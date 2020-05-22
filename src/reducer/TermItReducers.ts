@@ -30,6 +30,7 @@ import SearchResult from "../model/SearchResult";
 import SearchQuery from "../model/SearchQuery";
 import {ErrorLogItem} from "../model/ErrorInfo";
 import Utils from "../util/Utils";
+import Workspace from "../model/Workspace";
 
 /**
  * Handles changes to the currently logged in user.
@@ -445,6 +446,13 @@ function annotatorTerms(state: { [key: string]: Term } = {}, action: AsyncAction
     }
 }
 
+function workspace(state: Workspace | null = null, action: AsyncActionSuccess<Workspace>) {
+    if (action.type === ActionType.SELECT_WORKSPACE && action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload;
+    }
+    return state;
+}
+
 const rootReducer = combineReducers<TermItState>({
     user,
     loading,
@@ -473,7 +481,8 @@ const rootReducer = combineReducers<TermItState>({
     labelCache,
     sidebarExpanded,
     desktopView,
-    annotatorTerms
+    annotatorTerms,
+    workspace
 });
 
 export default rootReducer;

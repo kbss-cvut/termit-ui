@@ -39,6 +39,7 @@ import QueryResult from "../../model/QueryResult";
 import File from "../../model/File";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
+import Workspace from "../../model/Workspace";
 
 function stateToPlainObject(state: TermItState): TermItState {
     return {
@@ -69,7 +70,8 @@ function stateToPlainObject(state: TermItState): TermItState {
         labelCache: state.labelCache,
         sidebarExpanded: state.sidebarExpanded,
         desktopView: state.desktopView,
-        annotatorTerms: state.annotatorTerms
+        annotatorTerms: state.annotatorTerms,
+        workspace: state.workspace
     };
 }
 
@@ -589,6 +591,15 @@ describe("Reducers", () => {
             expected[term.iri] = term;
             const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.ANNOTATOR_LOAD_TERM}, term));
             expect(result.annotatorTerms).toEqual(expected);
+        });
+    });
+
+    describe("workspace", () => {
+        it("sets loaded workspace as current one in store", () => {
+            const ws = new Workspace({iri: Generator.generateUri(), label: "Test workspace"});
+            expect(stateToPlainObject(initialState).workspace).toBeNull();
+            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.SELECT_WORKSPACE}, ws));
+            expect(result.workspace).toEqual(ws);
         });
     });
 });

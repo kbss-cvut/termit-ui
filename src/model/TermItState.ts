@@ -13,6 +13,7 @@ import SearchQuery from "./SearchQuery";
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import {ErrorLogItem} from "./ErrorInfo";
 import Utils from "../util/Utils";
+import Workspace from "./Workspace";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -51,6 +52,7 @@ export default class TermItState {
     // Caches labels retrieved from the backend, so that they can be reused and thus server traffic reduced
     public labelCache: { [key: string]: string };
     public annotatorTerms: { [key: string]: Term };
+    public workspace: Workspace | null;
 
     constructor() {
         this.loading = false;
@@ -81,5 +83,6 @@ export default class TermItState {
         this.sidebarExpanded = true;
         this.desktopView = Utils.isDesktopView();
         this.annotatorTerms = {};
+        this.workspace = null;
     }
 }

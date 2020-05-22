@@ -15,6 +15,12 @@ export interface WorkspaceData extends AssetData {
 export default class Workspace extends Asset implements WorkspaceData {
     public description?: string;
 
+
+    constructor(data: WorkspaceData) {
+        super();
+        Object.assign(this, data);
+    }
+
     public toJsonLd(): {} {
         return Object.assign({}, this, {"@context": CONTEXT});
     }
