@@ -494,6 +494,6 @@ export default {
         "public.dashboard.actions.register": "Create account",
         "public.dashboard.actions.vocabularies": "Browse vocabularies and terms",
 
-        "workspace.select.success": "Workspace {name} successfully loaded."
+        "workspace.select.success": "Workspace \"{name}\" successfully loaded."
     }
 };
