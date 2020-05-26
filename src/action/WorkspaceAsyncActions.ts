@@ -10,6 +10,7 @@ import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import JsonLdUtils from "../util/JsonLdUtils";
 import Workspace, {CONTEXT as WORKSPACE_CONTEXT, WorkspaceData} from "../model/Workspace";
+import {AxiosResponse} from "axios";
 
 
 export function selectWorkspace(iri: IRI) {
@@ -20,7 +21,7 @@ export function selectWorkspace(iri: IRI) {
         }
         dispatch(asyncActionRequest(action));
         return Ajax.put(`${Constants.API_PREFIX}/workspaces/${iri.fragment}`, param("namespace", iri.namespace))
-            .then((data: object) => JsonLdUtils.compactAndResolveReferences(data, WORKSPACE_CONTEXT))
+            .then((resp: AxiosResponse) => JsonLdUtils.compactAndResolveReferences(resp.data, WORKSPACE_CONTEXT))
             .then((data: WorkspaceData) => {
                 dispatch(publishMessage(new Message({
                     messageId: "workspace.select.success",

@@ -49,7 +49,7 @@ describe("WorkspaceAsyncActions", () => {
             const fragment = "test-workspace";
             const iri = VocabularyUtils.create(`${VocabularyUtils.NS_TERMIT}${fragment}`);
             const ws = require("../../rest-mock/workspace.json");
-            Ajax.put = jest.fn().mockResolvedValue(ws);
+            Ajax.put = jest.fn().mockResolvedValue({data: ws, status: 200});
             return Promise.resolve((store.dispatch as ThunkDispatch)(selectWorkspace(iri))).then(() => {
                 const successAction = store.getActions().find(a => a.type === ActionType.SELECT_WORKSPACE && a.status === AsyncActionStatus.SUCCESS);
                 expect(successAction).toBeDefined();
