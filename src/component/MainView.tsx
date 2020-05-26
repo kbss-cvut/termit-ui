@@ -31,17 +31,20 @@ import VocabularyManagementRoute from "./vocabulary/VocabularyManagementRoute";
 import Dashboard from "./dashboard/Dashboard";
 import SearchVocabularies from "./search/SearchVocabularies";
 import ProfileRoute from "./profile/ProfileRoute";
+import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
 import AdministrationRoute from "./administration/AdministrationRoute";
 import {loadUser} from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
 import UserDropdown from "./misc/UserDropdown";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
+import {selectWorkspace} from "../action/WorkspaceAsyncActions";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     user: User;
-    loadUser: () => void;
+    loadUser: () => Promise<any>;
     logout: () => void;
+    selectWorkspace: (iri: IRI) => void;
     sidebarExpanded: boolean;
     desktopView: boolean;
     changeView: () => void;
@@ -64,7 +67,9 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     public componentDidMount(): void {
         if (this.props.user === EMPTY_USER) {
-            this.props.loadUser();
+            this.props.loadUser().then(() => this.selectWorkspaceIfProvided());
+        } else {
+            this.selectWorkspaceIfProvided();
         }
 
         window.addEventListener("resize", this.handleResize, false);
@@ -72,6 +77,15 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     public componentWillUnmount(): void {
         window.removeEventListener("resize", this.handleResize, false);
+    }
+
+    private selectWorkspaceIfProvided() {
+        let ws = Utils.extractQueryParam(this.props.location.search, "workspace");
+        if (!ws || this.props.user === EMPTY_USER) {
+            return;
+        }
+        ws = decodeURIComponent(ws);
+        this.props.selectWorkspace(VocabularyUtils.create(ws));
     }
 
     private handleResize = (): void => {
@@ -175,6 +189,7 @@ export default connect((state: TermItState) => {
     return {
         loadUser: () => dispatch(loadUser()),
         logout: () => dispatch(logout()),
-        changeView: () => dispatch(changeView())
+        changeView: () => dispatch(changeView()),
+        selectWorkspace: (iri: IRI) => dispatch(selectWorkspace(iri))
     };
 })(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));

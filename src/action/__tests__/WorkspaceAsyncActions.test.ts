@@ -7,6 +7,7 @@ import {ThunkDispatch} from "../../util/Types";
 import {selectWorkspace} from "../WorkspaceAsyncActions";
 import ActionType from "../ActionType";
 import AsyncActionStatus from "../AsyncActionStatus";
+import Workspace from "../../model/Workspace";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => ({
@@ -56,6 +57,19 @@ describe("WorkspaceAsyncActions", () => {
                 expect(successAction.payload.iri).toEqual(ws["@id"]);
                 expect(successAction.payload.label).toEqual(ws[VocabularyUtils.DC_TITLE]);
                 expect(successAction.payload.description).toEqual(ws[VocabularyUtils.DC_DESCRIPTION]);
+            });
+        });
+
+        it("does not send request when workspace is already loaded in state", () => {
+            const fragment = "test-workspace";
+            const iri = VocabularyUtils.create(`${VocabularyUtils.NS_TERMIT}${fragment}`);
+            Ajax.put = jest.fn().mockResolvedValue({});
+            store.getState().workspace = new Workspace({
+                iri: iri.toString(),
+                label: "Test ws"
+            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(selectWorkspace(iri))).then(() => {
+                expect(Ajax.put).not.toHaveBeenCalled();
             });
         });
     });

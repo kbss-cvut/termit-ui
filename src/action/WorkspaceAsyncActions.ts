@@ -1,8 +1,8 @@
 import {IRI} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import {ThunkDispatch} from "../util/Types";
+import {GetStoreState, ThunkDispatch} from "../util/Types";
 import * as SyncActions from "./SyncActions";
-import {asyncActionFailure, asyncActionRequest, asyncActionSuccessWithPayload} from "./SyncActions";
+import {asyncActionFailure, asyncActionRequest, asyncActionSuccessWithPayload, publishMessage} from "./SyncActions";
 import Ajax, {param} from "../util/Ajax";
 import Constants from "../util/Constants";
 import {ErrorData} from "../model/ErrorInfo";
@@ -14,11 +14,20 @@ import Workspace, {CONTEXT as WORKSPACE_CONTEXT, WorkspaceData} from "../model/W
 
 export function selectWorkspace(iri: IRI) {
     const action = {type: ActionType.SELECT_WORKSPACE};
-    return (dispatch: ThunkDispatch) => {
+    return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+        if (getState().workspace && getState().workspace!.iri === `${iri.namespace}${iri.fragment}`) {
+            return Promise.resolve({});
+        }
         dispatch(asyncActionRequest(action));
         return Ajax.put(`${Constants.API_PREFIX}/workspaces/${iri.fragment}`, param("namespace", iri.namespace))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences(data, WORKSPACE_CONTEXT))
-            .then((data: WorkspaceData) => dispatch(asyncActionSuccessWithPayload(action, new Workspace(data))))
+            .then((data: WorkspaceData) => {
+                dispatch(publishMessage(new Message({
+                    messageId: "workspace.select.success",
+                    values: {name: data.label}
+                }, MessageType.SUCCESS)));
+                return dispatch(asyncActionSuccessWithPayload(action, new Workspace(data)));
+            })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
