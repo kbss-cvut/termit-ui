@@ -344,6 +344,7 @@ export default {
         'statistics.user.count': 'User Count',
         'statistics.notFilled': "Not Filled",
         'statistics.types.frequency': "Term Types",
+        'statistics.types.frequency.empty': "There is no vocabulary or existing vocabularies contain no terms. Use left sidebar actions to create some.",
 
         'fullscreen.exit': 'Exit fullscreen',
         'fullscreen.enter': 'Enter fullscreen',
