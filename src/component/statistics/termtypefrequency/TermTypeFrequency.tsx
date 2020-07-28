@@ -16,6 +16,7 @@ const TYPES = [
     TYPE_NOT_FILLED];
 
 interface Props extends PublicProps {
+    empty: string,
     notFilled: string,
     lang: string
 }
@@ -101,12 +102,16 @@ class TermTypeFrequency extends React.Component<Props> {
         });
 
         // Height is given by the number of vocabularies + a fixed value for the legend
-        const height = Object.keys(vocabularies).length * 35 + 60;
-        return <Chart options={options}
-                      series={series}
-                      type="bar"
-                      width="100%"
-                      height={`${height}px`}/>;
+        if (Object.keys(vocabularies).length === 0) {
+            return <h4>{this.props.empty}</h4>
+        } else {
+            const height = Object.keys(vocabularies).length * 35 + 60;
+            return <Chart options={options}
+                          series={series}
+                          type="bar"
+                          width="100%"
+                          height={`${height}px`}/>;
+        }
     }
 }
 

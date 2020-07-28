@@ -41,6 +41,7 @@ const Statistics = (props: HasI18n) => {
                 <FullscreenablePanelWithActions actions={[]}
                                                 title={props.i18n("statistics.term.count")}>
                     <TermTypeFrequency sparqlQuery={templateTermTypeFrequency}
+                                       empty={props.i18n("statistics.types.frequency.empty")}
                                        notFilled={props.i18n("statistics.notFilled")}
                                        lang={props.locale}/>
                 </FullscreenablePanelWithActions>

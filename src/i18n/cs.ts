@@ -350,6 +350,7 @@ export default {
         'statistics.user.count': 'Počet uživatelů',
         'statistics.notFilled': "Nevyplněno",
         'statistics.types.frequency': "Typy pojmů",
+        'statistics.types.frequency.empty': "Nemáte vytvořen žádný slovník, nebo vaše slovníky neobsahují žádné pojmy. Obojí si můžete vytvořit pomocí akcí v levém liště.",
 
         'fullscreen.exit': 'Vrátit zobrazení do okna',
         'fullscreen.enter': 'Zobrazit na celou obrazovku',
