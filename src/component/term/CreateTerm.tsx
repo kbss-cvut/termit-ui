@@ -33,17 +33,21 @@ export class CreateTerm extends React.Component<CreateTermProps> {
         }
     }
 
-    public onCreate = (term: Term) => {
+    public onCreate = (term: Term, newTerm : boolean) => {
         const vocabularyIri = VocabularyUtils.create(this.props.vocabulary.iri);
         this.props.createTerm(term, vocabularyIri).then((location: string) => {
             if (!location) {
                 return;
             }
             const termName = IdentifierResolver.extractNameFromLocation(location);
-            Routing.transitionTo(Routes.vocabularyTermDetail, {
-                params: new Map([["name", vocabularyIri.fragment], ["termName", termName]]),
-                query: new Map([["namespace", vocabularyIri.namespace!]])
-            });
+            const params = new Map([["name", vocabularyIri.fragment]]);
+            const query = new Map([["namespace", vocabularyIri.namespace!]]);
+            if (newTerm) {
+                Routing.transitionTo(Routes.createVocabularyTerm, { params, query });
+            } else {
+                params.set("termName", termName);
+                Routing.transitionTo(Routes.vocabularyTermDetail, { params, query });
+            }
         });
     };
 

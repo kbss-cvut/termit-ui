@@ -58,19 +58,33 @@ describe("CreateTerm", () => {
 
     it("invokes on create on create call", () => {
         const wrapper = shallow(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history} location={location} match={match} loadVocabulary={loadVocabulary}/>);
-        (wrapper.instance() as CreateTerm).onCreate(term);
+        (wrapper.instance() as CreateTerm).onCreate(term, false);
         expect(onCreate).toHaveBeenCalledWith(term, VocabularyUtils.create(vocabulary.iri));
     });
 
     it("invokes transition to term detail on successful creation", () => {
         const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history} location={location} match={match} loadVocabulary={loadVocabulary}/>);
-        (wrapper.instance() as CreateTerm).onCreate(term);
+        (wrapper.instance() as CreateTerm).onCreate(term, false);
         return Promise.resolve().then(() => {
             expect(Routing.transitionTo).toHaveBeenCalled();
-            const call = (Routing.transitionTo as jest.Mock).mock.calls[0];
+            const mock = (Routing.transitionTo as jest.Mock).mock;
+            const call = mock.calls[mock.calls.length-1];
             expect(call[0]).toEqual(Routes.vocabularyTermDetail);
             expect((call[1].params as Map<string, string>).get("name")).toEqual("test-vocabulary");
             expect((call[1].params as Map<string, string>).get("termName")).toEqual("test-term");
+            expect((call[1].query as Map<string, string>).get("namespace")).toEqual("http://onto.fel.cvut.cz/ontologies/termit/vocabularies/");
+        });
+    });
+
+    it("invokes transition to new term on successful creation", () => {
+        const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history} location={location} match={match} loadVocabulary={loadVocabulary}/>);
+        (wrapper.instance() as CreateTerm).onCreate(term, true);
+        return Promise.resolve().then(() => {
+            expect(Routing.transitionTo).toHaveBeenCalled();
+            const mock = (Routing.transitionTo as jest.Mock).mock;
+            const call = mock.calls[mock.calls.length-1];
+            expect(call[0]).toEqual(Routes.createVocabularyTerm);
+            expect((call[1].params as Map<string, string>).get("name")).toEqual("test-vocabulary");
             expect((call[1].query as Map<string, string>).get("namespace")).toEqual("http://onto.fel.cvut.cz/ontologies/termit/vocabularies/");
         });
     });
