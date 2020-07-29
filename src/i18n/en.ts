@@ -326,7 +326,8 @@ export default {
         'glossary.form.button.removeType': 'Remove term type',
         'glossary.form.button.showAdvancedSection': 'Show advanced options',
         'glossary.form.button.hideAdvancedSection': 'Hide advanced options',
-        'glossary.form.button.submit': 'Submit',
+        'glossary.form.button.submit': 'Create',
+        "glossary.form.button.submitAndGoToNewTerm" : "Create and Start New",
         'glossary.form.button.cancel': 'Cancel',
 
         'glossary.form.validation.validateLengthMin5': 'Field must be at least 5 characters',

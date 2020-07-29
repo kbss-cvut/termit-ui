@@ -333,6 +333,7 @@ export default {
         'glossary.form.button.showAdvancedSection': 'Zobrazit pokročilé možnosti',
         'glossary.form.button.hideAdvancedSection': 'Skrýt pokročilé možnosti',
         'glossary.form.button.submit': 'Vytvořit',
+        "glossary.form.button.submitAndGoToNewTerm" : "Vytvořit a začít nový",
         'glossary.form.button.cancel': 'Zrušit',
 
         'glossary.form.validation.validateLengthMin5': 'Pole musí mít alespoň 5 znaků',
