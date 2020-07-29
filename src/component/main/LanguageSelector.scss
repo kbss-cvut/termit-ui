@@ -1,0 +1,30 @@
+@import "../../styles/custom/colors";
+@import "../../styles/variables";
+
+.flag {
+  width: 1.6rem;
+}
+
+.language-selector-fixed {
+  color: $white !important;
+
+  &:hover {
+    color: $secondary !important;
+  }
+
+  @media (max-width: $md - 1px) {
+    color: $black !important;
+  }
+}
+
+.dropdown {
+  .language-selector {
+    @media (max-width: $sm - 1px) {
+      padding: 0.5rem !important;
+    }
+  }
+
+  &.show .language-selector {
+    color: $primary !important;
+  }
+}

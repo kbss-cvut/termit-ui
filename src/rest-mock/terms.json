@@ -1,0 +1,71 @@
+[
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-1",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept"
+    ],
+    "http://www.w3.org/2004/02/skos/core#prefLabel": "pojem 1",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+      "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+    }
+  },
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-2",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept"
+    ],
+    "http://www.w3.org/2004/02/skos/core#prefLabel": "pojem 2",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+      "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+    }
+  },
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept",
+      "http://onto.fel.cvut.cz/ontologies/ufo/event"
+    ],
+    "http://www.w3.org/2004/02/skos/core#prefLabel": "pojem 3",
+    "http://purl.org/dc/terms/source": [
+      "mpp/3.3/ca-1/h-II/cl-6/c-1/b-s"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#comment": "Comment to term 3",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+      "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+    }
+  },
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-4",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept"
+    ],
+    "http://www.w3.org/2004/02/skos/core#narrower": [
+      {
+        "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-6"
+      },
+      {
+        "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-7"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#prefLabel": "pojem 4",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+      "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+    }
+  },
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept",
+      "http://onto.fel.cvut.cz/ontologies/ufo/intrinsic-trope"
+    ],
+    "http://www.w3.org/2004/02/skos/core#prefLabel": "pojem 5",
+    "http://purl.org/dc/terms/source": [
+      "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"
+    ],
+    "http://www.w3.org/2004/02/skos/core#definition": "Definition of the term.",
+    "http://onto.fel.cvut.cz/ontologies/termit/properties#UnmappedProperty": "Value of an unmapped property without known prefix.",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+      "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+    }
+  }
+]

@@ -1,0 +1,32 @@
+ul.term-items {
+  padding-left: 1.2rem;
+}
+
+ul.term-items button {
+  padding: 0;
+}
+
+.term-edit-source-remove {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.term-edit-source-add-button {
+  z-index: 0 !important;
+}
+
+.term-edit .Select-placeholder {
+  line-height: 1.5;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.additional-metadata-container {
+  margin-top: 1rem;
+}
+
+#create-term-toggle-advanced {
+  margin-left: -0.75rem;
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance-44444",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu"
+    ],
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-přiřazením-termu": {
+      "@id": "http://data.iprpraha.cz/zdroj/slovnik/cz-institut-praha-svs/pojem/Okrsková-volební-komise",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#comment": "Volební\norgán, který dbá o pořádek ve volební místnosti, zajišťuje a dozírá na\nprůběh hlasování, sčítá hlasy a vyhotovuje zápis o průběhu a výsledku\nhlasování a odevzdává volební dokumentaci do úschovy obecnímu úřadu s\nvýjimkou jednoho stejnopisu zápisu o průběhu a výsledku hlasování (§ 16\nzákona č. 491/2001 Sb., o volbách do zastupitelstev obcí).",
+      "http://www.w3.org/2000/01/rdf-schema#label": "Okrsková volební komise",
+      "http://www.w3.org/2004/02/skos/core#related": "Volební orgány",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+        "@id": "http://data.iprpraha.cz/zdroj/slovnik/cz-institut-praha-svs"
+      },
+      "http://purl.org/dc/terms/source": [
+        "\n        – Zákon č. 491/2001 Sb.,\no volbách do zastupitelstev obcí"
+      ]
+    },
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/má-cíl": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-44444",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl"
+      ],
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-zdroj": {
+        "@id": "https://data.gov.cz/zdroj/datová-sada/http---atom.cuzk.cz-api-3-action-package_show-id-ruian-sp-vo-u",
+        "@type": [
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj"
+        ],
+        "http://www.w3.org/2000/01/rdf-schema#label": "RÚIAN speciální data - volební okrsky - stav",
+        "http://purl.org/dc/elements/1.1/description": "Data vychází z Registru územní identifikace, adres a nemovitostí (RÚIAN), který je součástí základních registrů České republiky a obsahuje informace o územní identifikaci, adresách a nemovitostech. Data jsou poskytována ve výměnném formátu RÚIAN (VFR), ve kterém jsou zapsána jazykem XML a odpovídají formátu GML 3.2.1 (podle ISO 19136:2007). Pro stažení jsou datové sady komprimovány jako archivy Gzip. Stavový soubor s volebními okrsky se generuje vždy aktuální k třetímu dni každého měsíce. Volební okrsky jsou účelovým územním prvkem vedeným v RÚIAN a jsou beze zbytku skladebné do území obcí, resp. území městských částí/městských obvodů (MOMC) územně členěných statutárních měst a tím odvozeně do území celé ČR. Soubor obsahuje všechny volební okrsky a jejich atributy: kód, definiční bod, hranice, platnost, kód obce, kód MOMC a ID návrhu změny, kterým byl volební okrsek naposledy změněn.",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-autora": {
+          "@id": "http://data.iprpraha.cz/zdroj/uzivatel/catherine-halsey",
+          "@type": [
+            "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"
+          ],
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey"
+        },
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-datum-a-čas-vytvoření": 1541675171869
+      }
+    }
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance-54321",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu"
+    ],
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-přiřazením-termu": {
+      "@id": "http://data.iprpraha.cz/zdroj/slovnik/cz-institut-praha-svs/pojem/Okrsková-volební-komise",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+      ],
+      "http://www.w3.org/2000/01/rdf-schema#comment": "Volební\norgán, který dbá o pořádek ve volební místnosti, zajišťuje a dozírá na\nprůběh hlasování, sčítá hlasy a vyhotovuje zápis o průběhu a výsledku\nhlasování a odevzdává volební dokumentaci do úschovy obecnímu úřadu s\nvýjimkou jednoho stejnopisu zápisu o průběhu a výsledku hlasování (§ 16\nzákona č. 491/2001 Sb., o volbách do zastupitelstev obcí).",
+      "http://www.w3.org/2000/01/rdf-schema#label": "Okrsková volební komise",
+      "http://www.w3.org/2004/02/skos/core#related": "Volební orgány",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+        "@id": "http://data.iprpraha.cz/zdroj/slovnik/cz-institut-praha-svs"
+      },
+      "http://purl.org/dc/terms/source": [
+        "\n        – Zákon č. 491/2001 Sb.,\no volbách do zastupitelstev obcí"
+      ]
+    },
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/má-cíl": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-54321",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl"
+      ],
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-zdroj": {
+        "@id": "https://data.gov.cz/zdroj/datová-sada/http---atom.cuzk.cz-api-3-action-package_show-id-cz-00025712-cuzk_ruian-sp-vo-u_1-oh",
+        "@type": [
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj"
+        ],
+        "http://www.w3.org/2000/01/rdf-schema#label": "RÚIAN speciální data - volební okrsky - stát",
+        "http://purl.org/dc/elements/1.1/description": "Data vychází z Registru územní identifikace, adres a nemovitostí (RÚIAN), který je součástí základních registrů České republiky a obsahuje informace o územní identifikaci, adresách a nemovitostech. Data jsou poskytována ve výměnném formátu RÚIAN (VFR), ve kterém jsou zapsána jazykem XML a odpovídají formátu GML 3.2.1 (podle ISO 19136:2007). Pro stažení jsou datové sady komprimovány jako archivy Gzip. Stavový soubor s volebními okrsky se generuje vždy aktuální k třetímu dni každého měsíce. Volební okrsky jsou účelovým územním prvkem vedeným v RÚIAN a jsou beze zbytku skladebné do území obcí, resp. území městských částí/městských obvodů (MOMC) územně členěných statutárních měst a tím odvozeně do území celé ČR. Soubor obsahuje všechny volební okrsky a jejich atributy: kód, definiční bod, hranice, platnost, kód obce, kód MOMC a ID návrhu změny, kterým byl volební okrsek naposledy změněn.",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-autora": {
+          "@id": "http://data.iprpraha.cz/zdroj/uzivatel/catherine-halsey",
+          "@type": [
+            "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"
+          ],
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
+          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey"
+        },
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-datum-a-čas-vytvoření": 1541675171869
+      }
+    }
+  }
+]

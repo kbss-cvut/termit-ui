@@ -1,0 +1,25 @@
+@import "~react-bootstrap-toggle/dist/bootstrap2-toggle.css";
+@import "../../styles/custom/colors";
+
+.toggle-custom {
+  white-space: nowrap !important;
+}
+
+.toggle-handle-custom {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.125) !important;
+}
+
+.toggle-on, .toggle-off {
+  position: absolute !important;
+}
+
+.toggle.btn-secondary {
+  background-color: $gray-400 !important;
+}
+
+.toggle-group {
+  .toggle-off, .btn-secondary {
+    background-color: transparent !important;
+  }
+}

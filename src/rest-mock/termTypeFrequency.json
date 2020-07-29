@@ -1,0 +1,112 @@
+[ {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik",
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "cs",
+    "@value" : "Testovací slovník"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/aaaaa",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/ahojsvete",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/bbbbbbbb",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/bbbbbbbbbbbbbbbb",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/fffff",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/ggggg",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/ufo/object" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/hhhhh",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/ufo/event" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/jjjjj",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/ufo/event" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/person",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/ufo/object-type" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/pokuspojem",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/xxxxx",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/xxxxxxxxxxxxxxxxxxxxxxx",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik/pojem/zzzzzzzzzzz",
+  "@type" : [ "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/not-filled" ],
+  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku" : [ {
+    "@id" : "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik"
+  } ]
+}, {
+  "@id" : "http://onto.fel.cvut.cz/ontologies/ufo/event",
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "cs",
+    "@value" : "Událost"
+  },{
+    "@language" : "en",
+    "@value" : "Event"
+  } ]
+}, {
+  "@id" : "http://onto.fel.cvut.cz/ontologies/ufo/object",
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "cs",
+    "@value" : "Objekt"
+  },{
+    "@language" : "en",
+    "@value" : "Object"
+  } ]
+}, {
+  "@id" : "http://onto.fel.cvut.cz/ontologies/ufo/object-type",
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "cs",
+    "@value" : "Typ objektu"
+  },{
+    "@language" : "en",
+    "@value" : "Object Type"
+  } ]
+} ]

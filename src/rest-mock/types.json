@@ -1,0 +1,86 @@
+[
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/object",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Object",
+    "http://www.w3.org/2004/02/skos/core#narrower": []
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/event",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Event",
+    "http://www.w3.org/2004/02/skos/core#narrower": []
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/object-type",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Object Type",
+    "http://www.w3.org/2004/02/skos/core#narrower": []
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/relator-type",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Relator Type",
+    "http://www.w3.org/2004/02/skos/core#narrower": []
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/individual",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Individual",
+    "http://www.w3.org/2004/02/skos/core#narrower": [
+      {
+        "@id": "http://onto.fel.cvut.cz/ontologies/ufo/event"
+      },
+      {
+        "@id": "http://onto.fel.cvut.cz/ontologies/ufo/object"
+      },
+      {
+        "@id": "http://onto.fel.cvut.cz/ontologies/ufo/relator"
+      }
+    ]
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/relator",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Relator",
+    "http://www.w3.org/2004/02/skos/core#narrower": []
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/event-type",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Event Type",
+    "http://www.w3.org/2004/02/skos/core#narrower": []
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/ufo/type",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "Type",
+    "http://www.w3.org/2004/02/skos/core#narrower": [
+      {
+        "@id": "http://onto.fel.cvut.cz/ontologies/ufo/event-type"
+      },
+      {
+        "@id": "http://onto.fel.cvut.cz/ontologies/ufo/object-type"
+      },
+      {
+        "@id": "http://onto.fel.cvut.cz/ontologies/ufo/relator-type"
+      }
+    ]
+  }
+]
