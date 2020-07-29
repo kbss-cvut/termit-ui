@@ -3,6 +3,7 @@ import AssetCount from "./assetcount/AssetCount";
 import Vocabulary from "../../util/VocabularyUtils";
 import {default as withI18n, HasI18n} from "../hoc/withI18n";
 import templateAssetCount from "./assetcount/AssetCount.rq";
+import termCount from "./assetcount/TermCount.rq";
 import templateTermTypeFrequency from "./termtypefrequency/TermTypeFrequency.rq";
 import {injectIntl} from "react-intl";
 import TermTypeFrequency from "./termtypefrequency/TermTypeFrequency";
@@ -26,7 +27,7 @@ const Statistics = (props: HasI18n) => {
             <Col lg={4} xs={12}>
                 <PanelWithActions
                     title={props.i18n("statistics.term.count")}>
-                    <AssetCount sparqlQuery={query(Vocabulary.TERM)}/>
+                    <AssetCount sparqlQuery={termCount}/>
                 </PanelWithActions>
             </Col>
             <Col lg={4} xs={12}>
