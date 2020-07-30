@@ -268,6 +268,22 @@ export default {
         'term.metadata.types': 'Typ pojmu',
         'term.metadata.status': 'Stav pojmu',
         'term.metadata.source': 'Zdroj pojmu',
+        'term.metadata.altLabels.label': 'Synonyma',
+        'term.metadata.altLabels.placeholder': 'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
+        'term.metadata.altLabels.placeholder.text': 'Přidat',
+        'term.metadata.altLabels.remove': 'Odebrat synonymum',
+        'term.metadata.altLabels.remove.text': 'Odebrat',
+        "term.metadata.altLabels.help": "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
+            "s názvem 'Adresa organizace' může mít synonymum 'Adresa', které se však použije jen v určitém kontextu " +
+            "(např. ve formuláři, ve kterém se vyplňují informace o organizaci). ",
+        'term.metadata.hiddenLabels.label': 'Vyhledávací texty',
+        'term.metadata.hiddenLabels.placeholder': 'Zadejte nový vyhledávací text a stiskněte tlačítko "Přidat"',
+        'term.metadata.hiddenLabels.placeholder.text': 'Přidat',
+        'term.metadata.hiddenLabels.remove': 'Odebrat vyhledávací text',
+        'term.metadata.hiddenLabels.remove.text': 'Odebrat',
+        "term.metadata.hiddenLabels.help": "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
+            " slouží zejména pro vyhledávání. Nemusí se jednat (ani kontextuální) synonyma k názvu pojmu. Např. " +
+            "pojem s názvem 'Kopaná' může mít vyhledávací text 'fočus'. ",
         'term.updated.message': 'Pojem úspěšně aktualizován.',
         'term.metadata.labelExists.message': "Pojem s názvem \"{label}\" již v tomto slovníku existuje",
         'term.metadata.multipleSources.message': "Pojem má více zdrojů, po uložení pojmu bude pouze aktuálně vyplněný zdroj a ostatní budou smazány",

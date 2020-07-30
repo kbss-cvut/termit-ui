@@ -93,7 +93,7 @@ export class TermDetail extends EditableComponent<TermDetailProps> {
         const buttons = this.getButtons();
         return <div id="term-detail">
             <HeaderWithActions title={
-                <>{term.label}<CopyIriIcon url={term.iri as string}/></>
+                <>{term.label}<CopyIriIcon url={term.iri as string}/><br/><h6>{Utils.sanitizeArray(term.altLabels || []).join(", ")}</h6></>
             } actions={buttons}/>
 
             {this.state.edit ?
