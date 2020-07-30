@@ -6,7 +6,7 @@ import {Table} from "reactstrap";
 import {connect} from "react-redux";
 import {injectIntl} from "react-intl";
 import {ThunkDispatch} from "../../util/Types";
-import {loadHistory} from "../../action/AsyncActions";
+import {loadHistory as loadHistoryAction} from "../../action/AsyncActions";
 import {UpdateRecord} from "../../model/changetracking/UpdateRecord";
 import UpdateRow from "./UpdateRow";
 import PersistRow from "./PersistRow";
@@ -21,13 +21,13 @@ interface AssetHistoryProps extends HasI18n {
 }
 
 export const AssetHistory: React.FC<AssetHistoryProps> = props => {
-    const {asset} = props;
+    const {asset, loadHistory} = props;
     const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
     React.useEffect(() => {
         if (asset.iri !== Constants.EMPTY_ASSET_IRI) {
-            props.loadHistory(asset).then(recs => setRecords(recs));
+            loadHistory(asset).then(recs => setRecords(recs));
         }
-    }, [asset]);
+    }, [asset, loadHistory]);
     const i18n = props.i18n;
     if (!records) {
         return <ContainerMask text={i18n("history.loading")}/>;
@@ -59,6 +59,6 @@ export const AssetHistory: React.FC<AssetHistoryProps> = props => {
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        loadHistory: (asset: Asset) => dispatch(loadHistory(asset))
+        loadHistory: (asset: Asset) => dispatch(loadHistoryAction(asset))
     };
 })(injectIntl(withI18n(AssetHistory)));

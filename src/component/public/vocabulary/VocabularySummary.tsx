@@ -24,11 +24,11 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export const VocabularySummary: React.FC<VocabularySummaryProps> = props => {
-    const {vocabulary, location, match, i18n, loadVocabulary} = props;
+    const {resetSelectedTerm, vocabulary, location, match, i18n, loadVocabulary} = props;
 
     React.useEffect(() => {
-        props.resetSelectedTerm();
-    }, []);
+        resetSelectedTerm();
+    }, [resetSelectedTerm]);
     React.useEffect(() => {
         const normalizedName = match.params.name;
         const namespace = Utils.extractQueryParam(location.search, "namespace");
