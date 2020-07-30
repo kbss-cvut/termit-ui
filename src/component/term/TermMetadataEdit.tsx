@@ -14,6 +14,7 @@ import Utils from "../../util/Utils";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
+import StringListEdit from "../misc/StringListEdit";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -54,6 +55,14 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     private onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const source = e.currentTarget.value;
         this.setState({sources: [source]});
+    };
+
+    private onHiddenLabelsChange = (hiddenLabels: string[]) => {
+        this.setState({hiddenLabels});
+    };
+
+    private onAltLabelsChange = (altLabels: string[]) => {
+        this.setState({altLabels});
     };
 
     private onTypesChange = (newTypes: string[]) => {
@@ -97,6 +106,20 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                          label={i18n("asset.label")} invalid={this.state.labelExists}
                                          invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: this.state.label}) : undefined}
                                          help={i18n("term.label.help")}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12}>
+                            <StringListEdit list={this.state.altLabels || []}
+                                            onChange={this.onAltLabelsChange}
+                                            i18nPrefix={"term.metadata.altLabels"}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12}>
+                            <StringListEdit list={this.state.hiddenLabels || []}
+                                            onChange={this.onHiddenLabelsChange}
+                                            i18nPrefix={"term.metadata.hiddenLabels"}/>
                         </Col>
                     </Row>
                     <Row>
