@@ -7,6 +7,7 @@ import Ajax from "../../../util/Ajax";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import CustomInput from "../../misc/CustomInput";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -64,5 +65,42 @@ describe("TermMetadataCreateForm", () => {
         const parents = [Generator.generateTerm()];
         wrapper.instance().onParentSelect(parents);
         expect(onChange).toHaveBeenCalledWith({parentTerms: parents});
+    });
+
+    it("checks for label uniqueness in vocabulary on label change", () => {
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                termData={AssetFactory.createEmptyTermData()}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const mock = jest.fn().mockImplementation(() => Promise.resolve(true));
+        Ajax.get = mock;
+        const newLabel = "New label";
+        wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label").simulate("change", {
+            currentTarget: {
+                name: "create-term-label",
+                value: newLabel
+            }
+        });
+        return Promise.resolve().then(() => {
+            // Label check, identifier generation
+            expect(Ajax.get).toHaveBeenCalledTimes(2);
+            expect(mock.mock.calls[1][1].getParams().value).toEqual(newLabel);
+        });
+    });
+
+    it("does not check for label uniqueness for empty label", () => {
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                termData={AssetFactory.createEmptyTermData()}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
+        wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label").simulate("change", {
+            currentTarget: {
+                name: "create-term-label",
+                value: ""
+            }
+        });
+        return Promise.resolve().then(() => {
+            // Label check, identifier generation
+            expect(Ajax.get).not.toHaveBeenCalled();
+        });
     });
 });
