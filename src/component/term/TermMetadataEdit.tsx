@@ -41,7 +41,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const label = e.currentTarget.value;
         this.setState({labelExists: false, label});
-        if (label === this.props.term.label) {
+        if (label.toLowerCase() === this.props.term.label.toLowerCase()) {
             return;
         }
         const vocabIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);

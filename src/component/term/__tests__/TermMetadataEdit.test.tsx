@@ -100,6 +100,22 @@ describe("Term edit", () => {
         expect(Ajax.get).not.toHaveBeenCalled();
     });
 
+    /**
+     * Bug 1323
+     */
+    it("does not check for label uniqueness when new label differs only in case from original", () => {
+        const wrapper = shallow(<TermMetadataEdit save={onSave} term={term}
+                                                  cancel={onCancel} {...intlFunctions()}/>);
+        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
+        wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
+            currentTarget: {
+                name: "edit-term-label",
+                value: term.label.toUpperCase()
+            }
+        });
+        expect(Ajax.get).not.toHaveBeenCalled();
+    });
+
     it("disables save button when duplicate label is set", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term}
                                                   cancel={onCancel} {...intlFunctions()}/>);
