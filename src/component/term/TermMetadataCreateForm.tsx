@@ -22,6 +22,7 @@ interface TermMetadataCreateFormProps extends HasI18n {
 interface TermMetadataCreateFormState {
     generateUri: boolean;
     showAdvanced: boolean;
+    labelExists: boolean;
 }
 
 export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFormProps, TermMetadataCreateFormState> {
@@ -30,7 +31,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         super(props);
         this.state = {
             generateUri: true,
-            showAdvanced: false
+            showAdvanced: false,
+            labelExists: false
         };
     }
 
@@ -45,7 +47,20 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         const label = e.currentTarget.value;
         this.props.onChange({label});
         this.resolveIdentifier(label);
+        this.checkLabelUniqueness(label);
     };
+
+    private checkLabelUniqueness(label: string) {
+        this.setState({labelExists: false});
+        if (label.trim().length === 0) {
+            return;
+        }
+        const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
+        const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/name`;
+        Ajax.get(url, params({namespace: vocabularyIri.namespace, value: label})).then((data) => {
+            this.setState({labelExists: data === true});
+        });
+    }
 
     private onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         this.props.onChange({definition: e.currentTarget.value});
@@ -99,6 +114,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                     <CustomInput name="create-term-label" label={i18n("asset.label")}
                                  help={this.props.i18n("term.label.help")}
                                  onChange={this.onLabelChange}
+                                 invalid={this.state.labelExists}
+                                 invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: termData.label}) : undefined}
                                  value={termData.label}/>
                 </Col>
             </Row>
