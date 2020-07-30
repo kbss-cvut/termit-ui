@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "homepage": ".",
-  "license": "GPL-3.0-only",
+  "license": "LGPL-3.0-only",
   "dependencies": {
     "@formatjs/intl-pluralrules": "^3.2.3",
     "@fortawesome/fontawesome-free": "^5.14.0",
