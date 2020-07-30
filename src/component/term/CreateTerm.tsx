@@ -44,6 +44,7 @@ export class CreateTerm extends React.Component<CreateTermProps> {
             const query = new Map([["namespace", vocabularyIri.namespace!]]);
             if (newTerm) {
                 Routing.transitionTo(Routes.createVocabularyTerm, { params, query });
+                Routing.reload();
             } else {
                 params.set("termName", termName);
                 Routing.transitionTo(Routes.vocabularyTermDetail, { params, query });
