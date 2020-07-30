@@ -30,7 +30,7 @@ const TermDetail: React.FC<TermDetailProps> = props => {
         const vocUri = {fragment: vocabularyName, namespace};
         loadTerm(termName, vocUri);
         loadVocabulary(vocUri);
-    }, [match.params.termName, loadTerm, loadVocabulary]);
+    }, [location.search, match.params.termName, match.params.name, loadTerm, loadVocabulary]);
 
     if (!term) {
         return null;

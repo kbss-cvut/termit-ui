@@ -6,7 +6,7 @@ import {injectIntl} from "react-intl";
 import {Alert} from "reactstrap";
 import {connect} from "react-redux";
 import {Dispatch} from "redux";
-import {dismissMessage} from "../../action/SyncActions";
+import {dismissMessage as dismissMessageAction} from "../../action/SyncActions";
 import Constants from "../../util/Constants";
 
 interface MessageProps extends HasI18n {
@@ -15,13 +15,13 @@ interface MessageProps extends HasI18n {
 }
 
 export const Message: React.FC<MessageProps> = (props: MessageProps) => {
-    const message = props.message;
+    const {message, dismissMessage} = props;
     useEffect(() => {
         const timer = setTimeout(() => {
-            props.dismissMessage(message);
+            dismissMessage(message);
         }, Constants.MESSAGE_DISPLAY_TIMEOUT);
         return () => clearTimeout(timer)
-    }, []);
+    }, [dismissMessage, message]);
 
     return <Alert color={message.type} isOpen={true}
                   toggle={() => props.dismissMessage(message)}>{message.messageId ? props.formatMessage(message.messageId, message.values) : message.message}</Alert>;
@@ -29,6 +29,6 @@ export const Message: React.FC<MessageProps> = (props: MessageProps) => {
 
 export default connect(null, (dispatch: Dispatch) => {
     return {
-        dismissMessage: (message: MessageModel) => dispatch(dismissMessage(message))
+        dismissMessage: (message: MessageModel) => dispatch(dismissMessageAction(message))
     }
 })(injectIntl(withI18n(Message)));
