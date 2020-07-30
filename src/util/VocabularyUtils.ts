@@ -51,6 +51,8 @@ export default {
     BROADER: _NS_SKOS + "broader",
     NARROWER: _NS_SKOS + "narrower",
     SKOS_PREF_LABEL: _NS_SKOS + "prefLabel",
+    SKOS_ALT_LABEL: _NS_SKOS + "altLabel",
+    SKOS_HIDDEN_LABEL: _NS_SKOS + "hiddenLabel",
     SKOS_SCOPE_NOTE: _NS_SKOS + "scopeNote",
     SKOS_IN_SCHEME: _NS_SKOS + "inScheme",
     IS_TERM_FROM_VOCABULARY: _NS_POPIS_DAT + "je-pojmem-ze-slovníku",

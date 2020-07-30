@@ -7,6 +7,8 @@ import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData} from "./Ter
 
 const ctx = {
     label: VocabularyUtils.SKOS_PREF_LABEL,
+    altLabels: VocabularyUtils.SKOS_ALT_LABEL,
+    hiddenLabels: VocabularyUtils.SKOS_HIDDEN_LABEL,
     definition: VocabularyUtils.DEFINITION,
     comment: VocabularyUtils.SKOS_SCOPE_NOTE,
     parentTerms: VocabularyUtils.BROADER,
@@ -21,11 +23,13 @@ const ctx = {
 
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, BASE_OCCURRENCE_CONTEXT);
 
-const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "definition",
+const MAPPED_PROPERTIES = ["@context", "iri", "label", "altLabels", "hiddenLabels", "comment", "definition",
     "subTerms", "sources", "types", "parentTerms", "parent", "plainSubTerms", "vocabulary", "glossary", "definitionSource", "draft"];
 
 export interface TermData extends AssetData {
     label: string;
+    altLabels?: string[];
+    hiddenLabels?: string[];
     definition?: string;
     subTerms?: TermInfo[];
     sources?: string[];
@@ -45,6 +49,8 @@ export interface TermInfo {
 }
 
 export default class Term extends Asset implements TermData {
+    public altLabels?: string[];
+    public hiddenLabels?: string[];
     public definition?: string;
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
