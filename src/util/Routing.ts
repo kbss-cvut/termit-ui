@@ -66,6 +66,13 @@ export class Routing {
         this.mHistory.push(Routing.getTransitionPath(route, options));
     };
 
+    /**
+     * Reloads the current route
+     */
+    public reload = () => {
+        this.mHistory.go(0)
+    };
+
     public transitionToHome = () => {
         this.transitionTo(Constants.HOME_ROUTE);
     };
