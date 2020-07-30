@@ -17,7 +17,7 @@ export default class Workspace extends Asset implements WorkspaceData {
 
 
     constructor(data: WorkspaceData) {
-        super();
+        super(data);
         Object.assign(this, data);
     }
 
