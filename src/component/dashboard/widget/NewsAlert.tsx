@@ -15,7 +15,7 @@ const NewsAlert: React.FC<HasI18n> = (props) => {
             displayAlert(true);
             window.localStorage.setItem(PREVIOUS_NEWS_VERSION_ALERT, version);
         }
-    });
+    }, [displayAlert, version]);
 
     return showAlert ?
         <UncontrolledAlert color="secondary">

@@ -17,11 +17,12 @@ interface TermChangeFrequencyProps extends HasI18n {
 
 export const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = props => {
     const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
+    const {vocabulary, loadContentChanges} = props;
     React.useEffect(() => {
-        if (props.vocabulary.iri !== Constants.EMPTY_ASSET_IRI) {
-            props.loadContentChanges(props.vocabulary).then(recs => setRecords(recs));
+        if (vocabulary.iri !== Constants.EMPTY_ASSET_IRI) {
+            loadContentChanges(vocabulary).then(recs => setRecords(recs));
         }
-    }, [props.vocabulary]);
+    }, [vocabulary, loadContentChanges]);
 
     return <>
         <TermChangeFrequencyUI records={(records || [])}/>

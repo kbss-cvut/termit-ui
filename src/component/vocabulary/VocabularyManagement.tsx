@@ -5,7 +5,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import Routes from "../../util/Routes";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
-import {loadVocabularies} from "../../action/AsyncActions";
+import {loadVocabularies as loadVocabulariesAction} from "../../action/AsyncActions";
 import VocabularyList from "./VocabularyList";
 import {Link} from "react-router-dom";
 import {GoPlus} from "react-icons/go";
@@ -18,10 +18,10 @@ interface VocabularyManagementProps extends HasI18n {
 }
 
 export const VocabularyManagement: React.FC<VocabularyManagementProps> = props => {
+    const {i18n, loadVocabularies} = props;
     React.useEffect(() => {
-        props.loadVocabularies();
-    }, []);
-    const {i18n} = props;
+        loadVocabularies();
+    }, [loadVocabularies]);
     const onSelect = (voc: Vocabulary) => {
         if (voc === null) {
             Routing.transitionTo(Routes.vocabularies);
@@ -53,6 +53,6 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        loadVocabularies: () => dispatch(loadVocabularies())
+        loadVocabularies: () => dispatch(loadVocabulariesAction())
     };
 })(injectIntl(withI18n(VocabularyManagement)));
