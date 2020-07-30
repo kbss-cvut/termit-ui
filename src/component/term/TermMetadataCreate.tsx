@@ -50,7 +50,6 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
 
     private onSaveAndGoToNewTerm = () => {
         this.props.onCreate(new Term(this.state), true);
-        this.setState(AssetFactory.createEmptyTermData());
     };
 
     public onChange = (change: object, callback?: () => void) => {
