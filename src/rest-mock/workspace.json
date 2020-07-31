@@ -1,0 +1,6 @@
+{
+  "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/workspaces/test-ws",
+  "@type": "https://slovník.gov.cz/datový/pracovní-prostor/pojem/metadatový-kontext",
+  "http://purl.org/dc/terms/title": "Test workspace",
+  "http://purl.org/dc/terms/description": "Description of the test workspace."
+}
