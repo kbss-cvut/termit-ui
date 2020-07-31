@@ -56,9 +56,9 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
     }
 
     public render() {
-        return <div>
+        return <div className="form-group-bottom-margin">
             <Label className="attribute-label">{this.getText("label")}</Label>
-            <InputGroup className="form-group no-shadow-box">
+            <InputGroup className="form-group no-bottom-margin">
                 <Input name="add-string-input" value={this.state.inputValue} onChange={this.onChange}
                        bsSize="sm" onKeyPress={this.onKeyPress}
                        placeholder={this.getText("placeholder")}/>
@@ -67,9 +67,9 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
                             className="term-edit-source-add-button" disabled={this.state.inputValue.trim().length === 0}
                             title={this.getText("placeholder.title")}><GoPlus/>&nbsp;{this.getText("placeholder.text")}
                     </Button>
-                </InputGroupAddon>
-                <FormText>{this.getText("help")}</FormText>
+                </InputGroupAddon><br/>
             </InputGroup>
+            <FormText>{this.getText("help")}</FormText>
             {this.renderList()}
 
         </div>;
