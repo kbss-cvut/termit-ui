@@ -5,7 +5,7 @@ import ChangeRecord, {ChangeRecordData} from "./ChangeRecord";
  */
 export default class PersistRecord extends ChangeRecord {
 
-    constructor(data: ChangeRecordData) {
+    public constructor(data: ChangeRecordData) {
         super(data);
     }
 
