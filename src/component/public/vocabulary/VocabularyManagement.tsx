@@ -15,9 +15,10 @@ interface VocabulariesProps extends HasI18n {
 }
 
 const VocabularyManagement: React.FC<VocabulariesProps> = props => {
+    const {loadVocabularies} = props;
     React.useEffect(() => {
-        props.loadVocabularies();
-    }, []);
+        loadVocabularies();
+    }, [loadVocabularies]);
 
     const onSelect = (voc: Vocabulary) => {
         if (voc === null) {
