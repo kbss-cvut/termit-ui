@@ -110,14 +110,14 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <StringListEdit list={this.state.altLabels || []}
+                            <StringListEdit list={this.state.altLabels}
                                             onChange={this.onAltLabelsChange}
                                             i18nPrefix={"term.metadata.altLabels"}/>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <StringListEdit list={this.state.hiddenLabels || []}
+                            <StringListEdit list={this.state.hiddenLabels}
                                             onChange={this.onHiddenLabelsChange}
                                             i18nPrefix={"term.metadata.hiddenLabels"}/>
                         </Col>
