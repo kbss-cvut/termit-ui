@@ -8,7 +8,7 @@ import "./StringListEdit.scss";
 import Utils from "../../util/Utils";
 
 interface StringListEditProps extends HasI18n {
-    list: string[];
+    list?: string[];
     onChange: (list: string[]) => void;
     i18nPrefix: string;
 }

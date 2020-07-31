@@ -262,6 +262,22 @@ export default {
         'term.metadata.subTerms': 'Sub terms',
         'term.metadata.types': 'Type',
         'term.metadata.source': 'Source',
+        'term.metadata.altLabels.label': 'Synonyms',
+        'term.metadata.altLabels.placeholder': 'Enter a new synonym and press "Add"',
+        'term.metadata.altLabels.placeholder.text': 'Add',
+        'term.metadata.altLabels.remove': 'Remove synonym',
+        'term.metadata.altLabels.remove.text': 'Remove',
+        "term.metadata.altLabels.help": "(Optional) synonyms of the label. Synonyms can be contextual - e.g. term " +
+            "named 'Organization address' can have a synonym 'Address', which is used in a specific context only " +
+            "(e.g. in a form gathering information about an organization). ",
+        'term.metadata.hiddenLabels.label': 'Search strings',
+        'term.metadata.hiddenLabels.placeholder': 'Enter a new search string and press "Add"',
+        'term.metadata.hiddenLabels.placeholder.text': 'Add',
+        'term.metadata.hiddenLabels.remove': 'Remove search string',
+        'term.metadata.hiddenLabels.remove.text': 'Remove',
+        "term.metadata.hiddenLabels.help": "(Optional) search strings, which are not meant for visual presentation of terms and" +
+            " serve mainly for search engines. Search strings do not need to be (contextual) synonyms to the label. E.g. " +
+            "a term with label 'potato' can have search string 'spud'. ",
         'term.metadata.status': 'Status',
         'term.updated.message': 'Term successfully updated.',
         'term.metadata.labelExists.message': "Term with label \"{label}\" already exists in this vocabulary",
