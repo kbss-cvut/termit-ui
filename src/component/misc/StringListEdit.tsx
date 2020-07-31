@@ -67,11 +67,10 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
                             className="term-edit-source-add-button" disabled={this.state.inputValue.trim().length === 0}
                             title={this.getText("placeholder.title")}><GoPlus/>&nbsp;{this.getText("placeholder.text")}
                     </Button>
-                </InputGroupAddon><br/>
+                </InputGroupAddon>
             </InputGroup>
             <FormText>{this.getText("help")}</FormText>
             {this.renderList()}
-
         </div>;
     }
 
