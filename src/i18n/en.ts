@@ -185,6 +185,7 @@ export default {
         "vocabulary.termchanges.termcount":"Changed term count",
         "vocabulary.termchanges.loading": "Loading changes ...",
         "vocabulary.termchanges.empty": "No creations/updates of terms found.",
+        "vocabulary.removed.message": "Vocabulary successfully removed.",
 
         'vocabulary.term.created.message': 'Term successfully created.',
         'vocabulary.select-vocabulary': 'Select a Vocabulary',
