@@ -23,6 +23,8 @@ describe("VocabularySummary", () => {
     const history = createMemoryHistory();
     let match: Match<any>;
 
+    let removeVocabulary: (iri: IRI) => Promise<any>;
+
     let onLoad: (iri: IRI) => void;
     let onUpdate: (vocabulary: Vocabulary) => Promise<any>;
     let exportToCsv: (iri: IRI) => void;
@@ -35,6 +37,7 @@ describe("VocabularySummary", () => {
     beforeEach(() => {
         onLoad = jest.fn();
         onUpdate = jest.fn().mockResolvedValue(undefined);
+        removeVocabulary = jest.fn().mockImplementation(() => Promise.resolve());
         exportToCsv = jest.fn();
         exportToExcel = jest.fn();
         exportToTurtle = jest.fn();
@@ -84,6 +87,22 @@ describe("VocabularySummary", () => {
         wrapper.setProps({vocabulary});
         wrapper.update();
         expect(onLoad).toHaveBeenCalledTimes(1);
+    });
+
+    it("invokes remove action and closes remove confirmation dialog on remove", () => {
+        const wrapper = shallow<VocabularySummary>(<VocabularySummary
+            vocabulary={vocabulary}
+            updateVocabulary={onUpdate}
+            loadVocabulary={onLoad}
+            removeVocabulary={removeVocabulary}
+            {...exportFunctions}
+            history={history}
+            location={location}
+            match={match}
+            {...intlFunctions()}/>);
+        wrapper.instance().onRemove();
+        expect(removeVocabulary).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
+        expect(wrapper.state("showRemoveDialog")).toBeFalsy();
     });
 
     it("opens edit view on edit button click", () => {

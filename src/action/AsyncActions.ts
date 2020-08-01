@@ -12,7 +12,7 @@ import {GetStoreState, ThunkDispatch} from "../util/Types";
 import Routing from "../util/Routing";
 import Constants from "../util/Constants";
 import Vocabulary, {CONTEXT as VOCABULARY_CONTEXT, VocabularyData} from "../model/Vocabulary";
-import Routes from "../util/Routes";
+import Routes, {Route} from "../util/Routes";
 import {ErrorData} from "../model/ErrorInfo";
 import {AxiosResponse} from "axios";
 import * as jsonld from "jsonld";
@@ -342,18 +342,42 @@ export function uploadFileContent(fileIri: IRI, data: File) {
 }
 
 export function removeResource(resource: Resource) {
-    const action = {
-        type: ActionType.REMOVE_RESOURCE
-    };
+    return removeAsset(
+        VocabularyUtils.create(resource.iri),
+        ActionType.REMOVE_RESOURCE,
+        "resources",
+        loadResources,
+        Routes.resources,
+        "resource.removed.message"
+    );
+}
+
+export function removeVocabulary(iri: IRI) {
+    return removeAsset(
+        iri,
+        ActionType.REMOVE_VOCABULARY,
+        "vocabularies",
+        loadVocabularies,
+        Routes.vocabularies,
+        "vocabulary.removed.message"
+    );
+}
+
+export function removeAsset(iri: IRI,
+                            type: string,
+                            assetPathFragment: string,
+                            load: () => any,
+                            transitionRoute: Route,
+                            messageId: string) {
+    const action = { type };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
-        const resourceIri = VocabularyUtils.create(resource.iri);
-        return Ajax.delete(Constants.API_PREFIX + "/resources/" + resourceIri.fragment, param("namespace", resourceIri.namespace))
-            .then(() => {
+        return Ajax.delete(Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
+            param("namespace", iri.namespace)).then(() => {
                 dispatch(asyncActionSuccess(action));
-                dispatch(loadResources());
-                Routing.transitionTo(Routes.resources);
-                return dispatch(SyncActions.publishMessage(new Message({messageId: "resource.removed.message"}, MessageType.SUCCESS)));
+                dispatch(load());
+                Routing.transitionTo(transitionRoute)
+                return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));

@@ -32,7 +32,6 @@ export interface ResourceSummaryProps extends HasI18n {
 }
 
 export interface ResourceSummaryState extends EditableComponentState {
-    showRemoveDialog: boolean;
 }
 
 export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryProps, S extends ResourceSummaryState = ResourceSummaryState>
@@ -53,17 +52,11 @@ export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryPro
         });
     };
 
-    protected onRemoveClick = () => {
-        this.setState({showRemoveDialog: true});
-    };
-
     public onRemove = () => {
-        this.props.removeResource(this.props.resource);
-        this.setState({showRemoveDialog: false});
-    };
-
-    protected onRemoveCancel = () => {
-        this.setState({showRemoveDialog: false});
+        const onCloseRemove = this.onCloseRemove;
+        this.props.removeResource(this.props.resource).then(() => {
+            onCloseRemove();
+        });
     };
 
     protected canRemove() {

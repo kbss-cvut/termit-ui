@@ -5,35 +5,42 @@ import {RouteComponentProps} from "react-router";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
-import {exportGlossary, loadVocabulary, updateVocabulary} from "../../action/AsyncActions";
+import {exportGlossary, loadVocabulary, removeVocabulary, updateVocabulary} from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
 import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import {GoCloudDownload, GoPencil} from "react-icons/go";
 import {ThunkDispatch} from "../../util/Types";
-import EditableComponent from "../misc/EditableComponent";
+import EditableComponent, {EditableComponentState} from "../misc/EditableComponent";
 import VocabularyEdit from "./VocabularyEdit";
 import Utils from "../../util/Utils";
 import "./VocabularySummary.scss";
 import ExportType from "../../util/ExportType";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
+import {FaTrashAlt} from "react-icons/fa";
+import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
     loadVocabulary: (iri: IRI) => void;
+    removeVocabulary: (iri: IRI) => Promise<any>;
     updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     exportToCsv: (iri: IRI) => void;
     exportToExcel: (iri: IRI) => void;
     exportToTurtle: (iri: IRI) => void;
 }
 
-export class VocabularySummary extends EditableComponent<VocabularySummaryProps> {
+export interface VocabularySummaryState extends EditableComponentState {
+}
+
+export class VocabularySummary extends EditableComponent<VocabularySummaryProps,VocabularySummaryState> {
 
     constructor(props: VocabularySummaryProps) {
         super(props);
         this.state = {
-            edit: false
+            edit: false,
+            showRemoveDialog: false
         };
     }
 
@@ -63,6 +70,14 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps>
         });
     };
 
+    public onRemove = () => {
+        const onCloseRemove = this.onCloseRemove;
+        const iri = VocabularyUtils.create(this.props.vocabulary.iri);
+        this.props.removeVocabulary(iri).then(() => {
+            onCloseRemove();
+        });
+    };
+
     private onExportToCsv = () => {
         this.props.exportToCsv(VocabularyUtils.create(this.props.vocabulary.iri));
     };
@@ -79,6 +94,10 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps>
         this.loadVocabulary();
     };
 
+    private canRemove = () => {
+        return true;
+    }
+
     public render() {
         const buttons = [];
         if (!this.state.edit) {
@@ -87,11 +106,18 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps>
                                  onClick={this.onEdit}><GoPencil/> {this.props.i18n("edit")}</Button>);
         }
         buttons.push(this.renderExportDropdown());
+        if (this.canRemove()) {
+            buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
+                                 title={this.props.i18n("asset.remove.tooltip")}
+                                 onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
+        }
 
         return <div id="vocabulary-detail">
             <HeaderWithActions title={
                 <>{this.props.vocabulary.label}<CopyIriIcon url={this.props.vocabulary.iri as string}/></>
             } actions={buttons}/>
+            <RemoveAssetDialog show={this.state.showRemoveDialog} asset={this.props.vocabulary}
+                               onCancel={this.onRemoveCancel} onSubmit={this.onRemove}/>
 
             {this.state.edit ?
                 <VocabularyEdit save={this.onSave} cancel={this.onCloseEdit}
@@ -130,6 +156,7 @@ export default connect((state: TermItState) => {
     return {
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),
+        removeVocabulary: (iri: IRI) => dispatch(removeVocabulary(iri)),
         exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
         exportToExcel: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Excel)),
         exportToTurtle: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Turtle))

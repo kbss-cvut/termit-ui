@@ -29,7 +29,7 @@ import {
     loadVocabularies,
     loadVocabulary,
     loadVocabularyContentChanges,
-    removeResource,
+    removeResource, removeVocabulary,
     saveFileContent,
     searchTerms,
     updateResource,
@@ -191,6 +191,41 @@ describe("Async actions", () => {
                 const loadImportsSuccessAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_IMPORTS && a.status === AsyncActionStatus.SUCCESS);
                 expect(loadImportsSuccessAction).toBeDefined();
                 expect(loadImportsSuccessAction.payload).toEqual(imports);
+            });
+        });
+    });
+
+    describe("removeVocabulary", () => {
+        it("sends delete vocabulary request to the server", () => {
+            const normalizedName = "test-vocabulary";
+            const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
+            const vocabularyIri = VocabularyUtils.create(namespace + normalizedName);
+            Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(removeVocabulary(vocabularyIri))).then(() => {
+                    expect(Ajax.delete).toHaveBeenCalled();
+                    const call = (Ajax.delete as jest.Mock).mock.calls[0];
+                    expect(call[0]).toEqual(Constants.API_PREFIX + "/vocabularies/" + normalizedName);
+                    expect(call[1].getParams().namespace).toEqual(namespace);
+            });
+        });
+
+        it("refreshes vocabulary list on success", () => {
+            const vocabularyIri = VocabularyUtils.create(Generator.generateUri());
+            Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(removeVocabulary(vocabularyIri))).then(() => {
+                const actions = store.getActions();
+                expect(actions.find(a => a.type === ActionType.LOAD_VOCABULARIES)).toBeDefined();
+            });
+        });
+
+        it("transitions to vocabulary management on success", () => {
+            const vocabularyIri = VocabularyUtils.create(Generator.generateUri());
+            Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(removeVocabulary(vocabularyIri))).then(() => {
+                expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies);
             });
         });
     });
