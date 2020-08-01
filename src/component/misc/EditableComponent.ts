@@ -5,6 +5,7 @@ import * as React from "react";
  */
 export interface EditableComponentState {
     edit: boolean;
+    showRemoveDialog: boolean;
 }
 
 /**
@@ -21,5 +22,17 @@ export default class EditableComponent<P = {}, S extends EditableComponentState 
 
     public onCloseEdit = () => {
         this.setState({edit: false});
+    };
+
+    protected onRemoveClick = () => {
+        this.setState({showRemoveDialog: true});
+    };
+
+    public onCloseRemove = () => {
+        this.setState({showRemoveDialog: false});
+    };
+
+    protected onRemoveCancel = () => {
+        this.setState({showRemoveDialog: false});
     };
 }

@@ -10,7 +10,7 @@ import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
 import {Button} from "reactstrap";
 import {GoPencil} from "react-icons/go";
-import EditableComponent from "../misc/EditableComponent";
+import EditableComponent, {EditableComponentState} from "../misc/EditableComponent";
 import TermMetadataEdit from "./TermMetadataEdit";
 import Utils from "../../util/Utils";
 import AppNotification from "../../model/AppNotification";
@@ -21,6 +21,7 @@ import * as _ from "lodash";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
+import {FaTrashAlt} from "react-icons/fa/index";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -31,12 +32,16 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     publishNotification: (notification: AppNotification) => void;
 }
 
-export class TermDetail extends EditableComponent<TermDetailProps> {
+export interface TermSummaryState extends EditableComponentState {
+}
+
+export class TermDetail extends EditableComponent<TermDetailProps,TermSummaryState> {
 
     constructor(props: TermDetailProps) {
         super(props);
         this.state = {
-            edit: false
+            edit: false,
+            showRemoveDialog: false
         };
     }
 
@@ -78,11 +83,22 @@ export class TermDetail extends EditableComponent<TermDetailProps> {
         });
     };
 
+    private canRemove() {
+        return true;
+    }
+
     public getButtons = () => {
-        return this.state.edit ? [] : [
-            <Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit} key="term-detail-edit"
-                    title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>
-        ]
+        const buttons = [];
+        if ( !this.state.edit ) {
+            buttons.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit} key="term-detail-edit"
+                    title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
+        }
+        if ( this.canRemove() ) {
+            buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
+                                 title={this.props.i18n("asset.remove.tooltip")}
+                                 onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
+        }
+        return buttons;
     }
 
     public render() {

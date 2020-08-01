@@ -185,6 +185,7 @@ export default {
         "vocabulary.termchanges.termcount": "Počet změněných pojmů",
         "vocabulary.termchanges.loading": "Načítám změny ...",
         "vocabulary.termchanges.empty": "Žádné nové pojmy ani aktualizace pojmů nebyly nalezeny.",
+        "vocabulary.removed.message": "Slovník by odstraněn.",
 
         'vocabulary.term.created.message': 'Pojem úspěšně vytvořen.',
         'vocabulary.select-vocabulary': 'Vyber slovník',
