@@ -30,6 +30,7 @@ describe("TermDetail", () => {
     let onLoad: (termName: string, vocabIri: IRI) => void;
     let loadVocabulary: (iri: IRI) => void;
     let onUpdate: (term: Term) => Promise<any>;
+    let removeTerm: (term: Term) => Promise<any>;
     let onPublishNotification: (notification: AppNotification) => void;
 
     let vocabulary: Vocabulary;
@@ -54,6 +55,7 @@ describe("TermDetail", () => {
         onLoad = jest.fn();
         loadVocabulary = jest.fn();
         onUpdate = jest.fn().mockImplementation(() => Promise.resolve());
+        removeTerm = jest.fn().mockImplementation(() => Promise.resolve());
         onPublishNotification = jest.fn();
         vocabulary = Generator.generateVocabulary();
         term = new Term({
@@ -65,7 +67,7 @@ describe("TermDetail", () => {
     });
 
     it("loads term on mount", () => {
-        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} loadVocabulary={loadVocabulary}
+        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm} loadVocabulary={loadVocabulary}
                             publishNotification={onPublishNotification} vocabulary={vocabulary}
                             history={history} location={location} match={match}
                             {...intlFunctions()}/>);
@@ -75,7 +77,7 @@ describe("TermDetail", () => {
     it("provides namespace to term loading when specified in url", () => {
         const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
         location.search = "?namespace=" + namespace;
-        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} loadVocabulary={loadVocabulary}
+        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm} loadVocabulary={loadVocabulary}
                             history={history} location={location} match={match} vocabulary={vocabulary}
                             publishNotification={onPublishNotification}
                             {...intlFunctions()}/>);
@@ -84,7 +86,9 @@ describe("TermDetail", () => {
 
     it("renders term metadata by default", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate} vocabulary={vocabulary}
+                                            updateTerm={onUpdate}
+                                            removeTerm={removeTerm}
+                                            vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
                                             {...intlFunctions()}/>);
@@ -93,7 +97,9 @@ describe("TermDetail", () => {
 
     it("renders term editor after clicking edit button", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate} vocabulary={vocabulary}
+                                            updateTerm={onUpdate}
+                                            removeTerm={removeTerm}
+                                            vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
                                             {...intlFunctions()}/>);
@@ -103,6 +109,7 @@ describe("TermDetail", () => {
 
     it("invokes termUpdate action on save", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
+                                            removeTerm={removeTerm}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
@@ -113,7 +120,9 @@ describe("TermDetail", () => {
 
     it("closes term metadata edit on save success", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate} publishNotification={onPublishNotification}
+                                            updateTerm={onUpdate}
+                                            removeTerm={removeTerm}
+                                            publishNotification={onPublishNotification}
                                             history={history} location={location} match={match} vocabulary={vocabulary}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
@@ -126,6 +135,7 @@ describe("TermDetail", () => {
 
     it("reloads term on successful save", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
+                                            removeTerm={removeTerm}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
@@ -138,6 +148,7 @@ describe("TermDetail", () => {
 
     it("closes edit when different term is selected", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
+                                            removeTerm={removeTerm}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
@@ -161,7 +172,9 @@ describe("TermDetail", () => {
 
     it("does not render edit button when editing", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate} vocabulary={vocabulary}
+                                            updateTerm={onUpdate}
+                                            removeTerm={removeTerm}
+                                            vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
                                             {...intlFunctions()}/>);
@@ -173,6 +186,7 @@ describe("TermDetail", () => {
 
     it("publishes term update notification when parent term changes", () => {
         const wrapper = shallow<TermDetail>(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
+                                                        removeTerm={removeTerm}
                                                         loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                                         history={history} location={location} match={match}
                                                         publishNotification={onPublishNotification}
@@ -184,5 +198,21 @@ describe("TermDetail", () => {
         return Promise.resolve().then(() => {
             expect(onPublishNotification).toHaveBeenCalledWith({source: {type: NotificationType.TERM_HIERARCHY_UPDATED}});
         });
+    });
+    it("invokes remove action and closes remove confirmation dialog on remove", () => {
+        const wrapper = shallow<TermDetail>(<TermDetail term={term}
+                                    loadTerm={onLoad}
+                                    updateTerm={onUpdate}
+                                    removeTerm={removeTerm}
+                                    loadVocabulary={loadVocabulary}
+                                    vocabulary={vocabulary}
+                                    history={history}
+                                    location={location}
+                                    match={match}
+                                    publishNotification={onPublishNotification}
+                                    {...intlFunctions()}/>);
+        wrapper.instance().onRemove();
+        expect(removeTerm).toHaveBeenCalledWith(term);
+        expect(wrapper.state("showRemoveDialog")).toBeFalsy();
     });
 });
