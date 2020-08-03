@@ -4,7 +4,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {RouteComponentProps, withRouter} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
-import {loadTerm, loadVocabulary, updateTerm} from "../../action/AsyncActions";
+import {loadTerm, loadVocabulary, removeTerm, updateTerm} from "../../action/AsyncActions";
 import TermMetadata from "./TermMetadata";
 import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
@@ -22,6 +22,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
 import {FaTrashAlt} from "react-icons/fa/index";
+import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -29,6 +30,7 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     loadVocabulary: (iri: IRI) => void;
     loadTerm: (termName: string, vocabularyIri: IRI) => void;
     updateTerm: (term: Term) => Promise<any>;
+    removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
 }
 
@@ -83,9 +85,12 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
         });
     };
 
-    private canRemove() {
-        return true;
-    }
+    public onRemove = () => {
+        const onCloseRemove = this.onCloseRemove;
+        this.props.removeTerm(this.props.term!).then(() => {
+            onCloseRemove();
+        });
+    };
 
     public getButtons = () => {
         const buttons = [];
@@ -93,11 +98,9 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
             buttons.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit} key="term-detail-edit"
                     title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
         }
-        if ( this.canRemove() ) {
-            buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
-                                 title={this.props.i18n("asset.remove.tooltip")}
-                                 onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
-        }
+        buttons.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
+                             title={this.props.i18n("asset.remove.tooltip")}
+                             onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
         return buttons;
     }
 
@@ -111,6 +114,9 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
             <HeaderWithActions title={
                 <>{term.label}<CopyIriIcon url={term.iri as string}/><br/><h6>{Utils.sanitizeArray(term.altLabels).join(", ")}</h6></>
             } actions={buttons}/>
+
+            <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
+                               onCancel={this.onRemoveCancel} onSubmit={this.onRemove}/>
 
             {this.state.edit ?
                 <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}/> :
@@ -129,6 +135,7 @@ export default connect((state: TermItState) => {
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
         loadTerm: (termName: string, vocabularyIri: IRI) => dispatch(loadTerm(termName, vocabularyIri)),
         updateTerm: (term: Term) => dispatch(updateTerm(term)),
+        removeTerm: (term: Term) => dispatch(removeTerm(term)),
         publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
 })(injectIntl(withI18n(withRouter(TermDetail))));

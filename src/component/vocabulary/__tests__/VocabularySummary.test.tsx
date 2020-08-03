@@ -101,7 +101,7 @@ describe("VocabularySummary", () => {
             match={match}
             {...intlFunctions()}/>);
         wrapper.instance().onRemove();
-        expect(removeVocabulary).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
+        expect(removeVocabulary).toHaveBeenCalledWith(vocabulary);
         expect(wrapper.state("showRemoveDialog")).toBeFalsy();
     });
 

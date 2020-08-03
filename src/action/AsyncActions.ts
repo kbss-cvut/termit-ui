@@ -342,41 +342,64 @@ export function uploadFileContent(fileIri: IRI, data: File) {
 }
 
 export function removeResource(resource: Resource) {
+    const iri = VocabularyUtils.create(resource.iri)
     return removeAsset(
-        VocabularyUtils.create(resource.iri),
+        iri,
+        iri.namespace,
         ActionType.REMOVE_RESOURCE,
         "resources",
         loadResources,
-        Routes.resources,
-        "resource.removed.message"
+        "resource.removed.message",
+        Routes.resources
     );
 }
 
-export function removeVocabulary(iri: IRI) {
+export function removeVocabulary(vocabulary: Vocabulary) {
+    const iri = VocabularyUtils.create(vocabulary.iri);
     return removeAsset(
         iri,
+        iri.namespace,
         ActionType.REMOVE_VOCABULARY,
         "vocabularies",
         loadVocabularies,
-        Routes.vocabularies,
-        "vocabulary.removed.message"
+        "vocabulary.removed.message",
+        Routes.vocabularies
+    );
+}
+
+export function removeTerm(term: Term) {
+    const vocabularyIri = VocabularyUtils.create(term.vocabulary?.iri!);
+    return removeAsset(
+        VocabularyUtils.create(term.iri),
+        vocabularyIri.namespace,
+        ActionType.REMOVE_VOCABULARY_TERM,
+        "vocabularies/"+vocabularyIri.fragment+"/terms",
+        () => loadVocabulary(vocabularyIri),
+        "term.removed.message",
+        Routes.vocabularyDetail,
+        {
+            params: new Map([["name", vocabularyIri.fragment]]),
+            query: vocabularyIri.namespace ? new Map([["namespace", vocabularyIri.namespace]]) : undefined
+        }
     );
 }
 
 export function removeAsset(iri: IRI,
+                            namespace: string | undefined,
                             type: string,
                             assetPathFragment: string,
-                            load: () => any,
+                            load: () => (dispatch:ThunkDispatch, getState: GetStoreState) => Promise<{}>,
+                            messageId: string,
                             transitionRoute: Route,
-                            messageId: string) {
+                            options?: {} ) {
     const action = { type };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         return Ajax.delete(Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
-            param("namespace", iri.namespace)).then(() => {
+            param("namespace", namespace)).then(() => {
                 dispatch(asyncActionSuccess(action));
                 dispatch(load());
-                Routing.transitionTo(transitionRoute)
+                Routing.transitionTo(transitionRoute, options)
                 return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
             })
             .catch((error: ErrorData) => {
