@@ -322,6 +322,7 @@ export default {
         "term.metadata.status.confirmed" : "Schválený",
         "term.metadata.status.help" : "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
         "term.metadata.types.select.placeholder": "Vyberte typ",
+        "term.removed.message": "Pojem by odstraněn.",
 
         "glossary.title": "Pojmy",
         "glossary.new": "Nový pojem",

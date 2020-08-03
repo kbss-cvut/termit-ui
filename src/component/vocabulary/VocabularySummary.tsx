@@ -24,8 +24,8 @@ import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
     loadVocabulary: (iri: IRI) => void;
-    removeVocabulary: (iri: IRI) => Promise<any>;
     updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
+    removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     exportToCsv: (iri: IRI) => void;
     exportToExcel: (iri: IRI) => void;
     exportToTurtle: (iri: IRI) => void;
@@ -72,8 +72,7 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
 
     public onRemove = () => {
         const onCloseRemove = this.onCloseRemove;
-        const iri = VocabularyUtils.create(this.props.vocabulary.iri);
-        this.props.removeVocabulary(iri).then(() => {
+        this.props.removeVocabulary(this.props.vocabulary).then(() => {
             onCloseRemove();
         });
     };
@@ -94,10 +93,6 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         this.loadVocabulary();
     };
 
-    private canRemove = () => {
-        return true;
-    }
-
     public render() {
         const buttons = [];
         if (!this.state.edit) {
@@ -106,11 +101,9 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                                  onClick={this.onEdit}><GoPencil/> {this.props.i18n("edit")}</Button>);
         }
         buttons.push(this.renderExportDropdown());
-        if (this.canRemove()) {
-            buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
-                                 title={this.props.i18n("asset.remove.tooltip")}
-                                 onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
-        }
+        buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
+                             title={this.props.i18n("asset.remove.tooltip")}
+                             onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
 
         return <div id="vocabulary-detail">
             <HeaderWithActions title={
@@ -156,7 +149,7 @@ export default connect((state: TermItState) => {
     return {
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),
-        removeVocabulary: (iri: IRI) => dispatch(removeVocabulary(iri)),
+        removeVocabulary: (vocabulary: Vocabulary) => dispatch(removeVocabulary(vocabulary)),
         exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
         exportToExcel: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Excel)),
         exportToTurtle: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Turtle))

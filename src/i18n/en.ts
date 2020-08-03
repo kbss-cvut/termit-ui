@@ -317,6 +317,7 @@ export default {
         "term.metadata.status.confirmed" : "Confirmed",
         "term.metadata.status.help" : "Draft term is not ready to be used yet, while Confirmed term is.",
         "term.metadata.types.select.placeholder": "Select type",
+        "term.removed.message": "Term successfully removed.",
 
         "glossary.title": "Terms",
         "glossary.new": "New Term",
