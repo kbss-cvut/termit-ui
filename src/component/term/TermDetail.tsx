@@ -86,9 +86,8 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
     };
 
     public onRemove = () => {
-        const onCloseRemove = this.onCloseRemove;
         this.props.removeTerm(this.props.term!).then(() => {
-            onCloseRemove();
+            this.onCloseRemove();
         });
     };
 
@@ -116,7 +115,7 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
             } actions={buttons}/>
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
-                               onCancel={this.onRemoveCancel} onSubmit={this.onRemove}/>
+                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
 
             {this.state.edit ?
                 <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}/> :
