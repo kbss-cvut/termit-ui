@@ -86,7 +86,7 @@ export class FileSummary extends ResourceSummary<FileSummaryProps, FileSummarySt
             } actions={buttons}/>
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={this.props.resource}
-                               onCancel={this.onRemoveCancel} onSubmit={this.onRemove}/>
+                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
             {this.state.edit ? this.renderMetadataEdit() : this.renderMetadata()}
         </div>;
     }
