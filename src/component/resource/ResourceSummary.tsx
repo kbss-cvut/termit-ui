@@ -53,9 +53,8 @@ export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryPro
     };
 
     public onRemove = () => {
-        const onCloseRemove = this.onCloseRemove;
         this.props.removeResource(this.props.resource).then(() => {
-            onCloseRemove();
+            this.onCloseRemove();
         });
     };
 
@@ -70,7 +69,7 @@ export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryPro
             } actions={this.getActionButtons()}/>
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={this.props.resource}
-                               onCancel={this.onRemoveCancel} onSubmit={this.onRemove}/>
+                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
             {this.state.edit ? this.renderMetadataEdit() : this.renderMetadata()}
         </div>;
     }

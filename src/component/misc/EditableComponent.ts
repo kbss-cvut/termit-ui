@@ -31,8 +31,4 @@ export default class EditableComponent<P = {}, S extends EditableComponentState 
     public onCloseRemove = () => {
         this.setState({showRemoveDialog: false});
     };
-
-    protected onRemoveCancel = () => {
-        this.setState({showRemoveDialog: false});
-    };
 }

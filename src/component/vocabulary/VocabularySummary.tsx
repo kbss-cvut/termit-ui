@@ -71,9 +71,8 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
     };
 
     public onRemove = () => {
-        const onCloseRemove = this.onCloseRemove;
         this.props.removeVocabulary(this.props.vocabulary).then(() => {
-            onCloseRemove();
+            this.onCloseRemove();
         });
     };
 
@@ -110,7 +109,7 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                 <>{this.props.vocabulary.label}<CopyIriIcon url={this.props.vocabulary.iri as string}/></>
             } actions={buttons}/>
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={this.props.vocabulary}
-                               onCancel={this.onRemoveCancel} onSubmit={this.onRemove}/>
+                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
 
             {this.state.edit ?
                 <VocabularyEdit save={this.onSave} cancel={this.onCloseEdit}
