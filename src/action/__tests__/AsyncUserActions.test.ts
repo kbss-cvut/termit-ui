@@ -27,15 +27,13 @@ import {Action} from "redux";
 import Routing from "../../util/Routing";
 
 jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => ({
-    default: jest.fn(),
-    content: jest.requireActual("../../util/Ajax").content,
-    params: jest.requireActual("../../util/Ajax").params,
-    param: jest.requireActual("../../util/Ajax").param,
-    accept: jest.requireActual("../../util/Ajax").accept,
-    contentType: jest.requireActual("../../util/Ajax").contentType,
-    formData: jest.requireActual("../../util/Ajax").formData
-}));
+jest.mock("../../util/Ajax", () => {
+    const originalModule = jest.requireActual("../../util/Ajax");
+    return {
+        ...originalModule,
+        default: jest.fn()
+    };
+});
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
@@ -67,7 +65,7 @@ describe("AsyncUserActions", () => {
     });
 
     describe("login", () => {
-        it("transitions to home on login success", () => {
+        it("transitions to original target on login success", () => {
             const resp = {
                 data: {
                     loggedIn: true
@@ -77,7 +75,7 @@ describe("AsyncUserActions", () => {
             resp.headers[Constants.Headers.AUTHORIZATION] = "Bearer jwt12345";
             Ajax.post = jest.fn().mockImplementation(() => Promise.resolve(resp));
             return Promise.resolve((store.dispatch as ThunkDispatch)(login("test", "test"))).then(() => {
-                expect(Routing.transitionToHome).toHaveBeenCalled();
+                expect(Routing.transitionToOriginalTarget).toHaveBeenCalled();
             });
         });
     });

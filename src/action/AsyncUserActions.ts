@@ -65,7 +65,7 @@ export function login(username: string, password: string) {
                 if (!data.loggedIn) {
                     return Promise.reject(data);
                 } else {
-                    Routing.transitionToHome();
+                    Routing.transitionToOriginalTarget();
                     dispatch(asyncActionSuccess(action));
                     return Promise.resolve();
                 }
