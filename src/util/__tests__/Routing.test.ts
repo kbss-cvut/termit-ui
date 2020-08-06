@@ -122,4 +122,52 @@ describe("Routing", () => {
             }));
         });
     });
+
+    describe("saveOriginalTarget", () => {
+
+        afterEach(() => {
+            delete RoutingInstance.history.location;
+            // @ts-ignore
+            RoutingInstance.originalTarget = undefined;
+        })
+
+        it("stores current URL for later transition", () => {
+            const originalPath = Routes.administration.path;
+            RoutingInstance.history.location = {
+                hash: originalPath,
+                pathname: originalPath,
+                state: null,
+                search: ""
+            }
+            RoutingInstance.saveOriginalTarget();
+            expect(RoutingInstance.originalRoutingTarget).toEqual(Routes.administration.path);
+        });
+    });
+
+    describe("transitionToOriginalTarget", () => {
+
+        afterEach(() => {
+            delete RoutingInstance.history.location;
+            // @ts-ignore
+            RoutingInstance.originalTarget = undefined;
+        });
+
+        it("transitions to dashboard when no original target is available", () => {
+            RoutingInstance.transitionToOriginalTarget();
+            expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.dashboard));
+        });
+
+        it("transitions to original saved target when there is one", () => {
+            const originalPath = Routes.administration.path;
+            RoutingInstance.history.location = {
+                hash: originalPath,
+                pathname: originalPath,
+                state: null,
+                search: ""
+            }
+            RoutingInstance.saveOriginalTarget();
+            RoutingInstance.transitionToOriginalTarget();
+            expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.administration));
+        });
+    });
 });

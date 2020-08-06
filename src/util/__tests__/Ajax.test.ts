@@ -68,6 +68,14 @@ describe("Ajax", () => {
             });
         });
 
+        it("saves original navigation target when transitioning to login route after receiving 401 Unauthorized", () => {
+            mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
+            return sut.get("/users/current").catch(() => {
+                expect(Routing.saveOriginalTarget).toHaveBeenCalled();
+                return expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.login);
+            });
+        });
+
         it("returns connection error object when network error occurs", () => {
             mock.onAny().networkError();
             return sut.get("/users/current").catch(error => {

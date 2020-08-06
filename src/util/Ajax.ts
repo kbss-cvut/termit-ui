@@ -186,6 +186,7 @@ export class Ajax {
             }
             const response = error.response;
             if (response.status === Constants.STATUS_UNAUTHORIZED) {
+                Routing.saveOriginalTarget();
                 Routing.transitionTo(Routes.login);
             }
             if (typeof response.data === "string") {
