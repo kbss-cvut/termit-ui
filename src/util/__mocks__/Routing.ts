@@ -5,6 +5,8 @@ export class Routing {
 }
 
 class RoutingMock {
+    public reload = jest.fn();
+
     public saveOriginalTarget = jest.fn();
 
     public transitionTo = jest.fn();

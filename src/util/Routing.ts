@@ -35,17 +35,14 @@ export class Routing {
     };
 
     private readonly mHistory: History;
-    private originalTarget?: Route;
+    private originalTarget?: string;
 
     constructor() {
         this.mHistory = createHashHistory();
     }
 
-    public saveOriginalTarget = (route: Route) => {
-        if (!route) {
-            return;
-        }
-        this.originalTarget = route;
+    public saveOriginalTarget = () => {
+        this.originalTarget = this.mHistory.location.pathname + this.mHistory.location.search;
     };
 
     /**
@@ -77,9 +74,13 @@ export class Routing {
         this.transitionTo(Constants.HOME_ROUTE);
     };
 
+    public get originalRoutingTarget() {
+        return this.originalTarget;
+    }
+
     public transitionToOriginalTarget = () => {
-        if (this.originalTarget && this.originalTarget.path) {
-            this.transitionTo(this.originalTarget);
+        if (this.originalTarget) {
+            this.mHistory.push(this.originalTarget);
         } else {
             this.transitionTo(Constants.HOME_ROUTE);
         }
