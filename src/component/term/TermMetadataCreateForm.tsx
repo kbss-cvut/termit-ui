@@ -11,6 +11,7 @@ import TermTypesEdit from "./TermTypesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
+import StringListEdit from "../misc/StringListEdit";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
@@ -48,6 +49,14 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.props.onChange({label});
         this.resolveIdentifier(label);
         this.checkLabelUniqueness(label);
+    };
+
+    private onAltLabelsChange = (altLabels : string[]) => {
+        this.props.onChange({altLabels});
+    };
+
+    private onHiddenLabelsChange = (hiddenLabels : string[]) => {
+        this.props.onChange({hiddenLabels});
     };
 
     private checkLabelUniqueness(label: string) {
@@ -121,6 +130,14 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
             <Row>
                 <Col xs={12}>
+                    <StringListEdit list={termData.altLabels}
+                                    onChange={this.onAltLabelsChange}
+                                    i18nPrefix={"term.metadata.altLabels"}/>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col xs={12}>
                     {this.props.definitionSelector ?
                         <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
                             <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>
@@ -176,6 +193,14 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                      onChange={this.onSourceChange}
                                      label={i18n("term.metadata.source")}
                                      help={i18n("term.source.help")}/>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col xs={12}>
+                        <StringListEdit list={termData.hiddenLabels}
+                                        onChange={this.onHiddenLabelsChange}
+                                        i18nPrefix={"term.metadata.hiddenLabels"}/>
                     </Col>
                 </Row>
 
