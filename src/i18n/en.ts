@@ -549,6 +549,10 @@ const en = {
         "public.dashboard.actions.login": "Log in",
         "public.dashboard.actions.register": "Create account",
         "public.dashboard.actions.vocabularies": "Browse vocabularies and terms",
+
+        "comments.title": "Comments",
+        "comments.create.placeholder": "Type your comment...",
+        "comments.create.submit.title": "Submit"
     }
 };
 

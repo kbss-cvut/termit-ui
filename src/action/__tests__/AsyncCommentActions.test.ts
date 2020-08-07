@@ -92,7 +92,7 @@ describe("AsyncCommentActions", () => {
                 content: "Test comment"
             });
             Ajax.post = jest.fn().mockResolvedValue({});
-            return Promise.resolve(((store.dispatch as ThunkDispatch)(createTermComment(termIri, comment)))).then(() => {
+            return Promise.resolve(((store.dispatch as ThunkDispatch)(createTermComment(comment, termIri)))).then(() => {
                 expect(Ajax.post).toHaveBeenCalled();
                 const args = (Ajax.post as jest.Mock).mock.calls[0];
                 expect(args[0]).toContain(`${termIri.fragment}/comments`);

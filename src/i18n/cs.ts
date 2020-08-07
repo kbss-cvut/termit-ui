@@ -554,6 +554,10 @@ const cs = {
         "public.dashboard.actions.login": "Přihlaste se",
         "public.dashboard.actions.register": "Vytvořte si účet",
         "public.dashboard.actions.vocabularies": "Prohlédněte si slovníky a pojmy",
+
+        "comments.title": "Komentáře",
+        "comments.create.placeholder": "Napište komentář...",
+        "comments.create.submit.title": "Odeslat"
     }
 };
 

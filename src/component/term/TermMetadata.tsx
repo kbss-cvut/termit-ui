@@ -15,6 +15,7 @@ import Terms from "./Terms";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import ValidationResults from "./validation/ValidationResults";
 import Utils from "../../util/Utils";
+import Comments from "../comment/Comments";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
@@ -106,7 +107,8 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                                         "term.metadata.assignments.title": <TermAssignments term={term}
                                                                                             onLoad={this.setAssignmentsCount}/>,
                                         "history.label": <AssetHistory asset={term}/>,
-                                        "term.metadata.validation.title": <ValidationResults term={term}/>
+                                        "term.metadata.validation.title": <ValidationResults term={term}/>,
+                                        "comments.title": <Comments term={term}/>
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),
                                         "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,
