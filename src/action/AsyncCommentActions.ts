@@ -24,7 +24,7 @@ export function loadTermComments(termIri: IRI) {
     }
 }
 
-export function createTermComment(termIri: IRI, comment: Comment) {
+export function createTermComment(comment: Comment, termIri: IRI) {
     const action = {type: ActionType.CREATE_COMMENT};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));

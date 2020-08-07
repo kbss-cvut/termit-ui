@@ -519,6 +519,10 @@ export default {
         "public.dashboard.actions.register": "Vytvořte si účet",
         "public.dashboard.actions.vocabularies": "Prohlédněte si slovníky a pojmy",
 
-        "workspace.select.success": "Pracovní prostor \"{name}\" úspěšně načten."
+        "workspace.select.success": "Pracovní prostor \"{name}\" úspěšně načten.",
+
+        "comments.title": "Komentáře",
+        "comments.create.placeholder": "Napište komentář...",
+        "comments.create.submit.title": "Odeslat"
     }
 };
