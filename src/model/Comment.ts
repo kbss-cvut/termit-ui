@@ -1,6 +1,6 @@
 import VocabularyUtils from "../util/VocabularyUtils";
-import {ASSET_CONTEXT} from "./Asset";
-import {UserData} from "./User";
+import {ASSET_CONTEXT, SupportsJsonLd} from "./Asset";
+import {CONTEXT as USER_CONTEXT, UserData} from "./User";
 
 const ctx = {
     content: "http://rdfs.org/sioc/ns#content",
@@ -10,7 +10,7 @@ const ctx = {
     modified: VocabularyUtils.LAST_MODIFIED
 }
 
-export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT);
+export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT, USER_CONTEXT);
 
 export interface CommentData {
     iri?: string;
@@ -21,7 +21,7 @@ export interface CommentData {
     modified?: number;
 }
 
-export default class Comment implements CommentData {
+export default class Comment implements CommentData, SupportsJsonLd<CommentData> {
     public iri?: string;
     public content: string;
     public author?: UserData;
@@ -32,5 +32,9 @@ export default class Comment implements CommentData {
     public constructor(data: CommentData) {
         Object.assign(this, data);
         this.content = data.content;
+    }
+
+    toJsonLd(): CommentData {
+        return Object.assign({}, this, {"@context": CONTEXT});
     }
 }
