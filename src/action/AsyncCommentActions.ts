@@ -23,3 +23,14 @@ export function loadTermComments(termIri: IRI) {
             });
     }
 }
+
+export function createTermComment(termIri: IRI, comment: Comment) {
+    const action = {type: ActionType.CREATE_COMMENT};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action));
+        return Ajax.post(`${Constants.API_PREFIX}/terms/${termIri.fragment}/comments`,
+            param("namespace", termIri.namespace).content(comment.toJsonLd()))
+            .then(() => dispatch(asyncActionSuccess(action)))
+            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+    }
+}

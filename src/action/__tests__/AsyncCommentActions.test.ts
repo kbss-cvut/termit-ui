@@ -5,7 +5,7 @@ import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 import Ajax from "../../util/Ajax";
 import {ThunkDispatch} from "../../util/Types";
-import {loadTermComments} from "../AsyncCommentActions";
+import {createTermComment, loadTermComments} from "../AsyncCommentActions";
 import ActionType from "../ActionType";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Comment from "../../model/Comment";
@@ -80,6 +80,25 @@ describe("AsyncCommentActions", () => {
                 expect(Ajax.get).toHaveBeenCalled();
                 expect(result).toBeDefined();
                 expect(result.length).toEqual(0);
+            });
+        });
+    });
+
+    describe("createTermComment", () => {
+
+        it("sends JSON-LD serialization of specified comment to specified term endpoint", () => {
+            const termIri = VocabularyUtils.create(Generator.generateUri());
+            const comment = new Comment({
+                content: "Test comment"
+            });
+            Ajax.post = jest.fn().mockResolvedValue({});
+            return Promise.resolve(((store.dispatch as ThunkDispatch)(createTermComment(termIri, comment)))).then(() => {
+                expect(Ajax.post).toHaveBeenCalled();
+                const args = (Ajax.post as jest.Mock).mock.calls[0];
+                expect(args[0]).toContain(`${termIri.fragment}/comments`);
+                expect(args[1].getParams().namespace).toEqual(termIri.namespace);
+                expect(args[1].getContent()).toEqual(comment.toJsonLd());
+                expect(store.getActions().find(a => a.type === ActionType.CREATE_COMMENT && a.status === AsyncActionStatus.SUCCESS)).toBeDefined();
             });
         });
     });
