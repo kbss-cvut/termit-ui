@@ -1,5 +1,6 @@
 import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import {PasswordUpdateUser, UserDataWithPassword} from "../User";
 
 describe("User", () => {
 
@@ -57,6 +58,22 @@ describe("User", () => {
             const sut = Generator.generateUser();
             sut.types.push(VocabularyUtils.USER_ADMIN);
             expect(sut.isAdmin()).toBeTruthy();
+        });
+    });
+});
+
+describe("PasswordUpdateUser", () => {
+    describe("constructor", () => {
+        it("supports passing password and originalPassword", () => {
+            const password = "b";
+            const originalPassword = "a";
+            const userData: UserDataWithPassword = Object.assign({}, Generator.generateUser(), {
+                password,
+                originalPassword
+            });
+            const sut = new PasswordUpdateUser(userData);
+            expect(sut.password).toEqual(password);
+            expect(sut.originalPassword).toEqual(originalPassword);
         });
     });
 });
