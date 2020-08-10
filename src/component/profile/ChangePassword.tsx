@@ -8,7 +8,7 @@ import {Button, ButtonToolbar, Card, CardBody, Col, Form, Row} from "reactstrap"
 import CustomInput from "../misc/CustomInput";
 import {AsyncAction} from "../../action/ActionType";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
-import User, {UserDataWithPassword} from "../../model/User";
+import User, {PasswordUpdateUser, UserDataWithPassword} from "../../model/User";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
 import {changePassword} from "../../action/AsyncUserActions";
@@ -58,7 +58,7 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
             password: this.state.newPassword,
         };
 
-        this.props.changePassword(new User(userDataWithPassword)).then((asyncResult: AsyncAction) => {
+        this.props.changePassword(new PasswordUpdateUser(userDataWithPassword)).then((asyncResult: AsyncAction) => {
             if (asyncResult.status === AsyncActionStatus.SUCCESS) {
                 this.navigateToProfileRoute();
             }

@@ -40,8 +40,10 @@ export default class User implements UserData {
     public readonly lastName: string;
     public readonly username: string;
     public readonly types: string[];
+    protected readonly password?: string;
+    protected readonly originalPassword?: string;
 
-    constructor(data: UserData | UserDataWithPassword) {
+    constructor(data: UserData) {
         this.iri = data.iri;
         this.firstName = data.firstName;
         this.lastName = data.lastName;
@@ -78,6 +80,17 @@ export default class User implements UserData {
 
     public toJsonLd(): UserData {
         return Object.assign({}, this, {"@context": CONTEXT});
+    }
+}
+
+export class PasswordUpdateUser extends User implements UserDataWithPassword {
+    public readonly password: string;
+    public readonly originalPassword: string;
+
+    public constructor(data: UserDataWithPassword) {
+        super(data);
+        this.password = data.password;
+        this.originalPassword = data.originalPassword;
     }
 }
 
