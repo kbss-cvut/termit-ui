@@ -315,6 +315,21 @@ describe("Annotation", () => {
             expect((wrapper.find(Annotation).state() as any).detailOpened).toBeFalsy();
         });
     });
+
+    describe("onSelectTerm", () => {
+        // Bug #1359
+        it("resets current term to allow load of the selected one", () => {
+            const wrapper = shallow<Annotation>(
+                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+            return Promise.resolve().then(() => {
+                expect(wrapper.state().term).toEqual(term);
+                const selectedTerm = Generator.generateTerm();
+                wrapper.instance().onSelectTerm(selectedTerm);
+                wrapper.update();
+                expect(wrapper.state().term).toBeNull();
+            });
+        });
+    });
 });
 
 describe("isDefinitionAnnotation", () => {
