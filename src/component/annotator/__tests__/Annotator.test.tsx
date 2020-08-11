@@ -201,7 +201,7 @@ describe("Annotator", () => {
 
             wrapper.instance().onCloseCreate();
             expect(wrapper.state().newTermLabelAnnotation).not.toBeDefined();
-            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(annotation);
+            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(annotation, expect.anything());
         });
 
         // Bug #1245
@@ -233,7 +233,7 @@ describe("Annotator", () => {
 
             wrapper.instance().onCloseCreate();
             expect(wrapper.state().newTermDefinitionAnnotation).not.toBeDefined();
-            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(definitionAnnotation);
+            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(definitionAnnotation, expect.anything());
         });
 
         it("makes a shallow copy of parsed content to force its re-render when new term is created", () => {
