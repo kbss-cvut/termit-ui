@@ -47,13 +47,17 @@ export default {
             return foundResults[0] as DomHandlerElement;
         }
     },
-    removeAnnotation(annotation: DomHandlerNode): DomHandlerNode {
+
+    removeAnnotation(annotation: DomHandlerNode, dom: DomHandlerNode[]): void {
         // assuming annotation.type === "tag"
         const elem = annotation as DomHandlerElement;
         if (Utils.sanitizeArray(elem.children).length === 1 && elem.children![0].type === "text") {
             const newNode = this.createTextualNode(elem);
             DomUtils.replaceElement(elem, newNode);
-            return newNode;
+            const elemInd = dom.indexOf(elem);
+            if (elemInd !== -1) {
+                dom.splice(elemInd, 1, newNode);
+            }
         } else {
             // If the node is not just text, it contains other elements as well. In that case, just delete the
             // RDFa-specific attributes
@@ -62,7 +66,6 @@ export default {
             delete elem.attribs.property;
             delete elem.attribs.typeof;
             delete elem.attribs.class;
-            return elem;
         }
     },
 
