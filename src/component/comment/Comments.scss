@@ -23,7 +23,11 @@
 }
 
 .comment .metadata {
-  margin-left: 0.5rem;
+  margin-left: 1rem;
   display: inline-block;
   font-size: 0.875rem;
+}
+
+.comment .metadata .reaction {
+  cursor: pointer;
 }

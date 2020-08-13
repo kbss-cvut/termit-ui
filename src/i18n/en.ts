@@ -519,5 +519,9 @@ export default {
         "comments.create.placeholder": "Type your comment...",
         "comments.create.submit.title": "Submit",
         "comments.list.empty": "No comments, yet.",
+        "comments.comment.like": "Like this comment",
+        "comments.comment.like.on": "Cancel reaction",
+        "comments.comment.dislike": "Dislike this comment",
+        "comments.comment.dislike.on": "Cancel reaction",
     }
 };
