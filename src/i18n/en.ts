@@ -552,7 +552,8 @@ const en = {
 
         "comments.title": "Comments",
         "comments.create.placeholder": "Type your comment...",
-        "comments.create.submit.title": "Submit"
+        "comments.create.submit.title": "Submit",
+        "comments.list.empty": "No comments, yet.",
     }
 };
 
