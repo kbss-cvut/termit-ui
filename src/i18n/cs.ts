@@ -523,6 +523,7 @@ export default {
 
         "comments.title": "Komentáře",
         "comments.create.placeholder": "Napište komentář...",
-        "comments.create.submit.title": "Odeslat"
+        "comments.create.submit.title": "Odeslat",
+        "comments.list.empty": "Zatím tu žádné komentáře nejsou.",
     }
 };
