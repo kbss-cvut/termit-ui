@@ -12,17 +12,20 @@ interface CreateCommentFormProps extends HasI18n {
 const CreateCommentForm: React.FC<CreateCommentFormProps> = props => {
     const {i18n, onSubmit} = props;
     const [content, setContent] = React.useState("");
+    const [submitting, setSubmitting] = React.useState(false);
     const submit = () => {
+        setSubmitting(true);
         onSubmit(new Comment({content})).then(() => {
             setContent("");
+            setSubmitting(false);
         });
     };
 
-    return <div className="comments-create mt-2">
+    return <div className="comments-create mt-3">
         <TextArea value={content} onChange={(e) => setContent(e.target.value)}
                   placeholder={i18n("comments.create.placeholder")} rows={5}/>
         <ButtonToolbar className="justify-content-end">
-            <Button color="success" id="comment-submit" size="sm" disabled={content.trim().length === 0}
+            <Button color="success" id="comment-submit" size="sm" disabled={content.trim().length === 0 || submitting}
                     onClick={submit}>{i18n("comments.create.submit.title")}</Button>
         </ButtonToolbar>
     </div>;
