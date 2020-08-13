@@ -559,6 +559,10 @@ const cs = {
         "comments.create.placeholder": "Napište komentář...",
         "comments.create.submit.title": "Odeslat",
         "comments.list.empty": "Zatím tu žádné komentáře nejsou.",
+        "comments.comment.like": "Líbí se mi",
+        "comments.comment.like.on": "Už se mi nelíbí",
+        "comments.comment.dislike": "Nelíbí se mi",
+        "comments.comment.dislike.on": "Zrušit reakci",
     }
 };
 
