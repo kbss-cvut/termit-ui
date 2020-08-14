@@ -6,29 +6,26 @@ import TermItState from "../../model/TermItState";
 import {FaRegThumbsUp, FaThumbsUp} from "react-icons/fa";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import {ThunkDispatch} from "../../util/Types";
-import {
-    likeComment as likeCommentAction,
-    cancelCommentLike as cancelCommentLikeAction
-} from "../../action/AsyncCommentActions";
-import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface CommentLikesProps extends HasI18n {
-    likes: CommentReaction[];
+    reactions: CommentReaction[];
     comment: Comment;
 
     currentUser: User;
-    likeComment: (comment: Comment) => Promise<any>;
-    cancelCommentLike: (comment: Comment) => Promise<any>;
+    addReaction: (comment: Comment, reactionType: string) => void;
+    removeReaction: (comment: Comment) => void;
 }
 
+const LIKE_TYPE = "https://www.w3.org/ns/activitystreams#Like";
+
 const CommentLikes: React.FC<CommentLikesProps> = props => {
-    const {likes, currentUser, likeComment, cancelCommentLike, comment} = props;
+    const {reactions, currentUser, addReaction, removeReaction, comment} = props;
+    const likes = reactions.filter(r => r.types.indexOf(LIKE_TYPE) !== -1);
     const reacted = likes.find(cr => cr.author === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsUp : FaRegThumbsUp;
     const title = reacted ? "comments.comment.like.on" : "comments.comment.like";
     const onClick = () => {
-        reacted ? cancelCommentLike(comment) : likeComment(comment);
+        reacted ? removeReaction(comment) : addReaction(comment, LIKE_TYPE);
     }
     return <div className="ml-2 d-inline-block">
         <IconElem className="reaction" title={props.i18n(title)} onClick={onClick}/>
@@ -37,9 +34,4 @@ const CommentLikes: React.FC<CommentLikesProps> = props => {
     </div>
 }
 
-export default connect((state: TermItState) => ({currentUser: state.user}), (dispatch: ThunkDispatch) => {
-    return {
-        likeComment: (comment: Comment) => dispatch(likeCommentAction(VocabularyUtils.create(comment.iri!))),
-        cancelCommentLike: (comment: Comment) => dispatch(cancelCommentLikeAction(VocabularyUtils.create(comment.iri!)))
-    };
-})(injectIntl(withI18n(CommentLikes)));
+export default connect((state: TermItState) => ({currentUser: state.user}))(injectIntl(withI18n(CommentLikes)));
