@@ -55,3 +55,18 @@
   cursor: pointer;
   color: inherit;
 }
+
+.comment .actions {
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.comments .actions .comment-action {
+  cursor: pointer;
+  color: $gray-600;
+}
+
+.comments .actions .comment-action:hover {
+  cursor: pointer;
+  color: inherit;
+}
