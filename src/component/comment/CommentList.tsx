@@ -12,12 +12,14 @@ interface CommentListProps extends HasI18n {
 
 const CommentList: React.FC<CommentListProps> = props => {
     const {comments, addReaction, removeReaction} = props;
+    // @ts-ignore
+    const [editedComment, setEditedComment] = React.useState<Comment | null>(null);
     if (comments.length === 0) {
         return <span className="italics">{props.i18n("comments.list.empty")}</span>
     }
     return <>
         {comments.map(c => <CommentView key={c.iri} comment={c} addReaction={addReaction}
-                                        removeReaction={removeReaction}/>)}
+                                        removeReaction={removeReaction} onEdit={setEditedComment}/>)}
     </>;
 }
 

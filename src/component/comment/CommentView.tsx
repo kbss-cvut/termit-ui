@@ -7,16 +7,23 @@ import TimeAgo from "javascript-time-ago";
 import Utils from "../../util/Utils";
 import CommentLikes from "./CommentLikes";
 import CommentDislikes from "./CommentDislikes";
+import User from "../../model/User";
+import TermItState from "../../model/TermItState";
+import {connect} from "react-redux";
 
 interface CommentViewProps extends HasI18n {
     comment: Comment;
     addReaction: (comment: Comment, reactionType: string) => void;
     removeReaction: (comment: Comment) => void;
+    onEdit: (comment: Comment) => void;
+
+    currentUser: User;
 }
 
 const CommentView: React.FC<CommentViewProps> = props => {
-    const {comment, addReaction, removeReaction} = props;
+    const {comment, addReaction, removeReaction, onEdit, currentUser} = props;
     const formatter = new TimeAgo(props.locale);
+    const canEdit = comment.author!.iri === currentUser.iri;
     return <div className="comment mt-2 pt-2">
         <div className="float-left avatar"><FaUserCircle/></div>
         <div className="content">
@@ -29,8 +36,11 @@ const CommentView: React.FC<CommentViewProps> = props => {
                                  addReaction={addReaction} removeReaction={removeReaction}/>
             </div>
             <div className="mt-1 mb-2">{comment.content}</div>
+            <div className="actions">
+                {canEdit && <span className="comment-action" onClick={() => onEdit(comment)}>{props.i18n("edit")}</span>}
+            </div>
         </div>
     </div>;
 };
 
-export default injectIntl(withI18n(CommentView));
+export default connect((state: TermItState) => ({currentUser: state.user}))(injectIntl(withI18n(CommentView)));
