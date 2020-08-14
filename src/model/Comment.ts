@@ -8,8 +8,7 @@ const ctx = {
     asset: "http://rdfs.org/sioc/ns#topic",
     created: VocabularyUtils.CREATED,
     modified: VocabularyUtils.LAST_MODIFIED,
-    likes: VocabularyUtils.NS_TERMIT + "je-oblíben",
-    dislikes: VocabularyUtils.NS_TERMIT + "je-neoblíben"
+    reactions: VocabularyUtils.NS_TERMIT + "má-reakce",
 }
 
 export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT, USER_CONTEXT);
@@ -20,6 +19,7 @@ export interface CommentReaction {
     iri: string;
     author: string;
     object: string;
+    types: string[];
 }
 
 export interface CommentData {
@@ -29,8 +29,7 @@ export interface CommentData {
     asset?: string;  // Asset IRI
     created?: number;
     modified?: number;
-    likes?: CommentReaction[];
-    dislikes?: CommentReaction[];
+    reactions?: CommentReaction[];
 }
 
 export default class Comment implements CommentData, SupportsJsonLd<CommentData> {
@@ -40,8 +39,7 @@ export default class Comment implements CommentData, SupportsJsonLd<CommentData>
     public asset?: string;
     public created?: number;
     public modified?: number;
-    public likes?: CommentReaction[];
-    public dislikes?: CommentReaction[];
+    public reactions?: CommentReaction[];
 
     public constructor(data: CommentData) {
         Object.assign(this, data);

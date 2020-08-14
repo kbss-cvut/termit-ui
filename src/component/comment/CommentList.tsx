@@ -6,14 +6,18 @@ import {injectIntl} from "react-intl";
 
 interface CommentListProps extends HasI18n {
     comments: Comment[];
+    addReaction: (comment: Comment, reactionType: string) => void;
+    removeReaction: (comment: Comment) => void;
 }
 
 const CommentList: React.FC<CommentListProps> = props => {
-    if (props.comments.length === 0) {
+    const {comments, addReaction, removeReaction} = props;
+    if (comments.length === 0) {
         return <span className="italics">{props.i18n("comments.list.empty")}</span>
     }
     return <>
-        {props.comments.map(c => <CommentView key={c.iri} comment={c}/>)}
+        {comments.map(c => <CommentView key={c.iri} comment={c} addReaction={addReaction}
+                                        removeReaction={removeReaction}/>)}
     </>;
 }
 
