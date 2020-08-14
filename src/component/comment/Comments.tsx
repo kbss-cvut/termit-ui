@@ -34,9 +34,15 @@ const Comments: React.FC<CommentsProps> = props => {
             loadComments(term.iri).then(data => setComments(data));
         });
     }
+    const onAddReaction = (comment: Comment, type: string) => {
+        addReaction(comment, type).then(() => loadComments(term.iri).then(data => setComments(data)));
+    }
+    const onRemoveReaction = (comment: Comment) => {
+        removeReaction(comment).then(() => loadComments(term.iri).then(data => setComments(data)));
+    }
 
     return <div id="term-comments" className="comments m-1 mt-3">
-        <CommentList comments={comments} addReaction={addReaction} removeReaction={removeReaction}/>
+        <CommentList comments={comments} addReaction={onAddReaction} removeReaction={onRemoveReaction}/>
         {comments.length > 0 && <hr className="mt-1 mb-1 border-top"/>}
         <CreateCommentForm onSubmit={onSubmit}/>
     </div>;
