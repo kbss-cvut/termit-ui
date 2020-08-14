@@ -10,10 +10,12 @@ import CommentDislikes from "./CommentDislikes";
 
 interface CommentViewProps extends HasI18n {
     comment: Comment;
+    addReaction: (comment: Comment, reactionType: string) => void;
+    removeReaction: (comment: Comment) => void;
 }
 
 const CommentView: React.FC<CommentViewProps> = props => {
-    const {comment} = props;
+    const {comment, addReaction, removeReaction} = props;
     const formatter = new TimeAgo(props.locale);
     return <div className="comment mt-2 pt-2">
         <div className="float-left avatar"><FaUserCircle/></div>
@@ -21,8 +23,10 @@ const CommentView: React.FC<CommentViewProps> = props => {
             <span className="author">{comment.author!.fullName}</span>
             <div className="metadata text-muted">
                 <div className="mr-2 d-inline-block">{formatter.format(comment.created!)}</div>
-                <CommentLikes comment={comment} likes={Utils.sanitizeArray(comment.likes)}/>
-                <CommentDislikes comment={comment} dislikes={Utils.sanitizeArray(comment.dislikes)}/>
+                <CommentLikes comment={comment} reactions={Utils.sanitizeArray(comment.reactions)}
+                              addReaction={addReaction} removeReaction={removeReaction}/>
+                <CommentDislikes comment={comment} reactions={Utils.sanitizeArray(comment.reactions)}
+                                 addReaction={addReaction} removeReaction={removeReaction}/>
             </div>
             <div className="mt-1 mb-2">{comment.content}</div>
         </div>

@@ -3,32 +3,29 @@ import Comment, {CommentReaction} from "../../model/Comment";
 import User from "../../model/User";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
-import {FaThumbsDown, FaRegThumbsDown} from "react-icons/fa/index";
+import {FaRegThumbsDown, FaThumbsDown} from "react-icons/fa/index";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
-import {ThunkDispatch} from "../../util/Types";
-import {
-    cancelCommentDislike as cancelCommentDislikeAction,
-    dislikeComment as dislikeCommentAction
-} from "../../action/AsyncCommentActions";
-import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface CommentDislikesProps extends HasI18n {
-    dislikes: CommentReaction[];
+    reactions: CommentReaction[];
     comment: Comment;
 
     currentUser: User;
-    dislikeComment: (comment: Comment) => Promise<any>;
-    cancelCommentDislike: (comment: Comment) => Promise<any>;
+    addReaction: (comment: Comment, reactionType: string) => void;
+    removeReaction: (comment: Comment) => void;
 }
 
+const DISLIKE_TYPE = "https://www.w3.org/ns/activitystreams#Dislike";
+
 const CommentDislikes: React.FC<CommentDislikesProps> = props => {
-    const {dislikes, currentUser, dislikeComment, cancelCommentDislike, comment} = props;
+    const {reactions, currentUser, addReaction, removeReaction, comment} = props;
+    const dislikes = reactions.filter(r => r.types.indexOf(DISLIKE_TYPE) !== -1);
     const reacted = dislikes.find(cr => cr.author === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsDown : FaRegThumbsDown;
     const title = reacted ? "comments.comment.dislike.on" : "comments.comment.dislike";
     const onClick = () => {
-        reacted ? cancelCommentDislike(comment) : dislikeComment(comment);
+        reacted ? removeReaction(comment) : addReaction(comment, DISLIKE_TYPE);
     }
     return <div className="ml-2 d-inline-block">
         <IconElem className="reaction" title={props.i18n(title)} onClick={onClick}/>
@@ -37,9 +34,4 @@ const CommentDislikes: React.FC<CommentDislikesProps> = props => {
     </div>;
 }
 
-export default connect((state: TermItState) => ({currentUser: state.user}), (dispatch: ThunkDispatch) => {
-    return {
-        dislikeComment: (comment: Comment) => dispatch(dislikeCommentAction(VocabularyUtils.create(comment.iri!))),
-        cancelCommentDislike: (comment: Comment) => dispatch(cancelCommentDislikeAction(VocabularyUtils.create(comment.iri!)))
-    };
-})(injectIntl(withI18n(CommentDislikes)));
+export default connect((state: TermItState) => ({currentUser: state.user}))(injectIntl(withI18n(CommentDislikes)));

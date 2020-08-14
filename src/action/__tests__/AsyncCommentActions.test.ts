@@ -5,7 +5,7 @@ import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 import Ajax from "../../util/Ajax";
 import {ThunkDispatch} from "../../util/Types";
-import {createTermComment, loadTermComments} from "../AsyncCommentActions";
+import {createTermComment, loadTermComments, reactToComment} from "../AsyncCommentActions";
 import ActionType from "../ActionType";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Comment from "../../model/Comment";
@@ -99,6 +99,22 @@ describe("AsyncCommentActions", () => {
                 expect(args[1].getParams().namespace).toEqual(termIri.namespace);
                 expect(args[1].getContent()).toEqual(comment.toJsonLd());
                 expect(store.getActions().find(a => a.type === ActionType.CREATE_COMMENT && a.status === AsyncActionStatus.SUCCESS)).toBeDefined();
+            });
+        });
+    });
+
+    describe("reactToComment", () => {
+        it("sends type of reaction as query parameter", () => {
+            const comment = new Comment({
+                iri: Generator.generateUri(),
+                content: "Test comment"
+            });
+            const reactionType = "https://www.w3.org/ns/activitystreams#Dislike";
+            Ajax.post = jest.fn().mockResolvedValue({});
+            return Promise.resolve(((store.dispatch as ThunkDispatch)(reactToComment(VocabularyUtils.create(comment.iri!), reactionType)))).then(() => {
+                expect(Ajax.post).toHaveBeenCalled();
+                const args = (Ajax.post as jest.Mock).mock.calls[0];
+                expect(args[1].getParams().type).toEqual(reactionType);
             });
         });
     });
