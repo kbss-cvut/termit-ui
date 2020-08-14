@@ -1,3 +1,5 @@
+@import "../../styles/argon-dashboard-react.scss";
+
 .comments {
   width: 100%;
 }
@@ -30,4 +32,19 @@
 
 .comment .metadata .reaction {
   cursor: pointer;
+}
+
+.comment .actions {
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.comments .actions .comment-action {
+  cursor: pointer;
+  color: $gray-600;
+}
+
+.comments .actions .comment-action:hover {
+  cursor: pointer;
+  color: inherit;
 }
