@@ -2,7 +2,7 @@ import {IRI} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import {ThunkDispatch} from "../util/Types";
 import {asyncActionFailure, asyncActionRequest, asyncActionSuccess} from "./SyncActions";
-import Ajax, {param} from "../util/Ajax";
+import Ajax, {param, params} from "../util/Ajax";
 import Constants from "../util/Constants";
 import JsonLdUtils from "../util/JsonLdUtils";
 import Comment, {CommentData, CONTEXT as COMMENT_CONTEXT} from "../model/Comment";
@@ -35,41 +35,24 @@ export function createTermComment(comment: Comment, termIri: IRI) {
     };
 }
 
-export function likeComment(commentIri: IRI) {
-    const action = {type: ActionType.LIKE_COMMENT};
+export function reactToComment(commentIri: IRI, reactionType: string) {
+    const action = {type: ActionType.REACT_TO_COMMENT};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true))
-        return Ajax.post(`${Constants.API_PREFIX}/comments/${commentIri.fragment}/likes`, param("namespace", commentIri.namespace))
+        return Ajax.post(`${Constants.API_PREFIX}/comments/${commentIri.fragment}/reactions`, params({
+            namespace: commentIri.namespace,
+            type: reactionType
+        }))
             .then(() => dispatch(asyncActionSuccess(action)))
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
     };
 }
 
-export function cancelCommentLike(commentIri: IRI) {
-    const action = {type: ActionType.CANCEL_COMMENT_LIKE};
+export function removeCommentReaction(commentIri: IRI) {
+    const action = {type: ActionType.REMOVE_COMMENT_REACTION};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true))
-        return Ajax.delete(`${Constants.API_PREFIX}/comments/${commentIri.fragment}/likes`, param("namespace", commentIri.namespace))
-            .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-    };
-}
-
-export function dislikeComment(commentIri: IRI) {
-    const action = {type: ActionType.DISLIKE_COMMENT};
-    return (dispatch: ThunkDispatch) => {
-        dispatch(asyncActionRequest(action, true))
-        return Ajax.post(`${Constants.API_PREFIX}/comments/${commentIri.fragment}/dislikes`, param("namespace", commentIri.namespace))
-            .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-    };
-}
-
-export function cancelCommentDislike(commentIri: IRI) {
-    const action = {type: ActionType.CANCEL_COMMENT_DISLIKE};
-    return (dispatch: ThunkDispatch) => {
-        dispatch(asyncActionRequest(action, true))
-        return Ajax.delete(`${Constants.API_PREFIX}/comments/${commentIri.fragment}/dislikes`, param("namespace", commentIri.namespace))
+        return Ajax.delete(`${Constants.API_PREFIX}/comments/${commentIri.fragment}/reactions`, param("namespace", commentIri.namespace))
             .then(() => dispatch(asyncActionSuccess(action)))
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
     };
