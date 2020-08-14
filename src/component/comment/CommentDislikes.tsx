@@ -21,7 +21,7 @@ const DISLIKE_TYPE = "https://www.w3.org/ns/activitystreams#Dislike";
 const CommentDislikes: React.FC<CommentDislikesProps> = props => {
     const {reactions, currentUser, addReaction, removeReaction, comment} = props;
     const dislikes = reactions.filter(r => r.types.indexOf(DISLIKE_TYPE) !== -1);
-    const reacted = dislikes.find(cr => cr.author === currentUser.iri) !== undefined;
+    const reacted = dislikes.find(cr => cr.actor.iri === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsDown : FaRegThumbsDown;
     const title = reacted ? "comments.comment.dislike.on" : "comments.comment.dislike";
     const onClick = () => {

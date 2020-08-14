@@ -1,5 +1,5 @@
 import VocabularyUtils from "../util/VocabularyUtils";
-import {ASSET_CONTEXT, SupportsJsonLd} from "./Asset";
+import {ASSET_CONTEXT, AssetData, SupportsJsonLd} from "./Asset";
 import User, {CONTEXT as USER_CONTEXT, UserData} from "./User";
 
 const ctx = {
@@ -8,7 +8,9 @@ const ctx = {
     asset: "http://rdfs.org/sioc/ns#topic",
     created: VocabularyUtils.CREATED,
     modified: VocabularyUtils.LAST_MODIFIED,
-    reactions: VocabularyUtils.NS_TERMIT + "má-reakce",
+    reactions: VocabularyUtils.NS_TERMIT + "má-reakci",
+    actor: "https://www.w3.org/ns/activitystreams#actor",
+    object: "https://www.w3.org/ns/activitystreams#object"
 }
 
 export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT, USER_CONTEXT);
@@ -17,8 +19,8 @@ const TYPE = "http://rdfs.org/sioc/types#Comment";
 
 export interface CommentReaction {
     iri: string;
-    author: string;
-    object: string;
+    actor: AssetData;
+    object: AssetData;
     types: string[];
 }
 

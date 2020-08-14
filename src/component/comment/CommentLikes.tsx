@@ -21,7 +21,7 @@ const LIKE_TYPE = "https://www.w3.org/ns/activitystreams#Like";
 const CommentLikes: React.FC<CommentLikesProps> = props => {
     const {reactions, currentUser, addReaction, removeReaction, comment} = props;
     const likes = reactions.filter(r => r.types.indexOf(LIKE_TYPE) !== -1);
-    const reacted = likes.find(cr => cr.author === currentUser.iri) !== undefined;
+    const reacted = likes.find(cr => cr.actor.iri === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsUp : FaRegThumbsUp;
     const title = reacted ? "comments.comment.like.on" : "comments.comment.like";
     const onClick = () => {
