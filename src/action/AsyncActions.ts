@@ -50,6 +50,7 @@ import TermOccurrence from "../model/TermOccurrence";
 import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "../model/SearchResult";
 import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
+import ValidationResult from "../model/ValidationResult";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -373,7 +374,7 @@ export function removeTerm(term: Term) {
         VocabularyUtils.create(term.iri),
         vocabularyIri.namespace,
         ActionType.REMOVE_VOCABULARY_TERM,
-        "vocabularies/"+vocabularyIri.fragment+"/terms",
+        "vocabularies/" + vocabularyIri.fragment + "/terms",
         () => loadVocabulary(vocabularyIri),
         "term.removed.message",
         Routes.vocabularyDetail,
@@ -388,20 +389,20 @@ export function removeAsset(iri: IRI,
                             namespace: string | undefined,
                             type: string,
                             assetPathFragment: string,
-                            load: () => (dispatch:ThunkDispatch, getState: GetStoreState) => Promise<{}>,
+                            load: () => (dispatch: ThunkDispatch, getState: GetStoreState) => Promise<{}>,
                             messageId: string,
                             transitionRoute: Route,
-                            options?: {} ) {
-    const action = { type };
+                            options?: {}) {
+    const action = {type};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         return Ajax.delete(Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
             param("namespace", namespace)).then(() => {
-                dispatch(asyncActionSuccess(action));
-                dispatch(load());
-                Routing.transitionTo(transitionRoute, options)
-                return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
-            })
+            dispatch(asyncActionSuccess(action));
+            dispatch(load());
+            Routing.transitionTo(transitionRoute, options)
+            return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
+        })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
@@ -553,6 +554,47 @@ export function loadTermByIri(termIri: IRI, apiPrefix: string = Constants.API_PR
             }).catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return null;
+            });
+    };
+}
+
+export type ValidationRecord = {
+    severity: string;
+    message: string;
+    focusNode: string;
+}
+type ValidationReport = {
+    conforms: boolean;
+    results: ValidationRecord[];
+}
+
+export function loadValidationResults(vocabularyIri: IRI) {
+    const action = {
+        type: ActionType.FETCH_VALIDATION_RESULTS
+    };
+
+    return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+        if (isActionRequestPending(getState(), action)) {
+            return Promise.resolve([]);
+        }
+        dispatch(asyncActionRequest(action));
+        const reqUrl = Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/validate";
+        return Ajax.get(reqUrl)
+            .then((data: ValidationReport) =>
+                data.results.length !== 0 ? data.results.map( r => { return new ValidationResult(
+                    r.focusNode,
+                    r.severity,
+                    r.message)
+                })
+                    // JsonLdUtils
+                    // .compactAndResolveReferencesAsArray<ValidationResult>(data.results, VOCABULARY_CONTEXT)
+            : [])
+            .then((data: ValidationResult[]) => {
+                dispatch(asyncActionSuccess(action));
+                return data;})
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return [];
             });
     };
 }

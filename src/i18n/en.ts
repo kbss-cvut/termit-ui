@@ -190,6 +190,12 @@ export default {
         'vocabulary.term.created.message': 'Term successfully created.',
         'vocabulary.select-vocabulary': 'Select a Vocabulary',
 
+        "vocabulary.validation.tab": "Validation",
+        "vocabulary.validation.term": "Term",
+        "vocabulary.validation.severity": "Severity",
+        "vocabulary.validation.message": "Message",
+        "vocabulary.validation.action": "Validate",
+
         'resource.management': 'Resources management',
         'resource.management.resources': 'Resources',
         "resource.management.empty": "No resources found. Start by registering some.",

@@ -1,0 +1,790 @@
+{
+  "conforms": false,
+  "results": [
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/je-vlastností"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-vlastnost"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-vztažený-prvek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "Less than 1 values have shape _:919ece237be5bdb83e38431a00db2bbf",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/číselník"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-časové-určení"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/je-vykonána"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "More than 0 values have shape _:8e3f1acd8d7100b4e8f45dd9a67d7555",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/veřejnoprávní-korporace"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-vztažený-prvek-2"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-prostorové-určení"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-účastníka"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/proměnný-prvek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/okamžitý-stav-proměnného-prvku"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-koncový-stav"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "More than 0 values have shape _:8e3f1acd8d7100b4e8f45dd9a67d7555",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/znalostní-struktura"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "Less than 1 values have shape _:919ece237be5bdb83e38431a00db2bbf",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/evidenční-systém"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/prvek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-vztažený-prvek-1"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/neměnný-prvek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/je-ve-vztahu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Violation",
+      "message": "The concept has not defined the type (Object, Aspect, Relation, Event).@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/má-počáteční-stav"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časový-interval"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-část-právního-předpisu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/mixin-rolí"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/proměnný-prvek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/den-v-měsíci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/prostorový-objekt"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/rok"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-začátek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/den-v-týdnu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/minuta"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/způsobilost-k-protiprávnímu-jednání"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/měsíc-v-roce"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/hodina"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/rok-ve-století"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/geografický-název"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/číselník"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/den-v-měsíci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-vztahu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/eviduje"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časová-entita"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-geometrii"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-konec"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "A glossary concept is not used in the model.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/jméno"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/způsobilost-k-právům-a-povinnostem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/časová-specifikace"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-modální-vlastnosti"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/sortál"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-kontext"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/sekundární-objekt-práva"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/množství"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/objekt"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/kategorie"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/poddruh"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/objekt-práva"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/týden-v-měsíci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-vztah-k-prostorovému-objektu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časový-úsek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/právo"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/název-datové-sady"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-geometrii"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/lokalizace-popisem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/hodina"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/lokalizace-vyjádřená-prostorovým-objektem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/mixin"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/druh"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/rok-v-desetiletí"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-vlastnosti"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/povinnost"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-množství"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/výkon-svrchované-moci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-modální-vlastnosti"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-počet-opakování"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/týden-v-roce"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/prostorový-objekt"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/geografický-název"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/okamžitý-stav-proměnného-prvku"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/zahrnuje"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/vyjímá"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/lokalizace-prostorového-objektu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/mixin"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/rok"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-vztah-k-prostorovému-objektu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/nesortál"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-platnost"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-objektu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/vyjímá"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/lokalizace-prostorového-objektu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/opakovaná-časová-specifikace"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-módu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-lokalizaci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/vlastnost"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/vztah"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/právní-vztah"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "A glossary concept is not used in the model.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/měsíc-v-roce"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/geometrie"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/opakuje"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/jméno"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/je-evidencí-pro"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-události"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/rok-v-desetiletí"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/rok-ve-století"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-množství"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/den-v-týdnu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/legislativní-znalostní-struktura"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-lokalizaci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/nesortál"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-časový-úsek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "A glossary concept is not used in the model.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/den-v-týdnu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/lokalizace-vyjádřená-prostorovým-objektem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/subjekt-práva"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/agent"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/geometrie"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-zdrojový-předpis"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-konec"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/měsíc-v-roce"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/role"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/mixin-fází"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/týden-v-měsíci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/množství"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časový-okamžik"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/týden-v-roce"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-lokalizaci-popisem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časový-interval"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/minuta"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/způsobilost-k-právnímu-jednání"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-počet-opakování"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/popis-datové-sady"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/pasivní-objekt"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "A glossary concept is not used in the model.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-definiční-lokalizaci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/primární-objekt-práva"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-časový-úsek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časový-okamžik"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-lokalizaci-názvem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časový-úsek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/časová-entita"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/sortál"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-módu"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-definiční-lokalizaci"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/zahrnuje"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-lokalizaci-popisem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/lokalizace-popisem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/fáze"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-platnost"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-proměnného-prvku"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/křestní-jméno"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/příjmení"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/název-datové-sady"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-kvalitativní-vlastnosti"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/prostorový-objekt"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/opakuje"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/popis-datové-sady"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-začátek"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/opakovaná-časová-specifikace"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "Endurant type does not have defined an ontological type.@en",
+      "focusNode": "https://slovník.gov.cz/základní/pojem/typ-kvalitativní-vlastnosti"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-lokalizaci-názvem"
+    },
+    {
+      "severity": "http://www.w3.org/ns/shacl#Warning",
+      "message": "The concept does not have a single definition in Czech.@en",
+      "focusNode": "https://slovník.gov.cz/veřejný-sektor/pojem/má-definiční-lokalizaci"
+    }
+  ]
+}

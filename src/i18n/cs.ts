@@ -187,6 +187,12 @@ export default {
         "vocabulary.termchanges.empty": "Žádné nové pojmy ani aktualizace pojmů nebyly nalezeny.",
         "vocabulary.removed.message": "Slovník by odstraněn.",
 
+        "vocabulary.validation.tab": "Kontrola",
+        "vocabulary.validation.term": "Pojem",
+        "vocabulary.validation.severity": "Závažnost",
+        "vocabulary.validation.message": "Zpráva",
+        "vocabulary.validation.action": "Zkontrolovat",
+
         'vocabulary.term.created.message': 'Pojem úspěšně vytvořen.',
         'vocabulary.select-vocabulary': 'Vyber slovník',
 
