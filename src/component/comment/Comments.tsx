@@ -49,7 +49,7 @@ const Comments: React.FC<CommentsProps> = props => {
     return <div id="term-comments" className="comments m-1 mt-3">
         <CommentList comments={comments} addReaction={onAddReaction} removeReaction={onRemoveReaction}
                      updateComment={onUpdate}/>
-        {comments.length > 0 && <hr className="mt-1 mb-1 border-top"/>}
+        {comments.length > 0 && <hr className="mt-3 mb-1 border-top"/>}
         <CreateCommentForm onSubmit={onSubmit}/>
     </div>;
 }
