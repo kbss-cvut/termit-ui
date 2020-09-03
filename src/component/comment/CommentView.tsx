@@ -34,10 +34,12 @@ const CommentView: React.FC<CommentViewProps> = props => {
                               addReaction={addReaction} removeReaction={removeReaction}/>
                 <CommentDislikes comment={comment} reactions={Utils.sanitizeArray(comment.reactions)}
                                  addReaction={addReaction} removeReaction={removeReaction}/>
+                {comment.modified && <div className="ml-3 d-inline-block italics">{props.i18n("comments.comment.edited")}</div>}
             </div>
-            <div className="mt-1 mb-2">{comment.content}</div>
+            <div className="mt-1 mb-2 comment-text">{comment.content}</div>
             <div className="actions">
-                {canEdit && <span className="comment-action" onClick={() => onEdit(comment)}>{props.i18n("edit")}</span>}
+                {canEdit &&
+                <span className="comment-action btn-outline-primary" onClick={() => onEdit(comment)}>{props.i18n("edit")}</span>}
             </div>
         </div>
     </div>;
