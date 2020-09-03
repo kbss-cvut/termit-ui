@@ -48,7 +48,7 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (props:
 
             items.push(view);
         }
-        if (i < props.searchResults.length) {
+        if (i < mergedResults.length) {
             items.push(<li id="search-results-link" key="full-info" className="btn-link search-result-info"
                            onClick={props.onOpenSearch}>
                 {props.formatMessage("main.search.count-info-and-link", {
