@@ -68,14 +68,3 @@ export function updateComment(comment: Comment) {
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
     };
 }
-
-export function createTermComment(comment: Comment, termIri: IRI) {
-    const action = {type: ActionType.CREATE_COMMENT};
-    return (dispatch: ThunkDispatch) => {
-        dispatch(asyncActionRequest(action));
-        return Ajax.post(`${Constants.API_PREFIX}/terms/${termIri.fragment}/comments`,
-            param("namespace", termIri.namespace).content(comment.toJsonLd()))
-            .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-    }
-}
