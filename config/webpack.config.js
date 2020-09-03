@@ -74,6 +74,13 @@ module.exports = function(webpackEnv) {
   // fall back to the configured one.
   server['url'] = process.env.serverUrl ? process.env.serverUrl : server['url'];
 
+  // This allows to parameterize deployment name, so that multiple deployments of TermIt accessed from one client do not
+  // mess their data, e.g. auth token, language setting
+  const deploymentName = process.env.deployment ? process.env.deployment : '';
+  if (!process.env.ANALYZE_BUNDLE_MODE) {
+    console.log("Building with deployment name: " + deploymentName)
+  }
+
   // common function to get style loaders
   const getStyleLoaders = (cssOptions, preProcessor) => {
     const loaders = [
@@ -389,7 +396,7 @@ module.exports = function(webpackEnv) {
                 }, {
                   // Deployment name is not important for dev build, so just make it empty
                   search: '__DEPLOYMENT_NAME__',
-                  replace: '',
+                  replace: deploymentName,
                   strict: true
                 }]
               }
