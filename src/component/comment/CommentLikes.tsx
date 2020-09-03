@@ -18,17 +18,26 @@ interface CommentLikesProps extends HasI18n {
 
 const LIKE_TYPE = "https://www.w3.org/ns/activitystreams#Like";
 
+export function isMine(comment: Comment, user: User) {
+    return comment.author!.iri !== user.iri;
+}
+
 const CommentLikes: React.FC<CommentLikesProps> = props => {
     const {reactions, currentUser, addReaction, removeReaction, comment} = props;
     const likes = reactions.filter(r => r.types.indexOf(LIKE_TYPE) !== -1);
     const reacted = likes.find(cr => cr.actor.iri === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsUp : FaRegThumbsUp;
     const title = reacted ? "comments.comment.like.on" : "comments.comment.like";
-    const onClick = () => {
-        reacted ? removeReaction(comment) : addReaction(comment, LIKE_TYPE);
+    let onClick;
+    let iconClass;
+    if (isMine(comment, currentUser)) {
+        onClick = () => {
+            reacted ? removeReaction(comment) : addReaction(comment, LIKE_TYPE);
+        }
+        iconClass = "actionable-reaction";
     }
     return <div className="ml-2 d-inline-block">
-        <IconElem className="reaction" title={props.i18n(title)} onClick={onClick}/>
+        <IconElem className={iconClass} title={props.i18n(title)} onClick={onClick}/>
         &nbsp;
         {likes.length}
     </div>
