@@ -3,9 +3,10 @@ import Comment, {CommentReaction} from "../../model/Comment";
 import User from "../../model/User";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
-import {FaRegThumbsDown, FaThumbsDown} from "react-icons/fa/index";
+import {FaRegThumbsDown, FaThumbsDown} from "react-icons/fa";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
+import {isMine} from "./CommentLikes";
 
 interface CommentDislikesProps extends HasI18n {
     reactions: CommentReaction[];
@@ -24,11 +25,16 @@ const CommentDislikes: React.FC<CommentDislikesProps> = props => {
     const reacted = dislikes.find(cr => cr.actor.iri === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsDown : FaRegThumbsDown;
     const title = reacted ? "comments.comment.dislike.on" : "comments.comment.dislike";
-    const onClick = () => {
-        reacted ? removeReaction(comment) : addReaction(comment, DISLIKE_TYPE);
+    let onClick;
+    let iconClass;
+    if (isMine(comment, currentUser)) {
+        onClick = () => {
+            reacted ? removeReaction(comment) : addReaction(comment, DISLIKE_TYPE);
+        };
+        iconClass = "actionable-reaction";
     }
     return <div className="ml-2 d-inline-block">
-        <IconElem className="reaction" title={props.i18n(title)} onClick={onClick}/>
+        <IconElem className={iconClass} title={props.i18n(title)} onClick={onClick}/>
         &nbsp;
         {dislikes.length}
     </div>;
