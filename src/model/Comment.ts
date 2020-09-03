@@ -1,6 +1,7 @@
 import VocabularyUtils from "../util/VocabularyUtils";
 import {ASSET_CONTEXT, AssetData, SupportsJsonLd} from "./Asset";
 import User, {CONTEXT as USER_CONTEXT, UserData} from "./User";
+import Utils from "../util/Utils";
 
 const ctx = {
     content: "http://rdfs.org/sioc/ns#content",
@@ -52,6 +53,10 @@ export default class Comment implements CommentData, SupportsJsonLd<CommentData>
     }
 
     toJsonLd(): CommentData {
-        return Object.assign({types: [TYPE]}, this, {"@context": CONTEXT});
+        const result = Object.assign({types: [TYPE]}, this, {"@context": CONTEXT});
+        if (result.reactions) {
+            Utils.sanitizeArray(result.reactions).forEach(r => r.object = {iri: this.iri});
+        }
+        return result;
     }
 }
