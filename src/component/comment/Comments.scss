@@ -30,6 +30,10 @@
   font-size: 0.875rem;
 }
 
+.comment .comment-text {
+  white-space: pre;
+}
+
 .comment .metadata .reaction {
   cursor: pointer;
 }
@@ -41,7 +45,10 @@
 
 .comments .actions .comment-action {
   cursor: pointer;
-  color: $gray-600;
+  //color: $gray-600;
+  padding: 0.125rem 0.25rem;
+  //border: 1px solid #e9ecef;
+  border-radius: 0.25rem;
 }
 
 .comments .actions .comment-action:hover {
