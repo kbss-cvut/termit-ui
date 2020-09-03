@@ -165,4 +165,16 @@ describe("SearchResultsOverlay", () => {
         expect(items.length).toEqual(results.length - 1);
         expect(items[0].id).toContain(newItem.iri);
     });
+
+    it("shows correct number of results when there are fewer than threshold and some are merged", () => {
+        const results = generateResults(Vocabulary.TERM, 1);
+        results.push(results[0].copy());
+        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
+                                                                    onClose={onClose}
+                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        const infoLink = document.getElementById("search-results-link");
+        expect(infoLink).toBeNull();
+        const items = document.getElementsByClassName("search-result-link");
+        expect(items.length).toEqual(1);
+    });
 });
