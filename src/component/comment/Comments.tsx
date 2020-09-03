@@ -8,7 +8,8 @@ import {
     createTermComment,
     loadTermComments,
     reactToComment,
-    removeCommentReaction
+    removeCommentReaction,
+    updateComment as updateCommentAction
 } from "../../action/AsyncCommentActions";
 import CreateCommentForm from "./CreateCommentForm";
 import CommentList from "./CommentList";
@@ -19,12 +20,13 @@ interface CommentsProps {
 
     loadComments: (termIri: string) => Promise<Comment[]>;
     createComment: (comment: Comment, termIRI: string) => Promise<any>;
+    updateComment: (comment: Comment) => Promise<any>;
     addReaction: (comment: Comment, reactionType: string) => Promise<any>;
     removeReaction: (comment: Comment) => Promise<any>;
 }
 
 const Comments: React.FC<CommentsProps> = props => {
-    const {loadComments, createComment, addReaction, removeReaction, term} = props;
+    const {loadComments, createComment, addReaction, removeReaction, updateComment, term} = props;
     const [comments, setComments] = React.useState<Comment[]>([]);
     React.useEffect(() => {
         loadComments(term.iri).then(data => setComments(data));
@@ -40,9 +42,13 @@ const Comments: React.FC<CommentsProps> = props => {
     const onRemoveReaction = (comment: Comment) => {
         removeReaction(comment).then(() => loadComments(term.iri).then(data => setComments(data)));
     }
+    const onUpdate = (comment: Comment) => {
+        return updateComment(comment).then(() => loadComments(term.iri).then(data => setComments(data)));
+    }
 
     return <div id="term-comments" className="comments m-1 mt-3">
-        <CommentList comments={comments} addReaction={onAddReaction} removeReaction={onRemoveReaction}/>
+        <CommentList comments={comments} addReaction={onAddReaction} removeReaction={onRemoveReaction}
+                     updateComment={onUpdate}/>
         {comments.length > 0 && <hr className="mt-1 mb-1 border-top"/>}
         <CreateCommentForm onSubmit={onSubmit}/>
     </div>;
@@ -53,6 +59,7 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
         loadComments: (termIri: string) => dispatch(loadTermComments(VocabularyUtils.create(termIri))),
         createComment: (comment: Comment, termIri: string) => dispatch(createTermComment(comment, VocabularyUtils.create(termIri))),
         addReaction: (comment: Comment, reactionType: string) => dispatch(reactToComment(VocabularyUtils.create(comment.iri!), reactionType)),
-        removeReaction: (comment: Comment) => dispatch(removeCommentReaction(VocabularyUtils.create(comment.iri!)))
+        removeReaction: (comment: Comment) => dispatch(removeCommentReaction(VocabularyUtils.create(comment.iri!))),
+        updateComment: (comment: Comment) => dispatch(updateCommentAction(comment))
     };
 })(Comments);

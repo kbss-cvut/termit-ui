@@ -3,7 +3,8 @@ import {FormFeedback, FormGroup, Input} from "reactstrap";
 import AbstractInput, {AbstractInputProps} from "./AbstractInput";
 
 export interface TextAreaProps extends AbstractInputProps {
-    onKeyPress?: (e: object) => void;
+    onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     rows?: number;
 }
 

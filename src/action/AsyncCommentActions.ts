@@ -1,8 +1,8 @@
-import {IRI} from "../util/VocabularyUtils";
+import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import {ThunkDispatch} from "../util/Types";
 import {asyncActionFailure, asyncActionRequest, asyncActionSuccess} from "./SyncActions";
-import Ajax, {param, params} from "../util/Ajax";
+import Ajax, {content, param, params} from "../util/Ajax";
 import Constants from "../util/Constants";
 import JsonLdUtils from "../util/JsonLdUtils";
 import Comment, {CommentData, CONTEXT as COMMENT_CONTEXT} from "../model/Comment";
@@ -53,6 +53,17 @@ export function removeCommentReaction(commentIri: IRI) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true))
         return Ajax.delete(`${Constants.API_PREFIX}/comments/${commentIri.fragment}/reactions`, param("namespace", commentIri.namespace))
+            .then(() => dispatch(asyncActionSuccess(action)))
+            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+    };
+}
+
+export function updateComment(comment: Comment) {
+    const action = {type: ActionType.UPDATE_COMMENT};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        const commentIri = VocabularyUtils.create(comment.iri!);
+        return Ajax.put(`${Constants.API_PREFIX}/comments/${commentIri.fragment}`, content(comment.toJsonLd()).param("namespace", commentIri.namespace))
             .then(() => dispatch(asyncActionSuccess(action)))
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
     };

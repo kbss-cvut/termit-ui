@@ -5,7 +5,7 @@ import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 import Ajax from "../../util/Ajax";
 import {ThunkDispatch} from "../../util/Types";
-import {createTermComment, loadTermComments, reactToComment} from "../AsyncCommentActions";
+import {createTermComment, loadTermComments, reactToComment, updateComment} from "../AsyncCommentActions";
 import ActionType from "../ActionType";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Comment from "../../model/Comment";
@@ -115,6 +115,21 @@ describe("AsyncCommentActions", () => {
                 expect(Ajax.post).toHaveBeenCalled();
                 const args = (Ajax.post as jest.Mock).mock.calls[0];
                 expect(args[1].getParams().type).toEqual(reactionType);
+            });
+        });
+    });
+
+    describe("updateComment", () => {
+        it("sends updated comment as request payload in JSON-LD", () => {
+            const comment = new Comment({
+                iri: Generator.generateUri(),
+                content: "Test comment update"
+            });
+            Ajax.put = jest.fn().mockResolvedValue({});
+            return Promise.resolve(((store.dispatch as ThunkDispatch)(updateComment(comment)))).then(() => {
+                expect(Ajax.put).toHaveBeenCalled();
+                const args = (Ajax.put as jest.Mock).mock.calls[0];
+                expect(args[1].getContent()).toEqual(comment.toJsonLd());
             });
         });
     });
