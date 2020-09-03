@@ -563,6 +563,7 @@ const cs = {
         "comments.comment.like.on": "Už se mi nelíbí",
         "comments.comment.dislike": "Nelíbí se mi",
         "comments.comment.dislike.on": "Zrušit reakci",
+        "comments.comment.edited": "Upraveno"
     }
 };
 

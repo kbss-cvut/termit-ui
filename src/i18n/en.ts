@@ -558,6 +558,7 @@ const en = {
         "comments.comment.like.on": "Cancel reaction",
         "comments.comment.dislike": "Dislike this comment",
         "comments.comment.dislike.on": "Cancel reaction",
+        "comments.comment.edited": "Edited"
     }
 };
 
