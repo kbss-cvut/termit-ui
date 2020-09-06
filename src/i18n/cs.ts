@@ -519,6 +519,16 @@ export default {
         "public.dashboard.actions.register": "Vytvořte si účet",
         "public.dashboard.actions.vocabularies": "Prohlédněte si slovníky a pojmy",
 
-        "workspace.select.success": "Pracovní prostor \"{name}\" úspěšně načten."
+        "workspace.select.success": "Pracovní prostor \"{name}\" úspěšně načten.",
+
+        "comments.title": "Komentáře",
+        "comments.create.placeholder": "Napište komentář...",
+        "comments.create.submit.title": "Odeslat",
+        "comments.list.empty": "Zatím tu žádné komentáře nejsou.",
+        "comments.comment.like": "Líbí se mi",
+        "comments.comment.like.on": "Už se mi nelíbí",
+        "comments.comment.dislike": "Nelíbí se mi",
+        "comments.comment.dislike.on": "Zrušit reakci",
+        "comments.comment.edited": "Upraveno"
     }
 };

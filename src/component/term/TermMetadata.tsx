@@ -12,6 +12,7 @@ import BasicTermMetadata from "./BasicTermMetadata";
 import Vocabulary from "../../model/Vocabulary";
 import {RouteComponentProps, withRouter} from "react-router";
 import Terms from "./Terms";
+import Comments from "../comment/Comments";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
@@ -84,7 +85,8 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                                             showInfoOnEmpty={true}/>,
                                         "term.metadata.assignments.title": <TermAssignments term={term}
                                                                                             onLoad={this.setAssignmentsCount}/>,
-                                        "history.label": <AssetHistory asset={term}/>
+                                        "history.label": <AssetHistory asset={term}/>,
+                                        "comments.title": <Comments term={term}/>
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),
                                         "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,

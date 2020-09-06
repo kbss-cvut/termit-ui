@@ -1,0 +1,57 @@
+@import "../../styles/argon-dashboard-react.scss";
+
+.comments {
+  width: 100%;
+}
+
+.comments .comment {
+  position: relative;
+  line-height: 1.2;
+}
+
+.comment .avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.comment .content {
+  display: block;
+  margin-left: 3.5rem;
+  margin-top: 0;
+}
+
+.comment .author {
+  font-weight: 700;
+}
+
+.comment .metadata {
+  margin-left: 1rem;
+  display: inline-block;
+  font-size: 0.875rem;
+}
+
+.comment .comment-text {
+  white-space: pre;
+}
+
+.comment .metadata .actionable-reaction {
+  cursor: pointer;
+}
+
+.comment .actions {
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.comments .actions .comment-action {
+  cursor: pointer;
+  //color: $gray-600;
+  padding: 0.125rem 0.25rem;
+  //border: 1px solid #e9ecef;
+  border-radius: 0.25rem;
+}
+
+.comments .actions .comment-action:hover {
+  cursor: pointer;
+  color: inherit;
+}
