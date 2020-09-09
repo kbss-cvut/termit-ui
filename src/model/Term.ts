@@ -48,6 +48,8 @@ export interface TermInfo {
     vocabulary: AssetData;
 }
 
+declare type TermMap = { [key: string]: Term };
+
 export default class Term extends Asset implements TermData {
     public altLabels?: string[];
     public hiddenLabels?: string[];
@@ -61,7 +63,7 @@ export default class Term extends Asset implements TermData {
     public readonly definitionSource?: TermOccurrenceData;
     public draft: boolean;
 
-    constructor(termData: TermData) {
+    constructor(termData: TermData, visitedTerms: TermMap = {}) {
         super(termData);
         Object.assign(this, termData);
         this.types = Utils.sanitizeArray(termData.types);
@@ -69,7 +71,8 @@ export default class Term extends Asset implements TermData {
             this.types.push(VocabularyUtils.TERM);
         }
         if (this.parentTerms) {
-            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map(pt => new Term(pt));
+            visitedTerms[this.iri] = this;
+            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map(pt => visitedTerms[pt.iri] ? visitedTerms[pt.iri] : new Term(pt, visitedTerms));
             this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
         }
