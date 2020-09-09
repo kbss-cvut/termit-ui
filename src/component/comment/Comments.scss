@@ -38,6 +38,10 @@
   cursor: pointer;
 }
 
+.comment .metadata .actionable-reaction:hover {
+  transform: scale(1.2);
+}
+
 .comment .actions {
   font-size: 0.875rem;
   display: inline-block;
