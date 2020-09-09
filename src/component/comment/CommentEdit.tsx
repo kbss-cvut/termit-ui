@@ -33,7 +33,7 @@ const CommentEdit: React.FC<CommentEditProps> = props => {
             <TextArea value={content} autoFocus={true} onChange={e => setContent(e.target.value)} onKeyDown={onKeyDown}/>
             <ButtonToolbar className="justify-content-end">
                 <Button color="success" id="comment-edit-submit" size="sm" disabled={content.trim().length === 0}
-                        onClick={() => props.onSubmit(comment)}>{i18n("save")}</Button>
+                        onClick={submit}>{i18n("save")}</Button>
                 <Button color="outline-dark" id="comment-edit-cancel" size="sm"
                         onClick={onCancel}>{i18n("cancel")}</Button>
             </ButtonToolbar>
