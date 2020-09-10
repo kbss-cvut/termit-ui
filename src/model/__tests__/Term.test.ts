@@ -230,5 +230,17 @@ describe("Term tests", () => {
             expect(result.definitionSource!.term).not.toEqual(result);
             expect(result.definitionSource!.term).toEqual({iri: sut.iri});
         });
+
+        it("breaks possible reference cycle over parent terms", () => {
+            const sut = new Term(termData);
+            const parent = Generator.generateTerm();
+            const grandParent = Generator.generateTerm();
+            sut.parentTerms = [parent];
+            parent.parentTerms = [grandParent];
+            grandParent.parentTerms = [sut];
+            const result = sut.toTermData();
+            expect(result.parentTerms!.length).toEqual(1);
+            expect(result.parentTerms![0].iri).toEqual(parent.iri);
+        });
     });
 });
