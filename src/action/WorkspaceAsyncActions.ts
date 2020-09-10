@@ -36,3 +36,20 @@ export function selectWorkspace(iri: IRI) {
             });
     }
 }
+
+export function loadCurrentWorkspace() {
+    const action = {type: ActionType.LOAD_WORKSPACE};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action));
+        return Ajax.get(`${Constants.API_PREFIX}/workspaces/current`)
+            .then(data => JsonLdUtils.compactAndResolveReferences(data, WORKSPACE_CONTEXT))
+            .then((data: WorkspaceData) => {
+                dispatch(publishMessage(new Message({
+                    messageId: "workspace.select.success",
+                    values: {name: data.label}
+                }, MessageType.SUCCESS)));
+                return dispatch(asyncActionSuccessWithPayload(action, new Workspace(data)));
+            })
+            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+    }
+}
