@@ -38,13 +38,16 @@ import Sidebar from "./sidebar/Sidebar";
 import UserDropdown from "./misc/UserDropdown";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
-import {selectWorkspace} from "../action/WorkspaceAsyncActions";
+import {loadCurrentWorkspace, selectWorkspace} from "../action/WorkspaceAsyncActions";
+import Workspace from "../model/Workspace";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     user: User;
+    workspace?: Workspace | null;
     loadUser: () => Promise<any>;
     logout: () => void;
     selectWorkspace: (iri: IRI) => void;
+    loadCurrentWorkspace: () => void;
     sidebarExpanded: boolean;
     desktopView: boolean;
     changeView: () => void;
@@ -67,9 +70,9 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     public componentDidMount(): void {
         if (this.props.user === EMPTY_USER) {
-            this.props.loadUser().then(() => this.selectWorkspaceIfProvided());
+            this.props.loadUser().then(() => this.loadWorkspace());
         } else {
-            this.selectWorkspaceIfProvided();
+            this.loadWorkspace();
         }
 
         window.addEventListener("resize", this.handleResize, false);
@@ -79,13 +82,17 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
         window.removeEventListener("resize", this.handleResize, false);
     }
 
-    private selectWorkspaceIfProvided() {
-        let ws = Utils.extractQueryParam(this.props.location.search, "workspace");
-        if (!ws || this.props.user === EMPTY_USER) {
+    private loadWorkspace() {
+        if (this.props.user === EMPTY_USER) {
             return;
         }
-        ws = decodeURIComponent(ws);
-        this.props.selectWorkspace(VocabularyUtils.create(ws));
+        let ws = Utils.extractQueryParam(this.props.location.search, "workspace");
+        if (ws) {
+            ws = decodeURIComponent(ws);
+            this.props.selectWorkspace(VocabularyUtils.create(ws));
+        } else {
+            this.props.loadCurrentWorkspace();
+        }
     }
 
     private handleResize = (): void => {
@@ -181,6 +188,7 @@ export default connect((state: TermItState) => {
     return {
         loading: state.loading,
         user: state.user,
+        workspace: state.workspace,
         intl: state.intl,    // Pass intl in props to force UI re-render on language switch
         sidebarExpanded: state.sidebarExpanded,
         desktopView: state.desktopView
@@ -190,6 +198,7 @@ export default connect((state: TermItState) => {
         loadUser: () => dispatch(loadUser()),
         logout: () => dispatch(logout()),
         changeView: () => dispatch(changeView()),
-        selectWorkspace: (iri: IRI) => dispatch(selectWorkspace(iri))
+        selectWorkspace: (iri: IRI) => dispatch(selectWorkspace(iri)),
+        loadCurrentWorkspace: () => dispatch(loadCurrentWorkspace())
     };
 })(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));

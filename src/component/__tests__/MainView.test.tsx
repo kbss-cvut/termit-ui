@@ -24,9 +24,12 @@ describe("MainView", () => {
         url: "http://localhost:3000/"
     };
 
-    let loadUser: () => Promise<any>;
-    let logout: () => void;
-    let selectWorkspace: (iri: IRI) => void;
+    let dispatchFunctions: {
+        loadUser: () => Promise<any>;
+        logout: () => void;
+        selectWorkspace: (iri: IRI) => void;
+        loadCurrentWorkspace: () => void;
+    }
 
     const nonEmptyUser = new User({
         firstName: "Catherine",
@@ -36,15 +39,19 @@ describe("MainView", () => {
     });
 
     beforeEach(() => {
-        loadUser = jest.fn().mockResolvedValue({});
-        logout = jest.fn();
-        selectWorkspace = jest.fn();
+        location.search = "";
+        dispatchFunctions = {
+            loadUser: jest.fn().mockResolvedValue({}),
+            logout: jest.fn(),
+            selectWorkspace: jest.fn(),
+            loadCurrentWorkspace: jest.fn()
+        };
     });
 
     it("loads user on mount", () => {
-        shallow(<MainView user={EMPTY_USER} loadUser={loadUser} logout={logout} selectWorkspace={selectWorkspace}
+        shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
                           history={history} location={location} match={match} {...intlFunctions()}/>);
-        expect(loadUser).toHaveBeenCalled();
+        expect(dispatchFunctions.loadUser).toHaveBeenCalled();
     });
 
     it("does not load user when it is already present in store", () => {
@@ -54,43 +61,56 @@ describe("MainView", () => {
             username: "halsey@unsc.org",
             iri: "http://onto.fel.cvut.cz/ontologies/termit/catherine-halsey"
         });
-        shallow(<MainView user={user} loadUser={loadUser} logout={logout} selectWorkspace={selectWorkspace}
+        shallow(<MainView user={user} {...dispatchFunctions}
                           history={history} location={location} match={match} {...intlFunctions()}/>);
-        expect(loadUser).not.toHaveBeenCalled();
+        expect(dispatchFunctions.loadUser).not.toHaveBeenCalled();
     });
 
     it("renders placeholder UI when user is being loaded", () => {
-        const wrapper = shallow(<MainView user={EMPTY_USER} loadUser={loadUser} logout={logout}
-                                          selectWorkspace={selectWorkspace} history={history}
+        const wrapper = shallow(<MainView user={EMPTY_USER} {...dispatchFunctions} history={history}
                                           location={location} match={match} {...intlFunctions()}/>);
         expect(wrapper.exists("#loading-placeholder")).toBeTruthy();
     });
 
-    describe("workspace selection", () => {
+    describe("workspace", () => {
 
         const wsIri = "http://onto.fel.cvut.cz/ontologies/termit/workspaces/testOne";
 
         it("selects workspace when workspace IRI is specified as query param", () => {
             location.search = `workspace=${encodeURIComponent(wsIri)}`;
-            shallow(<MainView user={Generator.generateUser()} loadUser={loadUser} logout={logout}
-                              selectWorkspace={selectWorkspace}
+            shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions}
                               history={history} location={location} match={match} {...intlFunctions()}/>);
             return Promise.resolve().then(() => {
-                expect(selectWorkspace).toHaveBeenCalledWith(VocabularyUtils.create(wsIri));
+                expect(dispatchFunctions.selectWorkspace).toHaveBeenCalledWith(VocabularyUtils.create(wsIri));
             });
         });
 
         it("does not select workspace when user is not loaded", () => {
             location.search = `workspace=${encodeURIComponent(wsIri)}`;
-            shallow(<MainView user={EMPTY_USER} loadUser={loadUser} logout={logout} selectWorkspace={selectWorkspace}
+            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
                               history={history} location={location} match={match} {...intlFunctions()}/>);
-            expect(selectWorkspace).not.toHaveBeenCalled();
+            expect(dispatchFunctions.selectWorkspace).not.toHaveBeenCalled();
+        });
+
+        it("loads current workspace when user is loaded and no workspace IRI is provided", () => {
+            shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions}
+                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            return Promise.resolve().then(() => {
+                expect(dispatchFunctions.loadCurrentWorkspace).toHaveBeenCalled();
+            });
+        });
+
+        it("does not load current workspace when user is not loaded", () => {
+            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
+                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            return Promise.resolve().then(() => {
+                expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
+            });
         });
     });
 
     it("does not render breadcrumb on dashboard", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          selectWorkspace={selectWorkspace}
+        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
                                           location={location} match={match} {...intlFunctions()}/>);
         expect(wrapper.exists(Breadcrumbs)).toBeFalsy();
     });
@@ -103,22 +123,19 @@ describe("MainView", () => {
             state: {}
         };
 
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          selectWorkspace={selectWorkspace}
+        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
                                           location={locationVocabularies} match={match} {...intlFunctions()}/>);
         expect(wrapper.exists(Breadcrumbs)).toBeTruthy();
     });
 
     it("renders navbar on >= 768px", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          selectWorkspace={selectWorkspace}
+        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
                                           location={location} match={match} desktopView={true} {...intlFunctions()}/>);
         expect(wrapper.exists("#navbar")).toBeTruthy();
     });
 
     it("does not render navbar on > 768px", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          selectWorkspace={selectWorkspace}
+        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
                                           location={location} match={match} desktopView={false} {...intlFunctions()}/>);
         expect(wrapper.exists("#navbar")).toBeFalsy();
     });
