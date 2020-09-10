@@ -514,6 +514,8 @@ export default {
         "public.dashboard.actions.vocabularies": "Browse vocabularies and terms",
 
         "workspace.select.success": "Workspace \"{name}\" successfully loaded.",
+        "workspace.loading": "Loading current workspace...",
+        "workspace.current.empty": "No workspace is currently loaded.",
 
         "comments.title": "Comments",
         "comments.create.placeholder": "Type your comment...",

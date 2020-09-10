@@ -4,9 +4,11 @@ import User, {EMPTY_USER} from "../../model/User";
 import {intlFunctions} from "../../__tests__/environment/IntlUtil";
 import {shallow} from "enzyme";
 import {createMemoryHistory} from "history";
-import {Breadcrumbs} from "react-breadcrumbs";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
+import WorkspaceNotLoaded from "../workspace/WorkspaceNotLoaded";
+import Workspace from "../../model/Workspace";
+import Header from "../main/Header";
 
 describe("MainView", () => {
 
@@ -107,12 +109,20 @@ describe("MainView", () => {
                 expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
             });
         });
+
+        it("renders workspace placeholder when workspace is not loaded", () => {
+            const wrapper = shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions} history={history}
+                                              location={location} match={match} {...intlFunctions()}/>);
+            expect(wrapper.exists(WorkspaceNotLoaded)).toBeTruthy();
+        });
     });
 
     it("does not render breadcrumb on dashboard", () => {
         const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
+                                          workspace={new Workspace({iri: Generator.generateUri()})}
                                           location={location} match={match} {...intlFunctions()}/>);
-        expect(wrapper.exists(Breadcrumbs)).toBeFalsy();
+        const header = wrapper.find(Header);
+        expect(header.prop("showBreadcrumbs")).toBeFalsy();
     });
 
     it("renders breadcrumb on route different to dashboard", () => {
@@ -124,19 +134,9 @@ describe("MainView", () => {
         };
 
         const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
+                                          workspace={new Workspace({iri: Generator.generateUri()})}
                                           location={locationVocabularies} match={match} {...intlFunctions()}/>);
-        expect(wrapper.exists(Breadcrumbs)).toBeTruthy();
-    });
-
-    it("renders navbar on >= 768px", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
-                                          location={location} match={match} desktopView={true} {...intlFunctions()}/>);
-        expect(wrapper.exists("#navbar")).toBeTruthy();
-    });
-
-    it("does not render navbar on > 768px", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
-                                          location={location} match={match} desktopView={false} {...intlFunctions()}/>);
-        expect(wrapper.exists("#navbar")).toBeFalsy();
+        const header = wrapper.find(Header);
+        expect(header.prop("showBreadcrumbs")).toBeTruthy();
     });
 });

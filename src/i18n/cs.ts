@@ -520,6 +520,8 @@ export default {
         "public.dashboard.actions.vocabularies": "Prohlédněte si slovníky a pojmy",
 
         "workspace.select.success": "Pracovní prostor \"{name}\" úspěšně načten.",
+        "workspace.loading": "Načítám aktuální pracovní prostor...",
+        "workspace.current.empty": "Aktuálně nemáte načtený žádný pracovní prostor.",
 
         "comments.title": "Komentáře",
         "comments.create.placeholder": "Napište komentář...",

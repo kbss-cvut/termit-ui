@@ -5,12 +5,7 @@ import withI18n, {HasI18n} from "./hoc/withI18n";
 import withLoading from "./hoc/withLoading";
 import {connect} from "react-redux";
 import TermItState from "../model/TermItState";
-import {
-    Container,
-    Jumbotron,
-    Nav,
-    Navbar,
-} from "reactstrap";
+import {Container, Jumbotron,} from "reactstrap";
 import User, {EMPTY_USER} from "../model/User";
 import "./MainView.scss";
 import Routes from "../util/Routes";
@@ -19,13 +14,11 @@ import {logout} from "../action/ComplexActions";
 import {Route, RouteComponentProps, Switch, withRouter} from "react-router";
 import Messages from "./message/Messages";
 import Statistics from "./statistics/Statistics";
-import NavbarSearch from "./search/label/NavbarSearch";
 import Search from "./search/label/Search";
 import {ThunkDispatch} from "../util/Types";
 import ResourceManagementRoute from "./resource/ResourceManagementRoute";
 import SearchTypeTabs from "./search/SearchTypeTabs";
 import SearchTerms from "./search/SearchTerms";
-import {Breadcrumbs} from "react-breadcrumbs";
 import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
 import VocabularyManagementRoute from "./vocabulary/VocabularyManagementRoute";
 import Dashboard from "./dashboard/Dashboard";
@@ -35,11 +28,12 @@ import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
 import AdministrationRoute from "./administration/AdministrationRoute";
 import {loadUser} from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
-import UserDropdown from "./misc/UserDropdown";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
 import {loadCurrentWorkspace, selectWorkspace} from "../action/WorkspaceAsyncActions";
 import Workspace from "../model/Workspace";
+import Header from "./main/Header";
+import WorkspaceNotLoaded from "./workspace/WorkspaceNotLoaded";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     user: User;
@@ -113,10 +107,13 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     public render() {
-        const {i18n, user, sidebarExpanded, desktopView} = this.props;
+        const {i18n, user, sidebarExpanded} = this.props;
 
         if (user === EMPTY_USER) {
             return this.renderPlaceholder();
+        }
+        if (!this.props.workspace) {
+            return <WorkspaceNotLoaded/>;
         }
 
         return <div className="main-container">
@@ -125,24 +122,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                 "main-view-sidebar-expanded": sidebarExpanded,
                 "main-view-sidebar-collapsed": !sidebarExpanded
             }, "flex-grow-1")}>
-                <header>
-                    {desktopView && <Navbar id="navbar"
-                                            light={true} fixed="top"
-                                            className={classNames("bg-white", "navbar-top", "d-flex")}>
-                        <Nav navbar={true} className="nav-search">
-                            <NavbarSearch navbar={true}/>
-                        </Nav>
-
-                        <Nav navbar={true} className="nav-menu-user flex-row-reverse">
-                            <UserDropdown dark={false}/>
-                        </Nav>
-                    </Navbar>}
-
-                    {/*
-                        // @ts-ignore */}
-                    {!this.isDashboardRoute() && <Breadcrumbs className="breadcrumb-bar" separator="/"/>}
-
-                </header>
+                <Header showBreadcrumbs={!this.isDashboardRoute()}/>
                 <SearchTypeTabs/>
                 <Messages/>
                 <Container id="content-container" fluid={true}
@@ -176,7 +156,8 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     private renderPlaceholder() {
-        return <div id="loading-placeholder" className="wrapper center">
+        return <div id="loading-placeholder" className="wrapper center main-container">
+            <Header showBreadcrumbs={false}/>
             <Jumbotron>
                 <h1>{this.props.i18n("message.welcome")}</h1>
             </Jumbotron>
