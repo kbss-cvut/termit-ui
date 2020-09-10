@@ -449,6 +449,8 @@ function annotatorTerms(state: { [key: string]: Term } = {}, action: AsyncAction
 function workspace(state: Workspace | null = null, action: AsyncActionSuccess<Workspace>) {
     if (action.type === ActionType.SELECT_WORKSPACE && action.status === AsyncActionStatus.SUCCESS) {
         return action.payload;
+    } else if (action.type === ActionType.LOAD_WORKSPACE && action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload;
     }
     return state;
 }

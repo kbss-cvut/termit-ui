@@ -77,9 +77,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     private loadWorkspace() {
-        if (this.props.user === EMPTY_USER) {
-            return;
-        }
         let ws = Utils.extractQueryParam(this.props.location.search, "workspace");
         if (ws) {
             ws = decodeURIComponent(ws);
@@ -156,7 +153,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     private renderPlaceholder() {
-        return <div id="loading-placeholder" className="wrapper center main-container">
+        return <div id="loading-placeholder" className="wrapper main-container">
             <Header showBreadcrumbs={false}/>
             <Jumbotron>
                 <h1>{this.props.i18n("message.welcome")}</h1>

@@ -595,10 +595,17 @@ describe("Reducers", () => {
     });
 
     describe("workspace", () => {
-        it("sets loaded workspace as current one in store", () => {
+        it("sets loaded workspace as current one in store after workspace select", () => {
             const ws = new Workspace({iri: Generator.generateUri(), label: "Test workspace"});
             expect(stateToPlainObject(initialState).workspace).toBeNull();
             const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.SELECT_WORKSPACE}, ws));
+            expect(result.workspace).toEqual(ws);
+        });
+
+        it("sets loaded workspace as current one in store after workspace loaded", () => {
+            const ws = new Workspace({iri: Generator.generateUri(), label: "Test workspace"});
+            expect(stateToPlainObject(initialState).workspace).toBeNull();
+            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_WORKSPACE}, ws));
             expect(result.workspace).toEqual(ws);
         });
     });
