@@ -516,6 +516,7 @@ export default {
         "workspace.select.success": "Workspace \"{name}\" successfully loaded.",
         "workspace.loading": "Loading current workspace...",
         "workspace.current.empty": "No workspace is currently loaded.",
+        "workspace.indicator": "Workspace: {name}",
 
         "comments.title": "Comments",
         "comments.create.placeholder": "Type your comment...",
