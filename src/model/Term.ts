@@ -103,15 +103,14 @@ export default class Term extends Asset implements TermData {
         }
     }
 
-    public toTermData(): TermData {
+    public toTermData(withoutParents: boolean = false): TermData {
         const result: any = Object.assign({}, this);
         if (result.parentTerms) {
-            result.parentTerms = result.parentTerms.map((pt: Term) => {
-                const res = pt.toTermData();
-                // No need to track ancestors, they are not updated on the backend anyway
-                delete res.parentTerms;
-                return res;
-            });
+            if (withoutParents) {
+                result.parentTerms = undefined;
+            } else {
+                result.parentTerms = result.parentTerms.map((pt: Term) => pt.toTermData(true));
+            }
         }
         if (result.definitionSource) {
             result.definitionSource.term = {iri: result.iri};
