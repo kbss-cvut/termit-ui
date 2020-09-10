@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 import Workspace from "../../model/Workspace";
 import Routes from "../../util/Routes";
 import Constants from "../../util/Constants";
+import WorkspaceIndicator from "../workspace/WorkspaceIndicator";
 
 interface HeaderProps {
     showBreadcrumbs: boolean;
@@ -35,12 +36,14 @@ export const Header: React.FC<HeaderProps> = props => {
             <Nav navbar={true} className="nav-search">
                 {isLoggedIn && workspace && <NavbarSearch navbar={true}/>}
             </Nav>
+            <Nav navbar={true}>
+                {workspace && <WorkspaceIndicator/>}
+            </Nav>
             <Nav navbar={true} className="nav-menu-user flex-row-reverse">
                 {isLoggedIn && <UserDropdown dark={false}/>}
             </Nav>
         </Navbar>}
 
-        {}
         {showBreadcrumbs && <Breadcrumbs className="breadcrumb-bar" separator="/"/>}
     </header>;
 }

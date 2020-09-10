@@ -522,6 +522,7 @@ export default {
         "workspace.select.success": "Pracovní prostor \"{name}\" úspěšně načten.",
         "workspace.loading": "Načítám aktuální pracovní prostor...",
         "workspace.current.empty": "Aktuálně nemáte načtený žádný pracovní prostor.",
+        "workspace.indicator": "Prac. prostor: {name}",
 
         "comments.title": "Komentáře",
         "comments.create.placeholder": "Napište komentář...",
