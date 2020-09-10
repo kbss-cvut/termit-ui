@@ -105,9 +105,7 @@ describe("MainView", () => {
         it("does not load current workspace when user is not loaded", () => {
             shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
                               history={history} location={location} match={match} {...intlFunctions()}/>);
-            return Promise.resolve().then(() => {
-                expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
-            });
+            expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
         });
 
         it("renders workspace placeholder when workspace is not loaded", () => {

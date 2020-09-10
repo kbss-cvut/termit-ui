@@ -13,7 +13,7 @@ interface WorkspaceNotLoadedProps extends HasI18n {
 const WorkspaceNotLoaded: React.FC<WorkspaceNotLoadedProps> = props => {
     const {i18n, loading} = props;
     const msg = loading ? "workspace.loading" : "workspace.current.empty";
-    return <div id="workspace-not-loaded" className="wrapper center main-container">
+    return <div id="workspace-not-loaded" className="wrapper main-container">
         <Header showBreadcrumbs={false}/>
         <Jumbotron>
             <h1>{i18n(msg)}</h1>
