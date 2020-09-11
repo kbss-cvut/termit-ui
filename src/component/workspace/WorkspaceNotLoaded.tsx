@@ -5,6 +5,7 @@ import {Jumbotron} from "reactstrap";
 import {injectIntl} from "react-intl";
 import TermItState from "../../model/TermItState";
 import {connect} from "react-redux";
+import Messages from "../message/Messages";
 
 interface WorkspaceNotLoadedProps extends HasI18n {
     loading: boolean;
@@ -15,6 +16,7 @@ const WorkspaceNotLoaded: React.FC<WorkspaceNotLoadedProps> = props => {
     const msg = loading ? "workspace.loading" : "workspace.current.empty";
     return <div id="workspace-not-loaded" className="wrapper main-container">
         <Header showBreadcrumbs={false}/>
+        <Messages/>
         <Jumbotron>
             <h1>{i18n(msg)}</h1>
         </Jumbotron>

@@ -34,6 +34,7 @@ import {loadCurrentWorkspace, selectWorkspace} from "../action/WorkspaceAsyncAct
 import Workspace from "../model/Workspace";
 import Header from "./main/Header";
 import WorkspaceNotLoaded from "./workspace/WorkspaceNotLoaded";
+import AsyncActionStatus from "../action/AsyncActionStatus";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     user: User;
@@ -64,7 +65,11 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     public componentDidMount(): void {
         if (this.props.user === EMPTY_USER) {
-            this.props.loadUser().then(() => this.loadWorkspace());
+            this.props.loadUser().then((res) => {
+                if (res.status !== AsyncActionStatus.FAILURE) {
+                    this.loadWorkspace();
+                }
+            });
         } else {
             this.loadWorkspace();
         }
@@ -155,6 +160,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     private renderPlaceholder() {
         return <div id="loading-placeholder" className="wrapper main-container">
             <Header showBreadcrumbs={false}/>
+            <Messages/>
             <Jumbotron>
                 <h1>{this.props.i18n("message.welcome")}</h1>
             </Jumbotron>

@@ -9,6 +9,8 @@ import Generator from "../../__tests__/environment/Generator";
 import WorkspaceNotLoaded from "../workspace/WorkspaceNotLoaded";
 import Workspace from "../../model/Workspace";
 import Header from "../main/Header";
+import ActionType from "../../action/ActionType";
+import AsyncActionStatus from "../../action/AsyncActionStatus";
 
 describe("MainView", () => {
 
@@ -106,6 +108,19 @@ describe("MainView", () => {
             shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
                               history={history} location={location} match={match} {...intlFunctions()}/>);
             expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
+        });
+
+        it("does not attempt to load current workspace when user loading failed", () => {
+            dispatchFunctions.loadUser = jest.fn().mockResolvedValue({
+                type: ActionType.FETCH_USER,
+                status: AsyncActionStatus.FAILURE,
+                error: {status: 401}
+            });
+            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
+                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            return Promise.resolve().then(() => {
+                expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
+            });
         });
 
         it("renders workspace placeholder when workspace is not loaded", () => {
