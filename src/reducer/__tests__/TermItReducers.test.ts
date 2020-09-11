@@ -632,5 +632,10 @@ describe("Reducers", () => {
             const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_WORKSPACE}, ws));
             expect(result.workspace).toEqual(ws);
         });
+
+        it("clears stored workspace on logout", () => {
+            initialState.workspace = new Workspace({iri: Generator.generateUri(), label: "Test workspace"});
+            expect(reducers(stateToPlainObject(initialState), {type: ActionType.LOGOUT}).workspace).toBeNull();
+        });
     });
 });

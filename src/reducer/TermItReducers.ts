@@ -454,6 +454,8 @@ function workspace(state: Workspace | null = null, action: AsyncActionSuccess<Wo
         return action.payload;
     } else if (action.type === ActionType.LOAD_WORKSPACE && action.status === AsyncActionStatus.SUCCESS) {
         return action.payload;
+    } else if (action.type === ActionType.LOGOUT) {
+        return null;
     }
     return state;
 }
