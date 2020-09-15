@@ -99,6 +99,15 @@ there is the `_custom.scss` file in `src`. This file allows to override default 
 
 Further documentation is in the [doc folder](doc/index.md).
 
+## Dockerization
+
+The docker image of TermIt UI can be built by 
+`docker build -t kbss-cvut:termit-ui .` 
+An optional argument is `SERVER_URL` pointing to the TermIt backend.
+
+Then, TermIt UI can be run and exposed at the port 3000 as 
+`sudo docker run -p 3000:80 kbss-cvut:termit-ui`
+
 ## License
 
 Licensed under LGPL v3.0.

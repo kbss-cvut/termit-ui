@@ -177,6 +177,30 @@ describe("Reducers", () => {
             const action = dismissMessage(mOne);
             expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {messages: [mTwo]}));
         });
+
+        it("clears messages on logout", () => {
+            const mOne = new Message({
+                message: "test"
+            });
+            const mTwo = new Message({
+                messageId: "connection.error"
+            });
+            initialState.messages = [mOne, mTwo];
+            const action = userLogout();
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {messages: []}));
+        });
+
+        it("clears messages on login", () => {
+            const mOne = new Message({
+                message: "test"
+            });
+            const mTwo = new Message({
+                messageId: "connection.error"
+            });
+            initialState.messages = [mOne, mTwo];
+            const action = {type: ActionType.LOGIN};
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {messages: []}));
+        });
     });
 
     describe("intl", () => {
