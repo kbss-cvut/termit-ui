@@ -1,33 +1,28 @@
-import {ASSET_CONTEXT} from "./Asset";
 import VocabularyUtils from "../util/VocabularyUtils";
-import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT} from "./TermOccurrence";
+import {TermData} from "./Term";
+import {CONTEXT as TERM_CONTEXT} from "./Term";
+import {CONTEXT as LANG_STRING_CONTEXT, LangString} from "./LangString";
+import {Severity} from "./Severity";
 
+// @id and @type are merged from ASSET_CONTEXT
 const ctx = {
-    label: VocabularyUtils.SKOS_PREF_LABEL,
-    altLabels: VocabularyUtils.SKOS_ALT_LABEL,
-    hiddenLabels: VocabularyUtils.SKOS_HIDDEN_LABEL,
-    definition: VocabularyUtils.DEFINITION,
-    comment: VocabularyUtils.SKOS_SCOPE_NOTE,
-    parentTerms: VocabularyUtils.BROADER,
-    subTerms: VocabularyUtils.NARROWER,
-    sources: VocabularyUtils.DC_SOURCE,
-    vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
-    definitionSource: VocabularyUtils.HAS_DEFINITION_SOURCE,
-    draft: VocabularyUtils.IS_DRAFT,
-    glossary: VocabularyUtils.SKOS_IN_SCHEME,
-    types: "@type"
+    "term": VocabularyUtils.SH_FOCUS_NODE,
+    "severity": VocabularyUtils.SH_RESULT_SEVERITY,
+    "message": VocabularyUtils.SH_RESULT_MESSAGE
 };
 
-export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, BASE_OCCURRENCE_CONTEXT);
+export const CONTEXT = Object.assign({}, TERM_CONTEXT, LANG_STRING_CONTEXT, ctx );
 
 export default class ValidationResult {
-    public termIri: string;
-    public severityKey: string;
-    public message: string;
+    public id: string;
+    public term: TermData;
+    public severity: Severity;
+    public message: LangString[];
 
-    constructor(termIri : string, severityKey: string, message: string) {
-        this.termIri = termIri;
-        this.severityKey = severityKey;
+    constructor(id: string, term : TermData, severity: Severity, message: LangString[] ) {
+        this.id = id;
+        this.term = term;
+        this.severity = severity;
         this.message = message;
     }
 }

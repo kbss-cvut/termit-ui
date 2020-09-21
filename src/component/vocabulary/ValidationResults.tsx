@@ -10,6 +10,8 @@ import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import {loadValidationResults} from "../../action/AsyncActions";
+import TermIriLink from "../term/TermIriLink";
+import SeverityText from "./SeverityText";
 
 interface ValidationResultsProps extends HasI18n {
     vocabulary: Vocabulary;
@@ -34,26 +36,28 @@ export class ValidationResults extends React.Component<ValidationResultsProps, V
     }
 
     public render() {
+        const clickValidate = () => this.loadValidationResults();
         return <div id="validation-result-list">
 
             <Table>
                 <thead>
                 <tr>
                     <th>{this.props.i18n('vocabulary.validation.term')}</th>
-                    <th>{this.props.i18n('vocabulary.validation.severity')}</th>
                     <th>{this.props.i18n('vocabulary.validation.message')}</th>
-                    <th>            <Button id="vocabulary.validate.action" onClick={this.loadValidationResults} color="success"
+                    <th>            <Button id="vocabulary.validate.action" onClick={clickValidate} color="success"
                                             size="sm">{i18n("vocabulary.validation.action")}</Button></th>
                 </tr>
                 </thead>
                 <tbody>
                 {
-                    this.state.validationResults.map(r =>
-                        <tr key={r.termIri}>
-                            <td>{r.termIri}</td>
-                            <td>{r.severityKey}</td>
-                            <td>{r.message}</td>
+                    this.state.validationResults.map(r => {
+                        let message = r.message.find(msg => msg.language === this.props.locale);
+                        if (!message) message = r.message.find(() => true);
+                        return <tr key={JSON.stringify(r.id)}>
+                            <td><TermIriLink iri={r.term.iri!}/></td>
+                            <td><SeverityText severityIri={r.severity.iri} message={message!.value}/></td>
                         </tr>
+                        }
                     )
                 }
                 </tbody>

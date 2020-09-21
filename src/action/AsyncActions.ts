@@ -50,7 +50,7 @@ import TermOccurrence from "../model/TermOccurrence";
 import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "../model/SearchResult";
 import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
-import ValidationResult from "../model/ValidationResult";
+import ValidationResult, {CONTEXT as VALIDATION_RESULT_CONTEXT} from "../model/ValidationResult";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -563,12 +563,8 @@ export type ValidationRecord = {
     message: string;
     focusNode: string;
 }
-type ValidationReport = {
-    conforms: boolean;
-    results: ValidationRecord[];
-}
 
-export function loadValidationResults(vocabularyIri: IRI) {
+export function loadValidationResults(vocabularyIri: IRI, apiPrefix: string = Constants.API_PREFIX) {
     const action = {
         type: ActionType.FETCH_VALIDATION_RESULTS
     };
@@ -578,17 +574,10 @@ export function loadValidationResults(vocabularyIri: IRI) {
             return Promise.resolve([]);
         }
         dispatch(asyncActionRequest(action));
-        const reqUrl = Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/validate";
-        return Ajax.get(reqUrl)
-            .then((data: ValidationReport) =>
-                data.results.length !== 0 ? data.results.map( r => { return new ValidationResult(
-                    r.focusNode,
-                    r.severity,
-                    r.message)
-                })
-                    // JsonLdUtils
-                    // .compactAndResolveReferencesAsArray<ValidationResult>(data.results, VOCABULARY_CONTEXT)
-            : [])
+        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`, param("namespace", vocabularyIri.namespace))
+            .then((data: ValidationRecord[]) =>
+                JsonLdUtils
+                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT))
             .then((data: ValidationResult[]) => {
                 dispatch(asyncActionSuccess(action));
                 return data;})
