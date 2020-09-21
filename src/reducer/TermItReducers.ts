@@ -79,6 +79,9 @@ function messages(state: Message[] = [], action: MessageAction): Message[] {
             const newArr = state.slice(0);
             newArr.splice(newArr.indexOf(action.message), 1);
             return newArr;
+        case ActionType.LOGOUT:
+        case ActionType.LOGIN:  // Intentional fall-through
+            return [];
         default:
             return state;
     }

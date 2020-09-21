@@ -71,6 +71,27 @@ describe("Term tests", () => {
             const result = new Term(termData);
             expect(result.subTerms).toEqual([subTerm]);
         });
+
+        it("handles parent term cycles", () => {
+            const parentData:TermData = {
+                iri: Generator.generateUri(),
+                label: "Parent",
+                vocabulary: {iri: Generator.generateUri()}
+            };
+            const grandParentData: TermData = {
+                iri: Generator.generateUri(),
+                label: "Grandparent",
+                vocabulary: {iri: Generator.generateUri()},
+                parentTerms: [termData]
+            };
+            parentData.parentTerms = [grandParentData];
+            termData.parentTerms = [parentData];
+            const result = new Term(termData);
+            expect(result.parentTerms![0].iri).toEqual(parentData.iri);
+            expect(result.parentTerms![0].parentTerms![0].iri).toEqual(grandParentData.iri);
+            // Here the cycle closes
+            expect(result.parentTerms![0].parentTerms![0].parentTerms![0]).toEqual(result);
+        });
     });
 
     it("adds term type in constructor when it is missing in specified data", () => {
