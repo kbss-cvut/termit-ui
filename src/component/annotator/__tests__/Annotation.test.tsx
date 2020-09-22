@@ -317,8 +317,8 @@ describe("Annotation", () => {
     });
 
     describe("onSelectTerm", () => {
-        // Bug #1359
-        it("resets current term to allow load of the selected one", () => {
+        // Bug #1359, #1360
+        it("sets current term to the selected one", () => {
             const wrapper = shallow<Annotation>(
                 <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
             return Promise.resolve().then(() => {
@@ -326,7 +326,7 @@ describe("Annotation", () => {
                 const selectedTerm = Generator.generateTerm();
                 wrapper.instance().onSelectTerm(selectedTerm);
                 wrapper.update();
-                expect(wrapper.state().term).toBeNull();
+                expect(wrapper.state().term).toEqual(selectedTerm);
             });
         });
     });
