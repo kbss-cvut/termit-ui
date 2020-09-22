@@ -131,7 +131,7 @@ export class Annotation extends React.Component<AnnotationProps, AnnotationState
     public onSelectTerm = (t: Term | null) => {
         this.setState({
             detailOpened: false,
-            term: null
+            term: t
         });
         if (this.props.onUpdate) {
             const newAnnotation: AnnotationSpanProps = {
