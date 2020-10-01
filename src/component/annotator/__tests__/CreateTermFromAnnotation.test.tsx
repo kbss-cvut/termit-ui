@@ -4,6 +4,7 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import {shallow} from "enzyme";
 import {CreateTermFromAnnotation} from "../CreateTermFromAnnotation";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {toMultilingual} from "../../../model/MultilingualString";
 
 describe("CreateTermFromAnnotation", () => {
 
@@ -27,7 +28,7 @@ describe("CreateTermFromAnnotation", () => {
     it("resets state before close", () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        wrapper.setState({iri: "http://test", label: "test"});
+        wrapper.setState({iri: "http://test", label: toMultilingual("test")});
         wrapper.instance().onCancel();
         expect(onClose).toHaveBeenCalled();
         expect(wrapper.state().iri).toEqual("");
@@ -56,7 +57,7 @@ describe("CreateTermFromAnnotation", () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
         const iri = vocabularyIri + "/term/test-term";
-        const label = "Test label";
+        const label = toMultilingual("Test label");
         const sources = ["source.html", "http://onto.fel.cvut.cz"];
         wrapper.setState({iri, label, sources});
         wrapper.instance().onSave();
@@ -73,11 +74,11 @@ describe("CreateTermFromAnnotation", () => {
     it("invokes close and clears state after successful term creation", async () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        wrapper.setState({iri: vocabularyIri + "/term/test-term", label: "Test term"});
+        wrapper.setState({iri: vocabularyIri + "/term/test-term", label: toMultilingual("Test term")});
         await wrapper.instance().onSave();
         expect(onClose).toHaveBeenCalled();
         expect(wrapper.state().iri).toEqual("");
-        expect(wrapper.state().label).toEqual("");
+        expect(wrapper.state().label).toEqual(toMultilingual(""));
     });
 
     it("invokes onTermCreated with the new term after successful term creation", async () => {
@@ -85,7 +86,7 @@ describe("CreateTermFromAnnotation", () => {
         const termLabel = "Test term";
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        wrapper.setState({iri: termIri, label: termLabel});
+        wrapper.setState({iri: termIri, label: toMultilingual(termLabel)});
         await wrapper.instance().onSave();
         expect(onTermCreated).toHaveBeenCalled();
         const newTerm = (onTermCreated as jest.Mock).mock.calls[0][0];

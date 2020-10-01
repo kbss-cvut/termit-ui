@@ -4,7 +4,7 @@ import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
 import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData} from "./TermOccurrence";
-import MultilingualString from "./MultilingualString";
+import MultilingualString, {NO_LANG} from "./MultilingualString";
 import Constants from "../util/Constants";
 
 const ctx = {
@@ -135,7 +135,7 @@ export default class Term extends Asset implements TermData {
     }
 
     getLabel(): string {
-        return this.label[Constants.DEFAULT_LOCALE];
+        return this.label[Constants.DEFAULT_LOCALE] ? this.label[Constants.DEFAULT_LOCALE] : this.label[NO_LANG];
     }
 
     public toJsonLd(): TermData {
