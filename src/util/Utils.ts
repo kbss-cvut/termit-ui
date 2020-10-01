@@ -173,8 +173,8 @@ export default {
      * This renderer takes the specified option and renders its label.
      * @param option Options to render
      */
-    labelValueRenderer(option: HasLabel) {
-        return option.getLabel();
+    labelValueRenderer(option: { label: string }) {
+        return option.label;
     },
 
     /**

@@ -87,7 +87,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
                     <Col xs={12}>
                         <ButtonToolbar className="d-flex justify-content-center mt-4">
                             <Button id="create-term-submit" color="success" onClick={this.onSave}
-                                    disabled={!isFormValid(this.state)}
+                                    disabled={!isFormValid(this.state, this.props.locale)}
                                     size="sm">{i18n("glossary.form.button.submit")}</Button>
                             <Button id="create-term-cancel" color="outline-dark" size="sm"
                                     onClick={this.onCancel}>{i18n("glossary.form.button.cancel")}</Button>

@@ -1,3 +1,5 @@
+import Constants from "../util/Constants";
+
 export function context(propertyIri: string) {
     return {
         "@id": propertyIri,
@@ -18,6 +20,15 @@ export function toMultilingual(str: string) {
     const result = {};
     result[NO_LANG] = str;
     return result;
+}
+
+export function getLocalized(str: MultilingualString, locale: string = Constants.DEFAULT_LOCALE) {
+    if (str[locale]) {
+        return str[locale];
+    } else if (str[Constants.DEFAULT_LOCALE]) {
+        return str[Constants.DEFAULT_LOCALE]
+    }
+    return str[NO_LANG];
 }
 
 export default MultilingualString;
