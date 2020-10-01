@@ -4,6 +4,8 @@ import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
 import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData} from "./TermOccurrence";
+import MultilingualString from "./MultilingualString";
+import Constants from "../util/Constants";
 
 const ctx = {
     label: VocabularyUtils.SKOS_PREF_LABEL,
@@ -27,7 +29,7 @@ const MAPPED_PROPERTIES = ["@context", "iri", "label", "altLabels", "hiddenLabel
     "subTerms", "sources", "types", "parentTerms", "parent", "plainSubTerms", "vocabulary", "glossary", "definitionSource", "draft"];
 
 export interface TermData extends AssetData {
-    label: string;
+    label: MultilingualString;
     altLabels?: string[];
     hiddenLabels?: string[];
     definition?: string;
@@ -51,6 +53,7 @@ export interface TermInfo {
 declare type TermMap = { [key: string]: Term };
 
 export default class Term extends Asset implements TermData {
+    public label: MultilingualString;
     public altLabels?: string[];
     public hiddenLabels?: string[];
     public definition?: string;
@@ -66,6 +69,7 @@ export default class Term extends Asset implements TermData {
     constructor(termData: TermData, visitedTerms: TermMap = {}) {
         super(termData);
         Object.assign(this, termData);
+        this.label = termData.label;
         this.types = Utils.sanitizeArray(termData.types);
         if (this.types.indexOf(VocabularyUtils.TERM) === -1) {
             this.types.push(VocabularyUtils.TERM);
@@ -128,6 +132,10 @@ export default class Term extends Asset implements TermData {
 
     public set unmappedProperties(properties: Map<string, string[]>) {
         WithUnmappedProperties.setUnmappedProperties(this, properties, MAPPED_PROPERTIES);
+    }
+
+    getLabel(): string {
+        return this.label[Constants.DEFAULT_LOCALE];
     }
 
     public toJsonLd(): TermData {

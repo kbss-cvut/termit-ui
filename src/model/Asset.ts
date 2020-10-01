@@ -3,9 +3,12 @@ export interface HasTypes {
 }
 
 
+export interface HasLabel {
+    getLabel: () => string;
+}
+
 export interface AssetData extends HasTypes {
     iri?: string;
-    label?: string;
     comment?: string;
 }
 
@@ -22,15 +25,13 @@ export interface SupportsJsonLd<T extends any> {
     toJsonLd(): T;
 }
 
-export default abstract class Asset implements AssetData {
+export default abstract class Asset implements AssetData, HasLabel {
     public iri: string;
-    public label: string;
     public comment?: string;
     public types?: string[];
 
     protected constructor(data: AssetData) {
         this.iri = data.iri || "";
-        this.label = data.label || "";
     }
 
     public addType(type: string) {
@@ -45,6 +46,8 @@ export default abstract class Asset implements AssetData {
     public hasType(type: string): boolean {
         return this.types !== undefined && this.types.indexOf(type) !== -1;
     }
+
+    public abstract getLabel(): string;
 
     public abstract toJsonLd(): {};
 

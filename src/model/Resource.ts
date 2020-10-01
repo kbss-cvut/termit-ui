@@ -19,11 +19,13 @@ export interface ResourceData extends AssetData {
 }
 
 export default class Resource extends Asset implements ResourceData {
+    public label: string;
     public description?: string;
     public terms: Term[];
 
     constructor(data: ResourceData) {
         super(data);
+        this.label = data.label;
         this.terms = [];
         Object.assign(this, data);
         this.types = Utils.sanitizeArray(data.types);
@@ -34,6 +36,10 @@ export default class Resource extends Asset implements ResourceData {
 
     public clone() {
         return new Resource(this);
+    }
+
+    getLabel(): string {
+        return this.label;
     }
 
     public toJsonLd(): {} {
