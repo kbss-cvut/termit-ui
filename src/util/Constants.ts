@@ -3,6 +3,7 @@ import Routes from "./Routes";
 const SERVER_URL = "__SERVER_URL__";
 
 const API_PREFIX = "/rest";
+const DEFAULT_LOCALE = "en";
 
 const constants = {
     // Will be replaced with actual server url during build
@@ -23,11 +24,12 @@ const constants = {
             flag: "flags/cz.svg"
         },
         EN: {
-            locale: "en",
+            locale: DEFAULT_LOCALE,
             label: "English",
             flag: "flags/gb.svg"
         }
     },
+    DEFAULT_LOCALE,
     // Error origin caused by the inability to connect to the backend server
     CONNECTION_ERROR: "CONNECTION_ERROR",
     JSON_LD_MIME_TYPE: "application/ld+json",

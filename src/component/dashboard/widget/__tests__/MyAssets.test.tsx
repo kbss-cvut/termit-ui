@@ -1,12 +1,12 @@
 import * as React from "react";
-import Asset from "../../../../model/Asset";
 import {shallow} from "enzyme";
 import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import {InjectsLoading} from "../../../hoc/withInjectableLoading";
 import {MyAssets} from "../MyAssets";
+import RecentlyModifiedAsset from "../../../../model/RecentlyModifiedAsset";
 
 describe("LastEditedAssets", () => {
-    let onLoad: () => Promise<Asset[]>;
+    let onLoad: () => Promise<RecentlyModifiedAsset[]>;
 
     const loadingInjectMock: InjectsLoading = {
         loadingOn(): void {
