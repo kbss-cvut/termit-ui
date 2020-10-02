@@ -16,14 +16,14 @@ interface MultilingualString {
  */
 export const NO_LANG = "@none";
 
-export function toMultilingual(str: string) {
+export function langString(str: string, locale: string = Constants.DEFAULT_LOCALE): MultilingualString {
     const result = {};
-    result[NO_LANG] = str;
+    result[locale] = str;
     return result;
 }
 
 export function getLocalized(str: MultilingualString, locale: string = Constants.DEFAULT_LOCALE) {
-    if (str[locale]) {
+    if (str[locale] !== undefined) {
         return str[locale];
     } else if (str[Constants.DEFAULT_LOCALE]) {
         return str[Constants.DEFAULT_LOCALE]

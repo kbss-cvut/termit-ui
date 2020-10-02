@@ -3,7 +3,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Term, {TermData} from "../Term";
 import Generator from "../../__tests__/environment/Generator";
 import {TermOccurrenceData} from "../TermOccurrence";
-import {toMultilingual} from "../MultilingualString";
+import {langString} from "../MultilingualString";
 
 describe("Term tests", () => {
 
@@ -13,14 +13,14 @@ describe("Term tests", () => {
     beforeEach(() => {
         termData = {
             iri: "http://example.org/term1",
-            label: toMultilingual("test term 1"),
+            label: langString("test term 1"),
             types: ["http://example.org/type1", OntologicalVocabulary.TERM],
             draft: true
         };
 
         term = {
             iri: "http://example.org/term1",
-            label: toMultilingual("test term 1"),
+            label: langString("test term 1"),
             types: ["http://example.org/type1", OntologicalVocabulary.TERM],
             draft: true
         };
@@ -44,7 +44,7 @@ describe("Term tests", () => {
             termData.vocabulary = {iri: Generator.generateUri()};
             termData.parentTerms = [{
                 iri: Generator.generateUri(),
-                label: toMultilingual("Parent"),
+                label: langString("Parent"),
                 vocabulary: termData.vocabulary
             }];
             const result = new Term(termData);
@@ -55,11 +55,11 @@ describe("Term tests", () => {
             termData.vocabulary = {iri: Generator.generateUri()};
             termData.parentTerms = [{
                 iri: Generator.generateUri(),
-                label: toMultilingual("Parent"),
+                label: langString("Parent"),
                 vocabulary: {iri: Generator.generateUri()}
             }, {
                 iri: Generator.generateUri(),
-                label: toMultilingual("Parent Two"),
+                label: langString("Parent Two"),
                 vocabulary: {iri: termData.vocabulary.iri}
             }];
             const result = new Term(termData);
@@ -76,12 +76,12 @@ describe("Term tests", () => {
         it("handles parent term cycles", () => {
             const parentData: TermData = {
                 iri: Generator.generateUri(),
-                label: toMultilingual("Parent"),
+                label: langString("Parent"),
                 vocabulary: {iri: Generator.generateUri()}
             };
             const grandParentData: TermData = {
                 iri: Generator.generateUri(),
-                label: toMultilingual("Grandparent"),
+                label: langString("Grandparent"),
                 vocabulary: {iri: Generator.generateUri()},
                 parentTerms: [termData]
             };
@@ -98,7 +98,7 @@ describe("Term tests", () => {
     it("adds term type in constructor when it is missing in specified data", () => {
         const data = {
             iri: Generator.generateUri(),
-            label: toMultilingual("New term")
+            label: langString("New term")
         };
         const result = new Term(data);
         expect(result.types).toBeDefined();
@@ -110,7 +110,7 @@ describe("Term tests", () => {
             const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const data: TermData = {
                 iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
-                label: toMultilingual("pojem 5"),
+                label: langString("pojem 5"),
                 sources: [
                     "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"
                 ]
@@ -128,7 +128,7 @@ describe("Term tests", () => {
             const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const data: TermData = {
                 iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
-                label: toMultilingual("pojem 5"),
+                label: langString("pojem 5"),
                 sources: [
                     "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"
                 ]
@@ -221,7 +221,7 @@ describe("Term tests", () => {
             };
             const sut: Term = new Term({
                 iri: Generator.generateUri(),
-                label: toMultilingual("Test term"),
+                label: langString("Test term"),
                 definitionSource: defSource,
                 types: [VocabularyUtils.TERM]
             });

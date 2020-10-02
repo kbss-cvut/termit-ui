@@ -8,7 +8,7 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import Generator from "../../../__tests__/environment/Generator";
 import {shallow} from "enzyme";
-import {toMultilingual} from "../../../model/MultilingualString";
+import {langString} from "../../../model/MultilingualString";
 
 describe("TermTypesEdit", () => {
     let onChange: (types: string[]) => void;
@@ -21,7 +21,7 @@ describe("TermTypesEdit", () => {
 
     it("does not render implicit term type in the selector when no other type is assigned to term", () => {
         const availableTypes = {};
-        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: toMultilingual("Term")});
+        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
         const types = [VocabularyUtils.TERM];
         const wrapper = mountWithIntl(<TermTypesEdit termTypes={types} availableTypes={availableTypes}
                                                      loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
@@ -32,8 +32,8 @@ describe("TermTypesEdit", () => {
     it("does not render implicit term type in the selector when other another type is present as well", () => {
         const iri = Generator.generateUri();
         const availableTypes = {};
-        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: toMultilingual("Term")});
-        availableTypes[iri] = new Term({iri, label: toMultilingual("Other type")});
+        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
+        availableTypes[iri] = new Term({iri, label: langString("Other type")});
         const types = [VocabularyUtils.TERM, iri];
         const wrapper = mountWithIntl(<TermTypesEdit termTypes={types} availableTypes={availableTypes}
                                                      loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
@@ -42,7 +42,7 @@ describe("TermTypesEdit", () => {
     });
 
     it("invokes onChange handler with selected type and the implicit Term type", () => {
-        const selected = new Term({iri: Generator.generateUri(), label: toMultilingual("Selected term")});
+        const selected = new Term({iri: Generator.generateUri(), label: langString("Selected term")});
         const wrapper = shallow(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={{}}
                                                loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
         (wrapper.instance() as TermTypesEdit).onChange(selected);
@@ -56,8 +56,8 @@ describe("TermTypesEdit", () => {
     it("invokes onChange handler with implicit Term type only when reset button is clicked", () => {
         const iri = Generator.generateUri();
         const availableTypes = {};
-        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: toMultilingual("Term")});
-        availableTypes[iri] = new Term({iri, label: toMultilingual("Other type")});
+        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
+        availableTypes[iri] = new Term({iri, label: langString("Other type")});
         const types = [VocabularyUtils.TERM, iri];
         const wrapper = shallow<TermTypesEdit>(<TermTypesEdit termTypes={types} availableTypes={availableTypes}
                                                               loadTypes={loadTypes}

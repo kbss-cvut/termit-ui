@@ -25,7 +25,7 @@ declare type TermMetadataCreateProps =
 interface CreateVocabularyTermState extends TermData {
 }
 
-export function isFormValid(data: TermData, locale: string) {
+export function isFormValid(data: TermData, locale?: string) {
     return getLocalized(data.label, locale).trim().length > 0 && data.iri && data.iri.trim().length > 0;
 }
 
@@ -70,7 +70,7 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
                         <Col md={12}>
                             <ButtonToolbar className="d-flex justify-content-center mt-4">
                                 <Button id="create-term-submit" color="success" onClick={this.onSave} size="sm"
-                                        disabled={!isFormValid(this.state, this.props.locale)}>{i18n("glossary.form.button.submit")}</Button>
+                                        disabled={!isFormValid(this.state)}>{i18n("glossary.form.button.submit")}</Button>
                                 <Button id="create-term-submit-and-go-to-new-term" color="success" onClick={this.onSaveAndGoToNewTerm} size="sm"
                                         disabled={!isFormValid(this.state, this.props.locale)}>{i18n("glossary.form.button.submitAndGoToNewTerm")}</Button>
                                 <Button id="create-term-cancel" color="outline-dark" size="sm"

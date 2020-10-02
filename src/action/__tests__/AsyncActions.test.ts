@@ -71,7 +71,7 @@ import {verifyExpectedAssets} from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
 import NotificationType from "../../model/NotificationType";
-import {toMultilingual} from "../../model/MultilingualString";
+import {langString} from "../../model/MultilingualString";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -301,7 +301,7 @@ describe("Async actions", () => {
 
         it("create top level term in vocabulary context and send it over the network", () => {
             const term = new Term({
-                label: toMultilingual("Test term 1"),
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -320,12 +320,12 @@ describe("Async actions", () => {
         it("create child term in vocabulary context and send it over the network", () => {
             const parentFragment = "test-term-1";
             const parentTerm = new Term({
-                label: toMultilingual("Test term 1"),
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/" + parentFragment,
                 vocabulary: {iri: vocabularyIri.toString()}
             });
             const childTerm = new Term({
-                label: toMultilingual("Test term 2"),
+                label: langString("Test term 2"),
                 iri: vocabularyIri.toString() + "term/test-term-2",
                 parentTerms: [parentTerm]
             });
@@ -344,7 +344,7 @@ describe("Async actions", () => {
 
         it("publishes notification on successful creation", () => {
             const term = new Term({
-                label: toMultilingual("Test term 1"),
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({
@@ -363,7 +363,7 @@ describe("Async actions", () => {
 
         it("provides vocabulary namespace in a request parameter", () => {
             const term = new Term({
-                label: toMultilingual("Test term 1"),
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -378,12 +378,12 @@ describe("Async actions", () => {
             const parentVocabularyIri = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/parent-vocabulary";
             const parentTerm = new Term({
                 iri: parentVocabularyIri + "/terms/parent-term",
-                label: toMultilingual("Parent term"),
+                label: langString("Parent term"),
                 vocabulary: {iri: parentVocabularyIri}
             });
             const childTerm = new Term({
                 iri: vocabularyIri.toString() + "/terms/test-term",
-                label: toMultilingual("Test term"),
+                label: langString("Test term"),
                 parentTerms: [parentTerm]
             });
             Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
@@ -398,7 +398,7 @@ describe("Async actions", () => {
 
         it("sets term vocabulary before sending it to server", () => {
             const term = new Term({
-                label: toMultilingual("Test term 1"),
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
@@ -558,7 +558,7 @@ describe("Async actions", () => {
             const normalizedTermName = "test-term";
             const term: Term = new Term({
                 iri: namespace + "pojem/" + normalizedTermName,
-                label: toMultilingual("Test"),
+                label: langString("Test"),
                 comment: "Test term",
                 vocabulary: {iri: namespace + normalizedVocabularyName}
             });
@@ -577,7 +577,7 @@ describe("Async actions", () => {
         it("sends JSON-LD of term argument to REST endpoint", () => {
             const term: Term = new Term({
                 iri: Generator.generateUri(),
-                label: toMultilingual("Test"),
+                label: langString("Test"),
                 comment: "Test term",
                 vocabulary: {iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary"}
             });
@@ -614,7 +614,7 @@ describe("Async actions", () => {
             iri: namespace + normalizedName
         });
         const term = new Term({
-            label: toMultilingual("Test Term"),
+            label: langString("Test Term"),
             iri: vocabulary.iri + "/pojem/" + termName,
             vocabulary
         });
@@ -943,7 +943,7 @@ describe("Async actions", () => {
             const normalizedTermName = "test-term";
             const term: Term = new Term({
                 iri: namespace + "pojem/" + normalizedTermName,
-                label: toMultilingual("Test"),
+                label: langString("Test"),
                 comment: "Test term"
             });
             const resource = new Resource({
@@ -1393,7 +1393,7 @@ describe("Async actions", () => {
                 expect(termsAction).toBeDefined();
                 expect(termsAction.payload).toEqual([new Term({
                     iri: data[0].term.iri,
-                    label: toMultilingual(data[0].label),
+                    label: langString(data[0].label),
                     vocabulary: data[0].vocabulary
                 })]);
             });
