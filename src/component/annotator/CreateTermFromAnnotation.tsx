@@ -46,7 +46,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * component state.
      */
     public setLabel(label: string) {
-        this.setState({label: langString(label, Constants.DEFAULT_LOCALE)});
+        this.setState({label: langString(label, Constants.DEFAULT_LANGUAGE)});
     }
 
     /**

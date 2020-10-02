@@ -12,6 +12,7 @@ import AppNotification from "../../../model/AppNotification";
 import NotificationType from "../../../model/NotificationType";
 import {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
+import {langString} from "../../../model/MultilingualString";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -60,14 +61,15 @@ describe("TermDetail", () => {
         vocabulary = Generator.generateVocabulary();
         term = new Term({
             iri: Generator.generateUri(),
-            label: "Test term",
+            label: langString("Test term"),
             vocabulary: {iri: Generator.generateUri()},
             draft: true
         });
     });
 
     it("loads term on mount", () => {
-        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm} loadVocabulary={loadVocabulary}
+        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
+                            loadVocabulary={loadVocabulary}
                             publishNotification={onPublishNotification} vocabulary={vocabulary}
                             history={history} location={location} match={match}
                             {...intlFunctions()}/>);
@@ -77,7 +79,8 @@ describe("TermDetail", () => {
     it("provides namespace to term loading when specified in url", () => {
         const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
         location.search = "?namespace=" + namespace;
-        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm} loadVocabulary={loadVocabulary}
+        shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
+                            loadVocabulary={loadVocabulary}
                             history={history} location={location} match={match} vocabulary={vocabulary}
                             publishNotification={onPublishNotification}
                             {...intlFunctions()}/>);
@@ -193,7 +196,7 @@ describe("TermDetail", () => {
                                                         {...intlFunctions()}/>);
         const update = new Term(Object.assign({}, term));
         const newParent = Generator.generateUri();
-        update.parentTerms = [new Term({iri: newParent, label: "New parent", draft: true})];
+        update.parentTerms = [new Term({iri: newParent, label: langString("New parent"), draft: true})];
         wrapper.instance().onSave(update);
         return Promise.resolve().then(() => {
             expect(onPublishNotification).toHaveBeenCalledWith({source: {type: NotificationType.TERM_HIERARCHY_UPDATED}});
@@ -201,16 +204,16 @@ describe("TermDetail", () => {
     });
     it("invokes remove action and closes remove confirmation dialog on remove", () => {
         const wrapper = shallow<TermDetail>(<TermDetail term={term}
-                                    loadTerm={onLoad}
-                                    updateTerm={onUpdate}
-                                    removeTerm={removeTerm}
-                                    loadVocabulary={loadVocabulary}
-                                    vocabulary={vocabulary}
-                                    history={history}
-                                    location={location}
-                                    match={match}
-                                    publishNotification={onPublishNotification}
-                                    {...intlFunctions()}/>);
+                                                        loadTerm={onLoad}
+                                                        updateTerm={onUpdate}
+                                                        removeTerm={removeTerm}
+                                                        loadVocabulary={loadVocabulary}
+                                                        vocabulary={vocabulary}
+                                                        history={history}
+                                                        location={location}
+                                                        match={match}
+                                                        publishNotification={onPublishNotification}
+                                                        {...intlFunctions()}/>);
         wrapper.instance().onRemove();
         expect(removeTerm).toHaveBeenCalledWith(term);
         expect(wrapper.state("showRemoveDialog")).toBeFalsy();

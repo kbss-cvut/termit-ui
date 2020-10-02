@@ -23,6 +23,7 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
 import {FaTrashAlt} from "react-icons/fa/index";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
+import {getLocalized} from "../../model/MultilingualString";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -111,7 +112,7 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
         const buttons = this.getButtons();
         return <div id="term-detail">
             <HeaderWithActions title={
-                <>{term.label}<CopyIriIcon url={term.iri as string}/><br/><h6>{Utils.sanitizeArray(term.altLabels).join(", ")}</h6></>
+                <>{getLocalized(term.label)}<CopyIriIcon url={term.iri as string}/><br/><h6>{Utils.sanitizeArray(term.altLabels).join(", ")}</h6></>
             } actions={buttons}/>
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}

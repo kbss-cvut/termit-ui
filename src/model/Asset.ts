@@ -47,7 +47,7 @@ export default abstract class Asset implements AssetData, HasLabel {
         return this.types !== undefined && this.types.indexOf(type) !== -1;
     }
 
-    public abstract getLabel(): string;
+    public abstract getLabel(lang?: string): string;
 
     public abstract toJsonLd(): {};
 

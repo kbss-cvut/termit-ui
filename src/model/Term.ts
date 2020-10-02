@@ -4,11 +4,10 @@ import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
 import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData} from "./TermOccurrence";
-import MultilingualString, {NO_LANG} from "./MultilingualString";
-import Constants from "../util/Constants";
+import MultilingualString, {context, getLocalized} from "./MultilingualString";
 
 const ctx = {
-    label: VocabularyUtils.SKOS_PREF_LABEL,
+    label: context(VocabularyUtils.SKOS_PREF_LABEL),
     altLabels: VocabularyUtils.SKOS_ALT_LABEL,
     hiddenLabels: VocabularyUtils.SKOS_HIDDEN_LABEL,
     definition: VocabularyUtils.DEFINITION,
@@ -48,6 +47,10 @@ export interface TermInfo {
     iri: string;
     label: string;
     vocabulary: AssetData;
+}
+
+export function termInfoComparator(a: TermInfo, b: TermInfo) {
+    return a.label.localeCompare(b.label);
 }
 
 declare type TermMap = { [key: string]: Term };
@@ -134,8 +137,8 @@ export default class Term extends Asset implements TermData {
         WithUnmappedProperties.setUnmappedProperties(this, properties, MAPPED_PROPERTIES);
     }
 
-    getLabel(): string {
-        return this.label[Constants.DEFAULT_LOCALE] ? this.label[Constants.DEFAULT_LOCALE] : this.label[NO_LANG];
+    getLabel(lang?: string): string {
+        return getLocalized(this.label, lang);
     }
 
     public toJsonLd(): TermData {

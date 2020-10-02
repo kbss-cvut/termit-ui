@@ -8,6 +8,7 @@ import {shallow} from "enzyme";
 import UnmappedPropertiesEdit from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import CustomInput from "../../misc/CustomInput";
+import {getLocalized, langString} from "../../../model/MultilingualString";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -23,7 +24,7 @@ describe("Term edit", () => {
     beforeEach(() => {
         term = new Term({
             iri: Generator.generateUri(),
-            label: "Test",
+            label: langString("Test"),
             comment: "test",
             vocabulary: {iri: Generator.generateUri()}
         });
@@ -64,7 +65,7 @@ describe("Term edit", () => {
             expect(onSave).toHaveBeenCalled();
             const arg = (onSave as jest.Mock).mock.calls[0][0];
             expect(arg.iri).toEqual(term.iri);
-            expect(arg.label).toEqual(newLabel);
+            expect(arg.label).toEqual(langString(newLabel));
             expect(arg.comment).toEqual(term.comment);
         });
     });
@@ -94,7 +95,7 @@ describe("Term edit", () => {
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
                 name: "edit-term-label",
-                value: term.label
+                value: getLocalized(term.label)
             }
         });
         expect(Ajax.get).not.toHaveBeenCalled();
@@ -110,7 +111,7 @@ describe("Term edit", () => {
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
                 name: "edit-term-label",
-                value: term.label.toUpperCase()
+                value: getLocalized(term.label).toUpperCase()
             }
         });
         expect(Ajax.get).not.toHaveBeenCalled();
