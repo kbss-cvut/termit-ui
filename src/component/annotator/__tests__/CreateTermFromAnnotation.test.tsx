@@ -42,7 +42,7 @@ describe("CreateTermFromAnnotation", () => {
         expect(wrapper.state().label).toEqual(langString(""));
         const label = "Test";
         wrapper.instance().setLabel(label);
-        expect(wrapper.state().label).toEqual(langString(label, Constants.DEFAULT_LOCALE));
+        expect(wrapper.state().label).toEqual(langString(label, Constants.DEFAULT_LANGUAGE));
     });
 
     it("setDefinition sets definition in state", () => {

@@ -79,7 +79,7 @@ export default {
     createEmptyTermData(): TermData {
         return {
             iri: "",
-            label: langString("", Constants.DEFAULT_LOCALE),
+            label: langString("", Constants.DEFAULT_LANGUAGE),
             definition: "",
             comment: "",
             types: [],

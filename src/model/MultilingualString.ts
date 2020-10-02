@@ -16,19 +16,23 @@ interface MultilingualString {
  */
 export const NO_LANG = "@none";
 
-export function langString(str: string, locale: string = Constants.DEFAULT_LOCALE): MultilingualString {
+export function langString(str: string, lang: string = Constants.DEFAULT_LANGUAGE): MultilingualString {
     const result = {};
-    result[locale] = str;
+    result[lang] = str;
     return result;
 }
 
-export function getLocalized(str: MultilingualString, locale: string = Constants.DEFAULT_LOCALE) {
-    if (str[locale] !== undefined) {
-        return str[locale];
-    } else if (str[Constants.DEFAULT_LOCALE]) {
-        return str[Constants.DEFAULT_LOCALE]
+export function getLocalized(str: MultilingualString | string, lang: string = Constants.DEFAULT_LANGUAGE) {
+    if (typeof str === "string") {
+        return str;
     }
-    return str[NO_LANG];
+    lang = lang.toLowerCase();
+    if (str[lang] !== undefined) {
+        return str[lang];
+    } else if (str[Constants.DEFAULT_LANGUAGE]) {
+        return str[Constants.DEFAULT_LANGUAGE]
+    }
+    return str[NO_LANG] !== undefined ? str[NO_LANG] : str[Object.getOwnPropertyNames(str)[0]];
 }
 
 export default MultilingualString;

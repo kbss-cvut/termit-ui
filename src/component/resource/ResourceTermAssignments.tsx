@@ -19,6 +19,7 @@ import AppNotification from "../../model/AppNotification";
 import TermItState from "../../model/TermItState";
 import NotificationType from "../../model/NotificationType";
 import {consumeNotification} from "../../action/SyncActions";
+import {langString} from "../../model/MultilingualString";
 
 interface ResourceTermAssignmentsOwnProps {
     resource: Resource;
@@ -115,7 +116,7 @@ export class ResourceTermAssignments extends React.Component<ResourceTermAssignm
                             <TermLink
                                 term={new Term({
                                     iri: rta.term.iri,
-                                    label: rta.label,
+                                    label: langString(rta.label),
                                     vocabulary: rta.vocabulary,
                                     draft: rta.term.draft
                                 })}/>
@@ -132,7 +133,7 @@ export class ResourceTermAssignments extends React.Component<ResourceTermAssignm
                 occurrences.set(rta.term.iri!, {
                     term: new Term({
                         iri: rta.term.iri,
-                        label: rta.label,
+                        label: langString(rta.label),
                         vocabulary: rta.vocabulary,
                         draft: rta.term.draft
                     }),
