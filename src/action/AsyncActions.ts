@@ -50,7 +50,7 @@ import TermOccurrence from "../model/TermOccurrence";
 import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "../model/SearchResult";
 import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
-import {toMultilingual} from "../model/MultilingualString";
+import {langString} from "../model/MultilingualString";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -258,7 +258,7 @@ export function loadResourceTermAssignmentsInfo(resourceIri: IRI) {
                 dispatch(asyncActionSuccess(action));
                 const assignedTerms = data.filter(a => a.types.indexOf(VocabularyUtils.TERM_OCCURRENCE) === -1).map(a => new Term({
                     iri: a.term.iri,
-                    label: toMultilingual(a.label),
+                    label: langString(a.label),
                     vocabulary: a.vocabulary,
                     draft: a.term.draft
                 }));
@@ -484,7 +484,7 @@ export function searchTerms(searchString: string) {
                 dispatch(SyncActions.asyncActionSuccess(action));
                 return data
                     .filter(d => d.hasType(VocabularyUtils.TERM))
-                    .map(d => new Term({iri: d.iri, label: toMultilingual(d.label)}))
+                    .map(d => new Term({iri: d.iri, label: langString(d.label)}))
             })
             .catch((error: ErrorData) => {
                 dispatch(SyncActions.asyncActionFailure(action, error));

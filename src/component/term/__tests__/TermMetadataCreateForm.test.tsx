@@ -8,6 +8,7 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
+import {getLocalized, langString} from "../../../model/MultilingualString";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -34,12 +35,12 @@ describe("TermMetadataCreateForm", () => {
 
     it("generates identifier on mount if a valid label is provided", () => {
         Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
-        const termData = {label: "test label"};
+        const termData = {label: langString("test label")};
         shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange} termData={termData}
                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         expect(Ajax.get).toHaveBeenCalled();
         const config = (Ajax.get as jest.Mock).mock.calls[0][1];
-        expect(config.getParams().name).toEqual(termData.label);
+        expect(config.getParams().name).toEqual(getLocalized(termData.label));
         expect(config.getParams().namespace).toEqual(VocabularyUtils.create(vocabularyIri).namespace);
     });
 

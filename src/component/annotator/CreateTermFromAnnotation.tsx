@@ -18,6 +18,8 @@ import {ThunkDispatch} from "../../util/Types";
 import {createTerm} from "../../action/AsyncActions";
 import {IRI} from "../../util/VocabularyUtils";
 import AssetFactory from "../../util/AssetFactory";
+import {langString} from "../../model/MultilingualString";
+import Constants from "../../util/Constants";
 
 interface CreateTermFromAnnotationProps extends HasI18n {
     show: boolean;
@@ -44,7 +46,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * component state.
      */
     public setLabel(label: string) {
-        this.setState({label});
+        this.setState({label: langString(label, Constants.DEFAULT_LOCALE)});
     }
 
     /**
@@ -87,7 +89,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
                     <Col xs={12}>
                         <ButtonToolbar className="d-flex justify-content-center mt-4">
                             <Button id="create-term-submit" color="success" onClick={this.onSave}
-                                    disabled={!isFormValid(this.state, this.props.locale)}
+                                    disabled={!isFormValid(this.state)}
                                     size="sm">{i18n("glossary.form.button.submit")}</Button>
                             <Button id="create-term-cancel" color="outline-dark" size="sm"
                                     onClick={this.onCancel}>{i18n("glossary.form.button.cancel")}</Button>
