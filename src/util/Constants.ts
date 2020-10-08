@@ -32,6 +32,7 @@ const constants = {
     DEFAULT_LANGUAGE,
     // Error origin caused by the inability to connect to the backend server
     CONNECTION_ERROR: "CONNECTION_ERROR",
+    JSON_MIME_TYPE: "application/json",
     JSON_LD_MIME_TYPE: "application/ld+json",
     TEXT_MIME_TYPE: "text/plain",
     HTML_MIME_TYPE: "text/html",

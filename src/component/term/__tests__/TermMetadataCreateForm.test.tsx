@@ -9,6 +9,7 @@ import AssetFactory from "../../../util/AssetFactory";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
 import {getLocalized, langString} from "../../../model/MultilingualString";
+import Constants from "../../../util/Constants";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -37,6 +38,7 @@ describe("TermMetadataCreateForm", () => {
         Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
         const termData = {label: langString("test label")};
         shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange} termData={termData}
+                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         expect(Ajax.get).toHaveBeenCalled();
         const config = (Ajax.get as jest.Mock).mock.calls[0][1];
@@ -46,7 +48,7 @@ describe("TermMetadataCreateForm", () => {
 
     it("generates identifier on label change for non-empty label", () => {
         Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
-        const wrapper = mountWithIntl(<TermMetadataCreateForm onChange={onChange}
+        const wrapper = mountWithIntl(<TermMetadataCreateForm onChange={onChange} language={Constants.DEFAULT_LANGUAGE}
                                                               termData={AssetFactory.createEmptyTermData()}
                                                               vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const labelInput = wrapper.find("input[name=\"create-term-label\"]");
@@ -61,6 +63,7 @@ describe("TermMetadataCreateForm", () => {
 
     it("correctly passes selected parent terms to onChange handler", () => {
         const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                                 termData={AssetFactory.createEmptyTermData()}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const parents = [Generator.generateTerm()];
@@ -70,6 +73,7 @@ describe("TermMetadataCreateForm", () => {
 
     it("checks for label uniqueness in vocabulary on label change", () => {
         const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                                 termData={AssetFactory.createEmptyTermData()}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const mock = jest.fn().mockImplementation(() => Promise.resolve(true));
@@ -90,6 +94,7 @@ describe("TermMetadataCreateForm", () => {
 
     it("does not check for label uniqueness for empty label", () => {
         const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                                 termData={AssetFactory.createEmptyTermData()}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
