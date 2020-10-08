@@ -51,6 +51,7 @@ import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "
 import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
 import {langString} from "../model/MultilingualString";
+import {Configuration} from "../model/Configuration";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1112,6 +1113,16 @@ export function invalidateCaches() {
         return Ajax.delete(`${Constants.API_PREFIX}/admin/cache`)
             .then(() => dispatch(asyncActionSuccess(action)))
             .then(() => dispatch(publishMessage(new Message({messageId: "administration.maintenance.invalidateCaches.success"}, MessageType.SUCCESS))))
+            .catch(error => dispatch(asyncActionFailure(action, error)));
+    }
+}
+
+export function loadConfiguration() {
+    const action = {type: ActionType.LOAD_CONFIGURATION};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        return Ajax.get(`${Constants.API_PREFIX}/configuration`)
+            .then((data: Configuration) => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch(error => dispatch(asyncActionFailure(action, error)));
     }
 }

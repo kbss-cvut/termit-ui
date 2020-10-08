@@ -25,6 +25,7 @@ import AsyncActionStatus from "../AsyncActionStatus";
 import {ErrorData} from "../../model/ErrorInfo";
 import {Action} from "redux";
 import Routing from "../../util/Routing";
+import {DEFAULT_CONFIGURATION} from "../../model/Configuration";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -55,11 +56,20 @@ describe("AsyncUserActions", () => {
                 message: "Unauthorized",
                 status: Constants.STATUS_UNAUTHORIZED
             };
-            Ajax.get = jest.fn().mockImplementation(() => Promise.reject(error));
+            Ajax.get = jest.fn().mockRejectedValue(error);
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadUser())).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 return expect(found).not.toBeDefined();
+            });
+        });
+
+        it("loads configuration after successful user fetch", () => {
+            const user = Generator.generateUser();
+            Ajax.get = jest.fn().mockResolvedValueOnce(user).mockResolvedValueOnce(DEFAULT_CONFIGURATION);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadUser())).then(() => {
+                const actions: Action[] = store.getActions();
+                expect(actions.find(a => a.type === ActionType.LOAD_CONFIGURATION)).toBeDefined();
             });
         });
     });
@@ -260,10 +270,8 @@ describe("AsyncUserActions", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve());
             return Promise.resolve((store.dispatch as ThunkDispatch)(updateProfile(user))).then(() => {
-                // 0 - async request, 1 - fetch user, 2 - fetch user success, 3 - publish message, 4 - request success
-                const action: AsyncAction = store.getActions()[4];
+                const action: AsyncAction = store.getActions().find(a => a.type === ActionType.UPDATE_PROFILE);
                 expect(action).toBeDefined();
-                expect(action.type).toEqual(ActionType.UPDATE_PROFILE);
             });
         });
 
@@ -277,8 +285,7 @@ describe("AsyncUserActions", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve());
             return Promise.resolve((store.dispatch as ThunkDispatch)(updateProfile(user))).then(() => {
-                // 0 - async request, 1 - fetch user, 2 - fetch user success, 3 - publish message, 4 - request success
-                const action: MessageAction = store.getActions()[3];
+                const action: MessageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(action).toBeDefined();
                 expect(action.message.messageId).toEqual("profile.updated.message");
             });
