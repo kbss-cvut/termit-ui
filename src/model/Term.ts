@@ -45,12 +45,12 @@ export interface TermData extends AssetData {
 
 export interface TermInfo {
     iri: string;
-    label: string;
+    label: MultilingualString; // Multilingual string due to the same context item (see ctx above)
     vocabulary: AssetData;
 }
 
 export function termInfoComparator(a: TermInfo, b: TermInfo) {
-    return a.label.localeCompare(b.label);
+    return getLocalized(a.label).localeCompare(getLocalized(b.label));
 }
 
 declare type TermMap = { [key: string]: Term };
