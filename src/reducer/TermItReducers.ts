@@ -30,6 +30,7 @@ import SearchResult from "../model/SearchResult";
 import SearchQuery from "../model/SearchQuery";
 import {ErrorLogItem} from "../model/ErrorInfo";
 import Utils from "../util/Utils";
+import {Configuration, DEFAULT_CONFIGURATION} from "../model/Configuration";
 
 /**
  * Handles changes to the currently logged in user.
@@ -448,6 +449,13 @@ function annotatorTerms(state: { [key: string]: Term } = {}, action: AsyncAction
     }
 }
 
+function configuration(state: Configuration = DEFAULT_CONFIGURATION, action: AsyncActionSuccess<Configuration>) {
+    if (action.type === ActionType.LOAD_CONFIGURATION && action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload;
+    }
+    return state;
+}
+
 const rootReducer = combineReducers<TermItState>({
     user,
     loading,
@@ -476,7 +484,8 @@ const rootReducer = combineReducers<TermItState>({
     labelCache,
     sidebarExpanded,
     desktopView,
-    annotatorTerms
+    annotatorTerms,
+    configuration
 });
 
 export default rootReducer;
