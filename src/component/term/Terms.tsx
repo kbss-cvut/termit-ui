@@ -149,6 +149,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             delete cloneData.expanded;
             // @ts-ignore
             delete cloneData.depth;
+            // @ts-ignore
+            delete cloneData.simpleLabel;
             const clone = new Term(cloneData);
             this.props.selectVocabularyTerm(clone);
             Routing.transitionToAsset(clone, {query: new Map([["includeImported", this.state.includeImported.toString()]])});
