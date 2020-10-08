@@ -12,6 +12,7 @@ import TermDefinitionAnnotation from "../TermDefinitionAnnotation";
 import TermOccurrenceAnnotation from "../TermOccurrenceAnnotation";
 import {MemoryRouter} from "react-router-dom";
 import Generator from "../../../__tests__/environment/Generator";
+import {langString} from "../../../model/MultilingualString";
 
 function assumeProps(wrapper: ReactWrapper, component: ComponentClass<any>, props: {}) {
     expect(wrapper.find(component).props())
@@ -29,7 +30,7 @@ jest.mock("popper.js");
 describe("Annotation", () => {
 
     const term = new Term({
-        label: "Mesto",
+        label: langString("Mesto"),
         iri: "http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/mesto"
     });
     const text = "mesta";
