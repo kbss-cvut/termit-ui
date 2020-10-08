@@ -7,7 +7,7 @@ import {
     publishMessage,
     publishNotification
 } from "./SyncActions";
-import Ajax, {content, contentType, param, params} from "../util/Ajax";
+import Ajax, {accept, content, contentType, param, params} from "../util/Ajax";
 import {GetStoreState, ThunkDispatch} from "../util/Types";
 import Routing from "../util/Routing";
 import Constants from "../util/Constants";
@@ -1121,7 +1121,7 @@ export function loadConfiguration() {
     const action = {type: ActionType.LOAD_CONFIGURATION};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${Constants.API_PREFIX}/configuration`)
+        return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_MIME_TYPE))
             .then((data: Configuration) => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch(error => dispatch(asyncActionFailure(action, error)));
     }

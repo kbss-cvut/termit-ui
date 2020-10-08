@@ -13,12 +13,16 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, langString} from "../../model/MultilingualString";
+import {connect} from "react-redux";
+import TermItState from "../../model/TermItState";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
     definitionSelector?: () => void;
     termData: TermData;
     vocabularyIri: string;
+
+    language: string;
 }
 
 interface TermMetadataCreateFormState {
@@ -47,16 +51,16 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
     private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const label = e.currentTarget.value;
-        this.props.onChange({label: langString(label)});
+        this.props.onChange({label: langString(label, this.props.language)});
         this.resolveIdentifier(label);
         this.checkLabelUniqueness(label);
     };
 
-    private onAltLabelsChange = (altLabels : string[]) => {
+    private onAltLabelsChange = (altLabels: string[]) => {
         this.props.onChange({altLabels});
     };
 
-    private onHiddenLabelsChange = (hiddenLabels : string[]) => {
+    private onHiddenLabelsChange = (hiddenLabels: string[]) => {
         this.props.onChange({hiddenLabels});
     };
 
@@ -219,4 +223,4 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     }
 }
 
-export default injectIntl(withI18n(TermMetadataCreateForm));
+export default connect((state: TermItState) => ({language: state.configuration.language}))(injectIntl(withI18n(TermMetadataCreateForm)));

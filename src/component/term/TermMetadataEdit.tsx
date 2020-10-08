@@ -16,11 +16,15 @@ import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, langString} from "../../model/MultilingualString";
+import {connect} from "react-redux";
+import TermItState from "../../model/TermItState";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
     save: (term: Term) => void;
     cancel: () => void;
+
+    language: string;
 }
 
 interface TermMetadataEditState extends TermData {
@@ -42,7 +46,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const label = e.currentTarget.value;
-        this.setState({labelExists: false, label: langString(label)});
+        this.setState({labelExists: false, label: langString(label, this.props.language)});
         if (label.toLowerCase() === getLocalized(this.props.term.label).toLowerCase()) {
             return;
         }
@@ -197,4 +201,4 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     }
 }
 
-export default injectIntl(withI18n(TermMetadataEdit));
+export default connect((state: TermItState) => ({language: state.configuration.language}))(injectIntl(withI18n(TermMetadataEdit)));
