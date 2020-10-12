@@ -79,8 +79,6 @@ const mainNavRoutes: NavLinkRoute[] = [{
 }];
 
 const createNewNavRoutes: NavLinkRoute[] = [{
-    path: Routes.createVocabulary.path, name: "main.nav.create-vocabulary", icon: "fas fa-book", supIcon: "fas fa-plus"
-}, {
     path: Routes.createResource.path, name: "main.nav.create-resource", icon: "fas fa-clipboard", supIcon: "fas fa-plus"
 }];
 
