@@ -3,8 +3,6 @@ import {Route, RouteComponentProps, Switch} from "react-router";
 import Routes from "../../util/Routes";
 import VocabularyManagement from "./VocabularyManagement";
 import DynamicBreadcrumbRoute from "../breadcrumb/DynamicBreadcrumbRoute";
-import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
-import CreateVocabulary from "./CreateVocabulary";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import VocabularyFileDetailRoute from "./VocabularyFileDetailRoute";
@@ -18,8 +16,6 @@ const VocabularyManagementRoute: React.FC<HasI18n & RouteComponentProps<any>> = 
     return <Switch>
         <DynamicBreadcrumbRoute asset="vocabulary" path={removeLastLocation(Routes.annotateVocabularyFile.path)}
                                 component={VocabularyFileDetailRoute}/>
-        <BreadcrumbRoute title={props.i18n("vocabulary.create.title")} path={Routes.createVocabulary.path}
-                         component={CreateVocabulary}/>
         <DynamicBreadcrumbRoute asset="vocabulary" path={Routes.vocabularySummary.path}
                                 includeSearch={true} component={VocabularyRoute}/>
         <Route component={VocabularyManagement} path={Routes.vocabularies.path}/>

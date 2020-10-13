@@ -37,7 +37,6 @@ export default {
     statistics: new Route("statistics", "/statistics"),
     vocabularies: new Route("vocabulary", "/vocabularies"),
     resources: new Route("resource", "/resources"),
-    createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
     vocabularyDetail: new Route("vocabularyDetail", "/vocabularies/:name/terms"),
     vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
     annotateVocabularyFile: new Route("annotateVocabularyFile", "/vocabularies/:name/files/:fileName/annotate"),
