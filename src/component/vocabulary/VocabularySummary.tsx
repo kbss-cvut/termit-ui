@@ -72,7 +72,6 @@ export class VocabularySummary extends React.Component<VocabularySummaryProps> {
 
             <VocabularyMetadata vocabulary={this.props.vocabulary} onFileAdded={this.onFileAdded}
                                 location={this.props.location} match={this.props.match}/>
-
         </div>
     }
 
