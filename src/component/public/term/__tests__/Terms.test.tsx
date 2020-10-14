@@ -12,6 +12,7 @@ import {Terms} from "../Terms";
 import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import Generator from "../../../../__tests__/environment/Generator";
 import * as TermTreeSelectHelper from "../../../term/TermTreeSelectHelper";
+import {langString} from "../../../../model/MultilingualString";
 
 jest.mock("../../../../util/Routing");
 
@@ -23,7 +24,7 @@ describe("Terms", () => {
 
     const term: TermData = {
         iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary/terms/" + termName,
-        label: "test term",
+        label: langString("test term"),
         vocabulary: {
             iri: namespace + vocabularyName
         },
@@ -102,7 +103,7 @@ describe("Terms", () => {
         wrapper.update();
         const option = new Term({
             iri: Generator.generateUri(),
-            label: "Test term",
+            label: langString("Test term"),
             vocabulary: {iri: Generator.generateUri()},
             draft: true
         });
@@ -172,11 +173,11 @@ describe("Terms", () => {
             const terms: Term[] = [Generator.generateTerm(vocabulary.iri)];
             const subTerms = [{
                 iri: Generator.generateUri(),
-                label: "child one",
+                label: langString("child one"),
                 vocabulary: {iri: vocabulary.iri}
             }, {
                 iri: Generator.generateUri(),
-                label: "child two",
+                label: langString("child two"),
                 vocabulary: {iri: Generator.generateUri()}
             }];
             terms[0].subTerms = subTerms;

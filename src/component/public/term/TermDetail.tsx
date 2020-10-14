@@ -14,6 +14,8 @@ import TermMetadata from "./TermMetadata";
 import {loadPublicTerm, loadPublicVocabulary} from "../../../action/AsyncPublicViewActions";
 import Vocabulary from "../../../model/Vocabulary";
 import {getShortLocale} from "../../../util/IntlUtil";
+import LanguageSelector from "../../multilingual/LanguageSelector";
+import {getLocalized} from "../../../model/MultilingualString";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -32,15 +34,15 @@ const TermDetail: React.FC<TermDetailProps> = props => {
         loadTerm(termName, vocUri);
         loadVocabulary(vocUri);
     }, [location.search, match.params.termName, match.params.name, loadTerm, loadVocabulary]);
-    // TODO
-    // @ts-ignore
     const [language, setLanguage] = React.useState<string>(getShortLocale(props.locale));
 
     if (!term) {
         return null;
     }
     return <div id="public-term-detail">
-        <HeaderWithActions title={<>{term.label}<CopyIriIcon url={term.iri as string}/></>}/>
+        <HeaderWithActions title={<>{getLocalized(term.label, language)}<CopyIriIcon url={term.iri as string}/></>}
+                           actions={<LanguageSelector key={"term-language-selector"} term={term}
+                                                      language={language} onSelect={setLanguage}/>}/>
         <TermMetadata term={term} vocabulary={props.vocabulary} language={language}/>
     </div>;
 }
