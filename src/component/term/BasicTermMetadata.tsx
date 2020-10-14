@@ -15,6 +15,7 @@ import {OWL, SKOS} from "../../util/Namespaces";
 interface BasicTermMetadataProps extends HasI18n {
     term: Term;
     withDefinitionSource?: boolean;
+    language: string;
 }
 
 export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, any> {

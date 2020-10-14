@@ -22,6 +22,16 @@ export function langString(str: string, lang: string = Constants.DEFAULT_LANGUAG
     return result;
 }
 
+/**
+ * Gets value in the specified language from the specified string.
+ *
+ * If such translation is not available, this method attempts to get the value in the configured default language, no
+ * language. If all of these fail, the first available translation is returned.
+ *
+ * If the argument is a regular string, it is immediately returned.
+ * @param str String to get localized value from
+ * @param lang Target language
+ */
 export function getLocalized(str: MultilingualString | string, lang: string = Constants.DEFAULT_LANGUAGE) {
     if (typeof str === "string") {
         return str;
@@ -33,6 +43,24 @@ export function getLocalized(str: MultilingualString | string, lang: string = Co
         return str[Constants.DEFAULT_LANGUAGE]
     }
     return str[NO_LANG] !== undefined ? str[NO_LANG] : str[Object.getOwnPropertyNames(str)[0]];
+}
+
+/**
+ * Gets value in the specified language from the specified string.
+ *
+ * If such transformation is not available, the provided default value is returned.
+ *
+ * If the argument is a regular string, it is immediately returned.
+ * @param str String to get localized value from
+ * @param defaultValue Value to return if translation is not available
+ * @param lang Target language
+ */
+export function getLocalizedOrDefault(str: MultilingualString | string, defaultValue: string = "", lang: string = Constants.DEFAULT_LANGUAGE) {
+    if (typeof str === "string") {
+        return str;
+    }
+    lang = lang.toLowerCase();
+    return str[lang] !== undefined ? str[lang] : defaultValue;
 }
 
 export default MultilingualString;

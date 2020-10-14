@@ -1,4 +1,4 @@
-import {getLocalized, NO_LANG} from "../MultilingualString";
+import {getLocalized, getLocalizedOrDefault, NO_LANG} from "../MultilingualString";
 import Constants from "../../util/Constants";
 
 describe("MultilingualString", () => {
@@ -32,6 +32,30 @@ describe("MultilingualString", () => {
         it("returns the argument when it is a string", () => {
             const value = "budova";
             expect(getLocalized(value)).toEqual(value);
+        });
+    });
+
+    describe("getLocalizedOrDefault", () => {
+        it("returns value when specified language exists in string", () => {
+            const value = {"en": "Test", "cs": "Test dva"};
+            expect(getLocalizedOrDefault(value,"", "cs")).toEqual(value.cs);
+        });
+
+        it("returns value in default language when no language is specified", () => {
+            const value = {"es": "casa"};
+            value[Constants.DEFAULT_LANGUAGE] = "building";
+            expect(getLocalizedOrDefault(value, "")).toEqual(value[Constants.DEFAULT_LANGUAGE]);
+        });
+
+        it("returns specified default value when value in specified languages does not exist", () => {
+            const value = {"cs": "budova"};
+            const defaultValue = "building";
+            expect(getLocalizedOrDefault(value, defaultValue, "en")).toEqual(defaultValue);
+        });
+
+        it("returns the argument when it is a string", () => {
+            const value = "budova";
+            expect(getLocalizedOrDefault(value, "defaultValue")).toEqual(value);
         });
     });
 });

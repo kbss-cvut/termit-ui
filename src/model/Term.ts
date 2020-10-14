@@ -27,6 +27,8 @@ export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, BASE_OCCURRENCE_CONTEXT
 const MAPPED_PROPERTIES = ["@context", "iri", "label", "altLabels", "hiddenLabels", "comment", "definition",
     "subTerms", "sources", "types", "parentTerms", "parent", "plainSubTerms", "vocabulary", "glossary", "definitionSource", "draft"];
 
+export const TERM_MULTILINGUAL_ATTRIBUTES = ["label"];
+
 export interface TermData extends AssetData {
     label: MultilingualString;
     altLabels?: string[];

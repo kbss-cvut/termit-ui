@@ -80,6 +80,7 @@ export default {
         'main.search.tooltip': 'Přejít na stránku hledání',
         'main.search.count-info-and-link': 'Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.',
         'main.search.no-results': 'Zadanému výrazu neodpovídá žádný výsledek.',
+        "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
         "dashboard.widget.assetList.empty": "Pro tuto část nebyly nalezeny žádné záznamy.",
         "dashboard.widget.assetList.lastEditMessage": "{operation, select, " +
@@ -224,6 +225,7 @@ export default {
         "resource.metadata.document.files.empty": "Žádné soubory nenalezeny. Vytvořte nějaký...",
         "resource.document.vocabulary.create": "Připojit dokument",
 
+        "term.language.selector": "Vyberte jazyk hodnot atributů pojmu",
         "term.iri.help": "Identifikátor pojmu ve formě Internationalized Resource Identifier (IRI). Je " +
             " vygenerován automaticky na základě názvu, ale může být ručně upraven. Jedná se o možnost pro pokročilé uživatele." +
             "Identifikátor může obsahovat pouze " +
