@@ -16,6 +16,7 @@ import {GoPlus} from "react-icons/go";
 import Utils from "../../util/Utils";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../term/TermTreeSelectHelper";
 import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
     vocabulary?: Vocabulary;
@@ -77,7 +78,9 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
 
     public render() {
         const {i18n, vocabulary} = this.props;
-        const terms = processTermsForTreeSelect(Object.keys(this.props.terms).map(k => this.props.terms[k]), Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(vocabulary!.iri), {});
+        const terms = processTermsForTreeSelect(Object.keys(this.props.terms).map(k => this.props.terms[k]),
+            Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(vocabulary!.iri),
+            {labelLang: getShortLocale(this.props.locale)});
 
         return <FormGroup>
             <div>

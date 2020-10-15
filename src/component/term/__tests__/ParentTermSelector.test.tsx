@@ -10,6 +10,8 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
+import Constants from "../../../util/Constants";
+import {langString} from "../../../model/MultilingualString";
 
 describe("ParentTermSelector", () => {
 
@@ -113,7 +115,7 @@ describe("ParentTermSelector", () => {
         it("uses vocabulary of term being toggled when loading it subterms", () => {
             const parent = new Term({
                 iri: Generator.generateUri(),
-                label: "parent",
+                label: langString("parent"),
                 vocabulary: {iri: vocabularyIri}
             });
             const wrapper = shallow<ParentTermSelector>(<ParentTermSelector id="test" termIri={Generator.generateUri()}
@@ -202,7 +204,10 @@ describe("ParentTermSelector", () => {
             return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
                 expect(options.length).toEqual(1);
                 expect(options).toEqual(terms);
-                expect(spy).toHaveBeenCalledWith(terms, [vocabularyIri], {searchString: "test"});
+                expect(spy).toHaveBeenCalledWith(terms, [vocabularyIri], {
+                    searchString: "test",
+                    labelLang: Constants.DEFAULT_LANGUAGE
+                });
             });
         });
 

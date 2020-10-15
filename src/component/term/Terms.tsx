@@ -30,6 +30,7 @@ import {match as Match} from "react-router";
 import classNames from "classnames";
 import StatusFilter from "./StatusFilter";
 import "./Terms.scss";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface GlossaryTermsProps extends HasI18n {
     vocabulary?: Vocabulary;
@@ -123,7 +124,10 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             .then(terms => {
                 const matchingVocabularies = this.state.includeImported ? Utils.sanitizeArray(this.props.vocabulary!.allImportedVocabularies).concat(this.props.vocabulary!.iri) : [this.props.vocabulary!.iri];
                 this.setState({disableIncludeImportedToggle: this.props.isDetailView || false});
-                return processTermsForTreeSelect(terms, matchingVocabularies, fetchOptions);
+                return processTermsForTreeSelect(terms, matchingVocabularies, {
+                    searchString: fetchOptions.searchString,
+                    labelLang: getShortLocale(this.props.locale)
+                });
             });
     };
 
@@ -163,12 +167,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
     private renderIncludeImported() {
         return <div className={classNames({"mb-3": !this.props.isDetailView})}>
-                {this.props.isDetailView ? <></> : <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
-                                                  includeImported={this.state.includeImported}
-                                                  disabled={this.state.disableIncludeImportedToggle}/>
+            {this.props.isDetailView ? <></> :
+                <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
+                                            includeImported={this.state.includeImported}
+                                            disabled={this.state.disableIncludeImportedToggle}/>
 
-                }
-            </div>;
+            }
+        </div>;
     }
 
     private onDraftOnlyToggle = () => {
@@ -216,7 +221,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 "mb-2 mt-3": !isDetailView
             }, "d-flex", "flex-wrap", "justify-content-between", "card-header-basic-info")}>
                 <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}
-                    &nbsp;{(isDetailView && renderIncludeImported) ? <>({this.props.i18n(includeImported ? "glossary.importedIncluded" :"glossary.importedExcluded")})</> : <></>}
+                    &nbsp;{(isDetailView && renderIncludeImported) ? <>({this.props.i18n(includeImported ? "glossary.importedIncluded" : "glossary.importedExcluded")})</> : <></>}
                 </h4>
                 {!isDetailView && <Button
                     id="terms-create"

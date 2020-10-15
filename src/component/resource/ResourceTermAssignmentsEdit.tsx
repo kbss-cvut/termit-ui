@@ -11,6 +11,7 @@ import {ThunkDispatch} from "../../util/Types";
 import FetchOptionsFunction from "../../model/Functions";
 import {searchTerms} from "../../action/AsyncActions";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../term/TermTreeSelectHelper";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface PropsExternal {
     terms: Term[];
@@ -41,7 +42,10 @@ export class ResourceTermAssignmentsEdit extends React.Component<ResourceTermAss
         const searchString = fetchOptions.searchString || "a e i o u y r l s m n";
 
         return this.props.fetchTerms(searchString)
-            .then(terms => processTermsForTreeSelect(terms, undefined, fetchOptions))
+            .then(terms => processTermsForTreeSelect(terms, undefined, {
+                searchString,
+                labelLang: getShortLocale(this.props.locale)
+            }))
             .then(terms => {
                 const toReturn = all;
                 terms.forEach(t => toReturn.push(t));

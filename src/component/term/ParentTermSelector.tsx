@@ -17,6 +17,7 @@ import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import CustomInput from "../misc/CustomInput";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
+import {getShortLocale} from "../../util/IntlUtil";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
     if (currentTermIri) {
@@ -106,7 +107,10 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         }, VocabularyUtils.create(fetchOptions.option ? fetchOptions.option.vocabulary!.iri! : this.props.vocabularyIri)).then(terms => {
             this.setState({disableIncludeImportedToggle: false});
             const matchingVocabularies = this.state.includeImported ? Utils.sanitizeArray(this.state.importedVocabularies).concat(this.props.vocabularyIri) : [this.props.vocabularyIri];
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, matchingVocabularies, fetchOptions), this.props.termIri);
+            return filterOutCurrentTerm(processTermsForTreeSelect(terms, matchingVocabularies, {
+                searchString: fetchOptions.searchString,
+                labelLang: getShortLocale(this.props.locale)
+            }), this.props.termIri);
         });
     };
 
@@ -136,14 +140,14 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                                 help={this.props.i18n("term.parent.help")}/>;
         } else {
             return <><IntelligentTreeSelect onChange={this.onChange}
-                                          ref={this.treeComponent}
-                                          value={this.resolveSelectedParents()}
-                                          fetchOptions={this.fetchOptions}
-                                          fetchLimit={300}
-                                          maxHeight={200}
-                                          multi={true}
-                                          optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
-                                          {...commonTermTreeSelectProps(this.props.i18n)}/>
+                                            ref={this.treeComponent}
+                                            value={this.resolveSelectedParents()}
+                                            fetchOptions={this.fetchOptions}
+                                            fetchLimit={300}
+                                            maxHeight={200}
+                                            multi={true}
+                                            optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
+                                            {...commonTermTreeSelectProps(this.props.i18n)}/>
                 <FormText>{this.props.i18n("term.parent.help")}</FormText>
             </>;
         }
