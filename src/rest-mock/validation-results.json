@@ -1,0 +1,27 @@
+[
+  {
+    "@id": "_:1361102128",
+    "@type": [
+      "http://www.w3.org/ns/shacl#ValidationResult"
+    ],
+    "http://www.w3.org/ns/shacl#resultSeverity": {
+      "@id": "http://www.w3.org/ns/shacl#Violation"
+    },
+    "http://www.w3.org/ns/shacl#sourceShape": {
+      "@id": "https://slovník.gov.cz/jazyk/obecný/m1"
+    },
+    "http://www.w3.org/ns/shacl#focusNode": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"
+    },
+    "http://www.w3.org/ns/shacl#resultMessage": [
+      {
+        "@language": "cs",
+        "@value": "Pojem nemá definován obsahový stereotyp (Objekt, Vlastnost, Vztah, Událost), ani není odvozen od pojmu, který jej definován má."
+      },
+      {
+        "@language": "en",
+        "@value": "The concept has not defined the type (Object, Aspect, Relation, Event)."
+      }
+    ]
+  }
+]

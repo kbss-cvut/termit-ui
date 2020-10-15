@@ -52,6 +52,7 @@ import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
 import {langString} from "../model/MultilingualString";
 import {Configuration} from "../model/Configuration";
+import ValidationResult, {CONTEXT as VALIDATION_RESULT_CONTEXT} from "../model/ValidationResult";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -555,6 +556,36 @@ export function loadTermByIri(termIri: IRI, apiPrefix: string = Constants.API_PR
             }).catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return null;
+            });
+    };
+}
+
+export type ValidationRecord = {
+    severity: string;
+    message: string;
+    focusNode: string;
+}
+
+export function loadValidationResults(vocabularyIri: IRI, apiPrefix: string = Constants.API_PREFIX) {
+    const action = {
+        type: ActionType.FETCH_VALIDATION_RESULTS
+    };
+
+    return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+        if (isActionRequestPending(getState(), action)) {
+            return Promise.resolve([]);
+        }
+        dispatch(asyncActionRequest(action));
+        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`, param("namespace", vocabularyIri.namespace))
+            .then((data: ValidationRecord[]) =>
+                JsonLdUtils
+                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT))
+            .then((data: ValidationResult[]) => {
+                dispatch(asyncActionSuccess(action));
+                return data;})
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return [];
             });
     };
 }
