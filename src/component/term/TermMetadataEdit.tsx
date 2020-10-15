@@ -57,6 +57,11 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         });
     };
 
+    public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.currentTarget.value;
+        this.setState({definition: langString(value, this.props.language)});
+    }
+
     private onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const source = e.currentTarget.value;
         this.setState({sources: [source]});
@@ -130,8 +135,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <TextArea name="edit-term-definition" value={this.state.definition}
-                                      onChange={this.onInputChange} rows={3} label={i18n("term.metadata.definition")}
+                            <TextArea name="edit-term-definition" value={getLocalized(this.state.definition)}
+                                      onChange={this.onDefinitionChange} rows={3} label={i18n("term.metadata.definition")}
                                       help={i18n("term.definition.help")}/>
                         </Col>
                     </Row>

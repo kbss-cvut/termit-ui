@@ -32,9 +32,12 @@ export function langString(str: string, lang: string = Constants.DEFAULT_LANGUAG
  * @param str String to get localized value from
  * @param lang Target language
  */
-export function getLocalized(str: MultilingualString | string, lang: string = Constants.DEFAULT_LANGUAGE) {
+export function getLocalized(str?: MultilingualString | string, lang: string = Constants.DEFAULT_LANGUAGE) {
     if (typeof str === "string") {
         return str;
+    }
+    if (!str) {
+        return "";
     }
     lang = lang.toLowerCase();
     if (str[lang] !== undefined) {
@@ -55,12 +58,15 @@ export function getLocalized(str: MultilingualString | string, lang: string = Co
  * @param defaultValue Value to return if translation is not available
  * @param lang Target language
  */
-export function getLocalizedOrDefault(str: MultilingualString | string, defaultValue: string = "", lang: string = Constants.DEFAULT_LANGUAGE) {
+export function getLocalizedOrDefault(str?: MultilingualString | string, defaultValue: string = "", lang: string = Constants.DEFAULT_LANGUAGE) {
     if (typeof str === "string") {
         return str;
     }
+    if (!str) {
+        return "";
+    }
     lang = lang.toLowerCase();
-    return str[lang] !== undefined ? str[lang] : defaultValue;
+    return str[lang] !== undefined ? str[lang] : str[NO_LANG] !== undefined ? str[NO_LANG] : defaultValue;
 }
 
 export default MultilingualString;

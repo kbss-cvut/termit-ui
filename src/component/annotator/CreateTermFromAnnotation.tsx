@@ -1,15 +1,7 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
-import {
-    Button,
-    ButtonToolbar,
-    Col,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row
-} from "reactstrap";
+import {Button, ButtonToolbar, Col, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import TermMetadataCreateForm from "../term/TermMetadataCreateForm";
 import {isFormValid} from "../term/TermMetadataCreate";
 import {connect} from "react-redux";
@@ -19,7 +11,7 @@ import {createTerm} from "../../action/AsyncActions";
 import {IRI} from "../../util/VocabularyUtils";
 import AssetFactory from "../../util/AssetFactory";
 import {langString} from "../../model/MultilingualString";
-import Constants from "../../util/Constants";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface CreateTermFromAnnotationProps extends HasI18n {
     show: boolean;
@@ -46,7 +38,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * component state.
      */
     public setLabel(label: string) {
-        this.setState({label: langString(label, Constants.DEFAULT_LANGUAGE)});
+        this.setState({label: langString(label, getShortLocale(this.props.locale))});
     }
 
     /**
@@ -54,7 +46,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * parent component state.
      */
     public setDefinition(definition: string) {
-        this.setState({definition});
+        this.setState({definition: langString(definition, getShortLocale(this.props.locale))});
     }
 
     public onChange = (change: object, callback?: () => void) => {

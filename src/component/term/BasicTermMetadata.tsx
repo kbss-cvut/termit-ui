@@ -11,6 +11,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import TermLink from "./TermLink";
 import TermDefinitionSourceLink from "./TermDefinitionSourceLink";
 import {OWL, SKOS} from "../../util/Namespaces";
+import {getLocalizedOrDefault} from "../../model/MultilingualString";
 
 interface BasicTermMetadataProps extends HasI18n {
     term: Term;
@@ -25,14 +26,15 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
     };
 
     public render() {
-        const {i18n, term} = this.props;
+        const {i18n, term, language} = this.props;
         return <>
             <Row>
                 <Col xl={2} md={4}>
                     <Label className="attribute-label bold">{i18n("term.metadata.definition")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
-                    <Label id="term-metadata-definition" className="bold">{term.definition}</Label>
+                    <Label id="term-metadata-definition"
+                           className="bold">{getLocalizedOrDefault(term.definition, "", language)}</Label>
                 </Col>
             </Row>
             {this.renderDefinitionSource()}

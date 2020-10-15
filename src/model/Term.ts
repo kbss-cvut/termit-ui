@@ -10,7 +10,7 @@ const ctx = {
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
     altLabels: VocabularyUtils.SKOS_ALT_LABEL,
     hiddenLabels: VocabularyUtils.SKOS_HIDDEN_LABEL,
-    definition: VocabularyUtils.DEFINITION,
+    definition: context(VocabularyUtils.DEFINITION),
     comment: VocabularyUtils.SKOS_SCOPE_NOTE,
     parentTerms: VocabularyUtils.BROADER,
     subTerms: VocabularyUtils.NARROWER,
@@ -33,7 +33,7 @@ export interface TermData extends AssetData {
     label: MultilingualString;
     altLabels?: string[];
     hiddenLabels?: string[];
-    definition?: string;
+    definition?: MultilingualString;
     subTerms?: TermInfo[];
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
@@ -61,7 +61,7 @@ export default class Term extends Asset implements TermData {
     public label: MultilingualString;
     public altLabels?: string[];
     public hiddenLabels?: string[];
-    public definition?: string;
+    public definition?: MultilingualString;
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
     public readonly parent?: string;

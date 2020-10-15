@@ -48,10 +48,10 @@ describe("CreateTermFromAnnotation", () => {
     it("setDefinition sets definition in state", () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        expect(wrapper.state().definition).toEqual("");
+        expect(wrapper.state().definition).toEqual(langString("", Constants.DEFAULT_LANGUAGE));
         const definition = "Test definition";
         wrapper.instance().setDefinition(definition);
-        expect(wrapper.state().definition).toEqual(definition);
+        expect(wrapper.state().definition).toEqual(langString(definition, Constants.DEFAULT_LANGUAGE));
     });
 
     it("onSave creates new term from current state and saves it", () => {

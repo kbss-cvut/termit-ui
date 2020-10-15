@@ -57,5 +57,10 @@ describe("MultilingualString", () => {
             const value = "budova";
             expect(getLocalizedOrDefault(value, "defaultValue")).toEqual(value);
         });
+
+        it("returns value without language when target language value is not present", () => {
+            const value = {"@none": "building"};
+            expect(getLocalizedOrDefault(value, "defaultValue")).toEqual(value["@none"]);
+        });
     });
 });

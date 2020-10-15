@@ -77,7 +77,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     }
 
     private onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.props.onChange({definition: e.currentTarget.value});
+        this.props.onChange({definition: langString(e.currentTarget.value, this.props.language)});
     };
 
     private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -157,7 +157,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                         </FormGroup>
                         : <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>}
                     <TextArea name="create-term-definition"
-                              type="textarea" rows={3} value={termData.definition}
+                              type="textarea" rows={3} value={getLocalized(termData.definition)}
                               help={this.props.i18n("term.definition.help")}
                               onChange={this.onDefinitionChange}/>
                 </Col>
