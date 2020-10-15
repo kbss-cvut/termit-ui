@@ -25,7 +25,7 @@ describe("TermAssignments", () => {
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve([]));
         term = new Term({
             iri: Generator.generateUri(),
-            label: "Test term",
+            label:  {"en":"Test term"},
             vocabulary: {
                 iri: Generator.generateUri()
             }
@@ -78,7 +78,7 @@ describe("TermAssignments", () => {
         expect(loadTermAssignments).toHaveBeenCalledWith(term);
         const differentTerm = new Term({
             iri: Generator.generateUri(),
-            label: "Different term",
+            label: {"en":"Different term"},
             vocabulary: {
                 iri: Generator.generateUri()
             }

@@ -5,7 +5,6 @@ import Vocabulary from "../../model/Vocabulary";
 import {Button, Table} from "reactstrap";
 import ValidationResult from "../../model/ValidationResult";
 import {injectIntl} from "react-intl";
-import {i18n} from "../../__tests__/environment/IntlUtil";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
@@ -45,7 +44,7 @@ export class ValidationResults extends React.Component<ValidationResultsProps, V
                     <th>{this.props.i18n('vocabulary.validation.term')}</th>
                     <th>{this.props.i18n('vocabulary.validation.message')}</th>
                     <th>            <Button id="vocabulary.validate.action" onClick={clickValidate} color="success"
-                                            size="sm">{i18n("vocabulary.validation.action")}</Button></th>
+                                            size="sm">{this.props.i18n("vocabulary.validation.action")}</Button></th>
                 </tr>
                 </thead>
                 <tbody>
