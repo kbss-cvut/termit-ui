@@ -12,7 +12,7 @@ import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
-import {getLocalized, langString} from "../../model/MultilingualString";
+import {getLocalized, getLocalizedOrDefault, langString} from "../../model/MultilingualString";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 
@@ -57,7 +57,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     };
 
     private onAltLabelsChange = (altLabels: string[]) => {
-        this.props.onChange({altLabels});
+        const language = this.props.language;
+        this.props.onChange({altLabels: altLabels.map(str => langString(str, language))});
     };
 
     private onHiddenLabelsChange = (hiddenLabels: string[]) => {
@@ -118,11 +119,10 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     };
 
     public render() {
-        const i18n = this.props.i18n;
-        const termData = this.props.termData;
+        const {termData, i18n, language} = this.props;
         const sources = termData.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
-        const label = getLocalized(termData.label);
+        const label = getLocalized(termData.label, language);
         return <Form>
             <Row>
                 <Col xs={12}>
@@ -136,9 +136,10 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
             <Row>
                 <Col xs={12}>
-                    <StringListEdit list={termData.altLabels}
-                                    onChange={this.onAltLabelsChange}
-                                    i18nPrefix={"term.metadata.altLabels"}/>
+                    <StringListEdit
+                        list={Utils.sanitizeArray(termData.altLabels).map(s => getLocalizedOrDefault(s, "", language))}
+                        onChange={this.onAltLabelsChange}
+                        i18nPrefix={"term.metadata.altLabels"}/>
                 </Col>
             </Row>
 
