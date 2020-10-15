@@ -23,7 +23,7 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
-import {getLocalized, getLocalizedOrDefault} from "../../model/MultilingualString";
+import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import LanguageSelector from "../multilingual/LanguageSelector";
 
@@ -138,7 +138,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         return <>
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
-            <h6>{Utils.sanitizeArray(term.altLabels).map(s => getLocalizedOrDefault(s, "", this.state.language)).filter(s => s.length > 0).join(", ")}</h6>
+            <h6>{getLocalizedPlural(term.altLabels, this.state.language).join(", ")}</h6>
         </>;
     }
 }

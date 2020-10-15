@@ -12,7 +12,7 @@ import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
-import {getLocalized, getLocalizedOrDefault, langString} from "../../model/MultilingualString";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural, langString} from "../../model/MultilingualString";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 
@@ -58,12 +58,16 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
     public onAltLabelsChange = (altLabels: string[]) => {
         const language = this.props.language;
-        this.props.onChange({altLabels: altLabels.map(str => langString(str, language))});
+        const change = {};
+        change[language] = altLabels;
+        this.props.onChange({altLabels: Object.assign({}, this.props.termData.altLabels, change)});
     };
 
     public onHiddenLabelsChange = (hiddenLabels: string[]) => {
         const language = this.props.language;
-        this.props.onChange({hiddenLabels: hiddenLabels.map(str => langString(str, language))});
+        const change = {};
+        change[language] = hiddenLabels;
+        this.props.onChange({hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change)});
     };
 
     private checkLabelUniqueness(label: string) {
@@ -137,10 +141,9 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
             <Row>
                 <Col xs={12}>
-                    <StringListEdit
-                        list={Utils.sanitizeArray(termData.altLabels).map(s => getLocalizedOrDefault(s, "", language))}
-                        onChange={this.onAltLabelsChange}
-                        i18nPrefix={"term.metadata.altLabels"}/>
+                    <StringListEdit list={getLocalizedPlural(termData.altLabels, language)}
+                                    onChange={this.onAltLabelsChange}
+                                    i18nPrefix={"term.metadata.altLabels"}/>
                 </Col>
             </Row>
 
@@ -206,10 +209,9 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
                 <Row>
                     <Col xs={12}>
-                        <StringListEdit
-                            list={Utils.sanitizeArray(termData.hiddenLabels).map(s => getLocalizedOrDefault(s, "", language))}
-                            onChange={this.onHiddenLabelsChange}
-                            i18nPrefix={"term.metadata.hiddenLabels"}/>
+                        <StringListEdit list={getLocalizedPlural(termData.hiddenLabels, language)}
+                                        onChange={this.onHiddenLabelsChange}
+                                        i18nPrefix={"term.metadata.hiddenLabels"}/>
                     </Col>
                 </Row>
 

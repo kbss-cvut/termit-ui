@@ -8,7 +8,7 @@ import {shallow} from "enzyme";
 import UnmappedPropertiesEdit from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import CustomInput from "../../misc/CustomInput";
-import {getLocalized, langString} from "../../../model/MultilingualString";
+import {getLocalized, langString, pluralLangString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import TextArea from "../../misc/TextArea";
 import StringListEdit from "../../misc/StringListEdit";
@@ -177,13 +177,13 @@ describe("Term edit", () => {
     });
 
     it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {
-        term.altLabels = [{"en": "building", "cs": "budova"}, {"en": "construction", "cs": "stavba"}];
-        term.hiddenLabels = [{"en": "shack", "cs": "barák"}, {"cs": "dům"}];
+        term.altLabels = {"en": ["building", "construction"], "cs": ["budova", "stavba"]};
+        term.hiddenLabels = {"en": ["shack"], "cs": ["barák", "dům"]};
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
                                                                     language={"cs"} {...intlFunctions()}/>);
         const stringListEdits = wrapper.find(StringListEdit);
-        expect(stringListEdits.at(0).prop("list")).toEqual(term.altLabels.map(s => s.cs));
-        expect(stringListEdits.at(1).prop("list")).toEqual(term.hiddenLabels.map(s => s.cs));
+        expect(stringListEdits.at(0).prop("list")).toEqual(term.altLabels.cs);
+        expect(stringListEdits.at(1).prop("list")).toEqual(term.hiddenLabels.cs);
     });
 
     it("maps list of string alt labels to multilingual strings with selected language", () => {
@@ -192,7 +192,7 @@ describe("Term edit", () => {
         const list = ["budova", "stavba"];
         wrapper.instance().onAltLabelsChange(list);
         wrapper.update();
-        expect(wrapper.state().altLabels).toEqual(list.map(label => langString(label, "cs")));
+        expect(wrapper.state().altLabels).toEqual(pluralLangString(list, "cs"));
     });
 
     it("maps list of string hidden labels to multilingual strings with selected language", () => {
@@ -201,6 +201,6 @@ describe("Term edit", () => {
         const list = ["bau", "gebäude"];
         wrapper.instance().onHiddenLabelsChange(list);
         wrapper.update();
-        expect(wrapper.state().hiddenLabels).toEqual(list.map(label => langString(label, "de")));
+        expect(wrapper.state().hiddenLabels).toEqual(pluralLangString(list, "de"));
     });
 });

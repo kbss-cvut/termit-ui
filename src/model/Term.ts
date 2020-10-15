@@ -4,7 +4,7 @@ import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
 import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData} from "./TermOccurrence";
-import MultilingualString, {context, getLocalized} from "./MultilingualString";
+import MultilingualString, {context, getLocalized, PluralMultilingualString} from "./MultilingualString";
 
 const ctx = {
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
@@ -31,8 +31,8 @@ export const TERM_MULTILINGUAL_ATTRIBUTES = ["label", "definition", "altLabels",
 
 export interface TermData extends AssetData {
     label: MultilingualString;
-    altLabels?: MultilingualString[];
-    hiddenLabels?: MultilingualString[];
+    altLabels?: PluralMultilingualString;
+    hiddenLabels?: PluralMultilingualString;
     definition?: MultilingualString;
     subTerms?: TermInfo[];
     sources?: string[];
@@ -59,8 +59,8 @@ declare type TermMap = { [key: string]: Term };
 
 export default class Term extends Asset implements TermData {
     public label: MultilingualString;
-    public altLabels?: MultilingualString[];
-    public hiddenLabels?: MultilingualString[];
+    public altLabels?: PluralMultilingualString;
+    public hiddenLabels?: PluralMultilingualString;
     public definition?: MultilingualString;
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];

@@ -1,4 +1,5 @@
 import Constants from "../util/Constants";
+import Utils from "../util/Utils";
 
 export function context(propertyIri: string) {
     return {
@@ -7,8 +8,12 @@ export function context(propertyIri: string) {
     };
 }
 
-interface MultilingualString {
+export interface MultilingualString {
     [key: string]: string;
+}
+
+export interface PluralMultilingualString {
+    [key: string]: string[];
 }
 
 /**
@@ -16,9 +21,25 @@ interface MultilingualString {
  */
 export const NO_LANG = "@none";
 
+/**
+ * Creates a MultilingualString instance from the specifies string and language.
+ * @param str String to use as value
+ * @param lang Language (optional), defaults to Constants.DEFAULT_LANGUAGE
+ */
 export function langString(str: string, lang: string = Constants.DEFAULT_LANGUAGE): MultilingualString {
     const result = {};
     result[lang] = str;
+    return result;
+}
+
+/**
+ * Creates a PluralMultilingualString instance from the specifies string(s) and language.
+ * @param str String or string array to use as value (will always be transformed to an array)
+ * @param lang Language (optional), defaults to Constants.DEFAULT_LANGUAGE
+ */
+export function pluralLangString(str: string | string[], lang: string = Constants.DEFAULT_LANGUAGE): PluralMultilingualString {
+    const result = {};
+    result[lang] = Utils.sanitizeArray(str);
     return result;
 }
 
@@ -43,9 +64,31 @@ export function getLocalized(str?: MultilingualString | string, lang: string = C
     if (str[lang] !== undefined) {
         return str[lang];
     } else if (str[Constants.DEFAULT_LANGUAGE]) {
-        return str[Constants.DEFAULT_LANGUAGE]
+        return str[Constants.DEFAULT_LANGUAGE];
     }
     return str[NO_LANG] !== undefined ? str[NO_LANG] : str[Object.getOwnPropertyNames(str)[0]];
+}
+
+/**
+ * Gets value in the specified language from the specified plural string.
+ *
+ * If such translation is not available, this method attempts to get the value in the configured default language, no
+ * language. If all of these fail, an empty array is returned.
+ *
+ * @param str String to get localized value from
+ * @param lang Target language
+ */
+export function getLocalizedPlural(str?: PluralMultilingualString, lang: string = Constants.DEFAULT_LANGUAGE) {
+    if (!str) {
+        return [];
+    }
+    lang = lang.toLowerCase();
+    if (str[lang] !== undefined) {
+        return Utils.sanitizeArray(str[lang]);
+    } else if (str[Constants.DEFAULT_LANGUAGE]) {
+        return Utils.sanitizeArray(str[Constants.DEFAULT_LANGUAGE]);
+    }
+    return str[NO_LANG] !== undefined ? Utils.sanitizeArray(str[NO_LANG]) : [];
 }
 
 /**

@@ -15,7 +15,7 @@ import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
-import {getLocalized, getLocalizedOrDefault, langString} from "../../model/MultilingualString";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural, langString} from "../../model/MultilingualString";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 
@@ -69,12 +69,16 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public onHiddenLabelsChange = (hiddenLabels: string[]) => {
         const language = this.props.language;
-        this.setState({hiddenLabels: hiddenLabels.map(str => langString(str, language))});
+        const change = {};
+        change[language] = hiddenLabels;
+        this.setState({hiddenLabels: Object.assign({}, this.state.hiddenLabels, change)});
     };
 
     public onAltLabelsChange = (altLabels: string[]) => {
         const language = this.props.language;
-        this.setState({altLabels: altLabels.map(str => langString(str, language))});
+        const change = {};
+        change[language] = altLabels;
+        this.setState({altLabels: Object.assign({}, this.state.altLabels, change)});
     };
 
     private onTypesChange = (newTypes: string[]) => {
@@ -124,18 +128,16 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <StringListEdit
-                                list={Utils.sanitizeArray(this.state.altLabels).map(s => getLocalizedOrDefault(s, "", language))}
-                                onChange={this.onAltLabelsChange}
-                                i18nPrefix={"term.metadata.altLabels"}/>
+                            <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
+                                            onChange={this.onAltLabelsChange}
+                                            i18nPrefix={"term.metadata.altLabels"}/>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <StringListEdit
-                                list={Utils.sanitizeArray(this.state.hiddenLabels).map(s => getLocalizedOrDefault(s, "", language))}
-                                onChange={this.onHiddenLabelsChange}
-                                i18nPrefix={"term.metadata.hiddenLabels"}/>
+                            <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
+                                            onChange={this.onHiddenLabelsChange}
+                                            i18nPrefix={"term.metadata.hiddenLabels"}/>
                         </Col>
                     </Row>
                     <Row>

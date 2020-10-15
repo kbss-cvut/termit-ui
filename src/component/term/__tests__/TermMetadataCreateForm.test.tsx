@@ -8,7 +8,7 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
-import {getLocalized, langString} from "../../../model/MultilingualString";
+import {getLocalized, langString, pluralLangString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import TextArea from "../../misc/TextArea";
 import StringListEdit from "../../misc/StringListEdit";
@@ -137,15 +137,15 @@ describe("TermMetadataCreateForm", () => {
 
     it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {
         const termData = AssetFactory.createEmptyTermData();
-        termData.altLabels = [{"en": "building", "cs": "budova"}, {"en": "construction", "cs": "stavba"}];
-        termData.hiddenLabels = [{"en": "shack", "cs": "barák"}, {"cs": "dům"}];
+        termData.altLabels = {"en": ["building", "construction"], "cs": ["budova", "stavba"]};
+        termData.hiddenLabels = {"en": ["shack"], "cs": ["barák", "dům"]};
         const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
                                                                                 language={"cs"}
                                                                                 termData={termData}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const stringListEdits = wrapper.find(StringListEdit);
-        expect(stringListEdits.at(0).prop("list")).toEqual(termData.altLabels.map(s => s.cs));
-        expect(stringListEdits.at(1).prop("list")).toEqual(termData.hiddenLabels.map(s => s.cs));
+        expect(stringListEdits.at(0).prop("list")).toEqual(termData.altLabels.cs);
+        expect(stringListEdits.at(1).prop("list")).toEqual(termData.hiddenLabels.cs);
     });
 
     it("maps list of string alt labels to multilingual strings with selected language", () => {
@@ -155,7 +155,7 @@ describe("TermMetadataCreateForm", () => {
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const list = ["budova", "stavba"];
         wrapper.instance().onAltLabelsChange(list);
-        expect(onChange).toHaveBeenCalledWith({altLabels: list.map(label => langString(label, "cs"))});
+        expect(onChange).toHaveBeenCalledWith({altLabels: pluralLangString(list, "cs")});
     });
 
     it("maps list of string hidden labels to multilingual strings with selected language", () => {
@@ -165,6 +165,6 @@ describe("TermMetadataCreateForm", () => {
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const list = ["bau", "gebäude"];
         wrapper.instance().onHiddenLabelsChange(list);
-        expect(onChange).toHaveBeenCalledWith({hiddenLabels: list.map(label => langString(label, "de"))});
+        expect(onChange).toHaveBeenCalledWith({hiddenLabels: pluralLangString(list, "de")});
     });
 });
