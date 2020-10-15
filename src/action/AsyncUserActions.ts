@@ -21,7 +21,7 @@ import {
 import {ErrorData} from "../model/ErrorInfo";
 import Message, {createFormattedMessage} from "../model/Message";
 import MessageType from "../model/MessageType";
-import {isActionRequestPending} from "./AsyncActions";
+import {isActionRequestPending, loadConfiguration} from "./AsyncActions";
 import TermItState from "../model/TermItState";
 import VocabularyUtils from "../util/VocabularyUtils";
 import {Action} from "redux";
@@ -38,7 +38,10 @@ export function loadUser() {
         dispatch(asyncActionRequest(action));
         return Ajax.get(`${Constants.API_PREFIX}${USERS_ENDPOINT}/current`)
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<UserData>(data, USER_CONTEXT))
-            .then((data: UserData) => dispatch(asyncActionSuccessWithPayload(action, new User(data))))
+            .then((data: UserData) => {
+                dispatch(loadConfiguration());
+                return dispatch(asyncActionSuccessWithPayload(action, new User(data)));
+            })
             .catch((error: ErrorData) => {
                 if (error.status === Constants.STATUS_UNAUTHORIZED) {
                     return dispatch(asyncActionFailure(action, {message: "Not logged in."}));

@@ -21,8 +21,9 @@ import * as _ from "lodash";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
-import {FaTrashAlt} from "react-icons/fa/index";
+import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
+import MultilingualStringView from "../multilingual/MultilingualStringView";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -37,7 +38,7 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
 export interface TermSummaryState extends EditableComponentState {
 }
 
-export class TermDetail extends EditableComponent<TermDetailProps,TermSummaryState> {
+export class TermDetail extends EditableComponent<TermDetailProps, TermSummaryState> {
 
     constructor(props: TermDetailProps) {
         super(props);
@@ -93,9 +94,10 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
 
     public getButtons = () => {
         const buttons = [];
-        if ( !this.state.edit ) {
-            buttons.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit} key="term-detail-edit"
-                    title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
+        if (!this.state.edit) {
+            buttons.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
+                                 key="term-detail-edit"
+                                 title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
         }
         buttons.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
@@ -110,9 +112,7 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
         }
         const buttons = this.getButtons();
         return <div id="term-detail">
-            <HeaderWithActions title={
-                <>{term.label}<CopyIriIcon url={term.iri as string}/><br/><h6>{Utils.sanitizeArray(term.altLabels).join(", ")}</h6></>
-            } actions={buttons}/>
+            <HeaderWithActions title={this.renderTitle()} actions={buttons}/>
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
                                onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
@@ -121,6 +121,15 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
                 <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}/> :
                 <TermMetadata term={term} vocabulary={vocabulary}/>}
         </div>
+    }
+
+    private renderTitle() {
+        const term = this.props.term!;
+        return <>
+            <MultilingualStringView id={`term-${Utils.hashCode(term.iri)}-label`} value={term.label}/>
+            <CopyIriIcon url={term.iri as string}/><br/>
+            <h6>{Utils.sanitizeArray(term.altLabels).join(", ")}</h6>
+        </>;
     }
 }
 

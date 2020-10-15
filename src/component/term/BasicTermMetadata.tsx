@@ -1,6 +1,6 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import Term from "../../model/Term";
+import Term, {termInfoComparator} from "../../model/Term";
 import {injectIntl} from "react-intl";
 import {Col, Label, Row} from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
@@ -91,11 +91,11 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         // Ensures that the implicit TERM type is not rendered
         const types = this.props.term.types;
         return BasicTermMetadata.renderItems(Utils.sanitizeArray(types)
-            .filter(t =>
-                t !== VocabularyUtils.TERM
-                && !t.startsWith(SKOS.namespace)
-                && !t.startsWith(OWL.namespace)
-            ),
+                .filter(t =>
+                    t !== VocabularyUtils.TERM
+                    && !t.startsWith(SKOS.namespace)
+                    && !t.startsWith(OWL.namespace)
+                ),
             "term-metadata-types");
     }
 
@@ -105,8 +105,8 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             return null;
         }
 
-        const renderItem = (item : string) => Utils.isLink(item) ?
-                <OutgoingLink iri={item} label={<AssetLabel iri={item}/>}/> : <Label>{item}</Label>
+        const renderItem = (item: string) => Utils.isLink(item) ?
+            <OutgoingLink iri={item} label={<AssetLabel iri={item}/>}/> : <Label>{item}</Label>
 
         if (source.length === 1) {
             return renderItem(source[0]);
@@ -142,7 +142,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         if (source.length === 0) {
             return null;
         }
-        source.sort(Utils.labelComparator);
+        source.sort(termInfoComparator);
         return <Row>
             <Col xl={2} md={4}>
                 <Label className="attribute-label">{this.props.i18n("term.metadata.subTerms")}</Label>

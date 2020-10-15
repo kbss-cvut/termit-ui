@@ -18,6 +18,8 @@ import {ThunkDispatch} from "../../util/Types";
 import {createTerm} from "../../action/AsyncActions";
 import {IRI} from "../../util/VocabularyUtils";
 import AssetFactory from "../../util/AssetFactory";
+import {langString} from "../../model/MultilingualString";
+import Constants from "../../util/Constants";
 
 interface CreateTermFromAnnotationProps extends HasI18n {
     show: boolean;
@@ -44,7 +46,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * component state.
      */
     public setLabel(label: string) {
-        this.setState({label});
+        this.setState({label: langString(label, Constants.DEFAULT_LANGUAGE)});
     }
 
     /**

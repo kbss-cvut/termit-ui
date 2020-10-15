@@ -29,6 +29,7 @@ export interface VocabularyData extends AssetData {
 }
 
 export default class Vocabulary extends Asset implements VocabularyData {
+    public label: string;
     public document?: Document;
     public glossary?: AssetData;
     public model?: AssetData;
@@ -38,10 +39,15 @@ export default class Vocabulary extends Asset implements VocabularyData {
     constructor(data: VocabularyData) {
         super(data);
         Object.assign(this, data);
+        this.label = data.label;
         this.types = Utils.sanitizeArray(data.types);
         if (this.types.indexOf(OntologicalVocabulary.VOCABULARY) === -1) {
             this.types.push(OntologicalVocabulary.VOCABULARY);
         }
+    }
+
+    getLabel(): string {
+        return this.label;
     }
 
     public toJsonLd(): VocabularyData {

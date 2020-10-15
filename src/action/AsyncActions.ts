@@ -7,7 +7,7 @@ import {
     publishMessage,
     publishNotification
 } from "./SyncActions";
-import Ajax, {content, contentType, param, params} from "../util/Ajax";
+import Ajax, {accept, content, contentType, param, params} from "../util/Ajax";
 import {GetStoreState, ThunkDispatch} from "../util/Types";
 import Routing from "../util/Routing";
 import Constants from "../util/Constants";
@@ -50,6 +50,8 @@ import TermOccurrence from "../model/TermOccurrence";
 import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "../model/SearchResult";
 import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
+import {langString} from "../model/MultilingualString";
+import {Configuration} from "../model/Configuration";
 import ValidationResult, {CONTEXT as VALIDATION_RESULT_CONTEXT} from "../model/ValidationResult";
 
 /*
@@ -258,7 +260,7 @@ export function loadResourceTermAssignmentsInfo(resourceIri: IRI) {
                 dispatch(asyncActionSuccess(action));
                 const assignedTerms = data.filter(a => a.types.indexOf(VocabularyUtils.TERM_OCCURRENCE) === -1).map(a => new Term({
                     iri: a.term.iri,
-                    label: a.label,
+                    label: langString(a.label),
                     vocabulary: a.vocabulary,
                     draft: a.term.draft
                 }));
@@ -484,7 +486,7 @@ export function searchTerms(searchString: string) {
                 dispatch(SyncActions.asyncActionSuccess(action));
                 return data
                     .filter(d => d.hasType(VocabularyUtils.TERM))
-                    .map(d => new Term({iri: d.iri, label: d.label}))
+                    .map(d => new Term({iri: d.iri, label: langString(d.label)}))
             })
             .catch((error: ErrorData) => {
                 dispatch(SyncActions.asyncActionFailure(action, error));
@@ -1142,6 +1144,16 @@ export function invalidateCaches() {
         return Ajax.delete(`${Constants.API_PREFIX}/admin/cache`)
             .then(() => dispatch(asyncActionSuccess(action)))
             .then(() => dispatch(publishMessage(new Message({messageId: "administration.maintenance.invalidateCaches.success"}, MessageType.SUCCESS))))
+            .catch(error => dispatch(asyncActionFailure(action, error)));
+    }
+}
+
+export function loadConfiguration() {
+    const action = {type: ActionType.LOAD_CONFIGURATION};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_MIME_TYPE))
+            .then((data: Configuration) => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch(error => dispatch(asyncActionFailure(action, error)));
     }
 }

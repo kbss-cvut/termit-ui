@@ -8,6 +8,8 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
+import {getLocalized, langString} from "../../../model/MultilingualString";
+import Constants from "../../../util/Constants";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -34,18 +36,19 @@ describe("TermMetadataCreateForm", () => {
 
     it("generates identifier on mount if a valid label is provided", () => {
         Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
-        const termData = {label: "test label"};
+        const termData = {label: langString("test label")};
         shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange} termData={termData}
+                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         expect(Ajax.get).toHaveBeenCalled();
         const config = (Ajax.get as jest.Mock).mock.calls[0][1];
-        expect(config.getParams().name).toEqual(termData.label);
+        expect(config.getParams().name).toEqual(getLocalized(termData.label));
         expect(config.getParams().namespace).toEqual(VocabularyUtils.create(vocabularyIri).namespace);
     });
 
     it("generates identifier on label change for non-empty label", () => {
         Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
-        const wrapper = mountWithIntl(<TermMetadataCreateForm onChange={onChange}
+        const wrapper = mountWithIntl(<TermMetadataCreateForm onChange={onChange} language={Constants.DEFAULT_LANGUAGE}
                                                               termData={AssetFactory.createEmptyTermData()}
                                                               vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const labelInput = wrapper.find("input[name=\"create-term-label\"]");
@@ -60,6 +63,7 @@ describe("TermMetadataCreateForm", () => {
 
     it("correctly passes selected parent terms to onChange handler", () => {
         const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                                 termData={AssetFactory.createEmptyTermData()}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const parents = [Generator.generateTerm()];
@@ -69,6 +73,7 @@ describe("TermMetadataCreateForm", () => {
 
     it("checks for label uniqueness in vocabulary on label change", () => {
         const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                                 termData={AssetFactory.createEmptyTermData()}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         const mock = jest.fn().mockImplementation(() => Promise.resolve(true));
@@ -89,6 +94,7 @@ describe("TermMetadataCreateForm", () => {
 
     it("does not check for label uniqueness for empty label", () => {
         const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={Constants.DEFAULT_LANGUAGE}
                                                                                 termData={AssetFactory.createEmptyTermData()}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));

@@ -43,7 +43,7 @@ export default class User implements UserData {
     protected readonly password?: string;
     protected readonly originalPassword?: string;
 
-    constructor(data: UserData) {
+    constructor(data: UserData | UserDataWithPassword) {
         this.iri = data.iri;
         this.firstName = data.firstName;
         this.lastName = data.lastName;

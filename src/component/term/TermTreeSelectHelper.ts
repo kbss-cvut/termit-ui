@@ -1,4 +1,3 @@
-import Utils from "../../util/Utils";
 import Term, {TermData, TermInfo} from "../../model/Term";
 import {TreeSelectFetchOptionsParams} from "../../util/Types";
 
@@ -9,14 +8,13 @@ import {TreeSelectFetchOptionsParams} from "../../util/Types";
 export function commonTermTreeSelectProps(i18n: (messageId: string) => string) {
     return {
         valueKey: "iri",
-        labelKey: "label",
+        labelKey: "simpleLabel",
         childrenKey: "plainSubTerms",
         renderAsTree: true,
         simpleTreeData: true,
         showSettings: false,
         noResultsText: i18n("main.search.no-results"),
-        placeholder: i18n("glossary.select.placeholder"),
-        valueRenderer: Utils.labelValueRenderer
+        placeholder: i18n("glossary.select.placeholder")
     };
 }
 
@@ -43,6 +41,7 @@ export function processTermsForTreeSelect(terms: Term[], vocabularies: (string[]
         if (fetchOptions.searchString && t.parentTerms) {
             result = result.concat(flattenAncestors(t.parentTerms).filter(pt => vocabularyMatches(pt, vocabularies)));
         }
+        (t as any).simpleLabel = t.getLabel();
     }
     return result;
 }

@@ -155,16 +155,16 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     };
 
     private createOccurrence(annotationNode: Element, term: Term): Promise<void> {
-        const defSource = new TermOccurrence({
-            term,
-            target: {
-                source: {iri: this.props.fileIri.namespace + this.props.fileIri.fragment},
-                selectors: [AnnotationDomHelper.generateSelector(annotationNode)],
-                types: [VocabularyUtils.FILE_OCCURRENCE_TARGET]
-            },
-            types: []
-        });
         if (annotationNode.attribs.typeof === AnnotationType.DEFINITION) {
+            const defSource = new TermOccurrence({
+                term,
+                target: {
+                    source: {iri: this.props.fileIri.namespace + this.props.fileIri.fragment},
+                    selectors: [AnnotationDomHelper.generateSelector(annotationNode)],
+                    types: [VocabularyUtils.FILE_OCCURRENCE_TARGET]
+                },
+                types: []
+            });
             return this.setTermDefinitionSource(defSource, term);
         } else {
             // TODO Creating occurrences is not implemented, yet

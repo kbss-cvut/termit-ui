@@ -39,6 +39,8 @@ import QueryResult from "../../model/QueryResult";
 import File from "../../model/File";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
+import {langString} from "../../model/MultilingualString";
+import {Configuration} from "../../model/Configuration";
 
 function stateToPlainObject(state: TermItState): TermItState {
     return {
@@ -69,7 +71,8 @@ function stateToPlainObject(state: TermItState): TermItState {
         labelCache: state.labelCache,
         sidebarExpanded: state.sidebarExpanded,
         desktopView: state.desktopView,
-        annotatorTerms: state.annotatorTerms
+        annotatorTerms: state.annotatorTerms,
+        configuration: state.configuration
     };
 }
 
@@ -323,7 +326,7 @@ describe("Reducers", () => {
     describe("select term", () => {
         it("sets selectedTerm when it was successfully selected", () => {
             const term: TermData = {
-                label: "Test term",
+                label: langString("Test term"),
                 iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term"
             };
             expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(term)))
@@ -332,7 +335,7 @@ describe("Reducers", () => {
 
         it("sets selectedTerm when it was successfully selected then deselect it", () => {
             const term: TermData = {
-                label: "Test term",
+                label: langString("Test term"),
                 iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term"
             };
             expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(term)))
@@ -346,11 +349,11 @@ describe("Reducers", () => {
         it("sets default terms when it was successfully loaded", () => {
             const terms: TermData[] = [
                 {
-                    label: "Test type 1",
+                    label: langString("Test type 1"),
                     iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-1"
                 },
                 {
-                    label: "Test type 2",
+                    label: langString("Test type 2"),
                     iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-2"
                 }
             ];
@@ -613,6 +616,14 @@ describe("Reducers", () => {
             expected[term.iri] = term;
             const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.ANNOTATOR_LOAD_TERM}, term));
             expect(result.annotatorTerms).toEqual(expected);
+        });
+    });
+
+    describe("configuration", () => {
+        it("sets loaded configuration to state on request success", () => {
+            const config: Configuration = {language: "es"};
+            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_CONFIGURATION}, config));
+            expect(result.configuration).toEqual(config);
         });
     });
 });

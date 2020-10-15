@@ -11,6 +11,8 @@ import TermOccurrence, {TermOccurrenceData} from "../model/TermOccurrence";
 import ChangeRecord, {ChangeRecordData} from "../model/changetracking/ChangeRecord";
 import PersistRecord from "../model/changetracking/PersistRecord";
 import {UpdateRecord, UpdateRecordData} from "../model/changetracking/UpdateRecord";
+import {langString} from "../model/MultilingualString";
+import Constants from "./Constants";
 
 
 export default {
@@ -77,7 +79,7 @@ export default {
     createEmptyTermData(): TermData {
         return {
             iri: "",
-            label: "",
+            label: langString("", Constants.DEFAULT_LANGUAGE),
             definition: "",
             comment: "",
             types: [],

@@ -12,12 +12,17 @@ import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
+import {getLocalized, langString} from "../../model/MultilingualString";
+import {connect} from "react-redux";
+import TermItState from "../../model/TermItState";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
     definitionSelector?: () => void;
     termData: TermData;
     vocabularyIri: string;
+
+    language: string;
 }
 
 interface TermMetadataCreateFormState {
@@ -40,22 +45,22 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     public componentDidMount(): void {
         const label = this.props.termData.label;
         if (label) {
-            this.resolveIdentifier(label);
+            this.resolveIdentifier(getLocalized(label));
         }
     }
 
     private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const label = e.currentTarget.value;
-        this.props.onChange({label});
+        this.props.onChange({label: langString(label, this.props.language)});
         this.resolveIdentifier(label);
         this.checkLabelUniqueness(label);
     };
 
-    private onAltLabelsChange = (altLabels : string[]) => {
+    private onAltLabelsChange = (altLabels: string[]) => {
         this.props.onChange({altLabels});
     };
 
-    private onHiddenLabelsChange = (hiddenLabels : string[]) => {
+    private onHiddenLabelsChange = (hiddenLabels: string[]) => {
         this.props.onChange({hiddenLabels});
     };
 
@@ -117,6 +122,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         const termData = this.props.termData;
         const sources = termData.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
+        const label = getLocalized(termData.label);
         return <Form>
             <Row>
                 <Col xs={12}>
@@ -124,8 +130,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                  help={this.props.i18n("term.label.help")}
                                  onChange={this.onLabelChange}
                                  invalid={this.state.labelExists}
-                                 invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: termData.label}) : undefined}
-                                 value={termData.label}/>
+                                 invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
+                                 value={label}/>
                 </Col>
             </Row>
             <Row>
@@ -217,4 +223,4 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     }
 }
 
-export default injectIntl(withI18n(TermMetadataCreateForm));
+export default connect((state: TermItState) => ({language: state.configuration.language}))(injectIntl(withI18n(TermMetadataCreateForm)));
