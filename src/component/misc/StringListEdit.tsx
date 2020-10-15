@@ -63,7 +63,7 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
                        bsSize="sm" onKeyPress={this.onKeyPress}
                        placeholder={this.getText("placeholder")}/>
                 <InputGroupAddon addonType="append">
-                    <Button id="add-string-submit" color="primary" size="sm" onClick={this.onAdd}
+                    <Button key="add-string-submit" color="primary" size="sm" onClick={this.onAdd}
                             className="term-edit-source-add-button" disabled={this.state.inputValue.trim().length === 0}
                             title={this.getText("placeholder.title")}><GoPlus/>&nbsp;{this.getText("placeholder.text")}
                     </Button>

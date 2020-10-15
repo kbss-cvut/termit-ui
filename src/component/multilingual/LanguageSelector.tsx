@@ -5,6 +5,7 @@ import Term, {TERM_MULTILINGUAL_ATTRIBUTES} from "../../model/Term";
 import {injectIntl} from "react-intl";
 import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown} from "reactstrap";
 import {FaGlobe} from "react-icons/fa";
+import Utils from "../../util/Utils";
 
 interface LanguageSelectorProps extends HasI18n {
     term: Term | null;
@@ -15,7 +16,7 @@ interface LanguageSelectorProps extends HasI18n {
 function getLanguages(term: Term): string[] {
     const languages: Set<string> = new Set();
     TERM_MULTILINGUAL_ATTRIBUTES.filter(att => term[att]).forEach(att => {
-        Object.getOwnPropertyNames(term[att]).forEach(n => languages.add(n));
+        Utils.sanitizeArray(term[att]).forEach(attValue => Object.getOwnPropertyNames(attValue).forEach(n => languages.add(n)))
     });
     return Array.from(languages);
 }

@@ -67,11 +67,12 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState({sources: [source]});
     };
 
-    private onHiddenLabelsChange = (hiddenLabels: string[]) => {
-        this.setState({hiddenLabels});
+    public onHiddenLabelsChange = (hiddenLabels: string[]) => {
+        const language = this.props.language;
+        this.setState({hiddenLabels: hiddenLabels.map(str => langString(str, language))});
     };
 
-    private onAltLabelsChange = (altLabels: string[]) => {
+    public onAltLabelsChange = (altLabels: string[]) => {
         const language = this.props.language;
         this.setState({altLabels: altLabels.map(str => langString(str, language))});
     };
@@ -131,9 +132,10 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <StringListEdit list={this.state.hiddenLabels}
-                                            onChange={this.onHiddenLabelsChange}
-                                            i18nPrefix={"term.metadata.hiddenLabels"}/>
+                            <StringListEdit
+                                list={Utils.sanitizeArray(this.state.hiddenLabels).map(s => getLocalizedOrDefault(s, "", language))}
+                                onChange={this.onHiddenLabelsChange}
+                                i18nPrefix={"term.metadata.hiddenLabels"}/>
                         </Col>
                     </Row>
                     <Row>

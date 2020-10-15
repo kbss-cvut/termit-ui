@@ -10,6 +10,8 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import CustomInput from "../../misc/CustomInput";
 import {getLocalized, langString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import TextArea from "../../misc/TextArea";
+import StringListEdit from "../../misc/StringListEdit";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -156,5 +158,49 @@ describe("Term edit", () => {
         expect(ignored).toBeDefined();
         expect(ignored!.indexOf(VocabularyUtils.RDF_TYPE)).not.toEqual(-1);
         Object.getOwnPropertyNames((n: string) => expect(ignored![CONTEXT[n]]).not.toEqual(-1));
+    });
+
+    it("passes label value in selected language to label edit input", () => {
+        term.label = {"en": "Building", "cs": "Budova"};
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language={"en"} {...intlFunctions()}/>);
+        const labelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label");
+        expect(labelInput.prop("value")).toEqual(term.label.en);
+    });
+
+    it("passes definition value in selected language to definition edit textarea", () => {
+        term.definition = {"en": "Building is a kind of construction", "cs": "Budova je typem stavby"};
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language={"cs"} {...intlFunctions()}/>);
+        const definitionInput = wrapper.find(TextArea).findWhere(ci => ci.prop("name") === "edit-term-definition");
+        expect(definitionInput.prop("value")).toEqual(term.definition.cs);
+    });
+
+    it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {
+        term.altLabels = [{"en": "building", "cs": "budova"}, {"en": "construction", "cs": "stavba"}];
+        term.hiddenLabels = [{"en": "shack", "cs": "barák"}, {"cs": "dům"}];
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language={"cs"} {...intlFunctions()}/>);
+        const stringListEdits = wrapper.find(StringListEdit);
+        expect(stringListEdits.at(0).prop("list")).toEqual(term.altLabels.map(s => s.cs));
+        expect(stringListEdits.at(1).prop("list")).toEqual(term.hiddenLabels.map(s => s.cs));
+    });
+
+    it("maps list of string alt labels to multilingual strings with selected language", () => {
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language={"cs"} {...intlFunctions()}/>);
+        const list = ["budova", "stavba"];
+        wrapper.instance().onAltLabelsChange(list);
+        wrapper.update();
+        expect(wrapper.state().altLabels).toEqual(list.map(label => langString(label, "cs")));
+    });
+
+    it("maps list of string hidden labels to multilingual strings with selected language", () => {
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language={"de"} {...intlFunctions()}/>);
+        const list = ["bau", "gebäude"];
+        wrapper.instance().onHiddenLabelsChange(list);
+        wrapper.update();
+        expect(wrapper.state().hiddenLabels).toEqual(list.map(label => langString(label, "de")));
     });
 });

@@ -10,6 +10,8 @@ import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
 import {getLocalized, langString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import TextArea from "../../misc/TextArea";
+import StringListEdit from "../../misc/StringListEdit";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -108,5 +110,61 @@ describe("TermMetadataCreateForm", () => {
             // Label check, identifier generation
             expect(Ajax.get).not.toHaveBeenCalled();
         });
+    });
+
+    it("passes existing label value in selected language to label edit input", () => {
+        Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
+        const termData = AssetFactory.createEmptyTermData();
+        termData.label = {"en": "Building", "cs": "Budova"};
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={"en"}
+                                                                                termData={termData}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const labelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label");
+        expect(labelInput.prop("value")).toEqual(termData.label.en);
+    });
+
+    it("passes definition value in selected language to definition edit textarea", () => {
+        const termData = AssetFactory.createEmptyTermData();
+        termData.definition = {"en": "Building is a kind of construction", "cs": "Budova je typem stavby"};
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={"cs"}
+                                                                                termData={termData}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const definitionInput = wrapper.find(TextArea).findWhere(ci => ci.prop("name") === "create-term-definition");
+        expect(definitionInput.prop("value")).toEqual(termData.definition.cs);
+    });
+
+    it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {
+        const termData = AssetFactory.createEmptyTermData();
+        termData.altLabels = [{"en": "building", "cs": "budova"}, {"en": "construction", "cs": "stavba"}];
+        termData.hiddenLabels = [{"en": "shack", "cs": "barák"}, {"cs": "dům"}];
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={"cs"}
+                                                                                termData={termData}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const stringListEdits = wrapper.find(StringListEdit);
+        expect(stringListEdits.at(0).prop("list")).toEqual(termData.altLabels.map(s => s.cs));
+        expect(stringListEdits.at(1).prop("list")).toEqual(termData.hiddenLabels.map(s => s.cs));
+    });
+
+    it("maps list of string alt labels to multilingual strings with selected language", () => {
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={"cs"}
+                                                                                termData={AssetFactory.createEmptyTermData("cs")}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const list = ["budova", "stavba"];
+        wrapper.instance().onAltLabelsChange(list);
+        expect(onChange).toHaveBeenCalledWith({altLabels: list.map(label => langString(label, "cs"))});
+    });
+
+    it("maps list of string hidden labels to multilingual strings with selected language", () => {
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language={"de"}
+                                                                                termData={AssetFactory.createEmptyTermData("de")}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const list = ["bau", "gebäude"];
+        wrapper.instance().onHiddenLabelsChange(list);
+        expect(onChange).toHaveBeenCalledWith({hiddenLabels: list.map(label => langString(label, "de"))});
     });
 });

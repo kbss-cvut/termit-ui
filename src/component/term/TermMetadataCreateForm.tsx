@@ -56,13 +56,14 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.checkLabelUniqueness(label);
     };
 
-    private onAltLabelsChange = (altLabels: string[]) => {
+    public onAltLabelsChange = (altLabels: string[]) => {
         const language = this.props.language;
         this.props.onChange({altLabels: altLabels.map(str => langString(str, language))});
     };
 
-    private onHiddenLabelsChange = (hiddenLabels: string[]) => {
-        this.props.onChange({hiddenLabels});
+    public onHiddenLabelsChange = (hiddenLabels: string[]) => {
+        const language = this.props.language;
+        this.props.onChange({hiddenLabels: hiddenLabels.map(str => langString(str, language))});
     };
 
     private checkLabelUniqueness(label: string) {
@@ -158,7 +159,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                         </FormGroup>
                         : <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>}
                     <TextArea name="create-term-definition"
-                              type="textarea" rows={3} value={getLocalized(termData.definition)}
+                              type="textarea" rows={3} value={getLocalizedOrDefault(termData.definition, "", language)}
                               help={this.props.i18n("term.definition.help")}
                               onChange={this.onDefinitionChange}/>
                 </Col>
@@ -205,9 +206,10 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
                 <Row>
                     <Col xs={12}>
-                        <StringListEdit list={termData.hiddenLabels}
-                                        onChange={this.onHiddenLabelsChange}
-                                        i18nPrefix={"term.metadata.hiddenLabels"}/>
+                        <StringListEdit
+                            list={Utils.sanitizeArray(termData.hiddenLabels).map(s => getLocalizedOrDefault(s, "", language))}
+                            onChange={this.onHiddenLabelsChange}
+                            i18nPrefix={"term.metadata.hiddenLabels"}/>
                     </Col>
                 </Row>
 

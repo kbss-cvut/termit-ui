@@ -65,4 +65,22 @@ describe("LanguageSelector", () => {
                                                        language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
         expect(result.exists("#term-language-selector")).toBeFalsy();
     });
+
+    it("handles plural multilingual attributes when determining languages to show", () => {
+        const term = new Term({
+            iri: Generator.generateUri(),
+            label: {
+                "en": "Building",
+            },
+            definition: {"en": "Building is a bunch of concrete with windows and doors."},
+            altLabels: [{"en": "Construction", "cs": "Stavba"}],
+            types: [VocabularyUtils.TERM]
+        });
+        const result = mountWithIntl(<LanguageSelector term={term} onSelect={onSelect}
+                                                       language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
+        const items = result.find(DropdownItem);
+        expect(items.length).toEqual(2);
+        const texts = items.map(i => i.text());
+        ["cs", "en"].forEach(lang => expect(texts.find(t => ISO6391.getNativeName(lang))).toBeDefined());
+    });
 });

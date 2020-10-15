@@ -9,7 +9,7 @@ import MultilingualString, {context, getLocalized} from "./MultilingualString";
 const ctx = {
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
     altLabels: context(VocabularyUtils.SKOS_ALT_LABEL),
-    hiddenLabels: VocabularyUtils.SKOS_HIDDEN_LABEL,
+    hiddenLabels: context(VocabularyUtils.SKOS_HIDDEN_LABEL),
     definition: context(VocabularyUtils.DEFINITION),
     comment: VocabularyUtils.SKOS_SCOPE_NOTE,
     parentTerms: VocabularyUtils.BROADER,
@@ -27,12 +27,12 @@ export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, BASE_OCCURRENCE_CONTEXT
 const MAPPED_PROPERTIES = ["@context", "iri", "label", "altLabels", "hiddenLabels", "comment", "definition",
     "subTerms", "sources", "types", "parentTerms", "parent", "plainSubTerms", "vocabulary", "glossary", "definitionSource", "draft"];
 
-export const TERM_MULTILINGUAL_ATTRIBUTES = ["label", "definition"];
+export const TERM_MULTILINGUAL_ATTRIBUTES = ["label", "definition", "altLabels", "hiddenLabels"];
 
 export interface TermData extends AssetData {
     label: MultilingualString;
     altLabels?: MultilingualString[];
-    hiddenLabels?: string[];
+    hiddenLabels?: MultilingualString[];
     definition?: MultilingualString;
     subTerms?: TermInfo[];
     sources?: string[];
@@ -60,7 +60,7 @@ declare type TermMap = { [key: string]: Term };
 export default class Term extends Asset implements TermData {
     public label: MultilingualString;
     public altLabels?: MultilingualString[];
-    public hiddenLabels?: string[];
+    public hiddenLabels?: MultilingualString[];
     public definition?: MultilingualString;
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
