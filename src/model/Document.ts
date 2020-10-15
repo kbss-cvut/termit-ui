@@ -16,7 +16,7 @@ const ctx = {
 export const CONTEXT = Object.assign({}, RESOURCE_CONTEXT, ctx, FILE_CONTEXT);
 
 export interface DocumentData extends ResourceData {
-    files: File[];
+    files: FileData[];
     vocabulary?: AssetData;
 }
 

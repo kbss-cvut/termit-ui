@@ -4,13 +4,13 @@ import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
 import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData} from "./TermOccurrence";
-import MultilingualString, {context, getLocalized} from "./MultilingualString";
+import MultilingualString, {context, getLocalized, PluralMultilingualString} from "./MultilingualString";
 
 const ctx = {
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
-    altLabels: VocabularyUtils.SKOS_ALT_LABEL,
-    hiddenLabels: VocabularyUtils.SKOS_HIDDEN_LABEL,
-    definition: VocabularyUtils.DEFINITION,
+    altLabels: context(VocabularyUtils.SKOS_ALT_LABEL),
+    hiddenLabels: context(VocabularyUtils.SKOS_HIDDEN_LABEL),
+    definition: context(VocabularyUtils.DEFINITION),
     comment: VocabularyUtils.SKOS_SCOPE_NOTE,
     parentTerms: VocabularyUtils.BROADER,
     subTerms: VocabularyUtils.NARROWER,
@@ -27,11 +27,13 @@ export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, BASE_OCCURRENCE_CONTEXT
 const MAPPED_PROPERTIES = ["@context", "iri", "label", "altLabels", "hiddenLabels", "comment", "definition",
     "subTerms", "sources", "types", "parentTerms", "parent", "plainSubTerms", "vocabulary", "glossary", "definitionSource", "draft"];
 
+export const TERM_MULTILINGUAL_ATTRIBUTES = ["label", "definition", "altLabels", "hiddenLabels"];
+
 export interface TermData extends AssetData {
     label: MultilingualString;
-    altLabels?: string[];
-    hiddenLabels?: string[];
-    definition?: string;
+    altLabels?: PluralMultilingualString;
+    hiddenLabels?: PluralMultilingualString;
+    definition?: MultilingualString;
     subTerms?: TermInfo[];
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
@@ -57,9 +59,9 @@ declare type TermMap = { [key: string]: Term };
 
 export default class Term extends Asset implements TermData {
     public label: MultilingualString;
-    public altLabels?: string[];
-    public hiddenLabels?: string[];
-    public definition?: string;
+    public altLabels?: PluralMultilingualString;
+    public hiddenLabels?: PluralMultilingualString;
+    public definition?: MultilingualString;
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
     public readonly parent?: string;

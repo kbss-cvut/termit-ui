@@ -28,6 +28,26 @@ describe("Vocabulary", () => {
             expect(testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)).not.toEqual(-1);
             expect(testVocabulary.types!.lastIndexOf(VocabularyUtils.VOCABULARY)).toEqual(testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY));
         });
+
+        it("initializes document when document data are available", () => {
+            const vocData:VocabularyData = {
+                iri: Generator.generateUri(),
+                label: "Test vocabulary",
+                types: [VocabularyUtils.VOCABULARY],
+                document: {
+                    iri: Generator.generateUri(),
+                    label: "Test document",
+                    types: [VocabularyUtils.DOCUMENT],
+                    files: [{
+                        iri: Generator.generateUri(),
+                        label: "Test file",
+                        types: [VocabularyUtils.FILE]
+                    }]
+                }
+            };
+            const result = new Vocabulary(vocData);
+            expect(result.document).toBeInstanceOf(Document);
+        });
     });
 
     describe("get unmappedProperties", () => {

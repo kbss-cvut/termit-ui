@@ -15,7 +15,7 @@ import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
-import {getLocalized, langString} from "../../model/MultilingualString";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural, langString} from "../../model/MultilingualString";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 
@@ -57,17 +57,28 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         });
     };
 
+    public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.currentTarget.value;
+        this.setState({definition: langString(value, this.props.language)});
+    }
+
     private onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const source = e.currentTarget.value;
         this.setState({sources: [source]});
     };
 
-    private onHiddenLabelsChange = (hiddenLabels: string[]) => {
-        this.setState({hiddenLabels});
+    public onHiddenLabelsChange = (hiddenLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = hiddenLabels;
+        this.setState({hiddenLabels: Object.assign({}, this.state.hiddenLabels, change)});
     };
 
-    private onAltLabelsChange = (altLabels: string[]) => {
-        this.setState({altLabels});
+    public onAltLabelsChange = (altLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = altLabels;
+        this.setState({altLabels: Object.assign({}, this.state.altLabels, change)});
     };
 
     private onTypesChange = (newTypes: string[]) => {
@@ -98,7 +109,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     }
 
     public render() {
-        const i18n = this.props.i18n;
+        const {i18n, language} = this.props;
         const t = this.onStatusChange.bind(this);
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
@@ -107,7 +118,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                 <Form>
                     <Row>
                         <Col xs={12}>
-                            <CustomInput name="edit-term-label" value={getLocalized(this.state.label)}
+                            <CustomInput name="edit-term-label"
+                                         value={getLocalizedOrDefault(this.state.label, "", language)}
                                          onChange={this.onLabelChange}
                                          label={i18n("asset.label")} invalid={this.state.labelExists}
                                          invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: this.state.label}) : undefined}
@@ -116,22 +128,24 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <StringListEdit list={this.state.altLabels}
+                            <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
                                             onChange={this.onAltLabelsChange}
                                             i18nPrefix={"term.metadata.altLabels"}/>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <StringListEdit list={this.state.hiddenLabels}
+                            <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
                                             onChange={this.onHiddenLabelsChange}
                                             i18nPrefix={"term.metadata.hiddenLabels"}/>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <TextArea name="edit-term-definition" value={this.state.definition}
-                                      onChange={this.onInputChange} rows={3} label={i18n("term.metadata.definition")}
+                            <TextArea name="edit-term-definition"
+                                      value={getLocalizedOrDefault(this.state.definition, "", language)}
+                                      onChange={this.onDefinitionChange} rows={3}
+                                      label={i18n("term.metadata.definition")}
                                       help={i18n("term.definition.help")}/>
                         </Col>
                     </Row>

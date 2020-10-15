@@ -16,6 +16,7 @@ import Terms from "./Terms";
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
     vocabulary: Vocabulary;
+    language: string;
 }
 
 interface TermMetadataState {
@@ -69,7 +70,8 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                         <Col xs={12}>
                             <Card className="mb-3">
                                 <CardBody className="card-body-basic-info">
-                                    <BasicTermMetadata term={term} withDefinitionSource={true}/>
+                                    <BasicTermMetadata term={term} withDefinitionSource={true}
+                                                       language={this.props.language}/>
                                 </CardBody>
                             </Card>
                         </Col>

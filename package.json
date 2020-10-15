@@ -17,6 +17,7 @@
     "html-to-react": "1.4.3",
     "htmlparser2": "^4.1.0",
     "intelligent-tree-select": "0.7.2",
+    "iso-639-1": "^2.1.4",
     "javascript-time-ago": "2.0.13",
     "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",

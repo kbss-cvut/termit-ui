@@ -9,10 +9,11 @@ import {RouteComponentProps, withRouter} from "react-router";
 interface TermMetadata extends RouteComponentProps<any> {
     term: Term;
     vocabulary: Vocabulary;
+    language: string;
 }
 
 const TermMetadata: React.FC<TermMetadata> = props => {
-    const {term, vocabulary} = props;
+    const {term, vocabulary, language} = props;
 
     return <>
         <Row>
@@ -21,7 +22,7 @@ const TermMetadata: React.FC<TermMetadata> = props => {
                     <Col xs={12}>
                         <Card className="mb-3">
                             <CardBody className="card-body-basic-info">
-                                <BasicTermMetadata term={term} withDefinitionSource={true}/>
+                                <BasicTermMetadata term={term} withDefinitionSource={true} language={language}/>
                             </CardBody>
                         </Card>
                     </Col>

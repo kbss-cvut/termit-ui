@@ -23,7 +23,9 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
-import MultilingualStringView from "../multilingual/MultilingualStringView";
+import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
+import {getShortLocale} from "../../util/IntlUtil";
+import LanguageSelector from "../multilingual/LanguageSelector";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -35,16 +37,18 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     publishNotification: (notification: AppNotification) => void;
 }
 
-export interface TermSummaryState extends EditableComponentState {
+export interface TermDetailState extends EditableComponentState {
+    language: string;
 }
 
-export class TermDetail extends EditableComponent<TermDetailProps, TermSummaryState> {
+export class TermDetail extends EditableComponent<TermDetailProps, TermDetailState> {
 
     constructor(props: TermDetailProps) {
         super(props);
         this.state = {
             edit: false,
-            showRemoveDialog: false
+            showRemoveDialog: false,
+            language: getShortLocale(props.locale)
         };
     }
 
@@ -75,6 +79,10 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermSummarySt
         }
     }
 
+    public setLanguage = (language: string) => {
+        this.setState({language});
+    };
+
     public onSave = (term: Term) => {
         const oldTerm = this.props.term!;
         this.props.updateTerm(term).then(() => {
@@ -102,6 +110,11 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermSummarySt
         buttons.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
+        if (!this.state.edit) {
+            // TODO This will change when editing multilingual strings is supported
+            buttons.push(<LanguageSelector key={"term-language-selector"} term={this.props.term}
+                                           language={this.state.language} onSelect={this.setLanguage}/>);
+        }
         return buttons;
     }
 
@@ -119,16 +132,16 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermSummarySt
 
             {this.state.edit ?
                 <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}/> :
-                <TermMetadata term={term} vocabulary={vocabulary}/>}
+                <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}/>}
         </div>
     }
 
     private renderTitle() {
         const term = this.props.term!;
         return <>
-            <MultilingualStringView id={`term-${Utils.hashCode(term.iri)}-label`} value={term.label}/>
+            {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
-            <h6>{Utils.sanitizeArray(term.altLabels).join(", ")}</h6>
+            <h6>{getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ")}</h6>
         </>;
     }
 }
