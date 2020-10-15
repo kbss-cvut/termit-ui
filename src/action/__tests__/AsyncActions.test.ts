@@ -25,7 +25,7 @@ import {
     loadTermAssignmentsInfo,
     loadTerms,
     loadTypes,
-    loadUnusedTermsForVocabulary,
+    loadUnusedTermsForVocabulary, loadValidationResults,
     loadVocabularies,
     loadVocabulary,
     loadVocabularyContentChanges,
@@ -36,7 +36,7 @@ import {
     updateResourceTerms,
     updateTerm,
     updateVocabulary,
-    uploadFileContent
+    uploadFileContent, ValidationRecord
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, {param} from "../../util/Ajax";
@@ -913,6 +913,46 @@ describe("Async actions", () => {
 
             store.getState().pendingActions[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadResources())).then(() => {
+                expect(Ajax.get).not.toHaveBeenCalled();
+            });
+        });
+    });
+
+    describe("validate results", () => {
+        const v = VocabularyUtils.create('');
+        it("extracts validation results from incoming JSON", () => {
+            const validationResults = require("../../rest-mock/validation-results.json");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadValidationResults(v))).then((result) => {
+                expect(result.length).toEqual(validationResults.length);
+                // @ts-ignore
+                result.sort((a, b) => a.term.iri.localeCompare(b.term.iri));
+                validationResults.sort((a: ValidationRecord, b: ValidationRecord) => a.focusNode.localeCompare(b.focusNode));
+                for (let i = 0; i < validationResults.length; i++) {
+                    expect(result[i].term.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
+                    expect(result[i].severity.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
+                    expect(result[i].message.length).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultMessage"].length);
+                }
+            });
+        });
+
+        it("extracts single resource as an array of resources from incoming JSON-LD", () => {
+            const validationResults = require("../../rest-mock/validation-results.json");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadValidationResults(v))).then((result) => {
+                expect(Array.isArray(result)).toBeTruthy();
+                expect(result.length).toEqual(1);
+                expect(result[0].term.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
+                expect(result[0].severity.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
+                expect(result[0].message.length
+                ).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#resultMessage"].length);
+            });
+        });
+
+        it("does nothing when loading action is already pending", () => {
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
+            store.getState().pendingActions[ActionType.FETCH_VALIDATION_RESULTS] = AsyncActionStatus.REQUEST;
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadValidationResults(v))).then(() => {
                 expect(Ajax.get).not.toHaveBeenCalled();
             });
         });
