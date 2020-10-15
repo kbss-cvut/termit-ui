@@ -51,8 +51,8 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
         this.props.onChange(newList);
     };
 
-    private getText = (keySuffix : string) => {
-        return this.props.i18n(this.props.i18nPrefix+"."+keySuffix)
+    private getText = (keySuffix: string) => {
+        return this.props.i18n(this.props.i18nPrefix + "." + keySuffix)
     }
 
     public render() {
@@ -79,15 +79,23 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
         if (list.length === 0) {
             return null;
         }
-        return <ul className="term-items">
-            {list.map(s => <li key={s}>
-                {s}
-                <Badge title={this.getText("remove.title")}
-                       className="term-edit-source-remove align-middle"
-                       onClick={this.onRemove.bind(null, s)}><FaTrashAlt/> {this.getText("remove.text")}
-                </Badge>
-            </li>)}
-        </ul>;
+        return <table>
+            {list.map(s => <tr key={s}>
+                <td className="align-middle">
+                    <ul className="term-items mt-0 mb-0">
+                        <li>
+                            {s}
+                        </li>
+                    </ul>
+                </td>
+                <td className="align-middle">
+                    <Badge title={this.getText("remove.title")}
+                           className="term-edit-source-remove align-middle"
+                           onClick={this.onRemove.bind(null, s)}><FaTrashAlt/> {this.getText("remove.text")}
+                    </Badge>
+                </td>
+            </tr>)}
+        </table>;
     }
 }
 

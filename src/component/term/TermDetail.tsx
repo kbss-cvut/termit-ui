@@ -110,8 +110,11 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         buttons.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
-        buttons.push(<LanguageSelector key={"term-language-selector"} term={this.props.term}
-                                       language={this.state.language} onSelect={this.setLanguage}/>);
+        if (!this.state.edit) {
+            // TODO This will change when editing multilingual strings is supported
+            buttons.push(<LanguageSelector key={"term-language-selector"} term={this.props.term}
+                                           language={this.state.language} onSelect={this.setLanguage}/>);
+        }
         return buttons;
     }
 
@@ -138,7 +141,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         return <>
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
-            <h6>{getLocalizedPlural(term.altLabels, this.state.language).join(", ")}</h6>
+            <h6>{getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ")}</h6>
         </>;
     }
 }
