@@ -929,7 +929,7 @@ export function loadTermAssignmentsInfo(termIri: IRI, vocabularyIri: IRI) {
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
-                return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
+                return [];
             });
     };
 }
