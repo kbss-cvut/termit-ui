@@ -24,7 +24,29 @@ export class ValidationResults extends React.Component<ValidationResultsProps, V
         super(props);
     }
 
+    private renderResultMessage(result : ValidationResult) {
+        let message = result.message.find(msg => msg.language === this.props.locale);
+        if (!message) message = result.message.find(() => true);
+        return <SeverityText severityIri={result.severity.iri} message={message!.value}/>;
+    }
+
     render() {
+        let consolidatedResults : ({ [termIri: string] : ValidationResult[]  } | undefined);
+        if (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) {
+            consolidatedResults = {};
+            this.props.validationResults[this.props.vocabulary.iri].forEach(r => {
+                // @ts-ignore
+                    let results = consolidatedResults[r.term.iri];
+                    if ( results === undefined ) {
+                        // @ts-ignore
+                        consolidatedResults[r.term.iri] = []
+                        results = []
+                    }
+                    results.push(r);
+                }
+            );
+        }
+
         return <div id="validation-result-list">
 
             <Table>
@@ -36,16 +58,18 @@ export class ValidationResults extends React.Component<ValidationResultsProps, V
                 </thead>
                 <tbody>
                 {
-                    (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) ?
-                        this.props.validationResults[this.props.vocabulary.iri].map(r => {
-                                let message = r.message.find(msg => msg.language === this.props.locale);
-                                if (!message) message = r.message.find(() => true);
-                                return <tr key={JSON.stringify(r.id)}>
-                                    <td><TermIriLink iri={r.term.iri!}/></td>
-                                    <td><SeverityText severityIri={r.severity.iri} message={message!.value}/></td>
-                                </tr>
-                            }
-                        ) : <></>
+                    (consolidatedResults ?
+                        Object.keys(consolidatedResults).map( termIri =>
+                             <tr key={termIri}>
+                                <td><TermIriLink iri={termIri}/></td>
+                                <td>
+                                    {
+                                        consolidatedResults![termIri].map(result => this.renderResultMessage(result) )
+                                    }
+                                </td>
+                            </tr>
+                        )
+                    : <></> )
                 }
                 </tbody>
             </Table>
