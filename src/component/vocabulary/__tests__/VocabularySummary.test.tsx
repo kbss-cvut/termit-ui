@@ -30,6 +30,7 @@ describe("VocabularySummary", () => {
     let exportToCsv: (iri: IRI) => void;
     let exportToExcel: (iri: IRI) => void;
     let exportToTurtle: (iri: IRI) => void;
+    let validateVocabulary: (iri: IRI) => void;
     let exportFunctions: any;
 
     let vocabulary: Vocabulary;
@@ -41,6 +42,7 @@ describe("VocabularySummary", () => {
         exportToCsv = jest.fn();
         exportToExcel = jest.fn();
         exportToTurtle = jest.fn();
+        validateVocabulary = jest.fn();
         exportFunctions = {exportToCsv, exportToExcel, exportToTurtle};
         location = {
             pathname: "/vocabulary/" + normalizedName,
@@ -65,6 +67,7 @@ describe("VocabularySummary", () => {
     it("loads vocabulary on mount", () => {
         shallow(<VocabularySummary vocabulary={EMPTY_VOCABULARY} updateVocabulary={onUpdate} loadVocabulary={onLoad}
                                    history={history} location={location} {...exportFunctions}
+                                   validateVocabulary={validateVocabulary}
                                    match={match} {...intlFunctions()}/>);
         expect(onLoad).toHaveBeenCalledWith({fragment: normalizedName, namespace});
     });
@@ -73,6 +76,7 @@ describe("VocabularySummary", () => {
         location.search = "?namespace=" + namespace;
         shallow(<VocabularySummary vocabulary={EMPTY_VOCABULARY} updateVocabulary={onUpdate} loadVocabulary={onLoad}
                                    history={history} location={location} {...exportFunctions}
+                                   validateVocabulary={validateVocabulary}
                                    match={match} {...intlFunctions()}/>);
         expect(onLoad).toHaveBeenCalledWith({fragment: normalizedName, namespace});
     });
@@ -83,6 +87,7 @@ describe("VocabularySummary", () => {
                                                                       loadVocabulary={onLoad}
                                                                       history={history}
                                                                       location={location} {...exportFunctions}
+                                                                      validateVocabulary={validateVocabulary}
                                                                       match={match} {...intlFunctions()}/>);
         wrapper.setProps({vocabulary});
         wrapper.update();
@@ -98,6 +103,7 @@ describe("VocabularySummary", () => {
             {...exportFunctions}
             history={history}
             location={location}
+            validateVocabulary={validateVocabulary}
             match={match}
             {...intlFunctions()}/>);
         wrapper.instance().onRemove();
@@ -112,6 +118,7 @@ describe("VocabularySummary", () => {
         const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
                                                          loadVocabulary={onLoad} {...exportFunctions}
                                                          history={history} location={location}
+                                                         validateVocabulary={validateVocabulary}
                                                          match={match} {...intlFunctions()}/>, {attachTo: div});
         expect(wrapper.find(VocabularyEdit).exists()).toBeFalsy();
         const editButton = wrapper.find(Button).findWhere(b => b.key() === "vocabulary.summary.edit");
@@ -126,6 +133,7 @@ describe("VocabularySummary", () => {
         const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
                                                          loadVocabulary={onLoad} {...exportFunctions}
                                                          history={history} location={location}
+                                                         validateVocabulary={validateVocabulary}
                                                          match={match} {...intlFunctions()}/>, {attachTo: div});
         (wrapper.find(VocabularySummary).instance() as VocabularySummary).onEdit();
         wrapper.update();
@@ -138,6 +146,7 @@ describe("VocabularySummary", () => {
                                                                       updateVocabulary={onUpdate}
                                                                       loadVocabulary={onLoad} {...exportFunctions}
                                                                       history={history} location={location}
+                                                                      validateVocabulary={validateVocabulary}
                                                                       match={match} {...intlFunctions()}/>);
         wrapper.instance().onEdit();
         const update = new Vocabulary({
@@ -153,6 +162,7 @@ describe("VocabularySummary", () => {
                                                                       updateVocabulary={onUpdate}
                                                                       loadVocabulary={onLoad} {...exportFunctions}
                                                                       history={history} location={location}
+                                                                      validateVocabulary={validateVocabulary}
                                                                       match={match} {...intlFunctions()}/>);
         wrapper.instance().onEdit();
         wrapper.instance().onSave(vocabulary);
@@ -167,6 +177,7 @@ describe("VocabularySummary", () => {
                                                                       updateVocabulary={onUpdate}
                                                                       loadVocabulary={onLoad} {...exportFunctions}
                                                                       history={history} location={location}
+                                                                      validateVocabulary={validateVocabulary}
                                                                       match={match} {...intlFunctions()}/>);
         wrapper.instance().onEdit();
         wrapper.instance().onSave(vocabulary);
@@ -182,6 +193,7 @@ describe("VocabularySummary", () => {
         const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
                                                          loadVocabulary={onLoad} {...exportFunctions}
                                                          history={history} location={location}
+                                                         validateVocabulary={validateVocabulary}
                                                          match={match} {...intlFunctions()}/>, {attachTo: div});
         wrapper.find(DropdownToggle).simulate("click");
         wrapper.find("button[name=\"vocabulary-export-csv\"]").simulate("click");
@@ -195,6 +207,7 @@ describe("VocabularySummary", () => {
         const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
                                                          loadVocabulary={onLoad} {...exportFunctions}
                                                          history={history} location={location}
+                                                         validateVocabulary={validateVocabulary}
                                                          match={match} {...intlFunctions()}/>, {attachTo: div});
         wrapper.find(DropdownToggle).simulate("click");
         wrapper.find("button[name=\"vocabulary-export-excel\"]").simulate("click");
@@ -208,17 +221,33 @@ describe("VocabularySummary", () => {
         const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
                                                          loadVocabulary={onLoad} {...exportFunctions}
                                                          history={history} location={location}
+                                                         validateVocabulary={validateVocabulary}
                                                          match={match} {...intlFunctions()}/>, {attachTo: div});
         wrapper.find(DropdownToggle).simulate("click");
         wrapper.find("button[name=\"vocabulary-export-ttl\"]").simulate("click");
         expect(exportToTurtle).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
     });
 
+    it("invokes validation when validate is triggered", () => {
+        const div = document.createElement("div");
+        document.body.appendChild(div);
+
+        const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
+                                                         loadVocabulary={onLoad} {...exportFunctions}
+                                                         history={history} location={location}
+                                                         validateVocabulary={validateVocabulary}
+                                                         match={match} {...intlFunctions()}/>, {attachTo: div});
+        wrapper.find("button[id=\"vocabulary.validate.action\"]").simulate("click");
+        expect(validateVocabulary).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
+    });
+
+
     it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
         const wrapper = shallow<VocabularySummary>(<VocabularySummary vocabulary={EMPTY_VOCABULARY}
                                                                       updateVocabulary={onUpdate}
                                                                       loadVocabulary={onLoad} {...exportFunctions}
                                                                       history={history} location={location}
+                                                                      validateVocabulary={validateVocabulary}
                                                                       match={match} {...intlFunctions()}/>);
         wrapper.instance().onFileAdded();
         expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));

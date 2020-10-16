@@ -560,13 +560,7 @@ export function loadTermByIri(termIri: IRI, apiPrefix: string = Constants.API_PR
     };
 }
 
-export type ValidationRecord = {
-    severity: string;
-    message: string;
-    focusNode: string;
-}
-
-export function loadValidationResults(vocabularyIri: IRI, apiPrefix: string = Constants.API_PREFIX) {
+export function validateVocabulary(vocabularyIri: IRI, apiPrefix: string = Constants.API_PREFIX) {
     const action = {
         type: ActionType.FETCH_VALIDATION_RESULTS
     };
@@ -575,14 +569,14 @@ export function loadValidationResults(vocabularyIri: IRI, apiPrefix: string = Co
         if (isActionRequestPending(getState(), action)) {
             return Promise.resolve([]);
         }
+
         dispatch(asyncActionRequest(action));
         return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`, param("namespace", vocabularyIri.namespace))
-            .then((data: ValidationRecord[]) =>
-                JsonLdUtils
-                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT))
-            .then((data: ValidationResult[]) => {
-                dispatch(asyncActionSuccess(action));
-                return data;})
+            .then((data: object[]) =>
+                data.length !== 0 ? JsonLdUtils
+                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT): [] )
+            .then((data: ValidationResult[]) =>
+                dispatch(asyncActionSuccessWithPayload(action, {[vocabularyIri.toString()] :  data })))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return [];

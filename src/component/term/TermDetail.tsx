@@ -4,7 +4,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {RouteComponentProps, withRouter} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
-import {loadTerm, loadValidationResults, loadVocabulary, removeTerm, updateTerm} from "../../action/AsyncActions";
+import {loadTerm, loadVocabulary, removeTerm, updateTerm} from "../../action/AsyncActions";
 import TermMetadata from "./TermMetadata";
 import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
@@ -36,6 +36,7 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
+    validationResults: {[vocabularyIri : string] : ValidationResult[]};
     loadValidationResults: ( vocabularyIri : IRI ) => Promise<ValidationResult[]>;
 }
 
@@ -83,11 +84,8 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     }
 
     private loadValidationResults = () => {
-        const vocabularyName: string = this.props.match.params.name;
-        const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        this.props.loadValidationResults({fragment: vocabularyName, namespace}).then(
-            validationResults => validationResults.filter(result => result.term.iri === this.props.term?.iri)).then(
-            termValidationResults => {this.computeScore(termValidationResults)});
+        (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) ?
+        this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(-1);
     }
 
     private computeScore(results: ValidationResult []): void {
@@ -205,7 +203,8 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
-        vocabulary: state.vocabulary
+        vocabulary: state.vocabulary,
+        validationResults : state.validationResults
     };
 }, (dispatch: ThunkDispatch) => {
     return {
@@ -213,7 +212,6 @@ export default connect((state: TermItState) => {
         loadTerm: (termName: string, vocabularyIri: IRI) => dispatch(loadTerm(termName, vocabularyIri)),
         updateTerm: (term: Term) => dispatch(updateTerm(term)),
         removeTerm: (term: Term) => dispatch(removeTerm(term)),
-        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification)),
-        loadValidationResults: (vocabularyIri : IRI) => dispatch(loadValidationResults(vocabularyIri))
+        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
 })(injectIntl(withI18n(withRouter(TermDetail))));

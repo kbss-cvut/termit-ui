@@ -72,7 +72,8 @@ function stateToPlainObject(state: TermItState): TermItState {
         sidebarExpanded: state.sidebarExpanded,
         desktopView: state.desktopView,
         annotatorTerms: state.annotatorTerms,
-        configuration: state.configuration
+        configuration: state.configuration,
+        validationResults : state.validationResults
     };
 }
 
