@@ -4,11 +4,11 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {RouteComponentProps, withRouter} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
-import {loadTerm, loadVocabulary, removeTerm, updateTerm} from "../../action/AsyncActions";
+import {loadTerm, loadValidationResults, loadVocabulary, removeTerm, updateTerm} from "../../action/AsyncActions";
 import TermMetadata from "./TermMetadata";
 import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
-import {Button} from "reactstrap";
+import {Badge, Button} from "reactstrap";
 import {GoPencil} from "react-icons/go";
 import EditableComponent, {EditableComponentState} from "../misc/EditableComponent";
 import TermMetadataEdit from "./TermMetadataEdit";
@@ -26,6 +26,7 @@ import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import LanguageSelector from "../multilingual/LanguageSelector";
+import ValidationResult from "../../model/ValidationResult";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -35,11 +36,20 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
+    loadValidationResults: ( vocabularyIri : IRI ) => Promise<ValidationResult[]>;
 }
 
 export interface TermDetailState extends EditableComponentState {
+    validationScore: number;
     language: string;
 }
+
+export const importantRules = [
+    "https://slovník.gov.cz/jazyk/obecný/g4",
+    "https://slovník.gov.cz/jazyk/obecný/m1",
+    "https://slovník.gov.cz/jazyk/obecný/g13",
+    "https://slovník.gov.cz/jazyk/obecný/g14"
+];
 
 export class TermDetail extends EditableComponent<TermDetailProps, TermDetailState> {
 
@@ -48,13 +58,15 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.state = {
             edit: false,
             showRemoveDialog: false,
-            language: getShortLocale(props.locale)
+            language: getShortLocale(props.locale),
+            validationScore: -1
         };
     }
 
     public componentDidMount(): void {
         this.loadTerm();
         this.loadVocabulary();
+        this.loadValidationResults();
     }
 
     private loadVocabulary(): void {
@@ -70,12 +82,32 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.props.loadTerm(termName, {fragment: vocabularyName, namespace});
     }
 
+    private loadValidationResults = () => {
+        const vocabularyName: string = this.props.match.params.name;
+        const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
+        this.props.loadValidationResults({fragment: vocabularyName, namespace}).then(
+            validationResults => validationResults.filter(result => result.term.iri === this.props.term?.iri)).then(
+            termValidationResults => {this.computeScore(termValidationResults)});
+    }
+
+    private computeScore(results: ValidationResult []): void {
+        const score = results.reduce((reduceScore, result) => {
+            if (importantRules.indexOf(result.sourceShape.iri) > 0) {
+                return reduceScore + 1;
+            }
+            return reduceScore;
+        }, 0);
+
+            this.setState({validationScore : score})
+    }
+
     public componentDidUpdate(prevProps: TermDetailProps) {
         const currTermName = this.props.match.params.termName;
         const prevTermName = prevProps.match.params.termName;
         if (currTermName !== prevTermName) {
             this.onCloseEdit();
             this.loadTerm();
+            this.loadValidationResults();
         }
     }
 
@@ -118,6 +150,29 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         return buttons;
     }
 
+    public setBadgeColor(score: number): string {
+        switch (score) {
+            case 0:
+                return "dark-green";
+            case 1:
+            case 2:
+                return "dark-yellow";
+            case 3:
+            case 4:
+                return "dark-red";
+            default:
+                return "gray";
+        }
+    }
+
+    public renderBadge() {
+        const emptyString = "  ";
+        return <Badge color = {this.setBadgeColor(this.state.validationScore)}
+                      className="term-quality-badge"
+                > {emptyString}
+               </Badge>
+    }
+
     public render() {
         const {term, vocabulary} = this.props;
         if (!term) {
@@ -139,6 +194,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     private renderTitle() {
         const term = this.props.term!;
         return <>
+            {this.renderBadge()}
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
             <h6>{getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ")}</h6>
@@ -157,6 +213,7 @@ export default connect((state: TermItState) => {
         loadTerm: (termName: string, vocabularyIri: IRI) => dispatch(loadTerm(termName, vocabularyIri)),
         updateTerm: (term: Term) => dispatch(updateTerm(term)),
         removeTerm: (term: Term) => dispatch(removeTerm(term)),
-        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
+        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification)),
+        loadValidationResults: (vocabularyIri : IRI) => dispatch(loadValidationResults(vocabularyIri))
     };
 })(injectIntl(withI18n(withRouter(TermDetail))));

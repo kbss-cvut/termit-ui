@@ -34,6 +34,9 @@ $yellow: #ffd600 !default;
 $green: #29AB87 !default;
 $teal: #11cdef !default;
 $cyan: #2bffc6 !default;
+$dark-green: #00ab18 !default;
+$dark-red: #7f0806 !default;
+$dark-yellow: #9bab11 !default;
 
 $colors: () !default;
 $colors: map-merge((
@@ -92,7 +95,11 @@ $theme-colors: map-merge((
   "purple": $purple,
   "yellow": $yellow,
   "orange": $orange,
-  "pink": $pink
+  "pink": $pink,
+  "red": $red,
+  "dark-green": $dark-green,
+  "dark-red": $dark-red,
+  "dark-yellow": $dark-yellow
 ), $theme-colors);
 
 $brand-colors: () !default;
