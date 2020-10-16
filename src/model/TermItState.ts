@@ -14,6 +14,7 @@ import AsyncActionStatus from "../action/AsyncActionStatus";
 import {ErrorLogItem} from "./ErrorInfo";
 import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "./Configuration";
+import ValidationResult from "./ValidationResult";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -53,6 +54,7 @@ export default class TermItState {
     public labelCache: { [key: string]: string };
     public annotatorTerms: { [key: string]: Term };
     public configuration: Configuration;
+    public validationResults: { [vocabularyIri: string] : ValidationResult[] };
 
     constructor() {
         this.loading = false;
@@ -84,5 +86,6 @@ export default class TermItState {
         this.desktopView = Utils.isDesktopView();
         this.annotatorTerms = {};
         this.configuration = DEFAULT_CONFIGURATION;
+        this.validationResults = {};
     }
 }

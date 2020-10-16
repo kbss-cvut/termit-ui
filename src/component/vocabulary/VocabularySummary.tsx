@@ -5,7 +5,13 @@ import {RouteComponentProps} from "react-router";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
-import {exportGlossary, loadVocabulary, removeVocabulary, updateVocabulary} from "../../action/AsyncActions";
+import {
+    exportGlossary,
+    loadVocabulary,
+    updateVocabulary,
+    removeVocabulary,
+    validateVocabulary
+} from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
 import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
@@ -26,6 +32,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     loadVocabulary: (iri: IRI) => void;
     updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
+    validateVocabulary: (iri: IRI) => Promise<any>;
     exportToCsv: (iri: IRI) => void;
     exportToExcel: (iri: IRI) => void;
     exportToTurtle: (iri: IRI) => void;
@@ -76,6 +83,10 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         });
     };
 
+    public onValidate = () => {
+        this.props.validateVocabulary(VocabularyUtils.create(this.props.vocabulary.iri));
+    };
+
     private onExportToCsv = () => {
         this.props.exportToCsv(VocabularyUtils.create(this.props.vocabulary.iri));
     };
@@ -100,6 +111,8 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                                  onClick={this.onEdit}><GoPencil/> {this.props.i18n("edit")}</Button>);
         }
         buttons.push(this.renderExportDropdown());
+        buttons.push(<Button id="vocabulary.validate.action" onClick={this.onValidate} color="success"
+                             size="sm">{this.props.i18n("vocabulary.validation.action")}</Button>)
         buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
@@ -142,13 +155,15 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
 
 export default connect((state: TermItState) => {
     return {
-        vocabulary: state.vocabulary
+        vocabulary: state.vocabulary,
+        validationResults: state.validationResults[state.vocabulary.iri]
     };
 }, (dispatch: ThunkDispatch) => {
     return {
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),
         removeVocabulary: (vocabulary: Vocabulary) => dispatch(removeVocabulary(vocabulary)),
+        validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
         exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
         exportToExcel: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Excel)),
         exportToTurtle: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Turtle))

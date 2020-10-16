@@ -25,7 +25,7 @@ import {
     loadTermAssignmentsInfo,
     loadTerms,
     loadTypes,
-    loadUnusedTermsForVocabulary, loadValidationResults,
+    loadUnusedTermsForVocabulary, validateVocabulary,
     loadVocabularies,
     loadVocabulary,
     loadVocabularyContentChanges,
@@ -36,7 +36,7 @@ import {
     updateResourceTerms,
     updateTerm,
     updateVocabulary,
-    uploadFileContent, ValidationRecord
+    uploadFileContent
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, {param} from "../../util/Ajax";
@@ -72,6 +72,7 @@ import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
 import NotificationType from "../../model/NotificationType";
 import {langString} from "../../model/MultilingualString";
+import ValidationResult from "../../model/ValidationResult";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -922,12 +923,14 @@ describe("Async actions", () => {
         const v = VocabularyUtils.create('');
         it("extracts validation results from incoming JSON", () => {
             const validationResults = require("../../rest-mock/validation-results.json");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadValidationResults(v))).then((result) => {
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults) );
+            return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
+                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const result = successAction.payload[v.toString()];
                 expect(result.length).toEqual(validationResults.length);
                 // @ts-ignore
                 result.sort((a, b) => a.term.iri.localeCompare(b.term.iri));
-                validationResults.sort((a: ValidationRecord, b: ValidationRecord) => a.focusNode.localeCompare(b.focusNode));
+                validationResults.sort((a: object, b: object) => a.toString().localeCompare(b.toString()));
                 for (let i = 0; i < validationResults.length; i++) {
                     expect(result[i].term.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
                     expect(result[i].severity.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
@@ -939,7 +942,9 @@ describe("Async actions", () => {
         it("extracts single resource as an array of resources from incoming JSON-LD", () => {
             const validationResults = require("../../rest-mock/validation-results.json");
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadValidationResults(v))).then((result) => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
+                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const result = successAction.payload[v.toString()];
                 expect(Array.isArray(result)).toBeTruthy();
                 expect(result.length).toEqual(1);
                 expect(result[0].term.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
@@ -952,7 +957,7 @@ describe("Async actions", () => {
         it("does nothing when loading action is already pending", () => {
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
             store.getState().pendingActions[ActionType.FETCH_VALIDATION_RESULTS] = AsyncActionStatus.REQUEST;
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadValidationResults(v))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
                 expect(Ajax.get).not.toHaveBeenCalled();
             });
         });
