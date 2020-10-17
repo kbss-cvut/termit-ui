@@ -192,7 +192,6 @@ export default {
         "vocabulary.validation.term": "Pojem",
         "vocabulary.validation.severity": "Závažnost",
         "vocabulary.validation.message": "Zpráva",
-        "vocabulary.validation.action": "Zkontrolovat",
 
         'vocabulary.term.created.message': 'Pojem úspěšně vytvořen.',
         'vocabulary.select-vocabulary': 'Vyber slovník',

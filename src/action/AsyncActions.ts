@@ -20,7 +20,7 @@ import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import Term, {CONTEXT as TERM_CONTEXT, TermData} from "../model/Term";
 import FetchOptionsFunction from "../model/Functions";
-import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
+import VocabularyUtils, {IRI, IRIImpl} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import Resource, {ResourceData} from "../model/Resource";
 import RdfsResource, {CONTEXT as RDFS_RESOURCE_CONTEXT, RdfsResourceData} from "../model/RdfsResource";
@@ -154,6 +154,7 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<VocabularyData>(data, VOCABULARY_CONTEXT))
             .then((data: VocabularyData) => {
                 dispatch(loadImportedVocabulariesIntoState(iri, apiPrefix));
+                dispatch(validateVocabulary(iri));
                 return dispatch(asyncActionSuccessWithPayload(action, new Vocabulary(data)));
             })
             .catch((error: ErrorData) => {
@@ -576,7 +577,7 @@ export function validateVocabulary(vocabularyIri: IRI, apiPrefix: string = Const
                 data.length !== 0 ? JsonLdUtils
                     .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT): [] )
             .then((data: ValidationResult[]) =>
-                dispatch(asyncActionSuccessWithPayload(action, {[vocabularyIri.toString()] :  data })))
+                dispatch(asyncActionSuccessWithPayload(action, {[IRIImpl.toString(vocabularyIri)] :  data })))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return [];
@@ -742,6 +743,7 @@ export function updateTerm(term: Term) {
                     original: getState().selectedTerm,
                     updated: term
                 }));
+                dispatch(validateVocabulary(vocabularyIri));
                 return dispatch(publishMessage(new Message({messageId: "term.updated.message"}, MessageType.SUCCESS)));
             })
             .catch((error: ErrorData) => {

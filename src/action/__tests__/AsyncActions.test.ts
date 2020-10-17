@@ -180,6 +180,14 @@ describe("Async actions", () => {
             });
         });
 
+        it("dispatches vocabulary validation action on success", () => {
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(require("../../rest-mock/vocabulary")));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
+                const validationAction = store.getActions().find(a => a.type === ActionType.FETCH_VALIDATION_RESULTS);
+                expect(validationAction).toBeDefined();
+            });
+        });
+
         it("passes loaded vocabulary imports to store", () => {
             const imports = [Generator.generateUri(), Generator.generateUri()];
             Ajax.get = jest.fn().mockImplementation((url) => {
@@ -604,6 +612,17 @@ describe("Async actions", () => {
                 expect(notifyAction.notification.updated).toEqual(updated);
             });
         });
+
+        it("dispatches vocabulary validation action after save", () => {
+            const original = Generator.generateTerm("http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary");
+            const updated = new Term(Object.assign({}, original, {label: "Updated label"}));
+            Ajax.put = jest.fn().mockResolvedValue(undefined);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateTerm(updated))).then(() => {
+                const validationAction = store.getActions().find(a => a.type === ActionType.FETCH_VALIDATION_RESULTS);
+                expect(validationAction).toBeDefined();
+            });
+        });
+
     });
 
     describe("remove term", () => {
