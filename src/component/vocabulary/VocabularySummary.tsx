@@ -14,7 +14,7 @@ import {
 } from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
 import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
 import {GoCloudDownload, GoPencil} from "react-icons/go";
 import {ThunkDispatch} from "../../util/Types";
 import EditableComponent, {EditableComponentState} from "../misc/EditableComponent";
@@ -66,7 +66,7 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
         const iri = VocabularyUtils.create(this.props.vocabulary.iri);
         if (iri.fragment !== normalizedName || (namespace && iri.namespace !== namespace)) {
-            this.props.loadVocabulary({fragment: normalizedName, namespace});
+            this.props.loadVocabulary(IRIImpl.create({fragment: normalizedName, namespace}));
         }
     }
 
@@ -111,8 +111,6 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                                  onClick={this.onEdit}><GoPencil/> {this.props.i18n("edit")}</Button>);
         }
         buttons.push(this.renderExportDropdown());
-        buttons.push(<Button id="vocabulary.validate.action" onClick={this.onValidate} color="success"
-                             size="sm">{this.props.i18n("vocabulary.validation.action")}</Button>)
         buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);

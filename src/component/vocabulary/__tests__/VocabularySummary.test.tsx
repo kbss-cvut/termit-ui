@@ -228,20 +228,6 @@ describe("VocabularySummary", () => {
         expect(exportToTurtle).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
     });
 
-    it("invokes validation when validate is triggered", () => {
-        const div = document.createElement("div");
-        document.body.appendChild(div);
-
-        const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
-                                                         loadVocabulary={onLoad} {...exportFunctions}
-                                                         history={history} location={location}
-                                                         validateVocabulary={validateVocabulary}
-                                                         match={match} {...intlFunctions()}/>, {attachTo: div});
-        wrapper.find("button[id=\"vocabulary.validate.action\"]").simulate("click");
-        expect(validateVocabulary).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
-    });
-
-
     it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
         const wrapper = shallow<VocabularySummary>(<VocabularySummary vocabulary={EMPTY_VOCABULARY}
                                                                       updateVocabulary={onUpdate}

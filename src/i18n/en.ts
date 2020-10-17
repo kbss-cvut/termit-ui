@@ -195,7 +195,6 @@ export default {
         "vocabulary.validation.term": "Term",
         "vocabulary.validation.severity": "Severity",
         "vocabulary.validation.message": "Message",
-        "vocabulary.validation.action": "Validate",
 
         'resource.management': 'Resources management',
         'resource.management.resources': 'Resources',
