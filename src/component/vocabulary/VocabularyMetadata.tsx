@@ -15,7 +15,7 @@ import {match as Match} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import {selectVocabularyTerm} from "../../action/SyncActions";
-import ValidationResults from "./ValidationResults";
+import ValidationResults from "./validation/ValidationResults";
 
 interface VocabularyMetadataProps extends HasI18n {
     vocabulary: Vocabulary;
