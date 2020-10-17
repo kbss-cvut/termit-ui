@@ -1,5 +1,6 @@
 import * as React from "react";
 import {Alert} from "reactstrap";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 interface SeverityTextProps {
     severityIri: string;
@@ -7,9 +8,9 @@ interface SeverityTextProps {
 }
 
 const SeverityText = (props: SeverityTextProps) => (
-    props.severityIri === "http://www.w3.org/ns/shacl#Violation" ?
+    props.severityIri === VocabularyUtils.SH_VIOLATION ?
             <Alert color="danger">{props.message}</Alert> :
-        (props.severityIri === "http://www.w3.org/ns/shacl#Warning" ?
+        (props.severityIri === VocabularyUtils.SH_WARNING ?
             <Alert color="warning">{props.message}</Alert> :
             <Alert color="info">{props.message}</Alert>)
 )
