@@ -27,17 +27,18 @@ import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import ValidationResult from "../../model/ValidationResult";
+import Routing from "../../util/Routing";
+import Routes from "../../util/Routes";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
     vocabulary: Vocabulary;
     loadVocabulary: (iri: IRI) => void;
-    loadTerm: (termName: string, vocabularyIri: IRI) => void;
+    loadTerm: (termName: string, vocabularyIri: IRI) => Promise<any>;
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
     validationResults: {[vocabularyIri : string] : ValidationResult[]};
-    loadValidationResults: ( vocabularyIri : IRI ) => Promise<ValidationResult[]>;
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -67,7 +68,6 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     public componentDidMount(): void {
         this.loadTerm();
         this.loadVocabulary();
-        this.loadValidationResults();
     }
 
     private loadVocabulary(): void {
@@ -80,21 +80,21 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         const vocabularyName: string = this.props.match.params.name;
         const termName: string = this.props.match.params.termName;
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        this.props.loadTerm(termName, {fragment: vocabularyName, namespace});
+        this.props.loadTerm(termName, {fragment: vocabularyName, namespace}).then( () => this.loadValidationResults());
     }
 
     private loadValidationResults = () => {
         (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) ?
-        this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(-1);
-    }
+         this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(-1);
+    };
 
     private computeScore(results: ValidationResult []): void {
         const score = results.reduce((reduceScore, result) => {
-            if (importantRules.indexOf(result.sourceShape.iri) > 0) {
-                return reduceScore + 1;
+            if (importantRules.indexOf(result.sourceShape.iri) >= 0) {
+                return reduceScore - 25;
             }
             return reduceScore;
-        }, 0);
+        }, 100);
 
             this.setState({validationScore : score})
     }
@@ -105,7 +105,6 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (currTermName !== prevTermName) {
             this.onCloseEdit();
             this.loadTerm();
-            this.loadValidationResults();
         }
     }
 
@@ -150,25 +149,41 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
     public setBadgeColor(score: number): string {
         switch (score) {
-            case 0:
+            case 100:
                 return "dark-green";
-            case 1:
-            case 2:
+            case 75:
+            case 50:
                 return "dark-yellow";
-            case 3:
-            case 4:
+            case 25:
+            case 0:
                 return "dark-red";
             default:
                 return "gray";
         }
     }
 
+    public onBadgeClick = () => {
+        const normalizedName = this.props.match.params.name;
+        const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
+        const queryMap = new Map();
+        if (namespace) {
+            queryMap.set("namespace", namespace);
+        }
+        queryMap.set("activeTab", "vocabulary.validation.tab");
+        Routing.transitionTo(Routes.vocabularyDetail, {
+            params: new Map([["name", normalizedName]]),
+            query: queryMap
+        });
+    }
+
     public renderBadge() {
-        const emptyString = "  ";
-        return <Badge color = {this.setBadgeColor(this.state.validationScore)}
-                      className="term-quality-badge"
-                > {emptyString}
-               </Badge>
+            const emptyString = "  ";
+            return <Badge color = {this.setBadgeColor(this.state.validationScore)}
+                          className="term-quality-badge"
+                          title={"The score of this term is "+ this.state.validationScore + "%. Click to see the validation results."}
+                          onClick={this.onBadgeClick}
+            > {emptyString}
+            </Badge>
     }
 
     public render() {
@@ -192,7 +207,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     private renderTitle() {
         const term = this.props.term!;
         return <>
-            {this.renderBadge()}
+            {this.state.validationScore > -1? this.renderBadge() : null}
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
             <h6>{getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ")}</h6>
