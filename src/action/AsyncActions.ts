@@ -373,7 +373,7 @@ export function removeTerm(term: Term) {
         VocabularyUtils.create(term.iri),
         vocabularyIri.namespace,
         ActionType.REMOVE_VOCABULARY_TERM,
-        "vocabularies/"+vocabularyIri.fragment+"/terms",
+        "vocabularies/" + vocabularyIri.fragment + "/terms",
         () => loadVocabulary(vocabularyIri),
         "term.removed.message",
         Routes.vocabularyDetail,
@@ -388,20 +388,20 @@ export function removeAsset(iri: IRI,
                             namespace: string | undefined,
                             type: string,
                             assetPathFragment: string,
-                            load: () => (dispatch:ThunkDispatch, getState: GetStoreState) => Promise<{}>,
+                            load: () => (dispatch: ThunkDispatch, getState: GetStoreState) => Promise<{}>,
                             messageId: string,
                             transitionRoute: Route,
-                            options?: {} ) {
-    const action = { type };
+                            options?: {}) {
+    const action = {type};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         return Ajax.delete(Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
             param("namespace", namespace)).then(() => {
-                dispatch(asyncActionSuccess(action));
-                dispatch(load());
-                Routing.transitionTo(transitionRoute, options)
-                return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
-            })
+            dispatch(asyncActionSuccess(action));
+            dispatch(load());
+            Routing.transitionTo(transitionRoute, options)
+            return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
+        })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
@@ -1103,7 +1103,6 @@ export function getContentType(fileIri: IRI) {
     }
 }
 
-
 export function invalidateCaches() {
     const action = {type: ActionType.INVALIDATE_CACHES};
     return (dispatch: ThunkDispatch) => {
@@ -1113,4 +1112,17 @@ export function invalidateCaches() {
             .then(() => dispatch(publishMessage(new Message({messageId: "administration.maintenance.invalidateCaches.success"}, MessageType.SUCCESS))))
             .catch(error => dispatch(asyncActionFailure(action, error)));
     }
+}
+
+export function loadStatistics(type: string) {
+    const action = {type: ActionType.LOAD_STATISTICS};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        return Ajax.get(`${Constants.API_PREFIX}/statistics/${type}`)
+            .then((data: any) => {
+                dispatch(asyncActionSuccess(action));
+                return data;
+            })
+            .catch(error => dispatch(asyncActionFailure(action, error)));
+    };
 }

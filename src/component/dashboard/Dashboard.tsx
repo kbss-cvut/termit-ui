@@ -4,7 +4,6 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Col, Row} from "reactstrap";
 import TermFrequency from "../statistics/termfrequency/TermFrequency";
 import PanelWithActions from "../misc/PanelWithActions";
-import templateQuery from "../statistics/termfrequency/TermFrequency.rq";
 import LastEditedAssets from "./widget/LastEditedAssets";
 import "./Dashboard.scss";
 import NewsAlert from "./widget/NewsAlert";
@@ -21,9 +20,7 @@ const Dashboard: React.FC<HasI18n> = (props) => (<>
             </Col>
             <Col xl={4} lg={6} md={12}>
                 <PanelWithActions className="p-0" title={props.i18n("dashboard.widget.typeFrequency.title")}>
-                    <TermFrequency
-                        sparqlQuery={templateQuery}
-                        lang={props.locale}/>
+                    <TermFrequency/>
                 </PanelWithActions>
             </Col>
         </Row>

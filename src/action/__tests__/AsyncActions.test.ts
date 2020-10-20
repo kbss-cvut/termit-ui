@@ -20,7 +20,7 @@ import {
     loadMyAssets,
     loadResource,
     loadResources,
-    loadResourceTermAssignmentsInfo,
+    loadResourceTermAssignmentsInfo, loadStatistics,
     loadTerm,
     loadTermAssignmentsInfo,
     loadTerms,
@@ -1746,6 +1746,17 @@ describe("Async actions", () => {
                 expect(notifyAction.notification.source.type).toEqual(NotificationType.ASSET_UPDATED);
                 expect(notifyAction.notification.original).toEqual(original);
                 expect(notifyAction.notification.updated).toEqual(updated);
+            });
+        });
+    });
+
+    describe("loadStatistics", () => {
+        it("uses provided type argument as part of URL when loading statistics", () => {
+            Ajax.get = jest.fn().mockResolvedValue({result: [{id: Generator.generateUri(), count: 1, label: "Test"}]});
+            const type = "term-frequency";
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadStatistics(type))).then(() => {
+                const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(url).toContain(`/statistics/${type}`);
             });
         });
     });
