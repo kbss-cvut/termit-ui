@@ -17,12 +17,17 @@ footer {
 .footer-row {
   display: flex;
   align-items: center;
+  vertical-align: middle;
   height: $footer-height;
   font-size: 0.875rem;
   z-index: 10;
 
   @media (max-width: $sm - 1px) {
     font-size: 0.6875rem;
+  }
+
+  .grant-logo {
+    height: $footer-height;
   }
 }
 
