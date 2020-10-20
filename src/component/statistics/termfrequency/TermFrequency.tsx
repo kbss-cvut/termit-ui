@@ -22,7 +22,7 @@ const TermFrequency: React.FC<Props> = (props) => {
     React.useEffect(() => {
         loadStatistics().then(data => setQueryResult(data));
     }, [loadStatistics]);
-    if (!queryResult) {
+    if (!queryResult || !queryResult) {
         return <div>{props.renderMask()}</div>;
     }
 

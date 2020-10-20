@@ -1114,11 +1114,11 @@ export function invalidateCaches() {
     }
 }
 
-export function loadStatistics(type: string, parameters: {} = {}) {
+export function loadStatistics(type: string) {
     const action = {type: ActionType.LOAD_STATISTICS};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${Constants.API_PREFIX}/statistics/${type}`, params(parameters))
+        return Ajax.get(`${Constants.API_PREFIX}/statistics/${type}`)
             .then((data: any) => {
                 dispatch(asyncActionSuccess(action));
                 return data;
