@@ -116,14 +116,14 @@ describe("TermAssignments", () => {
         });
     });
 
-    it("renders resource with badge showing number of occurrences of term in file", () => {
+    it("renders resource with badge showing number of suggested occurrences of term in file", () => {
         const fileIri = Generator.generateUri();
         const fileName = "Test file";
         const occurrences: TermOccurrences[] = [{
             term: {iri: term.iri},
             resource: {iri: fileIri},
             label: fileName,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE],
+            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE, VocabularyUtils.SUGGESTED_TERM_OCCURRENCE],
             count: 2
         }];
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve(occurrences));
@@ -164,9 +164,9 @@ describe("TermAssignments", () => {
         return Promise.resolve().then(() => {
             mounted.update();
             const checks = mounted.find(GoCheck);
-            expect(checks.length).toEqual(3);
+            expect(checks.length).toEqual(2);
             const badges = mounted.find(Badge);
-            expect(badges.length).toEqual(2);
+            expect(badges.length).toEqual(1);
         });
     });
 
