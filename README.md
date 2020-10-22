@@ -1,4 +1,5 @@
-# TermIt UI
+# TermIt UI 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a0f3b22c-93d8-4017-a5e5-0d4d531ebd94/deploy-status)](https://app.netlify.com/sites/termit-dev/deploys)
 
 This project was bootstrapped with [Create React App](https://github.com/wmonk/create-react-app-typescript), TypeScript version.
 
