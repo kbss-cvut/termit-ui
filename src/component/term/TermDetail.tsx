@@ -42,7 +42,7 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export interface TermDetailState extends EditableComponentState {
-    validationScore: number;
+    validationScore: number | null;
     language: string;
 }
 
@@ -61,7 +61,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
             edit: false,
             showRemoveDialog: false,
             language: getShortLocale(props.locale),
-            validationScore: -1
+            validationScore: null
         };
     }
 
@@ -85,7 +85,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
     private loadValidationResults = () => {
         (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) ?
-         this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(-1);
+         this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(null);
     };
 
     private computeScore(results: ValidationResult []): void {
@@ -147,7 +147,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         return buttons;
     }
 
-    public setBadgeColor(score: number): string {
+    public setBadgeColor(score: number | null): string {
         switch (score) {
             case 100:
                 return "dark-green";
@@ -207,7 +207,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     private renderTitle() {
         const term = this.props.term!;
         return <>
-            {this.state.validationScore > -1? this.renderBadge() : null}
+            {this.state.validationScore? this.renderBadge() : null}
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
             <h6>{getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ")}</h6>
