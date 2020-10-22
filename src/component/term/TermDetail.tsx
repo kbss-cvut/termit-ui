@@ -207,7 +207,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     private renderTitle() {
         const term = this.props.term!;
         return <>
-            {this.state.validationScore? this.renderBadge() : null}
+            {this.state.validationScore !== null? this.renderBadge() : null}
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
             <h6>{getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ")}</h6>
