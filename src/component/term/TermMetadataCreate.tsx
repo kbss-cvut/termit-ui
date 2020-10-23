@@ -11,11 +11,14 @@ import TermMetadataCreateForm from "./TermMetadataCreateForm";
 import AssetFactory from "../../util/AssetFactory";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {getLocalized} from "../../model/MultilingualString";
-import {getShortLocale} from "../../util/IntlUtil";
+import {connect} from "react-redux";
+import TermItState from "../../model/TermItState";
+import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 
 interface TermMetadataCreateOwnProps {
     onCreate: (term: Term, newTerm: boolean) => void;
     vocabularyIri: string;
+    language: string;
 }
 
 declare type TermMetadataCreateProps =
@@ -24,6 +27,7 @@ declare type TermMetadataCreateProps =
     & RouteComponentProps<any>;
 
 interface CreateVocabularyTermState extends TermData {
+    language: string;
 }
 
 export function isFormValid(data: TermData, locale?: string) {
@@ -34,7 +38,7 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
 
     constructor(props: TermMetadataCreateProps) {
         super(props);
-        this.state = AssetFactory.createEmptyTermData(getShortLocale(props.locale));
+        this.state = Object.assign(AssetFactory.createEmptyTermData(props.language), {language: props.language});
     }
 
     private cancelCreation = () => {
@@ -47,15 +51,25 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
     };
 
     private onSave = () => {
-        this.props.onCreate(new Term(this.state), false);
+        const t = new Term(this.state);
+        // @ts-ignore
+        delete t.language;
+        this.props.onCreate(t, false);
     };
 
     private onSaveAndGoToNewTerm = () => {
-        this.props.onCreate(new Term(this.state), true);
+        const t = new Term(this.state);
+        // @ts-ignore
+        delete t.language;
+        this.props.onCreate(new Term(t), true);
     };
 
     public onChange = (change: object, callback?: () => void) => {
         this.setState(change, callback);
+    };
+
+    public setLanguage = (language: string) => {
+        this.setState({language});
     };
 
     public render() {
@@ -63,10 +77,11 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
 
         return <>
             <HeaderWithActions title={i18n("glossary.form.header")}/>
+            <EditLanguageSelector language={this.state.language} onSelect={this.setLanguage} term={this.state}/>
             <Card id="create-term">
                 <CardBody>
                     <TermMetadataCreateForm onChange={this.onChange} termData={this.state}
-                                            vocabularyIri={this.props.vocabularyIri}/>
+                                            language={this.state.language} vocabularyIri={this.props.vocabularyIri}/>
                     <Row>
                         <Col md={12}>
                             <ButtonToolbar className="d-flex justify-content-center mt-4">
@@ -86,4 +101,4 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
     }
 }
 
-export default withRouter(injectIntl(withI18n(TermMetadataCreate)));
+export default connect((state: TermItState) => ({language: state.configuration.language}))(withRouter(injectIntl(withI18n(TermMetadataCreate))));
