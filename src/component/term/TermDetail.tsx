@@ -16,7 +16,7 @@ import Utils from "../../util/Utils";
 import AppNotification from "../../model/AppNotification";
 import {publishNotification} from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
-import {IRI} from "../../util/VocabularyUtils";
+import {IRI, IRIImpl} from "../../util/VocabularyUtils";
 import * as _ from "lodash";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
@@ -84,8 +84,10 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     }
 
     private loadValidationResults = () => {
-        (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) ?
-         this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(null);
+        const vocabularyName: string = this.props.match.params.name;
+        const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
+        (this.props.validationResults && this.props.validationResults[IRIImpl.toString(IRIImpl.create({fragment: vocabularyName, namespace}))]) ?
+         this.computeScore(this.props.validationResults[IRIImpl.toString(IRIImpl.create({fragment: vocabularyName, namespace}))].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(null);
     };
 
     private computeScore(results: ValidationResult []): void {
