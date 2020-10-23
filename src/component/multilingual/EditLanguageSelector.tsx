@@ -8,7 +8,7 @@ import Constants from "../../util/Constants";
 import {getShortLocale} from "../../util/IntlUtil";
 import Term from "../../model/Term";
 import {getLanguages} from "./LanguageSelector";
-import "./EditLanguageSelector.scss";
+import "./LanguageSelector.scss";
 
 interface EditLanguageSelectorProps extends HasI18n {
     language: string;
