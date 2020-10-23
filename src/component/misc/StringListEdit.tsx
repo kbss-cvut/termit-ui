@@ -80,6 +80,7 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
             return null;
         }
         return <table>
+            <tbody>
             {list.map(s => <tr key={s}>
                 <td className="align-middle">
                     <ul className="term-items mt-0 mb-0">
@@ -95,6 +96,7 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
                     </Badge>
                 </td>
             </tr>)}
+            </tbody>
         </table>;
     }
 }

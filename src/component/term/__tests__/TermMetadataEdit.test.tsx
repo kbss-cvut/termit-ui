@@ -93,7 +93,7 @@ describe("Term edit", () => {
 
     it("does not check for label uniqueness when new label is the same as original", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                  language={Constants.DEFAULT_LANGUAGE}{...intlFunctions()}/>);
+                                                  language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
@@ -102,6 +102,40 @@ describe("Term edit", () => {
             }
         });
         expect(Ajax.get).not.toHaveBeenCalled();
+    });
+
+    it("merges existing label value in a different language with edited value", () => {
+        const czechValue = "Test in Czech";
+        const englishValue = "Test in English";
+        term.label.cs = czechValue;
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language="en" {...intlFunctions()}/>);
+        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(false));
+        wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
+            currentTarget: {
+                name: "edit-term-label",
+                value: englishValue
+            }
+        });
+        wrapper.update();
+        expect(wrapper.state().label).toEqual({cs: czechValue, en: englishValue});
+    });
+
+    it("merges existing definition value in a different language with edited value", () => {
+        const czechValue = "Term definition in Czech";
+        const englishValue = "Term definition in English";
+        term.definition = {cs: czechValue};
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language="en" {...intlFunctions()}/>);
+        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(false));
+        wrapper.instance().onDefinitionChange({
+            currentTarget: {
+                name: "edit-term-definition",
+                value: englishValue
+            }
+        } as any);
+        wrapper.update();
+        expect(wrapper.state().definition).toEqual({cs: czechValue, en: englishValue});
     });
 
     /**

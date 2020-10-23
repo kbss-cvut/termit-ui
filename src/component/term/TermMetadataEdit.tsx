@@ -15,15 +15,12 @@ import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
-import {getLocalized, getLocalizedOrDefault, getLocalizedPlural, langString} from "../../model/MultilingualString";
-import {connect} from "react-redux";
-import TermItState from "../../model/TermItState";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
     save: (term: Term) => void;
     cancel: () => void;
-
     language: string;
 }
 
@@ -46,7 +43,9 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const label = e.currentTarget.value;
-        this.setState({labelExists: false, label: langString(label, this.props.language)});
+        const update = {};
+        update[this.props.language] = label;
+        this.setState({labelExists: false, label: Object.assign({}, this.state.label, update)});
         if (label.toLowerCase() === getLocalized(this.props.term.label).toLowerCase()) {
             return;
         }
@@ -59,7 +58,9 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
-        this.setState({definition: langString(value, this.props.language)});
+        const change = {};
+        change[this.props.language] = value;
+        this.setState({definition: Object.assign({}, this.state.definition, change)});
     }
 
     private onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +123,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                          value={getLocalizedOrDefault(this.state.label, "", language)}
                                          onChange={this.onLabelChange}
                                          label={i18n("asset.label")} invalid={this.state.labelExists}
-                                         invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: this.state.label}) : undefined}
+                                         invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
                                          help={i18n("term.label.help")}/>
                         </Col>
                     </Row>
@@ -215,4 +216,4 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     }
 }
 
-export default connect((state: TermItState) => ({language: state.configuration.language}))(injectIntl(withI18n(TermMetadataEdit)));
+export default injectIntl(withI18n(TermMetadataEdit));

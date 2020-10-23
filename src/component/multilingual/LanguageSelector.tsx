@@ -13,7 +13,7 @@ interface LanguageSelectorProps extends HasI18n {
     onSelect: (lang: string) => void;
 }
 
-function getLanguages(term: Term): string[] {
+export function getLanguages(term: Term): string[] {
     const languages: Set<string> = new Set();
     TERM_MULTILINGUAL_ATTRIBUTES.filter(att => term[att]).forEach(att => {
         Utils.sanitizeArray(term[att]).forEach(attValue => Object.getOwnPropertyNames(attValue).forEach(n => languages.add(n)))
