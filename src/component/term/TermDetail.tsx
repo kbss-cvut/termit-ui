@@ -27,6 +27,7 @@ import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import ValidationResult from "../../model/ValidationResult";
+import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -36,8 +37,8 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
-    validationResults: {[vocabularyIri : string] : ValidationResult[]};
-    loadValidationResults: ( vocabularyIri : IRI ) => Promise<ValidationResult[]>;
+    validationResults: { [vocabularyIri: string]: ValidationResult[] };
+    loadValidationResults: (vocabularyIri: IRI) => Promise<ValidationResult[]>;
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -85,7 +86,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
     private loadValidationResults = () => {
         (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) ?
-        this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(-1);
+            this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(-1);
     }
 
     private computeScore(results: ValidationResult []): void {
@@ -96,7 +97,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
             return reduceScore;
         }, 0);
 
-            this.setState({validationScore : score})
+        this.setState({validationScore: score})
     }
 
     public componentDidUpdate(prevProps: TermDetailProps) {
@@ -130,22 +131,24 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         });
     };
 
-    public getButtons = () => {
-        const buttons = [];
+    public getActions = () => {
+        const actions = [];
         if (!this.state.edit) {
-            buttons.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
+            actions.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
                                  key="term-detail-edit"
                                  title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
         }
-        buttons.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
+        actions.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
         if (!this.state.edit) {
-            // TODO This will change when editing multilingual strings is supported
-            buttons.push(<LanguageSelector key={"term-language-selector"} term={this.props.term}
+            actions.push(<LanguageSelector key={"term-language-selector"} term={this.props.term}
                                            language={this.state.language} onSelect={this.setLanguage}/>);
+        } else {
+            actions.push(<EditLanguageSelector key="term-edit-language-selector" term={this.props.term!}
+                                               language={this.state.language} onSelect={this.setLanguage}/>);
         }
-        return buttons;
+        return actions;
     }
 
     public setBadgeColor(score: number): string {
@@ -165,10 +168,10 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
     public renderBadge() {
         const emptyString = "  ";
-        return <Badge color = {this.setBadgeColor(this.state.validationScore)}
+        return <Badge color={this.setBadgeColor(this.state.validationScore)}
                       className="term-quality-badge"
-                > {emptyString}
-               </Badge>
+        > {emptyString}
+        </Badge>
     }
 
     public render() {
@@ -176,7 +179,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (!term) {
             return null;
         }
-        const buttons = this.getButtons();
+        const buttons = this.getActions();
         return <div id="term-detail">
             <HeaderWithActions title={this.renderTitle()} actions={buttons}/>
 
@@ -184,7 +187,8 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
                                onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
 
             {this.state.edit ?
-                <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}/> :
+                <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}
+                                  language={this.state.language}/> :
                 <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}/>}
         </div>
     }
@@ -204,7 +208,7 @@ export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
         vocabulary: state.vocabulary,
-        validationResults : state.validationResults
+        validationResults: state.validationResults
     };
 }, (dispatch: ThunkDispatch) => {
     return {
