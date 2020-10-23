@@ -75,6 +75,6 @@ describe("LanguageSelector", () => {
         const items = result.find(NavItem);
         expect(items.length).toEqual(2);
         const texts = items.map(i => i.text());
-        ["cs", "en"].forEach(lang => expect(texts.find(t => ISO6391.getNativeName(lang))).toBeDefined());
+        ["cs", "en"].forEach(lang => expect(texts.find(t => t.indexOf(ISO6391.getNativeName(lang)) !== -1)).toBeDefined());
     });
 });

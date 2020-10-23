@@ -72,8 +72,8 @@ export function getLocalized(str?: MultilingualString | string, lang: string = C
 /**
  * Gets value in the specified language from the specified plural string.
  *
- * If such translation is not available, this method attempts to get the value in the configured default language, no
- * language. If all of these fail, an empty array is returned.
+ * If such translation is not available, this method attempts to get the value with no language (@none). If both of
+ * these fail, an empty array is returned.
  *
  * @param str String to get localized value from
  * @param lang Target language
@@ -85,8 +85,6 @@ export function getLocalizedPlural(str?: PluralMultilingualString, lang: string 
     lang = lang.toLowerCase();
     if (str[lang] !== undefined) {
         return Utils.sanitizeArray(str[lang]);
-    } else if (str[Constants.DEFAULT_LANGUAGE]) {
-        return Utils.sanitizeArray(str[Constants.DEFAULT_LANGUAGE]);
     }
     return str[NO_LANG] !== undefined ? Utils.sanitizeArray(str[NO_LANG]) : [];
 }
