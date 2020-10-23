@@ -23,6 +23,7 @@ describe("Term edit", () => {
     let term: Term;
     let onSave: (t: Term) => void;
     let onCancel: () => void;
+    let selectLanguage: (lang: string) => void;
 
     beforeEach(() => {
         term = new Term({
@@ -33,13 +34,15 @@ describe("Term edit", () => {
         });
         onSave = jest.fn();
         onCancel = jest.fn();
+        selectLanguage = jest.fn();
     });
 
 
     it("disables save button when label field is empty", () => {
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
+                                                                    language={Constants.DEFAULT_LANGUAGE}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         return Promise.resolve().then(() => {
             wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
                 currentTarget: {
@@ -55,7 +58,8 @@ describe("Term edit", () => {
     it("invokes save with state data when save is clicked", () => {
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(false));
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                  language={Constants.DEFAULT_LANGUAGE}{...intlFunctions()}/>);
+                                                  language={Constants.DEFAULT_LANGUAGE}
+                                                  selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const newLabel = "New label";
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
@@ -75,7 +79,8 @@ describe("Term edit", () => {
 
     it("checks for label uniqueness in vocabulary on label change", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                  language={Constants.DEFAULT_LANGUAGE}{...intlFunctions()}/>);
+                                                  language={Constants.DEFAULT_LANGUAGE}
+                                                  selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const mock = jest.fn().mockImplementation(() => Promise.resolve(true));
         Ajax.get = mock;
         const newLabel = "New label";
@@ -93,7 +98,8 @@ describe("Term edit", () => {
 
     it("does not check for label uniqueness when new label is the same as original", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                  language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
+                                                  language={Constants.DEFAULT_LANGUAGE}
+                                                  selectLanguage={selectLanguage} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
@@ -109,7 +115,8 @@ describe("Term edit", () => {
         const englishValue = "Test in English";
         term.label.cs = czechValue;
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language="en" {...intlFunctions()}/>);
+                                                                    language="en"
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(false));
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
@@ -126,7 +133,8 @@ describe("Term edit", () => {
         const englishValue = "Term definition in English";
         term.definition = {cs: czechValue};
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language="en" {...intlFunctions()}/>);
+                                                                    language="en"
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(false));
         wrapper.instance().onDefinitionChange({
             currentTarget: {
@@ -143,7 +151,8 @@ describe("Term edit", () => {
      */
     it("does not check for label uniqueness when new label differs only in case from original", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                  language={Constants.DEFAULT_LANGUAGE}{...intlFunctions()}/>);
+                                                  language={Constants.DEFAULT_LANGUAGE}
+                                                  selectLanguage={selectLanguage} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
@@ -156,7 +165,8 @@ describe("Term edit", () => {
 
     it("disables save button when duplicate label is set", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                  language={Constants.DEFAULT_LANGUAGE}{...intlFunctions()}/>);
+                                                  language={Constants.DEFAULT_LANGUAGE}
+                                                  selectLanguage={selectLanguage} {...intlFunctions()}/>);
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
@@ -175,7 +185,8 @@ describe("Term edit", () => {
         const property = Generator.generateUri();
         term.unmappedProperties = new Map([[property, ["test"]]]);
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit term={term} save={onSave} cancel={onCancel}
-                                                                    language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
+                                                                    language={Constants.DEFAULT_LANGUAGE}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const updatedProperties = new Map([[property, ["test1", "test2"]]]);
         wrapper.instance().setState({unmappedProperties: updatedProperties});
         (wrapper.instance()).onSave();
@@ -187,7 +198,8 @@ describe("Term edit", () => {
 
     it("passes mapped Term properties for ignoring to UnmappedPropertiesEdit", () => {
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
+                                                                    language={Constants.DEFAULT_LANGUAGE}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const ignored: string[] | undefined = wrapper.find(UnmappedPropertiesEdit).prop("ignoredProperties");
         expect(ignored).toBeDefined();
         expect(ignored!.indexOf(VocabularyUtils.RDF_TYPE)).not.toEqual(-1);
@@ -197,7 +209,8 @@ describe("Term edit", () => {
     it("passes label value in selected language to label edit input", () => {
         term.label = {"en": "Building", "cs": "Budova"};
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={"en"} {...intlFunctions()}/>);
+                                                                    language={"en"}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const labelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label");
         expect(labelInput.prop("value")).toEqual(term.label.en);
     });
@@ -205,7 +218,8 @@ describe("Term edit", () => {
     it("passes definition value in selected language to definition edit textarea", () => {
         term.definition = {"en": "Building is a kind of construction", "cs": "Budova je typem stavby"};
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={"cs"} {...intlFunctions()}/>);
+                                                                    language={"cs"}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const definitionInput = wrapper.find(TextArea).findWhere(ci => ci.prop("name") === "edit-term-definition");
         expect(definitionInput.prop("value")).toEqual(term.definition.cs);
     });
@@ -214,7 +228,8 @@ describe("Term edit", () => {
         term.altLabels = {"en": ["building", "construction"], "cs": ["budova", "stavba"]};
         term.hiddenLabels = {"en": ["shack"], "cs": ["barák", "dům"]};
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={"cs"} {...intlFunctions()}/>);
+                                                                    language={"cs"}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const stringListEdits = wrapper.find(StringListEdit);
         expect(stringListEdits.at(0).prop("list")).toEqual(term.altLabels.cs);
         expect(stringListEdits.at(1).prop("list")).toEqual(term.hiddenLabels.cs);
@@ -222,7 +237,8 @@ describe("Term edit", () => {
 
     it("maps list of string alt labels to multilingual strings with selected language", () => {
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={"cs"} {...intlFunctions()}/>);
+                                                                    language={"cs"}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const list = ["budova", "stavba"];
         wrapper.instance().onAltLabelsChange(list);
         wrapper.update();
@@ -231,7 +247,8 @@ describe("Term edit", () => {
 
     it("maps list of string hidden labels to multilingual strings with selected language", () => {
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={"de"} {...intlFunctions()}/>);
+                                                                    language={"de"}
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
         const list = ["bau", "gebäude"];
         wrapper.instance().onHiddenLabelsChange(list);
         wrapper.update();
