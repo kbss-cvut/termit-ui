@@ -3,9 +3,9 @@ import ISO6391 from "iso-639-1";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TERM_MULTILINGUAL_ATTRIBUTES} from "../../model/Term";
 import {injectIntl} from "react-intl";
-import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown} from "reactstrap";
-import {FaGlobe} from "react-icons/fa";
+import {Nav, NavItem, NavLink} from "reactstrap";
 import Utils from "../../util/Utils";
+import "./LanguageSelector.scss";
 
 interface LanguageSelectorProps extends HasI18n {
     term: Term | null;
@@ -18,11 +18,13 @@ export function getLanguages(term: Term): string[] {
     TERM_MULTILINGUAL_ATTRIBUTES.filter(att => term[att]).forEach(att => {
         Utils.sanitizeArray(term[att]).forEach(attValue => Object.getOwnPropertyNames(attValue).forEach(n => languages.add(n)))
     });
-    return Array.from(languages);
+    const langArr = Array.from(languages);
+    langArr.sort();
+    return langArr;
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = props => {
-    const {term, language, onSelect, i18n} = props;
+    const {term, language, onSelect, formatMessage} = props;
     if (!term) {
         return null;
     }
@@ -30,19 +32,18 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = props => {
     if (languages.length <= 1) {
         return null;
     }
-    languages.sort();
-    return <UncontrolledDropdown id="term-language-selector">
-        <DropdownToggle id="term-language-selector-toggle" caret={true} size="sm"
-                        title={i18n("term.language.selector")} className="ml-1 mr-0">
-            <FaGlobe className="mr-1"/>
-            {ISO6391.getNativeName(language)}
-        </DropdownToggle>
-        <DropdownMenu>
-            {languages.map(lang => <DropdownItem key={lang} onClick={() => onSelect(lang)}>
+    return <div><Nav id="term-language-selector" tabs={true} className="language-selector-nav">
+        {languages.map(lang => <NavItem key={lang}
+                                        title={formatMessage("term.language.selector.item", {
+                                            lang: ISO6391.getName(lang),
+                                            nativeLang: ISO6391.getNativeName(lang)
+                                        })}
+                                        active={language === lang}>
+            <NavLink onClick={() => onSelect(lang)} className={language === lang ? "active bg-white" : "language-selector-item"}>
                 {ISO6391.getNativeName(lang)}
-            </DropdownItem>)}
-        </DropdownMenu>
-    </UncontrolledDropdown>;
+            </NavLink>
+        </NavItem>)}
+    </Nav></div>;
 };
 
 export default injectIntl(withI18n(LanguageSelector));

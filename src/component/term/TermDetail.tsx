@@ -141,13 +141,6 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         actions.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
-        if (!this.state.edit) {
-            actions.push(<LanguageSelector key={"term-language-selector"} term={this.props.term}
-                                           language={this.state.language} onSelect={this.setLanguage}/>);
-        } else {
-            actions.push(<EditLanguageSelector key="term-edit-language-selector" term={this.props.term!}
-                                               language={this.state.language} onSelect={this.setLanguage}/>);
-        }
         return actions;
     }
 
@@ -174,6 +167,16 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         </Badge>
     }
 
+    private renderLanguageSelector() {
+        if (!this.state.edit) {
+            return <LanguageSelector key={"term-language-selector"} term={this.props.term}
+                                           language={this.state.language} onSelect={this.setLanguage}/>;
+        } else {
+            return <EditLanguageSelector key="term-edit-language-selector" term={this.props.term!}
+                                               language={this.state.language} onSelect={this.setLanguage}/>;
+        }
+    }
+
     public render() {
         const {term, vocabulary} = this.props;
         if (!term) {
@@ -185,7 +188,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
                                onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
-
+            {this.renderLanguageSelector()}
             {this.state.edit ?
                 <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}
                                   language={this.state.language}/> :

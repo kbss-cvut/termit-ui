@@ -230,7 +230,7 @@ export default {
         "resource.metadata.document.files.empty": "Žádné soubory nenalezeny. Vytvořte nějaký...",
         "resource.document.vocabulary.create": "Připojit dokument",
 
-        "term.language.selector": "Vyberte jazyk hodnot atributů pojmu",
+        "term.language.selector.item": "Zobrazit data pojmu v jazyce: {nativeLang} ({lang})",
         "term.iri.help": "Identifikátor pojmu ve formě Internationalized Resource Identifier (IRI). Je " +
             " vygenerován automaticky na základě názvu, ale může být ručně upraven. Jedná se o možnost pro pokročilé uživatele." +
             "Identifikátor může obsahovat pouze " +
