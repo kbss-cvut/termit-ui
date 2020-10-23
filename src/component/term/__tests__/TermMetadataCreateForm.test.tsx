@@ -167,4 +167,44 @@ describe("TermMetadataCreateForm", () => {
         wrapper.instance().onHiddenLabelsChange(list);
         expect(onChange).toHaveBeenCalledWith({hiddenLabels: pluralLangString(list, "de")});
     });
+
+    it("merges existing label value in different language with newly set value in selected language", () => {
+        Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
+        const termData = AssetFactory.createEmptyTermData();
+        const enLabel = "Building";
+        const csLabel = "Budova";
+        termData.label = {"en": enLabel};
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language="cs"
+                                                                                termData={termData}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const labelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label");
+        labelInput.simulate("change", {
+            currentTarget: {
+                value: csLabel
+            }
+        });
+        wrapper.update();
+        expect(onChange).toHaveBeenCalledWith({label: {"en": enLabel, "cs": csLabel}});
+    });
+
+    it("merges existing definition value in different language with newly set value in selected language", () => {
+        Ajax.get = jest.fn().mockResolvedValue(Generator.generateUri());
+        const termData = AssetFactory.createEmptyTermData();
+        const enDefinition = "Building is a construction above ground.";
+        const csDefinition = "Budova je nadzemní konstrukce se zdmi.";
+        termData.definition = {"cs": csDefinition};
+        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
+                                                                                language="en"
+                                                                                termData={termData}
+                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const definitionArea = wrapper.find(TextArea).findWhere(ci => ci.prop("name") === "create-term-definition");
+        definitionArea.simulate("change", {
+            currentTarget: {
+                value: enDefinition
+            }
+        });
+        wrapper.update();
+        expect(onChange).toHaveBeenCalledWith({definition: {"en": enDefinition, "cs": csDefinition}});
+    });
 });

@@ -12,9 +12,7 @@ import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
-import {getLocalized, getLocalizedOrDefault, getLocalizedPlural, langString} from "../../model/MultilingualString";
-import {connect} from "react-redux";
-import TermItState from "../../model/TermItState";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
@@ -51,7 +49,9 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
     private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const label = e.currentTarget.value;
-        this.props.onChange({label: langString(label, this.props.language)});
+        const change = Object.assign({}, this.props.termData.label);
+        change[this.props.language] = label;
+        this.props.onChange({label: change});
         this.resolveIdentifier(label);
         this.checkLabelUniqueness(label);
     };
@@ -82,8 +82,11 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         });
     }
 
-    private onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.props.onChange({definition: langString(e.currentTarget.value, this.props.language)});
+    public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const value = e.currentTarget.value;
+        const change = Object.assign({}, this.props.termData.definition);
+        change[this.props.language] = value;
+        this.props.onChange({definition: change});
     };
 
     private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -127,7 +130,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         const {termData, i18n, language} = this.props;
         const sources = termData.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
-        const label = getLocalized(termData.label, language);
+        const label = getLocalizedOrDefault(termData.label, "", language);
         return <Form>
             <Row>
                 <Col xs={12}>
@@ -228,4 +231,4 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     }
 }
 
-export default connect((state: TermItState) => ({language: state.configuration.language}))(injectIntl(withI18n(TermMetadataCreateForm)));
+export default injectIntl(withI18n(TermMetadataCreateForm));
