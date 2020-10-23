@@ -25,9 +25,7 @@ import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
-import LanguageSelector from "../multilingual/LanguageSelector";
 import ValidationResult from "../../model/ValidationResult";
-import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -167,16 +165,6 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         </Badge>
     }
 
-    private renderLanguageSelector() {
-        if (!this.state.edit) {
-            return <LanguageSelector key={"term-language-selector"} term={this.props.term}
-                                           language={this.state.language} onSelect={this.setLanguage}/>;
-        } else {
-            return <EditLanguageSelector key="term-edit-language-selector" term={this.props.term!}
-                                               language={this.state.language} onSelect={this.setLanguage}/>;
-        }
-    }
-
     public render() {
         const {term, vocabulary} = this.props;
         if (!term) {
@@ -188,11 +176,11 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
                                onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
-            {this.renderLanguageSelector()}
             {this.state.edit ?
                 <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}
-                                  language={this.state.language}/> :
-                <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}/>}
+                                  language={this.state.language} selectLanguage={this.setLanguage}/> :
+                <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}
+                              selectLanguage={this.setLanguage}/>}
         </div>
     }
 

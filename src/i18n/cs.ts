@@ -231,6 +231,7 @@ export default {
         "resource.document.vocabulary.create": "Připojit dokument",
 
         "term.language.selector.item": "Zobrazit data pojmu v jazyce: {nativeLang} ({lang})",
+        "term.language.add.placeholder": "Vyberte...",
         "term.iri.help": "Identifikátor pojmu ve formě Internationalized Resource Identifier (IRI). Je " +
             " vygenerován automaticky na základě názvu, ale může být ručně upraven. Jedná se o možnost pro pokročilé uživatele." +
             "Identifikátor může obsahovat pouze " +

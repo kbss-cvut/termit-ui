@@ -231,6 +231,7 @@ export default {
         "resource.document.vocabulary.create": "Attach document",
 
         "term.language.selector.item": "View term data in language: {nativeLang} ({lang})",
+        "term.language.add.placeholder": "Select...",
         "term.iri.help": "Term identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
             "generated automatically based on the specified label, but you can adjust it manually. The identifier " +
             "can contain just alphanumerical characters and dashes (\"-\"). Slashes (\"/\") are used to separate " +
