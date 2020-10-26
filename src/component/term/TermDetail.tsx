@@ -16,7 +16,7 @@ import Utils from "../../util/Utils";
 import AppNotification from "../../model/AppNotification";
 import {publishNotification} from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
-import {IRI, IRIImpl} from "../../util/VocabularyUtils";
+import {IRI} from "../../util/VocabularyUtils";
 import * as _ from "lodash";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
@@ -33,7 +33,7 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
     vocabulary: Vocabulary;
     loadVocabulary: (iri: IRI) => void;
-    loadTerm: (termName: string, vocabularyIri: IRI) => Promise<any>;
+    loadTerm: (termName: string, vocabularyIri: IRI) => void;
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
@@ -41,7 +41,6 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export interface TermDetailState extends EditableComponentState {
-    validationScore: number | null;
     language: string;
 }
 
@@ -59,8 +58,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.state = {
             edit: false,
             showRemoveDialog: false,
-            language: getShortLocale(props.locale),
-            validationScore: null
+            language: getShortLocale(props.locale)
         };
     }
 
@@ -79,25 +77,16 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         const vocabularyName: string = this.props.match.params.name;
         const termName: string = this.props.match.params.termName;
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        this.props.loadTerm(termName, {fragment: vocabularyName, namespace}).then( () => this.loadValidationResults());
+        this.props.loadTerm(termName, {fragment: vocabularyName, namespace});
     }
 
-    private loadValidationResults = () => {
-        const vocabularyName: string = this.props.match.params.name;
-        const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        (this.props.validationResults && this.props.validationResults[IRIImpl.toString(IRIImpl.create({fragment: vocabularyName, namespace}))]) ?
-         this.computeScore(this.props.validationResults[IRIImpl.toString(IRIImpl.create({fragment: vocabularyName, namespace}))].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(null);
-    };
-
-    private computeScore(results: ValidationResult []): void {
-        const score = results.reduce((reduceScore, result) => {
+    private computeScore(results: ValidationResult []): number | undefined {
+        return results.reduce((reduceScore, result) => {
             if (importantRules.indexOf(result.sourceShape.iri) >= 0) {
                 return reduceScore - 25;
             }
             return reduceScore;
         }, 100);
-
-        this.setState({validationScore: score})
     }
 
     public componentDidUpdate(prevProps: TermDetailProps) {
@@ -143,7 +132,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         return actions;
     }
 
-    public setBadgeColor(score: number | null): string {
+    public setBadgeColor(score: number | undefined): string {
         switch (score) {
             case 100:
                 return "dark-green";
@@ -173,10 +162,14 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     }
 
     public renderBadge() {
+        let score: number | undefined;
+        if (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) {
+            score = this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri));
+        }
             const emptyString = "  ";
-            return <Badge color = {this.setBadgeColor(this.state.validationScore)}
+            return <Badge color = {this.setBadgeColor(score)}
                           className="term-quality-badge"
-                          title={"The score of this term is "+ this.state.validationScore + "%. Click to see the validation results."}
+                          title={"The score of this term is "+ score + "%. Click to see the validation results."}
                           onClick={this.onBadgeClick}
             > {emptyString}
             </Badge>
@@ -205,7 +198,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         const term = this.props.term!;
         const altLabels = getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ");
         return <>
-            {this.state.validationScore !== null? this.renderBadge() : null}
+            {this.renderBadge()}
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
             <h6>{altLabels.length > 0 ? altLabels : "\u00a0"}</h6>
