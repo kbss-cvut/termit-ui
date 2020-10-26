@@ -31,7 +31,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => (
         <DropdownToggle
             nav={true} caret={true}
             className={
-                classNames(props.dark ? "text-white-link" : "text-dark text-dropdown",
+                classNames(props.dark ? "text-white-link" : "dark-icon text-dropdown",
                     "d-flex",
                     "align-items-center",
                     "px-2",
