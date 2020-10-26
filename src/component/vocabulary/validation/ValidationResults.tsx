@@ -18,8 +18,13 @@ interface ValidationResultsProps extends HasI18n {
 export class ValidationResults extends React.Component<ValidationResultsProps> {
 
     private renderResultMessage(result: ValidationResult) {
-        let message = result.message.find(msg => msg.language === this.props.locale);
-        if (!message) message = result.message.find(() => true);
+        let message;
+        if (Array.isArray(result.message)) {
+            message = result.message.find(msg => msg.language === this.props.locale);
+            if (!message) message = result.message.find(() => true);
+        } else {
+            message = result.message;
+        }
         return <SeverityText key={result.id} severityIri={result.severity.iri} message={message!.value}/>;
     }
 

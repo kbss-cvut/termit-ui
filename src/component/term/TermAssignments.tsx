@@ -37,7 +37,7 @@ function isOccurrence(item: AssignmentInfo) {
 }
 
 function isSuggestedOccurrence(item: AssignmentInfo) {
-    return Utils.sanitizeArray(item.types).indexOf(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE) !== -1;
+    return isOccurrence(item) && Utils.sanitizeArray(item.types).indexOf(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE) !== -1;
 }
 
 export class TermAssignments extends React.Component<TermAssignmentsProps, TermAssignmentsState> {
@@ -80,11 +80,6 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
                                   id="term-metadata-assignments-assignment-help" className="ml-1"/>
                     </th>
                     <th className="col-xs-1 text-center">
-                        {i18n("term.metadata.assignments.occurrence")}
-                        <InfoIcon text={i18n("term.metadata.assignments.occurrence.help")}
-                                  id="term-metadata-assignments-occurrence-help" className="ml-1"/>
-                    </th>
-                    <th className="col-xs-1 text-center">
                         {i18n("term.metadata.assignments.suggestedOccurrence")}
                         <InfoIcon text={i18n("term.metadata.assignments.suggestedOccurrence.help")}
                                   id="term-metadata-assignments-suggestedOccurrence-help" className="ml-1"/>
@@ -113,9 +108,6 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
                             title={this.props.i18n("term.metadata.assignments.assignment.not.assigned")}><GoX/></span>}
                 </td>
                 <td className="text-center">
-                    {this.renderCheckWithCount(v.occurrenceCount)}
-                </td>
-                <td className="text-center">
                     {this.renderCheckWithCount(v.suggestedOccurrenceCount)}
                 </td>
             </tr>);
@@ -124,7 +116,7 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
     }
 
     private mapAssignments() {
-        const assignmentsPerResource = new Map<string, { resource: ResourceData, assignmentCount: number, occurrenceCount: number, suggestedOccurrenceCount: number }>();
+        const assignmentsPerResource = new Map<string, { resource: ResourceData, assignmentCount: number, suggestedOccurrenceCount: number }>();
         this.state.assignments.forEach(ass => {
             const resIri = ass.resource.iri!;
             let item;
@@ -137,16 +129,11 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
                         label: ass.label
                     },
                     assignmentCount: 0,
-                    occurrenceCount: 0,
                     suggestedOccurrenceCount: 0
                 };
             }
-            if (isOccurrence(ass)) {
                 if (isSuggestedOccurrence(ass)) {
                     item.suggestedOccurrenceCount = (ass as TermOccurrences).count;
-                } else {
-                    item.occurrenceCount = (ass as TermOccurrences).count;
-                }
             } else {
                 item.assignmentCount = 1;
             }
