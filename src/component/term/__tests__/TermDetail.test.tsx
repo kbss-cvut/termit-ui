@@ -196,7 +196,7 @@ describe("TermDetail", () => {
                                             history={history} location={location} match={match}
                                             validationResults={validationResults}
                                             {...intlFunctions()}/>);
-        const buttons = (wrapper.instance() as TermDetail).getButtons();
+        const buttons = (wrapper.instance() as TermDetail).getActions();
         expect(buttons.some(b => b.key === "term-detail-edit"));
         (wrapper.instance() as TermDetail).onEdit();
         expect(buttons.every(b => b.key !== "term-detail-edit"));

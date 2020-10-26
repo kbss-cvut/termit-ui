@@ -11,7 +11,7 @@ import {createTerm} from "../../action/AsyncActions";
 import {IRI} from "../../util/VocabularyUtils";
 import AssetFactory from "../../util/AssetFactory";
 import {langString} from "../../model/MultilingualString";
-import {getShortLocale} from "../../util/IntlUtil";
+import TermItState from "../../model/TermItState";
 
 interface CreateTermFromAnnotationProps extends HasI18n {
     show: boolean;
@@ -19,6 +19,7 @@ interface CreateTermFromAnnotationProps extends HasI18n {
     onMinimize: () => void; // Minimize will be used to allow the user to select definition for a term being created
     onTermCreated: (term: Term) => void;
     vocabularyIri: IRI;
+    language: string;
 
     createTerm: (term: Term, vocabularyIri: IRI) => Promise<any>;
 }
@@ -30,7 +31,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
 
     constructor(props: CreateTermFromAnnotationProps) {
         super(props);
-        this.state = AssetFactory.createEmptyTermData();
+        this.state = AssetFactory.createEmptyTermData(props.language);
     }
 
     /**
@@ -38,7 +39,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * component state.
      */
     public setLabel(label: string) {
-        this.setState({label: langString(label, getShortLocale(this.props.locale))});
+        this.setState({label: langString(label, this.props.language)});
     }
 
     /**
@@ -46,7 +47,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * parent component state.
      */
     public setDefinition(definition: string) {
-        this.setState({definition: langString(definition, getShortLocale(this.props.locale))});
+        this.setState({definition: langString(definition, this.props.language)});
     }
 
     public onChange = (change: object, callback?: () => void) => {
@@ -73,9 +74,8 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
                 {i18n("glossary.form.header")}
             </ModalHeader>
             <ModalBody>
-                <TermMetadataCreateForm onChange={this.onChange}
-                                        termData={this.state}
-                                        definitionSelector={this.props.onMinimize}
+                <TermMetadataCreateForm onChange={this.onChange} termData={this.state}
+                                        language={this.props.language} definitionSelector={this.props.onMinimize}
                                         vocabularyIri={this.props.vocabularyIri.namespace + this.props.vocabularyIri.fragment}/>
                 <Row>
                     <Col xs={12}>
@@ -93,7 +93,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
     }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
+export default connect((state: TermItState) => ({language: state.configuration.language}), (dispatch: ThunkDispatch) => {
     return {
         createTerm: (term: Term, vocabularyIri: IRI) => dispatch(createTerm(term, vocabularyIri))
     };

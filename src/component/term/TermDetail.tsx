@@ -25,7 +25,6 @@ import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
-import LanguageSelector from "../multilingual/LanguageSelector";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
@@ -38,7 +37,7 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
-    validationResults: {[vocabularyIri : string] : ValidationResult[]};
+    validationResults: {[vocabularyIri : string] : ValidationResult[] };
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -98,7 +97,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
             return reduceScore;
         }, 100);
 
-            this.setState({validationScore : score})
+        this.setState({validationScore: score})
     }
 
     public componentDidUpdate(prevProps: TermDetailProps) {
@@ -131,22 +130,17 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         });
     };
 
-    public getButtons = () => {
-        const buttons = [];
+    public getActions = () => {
+        const actions = [];
         if (!this.state.edit) {
-            buttons.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
+            actions.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
                                  key="term-detail-edit"
                                  title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
         }
-        buttons.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
+        actions.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
-        if (!this.state.edit) {
-            // TODO This will change when editing multilingual strings is supported
-            buttons.push(<LanguageSelector key={"term-language-selector"} term={this.props.term}
-                                           language={this.state.language} onSelect={this.setLanguage}/>);
-        }
-        return buttons;
+        return actions;
     }
 
     public setBadgeColor(score: number | null): string {
@@ -193,26 +187,28 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (!term) {
             return null;
         }
-        const buttons = this.getButtons();
+        const buttons = this.getActions();
         return <div id="term-detail">
             <HeaderWithActions title={this.renderTitle()} actions={buttons}/>
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
                                onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
-
             {this.state.edit ?
-                <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}/> :
-                <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}/>}
+                <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}
+                                  language={this.state.language} selectLanguage={this.setLanguage}/> :
+                <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}
+                              selectLanguage={this.setLanguage}/>}
         </div>
     }
 
     private renderTitle() {
         const term = this.props.term!;
+        const altLabels = getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ");
         return <>
             {this.state.validationScore !== null? this.renderBadge() : null}
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
-            <h6>{getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ")}</h6>
+            <h6>{altLabels.length > 0 ? altLabels : "\u00a0"}</h6>
         </>;
     }
 }
@@ -221,7 +217,7 @@ export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
         vocabulary: state.vocabulary,
-        validationResults : state.validationResults
+        validationResults: state.validationResults
     };
 }, (dispatch: ThunkDispatch) => {
     return {
