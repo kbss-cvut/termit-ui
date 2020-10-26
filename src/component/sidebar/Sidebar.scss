@@ -6,9 +6,20 @@
 }
 
 .brand {
-  color: rgba($white, .95) !important;
   font-weight: 700;
   font-size: 1.7rem !important;
+}
+
+.brand-dark {
+  color: $primary !important;
+
+  &:hover {
+    color: $secondary !important;
+  }
+}
+
+.brand-light {
+  color: rgba($white, .95) !important;
 
   &:hover {
     color: $secondary !important;
