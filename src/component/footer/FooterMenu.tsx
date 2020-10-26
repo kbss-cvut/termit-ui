@@ -24,8 +24,7 @@ export class FooterMenu extends React.Component<FooterMenuProps> {
                     "justify-content-between",
                     "align-items-center",
                     {
-                        "footer-sidebar": fixed && sidebarExpanded && desktopView,
-                        "text-white-link": fixed && sidebarExpanded && desktopView,
+                        "footer-sidebar": fixed && sidebarExpanded && desktopView
                     })}>
                 <LanguageSelector fixed={fixed && sidebarExpanded} authenticated={true}/>
             </div>);

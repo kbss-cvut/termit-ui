@@ -10,7 +10,11 @@ footer {
   }
 
   a {
-    color: inherit;
+    color: $link-color;
+  }
+
+  a:hover {
+    $link-hover-color: lighten($link-color, 10%) !default;
   }
 }
 
@@ -35,21 +39,23 @@ footer {
   display: block;
   cursor: pointer;
   padding: 8px 16px;
+  color: $link-color;
 
   svg {
     height: 1.5em;
 
     &:hover {
-      color: $secondary;
+      color: $link-hover-color;
     }
   }
 }
 
 .news-viewer-toggle {
   cursor: pointer;
+  color: $link-color;
 
   &:hover {
-    color: $secondary;
+    color: $link-hover-color;
   }
 }
 

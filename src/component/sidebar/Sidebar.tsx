@@ -164,7 +164,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
         return (
             <Navbar expand="md" id="sidenav-main"
-                    className={classNames("navbar-vertical", "navbar-dark", "bg-dark", "py-md-0",
+                    className={classNames("navbar-vertical", "navbar-dark", "sidebar", "py-md-0",
                         {
                             "sidebar-expanded": sidebarExpanded,
                             "sidebar-collapsed": !sidebarExpanded
