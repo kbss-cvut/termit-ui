@@ -9,14 +9,7 @@
 table.search-results {
   table-layout: fixed;
   word-break: break-word;
-}
-
-th.search-results-asset {
-  width: 50%;
-}
-
-th.search-results-score {
-  width: 100px;
+  border-bottom-color: #6a7e95;
 }
 
 .search-result-snippet-match {
