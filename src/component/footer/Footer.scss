@@ -3,7 +3,7 @@
 
 footer {
   background-color: rgba(255, 255, 255, 1);
-  color: black;
+  color: $link-color;
 
   &.transparent {
     background-color: rgba(255, 255, 255, 0.4);
@@ -28,6 +28,10 @@ footer {
 
   @media (max-width: $sm - 1px) {
     font-size: 0.6875rem;
+  }
+
+  @media (max-width: $lg - 1px) {
+    height: $footer-height-thick;
   }
 
   .grant-logo {

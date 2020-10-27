@@ -22,6 +22,10 @@
   a:hover {
     color: $default !important;
   }
+
+  @media (max-width: $lg - 1px) {
+    height: $footer-height-thick;
+  }
 }
 
 footer a {

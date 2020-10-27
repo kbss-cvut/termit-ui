@@ -23,7 +23,8 @@ export default {
         'ajax.unparseable-error': 'Action failed. Server responded with unexpected error. If necessary, see browser log for more details.',
         'ajax.failed': 'Unable to load data from the server.',
 
-        'footer.copyright': 'KBSS at FEE CTU in Prague',
+        'footer.copyright.kbss': 'KBSS at FEE CTU in Prague',
+        'footer.copyright.mvcr': 'Ministry of the Interior',
         'footer.version': 'Version',
         "footer.grant.text": "This application is developed as part of the project OPZ no. CZ.03.4.74/0.0/0.0/15_025/0013983.",
 

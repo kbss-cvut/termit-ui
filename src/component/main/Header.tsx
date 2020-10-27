@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = props => {
             <Nav navbar={true} className="nav-search">
                 {isLoggedIn && workspace && <NavbarSearch navbar={true}/>}
             </Nav>
-            <Nav navbar={true}>
+            <Nav navbar={true} className="workspace-indicator">
                 {workspace && <WorkspaceIndicator/>}
             </Nav>
             <Nav navbar={true} className="nav-menu-user flex-row-reverse">

@@ -117,7 +117,7 @@ header .nav-tabs {
 
 .card-header {
   h1 {
-    color: $green;
+    color: $primary;
     font-weight: 700;
     font-size: 2rem;
     margin-bottom: 0;
@@ -158,7 +158,7 @@ header .nav-tabs {
   color: white;
 
   &:hover {
-    color: $green;
+    color: $link-hover-color;
   }
 }
 
