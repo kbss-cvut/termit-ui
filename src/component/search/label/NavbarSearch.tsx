@@ -105,6 +105,13 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
                 </InputGroupText>
             </InputGroupAddon>);
 
+        const clearIcon = (
+            <InputGroupAddon addonType="append" id="search-reset" onClick={this.resetSearch} className="float-right">
+                <InputGroupText>
+                    <span className="fa fa-times"/>
+                </InputGroupText>
+            </InputGroupAddon>);
+
         return <div className={classNames({"search": navbar}, "flex-grow-1")}>
             <InputGroup className="input-group-rounded input-group-merge">
                 {navbar && searchIcon}
@@ -118,10 +125,15 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
                     value={this.props.searchString} onChange={this.onChange} onKeyPress={this.onKeyPress}
                 />
                 {!navbar && searchIcon}
+                {clearIcon}
             </InputGroup>
             {this.renderResultsOverlay()}
         </div>;
     }
+
+    protected resetSearch = () => {
+        this.props.updateSearchFilter("");
+    };
 
     private renderResultsOverlay() {
         const {searchResults, navbar} = this.props;
