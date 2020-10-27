@@ -29,6 +29,7 @@ import {Location} from "history";
 import {match as Match} from "react-router";
 import classNames from "classnames";
 import StatusFilter from "./StatusFilter";
+import TermTypeFrequency from "../statistics/termtypefrequency/TermTypeFrequency";
 import "./Terms.scss";
 
 interface GlossaryTermsProps extends HasI18n {
@@ -161,12 +162,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
     private renderIncludeImported() {
         return <div className={classNames({"mb-3": !this.props.isDetailView})}>
-                {this.props.isDetailView ? <></> : <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
-                                                  includeImported={this.state.includeImported}
-                                                  disabled={this.state.disableIncludeImportedToggle}/>
+            {this.props.isDetailView ? <></> :
+                <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
+                                            includeImported={this.state.includeImported}
+                                            disabled={this.state.disableIncludeImportedToggle}/>
 
-                }
-            </div>;
+            }
+        </div>;
     }
 
     private onDraftOnlyToggle = () => {
@@ -214,7 +216,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 "mb-2 mt-3": !isDetailView
             }, "d-flex", "flex-wrap", "justify-content-between", "card-header-basic-info")}>
                 <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}
-                    &nbsp;{(isDetailView && renderIncludeImported) ? <>({this.props.i18n(includeImported ? "glossary.importedIncluded" :"glossary.importedExcluded")})</> : <></>}
+                    &nbsp;{(isDetailView && renderIncludeImported) ? <>({this.props.i18n(includeImported ? "glossary.importedIncluded" : "glossary.importedExcluded")})</> : <></>}
                 </h4>
                 {!isDetailView && <Button
                     id="terms-create"
@@ -228,6 +230,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 {isDetailView && this.renderDraftOnly()}
             </div>
             <div id="glossary-list" className={classNames({"card-header": isDetailView})}>
+                {!isDetailView && <TermTypeFrequency vocabularyIri={this.props.vocabulary.iri}/>}
                 {(!isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
                 {!isDetailView && this.renderDraftOnly()}
                 <IntelligentTreeSelect

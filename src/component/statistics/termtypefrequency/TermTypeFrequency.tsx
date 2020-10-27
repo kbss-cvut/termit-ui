@@ -6,11 +6,12 @@ import withI18n, {HasI18n} from "../../hoc/withI18n";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../../util/Types";
 import {loadStatistics as loadStatisticsAction} from "../../../action/AsyncActions";
+import Constants from "../../../util/Constants";
 import Chart from "react-apexcharts";
 
 // const TYPE_NOT_FILLED = VocabularyUtils.PREFIX + "not-filled";
 
-const STATISTICS_TYPE = "term-frequency";
+const STATISTICS_TYPE = "term-type-frequency";
 
 const CHART_OPTIONS = {
     chart: {
@@ -33,6 +34,17 @@ const CHART_OPTIONS = {
     stroke: {
         width: 0
     },
+    xaxis: {
+        labels: {
+            show: false
+        },
+        axisBorder: {
+            show: false
+        },
+        axisTicks: {
+            show: false
+        }
+    },
     fill: {
         opacity: 1,
         type: "gradient",
@@ -50,7 +62,7 @@ const CHART_OPTIONS = {
 
     legend: {
         position: "bottom",
-        horizontalAlign: "right"
+        horizontalAlign: "center"
     }
 };
 
@@ -59,11 +71,15 @@ interface TermTypeFrequencyProps extends HasI18n, InjectsLoading {
     loadStatistics: (vocabularyIri: string) => Promise<any>;
 }
 
-export const TermTypeFrequency: React.FC<TermTypeFrequencyProps> = props => {
+export const TermTypeFrequency
+    :
+    React.FC<TermTypeFrequencyProps> = props => {
     const {vocabularyIri, loadStatistics} = props;
     const [data, setData] = React.useState<any>(null);
     React.useEffect(() => {
-        loadStatistics(vocabularyIri).then(result => setData(result));
+        if (vocabularyIri !== Constants.EMPTY_ASSET_IRI) {
+            loadStatistics(vocabularyIri).then(result => setData(result));
+        }
     }, [loadStatistics, vocabularyIri]);
 
     if (!data) {
@@ -78,7 +94,7 @@ export const TermTypeFrequency: React.FC<TermTypeFrequencyProps> = props => {
                   series={series}
                   type="bar"
                   width="100%"
-                  height="40px"/>;
+                  height="140px"/>;
 };
 
 
