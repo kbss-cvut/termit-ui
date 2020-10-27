@@ -9,6 +9,7 @@ import {act} from "react-dom/test-utils";
 jest.mock("../../../util/Routing");
 jest.mock("../../../util/Ajax");
 jest.mock("../../../util/Authentication");
+jest.mock("reactstrap/lib/UncontrolledTooltip");
 
 describe("Registration", () => {
 
