@@ -1,5 +1,7 @@
 # TermIt UI
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7a6a4e45-a53e-4e77-89fa-ca78e5efd8e4/deploy-status)](https://app.netlify.com/sites/termit-kodi/deploys)
+
 This project was bootstrapped with [Create React App](https://github.com/wmonk/create-react-app-typescript), TypeScript version.
 
 The backend is developed separately and their communication is enabled via CORS support on the backend.
