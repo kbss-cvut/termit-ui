@@ -8,7 +8,7 @@ import VocabularyUtils from "../../../../util/VocabularyUtils";
 import ValidationResult from "../../../../model/ValidationResult";
 import SeverityText from "../SeverityText";
 
-function constructValidationResult(termIri : string) : ValidationResult {
+export function constructValidationResult(termIri : string) : ValidationResult {
     return new ValidationResult(
         "",
         {iri: termIri, label: {"cs": termIri}},
