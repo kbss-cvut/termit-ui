@@ -68,10 +68,6 @@ const mainNavRoutes: NavLinkRoute[] = [{
     name: "main.nav.resources",
     icon: "fas fa-clipboard"
 }, {
-    path: Routes.statistics.path,
-    name: "main.nav.statistics",
-    icon: "fas fa-chart-pie"
-}, {
     path: Routes.administration.path,
     name: "main.nav.admin",
     icon: "fas fa-user-shield",

@@ -34,7 +34,6 @@ export default {
     searchTerms: new Route("searchTerms", "/search/terms"),
     searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),
     facetedSearch: new Route("facetedSearch", "/facetedSearch"),
-    statistics: new Route("statistics", "/statistics"),
     vocabularies: new Route("vocabulary", "/vocabularies"),
     resources: new Route("resource", "/resources"),
     vocabularyDetail: new Route("vocabularyDetail", "/vocabularies/:name/terms"),

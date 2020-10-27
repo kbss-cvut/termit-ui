@@ -13,7 +13,6 @@ import Footer from "./footer/Footer";
 import {logout} from "../action/ComplexActions";
 import {Route, RouteComponentProps, Switch, withRouter} from "react-router";
 import Messages from "./message/Messages";
-import Statistics from "./statistics/Statistics";
 import Search from "./search/label/Search";
 import {ThunkDispatch} from "../util/Types";
 import ResourceManagementRoute from "./resource/ResourceManagementRoute";
@@ -139,8 +138,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                                          component={ResourceManagementRoute}/>
                         <BreadcrumbRoute title={i18n("main.nav.vocabularies")} path={Routes.vocabularies.path}
                                          component={VocabularyManagementRoute}/>
-                        <BreadcrumbRoute title={i18n("main.nav.statistics")} path={Routes.statistics.path}
-                                         component={Statistics}/>
                         <BreadcrumbRoute title={i18n("main.nav.searchTerms")} path={Routes.searchTerms.path}
                                          component={SearchTerms}/>
                         <BreadcrumbRoute title={i18n("main.nav.searchVocabularies")}

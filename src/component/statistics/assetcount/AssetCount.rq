@@ -1,9 +1,0 @@
-PREFIX termit: <http://onto.fel.cvut.cz/ontologies/application/termit/pojem/>
-
-CONSTRUCT {
-    ?assetType termit:has-count ?count
-} WHERE {
-    SELECT (COUNT(DISTINCT ?asset) AS ?count) {
-        ?asset a ?assetType
-    }
-}
