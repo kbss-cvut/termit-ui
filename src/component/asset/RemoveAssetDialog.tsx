@@ -4,6 +4,7 @@ import Asset from "../../model/Asset";
 import {Button, ButtonToolbar, Label, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Utils from "../../util/Utils";
+import Constants from "../../util/Constants";
 
 interface RemoveAssetDialogProps extends HasI18n {
     show: boolean;
@@ -28,9 +29,9 @@ const RemoveAssetDialog: React.SFC<RemoveAssetDialogProps> = (props) => {
         </ModalBody>
         <ModalFooter>
             <ButtonToolbar className="pull-right">
-                <Button id="remove-asset-submit" color="primary" size="sm"
+                <Button id="remove-asset-submit" color={Constants.SUBMIT_BUTTON_VARIANT} size="sm"
                         onClick={props.onSubmit}>{props.i18n("remove")}</Button>
-                <Button id="remove-asset-cancel" color="outline-dark" size="sm"
+                <Button id="remove-asset-cancel" color={Constants.CANCEL_BUTTON_VARIANT} size="sm"
                         onClick={props.onCancel}>{props.i18n("cancel")}</Button>
             </ButtonToolbar>
         </ModalFooter>

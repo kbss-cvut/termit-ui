@@ -10,6 +10,7 @@ import {injectIntl} from "react-intl";
 import TermMetadataCreateForm from "./TermMetadataCreateForm";
 import AssetFactory from "../../util/AssetFactory";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import Constants from "../../util/Constants";
 
 interface TermMetadataCreateOwnProps {
     onCreate: (term: Term, newTerm: boolean) => void;
@@ -68,11 +69,14 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
                     <Row>
                         <Col md={12}>
                             <ButtonToolbar className="d-flex justify-content-center mt-4">
-                                <Button id="create-term-submit" color="success" onClick={this.onSave} size="sm"
+                                <Button id="create-term-submit" color={Constants.SUBMIT_BUTTON_VARIANT}
+                                        onClick={this.onSave} size="sm"
                                         disabled={!isFormValid(this.state)}>{i18n("glossary.form.button.submit")}</Button>
-                                <Button id="create-term-submit-and-go-to-new-term" color="success" onClick={this.onSaveAndGoToNewTerm} size="sm"
+                                <Button id="create-term-submit-and-go-to-new-term"
+                                        color={Constants.SUBMIT_BUTTON_VARIANT} onClick={this.onSaveAndGoToNewTerm}
+                                        size="sm"
                                         disabled={!isFormValid(this.state)}>{i18n("glossary.form.button.submitAndGoToNewTerm")}</Button>
-                                <Button id="create-term-cancel" color="outline-dark" size="sm"
+                                <Button id="create-term-cancel" color={Constants.CANCEL_BUTTON_VARIANT} size="sm"
                                         onClick={this.cancelCreation}>{i18n("glossary.form.button.cancel")}</Button>
                             </ButtonToolbar>
                         </Col>

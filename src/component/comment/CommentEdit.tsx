@@ -5,6 +5,7 @@ import {injectIntl} from "react-intl";
 import TextArea from "../misc/TextArea";
 import {Button, ButtonToolbar} from "reactstrap";
 import {FaUserCircle} from "react-icons/fa";
+import Constants from "../../util/Constants";
 
 interface CommentEditProps extends HasI18n {
     comment: Comment;
@@ -30,11 +31,12 @@ const CommentEdit: React.FC<CommentEditProps> = props => {
     return <div className="comment mt-2 pt-2">
         <div className="float-left avatar"><FaUserCircle/></div>
         <div className="content">
-            <TextArea value={content} autoFocus={true} onChange={e => setContent(e.target.value)} onKeyDown={onKeyDown}/>
+            <TextArea value={content} autoFocus={true} onChange={e => setContent(e.target.value)}
+                      onKeyDown={onKeyDown}/>
             <ButtonToolbar className="justify-content-end">
-                <Button color="success" id="comment-edit-submit" size="sm" disabled={content.trim().length === 0}
-                        onClick={submit}>{i18n("save")}</Button>
-                <Button color="outline-dark" id="comment-edit-cancel" size="sm"
+                <Button color={Constants.SUBMIT_BUTTON_VARIANT} id="comment-edit-submit" size="sm"
+                        disabled={content.trim().length === 0} onClick={submit}>{i18n("save")}</Button>
+                <Button color={Constants.CANCEL_BUTTON_VARIANT} id="comment-edit-cancel" size="sm"
                         onClick={onCancel}>{i18n("cancel")}</Button>
             </ButtonToolbar>
         </div>

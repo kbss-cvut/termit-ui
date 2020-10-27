@@ -25,6 +25,7 @@ export default {
 
         'footer.copyright.kbss': 'KBSS at FEE CTU in Prague',
         'footer.copyright.mvcr': 'Ministry of the Interior',
+        "footer.copyright.mvcr.tooltip": "Ministry of the Interior",
         'footer.version': 'Version',
         "footer.grant.text": "This application is developed as part of the project OPZ no. CZ.03.4.74/0.0/0.0/15_025/0013983.",
 

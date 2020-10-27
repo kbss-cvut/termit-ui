@@ -62,7 +62,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
                             ,&nbsp;
                             <a href="https://mvcr.cz" target="_blank"
                                rel="noreferrer"
-                               title={i18n("footer.copyright.mvcr")}>{i18n("footer.copyright.mvcr")}</a>
+                               title={i18n("footer.copyright.mvcr.tooltip")}>{i18n("footer.copyright.mvcr")}</a>
                             ,&nbsp;{new Date().getFullYear()}
                         </Col>
                         <Col xs="auto">

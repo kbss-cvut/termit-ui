@@ -85,10 +85,11 @@ export class CreateResourceMetadata<P extends CreateResourceMetadataProps = Crea
         return <Row>
             <Col xs={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">
-                    <Button id="create-resource-submit" onClick={this.onCreate} color="success" size="sm"
+                    <Button id="create-resource-submit" onClick={this.onCreate} color={Constants.SUBMIT_BUTTON_VARIANT}
+                            size="sm"
                             disabled={this.state.label.trim().length === 0}>{i18n("create")}</Button>
                     <Button id="create-resource-cancel" onClick={this.props.onCancel}
-                            color="outline-dark" size="sm">{i18n("cancel")}</Button>
+                            color={Constants.CANCEL_BUTTON_VARIANT} size="sm">{i18n("cancel")}</Button>
                 </ButtonToolbar>
             </Col>
         </Row>;
