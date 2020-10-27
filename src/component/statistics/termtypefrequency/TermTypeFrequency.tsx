@@ -1,118 +1,89 @@
 import * as React from "react";
-import SparqlWidget, {PublicProps} from "../SparqlWidget";
-import Chart from "react-apexcharts";
-import LD from "ld-query";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import defaultChartOptions from "../DefaultTermCharacteristicsFrequencyChartOptions";
-import withInjectableLoading from "../../hoc/withInjectableLoading";
+import withInjectableLoading, {InjectsLoading} from "../../hoc/withInjectableLoading";
+import {injectIntl} from "react-intl";
+import withI18n, {HasI18n} from "../../hoc/withI18n";
+import {connect} from "react-redux";
+import {ThunkDispatch} from "../../../util/Types";
+import {loadStatistics as loadStatisticsAction} from "../../../action/AsyncActions";
+import Chart from "react-apexcharts";
 
-const TYPE_NOT_FILLED = VocabularyUtils.PREFIX + "not-filled";
+// const TYPE_NOT_FILLED = VocabularyUtils.PREFIX + "not-filled";
 
-const TYPES = [
-    "https://slovník.gov.cz/základní/pojem/typ-objektu",
-    "https://slovník.gov.cz/základní/pojem/typ-vlastnosti",
-    "https://slovník.gov.cz/základní/pojem/typ-vztahu",
-    "https://slovník.gov.cz/základní/pojem/typ-události",
-    TYPE_NOT_FILLED];
+const STATISTICS_TYPE = "term-frequency";
 
-interface Props extends PublicProps {
-    empty: string,
-    notFilled: string,
-    lang: string
+const CHART_OPTIONS = {
+    chart: {
+        stacked: true,
+        stackType: "100%",
+        toolbar: {
+            show: false
+        }
+    },
+    plotOptions: {
+        bar: {
+            horizontal: true
+        }
+    },
+    dataLabels: {
+        dropShadow: {
+            enabled: true
+        }
+    },
+    stroke: {
+        width: 0
+    },
+    fill: {
+        opacity: 1,
+        type: "gradient",
+        gradient: {
+            shade: "dark",
+            type: "vertical",
+            shadeIntensity: 0.35,
+            gradientToColors: undefined,
+            inverseColors: false,
+            opacityFrom: 0.85,
+            opacityTo: 0.85,
+            stops: [90, 0, 100]
+        }
+    },
+
+    legend: {
+        position: "bottom",
+        horizontalAlign: "right"
+    }
+};
+
+interface TermTypeFrequencyProps extends HasI18n, InjectsLoading {
+    vocabularyIri: string;
+    loadStatistics: (vocabularyIri: string) => Promise<any>;
 }
 
-class TermTypeFrequency extends React.Component<Props> {
+export const TermTypeFrequency: React.FC<TermTypeFrequencyProps> = props => {
+    const {vocabularyIri, loadStatistics} = props;
+    const [data, setData] = React.useState<any>(null);
+    React.useEffect(() => {
+        loadStatistics(vocabularyIri).then(result => setData(result));
+    }, [loadStatistics, vocabularyIri]);
 
-    private cx = LD({"p": VocabularyUtils.PREFIX, "rdfs": VocabularyUtils.PREFIX_RDFS});
-
-    private getLabel(res: any, iri: string) {
-        if (TYPE_NOT_FILLED === iri) {
-            return this.props.notFilled;
-        }
-        const labels = this.cx(res).queryAll("[@id=" + iri + "] rdfs:label");
-        for (const label of labels) {
-            const q = label.query("@language");
-            if (q && (q.json() === this.props.lang)) {
-                return label.query("@value")
-            }
-        }
-        return this.cx(res).query("[@id=" + iri + "] rdfs:label @value");
+    if (!data) {
+        return <div>{props.renderMask()}</div>;
     }
 
-    public render() {
-        const TermTypeFrequencyI = this;
-        const queryResult = this.props.queryResults;
-        if (!queryResult || !queryResult.result) {
-            return <div>{this.props.renderMask()}</div>;
-        }
+    const series = (data as object[]).map((d: any) => ({
+        name: d[VocabularyUtils.RDFS_LABEL],
+        data: [d[VocabularyUtils.HAS_COUNT]]
+    }));
+    return <Chart options={CHART_OPTIONS}
+                  series={series}
+                  type="bar"
+                  width="100%"
+                  height="40px"/>;
+};
 
-        const res = queryResult.result;
-        const types: object = {};
 
-        TYPES.forEach(t => types[t] = TermTypeFrequencyI.getLabel(res, t) || t);
-
-        const vocabularies = {};
-        res.filter((r: any) => {
-            return r[VocabularyUtils.IS_TERM_FROM_VOCABULARY] !== undefined;
-        }).forEach((r: any) => {
-            const voc = r[VocabularyUtils.IS_TERM_FROM_VOCABULARY][0];
-            const vocabulary = voc["@id"];
-            let vocO = vocabularies[vocabulary];
-            if (!vocO) {
-                vocO = {name: TermTypeFrequencyI.getLabel(res, vocabulary)};
-                Object.keys(types).forEach(type => {
-                    vocO[types[type]] = 0
-                });
-                vocabularies[vocabulary] = vocO;
-            }
-
-            let currType;
-            if (r["@type"]) {
-                currType = r["@type"];
-            } else if (r[VocabularyUtils.RDF_TYPE]) {
-                // GraphDB returns types as rdf:type property values
-                currType = r[VocabularyUtils.RDF_TYPE].map((t: any) => t["@id"]);
-            } else {
-                currType = TYPE_NOT_FILLED;
-            }
-
-            let found = false;
-            currType.forEach((tt: any) => {
-                if (types[tt]) {
-                    vocO[types[tt]] = vocO[types[tt]] + 1 || 1;
-                    found = true;
-                }
-            });
-            if (!found) {
-                vocO[types[TYPE_NOT_FILLED]] += 1;
-            }
-        });
-
-        const series = Object.keys(types).map(t => {
-            return {
-                name: types[t],
-                data: Object.keys(vocabularies).map(v => vocabularies[v][types[t]])
-            }
-        });
-
-        const options = Object.assign(defaultChartOptions, {
-            xaxis: {
-                categories: Object.keys(vocabularies).map(v => vocabularies[v].name)
-            },
-        });
-
-        // Height is given by the number of vocabularies + a fixed value for the legend
-        if (Object.keys(vocabularies).length === 0) {
-            return <h4>{this.props.empty}</h4>
-        } else {
-            const height = Object.keys(vocabularies).length * 35 + 60;
-            return <Chart options={options}
-                          series={series}
-                          type="bar"
-                          width="100%"
-                          height={`${height}px`}/>;
-        }
-    }
-}
-
-export default withInjectableLoading(SparqlWidget(TermTypeFrequency));
+export default connect(undefined, (dispatch: ThunkDispatch) => {
+    return {
+        loadStatistics: (vocabularyIri: string) => dispatch(loadStatisticsAction(STATISTICS_TYPE, {vocabulary: vocabularyIri}))
+    };
+})(withInjectableLoading(injectIntl(withI18n(TermTypeFrequency))));
