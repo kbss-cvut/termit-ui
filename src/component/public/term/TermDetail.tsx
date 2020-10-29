@@ -42,7 +42,8 @@ const TermDetail: React.FC<TermDetailProps> = props => {
 
     return <div id="public-term-detail">
         <HeaderWithActions title={<>{getLocalized(term.label, language)}<CopyIriIcon url={term.iri as string}/>
-            <h6>{altLabels.length > 0 ? altLabels : "\u00a0"}</h6></>}/>
+            <div className="small italics">{altLabels.length > 0 ? altLabels : "\u00a0"}</div>
+        </>}/>
         <TermMetadata term={term} vocabulary={props.vocabulary} language={language} setLanguage={setLanguage}/>
     </div>;
 }
