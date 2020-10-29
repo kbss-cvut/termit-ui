@@ -1,7 +1,7 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
-import {Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
+import {Button, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 import "./NavbarSearch.scss";
 import SearchResult from "../../../model/SearchResult";
 import {connect} from "react-redux";
@@ -15,6 +15,7 @@ import {RouteComponentProps, withRouter} from "react-router";
 import classNames from "classnames";
 import User from "../../../model/User";
 import Authentication from "../../../util/Authentication";
+import {FaTimes} from "react-icons/fa";
 
 interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
     updateSearchFilter: (searchString: string) => any;
@@ -107,9 +108,7 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
 
         const clearIcon = (
             <InputGroupAddon addonType="append" id="search-reset" onClick={this.resetSearch} className="float-right">
-                <InputGroupText>
-                    <span className="fa fa-times"/>
-                </InputGroupText>
+                <Button title={this.props.i18n("search.reset")} color="outline-danger" style={{zIndex : 5}}><FaTimes/></Button>
             </InputGroupAddon>);
 
         return <div className={classNames({"search": navbar}, "flex-grow-1")}>
@@ -125,7 +124,7 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
                     value={this.props.searchString} onChange={this.onChange} onKeyPress={this.onKeyPress}
                 />
                 {!navbar && searchIcon}
-                {clearIcon}
+                {this.props.searchString && clearIcon}
             </InputGroup>
             {this.renderResultsOverlay()}
         </div>;
