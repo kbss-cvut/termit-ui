@@ -66,7 +66,7 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     public render() {
         const {term, language, selectLanguage} = this.props;
         return <>
-            <LanguageSelector key={"term-language-selector"} term={term} language={language} onSelect={selectLanguage}/>
+            <LanguageSelector key="term-language-selector" term={term} language={language} onSelect={selectLanguage}/>
             <Row>
                 <Col lg={this.state.displayTerms ? 9 : 12}>
                     <Row>
