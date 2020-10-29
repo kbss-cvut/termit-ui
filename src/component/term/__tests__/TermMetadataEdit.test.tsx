@@ -269,5 +269,15 @@ describe("Term edit", () => {
             // Original state should be unharmed
             expect(originalState.label[langToRemove]).toBeDefined();
         });
+
+        it("handles removal of translation in server configured language", () => {
+            const langToRemove = "cs";
+            term.label = langString("český preklad", "cs");
+            const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                        language="en"
+                                                                        selectLanguage={selectLanguage} {...intlFunctions()}/>);
+            wrapper.instance().removeTranslation(langToRemove);
+            expect(wrapper.state().label[langToRemove]).not.toBeDefined();
+        });
     });
 });

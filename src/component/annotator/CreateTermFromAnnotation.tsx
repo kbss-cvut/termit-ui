@@ -3,7 +3,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import {Button, ButtonToolbar, Col, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import TermMetadataCreateForm from "../term/TermMetadataCreateForm";
-import {isFormValid} from "../term/TermMetadataCreate";
+import {isTermValid} from "../term/TermMetadataCreate";
 import {connect} from "react-redux";
 import {injectIntl} from "react-intl";
 import {ThunkDispatch} from "../../util/Types";
@@ -81,7 +81,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
                     <Col xs={12}>
                         <ButtonToolbar className="d-flex justify-content-center mt-4">
                             <Button id="create-term-submit" color="success" onClick={this.onSave}
-                                    disabled={!isFormValid(this.state)}
+                                    disabled={!isTermValid(this.state)}
                                     size="sm">{i18n("glossary.form.button.submit")}</Button>
                             <Button id="create-term-cancel" color="outline-dark" size="sm"
                                     onClick={this.onCancel}>{i18n("glossary.form.button.cancel")}</Button>

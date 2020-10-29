@@ -24,7 +24,6 @@ import Vocabulary from "../../model/Vocabulary";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
-import {getShortLocale} from "../../util/IntlUtil";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
@@ -37,6 +36,7 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
+    configuredLanguage: string;
     validationResults: {[vocabularyIri : string] : ValidationResult[] };
 }
 
@@ -58,7 +58,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.state = {
             edit: false,
             showRemoveDialog: false,
-            language: getShortLocale(props.locale)
+            language: props.configuredLanguage
         };
     }
 
@@ -210,6 +210,7 @@ export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
         vocabulary: state.vocabulary,
+        configuredLanguage: state.configuration.language,
         validationResults: state.validationResults
     };
 }, (dispatch: ThunkDispatch) => {

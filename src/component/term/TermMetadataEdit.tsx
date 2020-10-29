@@ -18,6 +18,7 @@ import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
+import {isTermValid} from "./TermMetadataCreate";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -109,7 +110,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     };
 
     private isValid(): boolean {
-        return this.state.iri!.length > 0 && getLocalized(this.state.label).length > 0 && !this.state.labelExists;
+        return isTermValid(this.state, this.props.language) && !this.state.labelExists;
     }
 
     public removeTranslation = (lang: string) => {
