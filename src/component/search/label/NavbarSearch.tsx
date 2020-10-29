@@ -108,7 +108,9 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
 
         const clearIcon = (
             <InputGroupAddon addonType="append" id="search-reset" onClick={this.resetSearch} className="float-right">
-                <Button title={this.props.i18n("search.reset")} color="outline-danger" style={{zIndex : 5}}><FaTimes/></Button>
+                <Button title={this.props.i18n("search.reset")} color="outline-dark" style={{zIndex : 5}}>
+                    <FaTimes style={{marginBottom : 4}}/>
+                </Button>
             </InputGroupAddon>);
 
         return <div className={classNames({"search": navbar}, "flex-grow-1")}>
