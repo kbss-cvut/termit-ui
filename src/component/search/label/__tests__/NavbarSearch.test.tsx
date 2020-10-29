@@ -165,7 +165,8 @@ describe("NavbarSearch", () => {
         const inputGroup = wrapper.find(InputGroup);
         expect(inputGroup.childAt(0).prop("id")).toEqual("icon");
         expect(inputGroup.childAt(1).prop("id")).toEqual("main-search-input-navbar");
-        expect(inputGroup.children().length).toEqual(2);
+        expect(inputGroup.childAt(2).prop("id")).toEqual("search-reset");
+        expect(inputGroup.children().length).toEqual(3);
     });
 
     it("renders icon after input if search is not in navbar", () => {
@@ -175,7 +176,15 @@ describe("NavbarSearch", () => {
         const inputGroup = wrapper.find(InputGroup);
         expect(inputGroup.childAt(0).prop("id")).toEqual("main-search-input");
         expect(inputGroup.childAt(1).prop("id")).toEqual("icon");
-        expect(inputGroup.children().length).toEqual(2);
+        expect(inputGroup.childAt(2).prop("id")).toEqual("search-reset");
+        expect(inputGroup.children().length).toEqual(3);
+    });
+
+    it("does not render clear icon if search string is empty", () => {
+        const searchString = "";
+        const wrapper = shallow<NavbarSearch>(<NavbarSearch searchString={searchString} navbar={false} user={user}
+                                                            searchResults={null} {...navbarConnections()} {...intlFunctions()}/>);
+        expect(wrapper.find("#search-reset").length).toEqual(0);
     });
 
     it("transitions to public search view on enter when user is not logged in", () => {
