@@ -13,6 +13,7 @@ import NotificationType from "../../../model/NotificationType";
 import {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import {langString} from "../../../model/MultilingualString";
+import {constructValidationResult} from "../../vocabulary/validation/__tests__/ValidationResults.test";
 import ValidationResult from "../../../model/ValidationResult";
 
 jest.mock("../TermAssignments");
@@ -29,27 +30,15 @@ describe("TermDetail", () => {
     const history = createMemoryHistory();
     let match: Match<any>;
 
-    let onLoad: (termName: string, vocabIri: IRI) => void;
+    let onLoad: (termName: string, vocabIri: IRI) => Promise<any>;
     let loadVocabulary: (iri: IRI) => void;
     let onUpdate: (term: Term) => Promise<any>;
     let removeTerm: (term: Term) => Promise<any>;
     let onPublishNotification: (notification: AppNotification) => void;
-    let loadValidationResults: (vocabularyIri: IRI) => Promise<ValidationResult[]>;
 
     let vocabulary: Vocabulary;
     let term: Term;
-
-    const validationResultsArray:(sourceShapes: string[]) =>  ValidationResult[]= (sourceShapes) => {
-        return sourceShapes.map((sourceShape)=>{
-            return {
-                id : "some-id",
-                term,
-                severity : {iri:"http://www.w3.org/ns/shacl#Violation"},
-                message : [{language:"en", value: "some-value"}],
-                sourceShape:{iri:sourceShape},
-            }
-        })
-    };
+    let validationResults: {[vocabularyIri : string] : ValidationResult[]};
 
     beforeEach(() => {
         location = {
@@ -67,13 +56,17 @@ describe("TermDetail", () => {
             isExact: true,
             url: "http://localhost:3000/" + location.pathname
         };
-        onLoad = jest.fn();
+        onLoad = jest.fn().mockImplementation(() => Promise.resolve());
         loadVocabulary = jest.fn();
         onUpdate = jest.fn().mockImplementation(() => Promise.resolve());
         removeTerm = jest.fn().mockImplementation(() => Promise.resolve());
         onPublishNotification = jest.fn();
         vocabulary = Generator.generateVocabulary();
-        loadValidationResults = jest.fn().mockImplementation(() => Promise.resolve(validationResultsArray([])));
+        validationResults = {
+            [vocabulary.iri]: [
+                constructValidationResult("https://example.org/term1")
+            ]
+        };
         term = new Term({
             iri: Generator.generateUri(),
             label: langString("Test term"),
@@ -86,7 +79,7 @@ describe("TermDetail", () => {
         shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
                             loadVocabulary={loadVocabulary}
                             publishNotification={onPublishNotification} vocabulary={vocabulary}
-                            history={history} location={location} match={match} loadValidationResults={loadValidationResults}
+                            history={history} location={location} match={match} validationResults={validationResults}
                             {...intlFunctions()}/>);
         expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {fragment: normalizedVocabName});
     });
@@ -97,7 +90,7 @@ describe("TermDetail", () => {
         shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
                             loadVocabulary={loadVocabulary}
                             history={history} location={location} match={match} vocabulary={vocabulary}
-                            publishNotification={onPublishNotification} loadValidationResults={loadValidationResults}
+                            publishNotification={onPublishNotification} validationResults={validationResults}
                             {...intlFunctions()}/>);
         expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {fragment: normalizedVocabName, namespace});
     });
@@ -109,7 +102,7 @@ describe("TermDetail", () => {
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
-                                            loadValidationResults={loadValidationResults}
+                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         expect(wrapper.exists(TermMetadata)).toBeTruthy();
     });
@@ -120,7 +113,8 @@ describe("TermDetail", () => {
                                             removeTerm={removeTerm}
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
-                                            history={history} location={location} match={match} loadValidationResults={loadValidationResults}
+                                            history={history} location={location} match={match}
+                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
         expect(wrapper.find(TermMetadataEdit).exists()).toBeTruthy();
@@ -131,7 +125,8 @@ describe("TermDetail", () => {
                                             removeTerm={removeTerm}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
-                                            publishNotification={onPublishNotification} loadValidationResults={loadValidationResults}
+                                            publishNotification={onPublishNotification}
+                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onSave(term);
         expect(onUpdate).toHaveBeenCalledWith(term);
@@ -143,7 +138,7 @@ describe("TermDetail", () => {
                                             removeTerm={removeTerm}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match} vocabulary={vocabulary}
-                                            loadValidationResults={loadValidationResults}
+                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
         (wrapper.instance() as TermDetail).onSave(term);
@@ -158,7 +153,8 @@ describe("TermDetail", () => {
                                             removeTerm={removeTerm}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
-                                            publishNotification={onPublishNotification} loadValidationResults={loadValidationResults}
+                                            publishNotification={onPublishNotification}
+                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onSave(term);
         return Promise.resolve().then(() => {
@@ -171,7 +167,8 @@ describe("TermDetail", () => {
                                             removeTerm={removeTerm}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
-                                            publishNotification={onPublishNotification} loadValidationResults={loadValidationResults}
+                                            publishNotification={onPublishNotification}
+                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
         wrapper.update();
@@ -197,7 +194,7 @@ describe("TermDetail", () => {
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
-                                            loadValidationResults={loadValidationResults}
+                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         const buttons = (wrapper.instance() as TermDetail).getActions();
         expect(buttons.some(b => b.key === "term-detail-edit"));
@@ -211,7 +208,7 @@ describe("TermDetail", () => {
                                                         loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                                         history={history} location={location} match={match}
                                                         publishNotification={onPublishNotification}
-                                                        loadValidationResults={loadValidationResults}
+                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         const update = new Term(Object.assign({}, term));
         const newParent = Generator.generateUri();
@@ -232,7 +229,7 @@ describe("TermDetail", () => {
                                                         location={location}
                                                         match={match}
                                                         publishNotification={onPublishNotification}
-                                                        loadValidationResults={loadValidationResults}
+                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         wrapper.instance().onRemove();
         expect(removeTerm).toHaveBeenCalledWith(term);
