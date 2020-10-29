@@ -17,6 +17,8 @@ import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
+import * as _ from "lodash";
+import {isTermValid} from "./TermMetadataCreate";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -108,8 +110,14 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     };
 
     private isValid(): boolean {
-        return this.state.iri!.length > 0 && getLocalized(this.state.label).length > 0 && !this.state.labelExists;
+        return isTermValid(this.state, this.props.language) && !this.state.labelExists;
     }
+
+    public removeTranslation = (lang: string) => {
+        const copy = _.cloneDeep(this.state);
+        Term.removeTranslation(copy, lang);
+        this.setState(copy);
+    };
 
     public render() {
         const {i18n, language} = this.props;
@@ -117,8 +125,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         return <>
-            <EditLanguageSelector key="term-edit-language-selector" term={this.state}
-                                  language={language} onSelect={this.props.selectLanguage}/>
+            <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
+                                  onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
             <Card>
                 <CardBody>
                     <Form>

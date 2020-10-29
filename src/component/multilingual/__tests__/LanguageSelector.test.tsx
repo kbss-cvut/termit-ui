@@ -3,7 +3,7 @@ import Term from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
-import LanguageSelector from "../LanguageSelector";
+import LanguageSelector, {renderLanguages} from "../LanguageSelector";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import Constants from "../../../util/Constants";
 import {NavItem} from "reactstrap";
@@ -76,5 +76,33 @@ describe("LanguageSelector", () => {
         expect(items.length).toEqual(2);
         const texts = items.map(i => i.text());
         ["cs", "en"].forEach(lang => expect(texts.find(t => t.indexOf(ISO6391.getNativeName(lang)) !== -1)).toBeDefined());
+    });
+
+    describe("language removal", () => {
+
+        let onRemove: (lang: string) => void;
+
+        beforeEach(() => {
+            onRemove = jest.fn();
+        })
+
+        it("does not allow language removal when there is only one language", () => {
+            const wrapper = mountWithIntl(<>{renderLanguages(["en"], "en", intlFunctions().formatMessage, onSelect, onRemove)}</>);
+            expect(wrapper.exists(".m-remove-lang")).toBeFalsy();
+        });
+
+        it("selects the next language when first one is removed", () => {
+            const wrapper = mountWithIntl(<>{renderLanguages(["en", "cs"], "en", intlFunctions().formatMessage, onSelect, onRemove)}</>);
+            wrapper.find(".m-remove-lang").first().simulate("click");
+            expect(onRemove).toHaveBeenCalledWith("en");
+            expect(onSelect).toHaveBeenCalledWith("cs");
+        });
+
+        it("selects the preceding language when the language with non-zero index is removed", () => {
+            const wrapper = mountWithIntl(<>{renderLanguages(["en", "cs"], "en", intlFunctions().formatMessage, onSelect, onRemove)}</>);
+            wrapper.find(".m-remove-lang").last().simulate("click");
+            expect(onRemove).toHaveBeenCalledWith("cs");
+            expect(onSelect).toHaveBeenCalledWith("en");
+        });
     });
 });

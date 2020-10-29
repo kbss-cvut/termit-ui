@@ -15,6 +15,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import {langString} from "../../../model/MultilingualString";
 import {constructValidationResult} from "../../vocabulary/validation/__tests__/ValidationResults.test";
 import ValidationResult from "../../../model/ValidationResult";
+import Constants from "../../../util/Constants";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -38,7 +39,7 @@ describe("TermDetail", () => {
 
     let vocabulary: Vocabulary;
     let term: Term;
-    let validationResults: {[vocabularyIri : string] : ValidationResult[]};
+    let validationResults: { [vocabularyIri: string]: ValidationResult[] };
 
     beforeEach(() => {
         location = {
@@ -77,7 +78,7 @@ describe("TermDetail", () => {
 
     it("loads term on mount", () => {
         shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
-                            loadVocabulary={loadVocabulary}
+                            loadVocabulary={loadVocabulary} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                             publishNotification={onPublishNotification} vocabulary={vocabulary}
                             history={history} location={location} match={match} validationResults={validationResults}
                             {...intlFunctions()}/>);
@@ -88,7 +89,7 @@ describe("TermDetail", () => {
         const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
         location.search = "?namespace=" + namespace;
         shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
-                            loadVocabulary={loadVocabulary}
+                            loadVocabulary={loadVocabulary} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                             history={history} location={location} match={match} vocabulary={vocabulary}
                             publishNotification={onPublishNotification} validationResults={validationResults}
                             {...intlFunctions()}/>);
@@ -97,7 +98,7 @@ describe("TermDetail", () => {
 
     it("renders term metadata by default", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate}
+                                            updateTerm={onUpdate} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                             removeTerm={removeTerm}
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
@@ -109,7 +110,7 @@ describe("TermDetail", () => {
 
     it("renders term editor after clicking edit button", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate}
+                                            updateTerm={onUpdate} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                             removeTerm={removeTerm}
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
@@ -122,7 +123,7 @@ describe("TermDetail", () => {
 
     it("invokes termUpdate action on save", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
-                                            removeTerm={removeTerm}
+                                            removeTerm={removeTerm} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
@@ -134,7 +135,7 @@ describe("TermDetail", () => {
 
     it("closes term metadata edit on save success", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate}
+                                            updateTerm={onUpdate} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                             removeTerm={removeTerm}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match} vocabulary={vocabulary}
@@ -150,7 +151,7 @@ describe("TermDetail", () => {
 
     it("reloads term on successful save", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
-                                            removeTerm={removeTerm}
+                                            removeTerm={removeTerm} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
@@ -164,7 +165,7 @@ describe("TermDetail", () => {
 
     it("closes edit when different term is selected", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
-                                            removeTerm={removeTerm}
+                                            removeTerm={removeTerm} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
@@ -189,7 +190,7 @@ describe("TermDetail", () => {
 
     it("does not render edit button when editing", () => {
         const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} loadVocabulary={loadVocabulary}
-                                            updateTerm={onUpdate}
+                                            updateTerm={onUpdate} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                             removeTerm={removeTerm}
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
@@ -205,6 +206,7 @@ describe("TermDetail", () => {
     it("publishes term update notification when parent term changes", () => {
         const wrapper = shallow<TermDetail>(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
                                                         removeTerm={removeTerm}
+                                                        configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                                         loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                                         history={history} location={location} match={match}
                                                         publishNotification={onPublishNotification}
@@ -219,7 +221,7 @@ describe("TermDetail", () => {
         });
     });
     it("invokes remove action and closes remove confirmation dialog on remove", () => {
-        const wrapper = shallow<TermDetail>(<TermDetail term={term}
+        const wrapper = shallow<TermDetail>(<TermDetail term={term} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                                         loadTerm={onLoad}
                                                         updateTerm={onUpdate}
                                                         removeTerm={removeTerm}
