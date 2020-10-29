@@ -35,10 +35,10 @@ export function renderLanguages(languages: string[], selectedLanguage: string, f
         <NavLink onClick={() => onSelect(lang)}
                  className={selectedLanguage === lang ? "active bg-white" : "language-selector-item"}>
             {ISO6391.getNativeName(lang)}
-            {count > 1 && onRemove && <FaTimesCircle className="align-baseline ml-1" onClick={e => {
+            {count > 1 && onRemove && <FaTimesCircle className="m-remove-lang align-baseline ml-1" onClick={e => {
                 e.stopPropagation();
+                onSelect(languages[i > 0 ? i - 1 : 1]);
                 onRemove(lang);
-                onSelect(languages[i > 0 ? 0 : i - 1]);
             }}/>}
         </NavLink>
     </NavItem>);

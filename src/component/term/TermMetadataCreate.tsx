@@ -32,7 +32,8 @@ interface CreateVocabularyTermState extends TermData {
 }
 
 export function isFormValid(data: TermData, locale?: string) {
-    return getLocalized(data.label, locale).trim().length > 0 && data.iri && data.iri.trim().length > 0;
+    const localizedLabel = getLocalized(data.label, locale);
+    return localizedLabel !== undefined && localizedLabel.trim().length > 0 && data.iri && data.iri.trim().length > 0;
 }
 
 export class TermMetadataCreate extends React.Component<TermMetadataCreateProps, CreateVocabularyTermState> {
