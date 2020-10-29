@@ -169,11 +169,11 @@ describe("Term tests", () => {
         it("synchronizes plainSubTerms with current subTerms value", () => {
             const origSubTerms = [{
                 iri: Generator.generateUri(),
-                label: "test one",
+                label: langString("test one"),
                 vocabulary: {iri: Generator.generateUri()}
             }, {
                 iri: Generator.generateUri(),
-                label: "test two",
+                label: langString("test two"),
                 vocabulary: {iri: Generator.generateUri()}
             }];
             termData.subTerms = origSubTerms;
@@ -183,7 +183,7 @@ describe("Term tests", () => {
             newSubTerms.splice(newSubTerms.length - 1, 1);
             newSubTerms.push({
                 iri: Generator.generateUri(),
-                label: "test three",
+                label: langString("test three"),
                 vocabulary: {iri: Generator.generateUri()}
             });
             sut.subTerms = newSubTerms;
@@ -194,7 +194,7 @@ describe("Term tests", () => {
         it("is invoked by constructor", () => {
             const origSubTerms = [{
                 iri: Generator.generateUri(),
-                label: "test one",
+                label: langString("test one"),
                 vocabulary: {iri: Generator.generateUri()}
             }];
             termData.subTerms = origSubTerms;
@@ -230,6 +230,33 @@ describe("Term tests", () => {
             const result = sut.toTermData();
             expect(result.definitionSource!.term).not.toEqual(result);
             expect(result.definitionSource!.term).toEqual({iri: sut.iri});
+        });
+    });
+
+    describe("removeTranslation", () => {
+        it("deletes values in specified language from multilingual attributes", () => {
+            const data: TermData = {
+                iri: Generator.generateUri(),
+                label: {en: "test term", cs: "testovaci pojem"},
+                definition: {en: "Term definition.", cs: "Definice pojmu"},
+                types: [VocabularyUtils.TERM]
+            };
+
+            Term.removeTranslation(data, "cs");
+            expect(data.label.cs).not.toBeDefined();
+            expect(data.definition!.cs).not.toBeDefined();
+        });
+
+        it("handles plural attribute translation removal as well", () => {
+            const data: TermData = {
+                iri: Generator.generateUri(),
+                label: {en: "test term", cs: "testovaci pojem"},
+                altLabels: {en: ["test term", "test"], cs: ["testovaci pojem", "testovaci term"]},
+                types: [VocabularyUtils.TERM]
+            };
+
+            Term.removeTranslation(data, "cs");
+            expect(data.altLabels!.cs).not.toBeDefined();
         });
     });
 });

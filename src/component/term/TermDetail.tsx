@@ -24,7 +24,6 @@ import Vocabulary from "../../model/Vocabulary";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
-import {getShortLocale} from "../../util/IntlUtil";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
@@ -37,7 +36,8 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
-    validationResults: {[vocabularyIri : string] : ValidationResult[] };
+    configuredLanguage: string;
+    validationResults: { [vocabularyIri: string]: ValidationResult[] };
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -58,7 +58,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.state = {
             edit: false,
             showRemoveDialog: false,
-            language: getShortLocale(props.locale)
+            language: props.configuredLanguage
         };
     }
 
@@ -95,6 +95,9 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (currTermName !== prevTermName) {
             this.onCloseEdit();
             this.loadTerm();
+        }
+        if (prevProps.configuredLanguage !== this.props.configuredLanguage) {
+            this.setState({language: this.props.configuredLanguage});
         }
     }
 
@@ -166,13 +169,13 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) {
             score = this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri));
         }
-            const emptyString = "  ";
-            return <Badge color = {this.setBadgeColor(score)}
-                          className="term-quality-badge"
-                          title={"The score of this term is "+ score + "%. Click to see the validation results."}
-                          onClick={this.onBadgeClick}
-            > {emptyString}
-            </Badge>
+        const emptyString = "  ";
+        return <Badge color={this.setBadgeColor(score)}
+                      className="term-quality-badge"
+                      title={"The score of this term is " + score + "%. Click to see the validation results."}
+                      onClick={this.onBadgeClick}
+        > {emptyString}
+        </Badge>
     }
 
     public render() {
@@ -210,6 +213,7 @@ export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
         vocabulary: state.vocabulary,
+        configuredLanguage: state.configuration.language,
         validationResults: state.validationResults
     };
 }, (dispatch: ThunkDispatch) => {

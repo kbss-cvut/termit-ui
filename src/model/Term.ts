@@ -148,4 +148,19 @@ export default class Term extends Asset implements TermData {
         Object.assign(termData, {"@context": CONTEXT});
         return termData;
     }
+
+    /**
+     * Removes translation in the specified language from the specified term data.
+     *
+     * The removal happens in place.
+     * @param data Data to remove translation from.
+     * @param lang Language to remove
+     */
+    public static removeTranslation(data: TermData, lang: string) {
+        TERM_MULTILINGUAL_ATTRIBUTES.forEach(att => {
+            if (data[att]) {
+                delete data[att][lang];
+            }
+        });
+    }
 }
