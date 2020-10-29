@@ -4,7 +4,7 @@ import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import SearchResultsOverlay from "../SearchResultsOverlay";
 import {createMemoryHistory, Location} from "history";
 import {match as Match} from "react-router";
-import Routes from "../../../../util/Routes";
+import Routes, {Route} from "../../../../util/Routes";
 import {shallow} from "enzyme";
 import SearchResult from "../../../../model/SearchResult";
 import Generator from "../../../../__tests__/environment/Generator";
@@ -73,47 +73,29 @@ describe("NavbarSearch", () => {
     });
 
     it("does not display search results when current route is search", () => {
-        location.pathname = Routes.search.path;
-        match.path = Routes.search.path;
-        const isInNavbar = false;
-        const wrapper = shallow<NavbarSearch>(<NavbarSearch searchString="" navbar={isInNavbar} user={user}
-                                                            searchResults={searchResults} {...navbarConnections()} {...intlFunctions()}/>);
-        wrapper.setState({showResults: true, searchOriginNavbar: isInNavbar});
-        wrapper.update();
-        expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
+        verifyResultsNotDisplayed(Routes.search);
     });
 
-    it("does not display search results when current route is term search", () => {
-        location.pathname = Routes.searchTerms.path;
-        match.path = Routes.searchTerms.path;
-        const isInNavbar = false;
-        const wrapper = shallow<NavbarSearch>(<NavbarSearch searchString="" navbar={isInNavbar} user={user}
+    function verifyResultsNotDisplayed(route: Route) {
+        location.pathname = route.path;
+        match.path = route.path;
+        const wrapper = shallow<NavbarSearch>(<NavbarSearch searchString="" navbar={false} user={user}
                                                             searchResults={searchResults} {...navbarConnections()} {...intlFunctions()}/>);
-        wrapper.setState({showResults: true, searchOriginNavbar: isInNavbar});
+        wrapper.setState({showResults: true, searchOriginNavbar: false});
         wrapper.update();
         expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
+    }
+
+    it("does not display search results when current route is term search", () => {
+        verifyResultsNotDisplayed(Routes.searchTerms);
     });
 
     it("does not display search results when current route is vocabulary search", () => {
-        location.pathname = Routes.searchVocabularies.path;
-        match.path = Routes.searchVocabularies.path;
-        const isInNavbar = false;
-        const wrapper = shallow<NavbarSearch>(<NavbarSearch searchString="" navbar={isInNavbar} user={user}
-                                                            searchResults={searchResults} {...navbarConnections()} {...intlFunctions()}/>);
-        wrapper.setState({showResults: true, searchOriginNavbar: isInNavbar});
-        wrapper.update();
-        expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
+        verifyResultsNotDisplayed(Routes.searchVocabularies);
     });
 
     it("does not display search results when current route is faceted search", () => {
-        location.pathname = Routes.facetedSearch.path;
-        match.path = Routes.facetedSearch.path;
-        const isInNavbar = false;
-        const wrapper = shallow<NavbarSearch>(<NavbarSearch searchString="" navbar={isInNavbar} user={user}
-                                                            searchResults={searchResults} {...navbarConnections()} {...intlFunctions()}/>);
-        wrapper.setState({showResults: true, searchOriginNavbar: isInNavbar});
-        wrapper.update();
-        expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
+        verifyResultsNotDisplayed(Routes.facetedSearch);
     });
 
     it("renders results when they are available", () => {
@@ -194,5 +176,17 @@ describe("NavbarSearch", () => {
         const input = wrapper.find("#main-search-input");
         input.simulate("keyPress", {key: "Enter"});
         expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch, {query: new Map()});
+    });
+
+    it("does not display search results when current route is public search results", () => {
+        verifyResultsNotDisplayed(Routes.publicSearch);
+    });
+
+    it("does not display search results when current route is public term search results", () => {
+        verifyResultsNotDisplayed(Routes.publicSearchTerms);
+    });
+
+    it("does not display search results when current route is public term search results", () => {
+        verifyResultsNotDisplayed(Routes.publicSearchVocabularies);
     });
 });

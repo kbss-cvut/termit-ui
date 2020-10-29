@@ -31,6 +31,11 @@ interface NavbarSearchState {
     searchOriginNavbar?: boolean;
 }
 
+/**
+ * Routes for which the results results preview popup should not be displayed.
+ */
+const ROUTES_WITHOUT_SEARCH_OVERLAY = [Routes.search, Routes.searchTerms, Routes.searchVocabularies, Routes.facetedSearch, Routes.publicSearch, Routes.publicSearchTerms, Routes.publicSearchVocabularies];
+
 export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearchState> {
     constructor(props: NavbarSearchProps) {
         super(props);
@@ -92,8 +97,7 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
 
     private shouldDisplayResults() {
         const path = this.props.location.pathname;
-        return this.state.showResults && path !== Routes.search.path && path !== Routes.searchTerms.path
-            && path !== Routes.searchVocabularies.path && path !== Routes.facetedSearch.path;
+        return this.state.showResults && !ROUTES_WITHOUT_SEARCH_OVERLAY.find(r => r.path === path);
     }
 
     public render() {
@@ -108,8 +112,8 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
 
         const clearIcon = (
             <InputGroupAddon addonType="append" id="search-reset" onClick={this.resetSearch} className="float-right">
-                <Button title={this.props.i18n("search.reset")} color="outline-dark" style={{zIndex : 5}}>
-                    <FaTimes style={{marginBottom : 4}}/>
+                <Button title={this.props.i18n("search.reset")} color="outline-dark" style={{zIndex: 5}}>
+                    <FaTimes style={{marginBottom: 4}}/>
                 </Button>
             </InputGroupAddon>);
 
