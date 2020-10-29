@@ -13,6 +13,7 @@ import Constants from "../../../util/Constants";
 import TextArea from "../../misc/TextArea";
 import StringListEdit from "../../misc/StringListEdit";
 
+
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
 jest.mock("../TermTypesEdit");
@@ -253,5 +254,20 @@ describe("Term edit", () => {
         wrapper.instance().onHiddenLabelsChange(list);
         wrapper.update();
         expect(wrapper.state().hiddenLabels).toEqual(pluralLangString(list, "de"));
+    });
+
+    describe("removeTranslation", () => {
+        it("removes translation from cloned state term data", () => {
+            const langToRemove = "cs";
+            term.label[langToRemove] = "český preklad";
+            const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                        language="en"
+                                                                        selectLanguage={selectLanguage} {...intlFunctions()}/>);
+            const originalState = wrapper.state();
+            wrapper.instance().removeTranslation(langToRemove);
+            expect(wrapper.state().label[langToRemove]).not.toBeDefined();
+            // Original state should be unharmed
+            expect(originalState.label[langToRemove]).toBeDefined();
+        });
     });
 });

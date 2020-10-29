@@ -17,6 +17,7 @@ interface EditLanguageSelectorProps extends HasI18n {
     language: string;
     term: Term | TermData;
     onSelect: (lang: string) => void;
+    onRemove: (lang: string) => void;
 }
 
 interface Language {
@@ -38,7 +39,7 @@ function prioritizeLanguages(options: Language[], languages: string[]) {
 const OPTIONS = prioritizeLanguages(ISO6391.getLanguages(ISO6391.getAllCodes()), Object.getOwnPropertyNames(Constants.LANG).map(lang => getShortLocale(Constants.LANG[lang].locale)));
 
 const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = props => {
-    const {language, term, onSelect, i18n, formatMessage} = props;
+    const {language, term, onSelect, onRemove, i18n, formatMessage} = props;
     const [adding, setAdding] = React.useState(false);
     React.useEffect(() => {
         setAdding(false);
@@ -54,7 +55,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = props => {
     }
 
     return <div><Nav id="term-edit-language-selector" tabs={true} className="language-selector-nav">
-        {renderLanguages(existingLanguages, language, formatMessage, onSelect)}
+        {renderLanguages(existingLanguages, language, formatMessage, onSelect, onRemove)}
         <NavItem key="add-language" className={classNames({"edit-language-selector": adding})}>
             {!adding ?
                 <NavLink onClick={() => setAdding(true)} className="language-selector-item"><FaPlusCircle

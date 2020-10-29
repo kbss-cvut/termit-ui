@@ -6,6 +6,7 @@ import {injectIntl} from "react-intl";
 import {Nav, NavItem, NavLink} from "reactstrap";
 import Utils from "../../util/Utils";
 import "./LanguageSelector.scss";
+import {FaTimesCircle} from "react-icons/fa";
 
 interface LanguageSelectorProps extends HasI18n {
     term: Term | null;
@@ -23,16 +24,22 @@ export function getLanguages(term: Term | TermData): string[] {
     return langArr;
 }
 
-export function renderLanguages(languages: string[], selectedLanguage: string, formatMessage: (msgId: string, values: {} | undefined) => string, onSelect: (lang: string) => void) {
-    return languages.map(lang => <NavItem key={lang}
-                                          title={formatMessage("term.language.selector.item", {
-                                              lang: ISO6391.getName(lang),
-                                              nativeLang: ISO6391.getNativeName(lang)
-                                          })}
-                                          active={selectedLanguage === lang}>
+export function renderLanguages(languages: string[], selectedLanguage: string, formatMessage: (msgId: string, values: {} | undefined) => string, onSelect: (lang: string) => void, onRemove?: (lang: string) => void) {
+    const count = languages.length;
+    return languages.map((lang, i) => <NavItem key={lang}
+                                               title={formatMessage("term.language.selector.item", {
+                                                   lang: ISO6391.getName(lang),
+                                                   nativeLang: ISO6391.getNativeName(lang)
+                                               })}
+                                               active={selectedLanguage === lang}>
         <NavLink onClick={() => onSelect(lang)}
                  className={selectedLanguage === lang ? "active bg-white" : "language-selector-item"}>
             {ISO6391.getNativeName(lang)}
+            {count > 1 && onRemove && <FaTimesCircle className="align-baseline ml-1" onClick={e => {
+                e.stopPropagation();
+                onRemove(lang);
+                onSelect(languages[i > 0 ? 0 : i - 1]);
+            }}/>}
         </NavLink>
     </NavItem>);
 }

@@ -14,6 +14,7 @@ import {getLocalized} from "../../model/MultilingualString";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
+import * as _ from "lodash";
 
 interface TermMetadataCreateOwnProps {
     onCreate: (term: Term, newTerm: boolean) => void;
@@ -72,12 +73,19 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
         this.setState({language});
     };
 
+    public onRemoveTranslation = (language: string) => {
+        const copy = _.cloneDeep(this.state);
+        Term.removeTranslation(copy, language);
+        this.setState(copy);
+    };
+
     public render() {
         const i18n = this.props.i18n;
 
         return <>
             <HeaderWithActions title={i18n("glossary.form.header")}/>
-            <EditLanguageSelector language={this.state.language} onSelect={this.setLanguage} term={this.state}/>
+            <EditLanguageSelector language={this.state.language} onSelect={this.setLanguage}
+                                  onRemove={this.onRemoveTranslation} term={this.state}/>
             <Card id="create-term">
                 <CardBody>
                     <TermMetadataCreateForm onChange={this.onChange} termData={this.state}
