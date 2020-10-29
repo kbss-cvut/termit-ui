@@ -38,21 +38,15 @@ export class SearchResults extends React.Component<SearchResultsProps> {
     public render() {
         const i18n = this.props.i18n;
         if (this.props.results.length === 0) {
-            return <Label className="italics">{i18n("main.search.no-results")}</Label>;
+            return <Label className="italics small text-gray">{i18n("main.search.no-results")}</Label>;
         }
         const rows = this.renderResults();
         return <div>
-            <div className="italics">{this.props.formatMessage("search.results.countInfo", {
+            <div className="italics small text-gray">{this.props.formatMessage("search.results.countInfo", {
                 matches: this.props.results.length,
                 assets: rows.length
             })}</div>
-            <Table responsive={true} striped={true} className="search-results">
-                <thead>
-                <tr>
-                    <th className="search-results-asset">{i18n("type.asset")}</th>
-                    <th className="search-results-score text-center">{i18n("search.results.table.score")}</th>
-                </tr>
-                </thead>
+            <Table responsive={true} bordered={true} className="search-results">
                 <tbody>
                 {rows}
                 </tbody>
@@ -62,14 +56,10 @@ export class SearchResults extends React.Component<SearchResultsProps> {
 
     private renderResults() {
         const items = SearchResults.mergeDuplicates(this.props.results);
-        const maxScore = SearchResults.calculateMaxScore(items);
         return items.map(r => {
-            return <tr key={r.iri} className="m-search-result-row">
+            return <tr key={r.iri} className="search-result-match-row">
                 <td className="align-middle">
                     {SearchResults.renderMatch(r)}
-                </td>
-                <td className="align-middle text-center search-result-score">
-                    {SearchResults.renderScore(r.totalScore, maxScore)}
                 </td>
             </tr>;
         });
@@ -102,22 +92,8 @@ export class SearchResults extends React.Component<SearchResultsProps> {
         return arr;
     }
 
-    private static calculateMaxScore(results: SearchResultItem[]) {
-        return results.reduce((accumulator, item) => item.totalScore > accumulator ? item.totalScore : accumulator, 0.0);
-    }
-
     private static renderMatch(item: SearchResultItem) {
         return item.hasType(VocabularyUtils.VOCABULARY) ? <VocabularyResultItem result={item}/> : <TermResultItem result={item}/>;
-    }
-
-    private static renderScore(score: number | undefined, maxScore: number) {
-        if (!score) {
-            return null;
-        }
-        const width = (score / maxScore) * 100;
-        return <div className="search-result-score-container">
-            <div className="search-result-score-bar" style={{width: width + "px"}}/>
-        </div>;
     }
 }
 

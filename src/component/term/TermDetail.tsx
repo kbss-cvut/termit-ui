@@ -201,7 +201,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
             {this.renderBadge()}
             {getLocalized(term.label, this.state.language)}
             <CopyIriIcon url={term.iri as string}/><br/>
-            <h6>{altLabels.length > 0 ? altLabels : "\u00a0"}</h6>
+            <div className="small italics">{altLabels.length > 0 ? altLabels : "\u00a0"}</div>
         </>;
     }
 }
