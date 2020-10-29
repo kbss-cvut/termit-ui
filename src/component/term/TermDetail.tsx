@@ -37,10 +37,12 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
-    validationResults: {[vocabularyIri : string] : ValidationResult[] };
+    validationResults: { [vocabularyIri: string]: ValidationResult[] };
+    loadValidationResults: (vocabularyIri: IRI) => Promise<ValidationResult[]>;
 }
 
 export interface TermDetailState extends EditableComponentState {
+    validationScore: number;
     language: string;
 }
 
@@ -58,13 +60,15 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.state = {
             edit: false,
             showRemoveDialog: false,
-            language: getShortLocale(props.locale)
+            language: getShortLocale(props.locale),
+            validationScore: -1
         };
     }
 
     public componentDidMount(): void {
         this.loadTerm();
         this.loadVocabulary();
+        this.loadValidationResults();
     }
 
     private loadVocabulary(): void {
@@ -80,13 +84,20 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.props.loadTerm(termName, {fragment: vocabularyName, namespace});
     }
 
-    private computeScore(results: ValidationResult []): number | undefined {
-        return results.reduce((reduceScore, result) => {
-            if (importantRules.indexOf(result.sourceShape.iri) >= 0) {
-                return reduceScore - 25;
+    private loadValidationResults = () => {
+        (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) ?
+            this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri)) : this.setBadgeColor(-1);
+    }
+
+    private computeScore(results: ValidationResult []): void {
+        const score = results.reduce((reduceScore, result) => {
+            if (importantRules.indexOf(result.sourceShape.iri) > 0) {
+                return reduceScore + 1;
             }
             return reduceScore;
-        }, 100);
+        }, 0);
+
+        this.setState({validationScore: score})
     }
 
     public componentDidUpdate(prevProps: TermDetailProps) {
@@ -95,6 +106,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (currTermName !== prevTermName) {
             this.onCloseEdit();
             this.loadTerm();
+            this.loadValidationResults();
         }
     }
 
@@ -132,15 +144,15 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         return actions;
     }
 
-    public setBadgeColor(score: number | undefined): string {
+    public setBadgeColor(score: number): string {
         switch (score) {
-            case 100:
-                return "dark-green";
-            case 75:
-            case 50:
-                return "dark-yellow";
-            case 25:
             case 0:
+                return "dark-green";
+            case 1:
+            case 2:
+                return "dark-yellow";
+            case 3:
+            case 4:
                 return "dark-red";
             default:
                 return "gray";
