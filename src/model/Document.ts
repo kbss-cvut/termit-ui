@@ -26,6 +26,7 @@ export default class Document extends Resource implements DocumentData {
 
     constructor(data: DocumentData) {
         super(data);
+        this.vocabulary = data.vocabulary;
         this.files = Utils.sanitizeArray(data.files).map(fd => new File(fd));
     }
 
