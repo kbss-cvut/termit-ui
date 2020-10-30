@@ -142,6 +142,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
     public onTermSelect = (term: TermData | null) => {
         if (term === null) {
+            if (this.props.isDetailView) {
+                return;
+            }
             this.props.selectVocabularyTerm(term);
         } else {
             // The tree component adds depth and expanded attributes to the options when rendering,
