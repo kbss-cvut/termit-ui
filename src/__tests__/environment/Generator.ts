@@ -3,6 +3,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Term from "../../model/Term";
 import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
+import {langString} from "../../model/MultilingualString";
 
 export default class Generator {
 
@@ -53,7 +54,11 @@ export default class Generator {
     }
 
     public static generateTerm(vocabularyIri?: string) {
-        return new Term(Object.assign(this.generateAssetData("Term " + this.randomInt(0, 10000)), {vocabulary: vocabularyIri ? {iri: vocabularyIri} : undefined}));
+        return new Term({
+            iri: Generator.generateUri(),
+            label: langString("Term " + Generator.randomInt(0, 10000)),
+            vocabulary: vocabularyIri ? {iri: vocabularyIri} : undefined
+        });
     }
 
     public static generateVocabulary() {
