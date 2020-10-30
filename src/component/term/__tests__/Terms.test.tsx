@@ -71,30 +71,39 @@ describe("Terms", () => {
         });
     });
 
-    it("transitions to term detail on term select", () => {
-        const wrapper = renderShallow();
-        (wrapper.instance()).onTermSelect(term);
-        const call = (Routing.transitionToAsset as jest.Mock).mock.calls[0];
-        expect(call[0].iri).toEqual(term.iri);
-        expect(call[0].vocabulary).toEqual(term.vocabulary);
-        expect(call[0].types).toEqual(term.types);
+    describe("onTermSelect", () => {
+        it("transitions to selected term detail", () => {
+            const wrapper = renderShallow();
+            (wrapper.instance()).onTermSelect(term);
+            const call = (Routing.transitionToAsset as jest.Mock).mock.calls[0];
+            expect(call[0].iri).toEqual(term.iri);
+            expect(call[0].vocabulary).toEqual(term.vocabulary);
+            expect(call[0].types).toEqual(term.types);
+        });
+
+        it("invokes term selected on term select", () => {
+            const wrapper = renderShallow();
+            wrapper.instance().onTermSelect(term);
+            expect(selectVocabularyTerm).toHaveBeenCalled();
+            expect((selectVocabularyTerm as jest.Mock).mock.calls[0][0].iri).toEqual(term.iri);
+        });
+
+        // Redmine #1349
+        it("does not invoke termSelected when rendered in term detail view and no term is selected (input is cleared)", () => {
+            const wrapper = renderShallow(true);
+            wrapper.instance().onTermSelect(null);
+            expect(selectVocabularyTerm).not.toHaveBeenCalled();
+        });
     });
 
-    function renderShallow() {
+    function renderShallow(isDetailView: boolean = false) {
         return shallow<Terms>(<Terms counter={counter} selectedTerms={selectedTerms}
                                      notifications={[]} consumeNotification={consumeNotification}
                                      selectVocabularyTerm={selectVocabularyTerm} vocabulary={vocabulary}
                                      fetchTerms={fetchTerms} {...intlFunctions()}
-                                     location={location} match={match}
+                                     location={location} match={match} isDetailView={isDetailView}
                                      fetchUnusedTerms={fetchUnusedTerms}/>);
     }
-
-    it("invokes term selected on term select", () => {
-        const wrapper = renderShallow();
-        wrapper.instance().onTermSelect(term);
-        expect(selectVocabularyTerm).toHaveBeenCalled();
-        expect((selectVocabularyTerm as jest.Mock).mock.calls[0][0].iri).toEqual(term.iri);
-    });
 
     it("fetches terms including imported when configured to", () => {
         const wrapper = renderShallow();
