@@ -23,7 +23,6 @@ import Vocabulary from "../../model/Vocabulary";
 import {AbstractCreateAsset, AbstractCreateAssetState} from "../asset/AbstractCreateAsset";
 import CreateDocumentForVocabulary from "./CreateDocumentForVocabulary";
 import {GoPlus} from "react-icons/go";
-import Constants from "../../util/Constants";
 import withLoading from "../hoc/withLoading";
 import {createVocabulary} from "../../action/AsyncActions";
 import {connect} from "react-redux";
@@ -31,6 +30,7 @@ import {injectIntl} from "react-intl";
 import {ThunkDispatch} from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import {ContextFreeAssetType} from "../../model/ContextFreeAssetType";
 
 interface CreateVocabularyProps extends HasI18n {
     onCreate: (vocabulary: Vocabulary) => void
@@ -57,8 +57,8 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         };
     }
 
-    protected get identifierGenerationEndpoint(): string {
-        return Constants.API_PREFIX + "/vocabularies/identifier";
+    protected get assetType(): ContextFreeAssetType {
+        return "VOCABULARY";
     }
 
     public onCreate = () => {

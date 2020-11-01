@@ -25,7 +25,7 @@ describe("Create vocabulary view", () => {
     let onCreate: (vocabulary: Vocabulary) => void;
 
     beforeEach(() => {
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(iri));
+        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({ data : iri }));
         onCreate = jest.fn();
     });
 
@@ -51,7 +51,7 @@ describe("Create vocabulary view", () => {
         const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
         (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
         nameInput.simulate("change", nameInput);
-        return Ajax.get(Constants.API_PREFIX + "/vocabularies/identifier").then(() => {
+        return Ajax.post(Constants.API_PREFIX + "/identifiers", params({name: "", assetType: "VOCABULARY"})).then(() => {
             const submitButton = wrapper.find("#create-vocabulary-submit").first();
             submitButton.simulate("click");
             expect(onCreate).toHaveBeenCalled();
@@ -76,7 +76,10 @@ describe("Create vocabulary view", () => {
             (nameInput.getDOMNode() as HTMLInputElement).value = name;
             nameInput.simulate("change", nameInput);
             return Promise.resolve().then(() => {
-                expect(Ajax.get).toHaveBeenCalledWith(Constants.API_PREFIX + "/vocabularies/identifier", params({name}));
+                expect(Ajax.post).toHaveBeenCalledWith(Constants.API_PREFIX + "/identifiers", params({
+                    name,
+                    assetType: "VOCABULARY"})
+                );
             });
         });
 
@@ -88,15 +91,19 @@ describe("Create vocabulary view", () => {
             const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
             (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
             nameInput.simulate("change", nameInput);
-            expect(Ajax.get).not.toHaveBeenCalled();
+            expect(Ajax.post).not.toHaveBeenCalled();
         });
 
         it("displays IRI generated and returned by the server", () => {
             const wrapper = mountWithIntl(<CreateVocabulary onCreate={onCreate} {...intlFunctions()}/>);
             const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
-            (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
+            const name = "Metropolitan Plan";
+            (nameInput.getDOMNode() as HTMLInputElement).value = name;
             nameInput.simulate("change", nameInput);
-            return Ajax.get(Constants.API_PREFIX + "/vocabularies/identifier").then(() => {
+            return Ajax.post(Constants.API_PREFIX + "/identifiers", params({
+                name,
+                assetType: "VOCABULARY"
+            })).then(() => {
                 const iriInput = wrapper.find("input[name=\"create-vocabulary-iri\"]");
                 return expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
             });

@@ -40,7 +40,7 @@ describe("Term edit", () => {
 
 
     it("disables save button when label field is empty", () => {
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
+        Ajax.head = jest.fn().mockImplementation(() => Promise.resolve());
         const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
                                                                     language={Constants.DEFAULT_LANGUAGE}
                                                                     selectLanguage={selectLanguage} {...intlFunctions()}/>);
@@ -82,8 +82,8 @@ describe("Term edit", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
                                                   language={Constants.DEFAULT_LANGUAGE}
                                                   selectLanguage={selectLanguage} {...intlFunctions()}/>);
-        const mock = jest.fn().mockImplementation(() => Promise.resolve(true));
-        Ajax.get = mock;
+        const mock = jest.fn().mockImplementation(() => Promise.resolve( { status: 200 } ));
+        Ajax.head = mock;
         const newLabel = "New label";
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
             currentTarget: {
@@ -92,8 +92,8 @@ describe("Term edit", () => {
             }
         });
         return Promise.resolve().then(() => {
-            expect(Ajax.get).toHaveBeenCalled();
-            expect(mock.mock.calls[0][1].getParams().value).toEqual(newLabel);
+            expect(Ajax.head).toHaveBeenCalled();
+            expect(mock.mock.calls[0][1].getParams().prefLabel).toEqual(newLabel);
         });
     });
 
