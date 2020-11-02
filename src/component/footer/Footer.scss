@@ -3,18 +3,18 @@
 
 footer {
   background-color: rgba(255, 255, 255, 1);
-  color: $link-color;
+  color: $default;
 
   &.transparent {
     background-color: rgba(255, 255, 255, 0.4);
   }
 
   a {
-    color: $link-color;
+    color: $default;
   }
 
   a:hover {
-    $link-hover-color: lighten($link-color, 10%) !default;
+    $link-hover-color: lighten($default, 10%) !default;
   }
 }
 
@@ -43,23 +43,23 @@ footer {
   display: block;
   cursor: pointer;
   padding: 8px 16px;
-  color: $link-color;
+  color: $default;
 
   svg {
     height: 1.5em;
 
     &:hover {
-      color: $link-hover-color;
+      color: lighten($default, 10%);
     }
   }
 }
 
 .news-viewer-toggle {
   cursor: pointer;
-  color: $link-color;
+  color: $default;
 
   &:hover {
-    color: $link-hover-color;
+    color: lighten($default, 10%);
   }
 }
 

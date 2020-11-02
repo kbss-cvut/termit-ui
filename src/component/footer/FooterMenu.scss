@@ -29,8 +29,8 @@
 }
 
 footer a {
-  color: $link-color !important;
+  color: $default !important;
   &:hover {
-    color: $link-hover-color !important;
+    color: lighten($default, 10%) !important;
   }
 }
