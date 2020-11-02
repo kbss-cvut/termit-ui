@@ -7,6 +7,7 @@ import ResourceTermAssignmentsEdit from "./ResourceTermAssignmentsEdit";
 import Term from "../../model/Term";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
+import Constants from "../../util/Constants";
 
 export interface ResourceEditProps extends HasI18n {
     resource: Resource;
@@ -104,10 +105,10 @@ export class ResourceEdit<P extends ResourceEditProps = ResourceEditProps, S ext
         return <Row>
             <Col xs={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">
-                    <Button id="edit-resource-submit" onClick={this.onSave} color="success"
+                    <Button id="edit-resource-submit" onClick={this.onSave} color={Constants.SUBMIT_BUTTON_VARIANT}
                             size="sm">{i18n("save")}</Button>
-                    <Button id="edit-resource-cancel" onClick={this.props.cancel} key="cancel" color="outline-dark"
-                            size="sm">{i18n("cancel")}</Button>
+                    <Button id="edit-resource-cancel" onClick={this.props.cancel} key="cancel"
+                            color={Constants.CANCEL_BUTTON_VARIANT} size="sm">{i18n("cancel")}</Button>
                 </ButtonToolbar>
             </Col>
         </Row>

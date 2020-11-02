@@ -90,7 +90,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                        onKeyPress={this.onKeyPress} onChange={this.onChange}
                                        placeholder={i18n("login.password.placeholder")}/>
 
-                        <Button id="login-submit" color="success" onClick={this.login}
+                        <Button id="login-submit" color={Constants.SUBMIT_BUTTON_VARIANT} onClick={this.login}
                                 className="btn-block"
                                 disabled={this.props.loading || !this.isValid()}>{i18n("login.submit")}</Button>
                         {this.renderRegistrationLink()}

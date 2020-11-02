@@ -15,6 +15,22 @@
   position: fixed;
   bottom: 0;
   height: $footer-height;
-  background-color: $gray-900;
+  background-color: $secondary;
   width: $navbar-vertical-width-expanded;
+  color: $white;
+
+  a:hover {
+    color: $default !important;
+  }
+
+  @media (max-width: $lg - 1px) {
+    height: $footer-height-thick;
+  }
+}
+
+footer a {
+  color: $default !important;
+  &:hover {
+    color: lighten($default, 10%) !important;
+  }
 }

@@ -8,6 +8,7 @@ import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {shallow} from "enzyme";
 
 jest.mock("../../../util/Routing");
+jest.mock("reactstrap/lib/UncontrolledTooltip");
 
 describe("Login", () => {
 

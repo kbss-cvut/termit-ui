@@ -164,7 +164,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
         return (
             <Navbar expand="md" id="sidenav-main"
-                    className={classNames("navbar-vertical", "navbar-dark", "bg-dark", "py-md-0",
+                    className={classNames("navbar-vertical", "navbar-dark", "sidebar", "py-md-0",
                         {
                             "sidebar-expanded": sidebarExpanded,
                             "sidebar-collapsed": !sidebarExpanded
@@ -182,7 +182,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
                         {/* Brand */}
                         {(sidebarExpanded || !desktopView) && <NavbarBrand
-                            className="p-0 ml-2 ml-sm-3 ml-md-0 brand"
+                            className={classNames("p-0 ml-2 ml-sm-3 ml-md-0 brand", "brand-light")}
                             href={`#${Routes.dashboard.path}`}>
                             {Constants.APP_NAME}
                         </NavbarBrand>}
@@ -209,7 +209,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                             className="navbar-collapse-header d-flex justify-content-between align-items-center">
 
                             <NavbarBrand
-                                className="brand p-0"
+                                className="brand p-0 brand-dark"
                                 href={`#${Routes.dashboard.path}`}>
                                 {Constants.APP_NAME}
                             </NavbarBrand>

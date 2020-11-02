@@ -3,20 +3,25 @@
 
 footer {
   background-color: rgba(255, 255, 255, 1);
-  color: black;
+  color: $default;
 
   &.transparent {
     background-color: rgba(255, 255, 255, 0.4);
   }
 
   a {
-    color: inherit;
+    color: $default;
+  }
+
+  a:hover {
+    $link-hover-color: lighten($default, 10%) !default;
   }
 }
 
 .footer-row {
   display: flex;
   align-items: center;
+  vertical-align: middle;
   height: $footer-height;
   font-size: 0.875rem;
   z-index: 10;
@@ -24,27 +29,42 @@ footer {
   @media (max-width: $sm - 1px) {
     font-size: 0.6875rem;
   }
+
+  @media (max-width: $lg - 1px) {
+    height: $footer-height-thick;
+  }
+
+  .grant-logo {
+    height: $footer-height;
+    z-index: 11;
+
+    @media (max-width: $md - 1px) {
+      display: none;
+    }
+  }
 }
 
 .log-viewer-toggle {
   display: block;
   cursor: pointer;
   padding: 8px 16px;
+  color: $default;
 
   svg {
     height: 1.5em;
 
     &:hover {
-      color: $secondary;
+      color: lighten($default, 10%);
     }
   }
 }
 
 .news-viewer-toggle {
   cursor: pointer;
+  color: $default;
 
   &:hover {
-    color: $secondary;
+    color: lighten($default, 10%);
   }
 }
 

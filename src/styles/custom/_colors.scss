@@ -55,8 +55,8 @@ $colors: map-merge((
 ), $colors);
 
 $default: #172b4d !default;
-$primary: $green !default;
-$secondary: lighten($green, 10%) !default;
+$primary: #057fa5 !default;
+$secondary: lighten(#057fa5, 10%) !default;
 $success: $green !default;
 $info: $teal !default;
 $warning: $orange !default;
@@ -207,7 +207,7 @@ $section-colors: map-merge((
 
 // Links
 
-$link-color: $green !default;
+$link-color: $primary !default;
 $link-decoration: none !default;
 $link-hover-color: lighten($link-color, 10%) !default;
 $link-hover-decoration: none !default;

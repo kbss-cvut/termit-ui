@@ -75,7 +75,10 @@ const constants = {
     LAYOUT_WALLPAPER_NAVBAR_BACKGROUND_IS_LIGHT: false,
     LAYOUT_WALLPAPER_NAVBAR_BACKGROUND: "rgba(0,0,0,0.2)",
 
-    EMPTY_ASSET_IRI: "http://empty"
+    EMPTY_ASSET_IRI: "http://empty",
+
+    SUBMIT_BUTTON_VARIANT: "primary",
+    CANCEL_BUTTON_VARIANT: "outline-primary"
 };
 
 const deployment = constants.DEPLOYMENT_NAME.length > 0 ? constants.DEPLOYMENT_NAME + "-" : "";

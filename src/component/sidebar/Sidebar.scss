@@ -1,10 +1,25 @@
 @import "../../styles/custom/colors";
 @import "../../styles/variables";
 
+.sidebar {
+  background: linear-gradient(darken($primary, 15%), $secondary);
+}
+
 .brand {
-  color: $primary !important;
   font-weight: 700;
   font-size: 1.7rem !important;
+}
+
+.brand-dark {
+  color: $primary !important;
+
+  &:hover {
+    color: $secondary !important;
+  }
+}
+
+.brand-light {
+  color: rgba($white, .95) !important;
 
   &:hover {
     color: $secondary !important;

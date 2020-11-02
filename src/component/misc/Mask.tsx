@@ -17,7 +17,7 @@ const Mask: React.FC<MaskProps> = (props) => {
     return <div className={props.classes ? props.classes : "mask"}>
         <div className={containerClasses}>
             <div style={{width: 32, height: 32, margin: "auto"}}>
-                <ClipLoader color="#29AB87" size={32}/>
+                <ClipLoader color="#057fa5" size={32}/>
             </div>
             {!props.withoutText && <div className="spinner-message">{text}</div>}
         </div>
