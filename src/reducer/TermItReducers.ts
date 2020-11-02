@@ -463,8 +463,8 @@ function validationResults(state: { [vocabularyIri: string] : ValidationResult[]
         case ActionType.FETCH_VALIDATION_RESULTS:
             if (action.status === AsyncActionStatus.SUCCESS) {
                 return {
+                    ...state,
                     ...action.payload,
-                    ...state
                 }
             } else {
                 return state;
