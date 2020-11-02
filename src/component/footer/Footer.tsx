@@ -65,19 +65,19 @@ class Footer extends React.Component<FooterProps, FooterState> {
                                title={i18n("footer.copyright.mvcr.tooltip")}>{i18n("footer.copyright.mvcr")}</a>
                             ,&nbsp;{new Date().getFullYear()}
                         </Col>
-                        <Col xs="auto">
-                            <a href="https://esf2014.esfcr.cz/PublicPortal/Views/Projekty/Public/ProjektDetailPublicPage.aspx?action=get&datovySkladId=F5E162B2-15EC-4BBE-9ABD-066388F3D412"
-                               target="_blank" rel="noreferrer">
-                                <img id="footer-grant-logo"
-                                     src={this.props.locale === Constants.LANG.CS.locale ? grantLogoCz : grantLogoEn}
-                                     className="grant-logo" alt={i18n("footer.grant.text")}/>
-                            </a>
-                            <UncontrolledTooltip target="footer-grant-logo">
-                                <p>{i18n("footer.grant.text")}</p>
-                            </UncontrolledTooltip>
-                        </Col>
                     </Row>
                 </Col>
+                <div className="pl-xs-1 px-2 px-sm-3">
+                    <a href="https://esf2014.esfcr.cz/PublicPortal/Views/Projekty/Public/ProjektDetailPublicPage.aspx?action=get&datovySkladId=F5E162B2-15EC-4BBE-9ABD-066388F3D412"
+                       target="_blank" rel="noreferrer">
+                        <img id="footer-grant-logo"
+                             src={this.props.locale === Constants.LANG.CS.locale ? grantLogoCz : grantLogoEn}
+                             className="grant-logo" alt={i18n("footer.grant.text")}/>
+                    </a>
+                    <UncontrolledTooltip target="footer-grant-logo">
+                        <p>{i18n("footer.grant.text")}</p>
+                    </UncontrolledTooltip>
+                </div>
                 <div>
                 <span onClick={this.toggleLogViewer} className="log-viewer-toggle pl-xs-1 px-2 px-sm-3"
                       title={i18n("log-viewer.title")} id="log-viewer-toggler"><GoZap/></span>

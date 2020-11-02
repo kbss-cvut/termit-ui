@@ -36,6 +36,11 @@ footer {
 
   .grant-logo {
     height: $footer-height;
+    z-index: 11;
+
+    @media (max-width: $md - 1px) {
+      display: none;
+    }
   }
 }
 
