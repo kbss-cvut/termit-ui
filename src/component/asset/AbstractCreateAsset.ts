@@ -1,5 +1,6 @@
 import * as React from "react";
 import Ajax, {params} from "../../util/Ajax";
+import Constants from "../../util/Constants";
 
 export interface AbstractCreateAssetState {
     iri: string;
@@ -19,9 +20,9 @@ export abstract class AbstractCreateAsset<P, S extends AbstractCreateAssetState>
     }
 
     /**
-     * Defines URL of the endpoint used for identifier generation
+     * Defines Type of Asset for identifier generation. one of 'RESOURCE', 'VOCABULARY'.
      */
-    protected abstract get identifierGenerationEndpoint(): string;
+    protected abstract get assetType(): string;
 
     protected onLabelChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const label = e.currentTarget.value;
@@ -33,7 +34,10 @@ export abstract class AbstractCreateAsset<P, S extends AbstractCreateAssetState>
         if (!this.state.generateIri || label.length === 0) {
             return;
         }
-        Ajax.get(this.identifierGenerationEndpoint, params({name: label})).then(iri => this.setState({iri}));
+        Ajax.post( Constants.API_PREFIX + "/identifiers", params({
+            name: label,
+            assetType: this.assetType
+        })).then(response => this.setState({iri : response.data}));
     };
 
     protected onIriChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

@@ -46,17 +46,21 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     };
 
     public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const label = e.currentTarget.value;
+        const prefLabel = e.currentTarget.value;
         const update = {};
-        update[this.props.language] = label;
+        update[this.props.language] = prefLabel;
         this.setState({labelExists: false, label: Object.assign({}, this.state.label, update)});
-        if (label.toLowerCase() === getLocalized(this.props.term.label).toLowerCase()) {
+        if (prefLabel.toLowerCase() === getLocalized(this.props.term.label).toLowerCase()) {
             return;
         }
         const vocabIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);
-        const url = Constants.API_PREFIX + "/vocabularies/" + vocabIri.fragment + "/terms/name";
-        Ajax.get(url, params({namespace: vocabIri.namespace, value: label, language: this.props.language})).then((data) => {
-            this.setState({labelExists: data === true});
+        const url = Constants.API_PREFIX + "/vocabularies/" + vocabIri.fragment + "/terms";
+        Ajax.head(url, params({
+            namespace: vocabIri.namespace,
+            prefLabel,
+            language: this.props.language})
+        ).then((data) => {
+            this.setState({labelExists: data.status === 200});
         });
     };
 

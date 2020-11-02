@@ -70,15 +70,19 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.props.onChange({hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change)});
     };
 
-    private checkLabelUniqueness(label: string) {
+    private checkLabelUniqueness(prefLabel: string) {
         this.setState({labelExists: false});
-        if (label.trim().length === 0) {
+        if (prefLabel.trim().length === 0) {
             return;
         }
         const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
-        const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/name`;
-        Ajax.get(url, params({namespace: vocabularyIri.namespace, value: label})).then((data) => {
-            this.setState({labelExists: data === true});
+        const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms`;
+        Ajax.head(url, params({
+            namespace: vocabularyIri.namespace,
+            prefLabel,
+            language: this.props.language})
+        ).then((data) => {
+            this.setState({labelExists: data.status === 200});
         });
     }
 
@@ -100,8 +104,13 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     private resolveIdentifier = (label: string) => {
         if (this.state.generateUri && label.length > 0) {
             const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
-            Ajax.get(`${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/identifier`,
-                params({name: label, namespace: vocabularyIri.namespace})).then(uri => this.setIdentifier(uri));
+            Ajax.post(`${Constants.API_PREFIX}/identifiers`,
+                params({
+                    name: label,
+                    vocabularyIri,
+                    assetType: 'TERM'
+                })
+            ).then(response => this.setIdentifier(response.data));
         }
     };
 
