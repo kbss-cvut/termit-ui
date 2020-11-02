@@ -1,3 +1,5 @@
+@import "../../styles/variables";
+
 .draft-margin {
   margin-bottom: 0.5rem;
   font-size: 90%;
@@ -7,4 +9,10 @@
   margin-bottom: -0.7rem;
   flex-basis: 100%;
   font-size: 90%;
+}
+
+@media (max-width: $lg - 1px) {
+  .term-type-frequency {
+    display: none;
+  }
 }

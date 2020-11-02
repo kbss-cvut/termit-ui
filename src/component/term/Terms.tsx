@@ -1,6 +1,6 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
-import {Button} from "reactstrap";
+import {Button, Col, Row} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
@@ -230,22 +230,28 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 {isDetailView && this.renderDraftOnly()}
             </div>
             <div id="glossary-list" className={classNames({"card-header": isDetailView})}>
-                {!isDetailView && <TermTypeFrequency vocabularyIri={this.props.vocabulary.iri}/>}
-                {(!isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
-                {!isDetailView && this.renderDraftOnly()}
-                <IntelligentTreeSelect
-                    ref={this.treeComponent}
-                    clearable={!isDetailView}
-                    onChange={this.onTermSelect}
-                    value={this.props.selectedTerms ? this.props.selectedTerms.iri : null}
-                    fetchOptions={this.fetchOptions}
-                    isMenuOpen={true}
-                    scrollMenuIntoView={false}
-                    multi={false}
-                    maxHeight={Utils.calculateAssetListHeight()}
-                    optionRenderer={createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms, this.props.vocabulary.iri)}
-                    {...commonTermTreeSelectProps(i18n)}
-                />
+                <Row>
+                    <Col lg={isDetailView ? 12 : 9} md={12}>
+                        {(!isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
+                        {!isDetailView && this.renderDraftOnly()}
+                        <IntelligentTreeSelect
+                            ref={this.treeComponent}
+                            clearable={!isDetailView}
+                            onChange={this.onTermSelect}
+                            value={this.props.selectedTerms ? this.props.selectedTerms.iri : null}
+                            fetchOptions={this.fetchOptions}
+                            isMenuOpen={true}
+                            scrollMenuIntoView={false}
+                            multi={false}
+                            maxHeight={Utils.calculateAssetListHeight()}
+                            optionRenderer={createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms, this.props.vocabulary.iri)}
+                            {...commonTermTreeSelectProps(i18n)}
+                        />
+                    </Col>
+                    {!isDetailView && <Col lg={3} className="term-type-frequency">
+                        <TermTypeFrequency vocabularyIri={this.props.vocabulary.iri}/>
+                    </Col>}
+                </Row>
             </div>
         </div>
     }

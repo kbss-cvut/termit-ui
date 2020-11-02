@@ -8,8 +8,9 @@ import {ThunkDispatch} from "../../../util/Types";
 import {loadStatistics as loadStatisticsAction} from "../../../action/AsyncActions";
 import Constants from "../../../util/Constants";
 import Chart from "react-apexcharts";
+import Utils from "../../../util/Utils";
 
-// const TYPE_NOT_FILLED = VocabularyUtils.PREFIX + "not-filled";
+const TYPE_NOT_FILLED = VocabularyUtils.PREFIX + "not-filled";
 
 const STATISTICS_TYPE = "term-type-frequency";
 
@@ -23,7 +24,7 @@ const CHART_OPTIONS = {
     },
     plotOptions: {
         bar: {
-            horizontal: true
+            horizontal: false
         }
     },
     dataLabels: {
@@ -35,6 +36,7 @@ const CHART_OPTIONS = {
         width: 0
     },
     xaxis: {
+        categories: ["Type"],
         labels: {
             show: false
         },
@@ -45,23 +47,29 @@ const CHART_OPTIONS = {
             show: false
         }
     },
+    yaxis: {
+        show: false,
+        reversed: true
+    },
     fill: {
         opacity: 1,
         type: "gradient",
         gradient: {
             shade: "dark",
             type: "vertical",
-            shadeIntensity: 0.35,
+            shadeIntensity: 0.20,
             gradientToColors: undefined,
-            inverseColors: false,
-            opacityFrom: 0.85,
-            opacityTo: 0.85,
-            stops: [90, 0, 100]
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [0, 50, 100]
         }
     },
-
+    grid: {
+        show: false
+    },
     legend: {
-        position: "bottom",
+        position: "top",
         horizontalAlign: "center"
     }
 };
@@ -71,10 +79,8 @@ interface TermTypeFrequencyProps extends HasI18n, InjectsLoading {
     loadStatistics: (vocabularyIri: string) => Promise<any>;
 }
 
-export const TermTypeFrequency
-    :
-    React.FC<TermTypeFrequencyProps> = props => {
-    const {vocabularyIri, loadStatistics} = props;
+export const TermTypeFrequency: React.FC<TermTypeFrequencyProps> = props => {
+    const {vocabularyIri, loadStatistics, i18n} = props;
     const [data, setData] = React.useState<any>(null);
     React.useEffect(() => {
         if (vocabularyIri !== Constants.EMPTY_ASSET_IRI) {
@@ -87,14 +93,16 @@ export const TermTypeFrequency
     }
 
     const series = (data as object[]).map((d: any) => ({
-        name: d[VocabularyUtils.RDFS_LABEL],
+        name: d["@id"] === TYPE_NOT_FILLED ? i18n("statistics.notFilled") : d[VocabularyUtils.RDFS_LABEL],
         data: [d[VocabularyUtils.HAS_COUNT]]
     }));
-    return <Chart options={CHART_OPTIONS}
+    const options: any = Object.assign({}, CHART_OPTIONS);
+    options.xaxis.categories = [i18n("term.metadata.types")];
+    return <Chart options={options}
                   series={series}
                   type="bar"
                   width="100%"
-                  height="140px"/>;
+                  height={Utils.calculateAssetListHeight() + 88}/>;
 };
 
 
