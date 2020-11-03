@@ -78,12 +78,13 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
         const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms`;
         Ajax.head(url, params({
-            namespace: vocabularyIri.namespace,
-            prefLabel,
-            language: this.props.language})
+                namespace: vocabularyIri.namespace,
+                prefLabel,
+                language: this.props.language
+            })
         ).then((data) => {
             this.setState({labelExists: data.status === 200});
-        });
+        }).catch(() => this.setState({labelExists: false}));
     }
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -108,7 +109,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 params({
                     name: label,
                     vocabularyIri,
-                    assetType: 'TERM'
+                    assetType: "TERM"
                 })
             ).then(response => this.setIdentifier(response.data));
         }
