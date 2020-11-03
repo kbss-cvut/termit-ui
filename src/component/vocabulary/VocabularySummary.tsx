@@ -5,14 +5,9 @@ import {RouteComponentProps} from "react-router";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
-import {
-    exportGlossary,
-    loadVocabulary,
-    updateVocabulary,
-    validateVocabulary
-} from "../../action/AsyncActions";
+import {exportGlossary, loadVocabulary, validateVocabulary} from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
-import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
+import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
 import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
 import {GoCloudDownload} from "react-icons/go";
 import {ThunkDispatch} from "../../util/Types";

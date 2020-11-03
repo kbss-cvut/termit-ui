@@ -56,9 +56,10 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const vocabIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);
         const url = Constants.API_PREFIX + "/vocabularies/" + vocabIri.fragment + "/terms";
         Ajax.head(url, params({
-            namespace: vocabIri.namespace,
-            prefLabel,
-            language: this.props.language})
+                namespace: vocabIri.namespace,
+                prefLabel,
+                language: this.props.language
+            })
         ).then((data) => {
             this.setState({labelExists: data.status === 200});
         });
@@ -214,9 +215,10 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         <Row>
                             <Col xs={12}>
                                 <ButtonToolbar className="d-flex justify-content-center mt-4">
-                                    <Button id="edit-term-submit" color="success" disabled={!this.isValid()} size="sm"
+                                    <Button id="edit-term-submit" color={Constants.SUBMIT_BUTTON_VARIANT}
+                                            disabled={!this.isValid()} size="sm"
                                             onClick={this.onSave}>{i18n("save")}</Button>
-                                    <Button id="edit-term-cancel" color="outline-dark" size="sm"
+                                    <Button id="edit-term-cancel" color={Constants.CANCEL_BUTTON_VARIANT} size="sm"
                                             onClick={this.props.cancel}>{i18n("cancel")}</Button>
                                 </ButtonToolbar>
                             </Col>

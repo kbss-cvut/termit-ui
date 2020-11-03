@@ -97,11 +97,11 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
                             <ButtonToolbar className="d-flex justify-content-center mt-4">
                                 <Button id="create-term-submit" color={Constants.SUBMIT_BUTTON_VARIANT}
                                         onClick={this.onSave} size="sm"
-                                        disabled={!isFormValid(this.state, this.state.language)}>{i18n("glossary.form.button.submit")}</Button>
+                                        disabled={!isTermValid(this.state, this.state.language)}>{i18n("glossary.form.button.submit")}</Button>
                                 <Button id="create-term-submit-and-go-to-new-term"
                                         color={Constants.SUBMIT_BUTTON_VARIANT} onClick={this.onSaveAndGoToNewTerm}
                                         size="sm"
-                                        disabled={!isFormValid(this.state, this.state.language)}>{i18n("glossary.form.button.submitAndGoToNewTerm")}</Button>
+                                        disabled={!isTermValid(this.state, this.state.language)}>{i18n("glossary.form.button.submitAndGoToNewTerm")}</Button>
                                 <Button id="create-term-cancel" color={Constants.CANCEL_BUTTON_VARIANT} size="sm"
                                         onClick={this.cancelCreation}>{i18n("glossary.form.button.cancel")}</Button>
                             </ButtonToolbar>
