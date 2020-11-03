@@ -19,12 +19,12 @@ const RemoveAssetDialog: React.SFC<RemoveAssetDialogProps> = (props) => {
     return <Modal isOpen={props.show} toggle={props.onCancel}>
         <ModalHeader toggle={props.onCancel}>{props.formatMessage("asset.remove.dialog.title", {
             type: typeLabel,
-            label: props.asset.label
+            label: props.asset.getLabel()
         })}</ModalHeader>
         <ModalBody>
             <Label>{props.formatMessage("asset.remove.dialog.text", {
                 type: typeLabel,
-                label: props.asset.label
+                label: props.asset.getLabel()
             })}</Label>
         </ModalBody>
         <ModalFooter>

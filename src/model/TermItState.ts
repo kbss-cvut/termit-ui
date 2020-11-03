@@ -13,6 +13,8 @@ import SearchQuery from "./SearchQuery";
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import {ErrorLogItem} from "./ErrorInfo";
 import Utils from "../util/Utils";
+import {Configuration, DEFAULT_CONFIGURATION} from "./Configuration";
+import ValidationResult from "./ValidationResult";
 import Workspace from "./Workspace";
 
 /**
@@ -53,6 +55,8 @@ export default class TermItState {
     public labelCache: { [key: string]: string };
     public annotatorTerms: { [key: string]: Term };
     public workspace: Workspace | null;
+    public configuration: Configuration;
+    public validationResults: { [vocabularyIri: string] : ValidationResult[] };
 
     constructor() {
         this.loading = false;
@@ -84,5 +88,7 @@ export default class TermItState {
         this.desktopView = Utils.isDesktopView();
         this.annotatorTerms = {};
         this.workspace = null;
+        this.configuration = DEFAULT_CONFIGURATION;
+        this.validationResults = {};
     }
 }

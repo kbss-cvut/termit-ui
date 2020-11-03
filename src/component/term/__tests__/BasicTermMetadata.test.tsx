@@ -8,6 +8,8 @@ import TermLink from "../TermLink";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import OutgoingLink from "../../misc/OutgoingLink";
 import {BasicTermMetadata} from "../BasicTermMetadata";
+import {langString} from "../../../model/MultilingualString";
+import Constants from "../../../util/Constants";
 
 describe("BasicTermMetadata", () => {
 
@@ -20,7 +22,7 @@ describe("BasicTermMetadata", () => {
     beforeEach(() => {
         term = new Term({
             iri: Generator.generateUri(),
-            label: "Test",
+            label: langString("Test"),
             comment: "test",
             vocabulary: {iri: vocabulary.iri}
         });
@@ -29,18 +31,20 @@ describe("BasicTermMetadata", () => {
     it("renders sub terms as term links", () => {
         const subTerms: TermInfo[] = [{
             iri: Generator.generateUri(),
-            label: "SubTerm",
+            label: langString("SubTerm"),
             vocabulary: {iri: vocabulary.iri}
         }];
         term.subTerms = subTerms;
-        const wrapper = shallow(<BasicTermMetadata term={term} {...intlFunctions()}/>);
+        const wrapper = shallow(<BasicTermMetadata term={term}
+                                                   language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
         const subTermLinks = wrapper.find(TermLink);
         expect(subTermLinks.length).toEqual(subTerms.length);
     });
 
     it("skips implicit term type when rendering types", () => {
         term.types = [VocabularyUtils.TERM, Generator.generateUri()];
-        const wrapper = shallow(<BasicTermMetadata term={term} {...intlFunctions()}/>);
+        const wrapper = shallow(<BasicTermMetadata term={term}
+                                                   language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
         const renderedTypes = wrapper.find(OutgoingLink);
         expect(renderedTypes.length).toEqual(1);
         expect(renderedTypes.get(0).props.iri).toEqual(term.types[1]);
@@ -49,10 +53,11 @@ describe("BasicTermMetadata", () => {
     it("renders parent term link when parent term exists", () => {
         term.parentTerms = [new Term({
             iri: Generator.generateUri(),
-            label: "Parent",
+            label: langString("Parent"),
             vocabulary: {iri: Generator.generateUri()}
         })];
-        const wrapper = shallow(<BasicTermMetadata term={term} {...intlFunctions()}/>);
+        const wrapper = shallow(<BasicTermMetadata term={term}
+                                                   language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
         const parentLinks = wrapper.find(TermLink);
         expect(parentLinks.length).toEqual(term.parentTerms.length);
     });

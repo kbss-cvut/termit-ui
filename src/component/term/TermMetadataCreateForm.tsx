@@ -12,12 +12,15 @@ import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
     definitionSelector?: () => void;
     termData: TermData;
     vocabularyIri: string;
+
+    language: string;
 }
 
 interface TermMetadataCreateFormState {
@@ -40,39 +43,54 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     public componentDidMount(): void {
         const label = this.props.termData.label;
         if (label) {
-            this.resolveIdentifier(label);
+            this.resolveIdentifier(getLocalized(label));
         }
     }
 
     private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const label = e.currentTarget.value;
-        this.props.onChange({label});
+        const change = Object.assign({}, this.props.termData.label);
+        change[this.props.language] = label;
+        this.props.onChange({label: change});
         this.resolveIdentifier(label);
         this.checkLabelUniqueness(label);
     };
 
-    private onAltLabelsChange = (altLabels : string[]) => {
-        this.props.onChange({altLabels});
+    public onAltLabelsChange = (altLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = altLabels;
+        this.props.onChange({altLabels: Object.assign({}, this.props.termData.altLabels, change)});
     };
 
-    private onHiddenLabelsChange = (hiddenLabels : string[]) => {
-        this.props.onChange({hiddenLabels});
+    public onHiddenLabelsChange = (hiddenLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = hiddenLabels;
+        this.props.onChange({hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change)});
     };
 
-    private checkLabelUniqueness(label: string) {
+    private checkLabelUniqueness(prefLabel: string) {
         this.setState({labelExists: false});
-        if (label.trim().length === 0) {
+        if (prefLabel.trim().length === 0) {
             return;
         }
         const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
-        const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/name`;
-        Ajax.get(url, params({namespace: vocabularyIri.namespace, value: label})).then((data) => {
-            this.setState({labelExists: data === true});
+        const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms`;
+        Ajax.head(url, params({
+            namespace: vocabularyIri.namespace,
+            prefLabel,
+            language: this.props.language})
+        ).then((data) => {
+            this.setState({labelExists: data.status === 200});
         });
     }
 
-    private onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.props.onChange({definition: e.currentTarget.value});
+    public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const value = e.currentTarget.value;
+        const change = Object.assign({}, this.props.termData.definition);
+        change[this.props.language] = value;
+        this.props.onChange({definition: change});
     };
 
     private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -86,8 +104,13 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     private resolveIdentifier = (label: string) => {
         if (this.state.generateUri && label.length > 0) {
             const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
-            Ajax.get(`${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/identifier`,
-                params({name: label, namespace: vocabularyIri.namespace})).then(uri => this.setIdentifier(uri));
+            Ajax.post(`${Constants.API_PREFIX}/identifiers`,
+                params({
+                    name: label,
+                    vocabularyIri,
+                    assetType: 'TERM'
+                })
+            ).then(response => this.setIdentifier(response.data));
         }
     };
 
@@ -113,10 +136,10 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     };
 
     public render() {
-        const i18n = this.props.i18n;
-        const termData = this.props.termData;
+        const {termData, i18n, language} = this.props;
         const sources = termData.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
+        const label = getLocalizedOrDefault(termData.label, "", language);
         return <Form>
             <Row>
                 <Col xs={12}>
@@ -124,13 +147,13 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                  help={this.props.i18n("term.label.help")}
                                  onChange={this.onLabelChange}
                                  invalid={this.state.labelExists}
-                                 invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: termData.label}) : undefined}
-                                 value={termData.label}/>
+                                 invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
+                                 value={label}/>
                 </Col>
             </Row>
             <Row>
                 <Col xs={12}>
-                    <StringListEdit list={termData.altLabels}
+                    <StringListEdit list={getLocalizedPlural(termData.altLabels, language)}
                                     onChange={this.onAltLabelsChange}
                                     i18nPrefix={"term.metadata.altLabels"}/>
                 </Col>
@@ -151,7 +174,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                         </FormGroup>
                         : <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>}
                     <TextArea name="create-term-definition"
-                              type="textarea" rows={3} value={termData.definition}
+                              type="textarea" rows={3} value={getLocalizedOrDefault(termData.definition, "", language)}
                               help={this.props.i18n("term.definition.help")}
                               onChange={this.onDefinitionChange}/>
                 </Col>
@@ -198,7 +221,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
                 <Row>
                     <Col xs={12}>
-                        <StringListEdit list={termData.hiddenLabels}
+                        <StringListEdit list={getLocalizedPlural(termData.hiddenLabels, language)}
                                         onChange={this.onHiddenLabelsChange}
                                         i18nPrefix={"term.metadata.hiddenLabels"}/>
                     </Col>

@@ -19,6 +19,7 @@ import AppNotification from "../../model/AppNotification";
 import TermItState from "../../model/TermItState";
 import NotificationType from "../../model/NotificationType";
 import {consumeNotification} from "../../action/SyncActions";
+import {langString} from "../../model/MultilingualString";
 
 interface ResourceTermAssignmentsOwnProps {
     resource: Resource;
@@ -115,7 +116,7 @@ export class ResourceTermAssignments extends React.Component<ResourceTermAssignm
                             <TermLink
                                 term={new Term({
                                     iri: rta.term.iri,
-                                    label: rta.label,
+                                    label: langString(rta.label),
                                     vocabulary: rta.vocabulary,
                                     draft: rta.term.draft
                                 })}/>
@@ -126,37 +127,31 @@ export class ResourceTermAssignments extends React.Component<ResourceTermAssignm
 
     private renderTermOccurrences() {
         const items: JSX.Element[] = [];
-        const occurrences = new Map<string, { term: Term, suggestedCount: number, assertedCount: number }>();
+        const occurrences = new Map<string, { term: Term, suggestedCount: number}>();
         this.state.assignments.filter(isOccurrence).forEach(rta => {
             if (!occurrences.has(rta.term.iri!)) {
                 occurrences.set(rta.term.iri!, {
                     term: new Term({
                         iri: rta.term.iri,
-                        label: rta.label,
+                        label: langString(rta.label),
                         vocabulary: rta.vocabulary,
                         draft: rta.term.draft
                     }),
-                    suggestedCount: 0,
-                    assertedCount: 0
+                    suggestedCount: 0
                 });
             }
             if (Utils.sanitizeArray(rta.types).indexOf(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE) !== -1) {
                 occurrences.get(rta.term.iri!)!.suggestedCount = (rta as ResourceTermOccurrences).count;
-            } else {
-                occurrences.get(rta.term.iri!)!.assertedCount = (rta as ResourceTermOccurrences).count;
             }
         });
-        occurrences.forEach((v, k) => {
+        occurrences
+            .forEach((v, k) => {
+                if ( v.suggestedCount > 0 )
             items.push(<span key={k} className="resource-term-link m-term-occurrence">
                             <TermLink term={v.term}/>
-                {v.assertedCount > 0 &&
-                <Badge title={this.props.i18n("resource.metadata.terms.occurrences.confirmed.tooltip")}
-                       className="m-term-occurrence-confirmed"
-                       color="secondary">{this.props.formatMessage("resource.metadata.terms.occurrences.confirmed", {count: v.assertedCount})}</Badge>}
-                {v.suggestedCount > 0 &&
                 <Badge title={this.props.i18n("resource.metadata.terms.occurrences.suggested.tooltip")}
                        className="m-term-occurrence-suggested"
-                       color="secondary">{this.props.formatMessage("resource.metadata.terms.occurrences.suggested", {count: v.suggestedCount})}</Badge>}
+                       color="secondary">{this.props.formatMessage("resource.metadata.terms.occurrences.suggested", {count: v.suggestedCount})}</Badge>
                         </span>);
         });
         return items;

@@ -25,7 +25,7 @@ describe("CreateResource", () => {
     let onCreate: (resource: Resource) => Promise<string>;
 
     beforeEach(() => {
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(iri));
+        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve( { data: iri } ));
         onCreate = jest.fn().mockImplementation(() => Promise.resolve(iri));
     });
 

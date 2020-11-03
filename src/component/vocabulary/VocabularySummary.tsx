@@ -5,10 +5,15 @@ import {RouteComponentProps} from "react-router";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
-import {exportGlossary, loadVocabulary} from "../../action/AsyncActions";
+import {
+    exportGlossary,
+    loadVocabulary,
+    updateVocabulary,
+    validateVocabulary
+} from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
-import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
+import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
 import {GoCloudDownload} from "react-icons/go";
 import {ThunkDispatch} from "../../util/Types";
 import Utils from "../../util/Utils";
@@ -20,6 +25,7 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
     loadVocabulary: (iri: IRI) => void;
+    validateVocabulary: (iri: IRI) => Promise<any>;
     exportToCsv: (iri: IRI) => void;
     exportToExcel: (iri: IRI) => void;
     exportToTurtle: (iri: IRI) => void;
@@ -42,9 +48,13 @@ export class VocabularySummary extends React.Component<VocabularySummaryProps> {
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
         const iri = VocabularyUtils.create(this.props.vocabulary.iri);
         if (iri.fragment !== normalizedName || (namespace && iri.namespace !== namespace)) {
-            this.props.loadVocabulary({fragment: normalizedName, namespace});
+            this.props.loadVocabulary(IRIImpl.create({fragment: normalizedName, namespace}));
         }
     }
+
+    public onValidate = () => {
+        this.props.validateVocabulary(VocabularyUtils.create(this.props.vocabulary.iri));
+    };
 
     private onExportToCsv = () => {
         this.props.exportToCsv(VocabularyUtils.create(this.props.vocabulary.iri));
@@ -97,11 +107,13 @@ export class VocabularySummary extends React.Component<VocabularySummaryProps> {
 
 export default connect((state: TermItState) => {
     return {
-        vocabulary: state.vocabulary
+        vocabulary: state.vocabulary,
+        validationResults: state.validationResults[state.vocabulary.iri]
     };
 }, (dispatch: ThunkDispatch) => {
     return {
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
+        validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
         exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
         exportToExcel: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Excel)),
         exportToTurtle: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.Turtle))

@@ -4,6 +4,8 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import {shallow} from "enzyme";
 import {CreateTermFromAnnotation} from "../CreateTermFromAnnotation";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {langString} from "../../../model/MultilingualString";
+import Constants from "../../../util/Constants";
 
 describe("CreateTermFromAnnotation", () => {
 
@@ -26,37 +28,41 @@ describe("CreateTermFromAnnotation", () => {
 
     it("resets state before close", () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                    language={Constants.DEFAULT_LANGUAGE}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        wrapper.setState({iri: "http://test", label: "test"});
+        wrapper.setState({iri: "http://test", label: langString("test")});
         wrapper.instance().onCancel();
         expect(onClose).toHaveBeenCalled();
         expect(wrapper.state().iri).toEqual("");
-        expect(wrapper.state().label).toEqual("");
+        expect(wrapper.state().label).toEqual(langString(""));
     });
 
     it("setLabel sets label in state", () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                    language={Constants.DEFAULT_LANGUAGE}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        expect(wrapper.state().label).toEqual("");
+        expect(wrapper.state().label).toEqual(langString(""));
         const label = "Test";
         wrapper.instance().setLabel(label);
-        expect(wrapper.state().label).toEqual(label);
+        expect(wrapper.state().label).toEqual(langString(label, Constants.DEFAULT_LANGUAGE));
     });
 
     it("setDefinition sets definition in state", () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                    language={Constants.DEFAULT_LANGUAGE}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        expect(wrapper.state().definition).toEqual("");
+        expect(wrapper.state().definition).toEqual(langString("", Constants.DEFAULT_LANGUAGE));
         const definition = "Test definition";
         wrapper.instance().setDefinition(definition);
-        expect(wrapper.state().definition).toEqual(definition);
+        expect(wrapper.state().definition).toEqual(langString(definition, Constants.DEFAULT_LANGUAGE));
     });
 
     it("onSave creates new term from current state and saves it", () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                    language={Constants.DEFAULT_LANGUAGE}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
         const iri = vocabularyIri + "/term/test-term";
-        const label = "Test label";
+        const label = langString("Test label");
         const sources = ["source.html", "http://onto.fel.cvut.cz"];
         wrapper.setState({iri, label, sources});
         wrapper.instance().onSave();
@@ -72,18 +78,20 @@ describe("CreateTermFromAnnotation", () => {
 
     it("invokes close and clears state after successful term creation", async () => {
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                    language={Constants.DEFAULT_LANGUAGE}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        wrapper.setState({iri: vocabularyIri + "/term/test-term", label: "Test term"});
+        wrapper.setState({iri: vocabularyIri + "/term/test-term", label: langString("Test term")});
         await wrapper.instance().onSave();
         expect(onClose).toHaveBeenCalled();
         expect(wrapper.state().iri).toEqual("");
-        expect(wrapper.state().label).toEqual("");
+        expect(wrapper.state().label).toEqual(langString(""));
     });
 
     it("invokes onTermCreated with the new term after successful term creation", async () => {
         const termIri = vocabularyIri + "/term/test-term";
-        const termLabel = "Test term";
+        const termLabel = langString("Test term");
         const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                    language={Constants.DEFAULT_LANGUAGE}
                                                                                     vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
         wrapper.setState({iri: termIri, label: termLabel});
         await wrapper.instance().onSave();

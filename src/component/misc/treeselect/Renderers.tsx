@@ -14,6 +14,8 @@ interface OptionRendererParams<T> {
     focusedOption?: T & TreeOption;
     focusOption: (option: T & TreeOption) => void;
     key?: string;
+    labelKey: string;
+    valueKey: string;
     option: T & TreeOption;
     selectValue: (option: T & TreeOption) => void;
     optionStyle: any;
@@ -29,7 +31,7 @@ interface OptionRendererParams<T> {
  * @param currentVocabularyIri IRI of the current vocabulary, used to resolve whether term is imported
  */
 export function createTermsWithImportsOptionRenderer(currentVocabularyIri?: string) {
-    return createTermsWithImportsOptionRendererAndUnusedTerms([],currentVocabularyIri);
+    return createTermsWithImportsOptionRendererAndUnusedTerms([], currentVocabularyIri);
 }
 
 /**
@@ -58,12 +60,12 @@ export function createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms: 
                 <ImportedTermInfo term={option}/>}
             {unusedTerms.indexOf(option.iri) !== -1 ? <>
                 <UnusedTermInfo term={option}/>
-            </>: undefined}
+            </> : undefined}
         </span>;
 
         return <ResultItem key={params.key} renderAsTree={params.renderAsTree} className={className} option={option}
-                           childrenKey="plainSubTerms" labelKey="label" valueKey="iri" style={optionStyle}
-                           searchString={params.searchString} addonBefore={addonbefore}
+                           childrenKey="plainSubTerms" labelKey={params.labelKey} valueKey={params.valueKey}
+                           style={optionStyle} searchString={params.searchString} addonBefore={addonbefore}
                            displayInfoOnHover={false} {...eventHandlers}/>;
     }
 }

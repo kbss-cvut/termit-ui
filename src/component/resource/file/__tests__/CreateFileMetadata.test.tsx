@@ -29,7 +29,7 @@ describe("CreateFileMetadata", () => {
     let publishNotification: (notification: AppNotification) => void;
 
     beforeEach(() => {
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(iri));
+        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve( { data : iri } ));
         onCreate = jest.fn().mockImplementation(() => Promise.resolve(iri));
         onCancel = jest.fn();
         uploadFile = jest.fn().mockImplementation(() => Promise.resolve());
@@ -53,7 +53,7 @@ describe("CreateFileMetadata", () => {
                                                           uploadFileContent={uploadFile}
                                                           publishNotification={publishNotification} {...intlFunctions()}/>);
         (wrapper.find(CreateFileMetadata).instance() as CreateFileMetadata).setFile(file as File);
-        expect(Ajax.get).toHaveBeenCalled();
+        expect(Ajax.post).toHaveBeenCalled();
         return Promise.resolve().then(() => {
             const iriInput = wrapper.find("input[name=\"create-resource-iri\"]");
             expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);

@@ -15,6 +15,8 @@ import {match as Match} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import {selectVocabularyTerm} from "../../action/SyncActions";
+import ValidationResults from "./validation/ValidationResults";
+import Utils from "../../util/Utils";
 
 interface VocabularyMetadataProps extends HasI18n {
     vocabulary: Vocabulary;
@@ -32,7 +34,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
     constructor(props: VocabularyMetadataProps) {
         super(props);
         this.state = {
-            activeTab: "glossary.title"
+            activeTab:  (Utils.extractQueryParam(this.props.location.search, "activeTab") === "vocabulary.validation.tab")? "vocabulary.validation.tab" : "glossary.title"
         };
     }
 
@@ -91,6 +93,8 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         tabs["history.label"] = <AssetHistory asset={vocabulary}/>;
 
         tabs["changefrequency.label"] = <TermChangeFrequency vocabulary={vocabulary}/>;
+
+        tabs["vocabulary.validation.tab"] = <ValidationResults vocabulary={vocabulary}/>;
 
         return <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={tabs} tabBadges={{
             "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),

@@ -30,6 +30,8 @@ import SearchResult from "../model/SearchResult";
 import SearchQuery from "../model/SearchQuery";
 import {ErrorLogItem} from "../model/ErrorInfo";
 import Utils from "../util/Utils";
+import {Configuration, DEFAULT_CONFIGURATION} from "../model/Configuration";
+import ValidationResult from "../model/ValidationResult";
 import Workspace from "../model/Workspace";
 
 /**
@@ -460,6 +462,32 @@ function workspace(state: Workspace | null = null, action: AsyncActionSuccess<Wo
     return state;
 }
 
+function configuration(state: Configuration = DEFAULT_CONFIGURATION, action: AsyncActionSuccess<Configuration>) {
+    if (action.type === ActionType.LOAD_CONFIGURATION && action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload;
+    }
+    return state;
+}
+
+function validationResults(state: { [vocabularyIri: string] : ValidationResult[] } = {},
+                           action: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}>) {
+    switch (action.type) {
+        case ActionType.FETCH_VALIDATION_RESULTS:
+            if (action.status === AsyncActionStatus.SUCCESS) {
+                return {
+                    ...state,
+                    ...action.payload,
+                }
+            } else {
+                return state;
+            }
+        case ActionType.LOGOUT:
+            return {};
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers<TermItState>({
     user,
     loading,
@@ -489,7 +517,9 @@ const rootReducer = combineReducers<TermItState>({
     sidebarExpanded,
     desktopView,
     annotatorTerms,
-    workspace
+    workspace,
+    configuration,
+    validationResults
 });
 
 export default rootReducer;

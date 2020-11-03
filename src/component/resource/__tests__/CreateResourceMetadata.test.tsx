@@ -22,7 +22,7 @@ describe("CreateResourceMetadata", () => {
     let onCancel: () => void;
 
     beforeEach(() => {
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(iri));
+        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({ data : iri }));
         onCreate = jest.fn().mockImplementation(() => Promise.resolve(iri));
         onCancel = jest.fn();
     });
@@ -46,7 +46,10 @@ describe("CreateResourceMetadata", () => {
         const label = "Metropolitan Plan";
         (labelInput.getDOMNode() as HTMLInputElement).value = label;
         labelInput.simulate("change", labelInput);
-        return Ajax.get(Constants.API_PREFIX + "/resources/identifier").then(() => {
+        return Ajax.post(Constants.API_PREFIX + "/identifiers", params( {
+            name: label,
+            assetType: "RESOURCE"
+        })).then(() => {
             const submitButton = wrapper.find("button#create-resource-submit");
             submitButton.simulate("click");
             expect(onCreate).toHaveBeenCalled();
@@ -65,7 +68,7 @@ describe("CreateResourceMetadata", () => {
             (labelInput.getDOMNode() as HTMLInputElement).value = label;
             labelInput.simulate("change", labelInput);
             return Promise.resolve().then(() => {
-                expect(Ajax.get).toHaveBeenCalledWith(Constants.API_PREFIX + "/resources/identifier", params({name: label}));
+                expect(Ajax.post).toHaveBeenCalledWith(Constants.API_PREFIX + "/identifiers", params({name: label, assetType: "RESOURCE"}));
             });
         });
 
@@ -78,16 +81,17 @@ describe("CreateResourceMetadata", () => {
             const nameInput = wrapper.find("input[name=\"create-resource-label\"]");
             (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
             nameInput.simulate("change", nameInput);
-            expect(Ajax.get).not.toHaveBeenCalled();
+            expect(Ajax.post).not.toHaveBeenCalled();
         });
 
         it("displays IRI generated and returned by the server", () => {
             const wrapper = mountWithIntl(<CreateResourceMetadata onCreate={onCreate}
                                                                   onCancel={onCancel} {...intlFunctions()}/>);
+            const name = "Metropolitan Plan";
             const labelInput = wrapper.find("input[name=\"create-resource-label\"]");
-            (labelInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
+            (labelInput.getDOMNode() as HTMLInputElement).value = name;
             labelInput.simulate("change", labelInput);
-            return Ajax.get(Constants.API_PREFIX + "/resources/identifier").then(() => {
+            return Ajax.post(Constants.API_PREFIX + "/identifiers", params({name, assetType: "RESOURCE"})).then(() => {
                 const iriInput = wrapper.find("input[name=\"create-resource-iri\"]");
                 return expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
             });

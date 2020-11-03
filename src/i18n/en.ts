@@ -83,6 +83,7 @@ export default {
         'main.search.tooltip': 'Go to the search screen',
         'main.search.count-info-and-link': 'Showing {displayed} of {count} results. See all results.',
         'main.search.no-results': 'No results found.',
+        "main.lang-selector.tooltip": "Select user interface language",
 
         "dashboard.widget.assetList.empty": "Found no assets to show here.",
         "dashboard.widget.assetList.lastEditMessage": "{operation, select, " +
@@ -193,6 +194,11 @@ export default {
         'vocabulary.term.created.message': 'Term successfully created.',
         'vocabulary.select-vocabulary': 'Select a Vocabulary',
 
+        "vocabulary.validation.tab": "Validation",
+        "vocabulary.validation.term": "Term",
+        "vocabulary.validation.severity": "Severity",
+        "vocabulary.validation.message": "Message",
+
         'resource.management': 'Resources management',
         'resource.management.resources': 'Resources',
         "resource.management.empty": "No resources found. Start by registering some.",
@@ -227,6 +233,8 @@ export default {
         "resource.metadata.document.files.empty": "No files found. Start by adding some.",
         "resource.document.vocabulary.create": "Attach document",
 
+        "term.language.selector.item": "View term data in language: {nativeLang} ({lang})",
+        "term.language.add.placeholder": "Select...",
         "term.iri.help": "Term identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
             "generated automatically based on the specified label, but you can adjust it manually. The identifier " +
             "can contain just alphanumerical characters and dashes (\"-\"). Slashes (\"/\") are used to separate " +

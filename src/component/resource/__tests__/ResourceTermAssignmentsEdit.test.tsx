@@ -32,5 +32,19 @@ describe("ResourceTermAssignmentsEdit", () => {
                 expect(terms).toEqual([...existingTerms, ...fetchedTerms]);
             });
         });
+
+        it("ensures all terms passed as options to tree select have simpleLabel attribute", () => {
+            const existingTerms = [Generator.generateTerm(), Generator.generateTerm()];
+            const origLength = existingTerms.length;
+            const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
+            fetchTerms = jest.fn().mockResolvedValue(fetchedTerms);
+            const wrapper = shallow<ResourceTermAssignmentsEdit>(<ResourceTermAssignmentsEdit terms={existingTerms}
+                                                                                              onChange={onChange}
+                                                                                              fetchTerms={fetchTerms} {...intlFunctions()}/>);
+            return wrapper.instance().fetchOptions({}).then((terms) => {
+                expect(terms.length).toEqual(origLength + fetchedTerms.length);
+                terms.forEach((t: any) => expect(t.simpleLabel).toBeDefined());
+            });
+        });
     });
 });

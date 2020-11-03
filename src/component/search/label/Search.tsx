@@ -10,8 +10,6 @@ import {ThunkDispatch} from "../../../util/Types";
 import TermItState from "../../../model/TermItState";
 import SearchQuery from "../../../model/SearchQuery";
 import SearchResults from "./SearchResults";
-import {Button} from "reactstrap";
-import {GoTrashcan} from "react-icons/go";
 import ContainerMask from "../../misc/ContainerMask";
 
 interface SearchProps extends HasI18n, RouteComponentProps<any> {
@@ -33,10 +31,6 @@ export class Search extends React.Component<SearchProps> {
         this.props.removeSearchListener();
     }
 
-    protected resetSearch = () => {
-        this.props.updateSearchFilter("");
-    };
-
     protected getResults() {
         return this.props.searchResults;
     }
@@ -45,18 +39,10 @@ export class Search extends React.Component<SearchProps> {
         const loading = this.props.searchInProgress ? <ContainerMask/> : null;
         const results = this.getResults();
 
-        if (results) {
-            return <div className="relative">
-                <Button id="search-reset" color="danger" outline={true} size="sm" className="float-right" onClick={this.resetSearch}>
-                    <GoTrashcan/> {this.props.i18n("search.reset")}
-                </Button>
-                <h2>{this.props.formatMessage("search.results.title", {searchString: this.props.searchQuery.searchQuery})}</h2>
-                <SearchResults results={results}/>
+        return <div className="relative">
+            {results ? <SearchResults results={results}/> : null}
                 {loading}
-            </div>;
-        } else {
-            return <div className="relative">{loading}</div>;
-        }
+            </div>
     }
 }
 

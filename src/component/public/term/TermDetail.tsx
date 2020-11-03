@@ -13,6 +13,8 @@ import {injectIntl} from "react-intl";
 import TermMetadata from "./TermMetadata";
 import {loadPublicTerm, loadPublicVocabulary} from "../../../action/AsyncPublicViewActions";
 import Vocabulary from "../../../model/Vocabulary";
+import {getShortLocale} from "../../../util/IntlUtil";
+import {getLocalized, getLocalizedPlural} from "../../../model/MultilingualString";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -31,13 +33,18 @@ const TermDetail: React.FC<TermDetailProps> = props => {
         loadTerm(termName, vocUri);
         loadVocabulary(vocUri);
     }, [location.search, match.params.termName, match.params.name, loadTerm, loadVocabulary]);
+    const [language, setLanguage] = React.useState<string>(getShortLocale(props.locale));
 
     if (!term) {
         return null;
     }
+    const altLabels = getLocalizedPlural(term.altLabels, language).sort().join(", ");
+
     return <div id="public-term-detail">
-        <HeaderWithActions title={<>{term.label}<CopyIriIcon url={term.iri as string}/></>}/>
-        <TermMetadata term={term} vocabulary={props.vocabulary}/>
+        <HeaderWithActions title={<>{getLocalized(term.label, language)}<CopyIriIcon url={term.iri as string}/>
+            <div className="small italics">{altLabels.length > 0 ? altLabels : "\u00a0"}</div>
+        </>}/>
+        <TermMetadata term={term} vocabulary={props.vocabulary} language={language} setLanguage={setLanguage}/>
     </div>;
 }
 

@@ -41,7 +41,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
             return [];
         }
         const typesMap = {};
-        Object.keys(this.props.availableTypes).forEach(t => typesMap[t] = Object.assign({}, this.props.availableTypes[t]));
+        Object.keys(this.props.availableTypes).forEach(t => typesMap[t] = new Term(this.props.availableTypes[t]));
         const types = Object.keys(typesMap).map(k => typesMap[k]);
         types.forEach(t => {
             if (t.subTerms) {
@@ -49,6 +49,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
                 // @ts-ignore
                 t.subTerms.forEach(st => typesMap[st].parent = t.iri);
             }
+            t.label = t.getLabel();
         });
         return types;
     }

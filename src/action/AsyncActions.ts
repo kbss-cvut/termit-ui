@@ -7,7 +7,7 @@ import {
     publishMessage,
     publishNotification
 } from "./SyncActions";
-import Ajax, {content, contentType, param, params} from "../util/Ajax";
+import Ajax, {accept, content, contentType, param, params} from "../util/Ajax";
 import {GetStoreState, ThunkDispatch} from "../util/Types";
 import Routing from "../util/Routing";
 import Constants from "../util/Constants";
@@ -20,7 +20,7 @@ import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import Term, {CONTEXT as TERM_CONTEXT, TermData} from "../model/Term";
 import FetchOptionsFunction from "../model/Functions";
-import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
+import VocabularyUtils, {IRI, IRIImpl} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import Resource, {ResourceData} from "../model/Resource";
 import RdfsResource, {CONTEXT as RDFS_RESOURCE_CONTEXT, RdfsResourceData} from "../model/RdfsResource";
@@ -50,6 +50,9 @@ import TermOccurrence from "../model/TermOccurrence";
 import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "../model/SearchResult";
 import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
+import {langString} from "../model/MultilingualString";
+import {Configuration} from "../model/Configuration";
+import ValidationResult, {CONTEXT as VALIDATION_RESULT_CONTEXT} from "../model/ValidationResult";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -151,6 +154,7 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<VocabularyData>(data, VOCABULARY_CONTEXT))
             .then((data: VocabularyData) => {
                 dispatch(loadImportedVocabulariesIntoState(iri, apiPrefix));
+                dispatch(validateVocabulary(iri));
                 return dispatch(asyncActionSuccessWithPayload(action, new Vocabulary(data)));
             })
             .catch((error: ErrorData) => {
@@ -257,7 +261,7 @@ export function loadResourceTermAssignmentsInfo(resourceIri: IRI) {
                 dispatch(asyncActionSuccess(action));
                 const assignedTerms = data.filter(a => a.types.indexOf(VocabularyUtils.TERM_OCCURRENCE) === -1).map(a => new Term({
                     iri: a.term.iri,
-                    label: a.label,
+                    label: langString(a.label),
                     vocabulary: a.vocabulary,
                     draft: a.term.draft
                 }));
@@ -483,7 +487,7 @@ export function searchTerms(searchString: string) {
                 dispatch(SyncActions.asyncActionSuccess(action));
                 return data
                     .filter(d => d.hasType(VocabularyUtils.TERM))
-                    .map(d => new Term({iri: d.iri, label: d.label}))
+                    .map(d => new Term({iri: d.iri, label: langString(d.label)}))
             })
             .catch((error: ErrorData) => {
                 dispatch(SyncActions.asyncActionFailure(action, error));
@@ -553,6 +557,30 @@ export function loadTermByIri(termIri: IRI, apiPrefix: string = Constants.API_PR
             }).catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return null;
+            });
+    };
+}
+
+export function validateVocabulary(vocabularyIri: IRI, apiPrefix: string = Constants.API_PREFIX) {
+    const action = {
+        type: ActionType.FETCH_VALIDATION_RESULTS
+    };
+
+    return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+        if (isActionRequestPending(getState(), action)) {
+            return Promise.resolve([]);
+        }
+
+        dispatch(asyncActionRequest(action));
+        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`, param("namespace", vocabularyIri.namespace))
+            .then((data: object[]) =>
+                data.length !== 0 ? JsonLdUtils
+                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT): [] )
+            .then((data: ValidationResult[]) =>
+                dispatch(asyncActionSuccessWithPayload(action, {[IRIImpl.toString(vocabularyIri)] :  data })))
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return [];
             });
     };
 }
@@ -715,6 +743,7 @@ export function updateTerm(term: Term) {
                     original: getState().selectedTerm,
                     updated: term
                 }));
+                dispatch(validateVocabulary(vocabularyIri));
                 return dispatch(publishMessage(new Message({messageId: "term.updated.message"}, MessageType.SUCCESS)));
             })
             .catch((error: ErrorData) => {
@@ -1125,4 +1154,14 @@ export function loadStatistics(type: string, parameters: {} = {}) {
             })
             .catch(error => dispatch(asyncActionFailure(action, error)));
     };
+}
+
+export function loadConfiguration() {
+    const action = {type: ActionType.LOAD_CONFIGURATION};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_MIME_TYPE))
+            .then((data: Configuration) => dispatch(asyncActionSuccessWithPayload(action, data)))
+            .catch(error => dispatch(asyncActionFailure(action, error)));
+    }
 }

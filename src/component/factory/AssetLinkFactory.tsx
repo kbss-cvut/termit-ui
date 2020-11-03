@@ -23,7 +23,7 @@ export default class AssetLinkFactory {
             case VocabularyUtils.RESOURCE:  // Intentional fall-through
                 return <ResourceLink resource={asset as Resource}/>;
             default:
-                return <Label>{asset.label}</Label>;
+                return <Label>{asset.getLabel()}</Label>;
         }
     }
 }

@@ -66,7 +66,7 @@ describe("AsyncPublicViewActions", () => {
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadPublicVocabulary({fragment: "metropolitan-plan"}))).then(() => {
                 const loadImportsAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
                 expect(loadImportsAction).toBeDefined();
-                expect((Ajax.get as jest.Mock).mock.calls.length).toEqual(2);
+                expect((Ajax.get as jest.Mock).mock.calls.length).toEqual(3);
                 const url = (Ajax.get as jest.Mock).mock.calls[1][0];
                 expect(url).toContain(Constants.PUBLIC_API_PREFIX);
             });

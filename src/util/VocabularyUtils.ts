@@ -39,6 +39,7 @@ const _NS_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 const _NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
 const _NS_DC = "http://purl.org/dc/terms/";
+const _NS_SH = "http://www.w3.org/ns/shacl#";
 
 export default {
     PREFIX: _NS_POPIS_DAT,
@@ -96,6 +97,13 @@ export default {
     DC_FORMAT: _NS_DC + "format",
     DC_LICENSE: _NS_DC + "license",
     DC_MODIFIED: _NS_DC + "modified",
+
+    SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
+    SH_SOURCE_SHAPE: _NS_SH + "sourceShape",
+    SH_RESULT_MESSAGE: _NS_SH + "resultMessage",
+    SH_FOCUS_NODE: _NS_SH + "focusNode",
+    SH_VIOLATION: _NS_SH + "Violation",
+    SH_WARNING: _NS_SH + "Warning",
 
     PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
     UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,

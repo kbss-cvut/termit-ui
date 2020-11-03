@@ -12,6 +12,8 @@ import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import Generator from "../../../__tests__/environment/Generator";
 import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
+import Constants from "../../../util/Constants";
+import {langString} from "../../../model/MultilingualString";
 
 jest.mock("../../../util/Routing");
 
@@ -23,7 +25,7 @@ describe("Terms", () => {
 
     const term: TermData = {
         iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary/terms/" + termName,
-        label: "test term",
+        label: langString("test term"),
         vocabulary: {
             iri: namespace + vocabularyName
         },
@@ -69,30 +71,39 @@ describe("Terms", () => {
         });
     });
 
-    it("transitions to term detail on term select", () => {
-        const wrapper = renderShallow();
-        (wrapper.instance()).onTermSelect(term);
-        const call = (Routing.transitionToAsset as jest.Mock).mock.calls[0];
-        expect(call[0].iri).toEqual(term.iri);
-        expect(call[0].vocabulary).toEqual(term.vocabulary);
-        expect(call[0].types).toEqual(term.types);
+    describe("onTermSelect", () => {
+        it("transitions to selected term detail", () => {
+            const wrapper = renderShallow();
+            (wrapper.instance()).onTermSelect(term);
+            const call = (Routing.transitionToAsset as jest.Mock).mock.calls[0];
+            expect(call[0].iri).toEqual(term.iri);
+            expect(call[0].vocabulary).toEqual(term.vocabulary);
+            expect(call[0].types).toEqual(term.types);
+        });
+
+        it("invokes term selected on term select", () => {
+            const wrapper = renderShallow();
+            wrapper.instance().onTermSelect(term);
+            expect(selectVocabularyTerm).toHaveBeenCalled();
+            expect((selectVocabularyTerm as jest.Mock).mock.calls[0][0].iri).toEqual(term.iri);
+        });
+
+        // Redmine #1349
+        it("does not invoke termSelected when rendered in term detail view and no term is selected (input is cleared)", () => {
+            const wrapper = renderShallow(true);
+            wrapper.instance().onTermSelect(null);
+            expect(selectVocabularyTerm).not.toHaveBeenCalled();
+        });
     });
 
-    function renderShallow() {
+    function renderShallow(isDetailView: boolean = false) {
         return shallow<Terms>(<Terms counter={counter} selectedTerms={selectedTerms}
                                      notifications={[]} consumeNotification={consumeNotification}
                                      selectVocabularyTerm={selectVocabularyTerm} vocabulary={vocabulary}
                                      fetchTerms={fetchTerms} {...intlFunctions()}
-                                     location={location} match={match}
+                                     location={location} match={match} isDetailView={isDetailView}
                                      fetchUnusedTerms={fetchUnusedTerms}/>);
     }
-
-    it("invokes term selected on term select", () => {
-        const wrapper = renderShallow();
-        wrapper.instance().onTermSelect(term);
-        expect(selectVocabularyTerm).toHaveBeenCalled();
-        expect((selectVocabularyTerm as jest.Mock).mock.calls[0][0].iri).toEqual(term.iri);
-    });
 
     it("fetches terms including imported when configured to", () => {
         const wrapper = renderShallow();
@@ -108,7 +119,7 @@ describe("Terms", () => {
         wrapper.update();
         const option = new Term({
             iri: Generator.generateUri(),
-            label: "Test term",
+            label: langString("Test term"),
             vocabulary: {iri: Generator.generateUri()},
             draft: true
         });
@@ -202,11 +213,11 @@ describe("Terms", () => {
             const terms: Term[] = [Generator.generateTerm(vocabulary.iri)];
             const subTerms = [{
                 iri: Generator.generateUri(),
-                label: "child one",
+                label: langString("child one"),
                 vocabulary: {iri: vocabulary.iri}
             }, {
                 iri: Generator.generateUri(),
-                label: "child two",
+                label: langString("child two"),
                 vocabulary: {iri: Generator.generateUri()}
             }];
             terms[0].subTerms = subTerms;
@@ -253,7 +264,7 @@ describe("Terms", () => {
             return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
                 expect(options.length).toEqual(1);
                 expect(options).toEqual(terms);
-                expect(spy).toHaveBeenCalledWith(terms, [vocabulary.iri], {searchString: "test"});
+                expect(spy).toHaveBeenCalledWith(terms, [vocabulary.iri], {searchString: "test", labelLang: Constants.DEFAULT_LANGUAGE});
             });
         });
     });

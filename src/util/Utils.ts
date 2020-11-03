@@ -1,7 +1,7 @@
 /**
  * General utility functions.
  */
-import Asset, {AssetData, HasTypes} from "../model/Asset";
+import Asset, {HasLabel, HasTypes} from "../model/Asset";
 import VocabularyUtils from "./VocabularyUtils";
 import {match} from "react-router";
 import {Location} from "history";
@@ -163,8 +163,8 @@ export default {
      * @param a Reference asset
      * @param b Asset to compare it to
      */
-    labelComparator<T extends { label: string }>(a: T, b: T) {
-        return a.label.localeCompare(b.label);
+    labelComparator<T extends HasLabel>(a: T, b: T) {
+        return a.getLabel().localeCompare(b.getLabel());
     },
 
     /**
@@ -173,7 +173,7 @@ export default {
      * This renderer takes the specified option and renders its label.
      * @param option Options to render
      */
-    labelValueRenderer(option: AssetData) {
+    labelValueRenderer(option: { label: string }) {
         return option.label;
     },
 
@@ -204,7 +204,7 @@ export default {
                 return false;
             }
             const aun: AssetUpdateNotification<Asset> = n as AssetUpdateNotification<Asset>;
-            return aun.updated.hasType(assetType) && aun.updated.label !== aun.original.label;
+            return aun.updated.hasType(assetType) && aun.updated.getLabel() !== aun.original.getLabel();
         }
     },
 
