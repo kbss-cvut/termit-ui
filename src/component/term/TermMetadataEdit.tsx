@@ -15,11 +15,17 @@ import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
+import EditLanguageSelector from "../multilingual/EditLanguageSelector";
+import * as _ from "lodash";
+import {isTermValid} from "./TermMetadataCreate";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
     save: (term: Term) => void;
     cancel: () => void;
+    language: string;
+    selectLanguage: (lang: string) => void;
 }
 
 interface TermMetadataEditState extends TermData {
@@ -40,29 +46,49 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     };
 
     public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const label = e.currentTarget.value;
-        this.setState({labelExists: false, label});
-        if (label.toLowerCase() === this.props.term.label.toLowerCase()) {
+        const prefLabel = e.currentTarget.value;
+        const update = {};
+        update[this.props.language] = prefLabel;
+        this.setState({labelExists: false, label: Object.assign({}, this.state.label, update)});
+        if (prefLabel.toLowerCase() === getLocalized(this.props.term.label).toLowerCase()) {
             return;
         }
         const vocabIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);
-        const url = Constants.API_PREFIX + "/vocabularies/" + vocabIri.fragment + "/terms/name";
-        Ajax.get(url, params({namespace: vocabIri.namespace, value: label})).then((data) => {
-            this.setState({labelExists: data === true});
-        });
+        const url = Constants.API_PREFIX + "/vocabularies/" + vocabIri.fragment + "/terms";
+        Ajax.head(url, params({
+                namespace: vocabIri.namespace,
+                prefLabel,
+                language: this.props.language
+            })
+        ).then((data) => {
+            this.setState({labelExists: data.status === 200});
+        }).catch(() => this.setState({labelExists: false}));
     };
+
+    public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.currentTarget.value;
+        const change = {};
+        change[this.props.language] = value;
+        this.setState({definition: Object.assign({}, this.state.definition, change)});
+    }
 
     private onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const source = e.currentTarget.value;
         this.setState({sources: [source]});
     };
 
-    private onHiddenLabelsChange = (hiddenLabels: string[]) => {
-        this.setState({hiddenLabels});
+    public onHiddenLabelsChange = (hiddenLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = hiddenLabels;
+        this.setState({hiddenLabels: Object.assign({}, this.state.hiddenLabels, change)});
     };
 
-    private onAltLabelsChange = (altLabels: string[]) => {
-        this.setState({altLabels});
+    public onAltLabelsChange = (altLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = altLabels;
+        this.setState({altLabels: Object.assign({}, this.state.altLabels, change)});
     };
 
     private onTypesChange = (newTypes: string[]) => {
@@ -89,103 +115,118 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     };
 
     private isValid(): boolean {
-        return this.state.iri!.length > 0 && this.state.label.length > 0 && !this.state.labelExists;
+        return isTermValid(this.state, this.props.language) && !this.state.labelExists;
     }
 
+    public removeTranslation = (lang: string) => {
+        const copy = _.cloneDeep(this.state);
+        Term.removeTranslation(copy, lang);
+        this.setState(copy);
+    };
+
     public render() {
-        const i18n = this.props.i18n;
+        const {i18n, language} = this.props;
         const t = this.onStatusChange.bind(this);
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
-        return <Card>
-            <CardBody>
-                <Form>
-                    <Row>
-                        <Col xs={12}>
-                            <CustomInput name="edit-term-label" value={this.state.label} onChange={this.onLabelChange}
-                                         label={i18n("asset.label")} invalid={this.state.labelExists}
-                                         invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: this.state.label}) : undefined}
-                                         help={i18n("term.label.help")}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <StringListEdit list={this.state.altLabels}
-                                            onChange={this.onAltLabelsChange}
-                                            i18nPrefix={"term.metadata.altLabels"}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <StringListEdit list={this.state.hiddenLabels}
-                                            onChange={this.onHiddenLabelsChange}
-                                            i18nPrefix={"term.metadata.hiddenLabels"}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <TextArea name="edit-term-definition" value={this.state.definition}
-                                      onChange={this.onInputChange} rows={3} label={i18n("term.metadata.definition")}
-                                      help={i18n("term.definition.help")}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <TextArea name="edit-term-comment" value={this.state.comment}
-                                      onChange={this.onInputChange} rows={3} label={i18n("term.metadata.comment")}
-                                      help={i18n("term.comment.help")}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
-                                                parentTerms={this.state.parentTerms}
-                                                vocabularyIri={this.props.term.vocabulary!.iri!}
-                                                onChange={this.onParentChange}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
-                                           onChange={this.onTypesChange}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <DraftToggle id="edit-term-status"
-                                         draft={(this.state.draft === undefined) ? true : this.state.draft!}
-                                         onToggle={t}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                         label={i18n("term.metadata.source")}
-                                         invalidMessage={(this.state.sources && (this.state.sources.length > 1))
-                                             ? i18n("term.metadata.multipleSources.message") : undefined}
-                                         help={i18n("term.source.help")}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <UnmappedPropertiesEdit properties={this.state.unmappedProperties}
-                                                    ignoredProperties={TermMetadataEdit.mappedPropertiesToIgnore()}
-                                                    onChange={this.onPropertiesChange}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <ButtonToolbar className="d-flex justify-content-center mt-4">
-                                <Button id="edit-term-submit" color={Constants.SUBMIT_BUTTON_VARIANT} disabled={!this.isValid()} size="sm"
-                                        onClick={this.onSave}>{i18n("save")}</Button>
-                                <Button id="edit-term-cancel" color={Constants.CANCEL_BUTTON_VARIANT} size="sm"
-                                        onClick={this.props.cancel}>{i18n("cancel")}</Button>
-                            </ButtonToolbar>
-                        </Col>
-                    </Row>
-                </Form>
-            </CardBody>
-        </Card>;
+        return <>
+            <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
+                                  onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
+            <Card>
+                <CardBody>
+                    <Form>
+                        <Row>
+                            <Col xs={12}>
+                                <CustomInput name="edit-term-label"
+                                             value={getLocalizedOrDefault(this.state.label, "", language)}
+                                             onChange={this.onLabelChange}
+                                             label={i18n("asset.label")} invalid={this.state.labelExists}
+                                             invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
+                                             help={i18n("term.label.help")}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
+                                                onChange={this.onAltLabelsChange}
+                                                i18nPrefix={"term.metadata.altLabels"}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
+                                                onChange={this.onHiddenLabelsChange}
+                                                i18nPrefix={"term.metadata.hiddenLabels"}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <TextArea name="edit-term-definition"
+                                          value={getLocalizedOrDefault(this.state.definition, "", language)}
+                                          onChange={this.onDefinitionChange} rows={3}
+                                          label={i18n("term.metadata.definition")}
+                                          help={i18n("term.definition.help")}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <TextArea name="edit-term-comment" value={this.state.comment}
+                                          onChange={this.onInputChange} rows={3} label={i18n("term.metadata.comment")}
+                                          help={i18n("term.comment.help")}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
+                                                    parentTerms={this.state.parentTerms}
+                                                    vocabularyIri={this.props.term.vocabulary!.iri!}
+                                                    onChange={this.onParentChange}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
+                                               onChange={this.onTypesChange}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <DraftToggle id="edit-term-status"
+                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
+                                             onToggle={t}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
+                                             label={i18n("term.metadata.source")}
+                                             invalidMessage={(this.state.sources && (this.state.sources.length > 1))
+                                                 ? i18n("term.metadata.multipleSources.message") : undefined}
+                                             help={i18n("term.source.help")}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <UnmappedPropertiesEdit properties={this.state.unmappedProperties}
+                                                        ignoredProperties={TermMetadataEdit.mappedPropertiesToIgnore()}
+                                                        onChange={this.onPropertiesChange}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <ButtonToolbar className="d-flex justify-content-center mt-4">
+                                    <Button id="edit-term-submit" color={Constants.SUBMIT_BUTTON_VARIANT}
+                                            disabled={!this.isValid()} size="sm"
+                                            onClick={this.onSave}>{i18n("save")}</Button>
+                                    <Button id="edit-term-cancel" color={Constants.CANCEL_BUTTON_VARIANT} size="sm"
+                                            onClick={this.props.cancel}>{i18n("cancel")}</Button>
+                                </ButtonToolbar>
+                            </Col>
+                        </Row>
+                    </Form>
+                </CardBody>
+            </Card>
+        </>;
     }
 
     private static mappedPropertiesToIgnore() {

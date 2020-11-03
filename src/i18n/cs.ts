@@ -72,17 +72,18 @@ export default {
         "main.nav.statistics": "Statistiky",
         "main.nav.search": "Vyhledávání",
         "main.nav.facetedSearch": "Facetové vyhledávání",
-        "main.nav.searchTerms": "Vyhledávání pojmů",
-        "main.nav.searchVocabularies": "Vyhledávání slovníků",
-        "main.nav.admin": "Administrace",
-        "main.nav.create-vocabulary": "Nový slovník",
-        "main.nav.create-resource": "Nový zdroj",
-        "main.user-profile": "Profil uživatele",
-        "main.logout": "Odhlásit se",
-        "main.search.placeholder": "Hledat",
-        "main.search.tooltip": "Přejít na stránku hledání",
-        "main.search.count-info-and-link": "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
-        "main.search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
+        'main.nav.searchTerms': 'Vyhledávání pojmů',
+        'main.nav.searchVocabularies': 'Vyhledávání slovníků',
+        'main.nav.admin': 'Administrace',
+        'main.nav.create-vocabulary': 'Nový slovník',
+        'main.nav.create-resource': "Nový zdroj",
+        'main.user-profile': 'Profil uživatele',
+        'main.logout': 'Odhlásit se',
+        'main.search.placeholder': 'Hledat',
+        'main.search.tooltip': 'Přejít na stránku hledání',
+        'main.search.count-info-and-link': 'Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.',
+        'main.search.no-results': 'Zadanému výrazu neodpovídá žádný výsledek.',
+        "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
         "dashboard.widget.assetList.empty": "Pro tuto část nebyly nalezeny žádné záznamy.",
         "dashboard.widget.assetList.lastEditMessage": "{operation, select, " +
@@ -190,8 +191,13 @@ export default {
         "vocabulary.termchanges.empty": "Žádné nové pojmy ani aktualizace pojmů nebyly nalezeny.",
         "vocabulary.removed.message": "Slovník by odstraněn.",
 
-        "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
-        "vocabulary.select-vocabulary": "Vyber slovník",
+        "vocabulary.validation.tab": "Kontrola",
+        "vocabulary.validation.term": "Pojem",
+        "vocabulary.validation.severity": "Závažnost",
+        "vocabulary.validation.message": "Zpráva",
+
+        'vocabulary.term.created.message': 'Pojem úspěšně vytvořen.',
+        'vocabulary.select-vocabulary': 'Vyber slovník',
 
         "resource.management": "Správa zdrojů",
         "resource.management.resources": "Zdroje",
@@ -227,6 +233,8 @@ export default {
         "resource.metadata.document.files.empty": "Žádné soubory nenalezeny. Vytvořte nějaký...",
         "resource.document.vocabulary.create": "Připojit dokument",
 
+        "term.language.selector.item": "Zobrazit data pojmu v jazyce: {nativeLang} ({lang})",
+        "term.language.add.placeholder": "Vyberte...",
         "term.iri.help": "Identifikátor pojmu ve formě Internationalized Resource Identifier (IRI). Je " +
             " vygenerován automaticky na základě názvu, ale může být ručně upraven. Jedná se o možnost pro pokročilé uživatele." +
             "Identifikátor může obsahovat pouze " +

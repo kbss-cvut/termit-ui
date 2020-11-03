@@ -22,7 +22,7 @@ const DynamicBreadcrumbRoute = (props: DynamicBreadcrumbRoute) => {
     const {component, includeSearch, ...rest} = {...props};
     const Component = component;    // lowercase first character does not pass through JSX validation
     const renderRoute = (routeProps: RouteComponentProps<any>) => <Breadcrumb data={{
-        title: props.state[props.asset] ? (props.state[props.asset] as Asset).label : "",
+        title: props.state[props.asset] ? (props.state[props.asset] as Asset).getLabel() : "",
         pathname: routeProps.match.url,
         search: includeSearch ? routeProps.location.search : undefined
     }}>

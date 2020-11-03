@@ -1,23 +1,17 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
-import {
-    Button,
-    ButtonToolbar,
-    Col,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row
-} from "reactstrap";
+import {Button, ButtonToolbar, Col, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import TermMetadataCreateForm from "../term/TermMetadataCreateForm";
-import {isFormValid} from "../term/TermMetadataCreate";
+import {isTermValid} from "../term/TermMetadataCreate";
 import {connect} from "react-redux";
 import {injectIntl} from "react-intl";
 import {ThunkDispatch} from "../../util/Types";
 import {createTerm} from "../../action/AsyncActions";
 import {IRI} from "../../util/VocabularyUtils";
 import AssetFactory from "../../util/AssetFactory";
+import {langString} from "../../model/MultilingualString";
+import TermItState from "../../model/TermItState";
 
 interface CreateTermFromAnnotationProps extends HasI18n {
     show: boolean;
@@ -25,6 +19,7 @@ interface CreateTermFromAnnotationProps extends HasI18n {
     onMinimize: () => void; // Minimize will be used to allow the user to select definition for a term being created
     onTermCreated: (term: Term) => void;
     vocabularyIri: IRI;
+    language: string;
 
     createTerm: (term: Term, vocabularyIri: IRI) => Promise<any>;
 }
@@ -36,7 +31,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
 
     constructor(props: CreateTermFromAnnotationProps) {
         super(props);
-        this.state = AssetFactory.createEmptyTermData();
+        this.state = AssetFactory.createEmptyTermData(props.language);
     }
 
     /**
@@ -44,7 +39,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * component state.
      */
     public setLabel(label: string) {
-        this.setState({label});
+        this.setState({label: langString(label, this.props.language)});
     }
 
     /**
@@ -52,7 +47,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * parent component state.
      */
     public setDefinition(definition: string) {
-        this.setState({definition});
+        this.setState({definition: langString(definition, this.props.language)});
     }
 
     public onChange = (change: object, callback?: () => void) => {
@@ -79,15 +74,14 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
                 {i18n("glossary.form.header")}
             </ModalHeader>
             <ModalBody>
-                <TermMetadataCreateForm onChange={this.onChange}
-                                        termData={this.state}
-                                        definitionSelector={this.props.onMinimize}
+                <TermMetadataCreateForm onChange={this.onChange} termData={this.state}
+                                        language={this.props.language} definitionSelector={this.props.onMinimize}
                                         vocabularyIri={this.props.vocabularyIri.namespace + this.props.vocabularyIri.fragment}/>
                 <Row>
                     <Col xs={12}>
                         <ButtonToolbar className="d-flex justify-content-center mt-4">
                             <Button id="create-term-submit" color="success" onClick={this.onSave}
-                                    disabled={!isFormValid(this.state)}
+                                    disabled={!isTermValid(this.state)}
                                     size="sm">{i18n("glossary.form.button.submit")}</Button>
                             <Button id="create-term-cancel" color="outline-dark" size="sm"
                                     onClick={this.onCancel}>{i18n("glossary.form.button.cancel")}</Button>
@@ -99,7 +93,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
     }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
+export default connect((state: TermItState) => ({language: state.configuration.language}), (dispatch: ThunkDispatch) => {
     return {
         createTerm: (term: Term, vocabularyIri: IRI) => dispatch(createTerm(term, vocabularyIri))
     };

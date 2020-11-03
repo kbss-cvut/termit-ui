@@ -1,4 +1,4 @@
-import {AssetData} from "./Asset";
+import {AssetData, HasLabel} from "./Asset";
 import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
 
@@ -19,7 +19,7 @@ export interface RdfsResourceData extends AssetData {
 /**
  * Represents a generic RDFS resource.
  */
-export default class RdfsResource implements RdfsResourceData {
+export default class RdfsResource implements RdfsResourceData, HasLabel {
     public readonly iri: string;
     public readonly label?: string;
     public readonly comment?: string;
@@ -33,6 +33,10 @@ export default class RdfsResource implements RdfsResourceData {
         if (this.types.indexOf(VocabularyUtils.RDFS_RESOURCE) === -1) {
             this.types.push(VocabularyUtils.RDFS_RESOURCE);
         }
+    }
+
+    getLabel(): string {
+        return this.label ? this.label : "";
     }
 
     public toJsonLd() {

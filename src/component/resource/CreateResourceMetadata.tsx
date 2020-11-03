@@ -4,10 +4,11 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import Resource, {ResourceData} from "../../model/Resource";
 import {AbstractCreateAsset, AbstractCreateAssetState} from "../asset/AbstractCreateAsset";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import Constants from "../../util/Constants";
 import {Button, ButtonToolbar, Col, Form, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
+import {ContextFreeAssetType} from "../../model/ContextFreeAssetType";
+import Constants from "../../util/Constants";
 
 export interface CreateResourceMetadataProps extends HasI18n {
     onCreate: (resource: Resource) => Promise<string>;
@@ -33,8 +34,8 @@ export class CreateResourceMetadata<P extends CreateResourceMetadataProps = Crea
         } as S;
     }
 
-    protected get identifierGenerationEndpoint(): string {
-        return Constants.API_PREFIX + "/resources/identifier";
+    protected get assetType(): ContextFreeAssetType {
+        return "RESOURCE";
     }
 
     private onDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

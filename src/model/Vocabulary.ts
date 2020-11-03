@@ -1,7 +1,7 @@
 import OntologicalVocabulary from "../util/VocabularyUtils";
 import VocabularyUtils from "../util/VocabularyUtils";
 import Asset, {ASSET_CONTEXT, AssetData} from "./Asset";
-import Document, {CONTEXT as DOCUMENT_CONTEXT} from "./Document";
+import Document, {CONTEXT as DOCUMENT_CONTEXT, DocumentData} from "./Document";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
@@ -22,13 +22,14 @@ const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "document", "t
 
 export interface VocabularyData extends AssetData {
     label: string;
-    document?: Document;
+    document?: DocumentData;
     glossary?: AssetData;
     model?: AssetData;
     importedVocabularies?: AssetData[];
 }
 
 export default class Vocabulary extends Asset implements VocabularyData {
+    public label: string;
     public document?: Document;
     public glossary?: AssetData;
     public model?: AssetData;
@@ -38,10 +39,18 @@ export default class Vocabulary extends Asset implements VocabularyData {
     constructor(data: VocabularyData) {
         super(data);
         Object.assign(this, data);
+        this.label = data.label;
         this.types = Utils.sanitizeArray(data.types);
         if (this.types.indexOf(OntologicalVocabulary.VOCABULARY) === -1) {
             this.types.push(OntologicalVocabulary.VOCABULARY);
         }
+        if (data.document) {
+            this.document = new Document(data.document);
+        }
+    }
+
+    getLabel(): string {
+        return this.label;
     }
 
     public toJsonLd(): VocabularyData {

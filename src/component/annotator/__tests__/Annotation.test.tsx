@@ -12,6 +12,7 @@ import TermDefinitionAnnotation from "../TermDefinitionAnnotation";
 import TermOccurrenceAnnotation from "../TermOccurrenceAnnotation";
 import {MemoryRouter} from "react-router-dom";
 import Generator from "../../../__tests__/environment/Generator";
+import {langString} from "../../../model/MultilingualString";
 
 function assumeProps(wrapper: ReactWrapper, component: ComponentClass<any>, props: {}) {
     expect(wrapper.find(component).props())
@@ -29,7 +30,7 @@ jest.mock("popper.js");
 describe("Annotation", () => {
 
     const term = new Term({
-        label: "Mesto",
+        label: langString("Mesto"),
         iri: "http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/mesto"
     });
     const text = "mesta";
@@ -317,8 +318,8 @@ describe("Annotation", () => {
     });
 
     describe("onSelectTerm", () => {
-        // Bug #1359
-        it("resets current term to allow load of the selected one", () => {
+        // Bug #1359, #1360
+        it("sets current term to the selected one", () => {
             const wrapper = shallow<Annotation>(
                 <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
             return Promise.resolve().then(() => {
@@ -326,7 +327,7 @@ describe("Annotation", () => {
                 const selectedTerm = Generator.generateTerm();
                 wrapper.instance().onSelectTerm(selectedTerm);
                 wrapper.update();
-                expect(wrapper.state().term).toBeNull();
+                expect(wrapper.state().term).toEqual(selectedTerm);
             });
         });
     });

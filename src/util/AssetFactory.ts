@@ -11,6 +11,7 @@ import TermOccurrence, {TermOccurrenceData} from "../model/TermOccurrence";
 import ChangeRecord, {ChangeRecordData} from "../model/changetracking/ChangeRecord";
 import PersistRecord from "../model/changetracking/PersistRecord";
 import {UpdateRecord, UpdateRecordData} from "../model/changetracking/UpdateRecord";
+import {langString} from "../model/MultilingualString";
 
 
 export default {
@@ -73,12 +74,14 @@ export default {
      *
      * That is, string-based attributes (iri, label etc.) will be empty strings, array-valued attributes (types,
      * sources, parentTerms) will be empty arrays.
+     *
+     * @param lang Language to use for multilingual attribute default values (optional)
      */
-    createEmptyTermData(): TermData {
+    createEmptyTermData(lang?: string): TermData {
         return {
             iri: "",
-            label: "",
-            definition: "",
+            label: langString("", lang),
+            definition: langString("", lang),
             comment: "",
             types: [],
             sources: [],

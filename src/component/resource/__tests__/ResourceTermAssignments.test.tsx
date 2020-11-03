@@ -62,7 +62,7 @@ describe("ResourceTermAssignments", () => {
         const assignments: TermAssignmentInfo[] = [{
             term: {
                 iri: Generator.generateUri(),
-                label: "Test term"
+                label: {"cs" : "Test term"}
             },
             label: "Test term",
             resource: file,
@@ -79,30 +79,6 @@ describe("ResourceTermAssignments", () => {
             wrapper.update();
             expect(wrapper.find(TermLink).length).toEqual(1);
             expect(wrapper.find(".m-term-assignment").length).toEqual(1);
-        });
-    });
-
-    it("renders confirmed term occurrences", () => {
-        const assignments = [{
-            term: {
-                iri: Generator.generateUri()
-            },
-            label: "Test term",
-            resource: file,
-            vocabulary: {
-                iri: Generator.generateUri()
-            },
-            count: 1,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE]
-        }];
-        onLoadAssignments = jest.fn().mockImplementation(() => Promise.resolve(assignments));
-        const wrapper = mountWithIntl(<MemoryRouter><ResourceTermAssignments resource={file} notifications={[]}
-                                                                             consumeNotification={consumeNotification}
-                                                                             loadTermAssignments={onLoadAssignments} {...intlFunctions()}/></MemoryRouter>);
-        return Promise.resolve().then(() => {
-            wrapper.update();
-            expect(wrapper.find(TermLink).length).toEqual(1);
-            expect(wrapper.find(".m-term-occurrence").length).toEqual(1);
         });
     });
 
@@ -127,32 +103,6 @@ describe("ResourceTermAssignments", () => {
             wrapper.update();
             expect(wrapper.find(TermLink).length).toEqual(1);
             expect(wrapper.find("span.m-term-occurrence-suggested").length).toEqual(1);
-        });
-    });
-
-    it("renders term occurrences info with counter", () => {
-        const term = {iri: Generator.generateUri(), label: "Test term"};
-        const assignments = [{
-            term: {
-                iri: term.iri
-            },
-            label: term.label,
-            resource: file,
-            vocabulary: {
-                iri: Generator.generateUri()
-            },
-            count: 2,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE]
-        }];
-        onLoadAssignments = jest.fn().mockImplementation(() => Promise.resolve(assignments));
-        const wrapper = mountWithIntl(<MemoryRouter><ResourceTermAssignments resource={file} notifications={[]}
-                                                                             consumeNotification={consumeNotification}
-                                                                             loadTermAssignments={onLoadAssignments} {...intlFunctions()}/></MemoryRouter>);
-        return Promise.resolve().then(() => {
-            wrapper.update();
-            expect(wrapper.find(TermLink).length).toEqual(1);
-            expect(wrapper.find(".m-term-occurrence").length).toEqual(1);
-            expect(wrapper.find("span.m-term-occurrence-confirmed").text()).toContain("2");
         });
     });
 
@@ -220,7 +170,7 @@ describe("ResourceTermAssignments", () => {
         const existingAssignments: TermAssignmentInfo[] = [{
             term: {
                 iri: Generator.generateUri(),
-                label: "Test term"
+                label: { "cs" : "Test term" }
             },
             label: "Test term",
             resource: file,

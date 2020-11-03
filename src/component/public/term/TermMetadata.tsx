@@ -5,23 +5,27 @@ import {Card, CardBody, Col, Row} from "reactstrap";
 import Vocabulary from "../../../model/Vocabulary";
 import Terms from "./Terms";
 import {RouteComponentProps, withRouter} from "react-router";
+import LanguageSelector from "../../multilingual/LanguageSelector";
 
 interface TermMetadata extends RouteComponentProps<any> {
     term: Term;
     vocabulary: Vocabulary;
+    language: string;
+    setLanguage: (lang: string) => void;
 }
 
 const TermMetadata: React.FC<TermMetadata> = props => {
-    const {term, vocabulary} = props;
+    const {term, vocabulary, language, setLanguage} = props;
 
     return <>
+        <LanguageSelector key="term-language-selector" term={term} language={language} onSelect={setLanguage}/>
         <Row>
             <Col xl={9} lg={12}>
                 <Row>
                     <Col xs={12}>
                         <Card className="mb-3">
                             <CardBody className="card-body-basic-info">
-                                <BasicTermMetadata term={term} withDefinitionSource={true}/>
+                                <BasicTermMetadata term={term} withDefinitionSource={true} language={language}/>
                             </CardBody>
                         </Card>
                     </Col>

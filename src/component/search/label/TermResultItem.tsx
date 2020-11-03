@@ -17,6 +17,8 @@ import {getTermPath} from "../../term/TermLink";
 import {loadPublicTermByIri} from "../../../action/AsyncPublicViewActions";
 import User from "../../../model/User";
 import Authentication from "../../../util/Authentication";
+import {getLocalized} from "../../../model/MultilingualString";
+import {getShortLocale} from "../../../util/IntlUtil";
 
 interface TermResultItemOwnProps {
     result: SearchResultItem;
@@ -54,7 +56,7 @@ export class TermResultItem extends React.Component<TermResultItemProps, TermRes
             const loader = Authentication.isLoggedIn(this.props.user) ? this.props.loadTerm : this.props.loadPublicTerm;
             loader(iri).then(term => {
                 if (term) {
-                    this.setState({text: term!.definition ? term!.definition : term!.comment});
+                    this.setState({text: term!.definition ? getLocalized(term!.definition, getShortLocale(this.props.locale)) : term!.comment});
                 }
             });
         }

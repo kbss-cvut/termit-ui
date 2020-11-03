@@ -8,7 +8,7 @@ import {loadTerm, loadVocabulary, removeTerm, updateTerm} from "../../action/Asy
 import TermMetadata from "./TermMetadata";
 import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
-import {Button} from "reactstrap";
+import {Badge, Button} from "reactstrap";
 import {GoPencil} from "react-icons/go";
 import EditableComponent, {EditableComponentState} from "../misc/EditableComponent";
 import TermMetadataEdit from "./TermMetadataEdit";
@@ -21,8 +21,12 @@ import * as _ from "lodash";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
-import {FaTrashAlt} from "react-icons/fa/index";
+import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
+import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
+import ValidationResult from "../../model/ValidationResult";
+import Routing from "../../util/Routing";
+import Routes from "../../util/Routes";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -32,18 +36,29 @@ interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
+    configuredLanguage: string;
+    validationResults: { [vocabularyIri: string]: ValidationResult[] };
 }
 
-export interface TermSummaryState extends EditableComponentState {
+export interface TermDetailState extends EditableComponentState {
+    language: string;
 }
 
-export class TermDetail extends EditableComponent<TermDetailProps,TermSummaryState> {
+export const importantRules = [
+    "https://slovník.gov.cz/jazyk/obecný/g4",
+    "https://slovník.gov.cz/jazyk/obecný/m1",
+    "https://slovník.gov.cz/jazyk/obecný/g13",
+    "https://slovník.gov.cz/jazyk/obecný/g14"
+];
+
+export class TermDetail extends EditableComponent<TermDetailProps, TermDetailState> {
 
     constructor(props: TermDetailProps) {
         super(props);
         this.state = {
             edit: false,
-            showRemoveDialog: false
+            showRemoveDialog: false,
+            language: props.configuredLanguage
         };
     }
 
@@ -65,6 +80,15 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
         this.props.loadTerm(termName, {fragment: vocabularyName, namespace});
     }
 
+    private computeScore(results: ValidationResult []): number | undefined {
+        return results.reduce((reduceScore, result) => {
+            if (importantRules.indexOf(result.sourceShape.iri) >= 0) {
+                return reduceScore - 25;
+            }
+            return reduceScore;
+        }, 100);
+    }
+
     public componentDidUpdate(prevProps: TermDetailProps) {
         const currTermName = this.props.match.params.termName;
         const prevTermName = prevProps.match.params.termName;
@@ -72,7 +96,14 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
             this.onCloseEdit();
             this.loadTerm();
         }
+        if (prevProps.configuredLanguage !== this.props.configuredLanguage) {
+            this.setState({language: this.props.configuredLanguage});
+        }
     }
+
+    public setLanguage = (language: string) => {
+        this.setState({language});
+    };
 
     public onSave = (term: Term) => {
         const oldTerm = this.props.term!;
@@ -91,16 +122,60 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
         });
     };
 
-    public getButtons = () => {
-        const buttons = [];
-        if ( !this.state.edit ) {
-            buttons.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit} key="term-detail-edit"
-                    title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
+    public getActions = () => {
+        const actions = [];
+        if (!this.state.edit) {
+            actions.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
+                                 key="term-detail-edit"
+                                 title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
         }
-        buttons.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
+        actions.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
-        return buttons;
+        return actions;
+    }
+
+    public setBadgeColor(score: number | undefined): string {
+        switch (score) {
+            case 100:
+                return "dark-green";
+            case 75:
+            case 50:
+                return "dark-yellow";
+            case 25:
+            case 0:
+                return "dark-red";
+            default:
+                return "gray";
+        }
+    }
+
+    public onBadgeClick = () => {
+        const normalizedName = this.props.match.params.name;
+        const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
+        const queryMap = new Map();
+        if (namespace) {
+            queryMap.set("namespace", namespace);
+        }
+        queryMap.set("activeTab", "vocabulary.validation.tab");
+        Routing.transitionTo(Routes.vocabularyDetail, {
+            params: new Map([["name", normalizedName]]),
+            query: queryMap
+        });
+    }
+
+    public renderBadge() {
+        let score: number | undefined;
+        if (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) {
+            score = this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri));
+        }
+        const emptyString = "  ";
+        return <Badge color={this.setBadgeColor(score)}
+                      className="term-quality-badge"
+                      title={"The score of this term is " + score + "%. Click to see the validation results."}
+                      onClick={this.onBadgeClick}
+        > {emptyString}
+        </Badge>
     }
 
     public render() {
@@ -108,26 +183,38 @@ export class TermDetail extends EditableComponent<TermDetailProps,TermSummarySta
         if (!term) {
             return null;
         }
-        const buttons = this.getButtons();
+        const buttons = this.getActions();
         return <div id="term-detail">
-            <HeaderWithActions title={
-                <>{term.label}<CopyIriIcon url={term.iri as string}/><br/><h6>{Utils.sanitizeArray(term.altLabels).join(", ")}</h6></>
-            } actions={buttons}/>
+            <HeaderWithActions title={this.renderTitle()} actions={buttons}/>
 
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
                                onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
-
             {this.state.edit ?
-                <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}/> :
-                <TermMetadata term={term} vocabulary={vocabulary}/>}
+                <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}
+                                  language={this.state.language} selectLanguage={this.setLanguage}/> :
+                <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}
+                              selectLanguage={this.setLanguage}/>}
         </div>
+    }
+
+    private renderTitle() {
+        const term = this.props.term!;
+        const altLabels = getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ");
+        return <>
+            {this.renderBadge()}
+            {getLocalized(term.label, this.state.language)}
+            <CopyIriIcon url={term.iri as string}/><br/>
+            <div className="small italics">{altLabels.length > 0 ? altLabels : "\u00a0"}</div>
+        </>;
     }
 }
 
 export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
-        vocabulary: state.vocabulary
+        vocabulary: state.vocabulary,
+        configuredLanguage: state.configuration.language,
+        validationResults: state.validationResults
     };
 }, (dispatch: ThunkDispatch) => {
     return {

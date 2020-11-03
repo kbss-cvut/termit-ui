@@ -49,8 +49,8 @@ describe("SearchResults", () => {
         const wrapper = mountWithIntl(<MemoryRouter><SearchResults
             results={[result]} {...intlFunctions()}/></MemoryRouter>);
         const rows = wrapper.find("tr");
-        // Header + result row
-        expect(rows.length).toEqual(2);
+        // result row
+        expect(rows.length).toEqual(1);
         expect(rows.find(TermBadge).exists()).toBeTruthy();
         const label = wrapper.find(AssetLink);
         expect(label.text().startsWith(result.label)).toBeTruthy();
@@ -72,8 +72,8 @@ describe("SearchResults", () => {
         const wrapper = mountWithIntl(<MemoryRouter><SearchResults
             results={[result]} {...intlFunctions()}/></MemoryRouter>);
         const rows = wrapper.find("tr");
-        // Header + result row
-        expect(rows.length).toEqual(2);
+        // Result row
+        expect(rows.length).toEqual(1);
         expect(rows.find(VocabularyBadge).exists()).toBeTruthy();
         const label = wrapper.find(Link);
         expect(label.text()).toEqual(result.label);
@@ -85,7 +85,7 @@ describe("SearchResults", () => {
             results={results} {...intlFunctions()}/></MemoryRouter>);
         const rows = wrapper.find("tr");
         // Header + result row
-        expect(rows.length).toEqual(3);
+        expect(rows.length).toEqual(2);
         expect(rows.find(TermBadge).length).toEqual(1);
         expect(rows.find(VocabularyBadge).length).toEqual(1);
     });
@@ -125,8 +125,8 @@ describe("SearchResults", () => {
         const wrapper = mountWithIntl(<MemoryRouter><SearchResults
             results={results} {...intlFunctions()}/></MemoryRouter>);
         const rows = wrapper.find("tr");
-        // Header + result row
-        expect(rows.length).toEqual(2);
+        // result row
+        expect(rows.length).toEqual(1);
         const label = wrapper.find(VocabularyLink);
         expect(label.text().startsWith(results[0].label)).toBeTruthy();
         expect(wrapper.find(".search-result-snippet").text()).toContain(removeMarkup(results[0].snippetText));
@@ -158,8 +158,8 @@ describe("SearchResults", () => {
         const wrapper = mountWithIntl(<MemoryRouter><SearchResults
             results={results} {...intlFunctions()}/></MemoryRouter>);
         const rows = wrapper.find("tr");
-        // Header + result row
-        expect(rows.length).toEqual(2);
+        // result row
+        expect(rows.length).toEqual(1);
         const label = wrapper.find(AssetLink);
         expect(label.text().startsWith(results[0].label)).toBeTruthy();
         const matchTextContent = wrapper.find(".search-result-snippet").text();

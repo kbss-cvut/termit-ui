@@ -1,6 +1,6 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import Term from "../../model/Term";
+import Term, {termInfoComparator} from "../../model/Term";
 import {injectIntl} from "react-intl";
 import {Col, Label, Row} from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
@@ -11,10 +11,12 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import TermLink from "./TermLink";
 import TermDefinitionSourceLink from "./TermDefinitionSourceLink";
 import {OWL, SKOS} from "../../util/Namespaces";
+import {getLocalizedOrDefault} from "../../model/MultilingualString";
 
 interface BasicTermMetadataProps extends HasI18n {
     term: Term;
     withDefinitionSource?: boolean;
+    language: string;
 }
 
 export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, any> {
@@ -24,14 +26,15 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
     };
 
     public render() {
-        const {i18n, term} = this.props;
+        const {i18n, term, language} = this.props;
         return <>
             <Row>
                 <Col xl={2} md={4}>
                     <Label className="attribute-label bold">{i18n("term.metadata.definition")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
-                    <Label id="term-metadata-definition" className="bold">{term.definition}</Label>
+                    <Label id="term-metadata-definition"
+                           className="bold">{getLocalizedOrDefault(term.definition, "", language)}</Label>
                 </Col>
             </Row>
             {this.renderDefinitionSource()}
@@ -91,11 +94,11 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         // Ensures that the implicit TERM type is not rendered
         const types = this.props.term.types;
         return BasicTermMetadata.renderItems(Utils.sanitizeArray(types)
-            .filter(t =>
-                t !== VocabularyUtils.TERM
-                && !t.startsWith(SKOS.namespace)
-                && !t.startsWith(OWL.namespace)
-            ),
+                .filter(t =>
+                    t !== VocabularyUtils.TERM
+                    && !t.startsWith(SKOS.namespace)
+                    && !t.startsWith(OWL.namespace)
+                ),
             "term-metadata-types");
     }
 
@@ -105,8 +108,8 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             return null;
         }
 
-        const renderItem = (item : string) => Utils.isLink(item) ?
-                <OutgoingLink iri={item} label={<AssetLabel iri={item}/>}/> : <Label>{item}</Label>
+        const renderItem = (item: string) => Utils.isLink(item) ?
+            <OutgoingLink iri={item} label={<AssetLabel iri={item}/>}/> : <Label>{item}</Label>
 
         if (source.length === 1) {
             return renderItem(source[0]);
@@ -142,7 +145,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         if (source.length === 0) {
             return null;
         }
-        source.sort(Utils.labelComparator);
+        source.sort(termInfoComparator);
         return <Row>
             <Col xl={2} md={4}>
                 <Label className="attribute-label">{this.props.i18n("term.metadata.subTerms")}</Label>

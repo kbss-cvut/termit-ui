@@ -16,7 +16,7 @@ const ctx = {
 export const CONTEXT = Object.assign({}, RESOURCE_CONTEXT, ctx, FILE_CONTEXT);
 
 export interface DocumentData extends ResourceData {
-    files: File[];
+    files: FileData[];
     vocabulary?: AssetData;
 }
 
@@ -26,6 +26,7 @@ export default class Document extends Resource implements DocumentData {
 
     constructor(data: DocumentData) {
         super(data);
+        this.vocabulary = data.vocabulary;
         this.files = Utils.sanitizeArray(data.files).map(fd => new File(fd));
     }
 

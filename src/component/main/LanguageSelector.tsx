@@ -7,8 +7,10 @@ import {switchLanguage} from "../../action/SyncActions";
 import {ThunkDispatch} from "../../util/Types";
 import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown} from "reactstrap";
 import classNames from "classnames";
+import {injectIntl} from "react-intl";
+import withI18n, {HasI18n} from "../hoc/withI18n";
 
-interface LanguageSelectorProps {
+interface LanguageSelectorProps extends HasI18n {
     language: string,
     fixed: boolean,
     authenticated: boolean
@@ -52,7 +54,8 @@ export class LanguageSelector extends React.Component<LanguageSelectorProps> {
                         "language-selector-public": !authenticated
                     })}
                 caret={true}
-                nav={authenticated}>
+                nav={authenticated}
+                title={this.props.i18n("main.lang-selector.tooltip")}>
                 {this.resolveSelectedLanguage()}
             </DropdownToggle>
             <DropdownMenu right={true}>
@@ -78,4 +81,4 @@ export default connect((state: TermItState) => {
     return {
         switchLanguage: (lang: string) => dispatch(switchLanguage(lang))
     };
-})(LanguageSelector);
+})(injectIntl(withI18n(LanguageSelector)));

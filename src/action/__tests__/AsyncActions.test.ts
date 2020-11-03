@@ -25,7 +25,7 @@ import {
     loadTermAssignmentsInfo,
     loadTerms,
     loadTypes,
-    loadUnusedTermsForVocabulary,
+    loadUnusedTermsForVocabulary, validateVocabulary,
     loadVocabularies,
     loadVocabulary,
     loadVocabularyContentChanges,
@@ -71,6 +71,8 @@ import {verifyExpectedAssets} from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
 import NotificationType from "../../model/NotificationType";
+import {langString} from "../../model/MultilingualString";
+import ValidationResult from "../../model/ValidationResult";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -175,6 +177,14 @@ describe("Async actions", () => {
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
                 const loadImportsAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
                 expect(loadImportsAction).toBeDefined();
+            });
+        });
+
+        it("dispatches vocabulary validation action on success", () => {
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(require("../../rest-mock/vocabulary")));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
+                const validationAction = store.getActions().find(a => a.type === ActionType.FETCH_VALIDATION_RESULTS);
+                expect(validationAction).toBeDefined();
             });
         });
 
@@ -300,7 +310,7 @@ describe("Async actions", () => {
 
         it("create top level term in vocabulary context and send it over the network", () => {
             const term = new Term({
-                label: "Test term 1",
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -319,12 +329,12 @@ describe("Async actions", () => {
         it("create child term in vocabulary context and send it over the network", () => {
             const parentFragment = "test-term-1";
             const parentTerm = new Term({
-                label: "Test term 1",
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/" + parentFragment,
                 vocabulary: {iri: vocabularyIri.toString()}
             });
             const childTerm = new Term({
-                label: "Test term 2",
+                label: langString("Test term 2"),
                 iri: vocabularyIri.toString() + "term/test-term-2",
                 parentTerms: [parentTerm]
             });
@@ -343,7 +353,7 @@ describe("Async actions", () => {
 
         it("publishes notification on successful creation", () => {
             const term = new Term({
-                label: "Test term 1",
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({
@@ -362,7 +372,7 @@ describe("Async actions", () => {
 
         it("provides vocabulary namespace in a request parameter", () => {
             const term = new Term({
-                label: "Test term 1",
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -377,12 +387,12 @@ describe("Async actions", () => {
             const parentVocabularyIri = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/parent-vocabulary";
             const parentTerm = new Term({
                 iri: parentVocabularyIri + "/terms/parent-term",
-                label: "Parent term",
+                label: langString("Parent term"),
                 vocabulary: {iri: parentVocabularyIri}
             });
             const childTerm = new Term({
                 iri: vocabularyIri.toString() + "/terms/test-term",
-                label: "Test term",
+                label: langString("Test term"),
                 parentTerms: [parentTerm]
             });
             Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
@@ -397,7 +407,7 @@ describe("Async actions", () => {
 
         it("sets term vocabulary before sending it to server", () => {
             const term = new Term({
-                label: "Test term 1",
+                label: langString("Test term 1"),
                 iri: vocabularyIri.toString() + "term/test-term-1"
             });
             Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
@@ -557,7 +567,7 @@ describe("Async actions", () => {
             const normalizedTermName = "test-term";
             const term: Term = new Term({
                 iri: namespace + "pojem/" + normalizedTermName,
-                label: "Test",
+                label: langString("Test"),
                 comment: "Test term",
                 vocabulary: {iri: namespace + normalizedVocabularyName}
             });
@@ -576,7 +586,7 @@ describe("Async actions", () => {
         it("sends JSON-LD of term argument to REST endpoint", () => {
             const term: Term = new Term({
                 iri: Generator.generateUri(),
-                label: "Test",
+                label: langString("Test"),
                 comment: "Test term",
                 vocabulary: {iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary"}
             });
@@ -602,6 +612,17 @@ describe("Async actions", () => {
                 expect(notifyAction.notification.updated).toEqual(updated);
             });
         });
+
+        it("dispatches vocabulary validation action after save", () => {
+            const original = Generator.generateTerm("http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary");
+            const updated = new Term(Object.assign({}, original, {label: "Updated label"}));
+            Ajax.put = jest.fn().mockResolvedValue(undefined);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateTerm(updated))).then(() => {
+                const validationAction = store.getActions().find(a => a.type === ActionType.FETCH_VALIDATION_RESULTS);
+                expect(validationAction).toBeDefined();
+            });
+        });
+
     });
 
     describe("remove term", () => {
@@ -613,7 +634,7 @@ describe("Async actions", () => {
             iri: namespace + normalizedName
         });
         const term = new Term({
-            label: "Test Term",
+            label: langString("Test Term"),
             iri: vocabulary.iri + "/pojem/" + termName,
             vocabulary
         });
@@ -917,6 +938,50 @@ describe("Async actions", () => {
         });
     });
 
+    describe("validate results", () => {
+        const v = VocabularyUtils.create('');
+        it("extracts validation results from incoming JSON", () => {
+            const validationResults = require("../../rest-mock/validation-results.json");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults) );
+            return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
+                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const result = successAction.payload[v.toString()];
+                expect(result.length).toEqual(validationResults.length);
+                // @ts-ignore
+                result.sort((a, b) => a.term.iri.localeCompare(b.term.iri));
+                validationResults.sort((a: object, b: object) => a.toString().localeCompare(b.toString()));
+                for (let i = 0; i < validationResults.length; i++) {
+                    expect(result[i].term.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
+                    expect(result[i].severity.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
+                    expect(result[i].message.length).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultMessage"].length);
+                }
+            });
+        });
+
+        it("extracts single resource as an array of resources from incoming JSON-LD", () => {
+            const validationResults = require("../../rest-mock/validation-results.json");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
+                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const result = successAction.payload[v.toString()];
+                expect(Array.isArray(result)).toBeTruthy();
+                expect(result.length).toEqual(1);
+                expect(result[0].term.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
+                expect(result[0].severity.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
+                expect(result[0].message.length
+                ).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#resultMessage"].length);
+            });
+        });
+
+        it("does nothing when loading action is already pending", () => {
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
+            store.getState().pendingActions[ActionType.FETCH_VALIDATION_RESULTS] = AsyncActionStatus.REQUEST;
+            return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
+                expect(Ajax.get).not.toHaveBeenCalled();
+            });
+        });
+    });
+
     describe("loadResource", () => {
 
         it("returns resource as correct type based on type specified in JSON-LD data", () => {
@@ -942,7 +1007,7 @@ describe("Async actions", () => {
             const normalizedTermName = "test-term";
             const term: Term = new Term({
                 iri: namespace + "pojem/" + normalizedTermName,
-                label: "Test",
+                label: langString("Test"),
                 comment: "Test term"
             });
             const resource = new Resource({
@@ -1392,7 +1457,7 @@ describe("Async actions", () => {
                 expect(termsAction).toBeDefined();
                 expect(termsAction.payload).toEqual([new Term({
                     iri: data[0].term.iri,
-                    label: data[0].label,
+                    label: langString(data[0].label),
                     vocabulary: data[0].vocabulary
                 })]);
             });

@@ -13,10 +13,13 @@ import Vocabulary from "../../model/Vocabulary";
 import {RouteComponentProps, withRouter} from "react-router";
 import Terms from "./Terms";
 import Comments from "../comment/Comments";
+import LanguageSelector from "../multilingual/LanguageSelector";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
     vocabulary: Vocabulary;
+    language: string;
+    selectLanguage: (lang: string) => void;
 }
 
 interface TermMetadataState {
@@ -62,15 +65,16 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     };
 
     public render() {
-        const term = this.props.term;
+        const {term, language, selectLanguage} = this.props;
         return <>
+            <LanguageSelector key="term-language-selector" term={term} language={language} onSelect={selectLanguage}/>
             <Row>
                 <Col lg={this.state.displayTerms ? 9 : 12}>
                     <Row>
                         <Col xs={12}>
                             <Card className="mb-3">
                                 <CardBody className="card-body-basic-info">
-                                    <BasicTermMetadata term={term} withDefinitionSource={true}/>
+                                    <BasicTermMetadata term={term} withDefinitionSource={true} language={language}/>
                                 </CardBody>
                             </Card>
                         </Col>

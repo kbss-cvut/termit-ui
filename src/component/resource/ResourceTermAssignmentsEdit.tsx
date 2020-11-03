@@ -11,6 +11,7 @@ import {ThunkDispatch} from "../../util/Types";
 import FetchOptionsFunction from "../../model/Functions";
 import {searchTerms} from "../../action/AsyncActions";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../term/TermTreeSelectHelper";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface PropsExternal {
     terms: Term[];
@@ -36,16 +37,21 @@ export class ResourceTermAssignmentsEdit extends React.Component<ResourceTermAss
     public fetchOptions = (fetchOptions: FetchOptionsFunction) => {
         const all = [...this.props.terms];  // Make a copy of the resource's terms to prevent their accidental editing
 
-        // TODO hack to have the search fast - looks for wovels and syllabic consonants in czech and english. Thus works
+        // TODO hack to have the search fast - looks for vowels and syllabic consonants in czech and english. Thus works
         // only for terms which are words.
         const searchString = fetchOptions.searchString || "a e i o u y r l s m n";
 
         return this.props.fetchTerms(searchString)
-            .then(terms => processTermsForTreeSelect(terms, undefined, fetchOptions))
+            .then(terms => processTermsForTreeSelect(terms, undefined, {
+                searchString,
+                labelLang: getShortLocale(this.props.locale)
+            }))
             .then(terms => {
-                const toReturn = all;
-                terms.forEach(t => toReturn.push(t));
-                return toReturn;
+                const toReturn = processTermsForTreeSelect(all, undefined, {
+                    searchString,
+                    labelLang: getShortLocale(this.props.locale)
+                });
+                return toReturn.concat(terms);
             });
     };
 

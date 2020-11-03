@@ -189,7 +189,7 @@ export class Ajax {
                 Routing.saveOriginalTarget();
                 Routing.transitionTo(Routes.login);
             }
-            if (typeof response.data === "string") {
+            if (typeof response.data === "string" && response.data.length > 0) {
                 return Promise.reject({
                     messageId: "ajax.unparseable-error",
                     status: response.status
