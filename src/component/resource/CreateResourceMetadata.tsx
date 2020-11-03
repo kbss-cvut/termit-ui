@@ -8,6 +8,7 @@ import {Button, ButtonToolbar, Col, Form, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import {ContextFreeAssetType} from "../../model/ContextFreeAssetType";
+import Constants from "../../util/Constants";
 
 export interface CreateResourceMetadataProps extends HasI18n {
     onCreate: (resource: Resource) => Promise<string>;
