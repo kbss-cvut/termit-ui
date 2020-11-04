@@ -11,7 +11,6 @@ import {ThunkDispatch} from "../../util/Types";
 import FetchOptionsFunction from "../../model/Functions";
 import {searchTerms} from "../../action/AsyncActions";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../term/TermTreeSelectHelper";
-import {getShortLocale} from "../../util/IntlUtil";
 
 interface PropsExternal {
     terms: Term[];
@@ -30,6 +29,19 @@ interface ResourceTermAssignmentsEditProps extends PropsExternal, PropsConnected
 
 export class ResourceTermAssignmentsEdit extends React.Component<ResourceTermAssignmentsEditProps, {}> {
 
+    private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
+
+    constructor(props: ResourceTermAssignmentsEditProps) {
+        super(props);
+        this.treeComponent = React.createRef();
+    }
+
+    public componentDidUpdate(prevProps: Readonly<ResourceTermAssignmentsEditProps>) {
+        if (prevProps.locale !== this.props.locale) {
+            this.treeComponent.current.forceUpdate();
+        }
+    }
+
     private onChange = (val: Term[]) => {
         this.props.onChange(val);
     };
@@ -42,28 +54,21 @@ export class ResourceTermAssignmentsEdit extends React.Component<ResourceTermAss
         const searchString = fetchOptions.searchString || "a e i o u y r l s m n";
 
         return this.props.fetchTerms(searchString)
-            .then(terms => processTermsForTreeSelect(terms, undefined, {
-                searchString,
-                labelLang: getShortLocale(this.props.locale)
-            }))
+            .then(terms => processTermsForTreeSelect(terms, undefined, {searchString}))
             .then(terms => {
-                const toReturn = processTermsForTreeSelect(all, undefined, {
-                    searchString,
-                    labelLang: getShortLocale(this.props.locale)
-                });
+                const toReturn = processTermsForTreeSelect(all, undefined, {searchString});
                 return toReturn.concat(terms);
             });
     };
 
     public render() {
         const selected = (this.props.terms || []).map(t => t.iri!);
-        const key = "http://null";
-        const treeProps = commonTermTreeSelectProps(this.props.i18n);
+        const treeProps = commonTermTreeSelectProps(this.props);
         treeProps.noResultsText = "";
         treeProps.placeholder = this.props.i18n("resource.metadata.terms.edit.select.placeholder");
         return <FormGroup>
             <Label className="attribute-label">{this.props.i18n("resource.metadata.terms.assigned")}</Label>{" "}
-            <IntelligentTreeSelect key={key} id="edit-resource-tags"
+            <IntelligentTreeSelect ref={this.treeComponent} id="edit-resource-tags"
                                    className="resource-tags-edit"
                                    onChange={this.onChange}
                                    value={selected}
