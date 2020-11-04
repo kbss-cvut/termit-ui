@@ -36,7 +36,7 @@ import {
     updateResourceTerms,
     updateTerm,
     updateVocabulary,
-    uploadFileContent
+    uploadFileContent, loadNews
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, {param} from "../../util/Ajax";
@@ -1811,6 +1811,18 @@ describe("Async actions", () => {
                 expect(notifyAction.notification.source.type).toEqual(NotificationType.ASSET_UPDATED);
                 expect(notifyAction.notification.original).toEqual(original);
                 expect(notifyAction.notification.updated).toEqual(updated);
+            });
+        });
+    });
+
+    describe("loadNews", () => {
+        it("uses specified language to load news", () => {
+            const news = "New version published, yay!";
+            const lang = "cs";
+            Ajax.get = jest.fn().mockResolvedValue(news);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result:any) => {
+                expect(result).toEqual(news);
+                expect((Ajax.get as jest.Mock).mock.calls[0][0]).toEqual(Constants.NEWS_MD_URL[lang]);
             });
         });
     });
