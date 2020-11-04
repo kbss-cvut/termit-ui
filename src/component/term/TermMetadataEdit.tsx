@@ -56,12 +56,13 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const vocabIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);
         const url = Constants.API_PREFIX + "/vocabularies/" + vocabIri.fragment + "/terms";
         Ajax.head(url, params({
-            namespace: vocabIri.namespace,
-            prefLabel,
-            language: this.props.language})
+                namespace: vocabIri.namespace,
+                prefLabel,
+                language: this.props.language
+            })
         ).then((data) => {
             this.setState({labelExists: data.status === 200});
-        });
+        }).catch(() => this.setState({labelExists: false}));
     };
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
