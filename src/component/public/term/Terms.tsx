@@ -143,7 +143,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                     multi={false}
                     maxHeight={Utils.calculateAssetListHeight()}
                     optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary.iri)}
-                    {...commonTermTreeSelectProps(i18n)}
+                    {...commonTermTreeSelectProps(this.props)}
                 />
             </div>
         </div>

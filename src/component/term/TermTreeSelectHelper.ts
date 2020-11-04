@@ -1,27 +1,28 @@
-import Term, {TermInfo} from "../../model/Term";
+import Term, {TermData, TermInfo} from "../../model/Term";
 import {getLocalized} from "../../model/MultilingualString";
+import {HasI18n} from "../hoc/withI18n";
+import {getShortLocale} from "../../util/IntlUtil";
 
 /**
  * Common properties for a tree selector containing terms
- * @param i18n
+ * @param intl I18n data
  */
-export function commonTermTreeSelectProps(i18n: (messageId: string) => string) {
+export function commonTermTreeSelectProps(intl: HasI18n) {
     return {
         valueKey: "iri",
-        labelKey: "simpleLabel",
+        getOptionLabel: (option: Term | TermData) => getLocalized(option.label, getShortLocale(intl.locale)),
         childrenKey: "plainSubTerms",
         renderAsTree: true,
         simpleTreeData: true,
         showSettings: false,
-        noResultsText: i18n("main.search.no-results"),
-        placeholder: i18n("glossary.select.placeholder")
+        noResultsText: intl.i18n("main.search.no-results"),
+        placeholder: intl.i18n("glossary.select.placeholder")
     };
 }
 
 
 export type TermTreeSelectProcessingOptions = {
     searchString?: string;
-    labelLang?: string;
 }
 
 /**
@@ -41,16 +42,14 @@ export function processTermsForTreeSelect(terms: Term[], vocabularies: (string[]
         if (t.subTerms) {
             if (vocabularies) {
                 t.subTerms = t.subTerms.filter(st => vocabularyMatches(st, vocabularies)).map(st => {
-                    (st as any).simpleLabel = getLocalized(st.label, options.labelLang);
                     return st;
                 });
             }
             t.syncPlainSubTerms();
         }
         if (options.searchString && t.parentTerms) {
-            result = result.concat(flattenAncestors(t.parentTerms, options.labelLang).filter(pt => vocabularyMatches(pt, vocabularies)));
+            result = result.concat(flattenAncestors(t.parentTerms).filter(pt => vocabularyMatches(pt, vocabularies)));
         }
-        (t as any).simpleLabel = t.getLabel(options.labelLang);
     }
     return result;
 }
@@ -64,15 +63,13 @@ function vocabularyMatches(term: Term | TermInfo, vocabularies: string[] | undef
  *
  * This is necessary for proper functionality of the tree select.
  * @param terms Terms to flatten
- * @param lang Language used to get label
  */
-function flattenAncestors(terms: Term[], lang?: string) {
+function flattenAncestors(terms: Term[]) {
     let result: Term[] = [];
     for (const t of terms) {
         result.push(t);
-        (t as any).simpleLabel = t.getLabel(lang);
         if (t.parentTerms) {
-            result = result.concat(flattenAncestors(t.parentTerms, lang));
+            result = result.concat(flattenAncestors(t.parentTerms));
         }
     }
     return result;

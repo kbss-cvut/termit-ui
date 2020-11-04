@@ -4,7 +4,7 @@ import FetchOptionsFunction from "../../../model/Functions";
 import {shallow} from "enzyme";
 import {Terms} from "../Terms";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
-import { Location} from "history";
+import {Location} from "history";
 import {match as Match} from "react-router";
 import Routing from "../../../util/Routing";
 import Utils from "../../../util/Utils";
@@ -12,7 +12,6 @@ import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import Generator from "../../../__tests__/environment/Generator";
 import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
-import Constants from "../../../util/Constants";
 import {langString} from "../../../model/MultilingualString";
 
 jest.mock("../../../util/Routing");
@@ -264,7 +263,7 @@ describe("Terms", () => {
             return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
                 expect(options.length).toEqual(1);
                 expect(options).toEqual(terms);
-                expect(spy).toHaveBeenCalledWith(terms, [vocabulary.iri], {searchString: "test", labelLang: Constants.DEFAULT_LANGUAGE});
+                expect(spy).toHaveBeenCalledWith(terms, [vocabulary.iri], {searchString: "test"});
             });
         });
     });

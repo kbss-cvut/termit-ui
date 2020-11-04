@@ -10,7 +10,6 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
-import Constants from "../../../util/Constants";
 import {langString} from "../../../model/MultilingualString";
 
 describe("ParentTermSelector", () => {
@@ -204,10 +203,7 @@ describe("ParentTermSelector", () => {
             return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
                 expect(options.length).toEqual(1);
                 expect(options).toEqual(terms);
-                expect(spy).toHaveBeenCalledWith(terms, [vocabularyIri], {
-                    searchString: "test",
-                    labelLang: Constants.DEFAULT_LANGUAGE
-                });
+                expect(spy).toHaveBeenCalledWith(terms, [vocabularyIri], {searchString: "test"});
             });
         });
 
