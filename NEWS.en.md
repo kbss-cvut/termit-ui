@@ -1,3 +1,16 @@
+##### Version 2.1.0
+- Added support for SKOS altLabel and hiddenLabel.
+- Added support for multilingual term attributes.
+- Implemented validation of term quality in a vocabulary + results visualization.
+- Implemented Docker support.
+
+##### Version 2.0.0
+- UI redesign.
+- Added support for assigning multiple parents to a term.
+- Optimized annotator.
+- Further SKOS-ification of the model.
+- Added read-only no-login view for browsing vocabularies and terms.
+
 ##### Version 1.3.0
 - Implemented support for connecting a term to the source of its definition in a file.
 - Added the possibility to discover terms related via definition or ontological relationships.
