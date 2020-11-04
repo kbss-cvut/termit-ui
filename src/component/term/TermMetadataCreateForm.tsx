@@ -83,7 +83,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             language: this.props.language})
         ).then((data) => {
             this.setState({labelExists: data.status === 200});
-        });
+        }).catch(() => this.setState({labelExists: false}));
     }
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
