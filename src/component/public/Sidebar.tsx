@@ -28,6 +28,7 @@ import {ThunkDispatch} from "../../util/Types";
 import {toggleSidebar} from "../../action/SyncActions";
 import {injectIntl} from "react-intl";
 import {NavLinkRoute, Sidebar as DefaultSidebar, SidebarProps} from "../sidebar/Sidebar";
+import "../sidebar/Sidebar.scss";
 
 const mainNavRoutes: NavLinkRoute[] = [{
     path: Routes.publicVocabularies.path,

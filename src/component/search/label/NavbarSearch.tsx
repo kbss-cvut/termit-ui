@@ -2,7 +2,6 @@ import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
 import {Button, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
-import "./NavbarSearch.scss";
 import SearchResult from "../../../model/SearchResult";
 import {connect} from "react-redux";
 import {updateSearchFilter} from "../../../action/SearchActions";
@@ -16,6 +15,7 @@ import classNames from "classnames";
 import User from "../../../model/User";
 import Authentication from "../../../util/Authentication";
 import {FaTimes} from "react-icons/fa";
+import "./NavbarSearch.scss";
 
 interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
     updateSearchFilter: (searchString: string) => any;
