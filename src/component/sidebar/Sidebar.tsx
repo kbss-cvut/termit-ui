@@ -30,11 +30,11 @@ import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import classNames from "classnames";
 import Constants from "../../util/Constants";
-import "./Sidebar.scss";
 import {ThunkDispatch} from "../../util/Types";
-import UserDropdown from "../misc/UserDropdown";
 import NavbarSearch from "../search/label/NavbarSearch";
 import {toggleSidebar} from "../../action/SyncActions";
+import UserDropdown from "../misc/UserDropdown";
+import "./Sidebar.scss";
 
 export interface SidebarProps extends HasI18n, RouteComponentProps<any> {
     user: User;

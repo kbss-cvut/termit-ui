@@ -5,7 +5,6 @@ import Utils from "../../util/Utils";
 import classNames from "classnames";
 import {Container, Nav, Navbar, NavItem} from "reactstrap";
 import {Breadcrumbs} from "react-breadcrumbs";
-import SearchTypeTabs from "../search/SearchTypeTabs";
 import Messages from "../message/Messages";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import Routes from "../../util/Routes";
@@ -18,13 +17,15 @@ import {injectIntl} from "react-intl";
 import withLoading from "../hoc/withLoading";
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
-import {FaUserSlash} from "react-icons/all";
+import {FaUserSlash} from "react-icons/fa";
 import {Link} from "react-router-dom";
 import VocabularyManagementRoute from "./vocabulary/VocabularyManagementRoute";
+import SearchTypeTabs from "../search/SearchTypeTabs";
 import NavbarSearch from "../search/label/NavbarSearch";
 import SearchTerms from "../search/SearchTerms";
 import SearchVocabularies from "../search/SearchVocabularies";
 import Search from "../search/label/Search";
+import "../MainView.scss";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     sidebarExpanded: boolean;

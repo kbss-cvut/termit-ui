@@ -12,7 +12,6 @@ import {
     Navbar,
 } from "reactstrap";
 import User, {EMPTY_USER} from "../model/User";
-import "./MainView.scss";
 import Routes from "../util/Routes";
 import Footer from "./footer/Footer";
 import {logout} from "../action/ComplexActions";
@@ -23,14 +22,15 @@ import {ThunkDispatch} from "../util/Types";
 import SearchTypeTabs from "./search/SearchTypeTabs";
 import {Breadcrumbs} from "react-breadcrumbs";
 import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
-import Dashboard from "./dashboard/Dashboard";
-import ProfileRoute from "./profile/ProfileRoute";
 import {loadUser} from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
+import Dashboard from "./dashboard/Dashboard";
+import ProfileRoute from "./profile/ProfileRoute";
 import UserDropdown from "./misc/UserDropdown";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
 import Mask from "./misc/Mask";
+import "./MainView.scss";
 
 const AdministrationRoute = React.lazy(() => import("./administration/AdministrationRoute"));
 const ResourceManagementRoute = React.lazy(() => import("./resource/ResourceManagementRoute"));
