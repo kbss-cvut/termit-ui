@@ -8,7 +8,7 @@
 // Creates a vertically aligned version of the navbar
 .navbar-vertical {
     box-shadow: $navbar-vertical-box-shadow;
-    
+
     .navbar {
         border-width: 0 0 1px 0;
         border-style: solid;
@@ -228,12 +228,13 @@
                         padding: $navbar-vertical-nav-link-padding-y $navbar-vertical-nav-link-padding-x;
 
                         &.active {
+                          font-weight: 600;
                             &:before {
                                 top: $nav-link-padding-y;
                                 bottom: $nav-link-padding-y;
                                 left: 0;
                                 right: auto;
-                                border-left: 2px solid $primary;
+                                border-left: 4px solid $info;
                                 border-bottom: 0;
                             }
                         }
