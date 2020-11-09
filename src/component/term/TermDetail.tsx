@@ -171,7 +171,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         }
         return <Badge color={this.setBadgeColor(score)}
                       className="term-quality-badge"
-                      title={(score !== undefined) ? "The score of this term is " + score + "%. Click to see the validation results." : "There is no available score for this term"}
+                      title={(score !== undefined) ? this.props.formatMessage("term.badge.score.tooltip", {score}) : this.props.i18n("term.badge.no-score.tooltip")}
                       onClick={this.onBadgeClick}
         >&nbsp;
         </Badge>;
