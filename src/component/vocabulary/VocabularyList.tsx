@@ -7,9 +7,9 @@ import Vocabulary from "../../model/Vocabulary";
 import {Column, useFilters, UseFiltersColumnProps, useSortBy, UseSortByColumnProps, useTable} from "react-table";
 import {Table} from "reactstrap";
 import "./VocabularyList.scss";
-import {FaSortAlphaDown, FaSortAlphaDownAlt} from "react-icons/fa";
 import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter";
 import VocabularyLink from "./VocabularyLink";
+import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
 
 interface VocabularyListProps extends HasI18n {
     onSelect: (voc: Vocabulary) => void;
@@ -52,22 +52,18 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
         prepareRow,
     } = tableInstance;
 
-
     return <div id="vocabulary-list">
         <Table {...getTableProps()} striped={true} responsive={true}>
             <thead>
             {headerGroups.map(headerGroup => <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => {
                     const col: UseSortByColumnProps<Vocabulary> & UseFiltersColumnProps<Vocabulary> = column as any;
-                    return <th {...column.getHeaderProps([{
-                        className: (column as any).className
-                    }])}>
+                    return <th {...column.getHeaderProps([{className: (column as any).className}])}>
                         {column.render("Header")}
-                        {(column as any).canSort &&
-                        <span {...column.getHeaderProps(col.getSortByToggleProps())}
-                              className="ml-1 sort-icon">{col.isSortedDesc ? <FaSortAlphaDownAlt/> :
-                            <FaSortAlphaDown/>}</span>}
-                        {<div>{col.canFilter ? column.render("Filter") : null}</div>}
+                        {col.canSort &&
+                        <AlphaNumSortToggle sortProps={column.getHeaderProps(col.getSortByToggleProps())}
+                                            desc={col.isSortedDesc} isSorted={col.isSorted}/>}
+                        {col.canFilter && <div>{column.render("Filter")}</div>}
                     </th>
                 })}
             </tr>)}

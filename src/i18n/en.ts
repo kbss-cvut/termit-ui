@@ -519,6 +519,7 @@ export default {
         "tooltip.copied": "Copied!",
 
         "table.filter.text.placeholder": "Search {count} records...",
+        "table.sort.tooltip": "Sort items",
 
         "public.nav.user": "User not logged in. Click to log in.",
         "public.dashboard.title": "Welcome to TermIt!",

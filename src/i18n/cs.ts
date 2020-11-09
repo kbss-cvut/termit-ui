@@ -525,6 +525,7 @@ export default {
         "tooltip.copied": "Zkopírováno!",
 
         "table.filter.text.placeholder": "Hledat v {count, plural, one {# záznamu} few {# záznamech} other {# záznamech}}...",
+        "table.sort.tooltip": "Seřadit záznamy",
 
         "public.nav.user": "Uživatel nepřihlášen. Klikněte pro přihlášení.",
         "public.dashboard.title": "Vítejte v TermIt!",
