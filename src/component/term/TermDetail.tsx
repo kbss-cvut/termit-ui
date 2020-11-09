@@ -169,13 +169,12 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) {
             score = this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri));
         }
-        const emptyString = "  ";
         return <Badge color={this.setBadgeColor(score)}
                       className="term-quality-badge"
-                      title={"The score of this term is " + score + "%. Click to see the validation results."}
+                      title={(score !== undefined) ? "The score of this term is " + score + "%. Click to see the validation results." : "There is no available score for this term"}
                       onClick={this.onBadgeClick}
-        > {emptyString}
-        </Badge>
+        >&nbsp;
+        </Badge>;
     }
 
     public render() {
