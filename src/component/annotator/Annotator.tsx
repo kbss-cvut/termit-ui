@@ -120,7 +120,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     };
 
     public onRemove = (annotationId: string | string[]) => {
-        let dom = [...this.state.internalHtml];
+        const dom = [...this.state.internalHtml];
         let removed = false;
         for (const id of Utils.sanitizeArray(annotationId)) {
             const ann = AnnotationDomHelper.findAnnotation(dom, id, this.state.prefixMap);

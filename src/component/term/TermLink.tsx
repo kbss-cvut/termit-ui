@@ -12,6 +12,7 @@ import Routes from "../../util/Routes";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Authentication from "../../util/Authentication";
 import {getLocalized} from "../../model/MultilingualString";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface TermLinkProps extends HasI18n {
     term: Term | TermInfo;
@@ -35,13 +36,14 @@ export function getTermPath(term: Term | TermInfo, user?: User | null) {
 
 export const TermLink: React.FC<TermLinkProps> = (props) => {
     const {term} = props;
-    const label = getLocalized(term.label);
+    const label = getLocalized(term.label, getShortLocale(props.locale));
     if (!term.vocabulary) {
         // This can happen e.g. when FTS returns a term in the predefined language used for term types
         return <OutgoingLink label={label} iri={term.iri}/>;
     }
     const path = getTermPath(term, props.user);
-    const t = Object.assign(term, {label});
+    // Make a copy of the term with a simple localized label for the AssetLink component
+    const t = Object.assign({}, term, {label});
 
     return <AssetLink id={props.id}
                       asset={t}
