@@ -133,7 +133,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             <Col xl={10} md={8}>
                 <ul id="term-metadata-parentterms" className="term-items">
                     {parents.map(item => <li key={item.iri}>
-                        <TermLink term={item}/>
+                        <TermLink term={item} language={this.props.language}/>
                     </li>)}
                 </ul>
             </Col>
@@ -152,7 +152,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             </Col>
             <Col xl={10} md={8}>
                 <ul id="term-metadata-subterms" className="term-items">{source.map(item => <li key={item.iri}>
-                    <TermLink term={item}/>
+                    <TermLink term={item} language={this.props.language}/>
                 </li>)}
                 </ul>
             </Col>
