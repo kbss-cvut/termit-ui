@@ -94,4 +94,19 @@ describe("TermLink", () => {
                                                            user={EMPTY_USER} {...intlData}/></MemoryRouter>).find(Link);
         expect(link.text()).toEqual(term.label.cs);
     });
+
+    it("uses provided language to render link label instead of current locale", () => {
+        const term = new Term({
+            label: {
+                "en": "Test term",
+                "cs": "Testovaci pojem"
+            },
+            iri: `${testVocabulary.iri}/pojem/localTestFragment`,
+            vocabulary: testVocabulary
+        });
+
+        const link = mountWithIntl(<MemoryRouter><TermLink term={term} language="cs"
+                                                           user={EMPTY_USER} {...intlFunctions()}/></MemoryRouter>).find(Link);
+        expect(link.text()).toEqual(term.label.cs);
+    });
 });

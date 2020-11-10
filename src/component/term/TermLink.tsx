@@ -17,6 +17,7 @@ import {getShortLocale} from "../../util/IntlUtil";
 interface TermLinkProps extends HasI18n {
     term: Term | TermInfo;
     id?: string;
+    language?: string;
 
     user: User;
 }
@@ -35,8 +36,8 @@ export function getTermPath(term: Term | TermInfo, user?: User | null) {
 }
 
 export const TermLink: React.FC<TermLinkProps> = (props) => {
-    const {term} = props;
-    const label = getLocalized(term.label, getShortLocale(props.locale));
+    const {term, id, language} = props;
+    const label = getLocalized(term.label, language ? language : getShortLocale(props.locale));
     if (!term.vocabulary) {
         // This can happen e.g. when FTS returns a term in the predefined language used for term types
         return <OutgoingLink label={label} iri={term.iri}/>;
@@ -45,7 +46,7 @@ export const TermLink: React.FC<TermLinkProps> = (props) => {
     // Make a copy of the term with a simple localized label for the AssetLink component
     const t = Object.assign({}, term, {label});
 
-    return <AssetLink id={props.id}
+    return <AssetLink id={id}
                       asset={t}
                       path={path}
                       tooltip={props.i18n("asset.link.tooltip")}/>
