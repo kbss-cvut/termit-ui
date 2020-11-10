@@ -157,6 +157,7 @@ export default {
         'vocabulary.create.title': 'Create Vocabulary',
         'vocabulary.create.submit': 'Create',
         'vocabulary.create.document.help': 'Optional. If the vocabulary is based on a document (e.g. a law), you can link it here.',
+        "vocabulary.title": "Title",
         'vocabulary.comment': 'Description',
         'vocabulary.summary.title': '{name} - Summary',
         'vocabulary.summary.gotodetail.label': 'View terms in this vocabulary',
@@ -516,6 +517,9 @@ export default {
 
         "tooltip.copy-iri": "Copy IRI",
         "tooltip.copied": "Copied!",
+
+        "table.filter.text.placeholder": "Search {count} records...",
+        "table.sort.tooltip": "Sort items",
 
         "public.nav.user": "User not logged in. Click to log in.",
         "public.dashboard.title": "Welcome to TermIt!",
