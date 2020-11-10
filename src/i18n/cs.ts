@@ -331,6 +331,8 @@ export default {
         "term.metadata.status.help" : "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
         "term.metadata.types.select.placeholder": "Vyberte typ",
         "term.removed.message": "Pojem by odstraněn.",
+        "term.badge.score.tooltip": "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
+        "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
 
         "glossary.title": "Pojmy",
         "glossary.new": "Nový pojem",

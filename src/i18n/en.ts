@@ -326,6 +326,8 @@ export default {
         "term.metadata.status.help" : "Draft term is not ready to be used yet, while Confirmed term is.",
         "term.metadata.types.select.placeholder": "Select type",
         "term.removed.message": "Term successfully removed.",
+        "term.badge.score.tooltip": "The score of this term is {score}%. Click to see the validation results",
+        "term.badge.no-score.tooltip": "There is no available score for this term",
 
         "glossary.title": "Terms",
         "glossary.new": "New Term",
