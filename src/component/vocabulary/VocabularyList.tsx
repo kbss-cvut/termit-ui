@@ -28,12 +28,6 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
         Filter: TextBasedFilter,
         filter: "text",
         Cell: ({row}) => <VocabularyLink vocabulary={row.original}/>
-    }, {
-        Header: i18n("vocabulary.comment"),
-        accessor: "comment",
-        disableFilters: true,
-        disableSortBy: true,
-        className: "d-sm-none d-lg-table-cell"
     }], [i18n]);
     const filterTypes = React.useMemo(() => ({text: textContainsFilter}), []);
     const tableInstance = useTable<Vocabulary>({
@@ -63,7 +57,7 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
                         {col.canSort &&
                         <AlphaNumSortToggle sortProps={column.getHeaderProps(col.getSortByToggleProps())}
                                             desc={col.isSortedDesc} isSorted={col.isSorted}/>}
-                        {col.canFilter && <div>{column.render("Filter")}</div>}
+                        {col.canFilter && <div className="filter-wrapper">{column.render("Filter")}</div>}
                     </th>
                 })}
             </tr>)}
