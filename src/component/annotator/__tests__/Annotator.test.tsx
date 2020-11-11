@@ -204,6 +204,49 @@ describe("Annotator", () => {
             expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(annotation, expect.anything());
         });
 
+        // Bug #1443
+        it("does not remove suggested label occurrence when new term creation is cancelled", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent}
+            />);
+            const annotation = {
+                about: "_:13",
+                content: "infrastruktura",
+                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+                typeof: VocabularyUtils.TERM_OCCURRENCE,
+                score: "1.0"
+            };
+            wrapper.instance().setState({newTermLabelAnnotation: annotation});
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotation);
+            AnnotationDomHelper.removeAnnotation = jest.fn();
+
+            wrapper.instance().onCloseCreate();
+            // Workaround for not.toHaveBeenCalled throwing an error
+            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledTimes(0);
+        });
+
+        it("does not confirmed term label occurrence when new term creation is cancelled", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent}
+            />);
+            const annotation = {
+                about: "_:13",
+                content: "infrastruktura",
+                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+                typeof: VocabularyUtils.TERM_OCCURRENCE,
+                resource: Generator.generateUri()
+            };
+            wrapper.instance().setState({newTermLabelAnnotation: annotation});
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotation);
+            AnnotationDomHelper.removeAnnotation = jest.fn();
+
+            wrapper.instance().onCloseCreate();
+            // Workaround for not.toHaveBeenCalled throwing an error
+            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledTimes(0);
+        });
+
         // Bug #1245
         it("removes created definition annotation when new term creation is cancelled", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}

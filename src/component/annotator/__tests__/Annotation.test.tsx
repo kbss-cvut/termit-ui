@@ -276,7 +276,8 @@ describe("Annotation", () => {
                 about: assignedOccProps.about,
                 property: assignedOccProps.property,
                 typeof: assignedOccProps.typeof,
-                resource: assignedOccProps.resource
+                resource: assignedOccProps.resource,
+                score: assignedOccProps.score
             });
         });
 
