@@ -169,7 +169,8 @@ export class Annotation extends React.Component<AnnotationProps, AnnotationState
             about: this.props.about,
             property: this.props.property,
             resource: this.props.resource,
-            typeof: this.props.typeof
+            typeof: this.props.typeof,
+            score: this.props.score
         };
         this.props.onCreateTerm(this.props.content ? this.props.content : this.props.text, newAnnotation);
     };

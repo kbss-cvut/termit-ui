@@ -186,8 +186,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
     public onCloseCreate = () => {
         const toRemove: string[] = [];
-        if (this.state.newTermLabelAnnotation) {
-            toRemove.push(this.state.newTermLabelAnnotation.about!)
+        if (this.shouldRemoveLabelAnnotation()) {
+            toRemove.push(this.state.newTermLabelAnnotation!.about!)
         }
         if (this.state.newTermDefinitionAnnotation) {
             toRemove.push(this.state.newTermDefinitionAnnotation.about!);
@@ -199,6 +199,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             newTermDefinitionAnnotation: undefined
         });
     };
+
+    private shouldRemoveLabelAnnotation() {
+        const {newTermLabelAnnotation} = this.state;
+        return newTermLabelAnnotation && !newTermLabelAnnotation.score && !newTermLabelAnnotation.resource;
+    }
 
     private onMinimizeTermCreation = () => {
         this.props.publishMessage(new Message({messageId: "annotator.createTerm.selectDefinition.message"}, MessageType.INFO));
