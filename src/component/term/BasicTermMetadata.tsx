@@ -37,7 +37,14 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                            className="bold">{getLocalizedOrDefault(term.definition, "", language)}</Label>
                 </Col>
             </Row>
-            {this.renderDefinitionSource()}
+            <Row>
+                <Col xl={2} md={4}>
+                    <Label className="attribute-label">{this.props.i18n("term.metadata.definitionSource")}</Label>
+                </Col>
+                <Col xl={10} md={8}>
+                    {this.renderDefinitionSource()}
+                </Col>
+            </Row>
             <Row>
                 <Col xl={2} md={4}>
                     <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
@@ -80,14 +87,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         if (!this.props.withDefinitionSource || !defSource) {
             return null;
         }
-        return <Row>
-            <Col xl={2} md={4}>
-                <Label className="attribute-label">{this.props.i18n("term.metadata.definitionSource")}</Label>
-            </Col>
-            <Col xl={10} md={8}>
-                <TermDefinitionSourceLink term={this.props.term}/>
-            </Col>
-        </Row>;
+        return <TermDefinitionSourceLink term={this.props.term}/>
     }
 
     private renderTypes() {
@@ -122,9 +122,6 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
 
     private renderParentTerms() {
         const parents = Utils.sanitizeArray(this.props.term.parentTerms);
-        if (parents.length === 0) {
-            return null;
-        }
         parents.sort(Utils.labelComparator);
         return <Row>
             <Col xl={2} md={4}>
@@ -142,9 +139,6 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
 
     private renderSubTerms() {
         const source = Utils.sanitizeArray(this.props.term.subTerms);
-        if (source.length === 0) {
-            return null;
-        }
         source.sort(termInfoComparator);
         return <Row>
             <Col xl={2} md={4}>

@@ -267,7 +267,7 @@ export default {
         "term.metadata.definitionSource.goto": "Go to source",
         "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding file",
         'term.metadata.comment': 'Comment',
-        "term.metadata.parent": "Parent term",
+        "term.metadata.parent": "Parent terms",
         'term.metadata.subTerms': 'Sub terms',
         'term.metadata.types': 'Type',
         'term.metadata.source': 'Source',
