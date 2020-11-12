@@ -7,23 +7,24 @@ import {Button} from "reactstrap";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../../util/Types";
 import {executeFileTextAnalysis} from "../../../action/AsyncActions";
-import File from "../../../model/File";
 import {publishNotification} from "../../../action/SyncActions";
 import NotificationType from "../../../model/NotificationType";
 import ResourceSelectVocabulary from "../ResourceSelectVocabulary";
 import Vocabulary from "../../../model/Vocabulary";
+import {IRI} from "../../../util/VocabularyUtils";
 
 interface TextAnalysisInvocationButtonProps extends HasI18n, InjectsLoading {
     id?: string;
-    file: File;
-    vocabularyIri?: string;
-    executeTextAnalysis: (file: File, vocabularyIri?: string) => Promise<any>;
+    fileIri: IRI;
+    defaultVocabularyIri?: string;
+    executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) => Promise<any>;
     notifyAnalysisFinish: () => void;
     className?: string
 }
 
 interface TextAnalysisInvocationButtonState {
     showVocabularySelector: boolean;
+
 }
 
 export class TextAnalysisInvocationButton extends React.Component<TextAnalysisInvocationButtonProps, TextAnalysisInvocationButtonState> {
@@ -34,16 +35,16 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
     }
 
     public onClick = () => {
-        if (this.props.file.owner && this.props.file.owner.vocabulary) {
-            this.invokeTextAnalysis(this.props.file);
+        if (this.props.defaultVocabularyIri) {
+            this.invokeTextAnalysis(this.props.fileIri,this.props.defaultVocabularyIri);
         } else {
             this.setState({showVocabularySelector: true});
         }
     };
 
-    private invokeTextAnalysis(file: File, vocabularyIri?: string) {
+    private invokeTextAnalysis(fileIri: IRI, vocabularyIri: string) {
         this.props.loadingOn();
-        this.props.executeTextAnalysis(file, vocabularyIri).then(() => {
+        this.props.executeTextAnalysis(fileIri, vocabularyIri).then(() => {
             this.props.loadingOff();
             this.props.notifyAnalysisFinish();
         });
@@ -54,7 +55,7 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
         if (!vocabulary) {
             return;
         }
-        this.invokeTextAnalysis(this.props.file, vocabulary.iri);
+        this.invokeTextAnalysis(this.props.fileIri, vocabulary.iri);
     };
 
     private closeVocabularySelect = () => {
@@ -64,8 +65,8 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
     public render() {
         const i18n = this.props.i18n;
         return <>
-            <ResourceSelectVocabulary show={this.state.showVocabularySelector} asset={this.props.file}
-                                      defaultVocabularyIri={this.props.vocabularyIri}
+            <ResourceSelectVocabulary show={this.state.showVocabularySelector}
+                                      defaultVocabularyIri={this.props.defaultVocabularyIri}
                                       onCancel={this.closeVocabularySelect} onSubmit={this.onVocabularySelect}/>
             <Button id={this.props.id}
                     size="sm"
@@ -80,7 +81,7 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        executeTextAnalysis: (file: File, vocabularyIri?: string) => dispatch(executeFileTextAnalysis(file, vocabularyIri)),
+        executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) => dispatch(executeFileTextAnalysis(fileIri, vocabularyIri)),
         notifyAnalysisFinish: () => dispatch(publishNotification({source: {type: NotificationType.TEXT_ANALYSIS_FINISHED}}))
     };
 })(injectIntl(withI18n(withInjectableLoading(TextAnalysisInvocationButton))));
