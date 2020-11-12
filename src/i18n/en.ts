@@ -362,7 +362,7 @@ export default {
         'glossary.form.validation.validateLengthMin3': 'Field must be at least 3 characters',
         'glossary.form.validation.validateNotSameAsParent': 'Child option cannot be same as parent option',
 
-        'file.text-analysis.finished.message': "Text analysis of file \"{fileName}\" successfully finished.",
+        'file.text-analysis.finished.message': "Text analysis successfully finished.",
         'file.metadata.startTextAnalysis': 'Start text analysis',
         'file.metadata.startTextAnalysis.text': 'Analyze',
         "file.content.upload.success": "Content of file \"{fileName}\" successfully uploaded.",

@@ -1,6 +1,5 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
-import Asset from "../../model/Asset";
 import {Button, ButtonToolbar, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
@@ -17,7 +16,6 @@ interface ResourceSelectVocabularyOwnProps {
     defaultVocabularyIri?: string;
     onSubmit: (voc: Vocabulary | null) => void;
     onCancel: () => void;
-    asset: Asset;
 }
 
 type ResourceSelectVocabularyProps = PropsConnected & ResourceSelectVocabularyOwnProps & HasI18n;

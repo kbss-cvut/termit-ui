@@ -368,7 +368,7 @@ export default {
         'glossary.form.validation.validateLengthMin3': 'Pole musí mít alespoň 3 znaky',
         'glossary.form.validation.validateNotSameAsParent': 'Potomek nemůže být stejný jako předchůdce',
 
-        'file.text-analysis.finished.message': "Textová analýza souboru \"{fileName}\" úspěšně dokončena.",
+        'file.text-analysis.finished.message': "Textová analýza souboru úspěšně dokončena.",
         'file.metadata.startTextAnalysis': 'Spustit textovou analýzu',
         'file.metadata.startTextAnalysis.text': 'Analyzovat',
         "file.content.upload.success": "Soubor \"{fileName}\" úspěšně nahrán na server.",
