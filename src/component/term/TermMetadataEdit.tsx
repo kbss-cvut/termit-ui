@@ -39,14 +39,23 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.state = Object.assign({labelExists: false, unmappedProperties: props.term.unmappedProperties}, props.term);
     }
 
+    public componentDidUpdate(prevProps: TermMetadataEditProps, prevState: TermMetadataEditState): void {
+        if (this.props.language && (prevProps.language !== this.props.language)) {
+            this.onPrefLabelChange( this.state.label[this.props.language] || '' );
+        }
+    }
+
+    private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.onPrefLabelChange(e.currentTarget.value);
+    };
+
     public onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const change = {};
         change[e.currentTarget.name.substring(e.currentTarget.name.lastIndexOf("-") + 1)] = e.currentTarget.value;
         this.setState(change);
     };
 
-    public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const prefLabel = e.currentTarget.value;
+    public onPrefLabelChange = (prefLabel : string) => {
         const update = {};
         update[this.props.language] = prefLabel;
         this.setState({labelExists: false, label: Object.assign({}, this.state.label, update)});

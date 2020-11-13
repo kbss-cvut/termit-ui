@@ -47,8 +47,17 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         }
     }
 
+    public componentDidUpdate(prevProps: TermMetadataCreateFormProps, prevState: TermMetadataCreateFormState): void {
+        if (this.props.language && (prevProps.language !== this.props.language)) {
+            this.onPrefLabelChange( this.props.termData.label[this.props.language] || '' );
+        }
+    }
+
     private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const label = e.currentTarget.value;
+        this.onPrefLabelChange(e.currentTarget.value);
+    };
+
+    private onPrefLabelChange = (label : string) => {
         const change = Object.assign({}, this.props.termData.label);
         change[this.props.language] = label;
         this.props.onChange({label: change});
