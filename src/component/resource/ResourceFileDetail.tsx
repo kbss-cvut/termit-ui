@@ -54,6 +54,10 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
     }
 
     public componentDidUpdate(prevProps: Readonly<ResourceFileDetailProps>): void {
+        if (this.hasResourceIriChanged(prevProps)) {
+            this.props.loadResource(this.getFileIri());
+            return;
+        }
         if (this.shouldLoadVocabularyIri(prevProps)) {
             const vocabularyIri = this.getVocabularyIri();
             if (vocabularyIri) {
@@ -62,6 +66,10 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
                 this.loadLatestTextAnalysisRecord();
             }
         }
+    }
+
+    private hasResourceIriChanged(prevProps: Readonly<ResourceFileDetailProps>) {
+        return this.props.match.params.name !== prevProps.match.params.name || this.props.location.search !== prevProps.location.search;
     }
 
     private shouldLoadVocabularyIri(prevProps: Readonly<ResourceFileDetailProps>) {
