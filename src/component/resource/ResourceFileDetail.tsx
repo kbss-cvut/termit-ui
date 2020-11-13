@@ -56,6 +56,7 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
     public componentDidUpdate(prevProps: Readonly<ResourceFileDetailProps>): void {
         if (this.hasResourceIriChanged(prevProps)) {
             this.props.loadResource(this.getFileIri());
+            this.setState({vocabularyIri: undefined});
             return;
         }
         if (this.shouldLoadVocabularyIri(prevProps)) {

@@ -267,4 +267,20 @@ describe("ResourceFileDetail", () => {
         wrapper.update();
         expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(newNamespace + resourceName));
     });
+
+    it("sets vocabulary in state to undefined to force its reload when namespace in URL changes", () => {
+        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
+                                                                        loadResource={loadResource}
+                                                                        popRoutingPayload={popRoutingPayload}
+                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        expect(wrapper.state().vocabularyIri).toBeDefined();
+        const newResourceName = "different-resource";
+        const newMatch = Object.assign({}, match, {
+            url: "http://localhost:3000/" + location.pathname + location.search,
+            params: {name: newResourceName}
+        });
+        wrapper.setProps({match: newMatch});
+        wrapper.update();
+        expect(wrapper.state().vocabularyIri).not.toBeDefined();
+    });
 });
