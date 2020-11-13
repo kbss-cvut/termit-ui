@@ -37,14 +37,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                            className="bold">{getLocalizedOrDefault(term.definition, "", language)}</Label>
                 </Col>
             </Row>
-            <Row>
-                <Col xl={2} md={4}>
-                    <Label className="attribute-label">{this.props.i18n("term.metadata.definitionSource")}</Label>
-                </Col>
-                <Col xl={10} md={8}>
-                    {this.renderDefinitionSource()}
-                </Col>
-            </Row>
+            {this.renderDefinitionSource()}
             <Row>
                 <Col xl={2} md={4}>
                     <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
@@ -83,11 +76,18 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
     }
 
     private renderDefinitionSource() {
-        const defSource = this.props.term.definitionSource;
-        if (!this.props.withDefinitionSource || !defSource) {
+        if (!this.props.withDefinitionSource) {
             return null;
         }
-        return <TermDefinitionSourceLink term={this.props.term}/>
+        const defSource = this.props.term.definitionSource;
+        return <Row>
+            <Col xl={2} md={4}>
+                <Label className="attribute-label">{this.props.i18n("term.metadata.definitionSource")}</Label>
+            </Col>
+            <Col xl={10} md={8}>
+                {defSource && <TermDefinitionSourceLink term={this.props.term}/>}
+            </Col>
+        </Row>;
     }
 
     private renderTypes() {
