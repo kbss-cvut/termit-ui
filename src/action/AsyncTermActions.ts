@@ -4,7 +4,7 @@
  *
  * This file contains asynchronous actions related to term management in the frontend.
  */
-import VocabularyUtils from "../util/VocabularyUtils";
+import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import {ThunkDispatch} from "../util/Types";
 import {asyncActionFailure, asyncActionRequest, asyncActionSuccess, publishMessage} from "./SyncActions";
@@ -15,6 +15,7 @@ import Constants from "../util/Constants";
 import TermOccurrence from "../model/TermOccurrence";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
+import TermStatus from "../model/TermStatus";
 
 export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
     const termIri = VocabularyUtils.create(term.iri);
@@ -37,6 +38,20 @@ export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
                     }, MessageType.ERROR)));
                 }
                 return Promise.reject();
+            });
+    };
+}
+
+export function setTermStatus(termIri: IRI, status: TermStatus) {
+    const action = {type: ActionType.SET_TERM_STATUS};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action));
+        return Ajax.put(`${Constants.API_PREFIX}/terms/${termIri.fragment}/status`,
+            param("namespace", termIri.namespace).content(status).contentType(Constants.TEXT_MIME_TYPE))
+            .then(() => dispatch(asyncActionSuccess(action)))
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return Promise.reject(error.message);
             });
     };
 }

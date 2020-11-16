@@ -15,12 +15,19 @@ import Terms from "./Terms";
 import Comments from "../comment/Comments";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import DraftToggle from "./DraftToggle";
+import {connect} from "react-redux";
+import {ThunkDispatch} from "../../util/Types";
+import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import TermStatus from "../../model/TermStatus";
+import {setTermStatus} from "../../action/AsyncTermActions";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
     vocabulary: Vocabulary;
     language: string;
     selectLanguage: (lang: string) => void;
+
+    setStatus: (termIri: IRI, status: TermStatus) => Promise<any>;
 }
 
 interface TermMetadataState {
@@ -66,7 +73,9 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     };
 
     public onToggleDraft = () => {
-        // TODO
+        const {term, setStatus} = this.props;
+        const status = term.draft === undefined || term.draft ? TermStatus.CONFIRMED : TermStatus.DRAFT;
+        setStatus(VocabularyUtils.create(term.iri), status).then(() => term.draft = !term.draft);
     };
 
     public render() {
@@ -128,4 +137,8 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     }
 }
 
-export default injectIntl(withI18n(withRouter(TermMetadata)));
+export default connect(undefined, (dispatch: ThunkDispatch) => {
+    return {
+        setStatus: (iri: IRI, status: TermStatus) => dispatch(setTermStatus(iri, status))
+    };
+})(injectIntl(withI18n(withRouter(TermMetadata))));
