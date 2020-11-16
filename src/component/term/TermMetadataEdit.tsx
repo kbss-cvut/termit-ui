@@ -13,7 +13,6 @@ import TermTypesEdit from "./TermTypesEdit";
 import Utils from "../../util/Utils";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
-import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
@@ -99,10 +98,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState({parentTerms});
     };
 
-    public onStatusChange = () => {
-        this.setState({draft: !this.state.draft});
-    }
-
     private onPropertiesChange = (update: Map<string, string[]>) => {
         this.setState({unmappedProperties: update});
     };
@@ -126,7 +121,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public render() {
         const {i18n, language} = this.props;
-        const t = this.onStatusChange.bind(this);
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         return <>
@@ -187,13 +181,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             <Col xs={12}>
                                 <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
                                                onChange={this.onTypesChange}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <DraftToggle id="edit-term-status"
-                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
-                                             onToggle={t}/>
                             </Col>
                         </Row>
                         <Row>

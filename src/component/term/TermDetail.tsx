@@ -127,7 +127,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         if (!this.state.edit) {
             actions.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
                                  key="term-detail-edit"
-                                 title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
+                                 title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>);
         }
         actions.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
                              title={this.props.i18n("asset.remove.tooltip")}
