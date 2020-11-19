@@ -267,7 +267,7 @@ export default {
         "term.metadata.definitionSource.goto": "Go to source",
         "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding file",
         'term.metadata.comment': 'Comment',
-        "term.metadata.parent": "Parent term",
+        "term.metadata.parent": "Parent terms",
         'term.metadata.subTerms': 'Sub terms',
         'term.metadata.types': 'Type',
         'term.metadata.source': 'Source',
@@ -362,7 +362,7 @@ export default {
         'glossary.form.validation.validateLengthMin3': 'Field must be at least 3 characters',
         'glossary.form.validation.validateNotSameAsParent': 'Child option cannot be same as parent option',
 
-        'file.text-analysis.finished.message': "Text analysis of file \"{fileName}\" successfully finished.",
+        'file.text-analysis.finished.message': "Text analysis successfully finished.",
         'file.metadata.startTextAnalysis': 'Start text analysis',
         'file.metadata.startTextAnalysis.text': 'Analyze',
         "file.content.upload.success": "Content of file \"{fileName}\" successfully uploaded.",

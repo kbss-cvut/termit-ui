@@ -107,7 +107,7 @@ export class FileSummary extends ResourceSummary<FileSummaryProps, FileSummarySt
                 <TextAnalysisInvocationButton id="resource-file-analyze"
                                               key="resource-file-analyze"
                                               className="ml-1"
-                                              file={this.props.resource}/>
+                                              fileIri={VocabularyUtils.create(this.props.resource.iri)}/>
             ];
         }
         return [];

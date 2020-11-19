@@ -272,7 +272,7 @@ export default {
         "term.metadata.definitionSource.goto": "Zobrazit zdroj",
         "term.metadata.definitionSource.goto.tooltip": "Zobrazit zdroj definice přímo v příslušném souboru",
         'term.metadata.comment': 'Komentář',
-        "term.metadata.parent": "Nadřazený pojem",
+        "term.metadata.parent": "Nadřazené pojmy",
         'term.metadata.subTerms': 'Podřazené pojmy',
         'term.metadata.types': 'Typ pojmu',
         'term.metadata.status': 'Stav pojmu',
@@ -368,7 +368,7 @@ export default {
         'glossary.form.validation.validateLengthMin3': 'Pole musí mít alespoň 3 znaky',
         'glossary.form.validation.validateNotSameAsParent': 'Potomek nemůže být stejný jako předchůdce',
 
-        'file.text-analysis.finished.message': "Textová analýza souboru \"{fileName}\" úspěšně dokončena.",
+        'file.text-analysis.finished.message': "Textová analýza souboru úspěšně dokončena.",
         'file.metadata.startTextAnalysis': 'Spustit textovou analýzu',
         'file.metadata.startTextAnalysis.text': 'Analyzovat',
         "file.content.upload.success": "Soubor \"{fileName}\" úspěšně nahrán na server.",

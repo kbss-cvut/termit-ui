@@ -34,7 +34,7 @@ export const TermDefinitionSourceLink: React.FC<TermDefinitionSourceLinkProps> =
 
     return <>
         <ResourceIriLink id="term-metadata-definitionSource" iri={defSource!.target.source.iri!}/>
-        <Button id="term-metadata-definitionSource-goto" color="primary" outline={true} size="sm"
+        <Button id="term-metadata-definitionSource-goto" color="primary" outline={true} size="sm" className="ml-1"
                 onClick={navigateToDefinitionSource}
                 title={props.i18n("term.metadata.definitionSource.goto.tooltip")}>
             <GoFileSymlinkFile/>&nbsp;
