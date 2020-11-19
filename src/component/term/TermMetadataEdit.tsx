@@ -29,14 +29,17 @@ interface TermMetadataEditProps extends HasI18n {
 }
 
 interface TermMetadataEditState extends TermData {
-    labelExists: boolean;
+    labelExist: Map<string, boolean>;
     unmappedProperties: Map<string, string[]>;
 }
 
 export class TermMetadataEdit extends React.Component<TermMetadataEditProps, TermMetadataEditState> {
     constructor(props: TermMetadataEditProps) {
         super(props);
-        this.state = Object.assign({labelExists: false, unmappedProperties: props.term.unmappedProperties}, props.term);
+        this.state = Object.assign({
+            labelExist: new Map<string, boolean>(),
+            unmappedProperties: props.term.unmappedProperties
+        }, props.term);
     }
 
     public componentDidUpdate(prevProps: TermMetadataEditProps, prevState: TermMetadataEditState): void {
@@ -58,8 +61,15 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     public onPrefLabelChange = (prefLabel : string) => {
         const update = {};
         update[this.props.language] = prefLabel;
-        this.setState({labelExists: false, label: Object.assign({}, this.state.label, update)});
-        if (prefLabel.toLowerCase() === getLocalized(this.props.term.label).toLowerCase()) {
+        const updateLabelExists = {};
+        updateLabelExists[this.props.language] = false;
+        this.setState({
+            label: Object.assign({}, this.state.label, update),
+            labelExist: Object.assign({}, this.state.labelExist, updateLabelExists)
+        });
+
+        const prefLabelCurrent = getLocalized(this.props.term.label, this.props.language).toLowerCase();
+        if (prefLabel.toLowerCase() === prefLabelCurrent) {
             return;
         }
         const vocabIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);
@@ -69,9 +79,12 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                 prefLabel,
                 language: this.props.language
             })
-        ).then((data) => {
-            this.setState({labelExists: data.status === 200});
-        }).catch(() => this.setState({labelExists: false}));
+        ).then((response) => {
+            updateLabelExists[this.props.language] = true;
+            this.setState({
+                labelExist: Object.assign({}, this.state.labelExist, updateLabelExists)
+            });
+        });
     };
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,14 +130,25 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     };
 
     public onSave = () => {
-        const {labelExists, unmappedProperties, ...data} = this.state;
+        const {labelExist, unmappedProperties, ...data} = this.state;
         const t = new Term(data);
         t.unmappedProperties = this.state.unmappedProperties;
         this.props.save(t);
     };
 
     private isValid(): boolean {
-        return isTermValid(this.state, this.props.language) && !this.state.labelExists;
+        return isTermValid(this.state, this.props.language) && !this.labelInSomeLanguageExists();
+    }
+
+    private labelInSomeLanguageExists() : boolean {
+        const le = this.state.labelExist;
+        const langs = Object.keys(le);
+        for( const lang of langs ) {
+            if ( le[lang] ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public removeTranslation = (lang: string) => {
@@ -138,6 +162,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const t = this.onStatusChange.bind(this);
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
+        const labelInLanguageExists = this.state.labelExist[language];
         return <>
             <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
                                   onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
@@ -149,8 +174,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                 <CustomInput name="edit-term-label"
                                              value={getLocalizedOrDefault(this.state.label, "", language)}
                                              onChange={this.onLabelChange}
-                                             label={i18n("asset.label")} invalid={this.state.labelExists}
-                                             invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
+                                             label={i18n("asset.label")} invalid={labelInLanguageExists}
+                                             invalidMessage={labelInLanguageExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
                                              help={i18n("term.label.help")}/>
                             </Col>
                         </Row>
