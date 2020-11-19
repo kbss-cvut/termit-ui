@@ -6,11 +6,9 @@ import {TermAssignments} from "../TermAssignments";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {ReactWrapper, shallow} from "enzyme";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import {Badge} from "reactstrap";
 import {MemoryRouter} from "react-router";
 import {ResourceLink} from "../../resource/ResourceLink";
-import {GoCheck} from "react-icons/go";
-import {TermAssignments as AssignmentInfo, TermOccurrences} from "../../../model/TermAssignments";
+import {TermAssignments as AssignmentInfo} from "../../../model/TermAssignments";
 
 describe("TermAssignments", () => {
 
@@ -116,56 +114,21 @@ describe("TermAssignments", () => {
         });
     });
 
-    it("renders resource with badge showing number of suggested occurrences of term in file", () => {
-        const fileIri = Generator.generateUri();
-        const fileName = "Test file";
-        const occurrences: TermOccurrences[] = [{
-            term: {iri: term.iri},
-            resource: {iri: fileIri},
-            label: fileName,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE, VocabularyUtils.SUGGESTED_TERM_OCCURRENCE],
-            count: 2
-        }];
-        loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve(occurrences));
-        mounted = mountWithIntl(<MemoryRouter><TermAssignments term={term} onLoad={onAssignmentsLoad}
-                                                               loadTermAssignments={loadTermAssignments} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
-        return Promise.resolve().then(() => {
-            mounted.update();
-            const badge = mounted.find(Badge);
-            expect(badge.exists()).toBeTruthy();
-            expect(badge.text()).toEqual("2");
-        });
-    });
-
-    it("renders term assignments, term occurrences and suggested term occurrences for the same resource correctly", () => {
+    it("renders term assignments for the same resource correctly", () => {
         const fileIri = Generator.generateUri();
         const fileName = "Test file";
         const occurrences = [{
             term: {iri: term.iri},
             resource: {iri: fileIri},
             label: fileName,
-            count: 2,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE]
-        }, {
-            term: {iri: term.iri},
-            resource: {iri: fileIri},
-            label: fileName,
             types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }, {
-            term: {iri: term.iri},
-            resource: {iri: fileIri},
-            label: fileName,
-            count: 3,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE, VocabularyUtils.SUGGESTED_TERM_OCCURRENCE]
         }];
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve(occurrences));
         mounted = mountWithIntl(<MemoryRouter><TermAssignments term={term} onLoad={onAssignmentsLoad}
                                                                loadTermAssignments={loadTermAssignments} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
         return Promise.resolve().then(() => {
             mounted.update();
-            const checks = mounted.find(GoCheck);
-            expect(checks.length).toEqual(2);
-            const badges = mounted.find(Badge);
+            const badges = mounted.find(ResourceLink);
             expect(badges.length).toEqual(1);
         });
     });
