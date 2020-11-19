@@ -5,17 +5,15 @@ import Term from "../../model/Term";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import {loadTermAssignmentsInfo} from "../../action/AsyncActions";
-import {Badge, Table} from "reactstrap";
+import {Table} from "reactstrap";
 import TermItState from "../../model/TermItState";
 import IntlData from "../../model/IntlData";
 import "./TermAssignments.scss";
 import Resource, {ResourceData} from "../../model/Resource";
 import ResourceLink from "../resource/ResourceLink";
-import {GoCheck, GoX} from "react-icons/go";
-import {TermAssignments as AssignmentInfo, TermOccurrences} from "../../model/TermAssignments";
+import {TermAssignments as AssignmentInfo} from "../../model/TermAssignments";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Utils from "../../util/Utils";
-import InfoIcon from "../misc/InfoIcon";
 
 interface TermAssignmentsOwnProps {
     term: Term;
@@ -27,7 +25,7 @@ interface StoreDispatchProps {
 }
 
 interface TermAssignmentsState {
-    assignments: AssignmentInfo[];
+    resources: ResourceData[];
 }
 
 type TermAssignmentsProps = TermAssignmentsOwnProps & HasI18n & StoreDispatchProps;
@@ -44,48 +42,45 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
     constructor(props: TermAssignmentsProps) {
         super(props);
         this.state = {
-            assignments: []
+            resources: []
         };
     }
 
     public componentDidMount(): void {
-        this.props.loadTermAssignments(this.props.term).then((assignments: AssignmentInfo[]) => this.setAssignments(assignments));
+        this.loadAssignments();
     }
 
     public componentDidUpdate(prevProps: Readonly<TermAssignmentsProps>): void {
         if (this.props.term.iri !== prevProps.term.iri) {
-            this.props.loadTermAssignments(this.props.term).then((assignments: AssignmentInfo[]) => this.setAssignments(assignments));
+            this.loadAssignments();
         }
     }
 
-    private setAssignments = (assignments: AssignmentInfo[]) => {
-        this.setState({assignments});
-        this.props.onLoad(new Set(assignments.map(a => a.resource.iri!)).size);
-    };
+    private loadAssignments() {
+        this.props.loadTermAssignments(this.props.term)
+            .then((assignments: AssignmentInfo[]) => {
+                    const resources = assignments
+                        .filter(v => !isSuggestedOccurrence(v))
+                        .map(v => ({
+                            iri: v.resource.iri!,
+                            label: v.label
+                        }))
+                        .filter((item, index, array) =>
+                            array.map(c => c.iri).indexOf(item.iri) === index);
+                    this.setState({resources});
+                    this.props.onLoad(resources.map(a => a.iri!).length);
+                }
+            );
+    }
 
     public render() {
         const i18n = this.props.i18n;
-        if (this.state.assignments.length === 0) {
+        if (this.state.resources.length === 0) {
             return <div
                 className="additional-metadata-container italics">{i18n("term.metadata.assignments.empty")}</div>;
         }
         return <div className="additional-metadata-container">
             <Table borderless={true}>
-                <thead>
-                <tr>
-                    <th className="col-xs-9">{i18n("type.resource")}</th>
-                    <th className="col-xs-1 text-center">
-                        {i18n("term.metadata.assignments.assignment")}
-                        <InfoIcon text={i18n("term.metadata.assignments.assignment.help")}
-                                  id="term-metadata-assignments-assignment-help" className="ml-1"/>
-                    </th>
-                    <th className="col-xs-1 text-center">
-                        {i18n("term.metadata.assignments.suggestedOccurrence")}
-                        <InfoIcon text={i18n("term.metadata.assignments.suggestedOccurrence.help")}
-                                  id="term-metadata-assignments-suggestedOccurrence-help" className="ml-1"/>
-                    </th>
-                </tr>
-                </thead>
                 <tbody>
                 {this.renderAssignments()}
                 </tbody>
@@ -94,64 +89,17 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
     }
 
     private renderAssignments() {
-        const assignmentsPerResource = this.mapAssignments();
+        const assignmentsPerResource = this.state.resources;
         const result: JSX.Element[] = [];
-        assignmentsPerResource.forEach((v, k) => {
-            result.push(<tr key={k}>
-                <td>
-                    <ResourceLink resource={new Resource(v.resource)}/>
-                </td>
-                <td className="text-center">
-                    {v.assignmentCount > 0 ? <span
-                            title={this.props.i18n("term.metadata.assignments.assignment.assigned")}><GoCheck/></span> :
-                        <span
-                            title={this.props.i18n("term.metadata.assignments.assignment.not.assigned")}><GoX/></span>}
-                </td>
-                <td className="text-center">
-                    {this.renderCheckWithCount(v.suggestedOccurrenceCount)}
-                </td>
-            </tr>);
-        });
+        assignmentsPerResource
+            .forEach((v, k) => {
+                    result.push(<tr key={k}>
+                        <td>
+                            <ResourceLink resource={new Resource(v)}/>
+                        </td>
+                    </tr>);
+            });
         return result;
-    }
-
-    private mapAssignments() {
-        const assignmentsPerResource = new Map<string, { resource: ResourceData, assignmentCount: number, suggestedOccurrenceCount: number }>();
-        this.state.assignments.forEach(ass => {
-            const resIri = ass.resource.iri!;
-            let item;
-            if (assignmentsPerResource.has(resIri)) {
-                item = assignmentsPerResource.get(resIri)!;
-            } else {
-                item = {
-                    resource: {
-                        iri: resIri,
-                        label: ass.label
-                    },
-                    assignmentCount: 0,
-                    suggestedOccurrenceCount: 0
-                };
-            }
-                if (isSuggestedOccurrence(ass)) {
-                    item.suggestedOccurrenceCount = (ass as TermOccurrences).count;
-            } else {
-                item.assignmentCount = 1;
-            }
-            assignmentsPerResource.set(resIri, item);
-        });
-        return assignmentsPerResource;
-    }
-
-    private renderCheckWithCount(count: number) {
-        if (count > 0) {
-            return <>
-                <GoCheck/>&nbsp;
-                <Badge color="secondary" title={this.props.formatMessage("term.metadata.assignments.count.tooltip", {
-                    count
-                })}>{count}</Badge>
-            </>;
-        }
-        return <span title={this.props.i18n("term.metadata.assignments.count.zero.tooltip")}><GoX/></span>;
     }
 }
 
