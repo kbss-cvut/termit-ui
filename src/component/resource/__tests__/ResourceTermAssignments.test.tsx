@@ -82,30 +82,6 @@ describe("ResourceTermAssignments", () => {
         });
     });
 
-    it("renders suggested term occurrences", () => {
-        const assignments = [{
-            term: {
-                iri: Generator.generateUri()
-            },
-            label: "Test term",
-            resource: file,
-            vocabulary: {
-                iri: Generator.generateUri()
-            },
-            count: 1,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE, VocabularyUtils.SUGGESTED_TERM_OCCURRENCE]
-        }];
-        onLoadAssignments = jest.fn().mockImplementation(() => Promise.resolve(assignments));
-        const wrapper = mountWithIntl(<MemoryRouter><ResourceTermAssignments resource={file} notifications={[]}
-                                                                             consumeNotification={consumeNotification}
-                                                                             loadTermAssignments={onLoadAssignments} {...intlFunctions()}/></MemoryRouter>);
-        return Promise.resolve().then(() => {
-            wrapper.update();
-            expect(wrapper.find(TermLink).length).toEqual(1);
-            expect(wrapper.find("span.m-term-occurrence-suggested").length).toEqual(1);
-        });
-    });
-
     it("reloads assignments when text analysis finished notification is received", () => {
         const wrapper = shallow<ResourceTermAssignments>(<ResourceTermAssignments resource={file} notifications={[]}
                                                                                   consumeNotification={consumeNotification}
