@@ -51,6 +51,18 @@ describe("Term tests", () => {
             expect(result.parent).toEqual(termData.parentTerms[0].iri);
         });
 
+        it("sets draft to true when draft attribute is undefined in term data", () => {
+            delete termData.draft;
+            const result = new Term(termData);
+            expect(result.draft).toBeTruthy();
+        });
+
+        it("sets draft to provided value when it is defined", () => {
+            termData.draft = false;
+            const result = new Term(termData);
+            expect(result.draft).toEqual(termData.draft);
+        });
+
         it("sets parent to first parent with same vocabulary", () => {
             termData.vocabulary = {iri: Generator.generateUri()};
             termData.parentTerms = [{

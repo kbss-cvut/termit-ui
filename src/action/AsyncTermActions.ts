@@ -7,7 +7,13 @@
 import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import {ThunkDispatch} from "../util/Types";
-import {asyncActionFailure, asyncActionRequest, asyncActionSuccess, publishMessage} from "./SyncActions";
+import {
+    asyncActionFailure,
+    asyncActionRequest,
+    asyncActionSuccess,
+    asyncActionSuccessWithPayload,
+    publishMessage
+} from "./SyncActions";
 import Ajax, {param} from "../util/Ajax";
 import Term from "../model/Term";
 import {ErrorData} from "../model/ErrorInfo";
@@ -48,10 +54,7 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
         dispatch(asyncActionRequest(action));
         return Ajax.put(`${Constants.API_PREFIX}/terms/${termIri.fragment}/status`,
             param("namespace", termIri.namespace).content(status).contentType(Constants.TEXT_MIME_TYPE))
-            .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => {
-                dispatch(asyncActionFailure(action, error));
-                return Promise.reject(error.message);
-            });
+            .then(() => dispatch(asyncActionSuccessWithPayload(action, status)))
+            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
     };
 }

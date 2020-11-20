@@ -12,6 +12,7 @@ import ActionType from "../ActionType";
 import MessageType from "../../model/MessageType";
 import {langString} from "../../model/MultilingualString";
 import TermStatus from "../../model/TermStatus";
+import AsyncActionStatus from "../AsyncActionStatus";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -97,9 +98,15 @@ describe("AsyncTermActions", () => {
             });
         });
 
-        it("returns rejected promise when term status update request fails", () => {
-            Ajax.put = jest.fn().mockRejectedValue({status: 409, message: "Cannot update status."});
-            return expect((store.dispatch as ThunkDispatch)(setTermStatus(termIri, TermStatus.DRAFT))).rejects.toBeDefined();
+        it("publishes success action with new status as payload on success", () => {
+            Ajax.put = jest.fn().mockResolvedValue(null);
+            const status = TermStatus.CONFIRMED;
+            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermStatus(termIri, status))).then(() => {
+                expect(Ajax.put).toHaveBeenCalled();
+                const successAction = store.getActions().find(a => a.type === ActionType.SET_TERM_STATUS && a.status === AsyncActionStatus.SUCCESS);
+                expect(successAction).toBeDefined();
+                expect(successAction.payload).toEqual(status);
+            });
         });
     });
 });

@@ -42,6 +42,7 @@ import Routes from "../../util/Routes";
 import {langString} from "../../model/MultilingualString";
 import {Configuration} from "../../model/Configuration";
 import Workspace from "../../model/Workspace";
+import TermStatus from "../../model/TermStatus";
 
 function stateToPlainObject(state: TermItState): TermItState {
     return {
@@ -345,6 +346,16 @@ describe("Reducers", () => {
                 .toEqual(Object.assign({}, initialState, {selectedTerm: new Term(term)}));
             expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(null)))
                 .toEqual(Object.assign({}, initialState, {selectedTerm: null}));
+        });
+
+        it("updates selected term draft status on successful status change action completion", () => {
+            initialState.selectedTerm = new Term({
+                iri: Generator.generateUri(),
+                label: langString("test term")
+            });
+            const resultTerm = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.SET_TERM_STATUS}, TermStatus.CONFIRMED)).selectedTerm!;
+            expect(resultTerm.draft).toBeDefined();
+            expect(resultTerm.draft).toBeFalsy();
         });
     });
 

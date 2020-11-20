@@ -33,6 +33,7 @@ import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "../model/Configuration";
 import ValidationResult from "../model/ValidationResult";
 import Workspace from "../model/Workspace";
+import TermStatus from "../model/TermStatus";
 
 /**
  * Handles changes to the currently logged in user.
@@ -175,13 +176,16 @@ function vocabularies(state: { [key: string]: Vocabulary } | any = {}, action: A
     }
 }
 
-function selectedTerm(state: Term | null = null, action: SelectingTermsAction | AsyncActionSuccess<Term>) {
+function selectedTerm(state: Term | null = null, action: SelectingTermsAction | AsyncActionSuccess<Term | TermStatus>) {
     switch (action.type) {
         case ActionType.SELECT_VOCABULARY_TERM:
             return (action as SelectingTermsAction).selectedTerms;
         case ActionType.LOAD_TERM:
             const aa = action as AsyncActionSuccess<Term>;
             return aa.status === AsyncActionStatus.SUCCESS ? aa.payload : state;
+        case ActionType.SET_TERM_STATUS:
+            const sts = action as AsyncActionSuccess<TermStatus>;
+            return sts.status === AsyncActionStatus.SUCCESS ? new Term(Object.assign({}, state, {draft: sts.payload === TermStatus.DRAFT})) : state;
         case ActionType.LOGOUT:
             return null;
         default:
@@ -469,8 +473,8 @@ function configuration(state: Configuration = DEFAULT_CONFIGURATION, action: Asy
     return state;
 }
 
-function validationResults(state: { [vocabularyIri: string] : ValidationResult[] } = {},
-                           action: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}>) {
+function validationResults(state: { [vocabularyIri: string]: ValidationResult[] } = {},
+                           action: AsyncActionSuccess<{ [vocabularyIri: string]: ValidationResult[] }>) {
     switch (action.type) {
         case ActionType.FETCH_VALIDATION_RESULTS:
             if (action.status === AsyncActionStatus.SUCCESS) {

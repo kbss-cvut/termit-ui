@@ -27,7 +27,7 @@ interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     language: string;
     selectLanguage: (lang: string) => void;
 
-    setStatus: (termIri: IRI, status: TermStatus) => Promise<any>;
+    setStatus: (termIri: IRI, status: TermStatus) => void;
 }
 
 interface TermMetadataState {
@@ -75,7 +75,7 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     public onToggleDraft = () => {
         const {term, setStatus} = this.props;
         const status = term.draft === undefined || term.draft ? TermStatus.CONFIRMED : TermStatus.DRAFT;
-        setStatus(VocabularyUtils.create(term.iri), status).then(() => term.draft = !term.draft);
+        setStatus(VocabularyUtils.create(term.iri), status);
     };
 
     public render() {
