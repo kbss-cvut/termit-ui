@@ -119,6 +119,16 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState(copy);
     };
 
+    private draftRelatedLabelEditProps() {
+        if (this.state.draft === false) {
+            return {
+                disabled: true,
+                title: this.props.i18n("term.label.confirmed.disabled")
+            };
+        }
+        return undefined;
+    }
+
     public render() {
         const {i18n, language} = this.props;
         const sources = this.state.sources;
@@ -136,7 +146,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                              onChange={this.onLabelChange}
                                              label={i18n("asset.label")} invalid={this.state.labelExists}
                                              invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
-                                             help={i18n("term.label.help")}/>
+                                             help={i18n("term.label.help")}
+                                             {...this.draftRelatedLabelEditProps()}/>
                             </Col>
                         </Row>
                         <Row>
