@@ -1,12 +1,11 @@
-FROM node:latest as react-build
+FROM node:14 as react-build
 ARG SERVER_URL=http://localhost:8080/termit
-RUN test -n "$SERVER_URL"
+
 WORKDIR /frontend
 COPY . .
-RUN echo "{ \"url\": \"$SERVER_URL\" }" > config/server.json
-RUN npm install --silent
+RUN npm install
 ENV PATH $WORKDIR/node_modules/.bin:$PATH
-RUN npm run-script build-prod
+RUN serverUrl=${SERVER_URL} deployment=docker npm run build-prod
 
 FROM nginx:alpine
 COPY --from=react-build /frontend/build /usr/share/nginx/html
