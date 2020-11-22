@@ -10,11 +10,11 @@ import {injectIntl} from "react-intl";
 import TermMetadataCreateForm from "./TermMetadataCreateForm";
 import AssetFactory from "../../util/AssetFactory";
 import HeaderWithActions from "../misc/HeaderWithActions";
-import {getLocalized} from "../../model/MultilingualString";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
+import {isTermValid} from "./TermValidationUtils";
 
 interface TermMetadataCreateOwnProps {
     onCreate: (term: Term, newTerm: boolean) => void;
@@ -29,18 +29,19 @@ declare type TermMetadataCreateProps =
 
 interface CreateVocabularyTermState extends TermData {
     language: string;
-}
-
-export function isTermValid<T extends TermData>(data: T, locale?: string) {
-    const localizedLabel = getLocalized(data.label, locale);
-    return localizedLabel !== undefined && localizedLabel.trim().length > 0 && data.iri !== undefined && data.iri.trim().length > 0;
+    labelExist: { [lang: string]: boolean };
 }
 
 export class TermMetadataCreate extends React.Component<TermMetadataCreateProps, CreateVocabularyTermState> {
 
     constructor(props: TermMetadataCreateProps) {
         super(props);
-        this.state = Object.assign(AssetFactory.createEmptyTermData(props.language), {language: props.language});
+        this.state = Object.assign(
+            AssetFactory.createEmptyTermData(props.language),
+            {
+                language: props.language,
+                labelExist: {}
+            });
     }
 
     private cancelCreation = () => {
@@ -77,11 +78,13 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
     public onRemoveTranslation = (language: string) => {
         const copy = _.cloneDeep(this.state);
         Term.removeTranslation(copy, language);
+        delete copy.labelExist[language];
         this.setState(copy);
     };
 
     public render() {
         const i18n = this.props.i18n;
+        const invalid = !isTermValid(this.state,this.state.labelExist);
 
         return <>
             <HeaderWithActions title={i18n("glossary.form.header")}/>
@@ -90,15 +93,16 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
             <Card id="create-term">
                 <CardBody>
                     <TermMetadataCreateForm onChange={this.onChange} termData={this.state}
-                                            language={this.state.language} vocabularyIri={this.props.vocabularyIri}/>
+                                            language={this.state.language} vocabularyIri={this.props.vocabularyIri}
+                                            labelExist={this.state.labelExist}/>
                     <Row>
                         <Col md={12}>
                             <ButtonToolbar className="d-flex justify-content-center mt-4">
                                 <Button id="create-term-submit" color="success" onClick={this.onSave} size="sm"
-                                        disabled={!isTermValid(this.state)}>{i18n("glossary.form.button.submit")}</Button>
+                                        disabled={invalid}>{i18n("glossary.form.button.submit")}</Button>
                                 <Button id="create-term-submit-and-go-to-new-term" color="success"
                                         onClick={this.onSaveAndGoToNewTerm} size="sm"
-                                        disabled={!isTermValid(this.state, this.props.locale)}>{i18n("glossary.form.button.submitAndGoToNewTerm")}</Button>
+                                        disabled={invalid}>{i18n("glossary.form.button.submitAndGoToNewTerm")}</Button>
                                 <Button id="create-term-cancel" color="outline-dark" size="sm"
                                         onClick={this.cancelCreation}>{i18n("glossary.form.button.cancel")}</Button>
                             </ButtonToolbar>

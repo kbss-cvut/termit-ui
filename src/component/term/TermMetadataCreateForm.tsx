@@ -13,20 +13,20 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
+import {checkLabelUniqueness} from "./TermValidationUtils";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
     definitionSelector?: () => void;
     termData: TermData;
     vocabularyIri: string;
-
+    labelExist: {[lang: string] : boolean};
     language: string;
 }
 
 interface TermMetadataCreateFormState {
     generateUri: boolean;
     showAdvanced: boolean;
-    labelExists: boolean;
 }
 
 export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFormProps, TermMetadataCreateFormState> {
@@ -35,8 +35,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         super(props);
         this.state = {
             generateUri: true,
-            showAdvanced: false,
-            labelExists: false
+            showAdvanced: false
         };
     }
 
@@ -47,12 +46,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         }
     }
 
-    public componentDidUpdate(prevProps: TermMetadataCreateFormProps, prevState: TermMetadataCreateFormState): void {
-        if (this.props.language && (prevProps.language !== this.props.language)) {
-            this.onPrefLabelChange( this.props.termData.label[this.props.language] || '' );
-        }
-    }
-
     private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.onPrefLabelChange(e.currentTarget.value);
     };
@@ -60,7 +53,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     private onPrefLabelChange = (label : string) => {
         const change = Object.assign({}, this.props.termData.label);
         change[this.props.language] = label;
-        this.props.onChange({label: change});
         this.resolveIdentifier(label);
         this.checkLabelUniqueness(label);
     };
@@ -80,19 +72,23 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     };
 
     private checkLabelUniqueness(prefLabel: string) {
-        this.setState({labelExists: false});
-        if (prefLabel.trim().length === 0) {
+        const label = Object.assign({}, this.props.termData.label);
+        label[this.props.language] = prefLabel;
+        const labelExist = Object.assign({}, this.props.labelExist);
+        labelExist[this.props.language] = false;
+        this.props.onChange({label, labelExist});
+
+        const prefLabelCurrent = getLocalized(this.props.termData.label, this.props.language).toLowerCase();
+        if (prefLabel.toLowerCase() === prefLabelCurrent) {
             return;
         }
         const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
-        const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms`;
-        Ajax.head(url, params({
-            namespace: vocabularyIri.namespace,
-            prefLabel,
-            language: this.props.language})
-        ).then((data) => {
-            this.setState({labelExists: data.status === 200});
-        }).catch(() => this.setState({labelExists: false}));
+        checkLabelUniqueness(vocabularyIri, prefLabel, this.props.language, () => {
+            labelExist[this.props.language] = true;
+            this.props.onChange({
+                labelExist: Object.assign({}, this.props.labelExist, labelExist)
+            });
+        });
     }
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -149,14 +145,15 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         const sources = termData.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         const label = getLocalizedOrDefault(termData.label, "", language);
+        const labelInLanguageExists = this.props.labelExist[language];
         return <Form>
             <Row>
                 <Col xs={12}>
                     <CustomInput name="create-term-label" label={i18n("asset.label")}
                                  help={this.props.i18n("term.label.help")}
                                  onChange={this.onLabelChange}
-                                 invalid={this.state.labelExists}
-                                 invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
+                                 invalid={labelInLanguageExists}
+                                 invalidMessage={labelInLanguageExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
                                  value={label}/>
                 </Col>
             </Row>
