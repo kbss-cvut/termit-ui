@@ -82,7 +82,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
     private computeScore(results: ValidationResult []): number | undefined {
         return results.reduce((reduceScore, result) => {
-            if (importantRules.indexOf(result.sourceShape.iri) >= 0) {
+            if (importantRules.indexOf(result.sourceShape?.iri) >= 0) {
                 return reduceScore - 25;
             }
             return reduceScore;
