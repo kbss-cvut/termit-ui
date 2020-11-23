@@ -154,14 +154,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
             <Row>
                 <Col xs={12}>
-                    <StringListEdit list={getLocalizedPlural(termData.altLabels, language)}
-                                    onChange={this.onAltLabelsChange}
-                                    i18nPrefix={"term.metadata.altLabels"}/>
-                </Col>
-            </Row>
-
-            <Row>
-                <Col xs={12}>
                     {this.props.definitionSelector ?
                         <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
                             <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>
@@ -182,18 +174,16 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
             <Row>
                 <Col xs={12}>
-                    <TextArea name="create-term-comment" label={i18n("term.metadata.comment")}
-                              type="textarea" rows={3} value={termData.comment}
-                              help={this.props.i18n("term.comment.help")}
-                              onChange={this.onCommentChange}/>
+                    <CustomInput name="edit-term-source"
+                                 value={source}
+                                 onChange={this.onSourceChange}
+                                 label={i18n("term.metadata.source")}
+                                 help={i18n("term.source.help")}/>
                 </Col>
             </Row>
-
             <Row>
                 <Col xs={12}>
-                    <ParentTermSelector id="create-term-parent" onChange={this.onParentSelect}
-                                        parentTerms={termData.parentTerms}
-                                        vocabularyIri={this.props.vocabularyIri}/>
+                    <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}/>
                 </Col>
             </Row>
 
@@ -203,23 +193,20 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
 
             <Collapse isOpen={this.state.showAdvanced}>
-
                 <Row>
                     <Col xs={12}>
-                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}/>
+                        <ParentTermSelector id="create-term-parent" onChange={this.onParentSelect}
+                                            parentTerms={termData.parentTerms}
+                                            vocabularyIri={this.props.vocabularyIri}/>
                     </Col>
                 </Row>
-
                 <Row>
                     <Col xs={12}>
-                        <CustomInput name="edit-term-source"
-                                     value={source}
-                                     onChange={this.onSourceChange}
-                                     label={i18n("term.metadata.source")}
-                                     help={i18n("term.source.help")}/>
+                        <StringListEdit list={getLocalizedPlural(termData.altLabels, language)}
+                                        onChange={this.onAltLabelsChange}
+                                        i18nPrefix={"term.metadata.altLabels"}/>
                     </Col>
                 </Row>
-
                 <Row>
                     <Col xs={12}>
                         <StringListEdit list={getLocalizedPlural(termData.hiddenLabels, language)}
@@ -227,7 +214,14 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                         i18nPrefix={"term.metadata.hiddenLabels"}/>
                     </Col>
                 </Row>
-
+                <Row>
+                    <Col xs={12}>
+                        <TextArea name="create-term-comment" label={i18n("term.metadata.comment")}
+                                  type="textarea" rows={3} value={termData.comment}
+                                  help={this.props.i18n("term.comment.help")}
+                                  onChange={this.onCommentChange}/>
+                    </Col>
+                </Row>
                 <Row>
                     <Col xs={12}>
                         <CustomInput name="create-term-iri" label={i18n("asset.iri")}

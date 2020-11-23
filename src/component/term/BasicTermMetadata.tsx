@@ -40,6 +40,14 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             {this.renderDefinitionSource()}
             <Row>
                 <Col xl={2} md={4}>
+                    <Label className="attribute-label">{i18n("term.metadata.source")}</Label>
+                </Col>
+                <Col xl={10} md={8}>
+                    {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
+                </Col>
+            </Row>
+            <Row>
+                <Col xl={2} md={4}>
                     <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
                 </Col>
                 <Col xl={10} md={8}>{this.renderTypes()}
@@ -53,14 +61,6 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 </Col>
                 <Col xl={10} md={8}>
                     <Label id="term-metadata-comment">{term.comment}</Label>
-                </Col>
-            </Row>
-            <Row>
-                <Col xl={2} md={4}>
-                    <Label className="attribute-label">{i18n("term.metadata.source")}</Label>
-                </Col>
-                <Col xl={10} md={8}>
-                    {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
                 </Col>
             </Row>
             <Row>
