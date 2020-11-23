@@ -27,6 +27,8 @@ import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
+import {getLanguages} from "../multilingual/LanguageSelector";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
@@ -58,8 +60,15 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.state = {
             edit: false,
             showRemoveDialog: false,
-            language: props.configuredLanguage
+            language: TermDetail.resolveInitialLanguage(props)
         };
+    }
+
+    private static resolveInitialLanguage(props: TermDetailProps) {
+        const {term, configuredLanguage, locale} = props;
+        const supported = term ? getLanguages(term) : [];
+        const langLocale = getShortLocale(locale);
+        return supported.indexOf(langLocale) !== -1 ? langLocale : configuredLanguage;
     }
 
     public componentDidMount(): void {
@@ -96,8 +105,8 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
             this.onCloseEdit();
             this.loadTerm();
         }
-        if (prevProps.configuredLanguage !== this.props.configuredLanguage) {
-            this.setState({language: this.props.configuredLanguage});
+        if (prevProps.term?.iri !== this.props.term?.iri) {
+            this.setState({language: TermDetail.resolveInitialLanguage(this.props)});
         }
     }
 
