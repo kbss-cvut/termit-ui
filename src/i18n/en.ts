@@ -298,7 +298,7 @@ export default {
         'term.metadata.subterm.link': 'View detail of this term',
         "term.metadata.assignments.title": "Anotated resources",
         "term.metadata.assignments.empty": "This term is not assigned to any resources.",
-        "term.metadata.assignments.assignment": "Assigned to the resource",
+        "term.metadata.assignments.assignment": "Assigned to the resource?",
         "term.metadata.assignments.assignment.assigned": "Term is assigned to this resource",
         "term.metadata.assignments.assignment.not.assigned": "Term is not assigned to this resource",
         "term.metadata.assignments.assignment.help": "Term assignment represents situations when term is assigned to the resource as a whole.",
