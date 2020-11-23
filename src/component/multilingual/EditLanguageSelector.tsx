@@ -8,7 +8,7 @@ import {IntelligentTreeSelect} from "intelligent-tree-select";
 import Constants from "../../util/Constants";
 import {getShortLocale} from "../../util/IntlUtil";
 import Term, {TermData} from "../../model/Term";
-import {getLanguages, renderLanguages} from "./LanguageSelector";
+import {renderLanguages} from "./LanguageSelector";
 import "./LanguageSelector.scss";
 import {Nav, NavItem, NavLink} from "reactstrap";
 import {FaPlusCircle} from "react-icons/fa";
@@ -44,7 +44,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = props => {
     React.useEffect(() => {
         setAdding(false);
     }, [language]);
-    const existingLanguages = getLanguages(term);
+    const existingLanguages = Term.getLanguages(term);
     if (existingLanguages.indexOf(language) === -1) {
         existingLanguages.push(language);
     }

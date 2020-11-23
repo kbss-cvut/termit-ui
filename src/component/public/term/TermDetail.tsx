@@ -1,7 +1,6 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
+import withI18n from "../../hoc/withI18n";
 import {RouteComponentProps, withRouter} from "react-router";
-import Term from "../../../model/Term";
 import {IRI} from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
 import HeaderWithActions from "../../misc/HeaderWithActions";
@@ -12,15 +11,10 @@ import {ThunkDispatch} from "../../../util/Types";
 import {injectIntl} from "react-intl";
 import TermMetadata from "./TermMetadata";
 import {loadPublicTerm, loadPublicVocabulary} from "../../../action/AsyncPublicViewActions";
-import Vocabulary from "../../../model/Vocabulary";
-import {getShortLocale} from "../../../util/IntlUtil";
 import {getLocalized, getLocalizedPlural} from "../../../model/MultilingualString";
+import {CommonTermDetailProps, resolveInitialLanguage} from "../../term/TermDetail";
 
-interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
-    term: Term | null;
-    vocabulary: Vocabulary;
-    loadVocabulary: (iri: IRI) => void;
-    loadTerm: (termName: string, vocabularyIri: IRI) => void;
+interface TermDetailProps extends CommonTermDetailProps, RouteComponentProps<any> {
 }
 
 const TermDetail: React.FC<TermDetailProps> = props => {
@@ -33,7 +27,7 @@ const TermDetail: React.FC<TermDetailProps> = props => {
         loadTerm(termName, vocUri);
         loadVocabulary(vocUri);
     }, [location.search, match.params.termName, match.params.name, loadTerm, loadVocabulary]);
-    const [language, setLanguage] = React.useState<string>(getShortLocale(props.locale));
+    const [language, setLanguage] = React.useState<string>(resolveInitialLanguage(props));
 
     if (!term) {
         return null;
@@ -51,7 +45,8 @@ const TermDetail: React.FC<TermDetailProps> = props => {
 export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
-        vocabulary: state.vocabulary
+        vocabulary: state.vocabulary,
+        configuredLanguage: state.configuration.language,
     };
 }, (dispatch: ThunkDispatch) => {
     return {

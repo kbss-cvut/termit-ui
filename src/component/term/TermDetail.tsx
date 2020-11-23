@@ -27,18 +27,20 @@ import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
-import {getLanguages} from "../multilingual/LanguageSelector";
 import {getShortLocale} from "../../util/IntlUtil";
 
-interface TermDetailProps extends HasI18n, RouteComponentProps<any> {
+export interface CommonTermDetailProps extends HasI18n {
+    configuredLanguage: string;
     term: Term | null;
     vocabulary: Vocabulary;
     loadVocabulary: (iri: IRI) => void;
     loadTerm: (termName: string, vocabularyIri: IRI) => void;
+}
+
+interface TermDetailProps extends CommonTermDetailProps, RouteComponentProps<any> {
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
-    configuredLanguage: string;
     validationResults: { [vocabularyIri: string]: ValidationResult[] };
 }
 
@@ -53,6 +55,13 @@ export const importantRules = [
     "https://slovník.gov.cz/jazyk/obecný/g14"
 ];
 
+export function resolveInitialLanguage(props: CommonTermDetailProps) {
+    const {term, configuredLanguage, locale} = props;
+    const supported = term ? Term.getLanguages(term) : [];
+    const langLocale = getShortLocale(locale);
+    return supported.indexOf(langLocale) !== -1 ? langLocale : configuredLanguage;
+}
+
 export class TermDetail extends EditableComponent<TermDetailProps, TermDetailState> {
 
     constructor(props: TermDetailProps) {
@@ -60,15 +69,8 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.state = {
             edit: false,
             showRemoveDialog: false,
-            language: TermDetail.resolveInitialLanguage(props)
+            language: resolveInitialLanguage(props)
         };
-    }
-
-    private static resolveInitialLanguage(props: TermDetailProps) {
-        const {term, configuredLanguage, locale} = props;
-        const supported = term ? getLanguages(term) : [];
-        const langLocale = getShortLocale(locale);
-        return supported.indexOf(langLocale) !== -1 ? langLocale : configuredLanguage;
     }
 
     public componentDidMount(): void {
@@ -106,7 +108,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
             this.loadTerm();
         }
         if (prevProps.term?.iri !== this.props.term?.iri) {
-            this.setState({language: TermDetail.resolveInitialLanguage(this.props)});
+            this.setState({language: resolveInitialLanguage(this.props)});
         }
     }
 

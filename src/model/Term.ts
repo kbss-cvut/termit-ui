@@ -163,4 +163,14 @@ export default class Term extends Asset implements TermData {
             }
         });
     }
+
+    public static getLanguages(term: Term | TermData): string[] {
+        const languages: Set<string> = new Set();
+        TERM_MULTILINGUAL_ATTRIBUTES.filter(att => term[att]).forEach(att => {
+            Utils.sanitizeArray(term[att]).forEach(attValue => Object.getOwnPropertyNames(attValue).forEach(n => languages.add(n)))
+        });
+        const langArr = Array.from(languages);
+        langArr.sort();
+        return langArr;
+    }
 }
