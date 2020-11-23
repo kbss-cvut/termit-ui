@@ -8,7 +8,6 @@ import {langString} from "../MultilingualString";
 describe("Term tests", () => {
 
     let termData: TermData;
-    let term: {};
 
     beforeEach(() => {
         termData = {
@@ -17,17 +16,6 @@ describe("Term tests", () => {
             types: ["http://example.org/type1", OntologicalVocabulary.TERM],
             draft: true
         };
-
-        term = {
-            iri: "http://example.org/term1",
-            label: langString("test term 1"),
-            types: ["http://example.org/type1", OntologicalVocabulary.TERM],
-            draft: true
-        };
-    });
-
-    it("load a term", () => {
-        expect(term).toEqual(new Term(termData));
     });
 
     describe("constructor", () => {
@@ -281,6 +269,23 @@ describe("Term tests", () => {
 
             Term.removeTranslation(data, "cs");
             expect(data.altLabels!.cs).not.toBeDefined();
+        });
+    });
+
+    describe("isDraft", () => {
+        it("returns true when draft value is undefined", () => {
+            delete termData.draft;
+            expect(Term.isDraft(termData)).toBeTruthy();
+        });
+
+        it("returns true when draft value is true", () => {
+            termData.draft = true;
+            expect(Term.isDraft(termData)).toBeTruthy();
+        });
+
+        it("returns false when draft value is false", () => {
+            termData.draft = false;
+            expect(Term.isDraft(termData)).toBeFalsy();
         });
     });
 });

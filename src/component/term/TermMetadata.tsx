@@ -74,8 +74,8 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
 
     public onToggleDraft = () => {
         const {term, setStatus} = this.props;
-        const status = term.draft === undefined || term.draft ? TermStatus.CONFIRMED : TermStatus.DRAFT;
-        setStatus(VocabularyUtils.create(term.iri), status);
+        const nextStatus = Term.isDraft(term) ? TermStatus.CONFIRMED : TermStatus.DRAFT;
+        setStatus(VocabularyUtils.create(term.iri), nextStatus);
     };
 
     public render() {
@@ -96,8 +96,7 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                                         </Col>
                                         <Col xl={10} md={8}>
                                             <DraftToggle id="term-detail-draft-toggle"
-                                                         draft={term.draft === undefined || term.draft}
-                                                         onToggle={this.onToggleDraft}/>
+                                                         draft={Term.isDraft(term)} onToggle={this.onToggleDraft}/>
                                         </Col>
                                     </Row>
                                 </CardBody>

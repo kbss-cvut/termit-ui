@@ -221,7 +221,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                         {i18n("term.metadata.status")}
                                     </Label>
                                     <br/>
-                                    <DraftToggle draft={this.state.draft === undefined || this.state.draft}
+                                    <DraftToggle draft={Term.isDraft(this.state)}
                                                  id="term-metadata-edit-status-toggle" onToggle={this.onToggleDraft}/>
                                     <FormText>{i18n("term.metadata.status.help")}</FormText>
                                 </FormGroup>

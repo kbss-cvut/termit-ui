@@ -162,4 +162,8 @@ export default class Term extends Asset implements TermData {
             }
         });
     }
+
+    public static isDraft(data: TermData):boolean {
+        return data.draft === undefined || data.draft;
+    }
 }
