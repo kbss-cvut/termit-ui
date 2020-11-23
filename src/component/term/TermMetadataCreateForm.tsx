@@ -50,28 +50,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.onPrefLabelChange(e.currentTarget.value);
     };
 
-    private onPrefLabelChange = (label : string) => {
-        const change = Object.assign({}, this.props.termData.label);
-        change[this.props.language] = label;
-        this.resolveIdentifier(label);
-        this.checkLabelUniqueness(label);
-    };
-
-    public onAltLabelsChange = (altLabels: string[]) => {
-        const language = this.props.language;
-        const change = {};
-        change[language] = altLabels;
-        this.props.onChange({altLabels: Object.assign({}, this.props.termData.altLabels, change)});
-    };
-
-    public onHiddenLabelsChange = (hiddenLabels: string[]) => {
-        const language = this.props.language;
-        const change = {};
-        change[language] = hiddenLabels;
-        this.props.onChange({hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change)});
-    };
-
-    private checkLabelUniqueness(prefLabel: string) {
+    private onPrefLabelChange = (prefLabel : string) => {
+        this.resolveIdentifier(prefLabel);
         const label = Object.assign({}, this.props.termData.label);
         label[this.props.language] = prefLabel;
         const labelExist = Object.assign({}, this.props.labelExist);
@@ -89,7 +69,21 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 labelExist: Object.assign({}, this.props.labelExist, labelExist)
             });
         });
-    }
+    };
+
+    public onAltLabelsChange = (altLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = altLabels;
+        this.props.onChange({altLabels: Object.assign({}, this.props.termData.altLabels, change)});
+    };
+
+    public onHiddenLabelsChange = (hiddenLabels: string[]) => {
+        const language = this.props.language;
+        const change = {};
+        change[language] = hiddenLabels;
+        this.props.onChange({hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change)});
+    };
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.currentTarget.value;
