@@ -25,7 +25,7 @@ const TermMetadata: React.FC<TermMetadata> = props => {
                     <Col xs={12}>
                         <Card className="mb-3">
                             <CardBody className="card-body-basic-info">
-                                <BasicTermMetadata term={term} withDefinitionSource={true} language={language}/>
+                                <BasicTermMetadata term={term} withDefinitionSource={false} language={language}/>
                             </CardBody>
                         </Card>
                     </Col>

@@ -163,6 +163,38 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
+                                <TextArea name="edit-term-definition"
+                                          value={getLocalizedOrDefault(this.state.definition, "", language)}
+                                          onChange={this.onDefinitionChange} rows={3}
+                                          label={i18n("term.metadata.definition")}
+                                          help={i18n("term.definition.help")}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
+                                             label={i18n("term.metadata.source")}
+                                             invalidMessage={(this.state.sources && (this.state.sources.length > 1))
+                                                 ? i18n("term.metadata.multipleSources.message") : undefined}
+                                             help={i18n("term.source.help")}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
+                                               onChange={this.onTypesChange}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
+                                                    parentTerms={this.state.parentTerms}
+                                                    vocabularyIri={this.props.term.vocabulary!.iri!}
+                                                    onChange={this.onParentChange}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
                                 <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
                                                 onChange={this.onAltLabelsChange}
                                                 i18nPrefix={"term.metadata.altLabels"}/>
@@ -177,41 +209,9 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <TextArea name="edit-term-definition"
-                                          value={getLocalizedOrDefault(this.state.definition, "", language)}
-                                          onChange={this.onDefinitionChange} rows={3}
-                                          label={i18n("term.metadata.definition")}
-                                          help={i18n("term.definition.help")}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
                                 <TextArea name="edit-term-comment" value={this.state.comment}
                                           onChange={this.onInputChange} rows={3} label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
-                                                    parentTerms={this.state.parentTerms}
-                                                    vocabularyIri={this.props.term.vocabulary!.iri!}
-                                                    onChange={this.onParentChange}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
-                                               onChange={this.onTypesChange}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                             label={i18n("term.metadata.source")}
-                                             invalidMessage={(this.state.sources && (this.state.sources.length > 1))
-                                                 ? i18n("term.metadata.multipleSources.message") : undefined}
-                                             help={i18n("term.source.help")}/>
                             </Col>
                         </Row>
                         <Row>
