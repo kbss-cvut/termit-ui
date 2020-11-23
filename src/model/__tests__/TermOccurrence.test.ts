@@ -20,9 +20,10 @@ describe("TermOccurrence", () => {
             expect(result["@context"]).toEqual(CONTEXT);
         });
 
-        it("transforms term to term data suitable for JSON-LD as well", () => {
+        it("prevents circular reference issue by simplifying term data to just term IRI", () => {
+            const term = Generator.generateTerm();
             const sut = new TermOccurrence({
-                term: Generator.generateTerm(),
+                term,
                 target: {
                     source: {iri: Generator.generateUri()},
                     selectors: [{exactMatch: "test", types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]}],
@@ -30,11 +31,10 @@ describe("TermOccurrence", () => {
                 },
                 types: [VocabularyUtils.TERM_DEFINITION_SOURCE]
             });
-            jest.spyOn(sut.term, "toTermData");
+            sut.term.definitionSource = sut;
 
             const result = sut.toJsonLd();
-            expect(result.term).toEqual(sut.term.toTermData());
-            expect(sut.term.toTermData).toHaveBeenCalled();
+            expect(result.term).toEqual({iri: term.iri});
         });
     });
 });
