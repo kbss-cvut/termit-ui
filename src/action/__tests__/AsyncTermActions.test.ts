@@ -10,17 +10,17 @@ import Generator from "../../__tests__/environment/Generator";
 import Term from "../../model/Term";
 import ActionType from "../ActionType";
 import MessageType from "../../model/MessageType";
+import {langString} from "../../model/MultilingualString";
+import Constants from "../../util/Constants";
 
 jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => ({
-    default: jest.fn(),
-    content: jest.requireActual("../../util/Ajax").content,
-    params: jest.requireActual("../../util/Ajax").params,
-    param: jest.requireActual("../../util/Ajax").param,
-    accept: jest.requireActual("../../util/Ajax").accept,
-    contentType: jest.requireActual("../../util/Ajax").contentType,
-    formData: jest.requireActual("../../util/Ajax").formData
-}));
+jest.mock("../../util/Ajax", () => {
+    const originalModule = jest.requireActual("../../util/Ajax");
+    return {
+        ...originalModule,
+        default: jest.fn()
+    };
+});
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
@@ -41,7 +41,7 @@ describe("AsyncTermActions", () => {
 
         const term = new Term({
             iri: `${namespace}${vocabularyName}/terms/${termName}`,
-            label: termName
+            label: langString(termName)
         });
         const definitionSource = new TermOccurrence({
             term,
@@ -75,6 +75,17 @@ describe("AsyncTermActions", () => {
             });
         });
 
+        // Bug #1449
+        it("handles multilingual term label by showing localized label when publishing success message", () => {
+            Ajax.put = jest.fn().mockResolvedValue(null);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).then(() => {
+                expect(Ajax.put).toHaveBeenCalled();
+                const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
+                expect(messageAction).toBeDefined();
+                expect(messageAction.message.values.term).toEqual(term.label[Constants.DEFAULT_LANGUAGE]);
+            });
+        });
+
         it("publishes error message when server responds with CONFLICT", () => {
             Ajax.put = jest.fn().mockRejectedValue({status: 409});
             return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).catch(() => {
@@ -82,6 +93,17 @@ describe("AsyncTermActions", () => {
                 const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(messageAction).toBeDefined();
                 expect(messageAction.message.type).toEqual(MessageType.ERROR);
+            });
+        });
+
+        // Bug #1449
+        it("handles multilingual term label by showing localized label when publishing error message", () => {
+            Ajax.put = jest.fn().mockRejectedValue({status: 409});
+            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).catch(() => {
+                expect(Ajax.put).toHaveBeenCalled();
+                const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
+                expect(messageAction).toBeDefined();
+                expect(messageAction.message.values.term).toEqual(term.label[Constants.DEFAULT_LANGUAGE]);
             });
         });
     });
