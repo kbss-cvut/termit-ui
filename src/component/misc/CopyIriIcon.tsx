@@ -4,11 +4,11 @@ import "./CopyIriIcon.scss"
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 
-interface CopyIriIcon extends HasI18n {
+interface CopyIriIconProps extends HasI18n {
     url: string;
 }
 
-const CopyIriIcon: React.FC<CopyIriIcon> = ({url, i18n}) => {
+const CopyIriIcon: React.FC<CopyIriIconProps> = ({url, i18n}) => {
     const copyToClipboard = () => {
         if (!navigator.clipboard) {
             return;

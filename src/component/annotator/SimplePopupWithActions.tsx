@@ -14,7 +14,7 @@ const handler = (e: any) => {
     e.stopPropagation();
 }
 
-export default (props: PopupWithActionsProps) => {
+const SimplePopupWithActions:React.FC<PopupWithActionsProps> = props => {
     if (!props.isOpen) {
         return null;
     }
@@ -34,6 +34,8 @@ export default (props: PopupWithActionsProps) => {
             </PopoverBody>
         </div>
     </Popover>;
-}
+};
+
+export default SimplePopupWithActions;
 
 

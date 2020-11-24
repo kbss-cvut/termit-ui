@@ -1,4 +1,4 @@
-export default {
+const DefaultTermCharacteristicsFrequencyChartOptions = {
     chart: {
         id: "types",
         stacked: true,
@@ -6,6 +6,8 @@ export default {
     plotOptions: {
         bar: {
             horizontal: true,
-        },
-    },
+        }
+    }
 };
+
+export default DefaultTermCharacteristicsFrequencyChartOptions;

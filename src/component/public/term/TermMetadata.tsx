@@ -7,14 +7,14 @@ import Terms from "./Terms";
 import {RouteComponentProps, withRouter} from "react-router";
 import LanguageSelector from "../../multilingual/LanguageSelector";
 
-interface TermMetadata extends RouteComponentProps<any> {
+interface TermMetadataProps extends RouteComponentProps<any> {
     term: Term;
     vocabulary: Vocabulary;
     language: string;
     setLanguage: (lang: string) => void;
 }
 
-const TermMetadata: React.FC<TermMetadata> = props => {
+const TermMetadata: React.FC<TermMetadataProps> = props => {
     const {term, vocabulary, language, setLanguage} = props;
 
     return <>

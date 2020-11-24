@@ -10,7 +10,7 @@ import NotificationType from "../model/NotificationType";
 import {BasicRouteProps} from "./Types";
 import _ from "lodash";
 
-export default {
+const Utils = {
 
     /**
      * Ensures that the specified argument is returned as an array at all conditions.
@@ -227,3 +227,5 @@ export default {
         return false;
     }
 };
+
+export default Utils;

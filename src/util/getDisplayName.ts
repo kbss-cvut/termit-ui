@@ -5,6 +5,8 @@
  */
 import * as React from "react";
 
-export default (Component: React.ComponentType<any>) => {
+const getDisplayName = (Component: React.ComponentType<any>) => {
     return Component.displayName || Component.name || "Component"
 };
+
+export default getDisplayName;

@@ -31,7 +31,7 @@ function getPropertyForAnnotationType(annotationType: string) {
     return VocabularyUtils.IS_OCCURRENCE_OF_TERM;
 }
 
-export default {
+const AnnotationDomHelper = {
 
     isAnnotation(node: DomHandlerNode, prefixMap?: Map<string, string>): boolean {
         if (!node || !(node as DomHandlerElement).attribs) {
@@ -103,4 +103,6 @@ export default {
             types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
         }
     }
-}
+};
+
+export default AnnotationDomHelper;
