@@ -1,6 +1,6 @@
 import Constants from '../util/Constants';
 
-export default {
+const cs = {
     locale: Constants.LANG.CS.locale,
     messages: {
         'please-wait': 'Prosím, čekejte...',
@@ -530,3 +530,5 @@ export default {
         "public.dashboard.actions.vocabularies": "Prohlédněte si slovníky a pojmy",
     }
 };
+
+export default cs;
