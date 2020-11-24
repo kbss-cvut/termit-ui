@@ -1,6 +1,6 @@
 import Constants from '../util/Constants';
 
-export default {
+const en = {
     locale: Constants.LANG.EN.locale,
     messages: {
         'please-wait': 'Please wait...',
@@ -524,3 +524,5 @@ export default {
         "public.dashboard.actions.vocabularies": "Browse vocabularies and terms",
     }
 };
+
+export default en;

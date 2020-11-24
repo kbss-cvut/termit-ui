@@ -14,7 +14,7 @@ import {UpdateRecord, UpdateRecordData} from "../model/changetracking/UpdateReco
 import {langString} from "../model/MultilingualString";
 
 
-export default {
+const AssetFactory = {
     /**
      * Creates an instance of the appropriate asset class based on the specified data.
      *
@@ -103,3 +103,5 @@ export default {
         throw new TypeError("Unsupported type of change record data " + JSON.stringify(data));
     }
 };
+
+export default AssetFactory;

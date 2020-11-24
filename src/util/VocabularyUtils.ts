@@ -41,7 +41,7 @@ const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
 const _NS_DC = "http://purl.org/dc/terms/";
 const _NS_SH = "http://www.w3.org/ns/shacl#";
 
-export default {
+const VocabularyUtils = {
     PREFIX: _NS_POPIS_DAT,
     VOCABULARY: _NS_POPIS_DAT + "slovník",
     DOCUMENT_VOCABULARY: _NS_POPIS_DAT + "dokumentový-slovník",
@@ -118,4 +118,6 @@ export default {
         const fragment = hashFragment < 0 ? slashFragment : hashFragment;
         return new IRIImpl(iri.substr(fragment + 1), iri.substr(0, fragment + 1));
     }
-}
+};
+
+export default VocabularyUtils;

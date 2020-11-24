@@ -3,7 +3,7 @@ import {Element, Node} from "domhandler";
 
 const RDF_ATTRIBUTE_NAMES = ["about", "property", "resource", "typeof"];
 
-export default {
+const HtmlParserUtils = {
 
     html2dom(html: string): Node[] {
         // Do not decode HTML entities (e.g., &lt;) when parsing content for object representation, it caused issues
@@ -85,5 +85,6 @@ export default {
         }
         return newAttrs;
     }
+};
 
-}
+export default HtmlParserUtils;
