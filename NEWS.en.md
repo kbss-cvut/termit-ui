@@ -1,3 +1,7 @@
+##### Version 2.1.1
+- Úprava UI výsledků vyhledávání
+- Opravy drobných chyb v uživatelském rozhraní
+
 ##### Version 2.1.0
 - Added support for SKOS altLabel and hiddenLabel.
 - Added support for multilingual term attributes.
