@@ -3,7 +3,7 @@ import Utils from "../util/Utils";
 /**
  * Common logic for classes implementing support for unmapped properties.
  */
-export default {
+const WithUnmappedProperties = {
     getUnmappedProperties(instance: any, mappedProperties: string[]): Map<string, string[]> {
         const map = new Map<string, string[]>();
         Object.getOwnPropertyNames(instance).filter(p => mappedProperties.indexOf(p) === -1)
@@ -20,4 +20,6 @@ export default {
         // Set new values for unmapped properties
         properties.forEach((value, key) => instance[key] = value);
     }
-}
+};
+
+export default WithUnmappedProperties;

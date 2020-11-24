@@ -69,8 +69,7 @@ export interface PushRoutingPayloadAction extends Action {
     payload: any;
 }
 
-
-export default {
+const ActionType = {
     FETCH_USER: "FETCH_USER",
     LOGIN: "LOGIN",
     REGISTER: "REGISTER",
@@ -188,3 +187,5 @@ export default {
     LOAD_CONFIGURATION: "LOAD_CONFIGURATION",
     LOAD_NEWS: "LOAD_NEWS"
 };
+
+export default ActionType;

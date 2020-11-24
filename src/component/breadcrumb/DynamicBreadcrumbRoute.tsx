@@ -15,10 +15,10 @@ interface DynamicBreadcrumbRouteStoreProps {
     state: TermItState;
 }
 
-declare type DynamicBreadcrumbRoute = DynamicBreadcrumbRouteOwnProps & DynamicBreadcrumbRouteStoreProps;
+declare type DynamicBreadcrumbRouteProps = DynamicBreadcrumbRouteOwnProps & DynamicBreadcrumbRouteStoreProps;
 
 // This route should extract breadcrumb label from store data, e.g., vocabulary label from currently open vocabulary
-const DynamicBreadcrumbRoute = (props: DynamicBreadcrumbRoute) => {
+const DynamicBreadcrumbRoute = (props: DynamicBreadcrumbRouteProps) => {
     const {component, includeSearch, ...rest} = {...props};
     const Component = component;    // lowercase first character does not pass through JSX validation
     const renderRoute = (routeProps: RouteComponentProps<any>) => <Breadcrumb data={{
