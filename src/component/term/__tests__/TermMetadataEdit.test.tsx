@@ -82,7 +82,7 @@ describe("Term edit", () => {
         const wrapper = shallow(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
                                                   language={Constants.DEFAULT_LANGUAGE}
                                                   selectLanguage={selectLanguage} {...intlFunctions()}/>);
-        const mock = jest.fn().mockImplementation(() => Promise.resolve( { status: 200 } ));
+        const mock = jest.fn().mockImplementation(() => Promise.resolve({status: 200}));
         Ajax.head = mock;
         const newLabel = "New label";
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label").simulate("change", {
@@ -279,5 +279,27 @@ describe("Term edit", () => {
             wrapper.instance().removeTranslation(langToRemove);
             expect(wrapper.state().label[langToRemove]).not.toBeDefined();
         });
+    });
+
+    it("renders prefLabel input disabled when term status is confirmed", () => {
+        term.draft = false;
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language="en"
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
+        const prefLabelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label");
+        expect(prefLabelInput.prop("disabled")).toBeTruthy();
+    });
+
+    it("resets edited prefLabel when term was confirmed, set to draft, changed prefLabel, and set to confirmed again", () => {
+        term.draft = false;
+        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
+                                                                    language="en"
+                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
+        const differentLabel = langString("pending label");
+        wrapper.setState({label: differentLabel, draft: true});
+        wrapper.update();
+        wrapper.instance().onToggleDraft();
+        wrapper.update();
+        expect(wrapper.state().label).toEqual(term.label);
     });
 });

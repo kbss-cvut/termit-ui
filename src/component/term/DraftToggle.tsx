@@ -1,7 +1,7 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import {FormGroup, FormText, Label} from "reactstrap";
+import {UncontrolledTooltip} from "reactstrap";
 import Toggle from "react-bootstrap-toggle";
 
 interface DraftToggleProps extends HasI18n {
@@ -11,12 +11,7 @@ interface DraftToggleProps extends HasI18n {
 }
 
 const DraftToggle: React.FC<DraftToggleProps> = props =>
-    <FormGroup>
-        <Label id="term-metadata-edit-status"
-               className="attribute-label">
-            {props.i18n("term.metadata.status")}
-        </Label>
-        <br/>
+    <>
         <Toggle id={props.id}
                 onClick={() => props.onToggle()}
                 on={props.i18n("term.metadata.status.confirmed")}
@@ -28,7 +23,7 @@ const DraftToggle: React.FC<DraftToggleProps> = props =>
                 style={{height: "calc(1.5 * 0.875rem + 0.5rem + 2px)"}}
                 active={!props.draft}
                 recalculateOnResize={false}/>
-        <FormText>{props.i18n("term.metadata.status.help")}</FormText>
-    </FormGroup>;
+        <UncontrolledTooltip target={props.id}>{props.i18n("term.metadata.status.help")}</UncontrolledTooltip>
+    </>;
 
 export default injectIntl(withI18n(DraftToggle));

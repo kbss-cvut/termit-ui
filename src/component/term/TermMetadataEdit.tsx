@@ -1,7 +1,7 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Button, ButtonToolbar, Card, CardBody, Col, Form, Row} from "reactstrap";
+import {Button, ButtonToolbar, Card, CardBody, Col, Form, Label, Row, FormGroup, FormText} from "reactstrap";
 import Term, {CONTEXT, TermData} from "../../model/Term";
 import "./TermMetadata.scss";
 import CustomInput from "../misc/CustomInput";
@@ -13,12 +13,12 @@ import TermTypesEdit from "./TermTypesEdit";
 import Utils from "../../util/Utils";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
-import DraftToggle from "./DraftToggle";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {isTermValid} from "./TermMetadataCreate";
+import DraftToggle from "./DraftToggle";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -99,9 +99,15 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState({parentTerms});
     };
 
-    public onStatusChange = () => {
-        this.setState({draft: !this.state.draft});
-    }
+    public onToggleDraft = () => {
+        const original = this.props.term;
+        const change: any = {draft: !this.state.draft};
+        if (!change.draft && !original.draft) {
+            // If we've switched to draft and back, ensure that the label has not changed
+            change.label = original.label;
+        }
+        this.setState(change);
+    };
 
     private onPropertiesChange = (update: Map<string, string[]>) => {
         this.setState({unmappedProperties: update});
@@ -124,9 +130,18 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState(copy);
     };
 
+    private draftRelatedLabelEditProps() {
+        if (this.state.draft === false) {
+            return {
+                disabled: true,
+                title: this.props.i18n("term.label.confirmed.disabled")
+            };
+        }
+        return undefined;
+    }
+
     public render() {
         const {i18n, language} = this.props;
-        const t = this.onStatusChange.bind(this);
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         return <>
@@ -142,7 +157,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                              onChange={this.onLabelChange}
                                              label={i18n("asset.label")} invalid={this.state.labelExists}
                                              invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
-                                             help={i18n("term.label.help")}/>
+                                             help={i18n("term.label.help")}
+                                             {...this.draftRelatedLabelEditProps()}/>
                             </Col>
                         </Row>
                         <Row>
@@ -200,12 +216,17 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <DraftToggle id="edit-term-status"
-                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
-                                             onToggle={t}/>
+                                <FormGroup>
+                                    <Label id="term-metadata-edit-status" className="attribute-label">
+                                        {i18n("term.metadata.status")}
+                                    </Label>
+                                    <br/>
+                                    <DraftToggle draft={Term.isDraft(this.state)}
+                                                 id="term-metadata-edit-status-toggle" onToggle={this.onToggleDraft}/>
+                                    <FormText>{i18n("term.metadata.status.help")}</FormText>
+                                </FormGroup>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col xs={12}>
                                 <UnmappedPropertiesEdit properties={this.state.unmappedProperties}

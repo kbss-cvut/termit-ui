@@ -1,7 +1,7 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Card, CardBody, Col, Row} from "reactstrap";
+import {Card, CardBody, Col, Label, Row} from "reactstrap";
 import Term from "../../model/Term";
 import "./TermMetadata.scss";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
@@ -14,12 +14,20 @@ import {RouteComponentProps, withRouter} from "react-router";
 import Terms from "./Terms";
 import Comments from "../comment/Comments";
 import LanguageSelector from "../multilingual/LanguageSelector";
+import DraftToggle from "./DraftToggle";
+import {connect} from "react-redux";
+import {ThunkDispatch} from "../../util/Types";
+import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import TermStatus from "../../model/TermStatus";
+import {setTermStatus} from "../../action/AsyncTermActions";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
     vocabulary: Vocabulary;
     language: string;
     selectLanguage: (lang: string) => void;
+
+    setStatus: (termIri: IRI, status: TermStatus) => void;
 }
 
 interface TermMetadataState {
@@ -64,6 +72,12 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
         this.setState({assignmentsCount});
     };
 
+    public onToggleDraft = () => {
+        const {term, setStatus} = this.props;
+        const nextStatus = Term.isDraft(term) ? TermStatus.CONFIRMED : TermStatus.DRAFT;
+        setStatus(VocabularyUtils.create(term.iri), nextStatus);
+    };
+
     public render() {
         const {term, language, selectLanguage} = this.props;
         return <>
@@ -75,6 +89,16 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                             <Card className="mb-3">
                                 <CardBody className="card-body-basic-info">
                                     <BasicTermMetadata term={term} withDefinitionSource={true} language={language}/>
+                                    <Row>
+                                        <Col xl={2} md={4}>
+                                            <Label
+                                                className="attribute-label term-status-label">{this.props.i18n("term.metadata.status")}</Label>
+                                        </Col>
+                                        <Col xl={10} md={8}>
+                                            <DraftToggle id="term-detail-draft-toggle"
+                                                         draft={Term.isDraft(term)} onToggle={this.onToggleDraft}/>
+                                        </Col>
+                                    </Row>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -112,4 +136,8 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     }
 }
 
-export default injectIntl(withI18n(withRouter(TermMetadata)));
+export default connect(undefined, (dispatch: ThunkDispatch) => {
+    return {
+        setStatus: (iri: IRI, status: TermStatus) => dispatch(setTermStatus(iri, status))
+    };
+})(injectIntl(withI18n(withRouter(TermMetadata))));

@@ -245,6 +245,7 @@ export default {
             "Jako názvy pojmů se nepoužívají zkratky ('daň z přidané hodnoty' místo 'DPH'). První písmeno názvu pojmu " +
             "je velké, ostatní písmena jsou malá. Název pojmů není vhodné měnit, jeho změna může ovlivnit význam dat, " +
             "která jsou tímto pojmem popsána.",
+        "term.label.confirmed.disabled": "Pojem je schválený, jeho název by se tedy neměl měnit.",
         "term.definition.help": "(Nepovinný) text popisující význam konceptu. Definice jednoznačně popisuje význam pojmu. " +
             "Je-li pojem vázán na dokument, je definice přímou citací z daného dokumentu. Definice se používá pouze pro " +
             "plné vymezení významu pojmu (např. 'budova' ve slovníku Zákona č. 256/2013 Sb. by měla definici " +

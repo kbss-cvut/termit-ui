@@ -4,23 +4,24 @@ import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
 import {ThunkDispatch} from "../../util/Types";
-import {setTermDefinitionSource} from "../AsyncTermActions";
+import {setTermDefinitionSource, setTermStatus} from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
 import Term from "../../model/Term";
 import ActionType from "../ActionType";
 import MessageType from "../../model/MessageType";
+import {langString} from "../../model/MultilingualString";
+import TermStatus from "../../model/TermStatus";
+import AsyncActionStatus from "../AsyncActionStatus";
 
 jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => ({
-    default: jest.fn(),
-    content: jest.requireActual("../../util/Ajax").content,
-    params: jest.requireActual("../../util/Ajax").params,
-    param: jest.requireActual("../../util/Ajax").param,
-    accept: jest.requireActual("../../util/Ajax").accept,
-    contentType: jest.requireActual("../../util/Ajax").contentType,
-    formData: jest.requireActual("../../util/Ajax").formData
-}));
+jest.mock("../../util/Ajax", () => {
+    const originalModule = jest.requireActual("../../util/Ajax");
+    return {
+        ...originalModule,
+        default: jest.fn()
+    };
+});
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
@@ -41,7 +42,7 @@ describe("AsyncTermActions", () => {
 
         const term = new Term({
             iri: `${namespace}${vocabularyName}/terms/${termName}`,
-            label: termName
+            label: langString(termName)
         });
         const definitionSource = new TermOccurrence({
             term,
@@ -82,6 +83,29 @@ describe("AsyncTermActions", () => {
                 const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(messageAction).toBeDefined();
                 expect(messageAction.message.type).toEqual(MessageType.ERROR);
+            });
+        });
+    });
+
+    describe("setTermStatus", () => {
+        const termIri = VocabularyUtils.create(`${namespace}${vocabularyName}/terms/${termName}`);
+
+        it("sends PUT request with new term status to REST endpoint", () => {
+            Ajax.put = jest.fn().mockResolvedValue(null);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermStatus(termIri, TermStatus.CONFIRMED))).then(() => {
+                expect(Ajax.put).toHaveBeenCalled();
+                expect((Ajax.put as jest.Mock).mock.calls[0][1].getContent()).toEqual(TermStatus.CONFIRMED);
+            });
+        });
+
+        it("publishes success action with new status as payload on success", () => {
+            Ajax.put = jest.fn().mockResolvedValue(null);
+            const status = TermStatus.CONFIRMED;
+            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermStatus(termIri, status))).then(() => {
+                expect(Ajax.put).toHaveBeenCalled();
+                const successAction = store.getActions().find(a => a.type === ActionType.SET_TERM_STATUS && a.status === AsyncActionStatus.SUCCESS);
+                expect(successAction).toBeDefined();
+                expect(successAction.payload).toEqual(status);
             });
         });
     });
