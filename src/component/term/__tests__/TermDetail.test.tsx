@@ -220,6 +220,7 @@ describe("TermDetail", () => {
             expect(onPublishNotification).toHaveBeenCalledWith({source: {type: NotificationType.TERM_HIERARCHY_UPDATED}});
         });
     });
+
     it("invokes remove action and closes remove confirmation dialog on remove", () => {
         const wrapper = shallow<TermDetail>(<TermDetail term={term} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                                                         loadTerm={onLoad}
@@ -236,5 +237,57 @@ describe("TermDetail", () => {
         wrapper.instance().onRemove();
         expect(removeTerm).toHaveBeenCalledWith(term);
         expect(wrapper.state("showRemoveDialog")).toBeFalsy();
+    });
+
+    it("renders term initially in language corresponding to UI", () => {
+        const wrapper = shallow<TermDetail>(<TermDetail term={term} configuredLanguage="cs"
+                                                        loadTerm={onLoad}
+                                                        updateTerm={onUpdate}
+                                                        removeTerm={removeTerm}
+                                                        loadVocabulary={loadVocabulary}
+                                                        vocabulary={vocabulary}
+                                                        history={history}
+                                                        location={location}
+                                                        match={match}
+                                                        publishNotification={onPublishNotification}
+                                                        validationResults={validationResults}
+                                                        {...intlFunctions()}/>);
+        expect(wrapper.find(TermMetadata).prop("language")).toEqual(Constants.DEFAULT_LANGUAGE);
+    });
+
+    it("renders term in configured language when UI language is not supported", () => {
+        const lang = "cs";
+        term.label = langString("Pouze česky", lang);
+        const wrapper = shallow<TermDetail>(<TermDetail term={term} configuredLanguage={lang}
+                                                        loadTerm={onLoad}
+                                                        updateTerm={onUpdate}
+                                                        removeTerm={removeTerm}
+                                                        loadVocabulary={loadVocabulary}
+                                                        vocabulary={vocabulary}
+                                                        history={history}
+                                                        location={location}
+                                                        match={match}
+                                                        publishNotification={onPublishNotification}
+                                                        validationResults={validationResults}
+                                                        {...intlFunctions()}/>);
+        expect(wrapper.find(TermMetadata).prop("language")).toEqual(lang);
+    });
+
+    it("postpones language resolution until term is loaded", () => {
+        const wrapper = shallow<TermDetail>(<TermDetail term={null} configuredLanguage="cs"
+                                                        loadTerm={onLoad}
+                                                        updateTerm={onUpdate}
+                                                        removeTerm={removeTerm}
+                                                        loadVocabulary={loadVocabulary}
+                                                        vocabulary={vocabulary}
+                                                        history={history}
+                                                        location={location}
+                                                        match={match}
+                                                        publishNotification={onPublishNotification}
+                                                        validationResults={validationResults}
+                                                        {...intlFunctions()}/>);
+        wrapper.setProps({term});
+        wrapper.update();
+        expect(wrapper.find(TermMetadata).prop("language")).toEqual(Constants.DEFAULT_LANGUAGE);
     });
 });
