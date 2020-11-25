@@ -7,7 +7,13 @@
 import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import {GetStoreState, ThunkDispatch} from "../util/Types";
-import {asyncActionFailure, asyncActionRequest, asyncActionSuccess, publishMessage} from "./SyncActions";
+import {
+    asyncActionFailure,
+    asyncActionRequest,
+    asyncActionSuccess,
+    asyncActionSuccessWithPayload,
+    publishMessage
+} from "./SyncActions";
 import Ajax, {param} from "../util/Ajax";
 import Term from "../model/Term";
 import {ErrorData} from "../model/ErrorInfo";

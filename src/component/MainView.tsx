@@ -12,17 +12,13 @@ import Footer from "./footer/Footer";
 import {logout} from "../action/ComplexActions";
 import {Route, RouteComponentProps, Switch, withRouter} from "react-router";
 import Messages from "./message/Messages";
-import Search from "./search/label/Search";
-import NavbarSearch from "./search/label/NavbarSearch";
 import {ThunkDispatch} from "../util/Types";
 import SearchTypeTabs from "./search/SearchTypeTabs";
-import {Breadcrumbs} from "react-breadcrumbs";
 import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
 import {loadUser} from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
 import Dashboard from "./dashboard/Dashboard";
 import ProfileRoute from "./profile/ProfileRoute";
-import UserDropdown from "./misc/UserDropdown";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
 import {loadCurrentWorkspace, selectWorkspace} from "../action/WorkspaceAsyncActions";
@@ -32,11 +28,11 @@ import WorkspaceNotLoaded from "./workspace/WorkspaceNotLoaded";
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import Mask from "./misc/Mask";
 import "./MainView.scss";
+import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
 
 const AdministrationRoute = React.lazy(() => import("./administration/AdministrationRoute"));
 const ResourceManagementRoute = React.lazy(() => import("./resource/ResourceManagementRoute"));
 const VocabularyManagementRoute = React.lazy(() => import("./vocabulary/VocabularyManagementRoute"));
-const Statistics = React.lazy(() => import("./statistics/Statistics"));
 const Search = React.lazy(() => import("./search/label/Search"));
 const SearchVocabularies = React.lazy(() => import("./search/SearchVocabularies"));
 const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
@@ -145,13 +141,10 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                                              component={ResourceManagementRoute}/>
                             <BreadcrumbRoute title={i18n("main.nav.vocabularies")} path={Routes.vocabularies.path}
                                              component={VocabularyManagementRoute}/>
-                            <BreadcrumbRoute title={i18n("main.nav.statistics")} path={Routes.statistics.path}
-                                             component={Statistics}/>
                             <BreadcrumbRoute title={i18n("main.nav.searchTerms")} path={Routes.searchTerms.path}
                                              component={SearchTerms}/>
                             <BreadcrumbRoute title={i18n("main.nav.searchVocabularies")}
-                                             path={Routes.searchVocabularies.path}
-                                             component={SearchVocabularies}/>
+                                             path={Routes.searchVocabularies.path} component={SearchVocabularies}/>
                             <BreadcrumbRoute title={i18n("main.nav.search")} path={Routes.search.path}
                                              component={Search}/>
                             <BreadcrumbRoute title={i18n("main.user-profile")} path={Routes.profile.path}

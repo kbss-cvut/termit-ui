@@ -16,8 +16,8 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
-import {isTermValid} from "./TermMetadataCreate";
 import DraftToggle from "./DraftToggle";
+import Constants from "../../util/Constants";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -43,7 +43,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public componentDidUpdate(prevProps: TermMetadataEditProps, prevState: TermMetadataEditState): void {
         if (this.props.language && (prevProps.language !== this.props.language)) {
-            this.onPrefLabelChange(this.state.label[this.props.language] || '');
+            this.onPrefLabelChange(this.state.label[this.props.language] || "");
         }
     }
 
@@ -56,7 +56,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         label[this.props.language] = prefLabel;
         const labelExist = Object.assign({}, this.state.labelExist);
         labelExist[this.props.language] = false;
-        this.setState({ label, labelExist } );
+        this.setState({label, labelExist});
 
         const prefLabelCurrent = getLocalized(this.props.term.label, this.props.language).toLowerCase();
         if (prefLabel.toLowerCase() === prefLabelCurrent) {
@@ -152,8 +152,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const {i18n, language} = this.props;
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
-        const labelInLanguageInvalid = !isLabelValid(this.state,language) || this.state.labelExist[language];
-        const invalid = !isTermValid(this.state,this.state.labelExist);
+        const labelInLanguageInvalid = !isLabelValid(this.state, language) || this.state.labelExist[language];
+        const invalid = !isTermValid(this.state, this.state.labelExist);
         return <>
             <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
                                   onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
