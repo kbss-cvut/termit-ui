@@ -1,6 +1,6 @@
 import Constants from '../util/Constants';
 
-export default {
+const en = {
     locale: Constants.LANG.EN.locale,
     messages: {
         'please-wait': 'Please wait...',
@@ -272,7 +272,7 @@ export default {
         "term.metadata.definitionSource.goto": "Go to source",
         "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding file",
         'term.metadata.comment': 'Comment',
-        "term.metadata.parent": "Parent term",
+        "term.metadata.parent": "Parent terms",
         'term.metadata.subTerms': 'Sub terms',
         'term.metadata.types': 'Type',
         'term.metadata.source': 'Source',
@@ -301,9 +301,9 @@ export default {
         'term.metadata.source.remove.title': 'Remove source',
         'term.metadata.source.remove.text': 'Remove',
         'term.metadata.subterm.link': 'View detail of this term',
-        "term.metadata.assignments.title": "Related resources",
+        "term.metadata.assignments.title": "Anotated resources",
         "term.metadata.assignments.empty": "This term is not assigned to any resources.",
-        "term.metadata.assignments.assignment": "Assignment",
+        "term.metadata.assignments.assignment": "Assigned to the resource?",
         "term.metadata.assignments.assignment.assigned": "Term is assigned to this resource",
         "term.metadata.assignments.assignment.not.assigned": "Term is not assigned to this resource",
         "term.metadata.assignments.assignment.help": "Term assignment represents situations when term is assigned to the resource as a whole.",
@@ -331,6 +331,8 @@ export default {
         "term.metadata.status.help" : "Draft term is not ready to be used yet, while Confirmed term is.",
         "term.metadata.types.select.placeholder": "Select type",
         "term.removed.message": "Term successfully removed.",
+        "term.badge.score.tooltip": "The score of this term is {score}%. Click to see the validation results",
+        "term.badge.no-score.tooltip": "There is no available score for this term",
 
         "glossary.title": "Terms",
         "glossary.new": "New Term",
@@ -365,7 +367,7 @@ export default {
         'glossary.form.validation.validateLengthMin3': 'Field must be at least 3 characters',
         'glossary.form.validation.validateNotSameAsParent': 'Child option cannot be same as parent option',
 
-        'file.text-analysis.finished.message': "Text analysis of file \"{fileName}\" successfully finished.",
+        'file.text-analysis.finished.message': "Text analysis successfully finished.",
         'file.metadata.startTextAnalysis': 'Start text analysis',
         'file.metadata.startTextAnalysis.text': 'Analyze',
         "file.content.upload.success": "Content of file \"{fileName}\" successfully uploaded.",
@@ -545,3 +547,5 @@ export default {
         "comments.comment.edited": "Edited"
     }
 };
+
+export default en;

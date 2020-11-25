@@ -10,7 +10,7 @@ export interface TextAreaProps extends AbstractInputProps {
 
 export default class TextArea extends AbstractInput<TextAreaProps> {
 
-    protected readonly input: React.RefObject<Input<{}>>;
+    protected readonly input: React.RefObject<Input>;
 
     constructor(props: TextAreaProps) {
         super(props);

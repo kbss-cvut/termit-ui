@@ -36,42 +36,45 @@ function trueFunc() {
 
 const AnnotatorContent: React.FC<AnnotatorContentProps> = props => {
     const {prefixMap, stickyAnnotationId, content, onRemove, onUpdate, onResetSticky, onCreateTerm} = props;
-    const processNodeDefinitions = new ProcessNodeDefinitions(React);
-    const processingInstructions = [{
-        // Custom annotated element processing
-        shouldProcessNode: (node: any): boolean =>
-            AnnotationDomHelper.isAnnotation(node, prefixMap),
-        processNode: (node: DomHandlerNode, children?: React.ReactNode[]) => {
-            const elem = node as DomHandlerElement;
-            // filter annotations by score
-            if (!AnnotationDomHelper.isAnnotationWithMinimumScore(elem, ANNOTATION_MINIMUM_SCORE_THRESHOLD)) {
-                return <React.Fragment key={elem.attribs.about}>{children}</React.Fragment>;
-            }
-            const sticky = stickyAnnotationId === elem.attribs.about;
 
-            const attribs = HtmlParserUtils.resolveRDFAttributes(elem.attribs, prefixMap);
-
-            return <Annotation key={elem.attribs.about} tag={elem.name} onRemove={onRemove}
-                               onUpdate={onUpdate}
-                               onResetSticky={onResetSticky}
-                               onCreateTerm={onCreateTerm}
-                               sticky={sticky} text={HtmlDomUtils.getTextContent(node)} {...attribs}>
-                {children}
-            </Annotation>;
-        }
-    }, {
-        // Anything else
-        shouldProcessNode: trueFunc,
-        processNode: processNodeDefinitions.processDefaultNode
-    }];
-
-    const htmlToReactParser = new HtmlToReactParser();
     // Using memoization to skip processing and re-rendering of the content DOM in case it hasn't changed
-    const reactComponents = React.useMemo(() => htmlToReactParser.parseWithInstructions(
-        HtmlParserUtils.dom2html(content),
-        trueFunc,
-        processingInstructions,
-        PREPROCESSING_INSTRUCTIONS), [content, htmlToReactParser, processingInstructions]);
+    const reactComponents = React.useMemo(() => {
+        const htmlToReactParser = new HtmlToReactParser();
+        const processNodeDefinitions = new ProcessNodeDefinitions(React);
+        const processingInstructions = [{
+            // Custom annotated element processing
+            shouldProcessNode: (node: any): boolean =>
+                AnnotationDomHelper.isAnnotation(node, prefixMap),
+            processNode: (node: DomHandlerNode, children?: React.ReactNode[]) => {
+                const elem = node as DomHandlerElement;
+                // filter annotations by score
+                if (!AnnotationDomHelper.isAnnotationWithMinimumScore(elem, ANNOTATION_MINIMUM_SCORE_THRESHOLD)) {
+                    return <React.Fragment key={elem.attribs.about}>{children}</React.Fragment>;
+                }
+                const sticky = stickyAnnotationId === elem.attribs.about;
+
+                const attribs = HtmlParserUtils.resolveRDFAttributes(elem.attribs, prefixMap);
+
+                return <Annotation key={elem.attribs.about} tag={elem.name} onRemove={onRemove}
+                                   onUpdate={onUpdate}
+                                   onResetSticky={onResetSticky}
+                                   onCreateTerm={onCreateTerm}
+                                   sticky={sticky} text={HtmlDomUtils.getTextContent(node)} {...attribs}>
+                    {children}
+                </Annotation>;
+            }
+        }, {
+            // Anything else
+            shouldProcessNode: trueFunc,
+            processNode: processNodeDefinitions.processDefaultNode
+        }];
+
+        return htmlToReactParser.parseWithInstructions(
+            HtmlParserUtils.dom2html(content),
+            trueFunc,
+            processingInstructions,
+            PREPROCESSING_INSTRUCTIONS);
+    }, [prefixMap, stickyAnnotationId, content, onRemove, onUpdate, onResetSticky, onCreateTerm]);
 
     return <>
         {Utils.sanitizeArray(reactComponents).map((n, i) => <React.Fragment key={i}>{n}</React.Fragment>)}

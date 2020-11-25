@@ -35,7 +35,7 @@ export class SearchTypeTabs extends React.Component<SearchTypeTabsProps> {
         const path = this.props.location.pathname;
         const loggedIn = Authentication.isLoggedIn(this.props.user);
 
-        const tabs: Array<{ route: Route, altExactRoutes: Route[], label: string, id: string }> = [{
+        const tabs: { route: Route, altExactRoutes: Route[], label: string, id: string }[] = [{
             route: loggedIn ? Routes.search : Routes.publicSearch,
             altExactRoutes: [],
             label: i18n("search.tab.everything"),

@@ -204,6 +204,49 @@ describe("Annotator", () => {
             expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(annotation, expect.anything());
         });
 
+        // Bug #1443
+        it("does not remove suggested label occurrence when new term creation is cancelled", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent}
+            />);
+            const annotation = {
+                about: "_:13",
+                content: "infrastruktura",
+                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+                typeof: VocabularyUtils.TERM_OCCURRENCE,
+                score: "1.0"
+            };
+            wrapper.instance().setState({newTermLabelAnnotation: annotation});
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotation);
+            AnnotationDomHelper.removeAnnotation = jest.fn();
+
+            wrapper.instance().onCloseCreate();
+            // Workaround for not.toHaveBeenCalled throwing an error
+            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledTimes(0);
+        });
+
+        it("does not confirmed term label occurrence when new term creation is cancelled", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent}
+            />);
+            const annotation = {
+                about: "_:13",
+                content: "infrastruktura",
+                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+                typeof: VocabularyUtils.TERM_OCCURRENCE,
+                resource: Generator.generateUri()
+            };
+            wrapper.instance().setState({newTermLabelAnnotation: annotation});
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotation);
+            AnnotationDomHelper.removeAnnotation = jest.fn();
+
+            wrapper.instance().onCloseCreate();
+            // Workaround for not.toHaveBeenCalled throwing an error
+            expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledTimes(0);
+        });
+
         // Bug #1245
         it("removes created definition annotation when new term creation is cancelled", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
@@ -553,6 +596,36 @@ describe("Annotator", () => {
             return Promise.resolve().then(() => {
                 const newContent = wrapper.find(AnnotatorContent).prop("content");
                 expect(newContent).not.toBe(originalContent);
+            });
+        });
+
+        it("removes previously created annotation when term definition assignment fails", async () => {
+            mockedCallbackProps.setTermDefinitionSource = jest.fn().mockRejectedValue({});
+            const definitionAnnotation = {
+                about: "_:14",
+                property: VocabularyUtils.IS_DEFINITION_OF_TERM,
+                typeof: VocabularyUtils.DEFINITION
+            };
+            const term = Generator.generateTerm();
+            const defNode = {
+                attribs: {
+                    about: definitionAnnotation.about,
+                    resource: undefined,
+                    typeof: definitionAnnotation.typeof
+                }
+            };
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(defNode);
+            AnnotationDomHelper.removeAnnotation = jest.fn();
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent}
+            />);
+            await wrapper.instance().onAnnotationTermSelected(definitionAnnotation, term);
+            wrapper.update();
+
+            return Promise.resolve().then(() => {
+                expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
+                expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalled();
             });
         });
     });

@@ -54,6 +54,11 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
     }
 
     public componentDidUpdate(prevProps: Readonly<ResourceFileDetailProps>): void {
+        if (this.hasResourceIriChanged(prevProps)) {
+            this.props.loadResource(this.getFileIri());
+            this.setState({vocabularyIri: undefined});
+            return;
+        }
         if (this.shouldLoadVocabularyIri(prevProps)) {
             const vocabularyIri = this.getVocabularyIri();
             if (vocabularyIri) {
@@ -64,9 +69,14 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
         }
     }
 
+    private hasResourceIriChanged(prevProps: Readonly<ResourceFileDetailProps>) {
+        return this.props.match.params.name !== prevProps.match.params.name || this.props.location.search !== prevProps.location.search;
+    }
+
     private shouldLoadVocabularyIri(prevProps: Readonly<ResourceFileDetailProps>) {
-        return this.props.resource && this.props.resource !== EMPTY_RESOURCE &&
-            (!prevProps.resource || prevProps.resource === EMPTY_RESOURCE || prevProps.resource.iri !== this.props.resource.iri);
+        const {resource} = this.props;
+        return resource && resource !== EMPTY_RESOURCE &&
+            (!prevProps.resource || prevProps.resource === EMPTY_RESOURCE || prevProps.resource.iri !== resource.iri);
     }
 
     private getFileIri = (): IRI => {
@@ -94,17 +104,19 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
     }
 
     public render() {
-        if (this.props.resource && this.props.resource !== EMPTY_RESOURCE) {
-            if (this.state.vocabularyIri === undefined) {
+        const resource = this.props.resource;
+        const vocabularyIri = this.state.vocabularyIri;
+        if (resource && resource !== EMPTY_RESOURCE) {
+            if (vocabularyIri === undefined) {
                 return null;
             }
-            if (this.state.vocabularyIri === null) {
+            if (vocabularyIri === null) {
                 // This is temporary, annotator should support vocabulary selection
                 return <Label id="file-detail-no-vocabulary"
                               className="italics">{this.props.i18n("file.annotate.unknown-vocabulary")}</Label>
             }
-            return <ContentDetail iri={VocabularyUtils.create(this.props.resource.iri)}
-                                  scrollTo={this.state.scrollToSelector} vocabularyIri={this.state.vocabularyIri}/>
+            return <ContentDetail iri={VocabularyUtils.create(resource.iri)}
+                                  scrollTo={this.state.scrollToSelector} vocabularyIri={vocabularyIri}/>
         }
         return null;
     }
