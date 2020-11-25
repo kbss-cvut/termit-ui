@@ -1,6 +1,6 @@
 import * as React from "react";
 import File from "../../../../model/File";
-import VocabularyUtils from "../../../../util/VocabularyUtils";
+import VocabularyUtils, {IRI} from "../../../../util/VocabularyUtils";
 import Generator from "../../../../__tests__/environment/Generator";
 import {shallow} from "enzyme";
 import {TextAnalysisInvocationButton} from "../TextAnalysisInvocationButton";
@@ -16,7 +16,7 @@ describe("TextAnalysisInvocationButton", () => {
 
     let file: File;
 
-    let executeTextAnalysis: (file: File, vocabularyIri?: string) => Promise<any>;
+    let executeTextAnalysis: (fileIri: IRI, vocabularyIri?: string) => Promise<any>;
     let notifyAnalysisFinish: () => void;
     let loadingOn: () => void;
     let loadingOff: () => void;
@@ -38,52 +38,37 @@ describe("TextAnalysisInvocationButton", () => {
         loadingProps = {loadingOff, loadingOn, renderMask, loading: false};
     });
 
-    it("runs text analysis immediately when File has owner Document related to a Vocabulary", () => {
-        file.owner = {
-            iri: Generator.generateUri(),
-            label: "Test document",
-            files: [file],
-            vocabulary: {
-                iri: Generator.generateUri()
-            }
-        };
-        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton file={file}
+    it("runs text analysis immediately when defaultVocabulary was specified.", () => {
+        const vocabularyIri = Generator.generateUri();
+        const fileIri = VocabularyUtils.create(file.iri);
+        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton fileIri={fileIri}
                                                                                             executeTextAnalysis={executeTextAnalysis}
                                                                                             notifyAnalysisFinish={notifyAnalysisFinish}
+                                                                                            defaultVocabularyIri={vocabularyIri}
                                                                                             {...loadingProps} {...intlFunctions()}/>);
         wrapper.instance().onClick();
-        expect(executeTextAnalysis).toHaveBeenCalledWith(file, undefined);
+        expect(executeTextAnalysis).toHaveBeenCalledWith(fileIri, vocabularyIri);
     });
 
     it("starts loading when text analysis is invoked", () => {
-        file.owner = {
-            iri: Generator.generateUri(),
-            label: "Test document",
-            files: [file],
-            vocabulary: {
-                iri: Generator.generateUri()
-            }
-        };
-        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton file={file}
+        const fileIri = VocabularyUtils.create(Generator.generateUri());
+        const vocabularyIri = Generator.generateUri();
+        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton fileIri={fileIri}
                                                                                             executeTextAnalysis={executeTextAnalysis}
                                                                                             notifyAnalysisFinish={notifyAnalysisFinish}
+                                                                                            defaultVocabularyIri={vocabularyIri}
                                                                                             {...loadingProps} {...intlFunctions()}/>);
         wrapper.instance().onClick();
         expect(loadingOn).toHaveBeenCalled();
     });
 
     it("stops loading after text analysis invocation finishes", () => {
-        file.owner = {
-            iri: Generator.generateUri(),
-            label: "Test document",
-            files: [file],
-            vocabulary: {
-                iri: Generator.generateUri()
-            }
-        };
-        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton file={file}
+        const fileIri = VocabularyUtils.create(Generator.generateUri());
+        const vocabularyIri = Generator.generateUri();
+        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton fileIri={fileIri}
                                                                                             executeTextAnalysis={executeTextAnalysis}
                                                                                             notifyAnalysisFinish={notifyAnalysisFinish}
+                                                                                            defaultVocabularyIri={vocabularyIri}
                                                                                             {...loadingProps} {...intlFunctions()}/>);
         wrapper.instance().onClick();
         return Promise.resolve().then(() => {
@@ -92,17 +77,12 @@ describe("TextAnalysisInvocationButton", () => {
     });
 
     it("publishes notification after text analysis invocation finishes", () => {
-        file.owner = {
-            iri: Generator.generateUri(),
-            label: "Test document",
-            files: [file],
-            vocabulary: {
-                iri: Generator.generateUri()
-            }
-        };
-        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton file={file}
+        const fileIri = VocabularyUtils.create(Generator.generateUri());
+        const vocabularyIri = Generator.generateUri();
+        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton fileIri={fileIri}
                                                                                             executeTextAnalysis={executeTextAnalysis}
                                                                                             notifyAnalysisFinish={notifyAnalysisFinish}
+                                                                                            defaultVocabularyIri={vocabularyIri}
                                                                                             {...loadingProps} {...intlFunctions()}/>);
         wrapper.instance().onClick();
         return Promise.resolve().then(() => {
@@ -110,8 +90,9 @@ describe("TextAnalysisInvocationButton", () => {
         });
     });
 
-    it("shows vocabulary selector when File has no related Vocabulary", () => {
-        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton file={file}
+    it("shows vocabulary selector when no default vocabulary was specified", () => {
+        const fileIri = VocabularyUtils.create(Generator.generateUri());
+        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton fileIri={fileIri}
                                                                                             executeTextAnalysis={executeTextAnalysis}
                                                                                             notifyAnalysisFinish={notifyAnalysisFinish}
                                                                                             {...loadingProps} {...intlFunctions()}/>);
@@ -127,7 +108,7 @@ describe("TextAnalysisInvocationButton", () => {
             iri: Generator.generateUri(),
             label: "Test vocabulary"
         });
-        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton file={file}
+        const wrapper = shallow<TextAnalysisInvocationButton>(<TextAnalysisInvocationButton fileIri={VocabularyUtils.create(file.iri)}
                                                                                             executeTextAnalysis={executeTextAnalysis}
                                                                                             notifyAnalysisFinish={notifyAnalysisFinish}
                                                                                             {...loadingProps} {...intlFunctions()}/>);
@@ -135,7 +116,7 @@ describe("TextAnalysisInvocationButton", () => {
         wrapper.update();
         expect(wrapper.instance().state.showVocabularySelector).toBeTruthy();
         wrapper.instance().onVocabularySelect(vocabulary);
-        expect(executeTextAnalysis).toHaveBeenLastCalledWith(file, vocabulary.iri);
+        expect(executeTextAnalysis).toHaveBeenLastCalledWith(VocabularyUtils.create(file.iri), vocabulary.iri);
         wrapper.update();
         expect(wrapper.instance().state.showVocabularySelector).toBeFalsy();
     });

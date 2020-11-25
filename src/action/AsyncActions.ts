@@ -575,9 +575,9 @@ export function validateVocabulary(vocabularyIri: IRI, apiPrefix: string = Const
         return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`, param("namespace", vocabularyIri.namespace))
             .then((data: object[]) =>
                 data.length !== 0 ? JsonLdUtils
-                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT): [] )
+                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT) : [])
             .then((data: ValidationResult[]) =>
-                dispatch(asyncActionSuccessWithPayload(action, {[IRIImpl.toString(vocabularyIri)] :  data })))
+                dispatch(asyncActionSuccessWithPayload(action, {[IRIImpl.toString(vocabularyIri)]: data})))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return [];
@@ -636,25 +636,23 @@ export function loadTypes() {
     };
 }
 
-export function executeFileTextAnalysis(file: TermitFile, vocabularyIri?: string) {
+export function executeFileTextAnalysis(fileIri: IRI, vocabularyIri: string) {
     const action = {
         type: ActionType.EXECUTE_FILE_TEXT_ANALYSIS
     };
-    const iri = VocabularyUtils.create(file.iri);
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const reqParams: any = {};
-        reqParams.namespace = iri.namespace;
+        reqParams.namespace = fileIri.namespace;
         if (vocabularyIri) {
             reqParams.vocabulary = vocabularyIri
         }
         return Ajax
-            .put(Constants.API_PREFIX + "/resources/" + iri.fragment + "/text-analysis", params(reqParams))
+            .put(Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/text-analysis", params(reqParams))
             .then(() => {
                 dispatch(asyncActionSuccess(action));
                 return dispatch(publishMessage(new Message({
-                    messageId: "file.text-analysis.finished.message",
-                    values: {"fileName": file.label}
+                    messageId: "file.text-analysis.finished.message"
                 }, MessageType.SUCCESS)));
             })
             .catch((error: ErrorData) => {
@@ -836,11 +834,7 @@ export function getLabel(iri: string) {
     return getTextualField(iri, "label", ActionType.GET_LABEL);
 }
 
-/**
- * Fetches RDFS:label of a resource with the specified identifier.
- * @param iri Resource identifier
- */
-export function getTextualField(iri: string, field: string, actionType: string) {
+function getTextualField(iri: string, field: string, actionType: string) {
     const action = {
         type: actionType
     };
@@ -1163,5 +1157,20 @@ export function loadConfiguration() {
         return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_MIME_TYPE))
             .then((data: Configuration) => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch(error => dispatch(asyncActionFailure(action, error)));
+    }
+}
+
+export function loadNews(language: string) {
+    const action = {type: ActionType.LOAD_NEWS};
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        return Ajax.get(Constants.NEWS_MD_URL[language])
+            .then((data: string) => {
+                dispatch(asyncActionSuccess(action));
+                return data;
+            }).catch(error => {
+                dispatch(asyncActionFailure(action, error));
+                return null;
+            });
     }
 }

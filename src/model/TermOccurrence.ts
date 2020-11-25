@@ -57,7 +57,10 @@ export default class TermOccurrence extends TermAssignment {
     }
 
     public toJsonLd(): TermOccurrenceData {
-        return Object.assign({}, this, {"@context": CONTEXT});
+        const result = Object.assign({}, this, {"@context": CONTEXT});
+        // Prevent possible circular JSON reference issue
+        (result as any).term = {iri: this.term?.iri};
+        return result;
     }
 }
 

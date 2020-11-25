@@ -5,6 +5,8 @@ import {AssetData} from "../../../model/Asset";
 import Term from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import {shallow} from "enzyme";
+// @ts-ignore
+import {IntelligentTreeSelect} from "intelligent-tree-select";
 
 describe("ResourceTermAssignmentsEdit", () => {
 
@@ -13,6 +15,16 @@ describe("ResourceTermAssignmentsEdit", () => {
 
     beforeEach(() => {
         onChange = jest.fn();
+    });
+
+    it("passes term label retrieval function to tree select", () => {
+        const existingTerms = [Generator.generateTerm(), Generator.generateTerm()];
+        const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
+        fetchTerms = jest.fn().mockResolvedValue(fetchedTerms);
+        const wrapper = shallow<ResourceTermAssignmentsEdit>(<ResourceTermAssignmentsEdit terms={existingTerms}
+                                                                                          onChange={onChange}
+                                                                                          fetchTerms={fetchTerms} {...intlFunctions()}/>);
+        expect(wrapper.find(IntelligentTreeSelect).prop("getOptionLabel")).toBeDefined();
     });
 
     describe("fetchOptions", () => {
@@ -30,20 +42,6 @@ describe("ResourceTermAssignmentsEdit", () => {
                 expect(existingTerms.length).toEqual(origLength);
                 expect(terms.length).toEqual(origLength + fetchedTerms.length);
                 expect(terms).toEqual([...existingTerms, ...fetchedTerms]);
-            });
-        });
-
-        it("ensures all terms passed as options to tree select have simpleLabel attribute", () => {
-            const existingTerms = [Generator.generateTerm(), Generator.generateTerm()];
-            const origLength = existingTerms.length;
-            const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
-            fetchTerms = jest.fn().mockResolvedValue(fetchedTerms);
-            const wrapper = shallow<ResourceTermAssignmentsEdit>(<ResourceTermAssignmentsEdit terms={existingTerms}
-                                                                                              onChange={onChange}
-                                                                                              fetchTerms={fetchTerms} {...intlFunctions()}/>);
-            return wrapper.instance().fetchOptions({}).then((terms) => {
-                expect(terms.length).toEqual(origLength + fetchedTerms.length);
-                terms.forEach((t: any) => expect(t.simpleLabel).toBeDefined());
             });
         });
     });

@@ -7,26 +7,22 @@ import {connect} from "react-redux";
 import TermItState from "../model/TermItState";
 import {Container, Jumbotron,} from "reactstrap";
 import User, {EMPTY_USER} from "../model/User";
-import "./MainView.scss";
 import Routes from "../util/Routes";
 import Footer from "./footer/Footer";
 import {logout} from "../action/ComplexActions";
 import {Route, RouteComponentProps, Switch, withRouter} from "react-router";
 import Messages from "./message/Messages";
 import Search from "./search/label/Search";
+import NavbarSearch from "./search/label/NavbarSearch";
 import {ThunkDispatch} from "../util/Types";
-import ResourceManagementRoute from "./resource/ResourceManagementRoute";
 import SearchTypeTabs from "./search/SearchTypeTabs";
-import SearchTerms from "./search/SearchTerms";
+import {Breadcrumbs} from "react-breadcrumbs";
 import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
-import VocabularyManagementRoute from "./vocabulary/VocabularyManagementRoute";
-import Dashboard from "./dashboard/Dashboard";
-import SearchVocabularies from "./search/SearchVocabularies";
-import ProfileRoute from "./profile/ProfileRoute";
-import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
-import AdministrationRoute from "./administration/AdministrationRoute";
 import {loadUser} from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
+import Dashboard from "./dashboard/Dashboard";
+import ProfileRoute from "./profile/ProfileRoute";
+import UserDropdown from "./misc/UserDropdown";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
 import {loadCurrentWorkspace, selectWorkspace} from "../action/WorkspaceAsyncActions";
@@ -34,6 +30,16 @@ import Workspace from "../model/Workspace";
 import Header from "./main/Header";
 import WorkspaceNotLoaded from "./workspace/WorkspaceNotLoaded";
 import AsyncActionStatus from "../action/AsyncActionStatus";
+import Mask from "./misc/Mask";
+import "./MainView.scss";
+
+const AdministrationRoute = React.lazy(() => import("./administration/AdministrationRoute"));
+const ResourceManagementRoute = React.lazy(() => import("./resource/ResourceManagementRoute"));
+const VocabularyManagementRoute = React.lazy(() => import("./vocabulary/VocabularyManagementRoute"));
+const Statistics = React.lazy(() => import("./statistics/Statistics"));
+const Search = React.lazy(() => import("./search/label/Search"));
+const SearchVocabularies = React.lazy(() => import("./search/SearchVocabularies"));
+const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     user: User;
@@ -131,23 +137,28 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                                classNames("pt-3", "flex-grow-1",
                                    {"content-container-dashboard": this.isDashboardRoute()})
                            }>
-                    <Switch>
-                        <BreadcrumbRoute title={i18n("main.nav.admin")} path={Routes.administration.path}
-                                         component={AdministrationRoute}/>
-                        <BreadcrumbRoute title={i18n("main.nav.resources")} path={Routes.resources.path}
-                                         component={ResourceManagementRoute}/>
-                        <BreadcrumbRoute title={i18n("main.nav.vocabularies")} path={Routes.vocabularies.path}
-                                         component={VocabularyManagementRoute}/>
-                        <BreadcrumbRoute title={i18n("main.nav.searchTerms")} path={Routes.searchTerms.path}
-                                         component={SearchTerms}/>
-                        <BreadcrumbRoute title={i18n("main.nav.searchVocabularies")}
-                                         path={Routes.searchVocabularies.path}
-                                         component={SearchVocabularies}/>
-                        <BreadcrumbRoute title={i18n("main.nav.search")} path={Routes.search.path} component={Search}/>
-                        <BreadcrumbRoute title={i18n("main.user-profile")} path={Routes.profile.path}
-                                         component={ProfileRoute}/>
-                        <Route component={Dashboard}/>
-                    </Switch>
+                    <React.Suspense fallback={<Mask/>}>
+                        <Switch>
+                            <BreadcrumbRoute title={i18n("main.nav.admin")} path={Routes.administration.path}
+                                             component={AdministrationRoute}/>
+                            <BreadcrumbRoute title={i18n("main.nav.resources")} path={Routes.resources.path}
+                                             component={ResourceManagementRoute}/>
+                            <BreadcrumbRoute title={i18n("main.nav.vocabularies")} path={Routes.vocabularies.path}
+                                             component={VocabularyManagementRoute}/>
+                            <BreadcrumbRoute title={i18n("main.nav.statistics")} path={Routes.statistics.path}
+                                             component={Statistics}/>
+                            <BreadcrumbRoute title={i18n("main.nav.searchTerms")} path={Routes.searchTerms.path}
+                                             component={SearchTerms}/>
+                            <BreadcrumbRoute title={i18n("main.nav.searchVocabularies")}
+                                             path={Routes.searchVocabularies.path}
+                                             component={SearchVocabularies}/>
+                            <BreadcrumbRoute title={i18n("main.nav.search")} path={Routes.search.path}
+                                             component={Search}/>
+                            <BreadcrumbRoute title={i18n("main.user-profile")} path={Routes.profile.path}
+                                             component={ProfileRoute}/>
+                            <Route component={Dashboard}/>
+                        </Switch>
+                    </React.Suspense>
                 </Container>
             </div>
             <Footer authenticated={true} sidebarExpanded={sidebarExpanded}/>

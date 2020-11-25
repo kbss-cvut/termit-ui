@@ -22,7 +22,7 @@ export class Route {
     }
 }
 
-export default {
+const Routes = {
     dashboard: new Route("dashboard", "/"),
     administration: new Route("administration", "/administration"),
     createNewUser: new Route("createNewUser", "/administration/users/create"),
@@ -54,3 +54,5 @@ export default {
     publicSearchTerms: new Route("publicSearchTerms", "/public/search/terms"),
     publicSearchVocabularies: new Route("publicSearchVocabularies", "/public/search/vocabularies"),
 };
+
+export default Routes;

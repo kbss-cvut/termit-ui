@@ -15,6 +15,7 @@ interface OptionRendererParams<T> {
     focusOption: (option: T & TreeOption) => void;
     key?: string;
     labelKey: string;
+    getOptionLabel: (option: T & TreeOption) => string;
     valueKey: string;
     option: T & TreeOption;
     selectValue: (option: T & TreeOption) => void;
@@ -55,7 +56,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms: 
             onToggleClick: () => toggleOption(option),
         };
 
-        const addonbefore = <span>
+        const addonBefore = <span>
             {!currentVocabularyIri || currentVocabularyIri === option.vocabulary!.iri ? undefined :
                 <ImportedTermInfo term={option}/>}
             {unusedTerms.indexOf(option.iri) !== -1 ? <>
@@ -64,8 +65,8 @@ export function createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms: 
         </span>;
 
         return <ResultItem key={params.key} renderAsTree={params.renderAsTree} className={className} option={option}
-                           childrenKey="plainSubTerms" labelKey={params.labelKey} valueKey={params.valueKey}
-                           style={optionStyle} searchString={params.searchString} addonBefore={addonbefore}
+                           childrenKey="plainSubTerms" labelKey={params.labelKey} valueKey={params.valueKey} getOptionLabel={params.getOptionLabel}
+                           style={optionStyle} searchString={params.searchString} addonBefore={addonBefore}
                            displayInfoOnHover={false} {...eventHandlers}/>;
     }
 }

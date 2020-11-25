@@ -120,7 +120,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     };
 
     public onRemove = (annotationId: string | string[]) => {
-        let dom = [...this.state.internalHtml];
+        const dom = [...this.state.internalHtml];
         let removed = false;
         for (const id of Utils.sanitizeArray(annotationId)) {
             const ann = AnnotationDomHelper.findAnnotation(dom, id, this.state.prefixMap);
@@ -147,6 +147,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             if (term !== null) {
                 this.createOccurrence(ann, term).then(() => {
                     this.updateInternalHtml(dom);
+                }).catch(() => {
+                    this.onRemove(annotationSpan.about!);
                 });
             } else {
                 this.updateInternalHtml(dom);
@@ -186,8 +188,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
     public onCloseCreate = () => {
         const toRemove: string[] = [];
-        if (this.state.newTermLabelAnnotation) {
-            toRemove.push(this.state.newTermLabelAnnotation.about!)
+        if (this.shouldRemoveLabelAnnotation()) {
+            toRemove.push(this.state.newTermLabelAnnotation!.about!)
         }
         if (this.state.newTermDefinitionAnnotation) {
             toRemove.push(this.state.newTermDefinitionAnnotation.about!);
@@ -199,6 +201,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             newTermDefinitionAnnotation: undefined
         });
     };
+
+    private shouldRemoveLabelAnnotation() {
+        const {newTermLabelAnnotation} = this.state;
+        return newTermLabelAnnotation && !newTermLabelAnnotation.score && !newTermLabelAnnotation.resource;
+    }
 
     private onMinimizeTermCreation = () => {
         this.props.publishMessage(new Message({messageId: "annotator.createTerm.selectDefinition.message"}, MessageType.INFO));

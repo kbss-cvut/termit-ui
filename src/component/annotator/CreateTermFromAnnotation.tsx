@@ -3,7 +3,6 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import {Button, ButtonToolbar, Col, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import TermMetadataCreateForm from "../term/TermMetadataCreateForm";
-import {isTermValid} from "../term/TermMetadataCreate";
 import {connect} from "react-redux";
 import {injectIntl} from "react-intl";
 import {ThunkDispatch} from "../../util/Types";
@@ -12,6 +11,7 @@ import {IRI} from "../../util/VocabularyUtils";
 import AssetFactory from "../../util/AssetFactory";
 import {langString} from "../../model/MultilingualString";
 import TermItState from "../../model/TermItState";
+import {isTermValid, LabelExists} from "../term/TermValidationUtils";
 
 interface CreateTermFromAnnotationProps extends HasI18n {
     show: boolean;
@@ -25,13 +25,17 @@ interface CreateTermFromAnnotationProps extends HasI18n {
 }
 
 interface CreateTermFromAnnotationState extends TermData {
+    labelExists : LabelExists;
 }
 
 export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnnotationProps, CreateTermFromAnnotationState> {
 
     constructor(props: CreateTermFromAnnotationProps) {
         super(props);
-        this.state = AssetFactory.createEmptyTermData(props.language);
+        this.state = Object.assign({},
+            AssetFactory.createEmptyTermData(props.language),
+            { labelExists : {} }
+        );
     }
 
     /**
@@ -69,6 +73,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
 
     public render() {
         const i18n = this.props.i18n;
+        const invalid = !isTermValid(this.state,this.state.labelExists);
         return <Modal id="annotator-create-term" isOpen={this.props.show} toggle={this.onCancel}>
             <ModalHeader>
                 {i18n("glossary.form.header")}
@@ -76,12 +81,13 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
             <ModalBody>
                 <TermMetadataCreateForm onChange={this.onChange} termData={this.state}
                                         language={this.props.language} definitionSelector={this.props.onMinimize}
-                                        vocabularyIri={this.props.vocabularyIri.namespace + this.props.vocabularyIri.fragment}/>
+                                        vocabularyIri={this.props.vocabularyIri.namespace + this.props.vocabularyIri.fragment}
+                                        labelExist={this.state.labelExists}/>
                 <Row>
                     <Col xs={12}>
                         <ButtonToolbar className="d-flex justify-content-center mt-4">
                             <Button id="create-term-submit" color="success" onClick={this.onSave}
-                                    disabled={!isTermValid(this.state)}
+                                    disabled={invalid}
                                     size="sm">{i18n("glossary.form.button.submit")}</Button>
                             <Button id="create-term-cancel" color="outline-dark" size="sm"
                                     onClick={this.onCancel}>{i18n("glossary.form.button.cancel")}</Button>

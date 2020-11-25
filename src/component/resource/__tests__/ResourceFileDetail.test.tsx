@@ -239,4 +239,48 @@ describe("ResourceFileDetail", () => {
                                                         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
         expect(popRoutingPayload).toHaveBeenCalled();
     });
+
+    it("reloads resource when filename in URL changes", () => {
+        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
+                                                                        loadResource={loadResource}
+                                                                        popRoutingPayload={popRoutingPayload}
+                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const newResourceName = "different-resource";
+        const newMatch = Object.assign({}, match, {
+            url: "http://localhost:3000/" + location.pathname + location.search,
+            params: {name: newResourceName}
+        });
+        wrapper.setProps({match: newMatch});
+        wrapper.update();
+        expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(resourceNamespace + newResourceName));
+    });
+
+    it("reloads resource when namespace in URL changes", () => {
+        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
+                                                                        loadResource={loadResource}
+                                                                        popRoutingPayload={popRoutingPayload}
+                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const newNamespace = `${Generator.generateUri()}/`;
+        const newLocation = Object.assign({}, location, {search: `?namespace=${newNamespace}`});
+        const newMatch = Object.assign({}, match, {url: "http://localhost:3000/" + newLocation.pathname + newLocation.search});
+        wrapper.setProps({match: newMatch, location: newLocation});
+        wrapper.update();
+        expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(newNamespace + resourceName));
+    });
+
+    it("sets vocabulary in state to undefined to force its reload when namespace in URL changes", () => {
+        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
+                                                                        loadResource={loadResource}
+                                                                        popRoutingPayload={popRoutingPayload}
+                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        expect(wrapper.state().vocabularyIri).toBeDefined();
+        const newResourceName = "different-resource";
+        const newMatch = Object.assign({}, match, {
+            url: "http://localhost:3000/" + location.pathname + location.search,
+            params: {name: newResourceName}
+        });
+        wrapper.setProps({match: newMatch});
+        wrapper.update();
+        expect(wrapper.state().vocabularyIri).not.toBeDefined();
+    });
 });

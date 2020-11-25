@@ -19,7 +19,7 @@ function calculatePathLength(node: Node, ancestor: Node) {
     return length;
 }
 
-export default {
+const HtmlDomUtils = {
 
     /**
      * Returns true if there is a non-empty selection in the current window.
@@ -249,6 +249,4 @@ function suffixMatch(selector: TextQuoteSelector, element: Element) {
         element.nextSibling.textContent && element.nextSibling.textContent!.indexOf(selector.suffix) !== -1;
 }
 
-
-
-
+export default HtmlDomUtils;

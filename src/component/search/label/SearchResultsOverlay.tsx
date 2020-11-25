@@ -3,13 +3,13 @@ import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
 import SearchResult from "../../../model/SearchResult";
 import {Popover, PopoverBody} from "reactstrap";
+import TermBadge from "../../badge/TermBadge";
 import {SearchResults} from "./SearchResults";
 import AssetLinkFactory from "../../factory/AssetLinkFactory";
 import AssetFactory from "../../../util/AssetFactory";
 import AssetLabel from "../../misc/AssetLabel";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import VocabularyBadge from "../../badge/VocabularyBadge";
-import TermBadge from "../../badge/TermBadge";
 
 interface SearchResultsOverlayProps extends HasI18n {
     show: boolean;

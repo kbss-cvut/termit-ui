@@ -31,7 +31,6 @@ import classNames from "classnames";
 import StatusFilter from "./StatusFilter";
 import TermTypeFrequency from "../statistics/termtypefrequency/TermTypeFrequency";
 import "./Terms.scss";
-import {getShortLocale} from "../../util/IntlUtil";
 
 interface GlossaryTermsProps extends HasI18n {
     vocabulary?: Vocabulary;
@@ -89,6 +88,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         } else if (Utils.didNavigationOccur(prevProps, this.props) && this.treeComponent.current && !this.props.isDetailView) {
             this.treeComponent.current.resetOptions();
         }
+        if (prevProps.locale !== this.props.locale) {
+            this.treeComponent.current.forceUpdate();
+        }
     }
 
     private static isNotificationRelevant(n: AppNotification) {
@@ -125,10 +127,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             .then(terms => {
                 const matchingVocabularies = this.state.includeImported ? Utils.sanitizeArray(this.props.vocabulary!.allImportedVocabularies).concat(this.props.vocabulary!.iri) : [this.props.vocabulary!.iri];
                 this.setState({disableIncludeImportedToggle: this.props.isDetailView || false});
-                return processTermsForTreeSelect(terms, matchingVocabularies, {
-                    searchString: fetchOptions.searchString,
-                    labelLang: getShortLocale(this.props.locale)
-                });
+                return processTermsForTreeSelect(terms, matchingVocabularies, {searchString: fetchOptions.searchString});
             });
     };
 
@@ -157,8 +156,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             delete cloneData.expanded;
             // @ts-ignore
             delete cloneData.depth;
-            // @ts-ignore
-            delete cloneData.simpleLabel;
             const clone = new Term(cloneData);
             this.props.selectVocabularyTerm(clone);
             Routing.transitionToAsset(clone, {query: new Map([["includeImported", this.state.includeImported.toString()]])});
@@ -254,7 +251,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                             multi={false}
                             maxHeight={Utils.calculateAssetListHeight()}
                             optionRenderer={createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms, this.props.vocabulary.iri)}
-                            {...commonTermTreeSelectProps(i18n)}
+                            {...commonTermTreeSelectProps(this.props)}
                         />
                     </Col>
                     {!isDetailView && <Col lg={3} className="term-type-frequency">

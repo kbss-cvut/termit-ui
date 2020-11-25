@@ -11,6 +11,7 @@ interface ResultItemProps {
     childrenKey: string;
     valueKey: string;
     labelKey: string;
+    getOptionLabel: (option: any) => string;
     tooltipKey?: string | ValueMapper<any>;
     className?: string;
     renderAsTree: boolean;
@@ -53,12 +54,12 @@ class ResultItem extends React.Component<ResultItemProps> {
 
     public render() {
         let button = null;
-        const {option, childrenKey, valueKey, labelKey} = this.props;
+        const {option, childrenKey, valueKey, labelKey, getOptionLabel} = this.props;
         if (option[childrenKey].length > 0) {
             button = this.getCollapseButton();
         }
 
-        const label: string = option[labelKey];
+        const label: string = getOptionLabel ? getOptionLabel(option) : option[labelKey];
         const value: string = option[valueKey];
 
         return <div className={this.props.className} onMouseEnter={this.onMouseEnter} style={this.props.style}>

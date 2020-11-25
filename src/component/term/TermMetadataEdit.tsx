@@ -6,8 +6,6 @@ import Term, {CONTEXT, TermData} from "../../model/Term";
 import "./TermMetadata.scss";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
-import Ajax, {params} from "../../util/Ajax";
-import Constants from "../../util/Constants";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermTypesEdit from "./TermTypesEdit";
 import Utils from "../../util/Utils";
@@ -17,6 +15,7 @@ import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
+import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
 import {isTermValid} from "./TermMetadataCreate";
 import DraftToggle from "./DraftToggle";
 
@@ -29,40 +28,53 @@ interface TermMetadataEditProps extends HasI18n {
 }
 
 interface TermMetadataEditState extends TermData {
-    labelExists: boolean;
+    labelExist: LabelExists;
     unmappedProperties: Map<string, string[]>;
 }
 
 export class TermMetadataEdit extends React.Component<TermMetadataEditProps, TermMetadataEditState> {
     constructor(props: TermMetadataEditProps) {
         super(props);
-        this.state = Object.assign({labelExists: false, unmappedProperties: props.term.unmappedProperties}, props.term);
+        this.state = Object.assign({
+            labelExist: {},
+            unmappedProperties: props.term.unmappedProperties
+        }, props.term);
     }
+
+    public componentDidUpdate(prevProps: TermMetadataEditProps, prevState: TermMetadataEditState): void {
+        if (this.props.language && (prevProps.language !== this.props.language)) {
+            this.onPrefLabelChange(this.state.label[this.props.language] || '');
+        }
+    }
+
+    private onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.onPrefLabelChange(e.currentTarget.value);
+    };
+
+    public onPrefLabelChange = (prefLabel: string) => {
+        const label = Object.assign({}, this.state.label);
+        label[this.props.language] = prefLabel;
+        const labelExist = Object.assign({}, this.state.labelExist);
+        labelExist[this.props.language] = false;
+        this.setState({ label, labelExist } );
+
+        const prefLabelCurrent = getLocalized(this.props.term.label, this.props.language).toLowerCase();
+        if (prefLabel.toLowerCase() === prefLabelCurrent) {
+            return;
+        }
+        const vocabularyIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);
+        checkLabelUniqueness(vocabularyIri, prefLabel, this.props.language, () => {
+            labelExist[this.props.language] = true;
+            this.setState({
+                labelExist: Object.assign({}, this.state.labelExist, labelExist)
+            });
+        });
+    };
 
     public onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const change = {};
         change[e.currentTarget.name.substring(e.currentTarget.name.lastIndexOf("-") + 1)] = e.currentTarget.value;
         this.setState(change);
-    };
-
-    public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const prefLabel = e.currentTarget.value;
-        const update = {};
-        update[this.props.language] = prefLabel;
-        this.setState({labelExists: false, label: Object.assign({}, this.state.label, update)});
-        if (prefLabel.toLowerCase() === getLocalized(this.props.term.label).toLowerCase()) {
-            return;
-        }
-        const vocabIri = VocabularyUtils.create(this.props.term.vocabulary!.iri!);
-        const url = Constants.API_PREFIX + "/vocabularies/" + vocabIri.fragment + "/terms";
-        Ajax.head(url, params({
-                namespace: vocabIri.namespace,
-                prefLabel,
-                language: this.props.language
-            })
-        ).then((data) => {
-            this.setState({labelExists: data.status === 200});
-        }).catch(() => this.setState({labelExists: false}));
     };
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,15 +126,11 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     };
 
     public onSave = () => {
-        const {labelExists, unmappedProperties, ...data} = this.state;
+        const {labelExist, unmappedProperties, ...data} = this.state;
         const t = new Term(data);
         t.unmappedProperties = this.state.unmappedProperties;
         this.props.save(t);
     };
-
-    private isValid(): boolean {
-        return isTermValid(this.state, this.props.language) && !this.state.labelExists;
-    }
 
     public removeTranslation = (lang: string) => {
         const copy = _.cloneDeep(this.state);
@@ -144,6 +152,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const {i18n, language} = this.props;
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
+        const labelInLanguageInvalid = !isLabelValid(this.state,language) || this.state.labelExist[language];
+        const invalid = !isTermValid(this.state,this.state.labelExist);
         return <>
             <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
                                   onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
@@ -155,8 +165,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                 <CustomInput name="edit-term-label"
                                              value={getLocalizedOrDefault(this.state.label, "", language)}
                                              onChange={this.onLabelChange}
-                                             label={i18n("asset.label")} invalid={this.state.labelExists}
-                                             invalidMessage={this.state.labelExists ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
+                                             label={i18n("asset.label")} invalid={labelInLanguageInvalid}
+                                             invalidMessage={labelInLanguageInvalid ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
                                              help={i18n("term.label.help")}
                                              {...this.draftRelatedLabelEditProps()}/>
                             </Col>
@@ -238,7 +248,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             <Col xs={12}>
                                 <ButtonToolbar className="d-flex justify-content-center mt-4">
                                     <Button id="edit-term-submit" color={Constants.SUBMIT_BUTTON_VARIANT}
-                                            disabled={!this.isValid()} size="sm"
+                                            disabled={invalid} size="sm"
                                             onClick={this.onSave}>{i18n("save")}</Button>
                                     <Button id="edit-term-cancel" color={Constants.CANCEL_BUTTON_VARIANT} size="sm"
                                             onClick={this.props.cancel}>{i18n("cancel")}</Button>

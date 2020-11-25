@@ -16,7 +16,6 @@ import {GoPlus} from "react-icons/go";
 import Utils from "../../util/Utils";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../term/TermTreeSelectHelper";
 import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
-import {getShortLocale} from "../../util/IntlUtil";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
     vocabulary?: Vocabulary;
@@ -49,6 +48,9 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
         if (prevProps.counter < this.props.counter) {
             this.forceUpdate();
         }
+        if (prevProps.locale !== this.props.locale) {
+            this.treeComponent.current.forceUpdate();
+        }
     }
 
     public componentWillUnmount() {
@@ -79,8 +81,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
     public render() {
         const {i18n, vocabulary} = this.props;
         const terms = processTermsForTreeSelect(Object.keys(this.props.terms).map(k => this.props.terms[k]),
-            Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(vocabulary!.iri),
-            {labelLang: getShortLocale(this.props.locale)});
+            Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(vocabulary!.iri));
 
         return <FormGroup>
             <div>
@@ -98,7 +99,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
                 isMenuOpen={false}
                 multi={false}
                 optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary!.iri)}
-                {...commonTermTreeSelectProps(i18n)}
+                {...commonTermTreeSelectProps(this.props)}
             />
         </FormGroup>;
     }

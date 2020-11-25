@@ -1,3 +1,20 @@
+##### Verze 2.1.1
+- Úprava UI výsledků vyhledávání
+- Opravy drobných chyb v uživatelském rozhraní
+
+##### Verze 2.1.0
+- Přidána podpora pro SKOS altLabel a hiddenLabel.
+- Přidána podpora vícejazyčných atributů pojmu.
+- Implementována validace kvality pojmů v rámci slovníku a vizualizace jejích výsledků.
+- Implementována podpora Docker kontejneru.
+
+##### Verze 2.0.0
+- Nový design uživatelského rozhraní.
+- Přidána možnost nastavit pojmu několik rodičovských pojmů.
+- Optimalizace komponenty anotátoru.
+- Těsnější podpora modelu SKOS.
+- Přidána možnost prohlížet slovníky a pojmy bez přihlášení.
+
 ##### Verze 1.3.0
 - Implementována podpora propojení pojmu se zdrojem jeho definice v souboru.
 - Přidána možnost zjistit pojmy příbuzné skrze definici a ontologické vazby.

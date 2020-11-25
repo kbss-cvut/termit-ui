@@ -1,6 +1,6 @@
 import Constants from "../util/Constants";
 
-export default {
+const cs = {
     locale: Constants.LANG.CS.locale,
     messages: {
         "please-wait": "Prosím, čekejte...",
@@ -277,7 +277,7 @@ export default {
         "term.metadata.definitionSource.goto": "Zobrazit zdroj",
         "term.metadata.definitionSource.goto.tooltip": "Zobrazit zdroj definice přímo v příslušném souboru",
         "term.metadata.comment": "Komentář",
-        "term.metadata.parent": "Nadřazený pojem",
+        "term.metadata.parent": "Nadřazené pojmy",
         "term.metadata.subTerms": "Podřazené pojmy",
         "term.metadata.types": "Typ pojmu",
         "term.metadata.status": "Stav pojmu",
@@ -306,9 +306,9 @@ export default {
         "term.metadata.source.remove.title": "Odebrat zdroj",
         "term.metadata.source.remove.text": "Odebrat",
         "term.metadata.subterm.link": "Zobrazit detail tohoto pojmu",
-        "term.metadata.assignments.title": "Datové zdroje",
+        "term.metadata.assignments.title": "Anotované zdroje",
         "term.metadata.assignments.empty": "Žádný zdroj není anotován tímto pojmem.",
-        "term.metadata.assignments.assignment": "Anotace",
+        "term.metadata.assignments.assignment": "Anotován tímto pojmem?",
         "term.metadata.assignments.assignment.assigned": "Zdroj je anotován pojmem",
         "term.metadata.assignments.assignment.not.assigned": "Zdroj pojmem anotován není",
         "term.metadata.assignments.assignment.help": "Anotace zdroje pojmem reprezentuje situaci kdy je pojem přiřazen zdroji jako takovému.",
@@ -336,6 +336,8 @@ export default {
         "term.metadata.status.help": "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
         "term.metadata.types.select.placeholder": "Vyberte typ",
         "term.removed.message": "Pojem by odstraněn.",
+        "term.badge.score.tooltip": "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
+        "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
 
         "glossary.title": "Pojmy",
         "glossary.new": "Nový pojem",
@@ -551,3 +553,5 @@ export default {
         "comments.comment.edited": "Upraveno"
     }
 };
+
+export default cs;
