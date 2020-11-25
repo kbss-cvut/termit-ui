@@ -598,6 +598,36 @@ describe("Annotator", () => {
                 expect(newContent).not.toBe(originalContent);
             });
         });
+
+        it("removes previously created annotation when term definition assignment fails", async () => {
+            mockedCallbackProps.setTermDefinitionSource = jest.fn().mockRejectedValue({});
+            const definitionAnnotation = {
+                about: "_:14",
+                property: VocabularyUtils.IS_DEFINITION_OF_TERM,
+                typeof: VocabularyUtils.DEFINITION
+            };
+            const term = Generator.generateTerm();
+            const defNode = {
+                attribs: {
+                    about: definitionAnnotation.about,
+                    resource: undefined,
+                    typeof: definitionAnnotation.typeof
+                }
+            };
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(defNode);
+            AnnotationDomHelper.removeAnnotation = jest.fn();
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent}
+            />);
+            await wrapper.instance().onAnnotationTermSelected(definitionAnnotation, term);
+            wrapper.update();
+
+            return Promise.resolve().then(() => {
+                expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
+                expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalled();
+            });
+        });
     });
 
     describe("onRemove", () => {

@@ -6,7 +6,7 @@
  */
 import VocabularyUtils from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import {ThunkDispatch} from "../util/Types";
+import {GetStoreState, ThunkDispatch} from "../util/Types";
 import {asyncActionFailure, asyncActionRequest, asyncActionSuccess, publishMessage} from "./SyncActions";
 import Ajax, {param} from "../util/Ajax";
 import Term from "../model/Term";
@@ -15,25 +15,27 @@ import Constants from "../util/Constants";
 import TermOccurrence from "../model/TermOccurrence";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
+import {getLocalized} from "../model/MultilingualString";
+import {getShortLocale} from "../util/IntlUtil";
 
 export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
     const termIri = VocabularyUtils.create(term.iri);
     const action = {type: ActionType.SET_TERM_DEFINITION_SOURCE};
-    return (dispatch: ThunkDispatch) => {
+    return (dispatch: ThunkDispatch, getState: GetStoreState) => {
         dispatch(asyncActionRequest(action));
         return Ajax.put(`${Constants.API_PREFIX}/terms/${termIri.fragment}/definition-source`,
             param("namespace", termIri.namespace).content(source.toJsonLd()))
             .then(() => dispatch(asyncActionSuccess(action)))
             .then(() => dispatch(publishMessage(new Message({
                 messageId: "annotator.setTermDefinitionSource.success",
-                values: {term: term.label}
+                values: {term: getLocalized(term.label, getShortLocale(getState().intl.locale))}
             }, MessageType.SUCCESS))))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 if (error.status === Constants.STATUS_CONFLICT) {
                     dispatch(publishMessage(new Message({
                         messageId: "annotator.setTermDefinitionSource.error.exists",
-                        values: {term: term.label}
+                        values: {term: getLocalized(term.label, getShortLocale(getState().intl.locale))}
                     }, MessageType.ERROR)));
                 }
                 return Promise.reject();

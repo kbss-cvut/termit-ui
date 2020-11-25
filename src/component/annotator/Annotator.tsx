@@ -147,6 +147,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             if (term !== null) {
                 this.createOccurrence(ann, term).then(() => {
                     this.updateInternalHtml(dom);
+                }).catch(() => {
+                    this.onRemove(annotationSpan.about!);
                 });
             } else {
                 this.updateInternalHtml(dom);
