@@ -5,6 +5,7 @@ import {UpdateRecord, UpdateValueType} from "../../model/changetracking/UpdateRe
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
 import {Badge, Label} from "reactstrap";
+import {FaArrowRight} from "react-icons/fa";
 
 interface UpdateRowProps extends HasI18n {
     record: UpdateRecord;
@@ -43,17 +44,20 @@ function renderValue(value?: UpdateValueType) {
         return null;
     }
     if (Array.isArray(value)) {
-        return <ul>
-            {(value as Array<{ iri?: string }>).map((v, i) => <li key={i}>{v.iri ?
-                <OutgoingLink label={<AssetLabel iri={v.iri}/>} iri={v.iri}/> : <Label>{v}</Label>}</li>)}
-        </ul>;
+        return <ul>{value.map((v, i) => <li key={i}>{renderSingleValue(v)}</li>)}</ul>;
     } else {
-        if ((value as { iri?: string }).iri) {
-            const iri = (value as { iri: string }).iri;
-            return <OutgoingLink label={<AssetLabel iri={iri}/>} iri={iri}/>;
-        }
-        return <Label>{value}</Label>;
+        return renderSingleValue(value);
     }
+}
+
+function renderSingleValue(value: any) {
+    if ((value as { iri?: string }).iri) {
+        const iri = (value as { iri: string }).iri;
+        return <OutgoingLink label={<AssetLabel iri={iri}/>} iri={iri}/>;
+    } else if (value["@language"]) {
+        return <Label>{value["@language"]}<FaArrowRight className="ml-1 mr-1"/>{value["@value"]}</Label>
+    }
+    return <Label>{value}</Label>;
 }
 
 export default injectIntl(withI18n(UpdateRow));

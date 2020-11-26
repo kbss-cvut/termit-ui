@@ -7,6 +7,7 @@ import {UpdateRow} from "../UpdateRow";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import OutgoingLink from "../../misc/OutgoingLink";
 import {Label} from "reactstrap";
+import Constants from "../../../util/Constants";
 
 describe("UpdateRow", () => {
 
@@ -46,5 +47,54 @@ describe("UpdateRow", () => {
         const label = wrapper.find(Label);
         expect(label.exists()).toBeTruthy();
         expect(label.children().text()).toEqual(literalValue);
+    });
+
+    it("renders lang string value change", () => {
+        const newValue = {
+            "@language": Constants.DEFAULT_LANGUAGE,
+            "@value": "Test value"
+        }
+        const record = new UpdateRecord({
+            iri: Generator.generateUri(),
+            timestamp: Date.now(),
+            author: Generator.generateUser(),
+            changedEntity: {iri: Generator.generateUri()},
+            changedAttribute: {iri: VocabularyUtils.SKOS_PREF_LABEL},
+            newValue,
+            types: [VocabularyUtils.UPDATE_EVENT]
+        });
+        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()}/>);
+        const label = wrapper.find(Label);
+        expect(label.exists()).toBeTruthy();
+        expect(label.childAt(0).text()).toContain(Constants.DEFAULT_LANGUAGE);
+        expect(label.childAt(2).text()).toContain(newValue["@value"]);
+    });
+
+    it("renders multilingual string value change", () => {
+        const newValue = [{
+            "@language": Constants.DEFAULT_LANGUAGE,
+            "@value": "Test value"
+        }, {
+            "@language": "cs",
+            "@value": "Testovaci hodnota"
+        }];
+        const record = new UpdateRecord({
+            iri: Generator.generateUri(),
+            timestamp: Date.now(),
+            author: Generator.generateUser(),
+            changedEntity: {iri: Generator.generateUri()},
+            changedAttribute: {iri: VocabularyUtils.SKOS_PREF_LABEL},
+            newValue,
+            types: [VocabularyUtils.UPDATE_EVENT]
+        });
+        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()}/>);
+        const label = wrapper.find(Label);
+        expect(label.exists()).toBeTruthy();
+        expect(label.length).toEqual(newValue.length);
+        newValue.forEach(nv => {
+            const matching = label.filterWhere(lab => lab.childAt(0).text().indexOf(nv["@language"]) !== -1);
+            expect(matching.exists()).toBeTruthy();
+            expect(matching.childAt(2).text()).toContain(nv["@value"]);
+        })
     });
 });
