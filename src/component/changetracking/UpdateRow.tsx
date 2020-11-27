@@ -44,9 +44,16 @@ function renderValue(value?: UpdateValueType) {
         return null;
     }
     if (Array.isArray(value)) {
-        return <ul>{value.map((v, i) => <li key={i}>{renderSingleValue(v)}</li>)}</ul>;
+        sortIfMultilingual(value);
+        return <div>{value.map((v, i) => <div key={i}>{renderSingleValue(v)}</div>)}</div>;
     } else {
         return renderSingleValue(value);
+    }
+}
+
+function sortIfMultilingual(value: any[]) {
+    if (value.find(v => v["@language"])) {
+        value.sort((a, b) => a["@language"].localeCompare(b["@language"]));
     }
 }
 
