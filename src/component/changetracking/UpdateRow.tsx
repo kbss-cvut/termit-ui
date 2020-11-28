@@ -5,7 +5,6 @@ import {UpdateRecord, UpdateValueType} from "../../model/changetracking/UpdateRe
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
 import {Badge, Label} from "reactstrap";
-import {FaArrowRight} from "react-icons/fa";
 
 interface UpdateRowProps extends HasI18n {
     record: UpdateRecord;
@@ -62,7 +61,7 @@ function renderSingleValue(value: any) {
         const iri = (value as { iri: string }).iri;
         return <OutgoingLink label={<AssetLabel iri={iri}/>} iri={iri}/>;
     } else if (value["@language"]) {
-        return <Label>{value["@language"]}<FaArrowRight className="ml-1 mr-1"/>{value["@value"]}</Label>
+        return <Label>{value["@value"]}<sup>{value["@language"]}</sup></Label>
     }
     return <Label>{value}</Label>;
 }
