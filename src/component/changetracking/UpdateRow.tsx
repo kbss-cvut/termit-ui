@@ -64,7 +64,7 @@ function renderSingleValue(value: any) {
     } else if (value["@language"]) {
         return <Label>{value["@language"]}<FaArrowRight className="ml-1 mr-1"/>{value["@value"]}</Label>
     }
-    return <Label>{value}</Label>;
+    return <Label>{`${value}`}</Label>;
 }
 
 export default injectIntl(withI18n(UpdateRow));
