@@ -273,13 +273,4 @@ describe("Term edit", () => {
             expect(wrapper.state().label[langToRemove]).not.toBeDefined();
         });
     });
-
-    it("renders prefLabel input disabled when term status is confirmed", () => {
-        term.draft = false;
-        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language="en"
-                                                                    selectLanguage={selectLanguage} {...intlFunctions()}/>);
-        const prefLabelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label");
-        expect(prefLabelInput.prop("disabled")).toBeTruthy();
-    });
 });

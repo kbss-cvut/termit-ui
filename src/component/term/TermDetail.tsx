@@ -134,15 +134,18 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     };
 
     public getActions = () => {
+        const i18n = this.props.i18n;
         const actions = [];
         if (!this.state.edit) {
+            const isConfirmed = !Term.isDraft(this.props.term!);
             actions.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
-                                 key="term-detail-edit"
-                                 title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>);
+                                 key="term-detail-edit" disabled={isConfirmed}
+                                 title={i18n(isConfirmed ? "term.edit.confirmed.tooltip" : "edit")}>
+                <GoPencil className="mr-1"/>{i18n("edit")}</Button>);
         }
         actions.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
-                             title={this.props.i18n("asset.remove.tooltip")}
-                             onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
+                             title={i18n("asset.remove.tooltip")}
+                             onClick={this.onRemoveClick}><FaTrashAlt className="mr-1"/>{i18n("remove")}</Button>);
         return actions;
     }
 

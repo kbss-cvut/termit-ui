@@ -244,7 +244,6 @@ const en = {
             "Abbreviations are not allowed ('Value added tax' instead of 'VAT'). The label is written in sentence case " +
             "- first letter in upper case, the others in lower case. Label should not be changed, as its change might impact " +
             "meaning of data described by this concept.",
-        "term.label.confirmed.disabled": "The term is confirmed, so its label should not change.",
         "term.definition.help": "(Optional) text describing the concept meaning. The definition unambiguously describes " +
             "concept meaning. If a concept is defined in a document, its definition is precise quotation of the respective part " +
             "of the document. Definition is used for full specification of concept meaning (e.g. 'Man' can be defined as 'a male person'). " +
@@ -267,6 +266,7 @@ const en = {
             "or leave this field blank.",
         "term.source.help": "(Optional) reference to the origin of the term definition. It might refer to a particular " +
             "law section, or paragraph. Whenever the definition is marked in the document text, the source is filled automatically.",
+        "term.edit.confirmed.tooltip": "Term is confirmed, therefore it cannot be edited.",
         "term.metadata.definition": "Definition",
         "term.metadata.definitionSource": "Source of definition",
         "term.metadata.definitionSource.goto": "Go to source",
