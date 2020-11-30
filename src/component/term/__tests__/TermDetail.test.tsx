@@ -16,11 +16,16 @@ import {langString} from "../../../model/MultilingualString";
 import {constructValidationResult} from "../../vocabulary/validation/__tests__/ValidationResults.test";
 import ValidationResult from "../../../model/ValidationResult";
 import Constants from "../../../util/Constants";
+import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import { MemoryRouter } from "react-router-dom";
+import en from "../../../i18n/en";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
 jest.mock("../../misc/AssetLabel");
 jest.mock("../../changetracking/AssetHistory");
+jest.mock("../../misc/CopyIriIcon", () => () => <span/>);
+jest.mock("../DraftToggle", () => () => <span/>);
 
 describe("TermDetail", () => {
 
@@ -289,5 +294,25 @@ describe("TermDetail", () => {
         wrapper.setProps({term});
         wrapper.update();
         expect(wrapper.find(TermMetadata).prop("language")).toEqual(Constants.DEFAULT_LANGUAGE);
+    });
+
+    it("displays edit button as disabled when term is in confirmed state", () => {
+        term.draft = false;
+        const wrapper = mountWithIntl(<MemoryRouter><TermDetail term={term} configuredLanguage={Constants.DEFAULT_LANGUAGE}
+                                                        loadTerm={onLoad}
+                                                        updateTerm={onUpdate}
+                                                        removeTerm={removeTerm}
+                                                        loadVocabulary={loadVocabulary}
+                                                        vocabulary={vocabulary}
+                                                        history={history}
+                                                        location={location}
+                                                        match={match}
+                                                        publishNotification={onPublishNotification}
+                                                        validationResults={validationResults}
+                                                                {...intlFunctions()}/></MemoryRouter>);
+        const editButton = wrapper.find("button#term-detail-edit");
+        expect(editButton).toBeDefined();
+        expect(editButton.prop("disabled")).toBeTruthy();
+        expect(editButton.prop("title")).toEqual(en.messages["term.edit.confirmed.tooltip"]);
     });
 });
