@@ -5,6 +5,7 @@ import {UpdateRecord, UpdateValueType} from "../../model/changetracking/UpdateRe
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
 import {Badge, Label} from "reactstrap";
+import {FaArrowRight} from "react-icons/fa";
 
 interface UpdateRowProps extends HasI18n {
     record: UpdateRecord;
