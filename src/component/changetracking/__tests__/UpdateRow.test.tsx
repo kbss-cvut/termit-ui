@@ -66,8 +66,8 @@ describe("UpdateRow", () => {
         const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()}/>);
         const label = wrapper.find(Label);
         expect(label.exists()).toBeTruthy();
-        expect(label.childAt(0).text()).toContain(Constants.DEFAULT_LANGUAGE);
-        expect(label.childAt(2).text()).toContain(newValue["@value"]);
+        expect(label.childAt(1).childAt(0).text()).toContain(Constants.DEFAULT_LANGUAGE);
+        expect(label.childAt(0).text()).toContain(newValue["@value"]);
     });
 
     it("renders multilingual string value change", () => {
@@ -92,9 +92,9 @@ describe("UpdateRow", () => {
         expect(label.exists()).toBeTruthy();
         expect(label.length).toEqual(newValue.length);
         newValue.forEach(nv => {
-            const matching = label.filterWhere(lab => lab.childAt(0).text().indexOf(nv["@language"]) !== -1);
+            const matching = label.filterWhere(lab => lab.childAt(1).childAt(0).text().indexOf(nv["@language"]) !== -1);
             expect(matching.exists()).toBeTruthy();
-            expect(matching.childAt(2).text()).toContain(nv["@value"]);
+            expect(matching.childAt(0).text()).toContain(nv["@value"]);
         })
     });
 });
