@@ -63,7 +63,7 @@ function renderSingleValue(value: any) {
     } else if (value["@language"]) {
         return <Label>{value["@value"]}<sup>{value["@language"]}</sup></Label>
     }
-    return <Label>{value}</Label>;
+    return <Label>{`${value}`}</Label>;
 }
 
 export default injectIntl(withI18n(UpdateRow));
