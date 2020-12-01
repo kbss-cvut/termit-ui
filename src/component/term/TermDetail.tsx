@@ -102,10 +102,15 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
 
     public componentDidUpdate(prevProps: TermDetailProps) {
         const currTermName = this.props.match.params.termName;
+        const currVocabularyName = this.props.match.params.name;
         const prevTermName = prevProps.match.params.termName;
-        if (currTermName !== prevTermName) {
+        const prevVocabularyName = prevProps.match.params.name;
+        if (currTermName !== prevTermName || currVocabularyName !== prevVocabularyName) {
             this.onCloseEdit();
             this.loadTerm();
+            if (currVocabularyName !== prevVocabularyName) {
+                this.loadVocabulary();
+            }
         }
         if (prevProps.term?.iri !== this.props.term?.iri) {
             this.setState({language: resolveInitialLanguage(this.props)});
