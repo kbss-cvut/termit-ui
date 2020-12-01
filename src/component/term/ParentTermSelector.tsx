@@ -3,20 +3,22 @@ import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import {connect} from "react-redux";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {loadImportedVocabularies, loadTerms} from "../../action/AsyncActions";
 import {FormGroup, FormText, Label} from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
-import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
-import CustomInput from "../misc/CustomInput";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
+import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
+import StorageUtils from "../../util/StorageUtils";
+import Constants from "../../util/Constants";
+import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
+import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import {loadTerms} from "../../action/AsyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
     if (currentTermIri) {
@@ -43,14 +45,13 @@ interface ParentTermSelectorProps extends HasI18n {
     vocabularyIri: string;
     currentVocabulary?: Vocabulary;
     onChange: (newParents: Term[]) => void;
-    loadTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => Promise<Term[]>;
-    loadImportedVocabularies: (vocabularyIri: IRI) => Promise<string[]>;
+    loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
+    loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => Promise<Term[]>;
 }
 
 interface ParentTermSelectorState {
-    includeImported: boolean;
-    importedVocabularies?: string[];
-    disableIncludeImportedToggle: boolean;
+    wholeWorkspace: boolean;
+    disableConfig: boolean;
 }
 
 export class ParentTermSelector extends React.Component<ParentTermSelectorProps, ParentTermSelectorState> {
@@ -61,29 +62,13 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         super(props);
         this.treeComponent = React.createRef();
         this.state = {
-            includeImported: ParentTermSelector.hasParentInDifferentVocabulary(props.vocabularyIri, props.parentTerms),
-            disableIncludeImportedToggle: false
+            wholeWorkspace: StorageUtils.is(Constants.STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE),
+            disableConfig: false
         };
     }
 
-    private static hasParentInDifferentVocabulary(vocabularyIri: string, parentTerms?: TermData[]) {
-        return Utils.sanitizeArray(parentTerms).findIndex(pt => pt.vocabulary !== undefined && pt.vocabulary.iri !== vocabularyIri) !== -1;
-    }
-
-    public componentDidMount(): void {
-        if (this.props.currentVocabulary && this.props.currentVocabulary.iri === this.props.vocabularyIri) {
-            // No need to load imported vocabularies when vocabulary in state matches the term's vocabulary
-            this.setState({importedVocabularies: this.props.currentVocabulary.allImportedVocabularies});
-        } else {
-            this.props.loadImportedVocabularies(VocabularyUtils.create(this.props.vocabularyIri)).then(data => this.setState({importedVocabularies: data}));
-        }
-    }
-
-    public componentDidUpdate(): void {
-        if (!this.state.importedVocabularies) {
-            // This can happen when the component is displayed while vocabulary is still being loaded
-            this.props.loadImportedVocabularies(VocabularyUtils.create(this.props.vocabularyIri)).then(data => this.setState({importedVocabularies: data}));
-        }
+    public componentWillUnmount() {
+        StorageUtils.save(Constants.STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE, this.state.wholeWorkspace);
     }
 
     public onChange = (val: Term[] | Term | null) => {
@@ -95,23 +80,34 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     };
 
     public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
-        this.setState({disableIncludeImportedToggle: true});
+        this.setState({disableConfig: true});
+        return this.state.wholeWorkspace ? this.fetchOptionsFromWorkspace(fetchOptions) : this.fetchOptionsFromVocabulary(fetchOptions);
+    };
+
+    private fetchOptionsFromVocabulary = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
         // Use option vocabulary when present, it may differ from the current vocabulary (when option is from imported
         // vocabulary)
         const parents = Utils.sanitizeArray(this.props.parentTerms).map(p => p.iri!);
-        return this.props.loadTerms({
+        return this.props.loadTermsFromVocabulary({
             ...fetchOptions,
-            includeImported: this.state.includeImported,
             includeTerms: parents
         }, VocabularyUtils.create(fetchOptions.option ? fetchOptions.option.vocabulary!.iri! : this.props.vocabularyIri)).then(terms => {
-            this.setState({disableIncludeImportedToggle: false});
-            const matchingVocabularies = this.state.includeImported ? Utils.sanitizeArray(this.state.importedVocabularies).concat(this.props.vocabularyIri) : [this.props.vocabularyIri];
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, matchingVocabularies, {searchString: fetchOptions.searchString}), this.props.termIri);
+            this.setState({disableConfig: false});
+            return filterOutCurrentTerm(processTermsForTreeSelect(terms, [this.props.vocabularyIri], {searchString: fetchOptions.searchString}), this.props.termIri);
         });
     };
 
-    private onIncludeImportedToggle = () => {
-        this.setState({includeImported: !this.state.includeImported}, () => this.treeComponent.current.resetOptions());
+    private fetchOptionsFromWorkspace = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
+        return this.props.loadTermsFromWorkspace({
+            ...fetchOptions
+        }).then(terms => {
+            this.setState({disableConfig: false});
+            return filterOutCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri);
+        });
+    }
+
+    private onWholeWorkspaceToggle = () => {
+        this.setState({wholeWorkspace: !this.state.wholeWorkspace}, () => this.treeComponent.current.resetOptions());
     };
 
     private resolveSelectedParents() {
@@ -122,31 +118,25 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     public render() {
         return <FormGroup id={this.props.id}>
             <Label className="attribute-label">{this.props.i18n("term.metadata.parent")}</Label>
-            <IncludeImportedTermsToggle id={this.props.id + "-include-imported"} onToggle={this.onIncludeImportedToggle}
-                                        includeImported={this.state.includeImported} style={{float: "right"}}
-                                        disabled={this.state.disableIncludeImportedToggle}/>
+            <Label check={true} className="mr-1">{this.props.i18n("term.metadata.parent.useWorkspace")}</Label>
+            <CustomCheckBoxInput checked={this.state.wholeWorkspace} disabled={this.state.disableConfig}
+                                 onChange={this.onWholeWorkspaceToggle}/>
             {this.renderSelector()}
         </FormGroup>;
     }
 
     private renderSelector() {
-        if (!this.state.importedVocabularies) {
-            // render placeholder input until imported vocabularies are loaded
-            return <CustomInput placeholder={this.props.i18n("glossary.select.placeholder")} disabled={true}
-                                help={this.props.i18n("term.parent.help")}/>;
-        } else {
-            return <><IntelligentTreeSelect onChange={this.onChange}
-                                            ref={this.treeComponent}
-                                            value={this.resolveSelectedParents()}
-                                            fetchOptions={this.fetchOptions}
-                                            fetchLimit={300}
-                                            maxHeight={200}
-                                            multi={true}
-                                            optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
-                                            {...commonTermTreeSelectProps(this.props)}/>
-                <FormText>{this.props.i18n("term.parent.help")}</FormText>
-            </>;
-        }
+        return <><IntelligentTreeSelect onChange={this.onChange}
+                                        ref={this.treeComponent}
+                                        value={this.resolveSelectedParents()}
+                                        fetchOptions={this.fetchOptions}
+                                        fetchLimit={300}
+                                        maxHeight={200}
+                                        multi={true}
+                                        optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
+                                        {...commonTermTreeSelectProps(this.props)}/>
+            <FormText>{this.props.i18n("term.parent.help")}</FormText>
+        </>;
     }
 }
 
@@ -156,7 +146,7 @@ export default connect((state: TermItState) => {
     };
 }, ((dispatch: ThunkDispatch) => {
     return {
-        loadTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
-        loadImportedVocabularies: (vocabularyIri: IRI) => dispatch(loadImportedVocabularies(vocabularyIri))
+        loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => dispatch(loadTermsFromWorkspace(fetchOptions)),
+        loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri))
     }
 }))(injectIntl(withI18n(ParentTermSelector)));

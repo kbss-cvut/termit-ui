@@ -273,6 +273,7 @@ const en = {
         "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding file",
         'term.metadata.comment': 'Comment',
         "term.metadata.parent": "Parent terms",
+        "term.metadata.parent.useWorkspace": "Include terms from the whole workspace",
         'term.metadata.subTerms': 'Sub terms',
         'term.metadata.types': 'Type',
         'term.metadata.source': 'Source',

@@ -278,6 +278,7 @@ const cs = {
         "term.metadata.definitionSource.goto.tooltip": "Zobrazit zdroj definice přímo v příslušném souboru",
         "term.metadata.comment": "Komentář",
         "term.metadata.parent": "Nadřazené pojmy",
+        "term.metadata.parent.useWorkspace": "Použít pojmy z celého pracovního prostoru",
         "term.metadata.subTerms": "Podřazené pojmy",
         "term.metadata.types": "Typ pojmu",
         "term.metadata.status": "Stav pojmu",
