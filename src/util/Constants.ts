@@ -57,7 +57,7 @@ const constants = {
     },
     STORAGE_JWT_KEY: "",
     STORAGE_LANG_KEY: "",
-    STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE: "",
+    STORAGE_PARENT_SELECTOR_RANGE: "",
     // How many messages should be displayed at one moment
     MESSAGE_DISPLAY_COUNT: 5,
     // For how long should a message be displayed
@@ -88,7 +88,7 @@ const constants = {
 const deployment = constants.DEPLOYMENT_NAME.length > 0 ? constants.DEPLOYMENT_NAME + "-" : "";
 constants.STORAGE_JWT_KEY = constants.APP_NAME + "-" + deployment + constants.Headers.AUTHORIZATION;
 constants.STORAGE_LANG_KEY = constants.APP_NAME + "-" + deployment + "LANG";
-constants.STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE = constants.APP_NAME + "-" + deployment + "PARENT_SELECTOR_WORKSPACE";
+constants.STORAGE_PARENT_SELECTOR_RANGE = constants.APP_NAME + "-" + deployment + "PARENT_SELECTOR_RANGE";
 
 
 export default constants;

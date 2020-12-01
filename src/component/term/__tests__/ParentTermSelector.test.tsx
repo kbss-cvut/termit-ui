@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {ParentTermSelector} from "../ParentTermSelector";
+import {ParentSelectorRange, ParentTermSelector} from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
 import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
@@ -96,7 +96,7 @@ describe("ParentTermSelector", () => {
                                     vocabularyIri={vocabularyIri} onChange={onChange}
                                     loadTermsFromVocabulary={loadTermsFromVocabulary}
                                     loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-        expect(StorageUtils.is).toHaveBeenCalledWith(Constants.STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE);
+        expect(StorageUtils.load).toHaveBeenCalledWith(Constants.STORAGE_PARENT_SELECTOR_RANGE, ParentSelectorRange.VOCABULARY);
     });
 
     it("saves selector config on unmount", () => {
@@ -106,10 +106,10 @@ describe("ParentTermSelector", () => {
                                                                         onChange={onChange}
                                                                         loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                         loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-        const config = true;
-        wrapper.setState({wholeWorkspace: config});
+        const config = ParentSelectorRange.WORKSPACE;
+        wrapper.setState({selectorRange: config});
         wrapper.unmount();
-        expect(StorageUtils.save).toHaveBeenCalledWith(Constants.STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE, config);
+        expect(StorageUtils.save).toHaveBeenCalledWith(Constants.STORAGE_PARENT_SELECTOR_RANGE, config);
     });
 
     describe("fetchOptions", () => {
@@ -119,7 +119,7 @@ describe("ParentTermSelector", () => {
                                                                             onChange={onChange}
                                                                             loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                             loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-            wrapper.setState({wholeWorkspace: true});
+            wrapper.setState({selectorRange: ParentSelectorRange.WORKSPACE});
             wrapper.update();
             wrapper.instance().fetchOptions({});
             expect(loadTermsFromWorkspace).toHaveBeenCalled();
@@ -136,7 +136,7 @@ describe("ParentTermSelector", () => {
                                                                             onChange={onChange}
                                                                             loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                             loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-            wrapper.setState({wholeWorkspace: false});
+            wrapper.setState({selectorRange: ParentSelectorRange.VOCABULARY});
             wrapper.update();
             wrapper.instance().fetchOptions({optionID: parent.iri, option: parent});
             expect((loadTermsFromVocabulary as jest.Mock).mock.calls[0][0]).toMatchObject({optionID: parent.iri});
@@ -154,7 +154,7 @@ describe("ParentTermSelector", () => {
                                                                             onChange={onChange}
                                                                             loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                             loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-            wrapper.setState({wholeWorkspace: true});
+            wrapper.setState({selectorRange: ParentSelectorRange.WORKSPACE});
             wrapper.update();
             wrapper.instance().fetchOptions({optionID: parent.iri, option: parent});
             expect((loadTermsFromWorkspace as jest.Mock).mock.calls[0][0]).toMatchObject({optionID: parent.iri});
@@ -188,7 +188,7 @@ describe("ParentTermSelector", () => {
                                                                             onChange={onChange}
                                                                             loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                             loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-            wrapper.setState({wholeWorkspace: true});
+            wrapper.setState({selectorRange: ParentSelectorRange.WORKSPACE});
             return wrapper.instance().fetchOptions({}).then((terms) => {
                 expect(terms.indexOf(currentTerm)).toEqual(-1);
                 expect(terms[0].plainSubTerms!.indexOf(currentTerm.iri)).toEqual(-1);
@@ -206,7 +206,7 @@ describe("ParentTermSelector", () => {
                                                                             onChange={onChange}
                                                                             loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                             loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-            wrapper.setState({wholeWorkspace: false});
+            wrapper.setState({selectorRange: ParentSelectorRange.VOCABULARY});
             return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
                 expect(options.length).toEqual(1);
                 expect(options).toEqual(terms);
@@ -226,7 +226,7 @@ describe("ParentTermSelector", () => {
                                                                             parentTerms={[parent]}
                                                                             loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                             loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-            wrapper.setState({wholeWorkspace: false});
+            wrapper.setState({selectorRange: ParentSelectorRange.VOCABULARY});
             return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
                 expect(options.length).toEqual(2);
                 expect(options).toEqual([...terms, parent]);
@@ -242,7 +242,7 @@ describe("ParentTermSelector", () => {
                                                                             loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                             loadTermsFromWorkspace={loadTermsFromWorkspace}
                                                                             parentTerms={existingParents} {...intlFunctions()}/>);
-            wrapper.setState({wholeWorkspace: false});
+            wrapper.setState({selectorRange: ParentSelectorRange.VOCABULARY});
             wrapper.instance().fetchOptions({});
             expect((loadTermsFromVocabulary as jest.Mock).mock.calls[0][0].includeTerms).toBeDefined();
             expect((loadTermsFromVocabulary as jest.Mock).mock.calls[0][0].includeTerms).toEqual(existingParents.map(p => p.iri));
@@ -255,7 +255,7 @@ describe("ParentTermSelector", () => {
                                                                         onChange={onChange} parentTerms={[]}
                                                                         loadTermsFromVocabulary={loadTermsFromVocabulary}
                                                                         loadTermsFromWorkspace={loadTermsFromWorkspace} {...intlFunctions()}/>);
-        wrapper.setState({wholeWorkspace: false});
+        wrapper.setState({selectorRange: ParentSelectorRange.VOCABULARY});
         expect(wrapper.state().disableConfig).toBeFalsy();
         loadTermsFromVocabulary = jest.fn().mockImplementation(() => {
             wrapper.update();

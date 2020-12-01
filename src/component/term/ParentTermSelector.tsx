@@ -5,7 +5,7 @@ import Term, {TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import {connect} from "react-redux";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {FormGroup, FormText, Label} from "reactstrap";
+import {Button, ButtonGroup, FormGroup, FormText, Label} from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
@@ -14,7 +14,6 @@ import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSe
 import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
 import Constants from "../../util/Constants";
-import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import {loadTerms} from "../../action/AsyncActions";
 
@@ -47,8 +46,13 @@ interface ParentTermSelectorProps extends HasI18n {
 }
 
 interface ParentTermSelectorState {
-    wholeWorkspace: boolean;
+    selectorRange: string;
     disableConfig: boolean;
+}
+
+export const ParentSelectorRange = {
+    VOCABULARY: "VOCABULARY",
+    WORKSPACE: "WORKSPACE"
 }
 
 export class ParentTermSelector extends React.Component<ParentTermSelectorProps, ParentTermSelectorState> {
@@ -59,13 +63,13 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         super(props);
         this.treeComponent = React.createRef();
         this.state = {
-            wholeWorkspace: StorageUtils.is(Constants.STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE),
+            selectorRange: StorageUtils.load(Constants.STORAGE_PARENT_SELECTOR_RANGE, ParentSelectorRange.VOCABULARY)!,
             disableConfig: false
         };
     }
 
     public componentWillUnmount() {
-        StorageUtils.save(Constants.STORAGE_PARENT_SELECTOR_WHOLE_WORKSPACE, this.state.wholeWorkspace);
+        StorageUtils.save(Constants.STORAGE_PARENT_SELECTOR_RANGE, this.state.selectorRange);
     }
 
     public onChange = (val: Term[] | Term | null) => {
@@ -78,7 +82,12 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
 
     public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
         this.setState({disableConfig: true});
-        return this.state.wholeWorkspace ? this.fetchOptionsFromWorkspace(fetchOptions) : this.fetchOptionsFromVocabulary(fetchOptions);
+        switch (this.state.selectorRange) {
+            case ParentSelectorRange.WORKSPACE:
+                return this.fetchOptionsFromWorkspace(fetchOptions);
+            default:
+                return this.fetchOptionsFromVocabulary(fetchOptions);
+        }
     };
 
     private fetchOptionsFromVocabulary = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
@@ -104,8 +113,8 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         });
     }
 
-    private onWholeWorkspaceToggle = () => {
-        this.setState({wholeWorkspace: !this.state.wholeWorkspace}, () => this.treeComponent.current.resetOptions());
+    private onRangeToggle = (value: string) => {
+        this.setState({selectorRange: value}, () => this.treeComponent.current.resetOptions());
     };
 
     private resolveSelectedParents() {
@@ -114,15 +123,21 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     }
 
     public render() {
+        const range = this.state.selectorRange;
+        const i18n = this.props.i18n;
         return <FormGroup id={this.props.id}>
-            <Label className="attribute-label">{this.props.i18n("term.metadata.parent")}</Label>
+            <Label className="attribute-label">{i18n("term.metadata.parent")}</Label>
             <br/>
-            <FormGroup check={true}>
-                <CustomCheckBoxInput checked={this.state.wholeWorkspace} disabled={this.state.disableConfig}
-                                     onChange={this.onWholeWorkspaceToggle}/>
-                <Label check={true}
-                       className="parent-selector-label">{this.props.i18n("term.metadata.parent.useWorkspace")}</Label>
-            </FormGroup>
+            <ButtonGroup className="mb-1">
+                <Button key={ParentSelectorRange.VOCABULARY} color="primary" outline={true} size="sm"
+                        onClick={() => this.onRangeToggle(ParentSelectorRange.VOCABULARY)}
+                        active={range === ParentSelectorRange.VOCABULARY}
+                        disabled={this.state.disableConfig}>{i18n("term.metadata.parent.range.vocabulary")}</Button>
+                <Button key={ParentSelectorRange.WORKSPACE} color="primary" outline={true} size="sm"
+                        onClick={() => this.onRangeToggle(ParentSelectorRange.WORKSPACE)}
+                        active={range === ParentSelectorRange.WORKSPACE}
+                        disabled={this.state.disableConfig}>{i18n("term.metadata.parent.range.workspace")}</Button>
+            </ButtonGroup>
             {this.renderSelector()}
         </FormGroup>;
     }
