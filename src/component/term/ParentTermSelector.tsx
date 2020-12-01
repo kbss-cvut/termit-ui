@@ -10,8 +10,6 @@ import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
-import Vocabulary from "../../model/Vocabulary";
-import TermItState from "../../model/TermItState";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
 import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
@@ -43,7 +41,6 @@ interface ParentTermSelectorProps extends HasI18n {
     termIri?: string;
     parentTerms?: TermData[];
     vocabularyIri: string;
-    currentVocabulary?: Vocabulary;
     onChange: (newParents: Term[]) => void;
     loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
     loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => Promise<Term[]>;
@@ -88,12 +85,13 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         // Use option vocabulary when present, it may differ from the current vocabulary (when option is from imported
         // vocabulary)
         const parents = Utils.sanitizeArray(this.props.parentTerms).map(p => p.iri!);
+        const parentVocabs: string[] = Utils.sanitizeArray(this.props.parentTerms).filter(p => p.vocabulary).map(p => p.vocabulary!.iri!);
         return this.props.loadTermsFromVocabulary({
             ...fetchOptions,
             includeTerms: parents
         }, VocabularyUtils.create(fetchOptions.option ? fetchOptions.option.vocabulary!.iri! : this.props.vocabularyIri)).then(terms => {
             this.setState({disableConfig: false});
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, [this.props.vocabularyIri], {searchString: fetchOptions.searchString}), this.props.termIri);
+            return filterOutCurrentTerm(processTermsForTreeSelect(terms, [...parentVocabs, this.props.vocabularyIri], {searchString: fetchOptions.searchString}), this.props.termIri);
         });
     };
 
@@ -118,9 +116,13 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     public render() {
         return <FormGroup id={this.props.id}>
             <Label className="attribute-label">{this.props.i18n("term.metadata.parent")}</Label>
-            <Label check={true} className="mr-1">{this.props.i18n("term.metadata.parent.useWorkspace")}</Label>
-            <CustomCheckBoxInput checked={this.state.wholeWorkspace} disabled={this.state.disableConfig}
-                                 onChange={this.onWholeWorkspaceToggle}/>
+            <br/>
+            <FormGroup check={true}>
+                <CustomCheckBoxInput checked={this.state.wholeWorkspace} disabled={this.state.disableConfig}
+                                     onChange={this.onWholeWorkspaceToggle}/>
+                <Label check={true}
+                       className="parent-selector-label">{this.props.i18n("term.metadata.parent.useWorkspace")}</Label>
+            </FormGroup>
             {this.renderSelector()}
         </FormGroup>;
     }
@@ -140,11 +142,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        currentVocabulary: state.vocabulary
-    };
-}, ((dispatch: ThunkDispatch) => {
+export default connect(undefined, ((dispatch: ThunkDispatch) => {
     return {
         loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => dispatch(loadTermsFromWorkspace(fetchOptions)),
         loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri))
