@@ -14,8 +14,8 @@ import {
     asyncActionSuccessWithPayload,
     publishMessage
 } from "./SyncActions";
-import Ajax, {param} from "../util/Ajax";
-import Term from "../model/Term";
+import Ajax, {param, params} from "../util/Ajax";
+import Term, {CONTEXT as TERM_CONTEXT, TermData} from "../model/Term";
 import {ErrorData} from "../model/ErrorInfo";
 import Constants from "../util/Constants";
 import TermOccurrence from "../model/TermOccurrence";
@@ -24,6 +24,9 @@ import MessageType from "../model/MessageType";
 import {getLocalized} from "../model/MultilingualString";
 import {getShortLocale} from "../util/IntlUtil";
 import TermStatus from "../model/TermStatus";
+import FetchOptionsFunction from "../model/Functions";
+import Utils from "../util/Utils";
+import JsonLdUtils from "../util/JsonLdUtils";
 
 export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
     const termIri = VocabularyUtils.create(term.iri);
@@ -58,5 +61,35 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
             param("namespace", termIri.namespace).content(status).contentType(Constants.TEXT_MIME_TYPE))
             .then(() => dispatch(asyncActionSuccessWithPayload(action, status)))
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+    };
+}
+
+export function loadTermsFromWorkspace(fetchOptions: FetchOptionsFunction) {
+    const action = {
+        type: ActionType.FETCH_VOCABULARY_TERMS
+    };
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        let url = `${Constants.API_PREFIX}/terms`;
+        const parameters: any = {};
+        if (fetchOptions.optionID) {
+            const parentIri = VocabularyUtils.create(fetchOptions.optionID);
+            url += `/${parentIri.fragment}/subterms`;
+            parameters.namespace = parentIri.namespace;
+        } else {
+            parameters.searchString = fetchOptions.searchString;
+            parameters.rootsOnly = !fetchOptions.searchString;
+        }
+        return Ajax.get(url,
+            params(Object.assign(parameters, Utils.createPagingParams(fetchOptions.offset, fetchOptions.limit))))
+            .then((data: object[]) => data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : [])
+            .then((data: TermData[]) => {
+                dispatch(asyncActionSuccess(action));
+                return data.map(d => new Term(d));
+            })
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return [];
+            });
     };
 }

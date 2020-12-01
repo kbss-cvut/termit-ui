@@ -4,7 +4,7 @@ import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
 import {ThunkDispatch} from "../../util/Types";
-import {setTermDefinitionSource, setTermStatus} from "../AsyncTermActions";
+import {loadTermsFromWorkspace, setTermDefinitionSource, setTermStatus} from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
 import Term from "../../model/Term";
@@ -14,6 +14,7 @@ import {langString} from "../../model/MultilingualString";
 import TermStatus from "../../model/TermStatus";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Constants from "../../util/Constants";
+import FetchOptionsFunction from "../../model/Functions";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -129,6 +130,61 @@ describe("AsyncTermActions", () => {
                 const successAction = store.getActions().find(a => a.type === ActionType.SET_TERM_STATUS && a.status === AsyncActionStatus.SUCCESS);
                 expect(successAction).toBeDefined();
                 expect(successAction.payload).toEqual(status);
+            });
+        });
+    });
+
+    describe("loadTermsFromWorkspace", () => {
+        it("gets all root terms when parent option is not specified", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace({}))).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams()).toEqual({rootsOnly: true});
+            });
+        });
+
+        it("gets subterms when parent option is specified", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+            const termNamespace = "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/";
+            const fragment = "pojem-3";
+            const parentUri = termNamespace + fragment;
+            const params: FetchOptionsFunction = {
+                optionID: parentUri
+            };
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace(params))).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(`${Constants.API_PREFIX}/terms/${fragment}/subterms`);
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams()).toEqual({namespace: termNamespace});
+            });
+        });
+
+        it("specifies correct paging params for offset and limit", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+            const params: FetchOptionsFunction = {
+                offset: 88,
+                limit: 100
+            };
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace(params))).then(() => {
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams()).toEqual({page: 1, size: 100, rootsOnly: true});
+            });
+        });
+
+        it("specifies search string when search string option is provided", () => {
+            const searchString = "label";
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace({searchString}))).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams()).toEqual({rootsOnly: false, searchString});
             });
         });
     });
