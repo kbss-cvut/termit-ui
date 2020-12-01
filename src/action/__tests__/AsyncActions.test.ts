@@ -428,7 +428,7 @@ describe("Async actions", () => {
 
         it("publishes message on error", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.reject("An error"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(file))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri)))).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(found).toBeDefined();
@@ -438,7 +438,7 @@ describe("Async actions", () => {
 
         it("publishes message on success", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.resolve("Success"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(file))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri)))).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(found).toBeDefined();

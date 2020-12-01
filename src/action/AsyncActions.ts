@@ -636,7 +636,7 @@ export function loadTypes() {
     };
 }
 
-export function executeFileTextAnalysis(fileIri: IRI, vocabularyIri: string) {
+export function executeFileTextAnalysis(fileIri: IRI, vocabularyIri?: string) {
     const action = {
         type: ActionType.EXECUTE_FILE_TEXT_ANALYSIS
     };

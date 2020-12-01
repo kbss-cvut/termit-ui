@@ -82,14 +82,18 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             this.forceUpdate();
         }
         const matchingNotification = this.props.notifications.find(n => Terms.isNotificationRelevant(n) || Utils.generateIsAssetLabelUpdate(VocabularyUtils.TERM)(n));
-        if (matchingNotification && this.treeComponent.current) {
-            this.treeComponent.current.resetOptions();
-            this.props.consumeNotification(matchingNotification);
-        } else if (Utils.didNavigationOccur(prevProps, this.props) && this.treeComponent.current && !this.props.isDetailView) {
-            this.treeComponent.current.resetOptions();
-        }
-        if (prevProps.locale !== this.props.locale) {
-            this.treeComponent.current.forceUpdate();
+        if (this.treeComponent.current) {
+            if (matchingNotification) {
+                this.treeComponent.current.resetOptions();
+                this.props.consumeNotification(matchingNotification);
+            } else if (Utils.didNavigationOccur(prevProps, this.props) && !this.props.isDetailView) {
+                this.treeComponent.current.resetOptions();
+            } else if (this.props.match.params.name !== prevProps.match.params.name) {
+                this.treeComponent.current.resetOptions();
+            }
+            if (prevProps.locale !== this.props.locale) {
+                this.treeComponent.current.forceUpdate();
+            }
         }
     }
 

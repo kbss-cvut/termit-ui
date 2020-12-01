@@ -315,4 +315,30 @@ describe("TermDetail", () => {
         expect(editButton.prop("disabled")).toBeTruthy();
         expect(editButton.prop("title")).toEqual(en.messages["term.edit.confirmed.tooltip"]);
     });
+
+    it("loads term and vocabulary when term with the same name but in different vocabulary is selected", () => {
+        const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
+                                            removeTerm={removeTerm} configuredLanguage={Constants.DEFAULT_LANGUAGE}
+                                            loadVocabulary={loadVocabulary} vocabulary={vocabulary}
+                                            history={history} location={location} match={match}
+                                            publishNotification={onPublishNotification}
+                                            validationResults={validationResults}
+                                            {...intlFunctions()}/>);
+        (wrapper.instance() as TermDetail).onEdit();
+        wrapper.update();
+        expect((wrapper.instance() as TermDetail).state.edit).toBeTruthy();
+        const newMatch = {
+            params: {
+                name: "differentVocabularyName",
+                termName: normalizedTermName
+            },
+            path: "/differentVocabularyName/terms/" + normalizedTermName,
+            isExact: true,
+            url: "http://localhost:3000/different"
+        };
+        wrapper.setProps({match: newMatch});
+        wrapper.update();
+        expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {fragment: newMatch.params.name});
+        expect(loadVocabulary).toHaveBeenCalledWith({fragment: newMatch.params.name});
+    });
 });
