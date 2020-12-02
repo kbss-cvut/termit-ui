@@ -151,6 +151,7 @@ const cs = {
         'vocabulary.management.new': 'Nový slovník',
         'vocabulary.vocabularies.create.tooltip': 'Vytvořit nový slovník',
         "vocabulary.vocabularies.select.placeholder": "Začněte psát pro filtrování slovníků dle názvu",
+        "vocabulary.title": "Název",
         'vocabulary.create.title': 'Nový slovník',
         'vocabulary.create.submit': 'Vytvořit',
         'vocabulary.create.document.help': 'Nepovinný. Je-li slovník založen na dokumentu (např. zákona), můžete tento dokument zde připojit.',
@@ -521,6 +522,9 @@ const cs = {
 
         "tooltip.copy-iri": "Zkopírovat IRI",
         "tooltip.copied": "Zkopírováno!",
+
+        "table.filter.text.placeholder": "Hledat v {count, plural, one {# záznamu} few {# záznamech} other {# záznamech}}...",
+        "table.sort.tooltip": "Seřadit záznamy",
 
         "public.nav.user": "Uživatel nepřihlášen. Klikněte pro přihlášení.",
         "public.dashboard.title": "Vítejte v TermIt!",
