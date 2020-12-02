@@ -56,7 +56,7 @@ const Pagination: React.FC<PaginationProps> = props => {
         <div className="page-size-select"><Select value={pageSize.toString()}
                                                   onChange={(e) => setPageSize(Number(e.target.value))}>
             {PAGE_SIZES.map(s => <option key={s}
-                                         value={s}>{formatMessage("table.paging.pageSize.select", {pageSize})}</option>)}
+                                         value={s}>{formatMessage("table.paging.pageSize.select", {pageSize: s})}</option>)}
         </Select></div>}
     </>;
 };

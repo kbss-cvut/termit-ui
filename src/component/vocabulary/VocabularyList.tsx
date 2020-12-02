@@ -14,7 +14,6 @@ import {
     useTable
 } from "react-table";
 import {Table} from "reactstrap";
-import "./VocabularyList.scss";
 import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter";
 import VocabularyLink from "./VocabularyLink";
 import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
@@ -53,7 +52,7 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
     } = tableInstance;
     const page: Row<Vocabulary> [] = (tableInstance as any).page;
 
-    return <div id="vocabulary-list">
+    return <div id="vocabulary-list" className="asset-list">
         <Table {...getTableProps()} striped={true} responsive={true}>
             <thead>
             {headerGroups.map(headerGroup => <tr {...headerGroup.getHeaderGroupProps()}>

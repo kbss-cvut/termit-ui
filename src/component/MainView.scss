@@ -103,3 +103,17 @@
     }
   }
 }
+
+.asset-list th {
+  vertical-align: top;
+  text-align: center;
+}
+
+.asset-list .filter-wrapper {
+  margin-left: -1.25rem;
+  margin-right: -1.25rem;
+}
+
+.asset-list .sort-icon {
+  vertical-align: text-bottom;
+}
