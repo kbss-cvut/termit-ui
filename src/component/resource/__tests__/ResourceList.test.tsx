@@ -1,10 +1,11 @@
 import * as React from "react";
 import AppNotification from "../../../model/AppNotification";
-import {shallow} from "enzyme";
 import {ResourceList} from "../ResourceList";
 import NotificationType from "../../../model/NotificationType";
 import Generator from "../../../__tests__/environment/Generator";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {act} from "react-dom/test-utils";
+import {flushPromises, mountWithIntl} from "../../../__tests__/environment/Environment";
 
 describe("ResourceList", () => {
 
@@ -16,17 +17,18 @@ describe("ResourceList", () => {
         consumeNotification = jest.fn();
     });
 
-    it("loads resources on mount", () => {
-        shallow<ResourceList>(<ResourceList resources={{}} notifications={[]}
-                                            loading={false}
+    it("loads resources on mount", async () => {
+        mountWithIntl(<ResourceList resources={{}} notifications={[]}
                                             loadResources={loadResources}
                                             consumeNotification={consumeNotification} {...intlFunctions()}/>);
+        await act(async () => {
+            await flushPromises();
+        });
         expect(loadResources).toHaveBeenCalled();
     });
 
     it("reloads resources when asset label update notification is published", () => {
-        const wrapper = shallow<ResourceList>(<ResourceList resources={{}} notifications={[]}
-                                                            loading={false}
+        const wrapper = mountWithIntl(<ResourceList resources={{}} notifications={[]}
                                                             loadResources={loadResources}
                                                             consumeNotification={consumeNotification} {...intlFunctions()}/>);
         (loadResources as jest.Mock).mockClear();
