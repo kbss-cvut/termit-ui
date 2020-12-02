@@ -140,7 +140,7 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
     return url;
 }
 
-export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPrefix: string = Constants.API_PREFIX) {
+export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPrefix: string = Constants.API_PREFIX, withValidation = true) {
     const action = {
         type: ActionType.LOAD_VOCABULARY
     };
@@ -154,7 +154,9 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<VocabularyData>(data, VOCABULARY_CONTEXT))
             .then((data: VocabularyData) => {
                 dispatch(loadImportedVocabulariesIntoState(iri, apiPrefix));
-                dispatch(validateVocabulary(iri));
+                if (withValidation) {
+                    dispatch(validateVocabulary(iri));
+                }
                 return dispatch(asyncActionSuccessWithPayload(action, new Vocabulary(data)));
             })
             .catch((error: ErrorData) => {
