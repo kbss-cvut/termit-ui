@@ -525,6 +525,11 @@ const cs = {
 
         "table.filter.text.placeholder": "Hledat v {count, plural, one {# záznamu} few {# záznamech} other {# záznamech}}...",
         "table.sort.tooltip": "Seřadit záznamy",
+        "table.paging.first.tooltip": "První strana",
+        "table.paging.previous.tooltip": "Předchozí strana",
+        "table.paging.next.tooltip": "Následující strana",
+        "table.paging.last.tooltip": "Poslední strana",
+        "table.paging.pageSize.select": "Zobrazit {pageSize} záznamů na stránku",
 
         "public.nav.user": "Uživatel nepřihlášen. Klikněte pro přihlášení.",
         "public.dashboard.title": "Vítejte v TermIt!",

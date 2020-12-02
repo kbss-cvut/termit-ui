@@ -9,7 +9,7 @@ export default class Select extends AbstractInput<AbstractInputProps> {
     public render() {
         return <FormGroup>
             {this.renderLabel()}
-            <Input type="select" ref={(c: any) => this.input = c} {...this.inputProps()}>
+            <Input type="select" ref={(c: any) => this.input = c} {...this.inputProps()} bsSize="sm">
                 {this.props.children}
             </Input>
             <FormFeedback>{this.props.invalidMessage}</FormFeedback>

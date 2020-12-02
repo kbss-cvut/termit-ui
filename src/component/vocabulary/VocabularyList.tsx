@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary from "../../model/Vocabulary";
 import {
-    Column,
+    Column, Row,
     useFilters,
     UseFiltersColumnProps,
     usePagination,
@@ -18,6 +18,7 @@ import "./VocabularyList.scss";
 import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter";
 import VocabularyLink from "./VocabularyLink";
 import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
+import Pagination from "../misc/table/Pagination";
 
 interface VocabularyListProps extends HasI18n {
     onSelect: (voc: Vocabulary) => void;
@@ -48,9 +49,9 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
         prepareRow,
     } = tableInstance;
+    const page: Row<Vocabulary> [] = (tableInstance as any).page;
 
     return <div id="vocabulary-list">
         <Table {...getTableProps()} striped={true} responsive={true}>
@@ -69,7 +70,7 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
             </tr>)}
             </thead>
             <tbody {...getTableBodyProps()}>
-            {rows.map(row => {
+            {page.map(row => {
                 prepareRow(row);
                 return <tr {...row.getRowProps()}>
                     {row.cells.map(cell =>
@@ -78,6 +79,7 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
             })}
             </tbody>
         </Table>
+        <Pagination pagingProps={tableInstance as any} pagingState={tableInstance.state as any}/>
     </div>;
 };
 

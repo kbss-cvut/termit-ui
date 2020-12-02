@@ -519,6 +519,11 @@ const en = {
 
         "table.filter.text.placeholder": "Search {count} records...",
         "table.sort.tooltip": "Sort items",
+        "table.paging.first.tooltip": "Go to the first page",
+        "table.paging.previous.tooltip": "Go to the previous page",
+        "table.paging.next.tooltip": "Go to the next page",
+        "table.paging.last.tooltip": "Go to the last page",
+        "table.paging.pageSize.select": "Show {pageSize} items per page",
 
         "public.nav.user": "User not logged in. Click to log in.",
         "public.dashboard.title": "Welcome to TermIt!",
