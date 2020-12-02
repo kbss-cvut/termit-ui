@@ -4,60 +4,85 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary from "../../model/Vocabulary";
-// @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
-import "intelligent-tree-select/lib/styles.css";
-import Utils from "../../util/Utils";
+import {
+    Column,
+    useFilters,
+    UseFiltersColumnProps,
+    usePagination,
+    useSortBy,
+    UseSortByColumnProps,
+    useTable
+} from "react-table";
+import {Table} from "reactstrap";
+import "./VocabularyList.scss";
+import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter";
+import VocabularyLink from "./VocabularyLink";
+import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
 
 interface VocabularyListProps extends HasI18n {
     onSelect: (voc: Vocabulary) => void;
 
     vocabularies: { [id: string]: Vocabulary };
-    selectedVocabulary: Vocabulary;
-    loading: boolean;
 }
 
 export const VocabularyList: React.FC<VocabularyListProps> = props => {
-    const options = Object.keys(props.vocabularies).map((v) => {
-        const voc = props.vocabularies[v];
-        return {
-            iri: voc.iri,
-            label: voc.label,
-            comment: voc.comment ? voc.comment : voc.label,
-            types: Utils.sanitizeArray(voc.types).slice(),
-            children: []
+    const {vocabularies, i18n} = props;
+    const data = React.useMemo(() => Object.keys(vocabularies).map((v) => vocabularies[v]), [vocabularies]);
+    const columns: Column<Vocabulary>[] = React.useMemo(() => [{
+        Header: i18n("vocabulary.title"),
+        accessor: "label",
+        Filter: TextBasedFilter,
+        filter: "text",
+        Cell: ({row}) => <VocabularyLink vocabulary={row.original}/>
+    }], [i18n]);
+    const filterTypes = React.useMemo(() => ({text: textContainsFilter}), []);
+    const tableInstance = useTable<Vocabulary>({
+        columns, data, filterTypes, initialState: {
+            sortBy: [{
+                id: "label",
+                desc: false
+            }]
         }
-    });
-    if (options.length === 0 && !props.loading) {
-        return <div className="italics">{props.i18n("vocabulary.management.empty")}</div>;
-    }
-    const height = Utils.calculateAssetListHeight();
-    const i18n = props.i18n;
+    } as any, useFilters, useSortBy, usePagination);
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow,
+    } = tableInstance;
+
     return <div id="vocabulary-list">
-        <IntelligentTreeSelect className="p-0"
-                               onChange={props.onSelect}
-                               options={options}
-                               valueKey="iri"
-                               labelKey="label"
-                               isMenuOpen={true}
-                               multi={false}
-                               showSettings={false}
-                               displayInfoOnHover={true}
-                               scrollMenuIntoView={false}
-                               renderAsTree={false}
-                               maxHeight={height}
-                               valueRenderer={Utils.labelValueRenderer}
-                               noResultsText={i18n("main.search.no-results")}
-                               placeholder={i18n("vocabulary.vocabularies.select.placeholder")}
-                               tooltipKey="comment"
-        />
+        <Table {...getTableProps()} striped={true} responsive={true}>
+            <thead>
+            {headerGroups.map(headerGroup => <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => {
+                    const col: UseSortByColumnProps<Vocabulary> & UseFiltersColumnProps<Vocabulary> = column as any;
+                    return <th {...column.getHeaderProps([{className: (column as any).className}])}>
+                        {column.render("Header")}
+                        {col.canSort &&
+                        <AlphaNumSortToggle sortProps={column.getHeaderProps(col.getSortByToggleProps())}
+                                            desc={col.isSortedDesc} isSorted={col.isSorted}/>}
+                        {col.canFilter && <div className="filter-wrapper">{column.render("Filter")}</div>}
+                    </th>
+                })}
+            </tr>)}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+            {rows.map(row => {
+                prepareRow(row);
+                return <tr {...row.getRowProps()}>
+                    {row.cells.map(cell =>
+                        <td {...cell.getCellProps([{className: (cell.column as any).className}])}>{cell.render("Cell")}</td>)}
+                </tr>
+            })}
+            </tbody>
+        </Table>
     </div>;
 };
 
 export default connect((state: TermItState) => {
     return {
-        vocabularies: state.vocabularies,
-        selectedVocabulary: state.vocabulary,
-        loading: state.loading
+        vocabularies: state.vocabularies
     };
 })(injectIntl(withI18n(VocabularyList)));

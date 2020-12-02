@@ -151,6 +151,7 @@ const en = {
         'vocabulary.management.new': 'New Vocabulary',
         'vocabulary.vocabularies.create.tooltip': 'Create new vocabulary',
         "vocabulary.vocabularies.select.placeholder": "Start typing to filter vocabularies by name",
+        "vocabulary.title": "Title",
         'vocabulary.create.title': 'Create Vocabulary',
         'vocabulary.create.submit': 'Create',
         'vocabulary.create.document.help': 'Optional. If the vocabulary is based on a document (e.g. a law), you can link it here.',
@@ -515,6 +516,9 @@ const en = {
 
         "tooltip.copy-iri": "Copy IRI",
         "tooltip.copied": "Copied!",
+
+        "table.filter.text.placeholder": "Search {count} records...",
+        "table.sort.tooltip": "Sort items",
 
         "public.nav.user": "User not logged in. Click to log in.",
         "public.dashboard.title": "Welcome to TermIt!",
