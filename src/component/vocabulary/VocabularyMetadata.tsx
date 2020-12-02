@@ -6,7 +6,6 @@ import {Card, CardBody, Col, Label, Row} from "reactstrap";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import ImportedVocabulariesList from "./ImportedVocabulariesList";
 import Tabs from "../misc/Tabs";
-import AssetHistory from "../changetracking/AssetHistory";
 import TermChangeFrequency from "./TermChangeFrequency";
 import Terms from "../term/Terms";
 import DocumentSummaryInTab from "../resource/document/DocumentSummaryInTab";
@@ -34,7 +33,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
     constructor(props: VocabularyMetadataProps) {
         super(props);
         this.state = {
-            activeTab:  (Utils.extractQueryParam(this.props.location.search, "activeTab") === "vocabulary.validation.tab")? "vocabulary.validation.tab" : "glossary.title"
+            activeTab: (Utils.extractQueryParam(this.props.location.search, "activeTab") === "vocabulary.validation.tab") ? "vocabulary.validation.tab" : "glossary.title"
         };
     }
 
@@ -90,7 +89,6 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         }
         tabs["properties.edit.title"] = <UnmappedProperties properties={vocabulary.unmappedProperties}
                                                             showInfoOnEmpty={true}/>;
-        tabs["history.label"] = <AssetHistory asset={vocabulary}/>;
 
         tabs["changefrequency.label"] = <TermChangeFrequency vocabulary={vocabulary}/>;
 
