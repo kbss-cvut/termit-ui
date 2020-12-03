@@ -111,7 +111,7 @@ export const ResourceList: React.FC<ResourceListProps> = props => {
         </Table>
         <Pagination pagingProps={tableInstance as any} pagingState={tableInstance.state as any} allowSizeChange={true}/>
     </div>;
-}
+};
 
 export default connect((state: TermItState) => {
     return {
