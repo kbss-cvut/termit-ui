@@ -78,7 +78,7 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
             })}
             </tbody>
         </Table>
-        <Pagination pagingProps={tableInstance as any} pagingState={tableInstance.state as any}/>
+        <Pagination pagingProps={tableInstance as any} pagingState={tableInstance.state as any} allowSizeChange={true}/>
     </div>;
 };
 

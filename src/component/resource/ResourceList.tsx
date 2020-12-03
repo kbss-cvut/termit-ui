@@ -25,12 +25,19 @@ import Pagination from "../misc/table/Pagination";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import AppNotification from "../../model/AppNotification";
+import ResourceBadge from "../badge/ResourceBadge";
+import {createSelectFilter} from "../misc/table/SelectFilter";
+import {HasTypes} from "../../model/Asset";
 
 interface ResourceListProps extends HasI18n {
     resources: { [key: string]: Resource },
     notifications: AppNotification[];
     loadResources: () => void;
     consumeNotification: (notification: AppNotification) => void;
+}
+
+function resourceTypeFilter(rows: any[], id: string, filterValue: string) {
+    return rows.filter(r => Utils.getPrimaryAssetType(r.original) === filterValue);
 }
 
 export const ResourceList: React.FC<ResourceListProps> = props => {
@@ -45,6 +52,14 @@ export const ResourceList: React.FC<ResourceListProps> = props => {
     }
     const data = React.useMemo(() => Object.keys(resources).map((r) => resources[r]), [resources]);
     const columns: Column<Resource>[] = React.useMemo(() => [{
+        Header: i18n("resource.create.type"),
+        accessor: "types",
+        Filter: createSelectFilter((item: any) => Utils.getPrimaryAssetType(item as HasTypes)!, (type: string) => i18n(Utils.getAssetTypeLabelId({types: [type]}))),
+        filter: resourceTypeFilter,
+        disableSortBy: true,
+        className: "text-center type-column",
+        Cell: ({row}) => <ResourceBadge resource={row.original}/>
+    }, {
         Header: i18n("asset.label"),
         accessor: "label",
         Filter: TextBasedFilter,
@@ -66,10 +81,10 @@ export const ResourceList: React.FC<ResourceListProps> = props => {
         headerGroups,
         prepareRow,
     } = tableInstance;
-    const page: Row<Resource> [] = (tableInstance as any).page;
+    const page: Row<Resource>[] = (tableInstance as any).page;
 
     return <div id="resource-list" className="asset-list">
-        <Table {...getTableProps()} striped={true} responsive={true}>
+        <Table {...getTableProps()} striped={true}>
             <thead>
             {headerGroups.map(headerGroup => <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => {

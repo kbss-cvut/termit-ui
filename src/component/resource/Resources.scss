@@ -4,10 +4,8 @@
   border-left: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-.resource-list-badge {
-  vertical-align: text-bottom !important;
-  margin-right: 0.125rem;
-  display: inline-block;
+#resource-list .type-column {
+  width: 10.5rem;
 }
 
 .VirtualizedTreeSelectTooltip {

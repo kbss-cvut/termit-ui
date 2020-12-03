@@ -523,7 +523,8 @@ const cs = {
         "tooltip.copy-iri": "Zkopírovat IRI",
         "tooltip.copied": "Zkopírováno!",
 
-        "table.filter.text.placeholder": "Hledat v {count, plural, one {# záznamu} few {# záznamech} other {# záznamech}}...",
+        "table.filter.text.placeholder": "Filtrovat {count, plural, one {# záznam} few {# záznamy} other {# záznamů}}...",
+        "table.filter.select.all": "Vše",
         "table.sort.tooltip": "Seřadit záznamy",
         "table.paging.first.tooltip": "První strana",
         "table.paging.previous.tooltip": "Předchozí strana",
