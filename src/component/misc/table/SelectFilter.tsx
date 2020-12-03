@@ -22,7 +22,7 @@ export function createSelectFilter(getValue: (row: any) => string, getLabel: (va
             return [...opts.values()];
         }, [preFilteredRows]);
 
-        return <Input bsSize="sm" type="select" value={filterValue}
+        return <Input bsSize="sm" type="select" value={filterValue} className="m-table-select-filter"
                       onChange={e => {
                           setFilter(e.target.value || undefined);
                       }}>
