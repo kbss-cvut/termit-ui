@@ -517,7 +517,8 @@ const en = {
         "tooltip.copy-iri": "Copy IRI",
         "tooltip.copied": "Copied!",
 
-        "table.filter.text.placeholder": "Search {count} records...",
+        "table.filter.text.placeholder": "Filter {count} records...",
+        "table.filter.select.all": "All",
         "table.sort.tooltip": "Sort items",
         "table.paging.first.tooltip": "Go to the first page",
         "table.paging.previous.tooltip": "Go to the previous page",
