@@ -74,7 +74,7 @@ export class CreateResourceMetadata<P extends CreateResourceMetadataProps = Crea
             <Row>
                 <Col xs={12}>
                     <TextArea name="create-resource-description" label={i18n("resource.metadata.description")}
-                              type="textarea" rows={3} value={this.state.description} help={i18n("optional")}
+                              type="textarea" rows={4} value={this.state.description} help={i18n("optional")}
                               onChange={this.onDescriptionChange}/>
                 </Col>
             </Row>

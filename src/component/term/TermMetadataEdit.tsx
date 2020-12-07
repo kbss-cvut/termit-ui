@@ -153,7 +153,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             <Col xs={12}>
                                 <TextArea name="edit-term-definition"
                                           value={getLocalizedOrDefault(this.state.definition, "", language)}
-                                          onChange={this.onDefinitionChange} rows={3}
+                                          onChange={this.onDefinitionChange} rows={4}
                                           label={i18n("term.metadata.definition")}
                                           help={i18n("term.definition.help")}/>
                             </Col>
@@ -197,8 +197,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <TextArea name="edit-term-comment" value={this.state.comment}
-                                          onChange={this.onInputChange} rows={3} label={i18n("term.metadata.comment")}
+                                <TextArea id="edit-term-comment" name="edit-term-comment" value={this.state.comment}
+                                          onChange={this.onInputChange} rows={4} label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
                             </Col>
                         </Row>
