@@ -6,11 +6,11 @@ import Utils from "../util/Utils";
 import {AssetData} from "./Asset";
 
 const ctx = {
-    "files": {
+    files: {
         "@id": VocabularyUtils.HAS_FILE,
         "@container": "@set"
     },
-    "vocabulary": `${VocabularyUtils.PREFIX}má-dokumentový-slovník`
+    vocabulary: VocabularyUtils.HAS_DOCUMENT_VOCABULARY
 };
 
 export const CONTEXT = Object.assign({}, RESOURCE_CONTEXT, ctx, FILE_CONTEXT);
