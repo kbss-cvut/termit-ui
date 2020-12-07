@@ -16,10 +16,21 @@ import {RouteComponentProps} from "react-router";
 interface CreateTermProps extends RouteComponentProps<any> {
     vocabulary: Vocabulary;
     createTerm: (term: Term, vocabularyIri: IRI) => Promise<string>;
+
     loadVocabulary(iri: IRI): void;
 }
 
-export class CreateTerm extends React.Component<CreateTermProps> {
+interface CreateTermState {
+    newTermCounter: number;
+}
+
+export class CreateTerm extends React.Component<CreateTermProps, CreateTermState> {
+
+    constructor(props: CreateTermProps) {
+        super(props);
+        this.state = {newTermCounter: 0};
+    }
+
     public componentDidMount(): void {
         this.loadVocabulary();
     }
@@ -33,7 +44,7 @@ export class CreateTerm extends React.Component<CreateTermProps> {
         }
     }
 
-    public onCreate = (term: Term, newTerm : boolean) => {
+    public onCreate = (term: Term, newTerm: boolean) => {
         const vocabularyIri = VocabularyUtils.create(this.props.vocabulary.iri);
         this.props.createTerm(term, vocabularyIri).then((location: string) => {
             if (!location) {
@@ -43,18 +54,20 @@ export class CreateTerm extends React.Component<CreateTermProps> {
             const params = new Map([["name", vocabularyIri.fragment]]);
             const query = new Map([["namespace", vocabularyIri.namespace!]]);
             if (newTerm) {
-                Routing.transitionTo(Routes.createVocabularyTerm, { params, query });
-                Routing.reload();
+                Routing.transitionTo(Routes.createVocabularyTerm, {params, query});
+                // Modifying the form component key will force its remounting without the need to reload the whole page
+                this.setState({newTermCounter: this.state.newTermCounter + 1});
             } else {
                 params.set("termName", termName);
-                Routing.transitionTo(Routes.vocabularyTermDetail, { params, query });
+                Routing.transitionTo(Routes.vocabularyTermDetail, {params, query});
             }
         });
     };
 
     public render() {
         return this.props.vocabulary !== EMPTY_VOCABULARY ?
-            <TermMetadataCreate onCreate={this.onCreate} vocabularyIri={this.props.vocabulary.iri}/> : null;
+            <TermMetadataCreate key={this.state.newTermCounter} onCreate={this.onCreate}
+                                vocabularyIri={this.props.vocabulary.iri}/> : null;
     }
 }
 
