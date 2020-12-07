@@ -4,8 +4,8 @@ import Document, {DocumentData} from "./Document";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
-    "content": `${VocabularyUtils.PREFIX}soubor/content`,
-    "owner": `${VocabularyUtils.PREFIX}je-částí-dokumentu`
+    content: VocabularyUtils.CONTENT,
+    owner: VocabularyUtils.IS_PART_OF_DOCUMENT
 };
 
 /**

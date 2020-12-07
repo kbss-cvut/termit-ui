@@ -8,12 +8,12 @@ import Constants from "../util/Constants";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
-    "label": VocabularyUtils.DC_TITLE,
-    "comment": VocabularyUtils.DC_DESCRIPTION,
-    "document": VocabularyUtils.PREFIX + "popisuje-dokument",
-    "glossary": VocabularyUtils.PREFIX + "má-glosář",
-    "model": VocabularyUtils.PREFIX + "má-model",
-    "importedVocabularies": VocabularyUtils.IMPORTS_VOCABULARY
+    label: VocabularyUtils.DC_TITLE,
+    comment: VocabularyUtils.DC_DESCRIPTION,
+    document: VocabularyUtils.DESCRIBES_DOCUMENT,
+    glossary: VocabularyUtils.HAS_GLOSSARY,
+    model: VocabularyUtils.HAS_MODEL,
+    importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
