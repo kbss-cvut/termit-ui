@@ -74,6 +74,9 @@ module.exports = function(webpackEnv) {
   // fall back to the configured one.
   server['url'] = process.env.serverUrl ? process.env.serverUrl : server['url'];
 
+  // Allows to configure the application with the URL of the control panel, so that a link to it can be shown in the UI
+  // const controlPanelUrl = process.env.controlpanelUrl ? process.env.controlpanelUrl : "";
+
   // This allows to parameterize deployment name, so that multiple deployments of TermIt accessed from one client do not
   // mess their data, e.g. auth token, language setting
   const deploymentName = process.env.deployment ? process.env.deployment : '';
@@ -387,7 +390,11 @@ module.exports = function(webpackEnv) {
                   search: '__SERVER_URL__',
                   replace: server['url'],
                   strict: true
-                },{
+                }, {
+                //     search: '__CONTROL_PANEL_URL__',
+                //     replace: controlPanelUrl,
+                //     strict: true
+                // },{
                   search: '__VERSION__',
                   // @ts-ignore
                   replace: require('../package.json').version,

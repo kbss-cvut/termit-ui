@@ -537,6 +537,7 @@ const en = {
         "workspace.loading": "Loading current workspace...",
         "workspace.current.empty": "No workspace is currently loaded.",
         "workspace.indicator": "Workspace: {name}",
+        "workspace.indicator.controlPanelLink.tooltip": "Show workspace detail in the control panel",
 
         "comments.title": "Comments",
         "comments.create.placeholder": "Type your comment...",
