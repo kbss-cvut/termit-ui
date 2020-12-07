@@ -72,4 +72,15 @@ describe("TermTypesEdit", () => {
                                loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
         expect(loadTypes).toHaveBeenCalled();
     });
+
+    it("reloads types when they are cleared after language switch", () => {
+        const availableTypes = {};
+        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
+        const wrapper = shallow<TermTypesEdit>(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={availableTypes}
+                               loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
+        (loadTypes as jest.Mock).mockReset();
+        wrapper.setProps({availableTypes: {}});
+        wrapper.update();
+        expect(loadTypes).toHaveBeenCalled();
+    });
 });
