@@ -166,7 +166,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                         </FormGroup>
                         : <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>}
                     <TextArea name="create-term-definition"
-                              type="textarea" rows={3} value={getLocalizedOrDefault(termData.definition, "", language)}
+                              type="textarea" rows={4} value={getLocalizedOrDefault(termData.definition, "", language)}
                               help={this.props.i18n("term.definition.help")}
                               onChange={this.onDefinitionChange}/>
                 </Col>
@@ -216,7 +216,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 <Row>
                     <Col xs={12}>
                         <TextArea name="create-term-comment" label={i18n("term.metadata.comment")}
-                                  type="textarea" rows={3} value={termData.comment}
+                                  type="textarea" rows={4} value={termData.comment}
                                   help={this.props.i18n("term.comment.help")}
                                   onChange={this.onCommentChange}/>
                     </Col>
