@@ -13,7 +13,11 @@ interface WorkspaceIndicatorProps extends HasI18n {
 
 function generateControlPanelLink(ws: Workspace, i18n: (id?: string) => string) {
     const iri = VocabularyUtils.create(ws.iri);
-    return <a href={`${Constants.CONTROL_PANEL_URL}/workspaces/${iri.fragment}`}
+    let url = Constants.CONTROL_PANEL_URL;
+    if (!url.endsWith("/")) {
+        url += "/";
+    }
+    return <a href={`${url}workspaces/${iri.fragment}`}
               title={i18n("workspace.indicator.controlPanelLink.tooltip")}>{ws.label}</a>;
 }
 
