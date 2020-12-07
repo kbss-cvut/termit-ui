@@ -267,7 +267,7 @@ const en = {
         "term.metadata.definitionSource": "Source of definition",
         "term.metadata.definitionSource.goto": "Go to source",
         "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding file",
-        'term.metadata.comment': 'Comment',
+        'term.metadata.comment': 'Scope note',
         "term.metadata.parent": "Parent terms",
         'term.metadata.subTerms': 'Sub terms',
         'term.metadata.types': 'Type',
