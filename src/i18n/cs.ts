@@ -271,7 +271,7 @@ const cs = {
             "například na kapitolu knihy, či konkrétní odstavec v zákoně, např. 'Písmeno b) paragrafu 2 " +
             "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
             "je zdroj vyplňován automaticky.",
-        "term.edit.confirmed.tooltip": "Pojem je potvrzený, nemůže tedy být editován.",
+        "term.edit.confirmed.tooltip": "Pojem je schválený, nemůže tedy být editován.",
         "term.metadata.definition": "Definice",
         "term.metadata.definitionSource": "Zdroj definice",
         "term.metadata.definitionSource.goto": "Zobrazit zdroj",
