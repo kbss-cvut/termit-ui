@@ -203,6 +203,13 @@ describe("Async actions", () => {
                 expect(loadImportsSuccessAction.payload).toEqual(dependencies);
             });
         });
+
+        it("transitions to vocabulary list when vocabulary is not found", () => {
+            Ajax.get = jest.fn().mockRejectedValue({status: 404});
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
+                expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies);
+            });
+        });
     });
 
     describe("removeVocabulary", () => {

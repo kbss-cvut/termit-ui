@@ -159,6 +159,9 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
+                if (error.status === Constants.STATUS_NOT_FOUND) {
+                    Routing.transitionTo(Routes.vocabularies);
+                }
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
             });
     };
