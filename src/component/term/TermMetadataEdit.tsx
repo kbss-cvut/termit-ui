@@ -70,10 +70,11 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         });
     };
 
-    public onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    public onScopeNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.currentTarget.value;
         const change = {};
-        change[e.currentTarget.name.substring(e.currentTarget.name.lastIndexOf("-") + 1)] = e.currentTarget.value;
-        this.setState(change);
+        change[this.props.language] = value;
+        this.setState({scopeNote: Object.assign({}, this.state.scopeNote, change)});
     };
 
     public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,8 +180,9 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <TextArea name="edit-term-comment" value={this.state.comment}
-                                          onChange={this.onInputChange} rows={3} label={i18n("term.metadata.comment")}
+                                <TextArea name="edit-term-comment"
+                                          value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
+                                          onChange={this.onScopeNoteChange} rows={3} label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
                             </Col>
                         </Row>

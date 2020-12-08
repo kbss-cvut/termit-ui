@@ -181,8 +181,9 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
             <Row>
                 <Col xs={12}>
-                    <TextArea name="create-term-comment" label={i18n("term.metadata.comment")}
-                              type="textarea" rows={3} value={termData.comment}
+                    <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
+                    <TextArea name="create-term-comment"
+                              type="textarea" rows={3} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
                               help={this.props.i18n("term.comment.help")}
                               onChange={this.onCommentChange}/>
                 </Col>

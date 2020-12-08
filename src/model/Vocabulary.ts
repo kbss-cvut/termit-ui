@@ -22,6 +22,7 @@ const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "document", "t
 
 export interface VocabularyData extends AssetData {
     label: string;
+    comment?: string;
     document?: DocumentData;
     glossary?: AssetData;
     model?: AssetData;
@@ -30,6 +31,7 @@ export interface VocabularyData extends AssetData {
 
 export default class Vocabulary extends Asset implements VocabularyData {
     public label: string;
+    public comment?: string;
     public document?: Document;
     public glossary?: AssetData;
     public model?: AssetData;
