@@ -27,6 +27,12 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
         this.props.loadTypes();
     }
 
+    public componentDidUpdate(prevProps: Readonly<TermTypesEditProps>) {
+        if (Object.getOwnPropertyNames(prevProps.availableTypes).length > 0 && Object.getOwnPropertyNames(this.props.availableTypes).length === 0) {
+            this.props.loadTypes();
+        }
+    }
+
     public onChange = (val: Term | null) => {
         this.props.onChange(val ? [val.iri, VocabularyUtils.TERM] : [VocabularyUtils.TERM]);
     };
