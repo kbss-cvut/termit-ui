@@ -206,7 +206,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
                 <Row>
                     <Col xs={12}>
-                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}/>
+                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect} language={language}/>
                     </Col>
                 </Row>
 
