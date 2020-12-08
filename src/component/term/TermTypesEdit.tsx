@@ -9,9 +9,9 @@ import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {FormGroup, FormText, Label} from "reactstrap";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import Utils from "../../util/Utils";
 import {ThunkDispatch} from "../../util/Types";
 import {loadTypes} from "../../action/AsyncActions";
+import Utils from "../../util/Utils";
 
 interface TermTypesEditProps extends HasI18n {
     termTypes: string[];
@@ -19,11 +19,17 @@ interface TermTypesEditProps extends HasI18n {
 
     availableTypes: { [key: string]: Term };
     loadTypes: () => void;
+
+    language: string;
 }
 
 export class TermTypesEdit extends React.Component<TermTypesEditProps> {
 
     public componentDidMount(): void {
+        this.props.loadTypes();
+    }
+
+    public componentDidUpdate() {
         this.props.loadTypes();
     }
 
@@ -49,7 +55,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
                 // @ts-ignore
                 t.subTerms.forEach(st => typesMap[st].parent = t.iri);
             }
-            t.label = t.getLabel();
+            t.label = t.getLabel(this.props.language);
         });
         return types;
     }

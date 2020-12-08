@@ -197,7 +197,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         <Row>
                             <Col xs={12}>
                                 <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
-                                               onChange={this.onTypesChange}/>
+                                               onChange={this.onTypesChange}
+                                               language={this.props.language}/>
                             </Col>
                         </Row>
                         <Row>
