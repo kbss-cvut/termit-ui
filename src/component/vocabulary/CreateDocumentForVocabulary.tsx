@@ -60,7 +60,7 @@ export class CreateDocumentForVocabulary extends React.Component <CreateDocument
        const resource =  new Resource({
            label: this.state.label,
            iri: this.state.iri,
-           comment: this.state.description,
+           description: this.state.description,
        });
        resource.addType(VocabularyUtils.DOCUMENT);
         this.props.onDocumentSet(resource);

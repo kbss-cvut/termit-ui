@@ -56,7 +56,8 @@ export class TermResultItem extends React.Component<TermResultItemProps, TermRes
             const loader = Authentication.isLoggedIn(this.props.user) ? this.props.loadTerm : this.props.loadPublicTerm;
             loader(iri).then(term => {
                 if (term) {
-                    this.setState({text: term!.definition ? getLocalized(term!.definition, getShortLocale(this.props.locale)) : term!.comment});
+                    this.setState({text: term!.definition ? getLocalized(term!.definition, getShortLocale(this.props.locale)) :
+                            getLocalized(term!.scopeNote, getShortLocale(this.props.locale))});
                 }
             });
         }
