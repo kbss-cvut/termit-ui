@@ -9,7 +9,6 @@ export interface HasLabel {
 
 export interface AssetData extends HasTypes {
     iri?: string;
-    comment?: string;
 }
 
 /**
@@ -27,7 +26,6 @@ export interface SupportsJsonLd<T extends any> {
 
 export default abstract class Asset implements AssetData, HasLabel {
     public iri: string;
-    public comment?: string;
     public types?: string[];
 
     protected constructor(data: AssetData) {

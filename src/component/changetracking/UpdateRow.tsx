@@ -43,17 +43,27 @@ function renderValue(value?: UpdateValueType) {
         return null;
     }
     if (Array.isArray(value)) {
-        return <ul>
-            {(value as Array<{ iri?: string }>).map((v, i) => <li key={i}>{v.iri ?
-                <OutgoingLink label={<AssetLabel iri={v.iri}/>} iri={v.iri}/> : <Label>{v}</Label>}</li>)}
-        </ul>;
+        sortIfMultilingual(value);
+        return <div>{value.map((v, i) => <div key={i}>{renderSingleValue(v)}</div>)}</div>;
     } else {
-        if ((value as { iri?: string }).iri) {
-            const iri = (value as { iri: string }).iri;
-            return <OutgoingLink label={<AssetLabel iri={iri}/>} iri={iri}/>;
-        }
-        return <Label>{value}</Label>;
+        return renderSingleValue(value);
     }
+}
+
+function sortIfMultilingual(value: any[]) {
+    if (value.find(v => v["@language"])) {
+        value.sort((a, b) => a["@language"].localeCompare(b["@language"]));
+    }
+}
+
+function renderSingleValue(value: any) {
+    if ((value as { iri?: string }).iri) {
+        const iri = (value as { iri: string }).iri;
+        return <OutgoingLink label={<AssetLabel iri={iri}/>} iri={iri}/>;
+    } else if (value["@language"]) {
+        return <Label>{value["@value"]}<sup>{value["@language"]}</sup></Label>
+    }
+    return <Label>{`${value}`}</Label>;
 }
 
 export default injectIntl(withI18n(UpdateRow));

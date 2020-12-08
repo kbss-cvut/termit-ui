@@ -60,7 +60,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                     <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
-                    <Label id="term-metadata-comment">{term.comment}</Label>
+                    <Label id="term-metadata-comment">{getLocalizedOrDefault(term.scopeNote, "", language)}</Label>
                 </Col>
             </Row>
             <Row>

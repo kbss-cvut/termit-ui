@@ -5,140 +5,122 @@ import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {ThunkDispatch} from "../../util/Types";
 import Resource from "../../model/Resource";
-import {loadResources} from "../../action/AsyncActions";
-import ResourceBadge from "../badge/ResourceBadge";
-// @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
-import "intelligent-tree-select/lib/styles.css";
-import Routing from "../../util/Routing";
-import Routes from "../../util/Routes";
-import Document from "../../model/Document";
+import {loadResources as loadResourcesAction} from "../../action/AsyncActions";
+import {consumeNotification as consumeNotificationAction} from "../../action/SyncActions";
+import {
+    Column,
+    Row,
+    useFilters,
+    UseFiltersColumnProps,
+    usePagination,
+    useSortBy,
+    UseSortByColumnProps,
+    useTable
+} from "react-table";
+import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter";
+import ResourceLink from "./ResourceLink";
+import {Table} from "reactstrap";
+import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
+import Pagination from "../misc/table/Pagination";
 import Utils from "../../util/Utils";
-import AppNotification from "../../model/AppNotification";
-import {consumeNotification} from "../../action/SyncActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import AppNotification from "../../model/AppNotification";
+import ResourceBadge from "../badge/ResourceBadge";
+import {createSelectFilter} from "../misc/table/SelectFilter";
+import {HasTypes} from "../../model/Asset";
 
 interface ResourceListProps extends HasI18n {
-    loadResources: () => void;
-    resources: { [id: string]: Resource };
+    resources: { [key: string]: Resource },
     notifications: AppNotification[];
-    loading: boolean;
-    consumeNotification: (n: AppNotification) => void;
+    loadResources: () => void;
+    consumeNotification: (notification: AppNotification) => void;
 }
 
-class ResourceListItem extends Resource {
-    public parent?: string;
-    public children: string[];
-    public tooltip: string;
-
-    constructor(resource: Resource, i18n: (str?: string) => string) {
-        super(resource);
-        if (resource instanceof Document) {
-            this.children = Utils.sanitizeArray(resource.files).map(f => f.iri);
-        } else {
-            this.children = [];
-        }
-        this.tooltip = this.label + " - " + i18n(Utils.getAssetTypeLabelId(this));
-    }
+function resourceTypeFilter(rows: any[], id: string, filterValue: string) {
+    return rows.filter(r => Utils.getPrimaryAssetType(r.original) === filterValue);
 }
 
-export class ResourceList extends React.Component<ResourceListProps> {
-
-    private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
-
-    public constructor(props: ResourceListProps) {
-        super(props);
-        this.treeComponent = React.createRef();
+export const ResourceList: React.FC<ResourceListProps> = props => {
+    const {i18n, resources, notifications, loadResources, consumeNotification} = props;
+    React.useEffect(() => {
+        loadResources();
+    }, [loadResources]);
+    const resourceUpdate = notifications.find(Utils.generateIsAssetLabelUpdate(VocabularyUtils.RESOURCE));
+    if (resourceUpdate) {
+        loadResources();
+        consumeNotification(resourceUpdate);
     }
-
-    public componentDidMount() {
-        this.props.loadResources();
-    }
-
-    public componentDidUpdate(prevProps: Readonly<ResourceListProps>): void {
-        if (Object.keys(prevProps.resources).length > 0 && this.props.resources !== prevProps.resources) {
-            this.treeComponent.current.resetOptions();
+    const data = React.useMemo(() => Object.keys(resources).map((r) => resources[r]), [resources]);
+    const columns: Column<Resource>[] = React.useMemo(() => [{
+        Header: i18n("resource.create.type"),
+        accessor: "types",
+        Filter: createSelectFilter((item: any) => Utils.getPrimaryAssetType(item as HasTypes)!, (type: string) => i18n(Utils.getAssetTypeLabelId({types: [type]}))),
+        filter: resourceTypeFilter,
+        disableSortBy: true,
+        className: "text-center type-column",
+        Cell: ({row}) => <ResourceBadge resource={row.original}/>
+    }, {
+        Header: i18n("asset.label"),
+        accessor: "label",
+        Filter: TextBasedFilter,
+        filter: "text",
+        Cell: ({row}) => <ResourceLink resource={row.original}/>
+    }], [i18n]);
+    const filterTypes = React.useMemo(() => ({text: textContainsFilter}), []);
+    const tableInstance = useTable<Resource>({
+        columns, data, filterTypes, initialState: {
+            sortBy: [{
+                id: "label",
+                desc: false
+            }]
         }
-        const notifications = this.props.notifications;
-        const resourceUpdate = notifications.find(Utils.generateIsAssetLabelUpdate(VocabularyUtils.RESOURCE));
-        if (resourceUpdate) {
-            this.props.loadResources();
-            this.props.consumeNotification(resourceUpdate);
-        }
-    }
+    } as any, useFilters, useSortBy, usePagination);
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        prepareRow,
+    } = tableInstance;
+    const page: Row<Resource>[] = (tableInstance as any).page;
 
-    private static valueRenderer(option: Resource) {
-        return <div><ResourceBadge resource={option} className="resource-list-badge"/><span>{option.label}</span></div>
-    }
-
-    private onChange = (res: Resource | null) => {
-        if (res === null) {
-            Routing.transitionTo(Routes.resources);
-        } else {
-            Routing.transitionToAsset(res);
-        }
-    };
-
-    private flattenAndSetParents(resources: Resource[]): ResourceListItem[] {
-        let result: ResourceListItem[] = [];
-        for (let i = 0, len = resources.length; i < len; i++) {
-            const item: ResourceListItem = new ResourceListItem(resources[i], this.props.i18n);
-            result.push(item);
-            if (resources[i] instanceof Document && (resources[i] as Document).files) {
-                const filesCopy = this.flattenAndSetParents((resources[i] as Document).files);
-                filesCopy.forEach(fc => fc.parent = item.iri);
-                result = result.concat(filesCopy);
-            }
-        }
-        return result;
-    }
-
-    public render() {
-        const i18n = this.props.i18n;
-        const resources = Object.keys(this.props.resources).map((v) => this.props.resources[v]);
-        if (resources.length === 0 && !this.props.loading) {
-            return <div className="italics">{i18n("resource.management.empty")}</div>;
-        }
-        const options = this.flattenAndSetParents(resources);
-        const height = Utils.calculateAssetListHeight();
-
-        return <div id="resources-list">
-            <IntelligentTreeSelect
-                className="p-0"
-                ref={this.treeComponent}
-                onChange={this.onChange}
-                options={options}
-                valueKey="iri"
-                labelKey="label"
-                childrenKey="children"
-                isMenuOpen={true}
-                multi={false}
-                showSettings={false}
-                displayInfoOnHover={true}
-                scrollMenuIntoView={false}
-                renderAsTree={true}
-                maxHeight={height}
-                valueRenderer={ResourceList.valueRenderer}
-                placeholder={i18n("resource.management.select.placeholder")}
-                noResultsText={i18n("main.search.no-results")}
-                tooltipKey={"tooltip"}
-            />
-        </div>;
-    }
-}
+    return <div id="resource-list" className="asset-list">
+        <Table {...getTableProps()} striped={true}>
+            <thead>
+            {headerGroups.map(headerGroup => <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => {
+                    const col: UseSortByColumnProps<Resource> & UseFiltersColumnProps<Resource> = column as any;
+                    return <th {...column.getHeaderProps([{className: (column as any).className}])}>
+                        {column.render("Header")}
+                        {col.canSort &&
+                        <AlphaNumSortToggle sortProps={column.getHeaderProps(col.getSortByToggleProps())}
+                                            desc={col.isSortedDesc} isSorted={col.isSorted}/>}
+                        {col.canFilter && <div className="filter-wrapper">{column.render("Filter")}</div>}
+                    </th>
+                })}
+            </tr>)}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+            {page.map(row => {
+                prepareRow(row);
+                return <tr {...row.getRowProps()}>
+                    {row.cells.map(cell =>
+                        <td {...cell.getCellProps([{className: (cell.column as any).className}])}>{cell.render("Cell")}</td>)}
+                </tr>
+            })}
+            </tbody>
+        </Table>
+        <Pagination pagingProps={tableInstance as any} pagingState={tableInstance.state as any} allowSizeChange={true}/>
+    </div>;
+};
 
 export default connect((state: TermItState) => {
-        return {
-            resources: state.resources,
-            notifications: state.notifications,
-            loading: state.loading,
-            intl: state.intl    // Forces component update on language switch
-        };
-    },
-    (dispatch: ThunkDispatch) => {
-        return {
-            loadResources: () => dispatch(loadResources()),
-            consumeNotification: (n: AppNotification) => dispatch(consumeNotification(n))
-        };
+    return {
+        resources: state.resources,
+        notifications: state.notifications
     }
-)(injectIntl(withI18n(ResourceList)));
+}, (dispatch: ThunkDispatch) => {
+    return {
+        loadResources: () => dispatch(loadResourcesAction()),
+        consumeNotification: (notification: AppNotification) => dispatch(consumeNotificationAction(notification))
+    }
+})(injectIntl(withI18n(ResourceList)));

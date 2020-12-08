@@ -4,6 +4,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Badge} from "reactstrap";
 import Utils from "../../util/Utils";
 import {HasTypes} from "../../model/Asset";
+import classNames from "classnames";
 
 interface ResourceBadgeProps extends HasI18n {
     resource?: HasTypes;
@@ -15,7 +16,7 @@ const ResourceBadge: React.FC<ResourceBadgeProps> = (props: ResourceBadgeProps) 
     if (!typeLabel) {
         typeLabel = "type.resource";
     }
-    return <Badge color="orange" className={props.className}>{props.i18n(typeLabel)}</Badge>;
+    return <Badge color="orange" className={classNames("asset-badge", props.className)}>{props.i18n(typeLabel)}</Badge>;
 };
 
 export default injectIntl(withI18n(ResourceBadge));
