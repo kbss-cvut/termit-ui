@@ -9,7 +9,7 @@ import {match as Match, RouteComponentProps} from "react-router";
 import {createMemoryHistory, Location} from "history";
 import {mountWithIntlAttached} from "../../../annotator/__tests__/AnnotationUtil";
 
-jest.mock("../../../vocabulary/ImportedVocabulariesList", () => () => <div>Imported vocabularies</div>);
+jest.mock("../../../vocabulary/VocabularyDependenciesList", () => () => <div>Vocabulary dependencies</div>);
 jest.mock("../../term/Terms", () => () => <div>Terms</div>);
 
 describe("Public VocabularySummary", () => {

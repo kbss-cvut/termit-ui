@@ -298,7 +298,7 @@ describe("Reducers", () => {
                 label: "Test vocabulary",
                 iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary"
             });
-            const vocabulary = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_VOCABULARY_IMPORTS}, imports)).vocabulary;
+            const vocabulary = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_VOCABULARY_DEPENDENCIES}, imports)).vocabulary;
             expect(vocabulary.allImportedVocabularies).toEqual(imports);
         });
 

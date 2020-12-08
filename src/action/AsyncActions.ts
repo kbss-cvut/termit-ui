@@ -153,7 +153,7 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
             .get(`${apiPrefix}/vocabularies/${iri.fragment}`, param("namespace", iri.namespace))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<VocabularyData>(data, VOCABULARY_CONTEXT))
             .then((data: VocabularyData) => {
-                dispatch(loadImportedVocabulariesIntoState(iri, apiPrefix));
+                dispatch(loadVocabularyDependenciesIntoState(iri, apiPrefix));
                 dispatch(validateVocabulary(iri));
                 return dispatch(asyncActionSuccessWithPayload(action, new Vocabulary(data)));
             })
@@ -164,13 +164,13 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
     };
 }
 
-function loadImportedVocabulariesIntoState(vocabularyIri: IRI, apiPrefix: string) {
+function loadVocabularyDependenciesIntoState(vocabularyIri: IRI, apiPrefix: string) {
     const action = {
-        type: ActionType.LOAD_VOCABULARY_IMPORTS
+        type: ActionType.LOAD_VOCABULARY_DEPENDENCIES
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/imports`, param("namespace", vocabularyIri.namespace))
+        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/dependencies`, param("namespace", vocabularyIri.namespace))
             .then(data => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -182,16 +182,16 @@ function loadImportedVocabulariesIntoState(vocabularyIri: IRI, apiPrefix: string
 /**
  * Loads vocabularies imported (directly or transitively) by the vocabulary with the specified IRI.
  */
-export function loadImportedVocabularies(vocabularyIri: IRI) {
+export function loadVocabularyDependencies(vocabularyIri: IRI) {
     const action = {
-        type: ActionType.LOAD_VOCABULARY_IMPORTS
+        type: ActionType.LOAD_VOCABULARY_DEPENDENCIES
     };
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
         if (isActionRequestPending(getState(), action)) {
             return Promise.resolve([]);
         }
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/imports", param("namespace", vocabularyIri.namespace))
+        return Ajax.get(Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/dependencies", param("namespace", vocabularyIri.namespace))
             .then(data => {
                 dispatch(asyncActionSuccess(action));
                 return data;

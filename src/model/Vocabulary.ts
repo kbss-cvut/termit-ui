@@ -13,19 +13,19 @@ const ctx = {
     "document": VocabularyUtils.PREFIX + "popisuje-dokument",
     "glossary": VocabularyUtils.PREFIX + "má-glosář",
     "model": VocabularyUtils.PREFIX + "má-model",
-    "importedVocabularies": VocabularyUtils.IMPORTS_VOCABULARY
+    "dependencies": VocabularyUtils.VOCABULARY_DEPENDENCY
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
 
-const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "document", "types", "glossary", "model", "importedVocabularies", "allImportedVocabularies"];
+const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "document", "types", "glossary", "model", "dependencies", "allImportedVocabularies"];
 
 export interface VocabularyData extends AssetData {
     label: string;
     document?: DocumentData;
     glossary?: AssetData;
     model?: AssetData;
-    importedVocabularies?: AssetData[];
+    dependencies?: AssetData[];
 }
 
 export default class Vocabulary extends Asset implements VocabularyData {
@@ -33,7 +33,7 @@ export default class Vocabulary extends Asset implements VocabularyData {
     public document?: Document;
     public glossary?: AssetData;
     public model?: AssetData;
-    public importedVocabularies?: AssetData[];
+    public dependencies?: AssetData[];
     public allImportedVocabularies?: string[];
 
     constructor(data: VocabularyData) {

@@ -104,7 +104,7 @@ function vocabulary(state: Vocabulary = EMPTY_VOCABULARY, action: AsyncActionSuc
     switch (action.type) {
         case ActionType.LOAD_VOCABULARY:
             return action.status === AsyncActionStatus.SUCCESS ? action.payload as Vocabulary : state;
-        case ActionType.LOAD_VOCABULARY_IMPORTS:
+        case ActionType.LOAD_VOCABULARY_DEPENDENCIES:
             return action.status === AsyncActionStatus.SUCCESS ? new Vocabulary(Object.assign(state, {allImportedVocabularies: action.payload as string[]})) : state;
         case ActionType.LOGOUT:
             return EMPTY_VOCABULARY;

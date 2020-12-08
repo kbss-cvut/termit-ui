@@ -14,7 +14,7 @@ import {
     hasFileContent,
     loadFileContent,
     loadHistory,
-    loadImportedVocabularies,
+    loadVocabularyDependencies,
     loadLastEditedAssets,
     loadLatestTextAnalysisRecord,
     loadMyAssets,
@@ -175,7 +175,7 @@ describe("Async actions", () => {
         it("dispatches vocabulary imports loading on success", () => {
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(require("../../rest-mock/vocabulary")));
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
-                const loadImportsAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
+                const loadImportsAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES);
                 expect(loadImportsAction).toBeDefined();
             });
         });
@@ -188,19 +188,19 @@ describe("Async actions", () => {
             });
         });
 
-        it("passes loaded vocabulary imports to store", () => {
-            const imports = [Generator.generateUri(), Generator.generateUri()];
+        it("passes loaded vocabulary dependencies to store", () => {
+            const dependencies = [Generator.generateUri(), Generator.generateUri()];
             Ajax.get = jest.fn().mockImplementation((url) => {
-                if (url.endsWith("/imports")) {
-                    return Promise.resolve(imports);
+                if (url.endsWith("/dependencies")) {
+                    return Promise.resolve(dependencies);
                 } else {
                     return Promise.resolve(require("../../rest-mock/vocabulary"));
                 }
             });
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
-                const loadImportsSuccessAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_IMPORTS && a.status === AsyncActionStatus.SUCCESS);
+                const loadImportsSuccessAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES && a.status === AsyncActionStatus.SUCCESS);
                 expect(loadImportsSuccessAction).toBeDefined();
-                expect(loadImportsSuccessAction.payload).toEqual(imports);
+                expect(loadImportsSuccessAction.payload).toEqual(dependencies);
             });
         });
     });
@@ -216,10 +216,10 @@ describe("Async actions", () => {
             Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
             return Promise.resolve((store.dispatch as ThunkDispatch)(removeVocabulary(vocabulary))).then(() => {
-                    expect(Ajax.delete).toHaveBeenCalled();
-                    const call = (Ajax.delete as jest.Mock).mock.calls[0];
-                    expect(call[0]).toEqual(Constants.API_PREFIX + "/vocabularies/" + normalizedName);
-                    expect(call[1].getParams().namespace).toEqual(namespace);
+                expect(Ajax.delete).toHaveBeenCalled();
+                const call = (Ajax.delete as jest.Mock).mock.calls[0];
+                expect(call[0]).toEqual(Constants.API_PREFIX + "/vocabularies/" + normalizedName);
+                expect(call[1].getParams().namespace).toEqual(namespace);
             });
         });
 
@@ -244,7 +244,7 @@ describe("Async actions", () => {
             Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
             return Promise.resolve((store.dispatch as ThunkDispatch)(removeVocabulary(vocabulary))).then(() => {
-                expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies,undefined);
+                expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies, undefined);
             });
         });
     });
@@ -939,12 +939,12 @@ describe("Async actions", () => {
     });
 
     describe("validate results", () => {
-        const v = VocabularyUtils.create('');
+        const v = VocabularyUtils.create("");
         it("extracts validation results from incoming JSON", () => {
             const validationResults = require("../../rest-mock/validation-results.json");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults) );
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
             return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
-                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const successAction: AsyncActionSuccess<{ [vocabularyIri: string]: ValidationResult[] }> = store.getActions()[1];
                 const result = successAction.payload[v.toString()];
                 expect(result.length).toEqual(validationResults.length);
                 // @ts-ignore
@@ -962,7 +962,7 @@ describe("Async actions", () => {
             const validationResults = require("../../rest-mock/validation-results.json");
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
             return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
-                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const successAction: AsyncActionSuccess<{ [vocabularyIri: string]: ValidationResult[] }> = store.getActions()[1];
                 const result = successAction.payload[v.toString()];
                 expect(Array.isArray(result)).toBeTruthy();
                 expect(result.length).toEqual(1);
@@ -1670,32 +1670,32 @@ describe("Async actions", () => {
         });
     });
 
-    describe("loadImportedVocabularies", () => {
+    describe("loadVocabularyDependencies", () => {
 
-        it("loads imported vocabularies for the specified vocabulary IRI", () => {
-            const imports = [Generator.generateUri(), Generator.generateUri()];
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(imports));
+        it("loads dependencies for the specified vocabulary IRI", () => {
+            const dependencies = [Generator.generateUri(), Generator.generateUri()];
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(dependencies));
             const iri = VocabularyUtils.create(Generator.generateUri());
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadImportedVocabularies(iri))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabularyDependencies(iri))).then(() => {
                 expect(Ajax.get).toHaveBeenCalled();
                 const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-                expect(url).toEqual(Constants.API_PREFIX + "/vocabularies/" + iri.fragment + "/imports");
+                expect(url).toEqual(Constants.API_PREFIX + "/vocabularies/" + iri.fragment + "/dependencies");
             });
         });
 
-        it("returns loaded imports", () => {
-            const imports = [Generator.generateUri(), Generator.generateUri()];
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(imports));
+        it("returns loaded dependencies", () => {
+            const dependencies = [Generator.generateUri(), Generator.generateUri()];
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(dependencies));
             const iri = VocabularyUtils.create(Generator.generateUri());
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadImportedVocabularies(iri))).then((result) => {
-                expect(result).toEqual(imports);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabularyDependencies(iri))).then((result) => {
+                expect(result).toEqual(dependencies);
             });
         });
 
         it("returns empty array on error on request error", () => {
             Ajax.get = jest.fn().mockImplementation(() => Promise.reject({}));
             const iri = VocabularyUtils.create(Generator.generateUri());
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadImportedVocabularies(iri))).then((result) => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabularyDependencies(iri))).then((result) => {
                 expect(result).toEqual([]);
             });
         });
@@ -1831,7 +1831,7 @@ describe("Async actions", () => {
             const news = "New version published, yay!";
             const lang = "cs";
             Ajax.get = jest.fn().mockResolvedValue(news);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result:any) => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result: any) => {
                 expect(result).toEqual(news);
                 expect((Ajax.get as jest.Mock).mock.calls[0][0]).toEqual(Constants.NEWS_MD_URL[lang]);
             });
