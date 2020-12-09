@@ -218,7 +218,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         );
 
         const includeImported = this.state.includeImported;
-        const renderIncludeImported = this.props.vocabulary && this.props.vocabulary.importedVocabularies;
+        const renderIncludeImported = this.props.vocabulary && this.props.vocabulary.dependencies;
 
         return <div id="vocabulary-terms">
             <div className={classNames({

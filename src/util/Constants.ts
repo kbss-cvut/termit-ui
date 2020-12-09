@@ -48,6 +48,8 @@ const constants = {
     STATUS_UNAUTHORIZED: 401,
     // HTTP response status 409 Conflict
     STATUS_CONFLICT: 409,
+    // HTTP response status 404 Not found
+    STATUS_NOT_FOUND: 404,
     // Axios uses lower case for header names
     Headers: {
         ACCEPT: "accept",

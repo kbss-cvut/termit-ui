@@ -3,7 +3,7 @@ import withI18n, {HasI18n} from "../../hoc/withI18n";
 import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import {Card, CardBody, Col, Label, Row} from "reactstrap";
-import ImportedVocabulariesList from "../../vocabulary/ImportedVocabulariesList";
+import VocabularyDependenciesList from "../../vocabulary/VocabularyDependenciesList";
 import {connect} from "react-redux";
 import TermItState from "../../../model/TermItState";
 import {ThunkDispatch} from "../../../util/Types";
@@ -50,7 +50,7 @@ export const VocabularySummary: React.FC<VocabularySummaryProps> = props => {
                         <Label id="vocabulary-metadata-comment">{vocabulary.comment}</Label>
                     </Col>
                 </Row>
-                <ImportedVocabulariesList vocabularies={vocabulary.importedVocabularies}/>
+                <VocabularyDependenciesList vocabularies={vocabulary.dependencies}/>
             </CardBody>
         </Card>
         <Card>

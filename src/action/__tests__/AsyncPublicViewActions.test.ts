@@ -3,7 +3,7 @@ import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import Ajax from "../../util/Ajax";
 import {ThunkDispatch} from "../../util/Types";
-import ActionType, {AsyncActionSuccess} from "../ActionType";
+import ActionType, {AsyncActionSuccess, MessageAction} from "../ActionType";
 import Vocabulary from "../../model/Vocabulary";
 import {verifyExpectedAssets} from "../../__tests__/environment/TestUtil";
 import {loadPublicTerm, loadPublicTerms, loadPublicVocabularies, loadPublicVocabulary} from "../AsyncPublicViewActions";
@@ -61,11 +61,11 @@ describe("AsyncPublicViewActions", () => {
             });
         });
 
-        it("uses public API endpoint to load vocabulary's imports as well", () => {
+        it("uses public API endpoint to load vocabulary's dependencies as well", () => {
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(require("../../rest-mock/vocabulary")));
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadPublicVocabulary({fragment: "metropolitan-plan"}))).then(() => {
-                const loadImportsAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
-                expect(loadImportsAction).toBeDefined();
+                const loadDependenciesAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES);
+                expect(loadDependenciesAction).toBeDefined();
                 expect((Ajax.get as jest.Mock).mock.calls.length).toEqual(3);
                 const url = (Ajax.get as jest.Mock).mock.calls[1][0];
                 expect(url).toContain(Constants.PUBLIC_API_PREFIX);
@@ -95,10 +95,10 @@ describe("AsyncPublicViewActions", () => {
             const term = require("../../rest-mock/terms")[0];
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(term));
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadPublicTerm("test-term", {fragment: "test-vocabulary"})))
-                .then((data: AsyncActionSuccess<Term>) => {
+                .then((data: AsyncActionSuccess<Term> | MessageAction) => {
                     const url = (Ajax.get as jest.Mock).mock.calls[0][0];
                     expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-                    verifyExpectedAssets([term], [data.payload]);
+                    verifyExpectedAssets([term], [(data as AsyncActionSuccess<Term>).payload]);
                 });
         });
     });
