@@ -180,8 +180,8 @@ const cs = {
         "vocabulary.detail.files": "Soubory",
         "vocabulary.detail.files.file": "Název souboru",
         "vocabulary.detail.noTermSelected": "Vyberte pojem ve stromečku vlevo.",
-        "vocabulary.detail.imports": "Importuje",
-        "vocabulary.detail.imports.edit": "Importuje slovníky",
+        "vocabulary.detail.imports": "Závisí na",
+        "vocabulary.detail.imports.edit": "Závisí na",
         "vocabulary.detail.document": "Dokument",
         "vocabulary.text-analysis.finished.message": "Textová analýza definic pojmů v tomto slovníku úspěšně dokončena.",
         "vocabulary.all.text-analysis.invoke.message": "Textová analýza definic pojmů ve všech slovnících úspěšně spuštěna.",
@@ -549,6 +549,7 @@ const cs = {
         "workspace.loading": "Načítám aktuální pracovní prostor...",
         "workspace.current.empty": "Aktuálně nemáte načtený žádný pracovní prostor.",
         "workspace.indicator": "Pracovní prostor: {name}",
+        "workspace.indicator.controlPanelLink.tooltip": "Zobrazit detail pracovního prostoru v kontrolním panelu",
 
         "comments.title": "Komentáře",
         "comments.create.placeholder": "Napište komentář...",
