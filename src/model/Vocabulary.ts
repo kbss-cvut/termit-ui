@@ -8,12 +8,12 @@ import Constants from "../util/Constants";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
-    "label": VocabularyUtils.DC_TITLE,
-    "comment": VocabularyUtils.DC_DESCRIPTION,
-    "document": VocabularyUtils.PREFIX + "popisuje-dokument",
-    "glossary": VocabularyUtils.PREFIX + "má-glosář",
-    "model": VocabularyUtils.PREFIX + "má-model",
-    "dependencies": VocabularyUtils.VOCABULARY_DEPENDENCY
+    label: VocabularyUtils.DC_TITLE,
+    comment: VocabularyUtils.DC_DESCRIPTION,
+    document: VocabularyUtils.DESCRIBES_DOCUMENT,
+    glossary: VocabularyUtils.HAS_GLOSSARY,
+    model: VocabularyUtils.HAS_MODEL,
+    dependencies: VocabularyUtils.VOCABULARY_DEPENDENCY
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
@@ -22,6 +22,7 @@ const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "document", "t
 
 export interface VocabularyData extends AssetData {
     label: string;
+    comment?: string;
     document?: DocumentData;
     glossary?: AssetData;
     model?: AssetData;
@@ -30,6 +31,7 @@ export interface VocabularyData extends AssetData {
 
 export default class Vocabulary extends Asset implements VocabularyData {
     public label: string;
+    public comment?: string;
     public document?: Document;
     public glossary?: AssetData;
     public model?: AssetData;

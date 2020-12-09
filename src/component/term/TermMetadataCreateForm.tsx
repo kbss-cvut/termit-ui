@@ -182,7 +182,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
             <Row>
                 <Col xs={12}>
-                    <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}/>
+                    <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect} language={language}/>
                 </Col>
             </Row>
 
@@ -215,8 +215,9 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 </Row>
                 <Row>
                     <Col xs={12}>
+                        <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
                         <TextArea name="create-term-comment" label={i18n("term.metadata.comment")}
-                                  type="textarea" rows={4} value={termData.comment}
+                                  type="textarea" rows={4} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
                                   help={this.props.i18n("term.comment.help")}
                                   onChange={this.onCommentChange}/>
                     </Col>

@@ -30,7 +30,7 @@ describe("Term edit", () => {
         term = new Term({
             iri: Generator.generateUri(),
             label: langString("Test"),
-            comment: "test",
+            scopeNote: langString("test"),
             vocabulary: {iri: Generator.generateUri()}
         });
         onSave = jest.fn();
@@ -73,7 +73,7 @@ describe("Term edit", () => {
             const arg = (onSave as jest.Mock).mock.calls[0][0];
             expect(arg.iri).toEqual(term.iri);
             expect(arg.label).toEqual(langString(newLabel));
-            expect(arg.comment).toEqual(term.comment);
+            expect(arg.scopeNote).toEqual(term.scopeNote);
         });
     });
 

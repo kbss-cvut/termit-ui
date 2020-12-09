@@ -82,7 +82,7 @@ const AssetFactory = {
             iri: "",
             label: langString("", lang),
             definition: langString("", lang),
-            comment: "",
+            scopeNote: langString("", lang),
             types: [],
             sources: [],
             parentTerms: [],

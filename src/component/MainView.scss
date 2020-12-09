@@ -110,3 +110,20 @@
     display: none !important;
   }
 }
+
+.asset-list th {
+  vertical-align: top;
+  text-align: center;
+}
+
+.asset-list .filter-wrapper {
+  margin-top: 0.25rem;
+}
+
+.asset-list .sort-icon {
+  vertical-align: text-bottom;
+}
+
+.asset-badge {
+  width: 4.4rem;
+}

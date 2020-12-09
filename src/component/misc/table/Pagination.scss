@@ -1,0 +1,17 @@
+.page-size-select {
+  @media (max-width: 576px - 1) {
+    width: 100%;
+  }
+
+  @media (min-width: 576px) {
+    width: 75%;
+  }
+
+  @media (min-width: 892px) {
+    width: 50%;
+  }
+
+  @media (min-width: 1300px) {
+    width: 25%;
+  }
+}

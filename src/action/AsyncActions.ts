@@ -48,7 +48,6 @@ import RecentlyModifiedAsset, {
 } from "../model/RecentlyModifiedAsset";
 import TermOccurrence from "../model/TermOccurrence";
 import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "../model/SearchResult";
-import {getShortLocale} from "../util/IntlUtil";
 import NotificationType from "../model/NotificationType";
 import {langString} from "../model/MultilingualString";
 import {Configuration} from "../model/Configuration";
@@ -140,7 +139,7 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
     return url;
 }
 
-export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPrefix: string = Constants.API_PREFIX) {
+export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPrefix: string = Constants.API_PREFIX, withValidation = true) {
     const action = {
         type: ActionType.LOAD_VOCABULARY
     };
@@ -154,7 +153,9 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<VocabularyData>(data, VOCABULARY_CONTEXT))
             .then((data: VocabularyData) => {
                 dispatch(loadVocabularyDependenciesIntoState(iri, apiPrefix));
-                dispatch(validateVocabulary(iri));
+                if (withValidation) {
+                    dispatch(validateVocabulary(iri));
+                }
                 return dispatch(asyncActionSuccessWithPayload(action, new Vocabulary(data)));
             })
             .catch((error: ErrorData) => {
@@ -616,10 +617,9 @@ export function loadTypes() {
             // No need to load types if they are already loaded
             return Promise.resolve([]);
         }
-        const language = getShortLocale(getState().intl.locale);
         dispatch(asyncActionRequest(action));
         return Ajax
-            .get(Constants.API_PREFIX + "/language/types", params({language}))
+            .get(Constants.API_PREFIX + "/language/types")
             .then((data: object[]) =>
                 data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : [])
             .then((data: TermData[]) => {
