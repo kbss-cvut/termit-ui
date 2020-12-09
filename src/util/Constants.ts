@@ -1,6 +1,7 @@
 import Routes from "./Routes";
 
 const SERVER_URL = "__SERVER_URL__";
+const CONTROL_PANEL_URL = "__CONTROL_PANEL_URL__";
 
 const API_PREFIX = "/rest";
 const DEFAULT_LANGUAGE = "en";
@@ -8,6 +9,8 @@ const DEFAULT_LANGUAGE = "en";
 const constants = {
     // Will be replaced with actual server url during build
     SERVER_URL,
+    // Will be replaced with actual control panel url during build
+    CONTROL_PANEL_URL,
     // Prefix of the server REST API
     API_PREFIX,
     PUBLIC_API_PREFIX: `${API_PREFIX}/public`,

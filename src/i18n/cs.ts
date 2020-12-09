@@ -543,6 +543,7 @@ const cs = {
         "workspace.loading": "Načítám aktuální pracovní prostor...",
         "workspace.current.empty": "Aktuálně nemáte načtený žádný pracovní prostor.",
         "workspace.indicator": "Pracovní prostor: {name}",
+        "workspace.indicator.controlPanelLink.tooltip": "Zobrazit detail pracovního prostoru v kontrolním panelu",
 
         "comments.title": "Komentáře",
         "comments.create.placeholder": "Napište komentář...",
