@@ -391,10 +391,10 @@ module.exports = function(webpackEnv) {
                   replace: server['url'],
                   strict: true
                 }, {
-                //     search: '__CONTROL_PANEL_URL__',
-                //     replace: controlPanelUrl,
-                //     strict: true
-                // },{
+                    search: '__CONTROL_PANEL_URL__',
+                    replace: controlPanelUrl,
+                    strict: true
+                },{
                   search: '__VERSION__',
                   // @ts-ignore
                   replace: require('../package.json').version,
