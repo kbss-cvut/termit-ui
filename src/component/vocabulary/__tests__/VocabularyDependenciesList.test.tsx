@@ -1,14 +1,14 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {ImportedVocabulariesList} from "../ImportedVocabulariesList";
+import {VocabularyDependenciesList} from "../VocabularyDependenciesList";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyIriLink from "../VocabularyIriLink";
 
-describe("ImportedVocabulariesList", () => {
+describe("VocabularyDependenciesList", () => {
 
-    it("renders nothing when no imported vocabularies are provided", () => {
-        const wrapper = shallow(<ImportedVocabulariesList {...intlFunctions()}/>);
+    it("renders nothing when no dependencies are provided", () => {
+        const wrapper = shallow(<VocabularyDependenciesList {...intlFunctions()}/>);
         expect(wrapper.isEmptyRender()).toBeTruthy();
     });
 
@@ -18,7 +18,7 @@ describe("ImportedVocabulariesList", () => {
         }, {
             iri: Generator.generateUri()
         }];
-        const wrapper = shallow(<ImportedVocabulariesList vocabularies={vocabularies} {...intlFunctions()}/>);
+        const wrapper = shallow(<VocabularyDependenciesList vocabularies={vocabularies} {...intlFunctions()}/>);
         expect(wrapper.find(VocabularyIriLink).length).toEqual(2);
     });
 });

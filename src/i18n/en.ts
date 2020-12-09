@@ -180,8 +180,8 @@ const en = {
         'vocabulary.detail.files': 'Files',
         'vocabulary.detail.files.file': 'Filename',
         'vocabulary.detail.noTermSelected': 'Start by selecting a term in the tree on the left.',
-        "vocabulary.detail.imports": "Imports",
-        "vocabulary.detail.imports.edit": "Imports vocabularies",
+        "vocabulary.detail.imports": "Dependencies",
+        "vocabulary.detail.imports.edit": "Depends on vocabularies",
         "vocabulary.detail.document": "Document",
         "vocabulary.text-analysis.finished.message": "Text analysis of terms' definitions in this vocabulary successfully finished.",
         "vocabulary.all.text-analysis.invoke.message": "Text analysis of terms' definitions in all vocabularies successfully invoked.",
@@ -543,6 +543,7 @@ const en = {
         "workspace.loading": "Loading current workspace...",
         "workspace.current.empty": "No workspace is currently loaded.",
         "workspace.indicator": "Workspace: {name}",
+        "workspace.indicator.controlPanelLink.tooltip": "Show workspace detail in the control panel",
 
         "comments.title": "Comments",
         "comments.create.placeholder": "Type your comment...",

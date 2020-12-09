@@ -16,7 +16,7 @@
     "domhandler": "^3.0.0",
     "html-to-react": "1.4.5",
     "htmlparser2": "^4.1.0",
-    "intelligent-tree-select": "0.7.6",
+    "intelligent-tree-select": "0.7.7",
     "iso-639-1": "^2.1.4",
     "javascript-time-ago": "2.3.3",
     "jquery": "^3.5.1",

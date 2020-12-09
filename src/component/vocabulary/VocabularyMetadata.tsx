@@ -4,7 +4,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import {Card, CardBody, Col, Label, Row} from "reactstrap";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
-import ImportedVocabulariesList from "./ImportedVocabulariesList";
+import VocabularyDependenciesList from "./VocabularyDependenciesList";
 import Tabs from "../misc/Tabs";
 import TermChangeFrequency from "./TermChangeFrequency";
 import Terms from "../term/Terms";
@@ -60,7 +60,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
                             <Label id="vocabulary-metadata-comment">{vocabulary.comment}</Label>
                         </Col>
                     </Row>
-                    <ImportedVocabulariesList vocabularies={vocabulary.importedVocabularies}/>
+                    <VocabularyDependenciesList vocabularies={vocabulary.dependencies}/>
                 </CardBody>
             </Card>
             <Card>
