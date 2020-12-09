@@ -46,7 +46,7 @@ export const VocabularyList: React.FC<VocabularyListProps> = props => {
                 desc: false
             }]
         }
-    } as any, useFilters, useSortBy);
+    } as any, useFilters, useSortBy, usePagination);
     const {
         getTableProps,
         getTableBodyProps,
