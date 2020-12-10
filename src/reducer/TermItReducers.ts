@@ -31,7 +31,7 @@ import SearchQuery from "../model/SearchQuery";
 import {ErrorLogItem} from "../model/ErrorInfo";
 import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "../model/Configuration";
-import ValidationResult from "../model/ValidationResult";
+import {ConsolidatedResults} from "../model/ConsolidatedResults";
 
 /**
  * Handles changes to the currently logged in user.
@@ -457,8 +457,8 @@ function configuration(state: Configuration = DEFAULT_CONFIGURATION, action: Asy
     return state;
 }
 
-function validationResults(state: { [vocabularyIri: string] : ValidationResult[] } = {},
-                           action: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}>) {
+function validationResults(state: { [vocabularyIri: string] : ConsolidatedResults } = {},
+                           action: AsyncActionSuccess<{[vocabularyIri: string] : ConsolidatedResults}>) {
     switch (action.type) {
         case ActionType.FETCH_VALIDATION_RESULTS:
             if (action.status === AsyncActionStatus.SUCCESS) {

@@ -189,11 +189,6 @@ const cs = {
         "vocabulary.termchanges.empty": "Žádné nové pojmy ani aktualizace pojmů nebyly nalezeny.",
         "vocabulary.removed.message": "Slovník by odstraněn.",
 
-        "vocabulary.validation.tab": "Kontrola",
-        "vocabulary.validation.term": "Pojem",
-        "vocabulary.validation.severity": "Závažnost",
-        "vocabulary.validation.message": "Zpráva",
-
         'vocabulary.term.created.message': 'Pojem úspěšně vytvořen.',
         'vocabulary.select-vocabulary': 'Vyber slovník',
 
@@ -331,6 +326,7 @@ const cs = {
         "term.metadata.status.confirmed" : "Schválený",
         "term.metadata.status.help" : "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
         "term.metadata.types.select.placeholder": "Vyberte typ",
+        "term.metadata.validation.title" : "Kontrola",
         "term.removed.message": "Pojem by odstraněn.",
         "term.badge.score.tooltip": "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
         "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
