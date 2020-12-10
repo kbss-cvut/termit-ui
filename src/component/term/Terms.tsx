@@ -22,7 +22,9 @@ import AppNotification from "../../model/AppNotification";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
-import {createTermsWithImportsOptionRendererAndUnusedTerms} from "../misc/treeselect/Renderers";
+import {
+    createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge
+} from "../misc/treeselect/Renderers";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
 import {Location} from "history";
@@ -247,7 +249,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                     scrollMenuIntoView={false}
                     multi={false}
                     maxHeight={Utils.calculateAssetListHeight()}
-                    optionRenderer={createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms, this.props.vocabulary.iri)}
+                    optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, this.props.vocabulary.iri, true)}
                     {...commonTermTreeSelectProps(this.props)}
                 />
             </div>
