@@ -26,8 +26,8 @@ import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
-import Routes from "../../util/Routes";
 import {getShortLocale} from "../../util/IntlUtil";
+import {ConsolidatedResults} from "../../model/ConsolidatedResults";
 
 export interface CommonTermDetailProps extends HasI18n {
     configuredLanguage: string;
@@ -41,7 +41,7 @@ interface TermDetailProps extends CommonTermDetailProps, RouteComponentProps<any
     updateTerm: (term: Term) => Promise<any>;
     removeTerm: (term: Term) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
-    validationResults: { [vocabularyIri: string]: ValidationResult[] };
+    validationResults: ConsolidatedResults;
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -91,7 +91,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         this.props.loadTerm(termName, {fragment: vocabularyName, namespace});
     }
 
-    private computeScore(results: ValidationResult []): number | undefined {
+    private computeScore(results: ValidationResult[]): number | undefined {
         return results.reduce((reduceScore, result) => {
             if (importantRules.indexOf(result.sourceShape?.iri) >= 0) {
                 return reduceScore - 25;
@@ -162,23 +162,19 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     }
 
     public onBadgeClick = () => {
-        const normalizedName = this.props.match.params.name;
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        const queryMap = new Map();
+        const query = new Map();
         if (namespace) {
-            queryMap.set("namespace", namespace);
+            query.set("namespace", namespace);
         }
-        queryMap.set("activeTab", "vocabulary.validation.tab");
-        Routing.transitionTo(Routes.vocabularyDetail, {
-            params: new Map([["name", normalizedName]]),
-            query: queryMap
-        });
+        query.set("activeTab", "term.metadata.validation.title");
+        Routing.transitionToAsset(this.props.term!, { query })
     }
 
     public renderBadge() {
         let score: number | undefined;
-        if (this.props.validationResults && this.props.validationResults[this.props.vocabulary.iri]) {
-            score = this.computeScore(this.props.validationResults[this.props.vocabulary.iri].filter(result => result.term.iri === this.props.term?.iri));
+        if (this.props.validationResults) {
+            score = this.computeScore(this.props.validationResults[this.props.term!.iri] || [] );
         }
         return <Badge color={this.setBadgeColor(score)}
                       className="term-quality-badge"
@@ -224,7 +220,7 @@ export default connect((state: TermItState) => {
         term: state.selectedTerm,
         vocabulary: state.vocabulary,
         configuredLanguage: state.configuration.language,
-        validationResults: state.validationResults
+        validationResults: state.validationResults[state.vocabulary.iri]
     };
 }, (dispatch: ThunkDispatch) => {
     return {

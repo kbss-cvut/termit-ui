@@ -1,5 +1,4 @@
 import * as React from "react";
-import Vocabulary from "../../../../model/Vocabulary";
 import {shallow} from "enzyme";
 import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import {ValidationResults} from "../ValidationResults";
@@ -7,6 +6,7 @@ import Generator from "../../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import ValidationResult from "../../../../model/ValidationResult";
 import SeverityText from "../SeverityText";
+import Term from "../../../../model/Term";
 
 export function constructValidationResult(termIri : string) : ValidationResult {
     return new ValidationResult(
@@ -19,35 +19,26 @@ export function constructValidationResult(termIri : string) : ValidationResult {
 
 describe("Validation Results", () => {
 
-    let vocabulary: Vocabulary;
+    let term: Term;
 
     beforeEach(() => {
-        vocabulary = new Vocabulary({
-            iri: Generator.generateUri(),
-            label: "Test vocabulary"
-        });
+        term = Generator.generateTerm();
     });
 
     it("groups results by term and orders them most problematic first", () => {
+        const anotherTermIri = "https://example.org/term2";
         const validationResults = {
-            [vocabulary.iri]: [
-                constructValidationResult("https://example.org/term1"),
-                constructValidationResult("https://example.org/term2"),
-                constructValidationResult("https://example.org/term3"),
-                constructValidationResult("https://example.org/term1"),
-                constructValidationResult("https://example.org/term3"),
-                constructValidationResult("https://example.org/term3"),
-                constructValidationResult("https://example.org/term3")
-            ]
+            [term.iri]: [
+                constructValidationResult(term.iri),
+                constructValidationResult(term.iri),
+            ],
+            [anotherTermIri] : [ constructValidationResult(anotherTermIri) ]
         }
         const component = shallow<ValidationResults>(<ValidationResults
-            vocabulary={vocabulary}
+            term={term}
             validationResults={validationResults} {...intlFunctions()}/>);
 
-        const rows = component.find("tbody").find("tr");
-        expect(rows.length).toEqual(3);
-        expect(rows.at(0).find(SeverityText).length).toEqual(4);
-        expect(rows.at(1).find(SeverityText).length).toEqual(2);
-        expect(rows.at(2).find(SeverityText).length).toEqual(1);
+        const rows = component.find("tbody").find(SeverityText);
+        expect(rows.length).toEqual(2);
     });
 });

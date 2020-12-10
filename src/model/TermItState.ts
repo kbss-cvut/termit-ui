@@ -14,7 +14,7 @@ import AsyncActionStatus from "../action/AsyncActionStatus";
 import {ErrorLogItem} from "./ErrorInfo";
 import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "./Configuration";
-import ValidationResult from "./ValidationResult";
+import {ConsolidatedResults} from "./ConsolidatedResults";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -54,7 +54,7 @@ export default class TermItState {
     public labelCache: { [key: string]: string };
     public annotatorTerms: { [key: string]: Term };
     public configuration: Configuration;
-    public validationResults: { [vocabularyIri: string] : ValidationResult[] };
+    public validationResults: { [vocabularyIri: string] : ConsolidatedResults };
 
     constructor() {
         this.loading = false;
