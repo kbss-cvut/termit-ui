@@ -45,6 +45,8 @@ interface GlossaryTermsProps extends HasI18n {
     location: Location;
     match: Match<any>;
     isDetailView?: boolean;
+    // Whether terms should be displayed with the quality badge
+    showTermQualityBadge: boolean;
 }
 
 interface TermsState {
@@ -249,7 +251,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                     scrollMenuIntoView={false}
                     multi={false}
                     maxHeight={Utils.calculateAssetListHeight()}
-                    optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, this.props.vocabulary.iri, true)}
+                    optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, this.props.vocabulary.iri, this.props.showTermQualityBadge)}
                     {...commonTermTreeSelectProps(this.props)}
                 />
             </div>
