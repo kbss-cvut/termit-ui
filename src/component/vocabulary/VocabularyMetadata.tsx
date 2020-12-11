@@ -81,7 +81,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         // Ensure order of tabs Terms | (Files) | Unmapped properties | History
 
         tabs["glossary.title"] =
-            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location}/>
+            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location} showTermQualityBadge={true}/>
 
         if (vocabulary.document) {
             tabs["vocabulary.detail.document"] =

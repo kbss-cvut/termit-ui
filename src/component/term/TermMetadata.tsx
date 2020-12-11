@@ -119,10 +119,10 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                 {this.state.displayTerms && <Col>
                     <Card>
                         <Terms vocabulary={this.props.vocabulary} match={this.props.match}
-                               location={this.props.location} isDetailView={true}/>
+                               location={this.props.location} isDetailView={true}
+                               showTermQualityBadge={false}/>
                     </Card>
-                </Col>
-                }
+                </Col>}
             </Row>
         </>;
     }
