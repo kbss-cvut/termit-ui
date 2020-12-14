@@ -14,7 +14,6 @@ import {match as Match} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import {selectVocabularyTerm} from "../../action/SyncActions";
-import ValidationResults from "./validation/ValidationResults";
 import Utils from "../../util/Utils";
 
 interface VocabularyMetadataProps extends HasI18n {
@@ -81,7 +80,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         // Ensure order of tabs Terms | (Files) | Unmapped properties | History
 
         tabs["glossary.title"] =
-            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location}/>
+            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location} showTermQualityBadge={true}/>
 
         if (vocabulary.document) {
             tabs["vocabulary.detail.document"] =
@@ -91,8 +90,6 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
                                                             showInfoOnEmpty={true}/>;
 
         tabs["changefrequency.label"] = <TermChangeFrequency vocabulary={vocabulary}/>;
-
-        tabs["vocabulary.validation.tab"] = <ValidationResults vocabulary={vocabulary}/>;
 
         return <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={tabs} tabBadges={{
             "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),

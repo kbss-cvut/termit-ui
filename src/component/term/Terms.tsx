@@ -22,7 +22,9 @@ import AppNotification from "../../model/AppNotification";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
-import {createTermsWithImportsOptionRendererAndUnusedTerms} from "../misc/treeselect/Renderers";
+import {
+    createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge
+} from "../misc/treeselect/Renderers";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
 import {Location} from "history";
@@ -44,6 +46,8 @@ interface GlossaryTermsProps extends HasI18n {
     location: Location;
     match: Match<any>;
     isDetailView?: boolean;
+    // Whether terms should be displayed with the quality badge
+    showTermQualityBadge: boolean;
 }
 
 interface TermsState {
@@ -254,7 +258,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                             scrollMenuIntoView={false}
                             multi={false}
                             maxHeight={Utils.calculateAssetListHeight()}
-                            optionRenderer={createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms, this.props.vocabulary.iri)}
+                            optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, this.props.vocabulary.iri, this.props.showTermQualityBadge)}
                             {...commonTermTreeSelectProps(this.props)}
                         />
                     </Col>

@@ -4,6 +4,7 @@ import classNames from "classnames";
 import ResultItem from "./ResultItem";
 import ImportedTermInfo from "../../term/ImportedTermInfo";
 import UnusedTermInfo from "../../term/UnusedTermInfo";
+import TermQualityBadge from "../../term/TermQualityBadge";
 
 interface TreeOption {
     disabled: boolean;
@@ -42,6 +43,16 @@ export function createTermsWithImportsOptionRenderer(currentVocabularyIri?: stri
  * @param currentVocabularyIri IRI of the current vocabulary, used to resolve whether term is imported
  */
 export function createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms: string[], currentVocabularyIri?: string) {
+    createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, currentVocabularyIri, false);
+}
+
+/**
+ * Intelligent tree select option renderer which visualizes imported Terms by adding icon to them.
+ *
+ * @param unusedTerms List of identifiers of terms which are not used anywhere
+ * @param currentVocabularyIri IRI of the current vocabulary, used to resolve whether term is imported
+ */
+export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms: string[], currentVocabularyIri?: string, qualityBadge?: boolean) {
     return (params: OptionRendererParams<Term>) => {
         const {option, focusedOption, optionStyle, selectValue, focusOption, toggleOption, valueArray} = {...params};
         const className = classNames("VirtualizedSelectOption", {
@@ -57,6 +68,10 @@ export function createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms: 
         };
 
         const addonBefore = <span>
+            {qualityBadge ?
+                <TermQualityBadge term={option}/>
+                : undefined
+            }
             {!currentVocabularyIri || currentVocabularyIri === option.vocabulary!.iri ? undefined :
                 <ImportedTermInfo term={option}/>}
             {unusedTerms.indexOf(option.iri) !== -1 ? <>
