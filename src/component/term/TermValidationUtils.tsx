@@ -7,8 +7,8 @@ import {getLocalized} from "../../model/MultilingualString";
 export function checkLabelUniqueness(vocabularyIri: IRI,
                                      prefLabel: string,
                                      language: string,
-                                     onDuplicate : () => any,
-                                     onUnique? : () => any) {
+                                     onDuplicate: () => any,
+                                     onUnique: () => any = () => undefined) {
     const url = Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/terms";
     Ajax.head(url, params({
             namespace: vocabularyIri.namespace,
@@ -19,7 +19,7 @@ export function checkLabelUniqueness(vocabularyIri: IRI,
         .catch(onUnique);
 }
 
-function labelInEachLanguageValid<T extends TermData>(data: T, labelExists : LabelExists): boolean {
+function labelInEachLanguageValid<T extends TermData>(data: T, labelExists: LabelExists): boolean {
     const langs = Object.keys(data.label);
     for (const lang of langs) {
         if (!isLabelValid(data, lang) || labelExists[lang]) {
@@ -47,4 +47,4 @@ export function isLabelValid<T extends TermData>(
         && localizedLabel.trim().length > 0;
 }
 
-export type LabelExists = { [language : string] : boolean }
+export type LabelExists = { [language: string]: boolean };
