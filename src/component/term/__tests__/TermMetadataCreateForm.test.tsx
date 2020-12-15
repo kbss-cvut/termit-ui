@@ -6,7 +6,7 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import Ajax from "../../../util/Ajax";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import {mountWithIntl, promiseDelay} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
 import {getLocalized, langString, pluralLangString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
@@ -35,6 +35,11 @@ describe("TermMetadataCreateForm", () => {
     beforeEach(() => {
         onChange = jest.fn();
         Ajax.head = jest.fn().mockResolvedValue({});
+        jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
     });
 
     it("generates identifier on mount if a valid label is provided", () => {
@@ -64,7 +69,33 @@ describe("TermMetadataCreateForm", () => {
         const idCall = (Ajax.post as jest.Mock).mock.calls.find((c: any[]) => c[0].endsWith("/identifiers"));
         expect(idCall).toBeDefined();
         expect(idCall[1].getParams().name).toEqual("a");
+    });
 
+    it("handles possible race condition when generating identifier multiple times", () => {
+        const firstIri = Generator.generateUri();
+        const secondIri = Generator.generateUri();
+        Ajax.post = jest.fn().mockImplementationOnce(() => {
+            return promiseDelay(200, {data: firstIri});
+        }).mockImplementationOnce(() => Promise.resolve({data: secondIri}));
+        const wrapper = mountWithIntl(<TermMetadataCreateForm onChange={onChange} language={Constants.DEFAULT_LANGUAGE}
+                                                              labelExist={({})}
+                                                              termData={AssetFactory.createEmptyTermData()}
+                                                              vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const labelInput = wrapper.find("input[name=\"create-term-label\"]");
+        (labelInput.getDOMNode() as HTMLInputElement).value = "a";
+        labelInput.simulate("change", labelInput);
+        jest.advanceTimersByTime(100);
+        (labelInput.getDOMNode() as HTMLInputElement).value = "ab";
+        labelInput.simulate("change", labelInput);
+        jest.advanceTimersByTime(200);
+        return Promise.resolve().then(() => {
+            wrapper.update();
+            expect(Ajax.post).toHaveBeenCalledTimes(2);
+            const changesCalls = (onChange as jest.Mock).mock.calls;
+            changesCalls.forEach(call => {
+                expect(call[0].iri).not.toEqual(firstIri);
+            });
+        })
     });
 
     it("correctly passes selected parent terms to onChange handler", () => {
@@ -84,7 +115,7 @@ describe("TermMetadataCreateForm", () => {
                                                                                 labelExist={({})}
                                                                                 termData={AssetFactory.createEmptyTermData()}
                                                                                 vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
-        const mock = jest.fn().mockImplementation(() => Promise.resolve({ data : "" }));
+        const mock = jest.fn().mockImplementation(() => Promise.resolve({data: ""}));
         Ajax.post = mock;
         const newLabel = "New label";
         wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label").simulate("change", {
@@ -200,7 +231,7 @@ describe("TermMetadataCreateForm", () => {
             }
         });
         wrapper.update();
-        expect(onChange).toHaveBeenCalledWith({label: {"en": enLabel, "cs": csLabel}, labelExist: { "cs": false }});
+        expect(onChange).toHaveBeenCalledWith({label: {"en": enLabel, "cs": csLabel}, labelExist: {"cs": false}});
     });
 
     it("merges existing definition value in different language with newly set value in selected language", () => {
