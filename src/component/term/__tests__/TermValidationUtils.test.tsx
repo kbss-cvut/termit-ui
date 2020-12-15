@@ -2,37 +2,38 @@ import Term from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import Ajax from "../../../util/Ajax";
 import {langString} from "../../../model/MultilingualString";
-import {isTermValid} from "../TermValidationUtils";
+import {checkLabelUniqueness, isTermValid} from "../TermValidationUtils";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import Constants from "../../../util/Constants";
 
-
-jest.mock("../TermAssignments");
-jest.mock("../ParentTermSelector");
-jest.mock("../TermTypesEdit");
-jest.mock("../../misc/AssetLabel");
-
-describe("Term edit", () => {
+describe("TermValidationUtils", () => {
 
     let term: Term;
 
     beforeEach(() => {
         term = new Term({
             iri: Generator.generateUri(),
-            label: Object.assign(langString("Test", "cs"),langString("Test", "en")),
-            comment: "test",
+            label: Object.assign(langString("Test", "cs"), langString("Test", "en")),
+            scopeNote: langString("test"),
             vocabulary: {iri: Generator.generateUri()}
         });
         Ajax.head = jest.fn().mockResolvedValue({});
     });
 
+    describe("checkLabelUniqueness", () => {
+
+        it("handles unique label when no callback is provided", async () => {
+            Ajax.head = jest.fn().mockRejectedValue({status: 404, data: ""});
+            await checkLabelUniqueness(VocabularyUtils.create(Generator.generateUri()), "test", Constants.DEFAULT_LANGUAGE, () => null)
+        });
+    });
 
     it("isTermValid returns true if all labels in languages are unique", () => {
         const valid = isTermValid(
-            term,
-            {
-                "cs" : false,
-                "en" : false
-            }
-        )
+            term, {
+                "cs": false,
+                "en": false
+            });
         expect(valid).toBeTruthy();
     });
 });
