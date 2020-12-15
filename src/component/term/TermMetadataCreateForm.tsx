@@ -9,18 +9,19 @@ import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
 import ParentTermSelector from "./ParentTermSelector";
-import VocabularyUtils from "../../util/VocabularyUtils";
+import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import {checkLabelUniqueness} from "./TermValidationUtils";
+import last from "last";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
     definitionSelector?: () => void;
     termData: TermData;
     vocabularyIri: string;
-    labelExist: {[lang: string] : boolean};
+    labelExist: { [lang: string]: boolean };
     language: string;
 }
 
@@ -28,6 +29,19 @@ interface TermMetadataCreateFormState {
     generateUri: boolean;
     showAdvanced: boolean;
 }
+
+let loadIdentifier = (label: string, vocabularyIri: IRI) => {
+    return Ajax.post(`${Constants.API_PREFIX}/identifiers`,
+        params({
+            name: label,
+            vocabularyIri,
+            assetType: "TERM"
+        })
+    );
+};
+
+// This will cause the existing still running identifier requests to be ignored in favor of the most recent call
+loadIdentifier = last(loadIdentifier);
 
 export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFormProps, TermMetadataCreateFormState> {
 
@@ -50,7 +64,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.onPrefLabelChange(e.currentTarget.value);
     };
 
-    private onPrefLabelChange = (prefLabel : string) => {
+    private onPrefLabelChange = (prefLabel: string) => {
         this.resolveIdentifier(prefLabel);
         const label = Object.assign({}, this.props.termData.label);
         label[this.props.language] = prefLabel;
@@ -103,13 +117,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     private resolveIdentifier = (label: string) => {
         if (this.state.generateUri && label.length > 0) {
             const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
-            Ajax.post(`${Constants.API_PREFIX}/identifiers`,
-                params({
-                    name: label,
-                    vocabularyIri,
-                    assetType: "TERM"
-                })
-            ).then(response => this.setIdentifier(response.data));
+            loadIdentifier(label, vocabularyIri).then(response => this.setIdentifier(response.data));
         }
     };
 
@@ -206,7 +214,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
                 <Row>
                     <Col xs={12}>
-                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect} language={language}/>
+                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}
+                                       language={language}/>
                     </Col>
                 </Row>
 
