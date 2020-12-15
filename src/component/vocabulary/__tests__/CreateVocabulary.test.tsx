@@ -6,7 +6,7 @@ import Routes from "../../../util/Routes";
 import Ajax, {params} from "../../../util/Ajax";
 import Vocabulary from "../../../model/Vocabulary";
 import {shallow} from "enzyme";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import {flushPromises, mountWithIntl} from "../../../__tests__/environment/Environment";
 import Constants from "../../../util/Constants";
 
 jest.mock("../../../util/Routing");
@@ -25,7 +25,7 @@ describe("Create vocabulary view", () => {
     let onCreate: (vocabulary: Vocabulary) => void;
 
     beforeEach(() => {
-        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({ data : iri }));
+        Ajax.post = jest.fn().mockResolvedValue({data: iri});
         onCreate = jest.fn();
     });
 
@@ -42,7 +42,7 @@ describe("Create vocabulary view", () => {
         const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
         (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
         nameInput.simulate("change", nameInput);
-        submitButton =  wrapper.find("#create-vocabulary-submit").first();
+        submitButton = wrapper.find("#create-vocabulary-submit").first();
         expect(submitButton.getElement().props.disabled).toBeFalsy();
     });
 
@@ -51,7 +51,10 @@ describe("Create vocabulary view", () => {
         const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
         (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
         nameInput.simulate("change", nameInput);
-        return Ajax.post(Constants.API_PREFIX + "/identifiers", params({name: "", assetType: "VOCABULARY"})).then(() => {
+        return Ajax.post(Constants.API_PREFIX + "/identifiers", params({
+            name: "",
+            assetType: "VOCABULARY"
+        })).then(() => {
             const submitButton = wrapper.find("#create-vocabulary-submit").first();
             submitButton.simulate("click");
             expect(onCreate).toHaveBeenCalled();
@@ -77,8 +80,9 @@ describe("Create vocabulary view", () => {
             nameInput.simulate("change", nameInput);
             return Promise.resolve().then(() => {
                 expect(Ajax.post).toHaveBeenCalledWith(Constants.API_PREFIX + "/identifiers", params({
-                    name,
-                    assetType: "VOCABULARY"})
+                        name,
+                        assetType: "VOCABULARY"
+                    })
                 );
             });
         });
@@ -94,19 +98,14 @@ describe("Create vocabulary view", () => {
             expect(Ajax.post).not.toHaveBeenCalled();
         });
 
-        it("displays IRI generated and returned by the server", () => {
+        it("displays IRI generated and returned by the server", async () => {
             const wrapper = mountWithIntl(<CreateVocabulary onCreate={onCreate} {...intlFunctions()}/>);
             const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
-            const name = "Metropolitan Plan";
-            (nameInput.getDOMNode() as HTMLInputElement).value = name;
+            (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
             nameInput.simulate("change", nameInput);
-            return Ajax.post(Constants.API_PREFIX + "/identifiers", params({
-                name,
-                assetType: "VOCABULARY"
-            })).then(() => {
-                const iriInput = wrapper.find("input[name=\"create-vocabulary-iri\"]");
-                return expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
-            });
+            await flushPromises();
+            const iriInput = wrapper.find("input[name=\"create-vocabulary-iri\"]");
+            return expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
         });
     });
 });
