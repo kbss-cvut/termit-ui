@@ -1,6 +1,6 @@
 import * as React from "react";
 import Ajax, {params} from "../../../util/Ajax";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import {flushPromises, mountWithIntl} from "../../../__tests__/environment/Environment";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import Constants from "../../../util/Constants";
 import Resource from "../../../model/Resource";
@@ -22,8 +22,8 @@ describe("CreateResourceMetadata", () => {
     let onCancel: () => void;
 
     beforeEach(() => {
-        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({ data : iri }));
-        onCreate = jest.fn().mockImplementation(() => Promise.resolve(iri));
+        Ajax.post = jest.fn().mockResolvedValue({data: iri});
+        onCreate = jest.fn().mockResolvedValue(iri);
         onCancel = jest.fn();
     });
 
@@ -39,24 +39,20 @@ describe("CreateResourceMetadata", () => {
         expect(submitButton.getElement().props.disabled).toBeFalsy();
     });
 
-    it("calls onCreate on submit click", () => {
+    it("calls onCreate on submit click", async () => {
         const wrapper = mountWithIntl(<CreateResourceMetadata onCreate={onCreate}
                                                               onCancel={onCancel} {...intlFunctions()}/>);
         const labelInput = wrapper.find("input[name=\"create-resource-label\"]");
         const label = "Metropolitan Plan";
         (labelInput.getDOMNode() as HTMLInputElement).value = label;
         labelInput.simulate("change", labelInput);
-        return Ajax.post(Constants.API_PREFIX + "/identifiers", params( {
-            name: label,
-            assetType: "RESOURCE"
-        })).then(() => {
-            const submitButton = wrapper.find("button#create-resource-submit");
-            submitButton.simulate("click");
-            expect(onCreate).toHaveBeenCalled();
-            const newResource = (onCreate as jest.Mock).mock.calls[0][0];
-            expect(newResource.iri).toEqual(iri);
-            expect(newResource.label).toEqual(label);
-        });
+        await flushPromises();
+        const submitButton = wrapper.find("button#create-resource-submit")
+        submitButton.simulate("click");
+        expect(onCreate).toHaveBeenCalled();
+        const newResource = (onCreate as jest.Mock).mock.calls[0][0];
+        expect(newResource.iri).toEqual(iri);
+        expect(newResource.label).toEqual(label);
     });
 
     describe("IRI generation", () => {
@@ -68,7 +64,10 @@ describe("CreateResourceMetadata", () => {
             (labelInput.getDOMNode() as HTMLInputElement).value = label;
             labelInput.simulate("change", labelInput);
             return Promise.resolve().then(() => {
-                expect(Ajax.post).toHaveBeenCalledWith(Constants.API_PREFIX + "/identifiers", params({name: label, assetType: "RESOURCE"}));
+                expect(Ajax.post).toHaveBeenCalledWith(Constants.API_PREFIX + "/identifiers", params({
+                    name: label,
+                    assetType: "RESOURCE"
+                }));
             });
         });
 
@@ -84,17 +83,16 @@ describe("CreateResourceMetadata", () => {
             expect(Ajax.post).not.toHaveBeenCalled();
         });
 
-        it("displays IRI generated and returned by the server", () => {
+        it("displays IRI generated and returned by the server", async () => {
             const wrapper = mountWithIntl(<CreateResourceMetadata onCreate={onCreate}
                                                                   onCancel={onCancel} {...intlFunctions()}/>);
             const name = "Metropolitan Plan";
             const labelInput = wrapper.find("input[name=\"create-resource-label\"]");
             (labelInput.getDOMNode() as HTMLInputElement).value = name;
             labelInput.simulate("change", labelInput);
-            return Ajax.post(Constants.API_PREFIX + "/identifiers", params({name, assetType: "RESOURCE"})).then(() => {
-                const iriInput = wrapper.find("input[name=\"create-resource-iri\"]");
-                return expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
-            });
+            await flushPromises();
+            const iriInput = wrapper.find("input[name=\"create-resource-iri\"]");
+            return expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
         });
     });
 });

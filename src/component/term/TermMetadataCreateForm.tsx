@@ -2,19 +2,17 @@ import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import Utils from "../../util/Utils";
-import Ajax, {params} from "../../util/Ajax";
-import Constants from "../../util/Constants";
 import {Button, Col, Collapse, Form, FormGroup, Label, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
 import ParentTermSelector from "./ParentTermSelector";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import VocabularyUtils from "../../util/VocabularyUtils";
 import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import {checkLabelUniqueness} from "./TermValidationUtils";
-import last from "last";
+import {loadIdentifier} from "../asset/AbstractCreateAsset";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
@@ -29,19 +27,6 @@ interface TermMetadataCreateFormState {
     generateUri: boolean;
     showAdvanced: boolean;
 }
-
-let loadIdentifier = (label: string, vocabularyIri: IRI) => {
-    return Ajax.post(`${Constants.API_PREFIX}/identifiers`,
-        params({
-            name: label,
-            vocabularyIri,
-            assetType: "TERM"
-        })
-    );
-};
-
-// This will cause the existing still running identifier requests to be ignored in favor of the most recent call
-loadIdentifier = last(loadIdentifier);
 
 export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFormProps, TermMetadataCreateFormState> {
 
@@ -117,7 +102,11 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     private resolveIdentifier = (label: string) => {
         if (this.state.generateUri && label.length > 0) {
             const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
-            loadIdentifier(label, vocabularyIri).then(response => this.setIdentifier(response.data));
+            loadIdentifier({
+                name: label,
+                vocabularyIri,
+                assetType: "TERM"
+            }).then(response => this.setIdentifier(response.data));
         }
     };
 
