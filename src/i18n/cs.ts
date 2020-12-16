@@ -237,17 +237,17 @@ const cs = {
             "Jako názvy pojmů se nepoužívají zkratky ('daň z přidané hodnoty' místo 'DPH'). První písmeno názvu pojmu " +
             "je velké, ostatní písmena jsou malá. Název pojmů není vhodné měnit, jeho změna může ovlivnit význam dat, " +
             "která jsou tímto pojmem popsána.",
-        "term.definition.help": "(Nepovinný) text popisující význam konceptu. Definice jednoznačně popisuje význam pojmu. " +
+        "term.definition.help": "(Doporučený) text popisující význam konceptu. Definice jednoznačně popisuje význam pojmu. " +
             "Je-li pojem vázán na dokument, je definice přímou citací z daného dokumentu. Definice se používá pouze pro " +
             "plné vymezení významu pojmu (např. 'budova' ve slovníku Zákona č. 256/2013 Sb. by měla definici " +
             "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
             "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
             "z více zdrojů.",
         "term.comment.help": "(Nepovinný) nedefiniční text omezující význam konceptu. Může sloužit k upřesnění významu pojmu.",
-        "term.parent.help": "(Nepovinný) pojem s širším významem. Slouží k zachycení vazby na obecnější pojem " +
+        "term.parent.help": "(Doporučený) pojem s širším významem. Slouží k zachycení vazby na obecnější pojem " +
             "(např. 'Kostel' -> 'Budova'), k přiřazení pojmu jeho typu (např. 'Kostel sv. Ludmily na Chvalech' -> 'Kostel'), " +
             "nebo k vyjádření části celku (např. 'Klika' -> 'Dveře')",
-        "term.types.help": "(Nepovinný) charakter pojmu. Rozlišujeme typy a individuály - Typem je například " +
+        "term.types.help": "(Doporučený) charakter pojmu. Rozlišujeme typy a individuály - Typem je například " +
             "'Městská část', individuálem pak 'Střešovice'. Individuály jsou dále rozděleny na 'Objekty', " +
             "'Vlastnosti', 'Vztahy' a 'Události', typy analogicky na 'Typy objektů', 'Typy vlastností', " +
             "'Typy vztahů' a 'Typy událostí'. 'Objekty' (např. konkrétní městské části, auta, lidé, dokumenty) " +
@@ -259,7 +259,7 @@ const cs = {
             "'Městská část', nebo 'Auto'. 'Barva vlasů' by byl 'Typ vlastnosti'. 'Typem vztahu' je obecně " +
             "'Manželství' a je závislé na dvou 'Typech objektů'. Příkladem 'Typu události' jsou 'Olympijské hry'.  " +
             "V případě, že si nejste jistí, ponechte pole prázdné.",
-        "term.source.help": "(Nepovinný) odkaz na původ definice pojmu. Odkazuje na konkrétní místo v textu dokumentu, " +
+        "term.source.help": "(Doporučený) odkaz na původ definice pojmu. Odkazuje na konkrétní místo v textu dokumentu, " +
             "například na kapitolu knihy, či konkrétní odstavec v zákoně, např. 'Písmeno b) paragrafu 2 " +
             "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
             "je zdroj vyplňován automaticky.",

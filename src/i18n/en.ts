@@ -236,14 +236,14 @@ const en = {
             "Abbreviations are not allowed ('Value added tax' instead of 'VAT'). The label is written in sentence case " +
             "- first letter in upper case, the others in lower case. Label should not be changed, as its change might impact " +
             "meaning of data described by this concept.",
-        "term.definition.help": "(Optional) text describing the concept meaning. The definition unambiguously describes " +
+        "term.definition.help": "(Recommended) text describing the concept meaning. The definition unambiguously describes " +
             "concept meaning. If a concept is defined in a document, its definition is precise quotation of the respective part " +
             "of the document. Definition is used for full specification of concept meaning (e.g. 'Man' can be defined as 'a male person'). " +
             "Definition is always unique and cannot be combined from multiple sources.",
         "term.comment.help": "(Optional) non-definitorial text restricting the meaning of the term. It can help to make the meaning of a term more clear.",
-        "term.parent.help": "(Optional) broader term. It is used to model relationships to broader terms " +
+        "term.parent.help": "(Recommended) broader term. It is used to model relationships to broader terms " +
             "(e.g. Church -> Building), types of instances (e.g. St. Paul's -> Cathedral), or parthood relationships (e.g. Handle -> Door).",
-        "term.types.help": "(Optional) character of the term itself. Terms can be " +
+        "term.types.help": "(Recommended) character of the term itself. Terms can be " +
             " either types or individuals. An example of a type is 'Person', an example of an individual " +
             "(instance of this type) is 'John Doe'. Individuals can be either 'Objects', 'Aspects', 'Relators', or " +
             "'Events'. Types are partitioned anologously - 'Object types', 'Aspect types', 'Relator types', 'Event types'. " +
@@ -256,7 +256,7 @@ const en = {
             "of terms - 'Car' is an 'Object type'; 'Hair color' is an 'Aspect type'; 'Marriage' is a 'Relator type' and " +
             "'Already finished Olympic games' is an 'Event type'. If you are not sure, use general 'Type' or 'Individual' " +
             "or leave this field blank.",
-        "term.source.help": "(Optional) reference to the origin of the term definition. It might refer to a particular " +
+        "term.source.help": "(Recommended) reference to the origin of the term definition. It might refer to a particular " +
             "law section, or paragraph. Whenever the definition is marked in the document text, the source is filled automatically.",
         "term.metadata.definition": "Definition",
         "term.metadata.definitionSource": "Source of definition",
