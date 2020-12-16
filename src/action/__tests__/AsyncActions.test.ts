@@ -953,14 +953,15 @@ describe("Async actions", () => {
             return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
                 const successAction: AsyncActionSuccess<{ [vocabularyIri: string]: ValidationResult[] }> = store.getActions()[1];
                 const result = successAction.payload[v.toString()];
-                expect(result.length).toEqual(validationResults.length);
+                const array = result["http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"];
+                expect(array.length).toEqual(validationResults.length);
                 // @ts-ignore
-                result.sort((a, b) => a.term.iri.localeCompare(b.term.iri));
+                array.sort((a, b) => a.term.iri.localeCompare(b.term.iri));
                 validationResults.sort((a: object, b: object) => a.toString().localeCompare(b.toString()));
                 for (let i = 0; i < validationResults.length; i++) {
-                    expect(result[i].term.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
-                    expect(result[i].severity.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
-                    expect(result[i].message.length).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultMessage"].length);
+                    expect(array[i].term.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
+                    expect(array[i].severity.iri).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
+                    expect(array[i].message.length).toEqual(validationResults[i]["http://www.w3.org/ns/shacl#resultMessage"].length);
                 }
             });
         });
@@ -971,11 +972,11 @@ describe("Async actions", () => {
             return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
                 const successAction: AsyncActionSuccess<{ [vocabularyIri: string]: ValidationResult[] }> = store.getActions()[1];
                 const result = successAction.payload[v.toString()];
-                expect(Array.isArray(result)).toBeTruthy();
-                expect(result.length).toEqual(1);
-                expect(result[0].term.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
-                expect(result[0].severity.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
-                expect(result[0].message.length
+                const array = result["http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"];
+                expect(array).toBeDefined();
+                expect(array[0].term.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#focusNode"]["@id"]);
+                expect(array[0].severity.iri).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#resultSeverity"]["@id"]);
+                expect(array[0].message.length
                 ).toEqual(validationResults[0]["http://www.w3.org/ns/shacl#resultMessage"].length);
             });
         });

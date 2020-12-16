@@ -13,7 +13,7 @@ import NotificationType from "../../../model/NotificationType";
 import {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import {langString} from "../../../model/MultilingualString";
-import {constructValidationResult} from "../../vocabulary/validation/__tests__/ValidationResults.test";
+import {constructValidationResult} from "../validation/__tests__/ValidationResults.test";
 import ValidationResult from "../../../model/ValidationResult";
 import Constants from "../../../util/Constants";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";

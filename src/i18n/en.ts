@@ -195,11 +195,6 @@ const en = {
         'vocabulary.term.created.message': 'Term successfully created.',
         'vocabulary.select-vocabulary': 'Select a Vocabulary',
 
-        "vocabulary.validation.tab": "Validation",
-        "vocabulary.validation.term": "Term",
-        "vocabulary.validation.severity": "Severity",
-        "vocabulary.validation.message": "Message",
-
         'resource.management': 'Resources management',
         'resource.management.resources': 'Resources',
         "resource.management.empty": "No resources found. Start by registering some.",
@@ -332,6 +327,7 @@ const en = {
         "term.metadata.status.confirmed" : "Confirmed",
         "term.metadata.status.help" : "Draft term is not ready to be used yet, while Confirmed term is.",
         "term.metadata.types.select.placeholder": "Select type",
+        "term.metadata.validation.title" : "Validation",
         "term.removed.message": "Term successfully removed.",
         "term.badge.score.tooltip": "The score of this term is {score}%. Click to see the validation results",
         "term.badge.no-score.tooltip": "There is no available score for this term",

@@ -20,6 +20,8 @@ import {ThunkDispatch} from "../../util/Types";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import TermStatus from "../../model/TermStatus";
 import {setTermStatus} from "../../action/AsyncTermActions";
+import ValidationResults from "./validation/ValidationResults";
+import Utils from "../../util/Utils";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
@@ -43,7 +45,7 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     constructor(props: TermMetadataProps) {
         super(props);
         this.state = {
-            activeTab: "properties.edit.title",
+            activeTab:  "properties.edit.title",
             assignmentsCount: null,
             displayTerms: window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT
         };
@@ -51,6 +53,21 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
 
     public componentDidMount() {
         window.addEventListener("resize", this.handleResize);
+        this.updateTabFromUrlIfAny();
+    }
+
+    public componentDidUpdate(prevProps : TermMetadataProps, prevState: TermMetadataState) {
+        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
+        if ( this.state.activeTab === prevState.activeTab && this.state.activeTab !== activeTabFromUrl && activeTabFromUrl ) {
+            this.onTabSelect(activeTabFromUrl);
+        }
+    }
+
+    private updateTabFromUrlIfAny() {
+        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
+        if ( this.state.activeTab !== activeTabFromUrl && activeTabFromUrl ) {
+            this.onTabSelect(activeTabFromUrl);
+        }
     }
 
     public componentWillUnmount() {
@@ -114,7 +131,8 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                                         "term.metadata.assignments.title": <TermAssignments term={term}
                                                                                             onLoad={this.setAssignmentsCount}/>,
                                         "history.label": <AssetHistory asset={term}/>,
-                                        "comments.title": <Comments term={term}/>
+                                        "comments.title": <Comments term={term}/>,
+                                        "term.metadata.validation.title": <ValidationResults term={term}/>
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),
                                         "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,
@@ -127,10 +145,10 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                 {this.state.displayTerms && <Col>
                     <Card>
                         <Terms vocabulary={this.props.vocabulary} match={this.props.match}
-                               location={this.props.location} isDetailView={true}/>
+                               location={this.props.location} isDetailView={true}
+                               showTermQualityBadge={false}/>
                     </Card>
-                </Col>
-                }
+                </Col>}
             </Row>
         </>;
     }

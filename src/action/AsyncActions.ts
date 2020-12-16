@@ -52,6 +52,7 @@ import NotificationType from "../model/NotificationType";
 import {langString} from "../model/MultilingualString";
 import {Configuration} from "../model/Configuration";
 import ValidationResult, {CONTEXT as VALIDATION_RESULT_CONTEXT} from "../model/ValidationResult";
+import {ConsolidatedResults} from "../model/ConsolidatedResults";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -580,13 +581,23 @@ export function validateVocabulary(vocabularyIri: IRI, apiPrefix: string = Const
             .then((data: object[]) =>
                 data.length !== 0 ? JsonLdUtils
                     .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT) : [])
-            .then((data: ValidationResult[]) =>
+            .then((data: ValidationResult[]) => consolidateResults(data))
+            .then((data: ConsolidatedResults) =>
                 dispatch(asyncActionSuccessWithPayload(action, {[IRIImpl.toString(vocabularyIri)]: data})))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return [];
             });
     };
+}
+
+function consolidateResults(validationResults: ValidationResult[]) {
+    const consolidatedResults = {};
+    validationResults.forEach(r => {
+        consolidatedResults![r.term.iri!] = consolidatedResults![r.term.iri!] || [];
+        consolidatedResults![r.term.iri!].push(r);
+    });
+    return consolidatedResults;
 }
 
 export function executeQuery(queryString: string) {
