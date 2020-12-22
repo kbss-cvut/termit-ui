@@ -210,13 +210,6 @@ describe("Reducers", () => {
             const action = switchLanguage(Constants.LANG.CS.locale);
             expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {intl: require("../../i18n/cs").default}));
         });
-
-        it("clears types on language switch, because they are language-dependent", () => {
-            const type = Generator.generateTerm();
-            initialState.types[type.iri] = type;
-            const action = switchLanguage(Constants.LANG.CS.locale);
-            expect(reducers(stateToPlainObject(initialState), action).types).toEqual({});
-        });
     });
 
     describe("logout", () => {
