@@ -6,7 +6,7 @@ import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import Resource from "../../../model/Resource";
 import {CreateResource} from "../CreateResource";
-import {CreateFileMetadata} from "../file/CreateFileMetadata";
+import {CreateFileMetadataFull} from "../file/CreateFileMetadataFull";
 import {CreateResourceMetadata} from "../CreateResourceMetadata";
 import {shallow} from "enzyme";
 
@@ -52,10 +52,10 @@ describe("CreateResource", () => {
         expect(resource.types).toBeDefined();
     });
 
-    it("renders CreateFileMetadata component when File type is selected", () => {
+    it("renders CreateFileMetadataFull component when File type is selected", () => {
         const wrapper = mountWithIntl(<CreateResource onCreate={onCreate}  {...intlFunctions()}/>);
         wrapper.find("button#create-resource-type-file").simulate("click");
-        expect(wrapper.find(CreateFileMetadata).exists()).toBeTruthy();
+        expect(wrapper.find(CreateFileMetadataFull).exists()).toBeTruthy();
     });
 
     it("renders CreateResourceMetadata component for all resource types except File", () => {

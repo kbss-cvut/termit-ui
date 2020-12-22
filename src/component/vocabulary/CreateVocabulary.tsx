@@ -1,15 +1,10 @@
-import * as React from "react";
+import React from "react";
 import {
     Button,
     ButtonToolbar,
     Card,
     CardBody,
     Col,
-    FormText,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    Label,
     Row
 } from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
@@ -18,29 +13,38 @@ import Routing from "../../util/Routing";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import Document from "../../model/Document";
-import Resource from "../../model/Resource";
 import Vocabulary from "../../model/Vocabulary";
 import {AbstractCreateAsset, AbstractCreateAssetState} from "../asset/AbstractCreateAsset";
-import CreateDocumentForVocabulary from "./CreateDocumentForVocabulary";
-import {GoPlus} from "react-icons/go";
 import withLoading from "../hoc/withLoading";
-import {createVocabulary} from "../../action/AsyncActions";
 import {connect} from "react-redux";
 import {injectIntl} from "react-intl";
 import {ThunkDispatch} from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {ContextFreeAssetType} from "../../model/ContextFreeAssetType";
+import Resource from "../../model/Resource";
+import {createFileInDocument, createVocabulary, uploadFileContent} from "../../action/AsyncActions";
+import ShowAdvanceAssetFields from "../asset/ShowAdvancedAssetFields";
+import Files from "../resource/document/Files";
+import TermItFile from "../../model/File";
+import Utils from "../../util/Utils";
+import NotificationType from "../../model/NotificationType";
+import AppNotification from "../../model/AppNotification";
+import {publishNotification} from "../../action/SyncActions";
 
 interface CreateVocabularyProps extends HasI18n {
-    onCreate: (vocabulary: Vocabulary) => void
+    createFile: (file: TermItFile, documentIri: string) => Promise<any>,
+    createVocabulary: (vocabulary: Vocabulary) => Promise<any>,
+    uploadFileContent: (fileIri: string, file: File) => Promise<any>,
+    publishNotification: (notification: AppNotification) => void
 }
 
 interface CreateAllVocabulariesState extends AbstractCreateAssetState {
     comment: string;
     // document vocabulary
-    resource?: Resource | null;
-    showCreateDocument: boolean;
+    files: TermItFile[];
+    fileContents: File[];
+    showCreateFile: boolean
 }
 
 export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps, CreateAllVocabulariesState> {
@@ -52,8 +56,9 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
             iri: "",
             generateIri: true,
             comment: "",
-            resource: null,
-            showCreateDocument: false
+            files: [],
+            fileContents: [],
+            showCreateFile: false
         };
     }
 
@@ -62,34 +67,35 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
     }
 
     public onCreate = () => {
-        const vocabulary: Vocabulary = new Vocabulary({
+        const vocabulary = new Vocabulary({
             label: this.state.label,
             iri: this.state.iri,
             comment: this.state.comment
         });
-        if (this.state.resource == null) {
-            vocabulary.addType(VocabularyUtils.VOCABULARY);
-        } else {
-            vocabulary.addType(VocabularyUtils.DOCUMENT_VOCABULARY);
-            vocabulary.document = this.state.resource as Document;
-        }
-        this.props.onCreate(vocabulary);
+        vocabulary.addType(VocabularyUtils.DOCUMENT_VOCABULARY);
+
+        const files = this.state.files;
+        const fileContents = this.state.fileContents;
+        const document = new Document({
+            label: "Document for " + vocabulary.getLabel(),
+            iri: this.state.iri + "/document",
+            files: []
+        });
+        document.addType(VocabularyUtils.DOCUMENT);
+        vocabulary.document = document;
+        this.props.createVocabulary(vocabulary)
+            .then(() =>
+                Promise.all(
+                    Utils.sanitizeArray(files).map((f, fIndex) => {
+                        return this.props.createFile(f, document.iri).then(() =>
+                            this.props.uploadFileContent(f.iri, fileContents[fIndex])
+                                .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
+                    }))
+            );
     };
 
     public static onCancel(): void {
         Routing.transitionTo(Routes.vocabularies);
-    }
-
-    private createDocument = () => {
-        this.setState({showCreateDocument: true});
-    }
-
-    private onDocumentCreated(doc: Resource) {
-        this.setState({resource: doc, showCreateDocument: false});
-    }
-
-    private onCloseCreateDocument = () => {
-        this.setState({showCreateDocument: false});
     }
 
     private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -100,12 +106,22 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         return this.state.label.trim().length > 0;
     }
 
+    private onFileAdded() {
+        ;
+    }
+
+    private onCreateFile(termitFile: Resource, file: File): Promise<void> {
+        return Promise.resolve().then(() => {
+            const files = this.state.files.concat(termitFile as TermItFile);
+            const fileContents = this.state.fileContents.concat(file);
+            this.setState({files, fileContents});
+        });
+    }
+
     public render() {
         const i18n = this.props.i18n;
-        const onDocumentCreated = this.onDocumentCreated.bind(this);
+        const onCreateFile = this.onCreateFile.bind(this);
         const onCreate = this.onCreate.bind(this);
-        const onCloseCreateDocument = this.onCloseCreateDocument.bind(this);
-        const disabled = !(this.state.label.length > 0);
         const onCancel = CreateVocabulary.onCancel;
 
         return <>
@@ -123,39 +139,27 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                             </Row>
                             <Row>
                                 <Col xs={12}>
-                                    <CustomInput name="create-vocabulary-iri" label={i18n("asset.iri")}
-                                                 value={this.state.iri}
-                                                 onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={12}>
                                     <TextArea name="create-vocabulary-comment" label={i18n("vocabulary.comment")}
                                               type="textarea" rows={3} value={this.state.comment}
                                               help={i18n("optional")}
                                               onChange={this.onCommentChange}/>
                                 </Col>
                             </Row>
-                            <CreateDocumentForVocabulary showCreateDocument={this.state.showCreateDocument}
-                                                         resource={this.state.resource}
-                                                         onCancel={onCloseCreateDocument}
-                                                         onDocumentSet={onDocumentCreated} iri={this.state.iri}/>
-                            <Row>
-                                <Col xs={12}>
-                                    <Label className="attribute-label">{i18n("vocabulary.detail.document")}</Label>
-                                    <InputGroup className="form-group" help={i18n("optional")}>
-                                        <Input name="create-document-label" disabled={true} bsSize="sm"
-                                               value={this.state.resource ? this.state.resource.label : ""}/>
-                                        <InputGroupAddon addonType="append">
-                                            <Button id="create-document-for-vocabulary" color="primary" size="sm"
-                                                    className="term-edit-source-add-button" disabled={disabled}
-                                                    onClick={this.createDocument}><GoPlus/>&nbsp;{i18n("resource.document.vocabulary.create")}
-                                            </Button>
-                                        </InputGroupAddon>
-                                    </InputGroup>
-                                    <FormText>{i18n("vocabulary.create.document.help")}</FormText>
-                                </Col>
-                            </Row>
+
+                            <Files
+                                files={this.state.files}
+                                createFile={onCreateFile}
+                                onFileAdded={this.onFileAdded}
+                            />
+                            <ShowAdvanceAssetFields>
+                                <Row>
+                                    <Col xs={12}>
+                                        <CustomInput name="create-vocabulary-iri" label={i18n("asset.iri")}
+                                                     value={this.state.iri}
+                                                     onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
+                                    </Col>
+                                </Row>
+                            </ShowAdvanceAssetFields>
                             <Row>
                                 <Col xs={12}>
                                     <ButtonToolbar className="d-flex justify-content-center mt-4">
@@ -176,6 +180,9 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        onCreate: (vocabulary: Vocabulary) => dispatch(createVocabulary(vocabulary))
+        createVocabulary: (vocabulary: Vocabulary) => dispatch(createVocabulary(vocabulary)),
+        createFile: (file: TermItFile, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
+        uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
+        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
 })(injectIntl(withI18n(withLoading(CreateVocabulary))));
