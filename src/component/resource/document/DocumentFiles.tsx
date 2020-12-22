@@ -1,89 +1,49 @@
-import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
+import React from "react";
 import Document from "../../../model/Document";
-import {Button, Card, CardBody, CardHeader, Modal, ModalBody} from "reactstrap";
-import FileList from "../../file/FileList";
-import CreateFileMetadata from "../file/CreateFileMetadata";
-import File from "../../../model/File";
-import {GoPlus} from "react-icons/go";
-import VocabularyUtils from "../../../util/VocabularyUtils";
-import {connect} from "react-redux";
+import TermItFile from "../../../model/File";
 import {ThunkDispatch} from "../../../util/Types";
-import {createFileInDocument} from "../../../action/AsyncActions";
-import Resource from "../../../model/Resource";
+import withI18n, {HasI18n} from "../../hoc/withI18n";
+import {connect} from "react-redux";
+import {createFileInDocument, uploadFileContent} from "../../../action/AsyncActions";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import Files from "./Files";
+import {injectIntl} from "react-intl";
+import NotificationType from "../../../model/NotificationType";
+import AppNotification from "../../../model/AppNotification";
+import {publishNotification} from "../../../action/SyncActions";
 
 interface DocumentFilesProps extends HasI18n {
     document: Document;
     onFileAdded: () => void;
-    createFile: (file: File, documentIri: string) => Promise<string>;
+    createFile: (file: TermItFile, documentIri: string) => Promise<void>;
+    uploadFileContent: (fileIri: string, file: File) => Promise<any>,
+    publishNotification: (notification: AppNotification) => void
 }
 
-interface DocumentFilesState {
-    createFileDialogOpen: boolean;
-}
+export class DocumentFiles extends React.Component<DocumentFilesProps> {
 
-export class DocumentFiles extends React.Component<DocumentFilesProps, DocumentFilesState> {
-
-    constructor(props: DocumentFilesProps) {
-        super(props);
-        this.state = {createFileDialogOpen: false};
+    public createFile(termitFile: TermItFile, file: File): Promise<void> {
+        return this.props.createFile(termitFile, this.props.document.iri).then(() =>
+            this.props.uploadFileContent(termitFile.iri, file)
+                .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
     }
-
-    private openCreateFileDialog = () => {
-        this.setState({createFileDialogOpen: true});
-    };
-
-    private closeCreateFileDialog = () => {
-        this.setState({createFileDialogOpen: false});
-    };
-
-    public createFile = (file: Resource) => {
-        file.addType(VocabularyUtils.FILE);
-        return this.props.createFile(file as File, this.props.document.iri).then(str => {
-            this.closeCreateFileDialog();
-            this.props.onFileAdded();
-            return str;
-        });
-    };
 
     public render() {
         const doc = this.props.document;
+        const createFile = this.createFile.bind(this);
         if (!doc) {
             return null;
         }
-        const i18n = this.props.i18n;
-        return <div>
-            {this.renderCreateFileDialog()}
-            <div id="document-files" className="d-flex flex-wrap justify-content-between">
-                <h4>{i18n("vocabulary.detail.files")}</h4>
-                <Button className="mb-2" color="primary" size="sm" onClick={this.openCreateFileDialog}
-                        title={i18n("resource.metadata.document.files.create.tooltip")}>
-                    <GoPlus/>&nbsp;{i18n("resource.metadata.document.files.add")}
-                </Button>
-            </div>
-            <FileList files={doc.files}/>
-        </div>;
-    }
-
-    private renderCreateFileDialog() {
-        return <Modal isOpen={this.state.createFileDialogOpen} toggle={this.closeCreateFileDialog}>
-            <ModalBody>
-                <Card id="document-create-file">
-                    <CardHeader color="info">
-                        <h5>{this.props.i18n("resource.metadata.document.files.create.dialog.title")}</h5>
-                    </CardHeader>
-                    <CardBody>
-                        <CreateFileMetadata onCreate={this.createFile} onCancel={this.closeCreateFileDialog}/>
-                    </CardBody>
-                </Card>
-            </ModalBody>
-        </Modal>;
+        return <Files files={doc.files}
+                      createFile={createFile}
+                      onFileAdded={this.props.onFileAdded}/>
     }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        createFile: (file: File, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri)))
+        createFile: (file: TermItFile, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
+        uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
+        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
 })(injectIntl(withI18n(DocumentFiles)));
