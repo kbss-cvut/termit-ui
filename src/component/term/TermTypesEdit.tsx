@@ -14,6 +14,7 @@ import {loadTypes} from "../../action/AsyncActions";
 import {getLocalized} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import IntlData from "../../model/IntlData";
+import _ from "lodash";
 
 interface TermTypesEditProps extends HasI18n {
     termTypes: string[];
@@ -23,6 +24,24 @@ interface TermTypesEditProps extends HasI18n {
     intl: IntlData;
     loadTypes: () => void;
 }
+
+const getTypesForSelector = _.memoize((availableTypes: { [key: string]: Term }) => {
+    if (!availableTypes) {
+        return [];
+    }
+    const typesMap = {};
+    // Make a deep copy of the available types since we're going to modify them for the tree select
+    Object.keys(availableTypes).forEach(t => typesMap[t] = new Term(availableTypes[t]));
+    const types = Object.keys(typesMap).map(k => typesMap[k]);
+    types.forEach(t => {
+        if (t.subTerms) {
+            // The tree-select needs parent for proper function
+            // @ts-ignore
+            t.subTerms.forEach(st => typesMap[st].parent = t.iri);
+        }
+    });
+    return types;
+});
 
 export class TermTypesEdit extends React.Component<TermTypesEditProps> {
 
@@ -39,25 +58,8 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
         return matching.length > 0 ? matching[0].iri : undefined;
     }
 
-    private getTypesForSelector() {
-        if (!this.props.availableTypes) {
-            return [];
-        }
-        const typesMap = {};
-        Object.keys(this.props.availableTypes).forEach(t => typesMap[t] = new Term(this.props.availableTypes[t]));
-        const types = Object.keys(typesMap).map(k => typesMap[k]);
-        types.forEach(t => {
-            if (t.subTerms) {
-                // The tree-select needs parent for proper function
-                // @ts-ignore
-                t.subTerms.forEach(st => typesMap[st].parent = t.iri);
-            }
-        });
-        return types;
-    }
-
     public render() {
-        const types = this.getTypesForSelector();
+        const types = getTypesForSelector(this.props.availableTypes);
         const selected = this.resolveSelectedTypes(types);
         const {i18n, intl} = this.props;
         return <FormGroup>

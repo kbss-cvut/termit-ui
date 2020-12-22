@@ -36,8 +36,8 @@ describe("TermTypesEdit", () => {
         availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
         availableTypes[iri] = new Term({iri, label: langString("Other type")});
         const types = [VocabularyUtils.TERM, iri];
-        const wrapper = mountWithIntl(<TermTypesEdit termTypes={types} availableTypes={availableTypes} intl={intlData}
-                                                     loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
+        const wrapper = shallow(<TermTypesEdit termTypes={types} availableTypes={availableTypes} intl={intlData}
+                                               loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
         const selector = wrapper.find(IntelligentTreeSelect);
         expect(selector.prop("value")).toEqual(availableTypes[iri].iri);
     });
