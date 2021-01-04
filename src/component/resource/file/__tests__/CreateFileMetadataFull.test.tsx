@@ -56,20 +56,6 @@ describe("CreateFileMetadataFull", () => {
         expect(uploadFileContent).toHaveBeenCalledWith(iri, file);
     });
 
-    it("does not attempt file upload when no file has been attached", () => {
-        const wrapper = shallow<CreateFileMetadataFull>(<CreateFileMetadataFull
-            onCreate={onCreate}
-            onCancel={onCancel}
-            uploadFileContent={uploadFileContent}
-            publishNotification={publishNotification}
-            {...intlFunctions()}
-        />);
-        wrapper.instance().onCreate(resource, file);
-        return Promise.resolve().then(() => {
-            expect(uploadFileContent).not.toHaveBeenCalled();
-        });
-    });
-
     it("publishes notification when file content has been uploaded", async () => {
         const wrapper = shallow<CreateFileMetadataFull>(<CreateFileMetadataFull
             onCreate={onCreate}

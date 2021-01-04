@@ -21,9 +21,8 @@ interface CreateFileMetadataFullProps extends CreateResourceMetadataProps {
 
 export class CreateFileMetadataFull extends React.Component<CreateFileMetadataFullProps> {
 
-    public onCreate(resource: Resource, file?: File) {
-        return Promise.resolve()
-            .then(() => this.props.onCreate(resource))
+    public onCreate = (resource: Resource, file?: File) => {
+        return this.props.onCreate(resource)
             .then(() => {
                 if (file) {
                     this.props.uploadFileContent(resource.iri, file)
@@ -32,7 +31,6 @@ export class CreateFileMetadataFull extends React.Component<CreateFileMetadataFu
                     source: {type: NotificationType.FILE_CONTENT_UPLOADED}
                 })
             );
-        ;
     };
 
     public render() {

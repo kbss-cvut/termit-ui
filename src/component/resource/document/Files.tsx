@@ -34,9 +34,9 @@ export class Files extends React.Component<FilesProps, FilesState> {
         this.setState({createFileDialogOpen: false});
     };
 
-    public createFile = (termitFile: Resource, file: File) : Promise<void> => {
+    private createFile = (termitFile: Resource, file: File) : void => {
         termitFile.addType(VocabularyUtils.FILE);
-        return this.props.createFile(termitFile as TermItFile, file).then(() => {
+        this.props.createFile(termitFile as TermItFile, file).then(() => {
             this.closeCreateFileDialog();
             this.props.onFileAdded();
         });

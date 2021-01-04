@@ -191,6 +191,7 @@ const cs = {
         "vocabulary.termchanges.loading": "Načítám změny ...",
         "vocabulary.termchanges.empty": "Žádné nové pojmy ani aktualizace pojmů nebyly nalezeny.",
         "vocabulary.removed.message": "Slovník by odstraněn.",
+        "vocabulary.document.label": "Dokument pro {vocabulary}",
 
         'vocabulary.term.created.message': 'Pojem úspěšně vytvořen.',
         'vocabulary.select-vocabulary': 'Vyber slovník',
