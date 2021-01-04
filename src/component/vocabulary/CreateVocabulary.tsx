@@ -77,7 +77,9 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         const files = this.state.files;
         const fileContents = this.state.fileContents;
         const document = new Document({
-            label: "Document for " + vocabulary.getLabel(),
+            label: this.props.formatMessage("vocabulary.document.label", {
+                vocabulary: vocabulary.getLabel()
+            }),
             iri: this.state.iri + "/document",
             files: []
         });
@@ -106,11 +108,7 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         return this.state.label.trim().length > 0;
     }
 
-    private onFileAdded() {
-        ;
-    }
-
-    private onCreateFile(termitFile: Resource, file: File): Promise<void> {
+    private onCreateFile = (termitFile: Resource, file: File): Promise<void> => {
         return Promise.resolve().then(() => {
             const files = this.state.files.concat(termitFile as TermItFile);
             const fileContents = this.state.fileContents.concat(file);
@@ -120,8 +118,6 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
 
     public render() {
         const i18n = this.props.i18n;
-        const onCreateFile = this.onCreateFile.bind(this);
-        const onCreate = this.onCreate.bind(this);
         const onCancel = CreateVocabulary.onCancel;
 
         return <>
@@ -148,8 +144,8 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
 
                             <Files
                                 files={this.state.files}
-                                createFile={onCreateFile}
-                                onFileAdded={this.onFileAdded}
+                                createFile={this.onCreateFile}
+                                onFileAdded={() => {;}}
                             />
                             <ShowAdvanceAssetFields>
                                 <Row>
@@ -163,7 +159,7 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                             <Row>
                                 <Col xs={12}>
                                     <ButtonToolbar className="d-flex justify-content-center mt-4">
-                                        <Button id="create-vocabulary-submit" onClick={onCreate} color="success"
+                                        <Button id="create-vocabulary-submit" onClick={this.onCreate} color="success"
                                                 size="sm"
                                                 disabled={!this.isFormValid()}>{i18n("vocabulary.create.submit")}</Button>
                                         <Button id="create-vocabulary-cancel" onClick={onCancel}

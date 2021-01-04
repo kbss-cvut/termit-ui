@@ -191,6 +191,7 @@ const en = {
         "vocabulary.termchanges.loading": "Loading changes ...",
         "vocabulary.termchanges.empty": "No creations/updates of terms found.",
         "vocabulary.removed.message": "Vocabulary successfully removed.",
+        "vocabulary.document.label": "Document for {vocabulary}",
 
         'vocabulary.term.created.message': 'Term successfully created.',
         'vocabulary.select-vocabulary': 'Select a Vocabulary',

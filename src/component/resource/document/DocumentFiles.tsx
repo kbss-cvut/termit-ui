@@ -22,7 +22,7 @@ interface DocumentFilesProps extends HasI18n {
 
 export class DocumentFiles extends React.Component<DocumentFilesProps> {
 
-    public createFile(termitFile: TermItFile, file: File): Promise<void> {
+    private createFile = (termitFile: TermItFile, file: File) : Promise<void> =>  {
         return this.props.createFile(termitFile, this.props.document.iri).then(() =>
             this.props.uploadFileContent(termitFile.iri, file)
                 .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
@@ -30,12 +30,11 @@ export class DocumentFiles extends React.Component<DocumentFilesProps> {
 
     public render() {
         const doc = this.props.document;
-        const createFile = this.createFile.bind(this);
         if (!doc) {
             return null;
         }
         return <Files files={doc.files}
-                      createFile={createFile}
+                      createFile={this.createFile}
                       onFileAdded={this.props.onFileAdded}/>
     }
 }
