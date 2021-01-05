@@ -86,6 +86,9 @@ const AssetFactory = {
             types: [],
             sources: [],
             parentTerms: [],
+            altLabels: undefined,
+            hiddenLabels: undefined,
+            definitionSource: undefined,
             draft: true
         };
     },
