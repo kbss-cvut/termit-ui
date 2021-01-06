@@ -95,8 +95,8 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                             this.props.uploadFileContent(f.iri, fileContents[fIndex])
                                 .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
                     }))
-                    .then(() => this.props.loadResources())
                     .then(() => Routing.transitionTo(Routes.vocabularySummary, IdentifierResolver.routingOptionsFromLocation(location)))
+                    .then(() => this.props.loadResources())
             });
     };
 
