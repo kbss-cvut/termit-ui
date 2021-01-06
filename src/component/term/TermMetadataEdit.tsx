@@ -17,6 +17,11 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
+import {connect} from "react-redux";
+import TermItState from "../../model/TermItState";
+import {ConsolidatedResults} from "../../model/ConsolidatedResults";
+import SeverityText from "./validation/SeverityText";
+import ValidationResult from "../../model/ValidationResult";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -24,6 +29,7 @@ interface TermMetadataEditProps extends HasI18n {
     cancel: () => void;
     language: string;
     selectLanguage: (lang: string) => void;
+    validationResults: ConsolidatedResults;
 }
 
 interface TermMetadataEditState extends TermData {
@@ -132,6 +138,27 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState(copy);
     };
 
+    private getMessageInLanguage = ( result: ValidationResult) : string => {
+        return result.message.find( ls => ls.language === this.props.locale)!.value;
+    }
+
+    private renderValidationMessage = (prop: string) => {
+        const results = this.props.validationResults[this.props.term.iri];
+        if (results) {
+            const result = results.find( r => {
+                if (prop !== VocabularyUtils.RDF_TYPE) {
+                    return r.resultPath && r.resultPath.iri === prop
+                } else {
+                    return !r.resultPath
+                }
+            });
+            if ( result ) {
+                return <SeverityText key={result.id} severityIri={result.severity.iri} message={this.getMessageInLanguage(result)}/>;
+            }
+        }
+        return null;
+    }
+
     public render() {
         const {i18n, language} = this.props;
         const t = this.onStatusChange.bind(this);
@@ -151,8 +178,11 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                              value={getLocalizedOrDefault(this.state.label, "", language)}
                                              onChange={this.onLabelChange}
                                              label={i18n("asset.label")} invalid={labelInLanguageInvalid}
-                                             invalidMessage={labelInLanguageInvalid ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
+                                             invalidMessage={(labelInLanguageInvalid ?
+                                                 this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined
+                                             )}
                                              help={i18n("term.label.help")}/>
+                                {this.renderValidationMessage(VocabularyUtils.SKOS_PREF_LABEL)}
                             </Col>
                         </Row>
                         <Row>
@@ -160,6 +190,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                 <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
                                                 onChange={this.onAltLabelsChange}
                                                 i18nPrefix={"term.metadata.altLabels"}/>
+                                {this.renderValidationMessage(VocabularyUtils.SKOS_ALT_LABEL)}
                             </Col>
                         </Row>
                         <Row>
@@ -167,6 +198,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                 <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
                                                 onChange={this.onHiddenLabelsChange}
                                                 i18nPrefix={"term.metadata.hiddenLabels"}/>
+                                {this.renderValidationMessage(VocabularyUtils.SKOS_HIDDEN_LABEL)}
                             </Col>
                         </Row>
                         <Row>
@@ -176,6 +208,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                           onChange={this.onDefinitionChange} rows={3}
                                           label={i18n("term.metadata.definition")}
                                           help={i18n("term.definition.help")}/>
+                                {this.renderValidationMessage(VocabularyUtils.DEFINITION)}
                             </Col>
                         </Row>
                         <Row>
@@ -184,6 +217,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                           value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
                                           onChange={this.onScopeNoteChange} rows={3} label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
+                                {this.renderValidationMessage(VocabularyUtils.SKOS_SCOPE_NOTE)}
                             </Col>
                         </Row>
                         <Row>
@@ -192,6 +226,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                                     parentTerms={this.state.parentTerms}
                                                     vocabularyIri={this.props.term.vocabulary!.iri!}
                                                     onChange={this.onParentChange}/>
+                                {this.renderValidationMessage(VocabularyUtils.BROADER)}
                             </Col>
                         </Row>
                         <Row>
@@ -199,6 +234,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                 <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
                                                onChange={this.onTypesChange}
                                                language={this.props.language}/>
+                                {this.renderValidationMessage(VocabularyUtils.RDF_TYPE)}
                             </Col>
                         </Row>
                         <Row>
@@ -215,6 +251,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                              invalidMessage={(this.state.sources && (this.state.sources.length > 1))
                                                  ? i18n("term.metadata.multipleSources.message") : undefined}
                                              help={i18n("term.source.help")}/>
+                                {this.renderValidationMessage(VocabularyUtils.DC_SOURCE)}
                             </Col>
                         </Row>
                         <Row>
@@ -247,4 +284,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     }
 }
 
-export default injectIntl(withI18n(TermMetadataEdit));
+export default connect((state: TermItState) => {
+    return {
+        validationResults: state.validationResults[state.vocabulary.iri]
+    };
+})(injectIntl(withI18n(TermMetadataEdit)));

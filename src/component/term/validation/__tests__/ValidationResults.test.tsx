@@ -14,7 +14,9 @@ export function constructValidationResult(termIri : string) : ValidationResult {
         {iri: termIri, label: {"cs": termIri}},
         {iri: VocabularyUtils.SH_VIOLATION},
         [{language: "cs", value: "Chyba"}],
-        {iri: "https://example.org/sourceShape"});
+        {iri: "https://example.org/sourceShape"},
+        {iri: VocabularyUtils.SKOS_PREF_LABEL}
+        )
 };
 
 describe("Validation Results", () => {
