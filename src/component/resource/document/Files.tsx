@@ -13,6 +13,7 @@ interface FilesProps extends HasI18n {
     files: TermItFile[];
     onFileAdded: () => void;
     createFile: (termitFile: TermItFile, file: File) => Promise<void>;
+    showContent: boolean;
 }
 
 interface FilesState {
@@ -54,7 +55,7 @@ export class Files extends React.Component<FilesProps, FilesState> {
                     <GoPlus/>&nbsp;{i18n("resource.metadata.document.files.add")}
                 </Button>
             </div>
-            <FileList files={files}/>
+            <FileList files={files} showContent={this.props.showContent}/>
         </div>;
     }
 

@@ -16,8 +16,8 @@ interface DocumentFilesProps extends HasI18n {
     document: Document;
     onFileAdded: () => void;
     createFile: (file: TermItFile, documentIri: string) => Promise<void>;
-    uploadFileContent: (fileIri: string, file: File) => Promise<any>,
-    publishNotification: (notification: AppNotification) => void
+    uploadFileContent: (fileIri: string, file: File) => Promise<any>;
+    publishNotification: (notification: AppNotification) => void;
 }
 
 export class DocumentFiles extends React.Component<DocumentFilesProps> {
@@ -35,7 +35,9 @@ export class DocumentFiles extends React.Component<DocumentFilesProps> {
         }
         return <Files files={doc.files}
                       createFile={this.createFile}
-                      onFileAdded={this.props.onFileAdded}/>
+                      onFileAdded={this.props.onFileAdded}
+                      showContent={true}
+        />
     }
 }
 

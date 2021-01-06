@@ -146,6 +146,7 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                                 files={this.state.files}
                                 createFile={this.onCreateFile}
                                 onFileAdded={() => {;}}
+                                showContent={false}
                             />
                             <ShowAdvanceAssetFields>
                                 <Row>

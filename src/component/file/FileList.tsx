@@ -5,25 +5,25 @@ import {Table} from "reactstrap";
 import File from "../../model/File";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
-import ResourceLink from "../resource/ResourceLink";
 import Utils from "../../util/Utils";
 import FileContentLink from "../resource/file/FileContentLink";
 
 interface FileListProps extends HasI18n {
     files: File[];
+    showContent: boolean;
 }
 
 export const FileList: React.FC<FileListProps> = (props: FileListProps) => {
     if (Utils.sanitizeArray(props.files).length > 0) {
         const rows = props.files.slice().sort(Utils.labelComparator).map((v: File) => <tr key={v.iri}>
                 <td>
-                    <ResourceLink resource={v}/>
+                    {v.label}
                 </td>
-                <td>
-                    <div className="d-flex">
+                {
+                    props.showContent ? <td><div className="d-flex">
                         <FileContentLink file={v}/>
-                    </div>
-                </td>
+                    </div></td> : null
+                }
             </tr>
         );
         return <div>
@@ -33,9 +33,11 @@ export const FileList: React.FC<FileListProps> = (props: FileListProps) => {
                     <th>
                         {props.i18n("vocabulary.detail.files.file")}
                     </th>
-                    <th className="fit-content">
-                        {props.i18n("actions")}
-                    </th>
+                    {
+                        props.showContent ? <th className="fit-content">
+                                {props.i18n("actions")}
+                        </th> : null
+                    }
                 </tr>
                 </thead>
                 <tbody>

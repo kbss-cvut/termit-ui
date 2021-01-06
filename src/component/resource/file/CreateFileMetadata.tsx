@@ -43,15 +43,14 @@ export class CreateFileMetadata extends CreateResourceMetadata<CreateFileMetadat
         }
     };
 
-    public setFile(file: File): void {
+    public setFile = (file: File) => {
         this.setState({file, label: file.name, dragActive: false});
         this.generateIri(file.name);
     }
 
     public render() {
-        const setFile = this.setFile.bind(this);
         return <Form>
-            <UploadFile setFile={setFile}/>
+            <UploadFile setFile={this.setFile}/>
             {this.renderBasicMetadataInputs()}
             {this.renderSubmitButtons()}
         </Form>;
