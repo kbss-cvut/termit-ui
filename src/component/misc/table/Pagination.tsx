@@ -15,6 +15,7 @@ interface PaginationProps extends HasI18n {
 }
 
 const PAGE_SIZES = [10, 20, 30, 50];
+const INFINITE_PAGE = Number.MAX_SAFE_INTEGER;
 
 export const Pagination: React.FC<PaginationProps> = props => {
     const {i18n, formatMessage} = props;
@@ -48,7 +49,7 @@ export const Pagination: React.FC<PaginationProps> = props => {
     }
 
     return <>
-        <BootstrapPagination aria-label="Table page navigation">
+        {(canNextPage || canPreviousPage) && <BootstrapPagination aria-label="Table page navigation">
             <PaginationItem disabled={!canPreviousPage}>
                 <PaginationLink first={true} onClick={() => gotoPage(0)} title={i18n("table.paging.first.tooltip")}/>
             </PaginationItem>
@@ -64,11 +65,12 @@ export const Pagination: React.FC<PaginationProps> = props => {
                 <PaginationLink last={true} onClick={() => gotoPage(pageCount - 1)}
                                 title={i18n("table.paging.last.tooltip")}/>
             </PaginationItem>
-        </BootstrapPagination>
+        </BootstrapPagination>}
         {props.allowSizeChange &&
         <div className="page-size-select"><Select value={pageSize.toString()} onChange={onPageSizeSelect}>
             {PAGE_SIZES.map(s => <option key={s}
                                          value={s}>{formatMessage("table.paging.pageSize.select", {pageSize: s})}</option>)}
+            <option key={INFINITE_PAGE} value={INFINITE_PAGE}>{i18n("table.paging.pageSize.select.all")}</option>
         </Select></div>}
     </>;
 };

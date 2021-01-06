@@ -1,9 +1,10 @@
 import React from "react";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
-import {Pagination} from "../table/Pagination";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {Pagination as BootstrapPagination} from "reactstrap";
+import {mountWithIntl} from "../../../../__tests__/environment/Environment";
+import {Pagination} from "../Pagination";
+import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import {UsePaginationInstanceProps} from "react-table";
-import Constants from "../../../util/Constants";
+import Constants from "../../../../util/Constants";
 
 describe("Pagination", () => {
 
@@ -40,5 +41,15 @@ describe("Pagination", () => {
         mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
                                   allowSizeChange={true} {...intlFunctions()}/>);
         expect(pagingProps.setPageSize).toHaveBeenCalledWith(size);
+    });
+
+    it("does not render pagination when page size is greater than item count", () => {
+        const size = 20;
+        pagingProps.canPreviousPage = false;
+        pagingProps.canNextPage = false;
+        localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] = size.toString();
+        const wrapper = mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
+                                                  allowSizeChange={true} {...intlFunctions()}/>);
+        expect(wrapper.exists(BootstrapPagination)).toBeFalsy();
     });
 });

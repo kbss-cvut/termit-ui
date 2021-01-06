@@ -529,6 +529,7 @@ const cs = {
         "table.paging.next.tooltip": "Následující strana",
         "table.paging.last.tooltip": "Poslední strana",
         "table.paging.pageSize.select": "Zobrazit {pageSize} záznamů na stránku",
+        "table.paging.pageSize.select.all": "Zobrazit všechny záznamy",
 
         "public.nav.user": "Uživatel nepřihlášen. Klikněte pro přihlášení.",
         "public.dashboard.title": "Vítejte v TermIt!",
