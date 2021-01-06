@@ -1,10 +1,12 @@
 import * as React from "react";
+import {ChangeEvent} from "react";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
 import {UsePaginationInstanceProps, UsePaginationState} from "react-table";
 import {Pagination as BootstrapPagination, PaginationItem, PaginationLink} from "reactstrap";
 import {injectIntl} from "react-intl";
 import Select from "../Select";
 import "./Pagination.scss";
+import Constants from "../../../util/Constants";
 
 interface PaginationProps extends HasI18n {
     pagingProps: UsePaginationInstanceProps<any>;
@@ -14,7 +16,7 @@ interface PaginationProps extends HasI18n {
 
 const PAGE_SIZES = [10, 20, 30, 50];
 
-const Pagination: React.FC<PaginationProps> = props => {
+export const Pagination: React.FC<PaginationProps> = props => {
     const {i18n, formatMessage} = props;
     const {
         canPreviousPage,
@@ -26,6 +28,17 @@ const Pagination: React.FC<PaginationProps> = props => {
         setPageSize
     } = props.pagingProps;
     const {pageIndex, pageSize} = props.pagingState;
+    React.useEffect(() => {
+        const savedPageSize = localStorage.getItem(Constants.STORAGE_TABLE_PAGE_SIZE_KEY);
+        if (savedPageSize) {
+            setPageSize(Number(savedPageSize));
+        }
+    }, [setPageSize]);
+    const onPageSizeSelect = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        localStorage.setItem(Constants.STORAGE_TABLE_PAGE_SIZE_KEY, value);
+        setPageSize(Number(value));
+    }
 
     const items = [];
     for (let i = 0; i < pageCount; i++) {
@@ -53,8 +66,7 @@ const Pagination: React.FC<PaginationProps> = props => {
             </PaginationItem>
         </BootstrapPagination>
         {props.allowSizeChange &&
-        <div className="page-size-select"><Select value={pageSize.toString()}
-                                                  onChange={(e) => setPageSize(Number(e.target.value))}>
+        <div className="page-size-select"><Select value={pageSize.toString()} onChange={onPageSizeSelect}>
             {PAGE_SIZES.map(s => <option key={s}
                                          value={s}>{formatMessage("table.paging.pageSize.select", {pageSize: s})}</option>)}
         </Select></div>}
