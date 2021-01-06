@@ -29,14 +29,16 @@ describe("Create vocabulary view", () => {
     let createVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     let createFile: (file: TermItFile, documentIri : string) => Promise<any>;
     let uploadFileContent: (fileIri : string, file: File) => Promise<any>;
+    let loadResources: () => void;
     let publishNotification: (notification: AppNotification) => void;
 
     beforeEach(() => {
         Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({ data : iri }));
-        createVocabulary = jest.fn().mockImplementation( () => Promise.resolve() );
+        createVocabulary = jest.fn().mockImplementation( () => Promise.resolve( iri ) );
         createFile = jest.fn();
         uploadFileContent = jest.fn();
-        publishNotification = jest.fn();
+        publishNotification = jest.fn().mockImplementation( () => Promise.resolve() );
+        loadResources = jest.fn();
     });
 
     it("returns to Vocabulary Management on cancel", () => {
@@ -44,6 +46,7 @@ describe("Create vocabulary view", () => {
                                                     createFile={createFile}
                                                     uploadFileContent={uploadFileContent}
                                                     publishNotification={publishNotification}
+                                                    loadResources={loadResources}
                                                     {...intlFunctions()}/>);
         CreateVocabulary.onCancel();
         expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies);
@@ -54,6 +57,7 @@ describe("Create vocabulary view", () => {
                                                         createFile={createFile}
                                                         uploadFileContent={uploadFileContent}
                                                         publishNotification={publishNotification}
+                                                        loadResources={loadResources}
                                                         {...intlFunctions()}/>);
         let submitButton = wrapper.find("#create-vocabulary-submit").first();
         expect(submitButton.getElement().props.disabled).toBeTruthy();
@@ -69,6 +73,7 @@ describe("Create vocabulary view", () => {
                                                         createFile={createFile}
                                                         uploadFileContent={uploadFileContent}
                                                         publishNotification={publishNotification}
+                                                        loadResources={loadResources}
                                                         {...intlFunctions()}/>);
         const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
         (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
@@ -80,11 +85,38 @@ describe("Create vocabulary view", () => {
         });
     });
 
+    it("transitions to vocabulary summary on success", async () => {
+        const wrapper = shallow<CreateVocabulary>(<CreateVocabulary createVocabulary={createVocabulary}
+                                                                    createFile={createFile}
+                                                                    uploadFileContent={uploadFileContent}
+                                                                    publishNotification={publishNotification}
+                                                                    loadResources={loadResources}
+                                                                    {...intlFunctions()}/>);
+
+        const label = "Test vocabulary";
+        const comment = "Test vocabulary comment";
+        // const types = [VocabularyUtils.VOCABULARY,VocabularyUtils.DOCUMENT_VOCABULARY];
+        wrapper.setState({iri, label, comment});
+        wrapper.update();
+        (wrapper.instance()).onCreate();
+        await flushPromises();
+        expect(createVocabulary).toHaveBeenCalled();
+        expect(Routing.transitionTo).toHaveBeenCalled();
+        const calls = (Routing.transitionTo as jest.Mock).mock.calls;
+        const args = calls[calls.length-1];
+        expect(args[0]).toEqual(Routes.vocabularySummary);
+        expect(args[1]).toEqual({
+            params: new Map([["name", "test"]]),
+            query: new Map()
+        });
+    });
+
     it("passes state representing new vocabulary to vocabulary creation handler on submit", () => {
         const wrapper = shallow<CreateVocabulary>(<CreateVocabulary createVocabulary={createVocabulary}
                                                                     createFile={createFile}
                                                                     uploadFileContent={uploadFileContent}
                                                                     publishNotification={publishNotification}
+                                                                    loadResources={loadResources}
                                                                     {...intlFunctions()}/>);
         const label = "Test vocabulary";
         const comment = "Test vocabulary comment";
@@ -117,6 +149,7 @@ describe("Create vocabulary view", () => {
                                                             createFile={createFile}
                                                             uploadFileContent={uploadFileContent}
                                                             publishNotification={publishNotification}
+                                                            loadResources={loadResources}
                                                             {...intlFunctions()}/>);
             const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
             const name = "Metropolitan Plan";
@@ -135,6 +168,7 @@ describe("Create vocabulary view", () => {
                                                             createFile={createFile}
                                                             uploadFileContent={uploadFileContent}
                                                             publishNotification={publishNotification}
+                                                            loadResources={loadResources}
                                                             {...intlFunctions()}/>);
             const iriInput = wrapper.find("input[name=\"create-vocabulary-iri\"]");
             (iriInput.getDOMNode() as HTMLInputElement).value = "http://test";
@@ -150,6 +184,7 @@ describe("Create vocabulary view", () => {
                                                             createFile={createFile}
                                                             uploadFileContent={uploadFileContent}
                                                             publishNotification={publishNotification}
+                                                            loadResources={loadResources}
                                                             {...intlFunctions()}/>);
             const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
             const name = "Metropolitan Plan";
