@@ -521,6 +521,7 @@ const en = {
         "table.paging.next.tooltip": "Go to the next page",
         "table.paging.last.tooltip": "Go to the last page",
         "table.paging.pageSize.select": "Show {pageSize} items per page",
+        "table.paging.pageSize.select.all": "Show all items",
 
         "public.nav.user": "User not logged in. Click to log in.",
         "public.dashboard.title": "Welcome to TermIt!",
