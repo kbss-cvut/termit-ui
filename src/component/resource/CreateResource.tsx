@@ -10,7 +10,7 @@ import {ThunkDispatch} from "../../util/Types";
 import {createResource} from "../../action/AsyncActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import CreateResourceMetadata from "./CreateResourceMetadata";
-import CreateFileMetadata from "./file/CreateFileMetadata";
+import CreateFileMetadata from "./file/CreateFileMetadataFull";
 import IdentifierResolver from "../../util/IdentifierResolver";
 import HeaderWithActions from "../misc/HeaderWithActions";
 
