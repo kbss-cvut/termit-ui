@@ -160,8 +160,6 @@ const cs = {
         "vocabulary.create.submit": "Vytvořit",
         "vocabulary.create.document.help": "Nepovinný. Je-li slovník založen na dokumentu (např. zákona), můžete tento dokument zde připojit.",
         "vocabulary.title": "Název",
-        'vocabulary.create.title': 'Nový slovník',
-        'vocabulary.create.submit': 'Vytvořit',
         "vocabulary.create.files": "Soubory",
         'vocabulary.create.files.help': 'Nepovinné. Můžete připojit soubory (např. texty zákonů), ze kterých bude slovník vycházet.',
         'vocabulary.comment': 'Popis',
