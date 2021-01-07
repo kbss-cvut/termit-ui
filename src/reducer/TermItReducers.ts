@@ -314,9 +314,6 @@ function types(state: { [key: string]: Term } | any = {}, action: AsyncActionSuc
             } else {
                 return state;
             }
-        case ActionType.SWITCH_LANGUAGE:
-            // Types are language-dependent, so switching the language will require them to be loaded again
-            return {};
         default:
             return state;
     }

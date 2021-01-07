@@ -4,35 +4,49 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
-import Term from "../../model/Term";
+import Term, {TermData} from "../../model/Term";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {FormGroup, FormText, Label} from "reactstrap";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {ThunkDispatch} from "../../util/Types";
 import {loadTypes} from "../../action/AsyncActions";
-import Utils from "../../util/Utils";
+import {getLocalized} from "../../model/MultilingualString";
+import {getShortLocale} from "../../util/IntlUtil";
+import IntlData from "../../model/IntlData";
+import _ from "lodash";
 
 interface TermTypesEditProps extends HasI18n {
     termTypes: string[];
     onChange: (types: string[]) => void;
 
     availableTypes: { [key: string]: Term };
+    intl: IntlData;
     loadTypes: () => void;
-
-    language: string;
 }
+
+const getTypesForSelector = _.memoize((availableTypes: { [key: string]: Term }) => {
+    if (!availableTypes) {
+        return [];
+    }
+    const typesMap = {};
+    // Make a deep copy of the available types since we're going to modify them for the tree select
+    Object.keys(availableTypes).forEach(t => typesMap[t] = new Term(availableTypes[t]));
+    const types = Object.keys(typesMap).map(k => typesMap[k]);
+    types.forEach(t => {
+        if (t.subTerms) {
+            // The tree-select needs parent for proper function
+            // @ts-ignore
+            t.subTerms.forEach(st => typesMap[st].parent = t.iri);
+        }
+    });
+    return types;
+});
 
 export class TermTypesEdit extends React.Component<TermTypesEditProps> {
 
     public componentDidMount(): void {
         this.props.loadTypes();
-    }
-
-    public componentDidUpdate(prevProps: Readonly<TermTypesEditProps>) {
-        if (Object.getOwnPropertyNames(prevProps.availableTypes).length > 0 && Object.getOwnPropertyNames(this.props.availableTypes).length === 0) {
-            this.props.loadTypes();
-        }
     }
 
     public onChange = (val: Term | null) => {
@@ -44,34 +58,17 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
         return matching.length > 0 ? matching[0].iri : undefined;
     }
 
-    private getTypesForSelector() {
-        if (!this.props.availableTypes) {
-            return [];
-        }
-        const typesMap = {};
-        Object.keys(this.props.availableTypes).forEach(t => typesMap[t] = new Term(this.props.availableTypes[t]));
-        const types = Object.keys(typesMap).map(k => typesMap[k]);
-        types.forEach(t => {
-            if (t.subTerms) {
-                // The tree-select needs parent for proper function
-                // @ts-ignore
-                t.subTerms.forEach(st => typesMap[st].parent = t.iri);
-            }
-            t.label = t.getLabel(this.props.language);
-        });
-        return types;
-    }
-
     public render() {
-        const types = this.getTypesForSelector();
+        const types = getTypesForSelector(this.props.availableTypes);
         const selected = this.resolveSelectedTypes(types);
+        const {i18n, intl} = this.props;
         return <FormGroup>
-            <Label className="attribute-label">{this.props.i18n("term.metadata.types")}</Label>
+            <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
             <IntelligentTreeSelect onChange={this.onChange}
                                    value={selected}
                                    options={types}
                                    valueKey="iri"
-                                   labelKey="label"
+                                   getOptionLabel={(option: TermData) => getLocalized(option.label, getShortLocale(intl.locale))}
                                    childrenKey="subTerms"
                                    showSettings={false}
                                    maxHeight={150}
@@ -79,15 +76,14 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
                                    displayInfoOnHover={true}
                                    expanded={true}
                                    renderAsTree={true}
-                                   placeholder={this.props.i18n("term.metadata.types.select.placeholder")}
-                                   valueRenderer={Utils.labelValueRenderer}/>
-            <FormText>{this.props.i18n("term.types.help")}</FormText>
+                                   placeholder={i18n("term.metadata.types.select.placeholder")}/>
+            <FormText>{i18n("term.types.help")}</FormText>
         </FormGroup>;
     }
 }
 
 export default connect((state: TermItState) => {
-    return {availableTypes: state.types};
+    return {availableTypes: state.types, intl: state.intl};
 }, (dispatch: ThunkDispatch) => {
     return {
         loadTypes: () => dispatch(loadTypes())

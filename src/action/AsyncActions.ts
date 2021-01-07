@@ -32,7 +32,6 @@ import {CONTEXT as DOCUMENT_CONTEXT} from "../model/Document";
 import TermitFile from "../model/File";
 import Asset from "../model/Asset";
 import AssetFactory from "../util/AssetFactory";
-import IdentifierResolver from "../util/IdentifierResolver";
 import JsonLdUtils from "../util/JsonLdUtils";
 import {Action} from "redux";
 import {
@@ -90,9 +89,8 @@ export function createVocabulary(vocabulary: Vocabulary) {
             .then((resp: AxiosResponse) => {
                 dispatch(asyncActionSuccess(action));
                 dispatch(loadVocabularies());
-                const location = resp.headers[Constants.Headers.LOCATION];
-                Routing.transitionTo(Routes.vocabularySummary, IdentifierResolver.routingOptionsFromLocation(location));
-                return dispatch(SyncActions.publishMessage(new Message({messageId: "vocabulary.created.message"}, MessageType.SUCCESS)));
+                dispatch(SyncActions.publishMessage(new Message({messageId: "vocabulary.created.message"}, MessageType.SUCCESS)));
+                return resp.headers[Constants.Headers.LOCATION];
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -313,7 +311,6 @@ export function createFileInDocument(file: TermitFile, documentIri: IRI) {
         return Ajax.post(Constants.API_PREFIX + "/resources/" + documentIri.fragment + "/files", content(file.toJsonLd()).param("namespace", documentIri.namespace))
             .then((resp: AxiosResponse) => {
                 dispatch(asyncActionSuccess(action));
-                dispatch(loadResources());
                 dispatch(SyncActions.publishMessage(new Message({messageId: "resource.created.message"}, MessageType.SUCCESS)));
                 return resp.headers[Constants.Headers.LOCATION];
             })

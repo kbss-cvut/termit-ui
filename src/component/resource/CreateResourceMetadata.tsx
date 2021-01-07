@@ -8,10 +8,11 @@ import {Button, ButtonToolbar, Col, Form, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import {ContextFreeAssetType} from "../../model/ContextFreeAssetType";
+import ShowAdvanceAssetFields from "../asset/ShowAdvancedAssetFields";
 import Constants from "../../util/Constants";
 
 export interface CreateResourceMetadataProps extends HasI18n {
-    onCreate: (resource: Resource) => Promise<string>;
+    onCreate: (resource: Resource, data?: any) => Promise<string>;
     onCancel: () => void;
 }
 
@@ -66,18 +67,20 @@ export class CreateResourceMetadata<P extends CreateResourceMetadataProps = Crea
             </Row>
             <Row>
                 <Col xs={12}>
-                    <CustomInput name="create-resource-iri" label={i18n("asset.iri")}
-                                 value={this.state.iri}
-                                 onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
                     <TextArea name="create-resource-description" label={i18n("resource.metadata.description")}
-                              type="textarea" rows={4} value={this.state.description} help={i18n("optional")}
+                              type="textarea" rows={3} value={this.state.description} help={i18n("optional")}
                               onChange={this.onDescriptionChange}/>
                 </Col>
             </Row>
+            <ShowAdvanceAssetFields>
+                <Row>
+                    <Col xs={12}>
+                        <CustomInput name="create-resource-iri" label={i18n("asset.iri")}
+                                     value={this.state.iri}
+                                     onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
+                    </Col>
+                </Row>
+            </ShowAdvanceAssetFields>
         </>;
     }
 

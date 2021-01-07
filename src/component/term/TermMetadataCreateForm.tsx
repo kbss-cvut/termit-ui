@@ -2,7 +2,7 @@ import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import Utils from "../../util/Utils";
-import {Button, Col, Collapse, Form, FormGroup, Label, Row} from "reactstrap";
+import {Button, Col, Form, FormGroup, Label, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
@@ -12,6 +12,7 @@ import {injectIntl} from "react-intl";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import {checkLabelUniqueness} from "./TermValidationUtils";
+import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import {loadIdentifier} from "../asset/AbstractCreateAsset";
 
 interface TermMetadataCreateFormProps extends HasI18n {
@@ -24,8 +25,7 @@ interface TermMetadataCreateFormProps extends HasI18n {
 }
 
 interface TermMetadataCreateFormState {
-    generateUri: boolean;
-    showAdvanced: boolean;
+    generateUri: boolean
 }
 
 export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFormProps, TermMetadataCreateFormState> {
@@ -33,8 +33,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     constructor(props: TermMetadataCreateFormProps) {
         super(props);
         this.state = {
-            generateUri: true,
-            showAdvanced: false
+            generateUri: true
         };
     }
 
@@ -114,10 +113,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.props.onChange({iri: newUri}, callback)
     };
 
-    private toggleAdvancedSection = () => {
-        this.setState({showAdvanced: !this.state.showAdvanced});
-    };
-
     public onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const source = e.currentTarget.value;
         this.props.onChange({sources: [source]});
@@ -194,17 +189,10 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 </Col>
             </Row>
 
-            <Button color="link" id="create-term-toggle-advanced" onClick={this.toggleAdvancedSection}>
-                {this.state.showAdvanced ? i18n("glossary.form.button.hideAdvancedSection") : i18n("glossary.form.button.showAdvancedSection")}
-            </Button>
-
-
-            <Collapse isOpen={this.state.showAdvanced}>
-
+            <ShowAdvancedAssetFields>
                 <Row>
                     <Col xs={12}>
-                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}
-                                       language={language}/>
+                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}/>
                     </Col>
                 </Row>
 
@@ -234,7 +222,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                      value={termData.iri}/>
                     </Col>
                 </Row>
-            </Collapse>
+            </ShowAdvancedAssetFields>
         </Form>;
     }
 }

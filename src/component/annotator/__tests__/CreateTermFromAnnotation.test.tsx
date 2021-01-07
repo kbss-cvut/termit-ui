@@ -87,6 +87,23 @@ describe("CreateTermFromAnnotation", () => {
         expect(wrapper.state().label).toEqual(langString(""));
     });
 
+    // Bug #1463
+    it("clears also alt labels and hidden labels from state after successful term creation", async () => {
+        const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                    language={Constants.DEFAULT_LANGUAGE}
+                                                                                    vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
+        wrapper.setState({
+            iri: vocabularyIri + "/term/test-term",
+            label: langString("Test term"),
+            altLabels: {en: ["test one", "test two"]},
+            hiddenLabels: {en: ["hidden one", "hidden two"]}
+        });
+        await wrapper.instance().onSave();
+        expect(onClose).toHaveBeenCalled();
+        expect(wrapper.state().altLabels).not.toBeDefined();
+        expect(wrapper.state().hiddenLabels).not.toBeDefined();
+    })
+
     it("invokes onTermCreated with the new term after successful term creation", async () => {
         const termIri = vocabularyIri + "/term/test-term";
         const termLabel = langString("Test term");
