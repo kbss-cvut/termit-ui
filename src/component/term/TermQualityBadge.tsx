@@ -10,25 +10,19 @@ import Utils from "../../util/Utils";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
 import {ConsolidatedResults} from "../../model/ConsolidatedResults";
+import {ValidationUtils} from "./validation/ValidationUtils";
 
 interface TermQualityBadgeProps extends HasI18n, RouteComponentProps<any> {
     term: Term | null;
     validationResults: ConsolidatedResults;
 }
 
-export const importantRules = [
-    "https://slovník.gov.cz/jazyk/obecný/g4",
-    "https://slovník.gov.cz/jazyk/obecný/m1",
-    "https://slovník.gov.cz/jazyk/obecný/g13",
-    "https://slovník.gov.cz/jazyk/obecný/g14"
-];
-
 export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
 
     private computeScore(results: ValidationResult[]): number | undefined {
         return results.reduce((reduceScore, result) => {
-            if (importantRules.indexOf(result.sourceShape?.iri) >= 0) {
-                return reduceScore - 25;
+            if (ValidationUtils.qualityAffectingRules.indexOf(result.sourceShape?.iri) >= 0) {
+                return reduceScore - Math.floor(100 / ValidationUtils.qualityAffectingRules.length);
             }
             return reduceScore;
         }, 100);

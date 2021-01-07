@@ -5,7 +5,7 @@ import {ValidationResults} from "../ValidationResults";
 import Generator from "../../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import ValidationResult from "../../../../model/ValidationResult";
-import SeverityText from "../SeverityText";
+import ValidationMessage from "../ValidationMessage";
 import Term from "../../../../model/Term";
 
 export function constructValidationResult(termIri : string) : ValidationResult {
@@ -40,7 +40,7 @@ describe("Validation Results", () => {
             term={term}
             validationResults={validationResults} {...intlFunctions()}/>);
 
-        const rows = component.find("tbody").find(SeverityText);
+        const rows = component.find("div").find(ValidationMessage);
         expect(rows.length).toEqual(2);
     });
 });

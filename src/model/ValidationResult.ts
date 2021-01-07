@@ -18,15 +18,15 @@ const ctx = {
 export const CONTEXT = Object.assign({}, TERM_CONTEXT, LANG_STRING_CONTEXT, ctx );
 
 export default class ValidationResult {
-    public id: string;
+    public iri: string;
     public term: TermData;
     public severity: Severity;
     public message: LangString[];
     public sourceShape: SourceShape;
     public resultPath: ResultPath;
 
-    constructor(id: string, term : TermData, severity: Severity, message: LangString[], sourceShape: SourceShape, resultPath: ResultPath ) {
-        this.id = id;
+    constructor(iri: string, term : TermData, severity: Severity, message: LangString[], sourceShape: SourceShape, resultPath: ResultPath ) {
+        this.iri = iri  ;
         this.term = term;
         this.severity = severity;
         this.message = message;
