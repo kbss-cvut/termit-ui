@@ -10,6 +10,7 @@ import AsyncActionStatus from "../../../action/AsyncActionStatus";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import Ajax, {params} from "../../../util/Ajax";
 import Constants from "../../../util/Constants";
+import {MemoryRouter} from "react-router";
 
 describe("RegistrationForm", () => {
 
@@ -32,15 +33,15 @@ describe("RegistrationForm", () => {
     });
 
     it("displays submit button disabled when inputs are empty", () => {
-        const wrapper = mountWithIntl(<RegistrationForm loading={false} register={register}
-                                                        cancel={cancel} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><RegistrationForm loading={false} register={register}
+                                                                      cancel={cancel} {...intlFunctions()}/></MemoryRouter>);
         const submitButton = wrapper.find(Button).first();
         expect(submitButton.getElement().props.disabled).toBeTruthy();
     });
 
     it("enables submit button when inputs are nonempty", () => {
-        const wrapper = mountWithIntl(<RegistrationForm loading={false} register={register}
-                                                        cancel={cancel} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><RegistrationForm loading={false} register={register}
+                                                                      cancel={cancel} {...intlFunctions()}/></MemoryRouter>);
         fillBasicUserInfo(wrapper);
         fillPasswords(wrapper);
         const submitButton = wrapper.find(Button).first();
@@ -69,8 +70,8 @@ describe("RegistrationForm", () => {
     }
 
     it("disables submit button when passwords do not match", () => {
-        const wrapper = mountWithIntl(<RegistrationForm loading={false} register={register}
-                                                        cancel={cancel} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><RegistrationForm loading={false} register={register}
+                                                                      cancel={cancel} {...intlFunctions()}/></MemoryRouter>);
         fillBasicUserInfo(wrapper);
         fillPasswords(wrapper, true);
         const submitButton = wrapper.find(Button).first();
@@ -78,8 +79,8 @@ describe("RegistrationForm", () => {
     });
 
     it("submits user for registration on register click", () => {
-        const wrapper = mountWithIntl(<RegistrationForm loading={false} register={register}
-                                                        cancel={cancel} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><RegistrationForm loading={false} register={register}
+                                                                      cancel={cancel} {...intlFunctions()}/></MemoryRouter>);
         fillBasicUserInfo(wrapper);
         fillPasswords(wrapper);
         const submitButton = wrapper.find(Button).first();
@@ -88,8 +89,8 @@ describe("RegistrationForm", () => {
     });
 
     it("disables submit button when loading", () => {
-        const wrapper = mountWithIntl(<RegistrationForm loading={true} register={register}
-                                                        cancel={cancel} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><RegistrationForm loading={true} register={register}
+                                                                      cancel={cancel} {...intlFunctions()}/></MemoryRouter>);
         fillBasicUserInfo(wrapper);
         fillPasswords(wrapper);
         const submitButton = wrapper.find(Button).first();
@@ -97,8 +98,8 @@ describe("RegistrationForm", () => {
     });
 
     it("checks for username existence on username field edit", () => {
-        const wrapper = mountWithIntl(<RegistrationForm loading={false} register={register}
-                                                        cancel={cancel} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><RegistrationForm loading={false} register={register}
+                                                                      cancel={cancel} {...intlFunctions()}/></MemoryRouter>);
         const usernameInput = wrapper.find("input[name=\"username\"]");
         (usernameInput.getDOMNode() as HTMLInputElement).value = userInfo.username;
         usernameInput.simulate("change", usernameInput);
