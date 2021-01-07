@@ -23,7 +23,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {ContextFreeAssetType} from "../../model/ContextFreeAssetType";
 import Resource from "../../model/Resource";
-import {createFileInDocument, createVocabulary, uploadFileContent} from "../../action/AsyncActions";
+import {createFileInDocument, createVocabulary, loadResources, uploadFileContent} from "../../action/AsyncActions";
 import ShowAdvanceAssetFields from "../asset/ShowAdvancedAssetFields";
 import Files from "../resource/document/Files";
 import TermItFile from "../../model/File";
@@ -31,11 +31,13 @@ import Utils from "../../util/Utils";
 import NotificationType from "../../model/NotificationType";
 import AppNotification from "../../model/AppNotification";
 import {publishNotification} from "../../action/SyncActions";
+import IdentifierResolver from "../../util/IdentifierResolver";
 
 interface CreateVocabularyProps extends HasI18n {
     createFile: (file: TermItFile, documentIri: string) => Promise<any>,
-    createVocabulary: (vocabulary: Vocabulary) => Promise<any>,
+    createVocabulary: (vocabulary: Vocabulary) => Promise<string>,
     uploadFileContent: (fileIri: string, file: File) => Promise<any>,
+    loadResources: () => void,
     publishNotification: (notification: AppNotification) => void
 }
 
@@ -86,14 +88,16 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         document.addType(VocabularyUtils.DOCUMENT);
         vocabulary.document = document;
         this.props.createVocabulary(vocabulary)
-            .then(() =>
+            .then((location) => {
                 Promise.all(
                     Utils.sanitizeArray(files).map((f, fIndex) => {
                         return this.props.createFile(f, document.iri).then(() =>
                             this.props.uploadFileContent(f.iri, fileContents[fIndex])
                                 .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
                     }))
-            );
+                    .then(() => Routing.transitionTo(Routes.vocabularySummary, IdentifierResolver.routingOptionsFromLocation(location)))
+                    .then(() => this.props.loadResources())
+            });
     };
 
     public static onCancel(): void {
@@ -146,6 +150,21 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                                 files={this.state.files}
                                 createFile={this.onCreateFile}
                                 onFileAdded={() => {;}}
+                            />
+                            <ShowAdvanceAssetFields>
+                                <Row>
+                                    <Col xs={12}>
+                                        <CustomInput name="create-vocabulary-iri" label={i18n("asset.iri")}
+                                                     value={this.state.iri}
+                                                     onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
+                                    </Col>
+                                </Row>
+                            </ShowAdvanceAssetFields>
+
+                            <Files
+                                files={this.state.files}
+                                createFile={this.onCreateFile}
+                                onFileAdded={() => {;}}
                                 showContent={false}
                             />
                             <ShowAdvanceAssetFields>
@@ -179,6 +198,7 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         createVocabulary: (vocabulary: Vocabulary) => dispatch(createVocabulary(vocabulary)),
         createFile: (file: TermItFile, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
+        loadResources: () => dispatch(loadResources()),
         uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
         publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
