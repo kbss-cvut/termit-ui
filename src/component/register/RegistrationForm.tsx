@@ -9,7 +9,9 @@ import EnhancedInput, {LabelDirection} from "../misc/EnhancedInput";
 import Mask from "../misc/Mask";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
-import {injectIntl} from "react-intl";
+import {FormattedMessage, injectIntl} from "react-intl";
+import {Link} from "react-router-dom";
+import Routes from "../../util/Routes";
 
 interface RegistrationFormProps extends HasI18n {
     loading: boolean;
@@ -105,7 +107,7 @@ export class RegistrationForm extends React.Component<RegistrationFormProps, Reg
                         <EnhancedInput
                             type="text" name="firstName" autoComplete="given-name" label={i18n("register.first-name")}
                             labelDirection={LabelDirection.vertical} value={this.state.firstName}
-                            onChange={this.onChange} valid={this.isValidFirstName()}
+                            onChange={this.onChange} valid={this.isValidFirstName()} autoFocus={true}
                             placeholder={i18n("register.first-name.placeholder")}
                         />
                     </Col>
@@ -130,9 +132,11 @@ export class RegistrationForm extends React.Component<RegistrationFormProps, Reg
                         onClick={this.onRegister}>{i18n("register.submit")}</Button>
                 <br/>
                 <div className="text-center">
-                    {i18n("register.login.label")}
-                    <Button id="register-cancel" className="p-1 align-baseline" color="link"
-                            onClick={this.props.cancel}>{i18n("register.login")}</Button>
+                    <FormattedMessage id="register.login.label" values={{
+                        a: (chunks: any) => <Link id="login-register" to={Routes.login.link()}
+                                                  className="bold">{chunks}</Link>
+                    }}
+                    />
                 </div>
             </Form>
         </>;
