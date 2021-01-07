@@ -36,11 +36,12 @@ const cs = {
         'login.password.placeholder': 'Zadejte heslo',
         'login.submit': 'Přihlásit se',
         'login.register': 'Registrace',
-        'login.register.label': 'Nemáte zatím účet?',
+        'login.register.label': 'Nemáte zatím účet? <a>Zaregistrujte se</a>',
         'login.error': 'Přihlášení se nezdařilo.',
         'login.progress-mask': 'Přihlašuji...',
         'login.locked': 'Účet je zablokován.',
         'login.disabled': 'Účet byl deaktivován.',
+        "login.public-view-link": "Nebo si <a>prohlédněte</a> slovníky a pojmy",
 
         'register.title': 'Nový uživatel',
         'register.subtitle': 'Pro pokračování se prosím zaregistrujte',
@@ -60,7 +61,7 @@ const cs = {
         'register.error': 'Uživatele se nepodařilo zaregistrovat.',
         'register.login': 'Přihlásit se',
         'register.login.error': 'Nepodařilo se přihlásit k nově vytvořenému uživateli.',
-        'register.login.label': 'Již máte účet?',
+        'register.login.label': 'Již máte účet? <a>Přihlaste se</a>',
         'register.username-exists.tooltip': 'Uživatelské jméno již existuje',
 
         'main.nav.dashboard': 'Hlavní strana',

@@ -36,11 +36,12 @@ const en = {
         'login.password.placeholder': 'Enter Your Password',
         'login.submit': 'Login',
         'login.register': 'Register',
-        'login.register.label': 'Don\'t have an account?',
+        'login.register.label': 'Don\'t have an account? <a>Register</a>',
         'login.error': 'Authentication failed.',
         'login.progress-mask': 'Logging in...',
         'login.locked': 'Account locked.',
         'login.disabled': 'Account disabled.',
+        "login.public-view-link": "Or <a>explore</a> vocabularies and terms",
 
         'register.title': 'Registration',
         'register.subtitle': 'Please register to continue',
@@ -60,7 +61,7 @@ const en = {
         'register.error': 'Unable to register user account.',
         'register.login': 'Log in',
         'register.login.error': 'Unable to login into the newly created account.',
-        'register.login.label': 'Already a member?',
+        'register.login.label': 'Already a member? <a>Log in</a>',
         'register.username-exists.tooltip': 'Username already exists',
 
         'main.nav.dashboard': 'Dashboard',
