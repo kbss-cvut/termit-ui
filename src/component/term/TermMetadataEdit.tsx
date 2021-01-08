@@ -229,8 +229,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             <Col xs={12}>
                                 <ValidatedField results={this.getValidationResults(VocabularyUtils.RDF_TYPE)}>
                                 <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
-                                               onChange={this.onTypesChange}
-                                               language={this.props.language}/>
+                                               onChange={this.onTypesChange}/>
                                 </ValidatedField>
                             </Col>
                         </Row>
