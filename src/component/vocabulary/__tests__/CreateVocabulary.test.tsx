@@ -29,7 +29,6 @@ describe("Create vocabulary view", () => {
     let createVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     let createFile: (file: TermItFile, documentIri : string) => Promise<any>;
     let uploadFileContent: (fileIri : string, file: File) => Promise<any>;
-    let loadResources: () => void;
     let publishNotification: (notification: AppNotification) => void;
 
     beforeEach(() => {
@@ -38,7 +37,6 @@ describe("Create vocabulary view", () => {
         createFile = jest.fn();
         uploadFileContent = jest.fn();
         publishNotification = jest.fn().mockImplementation( () => Promise.resolve() );
-        loadResources = jest.fn();
     });
 
     it("returns to Vocabulary Management on cancel", () => {
@@ -46,7 +44,6 @@ describe("Create vocabulary view", () => {
                                                     createFile={createFile}
                                                     uploadFileContent={uploadFileContent}
                                                     publishNotification={publishNotification}
-                                                    loadResources={loadResources}
                                                     {...intlFunctions()}/>);
         CreateVocabulary.onCancel();
         expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies);
@@ -57,7 +54,6 @@ describe("Create vocabulary view", () => {
                                                         createFile={createFile}
                                                         uploadFileContent={uploadFileContent}
                                                         publishNotification={publishNotification}
-                                                        loadResources={loadResources}
                                                         {...intlFunctions()}/>);
         let submitButton = wrapper.find("#create-vocabulary-submit").first();
         expect(submitButton.getElement().props.disabled).toBeTruthy();
@@ -73,7 +69,6 @@ describe("Create vocabulary view", () => {
                                                         createFile={createFile}
                                                         uploadFileContent={uploadFileContent}
                                                         publishNotification={publishNotification}
-                                                        loadResources={loadResources}
                                                         {...intlFunctions()}/>);
         const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
         (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
@@ -90,7 +85,6 @@ describe("Create vocabulary view", () => {
                                                                     createFile={createFile}
                                                                     uploadFileContent={uploadFileContent}
                                                                     publishNotification={publishNotification}
-                                                                    loadResources={loadResources}
                                                                     {...intlFunctions()}/>);
 
         const label = "Test vocabulary";
@@ -116,7 +110,6 @@ describe("Create vocabulary view", () => {
                                                                     createFile={createFile}
                                                                     uploadFileContent={uploadFileContent}
                                                                     publishNotification={publishNotification}
-                                                                    loadResources={loadResources}
                                                                     {...intlFunctions()}/>);
         const label = "Test vocabulary";
         const comment = "Test vocabulary comment";
@@ -149,7 +142,6 @@ describe("Create vocabulary view", () => {
                                                             createFile={createFile}
                                                             uploadFileContent={uploadFileContent}
                                                             publishNotification={publishNotification}
-                                                            loadResources={loadResources}
                                                             {...intlFunctions()}/>);
             const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
             const name = "Metropolitan Plan";
@@ -168,7 +160,6 @@ describe("Create vocabulary view", () => {
                                                             createFile={createFile}
                                                             uploadFileContent={uploadFileContent}
                                                             publishNotification={publishNotification}
-                                                            loadResources={loadResources}
                                                             {...intlFunctions()}/>);
             const iriInput = wrapper.find("input[name=\"create-vocabulary-iri\"]");
             (iriInput.getDOMNode() as HTMLInputElement).value = "http://test";
@@ -184,7 +175,6 @@ describe("Create vocabulary view", () => {
                                                             createFile={createFile}
                                                             uploadFileContent={uploadFileContent}
                                                             publishNotification={publishNotification}
-                                                            loadResources={loadResources}
                                                             {...intlFunctions()}/>);
             const nameInput = wrapper.find("input[name=\"create-vocabulary-label\"]");
             const name = "Metropolitan Plan";
