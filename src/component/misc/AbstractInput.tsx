@@ -1,10 +1,12 @@
 import * as React from "react";
-import {Label, FormText} from "reactstrap";
+import {FormText, Label} from "reactstrap";
 import {InputType} from "reactstrap/lib/Input";
+import classNames from "classnames";
 
 export interface AbstractInputProps {
     name?: string;
     label?: string;
+    labelClass?: string;
     placeholder?: string;
     title?: string;
     value?: string;
@@ -22,7 +24,8 @@ export interface AbstractInputProps {
 export default class AbstractInput<T extends AbstractInputProps> extends React.Component<T> {
 
     protected renderLabel() {
-        return this.props.label ? <Label className="attribute-label">{this.props.label}</Label> : null;
+        return this.props.label ?
+            <Label className={classNames("attribute-label", this.props.labelClass)}>{this.props.label}</Label> : null;
     }
 
     protected renderHelp() {
