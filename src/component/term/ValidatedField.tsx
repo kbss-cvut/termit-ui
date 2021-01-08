@@ -7,6 +7,7 @@ import {injectIntl} from "react-intl";
 import {useState} from "react";
 import {Tooltip} from 'reactstrap';
 import _uniqueId from 'lodash/uniqueId';
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface ValidatedFieldProps extends HasI18n {
     results: ValidationResult[];
@@ -23,7 +24,7 @@ const ValidatedField: React.FC<ValidatedFieldProps> = ({
 
     const containsQualityAffectingRule = results.find(r => ValidationUtils.qualityAffectingRules.indexOf(r.sourceShape?.iri) > -1);
     const messages = results.map(r => {
-        const message = r.message.find(ls => ls.language === locale)!.value;
+        const message = r.message.find(ls => ls.language === getShortLocale(locale))!.value;
         return <li key={r.iri}>{message}</li>
     });
     const style = (results.length === 0) ? {} :
