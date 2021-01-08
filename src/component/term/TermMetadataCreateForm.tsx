@@ -14,6 +14,7 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import {checkLabelUniqueness} from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import {loadIdentifier} from "../asset/AbstractCreateAsset";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
@@ -152,8 +153,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 </Col>
             </Row>
 
-            <hr data-content={i18n("term.metadata.definition")} className="hr-definition-text"/>
-
+            <TermDefinitionContainer>
             <Row>
                 <Col xs={12}>
                     {this.props.definitionSelector ?
@@ -183,7 +183,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                  help={i18n("term.source.help")}/>
                 </Col>
             </Row>
-            <hr className="hr-definition"/>
+            </TermDefinitionContainer>
 
             <Row>
                 <Col xs={12}>
