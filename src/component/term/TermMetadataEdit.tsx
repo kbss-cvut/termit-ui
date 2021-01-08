@@ -47,7 +47,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public componentDidUpdate(prevProps: TermMetadataEditProps, prevState: TermMetadataEditState): void {
         if (this.props.language && (prevProps.language !== this.props.language)) {
-            this.onPrefLabelChange(this.state.label[this.props.language] || '');
+            this.onPrefLabelChange(this.state.label[this.props.language] || "");
         }
     }
 
