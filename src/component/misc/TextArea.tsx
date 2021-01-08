@@ -20,7 +20,7 @@ export default class TextArea extends AbstractInput<TextAreaProps> {
     public render() {
         return <FormGroup>
             {this.renderLabel()}
-            <Input type="textarea" style={{height: "auto"}} bsSize="sm"
+            <Input type="textarea" style={{resize: "none"}} bsSize="sm"
                    ref={this.input} {...this.inputProps()}/>
             <FormFeedback>{this.props.invalidMessage}</FormFeedback>
             {this.renderHelp()}

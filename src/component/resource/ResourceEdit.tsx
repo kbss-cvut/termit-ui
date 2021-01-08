@@ -87,8 +87,7 @@ export class ResourceEdit<P extends ResourceEditProps = ResourceEditProps, S ext
             <Row>
                 <Col xs={12}>
                     <TextArea name="edit-resource-description" label={i18n("resource.metadata.description")}
-                              rows={3}
-                              value={this.state.description} onChange={this.onChange}/>
+                              rows={4} value={this.state.description} onChange={this.onChange}/>
                 </Col>
             </Row>
             <Row>
