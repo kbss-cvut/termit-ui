@@ -4,6 +4,7 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {TermTypesEdit} from "../TermTypesEdit";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import intlData from "../../../i18n/en";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import Generator from "../../../__tests__/environment/Generator";
@@ -23,7 +24,7 @@ describe("TermTypesEdit", () => {
         const availableTypes = {};
         availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
         const types = [VocabularyUtils.TERM];
-        const wrapper = mountWithIntl(<TermTypesEdit termTypes={types} availableTypes={availableTypes}
+        const wrapper = mountWithIntl(<TermTypesEdit termTypes={types} availableTypes={availableTypes} intl={intlData}
                                                      loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
         const selector = wrapper.find(IntelligentTreeSelect);
         expect(selector.prop("value")).not.toBeDefined();
@@ -35,15 +36,15 @@ describe("TermTypesEdit", () => {
         availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
         availableTypes[iri] = new Term({iri, label: langString("Other type")});
         const types = [VocabularyUtils.TERM, iri];
-        const wrapper = mountWithIntl(<TermTypesEdit termTypes={types} availableTypes={availableTypes}
-                                                     loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
+        const wrapper = shallow(<TermTypesEdit termTypes={types} availableTypes={availableTypes} intl={intlData}
+                                               loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
         const selector = wrapper.find(IntelligentTreeSelect);
         expect(selector.prop("value")).toEqual(availableTypes[iri].iri);
     });
 
     it("invokes onChange handler with selected type and the implicit Term type", () => {
         const selected = new Term({iri: Generator.generateUri(), label: langString("Selected term")});
-        const wrapper = shallow(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={{}}
+        const wrapper = shallow(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={{}} intl={intlData}
                                                loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
         (wrapper.instance() as TermTypesEdit).onChange(selected);
         expect(onChange).toHaveBeenCalled();
@@ -60,7 +61,7 @@ describe("TermTypesEdit", () => {
         availableTypes[iri] = new Term({iri, label: langString("Other type")});
         const types = [VocabularyUtils.TERM, iri];
         const wrapper = shallow<TermTypesEdit>(<TermTypesEdit termTypes={types} availableTypes={availableTypes}
-                                                              loadTypes={loadTypes}
+                                                              loadTypes={loadTypes} intl={intlData}
                                                               onChange={onChange} {...intlFunctions()}/>);
         // Simulate tree reset (using the real component did not work)
         wrapper.instance().onChange(null);
@@ -68,19 +69,8 @@ describe("TermTypesEdit", () => {
     });
 
     it("loads types on mount", () => {
-        shallow(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={{}}
+        shallow(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={{}} intl={intlData}
                                loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
-        expect(loadTypes).toHaveBeenCalled();
-    });
-
-    it("reloads types when they are cleared after language switch", () => {
-        const availableTypes = {};
-        availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
-        const wrapper = shallow<TermTypesEdit>(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={availableTypes}
-                               loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
-        (loadTypes as jest.Mock).mockReset();
-        wrapper.setProps({availableTypes: {}});
-        wrapper.update();
         expect(loadTypes).toHaveBeenCalled();
     });
 });

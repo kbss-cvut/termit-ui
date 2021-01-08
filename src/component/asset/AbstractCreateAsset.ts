@@ -1,12 +1,25 @@
 import * as React from "react";
 import Ajax, {params} from "../../util/Ajax";
 import Constants from "../../util/Constants";
+import last from "last";
 
 export interface AbstractCreateAssetState {
     iri: string;
     label: string;
     generateIri: boolean;
 }
+
+
+let loadIdentifier = <T extends { name: string, assetType: string }>(parameters: T) => {
+    return Ajax.post(`${Constants.API_PREFIX}/identifiers`,
+        params(parameters)
+    );
+};
+
+// This will cause the existing still running identifier requests to be ignored in favor of the most recent call
+loadIdentifier = last(loadIdentifier);
+
+export {loadIdentifier};
 
 /**
  * Abstract asset creation component class.
@@ -34,10 +47,7 @@ export abstract class AbstractCreateAsset<P, S extends AbstractCreateAssetState>
         if (!this.state.generateIri || label.length === 0) {
             return;
         }
-        Ajax.post( Constants.API_PREFIX + "/identifiers", params({
-            name: label,
-            assetType: this.assetType
-        })).then(response => this.setState({iri : response.data}));
+        loadIdentifier({name: label, assetType: this.assetType}).then(response => this.setState({iri: response.data}));
     };
 
     protected onIriChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

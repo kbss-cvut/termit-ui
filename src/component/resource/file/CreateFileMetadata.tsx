@@ -8,18 +8,12 @@ import {
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import withI18n from "../../hoc/withI18n";
 import {Form} from "reactstrap";
-import {connect} from "react-redux";
-import {ThunkDispatch} from "../../../util/Types";
-import {uploadFileContent} from "../../../action/AsyncActions";
-import AppNotification from "../../../model/AppNotification";
-import {publishNotification} from "../../../action/SyncActions";
-import NotificationType from "../../../model/NotificationType";
 import UploadFile from "./UploadFile";
 import TermItFile from "../../../model/File";
+import Resource from "../../../model/Resource";
 
 interface CreateFileMetadataProps extends CreateResourceMetadataProps {
-    uploadFileContent: (fileIri: string, file: File) => Promise<any>;
-    publishNotification: (notification: AppNotification) => void;
+    onCreate: (termItFile : Resource, file: File) => any;
 }
 
 interface CreateFileMetadataState extends CreateResourceMetadataState {
@@ -44,11 +38,9 @@ export class CreateFileMetadata extends CreateResourceMetadata<CreateFileMetadat
 
     public onCreate = () => {
         const {generateIri, file, dragActive, ...data} = this.state;
-        this.props.onCreate(new TermItFile(data)).then(() => {
-            if (this.state.file) {
-                this.props.uploadFileContent(this.state.iri, this.state.file).then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}}));
-            }
-        });
+        if ( file ) {
+            this.props.onCreate(new TermItFile(data), file);
+        }
     };
 
     public setFile(file: File): void {
@@ -66,9 +58,4 @@ export class CreateFileMetadata extends CreateResourceMetadata<CreateFileMetadat
     }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-    return {
-        uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
-        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
-    };
-})(injectIntl(withI18n(CreateFileMetadata)));
+export default injectIntl(withI18n(CreateFileMetadata));

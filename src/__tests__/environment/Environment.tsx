@@ -57,3 +57,14 @@ export function mockWindowSelection(selection: object) {
         );
     });
 }
+
+/**
+ * Simulates a delay in Promise resolution (useful for simulating delay for Ajax invoking promises).
+ *
+ * Note that fake timers need to be used with this method. See TermMetadataCreateForm tests for usage example.
+ * @param ms Delay in milliseconds
+ * @param value Value to resolve the promise with
+ */
+export function promiseDelay(ms: number, value: any): Promise<any> {
+    return new Promise(resolve => setTimeout(resolve, ms, value));
+}
