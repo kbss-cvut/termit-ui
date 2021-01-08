@@ -17,6 +17,7 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -55,7 +56,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         label[this.props.language] = prefLabel;
         const labelExist = Object.assign({}, this.state.labelExist);
         labelExist[this.props.language] = false;
-        this.setState({ label, labelExist } );
+        this.setState({label, labelExist});
 
         const prefLabelCurrent = getLocalized(this.props.term.label, this.props.language).toLowerCase();
         if (prefLabel.toLowerCase() === prefLabelCurrent) {
@@ -137,8 +138,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const t = this.onStatusChange.bind(this);
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
-        const labelInLanguageInvalid = !isLabelValid(this.state,language) || this.state.labelExist[language];
-        const invalid = !isTermValid(this.state,this.state.labelExist);
+        const labelInLanguageInvalid = !isLabelValid(this.state, language) || this.state.labelExist[language];
+        const invalid = !isTermValid(this.state, this.state.labelExist);
         return <>
             <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
                                   onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
@@ -163,32 +164,33 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             </Col>
                         </Row>
 
-                        <hr data-content={i18n("term.metadata.definition")} className="hr-definition-text"/>
-                        <Row>
-                            <Col xs={12}>
-                                <TextArea name="edit-term-definition"
-                                          value={getLocalizedOrDefault(this.state.definition, "", language)}
-                                          onChange={this.onDefinitionChange} rows={4}
-                                          label={i18n("term.metadata.definition.text")} labelClass="definition"
-                                          help={i18n("term.definition.help")}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                             label={i18n("term.metadata.definitionSource")} labelClass="definition"
-                                             invalidMessage={(this.state.sources && (this.state.sources.length > 1))
-                                                 ? i18n("term.metadata.multipleSources.message") : undefined}
-                                             help={i18n("term.source.help")}/>
-                            </Col>
-                        </Row>
-                        <hr className="hr-definition"/>
+                        <TermDefinitionContainer>
+                            <Row>
+                                <Col xs={12}>
+                                    <TextArea name="edit-term-definition"
+                                              value={getLocalizedOrDefault(this.state.definition, "", language)}
+                                              onChange={this.onDefinitionChange} rows={4}
+                                              label={i18n("term.metadata.definition.text")} labelClass="definition"
+                                              help={i18n("term.definition.help")}/>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
+                                                 label={i18n("term.metadata.definitionSource")} labelClass="definition"
+                                                 invalidMessage={(this.state.sources && (this.state.sources.length > 1))
+                                                     ? i18n("term.metadata.multipleSources.message") : undefined}
+                                                 help={i18n("term.source.help")}/>
+                                </Col>
+                            </Row>
+                        </TermDefinitionContainer>
 
                         <Row>
                             <Col xs={12}>
                                 <TextArea name="edit-term-comment"
                                           value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
-                                          onChange={this.onScopeNoteChange} rows={4} label={i18n("term.metadata.comment")}
+                                          onChange={this.onScopeNoteChange} rows={4}
+                                          label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
                             </Col>
                         </Row>
