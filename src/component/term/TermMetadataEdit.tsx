@@ -162,27 +162,33 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                                 i18nPrefix={"term.metadata.altLabels"}/>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
-                                                onChange={this.onHiddenLabelsChange}
-                                                i18nPrefix={"term.metadata.hiddenLabels"}/>
-                            </Col>
-                        </Row>
+
+                        <hr data-content={i18n("term.metadata.definition")} className="hr-definition-text"/>
                         <Row>
                             <Col xs={12}>
                                 <TextArea name="edit-term-definition"
                                           value={getLocalizedOrDefault(this.state.definition, "", language)}
-                                          onChange={this.onDefinitionChange} rows={3}
-                                          label={i18n("term.metadata.definition")}
+                                          onChange={this.onDefinitionChange} rows={4}
+                                          label={i18n("term.metadata.definition.text")} labelClass="definition"
                                           help={i18n("term.definition.help")}/>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
+                                <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
+                                             label={i18n("term.metadata.definitionSource")} labelClass="definition"
+                                             invalidMessage={(this.state.sources && (this.state.sources.length > 1))
+                                                 ? i18n("term.metadata.multipleSources.message") : undefined}
+                                             help={i18n("term.source.help")}/>
+                            </Col>
+                        </Row>
+                        <hr className="hr-definition"/>
+
+                        <Row>
+                            <Col xs={12}>
                                 <TextArea name="edit-term-comment"
                                           value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
-                                          onChange={this.onScopeNoteChange} rows={3} label={i18n("term.metadata.comment")}
+                                          onChange={this.onScopeNoteChange} rows={4} label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
                             </Col>
                         </Row>
@@ -202,18 +208,16 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <DraftToggle id="edit-term-status"
-                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
-                                             onToggle={t}/>
+                                <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
+                                                onChange={this.onHiddenLabelsChange}
+                                                i18nPrefix={"term.metadata.hiddenLabels"}/>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                             label={i18n("term.metadata.source")}
-                                             invalidMessage={(this.state.sources && (this.state.sources.length > 1))
-                                                 ? i18n("term.metadata.multipleSources.message") : undefined}
-                                             help={i18n("term.source.help")}/>
+                                <DraftToggle id="edit-term-status"
+                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
+                                             onToggle={t}/>
                             </Col>
                         </Row>
                         <Row>
