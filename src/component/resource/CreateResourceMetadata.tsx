@@ -71,6 +71,7 @@ export class CreateResourceMetadata<P extends CreateResourceMetadataProps = Crea
                               onChange={this.onDescriptionChange}/>
                 </Col>
             </Row>
+            {this.props.children}
             <ShowAdvanceAssetFields>
                 <Row>
                     <Col xs={12}>
