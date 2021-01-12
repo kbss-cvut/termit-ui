@@ -168,16 +168,11 @@ export class Ajax {
 
     constructor() {
         this.axiosInstance.interceptors.request.use(reqConfig => {
-            reqConfig.headers[Constants.Headers.AUTHORIZATION] = Authentication.loadToken();
+            reqConfig.headers[Constants.Headers.AUTHORIZATION] = "Bearer " + Authentication.loadToken();
             reqConfig.withCredentials = true;
             return reqConfig;
         });
-        this.axiosInstance.interceptors.response.use((resp) => {
-            if (resp.headers && resp.headers[Constants.Headers.AUTHORIZATION]) {
-                Authentication.saveToken(resp.headers[Constants.Headers.AUTHORIZATION]);
-            }
-            return resp;
-        }, (error) => {
+        this.axiosInstance.interceptors.response.use(undefined, (error) => {
             if (!error.response) {
                 return Promise.reject({
                     message: error.message ? error.message : undefined,

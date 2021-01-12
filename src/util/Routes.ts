@@ -29,7 +29,6 @@ const Routes = {
     login: new Route("login", "/login"),
     profile: new Route("profile", "/profile"),
     changePassword: new Route("changePassword", "/profile/change-password"),
-    register: new Route("register", "/register"),
     search: new Route("search", "/search"),
     searchTerms: new Route("searchTerms", "/search/terms"),
     searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),
