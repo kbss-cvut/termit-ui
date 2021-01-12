@@ -7,19 +7,36 @@ import Routes from "../../util/Routes";
 import {Button, ButtonGroup, Card, CardBody, Col, Label, Row} from "reactstrap";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
-import {createResource} from "../../action/AsyncActions";
+import {
+    createFileInDocument,
+    createResource,
+    uploadFileContent
+} from "../../action/AsyncActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import CreateResourceMetadata from "./CreateResourceMetadata";
-import CreateFileMetadata from "./file/CreateFileMetadataFull";
 import IdentifierResolver from "../../util/IdentifierResolver";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import TermItFile from "../../model/File";
+import AppNotification from "../../model/AppNotification";
+import {publishNotification} from "../../action/SyncActions";
+import withLoading from "../hoc/withLoading";
+import Files from "./document/Files";
+import Utils from "../../util/Utils";
+import NotificationType from "../../model/NotificationType";
 
 interface CreateResourceProps extends HasI18n {
-    onCreate: (resource: Resource) => Promise<string>;
+    createResource: (resource: Resource) => Promise<string>;
+    createFile: (file: TermItFile, documentIri: string) => Promise<any>,
+    uploadFileContent: (fileIri: string, file: File) => Promise<any>,
+    publishNotification: (notification: AppNotification) => void
+
 }
 
 interface CreateResourceState {
     type: string
+    files: TermItFile[];
+    fileContents: File[];
+    showCreateFile: boolean
 }
 
 export class CreateResource extends React.Component<CreateResourceProps, CreateResourceState> {
@@ -27,7 +44,10 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
     constructor(props: CreateResourceProps) {
         super(props);
         this.state = {
-            type: VocabularyUtils.RESOURCE
+            type: VocabularyUtils.RESOURCE,
+            files: [],
+            fileContents: [],
+            showCreateFile: false
         };
     }
 
@@ -37,13 +57,27 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
 
     public onCreate = (resource: Resource): Promise<string> => {
         resource.addType(this.state.type);
-        return this.props.onCreate(resource).then(iri => {
-            if (iri) {
-                Routing.transitionTo(Routes.resourceSummary, IdentifierResolver.routingOptionsFromLocation(iri));
-            }
-            return iri;
-        });
+        const files = this.state.files;
+        const fileContents = this.state.fileContents;
+        return this.props.createResource(resource).then((iri) =>
+                Promise.all(
+                    Utils.sanitizeArray(files).map((f, fIndex) => {
+                        return this.props.createFile(f, resource.iri).then(() =>
+                            this.props.uploadFileContent(f.iri, fileContents[fIndex])
+                                .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
+                    }))
+                    .then(() => Routing.transitionTo(Routes.resourceSummary, IdentifierResolver.routingOptionsFromLocation(iri)))
+                    .then(() => iri)
+            );
     };
+
+    private onCreateFile = (termitFile: Resource, file: File): Promise<void> => {
+        return Promise.resolve().then(() => {
+            const files = this.state.files.concat(termitFile as TermItFile);
+            const fileContents = this.state.fileContents.concat(file);
+            this.setState({files, fileContents});
+        });
+    }
 
     public static onCancel(): void {
         Routing.transitionTo(Routes.resources);
@@ -73,31 +107,30 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
                                                 className="w-100 create-resource-type-select" outline={true}
                                                 onClick={this.onTypeSelect.bind(null, VocabularyUtils.DOCUMENT)}
                                                 active={this.state.type === VocabularyUtils.DOCUMENT}>{i18n("type.document")}</Button>
-                                        <Button id="create-resource-type-file" color="primary" size="sm"
-                                                className="w-100 create-resource-type-select" outline={true}
-                                                onClick={this.onTypeSelect.bind(null, VocabularyUtils.FILE)}
-                                                active={this.state.type === VocabularyUtils.FILE}>{i18n("type.file")}</Button>
                                     </ButtonGroup>
                                 </Col>
                             </Row>
                         </Col>
                     </Row>
-                    {this.renderMetadataForm()}
+                    <CreateResourceMetadata onCreate={this.onCreate} onCancel={CreateResource.onCancel}>
+                        {
+                            this.state.type === VocabularyUtils.DOCUMENT ?   <Files
+                                files={this.state.files}
+                                createFile={this.onCreateFile}
+                                onFileAdded={() => {;}}
+                            /> : null
+                        }
+                    </CreateResourceMetadata>
                 </CardBody>
             </Card></>;
-    }
-
-    private renderMetadataForm() {
-        if (this.state.type === VocabularyUtils.FILE) {
-            return <CreateFileMetadata onCreate={this.onCreate} onCancel={CreateResource.onCancel}/>;
-        } else {
-            return <CreateResourceMetadata onCreate={this.onCreate} onCancel={CreateResource.onCancel}/>;
-        }
     }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        onCreate: (resource: Resource) => dispatch(createResource(resource))
+        createResource: (resource: Resource) => dispatch(createResource(resource)),
+        createFile: (file: TermItFile, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
+        uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
+        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
-})(injectIntl(withI18n(CreateResource)));
+})(injectIntl(withI18n(withLoading(CreateResource))));

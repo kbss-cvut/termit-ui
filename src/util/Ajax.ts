@@ -186,7 +186,11 @@ export class Ajax {
             const response = error.response;
             if (response.status === Constants.STATUS_UNAUTHORIZED) {
                 Routing.saveOriginalTarget();
-                Routing.transitionTo(Routes.login);
+                if (process.env.REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED === true.toString()) {
+                    Routing.transitionTo(Routes.publicDashboard);
+                } else {
+                    Routing.transitionTo(Routes.login);
+                }
             }
             if (typeof response.data === "string") {
                 return Promise.reject({
@@ -197,7 +201,7 @@ export class Ajax {
                 return Promise.reject(Object.assign({}, response.data, {status: response.status}));
             }
         });
-        if (process.env.REACT_APP_MOCK_REST_API) {
+        if (process.env.REACT_APP_MOCK_REST_API === true.toString()) {
             // Mock backend REST API if the environment is configured to do so
             mockRestApi(this.axiosInstance);
         }

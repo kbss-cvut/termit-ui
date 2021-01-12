@@ -17,6 +17,10 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
+import {connect} from "react-redux";
+import TermItState from "../../model/TermItState";
+import {ConsolidatedResults} from "../../model/ConsolidatedResults";
+import ValidatedField from "./ValidatedField";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -24,6 +28,7 @@ interface TermMetadataEditProps extends HasI18n {
     cancel: () => void;
     language: string;
     selectLanguage: (lang: string) => void;
+    validationResults: ConsolidatedResults;
 }
 
 interface TermMetadataEditState extends TermData {
@@ -132,6 +137,18 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState(copy);
     };
 
+
+    private getValidationResults = (prop: string) => {
+        const results = this.props.validationResults[this.props.term.iri];
+        return (results || []).filter(r => {
+            if (prop !== VocabularyUtils.RDF_TYPE) {
+                return r.resultPath && r.resultPath.iri === prop
+            } else {
+                return !r.resultPath
+            }
+        })
+    }
+
     public render() {
         const {i18n, language} = this.props;
         const t = this.onStatusChange.bind(this);
@@ -147,57 +164,73 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                     <Form>
                         <Row>
                             <Col xs={12}>
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.SKOS_PREF_LABEL)}>
                                 <CustomInput name="edit-term-label"
                                              value={getLocalizedOrDefault(this.state.label, "", language)}
                                              onChange={this.onLabelChange}
                                              label={i18n("asset.label")} invalid={labelInLanguageInvalid}
-                                             invalidMessage={labelInLanguageInvalid ? this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined}
+                                             invalidMessage={(labelInLanguageInvalid ?
+                                                 this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) : undefined
+                                             )}
                                              help={i18n("term.label.help")}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.SKOS_ALT_LABEL)}>
+                                    <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
                                                 onChange={this.onAltLabelsChange}
                                                 i18nPrefix={"term.metadata.altLabels"}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.SKOS_HIDDEN_LABEL)}>
+                                  <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
                                                 onChange={this.onHiddenLabelsChange}
                                                 i18nPrefix={"term.metadata.hiddenLabels"}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <TextArea name="edit-term-definition"
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.DEFINITION)}>
+                                    <TextArea name="edit-term-definition"
                                           value={getLocalizedOrDefault(this.state.definition, "", language)}
                                           onChange={this.onDefinitionChange} rows={3}
                                           label={i18n("term.metadata.definition")}
                                           help={i18n("term.definition.help")}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.SKOS_SCOPE_NOTE)}>
                                 <TextArea name="edit-term-comment"
                                           value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
                                           onChange={this.onScopeNoteChange} rows={3} label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.BROADER)}>
+                                    <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
                                                     parentTerms={this.state.parentTerms}
                                                     vocabularyIri={this.props.term.vocabulary!.iri!}
                                                     onChange={this.onParentChange}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.RDF_TYPE)}>
                                 <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
                                                onChange={this.onTypesChange}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
@@ -209,11 +242,13 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
+                                <ValidatedField results={this.getValidationResults(VocabularyUtils.DC_SOURCE)}>
                                 <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
                                              label={i18n("term.metadata.source")}
                                              invalidMessage={(this.state.sources && (this.state.sources.length > 1))
                                                  ? i18n("term.metadata.multipleSources.message") : undefined}
                                              help={i18n("term.source.help")}/>
+                                </ValidatedField>
                             </Col>
                         </Row>
                         <Row>
@@ -246,4 +281,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     }
 }
 
-export default injectIntl(withI18n(TermMetadataEdit));
+export default connect((state: TermItState) => {
+    return {
+        validationResults: state.validationResults[state.vocabulary.iri]
+    };
+})(injectIntl(withI18n(TermMetadataEdit)));

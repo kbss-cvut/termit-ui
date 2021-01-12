@@ -107,6 +107,7 @@ const VocabularyUtils = {
     SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
     SH_SOURCE_SHAPE: _NS_SH + "sourceShape",
     SH_RESULT_MESSAGE: _NS_SH + "resultMessage",
+    SH_RESULT_PATH: _NS_SH + "resultPath",
     SH_FOCUS_NODE: _NS_SH + "focusNode",
     SH_VIOLATION: _NS_SH + "Violation",
     SH_WARNING: _NS_SH + "Warning",
