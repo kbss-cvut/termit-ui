@@ -7,7 +7,7 @@
 
 import ActionType from "./ActionType";
 import {ThunkDispatch} from "../util/Types";
-import Ajax, {content, param, params} from "../util/Ajax";
+import Ajax, {content, param} from "../util/Ajax";
 import Constants from "../util/Constants";
 import JsonLdUtils from "../util/JsonLdUtils";
 import User, {CONTEXT as USER_CONTEXT, UserAccountData, UserData} from "../model/User";
@@ -19,14 +19,13 @@ import {
     publishMessage
 } from "./SyncActions";
 import {ErrorData} from "../model/ErrorInfo";
-import Message, {createFormattedMessage} from "../model/Message";
+import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import {isActionRequestPending, loadConfiguration} from "./AsyncActions";
 import TermItState from "../model/TermItState";
 import VocabularyUtils from "../util/VocabularyUtils";
 import {Action} from "redux";
-import {AxiosResponse} from "axios";
-import Routing from "../util/Routing";
+import keycloak from "../util/Keycloak";
 
 const USERS_ENDPOINT = "/users";
 
@@ -53,28 +52,14 @@ export function loadUser() {
     };
 }
 
-export function login(username: string, password: string) {
+export function login() {
     const action = {
         type: ActionType.LOGIN
     };
+    // TODO The redirect URI must be resolved dynamically
+    keycloak.login({redirectUri: "https://localhost:3000/#/"});
     return (dispatch: ThunkDispatch) => {
-        dispatch(asyncActionRequest(action));
-        return Ajax.post("/j_spring_security_check", params({
-            username,
-            password
-        }).contentType(Constants.X_WWW_FORM_URLENCODED))
-            .then((resp: AxiosResponse) => {
-                const data = resp.data;
-                if (!data.loggedIn) {
-                    return Promise.reject(data);
-                } else {
-                    Routing.transitionToOriginalTarget();
-                    dispatch(asyncActionSuccess(action));
-                    return Promise.resolve();
-                }
-            })
-            .then(() => dispatch(publishMessage(createFormattedMessage("message.welcome"))))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+        dispatch(action);
     };
 }
 
@@ -86,7 +71,7 @@ export function register(user: UserAccountData) {
         dispatch(asyncActionRequest(action));
         return Ajax.post(Constants.API_PREFIX + "/users", content(user).contentType("application/json"))
             .then(() => dispatch(asyncActionSuccess(action)))
-            .then(() => dispatch(login(user.username, user.password)))
+            .then(() => dispatch(login()))
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
     };
 }

@@ -40,11 +40,6 @@ const actionNavRoutes: NavLinkRoute[] = [{
     path: Routes.login.path,
     name: "login.submit",
     icon: "fas fa-user"
-}, {
-    path: Routes.register.path,
-    name: "register.submit",
-    icon: "fas fa-user",
-    supIcon: "fas fa-plus"
 }];
 
 export class Sidebar extends DefaultSidebar {

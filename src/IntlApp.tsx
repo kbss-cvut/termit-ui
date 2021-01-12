@@ -5,11 +5,11 @@ import {Route, Router, Switch} from "react-router-dom";
 import Routing from "./util/Routing";
 import Routes from "./util/Routes";
 import Login from "./component/login/Login";
-import Register from "./component/register/Register";
 import {connect} from "react-redux";
 import TermItState from "./model/TermItState";
 import BreadcrumbRoute from "./component/breadcrumb/BreadcrumbRoute";
 import Mask from "./component/misc/Mask";
+import {useKeycloak} from "@react-keycloak/web";
 
 const PublicMainView = React.lazy(() => import("./component/public/MainView"));
 const MainView = React.lazy(() => import("./component/MainView"));
@@ -20,12 +20,18 @@ interface IntlWrapperProps {
 
 const IntlWrapper: React.FC<IntlWrapperProps> = (props) => {
     const {intl} = props;
+    const {initialized} = useKeycloak();
+    if (!initialized) {
+        return <IntlProvider {...intl}>
+            <Mask/>
+        </IntlProvider>;
+    }
+
     return <IntlProvider {...intl}>
         <Router history={Routing.history}>
             <React.Suspense fallback={<Mask/>}>
                 <Switch>
                     <Route path={Routes.login.path} component={Login}/>
-                    <Route path={Routes.register.path} component={Register}/>
                     <BreadcrumbRoute path={Routes.publicDashboard.path} title={intl.messages["main.nav.dashboard"]}
                                      component={PublicMainView}/>
                     <BreadcrumbRoute title={intl.messages["main.nav.dashboard"]} component={MainView}/>
