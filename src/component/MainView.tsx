@@ -29,6 +29,9 @@ import AsyncActionStatus from "../action/AsyncActionStatus";
 import Mask from "./misc/Mask";
 import "./MainView.scss";
 import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
+import {withKeycloak} from "@react-keycloak/web";
+import {KeycloakInstance} from "keycloak-js";
+import Routing from "../util/Routing";
 
 const AdministrationRoute = React.lazy(() => import("./administration/AdministrationRoute"));
 const ResourceManagementRoute = React.lazy(() => import("./resource/ResourceManagementRoute"));
@@ -47,6 +50,8 @@ interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     sidebarExpanded: boolean;
     desktopView: boolean;
     changeView: () => void;
+    keycloakInitialized: boolean;
+    keycloak: KeycloakInstance;
 }
 
 interface MainViewState {
@@ -65,16 +70,20 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     public componentDidMount(): void {
-        if (this.props.user === EMPTY_USER) {
-            this.props.loadUser().then((res) => {
-                if (res.status !== AsyncActionStatus.FAILURE) {
-                    this.loadWorkspace();
-                }
-            });
+        const {keycloak, keycloakInitialized} = this.props;
+        if (keycloakInitialized && keycloak.authenticated) {
+            if (this.props.user === EMPTY_USER) {
+                this.props.loadUser().then((res) => {
+                    if (res.status !== AsyncActionStatus.FAILURE) {
+                        this.loadWorkspace();
+                    }
+                });
+            } else {
+                this.loadWorkspace();
+            }
         } else {
-            this.loadWorkspace();
+            Routing.transitionTo(Routes.login);
         }
-
         window.addEventListener("resize", this.handleResize, false);
     }
 
@@ -186,4 +195,4 @@ export default connect((state: TermItState) => {
         selectWorkspace: (iri: IRI) => dispatch(selectWorkspace(iri)),
         loadCurrentWorkspace: () => dispatch(loadCurrentWorkspace())
     };
-})(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));
+})(injectIntl(withI18n(withLoading(withRouter(withKeycloak(MainView)), {containerClass: "app-container"}))));

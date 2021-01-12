@@ -1,8 +1,7 @@
 import Authentication from "../util/Authentication";
 import {userLogout} from "./SyncActions";
-import Routes from "../util/Routes";
-import Routing from "../util/Routing";
 import {ThunkDispatch} from "../util/Types";
+import keycloak from "../util/Keycloak";
 
 /*
  * Complex actions are basically just nice names for actions which involve both synchronous and asynchronous actions.
@@ -11,8 +10,9 @@ import {ThunkDispatch} from "../util/Types";
  */
 
 export function logout() {
+    // TODO The redirect URI must be resolved dynamically
+    keycloak.logout({redirectUri: "https://localhost:3000/#/public"});
     Authentication.clearToken();
-    Routing.transitionTo(Routes.login);
     return (dispatch: ThunkDispatch) => {
         dispatch(userLogout());
     };
