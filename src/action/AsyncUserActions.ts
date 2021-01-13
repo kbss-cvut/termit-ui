@@ -26,6 +26,8 @@ import TermItState from "../model/TermItState";
 import VocabularyUtils from "../util/VocabularyUtils";
 import {Action} from "redux";
 import keycloak from "../util/Keycloak";
+import Routing, {Routing as RoutingCls} from "../util/Routing";
+import Routes from "../util/Routes";
 
 const USERS_ENDPOINT = "/users";
 
@@ -56,8 +58,8 @@ export function login() {
     const action = {
         type: ActionType.LOGIN
     };
-    // TODO The redirect URI must be resolved dynamically
-    keycloak.login({redirectUri: "https://localhost:3000/#/"});
+    const redirectUri = RoutingCls.buildFullUrl(Routing.originalRoutingTarget ? Routing.originalRoutingTarget : Routes.dashboard);
+    keycloak.login({redirectUri});
     return (dispatch: ThunkDispatch) => {
         dispatch(action);
     };
