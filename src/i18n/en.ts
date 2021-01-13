@@ -31,6 +31,8 @@ const en = {
 
         'news-viewer.title': "News",
 
+        "auth.redirect-message": "Redirecting you to the authorization service.",
+
         'login.title': 'Log in',
         'login.subtitle': 'Please login to continue',
         'login.username': 'Username',

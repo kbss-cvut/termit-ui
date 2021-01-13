@@ -31,6 +31,8 @@ const cs = {
 
         "news-viewer.title": "Novinky",
 
+        "auth.redirect-message": "Za moment budete přesměrováni na autorizační službu.",
+
         "login.title": "Přihlášení",
         "login.subtitle": "Pro pokračování se prosím přihlašte",
         "login.username": "Uživatelské jméno",
