@@ -82,6 +82,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                 this.loadWorkspace();
             }
         } else {
+            Routing.saveOriginalTarget();
             Routing.transitionTo(Routes.login);
         }
         window.addEventListener("resize", this.handleResize, false);
@@ -102,7 +103,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     private handleResize = (): void => {
-
         if (Utils.isDesktopView() !== this.props.desktopView) {
             this.props.changeView();
         }
