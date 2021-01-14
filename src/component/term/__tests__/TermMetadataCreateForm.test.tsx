@@ -52,7 +52,7 @@ describe("TermMetadataCreateForm", () => {
         expect(Ajax.post).toHaveBeenCalled();
         const config = (Ajax.post as jest.Mock).mock.calls[0][1];
         expect(config.getParams().name).toEqual(getLocalized(termData.label));
-        expect(config.getParams().vocabularyIri).toEqual(VocabularyUtils.create(vocabularyIri));
+        expect(config.getParams().contextIri).toEqual(VocabularyUtils.create(vocabularyIri));
         expect(config.getParams().assetType).toEqual("TERM");
     });
 
