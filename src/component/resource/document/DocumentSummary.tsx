@@ -25,10 +25,10 @@ interface DocumentSummaryProps extends ResourceSummaryProps {
 export class DocumentSummary extends ResourceSummary<DocumentSummaryProps> {
 
     protected canRemove(): false | boolean {
-        return !this.props.resource.vocabulary && Utils.sanitizeArray(this.props.resource.files).length === 0;
+        return Utils.sanitizeArray(this.props.resource.files).length === 0;
     }
 
-    public onFileAdded = () => {
+    public reload = () => {
         this.props.loadResource(VocabularyUtils.create(this.props.resource.iri));
     };
 
@@ -65,7 +65,9 @@ export class DocumentSummary extends ResourceSummary<DocumentSummaryProps> {
             <ResourceMetadata resource={this.props.resource} additionalColumns={this.renderVocabulary()}/>
             <Card>
                 <CardBody>
-                    <DocumentFiles document={this.props.resource} onFileAdded={this.onFileAdded}/>
+                    <DocumentFiles document={this.props.resource}
+                                   onFileAdded={this.reload}
+                                   onFileRemoved={this.reload}/>
                 </CardBody>
             </Card>
         </div>;

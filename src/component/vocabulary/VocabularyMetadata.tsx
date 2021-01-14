@@ -19,7 +19,7 @@ import Utils from "../../util/Utils";
 
 interface VocabularyMetadataProps extends HasI18n {
     vocabulary: Vocabulary;
-    onFileAdded: () => void;
+    onChange: () => void;
     resetSelectedTerm: () => void;
     location: Location;
     match: Match<any>;
@@ -85,7 +85,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
 
         if (vocabulary.document) {
             tabs["vocabulary.detail.document"] =
-                <DocumentSummaryInTab resource={vocabulary.document} onFileAdded={this.props.onFileAdded}/>;
+                <DocumentSummaryInTab resource={vocabulary.document} onChange={this.props.onChange}/>;
         }
         tabs["properties.edit.title"] = <UnmappedProperties properties={vocabulary.unmappedProperties}
                                                             showInfoOnEmpty={true}/>;

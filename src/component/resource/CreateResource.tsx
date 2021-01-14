@@ -23,16 +23,18 @@ import withLoading from "../hoc/withLoading";
 import Files from "./document/Files";
 import Utils from "../../util/Utils";
 import NotificationType from "../../model/NotificationType";
+import AddFile from "./document/AddFile";
+import RemoveFile from "./document/RemoveFile";
 
 interface CreateResourceProps extends HasI18n {
     createResource: (resource: Resource) => Promise<string>;
     createFile: (file: TermItFile, documentIri: string) => Promise<any>,
     uploadFileContent: (fileIri: string, file: File) => Promise<any>,
     publishNotification: (notification: AppNotification) => void
-
 }
 
 interface CreateResourceState {
+    iri: string
     type: string
     files: TermItFile[];
     fileContents: File[];
@@ -44,7 +46,8 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
     constructor(props: CreateResourceProps) {
         super(props);
         this.state = {
-            type: VocabularyUtils.RESOURCE,
+            iri: '',
+            type: VocabularyUtils.DOCUMENT,
             files: [],
             fileContents: [],
             showCreateFile: false
@@ -59,16 +62,16 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
         resource.addType(this.state.type);
         const files = this.state.files;
         const fileContents = this.state.fileContents;
-        return this.props.createResource(resource).then((iri) =>
-                Promise.all(
-                    Utils.sanitizeArray(files).map((f, fIndex) => {
-                        return this.props.createFile(f, resource.iri).then(() =>
-                            this.props.uploadFileContent(f.iri, fileContents[fIndex])
-                                .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
-                    }))
-                    .then(() => Routing.transitionTo(Routes.resourceSummary, IdentifierResolver.routingOptionsFromLocation(iri)))
-                    .then(() => iri)
-            );
+        return this.props.createResource(resource).then((iri) => {
+            return Promise.all(Utils.sanitizeArray(files).map((f, fIndex) =>
+                this.props.createFile(f, resource.iri)
+                    .then(() => this.props.uploadFileContent(f.iri, fileContents[fIndex])
+                    .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})))
+                )
+            )
+                .then(() => Routing.transitionTo(Routes.resourceSummary, IdentifierResolver.routingOptionsFromLocation(iri)))
+                .then(() => iri)
+        });
     };
 
     private onCreateFile = (termitFile: Resource, file: File): Promise<void> => {
@@ -76,6 +79,23 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
             const files = this.state.files.concat(termitFile as TermItFile);
             const fileContents = this.state.fileContents.concat(file);
             this.setState({files, fileContents});
+        });
+    }
+
+    private onIdentifierChanged = (iri: string) => {
+        this.setState({iri});
+    }
+
+    private onRemoveFile = (termitFile: Resource): Promise<void> => {
+        return Promise.resolve().then(() => {
+            const index = this.state.files.indexOf(termitFile as TermItFile);
+            if (index > -1) {
+                const files = this.state.files;
+                files.splice(index, 1);
+                const fileContents = this.state.fileContents;
+                fileContents.splice(index, 1);
+                this.setState({files, fileContents});
+            }
         });
     }
 
@@ -112,13 +132,18 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
                             </Row>
                         </Col>
                     </Row>
-                    <CreateResourceMetadata onCreate={this.onCreate} onCancel={CreateResource.onCancel}>
+                    <CreateResourceMetadata onCreate={this.onCreate} onCancel={CreateResource.onCancel}
+                                            onIdentifierChanged={this.onIdentifierChanged}>
                         {
-                            this.state.type === VocabularyUtils.DOCUMENT ?   <Files
-                                files={this.state.files}
-                                createFile={this.onCreateFile}
-                                onFileAdded={() => {;}}
-                            /> : null
+                            this.state.type === VocabularyUtils.DOCUMENT ?
+                                <Files files={this.state.files}
+                                       actions={[<AddFile key="add-file" performAction={this.onCreateFile}/>]}
+                                       itemActions={(file: TermItFile) => [
+                                           <RemoveFile key="remove-file"
+                                                       performAction={this.onRemoveFile.bind(this, file)}
+                                                       withConfirmation={false}/>]
+                                       }
+                                /> : null
                         }
                     </CreateResourceMetadata>
                 </CardBody>

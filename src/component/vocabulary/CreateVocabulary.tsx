@@ -32,6 +32,8 @@ import NotificationType from "../../model/NotificationType";
 import AppNotification from "../../model/AppNotification";
 import {publishNotification} from "../../action/SyncActions";
 import IdentifierResolver from "../../util/IdentifierResolver";
+import AddFile from "../resource/document/AddFile";
+import RemoveFile from "../resource/document/RemoveFile";
 
 interface CreateVocabularyProps extends HasI18n {
     createFile: (file: TermItFile, documentIri: string) => Promise<any>,
@@ -87,14 +89,13 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         document.addType(VocabularyUtils.DOCUMENT);
         vocabulary.document = document;
         this.props.createVocabulary(vocabulary)
-            .then((location) =>
-                Promise.all(
-                    Utils.sanitizeArray(files).map((f, fIndex) => {
-                        return this.props.createFile(f, document.iri).then(() =>
-                            this.props.uploadFileContent(f.iri, fileContents[fIndex])
-                                .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})));
-                    }))
-                    .then(() => Routing.transitionTo(Routes.vocabularySummary, IdentifierResolver.routingOptionsFromLocation(location)))
+            .then((location) => {
+                    return Promise.all(Utils.sanitizeArray(files).map((f, fIndex) =>
+                        this.props.createFile(f, document.iri)
+                            .then(() => this.props.uploadFileContent(f.iri, fileContents[fIndex]))
+                            .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}}))
+                    )).then(() => Routing.transitionTo(Routes.vocabularySummary, IdentifierResolver.routingOptionsFromLocation(location)))
+                }
             );
     };
 
@@ -115,6 +116,19 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
             const files = this.state.files.concat(termitFile as TermItFile);
             const fileContents = this.state.fileContents.concat(file);
             this.setState({files, fileContents});
+        });
+    }
+
+    private onRemoveFile = (termitFile: Resource): Promise<void> => {
+        return Promise.resolve().then(() => {
+            const index = this.state.files.indexOf(termitFile as TermItFile);
+            if (index > -1) {
+                const files = this.state.files;
+                files.splice(index, 1);
+                const fileContents = this.state.fileContents;
+                fileContents.splice(index, 1);
+                this.setState({files, fileContents});
+            }
         });
     }
 
@@ -143,27 +157,13 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                                               onChange={this.onCommentChange}/>
                                 </Col>
                             </Row>
-
-                            <Files
-                                files={this.state.files}
-                                createFile={this.onCreateFile}
-                                onFileAdded={() => {;}}
-                            />
-                            <ShowAdvanceAssetFields>
-                                <Row>
-                                    <Col xs={12}>
-                                        <CustomInput name="create-vocabulary-iri" label={i18n("asset.iri")}
-                                                     value={this.state.iri}
-                                                     onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
-                                    </Col>
-                                </Row>
-                            </ShowAdvanceAssetFields>
-
-                            <Files
-                                files={this.state.files}
-                                createFile={this.onCreateFile}
-                                onFileAdded={() => {;}}
-                                showContent={false}
+                            <Files files={this.state.files}
+                                   actions={[<AddFile key="add-file" performAction={this.onCreateFile}/>]}
+                                   itemActions={(file: TermItFile) => [
+                                       <RemoveFile key="remove-file" performAction={this.onRemoveFile.bind(this, file)}
+                                                   withConfirmation={false}/>
+                                   ]
+                                   }
                             />
                             <ShowAdvanceAssetFields>
                                 <Row>

@@ -44,36 +44,24 @@ describe("DocumentSummary", () => {
         });
     });
 
-    it("does not render remove button for Document related to Vocabulary", () => {
-        doc.vocabulary = {iri: Generator.generateUri()};
-
-        const div = document.createElement("div");
-        document.body.appendChild(div);
-
-        const wrapper = mountWithIntl(<MemoryRouter>
-            <DocumentSummary resource={doc} {...resourceHandlers} {...intlFunctions()}/>
-        </MemoryRouter>, {attachTo: div});
-        expect(wrapper.exists("button#resource-detail-remove")).toBeFalsy();
-    });
-
     it("does not render remove button for Document containing files", () => {
         doc.files = [new File({iri: Generator.generateUri(), label: "test.html"})];
-        const wrapper = mountWithIntl(<MemoryRouter><DocumentSummary
-            resource={doc} {...resourceHandlers} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = shallow<DocumentSummary>(<DocumentSummary
+            resource={doc} {...resourceHandlers} {...intlFunctions()}/>);
         expect(wrapper.exists("button#resource-detail-remove")).toBeFalsy();
     });
-
-    it("renders vocabulary link when Document has related Vocabulary", () => {
-        doc.vocabulary = {iri: Generator.generateUri()};
-        const wrapper = mountWithIntl(<MemoryRouter><DocumentSummary
-            resource={doc} {...resourceHandlers} {...intlFunctions()}/></MemoryRouter>);
-        expect(wrapper.exists(AssetIriLink)).toBeTruthy();
-    });
+    //
+    // it("renders vocabulary link when Document has related Vocabulary", () => {
+    //     doc.vocabulary = {iri: Generator.generateUri()};
+    //     const wrapper = mountWithIntl(<MemoryRouter><DocumentSummary
+    //         resource={doc} {...resourceHandlers} {...intlFunctions()}/></MemoryRouter>);
+    //     expect(wrapper.exists(AssetIriLink)).toBeTruthy();
+    // });
 
     it("reloads document when file was added into it", () => {
         const wrapper = shallow<DocumentSummary>(<DocumentSummary
             resource={doc} {...resourceHandlers} {...intlFunctions()}/>);
-        wrapper.instance().onFileAdded();
+        wrapper.instance().reload();
         expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(doc.iri));
     });
 });
