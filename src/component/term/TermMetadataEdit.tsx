@@ -17,6 +17,7 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {ConsolidatedResults} from "../../model/ConsolidatedResults";
@@ -60,7 +61,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         label[this.props.language] = prefLabel;
         const labelExist = Object.assign({}, this.state.labelExist);
         labelExist[this.props.language] = false;
-        this.setState({ label, labelExist } );
+        this.setState({label, labelExist});
 
         const prefLabelCurrent = getLocalized(this.props.term.label, this.props.language).toLowerCase();
         if (prefLabel.toLowerCase() === prefLabelCurrent) {
@@ -154,8 +155,8 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const t = this.onStatusChange.bind(this);
         const sources = this.state.sources;
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
-        const labelInLanguageInvalid = !isLabelValid(this.state,language) || this.state.labelExist[language];
-        const invalid = !isTermValid(this.state,this.state.labelExist);
+        const labelInLanguageInvalid = !isLabelValid(this.state, language) || this.state.labelExist[language];
+        const invalid = !isTermValid(this.state, this.state.labelExist);
         return <>
             <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
                                   onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
@@ -185,32 +186,39 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                 </ValidatedField>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <ValidatedField results={this.getValidationResults(VocabularyUtils.SKOS_HIDDEN_LABEL)}>
-                                  <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
-                                                onChange={this.onHiddenLabelsChange}
-                                                i18nPrefix={"term.metadata.hiddenLabels"}/>
-                                </ValidatedField>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <ValidatedField results={this.getValidationResults(VocabularyUtils.DEFINITION)}>
+
+                        <TermDefinitionContainer>
+                            <Row>
+                                <Col xs={12}>
+                                    <ValidatedField results={this.getValidationResults(VocabularyUtils.DEFINITION)}>
                                     <TextArea name="edit-term-definition"
-                                          value={getLocalizedOrDefault(this.state.definition, "", language)}
-                                          onChange={this.onDefinitionChange} rows={3}
-                                          label={i18n("term.metadata.definition")}
-                                          help={i18n("term.definition.help")}/>
-                                </ValidatedField>
-                            </Col>
-                        </Row>
+                                              value={getLocalizedOrDefault(this.state.definition, "", language)}
+                                              onChange={this.onDefinitionChange} rows={4}
+                                              label={i18n("term.metadata.definition.text")} labelClass="definition"
+                                              help={i18n("term.definition.help")}/>
+                                    </ValidatedField>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <ValidatedField results={this.getValidationResults(VocabularyUtils.DC_SOURCE)}>
+                                    <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
+                                                 label={i18n("term.metadata.definitionSource")} labelClass="definition"
+                                                 invalidMessage={(this.state.sources && (this.state.sources.length > 1))
+                                                     ? i18n("term.metadata.multipleSources.message") : undefined}
+                                                 help={i18n("term.source.help")}/>
+                                    </ValidatedField>
+                                </Col>
+                            </Row>
+                        </TermDefinitionContainer>
+
                         <Row>
                             <Col xs={12}>
                                 <ValidatedField results={this.getValidationResults(VocabularyUtils.SKOS_SCOPE_NOTE)}>
                                 <TextArea name="edit-term-comment"
                                           value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
-                                          onChange={this.onScopeNoteChange} rows={3} label={i18n("term.metadata.comment")}
+                                          onChange={this.onScopeNoteChange} rows={4}
+                                          label={i18n("term.metadata.comment")}
                                           help={i18n("term.comment.help")}/>
                                 </ValidatedField>
                             </Col>
@@ -235,20 +243,16 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <DraftToggle id="edit-term-status"
-                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
-                                             onToggle={t}/>
+                                <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
+                                                onChange={this.onHiddenLabelsChange}
+                                                i18nPrefix={"term.metadata.hiddenLabels"}/>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                <ValidatedField results={this.getValidationResults(VocabularyUtils.DC_SOURCE)}>
-                                <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                             label={i18n("term.metadata.source")}
-                                             invalidMessage={(this.state.sources && (this.state.sources.length > 1))
-                                                 ? i18n("term.metadata.multipleSources.message") : undefined}
-                                             help={i18n("term.source.help")}/>
-                                </ValidatedField>
+                                <DraftToggle id="edit-term-status"
+                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
+                                             onToggle={t}/>
                             </Col>
                         </Row>
                         <Row>

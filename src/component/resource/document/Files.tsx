@@ -9,9 +9,10 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import Resource from "../../../model/Resource";
 import CreateFileMetadataLight from "../file/CreateFileMetadata";
 
+
 interface FilesProps extends HasI18n {
     files: TermItFile[];
-    onFileAdded: () => void;
+    onFileAdded?: () => void;
     createFile: (termitFile: TermItFile, file: File) => Promise<void>;
 }
 
@@ -34,11 +35,13 @@ export class Files extends React.Component<FilesProps, FilesState> {
         this.setState({createFileDialogOpen: false});
     };
 
-    private createFile = (termitFile: Resource, file: File) : void => {
+    private createFile = (termitFile: Resource, file: File): void => {
         termitFile.addType(VocabularyUtils.FILE);
         this.props.createFile(termitFile as TermItFile, file).then(() => {
             this.closeCreateFileDialog();
-            this.props.onFileAdded();
+            if (this.props.onFileAdded) {
+                this.props.onFileAdded();
+            }
         });
     };
 

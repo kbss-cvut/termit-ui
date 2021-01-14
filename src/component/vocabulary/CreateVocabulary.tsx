@@ -138,17 +138,13 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                             <Row>
                                 <Col xs={12}>
                                     <TextArea name="create-vocabulary-comment" label={i18n("vocabulary.comment")}
-                                              type="textarea" rows={3} value={this.state.comment}
+                                              type="textarea" rows={4} value={this.state.comment}
                                               help={i18n("optional")}
                                               onChange={this.onCommentChange}/>
                                 </Col>
                             </Row>
 
-                            <Files
-                                files={this.state.files}
-                                createFile={this.onCreateFile}
-                                onFileAdded={() => {;}}
-                            />
+                            <Files files={this.state.files} createFile={this.onCreateFile}/>
                             <ShowAdvanceAssetFields>
                                 <Row>
                                     <Col xs={12}>

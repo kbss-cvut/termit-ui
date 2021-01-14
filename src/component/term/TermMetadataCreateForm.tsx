@@ -14,6 +14,7 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import {checkLabelUniqueness} from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import {loadIdentifier} from "../asset/AbstractCreateAsset";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
@@ -132,12 +133,13 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         const label = getLocalizedOrDefault(termData.label, "", language);
         const labelInLanguageExists = this.props.labelExist[language];
+
         return <Form>
             <Row>
                 <Col xs={12}>
                     <CustomInput name="create-term-label" label={i18n("asset.label")}
                                  help={this.props.i18n("term.label.help")}
-                                 onChange={this.onLabelChange}
+                                 onChange={this.onLabelChange} autoFocus={true}
                                  invalid={labelInLanguageExists}
                                  invalidMessage={labelInLanguageExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
                                  value={label}/>
@@ -151,11 +153,12 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 </Col>
             </Row>
 
+            <TermDefinitionContainer>
             <Row>
                 <Col xs={12}>
                     {this.props.definitionSelector ?
                         <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
-                            <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>
+                            <Label className="attribute-label">{i18n("term.metadata.definition.text")}</Label>
                             <Button id="create-term-select-definition"
                                     color="muted"
                                     onClick={this.props.definitionSelector}
@@ -164,18 +167,29 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                 {i18n("annotator.createTerm.selectDefinition")}
                             </Button>
                         </FormGroup>
-                        : <Label className="attribute-label">{i18n("term.metadata.definition")}</Label>}
+                        : <Label className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>}
                     <TextArea name="create-term-definition"
-                              type="textarea" rows={3} value={getLocalizedOrDefault(termData.definition, "", language)}
-                              help={this.props.i18n("term.definition.help")}
+                              type="textarea" rows={4} value={getLocalizedOrDefault(termData.definition, "", language)}
+                              help={i18n("term.definition.help")}
                               onChange={this.onDefinitionChange}/>
                 </Col>
             </Row>
             <Row>
                 <Col xs={12}>
+                    <CustomInput name="edit-term-source"
+                                 value={source} labelClass="definition"
+                                 label={i18n("term.metadata.definitionSource")}
+                                 onChange={this.onSourceChange}
+                                 help={i18n("term.source.help")}/>
+                </Col>
+            </Row>
+            </TermDefinitionContainer>
+
+            <Row>
+                <Col xs={12}>
                     <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
                     <TextArea name="create-term-comment"
-                              type="textarea" rows={3} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
+                              type="textarea" rows={4} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
                               help={this.props.i18n("term.comment.help")}
                               onChange={this.onCommentChange}/>
                 </Col>
@@ -193,16 +207,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 <Row>
                     <Col xs={12}>
                         <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}/>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col xs={12}>
-                        <CustomInput name="edit-term-source"
-                                     value={source}
-                                     onChange={this.onSourceChange}
-                                     label={i18n("term.metadata.source")}
-                                     help={i18n("term.source.help")}/>
                     </Col>
                 </Row>
 

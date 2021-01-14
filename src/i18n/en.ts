@@ -264,7 +264,8 @@ const en = {
         "term.source.help": "(Optional) reference to the origin of the term definition. It might refer to a particular " +
             "law section, or paragraph. Whenever the definition is marked in the document text, the source is filled automatically.",
         "term.metadata.definition": "Definition",
-        "term.metadata.definitionSource": "Source of definition",
+        "term.metadata.definition.text": "Text",
+        "term.metadata.definitionSource": "Source",
         "term.metadata.definitionSource.goto": "Go to source",
         "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding file",
         'term.metadata.comment': 'Scope note',
