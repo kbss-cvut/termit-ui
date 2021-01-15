@@ -78,7 +78,7 @@ export class VocabularyEdit extends React.Component<VocabularyEditProps, Vocabul
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <TextArea name="edit-vocabulary-comment" label={i18n("vocabulary.comment")} rows={3}
+                            <TextArea name="edit-vocabulary-comment" label={i18n("vocabulary.comment")} rows={4}
                                       value={this.state.comment} onChange={this.onInputChange}/>
                         </Col>
                     </Row>

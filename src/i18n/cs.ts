@@ -272,7 +272,8 @@ const cs = {
             "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
             "je zdroj vyplňován automaticky.",
         "term.metadata.definition": "Definice",
-        "term.metadata.definitionSource": "Zdroj definice",
+        "term.metadata.definition.text": "Text",
+        "term.metadata.definitionSource": "Zdroj",
         "term.metadata.definitionSource.goto": "Zobrazit zdroj",
         "term.metadata.definitionSource.goto.tooltip": "Zobrazit zdroj definice přímo v příslušném souboru",
         'term.metadata.comment': 'Doplňující poznámka',
@@ -280,7 +281,7 @@ const cs = {
         'term.metadata.subTerms': 'Podřazené pojmy',
         'term.metadata.types': 'Typ pojmu',
         'term.metadata.status': 'Stav pojmu',
-        'term.metadata.source': 'Zdroj pojmu',
+        'term.metadata.source': 'Zdroj',
         'term.metadata.altLabels.label': 'Synonyma',
         'term.metadata.altLabels.placeholder': 'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
         'term.metadata.altLabels.placeholder.text': 'Přidat',

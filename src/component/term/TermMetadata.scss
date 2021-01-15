@@ -1,3 +1,5 @@
+@import "../../styles/custom/colors";
+
 ul.term-items {
   padding-left: 1.2rem;
 }
@@ -29,4 +31,39 @@ ul.term-items button {
 
 #create-term-toggle-advanced {
   margin-left: -0.75rem;
+}
+
+hr.hr-definition-text {
+  position: relative;
+  border: none;
+  height: 2px;
+  background: $gray-500;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+hr.hr-definition-text::before {
+  content: attr(data-content);
+  display: inline-block;
+  background: #fff;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+  border-radius: 30rem;
+  padding: 0.2rem 1.5rem 0.2rem 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(0%, -50%);
+}
+
+hr.hr-definition {
+  position: relative;
+  border: none;
+  height: 2px;
+  background: $gray-500;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+label.definition {
+  font-size: 90%;
 }
