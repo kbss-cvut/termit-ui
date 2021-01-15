@@ -104,7 +104,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             const vocabularyIri = VocabularyUtils.create(this.props.vocabularyIri);
             loadIdentifier({
                 name: label,
-                vocabularyIri,
+                contextIri: vocabularyIri,
                 assetType: "TERM"
             }).then(response => this.setIdentifier(response.data));
         }

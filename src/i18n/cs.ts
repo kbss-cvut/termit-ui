@@ -225,9 +225,9 @@ const cs = {
         "resource.metadata.file.content.view.tooltip": "Zobrazit obsah souboru a anotovat ho",
         "resource.metadata.file.content.download": "Stáhnout",
         "resource.metadata.document.vocabulary": "Dokumentový slovník",
-        "resource.metadata.document.files.add": "Přidat soubor",
-        "resource.metadata.document.files.create.tooltip": "Přidat nový soubor do tohoto dokumentu",
-        "resource.metadata.document.files.create.dialog.title": "Nový soubor",
+        "resource.metadata.document.files.actions.add": "Přidat soubor",
+        "resource.metadata.document.files.actions.add.tooltip": "Přidat nový soubor do tohoto dokumentu",
+        "resource.metadata.document.files.actions.add.dialog.title": "Nový soubor",
         "resource.metadata.document.files.empty": "Žádné soubory nenalezeny. Vytvořte nějaký...",
         "resource.file.vocabulary.create": "Přidat soubor",
 
