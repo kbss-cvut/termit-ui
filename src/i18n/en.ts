@@ -245,7 +245,7 @@ const en = {
             "concept meaning. If a concept is defined in a document, its definition is precise quotation of the respective part " +
             "of the document. Definition is used for full specification of concept meaning (e.g. 'Man' can be defined as 'a male person'). " +
             "Definition is always unique and cannot be combined from multiple sources.",
-        "term.comment.help": "(Optional) non-definitorial text restricting the meaning of the term. It can help to make the meaning of a term more clear.",
+        "term.comment.help": "(Optional) non-definitorial text clarifying the meaning of the term.",
         "term.parent.help": "(Optional) broader term. It is used to model relationships to broader terms " +
             "(e.g. Church -> Building), types of instances (e.g. St. Paul's -> Cathedral), or parthood relationships (e.g. Handle -> Door).",
         "term.types.help": "(Optional) character of the term itself. Terms can be " +

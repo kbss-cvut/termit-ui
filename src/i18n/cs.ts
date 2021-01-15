@@ -248,7 +248,7 @@ const cs = {
             "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
             "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
             "z více zdrojů.",
-        "term.comment.help": "(Nepovinný) nedefiniční text omezující význam konceptu. Může sloužit k upřesnění významu pojmu.",
+        "term.comment.help": "(Nepovinný) nedefiniční text upřesňující význam pojmu.",
         "term.parent.help": "(Nepovinný) pojem s širším významem. Slouží k zachycení vazby na obecnější pojem " +
             "(např. 'Kostel' -> 'Budova'), k přiřazení pojmu jeho typu (např. 'Kostel sv. Ludmily na Chvalech' -> 'Kostel'), " +
             "nebo k vyjádření části celku (např. 'Klika' -> 'Dveře')",
