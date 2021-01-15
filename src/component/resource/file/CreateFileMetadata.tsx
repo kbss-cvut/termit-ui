@@ -7,7 +7,6 @@ import TermItFile from "../../../model/File";
 import Resource from "../../../model/Resource";
 import CustomInput from "../../misc/CustomInput";
 import ShowAdvanceAssetFields from "../../asset/ShowAdvancedAssetFields";
-import {AbstractCreateAssetState} from "../../asset/AbstractCreateAsset";
 import {AssetData} from "../../../model/Asset";
 
 interface CreateFileMetadataProps extends HasI18n {
@@ -15,10 +14,9 @@ interface CreateFileMetadataProps extends HasI18n {
     onCancel: () => void;
 }
 
-interface CreateFileMetadataState extends AbstractCreateAssetState, AssetData {
+interface CreateFileMetadataState extends AssetData {
     iri: string;
     label: string;
-    generateIri: boolean;
     file?: File;
     dragActive: boolean;
 }
@@ -30,7 +28,6 @@ export class CreateFileMetadata extends React.Component<CreateFileMetadataProps,
         this.state = {
             iri: "",
             label: "",
-            generateIri: true,
             file: undefined,
             dragActive: false
         }
@@ -41,12 +38,8 @@ export class CreateFileMetadata extends React.Component<CreateFileMetadataProps,
         this.setState({label});
     };
 
-    protected onIriChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.setState({iri: (e.currentTarget.value as string), generateIri: false});
-    };
-
     public onCreate = () => {
-        const {generateIri, file, dragActive, ...data} = this.state;
+        const {file, dragActive, ...data} = this.state;
         if ( file ) {
             this.props.onCreate(new TermItFile(data), file);
         }
@@ -73,7 +66,7 @@ export class CreateFileMetadata extends React.Component<CreateFileMetadataProps,
                     <Col xs={12}>
                         <CustomInput name="create-resource-iri" label={i18n("asset.iri")}
                                      value={this.state.iri}
-                                     onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
+                                     help={i18n("asset.create.iri.help")}/>
                     </Col>
                 </Row>
             </ShowAdvanceAssetFields>

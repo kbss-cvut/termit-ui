@@ -228,9 +228,6 @@ const cs = {
         "resource.metadata.document.files.actions.add": "Přidat soubor",
         "resource.metadata.document.files.actions.add.tooltip": "Přidat nový soubor do tohoto dokumentu",
         "resource.metadata.document.files.actions.add.dialog.title": "Nový soubor",
-        "resource.metadata.document.files.actions.remove": "Smazat soubor",
-        "resource.metadata.document.files.actions.remove.tooltip": "Smazat soubor",
-        "resource.metadata.document.files.actions.remove.dialog.title": "Opravdu smazat soubor?",
         "resource.metadata.document.files.empty": "Žádné soubory nenalezeny. Vytvořte nějaký...",
         "resource.file.vocabulary.create": "Přidat soubor",
 

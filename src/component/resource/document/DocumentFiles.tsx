@@ -49,6 +49,7 @@ export class DocumentFiles extends React.Component<DocumentFilesProps> {
                       itemActions={(file: TermItFile) => [
                           <FileContentLink key="show-content-file" file={file}/>,
                           <RemoveFile key="remove-file"
+                                      file={file}
                                       performAction={this.removeFile.bind(this, file)}
                                       withConfirmation={true}/>
                       ]}

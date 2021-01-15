@@ -34,7 +34,6 @@ interface CreateResourceProps extends HasI18n {
 }
 
 interface CreateResourceState {
-    iri: string
     type: string
     files: TermItFile[];
     fileContents: File[];
@@ -46,7 +45,6 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
     constructor(props: CreateResourceProps) {
         super(props);
         this.state = {
-            iri: '',
             type: VocabularyUtils.DOCUMENT,
             files: [],
             fileContents: [],
@@ -80,10 +78,6 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
             const fileContents = this.state.fileContents.concat(file);
             this.setState({files, fileContents});
         });
-    }
-
-    private onIdentifierChanged = (iri: string) => {
-        this.setState({iri});
     }
 
     private onRemoveFile = (termitFile: Resource): Promise<void> => {
@@ -132,14 +126,14 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
                             </Row>
                         </Col>
                     </Row>
-                    <CreateResourceMetadata onCreate={this.onCreate} onCancel={CreateResource.onCancel}
-                                            onIdentifierChanged={this.onIdentifierChanged}>
+                    <CreateResourceMetadata onCreate={this.onCreate} onCancel={CreateResource.onCancel}>
                         {
                             this.state.type === VocabularyUtils.DOCUMENT ?
                                 <Files files={this.state.files}
                                        actions={[<AddFile key="add-file" performAction={this.onCreateFile}/>]}
                                        itemActions={(file: TermItFile) => [
                                            <RemoveFile key="remove-file"
+                                                       file={file}
                                                        performAction={this.onRemoveFile.bind(this, file)}
                                                        withConfirmation={false}/>]
                                        }

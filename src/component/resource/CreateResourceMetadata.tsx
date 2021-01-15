@@ -12,7 +12,6 @@ import ShowAdvanceAssetFields from "../asset/ShowAdvancedAssetFields";
 
 export interface CreateResourceMetadataProps extends HasI18n {
     onCreate: (resource: Resource, data?: any) => Promise<string>;
-    onIdentifierChanged: (iri : string) => any;
     onCancel: () => void;
 }
 

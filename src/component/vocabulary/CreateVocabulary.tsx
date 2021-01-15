@@ -160,7 +160,9 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                             <Files files={this.state.files}
                                    actions={[<AddFile key="add-file" performAction={this.onCreateFile}/>]}
                                    itemActions={(file: TermItFile) => [
-                                       <RemoveFile key="remove-file" performAction={this.onRemoveFile.bind(this, file)}
+                                       <RemoveFile key="remove-file"
+                                                   file={file}
+                                                   performAction={this.onRemoveFile.bind(this, file)}
                                                    withConfirmation={false}/>
                                    ]
                                    }

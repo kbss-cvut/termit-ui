@@ -14,9 +14,6 @@ describe("DocumentFiles", () => {
     let actions: JSX.Element[];
     let itemActions: (file: TermItFile) => JSX.Element[];
 
-    // let onFileAdded: () => void;
-    // let createFile: (termItFile: TermItFile, file: File) => Promise<void>;
-
     beforeEach(() => {
         document = new Document({
             iri: Generator.generateUri(),
@@ -24,10 +21,8 @@ describe("DocumentFiles", () => {
             files: [],
             types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]
         });
-        // onFileAdded = jest.fn();
         actions = [];
         itemActions = () => [];
-        // createFile = jest.fn().mockImplementation(() => Promise.resolve());
     });
 
     it("renders notice when no Files exist", () => {
