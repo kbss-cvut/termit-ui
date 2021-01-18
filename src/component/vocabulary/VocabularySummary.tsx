@@ -10,13 +10,22 @@ import {
     loadVocabulary,
     updateVocabulary,
     removeVocabulary,
-    validateVocabulary
+    validateVocabulary, loadResource
 } from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
-import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
+import {
+    Button,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Modal, ModalBody,
+    ModalHeader,
+    UncontrolledButtonDropdown
+} from "reactstrap";
 import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
-import {GoCloudDownload, GoPencil} from "react-icons/go";
+import {GoCloudDownload, GoPencil, GoX} from "react-icons/go";
 import {ThunkDispatch} from "../../util/Types";
+import Document from "../../model/Document";
 import EditableComponent, {EditableComponentState} from "../misc/EditableComponent";
 import VocabularyEdit from "./VocabularyEdit";
 import Utils from "../../util/Utils";
@@ -26,9 +35,11 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
+import DocumentList from "../resource/DocumentList";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
+    loadResource: (iri: IRI) => void;
     loadVocabulary: (iri: IRI) => void;
     updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
@@ -39,15 +50,17 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export interface VocabularySummaryState extends EditableComponentState {
+    selectDocumentDialogOpen: boolean
 }
 
-export class VocabularySummary extends EditableComponent<VocabularySummaryProps,VocabularySummaryState> {
+export class VocabularySummary extends EditableComponent<VocabularySummaryProps, VocabularySummaryState> {
 
     constructor(props: VocabularySummaryProps) {
         super(props);
         this.state = {
             edit: false,
-            showRemoveDialog: false
+            showRemoveDialog: false,
+            selectDocumentDialogOpen: false
         };
     }
 
@@ -99,9 +112,36 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         this.props.exportToTurtle(VocabularyUtils.create(this.props.vocabulary.iri));
     };
 
+    private onVocabularyDocumentSet = (document: Document) => {
+        this.props.vocabulary.document = document;
+        return this.props.updateVocabulary(this.props.vocabulary).then( () =>
+            this.props.loadResource(VocabularyUtils.create(document.iri!))
+        );
+    };
+
+    private onVocabularyDocumentRemove = () => {
+        const doc = this.props.vocabulary.document;
+        delete this.props.vocabulary.document!.vocabulary;
+        delete this.props.vocabulary.document;
+            this.props.updateVocabulary(this.props.vocabulary).then( () =>
+                this.props.loadResource(VocabularyUtils.create(doc?.iri!))
+            );
+    };
+
+    private toggle = () => {
+        this.setState({selectDocumentDialogOpen: !this.state.selectDocumentDialogOpen});
+
+    }
+
+    private onSelected = (document: Document) => {
+        this.toggle();
+        return this.onVocabularyDocumentSet(document);
+    }
+
     public render() {
         const buttons = [];
         if (!this.state.edit) {
+            buttons.push(this.props.vocabulary.document ? this.renderRemoveDocument() : this.renderAttachDocumentDropdown());
             buttons.push(<Button id="vocabulary-summary-edit" key="vocabulary.summary.edit" size="sm" color="primary"
                                  title={this.props.i18n("edit")}
                                  onClick={this.onEdit}><GoPencil/> {this.props.i18n("edit")}</Button>);
@@ -146,6 +186,35 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
             </DropdownMenu>
         </UncontrolledButtonDropdown>;
     }
+
+
+    private renderRemoveDocument() {
+        const i18n = this.props.i18n;
+        return <Button id="vocabulary.document.remove" key="vocabulary.document.remove" size="sm" color="primary"
+                       title={i18n("vocabulary.document.remove")}
+                       onClick={this.onVocabularyDocumentRemove}><GoX/> {this.props.i18n("vocabulary.document.remove")}
+        </Button>;
+    }
+
+    private renderSelectDocumentDialogOpen() {
+        return <Modal isOpen={this.state.selectDocumentDialogOpen} toggle={this.toggle}>
+            <ModalHeader>
+                {this.props.i18n("vocabulary.document.select.title")}
+            </ModalHeader>
+            <ModalBody>
+                <DocumentList onSelected={this.onSelected}/>
+            </ModalBody>
+        </Modal>;
+    }
+
+    private renderAttachDocumentDropdown() {
+        const i18n = this.props.i18n;
+        return <>
+            {this.renderSelectDocumentDialogOpen()}
+                <Button onClick={this.toggle} size="sm"
+                              title={i18n("vocabulary.document.select")}>{i18n("vocabulary.document.select")}</Button>
+        </>;
+    }
 }
 
 export default connect((state: TermItState) => {
@@ -155,6 +224,7 @@ export default connect((state: TermItState) => {
     };
 }, (dispatch: ThunkDispatch) => {
     return {
+        loadResource: (iri: IRI) => dispatch(loadResource(iri)),
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),
         removeVocabulary: (vocabulary: Vocabulary) => dispatch(removeVocabulary(vocabulary)),

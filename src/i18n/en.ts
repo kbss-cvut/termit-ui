@@ -193,6 +193,12 @@ const en = {
         "vocabulary.termchanges.empty": "No creations/updates of terms found.",
         "vocabulary.removed.message": "Vocabulary successfully removed.",
         "vocabulary.document.label": "Document for {vocabulary}",
+        "vocabulary.document.attach": "Attach document",
+        "vocabulary.document.create": "Create a new document",
+        "vocabulary.document.select": "Select an existing document",
+        "vocabulary.document.select.title": "Select a document",
+        "vocabulary.document.set": "Set document",
+        "vocabulary.document.remove": "Detach document",
 
         'vocabulary.term.created.message': 'Term successfully created.',
         'vocabulary.select-vocabulary': 'Select a Vocabulary',
