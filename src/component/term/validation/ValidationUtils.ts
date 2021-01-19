@@ -9,5 +9,5 @@ export const ValidationUtils = {
 
     qualityAffectingRuleViolationColor: "#ff9999",
 
-    qualityNotAffectingRuleViolationColor: "#ffffcc"
+    qualityNotAffectingRuleViolationColor: "#ffccaa"
 }
