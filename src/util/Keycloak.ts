@@ -1,11 +1,10 @@
 import Keycloak from "keycloak-js";
 
-// Setup Keycloak instance as needed
-// TODO This should be loaded from the server/configured in build
+// Setup Keycloak instance
 const keycloak = Keycloak({
-    url: "http://localhost:8080/auth",
-    realm: "kodi",
-    clientId: "termit-ui",
+    url: process.env.REACT_APP_KEYCLOAK_URL,
+    realm: process.env.REACT_APP_KEYCLOAK_REALM!,
+    clientId: process.env.REACT_APP_KEYCLOAK_CLIENTID!,
 });
 
 export default keycloak;
