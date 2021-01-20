@@ -20,6 +20,9 @@ The following parameters can be configured for the build:
 | `serverUrl` | Specifies the URL where the TermIt backend is running |
 | `deployment` | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances
 | `controlPanelUrl` | Specifies the URL of the Control panel |
+| `REACT_APP_KEYCLOAK_URL` | URL of the Keycloak authentication service. Loaded from `.env` on build by default |
+| `REACT_APP_KEYCLOAK_REALM` | Keycloak Realm used by this application. Loaded from `.env` on build by default |
+| `REACT_APP_KEYCLOAK_CLIENTID` | Keycloak client ID of this application. Loaded from `.env` on build by default |
 
 ### Example
 
