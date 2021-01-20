@@ -6,9 +6,13 @@ import {Action} from "redux";
 import {userLogout} from "../SyncActions";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
+import keycloak from "../../util/Keycloak";
 
 jest.mock("../../util/Authentication");
 jest.mock("../../util/Routing");
+jest.mock("../../util/Keycloak", () => ({
+    logout: jest.fn()
+}));
 
 const mockStore = configureMockStore([thunk]);
 
@@ -30,6 +34,11 @@ describe("Complex actions", () => {
         it("transitions to login page", () => {
             logout();
             expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.login);
+        });
+
+        it("invokes Keycloak logout", () => {
+            logout();
+            expect(keycloak.logout).toHaveBeenCalled();
         });
     });
 });

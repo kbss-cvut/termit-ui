@@ -18,7 +18,6 @@ import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
 import {loadUser} from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
 import Dashboard from "./dashboard/Dashboard";
-import ProfileRoute from "./profile/ProfileRoute";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
 import {loadCurrentWorkspace, selectWorkspace} from "../action/WorkspaceAsyncActions";
@@ -33,7 +32,6 @@ import {withKeycloak} from "@react-keycloak/web";
 import {KeycloakInstance} from "keycloak-js";
 import Routing from "../util/Routing";
 
-const AdministrationRoute = React.lazy(() => import("./administration/AdministrationRoute"));
 const ResourceManagementRoute = React.lazy(() => import("./resource/ResourceManagementRoute"));
 const VocabularyManagementRoute = React.lazy(() => import("./vocabulary/VocabularyManagementRoute"));
 const Search = React.lazy(() => import("./search/label/Search"));
@@ -144,8 +142,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                            }>
                     <React.Suspense fallback={<Mask/>}>
                         <Switch>
-                            <BreadcrumbRoute title={i18n("main.nav.admin")} path={Routes.administration.path}
-                                             component={AdministrationRoute}/>
                             <BreadcrumbRoute title={i18n("main.nav.resources")} path={Routes.resources.path}
                                              component={ResourceManagementRoute}/>
                             <BreadcrumbRoute title={i18n("main.nav.vocabularies")} path={Routes.vocabularies.path}
@@ -156,8 +152,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                                              path={Routes.searchVocabularies.path} component={SearchVocabularies}/>
                             <BreadcrumbRoute title={i18n("main.nav.search")} path={Routes.search.path}
                                              component={Search}/>
-                            <BreadcrumbRoute title={i18n("main.user-profile")} path={Routes.profile.path}
-                                             component={ProfileRoute}/>
                             <Route component={Dashboard}/>
                         </Switch>
                     </React.Suspense>
