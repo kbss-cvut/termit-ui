@@ -40,5 +40,10 @@ describe("Complex actions", () => {
             logout();
             expect(keycloak.logout).toHaveBeenCalled();
         });
+
+        it("invokes Keycloak logout", () => {
+            logout();
+            expect(keycloak.logout).toHaveBeenCalled();
+        });
     });
 });
