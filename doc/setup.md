@@ -20,12 +20,11 @@ The following parameters can be configured for the build:
 | `serverUrl` | Specifies the URL where the TermIt backend is running |
 | `deployment` | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances
 | `controlPanelUrl` | Specifies the URL of the Control panel |
-| `REACT_APP_ADMIN_REGISTRATION_ONLY` | Configures whether the login page should contain a link to registration or not. If the parameter is true, only administrators can add new users and there is no registration link |
 
 ### Example
 
 1. `npm install`
-2. `serverUrl=https://kbss.felk.cvut.cz/termit-server-dev deployment=dev REACT_APP_ADMIN_REGISTRATION_ONLY=true npm run build-prod`
+2. `serverUrl=https://kbss.felk.cvut.cz/termit-server-dev deployment=dev npm run build-prod`
 
 ## Deployment
 
