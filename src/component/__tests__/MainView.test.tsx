@@ -132,7 +132,10 @@ describe("MainView", () => {
 
     it("does not render breadcrumb on dashboard", () => {
         const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
-                                          workspace={new Workspace({iri: Generator.generateUri()})}
+                                          workspace={new Workspace({
+                                              iri: Generator.generateUri(),
+                                              label: "Test workspace"
+                                          })}
                                           location={location} match={match} {...intlFunctions()}/>);
         const header = wrapper.find(Header);
         expect(header.prop("showBreadcrumbs")).toBeFalsy();
@@ -147,7 +150,10 @@ describe("MainView", () => {
         };
 
         const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
-                                          workspace={new Workspace({iri: Generator.generateUri()})}
+                                          workspace={new Workspace({
+                                              iri: Generator.generateUri(),
+                                              label: "Test workspace"
+                                          })}
                                           location={locationVocabularies} match={match} {...intlFunctions()}/>);
         const header = wrapper.find(Header);
         expect(header.prop("showBreadcrumbs")).toBeTruthy();
