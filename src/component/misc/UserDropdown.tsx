@@ -35,12 +35,12 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
             <span className="user-dropdown">{props.user.abbreviatedName}</span>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-arrow" right={true}>
-            <DropdownItem
+            <DropdownItem id="user-dropdown-profile"
                 href={`${keycloak.authServerUrl}/realms/${keycloak.realm}/account?referrer=${keycloak.clientId}`}>
                 <i className="fas fa-user"/><span>{props.i18n("main.user-profile")}</span>
             </DropdownItem>
             <DropdownItem divider={true}/>
-            <DropdownItem onClick={props.logout}>
+            <DropdownItem id="user-dropdown-logout" onClick={props.logout}>
                 <i className="fas fa-sign-out-alt"/><span>{props.i18n("main.logout")}</span></DropdownItem>
         </DropdownMenu>
     </UncontrolledDropdown>;

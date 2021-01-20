@@ -90,7 +90,7 @@ describe("Routing", () => {
         it("transitions to term detail for a term", () => {
             const term = Generator.generateTerm(iri);
             term.label = langString("test-term");
-            term.iri = iri + "/pojem/" + term.label;
+            term.iri = iri + "/pojem/" + term.label.en;
             RoutingInstance.transitionToAsset(term);
             expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.vocabularyTermDetail, {
                 params: new Map([["name", label], ["termName", term.label.en]]),
@@ -116,7 +116,7 @@ describe("Routing", () => {
         it("transitions to public term detail for a term", () => {
             const term = Generator.generateTerm(iri);
             term.label = langString("test-term");
-            term.iri = iri + "/pojem/" + term.label;
+            term.iri = iri + "/pojem/" + term.label.en;
             RoutingInstance.transitionToPublicAsset(term);
             expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.publicVocabularyTermDetail, {
                 params: new Map([["name", label], ["termName", term.label.en]]),
