@@ -20,7 +20,10 @@ The following parameters can be configured for the build:
 | `serverUrl` | `string` | `''` | Specifies the URL where the TermIt backend is running |
 | `deployment` | `string` | `''` | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances
 | `controlPanelUrl` | `string` | `''` | Specifies the URL of the Control panel |
-| `REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED` | `boolean` | `false` | Configures whether the application should show the public view dashboard if the user is not logged in. By default, the login screen is shown.| 
+| `REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED` | `boolean` | `false` | Configures whether the application should show the public view dashboard if the user is not logged in. By default, the login screen is shown.|
+| `REACT_APP_KEYCLOAK_URL` | `string` | `http://localhost:8080/auth` | URL of the Keycloak authentication service. Loaded from `.env` on build by default |
+| `REACT_APP_KEYCLOAK_REALM` | `string` | `kodi` | Keycloak Realm used by this application. Loaded from `.env` on build by default |
+| `REACT_APP_KEYCLOAK_CLIENTID` | `string` | `termit-ui` | Keycloak client ID of this application. Loaded from `.env` on build by default |
 
 ### Example
 
