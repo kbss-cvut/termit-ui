@@ -1,10 +1,19 @@
-import * as React from 'react';
+import * as React from "react";
 
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {UserDropdown} from "../UserDropdown";
-import {shallow} from "enzyme";
 import User from "../../../model/User";
 import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown} from "reactstrap";
+import {ReactKeycloakProvider} from "@react-keycloak/web";
+import keycloak from "../../../util/Keycloak";
+import {mountWithIntl} from "../../../__tests__/environment/Environment";
+
+jest.mock("../../../util/Keycloak", () => ({
+    init: jest.fn().mockResolvedValue({}),
+    authServerUrl: "http://localhost:8080/",
+    realm: "test",
+    clientId: "client"
+}));
 
 describe("UserDropdown", () => {
     let logout: () => void;
@@ -21,7 +30,9 @@ describe("UserDropdown", () => {
     });
 
     it("renders correct structure of component", () => {
-        const wrapper = shallow(<UserDropdown user={user} logout={logout} dark={true} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<ReactKeycloakProvider authClient={keycloak}>
+            <UserDropdown user={user} logout={logout} dark={true} {...intlFunctions()}/>
+        </ReactKeycloakProvider>);
 
         expect(wrapper.find(UncontrolledDropdown).find(DropdownToggle).contains(<>
             <i className="fas fa-user-circle align-middle user-icon"/>&nbsp;
@@ -32,11 +43,13 @@ describe("UserDropdown", () => {
     });
 
     it("renders logout button as the last one in the menu", () => {
-        const wrapper = shallow(<UserDropdown user={user} logout={logout} dark={true} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<ReactKeycloakProvider authClient={keycloak}>
+            <UserDropdown user={user} logout={logout} dark={true} {...intlFunctions()}/>
+        </ReactKeycloakProvider>);
 
-        const dropdownMenu = wrapper.find(UncontrolledDropdown).find(DropdownMenu);
+        const logoutItem = wrapper.find("button#user-dropdown-logout");
 
-        dropdownMenu.childAt(dropdownMenu.children().length - 1).simulate("click");
+        logoutItem.simulate("click");
         expect(logout).toHaveBeenCalled();
     });
 });
