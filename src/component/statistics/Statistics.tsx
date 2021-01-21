@@ -11,13 +11,18 @@ import FullscreenablePanelWithActions from "../misc/FullscreenablePanelWithActio
 import PanelWithActions from "../misc/PanelWithActions";
 import {Col, Row} from "reactstrap";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
 
 const Statistics = (props: HasI18n) => {
 
     const query = (iri: string) => templateAssetCount.split("?assetType").join("<" + iri + ">");
 
     return <div>
-        <HeaderWithActions title={props.i18n("main.nav.statistics")} />
+        <Helmet>
+            <title>{`${props.i18n("main.nav.statistics")} | ${Constants.APP_NAME}`}</title>
+        </Helmet>
+        <HeaderWithActions title={props.i18n("main.nav.statistics")}/>
         <Row>
             <Col lg={4} xs={12}>
                 <PanelWithActions title={props.i18n("statistics.vocabulary.count")}>

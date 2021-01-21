@@ -20,8 +20,12 @@ import JsonLdUtils from "../../util/JsonLdUtils";
 import Utils from "../../util/Utils";
 import TextAnalysisButtonAnnotatorWrapper from "./TextAnalysisButtonAnnotatorWrapper";
 import AnnotatorContent from "./AnnotatorContent";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import {injectIntl} from "react-intl";
 
-interface AnnotatorProps {
+interface AnnotatorProps extends HasI18n {
     fileIri: IRI;
     vocabularyIri: IRI;
     initialHtml: string;
@@ -335,6 +339,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
     public render() {
         return <div>
+            <Helmet>
+                <title>{`${this.props.i18n("annotator")} | ${Constants.APP_NAME}`}</title>
+            </Helmet>
             <LegendToggle/>
             <TextAnalysisButtonAnnotatorWrapper fileIri={this.props.fileIri} vocabularyIri={this.props.vocabularyIri}/>
             <CreateTermFromAnnotation ref={this.createNewTermDialog}
@@ -414,4 +421,4 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
         publishMessage: (message: Message) => dispatch(publishMessage(message)),
         setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term))
     };
-})(Annotator);
+})(injectIntl(withI18n(Annotator)));

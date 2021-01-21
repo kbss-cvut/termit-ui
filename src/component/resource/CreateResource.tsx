@@ -7,11 +7,7 @@ import Routes from "../../util/Routes";
 import {Button, ButtonGroup, Card, CardBody, Col, Label, Row} from "reactstrap";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
-import {
-    createFileInDocument,
-    createResource,
-    uploadFileContent
-} from "../../action/AsyncActions";
+import {createFileInDocument, createResource, uploadFileContent} from "../../action/AsyncActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import CreateResourceMetadata from "./CreateResourceMetadata";
 import IdentifierResolver from "../../util/IdentifierResolver";
@@ -25,6 +21,8 @@ import Utils from "../../util/Utils";
 import NotificationType from "../../model/NotificationType";
 import AddFile from "./document/AddFile";
 import RemoveFile from "./document/RemoveFile";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
 
 interface CreateResourceProps extends HasI18n {
     createResource: (resource: Resource) => Promise<string>;
@@ -62,9 +60,9 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
         const fileContents = this.state.fileContents;
         return this.props.createResource(resource).then((iri) => {
             return Promise.all(Utils.sanitizeArray(files).map((f, fIndex) =>
-                this.props.createFile(f, resource.iri)
-                    .then(() => this.props.uploadFileContent(f.iri, fileContents[fIndex])
-                    .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})))
+                    this.props.createFile(f, resource.iri)
+                        .then(() => this.props.uploadFileContent(f.iri, fileContents[fIndex])
+                            .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})))
                 )
             )
                 .then(() => Routing.transitionTo(Routes.resourceSummary, IdentifierResolver.routingOptionsFromLocation(iri)))
@@ -100,6 +98,9 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
     public render() {
         const i18n = this.props.i18n;
         return <>
+            <Helmet>
+                <title>{`${i18n("resource.create.title")} | ${Constants.APP_NAME}`}</title>
+            </Helmet>
             <HeaderWithActions title={i18n("resource.create.title")}/>
             <Card id="create-resource">
                 <CardBody>

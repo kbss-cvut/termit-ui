@@ -14,8 +14,12 @@ import File from "../../model/File";
 import DocumentSummary from "./document/DocumentSummary";
 import Document from "../../model/Document";
 import Routes from "../../util/Routes";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import {injectIntl} from "react-intl";
 
-interface ResourceSummaryRouteProps extends RouteComponentProps<any> {
+interface ResourceSummaryRouteProps extends RouteComponentProps<any>, HasI18n {
     resource: Resource;
     loadResource: (iri: IRI) => Promise<any>;
     clearResource: () => void;
@@ -51,18 +55,28 @@ export class ResourceSummaryRoute extends React.Component<ResourceSummaryRoutePr
     }
 
     public render() {
-        if (this.props.resource === EMPTY_RESOURCE) {
+        const resource = this.props.resource;
+        if (resource === EMPTY_RESOURCE) {
             return null;
         }
-        const primaryType = Utils.getPrimaryAssetType(this.props.resource);
+        const primaryType = Utils.getPrimaryAssetType(resource);
+        let component;
         switch (primaryType) {
             case VocabularyUtils.FILE:
-                return <FileSummary resource={this.props.resource as File}/>;
+                component = <FileSummary resource={resource as File}/>;
+                break;
             case VocabularyUtils.DOCUMENT:
-                return <DocumentSummary resource={this.props.resource as Document}/>;
+                component = <DocumentSummary resource={resource as Document}/>;
+                break;
             default:
-                return <ResourceSummary resource={this.props.resource}/>;
+                component = <ResourceSummary resource={resource}/>;
         }
+        return <>
+            <Helmet>
+                <title>{`${resource.label} | ${this.props.i18n("main.nav.resources")} | ${Constants.APP_NAME}`}</title>
+            </Helmet>
+            {component}
+        </>
     }
 }
 
@@ -71,4 +85,4 @@ export default connect((state: TermItState) => ({resource: state.resource}), (di
         loadResource: (iri: IRI) => dispatch(loadResource(iri)),
         clearResource: () => dispatch(clearResource())
     };
-})(ResourceSummaryRoute);
+})(injectIntl(withI18n(ResourceSummaryRoute)));

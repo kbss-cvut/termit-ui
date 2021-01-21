@@ -26,6 +26,8 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
@@ -41,7 +43,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 export interface VocabularySummaryState extends EditableComponentState {
 }
 
-export class VocabularySummary extends EditableComponent<VocabularySummaryProps,VocabularySummaryState> {
+export class VocabularySummary extends EditableComponent<VocabularySummaryProps, VocabularySummaryState> {
 
     constructor(props: VocabularySummaryProps) {
         super(props);
@@ -112,6 +114,9 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                              onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
 
         return <div id="vocabulary-detail">
+            <Helmet>
+                <title>{`${this.props.vocabulary.label} | ${this.props.i18n("vocabulary.management.vocabularies")} | ${Constants.APP_NAME}`}</title>
+            </Helmet>
             <HeaderWithActions title={
                 <>{this.props.vocabulary.label}<CopyIriIcon url={this.props.vocabulary.iri as string}/></>
             } actions={buttons}/>

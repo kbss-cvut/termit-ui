@@ -9,8 +9,13 @@ import LastEditedAssets from "./widget/LastEditedAssets";
 import "./Dashboard.scss";
 import NewsAlert from "./widget/NewsAlert";
 import MyAssets from "./widget/MyAssets";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
 
 const Dashboard: React.FC<HasI18n> = (props) => (<>
+        <Helmet>
+            <title>{Constants.APP_NAME}</title>
+        </Helmet>
         <NewsAlert/>
         <Row>
             <Col xl={4} lg={6} md={12}>

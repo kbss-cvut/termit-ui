@@ -7,6 +7,8 @@ import {Link} from "react-router-dom";
 import {GoPlus} from "react-icons/go";
 import ResourceList from "./ResourceList";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
 
 class ResourceManagement extends React.Component<HasI18n> {
     public render() {
@@ -18,6 +20,9 @@ class ResourceManagement extends React.Component<HasI18n> {
         </Link>;
 
         return <div>
+            <Helmet>
+                <title>{`${i18n("main.nav.resources")} | ${Constants.APP_NAME}`}</title>
+            </Helmet>
             <HeaderWithActions title={i18n("resource.management")} actions={buttons}/>
             <div className="row">
                 <Col md={12}>

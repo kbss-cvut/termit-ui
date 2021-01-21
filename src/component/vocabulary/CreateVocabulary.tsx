@@ -34,6 +34,8 @@ import {publishNotification} from "../../action/SyncActions";
 import IdentifierResolver from "../../util/IdentifierResolver";
 import AddFile from "../resource/document/AddFile";
 import RemoveFile from "../resource/document/RemoveFile";
+import Constants from "../../util/Constants";
+import {Helmet} from "react-helmet";
 
 interface CreateVocabularyProps extends HasI18n {
     createFile: (file: TermItFile, documentIri: string) => Promise<any>,
@@ -137,6 +139,9 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         const onCancel = CreateVocabulary.onCancel;
 
         return <>
+            <Helmet>
+                <title>{`${i18n("vocabulary.create.title")} | ${Constants.APP_NAME}`}</title>
+            </Helmet>
             <HeaderWithActions title={i18n("vocabulary.create.title")}/>
             <Card id="create-vocabulary">
                 <CardBody>
