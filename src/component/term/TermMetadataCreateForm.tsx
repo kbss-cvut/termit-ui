@@ -178,7 +178,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 <Col xs={12}>
                     <CustomInput name="edit-term-source"
                                  value={source} labelClass="definition"
-                                 label={i18n("term.metadata.definitionSource")}
+                                 label={i18n("term.metadata.source")}
                                  onChange={this.onSourceChange}
                                  help={i18n("term.source.help")}/>
                 </Col>

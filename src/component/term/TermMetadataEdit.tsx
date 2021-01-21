@@ -219,7 +219,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             <Row>
                                 <Col xs={12}>
                                     <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                                 label={i18n("term.metadata.definitionSource")} labelClass="definition"
+                                                 label={i18n("term.metadata.source")} labelClass="definition"
                                                  invalid={validationSource.length > 0}
                                                  invalidMessage={this.renderMessages(validationSource)}
                                                  help={i18n("term.source.help")}/>
