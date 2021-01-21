@@ -61,7 +61,7 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         }
     }
 
-    private loadVocabulary(): void {
+    public loadVocabulary = () => {
         const normalizedName = this.props.match.params.name;
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
         const iri = VocabularyUtils.create(this.props.vocabulary.iri);
@@ -99,10 +99,6 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         this.props.exportToTurtle(VocabularyUtils.create(this.props.vocabulary.iri));
     };
 
-    public onFileAdded = () => {
-        this.loadVocabulary();
-    };
-
     public render() {
         const buttons = [];
         if (!this.state.edit) {
@@ -125,8 +121,9 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
             {this.state.edit ?
                 <VocabularyEdit save={this.onSave} cancel={this.onCloseEdit}
                                 vocabulary={this.props.vocabulary}/> :
-                <VocabularyMetadata vocabulary={this.props.vocabulary} onFileAdded={this.onFileAdded}
-                                    location={this.props.location} match={this.props.match}/>}
+                <VocabularyMetadata vocabulary={this.props.vocabulary}
+                                    location={this.props.location} match={this.props.match}
+                                    onChange={this.loadVocabulary}/>}
 
         </div>
     }

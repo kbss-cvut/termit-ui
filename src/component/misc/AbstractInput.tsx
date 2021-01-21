@@ -14,7 +14,7 @@ export interface AbstractInputProps {
     help?: string;
     valid?: boolean;
     invalid?: boolean;
-    invalidMessage?: string;
+    invalidMessage?: string | JSX.Element;
     autoFocus?: boolean;
     autoComplete?: string;
     type?: InputType;

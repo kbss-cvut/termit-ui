@@ -7,7 +7,7 @@ import "intelligent-tree-select/lib/styles.css";
 import Term, {TermData} from "../../model/Term";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
-import {FormGroup, FormText, Label} from "reactstrap";
+import {FormFeedback, FormGroup, FormText, Label} from "reactstrap";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {ThunkDispatch} from "../../util/Types";
 import {loadTypes} from "../../action/AsyncActions";
@@ -19,7 +19,8 @@ import _ from "lodash";
 interface TermTypesEditProps extends HasI18n {
     termTypes: string[];
     onChange: (types: string[]) => void;
-
+    invalid?: boolean;
+    invalidMessage?: JSX.Element;
     availableTypes: { [key: string]: Term };
     intl: IntlData;
     loadTypes: () => void;
@@ -62,6 +63,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
         const types = getTypesForSelector(this.props.availableTypes);
         const selected = this.resolveSelectedTypes(types);
         const {i18n, intl} = this.props;
+        const style = this.props.invalid ? { borderColor : 'red' } : {};
         return <FormGroup>
             <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
             <IntelligentTreeSelect onChange={this.onChange}
@@ -75,8 +77,12 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
                                    multi={false}
                                    displayInfoOnHover={true}
                                    expanded={true}
+                                   invalid={this.props.invalid}
+                                   invalidMessage={this.props.invalidMessage}
                                    renderAsTree={true}
+                                   style={style}
                                    placeholder={i18n("term.metadata.types.select.placeholder")}/>
+            {this.props.invalid ? <FormFeedback style={{display: 'block'}}>{this.props.invalidMessage}</FormFeedback> : <></>}
             <FormText>{i18n("term.types.help")}</FormText>
         </FormGroup>;
     }

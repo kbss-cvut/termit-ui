@@ -52,7 +52,7 @@ export class FileContentLink extends React.Component<FileContentLinkProps, FileC
         const query = {namespace: iri.namespace};
         const contentSupported = this.isContentSupported();
         return contentSupported ? <Link id={this.props.id}
-                                        className="btn btn-primary btn-sm"
+                                        className="btn btn-primary btn-sm mb-2"
                                         title={this.props.i18n("resource.metadata.file.content.view.tooltip")}
                                         to={Routes.annotateFile.link(params, query)}><GoFile/>&nbsp;{this.props.i18n("resource.metadata.file.content")}
         </Link> : <></>;

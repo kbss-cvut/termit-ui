@@ -302,18 +302,47 @@ export function createFileInDocument(file: TermitFile, documentIri: IRI) {
     const action = {
         type: ActionType.CREATE_RESOURCE
     };
+    return (dispatch: ThunkDispatch) =>
+        Ajax.post(`${Constants.API_PREFIX}/identifiers`,
+            params({
+                name: file.label,
+                contextIri: documentIri,
+                assetType: "FILE"
+            })
+        ).then(response => {
+            dispatch(asyncActionRequest(action));
+            file.iri = response.data;
+            return Ajax.post(`${Constants.API_PREFIX}/resources/${documentIri.fragment}/files`, content(file.toJsonLd()).param("namespace", documentIri.namespace))
+                .then((resp: AxiosResponse) => {
+                    dispatch(asyncActionSuccess(action));
+                    dispatch(SyncActions.publishMessage(new Message({messageId: "resource.created.message"}, MessageType.SUCCESS)));
+                    return resp.headers[Constants.Headers.LOCATION];
+                })
+                .catch((error: ErrorData) => {
+                    dispatch(asyncActionFailure(action, error));
+                    dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
+                    return undefined;
+                });
+        });
+
+}
+
+export function removeFileFromDocument(file: TermitFile, documentIri: IRI) {
+    const action = {
+        type: ActionType.REMOVE_RESOURCE
+    };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
-        return Ajax.post(Constants.API_PREFIX + "/resources/" + documentIri.fragment + "/files", content(file.toJsonLd()).param("namespace", documentIri.namespace))
+        const fileIri = VocabularyUtils.create(file.iri);
+        return Ajax.delete(Constants.API_PREFIX + "/resources/" + documentIri.fragment + "/files/" + fileIri.fragment, param("namespace", fileIri.namespace))
             .then((resp: AxiosResponse) => {
                 dispatch(asyncActionSuccess(action));
-                dispatch(SyncActions.publishMessage(new Message({messageId: "resource.created.message"}, MessageType.SUCCESS)));
-                return resp.headers[Constants.Headers.LOCATION];
+                dispatch(loadResource(documentIri));
+                dispatch(SyncActions.publishMessage(new Message({messageId: "resource.removed.message"}, MessageType.SUCCESS)));
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
-                return undefined;
             });
     };
 }
