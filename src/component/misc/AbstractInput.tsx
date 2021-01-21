@@ -33,7 +33,7 @@ export default class AbstractInput<T extends AbstractInputProps> extends React.C
     }
 
     protected inputProps() {
-        const {invalidMessage, help, ...p} = this.props as AbstractInputProps;
+        const {invalidMessage, help, labelClass, ...p} = this.props as AbstractInputProps;
         return p;
     }
 }

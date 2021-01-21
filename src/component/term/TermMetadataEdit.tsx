@@ -160,7 +160,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         return <>
             <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
                                   onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
-            <Card>
+            <Card id="edit-term">
                 <CardBody>
                     <Form>
                         <Row>

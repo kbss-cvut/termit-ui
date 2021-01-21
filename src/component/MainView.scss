@@ -12,7 +12,11 @@
 .attribute-label {
   font-weight: 600;
   color: rgba(0, 0, 0, 0.7);
-  word-break: break-all;
+  word-break: break-word;
+}
+
+.form-group .attribute-label {
+  font-size: 0.875rem;
 }
 
 .option-label {
@@ -119,4 +123,17 @@
 
 .asset-badge {
   width: 4.4rem;
+}
+
+/* Reactstrap overrides this by assigning form-control class to all form-controls, including small ones*/
+.form-control-sm {
+  font-size: 0.875rem !important;
+}
+
+.Select-placeholder {
+  font-size: 0.875rem !important;
+}
+
+.Select-value {
+  font-size: 0.875rem !important;
 }

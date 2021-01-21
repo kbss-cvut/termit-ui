@@ -16,6 +16,7 @@ import RdfsResource, {RdfsResourceData} from "../../model/RdfsResource";
 import CreatePropertyForm from "./CreatePropertyForm";
 import {clearProperties} from "../../action/SyncActions";
 import {FaTrashAlt} from "react-icons/fa";
+import "./UnmappedProperties.scss";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
     properties: Map<string, string[]>;
@@ -138,7 +139,7 @@ export class UnmappedPropertiesEdit extends React.Component<UnmappedPropertiesEd
             </li>);
 
             result.push(<div key={k}>
-                <div><OutgoingLink label={<Label className="attribute-label"><AssetLabel iri={k}/></Label>} iri={k}/>
+                <div><OutgoingLink label={<Label className="property-label"><AssetLabel iri={k}/></Label>} iri={k}/>
                 </div>
                 <div>
                     <ul className="term-items">

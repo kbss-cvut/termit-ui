@@ -49,7 +49,7 @@ export class AssetLabel extends React.Component<AssetLabelProps, AssetLabelState
     }
 
     public render() {
-        return this.state.label ? this.state.label : this.shrinkFullIri(Namespaces.getPrefixedOrDefault(this.props.iri));
+        return <span>{this.state.label ? this.state.label : this.shrinkFullIri(Namespaces.getPrefixedOrDefault(this.props.iri))}</span>;
     }
 
     private shrinkFullIri(iri: string): string {
