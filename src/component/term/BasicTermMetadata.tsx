@@ -30,16 +30,25 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         const {i18n, term, language} = this.props;
         return <>
             <TermDefinitionContainer>
-            <Row>
-                <Col xl={2} md={4}>
-                    <Label className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>
-                </Col>
-                <Col xl={10} md={8}>
-                    <p id="term-metadata-definition"
+                <Row>
+                    <Col xl={2} md={4}>
+                        <Label
+                            className="attribute-label mb-3 mt-2 definition">{i18n("term.metadata.definition.text")}</Label>
+                    </Col>
+                    <Col xl={10} md={8}>
+                        <p id="term-metadata-definition"
                            className="lead">{getLocalizedOrDefault(term.definition, "", language)}</p>
-                </Col>
-            </Row>
-            {this.renderDefinitionSource()}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xl={2} md={4}>
+                        <Label className="attribute-label mb-3 definition">{i18n("term.metadata.source")}</Label>
+                    </Col>
+                    <Col xl={10} md={8}>
+                        {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
+                    </Col>
+                </Row>
+                {this.renderDefinitionSource()}
             </TermDefinitionContainer>
             <Row>
                 <Col xl={2} md={4}>
@@ -56,14 +65,6 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 </Col>
                 <Col xl={10} md={8}>
                     <p id="term-metadata-comment">{getLocalizedOrDefault(term.scopeNote, "", language)}</p>
-                </Col>
-            </Row>
-            <Row>
-                <Col xl={2} md={4}>
-                    <Label className="attribute-label mb-3">{i18n("term.metadata.source")}</Label>
-                </Col>
-                <Col xl={10} md={8}>
-                    {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
                 </Col>
             </Row>
             <Row>
@@ -85,10 +86,12 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         const defSource = this.props.term.definitionSource;
         return <Row>
             <Col xl={2} md={4}>
-                <Label className="attribute-label definition">{this.props.i18n("term.metadata.definitionSource")}</Label>
+                <Label
+                    className="attribute-label definition mb-3 mt-1">{this.props.i18n("term.metadata.definitionSource")}</Label>
             </Col>
             <Col xl={10} md={8}>
-                {defSource && <TermDefinitionSourceLink term={this.props.term}/>}
+                {defSource ? <TermDefinitionSourceLink term={this.props.term}/> :
+                    <p className="text-muted italics">{this.props.i18n("term.metadata.definitionSource.empty")}</p>}
             </Col>
         </Row>;
     }
