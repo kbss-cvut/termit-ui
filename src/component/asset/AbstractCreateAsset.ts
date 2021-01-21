@@ -9,7 +9,6 @@ export interface AbstractCreateAssetState {
     generateIri: boolean;
 }
 
-
 let loadIdentifier = <T extends { name: string, assetType: string }>(parameters: T) => {
     return Ajax.post(`${Constants.API_PREFIX}/identifiers`,
         params(parameters)

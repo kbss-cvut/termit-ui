@@ -225,9 +225,9 @@ const cs = {
         "resource.metadata.file.content.view.tooltip": "Zobrazit obsah souboru a anotovat ho",
         "resource.metadata.file.content.download": "Stáhnout",
         "resource.metadata.document.vocabulary": "Dokumentový slovník",
-        "resource.metadata.document.files.add": "Přidat soubor",
-        "resource.metadata.document.files.create.tooltip": "Přidat nový soubor do tohoto dokumentu",
-        "resource.metadata.document.files.create.dialog.title": "Nový soubor",
+        "resource.metadata.document.files.actions.add": "Přidat soubor",
+        "resource.metadata.document.files.actions.add.tooltip": "Přidat nový soubor do tohoto dokumentu",
+        "resource.metadata.document.files.actions.add.dialog.title": "Nový soubor",
         "resource.metadata.document.files.empty": "Žádné soubory nenalezeny. Vytvořte nějaký...",
         "resource.file.vocabulary.create": "Přidat soubor",
 
@@ -248,7 +248,7 @@ const cs = {
             "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
             "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
             "z více zdrojů.",
-        "term.comment.help": "(Nepovinný) nedefiniční text omezující význam konceptu. Může sloužit k upřesnění významu pojmu.",
+        "term.comment.help": "(Nepovinný) nedefiniční text upřesňující význam pojmu.",
         "term.parent.help": "(Nepovinný) pojem s širším významem. Slouží k zachycení vazby na obecnější pojem " +
             "(např. 'Kostel' -> 'Budova'), k přiřazení pojmu jeho typu (např. 'Kostel sv. Ludmily na Chvalech' -> 'Kostel'), " +
             "nebo k vyjádření části celku (např. 'Klika' -> 'Dveře')",

@@ -1516,8 +1516,9 @@ describe("Async actions", () => {
             return Promise.resolve((store.dispatch as ThunkDispatch)(createFileInDocument(file, documentIri))).then(() => {
                 const actions = store.getActions();
                 expect(actions[0].type).toEqual(ActionType.CREATE_RESOURCE);
-                expect((Ajax.post as jest.Mock).mock.calls[0][0]).toEqual(Constants.API_PREFIX + "/resources/" + docName + "/files");
-                expect((Ajax.post as jest.Mock).mock.calls[0][1].getContent()).toEqual(file.toJsonLd());
+                expect((Ajax.post as jest.Mock).mock.calls[0][0]).toEqual(Constants.API_PREFIX + "/identifiers");
+                expect((Ajax.post as jest.Mock).mock.calls[1][0]).toEqual(Constants.API_PREFIX + "/resources/" + docName + "/files");
+                expect((Ajax.post as jest.Mock).mock.calls[1][1].getContent()).toEqual(file.toJsonLd());
             });
         });
     });

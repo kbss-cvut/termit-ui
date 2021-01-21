@@ -15,7 +15,7 @@ import DocumentFiles from "./DocumentFiles";
 
 interface DocumentSummaryInTabProps extends ResourceSummaryProps {
     resource: Document;
-    onFileAdded: () => void;
+    onChange: () => void;
 }
 
 export class DocumentSummaryInTab extends ResourceSummary<DocumentSummaryInTabProps> {
@@ -23,9 +23,8 @@ export class DocumentSummaryInTab extends ResourceSummary<DocumentSummaryInTabPr
         return !this.props.resource.vocabulary && Utils.sanitizeArray(this.props.resource.files).length === 0;
     }
 
-    public onFileAdded = () => {
-        this.props.loadResource(VocabularyUtils.create(this.props.resource.iri));
-        this.props.onFileAdded();
+    public reload = () => {
+        this.props.loadResource(VocabularyUtils.create(this.props.resource.iri)).then(this.props.onChange);
     };
 
     public render() {
@@ -36,7 +35,9 @@ export class DocumentSummaryInTab extends ResourceSummary<DocumentSummaryInTabPr
     protected renderMetadata() {
         return <div className="metadata-panel">
             <ResourceMetadata resource={this.props.resource} inTab={true}/>
-            <DocumentFiles document={this.props.resource} onFileAdded={this.onFileAdded}/>
+            <DocumentFiles document={this.props.resource}
+                           onFileAdded={this.reload}
+                           onFileRemoved={this.reload}/>
         </div>;
     }
 }
