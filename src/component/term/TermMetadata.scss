@@ -33,7 +33,7 @@ ul.term-items button {
   margin-left: -0.75rem;
 }
 
-hr.hr-definition-text {
+form hr.hr-definition-text {
   position: relative;
   border: none;
   height: 2px;
@@ -55,7 +55,7 @@ hr.hr-definition-text::before {
   transform: translate(0%, -50%);
 }
 
-hr.hr-definition {
+form hr.hr-definition {
   position: relative;
   border: none;
   height: 2px;
@@ -66,4 +66,27 @@ hr.hr-definition {
 
 label.definition {
   font-size: 90%;
+}
+
+/* No top hr for first item in card */
+div.card-body-basic-info hr.hr-definition-text:first-child {
+  position: relative;
+  border: none;
+  height: 2px;
+  background: $gray-500;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+div.card-body-basic-info hr.hr-definition {
+  position: relative;
+  border: none;
+  height: 2px;
+  background: $gray-500;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+}
+
+#term-metadata-definition {
+  margin-top: 0;
 }

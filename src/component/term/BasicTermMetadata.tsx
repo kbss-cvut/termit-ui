@@ -12,6 +12,7 @@ import TermLink from "./TermLink";
 import TermDefinitionSourceLink from "./TermDefinitionSourceLink";
 import {OWL, SKOS} from "../../util/Namespaces";
 import {getLocalizedOrDefault} from "../../model/MultilingualString";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface BasicTermMetadataProps extends HasI18n {
     term: Term;
@@ -28,19 +29,21 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
     public render() {
         const {i18n, term, language} = this.props;
         return <>
+            <TermDefinitionContainer>
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label bold">{i18n("term.metadata.definition")}</Label>
+                    <Label className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
-                    <Label id="term-metadata-definition"
-                           className="bold">{getLocalizedOrDefault(term.definition, "", language)}</Label>
+                    <p id="term-metadata-definition"
+                           className="lead">{getLocalizedOrDefault(term.definition, "", language)}</p>
                 </Col>
             </Row>
             {this.renderDefinitionSource()}
+            </TermDefinitionContainer>
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
+                    <Label className="attribute-label mb-3">{i18n("term.metadata.types")}</Label>
                 </Col>
                 <Col xl={10} md={8}>{this.renderTypes()}
                 </Col>
@@ -49,15 +52,15 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             {this.renderSubTerms()}
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
+                    <Label className="attribute-label mb-3">{i18n("term.metadata.comment")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
-                    <Label id="term-metadata-comment">{getLocalizedOrDefault(term.scopeNote, "", language)}</Label>
+                    <p id="term-metadata-comment">{getLocalizedOrDefault(term.scopeNote, "", language)}</p>
                 </Col>
             </Row>
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label">{i18n("term.metadata.source")}</Label>
+                    <Label className="attribute-label mb-3">{i18n("term.metadata.source")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
                     {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
@@ -65,7 +68,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             </Row>
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label"
+                    <Label className="attribute-label mb-3"
                            title={i18n("term.metadata.vocabulary.tooltip")}>{i18n("type.vocabulary")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
@@ -82,7 +85,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         const defSource = this.props.term.definitionSource;
         return <Row>
             <Col xl={2} md={4}>
-                <Label className="attribute-label">{this.props.i18n("term.metadata.definitionSource")}</Label>
+                <Label className="attribute-label definition">{this.props.i18n("term.metadata.definitionSource")}</Label>
             </Col>
             <Col xl={10} md={8}>
                 {defSource && <TermDefinitionSourceLink term={this.props.term}/>}
@@ -109,7 +112,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         }
 
         const renderItem = (item: string) => Utils.isLink(item) ?
-            <OutgoingLink iri={item} label={<AssetLabel iri={item}/>}/> : <Label>{item}</Label>
+            <OutgoingLink iri={item} label={<AssetLabel iri={item}/>}/> : <p>{item}</p>
 
         if (source.length === 1) {
             return renderItem(source[0]);
@@ -125,7 +128,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         parents.sort(Utils.labelComparator);
         return <Row>
             <Col xl={2} md={4}>
-                <Label className="attribute-label">{this.props.i18n("term.metadata.parent")}</Label>
+                <Label className="attribute-label mb-3">{this.props.i18n("term.metadata.parent")}</Label>
             </Col>
             <Col xl={10} md={8}>
                 <ul id="term-metadata-parentterms" className="term-items">
@@ -142,7 +145,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         source.sort(termInfoComparator);
         return <Row>
             <Col xl={2} md={4}>
-                <Label className="attribute-label">{this.props.i18n("term.metadata.subTerms")}</Label>
+                <Label className="attribute-label mb-3">{this.props.i18n("term.metadata.subTerms")}</Label>
             </Col>
             <Col xl={10} md={8}>
                 <ul id="term-metadata-subterms" className="term-items">{source.map(item => <li key={item.iri}>
