@@ -8,7 +8,7 @@ interface WindowTitleProps {
 }
 
 const WindowTitle: React.FC<WindowTitleProps> = props => <Helmet>
-    <title>{props.title}{props.appendAppName && `| ${Constants.APP_NAME}`}</title>
+    <title>{`${props.title}${props.appendAppName ? " | " + Constants.APP_NAME : ""}`}</title>
 </Helmet>;
 
 WindowTitle.defaultProps = {
