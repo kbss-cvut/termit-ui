@@ -42,13 +42,21 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 </Row>
                 <Row>
                     <Col xl={2} md={4}>
-                        <Label className="attribute-label mb-3 definition">{i18n("term.metadata.source")}</Label>
+                        <Label className="attribute-label mt-2 definition">{i18n("term.metadata.source")}</Label>
                     </Col>
                     <Col xl={10} md={8}>
-                        {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
+                        <Row>
+                            <Col>
+                                {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {this.renderDefinitionSource()}
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
-                {this.renderDefinitionSource()}
             </TermDefinitionContainer>
             <Row>
                 <Col xl={2} md={4}>
@@ -80,20 +88,10 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
     }
 
     private renderDefinitionSource() {
-        if (!this.props.withDefinitionSource) {
+        if (!this.props.withDefinitionSource || !this.props.term.definitionSource) {
             return null;
         }
-        const defSource = this.props.term.definitionSource;
-        return <Row>
-            <Col xl={2} md={4}>
-                <Label
-                    className="attribute-label definition mb-3 mt-1">{this.props.i18n("term.metadata.definitionSource")}</Label>
-            </Col>
-            <Col xl={10} md={8}>
-                {defSource ? <TermDefinitionSourceLink term={this.props.term}/> :
-                    <p className="text-muted italics">{this.props.i18n("term.metadata.definitionSource.empty")}</p>}
-            </Col>
-        </Row>;
+        return <TermDefinitionSourceLink term={this.props.term}/>;
     }
 
     private renderTypes() {

@@ -37,7 +37,7 @@ export const TermDefinitionSourceLink: React.FC<TermDefinitionSourceLinkProps> =
         <Button id="term-metadata-definitionSource-goto" color="primary" outline={true} size="sm" className="ml-1"
                 onClick={navigateToDefinitionSource}
                 title={props.i18n("term.metadata.definitionSource.goto.tooltip")}>
-            <GoFileSymlinkFile/>&nbsp;
+            <GoFileSymlinkFile className="mr-1"/>
             {props.i18n("term.metadata.definitionSource.goto")}
         </Button>
     </>;
