@@ -424,6 +424,7 @@ const cs = {
         'change-password.updated.message': 'Heslo bylo úspěšně změněno',
         'change-password.passwords.differ.tooltip': 'Staré a nové heslo se musí lišit.',
 
+        "annotator": "Anotátor",
         'annotator.annotate-content': 'Anotovat obsah',
         "annotator.content.loading": "Načítám obsah souboru...",
         "annotator.selectionPurpose.dialog.title": "K čemu bude sloužit vybraný text?",

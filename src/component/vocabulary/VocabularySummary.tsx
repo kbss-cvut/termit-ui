@@ -8,8 +8,8 @@ import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
 import {
     exportGlossary,
     loadVocabulary,
-    updateVocabulary,
     removeVocabulary,
+    updateVocabulary,
     validateVocabulary
 } from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
@@ -26,6 +26,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
+import WindowTitle from "../misc/WindowTitle";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
@@ -41,7 +42,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 export interface VocabularySummaryState extends EditableComponentState {
 }
 
-export class VocabularySummary extends EditableComponent<VocabularySummaryProps,VocabularySummaryState> {
+export class VocabularySummary extends EditableComponent<VocabularySummaryProps, VocabularySummaryState> {
 
     constructor(props: VocabularySummaryProps) {
         super(props);
@@ -100,29 +101,29 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
     };
 
     public render() {
+        const {i18n, vocabulary} = this.props;
         const buttons = [];
         if (!this.state.edit) {
             buttons.push(<Button id="vocabulary-summary-edit" key="vocabulary.summary.edit" size="sm" color="primary"
-                                 title={this.props.i18n("edit")}
-                                 onClick={this.onEdit}><GoPencil/> {this.props.i18n("edit")}</Button>);
+                                 title={i18n("edit")} onClick={this.onEdit}><GoPencil/> {i18n("edit")}</Button>);
         }
         buttons.push(this.renderExportDropdown());
         buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
-                             title={this.props.i18n("asset.remove.tooltip")}
-                             onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
+                             title={i18n("asset.remove.tooltip")}
+                             onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{i18n("remove")}</Button>);
 
         return <div id="vocabulary-detail">
+            <WindowTitle
+                title={`${vocabulary.label} | ${i18n("vocabulary.management.vocabularies")}`}/>
             <HeaderWithActions title={
-                <>{this.props.vocabulary.label}<CopyIriIcon url={this.props.vocabulary.iri as string}/></>
+                <>{vocabulary.label}<CopyIriIcon url={vocabulary.iri as string}/></>
             } actions={buttons}/>
-            <RemoveAssetDialog show={this.state.showRemoveDialog} asset={this.props.vocabulary}
-                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
+            <RemoveAssetDialog show={this.state.showRemoveDialog} asset={vocabulary} onCancel={this.onCloseRemove}
+                               onSubmit={this.onRemove}/>
 
             {this.state.edit ?
-                <VocabularyEdit save={this.onSave} cancel={this.onCloseEdit}
-                                vocabulary={this.props.vocabulary}/> :
-                <VocabularyMetadata vocabulary={this.props.vocabulary}
-                                    location={this.props.location} match={this.props.match}
+                <VocabularyEdit save={this.onSave} cancel={this.onCloseEdit} vocabulary={vocabulary}/> :
+                <VocabularyMetadata vocabulary={vocabulary} location={this.props.location} match={this.props.match}
                                     onChange={this.loadVocabulary}/>}
 
         </div>
