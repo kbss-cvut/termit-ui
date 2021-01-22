@@ -16,6 +16,7 @@ import EnhancedInput, {LabelDirection} from "../misc/EnhancedInput";
 import Constants from "../../util/Constants";
 import "./Login.scss";
 import {Link} from "react-router-dom";
+import WindowTitle from "../misc/WindowTitle";
 
 interface LoginProps extends HasI18n {
     loading: boolean;
@@ -67,6 +68,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
     public render() {
         const i18n = this.props.i18n;
         return <PublicLayout title={i18n("login.title")}>
+            <WindowTitle title={i18n("login.title")}/>
             <Card className="modal-panel">
                 <CardHeader className="text-center pb-0 border-bottom-0">
                     <h1>{Constants.APP_NAME}</h1>

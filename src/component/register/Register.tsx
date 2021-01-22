@@ -15,6 +15,7 @@ import {register} from "../../action/AsyncUserActions";
 import RegistrationForm from "./RegistrationForm";
 import Constants from "../../util/Constants";
 import {Link} from "react-router-dom";
+import WindowTitle from "../misc/WindowTitle";
 
 interface RegisterProps extends HasI18n {
     loading: boolean;
@@ -28,7 +29,8 @@ export const Register: React.FC<RegisterProps> = props => {
 
     const onRegister = (userData: UserAccountData) => props.register(userData);
     const onCancel = () => Routing.transitionTo(Routes.login);
-    return <PublicLayout title={props.i18n("login.title")}>
+    return <PublicLayout title={props.i18n("register.title")}>
+        <WindowTitle title={props.i18n("register.title")}/>
         <Card className="modal-panel">
             <CardHeader className="text-center pb-0 border-bottom-0">
                 <h1>{Constants.APP_NAME}</h1>
