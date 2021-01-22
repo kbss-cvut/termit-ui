@@ -12,8 +12,7 @@ import {GoPlus} from "react-icons/go";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import Routing from "../../util/Routing";
 import Vocabulary from "../../model/Vocabulary";
-import {Helmet} from "react-helmet";
-import Constants from "../../util/Constants";
+import WindowTitle from "../misc/WindowTitle";
 
 interface VocabularyManagementProps extends HasI18n {
     loadVocabularies: () => void;
@@ -40,7 +39,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
     </>
 
     return <div>
-        <Helmet><title>{`${i18n("vocabulary.management.vocabularies")} | ${Constants.APP_NAME}`}</title></Helmet>
+        <WindowTitle title={i18n("vocabulary.management.vocabularies")}/>
         <HeaderWithActions title={i18n("vocabulary.management")} actions={buttons}/>
         <div className="row">
             <Col md={12}>

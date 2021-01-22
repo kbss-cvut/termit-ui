@@ -1,12 +1,5 @@
 import React from "react";
-import {
-    Button,
-    ButtonToolbar,
-    Card,
-    CardBody,
-    Col,
-    Row
-} from "reactstrap";
+import {Button, ButtonToolbar, Card, CardBody, Col, Row} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Routes from "../../util/Routes";
 import Routing from "../../util/Routing";
@@ -34,8 +27,7 @@ import {publishNotification} from "../../action/SyncActions";
 import IdentifierResolver from "../../util/IdentifierResolver";
 import AddFile from "../resource/document/AddFile";
 import RemoveFile from "../resource/document/RemoveFile";
-import Constants from "../../util/Constants";
-import {Helmet} from "react-helmet";
+import WindowTitle from "../misc/WindowTitle";
 
 interface CreateVocabularyProps extends HasI18n {
     createFile: (file: TermItFile, documentIri: string) => Promise<any>,
@@ -139,9 +131,7 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         const onCancel = CreateVocabulary.onCancel;
 
         return <>
-            <Helmet>
-                <title>{`${i18n("vocabulary.create.title")} | ${Constants.APP_NAME}`}</title>
-            </Helmet>
+            <WindowTitle title={i18n("vocabulary.create.title")}/>
             <HeaderWithActions title={i18n("vocabulary.create.title")}/>
             <Card id="create-vocabulary">
                 <CardBody>

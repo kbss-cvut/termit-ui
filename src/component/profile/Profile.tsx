@@ -15,8 +15,7 @@ import ProfileEditForm from "./ProfileEditForm";
 import {updateProfile} from "../../action/AsyncUserActions";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {Card, CardBody} from "reactstrap";
-import Constants from "../../util/Constants";
-import {Helmet} from "react-helmet";
+import WindowTitle from "../misc/WindowTitle";
 
 interface ProfileProps extends HasI18n {
     user: User;
@@ -85,9 +84,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
         const {i18n, user} = this.props;
 
         return <>
-            <Helmet>
-                <title>{`${i18n("main.user-profile")} | ${Constants.APP_NAME}`}</title>
-            </Helmet>
+            <WindowTitle title={i18n("main.user-profile")}/>
             <HeaderWithActions title={`${i18n("main.user-profile")}: ${user.username}`}
                                actions={this.renderActionButtons()}/>
             <Card id="panel-profile">

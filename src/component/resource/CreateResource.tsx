@@ -21,8 +21,7 @@ import Utils from "../../util/Utils";
 import NotificationType from "../../model/NotificationType";
 import AddFile from "./document/AddFile";
 import RemoveFile from "./document/RemoveFile";
-import Constants from "../../util/Constants";
-import {Helmet} from "react-helmet";
+import WindowTitle from "../misc/WindowTitle";
 
 interface CreateResourceProps extends HasI18n {
     createResource: (resource: Resource) => Promise<string>;
@@ -98,9 +97,7 @@ export class CreateResource extends React.Component<CreateResourceProps, CreateR
     public render() {
         const i18n = this.props.i18n;
         return <>
-            <Helmet>
-                <title>{`${i18n("resource.create.title")} | ${Constants.APP_NAME}`}</title>
-            </Helmet>
+            <WindowTitle title={i18n("resource.create.title")}/>
             <HeaderWithActions title={i18n("resource.create.title")}/>
             <Card id="create-resource">
                 <CardBody>

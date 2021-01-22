@@ -26,8 +26,7 @@ import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import TermQualityBadge from "./TermQualityBadge";
-import Constants from "../../util/Constants";
-import {Helmet} from "react-helmet";
+import WindowTitle from "../misc/WindowTitle";
 
 export interface CommonTermDetailProps extends HasI18n {
     configuredLanguage: string;
@@ -136,11 +135,9 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
         }
         const buttons = this.getActions();
         return <div id="term-detail">
-            <Helmet>
-                <title>{`${getLocalized(term.label, this.state.language)} | ${vocabulary.label} | ${Constants.APP_NAME}`}</title>
-            </Helmet>
-            <HeaderWithActions title={this.renderTitle()} actions={buttons}/>
+            <WindowTitle title={`${getLocalized(term.label, this.state.language)} | ${vocabulary.label}`}/>
 
+            <HeaderWithActions title={this.renderTitle()} actions={buttons}/>
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
                                onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
             {this.state.edit ?

@@ -14,10 +14,9 @@ import File from "../../model/File";
 import DocumentSummary from "./document/DocumentSummary";
 import Document from "../../model/Document";
 import Routes from "../../util/Routes";
-import Constants from "../../util/Constants";
-import {Helmet} from "react-helmet";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
+import WindowTitle from "../misc/WindowTitle";
 
 interface ResourceSummaryRouteProps extends RouteComponentProps<any>, HasI18n {
     resource: Resource;
@@ -72,9 +71,7 @@ export class ResourceSummaryRoute extends React.Component<ResourceSummaryRoutePr
                 component = <ResourceSummary resource={resource}/>;
         }
         return <>
-            <Helmet>
-                <title>{`${resource.label} | ${this.props.i18n("main.nav.resources")} | ${Constants.APP_NAME}`}</title>
-            </Helmet>
+            <WindowTitle title={`${resource.label} | ${this.props.i18n("main.nav.resources")}`}/>
             {component}
         </>
     }

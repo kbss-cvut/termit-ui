@@ -12,10 +12,9 @@ import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
 import Utils from "../../util/Utils";
 import {RouteComponentProps} from "react-router";
-import Constants from "../../util/Constants";
-import {Helmet} from "react-helmet";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
+import WindowTitle from "../misc/WindowTitle";
 
 interface CreateTermProps extends RouteComponentProps<any>, HasI18n {
     vocabulary: Vocabulary;
@@ -60,9 +59,8 @@ export class CreateTerm extends React.Component<CreateTermProps> {
     public render() {
         const vocabulary = this.props.vocabulary;
         if (vocabulary !== EMPTY_VOCABULARY) {
-            return <><Helmet>
-                <title>{`${this.props.i18n("glossary.new")} | ${vocabulary.label} | ${Constants.APP_NAME}`}</title>
-            </Helmet>
+            return <>
+                <WindowTitle title={`${this.props.i18n("glossary.new")} | ${vocabulary.label}`}/>
                 <TermMetadataCreate onCreate={this.onCreate} vocabularyIri={this.props.vocabulary.iri}/>
             </>
         }
