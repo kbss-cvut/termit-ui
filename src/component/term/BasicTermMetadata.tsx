@@ -31,13 +31,9 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         return <>
             <TermDefinitionContainer>
                 <Row>
-                    <Col xl={2} md={4}>
-                        <Label
-                            className="attribute-label mb-3 mt-2 definition">{i18n("term.metadata.definition.text")}</Label>
-                    </Col>
-                    <Col xl={10} md={8}>
+                    <Col xs={12}>
                         <p id="term-metadata-definition"
-                           className="lead">{getLocalizedOrDefault(term.definition, "", language)}</p>
+                           className="lead mb-4">{getLocalizedOrDefault(term.definition, "", language)}</p>
                     </Col>
                 </Row>
                 <Row>
