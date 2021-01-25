@@ -18,6 +18,7 @@ import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter
 import {Table} from "reactstrap";
 import OntologicalVocabulary from "../../util/VocabularyUtils";
 import Pagination from "../misc/table/Pagination";
+import "./DocumentList.scss"
 
 interface DocumentListProps extends HasI18n {
     documents: Document[],
