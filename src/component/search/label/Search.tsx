@@ -11,6 +11,7 @@ import TermItState from "../../../model/TermItState";
 import SearchQuery from "../../../model/SearchQuery";
 import SearchResults from "./SearchResults";
 import ContainerMask from "../../misc/ContainerMask";
+import WindowTitle from "../../misc/WindowTitle";
 
 interface SearchProps extends HasI18n, RouteComponentProps<any> {
     addSearchListener: () => void;
@@ -40,9 +41,10 @@ export class Search extends React.Component<SearchProps> {
         const results = this.getResults();
 
         return <div className="relative">
+            <WindowTitle title={this.props.i18n("search.title")}/>
             {results ? <SearchResults results={results}/> : null}
-                {loading}
-            </div>
+            {loading}
+        </div>
     }
 }
 

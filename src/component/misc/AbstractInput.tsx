@@ -19,6 +19,7 @@ export interface AbstractInputProps {
     autoComplete?: string;
     type?: InputType;
     disabled?: boolean;
+    readOnly?: boolean;
 }
 
 export default class AbstractInput<T extends AbstractInputProps> extends React.Component<T> {

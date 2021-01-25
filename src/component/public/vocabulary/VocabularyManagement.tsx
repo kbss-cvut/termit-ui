@@ -9,6 +9,7 @@ import {loadPublicVocabularies} from "../../../action/AsyncPublicViewActions";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import HeaderWithActions from "../../misc/HeaderWithActions";
+import WindowTitle from "../../misc/WindowTitle";
 
 interface VocabulariesProps extends HasI18n {
     loadVocabularies: () => void;
@@ -29,6 +30,7 @@ const VocabularyManagement: React.FC<VocabulariesProps> = props => {
     };
 
     return <div id="public-vocabularies">
+        <WindowTitle title={props.i18n("vocabulary.management.vocabularies")}/>
         <HeaderWithActions title={props.i18n("vocabulary.management.vocabularies")}/>
         <VocabularyList onSelect={onSelect}/>
     </div>;

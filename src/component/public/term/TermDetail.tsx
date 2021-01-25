@@ -13,6 +13,7 @@ import TermMetadata from "./TermMetadata";
 import {loadPublicTerm, loadPublicVocabulary} from "../../../action/AsyncPublicViewActions";
 import {getLocalized, getLocalizedPlural} from "../../../model/MultilingualString";
 import {CommonTermDetailProps, resolveInitialLanguage} from "../../term/TermDetail";
+import WindowTitle from "../../misc/WindowTitle";
 
 interface TermDetailProps extends CommonTermDetailProps, RouteComponentProps<any> {
 }
@@ -35,6 +36,7 @@ const TermDetail: React.FC<TermDetailProps> = props => {
     const altLabels = getLocalizedPlural(term.altLabels, language).sort().join(", ");
 
     return <div id="public-term-detail">
+        <WindowTitle title={`${getLocalized(term.label, language)} | ${props.vocabulary.label}`}/>
         <HeaderWithActions title={<>{getLocalized(term.label, language)}<CopyIriIcon url={term.iri as string}/>
             <div className="small italics">{altLabels.length > 0 ? altLabels : "\u00a0"}</div>
         </>}/>

@@ -7,29 +7,29 @@ import {Link} from "react-router-dom";
 import {GoPlus} from "react-icons/go";
 import ResourceList from "./ResourceList";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import WindowTitle from "../misc/WindowTitle";
 
-class ResourceManagement extends React.Component<HasI18n> {
-    public render() {
-        const i18n = this.props.i18n;
+const ResourceManagement: React.FC<HasI18n> = props => {
+    const i18n = props.i18n;
 
-        const buttons = <Link id="resources-create" key="resource.management.create" to={Routes.createResource.path}
-                              className="btn btn-primary btn-sm" title={i18n("resource.management.create.tooltip")}>
-            <GoPlus/>&nbsp;{i18n("resource.management.new")}
-        </Link>;
+    const buttons = <Link id="resources-create" key="resource.management.create" to={Routes.createResource.path}
+                          className="btn btn-primary btn-sm" title={i18n("resource.management.create.tooltip")}>
+        <GoPlus/>&nbsp;{i18n("resource.management.new")}
+    </Link>;
 
-        return <div>
-            <HeaderWithActions title={i18n("resource.management")} actions={buttons}/>
-            <div className="row">
-                <Col md={12}>
-                    <Card>
-                        <CardBody>
-                            <ResourceList/>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </div>
-        </div>;
-    }
+    return <div>
+        <WindowTitle title={i18n("main.nav.resources")}/>
+        <HeaderWithActions title={i18n("resource.management")} actions={buttons}/>
+        <div className="row">
+            <Col md={12}>
+                <Card>
+                    <CardBody>
+                        <ResourceList/>
+                    </CardBody>
+                </Card>
+            </Col>
+        </div>
+    </div>;
 }
 
 export default injectIntl(withI18n(ResourceManagement));
