@@ -10,6 +10,7 @@ import {TermDefinitionSourceLink} from "../TermDefinitionSourceLink";
 import {flushPromises, mountWithIntl} from "../../../__tests__/environment/Environment";
 import {act} from "react-dom/test-utils";
 import {MemoryRouter} from "react-router";
+import {langString} from "../../../model/MultilingualString";
 
 describe("TermDefinitionSourceLink", () => {
 
@@ -31,11 +32,11 @@ describe("TermDefinitionSourceLink", () => {
         };
         const term = new Term({
             iri: Generator.generateUri(),
-            label: "Test",
-            comment: "test",
+            label: langString("Test"),
+            scopeNote: langString("test"),
             vocabulary,
             definitionSource: {
-                term: {iri: "test", label: "test"},
+                term: {iri: "test", label: langString("test")},
                 target: {
                     source: {iri: Generator.generateUri()},
                     selectors: [selector],

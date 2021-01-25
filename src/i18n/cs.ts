@@ -271,6 +271,7 @@ const cs = {
         "term.metadata.definition": "Definice",
         "term.metadata.definition.text": "Text",
         "term.metadata.definitionSource": "Dokument",
+        "term.metadata.definitionSource.title": "Zdroj definice tohoto pojmu",
         "term.metadata.definitionSource.goto": "Zobrazit v dokumentu",
         "term.metadata.definitionSource.goto.tooltip": "Zobrazit zdroj definice přímo v příslušném dokumentu",
         'term.metadata.comment': 'Doplňující poznámka',

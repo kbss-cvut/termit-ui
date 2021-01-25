@@ -29,31 +29,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
     public render() {
         const {i18n, term, language} = this.props;
         return <>
-            <TermDefinitionContainer>
-                <Row>
-                    <Col xs={12}>
-                        <p id="term-metadata-definition"
-                           className="lead mb-4">{getLocalizedOrDefault(term.definition, "", language)}</p>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xl={2} md={4}>
-                        <Label className="attribute-label mt-2 definition">{i18n("term.metadata.source")}</Label>
-                    </Col>
-                    <Col xl={10} md={8}>
-                        <Row>
-                            <Col>
-                                {BasicTermMetadata.renderItems(term.sources, "term-metadata-sources")}
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                {this.renderDefinitionSource()}
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
-            </TermDefinitionContainer>
+            {this.renderTermDefinition()}
             <Row>
                 <Col xl={2} md={4}>
                     <Label className="attribute-label mb-3">{i18n("term.metadata.types")}</Label>
@@ -81,6 +57,33 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 </Col>
             </Row>
         </>;
+    }
+
+    private renderTermDefinition() {
+        const {term, language, i18n} = this.props;
+        const sources = Utils.sanitizeArray(term.sources);
+        return <TermDefinitionContainer>
+            <Row>
+                <Col xs={12}>
+                    <p id="term-metadata-definition"
+                       className="lead mb-1">{getLocalizedOrDefault(term.definition, "", language)}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12}>
+                    {sources.length > 0 && <footer className="blockquote-footer mb-1 term-metadata-definition-source">
+                        {sources.map(s => {
+                            return <>
+                                <cite key={s} title={i18n("term.metadata.definitionSource.title")}>
+                                    {Utils.isLink(s) ? <OutgoingLink iri={s} label={<AssetLabel iri={s}/>}/> : <>{s}</>}
+                                </cite>
+                                {this.renderDefinitionSource()}
+                            </>;
+                        })}
+                    </footer>}
+                </Col>
+            </Row>
+        </TermDefinitionContainer>;
     }
 
     private renderDefinitionSource() {

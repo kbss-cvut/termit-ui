@@ -83,10 +83,14 @@ div.card-body-basic-info hr.hr-definition {
   border: none;
   height: 2px;
   background: $gray-500;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   margin-top: 1.5rem;
 }
 
 #term-metadata-definition {
   margin-top: 0;
+}
+
+.term-metadata-definition-source {
+  font-size: 1rem;
 }

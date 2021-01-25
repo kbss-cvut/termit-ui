@@ -266,6 +266,7 @@ const en = {
         "term.metadata.definition": "Definition",
         "term.metadata.definition.text": "Text",
         "term.metadata.definitionSource": "Document",
+        "term.metadata.definitionSource.title": "The source of the definition of this term",
         "term.metadata.definitionSource.goto": "See in the document",
         "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding document",
         'term.metadata.comment': 'Scope note',
