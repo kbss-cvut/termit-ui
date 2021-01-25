@@ -195,6 +195,7 @@ const cs = {
         "vocabulary.document.label": "Dokument pro {vocabulary}",
         "vocabulary.document.attach": "Připojit dokument",
         "vocabulary.document.create": "Vytvořit nový dokument",
+        "vocabulary.document.create.title": "Vytvořte dokument",
         "vocabulary.document.select": "Vybrat existující dokument",
         "vocabulary.document.select.title": "Vyberte dokument",
         "vocabulary.document.set": "Změnit dokument",

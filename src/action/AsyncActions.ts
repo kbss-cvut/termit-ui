@@ -209,18 +209,19 @@ export function loadResource(iri: IRI) {
         type: ActionType.LOAD_RESOURCE
     };
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-        if (isActionRequestPending(getState(), action)) {
-            return Promise.resolve({});
-        }
         dispatch(asyncActionRequest(action));
         return Ajax
             .get(Constants.API_PREFIX + "/resources/" + iri.fragment, param("namespace", iri.namespace))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<ResourceData>(data, JOINED_RESOURCE_CONTEXT))
-            .then((data: ResourceData) =>
-                dispatch(asyncActionSuccessWithPayload(action, AssetFactory.createResource((data)))))
+            .then((data: ResourceData) => {
+                    const resource = AssetFactory.createResource(data);
+                    dispatch(asyncActionSuccessWithPayload(action,resource));
+                    return resource;
+                })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
-                return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)))
+                dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)))
+                return null;
             });
     };
 }

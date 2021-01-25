@@ -16,18 +16,21 @@ import {
 } from "../../../action/AsyncActions";
 import {GoX} from "react-icons/go";
 import classNames from "classnames";
+import CreateResourceForm from "../CreateResourceForm";
 
 interface OptionalDocumentSummaryInTabProps extends HasI18n {
     vocabulary: Vocabulary;
     onChange: () => void;
 
-    loadResource: (iri: IRI) => void;
+    loadDocument: (iri: IRI) => Promise<Document | null>;
     updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
 }
 
 export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTabProps> = (props) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
+    const [isAttachOpen, setIsAttachOpen] = useState(false);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const toggleAttach = () => setIsAttachOpen(!isAttachOpen);
+    const toggleCreate = () => setIsCreateOpen(!isCreateOpen);
 
     if (props.vocabulary.document) {
         const onVocabularyDocumentRemove = () => {
@@ -35,7 +38,7 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
             delete props.vocabulary.document!.vocabulary;
             delete props.vocabulary.document;
             props.updateVocabulary(props.vocabulary).then(() =>
-                props.loadResource(VocabularyUtils.create(document?.iri!))
+                props.loadDocument(VocabularyUtils.create(document?.iri!))
             );
         };
 
@@ -44,7 +47,7 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
             <Button color="primary"
                     title={props.i18n("vocabulary.document.remove")}
                     size="sm"
-                    style={{float:"right"}}
+                    style={{float: "right"}}
                     onClick={onVocabularyDocumentRemove}><GoX/> {props.i18n("vocabulary.document.remove")}
             </Button>
             &nbsp;
@@ -54,33 +57,60 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
         const onVocabularyDocumentSet = (document: Document) => {
             props.vocabulary.document = document;
             // to avoid circular dependencies
-            props.vocabulary.document.files.forEach( f => delete f.owner);
+            props.vocabulary.document.files.forEach(f => delete f.owner);
             return props.updateVocabulary(props.vocabulary).then(() =>
-                props.loadResource(VocabularyUtils.create(document.iri!))
+                props.loadDocument(VocabularyUtils.create(document.iri!))
             );
         };
 
         const onSelected = (document: Document) => {
-            return onVocabularyDocumentSet(document).then(toggle);
+            return onVocabularyDocumentSet(document).then(toggleAttach);
+        }
+
+        const onCreated = (iri: string) => {
+            props.loadDocument(VocabularyUtils.create(iri)).then(document => {
+                if ( document ) {
+                    onSelected(document);
+                }
+            })
         }
 
         return <div className={classNames(
             "card-header", "d-flex", "justify-content-between")}>
             <div/>
-            <Modal isOpen={isOpen} toggle={toggle}>
+            <div>
+                <Modal isOpen={isAttachOpen} toggle={toggleAttach}>
+                    <ModalHeader>
+                        {props.i18n("vocabulary.document.select.title")}
+                    </ModalHeader>
+                    <ModalBody>
+                        <DocumentList onSelected={onSelected}/>
+                    </ModalBody>
+                </Modal><Modal isOpen={isCreateOpen} toggle={toggleCreate}>
                 <ModalHeader>
-                    {props.i18n("vocabulary.document.select.title")}
+                    {props.i18n("vocabulary.document.create.title")}
                 </ModalHeader>
                 <ModalBody>
-                    <DocumentList onSelected={onSelected}/>
+                    <CreateResourceForm onCancel={toggleCreate}
+                                        onSuccess={onCreated}
+                                        justDocument={true}/>
                 </ModalBody>
             </Modal>
-            <Button color="primary"
-                    title={props.i18n("vocabulary.document.select")}
-                    size="sm"
-                    onClick={toggle}>
-                {props.i18n("vocabulary.document.select")}
-            </Button>
+            </div>
+            <div>
+                <Button color="primary"
+                        title={props.i18n("vocabulary.document.create")}
+                        size="sm"
+                        onClick={toggleCreate}>
+                    {props.i18n("vocabulary.document.create")}
+                </Button>
+                <Button color="primary"
+                        title={props.i18n("vocabulary.document.select")}
+                        size="sm"
+                        onClick={toggleAttach}>
+                    {props.i18n("vocabulary.document.select")}
+                </Button>
+            </div>
         </div>;
     }
 }
@@ -89,7 +119,7 @@ export default connect(() => {
     ;
 }, (dispatch: ThunkDispatch) => {
     return {
-        loadResource: (iri: IRI) => dispatch(loadResource(iri)),
+        loadDocument: (iri: IRI) => dispatch(loadResource(iri)) as Promise<Document | null>,
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),
     };
 })(injectIntl(withI18n(OptionalDocumentSummaryInTab)));
