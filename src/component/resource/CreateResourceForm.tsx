@@ -23,7 +23,7 @@ interface CreateResourceFormProps extends HasI18n {
     uploadFileContent: (fileIri: string, file: File) => Promise<any>,
     publishNotification: (notification: AppNotification) => void;
     onCancel: () => void;
-    onSuccess: (iri : string) => void;
+    onSuccess: (iri : string, locationIri : string) => void;
     justDocument: boolean
 }
 
@@ -62,7 +62,7 @@ export class CreateResourceForm extends React.Component<CreateResourceFormProps,
                             .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})))
                 )
             )
-                .then(() => onSuccess(iri)
+                .then(() => onSuccess(resource.iri, iri)
                 )
                 .then(() => iri)
         });

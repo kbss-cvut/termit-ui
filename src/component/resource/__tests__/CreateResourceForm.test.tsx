@@ -103,7 +103,7 @@ describe("CreateResourceForm", () => {
         wrapper.instance().onCreate(new Resource({iri, label: "Test"}));
         return Promise.resolve().then(() => {
             return Promise.resolve().then(() => {
-                expect(onSuccess).toHaveBeenCalledWith(iri);
+                expect(onSuccess).toHaveBeenCalledWith(iri, iri);
             });
         })
     });

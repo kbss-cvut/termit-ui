@@ -70,9 +70,9 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
         const onCreated = (iri: string) => {
             props.loadDocument(VocabularyUtils.create(iri)).then(document => {
                 if ( document ) {
-                    onSelected(document);
+                    onVocabularyDocumentSet(document)
                 }
-            })
+            }).then(toggleCreate)
         }
 
         return <div className={classNames(

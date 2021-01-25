@@ -14,7 +14,7 @@ interface CreateResourceProps extends HasI18n {
 
 export const CreateResource: React.FC<CreateResourceProps> = (props: CreateResourceProps) => {
 
-    const onSuccess = (iri: string) => {
+    const onSuccess = (iri: string, iriLocation: string) => {
         Routing.transitionTo(Routes.resourceSummary, IdentifierResolver.routingOptionsFromLocation(iri));
     };
 
