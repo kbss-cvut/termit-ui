@@ -9,13 +9,13 @@ import Tabs from "../misc/Tabs";
 import AssetHistory from "../changetracking/AssetHistory";
 import TermChangeFrequency from "./TermChangeFrequency";
 import Terms from "../term/Terms";
-import DocumentSummaryInTab from "../resource/document/DocumentSummaryInTab";
 import {Location} from "history";
 import {match as Match} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import {selectVocabularyTerm} from "../../action/SyncActions";
 import Utils from "../../util/Utils";
+import OptionalDocumentSummaryInTab from "../resource/document/OptionalDocumentSummaryInTab";
 
 interface VocabularyMetadataProps extends HasI18n {
     vocabulary: Vocabulary;
@@ -83,10 +83,8 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         tabs["glossary.title"] =
             <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location} showTermQualityBadge={true}/>
 
-        if (vocabulary.document) {
-            tabs["vocabulary.detail.document"] =
-                <DocumentSummaryInTab resource={vocabulary.document} onChange={this.props.onChange}/>;
-        }
+        tabs["vocabulary.detail.document"] =
+            <OptionalDocumentSummaryInTab vocabulary={vocabulary} onChange={this.props.onChange}/>;
         tabs["properties.edit.title"] = <UnmappedProperties properties={vocabulary.unmappedProperties}
                                                             showInfoOnEmpty={true}/>;
         tabs["history.label"] = <AssetHistory asset={vocabulary}/>;
@@ -95,6 +93,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
 
         return <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={tabs} tabBadges={{
             "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
+            "vocabulary.detail.document": vocabulary.document ? '1' : '0',
         }}/>;
     }
 }
