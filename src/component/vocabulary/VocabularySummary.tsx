@@ -10,7 +10,7 @@ import {
     loadVocabulary,
     removeVocabulary,
     validateVocabulary, 
-    loadResource
+    loadResource,
     updateVocabulary
 } from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
