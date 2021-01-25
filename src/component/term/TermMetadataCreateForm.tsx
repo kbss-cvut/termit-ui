@@ -141,6 +141,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                  help={this.props.i18n("term.label.help")}
                                  onChange={this.onLabelChange} autoFocus={true}
                                  invalid={labelInLanguageExists}
+                                 placeholder={i18n("asset.label.placeholder")}
                                  invalidMessage={labelInLanguageExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
                                  value={label}/>
                 </Col>
@@ -154,35 +155,39 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             </Row>
 
             <TermDefinitionContainer>
-            <Row>
-                <Col xs={12}>
-                    {this.props.definitionSelector ?
-                        <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
-                            <Label className="attribute-label">{i18n("term.metadata.definition.text")}</Label>
-                            <Button id="create-term-select-definition"
-                                    color="muted"
-                                    onClick={this.props.definitionSelector}
-                                    size="sm" title={i18n("annotator.createTerm.selectDefinition.tooltip")}
-                                    style={{float: "right"}}>
-                                {i18n("annotator.createTerm.selectDefinition")}
-                            </Button>
-                        </FormGroup>
-                        : <Label className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>}
-                    <TextArea name="create-term-definition"
-                              type="textarea" rows={4} value={getLocalizedOrDefault(termData.definition, "", language)}
-                              help={i18n("term.definition.help")}
-                              onChange={this.onDefinitionChange}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
-                    <CustomInput name="edit-term-source"
-                                 value={source} labelClass="definition"
-                                 label={i18n("term.metadata.source")}
-                                 onChange={this.onSourceChange}
-                                 help={i18n("term.source.help")}/>
-                </Col>
-            </Row>
+                <Row>
+                    <Col xs={12}>
+                        {this.props.definitionSelector ?
+                            <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
+                                <Label className="attribute-label">{i18n("term.metadata.definition.text")}</Label>
+                                <Button id="create-term-select-definition"
+                                        color="muted"
+                                        onClick={this.props.definitionSelector}
+                                        size="sm" title={i18n("annotator.createTerm.selectDefinition.tooltip")}
+                                        style={{float: "right"}}>
+                                    {i18n("annotator.createTerm.selectDefinition")}
+                                </Button>
+                            </FormGroup>
+                            : <Label
+                                className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>}
+                        <TextArea name="create-term-definition"
+                                  type="textarea" rows={4}
+                                  value={getLocalizedOrDefault(termData.definition, "", language)}
+                                  help={i18n("term.definition.help")}
+                                  placeholder={i18n("term.metadata.definition.text.placeholder")}
+                                  onChange={this.onDefinitionChange}/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <CustomInput name="edit-term-source"
+                                     value={source} labelClass="definition"
+                                     label={i18n("term.metadata.source")}
+                                     onChange={this.onSourceChange}
+                                     placeholder={i18n("term.metadata.source.placeholder")}
+                                     help={i18n("term.source.help")}/>
+                    </Col>
+                </Row>
             </TermDefinitionContainer>
 
             <Row>
@@ -190,7 +195,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                     <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
                     <TextArea name="create-term-comment"
                               type="textarea" rows={4} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
-                              help={this.props.i18n("term.comment.help")}
+                              help={i18n("term.comment.help")} placeholder={i18n("term.metadata.comment.placeholder")}
                               onChange={this.onCommentChange}/>
                 </Col>
             </Row>
