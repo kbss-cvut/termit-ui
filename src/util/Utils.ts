@@ -225,6 +225,14 @@ const Utils = {
             }
         }
         return false;
+    },
+
+    /**
+     * Adds a trailing slash to the specified URL if necessary, i.e., if it does not end with it already.
+     * @param url URL to add slash to
+     */
+    withTrailingSlash(url?: string): string | undefined {
+        return url && url.charAt(url.length - 1) !== "/" ? (url + "/") : url;
     }
 };
 

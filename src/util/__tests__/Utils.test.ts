@@ -6,6 +6,7 @@ import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
 import Document from "../../model/Document";
 import File from "../../model/File";
+import {langString} from "../../model/MultilingualString";
 
 describe("Utils", () => {
 
@@ -72,7 +73,7 @@ describe("Utils", () => {
         it("returns term type label message id for term", () => {
             const term: Term = new Term({
                 iri: Generator.generateUri(),
-                label: "Test",
+                label: langString("Test"),
                 types: [VocabularyUtils.TERM]
             });
             expect(Utils.getAssetTypeLabelId(term)).toEqual("type.term");
@@ -153,6 +154,20 @@ describe("Utils", () => {
 
         it("returns 0 for zero-length argument", () => {
             expect(Utils.hashCode("")).toEqual(0);
+        });
+    });
+
+    describe("withTrailingSlash", () => {
+        it("appends trailing slash to specified URL when it does not have it", () => {
+            const url = Generator.generateUri();
+            expect(url.charAt(url.length - 1)).not.toEqual("/");
+            const result = Utils.withTrailingSlash(url);
+            expect(result.charAt(result.length - 1)).toEqual("/");
+        });
+
+        it("does not append trailing slash when specified URL already contains it", () => {
+            const url = Generator.generateUri() + "/";
+            expect(Utils.withTrailingSlash(url)).toEqual(url);
         });
     });
 });

@@ -10,6 +10,7 @@ import * as actions from "../../action/ComplexActions";
 import User from "../../model/User";
 import "./UserDropdown.scss";
 import {useKeycloak} from "@react-keycloak/web";
+import Utils from "../../util/Utils";
 
 interface UserDropdownProps extends HasI18n {
     user: User;
@@ -36,7 +37,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-arrow" right={true}>
             <DropdownItem id="user-dropdown-profile"
-                href={`${keycloak.authServerUrl}/realms/${keycloak.realm}/account?referrer=${keycloak.clientId}`}>
+                href={`${Utils.withTrailingSlash(keycloak.authServerUrl)}realms/${keycloak.realm}/account?referrer=${keycloak.clientId}`}>
                 <i className="fas fa-user"/><span>{props.i18n("main.user-profile")}</span>
             </DropdownItem>
             <DropdownItem divider={true}/>
