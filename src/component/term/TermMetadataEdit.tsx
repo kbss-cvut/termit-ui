@@ -152,7 +152,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         })
     }
 
-    private renderMessages = ( results: ValidationResult[] ) => <>{results.map(r => {
+    private renderMessages = (results: ValidationResult[]) => <>{results.map(r => {
         const message = r.message.find(ls => ls.language === getShortLocale(this.props.locale))!.value;
         const color = ValidationUtils.qualityAffectingRules.indexOf(r.sourceShape?.iri) > -1 ?
             ValidationUtils.qualityAffectingRuleViolationColor :
@@ -177,7 +177,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         return <>
             <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
                                   onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
-            <Card>
+            <Card id="edit-term">
                 <CardBody>
                     <Form>
                         <Row>
@@ -188,15 +188,15 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                              label={i18n("asset.label")}
                                              invalid={validationPrefLabel.length > 0 || labelInLanguageInvalid}
                                              invalidMessage={this.renderMessages(validationPrefLabel) +
-                                                 (labelInLanguageInvalid ?
+                                             (labelInLanguageInvalid ?
                                                  this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) :
-                                                     "" )}
+                                                 "")}
                                              help={i18n("term.label.help")}/>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                    <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
+                                <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
                                                 onChange={this.onAltLabelsChange}
                                                 invalid={validationAltLabel.length > 0 || labelInLanguageInvalid}
                                                 invalidMessage={this.renderMessages(validationAltLabel)}
@@ -219,7 +219,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             <Row>
                                 <Col xs={12}>
                                     <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                                 label={i18n("term.metadata.definitionSource")} labelClass="definition"
+                                                 label={i18n("term.metadata.source")} labelClass="definition"
                                                  invalid={validationSource.length > 0}
                                                  invalidMessage={this.renderMessages(validationSource)}
                                                  help={i18n("term.source.help")}/>
@@ -240,7 +240,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
                         <Row>
                             <Col xs={12}>
-                                    <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
+                                <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
                                                     parentTerms={this.state.parentTerms}
                                                     invalid={validationBroader.length > 0}
                                                     invalidMessage={this.renderMessages(validationBroader)}

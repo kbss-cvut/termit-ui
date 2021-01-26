@@ -63,7 +63,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
         const types = getTypesForSelector(this.props.availableTypes);
         const selected = this.resolveSelectedTypes(types);
         const {i18n, intl} = this.props;
-        const style = this.props.invalid ? { borderColor : 'red' } : {};
+        const style = this.props.invalid ? { borderColor : "red" } : {};
         return <FormGroup>
             <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
             <IntelligentTreeSelect onChange={this.onChange}
@@ -82,7 +82,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
                                    renderAsTree={true}
                                    style={style}
                                    placeholder={i18n("term.metadata.types.select.placeholder")}/>
-            {this.props.invalid ? <FormFeedback style={{display: 'block'}}>{this.props.invalidMessage}</FormFeedback> : <></>}
+            {this.props.invalid ? <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
             <FormText>{i18n("term.types.help")}</FormText>
         </FormGroup>;
     }
