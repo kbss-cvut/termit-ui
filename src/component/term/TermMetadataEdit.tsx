@@ -186,7 +186,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                              value={getLocalizedOrDefault(this.state.label, "", language)}
                                              onChange={this.onLabelChange}
                                              label={i18n("asset.label")}
-                                             placeholder={i18n("asset.label.placeholder")}
                                              invalid={validationPrefLabel.length > 0 || labelInLanguageInvalid}
                                              invalidMessage={this.renderMessages(validationPrefLabel) +
                                              (labelInLanguageInvalid ?
@@ -213,7 +212,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                               invalid={validationDefinition.length > 0}
                                               invalidMessage={this.renderMessages(validationDefinition)}
                                               onChange={this.onDefinitionChange} rows={4}
-                                              placeholder={i18n("term.metadata.definition.text.placeholder")}
                                               label={i18n("term.metadata.definition.text")} labelClass="definition"
                                               help={i18n("term.definition.help")}/>
                                 </Col>
@@ -224,7 +222,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                                  label={i18n("term.metadata.source")} labelClass="definition"
                                                  invalid={validationSource.length > 0}
                                                  invalidMessage={this.renderMessages(validationSource)}
-                                                 placeholder={i18n("term.metadata.source.placeholder")}
                                                  help={i18n("term.source.help")}/>
                                 </Col>
                             </Row>
@@ -238,7 +235,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                                           invalidMessage={this.renderMessages(validationScopeNote)}
                                           onChange={this.onScopeNoteChange} rows={4}
                                           label={i18n("term.metadata.comment")}
-                                          placeholder={i18n("term.metadata.comment.placeholder")}
                                           help={i18n("term.comment.help")}/>
                             </Col>
                         </Row>

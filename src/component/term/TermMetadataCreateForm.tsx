@@ -141,7 +141,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                  help={this.props.i18n("term.label.help")}
                                  onChange={this.onLabelChange} autoFocus={true}
                                  invalid={labelInLanguageExists}
-                                 placeholder={i18n("asset.label.placeholder")}
                                  invalidMessage={labelInLanguageExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
                                  value={label}/>
                 </Col>
@@ -174,7 +173,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                   type="textarea" rows={4}
                                   value={getLocalizedOrDefault(termData.definition, "", language)}
                                   help={i18n("term.definition.help")}
-                                  placeholder={i18n("term.metadata.definition.text.placeholder")}
                                   onChange={this.onDefinitionChange}/>
                     </Col>
                 </Row>
@@ -184,7 +182,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                                      value={source} labelClass="definition"
                                      label={i18n("term.metadata.source")}
                                      onChange={this.onSourceChange}
-                                     placeholder={i18n("term.metadata.source.placeholder")}
                                      help={i18n("term.source.help")}/>
                     </Col>
                 </Row>
@@ -195,7 +192,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                     <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
                     <TextArea name="create-term-comment"
                               type="textarea" rows={4} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
-                              help={i18n("term.comment.help")} placeholder={i18n("term.metadata.comment.placeholder")}
+                              help={i18n("term.comment.help")}
                               onChange={this.onCommentChange}/>
                 </Col>
             </Row>
