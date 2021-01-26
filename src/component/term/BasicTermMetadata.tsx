@@ -49,7 +49,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
             </Row>
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label mb-3"
+                    <Label className="attribute-label"
                            title={i18n("term.metadata.vocabulary.tooltip")}>{i18n("type.vocabulary")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
