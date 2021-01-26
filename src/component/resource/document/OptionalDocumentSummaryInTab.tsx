@@ -41,7 +41,7 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
 
         return <div className={classNames("card-header")}>
             <div/>
-            <Button color="primary"
+            <Button color="outline-muted"
                     title={props.i18n("vocabulary.document.remove")}
                     size="sm"
                     style={{float: "right"}}
