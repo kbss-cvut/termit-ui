@@ -4,6 +4,7 @@ import {Label, Table} from "reactstrap";
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
 import withI18n, {HasI18n} from "../hoc/withI18n";
+import "./UnmappedProperties.scss";
 
 declare type PropertyValueType = { iri: string } | string;
 
@@ -20,13 +21,14 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (props: UnmappedPr
     const result: JSX.Element[] = [];
     props.properties.forEach((values, k) => {
         const items = <ul className="term-items">{values.map((v: PropertyValueType) => {
-            const val: string = (v as {iri: string}).iri  ? (v as {iri: string}).iri : v as string;
+            const val: string = (v as { iri: string }).iri ? (v as { iri: string }).iri : v as string;
             return <li key={val}>{val}</li>;
         })}</ul>;
         result.push(<tr key={k}>
             <td>
                 <OutgoingLink
-                    label={<Label className="attribute-label" title={k}><AssetLabel iri={k} shrinkFullIri={true}/></Label>}
+                    label={<Label className="attribute-label" title={k}><AssetLabel iri={k}
+                                                                                    shrinkFullIri={true}/></Label>}
                     iri={k}/>
             </td>
             <td>{items}</td>
@@ -44,7 +46,7 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (props: UnmappedPr
         </tr>
         </thead>
         <tbody>
-            {result}
+        {result}
         </tbody>
     </Table>
 };

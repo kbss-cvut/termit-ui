@@ -54,10 +54,10 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
                 <CardBody className="card-body-basic-info">
                     <Row>
                         <Col xl={2} md={4}>
-                            <Label className="attribute-label">{i18n("vocabulary.comment")}:</Label>
+                            <Label className="attribute-label mb-3">{i18n("vocabulary.comment")}</Label>
                         </Col>
                         <Col xl={10} md={8}>
-                            <Label id="vocabulary-metadata-comment">{vocabulary.comment}</Label>
+                            <p id="vocabulary-metadata-comment">{vocabulary.comment}</p>
                         </Col>
                     </Row>
                     <ImportedVocabulariesList vocabularies={vocabulary.importedVocabularies}/>

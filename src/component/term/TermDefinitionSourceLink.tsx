@@ -2,7 +2,6 @@ import * as React from "react";
 import Term from "../../model/Term";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Routes, {Route} from "../../util/Routes";
-import ResourceIriLink from "../resource/ResourceIriLink";
 import {Button} from "reactstrap";
 import {GoFileSymlinkFile} from "react-icons/go";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -33,11 +32,10 @@ export const TermDefinitionSourceLink: React.FC<TermDefinitionSourceLinkProps> =
     };
 
     return <>
-        <ResourceIriLink id="term-metadata-definitionSource" iri={defSource!.target.source.iri!}/>
-        <Button id="term-metadata-definitionSource-goto" color="primary" outline={true} size="sm" className="ml-1"
+        <Button id="term-metadata-definitionSource-goto" color="primary" outline={true} size="sm" className="ml-2"
                 onClick={navigateToDefinitionSource}
                 title={props.i18n("term.metadata.definitionSource.goto.tooltip")}>
-            <GoFileSymlinkFile/>&nbsp;
+            <GoFileSymlinkFile className="mr-1"/>
             {props.i18n("term.metadata.definitionSource.goto")}
         </Button>
     </>;

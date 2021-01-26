@@ -58,7 +58,7 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
     }
 
     public render() {
-        return <div className="form-group-bottom-margin">
+        return <div className="form-group">
             <Label className="attribute-label">{this.getText("label")}</Label>
             <InputGroup className="form-group no-bottom-margin">
                 <Input name="add-string-input" value={this.state.inputValue} onChange={this.onChange}
