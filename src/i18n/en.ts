@@ -233,7 +233,7 @@ const en = {
         "resource.metadata.file.content.view.tooltip": "View file content and annotate it",
         "resource.metadata.file.content.download": "Download",
         "resource.metadata.document.vocabulary": "Document vocabulary",
-        "resource.metadata.document.files.actions.add": "Add file",
+        "resource.metadata.document.files.actions.add": "Add",
         "resource.metadata.document.files.actions.add.tooltip": "Add new file to this document",
         "resource.metadata.document.files.actions.add.dialog.title": "New file",
         "resource.metadata.document.files.empty": "No files found. Start by adding some.",

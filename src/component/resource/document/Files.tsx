@@ -3,7 +3,7 @@ import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
 import TermItFile from "../../../model/File";
 import Utils from "../../../util/Utils";
-import {Table} from "reactstrap";
+import {Label, Table} from "reactstrap";
 import File from "../../../model/File";
 import {connect} from "react-redux";
 import TermItState from "../../../model/TermItState";
@@ -15,29 +15,19 @@ interface FilesProps extends HasI18n {
 }
 
 export const Files = (props: FilesProps) => {
-    const i18n = props.i18n;
-
-    const header = <div id="document-files" className="d-flex flex-wrap justify-content-between">
-        <h4>{i18n("vocabulary.detail.files")}</h4>
-        {props.actions}
-    </div>
-
-    if (Utils.sanitizeArray(props.files).length > 0) {
-        return <div>
-            {header}
-            <Table striped={true}>
-                <thead>
-                <tr>
-                    <th>
-                        {props.i18n("vocabulary.detail.files.file")}
-                    </th>
-                    <th className="fit-content">
-                        {props.i18n("actions")}
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                {props.files.slice().sort(Utils.labelComparator).map((v: File) => <tr key={v.label}>
+    return <div>
+        <tr>
+            <td><Label className="attribute-label mb-3"> {props.i18n("vocabulary.detail.files")}</Label></td>
+            <td className="fit-content">
+                <div className="fit-content">
+                    {props.actions}
+                </div>
+            </td>
+        </tr>
+        <Table striped={true} bordered={true}>
+            <tbody>
+            {(Utils.sanitizeArray(props.files).length > 0) ? props.files.slice().sort(Utils.labelComparator).map((v: File) =>
+                <tr key={v.label}>
                     <td>
                         {v.label}
                     </td>
@@ -46,17 +36,12 @@ export const Files = (props: FilesProps) => {
                             {props.itemActions(v)}
                         </div>
                     </td>
-                </tr>)}
-                </tbody>
-            </Table>
-        </div>
-    } else {
-        return <div>
-            {header}
-            <div id="file-list-empty"
-                 className="italics">{props.i18n("resource.metadata.document.files.empty")}</div>
-        </div>;
-    }
+                </tr>) : <div id="file-list-empty"
+                              className="italics">{props.i18n("resource.metadata.document.files.empty")}</div>
+            }
+            </tbody>
+        </Table>
+    </div>
 }
 
 export default connect((state: TermItState) => {
