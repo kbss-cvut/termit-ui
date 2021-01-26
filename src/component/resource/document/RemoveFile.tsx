@@ -27,7 +27,7 @@ export const RemoveFile = (props: RemoveFileProps) => {
 
     return <>
         <RemoveAssetDialog onCancel={toggle} onSubmit={performAction} show={confirmationDialogOpen} asset={props.file}/>
-        <Button className="mb-2" color="primary" size="sm" onClick={props.withConfirmation ? toggle : performAction}
+        <Button className="mb-2" color="outline-danger" size="sm" onClick={props.withConfirmation ? toggle : performAction}
                 title={props.i18n("asset.remove.tooltip")}>
             <GoX/>&nbsp;{props.i18n("remove")}
         </Button>

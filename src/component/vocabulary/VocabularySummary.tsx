@@ -9,11 +9,18 @@ import {
     exportGlossary,
     loadVocabulary,
     removeVocabulary,
-    updateVocabulary,
-    validateVocabulary
+    validateVocabulary, 
+    loadResource,
+    updateVocabulary
 } from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
-import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
+import {
+    Button,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    UncontrolledButtonDropdown
+} from "reactstrap";
 import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
 import {GoCloudDownload, GoPencil} from "react-icons/go";
 import {ThunkDispatch} from "../../util/Types";
@@ -30,6 +37,7 @@ import WindowTitle from "../misc/WindowTitle";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
+    loadResource: (iri: IRI) => void;
     loadVocabulary: (iri: IRI) => void;
     updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
@@ -40,6 +48,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export interface VocabularySummaryState extends EditableComponentState {
+    selectDocumentDialogOpen: boolean
 }
 
 export class VocabularySummary extends EditableComponent<VocabularySummaryProps, VocabularySummaryState> {
@@ -48,7 +57,8 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         super(props);
         this.state = {
             edit: false,
-            showRemoveDialog: false
+            showRemoveDialog: false,
+            selectDocumentDialogOpen: false
         };
     }
 
@@ -156,6 +166,7 @@ export default connect((state: TermItState) => {
     };
 }, (dispatch: ThunkDispatch) => {
     return {
+        loadResource: (iri: IRI) => dispatch(loadResource(iri)),
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),
         removeVocabulary: (vocabulary: Vocabulary) => dispatch(removeVocabulary(vocabulary)),

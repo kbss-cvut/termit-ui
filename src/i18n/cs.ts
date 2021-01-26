@@ -194,6 +194,13 @@ const cs = {
         "vocabulary.termchanges.empty": "Žádné nové pojmy ani aktualizace pojmů nebyly nalezeny.",
         "vocabulary.removed.message": "Slovník by odstraněn.",
         "vocabulary.document.label": "Dokument pro {vocabulary}",
+        "vocabulary.document.attach": "Připojit dokument",
+        "vocabulary.document.create": "Vytvořit nový dokument",
+        "vocabulary.document.create.title": "Vytvořte dokument",
+        "vocabulary.document.select": "Vybrat existující dokument",
+        "vocabulary.document.select.title": "Vyberte dokument",
+        "vocabulary.document.set": "Změnit dokument",
+        "vocabulary.document.remove": "Odpojit dokument",
 
         'vocabulary.term.created.message': 'Pojem úspěšně vytvořen.',
         'vocabulary.select-vocabulary': 'Vyber slovník',
