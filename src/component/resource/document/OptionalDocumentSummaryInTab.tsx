@@ -1,19 +1,16 @@
 import * as React from "react";
+import {useState} from "react";
 import Document from "../../../model/Document";
 import DocumentSummaryInTab from "./DocumentSummaryInTab";
 import {Button, Modal, ModalBody, ModalHeader} from "reactstrap";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
 import {injectIntl} from "react-intl";
 import DocumentList from "../DocumentList";
-import {useState} from "react";
 import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../../util/Types";
-import {
-    loadResource,
-    updateVocabulary,
-} from "../../../action/AsyncActions";
+import {loadResource, updateVocabulary,} from "../../../action/AsyncActions";
 import {GoX} from "react-icons/go";
 import classNames from "classnames";
 import CreateResourceForm from "../CreateResourceForm";
@@ -69,7 +66,7 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
 
         const onCreated = (iri: string) => {
             props.loadDocument(VocabularyUtils.create(iri)).then(document => {
-                if ( document ) {
+                if (document) {
                     onVocabularyDocumentSet(document)
                 }
             }).then(toggleCreate)
@@ -115,9 +112,7 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
     }
 }
 
-export default connect(() => {
-    ;
-}, (dispatch: ThunkDispatch) => {
+export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         loadDocument: (iri: IRI) => dispatch(loadResource(iri)) as Promise<Document | null>,
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),

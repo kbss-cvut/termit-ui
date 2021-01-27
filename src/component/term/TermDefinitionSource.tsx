@@ -14,7 +14,7 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = props => {
     const {language, i18n, term, withDefinitionSource} = props;
     const definitionText = getLocalizedOrDefault(term.definition, "", language);
     const sources = Utils.sanitizeArray(term.sources);
-    if (definitionText.length === 0) {
+    if (definitionText.length === 0 && sources.length > 0) {
         return <>
             <Col xl={2} md={4}>
                 <Label className="attribute-label definition">{i18n("term.metadata.source")}</Label>
