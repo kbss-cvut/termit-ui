@@ -148,6 +148,8 @@ const en = {
         "asset.remove.dialog.title": "Remove {type} \"{label}\"?",
         "asset.remove.dialog.text": "Are you sure you want to remove {type} \"{label}\"?",
 
+        "document.remove.tooltip.disabled": "In order to delete the document, delete the files first.",
+
         'vocabulary.management': 'Vocabulary Management',
         'vocabulary.management.vocabularies': 'Vocabularies',
         'vocabulary.management.empty': 'No vocabularies found. Start by creating one.',
@@ -233,7 +235,7 @@ const en = {
         "resource.metadata.file.content.view.tooltip": "View file content and annotate it",
         "resource.metadata.file.content.download": "Download",
         "resource.metadata.document.vocabulary": "Document vocabulary",
-        "resource.metadata.document.files.actions.add": "Add file",
+        "resource.metadata.document.files.actions.add": "Add",
         "resource.metadata.document.files.actions.add.tooltip": "Add new file to this document",
         "resource.metadata.document.files.actions.add.dialog.title": "New file",
         "resource.metadata.document.files.empty": "No files found. Start by adding some.",

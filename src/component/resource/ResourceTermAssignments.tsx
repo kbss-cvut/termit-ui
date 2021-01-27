@@ -2,6 +2,7 @@ import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Resource, {EMPTY_RESOURCE} from "../../model/Resource";
+import Document from "../../model/Document";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import {loadResourceTermAssignmentsInfo} from "../../action/AsyncActions";
@@ -18,6 +19,7 @@ import TermItState from "../../model/TermItState";
 import NotificationType from "../../model/NotificationType";
 import {consumeNotification} from "../../action/SyncActions";
 import {langString} from "../../model/MultilingualString";
+import OntologicalVocabulary from "../../util/VocabularyUtils";
 
 interface ResourceTermAssignmentsOwnProps {
     resource: Resource;
@@ -72,7 +74,24 @@ export class ResourceTermAssignments extends React.Component<ResourceTermAssignm
     }
 
     private loadAssignments() {
-        this.props.loadTermAssignments(this.props.resource).then(data => this.setState({assignments: data}));
+        this.props.loadTermAssignments(this.props.resource)
+            .then(data => {
+                const assignments = data;
+                if (this.props.resource.hasType(OntologicalVocabulary.DOCUMENT)) {
+                    const document = this.props.resource as Document;
+                    Promise.all(Utils.sanitizeArray(document.files)
+                        .map((f, fIndex) =>
+                            this.props.loadTermAssignments(f)
+                                .then((fileTerms) => fileTerms
+                                        .filter(term => assignments.map(a => a.term.iri).indexOf(term.term.iri) < 0)
+                                        .forEach( term => assignments.push(term) ))
+                        )
+                    ).then( () => {
+                        this.setState({assignments})})
+                } else {
+                    this.setState({assignments})
+                }
+            });
     }
 
     public render() {

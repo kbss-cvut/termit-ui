@@ -148,6 +148,8 @@ const cs = {
         "asset.remove.dialog.title": "Odstranit {type} \"{label}\"?",
         "asset.remove.dialog.text": "Určitě chcete odstranit {type} \"{label}\"?",
 
+        "document.remove.tooltip.disabled": "Odstranit dokument je možné po odstranění všech jeho souborů.",
+
         'vocabulary.management': 'Správa slovníků',
         'vocabulary.management.vocabularies': 'Slovníky',
         'vocabulary.management.empty': 'Žádné slovníky nenalezeny. Vytvořte nějaký...',
@@ -180,7 +182,6 @@ const cs = {
         'vocabulary.detail.tabs.metadata': 'Metadata',
         'vocabulary.detail.tabs.termdetail': 'Detail pojmu',
         'vocabulary.detail.files': 'Soubory',
-        'vocabulary.detail.files.file': 'Název souboru',
         'vocabulary.detail.noTermSelected': 'Vyberte pojem ve stromečku vlevo.',
         "vocabulary.detail.imports": "Importuje",
         "vocabulary.detail.imports.edit": "Importuje slovníky",
@@ -233,7 +234,7 @@ const cs = {
         "resource.metadata.file.content.view.tooltip": "Zobrazit obsah souboru a anotovat ho",
         "resource.metadata.file.content.download": "Stáhnout",
         "resource.metadata.document.vocabulary": "Dokumentový slovník",
-        "resource.metadata.document.files.actions.add": "Přidat soubor",
+        "resource.metadata.document.files.actions.add": "Přidat",
         "resource.metadata.document.files.actions.add.tooltip": "Přidat nový soubor do tohoto dokumentu",
         "resource.metadata.document.files.actions.add.dialog.title": "Nový soubor",
         "resource.metadata.document.files.empty": "Žádné soubory nenalezeny. Vytvořte nějaký...",
