@@ -10,7 +10,6 @@ import {mountWithIntl, promiseDelay} from "../../../__tests__/environment/Enviro
 import CustomInput from "../../misc/CustomInput";
 import {getLocalized, langString, pluralLangString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import TextArea from "../../misc/TextArea";
 import StringListEdit from "../../misc/StringListEdit";
 
 jest.mock("../TermAssignments");
@@ -165,18 +164,6 @@ describe("TermMetadataCreateForm", () => {
         expect(labelInput.prop("value")).toEqual(termData.label.en);
     });
 
-    it("passes definition value in selected language to definition edit textarea", () => {
-        const termData = AssetFactory.createEmptyTermData();
-        termData.definition = {"en": "Building is a kind of construction", "cs": "Budova je typem stavby"};
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={"cs"}
-                                                                                labelExist={({})}
-                                                                                termData={termData}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
-        const definitionInput = wrapper.find(TextArea).findWhere(ci => ci.prop("name") === "create-term-definition");
-        expect(definitionInput.prop("value")).toEqual(termData.definition.cs);
-    });
-
     it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {
         const termData = AssetFactory.createEmptyTermData();
         termData.altLabels = {"en": ["building", "construction"], "cs": ["budova", "stavba"]};
@@ -232,26 +219,5 @@ describe("TermMetadataCreateForm", () => {
         });
         wrapper.update();
         expect(onChange).toHaveBeenCalledWith({label: {"en": enLabel, "cs": csLabel}, labelExist: {"cs": false}});
-    });
-
-    it("merges existing definition value in different language with newly set value in selected language", () => {
-        Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
-        const termData = AssetFactory.createEmptyTermData();
-        const enDefinition = "Building is a construction above ground.";
-        const csDefinition = "Budova je nadzemní konstrukce se zdmi.";
-        termData.definition = {"cs": csDefinition};
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language="en"
-                                                                                termData={termData}
-                                                                                labelExist={({})}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
-        const definitionArea = wrapper.find(TextArea).findWhere(ci => ci.prop("name") === "create-term-definition");
-        definitionArea.simulate("change", {
-            currentTarget: {
-                value: enDefinition
-            }
-        });
-        wrapper.update();
-        expect(onChange).toHaveBeenCalledWith({definition: {"en": enDefinition, "cs": csDefinition}});
     });
 });
