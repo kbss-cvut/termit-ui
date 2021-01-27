@@ -2,7 +2,8 @@ import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {termInfoComparator} from "../../model/Term";
 import {injectIntl} from "react-intl";
-import {Col, Label, Row} from "reactstrap";
+// @ts-ignore
+import {Col, Label, List, Row} from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import Utils from "../../util/Utils";
 import OutgoingLink from "../misc/OutgoingLink";
@@ -83,9 +84,9 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
         if (source.length === 1) {
             return renderItem(source[0]);
         } else {
-            return <ul id={containerId} className="term-items">
+            return <List type="unstyled" id={containerId} className="mb-3">
                 {source.map((item: string) => <li key={item}>{renderItem(item)}</li>)}
-            </ul>
+            </List>
         }
     }
 
@@ -97,11 +98,11 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 <Label className="attribute-label mb-3">{this.props.i18n("term.metadata.parent")}</Label>
             </Col>
             <Col xl={10} md={8}>
-                <ul id="term-metadata-parentterms" className="term-items">
+                <List type="unstyled" id="term-metadata-parentterms" className="mb-3">
                     {parents.map(item => <li key={item.iri}>
                         <TermLink term={item} language={this.props.language}/>
                     </li>)}
-                </ul>
+                </List>
             </Col>
         </Row>;
     }
@@ -114,10 +115,11 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 <Label className="attribute-label mb-3">{this.props.i18n("term.metadata.subTerms")}</Label>
             </Col>
             <Col xl={10} md={8}>
-                <ul id="term-metadata-subterms" className="term-items">{source.map(item => <li key={item.iri}>
-                    <TermLink term={item} language={this.props.language}/>
-                </li>)}
-                </ul>
+                <List type="unstyled" id="term-metadata-subterms" className="mb-3">
+                    {source.map(item => <li key={item.iri}>
+                        <TermLink term={item} language={this.props.language}/>
+                    </li>)}
+                </List>
             </Col>
         </Row>;
     }
