@@ -8,8 +8,11 @@ import LastEditedAssets from "./widget/LastEditedAssets";
 import "./Dashboard.scss";
 import NewsAlert from "./widget/NewsAlert";
 import MyAssets from "./widget/MyAssets";
+import Constants from "../../util/Constants";
+import WindowTitle from "../misc/WindowTitle";
 
 const Dashboard: React.FC<HasI18n> = (props) => (<>
+        <WindowTitle title={Constants.APP_NAME} appendAppName={false}/>
         <NewsAlert/>
         <Row>
             <Col xl={4} lg={6} md={12}>

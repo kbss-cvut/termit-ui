@@ -12,25 +12,18 @@ import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
 import Utils from "../../util/Utils";
 import {RouteComponentProps} from "react-router";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import {injectIntl} from "react-intl";
+import WindowTitle from "../misc/WindowTitle";
 
-interface CreateTermProps extends RouteComponentProps<any> {
+interface CreateTermProps extends RouteComponentProps<any>, HasI18n {
     vocabulary: Vocabulary;
     createTerm: (term: Term, vocabularyIri: IRI) => Promise<string>;
 
     loadVocabulary(iri: IRI): void;
 }
 
-interface CreateTermState {
-    newTermCounter: number;
-}
-
-export class CreateTerm extends React.Component<CreateTermProps, CreateTermState> {
-
-    constructor(props: CreateTermProps) {
-        super(props);
-        this.state = {newTermCounter: 0};
-    }
-
+export class CreateTerm extends React.Component<CreateTermProps> {
     public componentDidMount(): void {
         this.loadVocabulary();
     }
@@ -55,8 +48,7 @@ export class CreateTerm extends React.Component<CreateTermProps, CreateTermState
             const query = new Map([["namespace", vocabularyIri.namespace!]]);
             if (newTerm) {
                 Routing.transitionTo(Routes.createVocabularyTerm, {params, query});
-                // Modifying the form component key will force its remounting without the need to reload the whole page
-                this.setState({newTermCounter: this.state.newTermCounter + 1});
+                Routing.reload();
             } else {
                 params.set("termName", termName);
                 Routing.transitionTo(Routes.vocabularyTermDetail, {params, query});
@@ -65,9 +57,14 @@ export class CreateTerm extends React.Component<CreateTermProps, CreateTermState
     };
 
     public render() {
-        return this.props.vocabulary !== EMPTY_VOCABULARY ?
-            <TermMetadataCreate key={this.state.newTermCounter} onCreate={this.onCreate}
-                                vocabularyIri={this.props.vocabulary.iri}/> : null;
+        const vocabulary = this.props.vocabulary;
+        if (vocabulary !== EMPTY_VOCABULARY) {
+            return <>
+                <WindowTitle title={`${this.props.i18n("glossary.new")} | ${vocabulary.label}`}/>
+                <TermMetadataCreate onCreate={this.onCreate} vocabularyIri={this.props.vocabulary.iri}/>
+            </>
+        }
+        return null;
     }
 }
 
@@ -80,4 +77,4 @@ export default connect((state: TermItState) => {
         createTerm: (term: Term, vocabularyIri: IRI) => dispatch(createTerm(term, vocabularyIri)),
         loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
     };
-})(CreateTerm);
+})(injectIntl(withI18n(CreateTerm)));

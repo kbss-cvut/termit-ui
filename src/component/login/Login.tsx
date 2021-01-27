@@ -1,8 +1,7 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import {injectIntl} from "react-intl";
+import {FormattedMessage, injectIntl} from "react-intl";
 import {Alert, Button, Card, CardBody, CardHeader, Form} from "reactstrap";
-import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
 import Mask from "../misc/Mask";
 import {connect} from "react-redux";
@@ -16,6 +15,8 @@ import {login} from "../../action/AsyncUserActions";
 import EnhancedInput, {LabelDirection} from "../misc/EnhancedInput";
 import Constants from "../../util/Constants";
 import "./Login.scss";
+import {Link} from "react-router-dom";
+import WindowTitle from "../misc/WindowTitle";
 
 interface LoginProps extends HasI18n {
     loading: boolean;
@@ -60,10 +61,6 @@ export class Login extends React.Component<LoginProps, LoginState> {
         });
     };
 
-    private register = () => {
-        Routing.transitionTo(Routes.register);
-    };
-
     private isValid() {
         return this.state.username.length > 0 && this.state.password.length > 0;
     }
@@ -71,6 +68,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
     public render() {
         const i18n = this.props.i18n;
         return <PublicLayout title={i18n("login.title")}>
+            <WindowTitle title={i18n("login.title")}/>
             <Card className="modal-panel">
                 <CardHeader className="text-center pb-0 border-bottom-0">
                     <h1>{Constants.APP_NAME}</h1>
@@ -94,6 +92,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                 className="btn-block"
                                 disabled={this.props.loading || !this.isValid()}>{i18n("login.submit")}</Button>
                         {this.renderRegistrationLink()}
+                        {this.renderPublicViewLink()}
                     </Form>
                 </CardBody>
             </Card>
@@ -115,16 +114,25 @@ export class Login extends React.Component<LoginProps, LoginState> {
     }
 
     private renderRegistrationLink() {
-        const i18n = this.props.i18n;
-
         if (process.env.REACT_APP_ADMIN_REGISTRATION_ONLY === true.toString()) {
             return null;
         }
         return <div className="text-center mt-2">
-            {i18n("login.register.label")}
-            <Button id="login-register" color="link" onClick={this.register}
-                    className="p-1 align-baseline"
-                    disabled={this.props.loading}>{i18n("login.register")}</Button>
+            <FormattedMessage id="login.register.label" values={{
+                a: (chunks: any) => <Link id="login-register" to={Routes.register.link()}
+                                          className="bold">{chunks}</Link>
+            }}
+            />
+        </div>;
+    }
+
+    private renderPublicViewLink() {
+        return <div className="text-center mt-2">
+            <FormattedMessage id="login.public-view-link" values={{
+                a: (chunks: any) => <Link id="login-public-view" to={Routes.publicVocabularies.link()}
+                                          className="bold">{chunks}</Link>
+            }}
+            />
         </div>;
     }
 }

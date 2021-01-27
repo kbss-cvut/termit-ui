@@ -10,6 +10,7 @@ import VocabularyList from "./VocabularyList";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import Routing from "../../util/Routing";
 import Vocabulary from "../../model/Vocabulary";
+import WindowTitle from "../misc/WindowTitle";
 
 interface VocabularyManagementProps extends HasI18n {
     loadVocabularies: () => void;
@@ -29,6 +30,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
     };
 
     return <div>
+        <WindowTitle title={i18n("vocabulary.management.vocabularies")}/>
         <HeaderWithActions title={i18n("vocabulary.management")}/>
         <div className="row">
             <Col md={12}>

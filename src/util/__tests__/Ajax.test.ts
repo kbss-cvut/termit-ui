@@ -61,10 +61,30 @@ describe("Ajax", () => {
     });
 
     describe("error handling", () => {
+
+        const oldEnv = process.env;
+
+        beforeEach(() => {
+            jest.resetModules();
+            process.env = {...oldEnv}; // make a copy
+        });
+
+        afterEach(() => {
+            process.env = oldEnv;
+        })
+
         it("directly transitions to login route when 401 Unauthorized is received", () => {
             mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
             return sut.get("/users/current").catch(() => {
                 return expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.login);
+            });
+        });
+
+        it("transitions to public dashboard route when 401 Unauthorized is received and public view is preferred over login", () => {
+            process.env.REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED = true.toString();
+            mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
+            return sut.get("/users/current").catch(() => {
+                return expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicDashboard);
             });
         });
 

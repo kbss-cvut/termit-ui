@@ -13,13 +13,10 @@ interface VocabularyDependenciesListProps extends HasI18n {
 
 export const VocabularyDependenciesList: React.FC<VocabularyDependenciesListProps> = props => {
     const vocabs = Utils.sanitizeArray(props.vocabularies);
-    if (vocabs.length === 0) {
-        return null;
-    }
     vocabs.sort((a: AssetData, b: AssetData) => a.iri!.localeCompare(b.iri!));
     return <Row>
         <Col xl={2} md={4}>
-            <Label className="attribute-label">{props.i18n("vocabulary.detail.imports")}:</Label>
+            <Label className="attribute-label">{props.i18n("vocabulary.detail.imports")}</Label>
         </Col>
         <Col xl={10} md={8}>
             <ul id="vocabulary-metadata-dependencies" className="ul-padding">

@@ -5,7 +5,8 @@ import Term, {TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import {connect} from "react-redux";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {Button, ButtonGroup, FormGroup, FormText, Label} from "reactstrap";
+import {Button, ButtonGroup, FormFeedback, FormGroup, FormText, Label} from "reactstrap";
+import {loadImportedVocabularies, loadTerms} from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
@@ -39,6 +40,8 @@ interface ParentTermSelectorProps extends HasI18n {
     id: string;
     termIri?: string;
     parentTerms?: TermData[];
+    invalid?: boolean;
+    invalidMessage?: JSX.Element;
     vocabularyIri: string;
     onChange: (newParents: Term[]) => void;
     loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
@@ -143,17 +146,34 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     }
 
     private renderSelector() {
-        return <><IntelligentTreeSelect onChange={this.onChange}
-                                        ref={this.treeComponent}
-                                        value={this.resolveSelectedParents()}
-                                        fetchOptions={this.fetchOptions}
-                                        fetchLimit={300}
-                                        maxHeight={200}
-                                        multi={true}
-                                        optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
-                                        {...commonTermTreeSelectProps(this.props)}/>
-            <FormText>{this.props.i18n("term.parent.help")}</FormText>
-        </>;
+        if (!this.state.importedVocabularies) {
+            // render placeholder input until imported vocabularies are loaded
+            return <CustomInput placeholder={this.props.i18n("glossary.select.placeholder")}
+                                disabled={true}
+                                invalid={this.props.invalid}
+                                invalidMessage={this.props.invalidMessage}
+                                help={this.props.i18n("term.parent.help")}/>;
+        } else {
+            let style;
+            if (this.props.invalid) {
+                style = { borderColor : 'red' };
+            } else {
+                style = {}
+            }
+            return <><IntelligentTreeSelect onChange={this.onChange}
+                                            ref={this.treeComponent}
+                                            value={this.resolveSelectedParents()}
+                                            fetchOptions={this.fetchOptions}
+                                            fetchLimit={300}
+                                            maxHeight={200}
+                                            multi={true}
+                                            optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
+                                            style={style}
+                                            {...commonTermTreeSelectProps(this.props)}/>
+                {this.props.invalid ? <FormFeedback style={{display: 'block'}}>{this.props.invalidMessage}</FormFeedback> : <></>}
+                <FormText>{this.props.i18n("term.parent.help")}</FormText>
+            </>;
+        }
     }
 }
 

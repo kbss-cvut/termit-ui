@@ -15,6 +15,7 @@ import ProfileEditForm from "./ProfileEditForm";
 import {updateProfile} from "../../action/AsyncUserActions";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {Card, CardBody} from "reactstrap";
+import WindowTitle from "../misc/WindowTitle";
 
 interface ProfileProps extends HasI18n {
     user: User;
@@ -83,6 +84,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
         const {i18n, user} = this.props;
 
         return <>
+            <WindowTitle title={i18n("main.user-profile")}/>
             <HeaderWithActions title={`${i18n("main.user-profile")}: ${user.username}`}
                                actions={this.renderActionButtons()}/>
             <Card id="panel-profile">
@@ -105,7 +107,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
 
     private renderActionButtons() {
         return <ProfileActionButtons edit={this.state.edit} showProfileEdit={this.showProfileEdit}
-                                  navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}/>;
+                                     navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}/>;
     }
 }
 

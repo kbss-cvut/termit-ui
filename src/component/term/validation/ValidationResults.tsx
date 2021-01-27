@@ -1,11 +1,9 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
-// @ts-ignore
-import {Table} from "reactstrap";
 import ValidationResult from "../../../model/ValidationResult";
 import {injectIntl} from "react-intl";
 import {connect} from "react-redux";
-import SeverityText from "./SeverityText";
+import ValidationMessage from "./ValidationMessage";
 import TermItState from "../../../model/TermItState";
 import Term from "../../../model/Term";
 
@@ -24,20 +22,15 @@ export class ValidationResults extends React.Component<ValidationResultsProps> {
         } else {
             message = result.message;
         }
-        return <SeverityText key={result.id} severityIri={result.severity.iri} message={message!.value}/>;
+        return <ValidationMessage key={result.iri} sourceShapeIri={result.sourceShape?.iri} message={message!.value}/>;
     }
 
     render() {
         const termResults = (this.props.validationResults || [])[this.props.term.iri] || [];
-
-        return <div id="validation-result-list">
-            <Table>
-                <tbody>
-                {
-                    termResults.map(result => this.renderResultMessage(result))
-                }
-                </tbody>
-            </Table>
+        return <div id="validation-result-list" className="additional-metadata-container">
+            {
+                termResults.map(result => this.renderResultMessage(result))
+            }
         </div>;
     };
 }

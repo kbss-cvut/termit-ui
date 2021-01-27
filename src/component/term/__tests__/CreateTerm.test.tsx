@@ -12,6 +12,7 @@ import {createMemoryHistory, Location} from "history";
 import {match as Match} from "react-router";
 import {langString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 
 jest.mock("../../../util/Routing");
 
@@ -60,7 +61,8 @@ describe("CreateTerm", () => {
 
     it("invokes on create on create call", () => {
         const wrapper = shallow(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history}
-                                            location={location} match={match} loadVocabulary={loadVocabulary}/>);
+                                            location={location} match={match}
+                                            loadVocabulary={loadVocabulary} {...intlFunctions()}/>);
         (wrapper.instance() as CreateTerm).onCreate(term, false);
         expect(onCreate).toHaveBeenCalledWith(term, VocabularyUtils.create(vocabulary.iri));
     });
@@ -68,7 +70,7 @@ describe("CreateTerm", () => {
     it("invokes transition to term detail on successful creation", () => {
         const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history}
                                                         location={location} match={match}
-                                                        loadVocabulary={loadVocabulary}/>);
+                                                        loadVocabulary={loadVocabulary}  {...intlFunctions()}/>);
         (wrapper.instance() as CreateTerm).onCreate(term, false);
         return Promise.resolve().then(() => {
             expect(Routing.transitionTo).toHaveBeenCalled();
@@ -84,7 +86,7 @@ describe("CreateTerm", () => {
     it("invokes transition to new term on successful creation", () => {
         const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history}
                                                         location={location} match={match}
-                                                        loadVocabulary={loadVocabulary}/>);
+                                                        loadVocabulary={loadVocabulary}  {...intlFunctions()}/>);
         (wrapper.instance() as CreateTerm).onCreate(term, true);
         return Promise.resolve().then(() => {
             expect(Routing.transitionTo).toHaveBeenCalled();
@@ -99,7 +101,7 @@ describe("CreateTerm", () => {
     it("does not render component while vocabulary is empty", () => {
         const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={EMPTY_VOCABULARY}
                                                         history={history} location={location} match={match}
-                                                        loadVocabulary={loadVocabulary}/>);
+                                                        loadVocabulary={loadVocabulary}  {...intlFunctions()}/>);
         expect(wrapper.exists(TermMetadataCreate)).toBeFalsy();
         wrapper.setProps({vocabulary});
         expect(wrapper.exists(TermMetadataCreate)).toBeTruthy();

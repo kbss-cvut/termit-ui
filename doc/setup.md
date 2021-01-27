@@ -15,12 +15,13 @@ To build TermIt for **non**-development deployment, use the `build-prod` npm scr
 
 The following parameters can be configured for the build:
 
-| Parameter | Description |
-| :-------- | :---------- |
-| `serverUrl` | Specifies the URL where the TermIt backend is running |
-| `deployment` | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances
-| `controlPanelUrl` | Specifies the URL of the Control panel |
-| `REACT_APP_ADMIN_REGISTRATION_ONLY` | Configures whether the login page should contain a link to registration or not. If the parameter is true, only administrators can add new users and there is no registration link |
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `serverUrl` | `string` | `''` | Specifies the URL where the TermIt backend is running |
+| `deployment` | `string` | `''` | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances
+| `controlPanelUrl` | `string` | `''` | Specifies the URL of the Control panel |
+| `REACT_APP_ADMIN_REGISTRATION_ONLY` | `boolean` | `false` | Configures whether the login page should contain a link to registration or not. If the parameter is true, only administrators can add new users and there is no registration link |
+| `REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED` | `boolean` | `false` | Configures whether the application should show the public view dashboard if the user is not logged in. By default, the login screen is shown.| 
 
 ### Example
 
