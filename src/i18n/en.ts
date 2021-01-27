@@ -148,6 +148,8 @@ const en = {
         "asset.remove.dialog.title": "Remove {type} \"{label}\"?",
         "asset.remove.dialog.text": "Are you sure you want to remove {type} \"{label}\"?",
 
+        "document.remove.tooltip.disabled": "In order to delete the document, delete the files first.",
+
         'vocabulary.management': 'Vocabulary Management',
         'vocabulary.management.vocabularies': 'Vocabularies',
         'vocabulary.management.empty': 'No vocabularies found. Start by creating one.',

@@ -148,6 +148,8 @@ const cs = {
         "asset.remove.dialog.title": "Odstranit {type} \"{label}\"?",
         "asset.remove.dialog.text": "Určitě chcete odstranit {type} \"{label}\"?",
 
+        "document.remove.tooltip.disabled": "Odstranit dokument je možné po odstranění všech jeho souborů.",
+
         'vocabulary.management': 'Správa slovníků',
         'vocabulary.management.vocabularies': 'Slovníky',
         'vocabulary.management.empty': 'Žádné slovníky nenalezeny. Vytvořte nějaký...',
