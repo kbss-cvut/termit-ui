@@ -2,7 +2,7 @@ import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import Utils from "../../util/Utils";
-import {Button, Col, Form, FormGroup, Label, Row} from "reactstrap";
+import {Col, Form, Label, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
@@ -14,7 +14,7 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import {checkLabelUniqueness} from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import {loadIdentifier} from "../asset/AbstractCreateAsset";
-import TermDefinitionContainer from "./TermDefinitionContainer";
+import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
@@ -84,13 +84,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.props.onChange({hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change)});
     };
 
-    public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const value = e.currentTarget.value;
-        const change = Object.assign({}, this.props.termData.definition);
-        change[this.props.language] = value;
-        this.props.onChange({definition: change});
-    };
-
     private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         this.props.onChange({comment: e.currentTarget.value});
     };
@@ -114,11 +107,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         this.props.onChange({iri: newUri}, callback)
     };
 
-    public onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const source = e.currentTarget.value;
-        this.props.onChange({sources: [source]});
-    };
-
     public onTypeSelect = (types: string[]) => {
         this.props.onChange({types});
     };
@@ -129,8 +117,6 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
     public render() {
         const {termData, i18n, language} = this.props;
-        const sources = termData.sources;
-        const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         const label = getLocalizedOrDefault(termData.label, "", language);
         const labelInLanguageExists = this.props.labelExist[language];
 
@@ -153,39 +139,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 </Col>
             </Row>
 
-            <TermDefinitionContainer>
-                <Row>
-                    <Col xs={12}>
-                        {this.props.definitionSelector ?
-                            <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
-                                <Label className="attribute-label">{i18n("term.metadata.definition.text")}</Label>
-                                <Button id="create-term-select-definition"
-                                        color="muted"
-                                        onClick={this.props.definitionSelector}
-                                        size="sm" title={i18n("annotator.createTerm.selectDefinition.tooltip")}
-                                        style={{float: "right"}}>
-                                    {i18n("annotator.createTerm.selectDefinition")}
-                                </Button>
-                            </FormGroup>
-                            : <Label
-                                className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>}
-                        <TextArea name="create-term-definition"
-                                  type="textarea" rows={4}
-                                  value={getLocalizedOrDefault(termData.definition, "", language)}
-                                  help={i18n("term.definition.help")}
-                                  onChange={this.onDefinitionChange}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12}>
-                        <CustomInput name="edit-term-source"
-                                     value={source} labelClass="definition"
-                                     label={i18n("term.metadata.source")}
-                                     onChange={this.onSourceChange}
-                                     help={i18n("term.source.help")}/>
-                    </Col>
-                </Row>
-            </TermDefinitionContainer>
+            <TermDefinitionBlockEdit term={termData} onChange={this.props.onChange} getValidationResults={() => []}
+                                     language={language} definitionSelector={this.props.definitionSelector}/>
 
             <Row>
                 <Col xs={12}>
