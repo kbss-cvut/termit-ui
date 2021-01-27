@@ -106,17 +106,4 @@ describe("CreateTerm", () => {
         wrapper.setProps({vocabulary});
         expect(wrapper.exists(TermMetadataCreate)).toBeTruthy();
     });
-
-    it("re-renders new term form when save and create new is invoked", () => {
-        const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history}
-                                                        location={location} match={match}
-                                                        loadVocabulary={loadVocabulary}/>);
-        const formOne = wrapper.find(TermMetadataCreate);
-        (wrapper.instance() as CreateTerm).onCreate(term, true);
-        return Promise.resolve().then(() => {
-            wrapper.update();
-            const formTwo = wrapper.find(TermMetadataCreate);
-            expect(formOne.key()).not.toEqual(formTwo.key());
-        });
-    });
 });

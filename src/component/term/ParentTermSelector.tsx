@@ -6,7 +6,7 @@ import FetchOptionsFunction from "../../model/Functions";
 import {connect} from "react-redux";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
 import {Button, ButtonGroup, FormFeedback, FormGroup, FormText, Label} from "reactstrap";
-import {loadImportedVocabularies, loadTerms} from "../../action/AsyncActions";
+import {loadTerms} from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
@@ -16,7 +16,6 @@ import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
 import Constants from "../../util/Constants";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
-import {loadTerms} from "../../action/AsyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
     if (currentTermIri) {
@@ -146,34 +145,26 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     }
 
     private renderSelector() {
-        if (!this.state.importedVocabularies) {
-            // render placeholder input until imported vocabularies are loaded
-            return <CustomInput placeholder={this.props.i18n("glossary.select.placeholder")}
-                                disabled={true}
-                                invalid={this.props.invalid}
-                                invalidMessage={this.props.invalidMessage}
-                                help={this.props.i18n("term.parent.help")}/>;
+        let style;
+        if (this.props.invalid) {
+            style = {borderColor: "red"};
         } else {
-            let style;
-            if (this.props.invalid) {
-                style = { borderColor : 'red' };
-            } else {
-                style = {}
-            }
-            return <><IntelligentTreeSelect onChange={this.onChange}
-                                            ref={this.treeComponent}
-                                            value={this.resolveSelectedParents()}
-                                            fetchOptions={this.fetchOptions}
-                                            fetchLimit={300}
-                                            maxHeight={200}
-                                            multi={true}
-                                            optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
-                                            style={style}
-                                            {...commonTermTreeSelectProps(this.props)}/>
-                {this.props.invalid ? <FormFeedback style={{display: 'block'}}>{this.props.invalidMessage}</FormFeedback> : <></>}
-                <FormText>{this.props.i18n("term.parent.help")}</FormText>
-            </>;
+            style = {}
         }
+        return <><IntelligentTreeSelect onChange={this.onChange}
+                                        ref={this.treeComponent}
+                                        value={this.resolveSelectedParents()}
+                                        fetchOptions={this.fetchOptions}
+                                        fetchLimit={300}
+                                        maxHeight={200}
+                                        multi={true}
+                                        optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
+                                        style={style}
+                                        {...commonTermTreeSelectProps(this.props)}/>
+            {this.props.invalid ?
+                <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
+            <FormText>{this.props.i18n("term.parent.help")}</FormText>
+        </>;
     }
 }
 

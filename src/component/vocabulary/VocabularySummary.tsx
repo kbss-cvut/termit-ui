@@ -5,12 +5,7 @@ import {RouteComponentProps} from "react-router";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
-import {
-    exportGlossary,
-    loadVocabulary,
-    validateVocabulary,
-    loadResource
-} from "../../action/AsyncActions";
+import {exportGlossary, loadResource, loadVocabulary, validateVocabulary} from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
 import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
 import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
@@ -33,7 +28,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     exportToTurtle: (iri: IRI) => void;
 }
 
-export interface VocabularySummaryState extends EditableComponentState {
+export interface VocabularySummaryState {
     selectDocumentDialogOpen: boolean
 }
 
@@ -82,6 +77,7 @@ export class VocabularySummary extends React.Component<VocabularySummaryProps, V
     };
 
     public render() {
+        const {vocabulary, i18n} = this.props;
         const buttons = [this.renderExportDropdown()];
 
         return <div id="vocabulary-detail">
@@ -91,8 +87,8 @@ export class VocabularySummary extends React.Component<VocabularySummaryProps, V
                 <>{vocabulary.label}<CopyIriIcon url={vocabulary.iri as string}/></>
             } actions={buttons}/>
 
-            <VocabularyMetadata vocabulary={this.props.vocabulary} onFileAdded={this.onFileAdded}
-                                location={this.props.location} match={this.props.match}/>
+            <VocabularyMetadata vocabulary={this.props.vocabulary} location={this.props.location}
+                                match={this.props.match} onChange={this.loadVocabulary}/>
         </div>
     }
 
