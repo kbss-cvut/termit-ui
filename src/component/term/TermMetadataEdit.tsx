@@ -23,6 +23,7 @@ import {ConsolidatedResults} from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/ValidationResult";
 import {renderValidationMessages} from "./forms/FormUtils";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -188,9 +189,11 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                             </Col>
                         </Row>
 
-                        <TermDefinitionBlockEdit term={this.state} language={language}
-                                                 getValidationResults={this.getValidationResults}
-                                                 onChange={this.onChange}/>
+                        <TermDefinitionContainer>
+                            <TermDefinitionBlockEdit term={this.state} language={language}
+                                                     getValidationResults={this.getValidationResults}
+                                                     onChange={this.onChange}/>
+                        </TermDefinitionContainer>
 
                         <Row>
                             <Col xs={12}>

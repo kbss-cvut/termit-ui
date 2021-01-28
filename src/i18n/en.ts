@@ -441,6 +441,7 @@ const en = {
         "annotator.createTerm.selectDefinition.message": "Select definition of the new term in text.",
         "annotator.setTermDefinitionSource.success": "Definition source of term \"{term}\" successfully set.",
         "annotator.setTermDefinitionSource.error.exists": "Term \"{term}\" already has a definition source.",
+        "annotator.setTermDefinition.title": "Select definition of term \"{term}\"",
         "annotator.findAnnotation.error": "Unable to highlight annotation.",
 
         'annotation.form.suggested-occurrence.message': 'Phrase is not assigned to a vocabulary term.',
