@@ -446,6 +446,7 @@ const cs = {
         "annotator.createTerm.selectDefinition.message": "Vyberte definici nového pojmu v textu.",
         "annotator.setTermDefinitionSource.success": "Zdroj definice pojmu \"{term}\" nastaven.",
         "annotator.setTermDefinitionSource.error.exists": "Pojem \"{term}\" již má přiřazen zdroj definice.",
+        "annotator.setTermDefinition.title": "Výber definice pojmu \"{term}\"",
         "annotator.findAnnotation.error": "Anotaci nelze zobrazit.",
 
         'annotation.form.suggested-occurrence.message': 'Fráze není přiřazena žádnemu pojmu.',

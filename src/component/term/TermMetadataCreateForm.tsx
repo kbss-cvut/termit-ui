@@ -15,6 +15,7 @@ import {checkLabelUniqueness} from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import {loadIdentifier} from "../asset/AbstractCreateAsset";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface TermMetadataCreateFormProps extends HasI18n {
     onChange: (change: object, callback?: () => void) => void;
@@ -139,8 +140,10 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
                 </Col>
             </Row>
 
-            <TermDefinitionBlockEdit term={termData} onChange={this.props.onChange} getValidationResults={() => []}
-                                     language={language} definitionSelector={this.props.definitionSelector}/>
+            <TermDefinitionContainer>
+                <TermDefinitionBlockEdit term={termData} onChange={this.props.onChange} language={language}
+                                         definitionSelector={this.props.definitionSelector}/>
+            </TermDefinitionContainer>
 
             <Row>
                 <Col xs={12}>

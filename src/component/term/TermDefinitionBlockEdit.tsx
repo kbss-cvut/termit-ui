@@ -6,7 +6,6 @@ import {Button, Col, FormGroup, Label, Row} from "reactstrap";
 import TextArea from "../misc/TextArea";
 import {getLocalizedOrDefault} from "../../model/MultilingualString";
 import CustomInput from "../misc/CustomInput";
-import TermDefinitionContainer from "./TermDefinitionContainer";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {renderValidationMessages} from "./forms/FormUtils";
@@ -16,7 +15,7 @@ interface TermDefinitionBlockEditProps extends HasI18n {
     term: TermData;
     language: string;
     definitionSelector?: () => void;
-    getValidationResults: (property: string) => ValidationResult[];
+    getValidationResults?: (property: string) => ValidationResult[];
     onChange: (change: Partial<TermData>) => void;
 }
 
@@ -33,10 +32,10 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
         props.onChange({sources: [src]});
     };
     const source = term.sources ? Utils.sanitizeArray(term.sources!).join() : undefined;
-    const validationDefinition = getValidationResults(VocabularyUtils.DEFINITION);
-    const validationSource = getValidationResults(VocabularyUtils.DC_SOURCE);
+    const validationDefinition = getValidationResults!(VocabularyUtils.DEFINITION);
+    const validationSource = getValidationResults!(VocabularyUtils.DC_SOURCE);
 
-    return <TermDefinitionContainer>
+    return <>
         <Row>
             <Col xs={12}>
                 {props.definitionSelector ?
@@ -68,7 +67,11 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
                              help={i18n("term.source.help")}/>
             </Col>
         </Row>
-    </TermDefinitionContainer>;
+    </>;
 };
+
+TermDefinitionBlockEdit.defaultProps = {
+    getValidationResults: () => []
+}
 
 export default injectIntl(withI18n(TermDefinitionBlockEdit));
