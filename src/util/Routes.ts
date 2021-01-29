@@ -24,12 +24,7 @@ export class Route {
 
 const Routes = {
     dashboard: new Route("dashboard", "/"),
-    administration: new Route("administration", "/administration"),
-    createNewUser: new Route("createNewUser", "/administration/users/create"),
     login: new Route("login", "/login"),
-    profile: new Route("profile", "/profile"),
-    changePassword: new Route("changePassword", "/profile/change-password"),
-    register: new Route("register", "/register"),
     search: new Route("search", "/search"),
     searchTerms: new Route("searchTerms", "/search/terms"),
     searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),

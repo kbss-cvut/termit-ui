@@ -11,6 +11,7 @@ import Workspace from "../../model/Workspace";
 import Header from "../main/Header";
 import ActionType from "../../action/ActionType";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
+import {KeycloakInstance} from "keycloak-js";
 
 describe("MainView", () => {
 
@@ -42,6 +43,8 @@ describe("MainView", () => {
         iri: "http://onto.fel.cvut.cz/ontologies/termit/catherine-halsey"
     });
 
+    let keycloak: KeycloakInstance;
+
     beforeEach(() => {
         location.search = "";
         dispatchFunctions = {
@@ -50,11 +53,34 @@ describe("MainView", () => {
             selectWorkspace: jest.fn(),
             loadCurrentWorkspace: jest.fn()
         };
+        keycloak = {
+            init: jest.fn().mockResolvedValue({}),
+            authServerUrl: "http://localhost:8080/",
+            realm: "test",
+            clientId: "client",
+            authenticated: true,
+            login: jest.fn(),
+            logout: jest.fn(),
+            register: jest.fn(),
+            createAccountUrl: jest.fn(),
+            createLoginUrl: jest.fn(),
+            createLogoutUrl: jest.fn(),
+            createRegisterUrl: jest.fn(),
+            accountManagement: jest.fn(),
+            clearToken: jest.fn(),
+            isTokenExpired: jest.fn(),
+            updateToken: jest.fn(),
+            hasRealmRole: jest.fn(),
+            hasResourceRole: jest.fn(),
+            loadUserInfo: jest.fn(),
+            loadUserProfile: jest.fn()
+        };
     });
 
     it("loads user on mount", () => {
-        shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
-                          history={history} location={location} match={match} {...intlFunctions()}/>);
+        shallow(<MainView user={EMPTY_USER} {...dispatchFunctions} history={history} location={location}
+                          match={match} {...intlFunctions()}
+                          keycloak={keycloak} keycloakInitialized={true}/>);
         expect(dispatchFunctions.loadUser).toHaveBeenCalled();
     });
 
@@ -65,14 +91,15 @@ describe("MainView", () => {
             username: "halsey@unsc.org",
             iri: "http://onto.fel.cvut.cz/ontologies/termit/catherine-halsey"
         });
-        shallow(<MainView user={user} {...dispatchFunctions}
-                          history={history} location={location} match={match} {...intlFunctions()}/>);
+        shallow(<MainView user={user} {...dispatchFunctions} history={history} location={location}
+                          match={match} {...intlFunctions()} keycloak={keycloak} keycloakInitialized={true}/>);
         expect(dispatchFunctions.loadUser).not.toHaveBeenCalled();
     });
 
     it("renders placeholder UI when user is being loaded", () => {
         const wrapper = shallow(<MainView user={EMPTY_USER} {...dispatchFunctions} history={history}
-                                          location={location} match={match} {...intlFunctions()}/>);
+                                          location={location} match={match} {...intlFunctions()} keycloak={keycloak}
+                                          keycloakInitialized={true}/>);
         expect(wrapper.exists("#loading-placeholder")).toBeTruthy();
     });
 
@@ -82,8 +109,9 @@ describe("MainView", () => {
 
         it("selects workspace when workspace IRI is specified as query param", () => {
             location.search = `workspace=${encodeURIComponent(wsIri)}`;
-            shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions}
-                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions} history={history}
+                              location={location} match={match} {...intlFunctions()} keycloak={keycloak}
+                              keycloakInitialized={true}/>);
             return Promise.resolve().then(() => {
                 expect(dispatchFunctions.selectWorkspace).toHaveBeenCalledWith(VocabularyUtils.create(wsIri));
             });
@@ -91,22 +119,23 @@ describe("MainView", () => {
 
         it("does not select workspace when user is not loaded", () => {
             location.search = `workspace=${encodeURIComponent(wsIri)}`;
-            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
-                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions} history={history} location={location}
+                              match={match} {...intlFunctions()} keycloak={keycloak} keycloakInitialized={true}/>);
             expect(dispatchFunctions.selectWorkspace).not.toHaveBeenCalled();
         });
 
         it("loads current workspace when user is loaded and no workspace IRI is provided", () => {
-            shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions}
-                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions} history={history}
+                              location={location} match={match} {...intlFunctions()} keycloak={keycloak}
+                              keycloakInitialized={true}/>);
             return Promise.resolve().then(() => {
                 expect(dispatchFunctions.loadCurrentWorkspace).toHaveBeenCalled();
             });
         });
 
         it("does not load current workspace when user is not loaded", () => {
-            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
-                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions} history={history} location={location}
+                              match={match} {...intlFunctions()} keycloak={keycloak} keycloakInitialized={true}/>);
             expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
         });
 
@@ -116,8 +145,8 @@ describe("MainView", () => {
                 status: AsyncActionStatus.FAILURE,
                 error: {status: 401}
             });
-            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions}
-                              history={history} location={location} match={match} {...intlFunctions()}/>);
+            shallow(<MainView user={EMPTY_USER} {...dispatchFunctions} history={history} location={location}
+                              match={match} {...intlFunctions()} keycloak={keycloak} keycloakInitialized={true}/>);
             return Promise.resolve().then(() => {
                 expect(dispatchFunctions.loadCurrentWorkspace).not.toHaveBeenCalled();
             });
@@ -125,15 +154,17 @@ describe("MainView", () => {
 
         it("renders workspace placeholder when workspace is not loaded", () => {
             const wrapper = shallow(<MainView user={Generator.generateUser()} {...dispatchFunctions} history={history}
-                                              location={location} match={match} {...intlFunctions()}/>);
+                                              location={location} match={match} {...intlFunctions()} keycloak={keycloak}
+                                              keycloakInitialized={true}/>);
             expect(wrapper.exists(WorkspaceNotLoaded)).toBeTruthy();
         });
     });
 
     it("does not render breadcrumb on dashboard", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
-                                          workspace={new Workspace({iri: Generator.generateUri()})}
-                                          location={location} match={match} {...intlFunctions()}/>);
+        const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions} workspace={new Workspace({
+            iri: Generator.generateUri(),
+            label: "Test workspace"
+        })} location={location} match={match} {...intlFunctions()} keycloak={keycloak} keycloakInitialized={true}/>);
         const header = wrapper.find(Header);
         expect(header.prop("showBreadcrumbs")).toBeFalsy();
     });
@@ -147,8 +178,11 @@ describe("MainView", () => {
         };
 
         const wrapper = shallow(<MainView user={nonEmptyUser} {...dispatchFunctions}
-                                          workspace={new Workspace({iri: Generator.generateUri()})}
-                                          location={locationVocabularies} match={match} {...intlFunctions()}/>);
+                                          workspace={new Workspace({
+                                              iri: Generator.generateUri(),
+                                              label: "Test workspace"
+                                          })} location={locationVocabularies} match={match} {...intlFunctions()}
+                                          keycloak={keycloak} keycloakInitialized={true}/>);
         const header = wrapper.find(Header);
         expect(header.prop("showBreadcrumbs")).toBeTruthy();
     });

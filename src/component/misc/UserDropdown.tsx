@@ -1,9 +1,6 @@
 import React from "react";
-import {
-    DropdownMenu, DropdownItem, UncontrolledDropdown, DropdownToggle,
-} from "reactstrap";
+import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import Routes from "../../util/Routes";
 import {injectIntl} from "react-intl";
 import {connect} from "react-redux";
 import classNames from "classnames";
@@ -12,6 +9,8 @@ import {ThunkDispatch} from "../../util/Types";
 import * as actions from "../../action/ComplexActions";
 import User from "../../model/User";
 import "./UserDropdown.scss";
+import {useKeycloak} from "@react-keycloak/web";
+import Utils from "../../util/Utils";
 
 interface UserDropdownProps extends HasI18n {
     user: User;
@@ -19,15 +18,10 @@ interface UserDropdownProps extends HasI18n {
     dark: boolean;
 }
 
-/**
- * Have to explicitly add the hash to NavLink paths, otherwise NavLinks act as if using browser history.
- */
-function hashPath(path: string): string {
-    return "#" + path;
-}
+export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
+    const {keycloak} = useKeycloak();
 
-export const UserDropdown: React.FC<UserDropdownProps> = (props) => (
-    <UncontrolledDropdown nav={true}>
+    return <UncontrolledDropdown nav={true}>
         <DropdownToggle
             nav={true} caret={true}
             className={
@@ -42,15 +36,16 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => (
             <span className="user-dropdown">{props.user.abbreviatedName}</span>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-arrow" right={true}>
-            <DropdownItem
-                href={hashPath(Routes.profile.path)}><i
-                className="fas fa-user"/><span>{props.i18n("main.user-profile")}</span></DropdownItem>
+            <DropdownItem id="user-dropdown-profile"
+                href={`${Utils.withTrailingSlash(keycloak.authServerUrl)}realms/${keycloak.realm}/account?referrer=${keycloak.clientId}`}>
+                <i className="fas fa-user"/><span>{props.i18n("main.user-profile")}</span>
+            </DropdownItem>
             <DropdownItem divider={true}/>
-            <DropdownItem onClick={props.logout}><i
-                className="fas fa-sign-out-alt"/><span>{props.i18n("main.logout")}</span></DropdownItem>
+            <DropdownItem id="user-dropdown-logout" onClick={props.logout}>
+                <i className="fas fa-sign-out-alt"/><span>{props.i18n("main.logout")}</span></DropdownItem>
         </DropdownMenu>
-    </UncontrolledDropdown>
-);
+    </UncontrolledDropdown>;
+}
 
 export default connect((state: TermItState) => {
     return {

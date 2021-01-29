@@ -67,11 +67,6 @@ const mainNavRoutes: NavLinkRoute[] = [{
     path: Routes.resources.path,
     name: "main.nav.resources",
     icon: "fas fa-clipboard"
-}, {
-    path: Routes.administration.path,
-    name: "main.nav.admin",
-    icon: "fas fa-user-shield",
-    adminRoute: true
 }];
 
 const createNewNavRoutes: NavLinkRoute[] = [{

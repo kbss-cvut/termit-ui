@@ -7,6 +7,14 @@ import VocabularyUtils from "./VocabularyUtils";
 import Term from "../model/Term";
 
 export class Routing {
+
+    private readonly mHistory: History;
+    private originalTarget?: string;
+
+    constructor() {
+        this.mHistory = createHashHistory();
+    }
+
     get history(): History {
         return this.mHistory;
     }
@@ -34,11 +42,9 @@ export class Routing {
         return path;
     };
 
-    private readonly mHistory: History;
-    private originalTarget?: string;
-
-    constructor() {
-        this.mHistory = createHashHistory();
+    public static buildFullUrl(route: Route | string, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) {
+        const innerPath = typeof route === "string" ? route : Routing.buildUrl(route, options);
+        return window.location.origin + window.location.pathname + "#" + innerPath;
     }
 
     public saveOriginalTarget = () => {

@@ -43,21 +43,13 @@ describe("Ajax", () => {
         return sut.get("/users/current");
     });
 
-    it("extracts current JWT from response and saves it using Authentication", () => {
-        headers[Constants.Headers.AUTHORIZATION] = jwt;
-        Authentication.saveToken = jest.fn();
-        mock.onGet("/users/current").reply(200, require("../../rest-mock/current"), headers);
-        return sut.get("/users/current").then(() => {
-            expect(Authentication.saveToken).toHaveBeenCalledWith(jwt);
+    it("does not add authorization header when no JWT is loaded from localStorage", () => {
+        Authentication.loadToken = jest.fn().mockReturnValue(undefined);
+        mock.onGet("/users/current").reply((config: AxiosRequestConfig) => {
+            expect(config.headers[Constants.Headers.AUTHORIZATION]).not.toBeDefined();
+            return [200, require("../../rest-mock/current"), headers];
         });
-    });
-
-    it("does not extract JWT when there is none in response", () => {
-        Authentication.saveToken = jest.fn();
-        mock.onGet("/users/username").reply(200, false);
-        return sut.get("/users/username").then(() => {
-            expect(Authentication.saveToken).not.toHaveBeenCalled();
-        });
+        return sut.get("/users/current");
     });
 
     describe("error handling", () => {
