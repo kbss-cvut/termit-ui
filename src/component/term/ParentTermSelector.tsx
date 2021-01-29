@@ -5,7 +5,8 @@ import Term, {TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import {connect} from "react-redux";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {Button, ButtonGroup, FormGroup, FormText, Label} from "reactstrap";
+import {Button, ButtonGroup, FormFeedback, FormGroup, FormText, Label} from "reactstrap";
+import {loadTerms} from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
@@ -15,7 +16,6 @@ import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
 import Constants from "../../util/Constants";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
-import {loadTerms} from "../../action/AsyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
     if (currentTermIri) {
@@ -39,6 +39,8 @@ interface ParentTermSelectorProps extends HasI18n {
     id: string;
     termIri?: string;
     parentTerms?: TermData[];
+    invalid?: boolean;
+    invalidMessage?: JSX.Element;
     vocabularyIri: string;
     onChange: (newParents: Term[]) => void;
     loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
@@ -143,6 +145,12 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     }
 
     private renderSelector() {
+        let style;
+        if (this.props.invalid) {
+            style = {borderColor: "red"};
+        } else {
+            style = {}
+        }
         return <><IntelligentTreeSelect onChange={this.onChange}
                                         ref={this.treeComponent}
                                         value={this.resolveSelectedParents()}
@@ -151,7 +159,10 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                                         maxHeight={200}
                                         multi={true}
                                         optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
+                                        style={style}
                                         {...commonTermTreeSelectProps(this.props)}/>
+            {this.props.invalid ?
+                <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
             <FormText>{this.props.i18n("term.parent.help")}</FormText>
         </>;
     }

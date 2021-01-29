@@ -1,5 +1,5 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
+import {FormattedMessage, injectIntl} from "react-intl";
 import {Card, CardBody, CardHeader} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Routes from "../../util/Routes";
@@ -14,6 +14,8 @@ import {UserAccountData} from "../../model/User";
 import {register} from "../../action/AsyncUserActions";
 import RegistrationForm from "./RegistrationForm";
 import Constants from "../../util/Constants";
+import {Link} from "react-router-dom";
+import WindowTitle from "../misc/WindowTitle";
 
 interface RegisterProps extends HasI18n {
     loading: boolean;
@@ -27,7 +29,8 @@ export const Register: React.FC<RegisterProps> = props => {
 
     const onRegister = (userData: UserAccountData) => props.register(userData);
     const onCancel = () => Routing.transitionTo(Routes.login);
-    return <PublicLayout title={props.i18n("login.title")}>
+    return <PublicLayout title={props.i18n("register.title")}>
+        <WindowTitle title={props.i18n("register.title")}/>
         <Card className="modal-panel">
             <CardHeader className="text-center pb-0 border-bottom-0">
                 <h1>{Constants.APP_NAME}</h1>
@@ -35,6 +38,13 @@ export const Register: React.FC<RegisterProps> = props => {
             </CardHeader>
             <CardBody>
                 <RegistrationForm register={onRegister} cancel={onCancel} loading={props.loading}/>
+                <div className="text-center">
+                    <FormattedMessage id="register.login.label" values={{
+                        a: (chunks: any) => <Link id="register-login" to={Routes.login.link()}
+                                                  className="bold">{chunks}</Link>
+                    }}
+                    />
+                </div>
             </CardBody>
         </Card>
     </PublicLayout>;

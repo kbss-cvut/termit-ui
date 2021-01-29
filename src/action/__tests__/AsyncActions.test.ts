@@ -1320,18 +1320,6 @@ describe("Async actions", () => {
                 expect(res).toEqual(resource.iri);
             });
         });
-
-        it("refreshes resource list on success", () => {
-            const resource = new Resource({
-                iri: Generator.generateUri(),
-                label: "Test resource"
-            });
-            Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
-            return Promise.resolve((store.dispatch as ThunkDispatch)(createResource(resource))).then(() => {
-                const actions = store.getActions();
-                expect(actions.find(a => a.type === ActionType.LOAD_RESOURCES)).toBeDefined();
-            });
-        });
     });
 
     describe("removeResource", () => {
@@ -1535,8 +1523,9 @@ describe("Async actions", () => {
             return Promise.resolve((store.dispatch as ThunkDispatch)(createFileInDocument(file, documentIri))).then(() => {
                 const actions = store.getActions();
                 expect(actions[0].type).toEqual(ActionType.CREATE_RESOURCE);
-                expect((Ajax.post as jest.Mock).mock.calls[0][0]).toEqual(Constants.API_PREFIX + "/resources/" + docName + "/files");
-                expect((Ajax.post as jest.Mock).mock.calls[0][1].getContent()).toEqual(file.toJsonLd());
+                expect((Ajax.post as jest.Mock).mock.calls[0][0]).toEqual(Constants.API_PREFIX + "/identifiers");
+                expect((Ajax.post as jest.Mock).mock.calls[1][0]).toEqual(Constants.API_PREFIX + "/resources/" + docName + "/files");
+                expect((Ajax.post as jest.Mock).mock.calls[1][1].getContent()).toEqual(file.toJsonLd());
             });
         });
     });

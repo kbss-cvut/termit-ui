@@ -15,6 +15,7 @@ import HeaderWithActions from "../../misc/HeaderWithActions";
 import CopyIriIcon from "../../misc/CopyIriIcon";
 import Terms from "../term/Terms";
 import {selectVocabularyTerm} from "../../../action/SyncActions";
+import WindowTitle from "../../misc/WindowTitle";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
@@ -38,8 +39,11 @@ export const VocabularySummary: React.FC<VocabularySummaryProps> = props => {
         }
     }, [vocabulary, location, match, loadVocabulary]);
 
-    return <div id="public-vocabulary-detail"><HeaderWithActions id="public-vocabulary-summary" title={
-        <>{vocabulary.label}<CopyIriIcon url={vocabulary.iri as string}/></>}/>
+    return <div id="public-vocabulary-detail">
+        <WindowTitle
+            title={`${vocabulary.label} | ${i18n("vocabulary.management.vocabularies")}`}/>
+        <HeaderWithActions id="public-vocabulary-summary" title={
+            <>{vocabulary.label}<CopyIriIcon url={vocabulary.iri as string}/></>}/>
         <Card className="mb-3">
             <CardBody className="card-body-basic-info">
                 <Row>

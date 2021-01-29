@@ -135,7 +135,7 @@ describe("VocabularySummary", () => {
                                                                       history={history} location={location}
                                                                       validateVocabulary={validateVocabulary}
                                                                       match={match} {...intlFunctions()}/>);
-        wrapper.instance().onFileAdded();
+        wrapper.instance().loadVocabulary();
         expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
     });
 });

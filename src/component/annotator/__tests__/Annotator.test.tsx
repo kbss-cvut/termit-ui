@@ -14,6 +14,7 @@ import Message from "../../../model/Message";
 import AnnotationDomHelper, {AnnotationType} from "../AnnotationDomHelper";
 import TermOccurrence, {TextQuoteSelector} from "../../../model/TermOccurrence";
 import AnnotatorContent from "../AnnotatorContent";
+import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 
 jest.mock("../HtmlDomUtils");
 
@@ -44,7 +45,7 @@ describe("Annotator", () => {
     it("renders body of provided html content", () => {
         const wrapper = mountWithIntl(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                  {...mockedCallbackProps}
-                                                 initialHtml={generalHtmlContent}
+                                                 initialHtml={generalHtmlContent}  {...intlFunctions()}
 
         />);
 
@@ -56,7 +57,7 @@ describe("Annotator", () => {
 
         const wrapper = mountWithIntl(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                  {...mockedCallbackProps}
-                                                 initialHtml={htmlContent}
+                                                 initialHtml={htmlContent} {...intlFunctions()}
 
         />);
         const sampleOutput = "This is a <a data-href=\"https://example.org/link\">link</a>";
@@ -72,7 +73,7 @@ describe("Annotator", () => {
         );
         const wrapper = mountWithIntlAttached(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                          {...mockedCallbackProps}
-                                                         initialHtml={htmlWithOccurrence}
+                                                         initialHtml={htmlWithOccurrence} {...intlFunctions()}
 
         />);
 
@@ -98,7 +99,7 @@ describe("Annotator", () => {
             element.scrollIntoView = jest.fn();
             shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                           {...mockedCallbackProps} initialHtml={generalHtmlContent}
-                                          scrollTo={selector}/>);
+                                          scrollTo={selector} {...intlFunctions()}/>);
             expect(HtmlDomUtils.findAnnotationElementBySelector).toHaveBeenCalledWith(document, selector);
             expect(HtmlDomUtils.addClassToElement).toHaveBeenCalledWith(element, "annotator-highlighted-annotation");
             expect(element.scrollIntoView).toHaveBeenCalled();
@@ -113,7 +114,7 @@ describe("Annotator", () => {
             jest.useFakeTimers();
             shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                           {...mockedCallbackProps} initialHtml={generalHtmlContent}
-                                          scrollTo={selector}/>);
+                                          scrollTo={selector} {...intlFunctions()}/>);
             jest.runAllTimers();
             expect(HtmlDomUtils.removeClassFromElement).toHaveBeenCalledWith(element, "annotator-highlighted-annotation");
         });
@@ -125,7 +126,7 @@ describe("Annotator", () => {
             jest.useFakeTimers();
             shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                           {...mockedCallbackProps} initialHtml={generalHtmlContent}
-                                          scrollTo={selector}/>);
+                                          scrollTo={selector} {...intlFunctions()}/>);
             jest.runAllTimers();
 
         });
@@ -140,7 +141,7 @@ describe("Annotator", () => {
             element.scrollIntoView = jest.fn();
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps} initialHtml={generalHtmlContent}
-                                                          scrollTo={selector}/>);
+                                                          scrollTo={selector} {...intlFunctions()}/>);
             wrapper.update();
             expect(wrapper.state().stickyAnnotationId).toEqual(about);
         });
@@ -152,7 +153,7 @@ describe("Annotator", () => {
         document.body.appendChild(div);
         const wrapper = mountWithIntl(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                  {...mockedCallbackProps}
-                                                 initialHtml={generalHtmlContent}
+                                                 initialHtml={generalHtmlContent} {...intlFunctions()}
         />, {attachTo: div});
         const newSpan = div.querySelector("span");
         const annTarget = {element: newSpan, text: "some text"};
@@ -171,7 +172,7 @@ describe("Annotator", () => {
         it("stores annotation from which the new term is being created for later reference", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const annotation = {
                 about: "_:13",
@@ -187,7 +188,7 @@ describe("Annotator", () => {
         it("removes created label annotation when new term creation is cancelled", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const annotation = {
                 about: "_:13",
@@ -208,7 +209,7 @@ describe("Annotator", () => {
         it("does not remove suggested label occurrence when new term creation is cancelled", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const annotation = {
                 about: "_:13",
@@ -229,7 +230,7 @@ describe("Annotator", () => {
         it("does not confirmed term label occurrence when new term creation is cancelled", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const annotation = {
                 about: "_:13",
@@ -251,7 +252,7 @@ describe("Annotator", () => {
         it("removes created definition annotation when new term creation is cancelled", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const labelAnnotation = {
                 about: "_:13",
@@ -282,7 +283,7 @@ describe("Annotator", () => {
         it("makes a shallow copy of parsed content to force its re-render when new term is created", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const annotation = {
                 about: "_:13",
@@ -336,7 +337,7 @@ describe("Annotator", () => {
             });
             const wrapper = mountWithIntl(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                      {...mockedCallbackProps}
-                                                     initialHtml={generalHtmlContent}
+                                                     initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             wrapper.find("#annotator").simulate("mouseUp");
             wrapper.update();
@@ -349,7 +350,7 @@ describe("Annotator", () => {
             });
             const wrapper = mountWithIntl(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                      {...mockedCallbackProps}
-                                                     initialHtml={generalHtmlContent}
+                                                     initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             wrapper.find("#annotator").simulate("mouseUp");
             expect(wrapper.find(SelectionPurposeDialog).props().show).toBeTruthy();
@@ -379,7 +380,7 @@ describe("Annotator", () => {
         it("does not mark term occurrence sticky when it is being used to create new term", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
             const text = "12345 54321";
@@ -414,7 +415,7 @@ describe("Annotator", () => {
         it("sets content from the created annotation as definition of the term being currently created", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const annotation = {
                 about: "_:13",
@@ -439,7 +440,7 @@ describe("Annotator", () => {
         it("does not mark term definition sticky when it is being used as new term's definition", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const annotation = {
                 about: "_:13",
@@ -496,7 +497,7 @@ describe("Annotator", () => {
         it("assigns new term to the annotation used to define new term label", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             wrapper.setState({newTermLabelAnnotation: labelAnnotation});
             const term = Generator.generateTerm();
@@ -508,7 +509,7 @@ describe("Annotator", () => {
         it("assigns new term to the annotation used to define new term definition", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             wrapper.setState({
                 newTermLabelAnnotation: labelAnnotation,
@@ -524,7 +525,7 @@ describe("Annotator", () => {
         it("sets definition source of the new term", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             wrapper.setState({
                 newTermLabelAnnotation: labelAnnotation,
@@ -543,7 +544,7 @@ describe("Annotator", () => {
         it("creates term definition source when annotation is definition", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const definitionAnnotation = {
                 about: "_:14",
@@ -573,7 +574,7 @@ describe("Annotator", () => {
         it("makes a shallow copy of parsed content to force its re-render", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const originalContent = wrapper.find(AnnotatorContent).prop("content");
             const annotation = {
@@ -618,7 +619,7 @@ describe("Annotator", () => {
             AnnotationDomHelper.removeAnnotation = jest.fn();
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             await wrapper.instance().onAnnotationTermSelected(definitionAnnotation, term);
             wrapper.update();
@@ -634,7 +635,7 @@ describe("Annotator", () => {
         it("makes a shallow copy of parsed content to force its re-render", () => {
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const originalContent = wrapper.find(AnnotatorContent).prop("content");
             const annotation = {

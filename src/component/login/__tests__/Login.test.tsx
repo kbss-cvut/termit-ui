@@ -6,6 +6,7 @@ import ActionType, {AsyncFailureAction, MessageAction} from "../../../action/Act
 import {Alert} from "reactstrap";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {shallow} from "enzyme";
+import {MemoryRouter} from "react-router";
 
 jest.mock("../../../util/Routing");
 jest.mock("reactstrap/lib/UncontrolledTooltip");
@@ -23,7 +24,8 @@ describe("Login", () => {
     });
 
     it("renders submit button disabled when either field is empty", () => {
-        const wrapper = mountWithIntl(<Login loading={false} login={login} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
+                                                           login={login} {...intlFunctions()}/></MemoryRouter>);
         const button = wrapper.find("button#login-submit");
         expect(button.getElement().props.disabled).toBeTruthy();
         const usernameInput = wrapper.find("input[name=\"username\"]");
@@ -39,7 +41,8 @@ describe("Login", () => {
     });
 
     it("enables submit button when both fields are non-empty", () => {
-        const wrapper = mountWithIntl(<Login loading={false} login={login} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
+                                                           login={login} {...intlFunctions()}/></MemoryRouter>);
         const button = wrapper.find("button#login-submit");
         expect(button.getElement().props.disabled).toBeTruthy();
         const usernameInput = wrapper.find("input[name=\"username\"]");
@@ -52,7 +55,8 @@ describe("Login", () => {
     });
 
     it("invokes login when enter is pressed", () => {
-        const wrapper = mountWithIntl(<Login loading={false} login={login} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
+                                                           login={login} {...intlFunctions()}/></MemoryRouter>);
         const usernameInput = wrapper.find("input[name=\"username\"]");
         const passwordInput = wrapper.find("input[name=\"password\"]");
         (usernameInput.getDOMNode() as HTMLInputElement).value = "aaaa";
@@ -64,7 +68,8 @@ describe("Login", () => {
     });
 
     it("does not invoke login when enter is pressed and one field is invalid", () => {
-        const wrapper = mountWithIntl(<Login loading={false} login={login} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
+                                                           login={login} {...intlFunctions()}/></MemoryRouter>);
         const usernameInput = wrapper.find("input[name=\"username\"]");
         const passwordInput = wrapper.find("input[name=\"password\"]");
         (usernameInput.getDOMNode() as HTMLInputElement).value = "aaaa";
@@ -75,8 +80,7 @@ describe("Login", () => {
 
     it("renders alert with error when error is set", () => {
         const error = new ErrorInfo(ActionType.LOGIN, {});
-        const wrapper = shallow<Login>(<Login loading={false}
-                                              login={login} {...intlFunctions()}/>);
+        const wrapper = shallow<Login>(<Login loading={false} login={login} {...intlFunctions()}/>);
         wrapper.setState({error});
         wrapper.update();
         const alert = wrapper.find(Alert);
@@ -85,7 +89,8 @@ describe("Login", () => {
 
     it("clears error on user input", () => {
         const error = new ErrorInfo(ActionType.LOGIN, {});
-        const wrapper = mountWithIntl(<Login loading={false} login={login} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
+                                                           login={login} {...intlFunctions()}/></MemoryRouter>);
         (wrapper.find(Login).instance() as Login).setState({error});
         wrapper.update();
         const usernameInput = wrapper.find("input[name=\"username\"]");
@@ -96,15 +101,15 @@ describe("Login", () => {
     });
 
     it("renders registration link by default", () => {
-        const wrapper = shallow<Login>(<Login loading={false}
-                                              login={login} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
+                                                           login={login} {...intlFunctions()}/></MemoryRouter>);
         expect(wrapper.exists("#login-register")).toBeTruthy();
     });
 
     it("does not render registration link when admin registration only is turned on", () => {
         process.env.REACT_APP_ADMIN_REGISTRATION_ONLY = "true";
-        const wrapper = shallow<Login>(<Login loading={false}
-                                              login={login} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
+                                                           login={login} {...intlFunctions()}/></MemoryRouter>);
         expect(wrapper.exists("#login-register")).toBeFalsy();
     });
 });

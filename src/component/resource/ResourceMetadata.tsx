@@ -18,7 +18,7 @@ const ResourceMetadata = (props: ResourceMetadataProps) =>
         <CardBody className={classNames("card-body-basic-info", {"pl-0": props.inTab})}>
             {props.inTab && <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label">{props.i18n("asset.label")}:</Label>
+                    <Label className="attribute-label mb-3">{props.i18n("asset.label")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
                     <ResourceLink id="resource-metadata-label" resource={props.resource || {}}/>
@@ -26,10 +26,10 @@ const ResourceMetadata = (props: ResourceMetadataProps) =>
             </Row>}
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label">{props.i18n("resource.metadata.description")}:</Label>
+                    <Label className="attribute-label mb-3">{props.i18n("resource.metadata.description")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
-                    <Label id="resource-metadata-description">{(props.resource || {}).description}</Label>
+                    <p id="resource-metadata-description">{(props.resource || {}).description}</p>
                 </Col>
             </Row>
             {props.additionalColumns}

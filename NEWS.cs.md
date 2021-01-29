@@ -1,3 +1,9 @@
+##### Verze 2.1.2
+- Přepracovány obrazovky seznamu slovníků a zdrojů - nyní používají tabulku podporující stránkování a filtrování.
+- Opraveny problémy s generováním nových identifikátorů.
+- Optimizalizováno načítání výsledků validace.
+- Řada dalších oprav.
+
 ##### Verze 2.1.1
 - Úprava UI výsledků vyhledávání
 - Opravy drobných chyb v uživatelském rozhraní

@@ -38,13 +38,4 @@ describe("CreateFileMetadata", () => {
         const labelInput = wrapper.find("input[name=\"create-resource-label\"]");
         expect((labelInput.getDOMNode() as HTMLInputElement).value).toEqual(fileName);
     });
-
-    it("generates identifier after label has been set based on selected file", async () => {
-        const wrapper = mountWithIntl(<CreateFileMetadata onCreate={onCreate} onCancel={onCancel} {...intlFunctions()}/>);
-        (wrapper.find(CreateFileMetadata).instance() as CreateFileMetadata).setFile(file as File);
-        await flushPromises();
-        expect(Ajax.post).toHaveBeenCalled();
-        const iriInput = wrapper.find("input[name=\"create-resource-iri\"]");
-        expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
-    });
 });

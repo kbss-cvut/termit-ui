@@ -1,11 +1,13 @@
 import * as React from "react";
-import {Label, FormText} from "reactstrap";
+import {FormText, Label} from "reactstrap";
 import {InputType} from "reactstrap/lib/Input";
+import classNames from "classnames";
 
 export interface AbstractInputProps {
     id?: string;
     name?: string;
     label?: string;
+    labelClass?: string;
     placeholder?: string;
     title?: string;
     value?: string;
@@ -13,17 +15,19 @@ export interface AbstractInputProps {
     help?: string;
     valid?: boolean;
     invalid?: boolean;
-    invalidMessage?: string;
+    invalidMessage?: string | JSX.Element;
     autoFocus?: boolean;
     autoComplete?: string;
     type?: InputType;
     disabled?: boolean;
+    readOnly?: boolean;
 }
 
 export default class AbstractInput<T extends AbstractInputProps> extends React.Component<T> {
 
     protected renderLabel() {
-        return this.props.label ? <Label className="attribute-label" for={this.props.id ? this.props.id : undefined}>{this.props.label}</Label> : null;
+        return this.props.label ?
+            <Label className={classNames("attribute-label", this.props.labelClass)} for={this.props.id ? this.props.id : undefined}>{this.props.label}</Label> : null;
     }
 
     protected renderHelp() {
@@ -31,7 +35,7 @@ export default class AbstractInput<T extends AbstractInputProps> extends React.C
     }
 
     protected inputProps() {
-        const {invalidMessage, help, ...p} = this.props as AbstractInputProps;
+        const {invalidMessage, help, labelClass, ...p} = this.props as AbstractInputProps;
         return p;
     }
 }

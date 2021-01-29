@@ -1,6 +1,12 @@
+##### Version 2.1.2
+- Redesign vocabularies and resources lists - use pageable and filterable table.
+- Fix identifier generation issues.
+- Improve validation results retrieval.
+- Additional bug fixes.
+
 ##### Version 2.1.1
-- Úprava UI výsledků vyhledávání
-- Opravy drobných chyb v uživatelském rozhraní
+- Improved search results UI
+- Fix minor frontend issues
 
 ##### Version 2.1.0
 - Added support for SKOS altLabel and hiddenLabel.

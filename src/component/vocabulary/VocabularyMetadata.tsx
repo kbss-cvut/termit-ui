@@ -8,17 +8,17 @@ import VocabularyDependenciesList from "./VocabularyDependenciesList";
 import Tabs from "../misc/Tabs";
 import TermChangeFrequency from "./TermChangeFrequency";
 import Terms from "../term/Terms";
-import DocumentSummaryInTab from "../resource/document/DocumentSummaryInTab";
 import {Location} from "history";
 import {match as Match} from "react-router";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
 import {selectVocabularyTerm} from "../../action/SyncActions";
 import Utils from "../../util/Utils";
+import OptionalDocumentSummaryInTab from "../resource/document/OptionalDocumentSummaryInTab";
 
 interface VocabularyMetadataProps extends HasI18n {
     vocabulary: Vocabulary;
-    onFileAdded: () => void;
+    onChange: () => void;
     resetSelectedTerm: () => void;
     location: Location;
     match: Match<any>;
@@ -53,10 +53,10 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
                 <CardBody className="card-body-basic-info">
                     <Row>
                         <Col xl={2} md={4}>
-                            <Label className="attribute-label">{i18n("vocabulary.comment")}:</Label>
+                            <Label className="attribute-label mb-3">{i18n("vocabulary.comment")}</Label>
                         </Col>
                         <Col xl={10} md={8}>
-                            <Label id="vocabulary-metadata-comment">{vocabulary.comment}</Label>
+                            <p id="vocabulary-metadata-comment">{vocabulary.comment}</p>
                         </Col>
                     </Row>
                     <VocabularyDependenciesList vocabularies={vocabulary.dependencies}/>
@@ -82,10 +82,8 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         tabs["glossary.title"] =
             <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location} showTermQualityBadge={true}/>
 
-        if (vocabulary.document) {
-            tabs["vocabulary.detail.document"] =
-                <DocumentSummaryInTab resource={vocabulary.document} onFileAdded={this.props.onFileAdded}/>;
-        }
+        tabs["vocabulary.detail.document"] =
+            <OptionalDocumentSummaryInTab vocabulary={vocabulary} onChange={this.props.onChange}/>;
         tabs["properties.edit.title"] = <UnmappedProperties properties={vocabulary.unmappedProperties}
                                                             showInfoOnEmpty={true}/>;
 
@@ -93,6 +91,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
 
         return <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={tabs} tabBadges={{
             "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
+            "vocabulary.detail.document": vocabulary.document ? '1' : '0',
         }}/>;
     }
 }

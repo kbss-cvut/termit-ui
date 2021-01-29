@@ -7,11 +7,6 @@ import VocabularyIriLink from "../VocabularyIriLink";
 
 describe("VocabularyDependenciesList", () => {
 
-    it("renders nothing when no dependencies are provided", () => {
-        const wrapper = shallow(<VocabularyDependenciesList {...intlFunctions()}/>);
-        expect(wrapper.isEmptyRender()).toBeTruthy();
-    });
-
     it("renders links to provided vocabularies", () => {
         const vocabularies = [{
             iri: Generator.generateUri(),
