@@ -32,6 +32,7 @@ const cs = {
         "news-viewer.title": "Novinky",
 
         "auth.redirect-message": "Za moment budete přesměrováni na autorizační službu.",
+        "auth.unavailable-message": "Autorizační služba bohužel není dostupná. Kontaktujte, prosím, správce systému.",
 
         "login.title": "Přihlášení",
         "login.error": "Přihlášení se nezdařilo.",

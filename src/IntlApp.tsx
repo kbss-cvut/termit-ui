@@ -10,6 +10,7 @@ import TermItState from "./model/TermItState";
 import BreadcrumbRoute from "./component/breadcrumb/BreadcrumbRoute";
 import Mask from "./component/misc/Mask";
 import {useKeycloak} from "@react-keycloak/web";
+import AuthUnavailable from "./component/misc/AuthUnavailable";
 
 const PublicMainView = React.lazy(() => import("./component/public/MainView"));
 const MainView = React.lazy(() => import("./component/MainView"));
@@ -18,14 +19,31 @@ interface IntlWrapperProps {
     intl: IntlData
 }
 
+const AUTH_INIT_TIMEOUT = 5000;
+let authTimeout: number;
+
 const IntlWrapper: React.FC<IntlWrapperProps> = (props) => {
     const {intl} = props;
     const {initialized} = useKeycloak();
+    const [authAvailable, setAuthAvailable] = React.useState(true);
+    if (!authAvailable) {
+        return <IntlProvider {...intl}>
+            <AuthUnavailable/>
+        </IntlProvider>;
+    }
     if (!initialized) {
+        // Keycloak does not allow error handling in case it is unable to connect to the auth server, so we handle it
+        // by having a timer waiting for connection initialization.
+        authTimeout = window.setTimeout(() => {
+            if (!initialized) {
+                setAuthAvailable(false);
+            }
+        }, AUTH_INIT_TIMEOUT);
         return <IntlProvider {...intl}>
             <Mask/>
         </IntlProvider>;
     }
+    window.clearTimeout(authTimeout);
 
     return <IntlProvider {...intl}>
         <Router history={Routing.history}>

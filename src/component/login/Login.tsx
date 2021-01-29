@@ -35,7 +35,7 @@ export const Login: React.FC<LoginProps> = props => {
             <CardBody>
                 {i18n("auth.redirect-message")}
             </CardBody>
-        </Card>
+        </Card>;
     }
 };
 
