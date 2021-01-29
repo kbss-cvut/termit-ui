@@ -17,7 +17,7 @@ function generateControlPanelLink(ws: Workspace, i18n: (id?: string) => string) 
     if (!url.endsWith("/")) {
         url += "/";
     }
-    return <a href={`${url}workspaces/${iri.fragment}`}
+    return <a href={`${url}workspace/${iri.fragment}`}
               title={i18n("workspace.indicator.controlPanelLink.tooltip")}>{ws.label}</a>;
 }
 
