@@ -5,7 +5,6 @@ import {Button, Card, CardBody, CardHeader, Modal, ModalBody} from "reactstrap";
 import TermItFile from "../../../model/File";
 import {GoPlus} from "react-icons/go";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import Resource from "../../../model/Resource";
 import CreateFileMetadata from "../file/CreateFileMetadata";
 import {useState} from "react";
 
@@ -18,9 +17,9 @@ export const AddFile = (props: AddFileProps) => {
     const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
     const toggle = () => setCreateFileDialogOpen(!createFileDialogOpen);
 
-    const createFile = (termitFile: Resource, file: File) => {
+    const createFile = (termitFile: TermItFile, file: File) => {
         termitFile.addType(VocabularyUtils.FILE);
-        return props.performAction(termitFile as TermItFile, file)
+        return props.performAction(termitFile, file)
             .then(toggle)
     }
 

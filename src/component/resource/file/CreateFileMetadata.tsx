@@ -4,13 +4,11 @@ import withI18n, {HasI18n} from "../../hoc/withI18n";
 import {Button, ButtonToolbar, Col, Form, Row} from "reactstrap";
 import UploadFile from "./UploadFile";
 import TermItFile from "../../../model/File";
-import Resource from "../../../model/Resource";
 import CustomInput from "../../misc/CustomInput";
-import ShowAdvanceAssetFields from "../../asset/ShowAdvancedAssetFields";
 import {AssetData} from "../../../model/Asset";
 
 interface CreateFileMetadataProps extends HasI18n {
-    onCreate: (termItFile : Resource, file: File) => any;
+    onCreate: (termItFile : TermItFile, file: File) => any;
     onCancel: () => void;
 }
 
@@ -61,15 +59,6 @@ export class CreateFileMetadata extends React.Component<CreateFileMetadataProps,
                                  onChange={this.onLabelChange}/>
                 </Col>
             </Row>
-            <ShowAdvanceAssetFields>
-                <Row>
-                    <Col xs={12}>
-                        <CustomInput name="create-resource-iri" label={i18n("asset.iri")}
-                                     value={this.state.iri}
-                                     help={i18n("asset.create.iri.help")}/>
-                    </Col>
-                </Row>
-            </ShowAdvanceAssetFields>
             <Row>
                 <Col xs={12}>
                     <ButtonToolbar className="d-flex justify-content-center mt-4">
