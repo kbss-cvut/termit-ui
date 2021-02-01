@@ -47,6 +47,10 @@ export class CreateFileMetadata extends React.Component<CreateFileMetadataProps,
         this.setState({file, label: file.name, dragActive: false});
     }
 
+    public cannotSubmit = () => {
+        return !this.state.file || this.state.label.trim().length === 0;
+    }
+
     public render() {
         const i18n = this.props.i18n;
 
@@ -63,7 +67,7 @@ export class CreateFileMetadata extends React.Component<CreateFileMetadataProps,
                 <Col xs={12}>
                     <ButtonToolbar className="d-flex justify-content-center mt-4">
                         <Button id="create-resource-submit" onClick={this.onCreate} color="success" size="sm"
-                                disabled={this.state.label.trim().length === 0}>{i18n("create")}</Button>
+                                disabled={this.cannotSubmit()}>{i18n("create")}</Button>
                         <Button id="create-resource-cancel" onClick={this.props.onCancel}
                                 color="outline-dark" size="sm">{i18n("cancel")}</Button>
                     </ButtonToolbar>
