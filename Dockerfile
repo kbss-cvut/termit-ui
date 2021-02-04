@@ -15,6 +15,7 @@ RUN serverUrl=${SERVER_URL} deployment=${DEPLOYMENT} REACT_APP_ADMIN_REGISTRATIO
 FROM nginx:alpine
 COPY --from=react-build /frontend/build /usr/share/nginx/html
 RUN chmod a+r -R /usr/share/nginx/html
+RUN chmod ag+x /usr/share/nginx/html/flags
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
