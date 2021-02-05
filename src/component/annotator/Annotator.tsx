@@ -24,6 +24,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
 import WindowTitle from "../misc/WindowTitle";
 import TermDefinitionEdit from "./TermDefinitionEdit";
+import {updateTerm} from "../../action/AsyncActions";
 
 interface AnnotatorProps extends HasI18n {
     fileIri: IRI;
@@ -36,6 +37,7 @@ interface AnnotatorProps extends HasI18n {
     publishMessage(message: Message): void;
 
     setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
+    updateTerm(term: Term): Promise<any>;
 }
 
 interface AnnotatorState {
@@ -170,26 +172,35 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     }
 
     public onSaveTermDefinition = (term: Term) => {
+        this.setTermDefinitionSource(term, this.state.existingTermDefinitionAnnotationElement!)
+            .then(() => {
+                return this.props.updateTerm(term);
+            })
+            .finally(() => {
+                this.setState({
+                    existingTermDefinitionAnnotationElement: undefined,
+                    selectedTerm: undefined
+                });
+            });
+    }
+
+    private setTermDefinitionSource(term: Term, annotationElement: Element) {
         const dom = [...this.state.internalHtml];
         const defSource = new TermOccurrence({
             term,
             target: {
                 source: {iri: this.props.fileIri.namespace + this.props.fileIri.fragment},
-                selectors: [AnnotationDomHelper.generateSelector(this.state.existingTermDefinitionAnnotationElement!)],
+                selectors: [AnnotationDomHelper.generateSelector(annotationElement)],
                 types: [VocabularyUtils.FILE_OCCURRENCE_TARGET]
             },
             types: []
         });
-        // TODO Update term instead of just setting definition source
-        this.setTermDefinitionSource(defSource, term).then(() => {
+        defSource.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
+        return this.props.setTermDefinitionSource(defSource, term).then(() => {
             this.updateInternalHtml(dom);
+            return Promise.resolve();
         }).catch(() => {
-            this.onRemove(this.state.existingTermDefinitionAnnotationElement?.attribs!.about!);
-        }).finally(() => {
-            this.setState({
-                existingTermDefinitionAnnotationElement: undefined,
-                selectedTerm: undefined
-            });
+            this.onRemove(annotationElement.attribs!.about!);
         });
     }
 
@@ -199,11 +210,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             existingTermDefinitionAnnotationElement: undefined,
             selectedTerm: undefined
         });
-    }
-
-    private setTermDefinitionSource(source: TermOccurrence, term: Term) {
-        source.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
-        return this.props.setTermDefinitionSource(source, term);
     }
 
     public onCreateTerm = (label: string, annotation: AnnotationSpanProps) => {
@@ -252,7 +258,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             const ann = AnnotationDomHelper.findAnnotation(dom, this.state.newTermDefinitionAnnotation.about!, this.state.prefixMap);
             if (ann) {
                 ann.attribs.resource = newTerm.iri;
-                this.createOccurrence(this.state.newTermDefinitionAnnotation, newTerm);
+                this.setTermDefinitionSource(newTerm, ann);
             }
         }
         this.setState({newTermLabelAnnotation: undefined, newTermDefinitionAnnotation: undefined});
@@ -443,6 +449,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         publishMessage: (message: Message) => dispatch(publishMessage(message)),
-        setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term))
+        setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term)),
+        updateTerm: (term: Term) => dispatch(updateTerm(term))
     };
 })(injectIntl(withI18n(Annotator)));

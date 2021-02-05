@@ -45,8 +45,9 @@ const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
         </ModalBody>
         <ModalFooter>
             <ButtonToolbar className="d-flex justify-content-center mt-4">
-                <Button id="annotator-set-definition-save" color="success" onClick={onSaveClick}>{i18n("save")}</Button>
-                <Button id="annotator-set-definition-cancel" color="outline-dark"
+                <Button id="annotator-set-definition-save" color="success" size="sm"
+                        onClick={onSaveClick}>{i18n("save")}</Button>
+                <Button id="annotator-set-definition-cancel" color="outline-dark" size="sm"
                         onClick={onCancel}>{i18n("cancel")}</Button>
             </ButtonToolbar>
         </ModalFooter>
