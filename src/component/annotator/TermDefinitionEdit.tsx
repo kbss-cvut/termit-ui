@@ -24,7 +24,7 @@ function hasExistingDefinition(term: Term, language: string) {
     return term.definition && term.definition[language];
 }
 
-const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
+export const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
     const {term, annotationElement, onSave, onCancel, i18n, formatMessage} = props;
     const language = useSelector((state: TermItState) => state.configuration.language);
     const onChange = (change: Partial<TermData>) => setData(new Term(Object.assign({}, data, change)));
