@@ -2,7 +2,7 @@ import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import Utils from "../../util/Utils";
-import {Col, Form, Label, Row} from "reactstrap";
+import {Col, Form, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
@@ -147,8 +147,8 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
 
             <Row>
                 <Col xs={12}>
-                    <Label className="attribute-label">{i18n("term.metadata.comment")}</Label>
-                    <TextArea name="create-term-comment"
+                    <TextArea name="create-term-comment" label={i18n("term.metadata.comment")}
+                              labelClass="attribute-label"
                               type="textarea" rows={4} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
                               help={i18n("term.comment.help")}
                               onChange={this.onCommentChange}/>

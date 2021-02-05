@@ -464,6 +464,9 @@ const cs = {
         "annotation.definition.title": "Zdroj definice pojmu",
         "annotation.definition.term": "Pojem:",
         "annotation.definition.definition": "Definice:",
+        "annotation.definition.exists.message": "Pojem \"{term}\" již definici má. Níže můžete novou definici s původní porovnat a upravit ji.",
+        "annotation.definition.original": "Původní definice",
+        "annotation.definition.new": "Nová definice",
 
         'annotator.legend.confirmed.loading': 'Anotace se načítá',
         'annotator.legend.confirmed.loading.tooltip': 'Annotace, kterou vytvořil či akceptoval uživatel, se načítá.',

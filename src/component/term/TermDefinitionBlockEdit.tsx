@@ -10,6 +10,7 @@ import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {renderValidationMessages} from "./forms/FormUtils";
 import {injectIntl} from "react-intl";
+import "./TermDefinitionBlock.scss";
 
 interface TermDefinitionBlockEditProps extends HasI18n {
     term: TermData;
@@ -17,10 +18,11 @@ interface TermDefinitionBlockEditProps extends HasI18n {
     definitionSelector?: () => void;
     getValidationResults?: (property: string) => ValidationResult[];
     onChange: (change: Partial<TermData>) => void;
+    readOnly?: boolean;
 }
 
 export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = props => {
-    const {term, language, getValidationResults, onChange, i18n, locale} = props;
+    const {term, language, getValidationResults, onChange, i18n, locale, readOnly} = props;
     const onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
         const change = {};
@@ -40,7 +42,7 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
             <Col xs={12}>
                 {props.definitionSelector ?
                     <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
-                        <Label className="attribute-label">{i18n("term.metadata.definition.text")}</Label>
+                        <Label className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>
                         <Button id="create-term-select-definition"
                                 color="muted"
                                 onClick={props.definitionSelector}
@@ -49,11 +51,11 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
                             {i18n("annotator.createTerm.selectDefinition")}
                         </Button>
                     </FormGroup>
-                    : <Label
-                        className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>}
+                    : <FormGroup style={{marginBottom: 0}}><Label
+                        className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label></FormGroup>}
                 <TextArea name="edit-term-definition"
                           value={getLocalizedOrDefault(term.definition, "", language)}
-                          invalid={validationDefinition.length > 0}
+                          invalid={validationDefinition.length > 0} readOnly={readOnly}
                           invalidMessage={renderValidationMessages(locale, validationDefinition)}
                           onChange={onDefinitionChange} rows={4} help={i18n("term.definition.help")}/>
             </Col>
@@ -62,7 +64,7 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
             <Col xs={12}>
                 <CustomInput name="edit-term-source" value={source} onChange={onSourceChange}
                              label={i18n("term.metadata.source")} labelClass="definition"
-                             invalid={validationSource.length > 0}
+                             invalid={validationSource.length > 0} readOnly={readOnly}
                              invalidMessage={renderValidationMessages(locale, validationSource)}
                              help={i18n("term.source.help")}/>
             </Col>
@@ -71,7 +73,8 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
 };
 
 TermDefinitionBlockEdit.defaultProps = {
-    getValidationResults: () => []
+    getValidationResults: () => [],
+    readOnly: false
 }
 
 export default injectIntl(withI18n(TermDefinitionBlockEdit));

@@ -1,7 +1,7 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
-import {Button, ButtonToolbar, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {Button, ButtonToolbar, Col, Form, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {getLocalized} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import TermDefinitionBlockEdit from "../term/TermDefinitionBlockEdit";
@@ -10,12 +10,18 @@ import {useSelector} from "react-redux";
 import TermItState from "../../model/TermItState";
 import HtmlDomUtils from "./HtmlDomUtils";
 import {Element} from "domhandler";
+import "./TermDefinitionEdit.scss";
+import classNames from "classnames";
 
 interface TermDefinitionEditProps extends HasI18n {
     term?: Term;
     annotationElement?: Element;
     onSave: (update: Term) => void;
     onCancel: () => void;
+}
+
+function hasExistingDefinition(term: Term, language: string) {
+    return term.definition && term.definition[language];
 }
 
 const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
@@ -30,27 +36,49 @@ const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
             setData(new Term(Object.assign({}, term, {definition})));
         }
     }, [term, language, annotationElement]);
-    const onSaveClick = () => {
-        onSave(data!);
-    }
     if (!annotationElement || !data) {
         return null;
     }
-    return <Modal id="annotator-set-term-definition" isOpen={true} toggle={onCancel}>
+    const hasExisting = hasExistingDefinition(term!, language);
+
+    return <Modal id="annotator-set-term-definition" isOpen={true} toggle={onCancel} size="lg"
+                  className={classNames({wide: hasExisting})}>
         <ModalHeader>
             {formatMessage("annotator.setTermDefinition.title", {term: getLocalized(data.label, getShortLocale(props.locale))})}
         </ModalHeader>
         <ModalBody>
-            <TermDefinitionBlockEdit term={data} language={language} onChange={onChange}/>
+            <Form>
+                {hasExisting ? <>
+                    <Row>
+                        <Col xs={12}>
+                            <p>{formatMessage("annotation.definition.exists.message", {term: getLocalized(term!.label, getShortLocale(props.locale))})}</p>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={6}>
+                            <h4>{i18n("annotation.definition.original")}</h4>
+                            <TermDefinitionBlockEdit term={term!} language={language} onChange={onChange}
+                                                     readOnly={true}/>
+                        </Col>
+                        <Col xs={6}>
+                            <h4>{i18n("annotation.definition.new")}</h4>
+                            <TermDefinitionBlockEdit term={data} language={language} onChange={onChange}/>
+                        </Col>
+                    </Row>
+                </> : <TermDefinitionBlockEdit term={data} language={language} onChange={onChange}/>}
+
+                <Row>
+                    <Col xs={12}>
+                        <ButtonToolbar className="d-flex justify-content-center mt-4">
+                            <Button id="annotator-set-definition-save" color="success" size="sm"
+                                    onClick={() => onSave(data!)}>{i18n("save")}</Button>
+                            <Button id="annotator-set-definition-cancel" color="outline-dark" size="sm"
+                                    onClick={onCancel}>{i18n("cancel")}</Button>
+                        </ButtonToolbar>
+                    </Col>
+                </Row>
+            </Form>
         </ModalBody>
-        <ModalFooter>
-            <ButtonToolbar className="d-flex justify-content-center mt-4">
-                <Button id="annotator-set-definition-save" color="success" size="sm"
-                        onClick={onSaveClick}>{i18n("save")}</Button>
-                <Button id="annotator-set-definition-cancel" color="outline-dark" size="sm"
-                        onClick={onCancel}>{i18n("cancel")}</Button>
-            </ButtonToolbar>
-        </ModalFooter>
     </Modal>;
 };
 
