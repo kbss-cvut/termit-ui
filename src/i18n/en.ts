@@ -459,6 +459,9 @@ const en = {
         "annotation.definition.title": "Source of definition of term",
         "annotation.definition.term": "Term:",
         "annotation.definition.definition": "Definition:",
+        "annotation.definition.exists.message": "The term \"{term}\" already has a definition. You can compare the new definition with the original below and edit it.",
+        "annotation.definition.original": "Original definition",
+        "annotation.definition.new": "New definition",
 
         'annotator.legend.confirmed.loading': 'Loading annotation',
         'annotator.legend.confirmed.loading.tooltip': 'Annotation that was created or accepted by a user is loading.',
