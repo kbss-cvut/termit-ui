@@ -1,6 +1,7 @@
 import {mockWindowSelection, mountWithIntl} from "../../../__tests__/environment/Environment";
 import * as React from "react";
-import {Annotator} from "../Annotator";
+import {Element} from "domhandler";
+import {AnnotationSpanProps, Annotator} from "../Annotator";
 import {shallow} from "enzyme";
 import Annotation from "..//Annotation";
 import {createAnnotation, mountWithIntlAttached, surroundWithHtml} from "./AnnotationUtil";
@@ -33,13 +34,15 @@ describe("Annotator", () => {
         onUpdate(newHtml: string): void;
         publishMessage(msg: Message): void;
         setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
+        updateTerm(term: Term): Promise<any>;
     };
     beforeEach(() => {
         mockedCallbackProps = {
             onUpdate: jest.fn(),
             publishMessage: jest.fn(),
-            setTermDefinitionSource: jest.fn().mockResolvedValue(null)
-        }
+            setTermDefinitionSource: jest.fn().mockResolvedValue(null),
+            updateTerm: jest.fn().mockResolvedValue({})
+        };
     });
 
     it("renders body of provided html content", () => {
@@ -540,27 +543,36 @@ describe("Annotator", () => {
         });
     });
 
-    describe("onAnnotationTermSelected", () => {
-        it("creates term definition source when annotation is definition", () => {
-            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
-                                                          {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
-            />);
-            const definitionAnnotation = {
+    describe("onSaveTermDefinition", () => {
+
+        let definitionAnnotation: AnnotationSpanProps;
+        let annotationNode: any;
+        let term: Term;
+
+        beforeEach(() => {
+            definitionAnnotation = {
                 about: "_:14",
                 property: VocabularyUtils.IS_DEFINITION_OF_TERM,
                 typeof: VocabularyUtils.DEFINITION
             };
-            const term = Generator.generateTerm();
-            const defNode = {
+            annotationNode = {
                 attribs: {
                     about: definitionAnnotation.about,
                     resource: undefined,
                     typeof: definitionAnnotation.typeof
                 }
             };
-            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(defNode);
-            wrapper.instance().onAnnotationTermSelected(definitionAnnotation, term);
+            term = Generator.generateTerm();
+        })
+
+        it("creates term definition source when annotation is definition", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
+            />);
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
+            wrapper.setState({existingTermDefinitionAnnotationElement: annotationNode as Element});
+            wrapper.instance().onSaveTermDefinition(term);
 
             expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
             const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock).mock.calls[0][0];
@@ -577,21 +589,9 @@ describe("Annotator", () => {
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
             const originalContent = wrapper.find(AnnotatorContent).prop("content");
-            const annotation = {
-                about: "_:14",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE
-            };
-            const term = Generator.generateTerm();
-            const annotationNode = {
-                attribs: {
-                    about: annotation.about,
-                    resource: term.iri,
-                    typeof: annotation.typeof
-                }
-            };
             AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
-            wrapper.instance().onAnnotationTermSelected(annotation, term);
+            wrapper.setState({existingTermDefinitionAnnotationElement: annotationNode as Element});
+            wrapper.instance().onSaveTermDefinition(term);
             wrapper.update();
 
             return Promise.resolve().then(() => {
@@ -602,31 +602,34 @@ describe("Annotator", () => {
 
         it("removes previously created annotation when term definition assignment fails", async () => {
             mockedCallbackProps.setTermDefinitionSource = jest.fn().mockRejectedValue({});
-            const definitionAnnotation = {
-                about: "_:14",
-                property: VocabularyUtils.IS_DEFINITION_OF_TERM,
-                typeof: VocabularyUtils.DEFINITION
-            };
-            const term = Generator.generateTerm();
-            const defNode = {
-                attribs: {
-                    about: definitionAnnotation.about,
-                    resource: undefined,
-                    typeof: definitionAnnotation.typeof
-                }
-            };
-            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(defNode);
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
             AnnotationDomHelper.removeAnnotation = jest.fn();
             const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            await wrapper.instance().onAnnotationTermSelected(definitionAnnotation, term);
+            wrapper.setState({existingTermDefinitionAnnotationElement: annotationNode as Element});
+            await wrapper.instance().onSaveTermDefinition(term);
             wrapper.update();
 
             return Promise.resolve().then(() => {
                 expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
                 expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalled();
+            });
+        });
+
+        it("updates term with the specified definition content", async () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
+            />);
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
+            wrapper.setState({existingTermDefinitionAnnotationElement: annotationNode as Element});
+            wrapper.instance().onSaveTermDefinition(term);
+            await Promise.resolve();
+            await Promise.resolve();
+            return Promise.resolve().then(() => {
+                expect(mockedCallbackProps.updateTerm).toHaveBeenCalledWith(term);
             });
         });
     });
