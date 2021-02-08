@@ -38,7 +38,7 @@ const mainNavRoutes: NavLinkRoute[] = [{
 
 const actionNavRoutes: NavLinkRoute[] = [{
     path: Routes.login.path,
-    name: "login.submit",
+    name: "login.title",
     icon: "fas fa-user"
 }];
 
