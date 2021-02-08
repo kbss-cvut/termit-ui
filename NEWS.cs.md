@@ -1,3 +1,9 @@
+#### Verze 2.1.3
+- Titulek stránky se mění v závislosti na navigaci (usnadňuje hledání v historii).
+- Opravena komunikace se službou textové analýzy při vytvoření nového pojmu.
+- Opraveno nekonzistentní chování formuláře pro nahrání souboru.
+- Opravena nesprávná vizualizace validačního skóre nového pojmu.
+
 ##### Verze 2.1.2
 - Přepracovány obrazovky seznamu slovníků a zdrojů - nyní používají tabulku podporující stránkování a filtrování.
 - Opraveny problémy s generováním nových identifikátorů.
