@@ -446,6 +446,7 @@ const cs = {
         "annotator.createTerm.selectDefinition.message": "Vyberte definici nového pojmu v textu.",
         "annotator.setTermDefinitionSource.success": "Zdroj definice pojmu \"{term}\" nastaven.",
         "annotator.setTermDefinitionSource.error.exists": "Pojem \"{term}\" již má přiřazen zdroj definice.",
+        "annotator.setTermDefinition.title": "Výběr definice pojmu \"{term}\"",
         "annotator.findAnnotation.error": "Anotaci nelze zobrazit.",
 
         'annotation.form.suggested-occurrence.message': 'Fráze není přiřazena žádnemu pojmu.',
@@ -463,6 +464,9 @@ const cs = {
         "annotation.definition.title": "Zdroj definice pojmu",
         "annotation.definition.term": "Pojem:",
         "annotation.definition.definition": "Definice:",
+        "annotation.definition.exists.message": "Pojem \"{term}\" již definici má. Níže můžete novou definici s původní porovnat a upravit ji.",
+        "annotation.definition.original": "Původní definice",
+        "annotation.definition.new": "Nová definice",
 
         'annotator.legend.confirmed.loading': 'Anotace se načítá',
         'annotator.legend.confirmed.loading.tooltip': 'Annotace, kterou vytvořil či akceptoval uživatel, se načítá.',

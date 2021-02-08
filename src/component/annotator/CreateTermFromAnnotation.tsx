@@ -74,7 +74,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
     public render() {
         const i18n = this.props.i18n;
         const invalid = !isTermValid(this.state,this.state.labelExists);
-        return <Modal id="annotator-create-term" isOpen={this.props.show} toggle={this.onCancel}>
+        return <Modal id="annotator-create-term" isOpen={this.props.show} toggle={this.onCancel} size="lg">
             <ModalHeader>
                 {i18n("glossary.form.header")}
             </ModalHeader>

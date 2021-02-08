@@ -10,7 +10,6 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import CustomInput from "../../misc/CustomInput";
 import {getLocalized, langString, pluralLangString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import TextArea from "../../misc/TextArea";
 import StringListEdit from "../../misc/StringListEdit";
 import {ConsolidatedResults} from "../../../model/ConsolidatedResults";
 
@@ -137,25 +136,6 @@ describe("Term edit", () => {
         expect(wrapper.state().label).toEqual({cs: czechValue, en: englishValue});
     });
 
-    it("merges existing definition value in a different language with edited value", () => {
-        const czechValue = "Term definition in Czech";
-        const englishValue = "Term definition in English";
-        term.definition = {cs: czechValue};
-        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language="en"
-                                                                    selectLanguage={selectLanguage}
-                                                                    validationResults={validationResults}
-                                                                    {...intlFunctions()}/>);
-        wrapper.instance().onDefinitionChange({
-            currentTarget: {
-                name: "edit-term-definition",
-                value: englishValue
-            }
-        } as any);
-        wrapper.update();
-        expect(wrapper.state().definition).toEqual({cs: czechValue, en: englishValue});
-    });
-
     /**
      * Bug 1323
      */
@@ -232,17 +212,6 @@ describe("Term edit", () => {
                                                                     {...intlFunctions()}/>);
         const labelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "edit-term-label");
         expect(labelInput.prop("value")).toEqual(term.label.en);
-    });
-
-    it("passes definition value in selected language to definition edit textarea", () => {
-        term.definition = {"en": "Building is a kind of construction", "cs": "Budova je typem stavby"};
-        const wrapper = shallow<TermMetadataEdit>(<TermMetadataEdit save={onSave} term={term} cancel={onCancel}
-                                                                    language={"cs"}
-                                                                    selectLanguage={selectLanguage}
-                                                                    validationResults={validationResults}
-                                                                    {...intlFunctions()}/>);
-        const definitionInput = wrapper.find(TextArea).findWhere(ci => ci.prop("name") === "edit-term-definition");
-        expect(definitionInput.prop("value")).toEqual(term.definition.cs);
     });
 
     it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {

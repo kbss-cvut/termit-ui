@@ -6,6 +6,7 @@ import {injectIntl} from "react-intl";
 import TermDefinitionContainer from "./TermDefinitionContainer";
 import {getLocalizedOrDefault} from "../../model/MultilingualString";
 import TermDefinitionSource from "./TermDefinitionSource";
+import "./TermDefinitionBlock.scss";
 
 export interface TermDefinitionBlockProps extends HasI18n {
     term: Term;

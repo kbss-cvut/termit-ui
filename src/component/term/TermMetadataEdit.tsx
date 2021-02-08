@@ -17,13 +17,13 @@ import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../mod
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
-import TermDefinitionContainer from "./TermDefinitionContainer";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {ConsolidatedResults} from "../../model/ConsolidatedResults";
-import {getShortLocale} from "../../util/IntlUtil";
 import ValidationResult from "../../model/ValidationResult";
-import {ValidationUtils} from "./validation/ValidationUtils";
+import {renderValidationMessages} from "./forms/FormUtils";
+import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
@@ -85,17 +85,10 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState({scopeNote: Object.assign({}, this.state.scopeNote, change)});
     };
 
-    public onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.currentTarget.value;
-        const change = {};
-        change[this.props.language] = value;
-        this.setState({definition: Object.assign({}, this.state.definition, change)});
+    public onChange = (change: Partial<TermData>) => {
+        // @ts-ignore
+        this.setState(change);
     }
-
-    private onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const source = e.currentTarget.value;
-        this.setState({sources: [source]});
-    };
 
     public onHiddenLabelsChange = (hiddenLabels: string[]) => {
         const language = this.props.language;
@@ -152,25 +145,17 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         })
     }
 
-    private renderMessages = (results: ValidationResult[]) => <>{results.map(r => {
-        const message = r.message.find(ls => ls.language === getShortLocale(this.props.locale))!.value;
-        const color = ValidationUtils.qualityAffectingRules.indexOf(r.sourceShape?.iri) > -1 ?
-            ValidationUtils.qualityAffectingRuleViolationColor :
-            ValidationUtils.qualityNotAffectingRuleViolationColor;
-        return <li key={r.iri} style={{color}}>{message}</li>;
-    })}</>;
+    private renderMessages(results: ValidationResult[]) {
+        return renderValidationMessages(this.props.locale, results);
+    }
 
     public render() {
         const {i18n, language} = this.props;
         const t = this.onStatusChange.bind(this);
-        const sources = this.state.sources;
-        const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         const labelInLanguageInvalid = !isLabelValid(this.state, language) || this.state.labelExist[language];
         const invalid = !isTermValid(this.state, this.state.labelExist);
         const validationPrefLabel = this.getValidationResults(VocabularyUtils.SKOS_PREF_LABEL);
         const validationAltLabel = this.getValidationResults(VocabularyUtils.SKOS_ALT_LABEL);
-        const validationDefinition = this.getValidationResults(VocabularyUtils.DEFINITION);
-        const validationSource = this.getValidationResults(VocabularyUtils.DC_SOURCE);
         const validationScopeNote = this.getValidationResults(VocabularyUtils.SKOS_SCOPE_NOTE);
         const validationBroader = this.getValidationResults(VocabularyUtils.BROADER);
         const validationType = this.getValidationResults(VocabularyUtils.RDF_TYPE);
@@ -205,26 +190,9 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         </Row>
 
                         <TermDefinitionContainer>
-                            <Row>
-                                <Col xs={12}>
-                                    <TextArea name="edit-term-definition"
-                                              value={getLocalizedOrDefault(this.state.definition, "", language)}
-                                              invalid={validationDefinition.length > 0}
-                                              invalidMessage={this.renderMessages(validationDefinition)}
-                                              onChange={this.onDefinitionChange} rows={4}
-                                              label={i18n("term.metadata.definition.text")} labelClass="definition"
-                                              help={i18n("term.definition.help")}/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={12}>
-                                    <CustomInput name="edit-term-source" value={source} onChange={this.onSourceChange}
-                                                 label={i18n("term.metadata.source")} labelClass="definition"
-                                                 invalid={validationSource.length > 0}
-                                                 invalidMessage={this.renderMessages(validationSource)}
-                                                 help={i18n("term.source.help")}/>
-                                </Col>
-                            </Row>
+                            <TermDefinitionBlockEdit term={this.state} language={language}
+                                                     getValidationResults={this.getValidationResults}
+                                                     onChange={this.onChange}/>
                         </TermDefinitionContainer>
 
                         <Row>

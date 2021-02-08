@@ -441,6 +441,7 @@ const en = {
         "annotator.createTerm.selectDefinition.message": "Select definition of the new term in text.",
         "annotator.setTermDefinitionSource.success": "Definition source of term \"{term}\" successfully set.",
         "annotator.setTermDefinitionSource.error.exists": "Term \"{term}\" already has a definition source.",
+        "annotator.setTermDefinition.title": "Select definition of term \"{term}\"",
         "annotator.findAnnotation.error": "Unable to highlight annotation.",
 
         'annotation.form.suggested-occurrence.message': 'Phrase is not assigned to a vocabulary term.',
@@ -458,6 +459,9 @@ const en = {
         "annotation.definition.title": "Source of definition of term",
         "annotation.definition.term": "Term:",
         "annotation.definition.definition": "Definition:",
+        "annotation.definition.exists.message": "The term \"{term}\" already has a definition. You can compare the new definition with the original below and edit it.",
+        "annotation.definition.original": "Original definition",
+        "annotation.definition.new": "New definition",
 
         'annotator.legend.confirmed.loading': 'Loading annotation',
         'annotator.legend.confirmed.loading.tooltip': 'Annotation that was created or accepted by a user is loading.',
