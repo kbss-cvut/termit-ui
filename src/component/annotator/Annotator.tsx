@@ -37,6 +37,7 @@ interface AnnotatorProps extends HasI18n {
     publishMessage(message: Message): void;
 
     setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
+
     updateTerm(term: Term): Promise<any>;
 }
 
@@ -173,9 +174,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
     public onSaveTermDefinition = (term: Term) => {
         this.setTermDefinitionSource(term, this.state.existingTermDefinitionAnnotationElement!)
-            .then(() => {
-                return this.props.updateTerm(term);
-            })
+            .then(() => this.props.updateTerm(term))
             .finally(() => {
                 this.setState({
                     existingTermDefinitionAnnotationElement: undefined,
