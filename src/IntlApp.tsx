@@ -19,7 +19,7 @@ interface IntlWrapperProps {
     intl: IntlData
 }
 
-const AUTH_INIT_TIMEOUT = 5000;
+const AUTH_INIT_TIMEOUT = 20000;
 let authTimeout: number;
 
 const IntlWrapper: React.FC<IntlWrapperProps> = (props) => {
