@@ -173,7 +173,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     }
 
     public onSaveTermDefinition = (term: Term) => {
-        this.setTermDefinitionSource(term, this.state.existingTermDefinitionAnnotationElement!)
+        return this.setTermDefinitionSource(term, this.state.existingTermDefinitionAnnotationElement!)
             .then(() => this.props.updateTerm(term))
             .finally(() => {
                 this.setState({

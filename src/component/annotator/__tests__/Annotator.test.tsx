@@ -625,9 +625,7 @@ describe("Annotator", () => {
             />);
             AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
             wrapper.setState({existingTermDefinitionAnnotationElement: annotationNode as Element});
-            wrapper.instance().onSaveTermDefinition(term);
-            await Promise.resolve();
-            await Promise.resolve();
+            await wrapper.instance().onSaveTermDefinition(term);
             return Promise.resolve().then(() => {
                 expect(mockedCallbackProps.updateTerm).toHaveBeenCalledWith(term);
             });
