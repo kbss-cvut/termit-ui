@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Nav, Navbar, NavbarBrand} from "reactstrap";
+import {Nav, Navbar, NavbarBrand, NavItem} from "reactstrap";
 import classNames from "classnames";
 import NavbarSearch from "../search/label/NavbarSearch";
 import UserDropdown from "../misc/UserDropdown";
@@ -11,6 +11,8 @@ import Workspace from "../../model/Workspace";
 import Routes from "../../util/Routes";
 import Constants from "../../util/Constants";
 import WorkspaceIndicator from "../workspace/WorkspaceIndicator";
+import IssueTrackerLink from "./IssueTrackerLink";
+import "./Header.scss";
 
 interface HeaderProps {
     showBreadcrumbs: boolean;
@@ -39,7 +41,8 @@ export const Header: React.FC<HeaderProps> = props => {
             <Nav navbar={true} className="workspace-indicator">
                 {workspace && <WorkspaceIndicator/>}
             </Nav>
-            <Nav navbar={true} className="nav-menu-user flex-row-reverse">
+            <Nav navbar={true} className="nav-menu-user flex-row">
+                <NavItem><IssueTrackerLink/></NavItem>
                 {isLoggedIn && <UserDropdown dark={false}/>}
             </Nav>
         </Navbar>}

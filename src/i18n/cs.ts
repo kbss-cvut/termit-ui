@@ -55,6 +55,8 @@ const cs = {
         "main.search.count-info-and-link": "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
         "main.search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
         "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
+        "main.issue-tracker.reportBug": "Nahlásit chybu",
+        "main.issue-tracker.requestFeature": "Navrhnout úpravu",
 
         "dashboard.widget.assetList.empty": "Pro tuto část nebyly nalezeny žádné záznamy.",
         "dashboard.widget.assetList.lastEditMessage": "{operation, select, " +

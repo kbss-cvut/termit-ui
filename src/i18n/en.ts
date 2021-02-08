@@ -55,6 +55,8 @@ const en = {
         "main.search.count-info-and-link": "Showing {displayed} of {count} results. See all results.",
         "main.search.no-results": "No results found.",
         "main.lang-selector.tooltip": "Select user interface language",
+        "main.issue-tracker.reportBug": "Report a bug",
+        "main.issue-tracker.requestFeature": "Request a feature",
 
         "dashboard.widget.assetList.empty": "Found no assets to show here.",
         "dashboard.widget.assetList.lastEditMessage": "{operation, select, " +
