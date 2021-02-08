@@ -5,8 +5,7 @@ import {Button, Card, CardBody, CardHeader, Modal, ModalBody} from "reactstrap";
 import TermItFile from "../../../model/File";
 import {GoPlus} from "react-icons/go";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import Resource from "../../../model/Resource";
-import CreateFileMetadataLight from "../file/CreateFileMetadata";
+import CreateFileMetadata from "../file/CreateFileMetadata";
 import {useState} from "react";
 
 interface AddFileProps extends HasI18n {
@@ -18,9 +17,9 @@ export const AddFile = (props: AddFileProps) => {
     const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
     const toggle = () => setCreateFileDialogOpen(!createFileDialogOpen);
 
-    const createFile = (termitFile: Resource, file: File) => {
+    const createFile = (termitFile: TermItFile, file: File) => {
         termitFile.addType(VocabularyUtils.FILE);
-        return props.performAction(termitFile as TermItFile, file)
+        return props.performAction(termitFile, file)
             .then(toggle)
     }
 
@@ -32,7 +31,7 @@ export const AddFile = (props: AddFileProps) => {
                         <h5>{props.i18n("resource.metadata.document.files.actions.add.dialog.title")}</h5>
                     </CardHeader>
                     <CardBody>
-                        <CreateFileMetadataLight
+                        <CreateFileMetadata
                             onCreate={createFile}
                             onCancel={toggle}/>
                     </CardBody>

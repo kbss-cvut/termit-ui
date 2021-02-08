@@ -2,9 +2,9 @@ import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
 import TermItFile from "../../../model/File";
+import File from "../../../model/File";
 import Utils from "../../../util/Utils";
 import {Label, Table} from "reactstrap";
-import File from "../../../model/File";
 import {connect} from "react-redux";
 import TermItState from "../../../model/TermItState";
 
@@ -16,14 +16,18 @@ interface FilesProps extends HasI18n {
 
 export const Files = (props: FilesProps) => {
     return <div>
-        <tr>
-            <td><Label className="attribute-label mb-3"> {props.i18n("vocabulary.detail.files")}</Label></td>
-            <td className="fit-content">
-                <div className="fit-content">
-                    {props.actions}
-                </div>
-            </td>
-        </tr>
+        <table>
+            <tbody>
+            <tr>
+                <td><Label className="attribute-label mb-3"> {props.i18n("vocabulary.detail.files")}</Label></td>
+                <td className="fit-content">
+                    <div className="fit-content">
+                        {props.actions}
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
         <Table striped={true} bordered={true}>
             <tbody>
             {(Utils.sanitizeArray(props.files).length > 0) ? props.files.slice().sort(Utils.labelComparator).map((v: File) =>
