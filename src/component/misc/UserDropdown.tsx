@@ -29,11 +29,10 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
                     "d-flex",
                     "align-items-center",
                     "px-2",
-                    "px-sm-3"
+                    "px-sm-3",
+                    "py-2"
                 )}>
             <i className="fas fa-user-circle align-middle user-icon"/>
-            &nbsp;
-            <span className="user-dropdown">{props.user.abbreviatedName}</span>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-arrow" right={true}>
             <DropdownItem id="user-dropdown-profile"

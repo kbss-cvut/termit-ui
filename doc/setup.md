@@ -24,6 +24,8 @@ The following parameters can be configured for the build:
 | `REACT_APP_KEYCLOAK_URL` | `string` | `http://localhost:8080/auth` | URL of the Keycloak authentication service. Loaded from `.env` on build by default |
 | `REACT_APP_KEYCLOAK_REALM` | `string` | `kodi` | Keycloak Realm used by this application. Loaded from `.env` on build by default |
 | `REACT_APP_KEYCLOAK_CLIENTID` | `string` | `termit-ui` | Keycloak client ID of this application. Loaded from `.env` on build by default |
+| `REACT_APP_REPORT_BUG_LINK` | `string` | `https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=bug&template=po-adavek-na-opravu.md` | Link to issue tracker to report a bug |
+| `REACT_APP_REQUEST_FEATURE_LINK` | `string` | `https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=enhancement&template=po-adavek-na-novou-funkcionalitu.md` | Link to issue tracker to request a feature |
 
 ### Example
 
