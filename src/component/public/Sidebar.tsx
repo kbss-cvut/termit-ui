@@ -40,12 +40,17 @@ const actionNavRoutes: NavLinkRoute[] = [{
     path: Routes.login.path,
     name: "login.submit",
     icon: "fas fa-user"
-}, {
-    path: Routes.register.path,
-    name: "register.submit",
-    icon: "fas fa-user",
-    supIcon: "fas fa-plus"
 }];
+
+if (process.env.REACT_APP_ADMIN_REGISTRATION_ONLY !== true.toString()) {
+    actionNavRoutes.push({
+        path: Routes.register.path,
+        name: "register.submit",
+        icon: "fas fa-user",
+        supIcon: "fas fa-plus"
+    });
+}
+
 
 export class Sidebar extends DefaultSidebar {
     constructor(props: SidebarProps) {
