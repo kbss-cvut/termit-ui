@@ -2,6 +2,7 @@ import * as React from "react";
 import {Button, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
+import "./IssueTrackerLink.scss";
 
 const IssueTrackerLink: React.FC<HasI18n> = props => {
     const {i18n} = props;
@@ -14,8 +15,8 @@ const IssueTrackerLink: React.FC<HasI18n> = props => {
             </a>
         </Button>
         <DropdownToggle split={true} caret={true} color="warning"/>
-        <DropdownMenu>
-            <DropdownItem>
+        <DropdownMenu right={true}>
+            <DropdownItem className="btn-sm">
                 <a href={process.env.REACT_APP_REQUEST_FEATURE_LINK} target="_blank" rel="noreferrer">
                     {i18n("main.issue-tracker.requestFeature")}
                 </a>
