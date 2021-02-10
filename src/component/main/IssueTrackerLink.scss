@@ -1,0 +1,22 @@
+@import "../../styles/custom/colors";
+
+#issue-tracker-link .dropdown-menu {
+  color: $black !important;
+  background: $warning !important;
+  padding: 0;
+  margin-top: 0.125rem;
+  border-radius: 0.25rem !important;
+  min-width: 8rem;
+}
+
+#issue-tracker-link .dropdown-menu button {
+  font-weight: 600 !important;
+  font-size: 0.8125rem;
+  border-radius: 0.25rem !important;
+  transition: all 0.7s ease;
+}
+
+#issue-tracker-link .dropdown-menu button:hover {
+  background: lighten($warning, 7.5%) !important;
+  border-radius: 0.25rem !important;
+}
