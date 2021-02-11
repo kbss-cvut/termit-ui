@@ -1,5 +1,5 @@
 #### Verze 2.2.0
-- Přepracován vztah mezi slovníky a dokumenty.
+- Zjednodušení práce s dokumenty a soubory a jejich vazbou na slovníky - např. k slovníku je nově možné připojit (nebo od něj odpojit) dokument i po jeho vytvoření.
 - Vylepšena možnost přiřadit pojmu zdroj definice v dokumentu.
 - Nová prohledávatelná tabulka podporující stránkování pro zobrazení slovníků a zdrojů.
 - Podpora vícejazyčných popisů pojmů (skos:scopeNote).
