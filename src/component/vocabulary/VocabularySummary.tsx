@@ -9,7 +9,7 @@ import {
     exportGlossary,
     loadVocabulary,
     removeVocabulary,
-    validateVocabulary, 
+    validateVocabulary,
     loadResource,
     updateVocabulary
 } from "../../action/AsyncActions";
@@ -38,7 +38,7 @@ import WindowTitle from "../misc/WindowTitle";
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
     loadResource: (iri: IRI) => void;
-    loadVocabulary: (iri: IRI) => void;
+    loadVocabulary: (iri: IRI) => Promise<any>;
     updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
     validateVocabulary: (iri: IRI) => Promise<any>;
@@ -66,9 +66,12 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         this.loadVocabulary();
     }
 
-    public componentDidUpdate(): void {
+    public componentDidUpdate(prevProps: Readonly<VocabularySummaryProps>): void {
         if (this.props.vocabulary !== EMPTY_VOCABULARY) {
             this.loadVocabulary();
+        }
+        if (prevProps.vocabulary.iri !== this.props.vocabulary.iri) {
+            this.onCloseEdit();
         }
     }
 

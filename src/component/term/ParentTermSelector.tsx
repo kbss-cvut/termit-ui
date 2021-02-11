@@ -12,7 +12,7 @@ import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
-import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
+import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../misc/treeselect/Renderers";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import CustomInput from "../misc/CustomInput";
@@ -142,7 +142,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         } else {
             let style;
             if (this.props.invalid) {
-                style = { borderColor : 'red' };
+                style = {borderColor: "red"};
             } else {
                 style = {}
             }
@@ -154,9 +154,11 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                                             maxHeight={200}
                                             multi={true}
                                             optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
+                                            valueRenderer={createTermValueRenderer()}
                                             style={style}
                                             {...commonTermTreeSelectProps(this.props)}/>
-                {this.props.invalid ? <FormFeedback style={{display: 'block'}}>{this.props.invalidMessage}</FormFeedback> : <></>}
+                {this.props.invalid ?
+                    <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
                 <FormText>{this.props.i18n("term.parent.help")}</FormText>
             </>;
         }

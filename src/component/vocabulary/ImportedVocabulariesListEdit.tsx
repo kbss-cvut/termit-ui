@@ -9,6 +9,7 @@ import {Col, FormGroup, Label, Row} from "reactstrap";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Utils from "../../util/Utils";
+import {createVocabularyValueRenderer} from "../misc/treeselect/Renderers";
 
 interface ImportedVocabulariesListEditProps extends HasI18n {
     vocabulary: Vocabulary;
@@ -46,7 +47,7 @@ export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabu
                                            displayInfoOnHover={false}
                                            renderAsTree={false}
                                            simpleTreeData={true}
-                                           valueRenderer={Utils.labelValueRenderer}
+                                           valueRenderer={createVocabularyValueRenderer()}
                     />
                 </FormGroup>
             </Col>
