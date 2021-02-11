@@ -86,7 +86,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     };
 
     private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.props.onChange({comment: e.currentTarget.value});
+        this.props.onChange({scopeNote: e.currentTarget.value});
     };
 
     private onIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
