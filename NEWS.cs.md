@@ -1,3 +1,9 @@
+#### Verze 2.2.0
+- Přepracován vztah mezi slovníky a dokumenty.
+- Vylepšena možnost přiřadit pojmu zdroj definice v dokumentu.
+- Nová prohledávatelná tabulka podporující stránkování pro zobrazení slovníků a zdrojů.
+- Podpora vícejazyčných popisů pojmů (skos:scopeNote).
+
 #### Verze 2.1.3
 - Titulek stránky se mění v závislosti na navigaci (usnadňuje hledání v historii).
 - Opravena komunikace se službou textové analýzy při vytvoření nového pojmu.
