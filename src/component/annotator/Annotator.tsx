@@ -151,7 +151,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         const ann = AnnotationDomHelper.findAnnotation(dom, annotationSpan.about!, this.state.prefixMap);
         if (ann) {
             if (annotationSpan.resource) {
-                ann.attribs.resource = annotationSpan.resource!;
+                ann.attribs.resource = annotationSpan.resource;
+            } else {
+                delete ann.attribs.resource;
             }
             delete ann.attribs.score;
             if (term !== null) {

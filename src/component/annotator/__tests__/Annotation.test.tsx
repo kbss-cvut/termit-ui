@@ -48,6 +48,7 @@ describe("Annotation", () => {
         onFetchTerm: (termIri: string) => Promise<Term>;
         onCreateTerm: (label: string, annotation: AnnotationSpanProps) => void;
         onResetSticky: () => void;
+        onUpdate: (annotation: AnnotationSpanProps, term: Term | null) => void;
     };
     beforeEach(() => {
         assignedOccProps = {
@@ -58,7 +59,8 @@ describe("Annotation", () => {
         mockedFunctions = {
             onFetchTerm: jest.fn().mockResolvedValue(term),
             onCreateTerm: jest.fn(),
-            onResetSticky: jest.fn()
+            onResetSticky: jest.fn(),
+            onUpdate: jest.fn()
         }
     });
 
@@ -329,6 +331,30 @@ describe("Annotation", () => {
                 wrapper.instance().onSelectTerm(selectedTerm);
                 wrapper.update();
                 expect(wrapper.state().term).toEqual(selectedTerm);
+            });
+        });
+
+        it("passes selected term to update handler", () => {
+            const wrapper = shallow<Annotation>(
+                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+            return Promise.resolve().then(() => {
+                expect(wrapper.state().term).toEqual(term);
+                const selectedTerm = Generator.generateTerm();
+                wrapper.instance().onSelectTerm(selectedTerm);
+                const args = (mockedFunctions.onUpdate as jest.Mock).mock.calls[0];
+                expect(args[0].resource).toEqual(selectedTerm.iri);
+                expect(args[1]).toEqual(selectedTerm);
+            });
+        });
+
+        // Bug #1399
+        it("sets annotation resource to undefined when null term is selected", () => {
+            const wrapper = shallow<Annotation>(
+                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+            return Promise.resolve().then(() => {
+                wrapper.instance().onSelectTerm(null);
+                const args = (mockedFunctions.onUpdate as jest.Mock).mock.calls[0];
+                expect(args[0].resource).not.toBeDefined();
             });
         });
     });
