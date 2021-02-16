@@ -636,6 +636,7 @@ describe("Annotator", () => {
     describe("onAnnotationTermSelected", () => {
 
         let annotation: AnnotationSpanProps;
+        let annotationNode: any;
 
         beforeEach(() => {
             annotation = {
@@ -643,6 +644,13 @@ describe("Annotator", () => {
                 property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
                 typeof: VocabularyUtils.TERM_OCCURRENCE
             };
+            annotationNode = {
+                attribs: {
+                    about: annotation.about,
+                    typeof: annotation.typeof
+                }
+            };
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
         });
 
         it("sets annotation resource attribute to provided value when a term was indeed selected", () => {
@@ -652,13 +660,6 @@ describe("Annotator", () => {
             />);
             const term = Generator.generateTerm();
             annotation.resource = term.iri;
-            const annotationNode: any = {
-                attribs: {
-                    about: annotation.about,
-                    typeof: annotation.typeof
-                }
-            };
-            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
             wrapper.instance().onAnnotationTermSelected(annotation, term);
             expect(annotationNode.attribs.resource).toBeDefined();
             expect(annotationNode.attribs.resource).toEqual(term.iri);
@@ -670,16 +671,34 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const annotationNode: any = {
-                attribs: {
-                    about: annotation.about,
-                    resource: Generator.generateUri(),
-                    typeof: annotation.typeof
-                }
-            };
-            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
+            annotationNode.resource = Generator.generateUri();
             wrapper.instance().onAnnotationTermSelected(annotation, null);
             expect(annotationNode.attribs.resource).not.toBeDefined();
+        });
+
+        it("updates content when annotation is term occurrence", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
+            />);
+            const term = Generator.generateTerm();
+            annotation.resource = term.iri;
+            wrapper.instance().onAnnotationTermSelected(annotation, term);
+            expect(mockedCallbackProps.onUpdate).toHaveBeenCalled();
+        });
+
+        // Term definition sources have to be confirmed by user before the HTML is updated
+        it("does not update content when annotation is term definition source", () => {
+            annotation.property = VocabularyUtils.IS_DEFINITION_OF_TERM;
+            annotation.typeof = AnnotationType.DEFINITION;
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
+            />);
+            const term = Generator.generateTerm();
+            annotation.resource = term.iri;
+            wrapper.instance().onAnnotationTermSelected(annotation, term);
+            expect(mockedCallbackProps.onUpdate).not.toHaveBeenCalled();
         });
     });
 });
