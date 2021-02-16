@@ -172,17 +172,22 @@ describe("Annotator", () => {
 
     describe("onCreateTerm", () => {
 
-        it("stores annotation from which the new term is being created for later reference", () => {
-            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
-                                                          {...mockedCallbackProps}
-                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
-            />);
-            const annotation = {
+        let annotation: AnnotationSpanProps;
+
+        beforeEach(() => {
+            annotation = {
                 about: "_:13",
                 content: "infrastruktura",
                 property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
                 typeof: VocabularyUtils.TERM_OCCURRENCE
             };
+        });
+
+        it("stores annotation from which the new term is being created for later reference", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
+            />);
             wrapper.instance().onCreateTerm("label", annotation);
             expect(wrapper.state().newTermLabelAnnotation).toEqual(annotation);
         });
@@ -193,12 +198,6 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const annotation = {
-                about: "_:13",
-                content: "infrastruktura",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE
-            };
             wrapper.instance().setState({newTermLabelAnnotation: annotation});
             AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotation);
             AnnotationDomHelper.removeAnnotation = jest.fn();
@@ -214,13 +213,7 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const annotation = {
-                about: "_:13",
-                content: "infrastruktura",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE,
-                score: "1.0"
-            };
+            annotation.score = "1.0";
             wrapper.instance().setState({newTermLabelAnnotation: annotation});
             AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotation);
             AnnotationDomHelper.removeAnnotation = jest.fn();
@@ -235,13 +228,7 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const annotation = {
-                about: "_:13",
-                content: "infrastruktura",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE,
-                resource: Generator.generateUri()
-            };
+            annotation.resource = Generator.generateUri();
             wrapper.instance().setState({newTermLabelAnnotation: annotation});
             AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotation);
             AnnotationDomHelper.removeAnnotation = jest.fn();
@@ -257,12 +244,7 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const labelAnnotation = {
-                about: "_:13",
-                content: "infrastruktura",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE
-            };
+            const labelAnnotation = annotation;
             const definitionAnnotation = {
                 about: "_:14",
                 content: "term definition text",
@@ -288,12 +270,6 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const annotation = {
-                about: "_:13",
-                content: "infrastruktura",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE
-            };
             const annotationNode = {
                 attribs: {
                     about: annotation.about,
@@ -402,6 +378,13 @@ describe("Annotator", () => {
 
         let range: any;
 
+        const annotation = {
+            about: "_:13",
+            content: "infrastruktura",
+            property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+            typeof: VocabularyUtils.TERM_OCCURRENCE
+        };
+
         beforeEach(() => {
             const container = {
                 nodeType: Node.TEXT_NODE
@@ -420,12 +403,6 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const annotation = {
-                about: "_:13",
-                content: "infrastruktura",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE
-            };
             wrapper.setState({newTermLabelAnnotation: annotation});
             HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
             const text = "12345 54321";
@@ -445,12 +422,6 @@ describe("Annotator", () => {
                                                           {...mockedCallbackProps}
                                                           initialHtml={generalHtmlContent} {...intlFunctions()}
             />);
-            const annotation = {
-                about: "_:13",
-                content: "infrastruktura",
-                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
-                typeof: VocabularyUtils.TERM_OCCURRENCE
-            };
             wrapper.setState({newTermLabelAnnotation: annotation});
             HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
             const text = "12345 54321";
@@ -659,6 +630,56 @@ describe("Annotator", () => {
                 const newContent = wrapper.find(AnnotatorContent).prop("content");
                 expect(newContent).not.toBe(originalContent);
             });
+        });
+    });
+
+    describe("onAnnotationTermSelected", () => {
+
+        let annotation: AnnotationSpanProps;
+
+        beforeEach(() => {
+            annotation = {
+                about: "_:14",
+                property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+                typeof: VocabularyUtils.TERM_OCCURRENCE
+            };
+        });
+
+        it("sets annotation resource attribute to provided value when a term was indeed selected", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
+            />);
+            const term = Generator.generateTerm();
+            annotation.resource = term.iri;
+            const annotationNode: any = {
+                attribs: {
+                    about: annotation.about,
+                    typeof: annotation.typeof
+                }
+            };
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
+            wrapper.instance().onAnnotationTermSelected(annotation, term);
+            expect(annotationNode.attribs.resource).toBeDefined();
+            expect(annotationNode.attribs.resource).toEqual(term.iri);
+        });
+
+        // Bug #1399
+        it("deletes annotation resource attribute when null term is selected", () => {
+            const wrapper = shallow<Annotator>(<Annotator fileIri={fileIri} vocabularyIri={vocabularyIri}
+                                                          {...mockedCallbackProps}
+                                                          initialHtml={generalHtmlContent} {...intlFunctions()}
+            />);
+            const annotationNode: any = {
+                attribs: {
+                    about: annotation.about,
+                    resource: Generator.generateUri(),
+                    typeof: annotation.typeof
+                }
+            };
+            AnnotationDomHelper.findAnnotation = jest.fn().mockReturnValue(annotationNode);
+            wrapper.instance().onAnnotationTermSelected(annotation, null);
+            expect(annotationNode.attribs.resource).not.toBeDefined();
         });
     });
 });

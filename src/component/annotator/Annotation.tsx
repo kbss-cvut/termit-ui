@@ -139,7 +139,7 @@ export class Annotation extends React.Component<AnnotationProps, AnnotationState
                 property: this.props.property,
                 typeof: this.props.typeof
             };
-            newAnnotation.resource = t ? t.iri : this.props.resource;
+            newAnnotation.resource = t ? t.iri : undefined;
             this.props.onUpdate(newAnnotation, t);
         }
     };
