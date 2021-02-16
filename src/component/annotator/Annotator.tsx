@@ -156,21 +156,32 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 delete ann.attribs.resource;
             }
             delete ann.attribs.score;
+            let shouldUpdate = true;
             if (term !== null) {
-                this.createOccurrence(annotationSpan, term);
-            } else {
+                shouldUpdate = this.createOccurrence(annotationSpan, term);
+            }
+            if (shouldUpdate) {
                 this.updateInternalHtml(dom);
             }
         }
     };
 
-    private createOccurrence(annotationNode: AnnotationSpanProps, term: Term) {
+    /**
+     * Creates occurrence based on the specified annotation and term.
+     * @param annotationNode Annotation
+     * @param term Term whose occurrence this should be
+     * @private
+     * @return Whether the HTML content of the annotator should be updated
+     */
+    private createOccurrence(annotationNode: AnnotationSpanProps, term: Term):boolean {
         if (annotationNode.typeof === AnnotationType.DEFINITION) {
             this.setState({
                 selectedTerm: term,
                 existingTermDefinitionAnnotationElement: AnnotationDomHelper.findAnnotation(this.state.internalHtml, annotationNode.about!, this.state.prefixMap) as Element
             });
+            return false;
         }
+        return true;
         // TODO Creating occurrences is not implemented, yet
     }
 
