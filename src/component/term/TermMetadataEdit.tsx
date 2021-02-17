@@ -17,7 +17,6 @@ import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
 import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists} from "./TermValidationUtils";
 import Constants from "../../util/Constants";
-import TermDefinitionContainer from "./TermDefinitionContainer";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {ConsolidatedResults} from "../../model/ConsolidatedResults";
@@ -148,8 +147,6 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public render() {
         const {i18n, language} = this.props;
-        const sources = this.state.sources;
-        const source = sources ? Utils.sanitizeArray(sources!).join() : undefined;
         const labelInLanguageInvalid = !isLabelValid(this.state, language) || this.state.labelExist[language];
         const invalid = !isTermValid(this.state, this.state.labelExist);
         const validationPrefLabel = this.getValidationResults(VocabularyUtils.SKOS_PREF_LABEL);
