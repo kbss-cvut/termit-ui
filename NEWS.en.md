@@ -1,3 +1,15 @@
+##### Version 2.2.0
+- Reworked the relationship between vocabularies and documents.
+- Improved handling of term definition sources in documents.
+- Use a new filterable table with paging for resource and vocabulary list display.
+- Support multilingual term description (skos:scopeNote).
+
+##### Version 2.1.3
+- Page title now changes based on navigation (easier history search).
+- Fixed an issue in the invocation of text analysis on a new term's definition.
+- Fixed inconsistent behavior of the file upload form.
+- Fixed incorrect visualization of the validation score of a new term.
+
 ##### Version 2.1.2
 - Redesign vocabularies and resources lists - use pageable and filterable table.
 - Fix identifier generation issues.

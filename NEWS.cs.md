@@ -1,3 +1,15 @@
+#### Verze 2.2.0
+- Zjednodušení práce s dokumenty a soubory a jejich vazbou na slovníky - např. k slovníku je nově možné připojit (nebo od něj odpojit) dokument i po jeho vytvoření.
+- Vylepšena možnost přiřadit pojmu zdroj definice v dokumentu.
+- Nová prohledávatelná tabulka podporující stránkování pro zobrazení slovníků a zdrojů.
+- Podpora vícejazyčných popisů pojmů (skos:scopeNote).
+
+#### Verze 2.1.3
+- Titulek stránky se mění v závislosti na navigaci (usnadňuje hledání v historii).
+- Opravena komunikace se službou textové analýzy při vytvoření nového pojmu.
+- Opraveno nekonzistentní chování formuláře pro nahrání souboru.
+- Opravena nesprávná vizualizace validačního skóre nového pojmu.
+
 ##### Verze 2.1.2
 - Přepracovány obrazovky seznamu slovníků a zdrojů - nyní používají tabulku podporující stránkování a filtrování.
 - Opraveny problémy s generováním nových identifikátorů.

@@ -45,7 +45,7 @@ export class VocabularySummary extends React.Component<VocabularySummaryProps, V
         this.loadVocabulary();
     }
 
-    public componentDidUpdate(): void {
+    public componentDidUpdate(prevProps: Readonly<VocabularySummaryProps>): void {
         if (this.props.vocabulary !== EMPTY_VOCABULARY) {
             this.loadVocabulary();
         }

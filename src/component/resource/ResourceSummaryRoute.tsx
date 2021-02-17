@@ -65,7 +65,7 @@ export class ResourceSummaryRoute extends React.Component<ResourceSummaryRoutePr
                 component = <FileSummary resource={resource as File}/>;
                 break;
             case VocabularyUtils.DOCUMENT:
-                component = <DocumentSummary resource={resource as Document}/>;
+                component = <DocumentSummary resource={resource as Document} customDisabledRemoveTooltipKey="document.remove.tooltip.disabled"/>;
                 break;
             default:
                 component = <ResourceSummary resource={resource}/>;
