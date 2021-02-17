@@ -66,6 +66,7 @@ describe("Ajax", () => {
         })
 
         it("directly transitions to login route when 401 Unauthorized is received", () => {
+            process.env.REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED = false.toString();
             mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
             return sut.get("/users/current").catch(() => {
                 return expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.login);
@@ -81,6 +82,7 @@ describe("Ajax", () => {
         });
 
         it("saves original navigation target when transitioning to login route after receiving 401 Unauthorized", () => {
+            process.env.REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED = false.toString();
             mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
             return sut.get("/users/current").catch(() => {
                 expect(Routing.saveOriginalTarget).toHaveBeenCalled();

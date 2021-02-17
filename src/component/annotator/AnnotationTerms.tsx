@@ -15,7 +15,7 @@ import {ThunkDispatch} from "../../util/Types";
 import {GoPlus} from "react-icons/go";
 import Utils from "../../util/Utils";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../term/TermTreeSelectHelper";
-import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
+import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../misc/treeselect/Renderers";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
     vocabulary?: Vocabulary;
@@ -99,6 +99,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
                 isMenuOpen={false}
                 multi={false}
                 optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary!.iri)}
+                valueRenderer={createTermValueRenderer()}
                 {...commonTermTreeSelectProps(this.props)}
             />
         </FormGroup>;

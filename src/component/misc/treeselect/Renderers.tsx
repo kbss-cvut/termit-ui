@@ -5,6 +5,9 @@ import ResultItem from "./ResultItem";
 import ImportedTermInfo from "../../term/ImportedTermInfo";
 import UnusedTermInfo from "../../term/UnusedTermInfo";
 import TermQualityBadge from "../../term/TermQualityBadge";
+import TermLink from "../../term/TermLink";
+import Vocabulary from "../../../model/Vocabulary";
+import VocabularyLink from "../../vocabulary/VocabularyLink";
 
 interface TreeOption {
     disabled: boolean;
@@ -51,6 +54,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTerms(unusedTerms: 
  *
  * @param unusedTerms List of identifiers of terms which are not used anywhere
  * @param currentVocabularyIri IRI of the current vocabulary, used to resolve whether term is imported
+ * @param qualityBadge Whether quality badge should be rendered or not
  */
 export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms: string[], currentVocabularyIri?: string, qualityBadge?: boolean) {
     return (params: OptionRendererParams<Term>) => {
@@ -80,8 +84,17 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
         </span>;
 
         return <ResultItem key={params.key} renderAsTree={params.renderAsTree} className={className} option={option}
-                           childrenKey="plainSubTerms" labelKey={params.labelKey} valueKey={params.valueKey} getOptionLabel={params.getOptionLabel}
+                           childrenKey="plainSubTerms" labelKey={params.labelKey} valueKey={params.valueKey}
+                           getOptionLabel={params.getOptionLabel}
                            style={optionStyle} searchString={params.searchString} addonBefore={addonBefore}
                            displayInfoOnHover={false} {...eventHandlers}/>;
     }
+}
+
+export function createTermValueRenderer() {
+    return (option: Term) => <TermLink term={option}/>;
+}
+
+export function createVocabularyValueRenderer() {
+    return (option: Vocabulary) => <VocabularyLink vocabulary={option}/>;
 }

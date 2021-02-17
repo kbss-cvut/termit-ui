@@ -255,9 +255,6 @@ export function loadResourceTermAssignmentsInfo(resourceIri: IRI) {
         type: ActionType.LOAD_RESOURCE_TERM_ASSIGNMENTS
     };
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-        if (isActionRequestPending(getState(), action)) {
-            return Promise.resolve([]);
-        }
         dispatch(asyncActionRequest(action));
         return Ajax.get(Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/assignments/aggregated", param("namespace", resourceIri.namespace))
             .then((data: object[]) => JsonLdUtils.compactAndResolveReferencesAsArray<ResourceTermAssignments>(data, RESOURCE_TERM_ASSIGNMENTS_CONTEXT))

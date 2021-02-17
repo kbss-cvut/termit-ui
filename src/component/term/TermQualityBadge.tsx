@@ -56,9 +56,10 @@ export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
     public render() {
         let score: number | undefined;
         if (this.props.validationResults) {
-            score = this.computeScore(this.props.validationResults[this.props.term!.iri] || []);
+            const res = this.props.validationResults[this.props.term!.iri];
+            score = res ? this.computeScore(res) : undefined;
         }
-        return <Badge color={this.setBadgeColor(score)}
+        return score === undefined ? <></> : <Badge color={this.setBadgeColor(score)}
                       className="term-quality-badge"
                       title={(score !== undefined) ? this.props.formatMessage("term.badge.score.tooltip", {score}) : this.props.i18n("term.badge.no-score.tooltip")}
                       onClick={this.onBadgeClick}

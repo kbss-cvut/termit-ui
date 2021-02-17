@@ -20,6 +20,8 @@ import {connect} from "react-redux";
 import TermItState from "../../../model/TermItState";
 import {selectVocabularyTerm} from "../../../action/SyncActions";
 import {loadPublicTerms} from "../../../action/AsyncPublicViewActions";
+import {getLocalized} from "../../../model/MultilingualString";
+import {getShortLocale} from "../../../util/IntlUtil";
 
 
 interface GlossaryTermsProps extends HasI18n {
@@ -143,6 +145,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                     multi={false}
                     maxHeight={Utils.calculateAssetListHeight()}
                     optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary.iri)}
+                    valueRenderer={(option: Term) => getLocalized(option.label, getShortLocale(this.props.locale))}
                     {...commonTermTreeSelectProps(this.props)}
                 />
             </div>

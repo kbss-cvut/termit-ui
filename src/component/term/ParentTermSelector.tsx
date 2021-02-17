@@ -10,7 +10,7 @@ import {loadTerms} from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
+import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../misc/treeselect/Renderers";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
 import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
@@ -159,6 +159,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                                         maxHeight={200}
                                         multi={true}
                                         optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
+                                        valueRenderer={createTermValueRenderer()}
                                         style={style}
                                         {...commonTermTreeSelectProps(this.props)}/>
             {this.props.invalid ?

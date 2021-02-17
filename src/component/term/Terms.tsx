@@ -22,9 +22,7 @@ import AppNotification from "../../model/AppNotification";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
-import {
-    createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge
-} from "../misc/treeselect/Renderers";
+import {createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge} from "../misc/treeselect/Renderers";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
 import {Location} from "history";
@@ -33,6 +31,8 @@ import classNames from "classnames";
 import StatusFilter from "./StatusFilter";
 import TermTypeFrequency from "../statistics/termtypefrequency/TermTypeFrequency";
 import "./Terms.scss";
+import {getLocalized} from "../../model/MultilingualString";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface GlossaryTermsProps extends HasI18n {
     vocabulary?: Vocabulary;
@@ -259,6 +259,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                             multi={false}
                             maxHeight={Utils.calculateAssetListHeight()}
                             optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, this.props.vocabulary.iri, this.props.showTermQualityBadge)}
+                            valueRenderer={(option: Term) => getLocalized(option.label, getShortLocale(this.props.locale))}
                             {...commonTermTreeSelectProps(this.props)}
                         />
                     </Col>

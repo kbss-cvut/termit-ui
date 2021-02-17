@@ -33,68 +33,6 @@ ul.term-items button {
   margin-left: -0.75rem;
 }
 
-form hr.hr-definition-text {
-  position: relative;
-  border: none;
-  height: 2px;
-  background: $gray-500;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-}
-
-hr.hr-definition-text::before {
-  content: attr(data-content);
-  display: inline-block;
-  background: #fff;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.7);
-  border-radius: 30rem;
-  padding: 0.2rem 1.5rem 0.2rem 0;
-  position: absolute;
-  top: 50%;
-  transform: translate(0%, -50%);
-}
-
-form hr.hr-definition {
-  position: relative;
-  border: none;
-  height: 2px;
-  background: $gray-500;
-  margin-bottom: 1.5rem;
-  margin-top: 0;
-}
-
-label.definition {
-  font-size: 90%;
-}
-
-/* No top hr for first item in card */
-div.card-body-basic-info hr.hr-definition-text:first-child {
-  position: relative;
-  border: none;
-  height: 2px;
-  background: $gray-500;
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-div.card-body-basic-info hr.hr-definition {
-  position: relative;
-  border: none;
-  height: 2px;
-  background: $gray-500;
-  margin-bottom: 1.25rem;
-  margin-top: 1.5rem;
-}
-
-#term-metadata-definition {
-  margin-top: 0;
-}
-
-.term-metadata-definition-source {
-  font-size: 1rem;
-}
-
 .term-status-label {
   margin-top: 3px;
 }

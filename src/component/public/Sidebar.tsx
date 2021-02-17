@@ -42,6 +42,7 @@ const actionNavRoutes: NavLinkRoute[] = [{
     icon: "fas fa-user"
 }];
 
+
 export class Sidebar extends DefaultSidebar {
     constructor(props: SidebarProps) {
         super(props);

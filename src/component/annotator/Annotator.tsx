@@ -23,6 +23,8 @@ import AnnotatorContent from "./AnnotatorContent";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
 import WindowTitle from "../misc/WindowTitle";
+import TermDefinitionEdit from "./TermDefinitionEdit";
+import {updateTerm} from "../../action/AsyncActions";
 
 interface AnnotatorProps extends HasI18n {
     fileIri: IRI;
@@ -35,6 +37,8 @@ interface AnnotatorProps extends HasI18n {
     publishMessage(message: Message): void;
 
     setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
+
+    updateTerm(term: Term): Promise<any>;
 }
 
 interface AnnotatorState {
@@ -48,6 +52,9 @@ interface AnnotatorState {
     showNewTermDialog: boolean;
     newTermLabelAnnotation?: AnnotationSpanProps; // Annotation which is being used for new term label
     newTermDefinitionAnnotation?: AnnotationSpanProps; // Annotation which is being used for new term definition
+
+    existingTermDefinitionAnnotationElement?: Element;
+    selectedTerm?: Term;
 }
 
 export interface AnnotationSpanProps {
@@ -144,42 +151,77 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         const ann = AnnotationDomHelper.findAnnotation(dom, annotationSpan.about!, this.state.prefixMap);
         if (ann) {
             if (annotationSpan.resource) {
-                ann.attribs.resource = annotationSpan.resource!;
+                ann.attribs.resource = annotationSpan.resource;
+            } else {
+                delete ann.attribs.resource;
             }
             delete ann.attribs.score;
+            let shouldUpdate = true;
             if (term !== null) {
-                this.createOccurrence(ann, term).then(() => {
-                    this.updateInternalHtml(dom);
-                }).catch(() => {
-                    this.onRemove(annotationSpan.about!);
-                });
-            } else {
+                shouldUpdate = this.createOccurrence(annotationSpan, term);
+            }
+            if (shouldUpdate) {
                 this.updateInternalHtml(dom);
             }
         }
     };
 
-    private createOccurrence(annotationNode: Element, term: Term): Promise<void> {
-        if (annotationNode.attribs.typeof === AnnotationType.DEFINITION) {
-            const defSource = new TermOccurrence({
-                term,
-                target: {
-                    source: {iri: this.props.fileIri.namespace + this.props.fileIri.fragment},
-                    selectors: [AnnotationDomHelper.generateSelector(annotationNode)],
-                    types: [VocabularyUtils.FILE_OCCURRENCE_TARGET]
-                },
-                types: []
+    /**
+     * Creates occurrence based on the specified annotation and term.
+     * @param annotationNode Annotation
+     * @param term Term whose occurrence this should be
+     * @private
+     * @return Whether the HTML content of the annotator should be updated
+     */
+    private createOccurrence(annotationNode: AnnotationSpanProps, term: Term):boolean {
+        if (annotationNode.typeof === AnnotationType.DEFINITION) {
+            this.setState({
+                selectedTerm: term,
+                existingTermDefinitionAnnotationElement: AnnotationDomHelper.findAnnotation(this.state.internalHtml, annotationNode.about!, this.state.prefixMap) as Element
             });
-            return this.setTermDefinitionSource(defSource, term);
-        } else {
-            // TODO Creating occurrences is not implemented, yet
-            return Promise.resolve();
+            return false;
         }
+        return true;
+        // TODO Creating occurrences is not implemented, yet
     }
 
-    private setTermDefinitionSource(source: TermOccurrence, term: Term) {
-        source.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
-        return this.props.setTermDefinitionSource(source, term);
+    public onSaveTermDefinition = (term: Term) => {
+        return this.setTermDefinitionSource(term, this.state.existingTermDefinitionAnnotationElement!)
+            .then(() => this.props.updateTerm(term))
+            .finally(() => {
+                this.setState({
+                    existingTermDefinitionAnnotationElement: undefined,
+                    selectedTerm: undefined
+                });
+            });
+    }
+
+    private setTermDefinitionSource(term: Term, annotationElement: Element) {
+        const dom = [...this.state.internalHtml];
+        const defSource = new TermOccurrence({
+            term,
+            target: {
+                source: {iri: this.props.fileIri.namespace + this.props.fileIri.fragment},
+                selectors: [AnnotationDomHelper.generateSelector(annotationElement)],
+                types: [VocabularyUtils.FILE_OCCURRENCE_TARGET]
+            },
+            types: []
+        });
+        defSource.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
+        return this.props.setTermDefinitionSource(defSource, term).then(() => {
+            this.updateInternalHtml(dom);
+            return Promise.resolve();
+        }).catch(() => {
+            this.onRemove(annotationElement.attribs!.about!);
+        });
+    }
+
+    public onCloseTermDefinitionDialog = () => {
+        this.onRemove(this.state.existingTermDefinitionAnnotationElement?.attribs!.about!);
+        this.setState({
+            existingTermDefinitionAnnotationElement: undefined,
+            selectedTerm: undefined
+        });
     }
 
     public onCreateTerm = (label: string, annotation: AnnotationSpanProps) => {
@@ -228,7 +270,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             const ann = AnnotationDomHelper.findAnnotation(dom, this.state.newTermDefinitionAnnotation.about!, this.state.prefixMap);
             if (ann) {
                 ann.attribs.resource = newTerm.iri;
-                this.createOccurrence(ann, newTerm);
+                this.setTermDefinitionSource(newTerm, ann);
             }
         }
         this.setState({newTermLabelAnnotation: undefined, newTermDefinitionAnnotation: undefined});
@@ -351,6 +393,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                                     onMarkOccurrence={this.createTermOccurrence}
                                     onMarkDefinition={this.markTermDefinition}
                                     onCancel={this.closeSelectionPurposeDialog}/>
+            <TermDefinitionEdit term={this.state.selectedTerm}
+                                annotationElement={this.state.existingTermDefinitionAnnotationElement}
+                                onCancel={this.onCloseTermDefinitionDialog} onSave={this.onSaveTermDefinition}/>
             <div id="annotator"
                  ref={this.containerElement}
                  onMouseUp={this.handleMouseUp}>
@@ -416,6 +461,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         publishMessage: (message: Message) => dispatch(publishMessage(message)),
-        setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term))
+        setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term)),
+        updateTerm: (term: Term) => dispatch(updateTerm(term))
     };
 })(injectIntl(withI18n(Annotator)));

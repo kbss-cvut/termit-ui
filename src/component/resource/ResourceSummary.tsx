@@ -19,6 +19,7 @@ import FileEdit from "./file/FileEdit";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {FaTrashAlt} from "react-icons/fa";
 import CopyIriIcon from "../misc/CopyIriIcon";
+import classNames from "classnames";
 
 function isFile(resource: Resource) {
     return Utils.getPrimaryAssetType(resource) === VocabularyUtils.FILE;
@@ -29,6 +30,7 @@ export interface ResourceSummaryProps extends HasI18n {
     loadResource: (iri: IRI) => Promise<any>;
     saveResource: (resource: Resource) => Promise<any>;
     removeResource: (resource: Resource) => Promise<any>;
+    customDisabledRemoveTooltipKey? : string;
 }
 
 export interface ResourceSummaryState extends EditableComponentState {
@@ -82,11 +84,11 @@ export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryPro
                                  title={i18n("edit")}
                                  onClick={this.onEdit}><GoPencil/>&nbsp;{i18n("edit")}</Button>);
         }
-        if (this.canRemove()) {
             buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
-                                 title={i18n("asset.remove.tooltip")}
+                                 className={classNames({ "text-muted" : !this.canRemove()})}
+                                 title={i18n(!this.canRemove() && this.props.customDisabledRemoveTooltipKey ?  this.props.customDisabledRemoveTooltipKey : "asset.remove.tooltip")}
+                                 disabled={!this.canRemove()}
                                  onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{i18n("remove")}</Button>);
-        }
         return buttons;
     }
 
