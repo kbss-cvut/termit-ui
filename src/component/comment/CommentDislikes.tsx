@@ -1,5 +1,5 @@
 import * as React from "react";
-import Comment, {CommentReaction} from "../../model/Comment";
+import Comment, {CommentReaction, ReactionType} from "../../model/Comment";
 import User from "../../model/User";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
@@ -17,11 +17,9 @@ interface CommentDislikesProps extends HasI18n {
     removeReaction: (comment: Comment) => void;
 }
 
-const DISLIKE_TYPE = "https://www.w3.org/ns/activitystreams#Dislike";
-
 const CommentDislikes: React.FC<CommentDislikesProps> = props => {
     const {reactions, currentUser, addReaction, removeReaction, comment} = props;
-    const dislikes = reactions.filter(r => r.types.indexOf(DISLIKE_TYPE) !== -1);
+    const dislikes = reactions.filter(r => r.types.indexOf(ReactionType.DISLIKE) !== -1);
     const reacted = dislikes.find(cr => cr.actor.iri === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsDown : FaRegThumbsDown;
     const title = reacted ? "comments.comment.dislike.on" : "comments.comment.dislike";
@@ -29,7 +27,7 @@ const CommentDislikes: React.FC<CommentDislikesProps> = props => {
     let iconClass;
     if (isMine(comment, currentUser)) {
         onClick = () => {
-            reacted ? removeReaction(comment) : addReaction(comment, DISLIKE_TYPE);
+            reacted ? removeReaction(comment) : addReaction(comment, ReactionType.DISLIKE);
         };
         iconClass = "actionable-reaction";
     }

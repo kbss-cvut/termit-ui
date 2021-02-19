@@ -19,8 +19,6 @@ jest.mock("../../util/Ajax", () => {
     };
 });
 
-const COMMENT_TYPE = "http://rdfs.org/sioc/types#Comment";
-
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("AsyncCommentActions", () => {
@@ -50,7 +48,7 @@ describe("AsyncCommentActions", () => {
             for (let i = 0; i < 5; i++) {
                 comments.push({
                     "@id": Generator.generateUri(),
-                    "@type": [COMMENT_TYPE],
+                    "@type": [VocabularyUtils.COMMENT],
                     "http://rdfs.org/sioc/ns#content": "Test one",
                     "http://rdfs.org/sioc/ns#has_creator": require("../../rest-mock/current.json"),
                     "http://rdfs.org/sioc/ns#topic": {

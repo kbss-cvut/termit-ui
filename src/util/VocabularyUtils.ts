@@ -40,6 +40,8 @@ const _NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
 const _NS_DC = "http://purl.org/dc/terms/";
 const _NS_SH = "http://www.w3.org/ns/shacl#";
+const _NS_SIOC = "http://rdfs.org/sioc/";
+const _NS_ACTIVITY_STREAMS = "https://www.w3.org/ns/activitystreams#";
 
 const VocabularyUtils = {
     PREFIX: _NS_POPIS_DAT,
@@ -111,6 +113,11 @@ const VocabularyUtils = {
     SH_FOCUS_NODE: _NS_SH + "focusNode",
     SH_VIOLATION: _NS_SH + "Violation",
     SH_WARNING: _NS_SH + "Warning",
+
+    NS_SIOC: _NS_SIOC,
+    COMMENT: _NS_SIOC + "types#Comment",
+
+    NS_ACTIVITY_STREAMS: _NS_ACTIVITY_STREAMS,
 
     PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
     UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,

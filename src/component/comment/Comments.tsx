@@ -31,11 +31,9 @@ const Comments: React.FC<CommentsProps> = props => {
     React.useEffect(() => {
         loadComments(term.iri).then(data => setComments(data));
     }, [loadComments, term]);
-    const onSubmit = (comment: Comment) => {
-        return createComment(comment, term.iri).then(() => {
-            loadComments(term.iri).then(data => setComments(data));
-        });
-    }
+    const onSubmit = (comment: Comment) => createComment(comment, term.iri).then(() => {
+        loadComments(term.iri).then(data => setComments(data));
+    });
     const onAddReaction = (comment: Comment, type: string) => {
         addReaction(comment, type).then(() => loadComments(term.iri).then(data => setComments(data)));
     }

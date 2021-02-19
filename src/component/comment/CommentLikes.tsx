@@ -1,5 +1,5 @@
 import * as React from "react";
-import Comment, {CommentReaction} from "../../model/Comment";
+import Comment, {CommentReaction, ReactionType} from "../../model/Comment";
 import User from "../../model/User";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
@@ -16,15 +16,13 @@ interface CommentLikesProps extends HasI18n {
     removeReaction: (comment: Comment) => void;
 }
 
-const LIKE_TYPE = "https://www.w3.org/ns/activitystreams#Like";
-
 export function isMine(comment: Comment, user: User) {
     return comment.author!.iri !== user.iri;
 }
 
 const CommentLikes: React.FC<CommentLikesProps> = props => {
     const {reactions, currentUser, addReaction, removeReaction, comment} = props;
-    const likes = reactions.filter(r => r.types.indexOf(LIKE_TYPE) !== -1);
+    const likes = reactions.filter(r => r.types.indexOf(ReactionType.LIKE) !== -1);
     const reacted = likes.find(cr => cr.actor.iri === currentUser.iri) !== undefined;
     const IconElem = reacted ? FaThumbsUp : FaRegThumbsUp;
     const title = reacted ? "comments.comment.like.on" : "comments.comment.like";
@@ -32,7 +30,7 @@ const CommentLikes: React.FC<CommentLikesProps> = props => {
     let iconClass;
     if (isMine(comment, currentUser)) {
         onClick = () => {
-            reacted ? removeReaction(comment) : addReaction(comment, LIKE_TYPE);
+            reacted ? removeReaction(comment) : addReaction(comment, ReactionType.LIKE);
         }
         iconClass = "actionable-reaction";
     }
