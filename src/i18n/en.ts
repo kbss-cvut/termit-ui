@@ -555,7 +555,7 @@ const en = {
         "comments.create.submit.title": "Submit",
         "comments.list.empty": "No comments, yet.",
         "comments.comment.like": "Like this comment",
-        "comments.comment.like.on": "Cancel reaction",
+        "comments.comment.like.on": "Don't like any more",
         "comments.comment.dislike": "Dislike this comment",
         "comments.comment.dislike.on": "Cancel reaction",
         "comments.comment.edited": "Edited"
