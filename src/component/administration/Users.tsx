@@ -4,7 +4,7 @@ import User, {EMPTY_USER} from "../../model/User";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
-import {disableUser, enableUser, loadUsers, unlockUser} from "../../action/AsyncUserActions";
+import {changeRole, disableUser, enableUser, loadUsers, unlockUser} from "../../action/AsyncUserActions";
 import {Card, CardBody, Table} from "reactstrap";
 import UserRow from "./UserRow";
 import "./Users.scss";
@@ -14,6 +14,8 @@ import {Link} from "react-router-dom";
 import Routes from "../../util/Routes";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {GoPlus} from "react-icons/go";
+import {UserRoleData} from "src/model/UserRole";
+import UserRolesEdit from "./UserRolesEdit";
 
 interface UsersProps extends HasI18n {
     currentUser: User;
@@ -21,12 +23,15 @@ interface UsersProps extends HasI18n {
     disableUser: (user: User) => Promise<any>;
     enableUser: (user: User) => Promise<any>;
     unlockUser: (user: User, newPassword: string) => Promise<any>;
+    changeRole: (user: User, role: UserRoleData) => Promise<any> ;
 }
 
 interface UsersState {
     users: User[];
     displayUnlock: boolean;
     userToUnlock: User;
+    displayRoleEdit: boolean;
+    userToEdit: User;
 }
 
 export class Users extends React.Component<UsersProps, UsersState> {
@@ -35,7 +40,9 @@ export class Users extends React.Component<UsersProps, UsersState> {
         this.state = {
             users: [],
             displayUnlock: false,
-            userToUnlock: EMPTY_USER
+            userToUnlock: EMPTY_USER,
+            displayRoleEdit: false,
+            userToEdit: EMPTY_USER
         };
     }
 
@@ -70,12 +77,28 @@ export class Users extends React.Component<UsersProps, UsersState> {
         });
     };
 
+    public onChangeRole = (user: User) => {
+        this.setState({displayRoleEdit: true, userToEdit: user});
+    };
+
+    public onCloseRolesEdit = () => {
+        this.setState({displayRoleEdit: false, userToEdit: EMPTY_USER});
+    };
+
+    public changeRole = (role: UserRoleData) => {
+        this.props.changeRole(this.state.userToEdit, role).then(() => {
+            this.onCloseRolesEdit();
+            this.loadUsers();
+        });
+    };
+
     public render() {
         const i18n = this.props.i18n;
         const actions = {
             disable: this.disableUser,
             enable: this.enableUser,
-            unlock: this.onUnlockUser
+            unlock: this.onUnlockUser,
+            changeRole: this.onChangeRole
         };
         return <>
             <HeaderWithActions
@@ -90,6 +113,9 @@ export class Users extends React.Component<UsersProps, UsersState> {
                     <PasswordReset open={this.state.displayUnlock} user={this.state.userToUnlock}
                                    onSubmit={this.unlockUser}
                                    onCancel={this.onCloseUnlock}/>
+                    <UserRolesEdit open={this.state.displayRoleEdit} user={this.state.userToEdit}
+                                   onSubmit={this.changeRole}
+                                   onCancel={this.onCloseRolesEdit}/>
                     <Table striped={true}>
                         <thead>
                         <tr>
@@ -97,6 +123,7 @@ export class Users extends React.Component<UsersProps, UsersState> {
                             <th>{i18n("administration.users.name")}</th>
                             <th>{i18n("administration.users.username")}</th>
                             <th>{i18n("administration.users.status")}</th>
+                            <th>{i18n("administration.users.role")}</th>
                             <th className="text-center users-row-actions">{i18n("actions")}</th>
                         </tr>
                         </thead>
@@ -117,6 +144,7 @@ export default connect((state: TermItState) => {
     return {
         loadUsers: () => dispatch(loadUsers()),
         disableUser: (user: User) => dispatch(disableUser(user)),
+        changeRole: (user: User, role: UserRoleData) => dispatch(changeRole(user, role)),
         enableUser: (user: User) => dispatch(enableUser(user)),
         unlockUser: (user: User, newPassword: string) => dispatch(unlockUser(user, newPassword))
     };

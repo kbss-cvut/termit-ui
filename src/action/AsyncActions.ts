@@ -29,6 +29,7 @@ import TermItState from "../model/TermItState";
 import Utils from "../util/Utils";
 import ExportType from "../util/ExportType";
 import {CONTEXT as DOCUMENT_CONTEXT} from "../model/Document";
+import {CONTEXT as CONFIGURATION_CONTEXT} from "../model/Configuration";
 import TermitFile from "../model/File";
 import Asset from "../model/Asset";
 import AssetFactory from "../util/AssetFactory";
@@ -214,10 +215,10 @@ export function loadResource(iri: IRI) {
             .get(Constants.API_PREFIX + "/resources/" + iri.fragment, param("namespace", iri.namespace))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<ResourceData>(data, JOINED_RESOURCE_CONTEXT))
             .then((data: ResourceData) => {
-                    const resource = AssetFactory.createResource(data);
-                    dispatch(asyncActionSuccessWithPayload(action,resource));
-                    return resource;
-                })
+                const resource = AssetFactory.createResource(data);
+                dispatch(asyncActionSuccessWithPayload(action, resource));
+                return resource;
+            })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)))
@@ -1176,8 +1177,13 @@ export function loadConfiguration() {
     const action = {type: ActionType.LOAD_CONFIGURATION};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_MIME_TYPE))
-            .then((data: Configuration) => dispatch(asyncActionSuccessWithPayload(action, data)))
+        return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_LD_MIME_TYPE))
+            .then((data: object) => JsonLdUtils.compactAndResolveReferences<Configuration>(data, CONFIGURATION_CONTEXT))
+            .then((data: Configuration) => {
+                    data.roles = Utils.sanitizeArray(data.roles);
+                    return dispatch(asyncActionSuccessWithPayload(action, data))
+                }
+            )
             .catch(error => dispatch(asyncActionFailure(action, error)));
     }
 }

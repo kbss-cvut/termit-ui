@@ -27,6 +27,7 @@ import VocabularyUtils from "../util/VocabularyUtils";
 import {Action} from "redux";
 import {AxiosResponse} from "axios";
 import Routing from "../util/Routing";
+import {UserRoleData} from "../model/UserRole";
 
 const USERS_ENDPOINT = "/users";
 
@@ -148,6 +149,26 @@ export function disableUser(user: User) {
                     messageId: "administration.users.status.action.disable.success",
                     values: {name: user.fullName}
                 }, MessageType.SUCCESS)));
+            })
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+            });
+    }
+}
+
+export function changeRole(user: User, role: UserRoleData) {
+    const action = {
+        type: ActionType.CHANGE_ROLE
+    };
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action));
+        const iri = VocabularyUtils.create(user.iri);
+        return Ajax.post(`${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/role`,
+            param("namespace", iri.namespace).content(role.iri).contentType(Constants.TEXT_MIME_TYPE))
+            .then(() => {
+                dispatch(asyncActionSuccess(action));
+                return dispatch(publishMessage(new Message({ messageId: "administration.users.status.action.changeRole.success" }, MessageType.SUCCESS)));
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
