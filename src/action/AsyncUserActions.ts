@@ -164,7 +164,7 @@ export function changeRole(user: User, role: UserRoleData) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const iri = VocabularyUtils.create(user.iri);
-        return Ajax.post(`${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/role`,
+        return Ajax.put(`${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/role`,
             param("namespace", iri.namespace).content(role.iri).contentType(Constants.TEXT_MIME_TYPE))
             .then(() => {
                 dispatch(asyncActionSuccess(action));
