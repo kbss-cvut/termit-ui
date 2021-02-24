@@ -20,8 +20,6 @@ import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
 import Pagination from "../misc/table/Pagination";
 
 interface VocabularyListProps extends HasI18n {
-    onSelect: (voc: Vocabulary) => void;
-
     vocabularies: { [id: string]: Vocabulary };
 }
 

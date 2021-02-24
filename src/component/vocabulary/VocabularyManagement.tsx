@@ -10,33 +10,29 @@ import VocabularyList from "./VocabularyList";
 import {Link} from "react-router-dom";
 import {GoPlus} from "react-icons/go";
 import HeaderWithActions from "../misc/HeaderWithActions";
-import Routing from "../../util/Routing";
-import Vocabulary from "../../model/Vocabulary";
 import WindowTitle from "../misc/WindowTitle";
+import TermItState from "../../model/TermItState";
+import User from "../../model/User";
+import {IfNoneGranted} from "react-authorization";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface VocabularyManagementProps extends HasI18n {
+    user: User;
     loadVocabularies: () => void;
 }
 
 export const VocabularyManagement: React.FC<VocabularyManagementProps> = props => {
-    const {i18n, loadVocabularies} = props;
+    const {i18n, user, loadVocabularies} = props;
     React.useEffect(() => {
         loadVocabularies();
     }, [loadVocabularies]);
-    const onSelect = (voc: Vocabulary) => {
-        if (voc === null) {
-            Routing.transitionTo(Routes.vocabularies);
-        } else {
-            Routing.transitionToAsset(voc);
-        }
-    };
-    const buttons = <>
-        <Link id="vocabularies-create" key="vocabulary.vocabularies.create"
-              className="btn btn-primary btn-sm"
+
+    const buttons = <IfNoneGranted expected={VocabularyUtils.USER_RESTRICTED} actual={user.types}>
+        <Link id="vocabularies-create" className="btn btn-primary btn-sm"
               title={i18n("vocabulary.vocabularies.create.tooltip")}
               to={Routes.createVocabulary.path}><GoPlus/>&nbsp;{i18n("vocabulary.management.new")}
         </Link>
-    </>
+    </IfNoneGranted>;
 
     return <div>
         <WindowTitle title={i18n("vocabulary.management.vocabularies")}/>
@@ -45,7 +41,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
             <Col md={12}>
                 <Card>
                     <CardBody>
-                        <VocabularyList onSelect={onSelect}/>
+                        <VocabularyList/>
                     </CardBody>
                 </Card>
             </Col>
@@ -53,7 +49,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
     </div>
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
+export default connect((state: TermItState) => ({user: state.user}), (dispatch: ThunkDispatch) => {
     return {
         loadVocabularies: () => dispatch(loadVocabulariesAction())
     };

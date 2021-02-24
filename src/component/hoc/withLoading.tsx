@@ -4,7 +4,7 @@ import getDisplayName from "../../util/getDisplayName";
 import classNames from "classnames";
 
 export interface WithLoadingProps {
-    loading: boolean,
+    loading?: boolean,
     loadingMsg?: string
 }
 
@@ -21,8 +21,8 @@ export interface WithLoadingStaticOptions {
  * @param options Configuration for the generated wrapper
  * @constructor
  */
-const withLoading = <P extends object>(Component: React.ComponentType<P>, options: WithLoadingStaticOptions = {tag: "div"}): React.SFC<P & WithLoadingProps> => {
-    const Wrapped: React.SFC<P & WithLoadingProps> = ({loading, loadingMsg, ...props}: P & WithLoadingProps) => {
+const withLoading = <P extends object>(Component: React.ComponentType<P>, options: WithLoadingStaticOptions = {tag: "div"}): React.FC<P & WithLoadingProps> => {
+    const Wrapped: React.FC<P & WithLoadingProps> = ({loading, loadingMsg, ...props}: P & WithLoadingProps) => {
         const tag = options.tag ? options.tag : "div";
         const className = classNames(options.containerClass, "relative");
 
