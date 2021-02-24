@@ -23,7 +23,7 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {RouteComponentProps, withRouter} from "react-router";
 import Routes from "../../util/Routes";
 import {injectIntl} from "react-intl";
-import {IfGranted} from "react-authorization";
+import {IfGranted, IfNoneGranted} from "react-authorization";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
@@ -162,7 +162,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
     };
 
     public render() {
-        const {sidebarExpanded, desktopView} = this.props;
+        const {sidebarExpanded, desktopView, user} = this.props;
 
         return (
             <Navbar expand="md" id="sidenav-main"
@@ -236,12 +236,14 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                             {this.createLinks(mainNavRoutes)}
                         </Nav>
 
-                        {desktopView && <div className="d-block">
-                            <hr className="mb-2 mt-2"/>
-                            <Nav navbar={true}>
-                                {this.createActionLinks(createNewNavRoutes)}
-                            </Nav>
-                        </div>}
+                        {desktopView && <IfNoneGranted expected={VocabularyUtils.USER_RESTRICTED} actual={user.types}>
+                            <div className="d-block">
+                                <hr className="mb-2 mt-2"/>
+                                <Nav navbar={true}>
+                                    {this.createActionLinks(createNewNavRoutes)}
+                                </Nav>
+                            </div>
+                        </IfNoneGranted>}
                     </Collapse>
                 </Container>
             </Navbar>

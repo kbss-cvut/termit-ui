@@ -104,8 +104,9 @@ const en = {
         "dashboard.widget.alert.news": "TermIt is released in a new version {version}. Have a look at what's new by clicking on Version in the bottom right corner of application.",
         "dashboard.widget.donut.total-terms": "Total terms",
 
+        "unauthorized.message": "You are not authorized to access this part.",
+
         "administration.users": "Users",
-        "administration.accessDenied": "You have insufficient rights to access this view.",
         "administration.users.name": "Name",
         "administration.users.username": "Username",
         "administration.users.status": "Status",
