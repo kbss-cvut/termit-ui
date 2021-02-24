@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {injectIntl} from "react-intl";
-import {Button, ButtonToolbar, Form, FormText, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {Button, ButtonToolbar, Form, Modal, ModalBody, ModalHeader} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {UserRoleData} from "../../model/UserRole";
 import {getLocalized} from "../../model/MultilingualString";
@@ -49,12 +49,10 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
                 <Select
                     value={value}
                     onChange={(e: any) => setRole(e.target.value)}
-                    placeholder={i18n("select.placeholder")}>
+                    placeholder={i18n("select.placeholder")}
+                    help={description}>
                     {options}
                 </Select>
-                <FormText>
-                    {description}
-                </FormText>
                 <ButtonToolbar className="float-right">
                     <Button variant="success" className="users-action-button" onClick={save}>{i18n("save")}</Button>
                     <Button variant="outline-primary" className="users-action-button"
