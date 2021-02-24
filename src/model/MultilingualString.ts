@@ -1,5 +1,6 @@
 import Constants from "../util/Constants";
 import Utils from "../util/Utils";
+import {getShortLocale} from "../util/IntlUtil";
 
 export function context(propertyIri: string) {
     return {
@@ -63,6 +64,8 @@ export function getLocalized(str?: MultilingualString | string, lang: string = C
     lang = lang.toLowerCase();
     if (str[lang] !== undefined) {
         return str[lang];
+    } else if (str[getShortLocale(lang)] !== undefined) {
+        return str[getShortLocale(lang)];
     } else if (str[Constants.DEFAULT_LANGUAGE]) {
         return str[Constants.DEFAULT_LANGUAGE];
     }

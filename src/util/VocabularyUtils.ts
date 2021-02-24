@@ -105,6 +105,7 @@ const VocabularyUtils = {
     DC_FORMAT: _NS_DC + "format",
     DC_LICENSE: _NS_DC + "license",
     DC_MODIFIED: _NS_DC + "modified",
+    DC_LANGUAGE: _NS_DC + "language",
 
     SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
     SH_SOURCE_SHAPE: _NS_SH + "sourceShape",

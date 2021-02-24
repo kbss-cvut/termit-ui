@@ -8,6 +8,7 @@ import Utils from "../../util/Utils";
 import {GoCheck, GoCircleSlash, GoIssueOpened} from "react-icons/go";
 import InfoIcon from "../misc/InfoIcon";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import UserRoles from "./UserRoles";
 
 const STATUS_MAP = {
     ACTIVE: {
@@ -62,6 +63,10 @@ function renderActionButtons(user: User, actions: UserActions, i18n: (id: string
                              title={i18n(STATUS_MAP.LOCKED.buttonTitle)} className="users-action-button"
                              color="primary">{i18n(STATUS_MAP.LOCKED.buttonLabel)}</Button>);
     }
+    const btnId2 = `user-${Utils.hashCode(user.iri)}-changerole`;
+    buttons.push(<Button id={btnId2} key={btnId2} size="sm" onClick={() => actions.changeRole(user)}
+                         title={i18n("administration.users.action.changerole.tooltip")} className="users-action-button"
+                         color="primary">{i18n("administration.users.action.changerole")}</Button>);
     return buttons;
 }
 
@@ -84,6 +89,7 @@ export interface UserActions {
     disable: (user: User) => void;
     enable: (user: User) => void;
     unlock: (user: User) => void;
+    changeRole: (user: User) => void;
 }
 
 interface UserRowProps extends HasI18n {
@@ -107,6 +113,9 @@ export const UserRow: React.FC<UserRowProps> = (props: UserRowProps) => {
             {i18n(status.statusLabel)}
             <InfoIcon id={`user-${Utils.hashCode(user.iri)}-status-info`} text={i18n(status.help)}/>
             {renderUserTypeBadges(user, i18n)}
+        </td>
+        <td className="align-middle">
+            <UserRoles user={user}/>
         </td>
         <td className="align-middle users-row-actions">{isCurrentUser ? null : renderActionButtons(user, props.actions, i18n)}</td>
     </tr>;
