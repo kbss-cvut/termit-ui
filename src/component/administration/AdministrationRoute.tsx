@@ -11,7 +11,7 @@ import Routes from "../../util/Routes";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import CreateNewUser from "./CreateNewUser";
 import Administration from "./Administration";
-import Unauthorized from "../misc/Unauthorized";
+import Unauthorized from "../authorization/Unauthorized";
 
 interface AdministrationRouteProps extends HasI18n {
     user: User;
