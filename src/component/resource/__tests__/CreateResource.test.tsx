@@ -6,6 +6,8 @@ import Routes from "../../../util/Routes";
 import {CreateResource} from "../CreateResource";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {CreateResourceForm} from "../CreateResourceForm";
+import * as redux from "react-redux";
+import Generator from "../../../__tests__/environment/Generator";
 
 jest.mock("../../../util/Routing");
 jest.mock("../../../util/Ajax", () => {
@@ -21,6 +23,7 @@ describe("CreateResource", () => {
 
     beforeEach(() => {
         Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({ data : iri }));
+        jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
     });
 
     it("returns to Resource Management on cancel", () => {

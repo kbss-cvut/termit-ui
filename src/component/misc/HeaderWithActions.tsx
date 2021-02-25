@@ -1,6 +1,7 @@
 import React from "react";
 import "./HeaderWithActions.scss";
 import classNames from "classnames";
+import {ButtonToolbar} from "reactstrap";
 
 interface HeaderWithActionsProps {
     title: JSX.Element | string;
@@ -14,7 +15,7 @@ const HeaderWithActions: React.FC<HeaderWithActionsProps> = (props) => (
         <h2 className="page-header">
             {props.title}
         </h2>
-        <div className="mb-3">{props.actions}</div>
+        {props.actions && <ButtonToolbar className="mb-3">{props.actions}</ButtonToolbar>}
     </div>
 )
 

@@ -7,20 +7,14 @@ import TermItState from "../../model/TermItState";
 import Vocabulary, {EMPTY_VOCABULARY} from "../../model/Vocabulary";
 import {
     exportGlossary,
+    loadResource,
     loadVocabulary,
     removeVocabulary,
-    validateVocabulary,
-    loadResource,
-    updateVocabulary
+    updateVocabulary,
+    validateVocabulary
 } from "../../action/AsyncActions";
 import VocabularyMetadata from "./VocabularyMetadata";
-import {
-    Button,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    UncontrolledButtonDropdown
-} from "reactstrap";
+import {Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown} from "reactstrap";
 import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
 import {GoCloudDownload, GoPencil} from "react-icons/go";
 import {ThunkDispatch} from "../../util/Types";
@@ -34,6 +28,7 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 import {FaTrashAlt} from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
     vocabulary: Vocabulary;
@@ -117,20 +112,20 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
         const {i18n, vocabulary} = this.props;
         const buttons = [];
         if (!this.state.edit) {
-            buttons.push(<Button id="vocabulary-summary-edit" key="vocabulary.summary.edit" size="sm" color="primary"
-                                 title={i18n("edit")} onClick={this.onEdit}><GoPencil/> {i18n("edit")}</Button>);
+            buttons.push(<IfUserAuthorized key="vocabulary-summary-edit" renderUnauthorizedAlert={false}><Button
+                id="vocabulary-summary-edit" key="vocabulary.summary.edit" size="sm" color="primary"
+                title={i18n("edit")} onClick={this.onEdit}><GoPencil/>&nbsp;{i18n("edit")}</Button></IfUserAuthorized>);
         }
         buttons.push(this.renderExportDropdown());
-        buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
-                             title={i18n("asset.remove.tooltip")}
-                             onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{i18n("remove")}</Button>);
+        buttons.push(<IfUserAuthorized key="vocabulary-summary-remove" renderUnauthorizedAlert={false}><Button
+            id="vocabulary-summary-remove" key="vocabulary.summary.remove" size="sm" color="outline-danger"
+            title={i18n("asset.remove.tooltip")}
+            onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{i18n("remove")}</Button></IfUserAuthorized>);
 
         return <div id="vocabulary-detail">
-            <WindowTitle
-                title={`${vocabulary.label} | ${i18n("vocabulary.management.vocabularies")}`}/>
-            <HeaderWithActions title={
-                <>{vocabulary.label}<CopyIriIcon url={vocabulary.iri as string}/></>
-            } actions={buttons}/>
+            <WindowTitle title={`${vocabulary.label} | ${i18n("vocabulary.management.vocabularies")}`}/>
+            <HeaderWithActions title={<>{vocabulary.label}<CopyIriIcon url={vocabulary.iri as string}/></>}
+                               actions={buttons}/>
             <RemoveAssetDialog show={this.state.showRemoveDialog} asset={vocabulary} onCancel={this.onCloseRemove}
                                onSubmit={this.onRemove}/>
 
@@ -144,7 +139,7 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
 
     private renderExportDropdown() {
         const i18n = this.props.i18n;
-        return <UncontrolledButtonDropdown className="ml-1 mr-2" id="vocabulary-summary-export"
+        return <UncontrolledButtonDropdown id="vocabulary-summary-export" className="ml-0"
                                            key="vocabulary.summary.export"
                                            size="sm" title={i18n("vocabulary.summary.export.title")}>
             <DropdownToggle caret={false} color="primary" style={{borderRadius: "0.2rem"}}>

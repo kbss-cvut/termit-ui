@@ -20,6 +20,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import {FaTrashAlt} from "react-icons/fa";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import classNames from "classnames";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 function isFile(resource: Resource) {
     return Utils.getPrimaryAssetType(resource) === VocabularyUtils.FILE;
@@ -30,7 +31,7 @@ export interface ResourceSummaryProps extends HasI18n {
     loadResource: (iri: IRI) => Promise<any>;
     saveResource: (resource: Resource) => Promise<any>;
     removeResource: (resource: Resource) => Promise<any>;
-    customDisabledRemoveTooltipKey? : string;
+    customDisabledRemoveTooltipKey?: string;
 }
 
 export interface ResourceSummaryState extends EditableComponentState {
@@ -80,22 +81,25 @@ export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryPro
         const i18n = this.props.i18n;
         const buttons = [];
         if (!this.state.edit) {
-            buttons.push(<Button id="resource-detail-edit" key="resource.summary.edit" size="sm" color="primary"
-                                 title={i18n("edit")}
-                                 onClick={this.onEdit}><GoPencil/>&nbsp;{i18n("edit")}</Button>);
+            buttons.push(<IfUserAuthorized key="resource-detail-edit" renderUnauthorizedAlert={false}>
+                <Button id="resource-detail-edit" key="resource.summary.edit" size="sm" color="primary"
+                        title={i18n("edit")} onClick={this.onEdit}><GoPencil/>&nbsp;{i18n("edit")}</Button>
+            </IfUserAuthorized>);
         }
-            buttons.push(<Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
-                                 className={classNames({ "text-muted" : !this.canRemove()})}
-                                 title={i18n(!this.canRemove() && this.props.customDisabledRemoveTooltipKey ?  this.props.customDisabledRemoveTooltipKey : "asset.remove.tooltip")}
-                                 disabled={!this.canRemove()}
-                                 onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{i18n("remove")}</Button>);
+        buttons.push(<IfUserAuthorized key="resource-detail-remove" renderUnauthorizedAlert={false}>
+            <Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
+                    className={classNames({"text-muted": !this.canRemove()})}
+                    title={i18n(!this.canRemove() && this.props.customDisabledRemoveTooltipKey ? this.props.customDisabledRemoveTooltipKey : "asset.remove.tooltip")}
+                    disabled={!this.canRemove()}
+                    onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{i18n("remove")}</Button>
+        </IfUserAuthorized>);
         return buttons;
     }
 
     protected renderMetadataEdit() {
         if (isFile(this.props.resource)) {
             return <FileEdit resource={this.props.resource} save={this.onSave} cancel={this.onCloseEdit}/>;
-        } else  {
+        } else {
             return <ResourceEdit resource={this.props.resource} save={this.onSave} cancel={this.onCloseEdit}/>;
         }
     }
