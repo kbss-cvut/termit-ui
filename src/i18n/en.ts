@@ -500,6 +500,7 @@ const en = {
         "annotator.legend.definition.tooltip": "Definition of a known term created by a user.",
         'annotator.legend.toggle.show': 'Show legend',
         'annotator.legend.toggle.hide': 'Hide legend',
+        "annotator.unknown.unauthorized": "Term not selected.",
 
         'message.welcome': 'Welcome to TermIt!',
         'link.external.title': '{url} - open in a new browser tab',

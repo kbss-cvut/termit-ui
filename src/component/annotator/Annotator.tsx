@@ -25,12 +25,16 @@ import {injectIntl} from "react-intl";
 import WindowTitle from "../misc/WindowTitle";
 import TermDefinitionEdit from "./TermDefinitionEdit";
 import {updateTerm} from "../../action/AsyncActions";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import TermItState from "../../model/TermItState";
+import User from "../../model/User";
 
 interface AnnotatorProps extends HasI18n {
     fileIri: IRI;
     vocabularyIri: IRI;
     initialHtml: string;
     scrollTo?: TextQuoteSelector;   // Selector of an annotation to scroll to (and highlight) after rendering
+    user: User;
 
     onUpdate(newHtml: string): void;
 
@@ -173,7 +177,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
      * @private
      * @return Whether the HTML content of the annotator should be updated
      */
-    private createOccurrence(annotationNode: AnnotationSpanProps, term: Term):boolean {
+    private createOccurrence(annotationNode: AnnotationSpanProps, term: Term): boolean {
         if (annotationNode.typeof === AnnotationType.DEFINITION) {
             this.setState({
                 selectedTerm: term,
@@ -283,6 +287,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     };
 
     private handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (Utils.sanitizeArray(this.props.user.types).indexOf(VocabularyUtils.USER_RESTRICTED) !== -1) {
+            return;
+        }
         if (this.containerElement.current) {
             HtmlDomUtils.extendSelectionToWords();
             const range = HtmlDomUtils.getSelectionRange();
@@ -382,7 +389,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         return <div>
             <WindowTitle title={this.props.i18n("annotator")}/>
             <LegendToggle/>
-            <TextAnalysisButtonAnnotatorWrapper fileIri={this.props.fileIri} vocabularyIri={this.props.vocabularyIri}/>
+            <IfUserAuthorized renderUnauthorizedAlert={false}>
+                <TextAnalysisButtonAnnotatorWrapper fileIri={this.props.fileIri}
+                                                    vocabularyIri={this.props.vocabularyIri}/>
+            </IfUserAuthorized>
             <CreateTermFromAnnotation ref={this.createNewTermDialog}
                                       show={this.state.showNewTermDialog} onClose={this.onCloseCreate}
                                       onMinimize={this.onMinimizeTermCreation} onTermCreated={this.assignNewTerm}
@@ -458,7 +468,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
+export default connect((state: TermItState) => ({user: state.user}), (dispatch: ThunkDispatch) => {
     return {
         publishMessage: (message: Message) => dispatch(publishMessage(message)),
         setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term)),

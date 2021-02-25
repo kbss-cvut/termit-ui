@@ -16,6 +16,7 @@ import {GoPlus} from "react-icons/go";
 import Utils from "../../util/Utils";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../term/TermTreeSelectHelper";
 import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../misc/treeselect/Renderers";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
     vocabulary?: Vocabulary;
@@ -83,26 +84,28 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
         const terms = processTermsForTreeSelect(Object.keys(this.props.terms).map(k => this.props.terms[k]),
             Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(vocabulary!.iri));
 
-        return <FormGroup>
-            <div>
-                <Label className="attribute-label mr-1">{i18n("type.term") + ":"}</Label>
-                {this.props.canCreateTerm && <Button key="annotator.createTerm" color="primary"
-                                                     title={i18n("glossary.createTerm.tooltip")}
-                                                     size="sm" onClick={this.props.onCreateTerm}><GoPlus/></Button>}
-            </div>
-            <IntelligentTreeSelect
-                ref={this.treeComponent}
-                className="p-0 mt-1"
-                onChange={this.handleChange}
-                value={this.props.selectedTerm}
-                options={terms}
-                isMenuOpen={false}
-                multi={false}
-                optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary!.iri)}
-                valueRenderer={createTermValueRenderer()}
-                {...commonTermTreeSelectProps(this.props)}
-            />
-        </FormGroup>;
+        return <IfUserAuthorized unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}>
+            <FormGroup>
+                <div>
+                    <Label className="attribute-label mr-1">{i18n("type.term") + ":"}</Label>
+                    {this.props.canCreateTerm && <Button key="annotator.createTerm" color="primary"
+                                                         title={i18n("glossary.createTerm.tooltip")}
+                                                         size="sm" onClick={this.props.onCreateTerm}><GoPlus/></Button>}
+                </div>
+                <IntelligentTreeSelect
+                    ref={this.treeComponent}
+                    className="p-0 mt-1"
+                    onChange={this.handleChange}
+                    value={this.props.selectedTerm}
+                    options={terms}
+                    isMenuOpen={false}
+                    multi={false}
+                    optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary!.iri)}
+                    valueRenderer={createTermValueRenderer()}
+                    {...commonTermTreeSelectProps(this.props)}
+                />
+            </FormGroup>
+        </IfUserAuthorized>;
     }
 }
 

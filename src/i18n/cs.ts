@@ -505,6 +505,7 @@ const cs = {
         "annotator.legend.definition.tooltip": "Uživatelem označená definice existujícího pojmu.",
         "annotator.legend.toggle.show": "Zobrazit legendu",
         "annotator.legend.toggle.hide": "Skrýt legendu",
+        "annotator.unknown.unauthorized": "Pojem nevybrán.",
 
         "message.welcome": "Vítejte v aplikaci TermIt!",
         "link.external.title": "{url} - otevřít v nové záložce",

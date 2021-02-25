@@ -8,6 +8,7 @@ import SimplePopupWithActions from "./SimplePopupWithActions";
 import AnnotationTerms from "./AnnotationTerms";
 import TermDefinitionAnnotationView from "./TermDefinitionAnnotationView";
 import {GoPencil} from "react-icons/go";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 interface TermDefinitionAnnotationProps extends HasI18n {
     target: string;
@@ -26,19 +27,21 @@ function createActionButtons(props: TermDefinitionAnnotationProps, editing: bool
     const i18n = props.i18n;
     const actions = [];
     if (!editing) {
-        actions.push(<Button key="annotation.definition.edit"
-                             className="m-annotation-definition-edit"
-                             color="primary"
-                             title={i18n("edit")}
-                             size="sm"
-                             onClick={onEdit}><GoPencil/></Button>);
+        actions.push(<IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.definition.edit">
+            <Button className="m-annotation-definition-edit"
+                    color="primary"
+                    title={i18n("edit")}
+                    size="sm"
+                    onClick={onEdit}><GoPencil/></Button>
+        </IfUserAuthorized>);
     }
-    actions.push(<Button key="annotation.definition.remove"
-                         className="m-annotation-definition-remove"
-                         color="primary"
-                         title={i18n("remove")}
-                         size="sm"
-                         onClick={props.onRemove}><TiTrash/></Button>);
+    actions.push(<IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.definition.remove">
+        <Button className="m-annotation-definition-remove"
+                color="primary"
+                title={i18n("remove")}
+                size="sm"
+                onClick={props.onRemove}><TiTrash/></Button>
+    </IfUserAuthorized>);
     actions.push(<Button key="annotation.definition.close"
                          className="m-annotation-definition-close"
                          color="primary"
