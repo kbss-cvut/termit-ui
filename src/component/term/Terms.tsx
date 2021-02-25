@@ -32,6 +32,7 @@ import StatusFilter from "./StatusFilter";
 import "./Terms.scss";
 import {getLocalized} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 interface GlossaryTermsProps extends HasI18n {
     vocabulary?: Vocabulary;
@@ -227,13 +228,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}
                     &nbsp;{(isDetailView && renderIncludeImported) ? <>({this.props.i18n(includeImported ? "glossary.importedIncluded" : "glossary.importedExcluded")})</> : <></>}
                 </h4>
-                {!isDetailView && <Button
-                    id="terms-create"
-                    color="primary"
-                    title={i18n("glossary.createTerm.tooltip")}
-                    size="sm"
-                    onClick={this.onCreateClick}><GoPlus/>&nbsp;{i18n("glossary.new")}
-                </Button>
+                {!isDetailView && <IfUserAuthorized renderUnauthorizedAlert={false}>
+                    <Button id="terms-create" color="primary" size="sm"
+                            title={i18n("glossary.createTerm.tooltip")}
+                            onClick={this.onCreateClick}><GoPlus/>&nbsp;{i18n("glossary.new")}
+                    </Button>
+                </IfUserAuthorized>
                 }
                 {(isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
                 {isDetailView && this.renderDraftOnly()}

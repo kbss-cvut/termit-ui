@@ -96,7 +96,7 @@ describe("Terms", () => {
     });
 
     function renderShallow(isDetailView: boolean = false) {
-        return shallow<Terms>(<Terms counter={counter} selectedTerms={selectedTerms}
+        return shallow<Terms>(<Terms counter={counter} selectedTerms={selectedTerms} showTermQualityBadge={false}
                                      notifications={[]} consumeNotification={consumeNotification}
                                      selectVocabularyTerm={selectVocabularyTerm} vocabulary={vocabulary}
                                      fetchTerms={fetchTerms} {...intlFunctions()}
