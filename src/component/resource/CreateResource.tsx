@@ -8,11 +8,9 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
 import CreateResourceForm from "./CreateResourceForm";
 import withLoading from "../hoc/withLoading";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
-interface CreateResourceProps extends HasI18n {
-}
-
-export const CreateResource: React.FC<CreateResourceProps> = (props: CreateResourceProps) => {
+export const CreateResource: React.FC<HasI18n> = props => {
 
     const onSuccess = (iri: string, iriLocation: string) => {
         Routing.transitionTo(Routes.resourceSummary, IdentifierResolver.routingOptionsFromLocation(iri));
@@ -23,13 +21,13 @@ export const CreateResource: React.FC<CreateResourceProps> = (props: CreateResou
     }
 
     const i18n = props.i18n;
-    return <>
+    return <IfUserAuthorized>
         <WindowTitle title={i18n("resource.create.title")}/>
         <HeaderWithActions title={i18n("resource.create.title")}/>
         <CreateResourceForm onCancel={onCancel}
                             onSuccess={onSuccess}
                             justDocument={false}/>
-    </>
+    </IfUserAuthorized>;
 }
 
 export default injectIntl(withI18n(withLoading(CreateResource)));

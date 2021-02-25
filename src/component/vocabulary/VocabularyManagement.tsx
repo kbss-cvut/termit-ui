@@ -30,7 +30,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
         </Link>
     </IfUserAuthorized>;
 
-    return <div>
+    return <>
         <WindowTitle title={i18n("vocabulary.management.vocabularies")}/>
         <HeaderWithActions title={i18n("vocabulary.management")} actions={buttons}/>
         <div className="row">
@@ -42,7 +42,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
                 </Card>
             </Col>
         </div>
-    </div>
+    </>
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
