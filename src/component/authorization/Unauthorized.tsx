@@ -1,7 +1,7 @@
 import * as React from "react";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Alert} from "reactstrap";
-import {FaExclamationTriangle} from "react-icons/all";
+import {FaExclamationTriangle} from "react-icons/fa";
 import {injectIntl} from "react-intl";
 
 const Unauthorized: React.FC<HasI18n> = props => {
