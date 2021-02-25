@@ -26,6 +26,7 @@ import CopyIriIcon from "../../misc/CopyIriIcon";
 import FileContentLink from "./FileContentLink";
 import {GoCloudDownload} from "react-icons/go";
 import Resource from "../../../model/Resource";
+import IfUserAuthorized from "../../authorization/IfUserAuthorized";
 
 interface FileSummaryProps extends ResourceSummaryProps {
     resource: File;
@@ -104,10 +105,13 @@ export class FileSummary extends ResourceSummary<FileSummaryProps, FileSummarySt
                         onClick={this.onDownloadContent}>
                     <GoCloudDownload/>&nbsp;{i18n("resource.metadata.file.content.download")}
                 </Button>,
-                <TextAnalysisInvocationButton id="resource-file-analyze"
-                                              key="resource-file-analyze"
-                                              className="ml-1"
-                                              fileIri={VocabularyUtils.create(this.props.resource.iri)}/>
+                <IfUserAuthorized key="resource-file-analyze" renderUnauthorizedAlert={false}>
+                    <TextAnalysisInvocationButton
+                        id="resource-file-analyze"
+                        key="resource-file-analyze"
+                        className="ml-1"
+                        fileIri={VocabularyUtils.create(this.props.resource.iri)}/>
+                </IfUserAuthorized>
             ];
         }
         return [];

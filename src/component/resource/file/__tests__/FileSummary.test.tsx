@@ -8,6 +8,9 @@ import AppNotification from "../../../../model/AppNotification";
 import NotificationType from "../../../../model/NotificationType";
 import File from "../../../../model/File";
 import {FileSummary} from "../FileSummary";
+import TextAnalysisInvocationButton from "../TextAnalysisInvocationButton";
+import * as redux from "react-redux";
+import Generator from "../../../../__tests__/environment/Generator";
 
 jest.mock("../../ResourceTermAssignments");
 
@@ -48,6 +51,7 @@ describe("FileSummary", () => {
             label: resourceName,
             types: [VocabularyUtils.FILE]
         });
+        jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
     });
 
     it("renders content button for File", () => {
@@ -102,5 +106,20 @@ describe("FileSummary", () => {
                                                           notifications={[]} {...resourceHandlers} {...intlFunctions()}/>);
         wrapper.instance().onDownloadContent();
         expect(downloadContent).toHaveBeenCalledWith(VocabularyUtils.create(file.iri));
+    });
+
+    it("does not render text analysis button for restricted user", () => {
+        const restrictedUser = Generator.generateUser();
+        restrictedUser.types.push(VocabularyUtils.USER_RESTRICTED);
+        jest.spyOn(redux, "useSelector").mockReturnValue(restrictedUser);
+        const div = document.createElement("div");
+        document.body.appendChild(div);
+
+        const wrapper = mountWithIntl(<FileSummary resource={file}
+                                                   notifications={[]} {...resourceHandlers} {...intlFunctions()}/>, {attachTo: div});
+        return Promise.resolve().then(() => {
+            wrapper.update();
+            expect(wrapper.exists(TextAnalysisInvocationButton)).toBeFalsy();
+        });
     });
 });
