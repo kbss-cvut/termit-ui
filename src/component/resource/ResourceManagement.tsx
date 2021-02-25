@@ -8,16 +8,19 @@ import {GoPlus} from "react-icons/go";
 import ResourceList from "./ResourceList";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 const ResourceManagement: React.FC<HasI18n> = props => {
     const i18n = props.i18n;
 
-    const buttons = <Link id="resources-create" key="resource.management.create" to={Routes.createResource.path}
-                          className="btn btn-primary btn-sm" title={i18n("resource.management.create.tooltip")}>
-        <GoPlus/>&nbsp;{i18n("resource.management.new")}
-    </Link>;
+    const buttons = <IfUserAuthorized renderUnauthorizedAlert={false}>
+        <Link id="resources-create" key="resource.management.create" to={Routes.createResource.path}
+              className="btn btn-primary btn-sm" title={i18n("resource.management.create.tooltip")}>
+            <GoPlus/>&nbsp;{i18n("resource.management.new")}
+        </Link>
+    </IfUserAuthorized>;
 
-    return <div>
+    return <>
         <WindowTitle title={i18n("main.nav.resources")}/>
         <HeaderWithActions title={i18n("resource.management")} actions={buttons}/>
         <div className="row">
@@ -29,7 +32,7 @@ const ResourceManagement: React.FC<HasI18n> = props => {
                 </Card>
             </Col>
         </div>
-    </div>;
+    </>;
 }
 
 export default injectIntl(withI18n(ResourceManagement));
