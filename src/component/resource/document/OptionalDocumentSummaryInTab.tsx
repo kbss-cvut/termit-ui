@@ -14,6 +14,7 @@ import {loadResource, updateVocabulary,} from "../../../action/AsyncActions";
 import {GoX} from "react-icons/go";
 import classNames from "classnames";
 import CreateResourceForm from "../CreateResourceForm";
+import IfUserAuthorized from "../../authorization/IfUserAuthorized";
 
 interface OptionalDocumentSummaryInTabProps extends HasI18n {
     vocabulary: Vocabulary;
@@ -41,12 +42,12 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
 
         return <div className={classNames("card-header")}>
             <div/>
-            <Button color="outline-muted"
-                    title={props.i18n("vocabulary.document.remove")}
-                    size="sm"
-                    style={{float: "right"}}
-                    onClick={onVocabularyDocumentRemove}><GoX/> {props.i18n("vocabulary.document.remove")}
-            </Button>
+            <IfUserAuthorized renderUnauthorizedAlert={false}>
+                <Button color="outline-muted" className="float-right" size="sm"
+                        title={props.i18n("vocabulary.document.remove")}
+                        onClick={onVocabularyDocumentRemove}><GoX/>&nbsp;{props.i18n("vocabulary.document.remove")}
+                </Button>
+            </IfUserAuthorized>
             &nbsp;
             <DocumentSummaryInTab resource={props.vocabulary.document} onChange={props.onChange}/>
         </div>;

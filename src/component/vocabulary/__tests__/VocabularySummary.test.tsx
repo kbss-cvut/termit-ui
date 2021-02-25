@@ -9,6 +9,8 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {VocabularyEdit} from "../VocabularyEdit";
 import {Button, DropdownToggle} from "reactstrap";
+import * as redux from "react-redux";
+import Generator from "../../../__tests__/environment/Generator";
 
 jest.mock("../../changetracking/AssetHistory");
 jest.mock("../../term/Terms");
@@ -62,6 +64,7 @@ describe("VocabularySummary", () => {
             iri: namespace + normalizedName,
             label: "Test vocabulary"
         });
+        jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
     });
 
     it("loads vocabulary on mount", () => {
@@ -238,4 +241,17 @@ describe("VocabularySummary", () => {
         wrapper.instance().loadVocabulary();
         expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
     });
+
+    it("does not render modification buttons for restricted user", () => {
+        const user = Generator.generateUser();
+        user.types.push(VocabularyUtils.USER_RESTRICTED);
+        jest.spyOn(redux, "useSelector").mockReturnValue(user);
+        const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary} updateVocabulary={onUpdate}
+                                                         loadVocabulary={onLoad} {...exportFunctions}
+                                                         history={history} location={location}
+                                                         validateVocabulary={validateVocabulary}
+                                                         match={match} {...intlFunctions()}/>);
+        expect(wrapper.exists("#vocabulary-summary-edit")).toBeFalsy();
+        expect(wrapper.exists("#vocabulary-summary-remove")).toBeFalsy();
+    })
 });

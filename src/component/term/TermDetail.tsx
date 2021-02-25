@@ -27,6 +27,7 @@ import {getLocalized, getLocalizedPlural} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import TermQualityBadge from "./TermQualityBadge";
 import WindowTitle from "../misc/WindowTitle";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 export interface CommonTermDetailProps extends HasI18n {
     configuredLanguage: string;
@@ -118,13 +119,18 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     public getActions = () => {
         const actions = [];
         if (!this.state.edit) {
-            actions.push(<Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
-                                 key="term-detail-edit"
-                                 title={this.props.i18n("edit")}><GoPencil/> {this.props.i18n("edit")}</Button>)
+            actions.push(<IfUserAuthorized key="term-detail-edit" renderUnauthorizedAlert={false}>
+                <Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
+                        key="term-detail-edit" title={this.props.i18n("edit")}>
+                    <GoPencil/>&nbsp;{this.props.i18n("edit")}
+                </Button>
+            </IfUserAuthorized>);
         }
-        actions.push(<Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
-                             title={this.props.i18n("asset.remove.tooltip")}
-                             onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>);
+        actions.push(<IfUserAuthorized key="term-detail-remove" renderUnauthorizedAlert={false}>
+            <Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
+                    title={this.props.i18n("asset.remove.tooltip")}
+                    onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>
+        </IfUserAuthorized>);
         return actions;
     }
 
