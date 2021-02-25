@@ -33,7 +33,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
     constructor(props: VocabularyMetadataProps) {
         super(props);
         this.state = {
-            activeTab:  (Utils.extractQueryParam(this.props.location.search, "activeTab") === "vocabulary.validation.tab")? "vocabulary.validation.tab" : "glossary.title"
+            activeTab: (Utils.extractQueryParam(this.props.location.search, "activeTab") === "vocabulary.validation.tab") ? "vocabulary.validation.tab" : "glossary.title"
         };
     }
 
@@ -81,19 +81,21 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         // Ensure order of tabs Terms | (Files) | Unmapped properties | History
 
         tabs["glossary.title"] =
-            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location} showTermQualityBadge={true}/>
+            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location}
+                   showTermQualityBadge={true}/>
 
         tabs["vocabulary.detail.document"] =
             <OptionalDocumentSummaryInTab vocabulary={vocabulary} onChange={this.props.onChange}/>;
-        tabs["properties.edit.title"] = <UnmappedProperties properties={vocabulary.unmappedProperties}
-                                                            showInfoOnEmpty={true}/>;
         tabs["history.label"] = <AssetHistory asset={vocabulary}/>;
 
         tabs["changefrequency.label"] = <TermChangeFrequency vocabulary={vocabulary}/>;
 
+        tabs["properties.edit.title"] = <UnmappedProperties properties={vocabulary.unmappedProperties}
+                                                            showInfoOnEmpty={true}/>;
+
         return <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={tabs} tabBadges={{
             "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
-            "vocabulary.detail.document": vocabulary.document ? '1' : '0',
+            "vocabulary.detail.document": vocabulary.document ? "1" : "0",
         }}/>;
     }
 }

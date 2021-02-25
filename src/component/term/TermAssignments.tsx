@@ -14,6 +14,7 @@ import ResourceLink from "../resource/ResourceLink";
 import {TermAssignments as AssignmentInfo} from "../../model/TermAssignments";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Utils from "../../util/Utils";
+import ContainerMask from "../misc/ContainerMask";
 
 interface TermAssignmentsOwnProps {
     term: Term;
@@ -25,7 +26,7 @@ interface StoreDispatchProps {
 }
 
 interface TermAssignmentsState {
-    resources: ResourceData[];
+    resources: ResourceData[] | null;
 }
 
 type TermAssignmentsProps = TermAssignmentsOwnProps & HasI18n & StoreDispatchProps;
@@ -42,7 +43,7 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
     constructor(props: TermAssignmentsProps) {
         super(props);
         this.state = {
-            resources: []
+            resources: null
         };
     }
 
@@ -52,6 +53,7 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
 
     public componentDidUpdate(prevProps: Readonly<TermAssignmentsProps>): void {
         if (this.props.term.iri !== prevProps.term.iri) {
+            this.setState({resources: null});
             this.loadAssignments();
         }
     }
@@ -75,7 +77,11 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
 
     public render() {
         const i18n = this.props.i18n;
-        if (this.state.resources.length === 0) {
+        const resources = this.state.resources;
+        if (!resources) {
+            return <ContainerMask/>;
+        }
+        if (resources.length === 0) {
             return <div
                 className="additional-metadata-container italics">{i18n("term.metadata.assignments.empty")}</div>;
         }
@@ -89,16 +95,15 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
     }
 
     private renderAssignments() {
-        const assignmentsPerResource = this.state.resources;
+        const assignmentsPerResource = this.state.resources!;
         const result: JSX.Element[] = [];
-        assignmentsPerResource
-            .forEach((v, k) => {
-                    result.push(<tr key={k}>
-                        <td>
-                            <ResourceLink resource={new Resource(v)}/>
-                        </td>
-                    </tr>);
-            });
+        assignmentsPerResource.forEach((v, k) => {
+            result.push(<tr key={k}>
+                <td>
+                    <ResourceLink resource={new Resource(v)}/>
+                </td>
+            </tr>);
+        });
         return result;
     }
 }
