@@ -10,6 +10,7 @@ import {AnnotationOrigin} from "./Annotation";
 import SimplePopupWithActions from "./SimplePopupWithActions";
 import TermOccurrenceAnnotationView from "./TermOccurrenceAnnotationView";
 import {GoPencil} from "react-icons/go";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 interface TermOccurrenceAnnotationProps extends HasI18n {
     target: string;
@@ -33,24 +34,27 @@ function createActionButtons(props: TermOccurrenceAnnotationProps, editing: bool
     const actions = [];
     const t = props.term ? props.term : null;
     if (props.annotationOrigin === AnnotationOrigin.PROPOSED && t !== null) {
-        actions.push(<Button key="annotation.confirm"
-                             color="primary"
-                             title={i18n("annotation.confirm")}
-                             size="sm"
-                             onClick={() => props.onSelectTerm(t)}><FaCheck/></Button>);
+        actions.push(<IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.confirm">
+            <Button color="primary"
+                    title={i18n("annotation.confirm")}
+                    size="sm"
+                    onClick={() => props.onSelectTerm(t)}><FaCheck/></Button>
+        </IfUserAuthorized>);
     }
     if (!editing) {
-        actions.push(<Button key="annotation.edit"
-                             color="primary"
-                             title={i18n("annotation.edit")}
-                             size="sm"
-                             onClick={onEdit}><GoPencil/></Button>);
+        actions.push(<IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.edit">
+            <Button color="primary"
+                    title={i18n("annotation.edit")}
+                    size="sm"
+                    onClick={onEdit}><GoPencil/></Button>
+        </IfUserAuthorized>);
     }
-    actions.push(<Button key="annotation.remove"
-                         color="primary"
-                         title={i18n("annotation.remove")}
-                         size="sm"
-                         onClick={props.onRemove}><TiTrash/></Button>);
+    actions.push(<IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.remove">
+        <Button color="primary"
+                title={i18n("annotation.remove")}
+                size="sm"
+                onClick={props.onRemove}><TiTrash/></Button>
+    </IfUserAuthorized>);
     actions.push(<Button key="annotation.close"
                          color="primary"
                          title={i18n("annotation.close")}
