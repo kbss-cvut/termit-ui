@@ -28,6 +28,7 @@ import {updateTerm} from "../../action/AsyncActions";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
+import "./Annotator.scss";
 
 interface AnnotatorProps extends HasI18n {
     fileIri: IRI;

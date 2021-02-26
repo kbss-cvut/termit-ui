@@ -77,41 +77,6 @@
   background-color: rgba(220, 220, 220, 1);
 }
 
-.legend {
-  opacity: 0.9;
-  display: inline-block;
-  position: fixed !important;
-  bottom: 120px;
-  right:15px;
-  width:230px;
-  background-color: whitesmoke;
-}
-
-.legend-list {
-  list-style-type: none;
-  padding-left: 0;
-  margin-bottom: 0;
-}
-
-.legend-button {
-  position: fixed !important;
-  bottom: 80px;
-  right: 15px;
-  float: right
-}
-
-.analyze-button {
-  position: fixed !important;
-  bottom: 40px;
-  right: 15px;
-  float: right
-}
-
-.legend-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
 .annotator-highlighted-annotation {
   background-color: yellow !important;
   border: 1px solid #6f42c1;
