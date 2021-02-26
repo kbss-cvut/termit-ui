@@ -37,7 +37,7 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     constructor(props: TermMetadataProps) {
         super(props);
         this.state = {
-            activeTab:  "properties.edit.title",
+            activeTab: "term.metadata.assignments.title",
             assignmentsCount: null,
             displayTerms: window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT
         };
@@ -48,16 +48,16 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
         this.updateTabFromUrlIfAny();
     }
 
-    public componentDidUpdate(prevProps : TermMetadataProps, prevState: TermMetadataState) {
+    public componentDidUpdate(prevProps: TermMetadataProps, prevState: TermMetadataState) {
         const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
-        if ( this.state.activeTab === prevState.activeTab && this.state.activeTab !== activeTabFromUrl && activeTabFromUrl ) {
+        if (this.state.activeTab === prevState.activeTab && this.state.activeTab !== activeTabFromUrl && activeTabFromUrl) {
             this.onTabSelect(activeTabFromUrl);
         }
     }
 
     private updateTabFromUrlIfAny() {
         const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
-        if ( this.state.activeTab !== activeTabFromUrl && activeTabFromUrl ) {
+        if (this.state.activeTab !== activeTabFromUrl && activeTabFromUrl) {
             this.onTabSelect(activeTabFromUrl);
         }
     }
@@ -101,14 +101,13 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                             <Card>
                                 <CardBody>
                                     <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={{
-                                        "properties.edit.title": <UnmappedProperties
-                                            properties={term.unmappedProperties}
-                                            showInfoOnEmpty={true}/>,
                                         "term.metadata.assignments.title": <TermAssignments term={term}
                                                                                             onLoad={this.setAssignmentsCount}/>,
                                         "history.label": <AssetHistory asset={term}/>,
                                         "term.metadata.validation.title": <ValidationResults term={term}/>,
-                                        "comments.title": <Comments term={term}/>
+                                        "comments.title": <Comments term={term}/>,
+                                        "properties.edit.title": <UnmappedProperties
+                                            properties={term.unmappedProperties} showInfoOnEmpty={true}/>
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),
                                         "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,
