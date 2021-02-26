@@ -1,3 +1,10 @@
+#### Version 2.3.0
+
+- Added support for discussion on terms (logged-in users only).
+- Added support for user roles and basic authorization. Users may have restricted rights (view and commenting only), full rights (view and edit) or administrator rights.
+- Admin can change roles of users.
+- Default admin account is no longer generated on startup if another admin exists.
+
 ##### Version 2.2.0
 - Reworked the relationship between vocabularies and documents.
 - Improved handling of term definition sources in documents.
