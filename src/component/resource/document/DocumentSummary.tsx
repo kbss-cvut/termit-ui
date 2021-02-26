@@ -36,8 +36,7 @@ export class DocumentSummary extends ResourceSummary<DocumentSummaryProps> {
         if (this.props.resource.vocabulary) {
             return <Row>
                 <Col xl={2} md={4}>
-                    <Label
-                        className="attribute-label">{this.props.i18n("resource.metadata.document.vocabulary")}:</Label>
+                    <Label className="attribute-label mb-3">{this.props.i18n("resource.metadata.document.vocabulary")}</Label>
                 </Col>
                 <Col xl={10} md={8}>
                     <VocabularyIriLink iri={this.props.resource.vocabulary.iri!}/>
