@@ -100,8 +100,8 @@ export class ResourceTermAssignments extends React.Component<ResourceTermAssignm
         return <>
             <Row>
                 <Col xl={2} md={4}>
-                    <Label className="attribute-label" title={i18n("resource.metadata.terms.assigned.tooltip")}>
-                        {i18n("resource.metadata.terms.assigned")}:
+                    <Label className="attribute-label mb-3" title={i18n("resource.metadata.terms.assigned.tooltip")}>
+                        {i18n("resource.metadata.terms.assigned")}
                     </Label>
                 </Col>
                 <Col xl={10} md={8} id="resource-metadata-term-assignments" className="resource-terms">
