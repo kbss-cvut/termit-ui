@@ -10,6 +10,7 @@ import Mask from "../misc/Mask";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import {injectIntl} from "react-intl";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface RegistrationFormProps extends HasI18n {
     loading: boolean;
@@ -18,6 +19,7 @@ interface RegistrationFormProps extends HasI18n {
 }
 
 interface RegistrationFormState extends UserAccountData {
+    types: string[],
     passwordConfirm: string,
     usernameExists: boolean,
     error: ErrorInfo | null
@@ -31,6 +33,7 @@ export class RegistrationForm extends React.Component<RegistrationFormProps, Reg
             lastName: "",
             username: "",
             password: "",
+            types: [VocabularyUtils.USER_RESTRICTED],
             passwordConfirm: "",
             usernameExists: false,
             error: null
