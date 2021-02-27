@@ -1,6 +1,6 @@
 {
   "name": "termit-ui",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
@@ -103,7 +103,6 @@
     "dotenv-expand": "5.1.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
-    "extract-text-webpack-plugin": "3.0.2",
     "eslint": "^7.20.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-loader": "^4.0.2",
@@ -112,6 +111,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "extract-text-webpack-plugin": "3.0.2",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "^6.1.0",
     "fs-extra": "9.1.0",
