@@ -16,6 +16,7 @@ import {updateProfile} from "../../action/AsyncUserActions";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import {Card, CardBody} from "reactstrap";
 import WindowTitle from "../misc/WindowTitle";
+import UserRoles from "../administration/UserRoles";
 
 interface ProfileProps extends HasI18n {
     user: User;
@@ -85,7 +86,10 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
 
         return <>
             <WindowTitle title={i18n("main.user-profile")}/>
-            <HeaderWithActions title={`${i18n("main.user-profile")}: ${user.username}`}
+            <HeaderWithActions title={ <>
+                {i18n("main.user-profile")}: {user.username}
+                <div className="small italics"><UserRoles user={user}/></div>
+            </>}
                                actions={this.renderActionButtons()}/>
             <Card id="panel-profile">
                 <CardBody>

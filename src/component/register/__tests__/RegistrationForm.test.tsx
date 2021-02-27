@@ -11,6 +11,7 @@ import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import Ajax, {params} from "../../../util/Ajax";
 import Constants from "../../../util/Constants";
 import {MemoryRouter} from "react-router";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("RegistrationForm", () => {
 
@@ -85,7 +86,8 @@ describe("RegistrationForm", () => {
         fillPasswords(wrapper);
         const submitButton = wrapper.find(Button).first();
         submitButton.simulate("click");
-        expect(register).toHaveBeenCalledWith(userInfo);
+        const userWithTypes = Object.assign({}, userInfo, {types : [VocabularyUtils.USER_RESTRICTED]})
+        expect(register).toHaveBeenCalledWith(userWithTypes);
     });
 
     it("disables submit button when loading", () => {
