@@ -12,7 +12,7 @@ import Utils from "../../util/Utils";
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../misc/treeselect/Renderers";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
-import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
+import {loadTermsFromWorkspace, loadTermsIncludingCanonical} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
 import Constants from "../../util/Constants";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
@@ -43,8 +43,9 @@ interface ParentTermSelectorProps extends HasI18n {
     invalidMessage?: JSX.Element;
     vocabularyIri: string;
     onChange: (newParents: Term[]) => void;
-    loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
     loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => Promise<Term[]>;
+    loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
+    loadTermsIncludingCanonical: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
 }
 
 interface ParentTermSelectorState {
@@ -54,7 +55,8 @@ interface ParentTermSelectorState {
 
 export const ParentSelectorRange = {
     VOCABULARY: "VOCABULARY",
-    WORKSPACE: "WORKSPACE"
+    WORKSPACE: "WORKSPACE",
+    CANONICAL: "CANONICAL"
 }
 
 export class ParentTermSelector extends React.Component<ParentTermSelectorProps, ParentTermSelectorState> {
@@ -87,6 +89,8 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         switch (this.state.selectorRange) {
             case ParentSelectorRange.WORKSPACE:
                 return this.fetchOptionsFromWorkspace(fetchOptions);
+            case ParentSelectorRange.CANONICAL:
+                return this.fetchOptionsIncludingCanonical(fetchOptions);
             default:
                 return this.fetchOptionsFromVocabulary(fetchOptions);
         }
@@ -108,6 +112,15 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
 
     private fetchOptionsFromWorkspace = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
         return this.props.loadTermsFromWorkspace({
+            ...fetchOptions
+        }).then(terms => {
+            this.setState({disableConfig: false});
+            return filterOutCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri);
+        });
+    }
+
+    private fetchOptionsIncludingCanonical = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
+        return this.props.loadTermsIncludingCanonical({
             ...fetchOptions
         }).then(terms => {
             this.setState({disableConfig: false});
@@ -139,6 +152,10 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                         onClick={() => this.onRangeToggle(ParentSelectorRange.WORKSPACE)}
                         active={range === ParentSelectorRange.WORKSPACE}
                         disabled={this.state.disableConfig}>{i18n("term.metadata.parent.range.workspace")}</Button>
+                <Button key={ParentSelectorRange.CANONICAL} color="primary" outline={true} size="sm"
+                        onClick={() => this.onRangeToggle(ParentSelectorRange.CANONICAL)}
+                        active={range === ParentSelectorRange.CANONICAL}
+                        disabled={this.state.disableConfig}>{i18n("term.metadata.parent.range.canonical")}</Button>
             </ButtonGroup>
             {this.renderSelector()}
         </FormGroup>;
@@ -171,7 +188,8 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
 
 export default connect(undefined, ((dispatch: ThunkDispatch) => {
     return {
+        loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
         loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => dispatch(loadTermsFromWorkspace(fetchOptions)),
-        loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri))
+        loadTermsIncludingCanonical: (fetchOptions: FetchOptionsFunction) => dispatch(loadTermsIncludingCanonical(fetchOptions))
     }
 }))(injectIntl(withI18n(ParentTermSelector)));
