@@ -8,9 +8,9 @@
     "@formatjs/intl-pluralrules": "^4.0.6",
     "@fortawesome/fontawesome-free": "^5.15.2",
     "@react-keycloak/web": "^3.4.0",
+    "apexcharts": "^3.24.0",
     "axios": "^0.21.1",
     "bootstrap": "4.6.0",
-    "apexcharts": "^3.24.0",
     "chart.js": "^2.9.4",
     "checklist-model": "^1.0.0",
     "classnames": "^2.2.6",
@@ -59,7 +59,8 @@
     "sparql-faceter": "^1.11.0",
     "whatwg-fetch": "3.5.0",
     "whatwg-mimetype": "2.3.0",
-    "xpath-range": "^1.1.1"
+    "xpath-range": "^1.1.1",
+    "yaml": "^1.10.0"
   },
   "scripts": {
     "start": "cross-env HTTPS=false react-scripts start",
