@@ -37,7 +37,7 @@ const ENV = {
 const getEnv = (name: string, defaultValue?: string): string => {
     const value = ENV[name] || defaultValue
     if (value) {
-      return value
+        return value
     }
     throw new Error(`Missing environment variable: ${name}`)
 }
@@ -48,14 +48,15 @@ const getEnv = (name: string, defaultValue?: string): string => {
 const COMPONENTS: Components = (() => {
     const base64String = getEnv('COMPONENTS')
     try {
-      // Use TextDecoder interface to properly decode UTF-8 characters
-      const yamlString = new TextDecoder('utf-8').decode(
-        Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0))
-      )
-      return YAML.parse(yamlString)
+        // Use TextDecoder interface to properly decode UTF-8 characters
+        const yamlString = new TextDecoder('utf-8').decode(
+            Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0))
+        )
+        return YAML.parse(yamlString)
     } catch (error: any) {
-      console.error(error)
-      throw new Error('Unable to decode COMPONENTS configuration')
+        throw error;
+        console.error(error)
+        throw new Error('Unable to decode COMPONENTS configuration')
     }
 })()
 

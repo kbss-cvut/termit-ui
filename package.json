@@ -66,8 +66,8 @@
     "start": "cross-env HTTPS=false react-scripts start",
     "start-mock-rest": "cross-env REACT_APP_MOCK_REST_API=true react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
-    "build-prod": "npm run test && npm run build",
+    "test": "cross-env CI=true react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
+    "build-prod": "npm test && npm run build",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
