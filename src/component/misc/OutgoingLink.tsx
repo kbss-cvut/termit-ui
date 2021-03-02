@@ -14,7 +14,7 @@ interface OutgoingLinkProps extends HasI18n {
 
 export const OutgoingLink: React.FC<OutgoingLinkProps> = (props: OutgoingLinkProps) => {
     return <span>{props.label}
-        <a id={props.id} href={props.iri} target="_blank" style={{color: "gray"}} className={props.className} rel="noreferrer"
+        <a id={props.id} href={props.iri} target="_blank" style={{color: "gray"}} className={props.className} rel="noopener noreferrer"
            title={props.formatMessage("link.external.title", {url: props.iri})}>
             <span className={props.showLink ? "" : "hidden"}>
                 &nbsp;
