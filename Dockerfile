@@ -1,22 +1,39 @@
-FROM node:14 as react-build
-ARG SERVER_URL=http://localhost:8080/termit
-ARG DEPLOYMENT=dev
+# BASE STAGE
+# Prepare node, copy package.json
+FROM node:alpine AS base
+WORKDIR /usr/src/app
+COPY package.json package-lock.json ./
+
+# DEPENDENCIES STAGE
+# Install production and dev dependencies
+FROM base AS dependencies
+# install node packages
+RUN npm set progress=false && npm config set depth 0
+RUN npm install
+
+# TEST STAGE
+# run linters, setup and tests
+FROM dependencies AS test
+COPY . .
+RUN  npm test
+
+# BUILD STAGE
+# run NPM build
+FROM test as build
+
 ARG REACT_APP_ADMIN_REGISTRATION_ONLY=false
 ARG REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED=false
 ARG REACT_APP_GOOGLE_LOGIN=false
 ARG REACT_APP_GITHUB_LOGIN=false
 
-WORKDIR /frontend
-COPY . .
-RUN npm install
-ENV PATH $WORKDIR/node_modules/.bin:$PATH
-RUN serverUrl=${SERVER_URL} deployment=${DEPLOYMENT} REACT_APP_ADMIN_REGISTRATION_ONLY=${REACT_APP_ADMIN_REGISTRATION_ONLY} REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED=${REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED} REACT_APP_GOOGLE_LOGIN=${REACT_APP_GOOGLE_LOGIN} REACT_APP_GITHUB_LOGIN=${REACT_APP_GITHUB_LOGIN} npm run build-prod
+RUN set -ex; \
+  REACT_APP_ADMIN_REGISTRATION_ONLY=${REACT_APP_ADMIN_REGISTRATION_ONLY} REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED=${REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED} REACT_APP_GOOGLE_LOGIN=${REACT_APP_GOOGLE_LOGIN} REACT_APP_GITHUB_LOGIN=${REACT_APP_GITHUB_LOGIN} npm run build
 
-FROM nginx:alpine
-COPY --from=react-build /frontend/build /usr/share/nginx/html
-RUN chmod a+r -R /usr/share/nginx/html
-RUN chmod ag+x /usr/share/nginx/html/flags
-RUN chmod ag+x /usr/share/nginx/html/background
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# RELEASE STAGE
+# Only include the static files in the final image
+FROM docker.pkg.github.com/opendata-mvcr/react-nginx/react-nginx:latest
+WORKDIR /usr/share/nginx/html
+COPY --from=build /usr/src/app/build/ ./
+RUN chmod a+r -R .
+RUN chmod ag+x ./flags
+RUN chmod ag+x ./background

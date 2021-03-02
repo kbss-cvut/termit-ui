@@ -1,0 +1,12 @@
+# This is a utility file to test the TermIt docker image locally
+# docker-compose --env-file=.env.docker-compose up
+
+version: '3.9'
+services:
+  termit:
+    env_file:
+      - .env.docker-compose
+    build:
+      context: .
+    ports:
+      - '3000:80'
