@@ -26,11 +26,13 @@ import SearchTerms from "../search/SearchTerms";
 import SearchVocabularies from "../search/SearchVocabularies";
 import Search from "../search/label/Search";
 import "../MainView.scss";
+import {loadConfiguration} from "../../action/AsyncActions";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
     sidebarExpanded: boolean;
     desktopView: boolean;
     changeView: () => void;
+    loadConfiguration: () => void;
 }
 
 interface MainViewState {
@@ -48,6 +50,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     public componentDidMount(): void {
         window.addEventListener("resize", this.handleResize, false);
+        this.props.loadConfiguration();
     }
 
     public componentWillUnmount(): void {
@@ -133,6 +136,7 @@ export default connect((state: TermItState) => {
     };
 }, (dispatch: ThunkDispatch) => {
     return {
-        changeView: () => dispatch(changeView())
+        changeView: () => dispatch(changeView()),
+        loadConfiguration: () => dispatch(loadConfiguration())
     };
 })(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));
