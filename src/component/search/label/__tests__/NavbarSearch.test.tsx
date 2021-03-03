@@ -2,8 +2,6 @@ import * as React from "react";
 import {NavbarSearch} from "../NavbarSearch";
 import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import SearchResultsOverlay from "../SearchResultsOverlay";
-import {createMemoryHistory, Location} from "history";
-import {match as Match} from "react-router";
 import Routes, {Route} from "../../../../util/Routes";
 import {shallow} from "enzyme";
 import SearchResult from "../../../../model/SearchResult";
@@ -12,16 +10,13 @@ import VocabularyUtils from "../../../../util/VocabularyUtils";
 import Routing from "../../../../util/Routing";
 import {InputGroup} from "reactstrap";
 import {EMPTY_USER} from "../../../../model/User";
+import {location, match, routingProps} from "../../../../__tests__/environment/TestUtil";
 
 jest.mock("../../../../util/Routing");
 
 describe("NavbarSearch", () => {
 
     let updateSearchFilter: () => Promise<object>;
-
-    let location: Location;
-    const history = createMemoryHistory();
-    let match: Match<any>;
 
     const user = Generator.generateUser();
 
@@ -34,24 +29,12 @@ describe("NavbarSearch", () => {
     })];
 
     const navbarConnections = () => {
-        return {updateSearchFilter, location, history, match};
+        return {updateSearchFilter, ...routingProps()};
     };
 
     beforeEach(() => {
         updateSearchFilter = jest.fn().mockImplementation(() => Promise.resolve([]));
 
-        location = {
-            pathname: "/",
-            search: "",
-            hash: "",
-            state: {}
-        };
-        match = {
-            params: {},
-            path: location.pathname,
-            isExact: true,
-            url: "http://localhost:3000/" + location.pathname
-        };
     });
 
     it("does not render results component for initial state", () => {
@@ -77,10 +60,11 @@ describe("NavbarSearch", () => {
     });
 
     function verifyResultsNotDisplayed(route: Route) {
-        location.pathname = route.path;
-        match.path = route.path;
+        const props = navbarConnections();
+        props.location.pathname = route.path;
+        props.match.path = route.path;
         const wrapper = shallow<NavbarSearch>(<NavbarSearch searchString="" navbar={false} user={user}
-                                                            searchResults={searchResults} {...navbarConnections()} {...intlFunctions()}/>);
+                                                            searchResults={searchResults} {...props} {...intlFunctions()}/>);
         wrapper.setState({showResults: true, searchOriginNavbar: false});
         wrapper.update();
         expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
@@ -115,8 +99,8 @@ describe("NavbarSearch", () => {
         wrapper.setState({showResults: true, searchOriginNavbar: isInNavbar});
         wrapper.update();
         expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeTruthy();
-        const newLoc = Object.assign({}, location, {pathname: Routes.resources.path});
-        const newMatch = Object.assign({}, match, {path: Routes.resources.path});
+        const newLoc = Object.assign(location(), {pathname: Routes.resources.path});
+        const newMatch = Object.assign(match(), {path: Routes.resources.path});
         wrapper.setProps({location: newLoc, match: newMatch});
         wrapper.update();
         expect(wrapper.find(SearchResultsOverlay).length).toEqual(0);

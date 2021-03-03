@@ -4,25 +4,11 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {Sidebar} from "../Sidebar";
 import {shallow} from "enzyme";
 import User from "../../../model/User";
-import {createMemoryHistory} from "history";
 import {Container, Form} from "reactstrap";
+import {routingProps} from "../../../__tests__/environment/TestUtil";
 
 describe("Sidebar", () => {
     let toggleSidebar: () => void;
-
-    const location = {
-        pathname: "/",
-        search: "",
-        hash: "",
-        state: {}
-    };
-    const history = createMemoryHistory();
-    const match = {
-        params: {},
-        path: "/",
-        isExact: true,
-        url: "http://localhost:3000/"
-    };
 
     const user = new User({
         firstName: "Catherine",
@@ -36,9 +22,8 @@ describe("Sidebar", () => {
     });
 
     it("renders correct structure of component on desktop with sidebar expanded", () => {
-        const wrapper = shallow(<Sidebar location={location} match={match} history={history} user={user}
-                                         toggleSidebar={toggleSidebar}
-                                         sidebarExpanded={true} desktopView={true} {...intlFunctions()}/>);
+        const wrapper = shallow(<Sidebar user={user} toggleSidebar={toggleSidebar} sidebarExpanded={true}
+                                         desktopView={true} {...intlFunctions()} {...routingProps()}/>);
 
         const container = wrapper.find("#sidenav-main.sidebar-expanded").find(Container);
 
@@ -53,9 +38,8 @@ describe("Sidebar", () => {
     });
 
     it("renders correct structure of component on desktop with sidebar collapsed", () => {
-        const wrapper = shallow(<Sidebar location={location} match={match} history={history} user={user}
-                                         toggleSidebar={toggleSidebar}
-                                         sidebarExpanded={false} desktopView={true} {...intlFunctions()}/>);
+        const wrapper = shallow(<Sidebar user={user} toggleSidebar={toggleSidebar} sidebarExpanded={false}
+                                         desktopView={true} {...intlFunctions()} {...routingProps()}/>);
 
         const container = wrapper.find("#sidenav-main.sidebar-collapsed").find(Container);
 
@@ -71,9 +55,8 @@ describe("Sidebar", () => {
     });
 
     it("renders correct structure on mobile", () => {
-        const wrapper = shallow(<Sidebar location={location} match={match} history={history} user={user}
-                                         toggleSidebar={toggleSidebar}
-                                         sidebarExpanded={false} desktopView={false} {...intlFunctions()}/>);
+        const wrapper = shallow(<Sidebar user={user} toggleSidebar={toggleSidebar} sidebarExpanded={false}
+                                         desktopView={false} {...intlFunctions()} {...routingProps()}/>);
 
         const container = wrapper.find("#sidenav-main").find(Container);
         expect(container.find(".brand").length).toBe(2);

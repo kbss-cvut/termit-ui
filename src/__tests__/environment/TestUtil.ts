@@ -16,6 +16,9 @@ export function verifyExpectedAssets(expectedJsonLd: object[], actual: Asset[]) 
     }
 }
 
+/**
+ * Generates location object for tests.
+ */
 export function location(): Location {
     return {
         pathname: "/",
@@ -25,6 +28,9 @@ export function location(): Location {
     };
 }
 
+/**
+ * Generates a match object for tests.
+ */
 export function match(): MatchType<any> {
     return {
         params: {},
