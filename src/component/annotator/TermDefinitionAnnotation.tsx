@@ -54,6 +54,11 @@ function createActionButtons(props: TermDefinitionAnnotationProps, editing: bool
 export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> = props => {
     const term = props.term !== undefined ? props.term : null;
     const [editing, setEditing] = React.useState(term === null);
+    React.useEffect(() => {
+        if (term) {
+            setEditing(false);
+        }
+    }, [term]);
     const bodyContent = editing ? <AnnotationTerms onChange={props.onSelectTerm} canCreateTerm={false}
                                                    selectedTerm={term}/> :
         <TermDefinitionAnnotationView term={term} resource={props.resource} textContent={props.text}/>;
