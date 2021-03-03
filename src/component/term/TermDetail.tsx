@@ -170,8 +170,7 @@ export default connect((state: TermItState) => {
     return {
         term: state.selectedTerm,
         vocabulary: state.vocabulary,
-        configuredLanguage: state.configuration.language,
-        validationResults: state.validationResults[state.vocabulary.iri]
+        configuredLanguage: state.configuration.language
     };
 }, (dispatch: ThunkDispatch) => {
     return {
