@@ -7,6 +7,7 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import SimplePopupWithActions from "../SimplePopupWithActions";
 import AnnotationTerms from "../AnnotationTerms";
 import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
+import {withHooks} from "jest-react-hooks-shallow";
 
 describe("TermDefinitionAnnotation", () => {
 
@@ -42,5 +43,17 @@ describe("TermDefinitionAnnotation", () => {
         const wrapper = shallow(<TermDefinitionAnnotation isOpen={true}
                                                           term={null} {...annotationProps} {...actions} {...intlFunctions()}/>);
         expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(AnnotationTerms);
+    });
+
+    it("switches from editing to view mode when a term is provided", () => {
+        withHooks(() => {
+            const wrapper = shallow(<TermDefinitionAnnotation isOpen={true}
+                                                              term={null} {...annotationProps} {...actions} {...intlFunctions()}/>);
+            expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(AnnotationTerms);
+            const term = Generator.generateTerm();
+            wrapper.setProps({term});
+            wrapper.update();
+            expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(TermDefinitionAnnotationView);
+        });
     });
 });
