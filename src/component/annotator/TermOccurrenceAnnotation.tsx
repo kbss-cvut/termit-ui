@@ -66,16 +66,16 @@ function createActionButtons(props: TermOccurrenceAnnotationProps, editing: bool
 export const TermOccurrenceAnnotation: React.FC<TermOccurrenceAnnotationProps> = props => {
     const term = props.term !== undefined ? props.term : null;
     const [editing, setEditing] = React.useState(term === null);
-    const onConfirm = (t: Term) => {
-        setEditing(false);
-        props.onSelectTerm(t);
-    };
+    React.useEffect(() => {
+        if (term) {
+            setEditing(false);
+        }
+    }, [term]);
     const onClose = () => {
         setEditing(false);
         props.onClose();
     };
-    const popupBody = editing ? <AnnotationTerms selectedTerm={term}
-                                                 onChange={props.onSelectTerm}
+    const popupBody = editing ? <AnnotationTerms selectedTerm={term} onChange={props.onSelectTerm}
                                                  onCreateTerm={props.onCreateTerm}/> :
         <TermOccurrenceAnnotationView term={term} score={props.score} resource={props.resource}
                                       annotationClass={props.annotationClass}/>;
@@ -83,7 +83,7 @@ export const TermOccurrenceAnnotation: React.FC<TermOccurrenceAnnotationProps> =
     return <SimplePopupWithActions isOpen={props.isOpen} target={props.target} toggle={props.onToggleDetailOpen}
                                    component={popupBody}
                                    actions={createActionButtons(Object.assign({}, props, {
-                                       onSelectTerm: onConfirm,
+                                       onSelectTerm: props.onSelectTerm,
                                        onClose
                                    }), editing, () => setEditing(!editing))}
                                    title={props.i18n("annotation.occurrence.title")}/>;
