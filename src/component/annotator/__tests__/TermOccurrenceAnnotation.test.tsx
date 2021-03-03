@@ -5,6 +5,8 @@ import {TermOccurrenceAnnotation} from "../TermOccurrenceAnnotation";
 import {shallow} from "enzyme";
 import SimplePopupWithActions from "../SimplePopupWithActions";
 import {AnnotationClass, AnnotationOrigin} from "../Annotation";
+import Generator from "../../../__tests__/environment/Generator";
+import {withHooks} from "jest-react-hooks-shallow";
 
 describe("TermOccurrenceAnnotation", () => {
 
@@ -47,5 +49,23 @@ describe("TermOccurrenceAnnotation", () => {
         expect(buttons.length).toBeGreaterThan(0);
         const confirmButton = buttons.find(b => b.key === "annotation.confirm");
         expect(confirmButton).not.toBeDefined();
+    });
+
+    it("switches from editing to view mode when a term is provided", () => {
+        withHooks(() => {
+            const wrapper = shallow(<TermOccurrenceAnnotation
+                {...actions}
+                {...intlFunctions()}
+                {...suggestedOccProps}
+                {...intlFunctions()}
+                annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE} annotationOrigin={AnnotationOrigin.PROPOSED}
+                isOpen={true}/>);
+            const term = Generator.generateTerm();
+            wrapper.setProps({term});
+            wrapper.update();
+            wrapper.update();
+            const buttons = wrapper.find(SimplePopupWithActions).prop("actions");
+            expect(buttons.find(b => b.key === "annotation.edit")).toBeDefined();
+        });
     });
 });
