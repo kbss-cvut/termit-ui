@@ -5,22 +5,9 @@ import {intlFunctions} from "../../__tests__/environment/IntlUtil";
 import {shallow} from "enzyme";
 import {createMemoryHistory} from "history";
 import {Breadcrumbs} from "react-breadcrumbs";
+import {match, routingProps} from "../../__tests__/environment/TestUtil";
 
 describe("MainView", () => {
-
-    const location = {
-        pathname: "/",
-        search: "",
-        hash: "",
-        state: {}
-    };
-    const history = createMemoryHistory();
-    const match = {
-        params: {},
-        path: "/",
-        isExact: true,
-        url: "http://localhost:3000/"
-    };
 
     let loadUser: () => void;
     let logout: () => void;
@@ -38,8 +25,8 @@ describe("MainView", () => {
     });
 
     it("loads user on mount", () => {
-        shallow(<MainView user={EMPTY_USER} loadUser={loadUser} logout={logout} history={history} location={location}
-                          match={match} {...intlFunctions()}/>);
+        shallow(<MainView user={EMPTY_USER} loadUser={loadUser}
+                          logout={logout} {...intlFunctions()} {...routingProps()}/>);
         expect(loadUser).toHaveBeenCalled();
     });
 
@@ -50,20 +37,19 @@ describe("MainView", () => {
             username: "halsey@unsc.org",
             iri: "http://onto.fel.cvut.cz/ontologies/termit/catherine-halsey"
         });
-        shallow(<MainView user={user} loadUser={loadUser} logout={logout} history={history} location={location}
-                          match={match} {...intlFunctions()}/>);
+        shallow(<MainView user={user} loadUser={loadUser} logout={logout}  {...intlFunctions()} {...routingProps()}/>);
         expect(loadUser).not.toHaveBeenCalled();
     });
 
     it("renders placeholder UI when user is being loaded", () => {
-        const wrapper = shallow(<MainView user={EMPTY_USER} loadUser={loadUser} logout={logout} history={history}
-                                          location={location} match={match} {...intlFunctions()}/>);
+        const wrapper = shallow(<MainView user={EMPTY_USER} loadUser={loadUser}
+                                          logout={logout} {...intlFunctions()} {...routingProps()}/>);
         expect(wrapper.exists("#loading-placeholder")).toBeTruthy();
     });
 
     it("does not render breadcrumb on dashboard", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          location={location} match={match} {...intlFunctions()}/>);
+        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser}
+                                          logout={logout} {...intlFunctions()} {...routingProps()}/>);
         expect(wrapper.exists(Breadcrumbs)).toBeFalsy();
     });
 
@@ -75,20 +61,21 @@ describe("MainView", () => {
             state: {}
         };
 
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          location={locationVocabularies} match={match} {...intlFunctions()}/>);
+        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout}
+                                          history={createMemoryHistory()}
+                                          location={locationVocabularies} match={match()} {...intlFunctions()}/>);
         expect(wrapper.exists(Breadcrumbs)).toBeTruthy();
     });
 
     it("renders navbar on >= 768px", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          location={location} match={match} desktopView={true} {...intlFunctions()}/>);
+        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout}
+                                          desktopView={true} {...intlFunctions()} {...routingProps()}/>);
         expect(wrapper.exists("#navbar")).toBeTruthy();
     });
 
     it("does not render navbar on > 768px", () => {
-        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout} history={history}
-                                          location={location} match={match} desktopView={false} {...intlFunctions()}/>);
+        const wrapper = shallow(<MainView user={nonEmptyUser} loadUser={loadUser} logout={logout}
+                                          desktopView={false} {...intlFunctions()} {...routingProps()}/>);
         expect(wrapper.exists("#navbar")).toBeFalsy();
     });
 });
