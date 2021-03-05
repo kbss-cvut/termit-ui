@@ -18,7 +18,7 @@ import WindowTitle from "../../misc/WindowTitle";
 interface TermDetailProps extends CommonTermDetailProps, RouteComponentProps<any> {
 }
 
-const TermDetail: React.FC<TermDetailProps> = props => {
+export const TermDetail: React.FC<TermDetailProps> = props => {
     const {term, location, match, loadTerm, loadVocabulary} = props;
     React.useEffect(() => {
         const vocabularyName: string = match.params.name;
@@ -29,6 +29,9 @@ const TermDetail: React.FC<TermDetailProps> = props => {
         loadVocabulary(vocUri);
     }, [location.search, match.params.termName, match.params.name, loadTerm, loadVocabulary]);
     const [language, setLanguage] = React.useState<string>(resolveInitialLanguage(props));
+    React.useEffect(() => {
+        setLanguage(resolveInitialLanguage(props));
+    }, [term, props]);
 
     if (!term) {
         return null;

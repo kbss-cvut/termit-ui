@@ -13,8 +13,6 @@ import NotificationType from "../../../model/NotificationType";
 import {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import {langString} from "../../../model/MultilingualString";
-import {constructValidationResult} from "../validation/__tests__/ValidationResults.test";
-import ValidationResult from "../../../model/ValidationResult";
 import Constants from "../../../util/Constants";
 
 jest.mock("../TermAssignments");
@@ -39,7 +37,6 @@ describe("TermDetail", () => {
 
     let vocabulary: Vocabulary;
     let term: Term;
-    let validationResults: { [vocabularyIri: string]: ValidationResult[] };
 
     beforeEach(() => {
         location = {
@@ -63,11 +60,6 @@ describe("TermDetail", () => {
         removeTerm = jest.fn().mockImplementation(() => Promise.resolve());
         onPublishNotification = jest.fn();
         vocabulary = Generator.generateVocabulary();
-        validationResults = {
-            [vocabulary.iri]: [
-                constructValidationResult("https://example.org/term1")
-            ]
-        };
         term = new Term({
             iri: Generator.generateUri(),
             label: langString("Test term"),
@@ -80,7 +72,7 @@ describe("TermDetail", () => {
         shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
                             loadVocabulary={loadVocabulary} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                             publishNotification={onPublishNotification} vocabulary={vocabulary}
-                            history={history} location={location} match={match} validationResults={validationResults}
+                            history={history} location={location} match={match}
                             {...intlFunctions()}/>);
         expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {fragment: normalizedVocabName});
     });
@@ -91,7 +83,7 @@ describe("TermDetail", () => {
         shallow(<TermDetail term={null} loadTerm={onLoad} updateTerm={onUpdate} removeTerm={removeTerm}
                             loadVocabulary={loadVocabulary} configuredLanguage={Constants.DEFAULT_LANGUAGE}
                             history={history} location={location} match={match} vocabulary={vocabulary}
-                            publishNotification={onPublishNotification} validationResults={validationResults}
+                            publishNotification={onPublishNotification}
                             {...intlFunctions()}/>);
         expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {fragment: normalizedVocabName, namespace});
     });
@@ -103,7 +95,6 @@ describe("TermDetail", () => {
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         expect(wrapper.exists(TermMetadata)).toBeTruthy();
     });
@@ -115,7 +106,6 @@ describe("TermDetail", () => {
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
         expect(wrapper.find(TermMetadataEdit).exists()).toBeTruthy();
@@ -127,7 +117,6 @@ describe("TermDetail", () => {
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onSave(term);
         expect(onUpdate).toHaveBeenCalledWith(term);
@@ -139,7 +128,6 @@ describe("TermDetail", () => {
                                             removeTerm={removeTerm}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match} vocabulary={vocabulary}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
         (wrapper.instance() as TermDetail).onSave(term);
@@ -155,7 +143,6 @@ describe("TermDetail", () => {
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onSave(term);
         return Promise.resolve().then(() => {
@@ -169,7 +156,6 @@ describe("TermDetail", () => {
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
         wrapper.update();
@@ -195,7 +181,6 @@ describe("TermDetail", () => {
                                             vocabulary={vocabulary}
                                             publishNotification={onPublishNotification}
                                             history={history} location={location} match={match}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         const buttons = (wrapper.instance() as TermDetail).getActions();
         expect(buttons.some(b => b.key === "term-detail-edit"));
@@ -210,7 +195,6 @@ describe("TermDetail", () => {
                                                         loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                                         history={history} location={location} match={match}
                                                         publishNotification={onPublishNotification}
-                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         const update = new Term(Object.assign({}, term));
         const newParent = Generator.generateUri();
@@ -232,7 +216,6 @@ describe("TermDetail", () => {
                                                         location={location}
                                                         match={match}
                                                         publishNotification={onPublishNotification}
-                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         wrapper.instance().onRemove();
         expect(removeTerm).toHaveBeenCalledWith(term);
@@ -250,7 +233,6 @@ describe("TermDetail", () => {
                                                         location={location}
                                                         match={match}
                                                         publishNotification={onPublishNotification}
-                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         expect(wrapper.find(TermMetadata).prop("language")).toEqual(Constants.DEFAULT_LANGUAGE);
     });
@@ -268,7 +250,6 @@ describe("TermDetail", () => {
                                                         location={location}
                                                         match={match}
                                                         publishNotification={onPublishNotification}
-                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         expect(wrapper.find(TermMetadata).prop("language")).toEqual(lang);
     });
@@ -284,7 +265,6 @@ describe("TermDetail", () => {
                                                         location={location}
                                                         match={match}
                                                         publishNotification={onPublishNotification}
-                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         wrapper.setProps({term});
         wrapper.update();
