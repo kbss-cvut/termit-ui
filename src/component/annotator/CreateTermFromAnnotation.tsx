@@ -43,7 +43,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * component state.
      */
     public setLabel(label: string) {
-        this.setState({label: langString(label, this.props.language)});
+        this.setState({label: langString(label.trim(), this.props.language)});
     }
 
     /**
@@ -51,7 +51,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
      * parent component state.
      */
     public setDefinition(definition: string) {
-        this.setState({definition: langString(definition, this.props.language)});
+        this.setState({definition: langString(definition.trim(), this.props.language)});
     }
 
     public onChange = (change: object, callback?: () => void) => {

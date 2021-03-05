@@ -37,24 +37,48 @@ describe("CreateTermFromAnnotation", () => {
         expect(wrapper.state().label).toEqual(langString(""));
     });
 
-    it("setLabel sets label in state", () => {
-        const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
-                                                                                    language={Constants.DEFAULT_LANGUAGE}
-                                                                                    vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        expect(wrapper.state().label).toEqual(langString(""));
-        const label = "Test";
-        wrapper.instance().setLabel(label);
-        expect(wrapper.state().label).toEqual(langString(label, Constants.DEFAULT_LANGUAGE));
+    describe("setLabel", () => {
+        it("sets label in state", () => {
+            const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                        language={Constants.DEFAULT_LANGUAGE}
+                                                                                        vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
+            expect(wrapper.state().label).toEqual(langString(""));
+            const label = "Test";
+            wrapper.instance().setLabel(label);
+            expect(wrapper.state().label).toEqual(langString(label, Constants.DEFAULT_LANGUAGE));
+        });
+
+        it("removes leading and trailing whitespaces from the specified label", () => {
+            const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                        language={Constants.DEFAULT_LANGUAGE}
+                                                                                        vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
+            expect(wrapper.state().label).toEqual(langString(""));
+            const label = "    Test    \n";
+            wrapper.instance().setLabel(label);
+            expect(wrapper.state().label).toEqual(langString(label.trim(), Constants.DEFAULT_LANGUAGE));
+        });
     });
 
-    it("setDefinition sets definition in state", () => {
-        const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
-                                                                                    language={Constants.DEFAULT_LANGUAGE}
-                                                                                    vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
-        expect(wrapper.state().definition).toEqual(langString("", Constants.DEFAULT_LANGUAGE));
-        const definition = "Test definition";
-        wrapper.instance().setDefinition(definition);
-        expect(wrapper.state().definition).toEqual(langString(definition, Constants.DEFAULT_LANGUAGE));
+    describe("setDefinition", () => {
+        it("sets definition in state", () => {
+            const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                        language={Constants.DEFAULT_LANGUAGE}
+                                                                                        vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
+            expect(wrapper.state().definition).toEqual(langString("", Constants.DEFAULT_LANGUAGE));
+            const definition = "Test definition";
+            wrapper.instance().setDefinition(definition);
+            expect(wrapper.state().definition).toEqual(langString(definition, Constants.DEFAULT_LANGUAGE));
+        });
+
+        it("removes leading and trailing whitespaces from the specified definition", () => {
+            const wrapper = shallow<CreateTermFromAnnotation>(<CreateTermFromAnnotation show={true}
+                                                                                        language={Constants.DEFAULT_LANGUAGE}
+                                                                                        vocabularyIri={vocabularyIri} {...propsFunctions} {...intlFunctions()}/>);
+            expect(wrapper.state().definition).toEqual(langString("", Constants.DEFAULT_LANGUAGE));
+            const definition = "  Test definition \n";
+            wrapper.instance().setDefinition(definition);
+            expect(wrapper.state().definition).toEqual(langString(definition.trim(), Constants.DEFAULT_LANGUAGE));
+        });
     });
 
     it("onSave creates new term from current state and saves it", () => {
