@@ -208,7 +208,7 @@ describe("Ajax", () => {
             spy.mockClear();
             return sut.post("/users", params(formData).contentType(Constants.X_WWW_FORM_URLENCODED)).then(() => {
                 const reqConfig = spy.mock.calls[0][2];
-                expect(reqConfig!.headers[Constants.Headers.CONTENT_TYPE]).toEqual("application/x-www-form-urlencoded");
+                expect(reqConfig!.headers[Constants.Headers.CONTENT_TYPE]).toEqual(Constants.X_WWW_FORM_URLENCODED);
                 const expParams = new URLSearchParams();
                 expParams.append("username", formData.username);
                 expParams.append("password", formData.password);
