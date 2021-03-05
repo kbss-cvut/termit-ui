@@ -39,7 +39,7 @@ const constants = {
     CSV_MIME_TYPE: "text/csv",
     TTL_MIME_TYPE: "text/turtle",
     EXCEL_MIME_TYPE: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    X_WWW_FORM_URLENCODED: "application/x-www-form-urlencoded",
+    X_WWW_FORM_URLENCODED: "application/x-www-form-urlencoded;charset=UTF-8",
     MULTIPART_FORM_DATA: "multipart/form-data",
     // HTTP response status 401 Unauthorized
     STATUS_UNAUTHORIZED: 401,
