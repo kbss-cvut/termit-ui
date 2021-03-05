@@ -54,12 +54,14 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
                     {options}
                 </Select>
                 <ButtonToolbar className="float-right">
-                    <Button variant="success" className="users-action-button" onClick={save}>{i18n("save")}</Button>
-                    <Button variant="outline-primary" className="users-action-button"
+                    <Button variant="success" className="users-action-button" size="sm"
+                            onClick={save}>{i18n("save")}</Button>
+                    <Button variant="outline-primary" className="users-action-button" size="sm"
                             onClick={onCancel}>{i18n("cancel")}</Button>
                 </ButtonToolbar>
             </Form>
         </ModalBody>
     </Modal></>;
 }
-export default connect( (state : TermItState) => ({availableRoles: state.configuration.roles}))(injectIntl(withI18n(UserRolesEdit)));
+
+export default connect((state: TermItState) => ({availableRoles: state.configuration.roles}))(injectIntl(withI18n(UserRolesEdit)));
