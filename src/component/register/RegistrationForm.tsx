@@ -128,7 +128,7 @@ export class RegistrationForm extends React.Component<RegistrationFormProps, Reg
                                valid={this.isValidPassword() && this.passwordsMatch()}/>
 
                 {this.renderPasswordConfirm()}
-                <Button id="register-submit" className="btn-block" color="success"
+                <Button id="register-submit" className="btn-block" color="success" size="sm"
                         disabled={!this.isValid() || this.props.loading}
                         onClick={this.onRegister}>{i18n("register.submit")}</Button>
                 <br/>
