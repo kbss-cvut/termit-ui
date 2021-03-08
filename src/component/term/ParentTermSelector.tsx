@@ -17,8 +17,9 @@ import StorageUtils from "../../util/StorageUtils";
 import Constants from "../../util/Constants";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 
-function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
+function enhanceWithCurrentTerm(terms: Term[], currentTermIri?: string, parentTerms?: Term[]): Term[] {
     if (currentTermIri) {
+        const currentParents = Utils.sanitizeArray(parentTerms).slice();
         const result = [];
         for (const t of terms) {
             if (t.iri === currentTermIri) {
@@ -27,9 +28,13 @@ function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
             if (t.plainSubTerms) {
                 t.plainSubTerms = t.plainSubTerms.filter(st => st !== currentTermIri);
             }
-            result.push(t);
+            const parentIndex = currentParents.findIndex(p => p.iri === t.iri);
+            if (parentIndex === -1) {
+                result.push(t);
+            }
         }
-        return result;
+        // Add parents which are not in the loaded terms so that they show up in the list
+        return currentParents.concat(result);
     } else {
         return terms;
     }
@@ -38,7 +43,7 @@ function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
 interface ParentTermSelectorProps extends HasI18n {
     id: string;
     termIri?: string;
-    parentTerms?: TermData[];
+    parentTerms?: Term[];
     invalid?: boolean;
     invalidMessage?: JSX.Element;
     vocabularyIri: string;
@@ -80,7 +85,11 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         if (!val) {
             this.props.onChange([]);
         } else {
-            this.props.onChange(Utils.sanitizeArray(val).filter(v => v.iri !== this.props.termIri));
+            if (!this.props.termIri) {
+                this.props.onChange(Utils.sanitizeArray(val));
+            } else {
+                this.props.onChange(Utils.sanitizeArray(val).filter(v => v.iri !== this.props.termIri));
+            }
         }
     };
 
@@ -106,7 +115,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
             includeTerms: parents
         }, VocabularyUtils.create(fetchOptions.option ? fetchOptions.option.vocabulary!.iri! : this.props.vocabularyIri)).then(terms => {
             this.setState({disableConfig: false});
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, [...parentVocabs, this.props.vocabularyIri], {searchString: fetchOptions.searchString}), this.props.termIri);
+            return enhanceWithCurrentTerm(processTermsForTreeSelect(terms, [...parentVocabs, this.props.vocabularyIri], {searchString: fetchOptions.searchString}), this.props.termIri);
         });
     };
 
@@ -115,7 +124,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
             ...fetchOptions
         }).then(terms => {
             this.setState({disableConfig: false});
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri);
+            return enhanceWithCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri, this.props.parentTerms);
         });
     }
 
@@ -124,7 +133,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
             ...fetchOptions
         }).then(terms => {
             this.setState({disableConfig: false});
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri);
+            return enhanceWithCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri, this.props.parentTerms);
         });
     }
 

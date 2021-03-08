@@ -173,7 +173,7 @@ describe("ParentTermSelector", () => {
                 options.push(t);
             }
             const currentTerm = options[Generator.randomInt(0, options.length)];
-            loadTermsFromVocabulary = jest.fn().mockImplementation(() => Promise.resolve(options));
+            (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(options);
             const wrapper = shallow<ParentTermSelector>(<ParentTermSelector id="test" termIri={currentTerm.iri}
                                                                             vocabularyIri={vocabularyIri}
                                                                             onChange={onChange}
@@ -247,6 +247,25 @@ describe("ParentTermSelector", () => {
             wrapper.instance().fetchOptions({});
             expect((loadTermsFromVocabulary as jest.Mock).mock.calls[0][0].includeTerms).toBeDefined();
             expect((loadTermsFromVocabulary as jest.Mock).mock.calls[0][0].includeTerms).toEqual(existingParents.map(p => p.iri));
+        });
+
+        it("add term's parents to the beginning of the options list for canonical terms", () => {
+            const options: Term[] = [];
+            for (let i = 0; i < Generator.randomInt(5, 10); i++) {
+                const t = Generator.generateTerm(vocabularyIri);
+                options.push(t);
+            }
+            const parentTerms = [Generator.generateTerm(vocabularyIri), Generator.generateTerm(vocabularyIri)];
+            (loadTermsIncludingCanonical as jest.Mock).mockResolvedValue(options);
+            const wrapper = shallow<ParentTermSelector>(<ParentTermSelector id="test" termIri={Generator.generateUri()}
+                                                                            parentTerms={parentTerms}
+                                                                            vocabularyIri={vocabularyIri}
+                                                                            onChange={onChange}
+                                                                            {...fetchFunctions} {...intlFunctions()}/>);
+            wrapper.setState({selectorRange: ParentSelectorRange.CANONICAL});
+            return wrapper.instance().fetchOptions({}).then((terms) => {
+                expect(terms).toEqual(parentTerms.concat(options));
+            });
         });
     });
 
