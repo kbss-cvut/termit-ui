@@ -40,3 +40,9 @@ export default class Workspace extends Asset implements WorkspaceData {
         return Object.assign({}, this, {"@context": CONTEXT});
     }
 }
+
+export const EMPTY_WORKSPACE = new Workspace({
+    iri: "http://empty",
+    label: "",
+    vocabularies: []
+});
