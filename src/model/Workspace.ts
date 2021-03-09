@@ -32,8 +32,8 @@ export default class Workspace extends Asset implements WorkspaceData {
         return this.label;
     }
 
-    public containsVocabulary(vocabularyIri: string) {
-        return this.vocabularies.indexOf(vocabularyIri) !== -1;
+    public containsVocabulary(vocabularyIri?: string) {
+        return vocabularyIri && this.vocabularies.indexOf(vocabularyIri) !== -1;
     }
 
     public toJsonLd(): {} {

@@ -80,7 +80,8 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         // Ensure order of tabs Terms | (Files) | Unmapped properties | History
 
         tabs["glossary.title"] =
-            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location} showTermQualityBadge={true}/>
+            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location}
+                   showTermQualityBadge={true}/>
 
         tabs["vocabulary.detail.document"] =
             <OptionalDocumentSummaryInTab vocabulary={vocabulary} onChange={this.props.onChange}/>;
@@ -91,7 +92,7 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
 
         return <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={tabs} tabBadges={{
             "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
-            "vocabulary.detail.document": vocabulary.document ? '1' : '0',
+            "vocabulary.detail.document": vocabulary.document ? "1" : "0",
         }}/>;
     }
 }
