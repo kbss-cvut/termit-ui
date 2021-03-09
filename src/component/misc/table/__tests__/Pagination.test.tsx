@@ -2,7 +2,6 @@ import React from "react";
 import {Pagination as BootstrapPagination} from "reactstrap";
 import {mountWithIntl} from "../../../../__tests__/environment/Environment";
 import {Pagination} from "../Pagination";
-import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import {UsePaginationInstanceProps} from "react-table";
 import Constants from "../../../../util/Constants";
 
@@ -27,7 +26,7 @@ describe("Pagination", () => {
 
     it("stores selected page size in local storage", () => {
         const wrapper = mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
-                                                  allowSizeChange={true} {...intlFunctions()}/>);
+                                                  allowSizeChange={true}/>);
         const sizeSelect = wrapper.find("select");
         const value = 20;
         sizeSelect.simulate("change", {target: {value}});
@@ -39,7 +38,7 @@ describe("Pagination", () => {
         const size = 20;
         localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] = size.toString();
         mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
-                                  allowSizeChange={true} {...intlFunctions()}/>);
+                                  allowSizeChange={true}/>);
         expect(pagingProps.setPageSize).toHaveBeenCalledWith(size);
     });
 
@@ -49,7 +48,7 @@ describe("Pagination", () => {
         pagingProps.canNextPage = false;
         localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] = size.toString();
         const wrapper = mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
-                                                  allowSizeChange={true} {...intlFunctions()}/>);
+                                                  allowSizeChange={true}/>);
         expect(wrapper.exists(BootstrapPagination)).toBeFalsy();
     });
 });

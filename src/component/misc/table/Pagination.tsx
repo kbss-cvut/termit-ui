@@ -1,14 +1,13 @@
 import * as React from "react";
 import {ChangeEvent} from "react";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
 import {UsePaginationInstanceProps, UsePaginationState} from "react-table";
 import {Pagination as BootstrapPagination, PaginationItem, PaginationLink} from "reactstrap";
-import {injectIntl} from "react-intl";
 import Select from "../Select";
 import "./Pagination.scss";
 import Constants from "../../../util/Constants";
+import {useI18n} from "../../hook/useI18n";
 
-interface PaginationProps extends HasI18n {
+interface PaginationProps {
     pagingProps: UsePaginationInstanceProps<any>;
     pagingState: UsePaginationState<any>;
     allowSizeChange?: boolean;
@@ -18,7 +17,7 @@ const PAGE_SIZES = [10, 20, 30, 50];
 const INFINITE_PAGE = Number.MAX_SAFE_INTEGER;
 
 export const Pagination: React.FC<PaginationProps> = props => {
-    const {i18n, formatMessage} = props;
+    const {i18n, formatMessage} = useI18n();
     const {
         canPreviousPage,
         canNextPage,
@@ -79,4 +78,4 @@ Pagination.defaultProps = {
     allowSizeChange: false
 };
 
-export default injectIntl(withI18n(Pagination));
+export default Pagination;
