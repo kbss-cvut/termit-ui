@@ -10,12 +10,14 @@ import {loadTerms} from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../misc/treeselect/Renderers";
+import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
 import {loadTermsFromWorkspace, loadTermsIncludingCanonical} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
 import Constants from "../../util/Constants";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import OutgoingLink from "../misc/OutgoingLink";
+import {getLocalized} from "../../model/MultilingualString";
 
 function enhanceWithCurrentTerm(terms: Term[], currentTermIri?: string, parentTerms?: Term[]): Term[] {
     if (currentTermIri) {
@@ -38,6 +40,10 @@ function enhanceWithCurrentTerm(terms: Term[], currentTermIri?: string, parentTe
     } else {
         return terms;
     }
+}
+
+function createValueRenderer() {
+    return (term: Term) => <OutgoingLink label={getLocalized(term.label)} iri={term.iri}/>;
 }
 
 interface ParentTermSelectorProps extends HasI18n {
@@ -185,7 +191,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                                         maxHeight={200}
                                         multi={true}
                                         optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
-                                        valueRenderer={createTermValueRenderer()}
+                                        valueRenderer={createValueRenderer()}
                                         style={style}
                                         {...commonTermTreeSelectProps(this.props)}/>
             {this.props.invalid ?
