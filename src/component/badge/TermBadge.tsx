@@ -1,15 +1,16 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Badge} from "reactstrap";
 import classNames from "classnames";
+import {useI18n} from "../hook/useI18n";
 
-interface TermBadgeProps extends HasI18n {
+interface TermBadgeProps {
     className?: string;
 }
 
-const TermBadge: React.FC<TermBadgeProps> = (props: TermBadgeProps) =>
-    <Badge color="purple" className={classNames("asset-badge", props.className)}>{props.i18n("type.term")}</Badge>;
+const TermBadge: React.FC<TermBadgeProps> = (props: TermBadgeProps) => {
+    const {i18n} = useI18n();
+    return <Badge color="purple" className={classNames("asset-badge", props.className)}>{i18n("type.term")}</Badge>;
+};
 
 
-export default injectIntl(withI18n(TermBadge));
+export default TermBadge;
