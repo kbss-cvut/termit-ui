@@ -2,13 +2,15 @@ import * as React from "react";
 import {Link, MemoryRouter} from "react-router-dom";
 import Term from "../../../model/Term";
 import {TermLink} from "../TermLink";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import {mockStore, mountWithIntl} from "../../../__tests__/environment/Environment";
 import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
 import {EMPTY_USER} from "../../../model/User";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import MultilingualString, {langString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import TermItState from "../../../model/TermItState";
+import cs from "../../../i18n/cs";
+import * as redux from "react-redux";
 
 describe("TermLink", () => {
 
@@ -21,6 +23,7 @@ describe("TermLink", () => {
             label: "Test vocabulary",
             iri: vocNamespace + vocFragment
         });
+        jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
     })
 
     it("links to correct internal asset", () => {
@@ -31,8 +34,7 @@ describe("TermLink", () => {
             vocabulary: testVocabulary
         });
 
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term}
-                                                           user={Generator.generateUser()} {...intlFunctions()}/></MemoryRouter>).find(Link);
+        const link = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>).find(Link);
         expect((link.props() as any).to).toEqual(`/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`);
     });
 
@@ -41,8 +43,7 @@ describe("TermLink", () => {
             iri: Generator.generateUri(),
             label: langString("Term without vocabulary")
         });
-        const wrapper = mountWithIntl(<MemoryRouter><TermLink term={term}
-                                                              user={Generator.generateUser()} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>);
         expect(wrapper.find(Link).exists()).toBeFalsy();
         expect(wrapper.find("a").contains(<small>
             <i className="fas fa-external-link-alt text-primary"/>
@@ -56,9 +57,9 @@ describe("TermLink", () => {
             iri: `${testVocabulary.iri}/pojem/${termFragment}`,
             vocabulary: testVocabulary
         });
+        jest.spyOn(redux, "useSelector").mockReturnValue(EMPTY_USER);
 
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term}
-                                                           user={EMPTY_USER} {...intlFunctions()}/></MemoryRouter>).find(Link);
+        const link = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>).find(Link);
         expect((link.props() as any).to).toEqual(`/public/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`);
     });
 
@@ -73,8 +74,7 @@ describe("TermLink", () => {
             vocabulary: testVocabulary
         });
 
-        mountWithIntl(<MemoryRouter><TermLink term={term}
-                                              user={EMPTY_USER} {...intlFunctions()}/></MemoryRouter>).find(Link);
+        mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>).find(Link);
         expect(term.label).toEqual(originalLabel);
     });
 
@@ -88,10 +88,9 @@ describe("TermLink", () => {
             vocabulary: testVocabulary
         });
 
-        const intlData = intlFunctions();
-        intlData.locale = Constants.LANG.CS.locale;
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term}
-                                                           user={EMPTY_USER} {...intlData}/></MemoryRouter>).find(Link);
+        (mockStore.getState() as TermItState).intl.locale = Constants.LANG.CS.locale;
+        (mockStore.getState() as TermItState).intl.messages = cs.messages;
+        const link = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>, undefined, cs).find(Link);
         expect(link.text()).toEqual(term.label.cs);
     });
 
@@ -105,8 +104,7 @@ describe("TermLink", () => {
             vocabulary: testVocabulary
         });
 
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term} language="cs"
-                                                           user={EMPTY_USER} {...intlFunctions()}/></MemoryRouter>).find(Link);
+        const link = mountWithIntl(<MemoryRouter><TermLink term={term} language="cs"/></MemoryRouter>).find(Link);
         expect(link.text()).toEqual(term.label.cs);
     });
 });

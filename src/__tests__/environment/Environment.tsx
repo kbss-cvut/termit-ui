@@ -9,6 +9,7 @@ import thunk from "redux-thunk";
 import TermItState from "../../model/TermItState";
 // @ts-ignore
 import TimeAgo from "javascript-time-ago";
+import IntlData from "../../model/IntlData";
 
 export const mockStore = configureMockStore([thunk])(new TermItState());
 
@@ -19,8 +20,9 @@ const scheduler = typeof setImmediate === "function" ? setImmediate : setTimeout
  * React Intl context are set up.
  * @param node The element to render
  * @param options Optional rendering options for Enzyme
+ * @param intl Optional intl data. If not specified, default will be used
  */
-export function mountWithIntl(node: ReactElement<any>, options?: MountRendererProps) {
+export function mountWithIntl(node: ReactElement<any>, options?: MountRendererProps, intl: IntlData = intlData) {
     // Load locales for the TimeAgo library
     TimeAgo.addLocale(require("javascript-time-ago/locale/en"));
     // This weird workaround allows us to use setProps to set props of the component under test even though it is
@@ -30,7 +32,7 @@ export function mountWithIntl(node: ReactElement<any>, options?: MountRendererPr
     const properties = node.props;
     return mount(React.createElement(
         props => <Provider store={mockStore}>
-            <IntlProvider {...intlData}>
+            <IntlProvider {...intl}>
                 <ComponentUnderTest {...props} />
             </IntlProvider>
         </Provider>, properties), options);
