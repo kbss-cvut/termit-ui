@@ -1,34 +1,30 @@
 import * as React from "react";
-import {useEffect} from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
+import {useCallback, useEffect} from "react";
 import MessageModel from "../../model/Message";
-import {injectIntl} from "react-intl";
 import {Alert} from "reactstrap";
-import {connect} from "react-redux";
-import {Dispatch} from "redux";
-import {dismissMessage as dismissMessageAction} from "../../action/SyncActions";
+import {useDispatch} from "react-redux";
+import {dismissMessage} from "../../action/SyncActions";
 import Constants from "../../util/Constants";
+import {useI18n} from "../hook/useI18n";
 
-interface MessageProps extends HasI18n {
-    message: MessageModel,
-    dismissMessage: (message: MessageModel) => void
+interface MessageProps {
+    message: MessageModel;
 }
 
 export const Message: React.FC<MessageProps> = (props: MessageProps) => {
-    const {message, dismissMessage} = props;
+    const {message} = props;
+    const {formatMessage} = useI18n();
+    const dispatch = useDispatch();
+    const dismiss = useCallback(() => dispatch(dismissMessage(message)), [message, dispatch]);
     useEffect(() => {
         const timer = setTimeout(() => {
-            dismissMessage(message);
+            dismiss();
         }, Constants.MESSAGE_DISPLAY_TIMEOUT);
         return () => clearTimeout(timer)
-    }, [dismissMessage, message]);
+    }, [dismiss, message]);
 
     return <Alert color={message.type} isOpen={true}
-                  toggle={() => props.dismissMessage(message)}>{message.messageId ? props.formatMessage(message.messageId, message.values) : message.message}</Alert>;
+                  toggle={dismiss}>{message.messageId ? formatMessage(message.messageId, message.values) : message.message}</Alert>;
 };
 
-export default connect(null, (dispatch: Dispatch) => {
-    return {
-        dismissMessage: (message: MessageModel) => dispatch(dismissMessageAction(message))
-    }
-})(injectIntl(withI18n(Message)));
+export default Message;

@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {UncontrolledAlert} from "reactstrap";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
-import {injectIntl} from "react-intl";
 import Constants from "../../../util/Constants";
+import {useI18n} from "../../hook/useI18n";
 
 const PREVIOUS_NEWS_VERSION_ALERT = "previous_news_version_alert";
 
-const NewsAlert: React.FC<HasI18n> = (props) => {
+const NewsAlert: React.FC = () => {
     const version: string = Constants.VERSION;
+    const {formatMessage} = useI18n();
     const [showAlert, displayAlert] = useState(false);
 
     useEffect(() => {
@@ -19,8 +19,8 @@ const NewsAlert: React.FC<HasI18n> = (props) => {
 
     return showAlert ?
         <UncontrolledAlert color="secondary">
-            {props.formatMessage("dashboard.widget.alert.news", {version})}
+            {formatMessage("dashboard.widget.alert.news", {version})}
         </UncontrolledAlert> : null;
 };
 
-export default injectIntl(withI18n(NewsAlert));
+export default NewsAlert;

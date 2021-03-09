@@ -1,6 +1,9 @@
 import {HasI18n} from "../hoc/withI18n";
 import {useIntl} from "react-intl";
 
+/**
+ * React Hook providing basic i18n functions.
+ */
 export function useI18n(): HasI18n {
     const intl = useIntl();
     const i18n = (msgId: string) => intl.messages[msgId] as string || ("{" + msgId + "}");

@@ -4,6 +4,7 @@ import MessageModel from "../../../model/Message";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {Message} from "../Message";
 import Constants from "../../../util/Constants";
+import * as redux from "react-redux";
 
 describe("Messages", () => {
 
@@ -19,14 +20,16 @@ describe("Messages", () => {
     });
 
     it("renders configured number of messages", () => {
-        const wrapper = mountWithIntl(<Messages messages={messages}/>);
+        jest.spyOn(redux, "useSelector").mockReturnValue(messages);
+        const wrapper = mountWithIntl(<Messages/>);
         const messagesDisplayed = wrapper.find(Message);
         expect(messagesDisplayed.length).toEqual(Constants.MESSAGE_DISPLAY_COUNT);
     });
 
     it("renders all messages when their number is less than configured max", () => {
         const toRender = messages.slice(0, Constants.MESSAGE_DISPLAY_COUNT - 1);
-        const wrapper = mountWithIntl(<Messages messages={toRender}/>);
+        jest.spyOn(redux, "useSelector").mockReturnValue(toRender);
+        const wrapper = mountWithIntl(<Messages/>);
         const messagesDisplayed = wrapper.find(Message);
         expect(messagesDisplayed.length).toEqual(toRender.length);
     });

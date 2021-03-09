@@ -1,14 +1,14 @@
 import * as React from "react";
 import classNames from "classnames";
 import {ClipLoader} from "react-spinners";
-import {injectIntl} from "react-intl";
 import "./Mask.scss";
-import withI18n from "../hoc/withI18n";
 import {MaskProps} from "./Mask";
+import {useI18n} from "../hook/useI18n";
 
 const ContainerMask: React.FC<MaskProps> = (props) => {
+    const {i18n} = useI18n();
     const containerClasses = classNames("spinner-container", {"without-text": props.withoutText});
-    const text = props.text ? props.text : props.i18n("please-wait");
+    const text = props.text ? props.text : i18n("please-wait");
     return <div className={props.classes ? props.classes : "mask-container"}>
         <div className={containerClasses}>
             <div style={{width: 32, height: 32, margin: "auto"}}>
@@ -24,4 +24,4 @@ ContainerMask.defaultProps = {
     withoutText: false
 };
 
-export default injectIntl(withI18n(ContainerMask));
+export default ContainerMask;
