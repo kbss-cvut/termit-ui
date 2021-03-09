@@ -1,10 +1,9 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
 import "intelligent-tree-select/lib/styles.css";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import "./OutgoingLink.scss";
+import {useI18n} from "../hook/useI18n";
 
-interface OutgoingLinkProps extends HasI18n {
+interface OutgoingLinkProps {
     label: string | JSX.Element,
     iri: string,
     showLink?: boolean;
@@ -13,9 +12,11 @@ interface OutgoingLinkProps extends HasI18n {
 }
 
 export const OutgoingLink: React.FC<OutgoingLinkProps> = (props: OutgoingLinkProps) => {
+    const {formatMessage} = useI18n();
     return <span>{props.label}
-        <a id={props.id} href={props.iri} target="_blank" style={{color: "gray"}} className={props.className} rel="noreferrer"
-           title={props.formatMessage("link.external.title", {url: props.iri})}>
+        <a id={props.id} href={props.iri} target="_blank" style={{color: "gray"}} className={props.className}
+           rel="noreferrer"
+           title={formatMessage("link.external.title", {url: props.iri})}>
             <span className={props.showLink ? "" : "hidden"}>
                 &nbsp;
                 <small>
@@ -29,4 +30,4 @@ OutgoingLink.defaultProps = {
     showLink: true
 };
 
-export default injectIntl(withI18n(OutgoingLink));
+export default OutgoingLink;

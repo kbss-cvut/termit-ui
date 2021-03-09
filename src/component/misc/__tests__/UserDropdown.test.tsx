@@ -1,17 +1,12 @@
-import * as React from 'react';
-
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import * as React from "react";
 import {UserDropdown} from "../UserDropdown";
-import {shallow} from "enzyme";
 import User from "../../../model/User";
 import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown} from "reactstrap";
+import * as redux from "react-redux";
+import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import * as actions from "../../../action/ComplexActions";
 
 describe("UserDropdown", () => {
-    let logout: () => void;
-
-    beforeEach(() => {
-        logout = jest.fn();
-    });
 
     const user = new User({
         firstName: "Catherine",
@@ -20,8 +15,13 @@ describe("UserDropdown", () => {
         iri: "http://onto.fel.cvut.cz/ontologies/termit/catherine-halsey"
     });
 
+    beforeEach(() => {
+        jest.spyOn(redux, "useSelector").mockReturnValue(user);
+        jest.spyOn(actions, "logout");
+    });
+
     it("renders correct structure of component", () => {
-        const wrapper = shallow(<UserDropdown user={user} logout={logout} dark={true} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<UserDropdown dark={true}/>);
 
         expect(wrapper.find(UncontrolledDropdown).find(DropdownToggle).contains(<>
             <i className="fas fa-user-circle align-middle user-icon"/>&nbsp;
@@ -29,14 +29,5 @@ describe("UserDropdown", () => {
         </>));
 
         expect(wrapper.find(UncontrolledDropdown).find(DropdownMenu).find(DropdownItem).length).toBe(3);
-    });
-
-    it("renders logout button as the last one in the menu", () => {
-        const wrapper = shallow(<UserDropdown user={user} logout={logout} dark={true} {...intlFunctions()}/>);
-
-        const dropdownMenu = wrapper.find(UncontrolledDropdown).find(DropdownMenu);
-
-        dropdownMenu.childAt(dropdownMenu.children().length - 1).simulate("click");
-        expect(logout).toHaveBeenCalled();
     });
 });

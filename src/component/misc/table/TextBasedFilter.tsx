@@ -1,9 +1,8 @@
 import * as React from "react";
 import {Input} from "reactstrap";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
-import {injectIntl} from "react-intl";
+import {useI18n} from "../../hook/useI18n";
 
-interface TextBasedFilterProps extends HasI18n {
+interface TextBasedFilterProps {
     column: {
         filterValue?: string;
         setFilter: (value?: string) => void;
@@ -20,14 +19,15 @@ export function textContainsFilter(rows: any[], id: string, filterValue?: string
 
 const TextBasedFilter: React.FC<TextBasedFilterProps> = props => {
     const {filterValue, setFilter, preFilteredRows} = props.column;
+    const {formatMessage} = useI18n();
     const count = preFilteredRows.length;
     return <Input bsSize="sm" className="mt-1"
                   value={filterValue || ""}
                   onChange={e => {
                       setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
                   }}
-                  placeholder={props.formatMessage("table.filter.text.placeholder", {count})}
+                  placeholder={formatMessage("table.filter.text.placeholder", {count})}
     />;
 }
 
-export default injectIntl(withI18n(TextBasedFilter));
+export default TextBasedFilter;

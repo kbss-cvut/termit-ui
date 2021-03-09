@@ -1,13 +1,12 @@
 import * as React from "react";
 import ISO6391 from "iso-639-1";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term from "../../model/Term";
-import {injectIntl} from "react-intl";
 import {Nav, NavItem, NavLink} from "reactstrap";
 import "./LanguageSelector.scss";
 import {FaTimesCircle} from "react-icons/fa";
+import {useI18n} from "../hook/useI18n";
 
-interface LanguageSelectorProps extends HasI18n {
+interface LanguageSelectorProps {
     term: Term | null;
     language: string;
     onSelect: (lang: string) => void;
@@ -34,7 +33,8 @@ export function renderLanguages(languages: string[], selectedLanguage: string, f
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = props => {
-    const {term, language, onSelect, formatMessage} = props;
+    const {term, language, onSelect} = props;
+    const {formatMessage} = useI18n();
     if (!term) {
         return null;
     }
@@ -47,4 +47,4 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = props => {
     </Nav></div>;
 };
 
-export default injectIntl(withI18n(LanguageSelector));
+export default LanguageSelector;

@@ -1,8 +1,6 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
 import ISO6391 from "iso-639-1";
 import classNames from "classnames";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import Constants from "../../util/Constants";
@@ -12,8 +10,9 @@ import {renderLanguages} from "./LanguageSelector";
 import "./LanguageSelector.scss";
 import {Nav, NavItem, NavLink} from "reactstrap";
 import {FaPlusCircle} from "react-icons/fa";
+import {useI18n} from "../hook/useI18n";
 
-interface EditLanguageSelectorProps extends HasI18n {
+interface EditLanguageSelectorProps {
     language: string;
     term: Term | TermData;
     onSelect: (lang: string) => void;
@@ -39,7 +38,8 @@ function prioritizeLanguages(options: Language[], languages: string[]) {
 const OPTIONS = prioritizeLanguages(ISO6391.getLanguages(ISO6391.getAllCodes()), Object.getOwnPropertyNames(Constants.LANG).map(lang => getShortLocale(Constants.LANG[lang].locale)));
 
 const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = props => {
-    const {language, term, onSelect, onRemove, i18n, formatMessage} = props;
+    const {language, term, onSelect, onRemove} = props;
+    const {i18n, formatMessage} = useI18n();
     const [adding, setAdding] = React.useState(false);
     React.useEffect(() => {
         setAdding(false);
@@ -76,4 +76,4 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = props => {
     </Nav></div>;
 };
 
-export default injectIntl(withI18n(EditLanguageSelector));
+export default EditLanguageSelector;
