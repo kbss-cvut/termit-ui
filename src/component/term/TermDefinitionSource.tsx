@@ -6,12 +6,12 @@ import {Col, Label, List} from "reactstrap";
 import OutgoingLink from "../misc/OutgoingLink";
 import AssetLabel from "../misc/AssetLabel";
 import TermDefinitionSourceLink from "./TermDefinitionSourceLink";
-import {injectIntl} from "react-intl";
-import withI18n from "../hoc/withI18n";
 import {TermDefinitionBlockProps} from "./TermDefinitionBlock";
+import {useI18n} from "../hook/useI18n";
 
 const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = props => {
-    const {language, i18n, term, withDefinitionSource} = props;
+    const {i18n} = useI18n();
+    const {language, term, withDefinitionSource} = props;
     const definitionText = getLocalizedOrDefault(term.definition, "", language);
     const sources = Utils.sanitizeArray(term.sources);
     if (definitionText.length === 0 && sources.length > 0) {
@@ -45,4 +45,4 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = props => {
     }
 }
 
-export default injectIntl(withI18n(TermDefinitionSource));
+export default TermDefinitionSource;

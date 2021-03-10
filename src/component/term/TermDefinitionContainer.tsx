@@ -1,12 +1,12 @@
 import React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {injectIntl} from "react-intl";
+import {useI18n} from "../hook/useI18n";
 
 /**
  * Visual container for term definition-related attributes.
  */
-export const TermDefinitionContainer: React.FC<HasI18n> = props => {
-    const {i18n, children} = props;
+export const TermDefinitionContainer: React.FC = props => {
+    const {children} = props;
+    const {i18n} = useI18n();
     return <>
         <hr data-content={i18n("term.metadata.definition")} className="hr-definition-text"/>
         {children}
@@ -14,4 +14,4 @@ export const TermDefinitionContainer: React.FC<HasI18n> = props => {
     </>;
 }
 
-export default injectIntl(withI18n(TermDefinitionContainer));
+export default TermDefinitionContainer;

@@ -1,14 +1,12 @@
 import * as React from "react";
 import {Col, Row} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term from "../../model/Term";
-import {injectIntl} from "react-intl";
 import TermDefinitionContainer from "./TermDefinitionContainer";
 import {getLocalizedOrDefault} from "../../model/MultilingualString";
 import TermDefinitionSource from "./TermDefinitionSource";
 import "./TermDefinitionBlock.scss";
 
-export interface TermDefinitionBlockProps extends HasI18n {
+export interface TermDefinitionBlockProps {
     term: Term;
     language: string;
     withDefinitionSource?: boolean;
@@ -33,4 +31,4 @@ TermDefinitionBlock.defaultProps = {
     withDefinitionSource: false
 };
 
-export default injectIntl(withI18n(TermDefinitionBlock));
+export default TermDefinitionBlock;
