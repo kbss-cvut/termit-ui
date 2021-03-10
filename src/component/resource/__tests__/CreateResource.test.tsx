@@ -1,6 +1,5 @@
 import * as React from "react";
 import Ajax from "../../../util/Ajax";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import {CreateResource} from "../CreateResource";
@@ -22,20 +21,20 @@ describe("CreateResource", () => {
     const iri = "http://onto.fel.cvut.cz/ontologies/termit/resource/test";
 
     beforeEach(() => {
-        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({ data : iri }));
+        Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({data: iri}));
         jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
     });
 
     it("returns to Resource Management on cancel", () => {
-        const wrapper = mountWithIntl(<CreateResource {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<CreateResource/>);
         wrapper.find("#create-resource-cancel").at(0).simulate("click");
         expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.resources);
     });
 
     it("returns to Resource Management on submit", () => {
-        const wrapper = mountWithIntl(<CreateResource {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<CreateResource/>);
         (wrapper.find(CreateResourceForm).instance().props as any).onSuccess(iri);
-        expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.resourceSummary,  {
+        expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.resourceSummary, {
             params: new Map([["name", "test"]]),
             query: new Map()
         });

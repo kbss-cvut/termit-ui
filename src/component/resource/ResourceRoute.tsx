@@ -1,18 +1,18 @@
-import {Route, RouteComponentProps, Switch} from "react-router";
+import {Route, Switch} from "react-router";
 import Routes from "../../util/Routes";
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {injectIntl} from "react-intl";
 import ResourceSummaryRoute from "./ResourceSummaryRoute";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import Mask from "../misc/Mask";
+import {useI18n} from "../hook/useI18n";
 
 const ResourceFileDetail = React.lazy(() => import("./ResourceFileDetail"));
 
-const ResourceRoute: React.FC<HasI18n & RouteComponentProps<any>> = (props) => {
+const ResourceRoute: React.FC = () => {
+    const {i18n} = useI18n();
     return <React.Suspense fallback={<Mask/>}>
         <Switch>
-            <BreadcrumbRoute title={props.i18n("annotator.annotate-content")} path={Routes.annotateFile.path}
+            <BreadcrumbRoute title={i18n("annotator.annotate-content")} path={Routes.annotateFile.path}
                              component={ResourceFileDetail}/>
             <Route asset="resource" path={Routes.resourceSummary.path}
                    includeSearch={true} component={ResourceSummaryRoute}/>
@@ -20,4 +20,4 @@ const ResourceRoute: React.FC<HasI18n & RouteComponentProps<any>> = (props) => {
     </React.Suspense>;
 };
 
-export default injectIntl(withI18n(ResourceRoute));
+export default ResourceRoute;

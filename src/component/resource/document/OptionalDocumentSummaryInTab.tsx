@@ -3,8 +3,6 @@ import {useState} from "react";
 import Document from "../../../model/Document";
 import DocumentSummaryInTab from "./DocumentSummaryInTab";
 import {Button, Modal, ModalBody, ModalHeader} from "reactstrap";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
-import {injectIntl} from "react-intl";
 import DocumentList from "../DocumentList";
 import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
@@ -15,8 +13,9 @@ import {GoX} from "react-icons/go";
 import classNames from "classnames";
 import CreateResourceForm from "../CreateResourceForm";
 import IfUserAuthorized from "../../authorization/IfUserAuthorized";
+import {useI18n} from "../../hook/useI18n";
 
-interface OptionalDocumentSummaryInTabProps extends HasI18n {
+interface OptionalDocumentSummaryInTabProps {
     vocabulary: Vocabulary;
     onChange: () => void;
 
@@ -25,6 +24,7 @@ interface OptionalDocumentSummaryInTabProps extends HasI18n {
 }
 
 export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTabProps> = (props) => {
+    const {i18n} = useI18n();
     const [isAttachOpen, setIsAttachOpen] = useState(false);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const toggleAttach = () => setIsAttachOpen(!isAttachOpen);
@@ -44,8 +44,8 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
             <div/>
             <IfUserAuthorized renderUnauthorizedAlert={false}>
                 <Button color="outline-muted" className="float-right" size="sm"
-                        title={props.i18n("vocabulary.document.remove")}
-                        onClick={onVocabularyDocumentRemove}><GoX/>&nbsp;{props.i18n("vocabulary.document.remove")}
+                        title={i18n("vocabulary.document.remove")}
+                        onClick={onVocabularyDocumentRemove}><GoX/>&nbsp;{i18n("vocabulary.document.remove")}
                 </Button>
             </IfUserAuthorized>
             &nbsp;
@@ -79,14 +79,14 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
             <div>
                 <Modal isOpen={isAttachOpen} toggle={toggleAttach}>
                     <ModalHeader>
-                        {props.i18n("vocabulary.document.select.title")}
+                        {i18n("vocabulary.document.select.title")}
                     </ModalHeader>
                     <ModalBody>
                         <DocumentList onSelected={onSelected}/>
                     </ModalBody>
                 </Modal><Modal isOpen={isCreateOpen} toggle={toggleCreate}>
                 <ModalHeader>
-                    {props.i18n("vocabulary.document.create.title")}
+                    {i18n("vocabulary.document.create.title")}
                 </ModalHeader>
                 <ModalBody>
                     <CreateResourceForm onCancel={toggleCreate}
@@ -97,16 +97,16 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
             </div>
             <div>
                 <Button color="primary"
-                        title={props.i18n("vocabulary.document.create")}
+                        title={i18n("vocabulary.document.create")}
                         size="sm"
                         onClick={toggleCreate}>
-                    {props.i18n("vocabulary.document.create")}
+                    {i18n("vocabulary.document.create")}
                 </Button>
                 <Button color="primary"
-                        title={props.i18n("vocabulary.document.select")}
+                        title={i18n("vocabulary.document.select")}
                         size="sm"
                         onClick={toggleAttach}>
-                    {props.i18n("vocabulary.document.select")}
+                    {i18n("vocabulary.document.select")}
                 </Button>
             </div>
         </div>;
@@ -118,4 +118,4 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
         loadDocument: (iri: IRI) => dispatch(loadResource(iri)) as Promise<Document | null>,
         updateVocabulary: (vocabulary: Vocabulary) => dispatch(updateVocabulary(vocabulary)),
     };
-})(injectIntl(withI18n(OptionalDocumentSummaryInTab)));
+})(OptionalDocumentSummaryInTab);

@@ -1,20 +1,19 @@
 import * as React from "react";
 import {useState} from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
 import {Button, Card, CardBody, CardHeader, Modal, ModalBody} from "reactstrap";
 import TermItFile from "../../../model/File";
 import {GoPlus} from "react-icons/go";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import CreateFileMetadata from "../file/CreateFileMetadata";
 import IfUserAuthorized from "../../authorization/IfUserAuthorized";
+import {useI18n} from "../../hook/useI18n";
 
-interface AddFileProps extends HasI18n {
+interface AddFileProps {
     performAction: (termitFile: TermItFile, file: File) => Promise<void>;
 }
 
 export const AddFile = (props: AddFileProps) => {
-
+    const {i18n} = useI18n();
     const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
     const toggle = () => setCreateFileDialogOpen(!createFileDialogOpen);
 
@@ -29,7 +28,7 @@ export const AddFile = (props: AddFileProps) => {
             <ModalBody>
                 <Card id="document-create-file">
                     <CardHeader color="info">
-                        <h5>{props.i18n("resource.metadata.document.files.actions.add.dialog.title")}</h5>
+                        <h5>{i18n("resource.metadata.document.files.actions.add.dialog.title")}</h5>
                     </CardHeader>
                     <CardBody>
                         <CreateFileMetadata
@@ -40,10 +39,10 @@ export const AddFile = (props: AddFileProps) => {
             </ModalBody>
         </Modal>
         <Button className="mb-2" color="primary" size="sm" onClick={toggle}
-                title={props.i18n("resource.metadata.document.files.actions.add.tooltip")}>
-            <GoPlus/>&nbsp;{props.i18n("resource.metadata.document.files.actions.add")}
+                title={i18n("resource.metadata.document.files.actions.add.tooltip")}>
+            <GoPlus className="mr-1"/>{i18n("resource.metadata.document.files.actions.add")}
         </Button>
     </IfUserAuthorized>;
 }
 
-export default injectIntl(withI18n(AddFile));
+export default AddFile;
