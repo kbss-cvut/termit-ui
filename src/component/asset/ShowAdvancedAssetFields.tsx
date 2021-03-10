@@ -1,21 +1,18 @@
 import * as React from "react";
-import {Button, Collapse} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {useState} from "react";
-import {injectIntl} from "react-intl";
-
-interface ShowAdvancedAssetFieldsProps extends HasI18n {
-}
+import {Button, Collapse} from "reactstrap";
+import {useI18n} from "../hook/useI18n";
 
 /**
  * "Show Advanced" component.
  *
  * It wraps components that are shown in advanced regime only.
  */
-export const ShowAdvancedAssetFields: React.FC<ShowAdvancedAssetFieldsProps> = props => {
+export const ShowAdvancedAssetFields: React.FC = props => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
-    const { children, i18n } = props;
+    const {children} = props;
+    const {i18n} = useI18n();
     return <>
         <Button
             color="link"
@@ -32,5 +29,5 @@ export const ShowAdvancedAssetFields: React.FC<ShowAdvancedAssetFieldsProps> = p
     </>
 }
 
-export default injectIntl(withI18n(ShowAdvancedAssetFields));
+export default ShowAdvancedAssetFields;
 

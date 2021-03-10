@@ -1,7 +1,5 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
 import {Card, CardBody, Col} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Routes from "../../util/Routes";
 import {connect} from "react-redux";
 import {ThunkDispatch} from "../../util/Types";
@@ -12,13 +10,15 @@ import {GoPlus} from "react-icons/go";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import {useI18n} from "../hook/useI18n";
 
-interface VocabularyManagementProps extends HasI18n {
+interface VocabularyManagementProps {
     loadVocabularies: () => void;
 }
 
 export const VocabularyManagement: React.FC<VocabularyManagementProps> = props => {
-    const {i18n, loadVocabularies} = props;
+    const {loadVocabularies} = props;
+    const {i18n} = useI18n();
     React.useEffect(() => {
         loadVocabularies();
     }, [loadVocabularies]);
@@ -49,4 +49,4 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         loadVocabularies: () => dispatch(loadVocabulariesAction())
     };
-})(injectIntl(withI18n(VocabularyManagement)));
+})(VocabularyManagement);

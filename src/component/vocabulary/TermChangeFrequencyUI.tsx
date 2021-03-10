@@ -1,25 +1,25 @@
 import * as React from "react";
 import Chart from "react-apexcharts";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {injectIntl} from "react-intl";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import ContainerMask from "../misc/ContainerMask";
 import PersistRecord from "../../model/changetracking/PersistRecord";
 import {UpdateRecord} from "../../model/changetracking/UpdateRecord";
 import {Col, Row} from "reactstrap";
+import {useI18n} from "../hook/useI18n";
 
-interface TermChangeFrequencyUIProps extends HasI18n {
+interface TermChangeFrequencyUIProps {
     records: ChangeRecord[];
 }
 
 const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = props => {
+    const {i18n} = useI18n();
     if (!props.records) {
-        return <ContainerMask text={props.i18n("vocabulary.termchanges.loading")}/>;
+        return <ContainerMask text={i18n("vocabulary.termchanges.loading")}/>;
     }
 
     if (props.records.length === 0) {
         return <div id="history-empty-notice" className="additional-metadata-container italics">
-            {props.i18n("history.empty")}
+            {i18n("history.empty")}
         </div>;
     }
 
@@ -93,17 +93,17 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = props => {
                 "formatter": (x: number) => Math.abs(Math.round(x))
             },
             title: {
-                text: props.i18n("vocabulary.termchanges.termcount")
+                text: i18n("vocabulary.termchanges.termcount")
             }
         }
     };
 
     const series = [{
-        name: props.i18n("vocabulary.termchanges.updates"),
+        name: i18n("vocabulary.termchanges.updates"),
         type: "column",
         data: Object.keys(termUpdates).map(a => [parseInt(a, 10), -1 * termUpdates[a].length])
     }, {
-        name: props.i18n("vocabulary.termchanges.creations"),
+        name: i18n("vocabulary.termchanges.creations"),
         type: "column",
         data: Object.keys(termCreations).map(a => [parseInt(a, 10), termCreations[a].length])
     }];
@@ -115,4 +115,4 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = props => {
 
 }
 
-export default injectIntl(withI18n(TermChangeFrequencyUI));
+export default TermChangeFrequencyUI;
