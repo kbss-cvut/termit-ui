@@ -1,10 +1,9 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Button, ButtonToolbar, Col, Form, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
+import {useI18n} from "../hook/useI18n";
 
-interface ProfileEditFormProps extends HasI18n {
+interface ProfileEditFormProps {
     firstName: string;
     lastName: string;
     isValid: boolean;
@@ -16,9 +15,10 @@ interface ProfileEditFormProps extends HasI18n {
 
 export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                                                                     firstName, lastName, onChange, onSubmit, onKeyPress,
-                                                                    showProfileView, isValid, i18n
-                                                                }) => (
-    <Form>
+                                                                    showProfileView, isValid
+                                                                }) => {
+    const {i18n} = useI18n();
+    return <Form>
         <Row>
             <Col xl={6} md={12}>
                 <CustomInput
@@ -52,7 +52,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 </ButtonToolbar>
             </Col>
         </Row>
-    </Form>
-);
+    </Form>;
+};
 
-export default injectIntl(withI18n(ProfileEditForm));
+export default ProfileEditForm;

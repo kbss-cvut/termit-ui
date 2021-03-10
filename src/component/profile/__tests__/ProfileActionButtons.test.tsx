@@ -4,7 +4,7 @@ import {ProfileActionButtons} from "../ProfileActionButtons";
 import {Button, ButtonToolbar} from "reactstrap";
 import {GoKey, GoPencil} from "react-icons/go";
 import {shallow} from "enzyme";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 
 describe("ProfileActionButtons", () => {
 
@@ -16,6 +16,7 @@ describe("ProfileActionButtons", () => {
         showProfileEdit = jest.fn();
         navigateToChangePasswordRoute = jest.fn();
         edit = false;
+        mockUseI18n();
     });
 
     it("correctly renders component if !edit", () => {
