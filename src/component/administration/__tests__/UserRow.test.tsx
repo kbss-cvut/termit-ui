@@ -2,7 +2,7 @@ import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import {shallow} from "enzyme";
 import {UserActions, UserRow} from "../UserRow";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 import User from "../../../model/User";
 import Utils from "../../../util/Utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -17,8 +17,10 @@ describe("UserRow", () => {
         actions = {
             disable: jest.fn(),
             enable: jest.fn(),
-            unlock: jest.fn()
+            unlock: jest.fn(),
+            changeRole: jest.fn()
         };
+        mockUseI18n();
     });
 
     it("renders disable button for non-disabled user", () => {

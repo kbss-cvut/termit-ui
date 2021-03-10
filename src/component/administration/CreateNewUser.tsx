@@ -1,5 +1,4 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {UserAccountData} from "../../model/User";
 import {AsyncFailureAction, MessageAction} from "../../action/ActionType";
 import {connect} from "react-redux";
@@ -10,14 +9,15 @@ import Routes from "../../util/Routes";
 import RegistrationForm from "../register/RegistrationForm";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import {Card, CardBody} from "reactstrap";
-import {injectIntl} from "react-intl";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import {useI18n} from "../hook/useI18n";
 
-interface CreateNewUserProps extends HasI18n {
+interface CreateNewUserProps {
     register: (userData: UserAccountData) => Promise<AsyncFailureAction | MessageAction>;
 }
 
 export const CreateNewUser: React.FC<CreateNewUserProps> = props => {
+    const {i18n} = useI18n();
     const onRegister = (userData: UserAccountData) => {
         return props.register(userData).then(result => {
             if ((result as AsyncFailureAction).status !== AsyncActionStatus.FAILURE) {
@@ -29,7 +29,7 @@ export const CreateNewUser: React.FC<CreateNewUserProps> = props => {
     const onCancel = () => Routing.transitionTo(Routes.administration);
 
     return <>
-        <HeaderWithActions title={props.i18n("administration.users.create")}/>
+        <HeaderWithActions title={i18n("administration.users.create")}/>
         <Card id="administration-new-user-registration">
             <CardBody>
                 <RegistrationForm loading={false} register={onRegister} cancel={onCancel}/>
@@ -41,4 +41,4 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         register: (userData: UserAccountData) => dispatch(createNewUser(userData))
     }
-})(injectIntl(withI18n(CreateNewUser)));
+})(CreateNewUser);

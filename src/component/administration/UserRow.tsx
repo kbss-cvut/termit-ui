@@ -1,7 +1,5 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
 import classNames from "classnames";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import User from "../../model/User";
 import {Badge, Button} from "reactstrap";
 import Utils from "../../util/Utils";
@@ -9,6 +7,7 @@ import {GoCheck, GoCircleSlash, GoIssueOpened} from "react-icons/go";
 import InfoIcon from "../misc/InfoIcon";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import UserRoles from "./UserRoles";
+import {useI18n} from "../hook/useI18n";
 
 const STATUS_MAP = {
     ACTIVE: {
@@ -92,14 +91,15 @@ export interface UserActions {
     changeRole: (user: User) => void;
 }
 
-interface UserRowProps extends HasI18n {
+interface UserRowProps {
     user: User;
     currentUser?: boolean;   // Whether this row represents the currently logged in user
     actions: UserActions;
 }
 
 export const UserRow: React.FC<UserRowProps> = (props: UserRowProps) => {
-    const {user, i18n} = props;
+    const {user} = props;
+    const {i18n} = useI18n();
     const status = resolveStatus(user);
     const isCurrentUser = props.currentUser;
     return <tr className={classNames({"italics": !user.isActive(), "bold": isCurrentUser})}
@@ -125,4 +125,4 @@ UserRow.defaultProps = {
     currentUser: false
 };
 
-export default injectIntl(withI18n(UserRow));
+export default UserRow;
