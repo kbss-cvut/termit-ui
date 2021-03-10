@@ -4,14 +4,13 @@ import AssetLink from "../misc/AssetLink";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {Routing} from "../../util/Routing";
 import Routes from "../../util/Routes";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import Authentication from "../../util/Authentication";
+import {useI18n} from "../hook/useI18n";
 
-interface VocabularyLinkProps extends HasI18n {
+interface VocabularyLinkProps {
     vocabulary: Vocabulary;
     id?: string;
 
@@ -19,6 +18,7 @@ interface VocabularyLinkProps extends HasI18n {
 }
 
 export const VocabularyLink = (props: VocabularyLinkProps) => {
+    const {i18n} = useI18n();
     const iri = VocabularyUtils.create(props.vocabulary.iri);
     const path = Routing.getTransitionPath(Authentication.isLoggedIn(props.user) ? Routes.vocabularySummary : Routes.publicVocabularySummary,
         {
@@ -28,7 +28,7 @@ export const VocabularyLink = (props: VocabularyLinkProps) => {
     return <AssetLink id={props.id}
                       asset={props.vocabulary}
                       path={path}
-                      tooltip={props.i18n("asset.link.tooltip")}/>;
+                      tooltip={i18n("asset.link.tooltip")}/>;
 };
 
-export default connect((state: TermItState) => ({user: state.user}))(injectIntl(withI18n(VocabularyLink)));
+export default connect((state: TermItState) => ({user: state.user}))(VocabularyLink);

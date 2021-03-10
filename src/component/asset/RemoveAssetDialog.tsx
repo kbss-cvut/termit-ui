@@ -1,27 +1,27 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
 import Asset from "../../model/Asset";
 import {Button, ButtonToolbar, Label, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Utils from "../../util/Utils";
+import {useI18n} from "../hook/useI18n";
 
-interface RemoveAssetDialogProps extends HasI18n {
+interface RemoveAssetDialogProps {
     show: boolean;
     onSubmit: () => void;
     onCancel: () => void;
     asset: Asset;
 }
 
-const RemoveAssetDialog: React.SFC<RemoveAssetDialogProps> = (props) => {
+const RemoveAssetDialog: React.FC<RemoveAssetDialogProps> = (props) => {
+    const {i18n, formatMessage} = useI18n();
     const typeLabelId = Utils.getAssetTypeLabelId(props.asset);
-    const typeLabel = props.i18n(typeLabelId ? typeLabelId : "type.asset").toLowerCase();
+    const typeLabel = i18n(typeLabelId ? typeLabelId : "type.asset").toLowerCase();
     return <Modal isOpen={props.show} toggle={props.onCancel}>
-        <ModalHeader toggle={props.onCancel}>{props.formatMessage("asset.remove.dialog.title", {
+        <ModalHeader toggle={props.onCancel}>{formatMessage("asset.remove.dialog.title", {
             type: typeLabel,
             label: props.asset.getLabel()
         })}</ModalHeader>
         <ModalBody>
-            <Label>{props.formatMessage("asset.remove.dialog.text", {
+            <Label>{formatMessage("asset.remove.dialog.text", {
                 type: typeLabel,
                 label: props.asset.getLabel()
             })}</Label>
@@ -29,12 +29,12 @@ const RemoveAssetDialog: React.SFC<RemoveAssetDialogProps> = (props) => {
         <ModalFooter>
             <ButtonToolbar className="pull-right">
                 <Button id="remove-asset-submit" color="primary" size="sm"
-                        onClick={props.onSubmit}>{props.i18n("remove")}</Button>
+                        onClick={props.onSubmit}>{i18n("remove")}</Button>
                 <Button id="remove-asset-cancel" color="outline-dark" size="sm"
-                        onClick={props.onCancel}>{props.i18n("cancel")}</Button>
+                        onClick={props.onCancel}>{i18n("cancel")}</Button>
             </ButtonToolbar>
         </ModalFooter>
     </Modal>;
 };
 
-export default injectIntl(withI18n(RemoveAssetDialog));
+export default RemoveAssetDialog;

@@ -1,7 +1,5 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
-import {injectIntl} from "react-intl";
 import {loadVocabularyContentChanges} from "../../action/AsyncActions";
 import {ThunkDispatch} from "../../util/Types";
 import {connect} from "react-redux";
@@ -10,7 +8,7 @@ import TermChangeFrequencyUI from "./TermChangeFrequencyUI";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Constants from "../../util/Constants";
 
-interface TermChangeFrequencyProps extends HasI18n {
+interface TermChangeFrequencyProps {
     vocabulary: Vocabulary;
     loadContentChanges: (vocabulary: Vocabulary) => Promise<any>;
 }
@@ -33,4 +31,4 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         loadContentChanges: (vocabulary: Vocabulary) => dispatch(loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri))),
     };
-})(injectIntl(withI18n(TermChangeFrequency)));
+})(TermChangeFrequency);

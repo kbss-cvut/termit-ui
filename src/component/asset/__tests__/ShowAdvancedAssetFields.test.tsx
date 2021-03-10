@@ -1,9 +1,13 @@
 import * as React from "react";
 import {shallow} from "enzyme";
 import {ShowAdvancedAssetFields} from "../ShowAdvancedAssetFields";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 
 describe("ShowAdvancedAssetFields", () => {
+
+    beforeEach(() => {
+        mockUseI18n();
+    })
 
     it("is closed by default", () => {
         const wrapper = shallow(<ShowAdvancedAssetFields {...intlFunctions()}>
