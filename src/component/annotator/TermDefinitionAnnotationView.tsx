@@ -1,17 +1,16 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term from "../../model/Term";
 import TermLink from "../term/TermLink";
-import {injectIntl} from "react-intl";
+import {useI18n} from "../hook/useI18n";
 
-interface TermDefinitionAnnotationViewProps extends HasI18n {
+interface TermDefinitionAnnotationViewProps {
     term?: Term | null;
     resource?: string;
     textContent: string;
 }
 
 const TermDefinitionAnnotationView: React.FC<TermDefinitionAnnotationViewProps> = props => {
-    const i18n = props.i18n;
+    const {i18n} = useI18n();
     if (props.term) {
         return <table>
             <tbody>
@@ -33,4 +32,4 @@ const TermDefinitionAnnotationView: React.FC<TermDefinitionAnnotationViewProps> 
     }
 };
 
-export default injectIntl(withI18n(TermDefinitionAnnotationView));
+export default TermDefinitionAnnotationView;

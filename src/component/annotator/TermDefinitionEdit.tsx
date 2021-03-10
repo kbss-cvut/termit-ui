@@ -1,19 +1,18 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term, {TermData} from "../../model/Term";
 import {Button, ButtonToolbar, Col, Form, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {getLocalized} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import TermDefinitionBlockEdit from "../term/TermDefinitionBlockEdit";
-import {injectIntl} from "react-intl";
 import {useSelector} from "react-redux";
 import TermItState from "../../model/TermItState";
 import HtmlDomUtils from "./HtmlDomUtils";
 import {Element} from "domhandler";
 import "./TermDefinitionEdit.scss";
 import classNames from "classnames";
+import {useI18n} from "../hook/useI18n";
 
-interface TermDefinitionEditProps extends HasI18n {
+interface TermDefinitionEditProps {
     term?: Term;
     annotationElement?: Element;
     onSave: (update: Term) => void;
@@ -25,7 +24,8 @@ function hasExistingDefinition(term: Term, language: string) {
 }
 
 export const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
-    const {term, annotationElement, onSave, onCancel, i18n, formatMessage} = props;
+    const {term, annotationElement, onSave, onCancel} = props;
+    const {i18n, formatMessage, locale} = useI18n();
     const language = useSelector((state: TermItState) => state.configuration.language);
     const onChange = (change: Partial<TermData>) => setData(new Term(Object.assign({}, data, change)));
     const [data, setData] = React.useState<Term>();
@@ -44,14 +44,14 @@ export const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
     return <Modal id="annotator-set-term-definition" isOpen={true} toggle={onCancel} size="lg"
                   className={classNames({wide: hasExisting})}>
         <ModalHeader>
-            {formatMessage("annotator.setTermDefinition.title", {term: getLocalized(data.label, getShortLocale(props.locale))})}
+            {formatMessage("annotator.setTermDefinition.title", {term: getLocalized(data.label, getShortLocale(locale))})}
         </ModalHeader>
         <ModalBody>
             <Form>
                 {hasExisting ? <>
                     <Row>
                         <Col xs={12}>
-                            <p>{formatMessage("annotation.definition.exists.message", {term: getLocalized(term!.label, getShortLocale(props.locale))})}</p>
+                            <p>{formatMessage("annotation.definition.exists.message", {term: getLocalized(term!.label, getShortLocale(locale))})}</p>
                         </Col>
                     </Row>
                     <Row>
@@ -82,4 +82,4 @@ export const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
     </Modal>;
 };
 
-export default injectIntl(withI18n(TermDefinitionEdit));
+export default TermDefinitionEdit;

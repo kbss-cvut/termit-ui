@@ -1,5 +1,5 @@
 import Term from "../../../model/Term";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 import * as React from "react";
 import {TermOccurrenceAnnotation} from "../TermOccurrenceAnnotation";
 import {shallow} from "enzyme";
@@ -35,6 +35,7 @@ describe("TermOccurrenceAnnotation", () => {
             onCreateTerm: jest.fn(),
             onClose: jest.fn()
         };
+        mockUseI18n();
     });
 
     it("does not render confirm button for suggested occurrence of an unknown term", () => {

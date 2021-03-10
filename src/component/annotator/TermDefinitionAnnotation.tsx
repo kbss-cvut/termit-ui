@@ -1,16 +1,15 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term from "../../model/Term";
 import {Button} from "reactstrap";
 import {TiTimes, TiTrash} from "react-icons/ti";
-import {injectIntl} from "react-intl";
 import SimplePopupWithActions from "./SimplePopupWithActions";
 import AnnotationTerms from "./AnnotationTerms";
 import TermDefinitionAnnotationView from "./TermDefinitionAnnotationView";
 import {GoPencil} from "react-icons/go";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import {useI18n} from "../hook/useI18n";
 
-interface TermDefinitionAnnotationProps extends HasI18n {
+interface TermDefinitionAnnotationProps {
     target: string;
     term?: Term | null;
     resource?: string;
@@ -23,8 +22,7 @@ interface TermDefinitionAnnotationProps extends HasI18n {
     onClose: () => void;
 }
 
-function createActionButtons(props: TermDefinitionAnnotationProps, editing: boolean, onEdit: () => void) {
-    const i18n = props.i18n;
+function createActionButtons(props: TermDefinitionAnnotationProps, i18n: (msgId: string) => string, editing: boolean, onEdit: () => void) {
     const actions = [];
     if (!editing) {
         actions.push(<IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.definition.edit">
@@ -52,6 +50,7 @@ function createActionButtons(props: TermDefinitionAnnotationProps, editing: bool
 }
 
 export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> = props => {
+    const {i18n} = useI18n();
     const term = props.term !== undefined ? props.term : null;
     const [editing, setEditing] = React.useState(term === null);
     React.useEffect(() => {
@@ -65,8 +64,8 @@ export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> =
 
     return <SimplePopupWithActions isOpen={props.isOpen} target={props.target} toggle={props.onToggleDetailOpen}
                                    component={bodyContent}
-                                   actions={createActionButtons(props, editing, () => setEditing(!editing))}
-                                   title={props.i18n("annotation.definition.title")}/>;
+                                   actions={createActionButtons(props, i18n, editing, () => setEditing(!editing))}
+                                   title={i18n("annotation.definition.title")}/>;
 };
 
-export default injectIntl(withI18n(TermDefinitionAnnotation));
+export default TermDefinitionAnnotation;

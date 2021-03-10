@@ -1,7 +1,5 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
 import Term from "../../model/Term";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import AnnotationTerms from "./AnnotationTerms";
 import {Button} from "reactstrap";
 import {FaCheck} from "react-icons/fa";
@@ -11,8 +9,9 @@ import SimplePopupWithActions from "./SimplePopupWithActions";
 import TermOccurrenceAnnotationView from "./TermOccurrenceAnnotationView";
 import {GoPencil} from "react-icons/go";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import {useI18n} from "../hook/useI18n";
 
-interface TermOccurrenceAnnotationProps extends HasI18n {
+interface TermOccurrenceAnnotationProps {
     target: string;
     term?: Term | null;
     score?: string;
@@ -29,8 +28,7 @@ interface TermOccurrenceAnnotationProps extends HasI18n {
     onClose: () => void;
 }
 
-function createActionButtons(props: TermOccurrenceAnnotationProps, editing: boolean, onEdit: () => void) {
-    const i18n = props.i18n;
+function createActionButtons(props: TermOccurrenceAnnotationProps, i18n: (msgId: string) => string, editing: boolean, onEdit: () => void) {
     const actions = [];
     const t = props.term ? props.term : null;
     if (props.annotationOrigin === AnnotationOrigin.PROPOSED && t !== null) {
@@ -64,6 +62,7 @@ function createActionButtons(props: TermOccurrenceAnnotationProps, editing: bool
 }
 
 export const TermOccurrenceAnnotation: React.FC<TermOccurrenceAnnotationProps> = props => {
+    const {i18n} = useI18n();
     const term = props.term !== undefined ? props.term : null;
     const [editing, setEditing] = React.useState(term === null);
     React.useEffect(() => {
@@ -85,8 +84,8 @@ export const TermOccurrenceAnnotation: React.FC<TermOccurrenceAnnotationProps> =
                                    actions={createActionButtons(Object.assign({}, props, {
                                        onSelectTerm: props.onSelectTerm,
                                        onClose
-                                   }), editing, () => setEditing(!editing))}
-                                   title={props.i18n("annotation.occurrence.title")}/>;
+                                   }), i18n, editing, () => setEditing(!editing))}
+                                   title={i18n("annotation.occurrence.title")}/>;
 };
 
-export default injectIntl(withI18n(TermOccurrenceAnnotation));
+export default TermOccurrenceAnnotation;
