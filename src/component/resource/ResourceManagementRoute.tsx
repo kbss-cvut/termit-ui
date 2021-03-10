@@ -1,17 +1,17 @@
 import * as React from "react";
-import {Route, RouteComponentProps, Switch} from "react-router";
+import {Route, Switch} from "react-router";
 import Routes from "../../util/Routes";
 import DynamicBreadcrumbRoute from "../breadcrumb/DynamicBreadcrumbRoute";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import CreateResource from "./CreateResource";
 import ResourceManagement from "./ResourceManagement";
 import ResourceRoute from "./ResourceRoute";
+import {useI18n} from "../hook/useI18n";
 
-const ResourceManagementRoute: React.FC<HasI18n & RouteComponentProps<any>> = (props) => {
+const ResourceManagementRoute: React.FC = () => {
+    const {i18n} = useI18n();
     return <Switch>
-        <BreadcrumbRoute title={props.i18n("resource.create.title")} path={Routes.createResource.path}
+        <BreadcrumbRoute title={i18n("resource.create.title")} path={Routes.createResource.path}
                          component={CreateResource}/>
         <DynamicBreadcrumbRoute asset="resource" path={Routes.resourceSummary.path}
                                 includeSearch={true} component={ResourceRoute}/>
@@ -19,4 +19,4 @@ const ResourceManagementRoute: React.FC<HasI18n & RouteComponentProps<any>> = (p
     </Switch>;
 };
 
-export default injectIntl(withI18n(ResourceManagementRoute));
+export default ResourceManagementRoute;

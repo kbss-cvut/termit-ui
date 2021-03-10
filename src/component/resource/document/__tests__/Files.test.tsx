@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
+import {mockUseI18n} from "../../../../__tests__/environment/IntlUtil";
 import TermItFile from "../../../../model/File";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import Document from "../../../../model/Document";
@@ -23,13 +23,13 @@ describe("DocumentFiles", () => {
         });
         actions = [];
         itemActions = () => [];
+        mockUseI18n();
     });
 
     it("renders notice when no Files exist", () => {
         const wrapper = shallow(<Files files={document.files}
                                        actions={actions}
-                                       itemActions={itemActions}
-                                       {...intlFunctions()}/>);
+                                       itemActions={itemActions}/>);
         expect(wrapper.exists("#file-list-empty")).toBeTruthy();
     });
 });
