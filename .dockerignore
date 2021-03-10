@@ -3,3 +3,6 @@
 node_modules
 .dockerignore
 Dockerfile
+docker-compose.yml
+.env.docker-compose
+env-util

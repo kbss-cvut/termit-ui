@@ -1,12 +1,21 @@
 import Keycloak from "keycloak-js";
 import {Routing as RoutingCls} from "./Routing";
 import Routes from "./Routes";
+import Constants from "../util/Constants";
+
+// Extract Keycloak URL and realm from generic OIDC auth URL
+const OIDC_URL = Constants.COMPONENTS.authServer.url;
+const match = /^(.+)\/realms\/(.+)$/.exec(OIDC_URL)
+if (!match) {
+    throw new Error("Invalid Keycloak configuration provided")
+}
+const [, url, realm] = match
 
 // Setup Keycloak instance
 const keycloak = Keycloak({
-    url: process.env.REACT_APP_KEYCLOAK_URL,
-    realm: process.env.REACT_APP_KEYCLOAK_REALM!,
-    clientId: process.env.REACT_APP_KEYCLOAK_CLIENTID!,
+    url,
+    realm,
+    clientId: Constants.ID,
 });
 
 /**
