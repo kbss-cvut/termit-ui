@@ -1,6 +1,7 @@
 import {createIntl, FormatDateOptions, IntlShape} from "react-intl";
 import intlData from "../../i18n/en";
 import {HasI18n} from "../../component/hoc/withI18n";
+import * as useI18n from "../../component/hook/useI18n";
 
 const intlInst = createIntl(intlData);
 
@@ -35,4 +36,11 @@ export function intlFunctions(): HasI18n {
         formatTime,
         locale: intlData.locale
     };
+}
+
+/**
+ * Mocks the useI18n hook.
+ */
+export function mockUseI18n() {
+    jest.spyOn(useI18n, "useI18n").mockReturnValue({...intlFunctions()});
 }

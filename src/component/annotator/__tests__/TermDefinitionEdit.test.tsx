@@ -3,7 +3,7 @@ import * as redux from "react-redux";
 import Term from "../../../model/Term";
 import {shallow} from "enzyme";
 import {TermDefinitionEdit} from "../TermDefinitionEdit";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 import Generator from "../../../__tests__/environment/Generator";
 import {mountWithIntlAttached} from "./AnnotationUtil";
 import {ElementType} from "htmlparser2";
@@ -26,6 +26,7 @@ describe("TermDefinitionEdit", () => {
     });
 
     it("returns null when no element and term are provided", () => {
+        mockUseI18n();
         const wrapper = shallow(<TermDefinitionEdit onSave={onSave} onCancel={onCancel} {...intlFunctions()}/>);
         expect(wrapper.isEmptyRender()).toBeTruthy();
     });

@@ -1,11 +1,10 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term from "../../model/Term";
 import TermLink from "../term/TermLink";
 import {AnnotationClass} from "./Annotation";
-import {injectIntl} from "react-intl";
+import {useI18n} from "../hook/useI18n";
 
-interface TermOccurrenceAnnotationViewProps extends HasI18n {
+interface TermOccurrenceAnnotationViewProps {
     term?: Term | null;
     score?: string;
     resource?: string;
@@ -13,7 +12,7 @@ interface TermOccurrenceAnnotationViewProps extends HasI18n {
 }
 
 const TermOccurrenceAnnotationView: React.FC<TermOccurrenceAnnotationViewProps> = props => {
-    const i18n = props.i18n;
+    const {i18n, formatMessage} = useI18n();
     switch (props.annotationClass) {
         case AnnotationClass.ASSIGNED_OCCURRENCE:
             return <table>
@@ -30,10 +29,10 @@ const TermOccurrenceAnnotationView: React.FC<TermOccurrenceAnnotationViewProps> 
                     </span>;
         case AnnotationClass.INVALID:
             return <span className="an-error">
-                        {props.formatMessage("annotation.form.invalid-occurrence.message", {term: props.term ? props.term.iri : props.resource})}
+                        {formatMessage("annotation.form.invalid-occurrence.message", {term: props.term ? props.term.iri : props.resource})}
                     </span>;
     }
     return <div/>;
 };
 
-export default injectIntl(withI18n(TermOccurrenceAnnotationView));
+export default TermOccurrenceAnnotationView;

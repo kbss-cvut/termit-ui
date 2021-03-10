@@ -3,7 +3,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import Term from "../../../model/Term";
 import {shallow} from "enzyme";
 import {TermDefinitionAnnotation} from "../TermDefinitionAnnotation";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 import SimplePopupWithActions from "../SimplePopupWithActions";
 import AnnotationTerms from "../AnnotationTerms";
 import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
@@ -31,6 +31,7 @@ describe("TermDefinitionAnnotation", () => {
             onToggleDetailOpen: jest.fn(),
             onClose: jest.fn()
         };
+        mockUseI18n();
     });
 
     it("renders term definition view by default", () => {

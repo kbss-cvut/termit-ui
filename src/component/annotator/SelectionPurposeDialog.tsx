@@ -1,10 +1,9 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Button, ButtonToolbar, Popover, PopoverBody, PopoverHeader} from "reactstrap";
 import {TiTimes} from "react-icons/ti";
+import {useI18n} from "../hook/useI18n";
 
-interface SelectionPurposeDialogProps extends HasI18n {
+interface SelectionPurposeDialogProps {
     target?: string | HTMLElement;
     show: boolean;
     onCreateTerm: () => void;
@@ -18,6 +17,7 @@ function handler(e: any) {
 }
 
 export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = props => {
+    const {i18n} = useI18n();
     if (!props.show || !props.target) {
         return null;
     }
@@ -26,7 +26,7 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = pro
         <div onClick={handler}>
             <PopoverHeader className="d-flex">
                 <div className="flex-grow-1">
-                    {props.i18n("annotator.selectionPurpose.dialog.title")}
+                    {i18n("annotator.selectionPurpose.dialog.title")}
                 </div>
                 <div className="ml-2 flex-grow-0 float-right">
                     <Button id="annotator-selection-dialog-cancel" onClick={props.onCancel} color="secondary" size="sm"><TiTimes/></Button>
@@ -35,13 +35,13 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = pro
             <PopoverBody>
                 <ButtonToolbar>
                     <Button id="annotator-selection-dialog-mark-occurrence" color="primary" size="sm"
-                            onClick={props.onMarkOccurrence}>{props.i18n("annotator.selectionPurpose.occurrence")}</Button>
+                            onClick={props.onMarkOccurrence}>{i18n("annotator.selectionPurpose.occurrence")}</Button>
                     <Button id="annotator-selection-dialog-mark-definition" color="primary" size="sm"
-                            onClick={props.onMarkDefinition}>{props.i18n("annotator.selectionPurpose.definition")}</Button>
+                            onClick={props.onMarkDefinition}>{i18n("annotator.selectionPurpose.definition")}</Button>
                 </ButtonToolbar>
             </PopoverBody>
         </div>
     </Popover>;
 };
 
-export default injectIntl(withI18n(SelectionPurposeDialog));
+export default SelectionPurposeDialog;
