@@ -1,11 +1,10 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {UncontrolledTooltip} from "reactstrap";
 import Toggle from "react-bootstrap-toggle";
 import "./IncludeImportedTermsToggle.scss";
+import {useI18n} from "../hook/useI18n";
 
-interface IncludeImportedTermsToggleProps extends HasI18n {
+interface IncludeImportedTermsToggleProps {
     onToggle: () => void;
     includeImported: boolean;
     id: string; // Toggle id, required by the tooltip component
@@ -14,14 +13,15 @@ interface IncludeImportedTermsToggleProps extends HasI18n {
 }
 
 const IncludeImportedTermsToggle: React.FC<IncludeImportedTermsToggleProps> = props => {
+    const {i18n} = useI18n();
     let toggleStyle = {height: "calc(1.5 * 0.875rem + 0.5rem + 2px)"};
     if (props.style) {
         toggleStyle = Object.assign(toggleStyle, props.style);
     }
     return <>
         <Toggle id={props.id} onClick={props.onToggle}
-                on={props.i18n("glossary.includeImported")}
-                off={props.i18n("glossary.excludeImported")}
+                on={i18n("glossary.includeImported")}
+                off={i18n("glossary.excludeImported")}
                 disabled={props.disabled}
                 onstyle="primary"
                 offstyle="secondary"
@@ -33,9 +33,9 @@ const IncludeImportedTermsToggle: React.FC<IncludeImportedTermsToggleProps> = pr
                 active={props.includeImported}
                 recalculateOnResize={true}/>
         <UncontrolledTooltip target={props.id} placement="right">
-            {props.i18n(props.includeImported ? "glossary.includeImported.help" : "glossary.excludeImported.help")}
+            {i18n(props.includeImported ? "glossary.includeImported.help" : "glossary.excludeImported.help")}
         </UncontrolledTooltip>
     </>;
 };
 
-export default injectIntl(withI18n(IncludeImportedTermsToggle));
+export default IncludeImportedTermsToggle;

@@ -3,22 +3,16 @@ import {TextQuoteSelector} from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Term from "../../../model/Term";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
-import Routes, {Route} from "../../../util/Routes";
+import Routes from "../../../util/Routes";
 import {VocabularyData} from "../../../model/Vocabulary";
 import {TermDefinitionSourceLink} from "../TermDefinitionSourceLink";
-import {flushPromises, mountWithIntl} from "../../../__tests__/environment/Environment";
+import {flushPromises, mockStore, mountWithIntl} from "../../../__tests__/environment/Environment";
 import {act} from "react-dom/test-utils";
 import {MemoryRouter} from "react-router";
 import {langString} from "../../../model/MultilingualString";
+import ActionType from "../../../action/ActionType";
 
 describe("TermDefinitionSourceLink", () => {
-
-    let pushRoutingPayload: (route: Route, payload: any) => void;
-
-    beforeEach(() => {
-        pushRoutingPayload = jest.fn();
-    });
 
     it("pushes definition source selector to transition payload store when transition to definition source is triggered", async () => {
         const vocabulary: VocabularyData = {
@@ -46,12 +40,14 @@ describe("TermDefinitionSourceLink", () => {
             }
         });
         term.definitionSource!.term = term;
-        const wrapper = mountWithIntl(<MemoryRouter><TermDefinitionSourceLink term={term}
-                                                                              pushRoutingPayload={pushRoutingPayload} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(<MemoryRouter><TermDefinitionSourceLink term={term}/></MemoryRouter>);
         await act(async () => {
             await flushPromises();
         });
         wrapper.find("button#term-metadata-definitionSource-goto").simulate("click");
-        expect(pushRoutingPayload).toHaveBeenCalledWith(Routes.annotateFile, {selector});
+        const action = mockStore.getActions().find(a => a.type === ActionType.PUSH_ROUTING_PAYLOAD);
+        expect(action).toBeDefined();
+        expect(action.routeName).toEqual(Routes.annotateFile.name);
+        expect(action.payload).toEqual({selector});
     });
 });

@@ -1,30 +1,28 @@
 import * as React from "react";
 import Term from "../../model/Term";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import Routes, {Route} from "../../util/Routes";
+import Routes from "../../util/Routes";
 import {Button} from "reactstrap";
 import {GoFileSymlinkFile} from "react-icons/go";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Utils from "../../util/Utils";
 import Routing from "../../util/Routing";
-import {injectIntl} from "react-intl";
-import {connect} from "react-redux";
-import {ThunkDispatch} from "../../util/Types";
+import {useDispatch} from "react-redux";
 import {pushRoutingPayload} from "../../action/SyncActions";
+import {useI18n} from "../hook/useI18n";
 
-interface TermDefinitionSourceLinkProps extends HasI18n {
+interface TermDefinitionSourceLinkProps {
     term: Term;
-
-    pushRoutingPayload: (route: Route, payload: any) => void;
 }
 
 export const TermDefinitionSourceLink: React.FC<TermDefinitionSourceLinkProps> = props => {
     const defSource = props.term.definitionSource;
+    const {i18n} = useI18n();
+    const dispatch = useDispatch();
     const navigateToDefinitionSource = () => {
         const target = defSource!.target;
         const targetIri = VocabularyUtils.create(target.source.iri!);
         // assert target.selectors.length === 1
-        props.pushRoutingPayload(Routes.annotateFile, {selector: Utils.sanitizeArray(target.selectors)[0]});
+        dispatch(pushRoutingPayload(Routes.annotateFile, {selector: Utils.sanitizeArray(target.selectors)[0]}));
         Routing.transitionTo(Routes.annotateFile, {
             params: new Map([["name", targetIri.fragment]]),
             query: new Map([["namespace", targetIri.namespace!]])
@@ -34,15 +32,11 @@ export const TermDefinitionSourceLink: React.FC<TermDefinitionSourceLinkProps> =
     return <>
         <Button id="term-metadata-definitionSource-goto" color="primary" outline={true} size="sm" className="ml-2"
                 onClick={navigateToDefinitionSource}
-                title={props.i18n("term.metadata.definitionSource.goto.tooltip")}>
+                title={i18n("term.metadata.definitionSource.goto.tooltip")}>
             <GoFileSymlinkFile className="mr-1"/>
-            {props.i18n("term.metadata.definitionSource.goto")}
+            {i18n("term.metadata.definitionSource.goto")}
         </Button>
     </>;
 };
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-    return {
-        pushRoutingPayload: (route: Route, payload: any) => dispatch(pushRoutingPayload(route, payload))
-    };
-})(injectIntl(withI18n(TermDefinitionSourceLink)));
+export default TermDefinitionSourceLink;

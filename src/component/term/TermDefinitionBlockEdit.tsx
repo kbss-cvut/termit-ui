@@ -1,5 +1,4 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {TermData} from "../../model/Term";
 import ValidationResult from "../../model/ValidationResult";
 import {Button, Col, FormGroup, Label, Row} from "reactstrap";
@@ -9,10 +8,10 @@ import CustomInput from "../misc/CustomInput";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {renderValidationMessages} from "./forms/FormUtils";
-import {injectIntl} from "react-intl";
 import "./TermDefinitionBlock.scss";
+import {useI18n} from "../hook/useI18n";
 
-interface TermDefinitionBlockEditProps extends HasI18n {
+interface TermDefinitionBlockEditProps {
     term: TermData;
     language: string;
     definitionSelector?: () => void;
@@ -22,7 +21,8 @@ interface TermDefinitionBlockEditProps extends HasI18n {
 }
 
 export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = props => {
-    const {term, language, getValidationResults, onChange, i18n, locale, readOnly} = props;
+    const {term, language, getValidationResults, onChange, readOnly} = props;
+    const {i18n, locale} = useI18n();
     const onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
         const change = {};
@@ -77,4 +77,4 @@ TermDefinitionBlockEdit.defaultProps = {
     readOnly: false
 }
 
-export default injectIntl(withI18n(TermDefinitionBlockEdit));
+export default TermDefinitionBlockEdit;
