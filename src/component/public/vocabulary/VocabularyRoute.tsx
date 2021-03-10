@@ -1,5 +1,6 @@
 import * as React from "react";
-import {Route, RouteComponentProps, Switch} from "react-router";
+import {RouteComponentProps, Switch} from "react-router";
+import Route from "../../misc/Route";
 import VocabularySummary from "./VocabularySummary";
 import Routes from "../../../util/Routes";
 import DynamicBreadcrumbRoute from "../../breadcrumb/DynamicBreadcrumbRoute";
