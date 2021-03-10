@@ -4,7 +4,6 @@ import {flushPromises} from "../../../../__tests__/environment/Environment";
 import {VocabularySummary} from "../VocabularySummary";
 import {EMPTY_VOCABULARY} from "../../../../model/Vocabulary";
 import {act} from "react-dom/test-utils";
-import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
 import {match as Match, RouteComponentProps} from "react-router";
 import {createMemoryHistory, Location} from "history";
 import {mountWithIntlAttached} from "../../../annotator/__tests__/AnnotationUtil";
@@ -48,7 +47,7 @@ describe("Public VocabularySummary", () => {
 
     it("resets selected term on mount", async () => {
         mountWithIntlAttached(<VocabularySummary vocabulary={EMPTY_VOCABULARY} loadVocabulary={loadVocabulary}
-                                                 resetSelectedTerm={resetSelectedTerm} {...routerProps} {...intlFunctions()}/>);
+                                                 resetSelectedTerm={resetSelectedTerm} {...routerProps}/>);
         await act(async () => {
             await flushPromises();
         });

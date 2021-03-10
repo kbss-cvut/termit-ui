@@ -1,15 +1,14 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {injectIntl} from "react-intl";
 import {Button, ButtonToolbar, Container, Jumbotron} from "reactstrap";
 import {Link} from "react-router-dom";
 import Routes from "../../util/Routes";
 import "./Dashboard.scss";
 import Constants from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
+import {useI18n} from "../hook/useI18n";
 
-const Dashboard: React.FC<HasI18n> = props => {
-    const {i18n} = props;
+const Dashboard: React.FC = () => {
+    const {i18n} = useI18n();
     return <Jumbotron fluid={true}>
         <WindowTitle title={Constants.APP_NAME} appendAppName={false}/>
         <Container fluid={true}>
@@ -28,4 +27,4 @@ const Dashboard: React.FC<HasI18n> = props => {
     </Jumbotron>;
 };
 
-export default injectIntl(withI18n(Dashboard));
+export default Dashboard;

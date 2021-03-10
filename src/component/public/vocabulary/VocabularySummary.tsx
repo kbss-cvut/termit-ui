@@ -1,5 +1,4 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
 import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import {Card, CardBody, Col, Label, Row} from "reactstrap";
@@ -8,7 +7,6 @@ import {connect} from "react-redux";
 import TermItState from "../../../model/TermItState";
 import {ThunkDispatch} from "../../../util/Types";
 import {loadPublicVocabulary} from "../../../action/AsyncPublicViewActions";
-import {injectIntl} from "react-intl";
 import Utils from "../../../util/Utils";
 import {RouteComponentProps, withRouter} from "react-router";
 import HeaderWithActions from "../../misc/HeaderWithActions";
@@ -16,8 +14,9 @@ import CopyIriIcon from "../../misc/CopyIriIcon";
 import Terms from "../term/Terms";
 import {selectVocabularyTerm} from "../../../action/SyncActions";
 import WindowTitle from "../../misc/WindowTitle";
+import {useI18n} from "../../hook/useI18n";
 
-interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
+interface VocabularySummaryProps extends RouteComponentProps<any> {
     vocabulary: Vocabulary;
 
     loadVocabulary: (iri: IRI) => void;
@@ -25,7 +24,8 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export const VocabularySummary: React.FC<VocabularySummaryProps> = props => {
-    const {resetSelectedTerm, vocabulary, location, match, i18n, loadVocabulary} = props;
+    const {resetSelectedTerm, vocabulary, location, match, loadVocabulary} = props;
+    const {i18n} = useI18n();
 
     React.useEffect(() => {
         resetSelectedTerm();
@@ -74,4 +74,4 @@ export default connect((state: TermItState) => ({vocabulary: state.vocabulary}),
         loadVocabulary: (iri: IRI) => dispatch(loadPublicVocabulary(iri)),
         resetSelectedTerm: () => dispatch(selectVocabularyTerm(null))
     };
-})(injectIntl(withI18n(withRouter(VocabularySummary))));
+})(withRouter(VocabularySummary));

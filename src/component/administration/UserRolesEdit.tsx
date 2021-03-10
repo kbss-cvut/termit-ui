@@ -1,16 +1,15 @@
 import React from "react";
 import {connect} from "react-redux";
-import {injectIntl} from "react-intl";
 import {Button, ButtonToolbar, Form, Modal, ModalBody, ModalHeader} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {UserRoleData} from "../../model/UserRole";
 import {getLocalized} from "../../model/MultilingualString";
 import Select from "../misc/Select";
 import {filterActualRoles} from "./UserRoles";
 import User from "../../model/User";
 import TermItState from "../../model/TermItState";
+import {useI18n} from "../hook/useI18n";
 
-interface UserRolesEditProps extends HasI18n {
+interface UserRolesEditProps {
     user: User,
     open: boolean,
     availableRoles: UserRoleData[],
@@ -19,7 +18,8 @@ interface UserRolesEditProps extends HasI18n {
 }
 
 const UserRolesEdit = (props: UserRolesEditProps) => {
-    const {i18n, locale, user, open, availableRoles, onCancel, onSubmit} = props;
+    const {user, open, availableRoles, onCancel, onSubmit} = props;
+    const {i18n, formatMessage, locale} = useI18n();
     const [role, setRole] = React.useState<string>();
 
     React.useEffect(() => {
@@ -41,7 +41,7 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
     const value = (role !== undefined) ? roleObject.iri : undefined;
     const description = (role !== undefined) ? getLocalized(roleObject.description, locale) : undefined;
     return <><Modal id="administration.users.roles.edit" isOpen={true} toggle={props.onCancel} size="lg">
-        <ModalHeader toggle={props.onCancel}>{props.formatMessage("administration.users.roles.edit.title", {
+        <ModalHeader toggle={props.onCancel}>{formatMessage("administration.users.roles.edit.title", {
             name: user.fullName,
         })}</ModalHeader>
         <ModalBody>
@@ -64,4 +64,4 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
     </Modal></>;
 }
 
-export default connect((state: TermItState) => ({availableRoles: state.configuration.roles}))(injectIntl(withI18n(UserRolesEdit)));
+export default connect((state: TermItState) => ({availableRoles: state.configuration.roles}))(UserRolesEdit);

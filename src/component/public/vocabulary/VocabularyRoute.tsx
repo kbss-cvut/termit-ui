@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Route, RouteComponentProps, Switch} from "react-router";
+import {Route, Switch} from "react-router";
 import VocabularySummary from "./VocabularySummary";
 import Routes from "../../../util/Routes";
 import DynamicBreadcrumbRoute from "../../breadcrumb/DynamicBreadcrumbRoute";
 import TermDetail from "../term/TermDetail";
 
-const VocabularyRoute: React.FC<RouteComponentProps<any>> = () => {
+const VocabularyRoute: React.FC = () => {
     return <Switch>
         <DynamicBreadcrumbRoute asset="selectedTerm" path={Routes.publicVocabularyTermDetail.path}
                                 component={TermDetail} includeSearch={true}/>

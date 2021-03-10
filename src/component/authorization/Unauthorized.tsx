@@ -1,11 +1,10 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Alert} from "reactstrap";
 import {FaExclamationTriangle} from "react-icons/fa";
-import {injectIntl} from "react-intl";
+import {useI18n} from "../hook/useI18n";
 
-const Unauthorized: React.FC<HasI18n> = props => {
-    const i18n = props.i18n;
+const Unauthorized: React.FC = () => {
+    const {i18n} = useI18n();
 
     return <div className="m-3" id="unauthorized-container">
         <Alert color="warning">
@@ -17,4 +16,4 @@ const Unauthorized: React.FC<HasI18n> = props => {
     </div>
 };
 
-export default injectIntl(withI18n(Unauthorized));
+export default Unauthorized;
