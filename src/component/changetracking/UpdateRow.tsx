@@ -1,16 +1,17 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {FormattedDate, FormattedTime, injectIntl} from "react-intl";
+import {FormattedDate, FormattedTime} from "react-intl";
 import {UpdateRecord, UpdateValueType} from "../../model/changetracking/UpdateRecord";
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
 import {Badge, Label} from "reactstrap";
+import {useI18n} from "../hook/useI18n";
 
-interface UpdateRowProps extends HasI18n {
+interface UpdateRowProps {
     record: UpdateRecord;
 }
 
 export const UpdateRow: React.FC<UpdateRowProps> = props => {
+    const {i18n} = useI18n();
     const record = props.record;
     const created = new Date(record.timestamp);
     return <tr>
@@ -24,7 +25,7 @@ export const UpdateRow: React.FC<UpdateRowProps> = props => {
             </div>
         </td>
         <td>
-            <Badge color="secondary">{props.i18n(record.typeLabel)}</Badge>
+            <Badge color="secondary">{i18n(record.typeLabel)}</Badge>
         </td>
         <td>
             <AssetLabel iri={record.changedAttribute.iri}/>
@@ -66,4 +67,4 @@ function renderSingleValue(value: any) {
     return <Label>{`${value}`}</Label>;
 }
 
-export default injectIntl(withI18n(UpdateRow));
+export default UpdateRow;

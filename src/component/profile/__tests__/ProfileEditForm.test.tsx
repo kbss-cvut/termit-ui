@@ -3,7 +3,7 @@ import * as React from "react";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {Button, ButtonToolbar, Form} from "reactstrap";
 import {ProfileEditForm} from "../ProfileEditForm";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 import {shallow} from "enzyme";
 
 describe("ProfileEditForm", () => {
@@ -87,6 +87,7 @@ describe("ProfileEditForm", () => {
     });
 
     it("calls showProfileView on cancel button click", () => {
+        mockUseI18n();
         const wrapper = shallow(<ProfileEditForm
             firstName={firstName}
             lastName={lastName}

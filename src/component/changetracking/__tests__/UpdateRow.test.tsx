@@ -4,12 +4,16 @@ import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import {shallow} from "enzyme";
 import {UpdateRow} from "../UpdateRow";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 import OutgoingLink from "../../misc/OutgoingLink";
 import {Label} from "reactstrap";
 import Constants from "../../../util/Constants";
 
 describe("UpdateRow", () => {
+
+    beforeEach(() => {
+        mockUseI18n();
+    });
 
     it("renders id value as an outgoing link", () => {
         const newValue = Generator.generateUri();

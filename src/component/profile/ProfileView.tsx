@@ -1,15 +1,15 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Col, Label, Row} from "reactstrap";
 import User from "../../model/User";
+import {useI18n} from "../hook/useI18n";
 
-interface ProfileViewProps extends HasI18n {
+interface ProfileViewProps {
     user: User;
 }
 
-const ProfileView: React.FC<ProfileViewProps> = ({user, i18n}) => (
-    <>
+const ProfileView: React.FC<ProfileViewProps> = ({user}) => {
+    const {i18n} = useI18n();
+    return <>
         <Row>
             <Col xl={2}>
                 <Label className="attribute-label">{i18n("profile.first.name")}:</Label>
@@ -26,7 +26,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({user, i18n}) => (
                 <Label id="profile-last-name">{user.lastName}</Label>
             </Col>
         </Row>
-    </>
-);
+    </>;
+};
 
-export default injectIntl(withI18n(ProfileView));
+export default ProfileView;
