@@ -15,7 +15,7 @@ describe("ParentTermsList", () => {
     const workspace = new Workspace({
         iri: Generator.generateUri(),
         label: "test",
-        vocabularies: [vocabularyIri]
+        vocabularies: [{iri: vocabularyIri}]
     });
 
     it("renders parent terms in current workspace as links", () => {

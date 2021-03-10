@@ -18,7 +18,7 @@ describe("VocabularyDependenciesList", () => {
             iri: Generator.generateUri()
         }];
         const workspace = new Workspace({
-            vocabularies: vocabularies.map(v => v.iri),
+            vocabularies,
             iri: Generator.generateUri(),
             label: "Test"
         });

@@ -13,13 +13,13 @@ export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT);
 export interface WorkspaceData extends AssetData {
     label: string;
     description?: string;
-    vocabularies: string[];
+    vocabularies: AssetData[];
 }
 
 export default class Workspace extends Asset implements WorkspaceData {
     public readonly label: string;
     public readonly description?: string;
-    public readonly vocabularies: string[];
+    public readonly vocabularies: AssetData[];
 
     constructor(data: WorkspaceData) {
         super(data);
@@ -33,7 +33,7 @@ export default class Workspace extends Asset implements WorkspaceData {
     }
 
     public containsVocabulary(vocabularyIri?: string) {
-        return vocabularyIri && this.vocabularies.indexOf(vocabularyIri) !== -1;
+        return vocabularyIri && this.vocabularies.find(v => v.iri === vocabularyIri);
     }
 
     public toJsonLd(): {} {
