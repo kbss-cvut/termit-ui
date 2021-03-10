@@ -195,7 +195,6 @@ const en = {
         "vocabulary.detail.tabs.termdetail": "Term Detail",
         "vocabulary.detail.files": "Files",
         "vocabulary.detail.files.file": "Filename",
-        "vocabulary.detail.noTermSelected": "Start by selecting a term in the tree on the left.",
         "vocabulary.detail.imports": "Imports",
         "vocabulary.detail.imports.edit": "Imports vocabularies",
         "vocabulary.detail.document": "Document",
