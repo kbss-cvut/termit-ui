@@ -194,7 +194,6 @@ const cs = {
         "vocabulary.detail.tabs.metadata": "Metadata",
         "vocabulary.detail.tabs.termdetail": "Detail pojmu",
         "vocabulary.detail.files": "Soubory",
-        "vocabulary.detail.noTermSelected": "Vyberte pojem ve stromečku vlevo.",
         "vocabulary.detail.imports": "Importuje",
         "vocabulary.detail.imports.edit": "Importuje slovníky",
         "vocabulary.detail.document": "Dokument",
