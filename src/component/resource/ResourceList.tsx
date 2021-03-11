@@ -1,6 +1,4 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {ThunkDispatch} from "../../util/Types";
@@ -28,8 +26,9 @@ import AppNotification from "../../model/AppNotification";
 import ResourceBadge from "../badge/ResourceBadge";
 import {createSelectFilter} from "../misc/table/SelectFilter";
 import {HasTypes} from "../../model/Asset";
+import {useI18n} from "../hook/useI18n";
 
-interface ResourceListProps extends HasI18n {
+interface ResourceListProps {
     resources: { [key: string]: Resource },
     notifications: AppNotification[];
     loadResources: () => void;
@@ -41,7 +40,8 @@ function resourceTypeFilter(rows: any[], id: string, filterValue: string) {
 }
 
 export const ResourceList: React.FC<ResourceListProps> = props => {
-    const {i18n, resources, notifications, loadResources, consumeNotification} = props;
+    const {resources, notifications, loadResources, consumeNotification} = props;
+    const {i18n} = useI18n();
     React.useEffect(() => {
         loadResources();
     }, [loadResources]);
@@ -123,4 +123,4 @@ export default connect((state: TermItState) => {
         loadResources: () => dispatch(loadResourcesAction()),
         consumeNotification: (notification: AppNotification) => dispatch(consumeNotificationAction(notification))
     }
-})(injectIntl(withI18n(ResourceList)));
+})(ResourceList);
