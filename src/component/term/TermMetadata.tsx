@@ -27,6 +27,7 @@ interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
 interface TermMetadataState {
     activeTab: string;
     assignmentsCount: number | null;
+    commentsCount: number | null;
     displayTerms: boolean;
 }
 
@@ -39,6 +40,7 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
         this.state = {
             activeTab: "term.metadata.assignments.title",
             assignmentsCount: null,
+            commentsCount: null,
             displayTerms: window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT
         };
     }
@@ -81,6 +83,10 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
         this.setState({assignmentsCount});
     };
 
+    private setCommentsCount = (commentsCount: number) => {
+        this.setState({commentsCount});
+    };
+
     public render() {
         const {term, language, selectLanguage} = this.props;
         return <>
@@ -105,11 +111,12 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                                                                                             onLoad={this.setAssignmentsCount}/>,
                                         "history.label": <AssetHistory asset={term}/>,
                                         "term.metadata.validation.title": <ValidationResults term={term}/>,
-                                        "comments.title": <Comments term={term}/>,
+                                        "comments.title": <Comments term={term} onLoad={this.setCommentsCount}/>,
                                         "properties.edit.title": <UnmappedProperties
                                             properties={term.unmappedProperties} showInfoOnEmpty={true}/>
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),
+                                        "comments.title": this.state.commentsCount !== null ? this.state.commentsCount.toFixed() : null,
                                         "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,
                                     }}/>
                                 </CardBody>

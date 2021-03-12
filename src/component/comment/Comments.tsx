@@ -17,6 +17,7 @@ import "./Comments.scss";
 
 interface CommentsProps {
     term: Term;
+    onLoad: (commentsCount: number) => void;
 
     loadComments: (termIri: string) => Promise<Comment[]>;
     createComment: (comment: Comment, termIRI: string) => Promise<any>;
@@ -26,13 +27,22 @@ interface CommentsProps {
 }
 
 const Comments: React.FC<CommentsProps> = props => {
-    const {loadComments, createComment, addReaction, removeReaction, updateComment, term} = props;
+    const {loadComments, createComment, addReaction, removeReaction, updateComment, term, onLoad} = props;
     const [comments, setComments] = React.useState<Comment[]>([]);
+
     React.useEffect(() => {
-        loadComments(term.iri).then(data => setComments(data));
-    }, [loadComments, term]);
+        loadComments(term.iri)
+            .then(data => {
+                setComments(data);
+                onLoad(data.length);
+            });
+    }, [loadComments, setComments, onLoad, term]);
     const onSubmit = (comment: Comment) => createComment(comment, term.iri).then(() => {
-        loadComments(term.iri).then(data => setComments(data));
+        loadComments(term.iri)
+            .then(data => {
+                setComments(data);
+                onLoad(data.length);
+            });
     });
     const onAddReaction = (comment: Comment, type: string) => {
         addReaction(comment, type).then(() => loadComments(term.iri).then(data => setComments(data)));
