@@ -11,12 +11,12 @@ Pokud je to možné, pokuste se informaci o chybě rozepsat dle následující s
 # Popis problému
 Popište:
 - jak se problém projevuje,
-- v jakém nástroji jste pracovali (např. kontrolní panel, TermIt, OntoGrapher),
-- jaký pracovní prostor jste měli otevřený (např. Sbírka),
-- na jaké obrazovce se problém projevil (např. detail pojmu Osoba).
+- v jaké instanci TermIta jste pracovali (např. https://termit.fel.cvut.cz/dev/ipr)
+- jaký slovník jste měli otevřený (např. Metropolitní plán),
+- na jaké obrazovce se problém projevil (např. detail pojmu Jméno lokality, nebo ještě lépe odkaz https://termit.fel.cvut.cz/dev/ipr/#/vocabularies/datovy-mpp-3.4/terms/jm%C3%A9no-lokality?namespace=http://onto.fel.cvut.cz/ontologies/slovnik/&includeImported=false).
 
 # Závažnost problému
-- popište, jak závažný pro práci s výrobní linkou pro Vás problém je:
+- popište, jak závažný pro práci s TermItem pro Vás problém je:
 1. nemohu vůbec pracovat, 
 2. je to vážný problém,
 3. zpomaluje mě to,
