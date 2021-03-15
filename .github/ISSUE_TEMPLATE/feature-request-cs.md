@@ -3,7 +3,7 @@ name: Navrhnout úpravu
 about: Použijte, když budete chtít navrhnout novou funkci nebo vylepšit stávající funkci.
 title: ''
 labels: enhancement
-assignees: MichalMed
+assignees: 
 
 ---
 Pokud je to možné, pokuste se formulovat svůj návrh dle následující struktury, pomůžete nám jej efektivněji zpracovat.
