@@ -103,6 +103,14 @@ const cs = {
         "dashboard.widget.typeFrequency.title": "Počet pojmů ve slovníku",
         "dashboard.widget.alert.news": "TermIt má novou verzi {version}. Podívejte se, co je nového, klikem na verzi v pravém dolním rohu aplikace.",
         "dashboard.widget.donut.total-terms": "Celkem pojmů",
+        "dashboard.widget.commentList.empty": "Zde uvidíte své poslední komentáře a reakce na ně.",
+        "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
+        "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
+        "dashboard.widget.commentList.messageByYou": "{when} Vámi .",
+        "dashboard.widget.lastCommentedAssets.title": "Naposledy komentované pojmy",
+        "dashboard.widget.allLastCommentedAssets.title": "Všechny",
+        "dashboard.widget.myLastCommentedAssets.title": "Moje",
+        "dashboard.widget.lastCommentedAssetsInReactionToMine.title": "S reakcí na můj komentář",
 
         "unauthorized.message": "K této části aplikace nemáte přístup.",
 

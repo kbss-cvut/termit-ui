@@ -10,6 +10,7 @@ import MyAssets from "./widget/MyAssets";
 import Constants from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
 import {useI18n} from "../hook/useI18n";
+import LastCommentedAssets from "./widget/LastCommentedAssets";
 
 const Dashboard: React.FC = () => {
     const {i18n, locale} = useI18n();
@@ -23,6 +24,11 @@ const Dashboard: React.FC = () => {
             <Col xl={4} lg={6} md={12}>
                 <MyAssets/>
             </Col>
+            <Col xl={4} lg={6} md={12}>
+                <LastCommentedAssets/>
+            </Col>
+        </Row>
+        <Row>
             <Col xl={4} lg={6} md={12}>
                 <PanelWithActions className="p-0" title={i18n("dashboard.widget.typeFrequency.title")}>
                     <TermFrequency sparqlQuery={templateQuery} lang={locale}/>

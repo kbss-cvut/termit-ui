@@ -103,6 +103,14 @@ const en = {
         "dashboard.widget.typeFrequency.title": "Term count in vocabularies",
         "dashboard.widget.alert.news": "TermIt is released in a new version {version}. Have a look at what's new by clicking on Version in the bottom right corner of application.",
         "dashboard.widget.donut.total-terms": "Total terms",
+        "dashboard.widget.commentList.empty": "You will see here Your last comments and reactions to them.",
+        "dashboard.widget.commentList.lastComment": "Last comment of the term.",
+        "dashboard.widget.commentList.message": "{when} by {user} .",
+        "dashboard.widget.commentList.messageByYou": "{when} by You .",
+        "dashboard.widget.lastCommentedAssets.title": "Last commented terms",
+        "dashboard.widget.allLastCommentedAssets.title": "All",
+        "dashboard.widget.myLastCommentedAssets.title": "Mine",
+        "dashboard.widget.lastCommentedAssetsInReactionToMine.title": "With reaction to my comment",
 
         "unauthorized.message": "You are not authorized to access this part.",
 

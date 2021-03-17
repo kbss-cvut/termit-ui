@@ -4,6 +4,7 @@ import Term from "../../model/Term";
 import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
 import {langString} from "../../model/MultilingualString";
+import Comment from "../../model/Comment";
 
 export default class Generator {
 
@@ -74,5 +75,14 @@ export default class Generator {
             iri: Generator.generateUri(),
             label: label ? label : "Asset " + Generator.randomInt(0, 100)
         };
+    }
+
+    public static generateComment() {
+        return new Comment({
+            iri: Generator.generateUri(),
+            content: "Comment " + Generator.randomInt(0, 100),
+            asset: Generator.generateTerm(),
+            author: Generator.generateUser()
+        });
     }
 }
