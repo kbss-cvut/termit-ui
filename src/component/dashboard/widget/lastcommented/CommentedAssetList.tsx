@@ -1,13 +1,13 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
+import withI18n, {HasI18n} from "../../../hoc/withI18n";
 import {Col, Label, Row, Table} from "reactstrap";
 import TimeAgo from "javascript-time-ago";
 import {injectIntl} from "react-intl";
-import User from "../../../model/User";
+import User from "../../../../model/User";
 import {connect} from "react-redux";
-import TermItState from "../../../model/TermItState";
-import TermIriLink from "../../term/TermIriLink";
-import RecentlyCommentedAsset from "../../../model/RecentlyCommentedAsset";
+import TermItState from "../../../../model/TermItState";
+import TermIriLink from "../../../term/TermIriLink";
+import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
 
 interface CommentedAssetListProps extends HasI18n {
     locale: string;

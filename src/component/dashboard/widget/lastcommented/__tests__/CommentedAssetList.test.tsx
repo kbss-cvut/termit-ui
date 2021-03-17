@@ -1,10 +1,10 @@
 import * as React from "react";
-import {mountWithIntl} from "../../../../__tests__/environment/Environment";
-import en from "../../../../i18n/en";
-import Generator from "../../../../__tests__/environment/Generator";
+import {mountWithIntl} from "../../../../../__tests__/environment/Environment";
+import en from "../../../../../i18n/en";
+import Generator from "../../../../../__tests__/environment/Generator";
 import {MemoryRouter} from "react-router-dom";
-import User from "../../../../model/User";
-import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
+import User from "../../../../../model/User";
+import {intlFunctions} from "../../../../../__tests__/environment/IntlUtil";
 import {CommentedAssetList} from "../CommentedAssetList";
 
 describe("CommentedAssetList", () => {

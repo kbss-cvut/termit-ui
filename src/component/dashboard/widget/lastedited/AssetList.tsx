@@ -1,15 +1,15 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
+import withI18n, {HasI18n} from "../../../hoc/withI18n";
 import {Col, Label, Row, Table} from "reactstrap";
-import AssetLinkFactory from "../../factory/AssetLinkFactory";
+import AssetLinkFactory from "../../../factory/AssetLinkFactory";
 import TimeAgo from "javascript-time-ago";
 import {injectIntl} from "react-intl";
 import {AssetBadge} from "./AssetBadge";
-import User from "../../../model/User";
+import User from "../../../../model/User";
 import {connect} from "react-redux";
-import TermItState from "../../../model/TermItState";
-import RecentlyModifiedAsset from "../../../model/RecentlyModifiedAsset";
-import AssetFactory from "../../../util/AssetFactory";
+import TermItState from "../../../../model/TermItState";
+import RecentlyModifiedAsset from "../../../../model/RecentlyModifiedAsset";
+import AssetFactory from "../../../../util/AssetFactory";
 
 interface AssetListProps extends HasI18n {
     locale: string;

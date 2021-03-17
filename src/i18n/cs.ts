@@ -97,9 +97,10 @@ const cs = {
             "edit {Upraven}" +
             "other {Vytvořen}" +
             "} Vámi {when}.",
-        "dashboard.widget.myAssets.title": "Moje záznamy",
-        "dashboard.widget.lastEdited.title": "Naposledy upravené záznamy",
-        "dashboard.widget.lastEdited.lastEditDate": "Naposledy upraven/vytvořen",
+        "dashboard.widget.lastEditedAssets.title": "Naposledy upravené záznamy",
+        "dashboard.widget.lastEditedAssets.all.title": "Všechny",
+        "dashboard.widget.lastEditedAssets.mine.title": "Moje",
+        "dashboard.widget.lastEditedAssets.lastEditDate": "Naposledy upraven/vytvořen",
         "dashboard.widget.typeFrequency.title": "Počet pojmů ve slovníku",
         "dashboard.widget.alert.news": "TermIt má novou verzi {version}. Podívejte se, co je nového, klikem na verzi v pravém dolním rohu aplikace.",
         "dashboard.widget.donut.total-terms": "Celkem pojmů",
@@ -108,9 +109,9 @@ const cs = {
         "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
         "dashboard.widget.commentList.messageByYou": "{when} Vámi .",
         "dashboard.widget.lastCommentedAssets.title": "Naposledy komentované pojmy",
-        "dashboard.widget.allLastCommentedAssets.title": "Všechny",
-        "dashboard.widget.myLastCommentedAssets.title": "Moje",
-        "dashboard.widget.lastCommentedAssetsInReactionToMine.title": "S reakcí na můj komentář",
+        "dashboard.widget.lastCommentedAssets.all.title": "Všechny",
+        "dashboard.widget.lastCommentedAssets.mine.title": "Moje",
+        "dashboard.widget.lastCommentedAssets.inReactionToMine.title": "S reakcí na můj komentář",
 
         "unauthorized.message": "K této části aplikace nemáte přístup.",
 

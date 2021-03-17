@@ -3,15 +3,15 @@ import {Card, CardBody, CardHeader} from "reactstrap";
 import {useState} from "react";
 import MyLastCommentedAssets from "./MyLastCommentedAssets";
 import LastCommentedAssetsInReactionToMine from "./LastCommentedAssetsInReactionToMine";
-import Tabs from "../../misc/Tabs";
+import Tabs from "../../../misc/Tabs";
 import AllLastCommentedAssets from "./AllLastCommentedAssets";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
+import withI18n, {HasI18n} from "../../../hoc/withI18n";
 import {injectIntl} from "react-intl";
-import {useI18n} from "../../hook/useI18n";
+import {useI18n} from "../../../hook/useI18n";
 
 const LastCommentedAssets = (props: HasI18n) => {
     const {i18n} = useI18n();
-    const [activeTab, setActiveTab] = useState("dashboard.widget.allLastCommentedAssets.title");
+    const [activeTab, setActiveTab] = useState("dashboard.widget.lastCommentedAssets.all.title");
 
     const toggle = (tab: string) => {
         if (activeTab !== tab) setActiveTab(tab);
@@ -22,9 +22,9 @@ const LastCommentedAssets = (props: HasI18n) => {
         </CardHeader>
         <CardBody className="py-0">
             <Tabs navLinkStyle="small" activeTabLabelKey={activeTab} changeTab={toggle} tabs={{
-                "dashboard.widget.allLastCommentedAssets.title": <AllLastCommentedAssets/>,
-                "dashboard.widget.myLastCommentedAssets.title": <MyLastCommentedAssets/>,
-                "dashboard.widget.lastCommentedAssetsInReactionToMine.title": <LastCommentedAssetsInReactionToMine/>,
+                "dashboard.widget.lastCommentedAssets.all.title": <AllLastCommentedAssets/>,
+                "dashboard.widget.lastCommentedAssets.mine.title": <MyLastCommentedAssets/>,
+                "dashboard.widget.lastCommentedAssets.inReactionToMine.title": <LastCommentedAssetsInReactionToMine/>,
             }}/>
         </CardBody>
     </Card>)

@@ -1,14 +1,14 @@
 import * as React from "react";
-import {mountWithIntl} from "../../../../__tests__/environment/Environment";
-import en from "../../../../i18n/en";
-import Generator from "../../../../__tests__/environment/Generator";
+import {mountWithIntl} from "../../../../../__tests__/environment/Environment";
+import en from "../../../../../i18n/en";
+import Generator from "../../../../../__tests__/environment/Generator";
 import {Link, MemoryRouter} from "react-router-dom";
-import VocabularyUtils from "../../../../util/VocabularyUtils";
+import VocabularyUtils from "../../../../../util/VocabularyUtils";
 import {AssetList} from "../AssetList";
-import User from "../../../../model/User";
-import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
+import User from "../../../../../model/User";
+import {intlFunctions} from "../../../../../__tests__/environment/IntlUtil";
 import {Label} from "reactstrap";
-import RecentlyModifiedAsset from "../../../../model/RecentlyModifiedAsset";
+import RecentlyModifiedAsset from "../../../../../model/RecentlyModifiedAsset";
 
 describe("AssetList", () => {
     let user: User;
