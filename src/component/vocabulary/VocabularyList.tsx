@@ -1,11 +1,10 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary from "../../model/Vocabulary";
 import {
-    Column, Row,
+    Column,
+    Row,
     useFilters,
     UseFiltersColumnProps,
     usePagination,
@@ -18,13 +17,15 @@ import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter
 import VocabularyLink from "./VocabularyLink";
 import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
 import Pagination from "../misc/table/Pagination";
+import {useI18n} from "../hook/useI18n";
 
-interface VocabularyListProps extends HasI18n {
+interface VocabularyListProps {
     vocabularies: { [id: string]: Vocabulary };
 }
 
 export const VocabularyList: React.FC<VocabularyListProps> = props => {
-    const {vocabularies, i18n} = props;
+    const {vocabularies} = props;
+    const {i18n} = useI18n();
     const data = React.useMemo(() => Object.keys(vocabularies).map((v) => vocabularies[v]), [vocabularies]);
     const columns: Column<Vocabulary>[] = React.useMemo(() => [{
         Header: i18n("vocabulary.title"),
@@ -84,4 +85,4 @@ export default connect((state: TermItState) => {
     return {
         vocabularies: state.vocabularies
     };
-})(injectIntl(withI18n(VocabularyList)));
+})(VocabularyList);
