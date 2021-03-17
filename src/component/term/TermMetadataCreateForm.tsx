@@ -158,7 +158,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
             <Row>
                 <Col xs={12}>
                     <ParentTermSelector id="create-term-parent" onChange={this.onParentSelect}
-                                        parentTerms={termData.parentTerms}
+                                        parentTerms={termData.parentTerms as Term[]}
                                         vocabularyIri={this.props.vocabularyIri}/>
                 </Col>
             </Row>

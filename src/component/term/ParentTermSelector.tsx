@@ -10,15 +10,18 @@ import {loadTerms} from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../misc/treeselect/Renderers";
+import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
-import {loadTermsFromWorkspace} from "../../action/AsyncTermActions";
+import {loadTermsFromWorkspace, loadTermsIncludingCanonical} from "../../action/AsyncTermActions";
 import StorageUtils from "../../util/StorageUtils";
 import Constants from "../../util/Constants";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import OutgoingLink from "../misc/OutgoingLink";
+import {getLocalized} from "../../model/MultilingualString";
 
-function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
+function enhanceWithCurrentTerm(terms: Term[], currentTermIri?: string, parentTerms?: Term[]): Term[] {
     if (currentTermIri) {
+        const currentParents = Utils.sanitizeArray(parentTerms).slice();
         const result = [];
         for (const t of terms) {
             if (t.iri === currentTermIri) {
@@ -27,24 +30,33 @@ function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
             if (t.plainSubTerms) {
                 t.plainSubTerms = t.plainSubTerms.filter(st => st !== currentTermIri);
             }
-            result.push(t);
+            const parentIndex = currentParents.findIndex(p => p.iri === t.iri);
+            if (parentIndex === -1) {
+                result.push(t);
+            }
         }
-        return result;
+        // Add parents which are not in the loaded terms so that they show up in the list
+        return currentParents.concat(result);
     } else {
         return terms;
     }
 }
 
+function createValueRenderer() {
+    return (term: Term) => <OutgoingLink label={getLocalized(term.label)} iri={term.iri}/>;
+}
+
 interface ParentTermSelectorProps extends HasI18n {
     id: string;
     termIri?: string;
-    parentTerms?: TermData[];
+    parentTerms?: Term[];
     invalid?: boolean;
     invalidMessage?: JSX.Element;
     vocabularyIri: string;
     onChange: (newParents: Term[]) => void;
-    loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
     loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => Promise<Term[]>;
+    loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
+    loadTermsIncludingCanonical: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
 }
 
 interface ParentTermSelectorState {
@@ -54,7 +66,8 @@ interface ParentTermSelectorState {
 
 export const ParentSelectorRange = {
     VOCABULARY: "VOCABULARY",
-    WORKSPACE: "WORKSPACE"
+    WORKSPACE: "WORKSPACE",
+    CANONICAL: "CANONICAL"
 }
 
 export class ParentTermSelector extends React.Component<ParentTermSelectorProps, ParentTermSelectorState> {
@@ -78,7 +91,11 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         if (!val) {
             this.props.onChange([]);
         } else {
-            this.props.onChange(Utils.sanitizeArray(val).filter(v => v.iri !== this.props.termIri));
+            if (!this.props.termIri) {
+                this.props.onChange(Utils.sanitizeArray(val));
+            } else {
+                this.props.onChange(Utils.sanitizeArray(val).filter(v => v.iri !== this.props.termIri));
+            }
         }
     };
 
@@ -87,6 +104,8 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
         switch (this.state.selectorRange) {
             case ParentSelectorRange.WORKSPACE:
                 return this.fetchOptionsFromWorkspace(fetchOptions);
+            case ParentSelectorRange.CANONICAL:
+                return this.fetchOptionsIncludingCanonical(fetchOptions);
             default:
                 return this.fetchOptionsFromVocabulary(fetchOptions);
         }
@@ -102,7 +121,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
             includeTerms: parents
         }, VocabularyUtils.create(fetchOptions.option ? fetchOptions.option.vocabulary!.iri! : this.props.vocabularyIri)).then(terms => {
             this.setState({disableConfig: false});
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, [...parentVocabs, this.props.vocabularyIri], {searchString: fetchOptions.searchString}), this.props.termIri);
+            return enhanceWithCurrentTerm(processTermsForTreeSelect(terms, [...parentVocabs, this.props.vocabularyIri], {searchString: fetchOptions.searchString}), this.props.termIri);
         });
     };
 
@@ -111,7 +130,16 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
             ...fetchOptions
         }).then(terms => {
             this.setState({disableConfig: false});
-            return filterOutCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri);
+            return enhanceWithCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri, this.props.parentTerms);
+        });
+    }
+
+    private fetchOptionsIncludingCanonical = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
+        return this.props.loadTermsIncludingCanonical({
+            ...fetchOptions
+        }).then(terms => {
+            this.setState({disableConfig: false});
+            return enhanceWithCurrentTerm(processTermsForTreeSelect(terms, undefined, {searchString: fetchOptions.searchString}), this.props.termIri, this.props.parentTerms);
         });
     }
 
@@ -139,6 +167,10 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                         onClick={() => this.onRangeToggle(ParentSelectorRange.WORKSPACE)}
                         active={range === ParentSelectorRange.WORKSPACE}
                         disabled={this.state.disableConfig}>{i18n("term.metadata.parent.range.workspace")}</Button>
+                <Button key={ParentSelectorRange.CANONICAL} color="primary" outline={true} size="sm"
+                        onClick={() => this.onRangeToggle(ParentSelectorRange.CANONICAL)}
+                        active={range === ParentSelectorRange.CANONICAL}
+                        disabled={this.state.disableConfig}>{i18n("term.metadata.parent.range.canonical")}</Button>
             </ButtonGroup>
             {this.renderSelector()}
         </FormGroup>;
@@ -159,7 +191,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                                         maxHeight={200}
                                         multi={true}
                                         optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
-                                        valueRenderer={createTermValueRenderer()}
+                                        valueRenderer={createValueRenderer()}
                                         style={style}
                                         {...commonTermTreeSelectProps(this.props)}/>
             {this.props.invalid ?
@@ -171,7 +203,8 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
 
 export default connect(undefined, ((dispatch: ThunkDispatch) => {
     return {
+        loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
         loadTermsFromWorkspace: (fetchOptions: FetchOptionsFunction) => dispatch(loadTermsFromWorkspace(fetchOptions)),
-        loadTermsFromVocabulary: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri))
+        loadTermsIncludingCanonical: (fetchOptions: FetchOptionsFunction) => dispatch(loadTermsIncludingCanonical(fetchOptions))
     }
 }))(injectIntl(withI18n(ParentTermSelector)));

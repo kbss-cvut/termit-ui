@@ -31,7 +31,7 @@ import SearchQuery from "../model/SearchQuery";
 import {ErrorLogItem} from "../model/ErrorInfo";
 import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "../model/Configuration";
-import Workspace from "../model/Workspace";
+import Workspace, {EMPTY_WORKSPACE} from "../model/Workspace";
 import TermStatus from "../model/TermStatus";
 import {ConsolidatedResults} from "../model/ConsolidatedResults";
 
@@ -452,15 +452,21 @@ function annotatorTerms(state: { [key: string]: Term } = {}, action: AsyncAction
     }
 }
 
-function workspace(state: Workspace | null = null, action: AsyncActionSuccess<Workspace>) {
-    if (action.type === ActionType.SELECT_WORKSPACE && action.status === AsyncActionStatus.SUCCESS) {
-        return action.payload;
-    } else if (action.type === ActionType.LOAD_WORKSPACE && action.status === AsyncActionStatus.SUCCESS) {
-        return action.payload;
-    } else if (action.type === ActionType.LOGOUT) {
-        return null;
+function workspace(state: Workspace | null = EMPTY_WORKSPACE, action: AsyncActionSuccess<Workspace>) {
+    switch(action.type) {
+        case ActionType.SELECT_WORKSPACE:   // Intentional fall-through
+        case ActionType.LOAD_WORKSPACE:
+            if (action.status === AsyncActionStatus.SUCCESS) {
+                return action.payload;
+            } else if (action.status === AsyncActionStatus.FAILURE) {
+                return null;
+            }
+            return state;
+        case ActionType.LOGOUT:
+            return EMPTY_WORKSPACE;
+        default:
+            return state;
     }
-    return state;
 }
 
 function configuration(state: Configuration = DEFAULT_CONFIGURATION, action: AsyncActionSuccess<Configuration>) {

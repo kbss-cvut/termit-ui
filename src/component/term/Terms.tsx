@@ -23,7 +23,6 @@ import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
 import {createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge} from "../misc/treeselect/Renderers";
-import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
 import {Location} from "history";
 import {match as Match} from "react-router";
@@ -170,21 +169,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         }
     };
 
-    private onIncludeImportedToggle = () => {
-        this.setState({includeImported: !this.state.includeImported}, () => this.treeComponent.current.resetOptions());
-    };
-
-    private renderIncludeImported() {
-        return <div className={classNames({"mb-3": !this.props.isDetailView})}>
-            {this.props.isDetailView ? <></> :
-                <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
-                                            includeImported={this.state.includeImported}
-                                            disabled={this.state.disableIncludeImportedToggle}/>
-
-            }
-        </div>;
-    }
-
     private onDraftOnlyToggle = () => {
         this.setState({draft: !this.state.draft}, () => this.treeComponent.current.resetOptions());
     };
@@ -240,13 +224,11 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                     onClick={this.onCreateClick}><GoPlus/>&nbsp;{i18n("glossary.new")}
                 </Button>
                 }
-                {(isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
                 {isDetailView && this.renderDraftOnly()}
             </div>
             <div id="glossary-list" className={classNames({"card-header": isDetailView})}>
                 <Row>
                     <Col lg={isDetailView ? 12 : 9} md={12}>
-                        {(!isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
                         {!isDetailView && this.renderDraftOnly()}
                         <IntelligentTreeSelect
                             ref={this.treeComponent}

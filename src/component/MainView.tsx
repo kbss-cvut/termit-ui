@@ -21,7 +21,7 @@ import Dashboard from "./dashboard/Dashboard";
 import {changeView} from "../action/SyncActions";
 import Utils from "../util/Utils";
 import {loadCurrentWorkspace, selectWorkspace} from "../action/WorkspaceAsyncActions";
-import Workspace from "../model/Workspace";
+import Workspace, {EMPTY_WORKSPACE} from "../model/Workspace";
 import Header from "./main/Header";
 import WorkspaceNotLoaded from "./workspace/WorkspaceNotLoaded";
 import AsyncActionStatus from "../action/AsyncActionStatus";
@@ -117,12 +117,12 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     public render() {
-        const {i18n, user, sidebarExpanded} = this.props;
+        const {i18n, user, sidebarExpanded, workspace} = this.props;
 
-        if (user === EMPTY_USER) {
+        if (user === EMPTY_USER || workspace === EMPTY_WORKSPACE) {
             return this.renderPlaceholder();
         }
-        if (!this.props.workspace) {
+        if (!workspace) {
             return <WorkspaceNotLoaded/>;
         }
 
@@ -163,6 +163,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     private renderPlaceholder() {
         return <div id="loading-placeholder" className="wrapper main-container">
+            <Mask/>
             <Header showBreadcrumbs={false}/>
             <Messages/>
             <Jumbotron>

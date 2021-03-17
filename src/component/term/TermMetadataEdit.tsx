@@ -204,7 +204,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
                         <Row>
                             <Col xs={12}>
                                 <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
-                                                    parentTerms={this.state.parentTerms}
+                                                    parentTerms={this.state.parentTerms as Term[]}
                                                     invalid={validationBroader.length > 0}
                                                     invalidMessage={this.renderMessages(validationBroader)}
                                                     vocabularyIri={this.props.term.vocabulary!.iri!}

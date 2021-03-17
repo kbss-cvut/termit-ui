@@ -20,7 +20,7 @@ export function selectWorkspace(iri: IRI) {
             return Promise.resolve({});
         }
         dispatch(asyncActionRequest(action));
-        return Ajax.put(`${Constants.API_PREFIX}/workspaces/${iri.fragment}`, param("namespace", iri.namespace))
+        return Ajax.put(`${Constants.API_PREFIX}/workspaces/${iri.fragment}`, param("namespace", iri.namespace).accept(Constants.JSON_LD_MIME_TYPE))
             .then((resp: AxiosResponse) => JsonLdUtils.compactAndResolveReferences<WorkspaceData>(resp.data, WORKSPACE_CONTEXT))
             .then((data: WorkspaceData) => {
                 dispatch(publishMessage(new Message({
