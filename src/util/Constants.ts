@@ -23,7 +23,7 @@ type Component<T = {}> = {
  */
 const ENV = {
     ...Object.keys(process.env).reduce<Record<string, string>>((acc, key) => {
-        const strippedKey = key.replace('REACT_APP_', '')
+        const strippedKey = key.replace("REACT_APP_", "")
         acc[strippedKey] = process.env[key]!
         return acc
     }, {}),
@@ -33,6 +33,7 @@ const ENV = {
 /**
  * Helper to make sure that all envs are defined properly
  * @param name env variable name
+ * @param defaultValue Default variable name
  */
 const getEnv = (name: string, defaultValue?: string): string => {
     const value = ENV[name] || defaultValue
@@ -46,30 +47,28 @@ const getEnv = (name: string, defaultValue?: string): string => {
  * Components configuration
  */
 const COMPONENTS: Components = (() => {
-    const base64String = getEnv('COMPONENTS')
+    const base64String = getEnv("COMPONENTS")
     try {
         // Use TextDecoder interface to properly decode UTF-8 characters
-        const yamlString = new TextDecoder('utf-8').decode(
+        const yamlString = new TextDecoder("utf-8").decode(
             Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0))
         )
         return YAML.parse(yamlString)
     } catch (error: any) {
-        throw error;
-        console.error(error)
-        throw new Error('Unable to decode COMPONENTS configuration')
+        throw new Error("Unable to decode COMPONENTS configuration. Error: " + error);
     }
 })()
 
 const APP_NAME = "TermIt";
 const API_PREFIX = "/rest";
 const DEFAULT_LANGUAGE = "en";
-const DEPLOYMENT_NAME = getEnv('CONTEXT');
+const DEPLOYMENT_NAME = getEnv("CONTEXT");
 const DEPLOYMENT_INFIX = DEPLOYMENT_NAME.length > 0 ? DEPLOYMENT_NAME + "-" : "";
 const AUTHORIZATION = "authorization";
 
 const constants = {
     // Will be replaced with actual server url during runtime
-    ID: getEnv('ID'),
+    ID: getEnv("ID"),
     // Will be replaced with actual server url during runtime
     COMPONENTS,
     // Will be replaced with actual server url during runtime
@@ -81,7 +80,7 @@ const constants = {
     PUBLIC_API_PREFIX: `${API_PREFIX}/public`,
     APP_NAME,
     // Will be replaced with actual version during build
-    VERSION: getEnv('VERSION'),
+    VERSION: getEnv("VERSION"),
     // Will be replaced with actual deployment name during runtime
     DEPLOYMENT_NAME,
     HOME_ROUTE: Routes.dashboard,
