@@ -36,7 +36,7 @@ import {
     updateResourceTerms,
     updateTerm,
     updateVocabulary,
-    uploadFileContent, loadNews
+    uploadFileContent, loadNews, loadConfiguration
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, {param} from "../../util/Ajax";
@@ -73,6 +73,7 @@ import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
 import NotificationType from "../../model/NotificationType";
 import {langString} from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
+import UserRole from "../../model/UserRole";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -198,10 +199,10 @@ describe("Async actions", () => {
             Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
             return Promise.resolve((store.dispatch as ThunkDispatch)(removeVocabulary(vocabulary))).then(() => {
-                    expect(Ajax.delete).toHaveBeenCalled();
-                    const call = (Ajax.delete as jest.Mock).mock.calls[0];
-                    expect(call[0]).toEqual(Constants.API_PREFIX + "/vocabularies/" + normalizedName);
-                    expect(call[1].getParams().namespace).toEqual(namespace);
+                expect(Ajax.delete).toHaveBeenCalled();
+                const call = (Ajax.delete as jest.Mock).mock.calls[0];
+                expect(call[0]).toEqual(Constants.API_PREFIX + "/vocabularies/" + normalizedName);
+                expect(call[1].getParams().namespace).toEqual(namespace);
             });
         });
 
@@ -226,7 +227,7 @@ describe("Async actions", () => {
             Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
             return Promise.resolve((store.dispatch as ThunkDispatch)(removeVocabulary(vocabulary))).then(() => {
-                expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies,undefined);
+                expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies, undefined);
             });
         });
     });
@@ -410,7 +411,7 @@ describe("Async actions", () => {
 
         it("publishes message on error", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.reject("An error"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(file))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri), Generator.generateUri()))).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(found).toBeDefined();
@@ -420,7 +421,7 @@ describe("Async actions", () => {
 
         it("publishes message on success", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.resolve("Success"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(file))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri), Generator.generateUri()))).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(found).toBeDefined();
@@ -550,7 +551,7 @@ describe("Async actions", () => {
             const term: Term = new Term({
                 iri: namespace + "pojem/" + normalizedTermName,
                 label: langString("Test"),
-                comment: "Test term",
+                scopeNote: langString("Test term"),
                 vocabulary: {iri: namespace + normalizedVocabularyName}
             });
             const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -569,7 +570,7 @@ describe("Async actions", () => {
             const term: Term = new Term({
                 iri: Generator.generateUri(),
                 label: langString("Test"),
-                comment: "Test term",
+                scopeNote: langString("Test term"),
                 vocabulary: {iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary"}
             });
             const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -921,12 +922,12 @@ describe("Async actions", () => {
     });
 
     describe("validate results", () => {
-        const v = VocabularyUtils.create('');
+        const v = VocabularyUtils.create("");
         it("extracts validation results from incoming JSON", () => {
             const validationResults = require("../../rest-mock/validation-results.json");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults) );
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
             return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
-                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const successAction: AsyncActionSuccess<{ [vocabularyIri: string]: ValidationResult[] }> = store.getActions()[1];
                 const result = successAction.payload[v.toString()];
                 const array = result["http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"];
                 expect(array.length).toEqual(validationResults.length);
@@ -945,7 +946,7 @@ describe("Async actions", () => {
             const validationResults = require("../../rest-mock/validation-results.json");
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(validationResults));
             return Promise.resolve((store.dispatch as ThunkDispatch)(validateVocabulary(v))).then(() => {
-                const successAction: AsyncActionSuccess<{[vocabularyIri: string] : ValidationResult[]}> = store.getActions()[1];
+                const successAction: AsyncActionSuccess<{ [vocabularyIri: string]: ValidationResult[] }> = store.getActions()[1];
                 const result = successAction.payload[v.toString()];
                 const array = result["http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"];
                 expect(array).toBeDefined();
@@ -991,7 +992,7 @@ describe("Async actions", () => {
             const term: Term = new Term({
                 iri: namespace + "pojem/" + normalizedTermName,
                 label: langString("Test"),
-                comment: "Test term"
+                scopeNote: langString("Test term")
             });
             const resource = new Resource({
                 iri: namespace + normalizedResourceName,
@@ -1792,9 +1793,35 @@ describe("Async actions", () => {
             const news = "New version published, yay!";
             const lang = "cs";
             Ajax.get = jest.fn().mockResolvedValue(news);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result:any) => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result: any) => {
                 expect(result).toEqual(news);
                 expect((Ajax.get as jest.Mock).mock.calls[0][0]).toEqual(Constants.NEWS_MD_URL[lang]);
+            });
+        });
+    });
+
+    describe("loadConfiguration", () => {
+        it("maps returned role data to UserRole instances", () => {
+            const data = {
+                "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/konfigurace/default",
+                "@type": ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/konfigurace"],
+                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/má-uživatelskou-roli": [
+                    {
+                        "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/plný-uživatel-termitu",
+                        "@type": ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatelská-role"],
+                        "http://www.w3.org/2004/02/skos/core#prefLabel": [{
+                            "@language": "cs",
+                            "@value": "Editor"
+                        }, {"@language": "en", "@value": "Editor"}]
+                    }],
+                "http://purl.org/dc/terms/language": "cs"
+            };
+            Ajax.get = jest.fn().mockResolvedValue(data);
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadConfiguration())).then(() => {
+                const successAction = store.getActions().find(a => a.type === ActionType.LOAD_CONFIGURATION && a.status === AsyncActionStatus.SUCCESS);
+                expect(successAction).toBeDefined();
+                expect(successAction.payload.roles).toBeDefined();
+                successAction.payload.roles.forEach((r: any) => expect(r).toBeInstanceOf(UserRole));
             });
         });
     });

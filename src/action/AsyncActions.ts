@@ -53,6 +53,7 @@ import {langString} from "../model/MultilingualString";
 import {Configuration} from "../model/Configuration";
 import ValidationResult, {CONTEXT as VALIDATION_RESULT_CONTEXT} from "../model/ValidationResult";
 import {ConsolidatedResults} from "../model/ConsolidatedResults";
+import UserRole, {UserRoleData} from "../model/UserRole";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1180,7 +1181,7 @@ export function loadConfiguration() {
         return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_LD_MIME_TYPE))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<Configuration>(data, CONFIGURATION_CONTEXT))
             .then((data: Configuration) => {
-                    data.roles = Utils.sanitizeArray(data.roles);
+                    data.roles = Utils.sanitizeArray(data.roles).map((d: UserRoleData) => new UserRole(d));
                     return dispatch(asyncActionSuccessWithPayload(action, data))
                 }
             )
