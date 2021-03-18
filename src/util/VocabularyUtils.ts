@@ -72,6 +72,7 @@ const VocabularyUtils = {
     TERM_ASSIGNMENT: _NS_TERMIT + "přiřazení-termu",
     TERM_OCCURRENCE: _NS_TERMIT + "výskyt-termu",
     TERM_DEFINITION_SOURCE: _NS_TERMIT + "zdroj-definice-termu",
+    JE_TEMATEM: _NS_TERMIT + "je-tématem",
     SUGGESTED_TERM_OCCURRENCE: _NS_TERMIT + "navržený-výskyt-termu",
     ASSIGNMENT_TARGET: _NS_TERMIT + "c\u00edl",
     FILE_OCCURRENCE_TARGET: _NS_TERMIT + "c\u00edl-souborov\u00e9ho-v\u00fdskytu",

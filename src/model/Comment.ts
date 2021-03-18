@@ -32,7 +32,7 @@ export interface CommentData {
     iri?: string;
     content: string;
     author?: UserData;
-    asset?: string;  // Asset IRI
+    asset?: AssetData;  // Asset IRI
     created?: number;
     modified?: number;
     reactions?: CommentReaction[];
@@ -42,7 +42,7 @@ export default class Comment implements CommentData, SupportsJsonLd<CommentData>
     public iri?: string;
     public content: string;
     public author?: User;
-    public asset?: string;
+    public asset?: AssetData;
     public created?: number;
     public modified?: number;
     public reactions?: CommentReaction[];

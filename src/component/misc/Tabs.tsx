@@ -2,6 +2,7 @@ import * as React from "react";
 import {Badge, Nav, NavItem, NavLink, TabContent, TabPane} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
+import classNames from "classnames";
 
 interface TabsProps extends HasI18n {
     /**
@@ -19,7 +20,11 @@ interface TabsProps extends HasI18n {
     /**
      * Tab change function.
      */
-    changeTab: (selectedTabLabelKey: string) => void
+    changeTab: (selectedTabLabelKey: string) => void,
+    /**
+     * Navigation link style.
+     */
+    navLinkStyle?: string
 }
 
 export class Tabs extends React.Component<TabsProps> {
@@ -41,10 +46,12 @@ export class Tabs extends React.Component<TabsProps> {
                 ? <>{" "}<Badge>{this.props.tabBadges[id]}</Badge></>
                 : null;
 
+            const className = classNames(this.props.navLinkStyle ? this.props.navLinkStyle : "", (id === this.props.activeTabLabelKey) ? "active" : "");
+
             navLinks.push(
                 <NavItem key={id}>
                     <NavLink
-                        className={(id === this.props.activeTabLabelKey) ? "active" : ""}
+                        className={className}
                         onClick={changeTab}>
                         {this.props.formatMessage(id, {})}
                         {badge}
