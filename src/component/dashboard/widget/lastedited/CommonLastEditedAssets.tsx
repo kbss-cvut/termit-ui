@@ -1,13 +1,10 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../../../hoc/withI18n";
 import withInjectableLoading, {InjectsLoading} from "../../../hoc/withInjectableLoading";
 import RecentlyModifiedAsset from "../../../../model/RecentlyModifiedAsset";
 import AssetList from "./AssetList";
 
-export interface CommonLastEditedAssetsProps extends HasI18n, InjectsLoading {
+export interface CommonLastEditedAssetsProps extends InjectsLoading {
     loadAssets: () => Promise<RecentlyModifiedAsset[]>;
-    locale: string;
 }
 
 const CommonLastEditedAssets: React.FC<CommonLastEditedAssetsProps> = props => {
@@ -26,4 +23,4 @@ const CommonLastEditedAssets: React.FC<CommonLastEditedAssetsProps> = props => {
     </>;
 }
 
-export default injectIntl(withI18n(withInjectableLoading(CommonLastEditedAssets)));
+export default withInjectableLoading(CommonLastEditedAssets);

@@ -16,7 +16,7 @@ describe("CommentedAssetList", () => {
 
     it("does not render info message during loading", () => {
         const wrapper = mountWithIntl(<MemoryRouter>
-            <CommentedAssetList user={user} commentedAssets={[]} loading={true} {...intlFunctions()}/>
+            <CommentedAssetList user={user} assets={[]} loading={true} {...intlFunctions()}/>
         </MemoryRouter>);
         const info = wrapper.find(".italics");
         expect(info.exists()).toBeFalsy();
@@ -24,7 +24,7 @@ describe("CommentedAssetList", () => {
 
     it("renders info message when no assets were found", () => {
         const wrapper = mountWithIntl(<MemoryRouter>
-            <CommentedAssetList user={user} commentedAssets={[]} loading={false} {...intlFunctions()}/>
+            <CommentedAssetList user={user} assets={[]} loading={false} {...intlFunctions()}/>
         </MemoryRouter>);
         const info = wrapper.find(".italics");
         expect(info.exists()).toBeTruthy();

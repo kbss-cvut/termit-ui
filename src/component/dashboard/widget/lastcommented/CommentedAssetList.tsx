@@ -1,30 +1,30 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../../../hoc/withI18n";
 import {Col, Label, Row, Table} from "reactstrap";
 import TimeAgo from "javascript-time-ago";
-import {injectIntl} from "react-intl";
 import User from "../../../../model/User";
 import {connect} from "react-redux";
 import TermItState from "../../../../model/TermItState";
 import TermIriLink from "../../../term/TermIriLink";
 import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
+import {useCallback} from "react";
+import {useI18n} from "../../../hook/useI18n";
 
-interface CommentedAssetListProps extends HasI18n {
-    locale: string;
+interface CommentedAssetListProps {
     user: User;
-    commentedAssets: RecentlyCommentedAsset[];
+    assets: RecentlyCommentedAsset[];
     loading: boolean;
 }
 
 export const CommentedAssetList: React.FC<CommentedAssetListProps> = props => {
-    const { commentedAssets, loading, i18n, user, locale, formatMessage } = props;
+    const { assets, loading, user } = props;
+    const { i18n, formatMessage, locale } = useI18n();
 
     const renderEmptyInfo = () =>
        !loading ?
             <div className="italics py-2">{i18n("dashboard.widget.commentList.empty")}</div> : null;
 
-    const renderMessage = (lastEdited : number, author : User) => {
-        const formatter = new TimeAgo(props.locale);
+    const renderMessage = useCallback(  (lastEdited : number, author : User) => {
+        const formatter = new TimeAgo(locale);
         return (user.iri === author.iri) ?
             formatMessage("dashboard.widget.commentList.messageByYou", {
                 when: formatter.format(lastEdited)
@@ -33,9 +33,9 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = props => {
                 user: author.fullName,
                 when: formatter.format(lastEdited)
             })
-    }
+    },[formatMessage, user, locale]);
 
-    const renderCommentedAsset = (commentedAsset : RecentlyCommentedAsset) => {
+    const renderCommentedAsset = useCallback( (commentedAsset : RecentlyCommentedAsset) => {
         const lastEdited = commentedAsset.lastComment.modified ? commentedAsset.lastComment.modified : commentedAsset.lastComment.created;
         return <td className="col-xs-12 px-0">
             <div>
@@ -51,23 +51,22 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = props => {
                 </Col>
             </Row>
         </td>
-    }
+    },[renderMessage, i18n, locale]);
 
     const renderNonEmptyContent = () => {
         return <Table className="widget" borderless={true}>
             <tbody>
-            {commentedAssets.map(commentedAsset => <tr key={commentedAsset.iri}>{renderCommentedAsset(commentedAsset)}</tr>)}
+            {assets.map(asset => <tr key={asset.iri}>{renderCommentedAsset(asset)}</tr>)}
             </tbody>
         </Table>;
     }
 
     return <>
-        {commentedAssets.length > 0 ?
+        {assets.length > 0 ?
             renderNonEmptyContent() :
             renderEmptyInfo()}
     </>;
 }
 
-export default connect((state: TermItState) => ({ user: state.user }))
-(injectIntl(withI18n(CommentedAssetList)));
+export default connect((state: TermItState) => ({ user: state.user }))(CommentedAssetList);
 
