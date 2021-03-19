@@ -2,9 +2,9 @@ name: Docker
 
 on:
   push:
-    # Publish `main` as Docker `latest` image.
+    # Publish `master` as Docker `latest` image.
     branches:
-      - main
+      - master
 
 env:
   # TODO: Change variable to your image's name.
