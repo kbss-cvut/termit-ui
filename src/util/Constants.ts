@@ -6,24 +6,25 @@ type Component<T = {}> = {
     url: string
     meta: T
 }
+
+type Components = {
+    'al-sgov-server': Component
+    'al-db-server': Component
+    'al-auth-server': Component
+    'al-ontographer': Component<{ 'workspace-path': string }>
+    'al-termit-server': Component
+    'al-termit': Component<{ 'workspace-path': string }>
+    'al-mission-control': Component
+    'al-issue-tracker': Component<{ 'new-bug': string; 'new-feature': string }>
+  }
   
- type Components = {
-    sgovServer: Component
-    dbServer: Component
-    authServer: Component
-    ontographer: Component<{ workspacePath: string }>
-    termitServer: Component
-    termit: Component<{ workspacePath: string }>
-    missionControl: Component
-    issueTracker: Component<{ newBug: string; newFeature: string }>
-}
 
 /**
  * Aggregated object of process.env and window.__config__ to allow dynamic configuration
  */
 const ENV = {
     ...Object.keys(process.env).reduce<Record<string, string>>((acc, key) => {
-        const strippedKey = key.replace('REACT_APP_', '')
+        const strippedKey = key.replace("REACT_APP_", "")
         acc[strippedKey] = process.env[key]!
         return acc
     }, {}),
@@ -33,6 +34,7 @@ const ENV = {
 /**
  * Helper to make sure that all envs are defined properly
  * @param name env variable name
+ * @param defaultValue Default variable name
  */
 const getEnv = (name: string, defaultValue?: string): string => {
     const value = ENV[name] || defaultValue
@@ -46,42 +48,40 @@ const getEnv = (name: string, defaultValue?: string): string => {
  * Components configuration
  */
 const COMPONENTS: Components = (() => {
-    const base64String = getEnv('COMPONENTS')
+    const base64String = getEnv("COMPONENTS")
     try {
         // Use TextDecoder interface to properly decode UTF-8 characters
-        const yamlString = new TextDecoder('utf-8').decode(
+        const yamlString = new TextDecoder("utf-8").decode(
             Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0))
         )
         return YAML.parse(yamlString)
     } catch (error: any) {
-        throw error;
-        console.error(error)
-        throw new Error('Unable to decode COMPONENTS configuration')
+        throw new Error("Unable to decode COMPONENTS configuration. Error: " + error);
     }
 })()
 
 const APP_NAME = "TermIt";
 const API_PREFIX = "/rest";
 const DEFAULT_LANGUAGE = "en";
-const DEPLOYMENT_NAME = getEnv('CONTEXT');
+const DEPLOYMENT_NAME = getEnv("CONTEXT");
 const DEPLOYMENT_INFIX = DEPLOYMENT_NAME.length > 0 ? DEPLOYMENT_NAME + "-" : "";
 const AUTHORIZATION = "authorization";
 
 const constants = {
     // Will be replaced with actual server url during runtime
-    ID: getEnv('ID'),
+    ID: getEnv("ID"),
     // Will be replaced with actual server url during runtime
     COMPONENTS,
     // Will be replaced with actual server url during runtime
-    SERVER_URL: COMPONENTS.termitServer.url,
+    SERVER_URL: COMPONENTS['al-termit-server'].url,
     // Will be replaced with actual control panel url during runtime
-    CONTROL_PANEL_URL: COMPONENTS.missionControl.url,
+    CONTROL_PANEL_URL: COMPONENTS['al-mission-control'].url,
     // Prefix of the server REST API
     API_PREFIX,
     PUBLIC_API_PREFIX: `${API_PREFIX}/public`,
     APP_NAME,
     // Will be replaced with actual version during build
-    VERSION: getEnv('VERSION'),
+    VERSION: getEnv("VERSION"),
     // Will be replaced with actual deployment name during runtime
     DEPLOYMENT_NAME,
     HOME_ROUTE: Routes.dashboard,

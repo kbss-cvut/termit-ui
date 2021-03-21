@@ -65,6 +65,10 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
 }
 
 export function loadTermsFromWorkspace(fetchOptions: FetchOptionsFunction) {
+    return initTermFetching(fetchOptions, false);
+}
+
+function initTermFetching(fetchOptions: FetchOptionsFunction, includeCanonical?: boolean) {
     const action = {
         type: ActionType.FETCH_VOCABULARY_TERMS
     };
@@ -79,6 +83,7 @@ export function loadTermsFromWorkspace(fetchOptions: FetchOptionsFunction) {
         } else {
             parameters.searchString = fetchOptions.searchString;
             parameters.rootsOnly = !fetchOptions.searchString;
+            parameters.includeCanonical = includeCanonical;
         }
         return Ajax.get(url,
             params(Object.assign(parameters, Utils.createPagingParams(fetchOptions.offset, fetchOptions.limit))))
@@ -92,4 +97,8 @@ export function loadTermsFromWorkspace(fetchOptions: FetchOptionsFunction) {
                 return [];
             });
     };
+}
+
+export function loadTermsIncludingCanonical(fetchOptions: FetchOptionsFunction) {
+    return initTermFetching(fetchOptions, true);
 }

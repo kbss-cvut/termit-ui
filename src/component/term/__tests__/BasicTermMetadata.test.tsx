@@ -23,7 +23,7 @@ describe("BasicTermMetadata", () => {
         term = new Term({
             iri: Generator.generateUri(),
             label: langString("Test"),
-            comment: "test",
+            definition: langString("test"),
             vocabulary: {iri: vocabulary.iri}
         });
     });
@@ -48,17 +48,5 @@ describe("BasicTermMetadata", () => {
         const renderedTypes = wrapper.find(OutgoingLink);
         expect(renderedTypes.length).toEqual(1);
         expect(renderedTypes.get(0).props.iri).toEqual(term.types[1]);
-    });
-
-    it("renders parent term link when parent term exists", () => {
-        term.parentTerms = [new Term({
-            iri: Generator.generateUri(),
-            label: langString("Parent"),
-            vocabulary: {iri: Generator.generateUri()}
-        })];
-        const wrapper = shallow(<BasicTermMetadata term={term}
-                                                   language={Constants.DEFAULT_LANGUAGE} {...intlFunctions()}/>);
-        const parentLinks = wrapper.find(TermLink);
-        expect(parentLinks.length).toEqual(term.parentTerms.length);
     });
 });

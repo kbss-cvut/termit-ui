@@ -14,7 +14,7 @@ import AsyncActionStatus from "../action/AsyncActionStatus";
 import {ErrorLogItem} from "./ErrorInfo";
 import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "./Configuration";
-import Workspace from "./Workspace";
+import Workspace, {EMPTY_WORKSPACE} from "./Workspace";
 import {ConsolidatedResults} from "./ConsolidatedResults";
 
 /**
@@ -87,7 +87,7 @@ export default class TermItState {
         this.sidebarExpanded = true;
         this.desktopView = Utils.isDesktopView();
         this.annotatorTerms = {};
-        this.workspace = null;
+        this.workspace = EMPTY_WORKSPACE;
         this.configuration = DEFAULT_CONFIGURATION;
         this.validationResults = {};
     }

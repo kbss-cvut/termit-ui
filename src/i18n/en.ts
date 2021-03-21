@@ -224,6 +224,7 @@ const en = {
         "term.metadata.parent": "Parent terms",
         "term.metadata.parent.range.vocabulary": "Terms from current vocabulary",
         "term.metadata.parent.range.workspace": "Terms from the whole workspace",
+        "term.metadata.parent.range.canonical": "Terms from the workspace and published SSP",
         "term.metadata.subTerms": "Sub terms",
         "term.metadata.types": "Type",
         "term.metadata.source": "Source",

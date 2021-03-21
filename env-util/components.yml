@@ -1,36 +1,36 @@
-sgovServer:
+al-sgov-server:
   name: SGoV Service
   url: https://kbss.felk.cvut.cz/sgov-server
   meta: {}
-dbServer:
+al-db-server:
   name: A graph database
   url: https://example.com/sparql
   meta: {}
-authServer:
+al-auth-server:
   name: OIDC Authentication Service
   url: https://kbss.felk.cvut.cz:10808/auth/realms/kodi-dev
   meta: {}
-ontographer:
+al-ontographer:
   name: ontoGrapher
   url: https://slovník.gov.cz/modelujeme/v-nástroji/ontographer
   meta:
-    workspacePath: '?workspace=%WORKSPACE_IRI%'
-termitServer:
+    workspace-path: '?workspace=%WORKSPACE_IRI%'
+al-termit-server:
   name: TermIT backend
   url: https://kbss.felk.cvut.cz/termit-server-kodi
   meta: {}
-termit:
+al-termit:
   name: TermIT
   url: https://slovník.gov.cz/modelujeme/v-nástroji/termit
   meta:
-    workspacePath: '#vocabularies?workspace=%WORKSPACE_IRI%'
-missionControl:
+    workspace-path: '#vocabularies?workspace=%WORKSPACE_IRI%'
+al-mission-control:
   name: Mission Control
   url: https://slovník.gov.cz/modelujeme/
   meta: {}
-issueTracker:
+al-issue-tracker:
   name: Issue Tracker
   url: https://github.com/opendata-mvcr/sgov-assembly-line/issues
   meta:
-    newBug: https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=bug&template=po-adavek-na-opravu.md&title=
-    newFeature: https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=enhancement&template=po-adavek-na-novou-funkcionalitu.md&title=
+    new-bug: https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=bug&template=po-adavek-na-opravu.md&title=
+    new-feature: https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=enhancement&template=po-adavek-na-novou-funkcionalitu.md&title=

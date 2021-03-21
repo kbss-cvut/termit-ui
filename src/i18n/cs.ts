@@ -227,6 +227,7 @@ const cs = {
         "term.metadata.parent": "Nadřazené pojmy",
         "term.metadata.parent.range.vocabulary": "Použít pojmy z aktuálního slovníku",
         "term.metadata.parent.range.workspace": "Použít pojmy z celého pracovního prostoru",
+        "term.metadata.parent.range.canonical": "Použít pojmy z pracovního prostoru a z publikovaného SSP",
         'term.metadata.subTerms': 'Podřazené pojmy',
         'term.metadata.types': 'Typ pojmu',
         'term.metadata.status': 'Stav pojmu',

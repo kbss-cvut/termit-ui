@@ -13,6 +13,7 @@ import TermLink from "./TermLink";
 import {OWL, SKOS} from "../../util/Namespaces";
 import {getLocalizedOrDefault} from "../../model/MultilingualString";
 import TermDefinitionBlock from "./TermDefinitionBlock";
+import ParentTermsList from "./ParentTermsList";
 
 interface BasicTermMetadataProps extends HasI18n {
     term: Term;
@@ -38,7 +39,7 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 <Col xl={10} md={8}>{this.renderTypes()}
                 </Col>
             </Row>
-            {this.renderParentTerms()}
+            <ParentTermsList parentTerms={term.parentTerms} language={language}/>
             {this.renderSubTerms()}
             <Row>
                 <Col xl={2} md={4}>
@@ -88,23 +89,6 @@ export class BasicTermMetadata extends React.Component<BasicTermMetadataProps, a
                 {source.map((item: string) => <li key={item}>{renderItem(item)}</li>)}
             </List>
         }
-    }
-
-    private renderParentTerms() {
-        const parents = Utils.sanitizeArray(this.props.term.parentTerms);
-        parents.sort(Utils.labelComparator);
-        return <Row>
-            <Col xl={2} md={4}>
-                <Label className="attribute-label mb-3">{this.props.i18n("term.metadata.parent")}</Label>
-            </Col>
-            <Col xl={10} md={8}>
-                <List type="unstyled" id="term-metadata-parentterms" className="mb-3">
-                    {parents.map(item => <li key={item.iri}>
-                        <TermLink term={item} language={this.props.language}/>
-                    </li>)}
-                </List>
-            </Col>
-        </Row>;
     }
 
     private renderSubTerms() {

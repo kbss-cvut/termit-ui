@@ -4,7 +4,12 @@ import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
 import {ThunkDispatch} from "../../util/Types";
-import {loadTermsFromWorkspace, setTermDefinitionSource, setTermStatus} from "../AsyncTermActions";
+import {
+    loadTermsFromWorkspace,
+    loadTermsIncludingCanonical,
+    setTermDefinitionSource,
+    setTermStatus
+} from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
 import Term from "../../model/Term";
@@ -142,7 +147,7 @@ describe("AsyncTermActions", () => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual({rootsOnly: true});
+                expect(callConfig.getParams()).toEqual(expect.objectContaining({rootsOnly: true}));
             });
         });
 
@@ -159,7 +164,7 @@ describe("AsyncTermActions", () => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(`${Constants.API_PREFIX}/terms/${fragment}/subterms`);
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual({namespace: termNamespace});
+                expect(callConfig.getParams()).toEqual(expect.objectContaining({namespace: termNamespace}));
             });
         });
 
@@ -172,7 +177,7 @@ describe("AsyncTermActions", () => {
             };
             return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace(params))).then(() => {
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual({page: 1, size: 100, rootsOnly: true});
+                expect(callConfig.getParams()).toEqual(expect.objectContaining({page: 1, size: 100, rootsOnly: true}));
             });
         });
 
@@ -184,7 +189,32 @@ describe("AsyncTermActions", () => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual({rootsOnly: false, searchString});
+                expect(callConfig.getParams()).toEqual(expect.objectContaining({rootsOnly: false, searchString}));
+            });
+        });
+    });
+
+    describe("loadTermsIncludingCanonical", () => {
+        it("passes includeCanonical parameter to endpoint call", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsIncludingCanonical({}))).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams().includeCanonical).toBeTruthy();
+            });
+        });
+
+        it("supports using search string and canonical terms inclusion in the same request", () => {
+            const searchString = "label";
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsIncludingCanonical({searchString}))).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams()).toEqual(expect.objectContaining({searchString, includeCanonical: true}));
             });
         });
     });
