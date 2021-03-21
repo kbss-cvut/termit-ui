@@ -4,7 +4,7 @@ import Routes from "./Routes";
 import Constants from "../util/Constants";
 
 // Extract Keycloak URL and realm from generic OIDC auth URL
-const OIDC_URL = Constants.COMPONENTS.authServer.url;
+const OIDC_URL = Constants.COMPONENTS['al-auth-server'].url;
 const match = /^(.+)\/realms\/(.+)$/.exec(OIDC_URL)
 if (!match) {
     throw new Error("Invalid Keycloak configuration provided")

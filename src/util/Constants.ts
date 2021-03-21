@@ -6,17 +6,18 @@ type Component<T = {}> = {
     url: string
     meta: T
 }
+
+type Components = {
+    'al-sgov-server': Component
+    'al-db-server': Component
+    'al-auth-server': Component
+    'al-ontographer': Component<{ 'workspace-path': string }>
+    'al-termit-server': Component
+    'al-termit': Component<{ 'workspace-path': string }>
+    'al-mission-control': Component
+    'al-issue-tracker': Component<{ 'new-bug': string; 'new-feature': string }>
+  }
   
- type Components = {
-    sgovServer: Component
-    dbServer: Component
-    authServer: Component
-    ontographer: Component<{ workspacePath: string }>
-    termitServer: Component
-    termit: Component<{ workspacePath: string }>
-    missionControl: Component
-    issueTracker: Component<{ newBug: string; newFeature: string }>
-}
 
 /**
  * Aggregated object of process.env and window.__config__ to allow dynamic configuration
@@ -72,9 +73,9 @@ const constants = {
     // Will be replaced with actual server url during runtime
     COMPONENTS,
     // Will be replaced with actual server url during runtime
-    SERVER_URL: COMPONENTS.termitServer.url,
+    SERVER_URL: COMPONENTS['al-termit-server'].url,
     // Will be replaced with actual control panel url during runtime
-    CONTROL_PANEL_URL: COMPONENTS.missionControl.url,
+    CONTROL_PANEL_URL: COMPONENTS['al-mission-control'].url,
     // Prefix of the server REST API
     API_PREFIX,
     PUBLIC_API_PREFIX: `${API_PREFIX}/public`,
