@@ -18,6 +18,7 @@ const en = {
         "approve": "Approve",
         "basic-information": "Basic Information",
         "created-info": "Created by {author} on {date}",
+        "select.placeholder": "Select...",
 
         "connection.error": "Unable to connect to the server.",
         "ajax.unparseable-error": "Action failed. Server responded with unexpected error. If necessary, see browser log for more details.",

@@ -10,15 +10,24 @@ import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Utils from "../../util/Utils";
 import {createVocabularyValueRenderer} from "../misc/treeselect/Renderers";
+import {ThunkDispatch} from "../../util/Types";
+import {loadVocabularies} from "../../action/AsyncActions";
 
 interface ImportedVocabulariesListEditProps extends HasI18n {
     vocabulary: Vocabulary;
     vocabularies: { [key: string]: Vocabulary };
     importedVocabularies?: AssetData[];
     onChange: (change: object) => void;
+    loadVocabularies: () => void;
 }
 
 export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabulariesListEditProps> {
+
+    public componentDidMount() {
+        if (Object.getOwnPropertyNames(this.props.vocabularies).length === 0) {
+            this.props.loadVocabularies();
+        }
+    }
 
     public onChange = (selected: Vocabulary[]) => {
         const selectedVocabs = selected.map(v => ({iri: v.iri}));
@@ -41,6 +50,7 @@ export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabu
                                            valueKey="iri"
                                            labelKey="label"
                                            childrenKey="children"
+                                           placeholder={i18n("select.placeholder")}
                                            isMenuOpen={false}
                                            multi={true}
                                            showSettings={false}
@@ -55,6 +65,8 @@ export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabu
     }
 }
 
-export default connect((state: TermItState) => {
-    return {vocabularies: state.vocabularies};
+export default connect((state: TermItState) => ({vocabularies: state.vocabularies}), (dispatch: ThunkDispatch) => {
+    return {
+        loadVocabularies: () => dispatch(loadVocabularies())
+    };
 })(injectIntl(withI18n(ImportedVocabulariesListEdit)));
