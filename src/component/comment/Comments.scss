@@ -31,7 +31,9 @@
 }
 
 .comment .comment-text {
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  hyphens: manual;
 }
 
 .comment .metadata .actionable-reaction {
