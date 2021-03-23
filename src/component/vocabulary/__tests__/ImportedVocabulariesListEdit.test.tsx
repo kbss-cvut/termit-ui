@@ -14,6 +14,7 @@ describe("ImportedVocabulariesListEdit", () => {
     let vocabulary: Vocabulary;
 
     let onChange: (change: object) => void;
+    let loadVocabularies: () => void;
 
     beforeEach(() => {
         const vOne = new Vocabulary({
@@ -35,10 +36,19 @@ describe("ImportedVocabulariesListEdit", () => {
         });
         vocabularies[vocabulary.iri] = vocabulary;
         onChange = jest.fn();
+        loadVocabularies = jest.fn();
+    });
+
+    it("loads vocabularies after mount when they are not loaded yet", () => {
+        shallow(<ImportedVocabulariesListEdit vocabulary={vocabulary} vocabularies={{}}
+                                                              loadVocabularies={loadVocabularies}
+                                                              onChange={onChange} {...intlFunctions()}/>);
+        expect(loadVocabularies).toHaveBeenCalled();
     });
 
     it("renders select without any value when no imported vocabularies are specified", () => {
         const wrapper = shallow(<ImportedVocabulariesListEdit vocabulary={vocabulary} vocabularies={vocabularies}
+                                                              loadVocabularies={loadVocabularies}
                                                               onChange={onChange} {...intlFunctions()}/>);
         expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([]);
     });
@@ -46,6 +56,7 @@ describe("ImportedVocabulariesListEdit", () => {
     it("calls onChange with selected vocabularies IRIs on vocabulary selection", () => {
         const vocabularyArray = Object.keys(vocabularies).map((v) => vocabularies[v]);
         const wrapper = shallow<ImportedVocabulariesListEdit>(<ImportedVocabulariesListEdit vocabulary={vocabulary}
+                                                                                            loadVocabularies={loadVocabularies}
                                                                                             vocabularies={vocabularies}
                                                                                             onChange={onChange} {...intlFunctions()}/>);
         wrapper.instance().onChange(vocabularyArray);
@@ -55,6 +66,7 @@ describe("ImportedVocabulariesListEdit", () => {
     it("calls onChange with empty array when vocabulary selector is reset", () => {
         const selected = Object.keys(vocabularies).map(k => ({iri: k}));
         const wrapper = shallow<ImportedVocabulariesListEdit>(<ImportedVocabulariesListEdit vocabulary={vocabulary}
+                                                                                            loadVocabularies={loadVocabularies}
                                                                                             vocabularies={vocabularies}
                                                                                             importedVocabularies={selected}
                                                                                             onChange={onChange} {...intlFunctions()}/>);
@@ -64,6 +76,7 @@ describe("ImportedVocabulariesListEdit", () => {
 
     it("updates vocabulary selection when props are updated", () => {
         const wrapper = shallow<ImportedVocabulariesListEdit>(<ImportedVocabulariesListEdit vocabulary={vocabulary}
+                                                                                            loadVocabularies={loadVocabularies}
                                                                                             vocabularies={vocabularies}
                                                                                             onChange={onChange} {...intlFunctions()}/>);
         expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([]);
@@ -75,6 +88,7 @@ describe("ImportedVocabulariesListEdit", () => {
 
     it("does not offer the vocabulary itself for importing", () => {
         const wrapper = shallow(<ImportedVocabulariesListEdit vocabulary={vocabulary} vocabularies={vocabularies}
+                                                              loadVocabularies={loadVocabularies}
                                                               onChange={onChange} {...intlFunctions()}/>);
         const options: Vocabulary[] = wrapper.find(IntelligentTreeSelect).prop("options");
         expect(options.find(v => v.iri === vocabulary.iri)).not.toBeDefined();
