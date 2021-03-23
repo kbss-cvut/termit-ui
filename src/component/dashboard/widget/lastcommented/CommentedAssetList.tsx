@@ -8,6 +8,7 @@ import TermIriLink from "../../../term/TermIriLink";
 import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
 import {useCallback} from "react";
 import {useI18n} from "../../../hook/useI18n";
+import "./CommentedAssetList.scss";
 
 interface CommentedAssetListProps {
     user: User;
@@ -40,7 +41,7 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = props => {
         return <td className="col-xs-12 px-0">
             <div>
                 <TermIriLink iri={commentedAsset.iri!}/><br/>
-                <div title={i18n("dashboard.widget.commentList.lastComment")}>{commentedAsset.lastComment.content}</div>
+                <div className="comment-text" title={i18n("dashboard.widget.commentList.lastComment")}>{commentedAsset.lastComment.content}</div>
             </div>
             <Row>
                 <Col xs={12}>
@@ -54,7 +55,7 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = props => {
     },[renderMessage, i18n, locale]);
 
     const renderNonEmptyContent = () => {
-        return <Table className="widget" borderless={true}>
+        return <Table className="widget w-100" borderless={true}>
             <tbody>
             {assets.map(asset => <tr key={asset.iri}>{renderCommentedAsset(asset)}</tr>)}
             </tbody>
