@@ -22,7 +22,7 @@ export function createAnnotation(props: AnnotationSpanProps, text: string, eleme
  * document can access it.
  *
  * This is particularly usefull for reactstrap Popover component due to issue
- * "https://github.com/reactstrap/reactstrap/issues/773", which is often manifestated by message
+ * "https://github.com/reactstrap/reactstrap/issues/773", which is often manifested by message
  * "The target '$id' could not be identified in the dom, tip: check spelling"
  *
  * @param node The element to render
