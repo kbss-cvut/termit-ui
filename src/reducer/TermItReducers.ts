@@ -32,6 +32,8 @@ import {ErrorLogItem} from "../model/ErrorInfo";
 import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "../model/Configuration";
 import {ConsolidatedResults} from "../model/ConsolidatedResults";
+import File, {EMPTY_FILE} from "../model/File";
+import Document from "../model/Document";
 
 /**
  * Handles changes to the currently logged in user.
@@ -118,7 +120,8 @@ function vocabulary(state: Vocabulary = EMPTY_VOCABULARY, action: AsyncActionSuc
 function resource(state: Resource = EMPTY_RESOURCE, action: AsyncActionSuccess<any>): Resource {
     switch (action.type) {
         case ActionType.LOAD_RESOURCE:
-            return action.status === AsyncActionStatus.SUCCESS ? action.payload : state;
+            // return action.status === AsyncActionStatus.SUCCESS ? ( action.payload.owner ? new Document(action.payload.owner) : action.payload ) : state ;
+            return action.status === AsyncActionStatus.SUCCESS ? (action.payload.owner ? new Document(action.payload.owner) : action.payload ) : state;
         case ActionType.CLEAR_RESOURCE:
             return EMPTY_RESOURCE;
         case ActionType.LOAD_RESOURCE_TERMS:
@@ -131,6 +134,18 @@ function resource(state: Resource = EMPTY_RESOURCE, action: AsyncActionSuccess<a
             }
         case ActionType.LOGOUT:
             return EMPTY_RESOURCE;
+        default:
+            return state;
+    }
+}
+
+function selectedFile(state: File = EMPTY_FILE, action: AsyncActionSuccess<any>): File {
+    switch (action.type) {
+        case ActionType.LOAD_RESOURCE:
+            return action.status === AsyncActionStatus.SUCCESS ? ( action.payload.owner ? new File(action.payload) : action.payload ) : state
+        case ActionType.CLEAR_RESOURCE:
+        case ActionType.LOGOUT:
+            return EMPTY_FILE;
         default:
             return state;
     }
@@ -479,6 +494,7 @@ const rootReducer = combineReducers<TermItState>({
     vocabulary,
     vocabularies,
     resource,
+    selectedFile,
     resources,
     messages,
     intl,

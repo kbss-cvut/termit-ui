@@ -15,6 +15,7 @@ import {ErrorLogItem} from "./ErrorInfo";
 import Utils from "../util/Utils";
 import {Configuration, DEFAULT_CONFIGURATION} from "./Configuration";
 import {ConsolidatedResults} from "./ConsolidatedResults";
+import File, {EMPTY_FILE} from "./File";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -25,6 +26,7 @@ export default class TermItState {
     public vocabulary: Vocabulary;
     public resources: { [key: string]: Resource };
     public resource: Resource;
+    public selectedFile: File;
     public vocabularies: { [key: string]: Vocabulary };
     public fileContent: string | null;
     public messages: Message[];
@@ -61,6 +63,7 @@ export default class TermItState {
         this.user = EMPTY_USER;
         this.vocabulary = EMPTY_VOCABULARY;
         this.resource = EMPTY_RESOURCE;
+        this.selectedFile = EMPTY_FILE;
         this.resources = {};
         this.vocabularies = {};
         this.fileContent = null;

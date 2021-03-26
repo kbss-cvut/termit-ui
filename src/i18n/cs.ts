@@ -458,7 +458,6 @@ const cs = {
         "change-password.passwords.differ.tooltip": "Staré a nové heslo se musí lišit.",
 
         "annotator": "Anotátor",
-        "annotator.annotate-content": "Anotovat obsah",
         "annotator.content.loading": "Načítám obsah souboru...",
         "annotator.selectionPurpose.dialog.title": "K čemu bude sloužit vybraný text?",
         "annotator.selectionPurpose.create": "Nový pojem",
