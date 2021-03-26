@@ -32,7 +32,7 @@ const HelpIcon: React.FC<InfoIconProps> = props => {
         <Popover target={props.id} placement={props.placement} isOpen={open}>
             <PopoverHeader>
                 {i18n("help.title")}
-                <Button onClick={() => setOpen(false)} close={true} className="mt-1"/>
+                <Button onClick={onClick} close={true} className="mt-1"/>
             </PopoverHeader>
             <PopoverBody>
                 {props.text}
