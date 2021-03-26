@@ -4,6 +4,8 @@ import {StringListEdit} from "../StringListEdit";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import {Badge, Button} from "reactstrap";
 
+jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
+
 describe("StringListEdit", () => {
 
     let onChange: (list: string[]) => void;

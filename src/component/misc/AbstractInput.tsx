@@ -1,7 +1,8 @@
 import * as React from "react";
-import {FormText, Label} from "reactstrap";
+import {Label} from "reactstrap";
 import {InputType} from "reactstrap/lib/Input";
 import classNames from "classnames";
+import HelpIcon from "./HelpIcon";
 
 export interface AbstractInputProps {
     name?: string;
@@ -26,11 +27,12 @@ export default class AbstractInput<T extends AbstractInputProps> extends React.C
 
     protected renderLabel() {
         return this.props.label ?
-            <Label className={classNames("attribute-label", this.props.labelClass)}>{this.props.label}</Label> : null;
+            <Label
+                className={classNames("attribute-label", this.props.labelClass)}>{this.props.label}{this.renderHelp()}</Label> : null;
     }
 
-    protected renderHelp() {
-        return this.props.help ? <FormText>{this.props.help}</FormText> : null;
+    private renderHelp() {
+        return this.props.help ? <HelpIcon id={this.props.name!} text={this.props.help!}/> : null;
     }
 
     protected inputProps() {

@@ -25,7 +25,6 @@ export default class EnhancedInputPropsInput extends AbstractInput<EnhancedInput
             <Input type={this.props.type ? this.props.type : "text"} ref={(c: any) => this.input = c}
                    {...rest}/>
             <FormFeedback><i className="fas fa-exclamation-triangle"/> {invalidMessage}</FormFeedback>
-            {this.renderHelp()}
         </React.Fragment>;
 
         return <FormGroup row={labelDirection === LabelDirection.horizontal}>

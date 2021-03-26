@@ -7,7 +7,7 @@ import "intelligent-tree-select/lib/styles.css";
 import Term, {TermData} from "../../model/Term";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
-import {FormFeedback, FormGroup, FormText, Label} from "reactstrap";
+import {FormFeedback, FormGroup, Label} from "reactstrap";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import {ThunkDispatch} from "../../util/Types";
 import {loadTypes} from "../../action/AsyncActions";
@@ -15,6 +15,7 @@ import {getLocalized} from "../../model/MultilingualString";
 import {getShortLocale} from "../../util/IntlUtil";
 import IntlData from "../../model/IntlData";
 import _ from "lodash";
+import HelpIcon from "../misc/HelpIcon";
 
 interface TermTypesEditProps extends HasI18n {
     termTypes: string[];
@@ -63,9 +64,12 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
         const types = getTypesForSelector(this.props.availableTypes);
         const selected = this.resolveSelectedTypes(types);
         const {i18n, intl} = this.props;
-        const style = this.props.invalid ? { borderColor : "red" } : {};
+        const style = this.props.invalid ? {borderColor: "red"} : {};
         return <FormGroup>
-            <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
+            <Label className="attribute-label">
+                {i18n("term.metadata.types")}
+                <HelpIcon id={"test-types-edit"} text={i18n("term.types.help")}/>
+            </Label>
             <IntelligentTreeSelect onChange={this.onChange}
                                    value={selected}
                                    options={types}
@@ -82,8 +86,8 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
                                    renderAsTree={true}
                                    style={style}
                                    placeholder={i18n("term.metadata.types.select.placeholder")}/>
-            {this.props.invalid ? <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
-            <FormText>{i18n("term.types.help")}</FormText>
+            {this.props.invalid ?
+                <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
         </FormGroup>;
     }
 }
