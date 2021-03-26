@@ -43,10 +43,6 @@ export interface FacetedSearchAction extends AsyncAction {
     payload: object
 }
 
-export interface FileSelectingAction extends Action {
-    fileIri: string | null
-}
-
 export interface SearchAction extends Action {
     searchString: string
 }
