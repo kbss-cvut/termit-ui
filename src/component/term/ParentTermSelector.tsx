@@ -7,7 +7,7 @@ import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 import {connect} from "react-redux";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
 import {loadImportedVocabularies, loadTerms} from "../../action/AsyncActions";
-import {FormFeedback, FormGroup, FormText, Label} from "reactstrap";
+import {FormFeedback, FormGroup, Label} from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
@@ -17,6 +17,7 @@ import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import CustomInput from "../misc/CustomInput";
 import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
+import HelpIcon from "../misc/HelpIcon";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
     if (currentTermIri) {
@@ -122,8 +123,12 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     }
 
     public render() {
+        const i18n = this.props.i18n;
         return <FormGroup id={this.props.id}>
-            <Label className="attribute-label">{this.props.i18n("term.metadata.parent")}</Label>
+            <Label className="attribute-label">
+                {i18n("term.metadata.parent")}
+                <HelpIcon id={"parent-term-select"} text={i18n("term.parent.help")}/>
+            </Label>
             <IncludeImportedTermsToggle id={this.props.id + "-include-imported"} onToggle={this.onIncludeImportedToggle}
                                         includeImported={this.state.includeImported} style={{float: "right"}}
                                         disabled={this.state.disableIncludeImportedToggle}/>
@@ -159,7 +164,6 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
                                             {...commonTermTreeSelectProps(this.props)}/>
                 {this.props.invalid ?
                     <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
-                <FormText>{this.props.i18n("term.parent.help")}</FormText>
             </>;
         }
     }

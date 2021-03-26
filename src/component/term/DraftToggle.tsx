@@ -1,7 +1,8 @@
 import * as React from "react";
-import {FormGroup, FormText, Label} from "reactstrap";
+import {FormGroup, Label} from "reactstrap";
 import Toggle from "react-bootstrap-toggle";
 import {useI18n} from "../hook/useI18n";
+import HelpIcon from "../misc/HelpIcon";
 
 interface DraftToggleProps {
     id: string; // Toggle id, required by the tooltip component
@@ -12,9 +13,9 @@ interface DraftToggleProps {
 const DraftToggle: React.FC<DraftToggleProps> = props => {
     const {i18n} = useI18n();
     return <FormGroup>
-        <Label id="term-metadata-edit-status"
-               className="attribute-label">
+        <Label id="term-metadata-edit-status" className="attribute-label">
             {i18n("term.metadata.status")}
+            <HelpIcon id="term-metadata-status" text={i18n("term.metadata.status.help")}/>
         </Label>
         <br/>
         <Toggle id={props.id}
@@ -28,7 +29,6 @@ const DraftToggle: React.FC<DraftToggleProps> = props => {
                 style={{height: "calc(1.5 * 0.875rem + 0.5rem + 2px)"}}
                 active={!props.draft}
                 recalculateOnResize={false}/>
-        <FormText>{i18n("term.metadata.status.help")}</FormText>
     </FormGroup>;
 };
 

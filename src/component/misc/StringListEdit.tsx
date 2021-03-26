@@ -1,11 +1,12 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Badge, Button, FormFeedback, FormText, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
+import {Badge, Button, FormFeedback, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
 import {GoPlus} from "react-icons/go";
 import {FaTrashAlt} from "react-icons/fa";
 import "./StringListEdit.scss";
 import Utils from "../../util/Utils";
+import HelpIcon from "./HelpIcon";
 
 interface StringListEditProps extends HasI18n {
     list?: string[];
@@ -59,7 +60,9 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
 
     public render() {
         return <div className="form-group">
-            <Label className="attribute-label">{this.getText("label")}</Label>
+            <Label className="attribute-label">{this.getText("label")}
+                <HelpIcon id={"string-list-edit" + Date.now()} text={this.getText("help")}/>
+            </Label>
             <InputGroup className="form-group no-bottom-margin">
                 <Input name="add-string-input" value={this.state.inputValue} onChange={this.onChange}
                        bsSize="sm" onKeyPress={this.onKeyPress}
@@ -73,7 +76,6 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
                 </InputGroupAddon>
                 {this.props.invalid ? <FormFeedback>{this.props.invalidMessage}</FormFeedback> : <></>}
             </InputGroup>
-            <FormText>{this.getText("help")}</FormText>
             {this.renderList()}
         </div>;
     }

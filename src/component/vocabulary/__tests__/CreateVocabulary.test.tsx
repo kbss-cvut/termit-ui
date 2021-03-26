@@ -21,6 +21,7 @@ jest.mock("../../../util/Ajax", () => {
         default: jest.fn()
     };
 });
+jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
 describe("Create vocabulary view", () => {
 

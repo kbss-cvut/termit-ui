@@ -16,6 +16,7 @@ jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
 jest.mock("../../misc/AssetLabel");
 jest.mock("../TermTypesEdit");
+jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
 jest.mock("../../../util/Ajax", () => {
     const originalModule = jest.requireActual("../../../util/Ajax");
