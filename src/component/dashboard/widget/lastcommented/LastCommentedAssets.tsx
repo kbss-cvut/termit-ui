@@ -8,6 +8,7 @@ import AllLastCommentedAssets from "./AllLastCommentedAssets";
 import withI18n, {HasI18n} from "../../../hoc/withI18n";
 import {injectIntl} from "react-intl";
 import {useI18n} from "../../../hook/useI18n";
+import LastCommentedAssetsByMe from "./LastCommentedAssetsByMe";
 
 const LastCommentedAssets = (props: HasI18n) => {
     const {i18n} = useI18n();
@@ -25,6 +26,7 @@ const LastCommentedAssets = (props: HasI18n) => {
                 "dashboard.widget.lastCommentedAssets.all.title": <AllLastCommentedAssets/>,
                 "dashboard.widget.lastCommentedAssets.mine.title": <MyLastCommentedAssets/>,
                 "dashboard.widget.lastCommentedAssets.inReactionToMine.title": <LastCommentedAssetsInReactionToMine/>,
+                "dashboard.widget.lastCommentedAssets.byMe.title": <LastCommentedAssetsByMe/>,
             }}/>
         </CardBody>
     </Card>)

@@ -10,6 +10,11 @@ import RecentlyCommentedAsset, {
     RecentlyCommentedAssetData
 } from "../model/RecentlyCommentedAsset";
 
+
+export function loadLastCommentedByMe() {
+    return loadLastCommentedAssetList(ActionType.LOAD_LAST_COMMENTED_BY_ME, "/assets/last-commented-by-me");
+}
+
 export function loadLastCommentedAssets() {
     return loadLastCommentedAssetList(ActionType.LOAD_LAST_COMMENTED, "/assets/last-commented");
 }
@@ -28,7 +33,7 @@ function loadLastCommentedAssetList(at: string, endpoint: string) {
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(Constants.API_PREFIX + endpoint, param("limit", "5"))
+        return Ajax.get(Constants.API_PREFIX + endpoint, param("limit", Constants.LAST_COMMENTED_ASSET_LIMIT + ""))
             .then((data: object) => JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyCommentedAssetData>(data, RECENTLY_COMMENTED_ASSET_CONTEXT))
             .then((data: RecentlyCommentedAssetData[]) => {
                 dispatch(asyncActionSuccess(action));

@@ -79,7 +79,8 @@ const constants = {
     LAYOUT_WALLPAPER_NAVBAR_BACKGROUND_IS_LIGHT: false,
     LAYOUT_WALLPAPER_NAVBAR_BACKGROUND: "rgba(0,0,0,0.2)",
 
-    EMPTY_ASSET_IRI: "http://empty"
+    EMPTY_ASSET_IRI: "http://empty",
+    LAST_COMMENTED_ASSET_LIMIT : 5
 };
 
 const deployment = constants.DEPLOYMENT_NAME.length > 0 ? constants.DEPLOYMENT_NAME + "-" : "";

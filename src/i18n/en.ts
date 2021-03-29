@@ -113,6 +113,7 @@ const en = {
         "dashboard.widget.lastCommentedAssets.all.title": "All",
         "dashboard.widget.lastCommentedAssets.mine.title": "Mine",
         "dashboard.widget.lastCommentedAssets.inReactionToMine.title": "With reaction to my comment",
+        "dashboard.widget.lastCommentedAssets.byMe.title": "With my comment",
 
         "unauthorized.message": "You are not authorized to access this part.",
 
