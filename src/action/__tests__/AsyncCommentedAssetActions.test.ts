@@ -7,7 +7,7 @@ import Generator from "../../__tests__/environment/Generator";
 import {ThunkDispatch} from "../../util/Types";
 import TermItState from "../../model/TermItState";
 import {
-    loadLastCommentedAssets,
+    loadLastCommentedAssets, loadLastCommentedByMe,
     loadLastCommentedInReactionToMine,
     loadMyLastCommented
 } from "../AsyncCommentedAssetActions";
@@ -84,6 +84,17 @@ describe("Async commented asset actions", () => {
                 expect(result.length).toEqual(data.length);
                 result.forEach(r => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
             });
+        });
+    });
+
+    describe("load last assets last commented by me", () => {
+        it("returns correct instances of received assets last commented by me", () => {
+            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadLastCommentedByMe()).then((result: RecentlyCommentedAsset[]) => {
+                expect(Ajax.get).toHaveBeenCalledWith(Constants.API_PREFIX + "/assets/last-commented-by-me", param("limit", "5"));
+                expect(result.length).toEqual(data.length);
+                result.forEach(r => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
+            }));
         });
     });
 });

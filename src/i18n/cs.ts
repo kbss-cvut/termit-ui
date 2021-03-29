@@ -113,6 +113,7 @@ const cs = {
         "dashboard.widget.lastCommentedAssets.all.title": "Všechny",
         "dashboard.widget.lastCommentedAssets.mine.title": "Moje",
         "dashboard.widget.lastCommentedAssets.inReactionToMine.title": "S reakcí na můj komentář",
+        "dashboard.widget.lastCommentedAssets.byMe.title": "S mým komentářem",
 
         "unauthorized.message": "K této části aplikace nemáte přístup.",
 
