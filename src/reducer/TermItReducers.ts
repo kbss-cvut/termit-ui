@@ -120,7 +120,6 @@ function vocabulary(state: Vocabulary = EMPTY_VOCABULARY, action: AsyncActionSuc
 function resource(state: Resource = EMPTY_RESOURCE, action: AsyncActionSuccess<any>): Resource {
     switch (action.type) {
         case ActionType.LOAD_RESOURCE:
-            // return action.status === AsyncActionStatus.SUCCESS ? ( action.payload.owner ? new Document(action.payload.owner) : action.payload ) : state ;
             return action.status === AsyncActionStatus.SUCCESS ? (action.payload.owner ? new Document(action.payload.owner) : action.payload ) : state;
         case ActionType.CLEAR_RESOURCE:
             return EMPTY_RESOURCE;
