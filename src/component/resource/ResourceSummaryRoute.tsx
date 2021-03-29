@@ -4,13 +4,11 @@ import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import Utils from "../../util/Utils";
 import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
-import FileSummary from "./file/FileSummary";
 import ResourceSummary from "./ResourceSummary";
 import {RouteComponentProps} from "react-router";
 import {ThunkDispatch} from "../../util/Types";
 import {clearResource} from "../../action/SyncActions";
 import {loadResource} from "../../action/AsyncActions";
-import File from "../../model/File";
 import DocumentSummary from "./document/DocumentSummary";
 import Document from "../../model/Document";
 import Routes from "../../util/Routes";
@@ -62,8 +60,7 @@ export class ResourceSummaryRoute extends React.Component<ResourceSummaryRoutePr
         let component;
         switch (primaryType) {
             case VocabularyUtils.FILE:
-                component = <FileSummary resource={resource as File}/>;
-                break;
+                return null;
             case VocabularyUtils.DOCUMENT:
                 component = <DocumentSummary resource={resource as Document} customDisabledRemoveTooltipKey="document.remove.tooltip.disabled"/>;
                 break;

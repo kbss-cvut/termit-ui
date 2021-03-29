@@ -6,8 +6,6 @@ import Resource, {EMPTY_RESOURCE} from "../../../model/Resource";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import {ResourceSummaryRoute} from "../ResourceSummaryRoute";
-import File from "../../../model/File";
-import FileSummary from "../file/FileSummary";
 import ResourceSummary from "../ResourceSummary";
 import Document from "../../../model/Document";
 import DocumentSummary from "../document/DocumentSummary";
@@ -122,19 +120,6 @@ describe("ResourceSummaryRoute", () => {
         });
     });
 
-    it("renders FileSummary component for File resource", () => {
-        const file = new File({
-            iri: namespace + resourceName,
-            label: resourceName,
-            types: [VocabularyUtils.FILE, VocabularyUtils.RESOURCE]
-        });
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={file} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
-        expect(wrapper.exists(FileSummary)).toBeTruthy();
-        expect(wrapper.exists(ResourceSummary)).toBeFalsy();
-    });
-
     it("renders ResourceSummary component for plain Resource", () => {
         const resource = new Resource({
             iri: namespace + resourceName,
@@ -145,7 +130,6 @@ describe("ResourceSummaryRoute", () => {
             resource={resource} {...resourceHandlers} {...intlFunctions()}
             history={history} location={location} match={match}/>);
         expect(wrapper.exists(ResourceSummary)).toBeTruthy();
-        expect(wrapper.exists(FileSummary)).toBeFalsy();
     });
 
     it("renders DocumentSummary component for Document resource", () => {

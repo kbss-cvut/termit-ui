@@ -70,7 +70,7 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
     }
 
     private hasResourceIriChanged(prevProps: Readonly<ResourceFileDetailProps>) {
-        return this.props.match.params.name !== prevProps.match.params.name || this.props.location.search !== prevProps.location.search;
+        return this.props.match.params.fileName !== prevProps.match.params.fileName || this.props.location.search !== prevProps.location.search;
     }
 
     private shouldLoadVocabularyIri(prevProps: Readonly<ResourceFileDetailProps>) {
@@ -80,8 +80,8 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
     }
 
     private getFileIri = (): IRI => {
-        const normalizedFileName = this.props.match.params.name;
-        const fileNamespace = Utils.extractQueryParam(this.props.location.search, "namespace");
+        const normalizedFileName = this.props.match.params.fileName;
+        const fileNamespace = Utils.extractQueryParam(this.props.location.search, "fileNamespace");
         return VocabularyUtils.create(fileNamespace + normalizedFileName);
     };
 
@@ -115,7 +115,7 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
                 return <Label id="file-detail-no-vocabulary"
                               className="italics">{this.props.i18n("file.annotate.unknown-vocabulary")}</Label>
             }
-            return <ContentDetail iri={VocabularyUtils.create(resource.iri)}
+            return <ContentDetail iri={this.getFileIri()}
                                   scrollTo={this.state.scrollToSelector} vocabularyIri={vocabularyIri}/>
         }
         return null;
@@ -124,7 +124,7 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
 
 export default connect((state: TermItState) => {
     return {
-        resource: state.resource,
+        resource: state.selectedFile,
         routeTransitionPayload: state.routeTransitionPayload
     }
 }, (dispatch: ThunkDispatch) => {

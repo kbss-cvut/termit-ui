@@ -455,7 +455,6 @@ const en = {
         "change-password.passwords.differ.tooltip": "Old password and new password should not be same.",
 
         "annotator": "Annotator",
-        "annotator.annotate-content": "Annotate Content",
         "annotator.content.loading": "Loading file content...",
         "annotator.selectionPurpose.dialog.title": "What is the purpose of the selected text?",
         "annotator.selectionPurpose.create": "Create term",
