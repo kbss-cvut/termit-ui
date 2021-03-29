@@ -36,13 +36,13 @@ describe("ResourceFileDetail", () => {
 
         location = {
             pathname: "/resource/" + resourceName + "/annotate/",
-            search: "?namespace=" + resourceNamespace,
+            search: "?fileNamespace=" + resourceNamespace,
             hash: "",
             state: {}
         };
         match = {
             params: {
-                name: resourceName,
+                fileName: resourceName,
             },
             path: location.pathname,
             isExact: true,
@@ -248,7 +248,7 @@ describe("ResourceFileDetail", () => {
         const newResourceName = "different-resource";
         const newMatch = Object.assign({}, match, {
             url: "http://localhost:3000/" + location.pathname + location.search,
-            params: {name: newResourceName}
+            params: {fileName: newResourceName}
         });
         wrapper.setProps({match: newMatch});
         wrapper.update();
@@ -261,7 +261,7 @@ describe("ResourceFileDetail", () => {
                                                                         popRoutingPayload={popRoutingPayload}
                                                                         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
         const newNamespace = `${Generator.generateUri()}/`;
-        const newLocation = Object.assign({}, location, {search: `?namespace=${newNamespace}`});
+        const newLocation = Object.assign({}, location, {search: `?fileNamespace=${newNamespace}`});
         const newMatch = Object.assign({}, match, {url: "http://localhost:3000/" + newLocation.pathname + newLocation.search});
         wrapper.setProps({match: newMatch, location: newLocation});
         wrapper.update();

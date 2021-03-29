@@ -48,8 +48,9 @@ export class FileContentLink extends React.Component<FileContentLinkProps, FileC
 
     public render() {
         const iri = VocabularyUtils.create(this.props.file.iri);
-        const params = {name: iri.fragment};
-        const query = {namespace: iri.namespace};
+        const documentIri = VocabularyUtils.create(this.props.file.owner!.iri);
+        const params = {name: documentIri.fragment, fileName: iri.fragment};
+        const query = {namespace: documentIri.namespace, fileNamespace: iri.namespace};
         const contentSupported = this.isContentSupported();
         return contentSupported ? <Link id={this.props.id}
                                         className="btn btn-primary btn-sm"
