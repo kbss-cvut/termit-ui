@@ -4,6 +4,7 @@ import {Breadcrumb} from "react-breadcrumbs";
 import TermItState from "../../model/TermItState";
 import {connect} from "react-redux";
 import Asset from "../../model/Asset";
+import {useI18n} from "../hook/useI18n";
 
 interface DynamicBreadcrumbRouteOwnProps extends RouteProps {
     component: React.ComponentType<any>;
@@ -21,8 +22,9 @@ declare type DynamicBreadcrumbRouteProps = DynamicBreadcrumbRouteOwnProps & Dyna
 const DynamicBreadcrumbRoute = (props: DynamicBreadcrumbRouteProps) => {
     const {component, includeSearch, ...rest} = {...props};
     const Component = component;    // lowercase first character does not pass through JSX validation
+    const {locale} = useI18n();
     const renderRoute = (routeProps: RouteComponentProps<any>) => <Breadcrumb data={{
-        title: props.state[props.asset] ? (props.state[props.asset] as Asset).getLabel() : "",
+        title: props.state[props.asset] ? (props.state[props.asset] as Asset).getLabel(locale) : "",
         pathname: routeProps.match.url,
         search: includeSearch ? routeProps.location.search : undefined
     }}>

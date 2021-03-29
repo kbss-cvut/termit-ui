@@ -18,6 +18,7 @@ const cs = {
         "approve": "Schválit",
         "basic-information": "Základní informace",
         "created-info": "Vytvořeno uživatelem {author} dne {date}",
+        "select.placeholder": "Vyberte...",
 
         "connection.error": "Nepodařilo se navázat spojení se serverem.",
         "ajax.unparseable-error": "Akce selhala. Server odpověděl neznámou chybou. Více informací lze nalézt v konzoli prohlížeče.",
