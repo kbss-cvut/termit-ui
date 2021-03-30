@@ -456,6 +456,7 @@ const en = {
 
         "annotator": "Annotator",
         "annotator.content.loading": "Loading file content...",
+        "annotator.vocabulary": "Uses terms from vocabulary",
         "annotator.selectionPurpose.dialog.title": "What is the purpose of the selected text?",
         "annotator.selectionPurpose.create": "Create term",
         "annotator.selectionPurpose.occurrence": "Mark term occurrence",

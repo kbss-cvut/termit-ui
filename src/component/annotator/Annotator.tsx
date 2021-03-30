@@ -6,7 +6,7 @@ import Term from "../../model/Term";
 import HtmlDomUtils from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
 import {DomUtils} from "htmlparser2";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
 import CreateTermFromAnnotation, {CreateTermFromAnnotation as CT} from "./CreateTermFromAnnotation";
 import SelectionPurposeDialog from "./SelectionPurposeDialog";
 import {connect} from "react-redux";
@@ -29,6 +29,10 @@ import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import "./Annotator.scss";
+import HeaderWithActions from "../misc/HeaderWithActions";
+import {Card, CardBody, CardHeader, Col, Label, Row} from "reactstrap";
+import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
+import File from "../../model/File";
 
 interface AnnotatorProps extends HasI18n {
     fileIri: IRI;
@@ -36,6 +40,7 @@ interface AnnotatorProps extends HasI18n {
     initialHtml: string;
     scrollTo?: TextQuoteSelector;   // Selector of an annotation to scroll to (and highlight) after rendering
     user: User;
+    file: File;
 
     onUpdate(newHtml: string): void;
 
@@ -387,35 +392,56 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     };
 
     public render() {
-        return <div>
+
+        return <>
             <WindowTitle title={this.props.i18n("annotator")}/>
-            <LegendToggle/>
-            <IfUserAuthorized renderUnauthorizedAlert={false}>
-                <TextAnalysisButtonAnnotatorWrapper fileIri={this.props.fileIri}
-                                                    vocabularyIri={this.props.vocabularyIri}/>
-            </IfUserAuthorized>
-            <CreateTermFromAnnotation ref={this.createNewTermDialog}
-                                      show={this.state.showNewTermDialog} onClose={this.onCloseCreate}
-                                      onMinimize={this.onMinimizeTermCreation} onTermCreated={this.assignNewTerm}
-                                      vocabularyIri={this.props.vocabularyIri}/>
-            <SelectionPurposeDialog target={this.generateVirtualPopperAnchor()}
-                                    show={this.state.showSelectionPurposeDialog}
-                                    onCreateTerm={this.createTermFromSelection}
-                                    onMarkOccurrence={this.createTermOccurrence}
-                                    onMarkDefinition={this.markTermDefinition}
-                                    onCancel={this.closeSelectionPurposeDialog}/>
-            <TermDefinitionEdit term={this.state.selectedTerm}
-                                annotationElement={this.state.existingTermDefinitionAnnotationElement}
-                                onCancel={this.onCloseTermDefinitionDialog} onSave={this.onSaveTermDefinition}/>
-            <div id="annotator"
-                 ref={this.containerElement}
-                 onMouseUp={this.handleMouseUp}>
-                <AnnotatorContent content={this.state.internalHtml} prefixMap={this.state.prefixMap}
-                                  stickyAnnotationId={this.state.stickyAnnotationId}
-                                  onCreateTerm={this.onCreateTerm} onUpdate={this.onAnnotationTermSelected}
-                                  onRemove={this.onRemove} onResetSticky={this.resetStickyAnnotationId}/>
-            </div>
-        </div>
+            <HeaderWithActions title={this.props.i18n("annotator") + " - " + this.props.file.getLabel()}/>
+            <Card>
+                <CardHeader>
+                    {this.renderMetadata()}
+                </CardHeader>
+                <CardBody>
+                    <LegendToggle key="legend-toggle"/>
+                    <IfUserAuthorized key="text-analysis-button" renderUnauthorizedAlert={false}>
+                        <TextAnalysisButtonAnnotatorWrapper fileIri={this.props.fileIri}
+                                                            vocabularyIri={this.props.vocabularyIri}/>
+                    </IfUserAuthorized>
+                    <CreateTermFromAnnotation ref={this.createNewTermDialog}
+                                              show={this.state.showNewTermDialog} onClose={this.onCloseCreate}
+                                              onMinimize={this.onMinimizeTermCreation}
+                                              onTermCreated={this.assignNewTerm}
+                                              vocabularyIri={this.props.vocabularyIri}/>
+                    <SelectionPurposeDialog target={this.generateVirtualPopperAnchor()}
+                                            show={this.state.showSelectionPurposeDialog}
+                                            onCreateTerm={this.createTermFromSelection}
+                                            onMarkOccurrence={this.createTermOccurrence}
+                                            onMarkDefinition={this.markTermDefinition}
+                                            onCancel={this.closeSelectionPurposeDialog}/>
+                    <TermDefinitionEdit term={this.state.selectedTerm}
+                                        annotationElement={this.state.existingTermDefinitionAnnotationElement}
+                                        onCancel={this.onCloseTermDefinitionDialog} onSave={this.onSaveTermDefinition}/>
+                    <div id="annotator"
+                         ref={this.containerElement}
+                         onMouseUp={this.handleMouseUp}>
+                        <AnnotatorContent content={this.state.internalHtml} prefixMap={this.state.prefixMap}
+                                          stickyAnnotationId={this.state.stickyAnnotationId}
+                                          onCreateTerm={this.onCreateTerm} onUpdate={this.onAnnotationTermSelected}
+                                          onRemove={this.onRemove} onResetSticky={this.resetStickyAnnotationId}/>
+                    </div>
+                </CardBody>
+            </Card>
+        </>
+    }
+
+    private renderMetadata() {
+        return <Row>
+            <Col xl={2} md={4}>
+                <Label className="attribute-label">{this.props.i18n("annotator.vocabulary")}</Label>
+            </Col>
+            <Col xl={10} md={8}>
+                <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)}/>
+            </Col>
+        </Row>;
     }
 
     private generateVirtualPopperAnchor(): HTMLElement {
@@ -469,7 +495,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     }
 }
 
-export default connect((state: TermItState) => ({user: state.user}), (dispatch: ThunkDispatch) => {
+export default connect((state: TermItState) => ({
+    user: state.user,
+    file: state.selectedFile
+}), (dispatch: ThunkDispatch) => {
     return {
         publishMessage: (message: Message) => dispatch(publishMessage(message)),
         setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term)),
