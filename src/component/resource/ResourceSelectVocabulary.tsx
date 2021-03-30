@@ -24,8 +24,8 @@ const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = props 
     const vocabularies = useSelector((state: TermItState) => state.vocabularies);
     const submit = () => onSubmit(getVocabulary(selectedVocabulary, vocabularies, defaultVocabularyIri));
     const cancel = () => {
-        setSelectedVocabulary(null);
         onCancel();
+        setSelectedVocabulary(null);
     }
     const {i18n} = useI18n();
 
