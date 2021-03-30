@@ -227,7 +227,7 @@ const cs = {
         "vocabulary.document.remove": "Odpojit dokument",
 
         "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
-        "vocabulary.select-vocabulary": "Vyber slovník",
+        "vocabulary.select-vocabulary": "Vyberte slovník",
 
         "resource.management": "Správa zdrojů",
         "resource.management.resources": "Zdroje",
