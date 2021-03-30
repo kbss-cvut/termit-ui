@@ -18,7 +18,6 @@ import TermOccurrence, {TextQuoteSelector} from "../../model/TermOccurrence";
 import {setTermDefinitionSource} from "../../action/AsyncTermActions";
 import JsonLdUtils from "../../util/JsonLdUtils";
 import Utils from "../../util/Utils";
-import TextAnalysisButtonAnnotatorWrapper from "./TextAnalysisButtonAnnotatorWrapper";
 import AnnotatorContent from "./AnnotatorContent";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {injectIntl} from "react-intl";
@@ -33,6 +32,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import {Card, CardBody, CardHeader, Col, Label, Row} from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
+import TextAnalysisInvocationButton from "./TextAnalysisInvocationButton";
 
 interface AnnotatorProps extends HasI18n {
     fileIri: IRI;
@@ -403,8 +403,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 <CardBody>
                     <LegendToggle key="legend-toggle"/>
                     <IfUserAuthorized key="text-analysis-button" renderUnauthorizedAlert={false}>
-                        <TextAnalysisButtonAnnotatorWrapper fileIri={this.props.fileIri}
-                                                            vocabularyIri={this.props.vocabularyIri}/>
+                        <TextAnalysisInvocationButton className="analyze-button" fileIri={this.props.fileIri}
+                                                            defaultVocabularyIri={IRIImpl.toString(this.props.vocabularyIri)}/>
                     </IfUserAuthorized>
                     <CreateTermFromAnnotation ref={this.createNewTermDialog}
                                               show={this.state.showNewTermDialog} onClose={this.onCloseCreate}
