@@ -11,11 +11,13 @@ import Resource, {EMPTY_RESOURCE} from "../../model/Resource";
 import File from "../../model/File";
 import TermItState from "../../model/TermItState";
 import {TextAnalysisRecord} from "../../model/TextAnalysisRecord";
-import {Label} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {popRoutingPayload} from "../../action/SyncActions";
 import Routes from "../../util/Routes";
 import {TextQuoteSelector} from "../../model/TermOccurrence";
+import VocabularySelect from "../vocabulary/VocabularySelect";
+import Vocabulary from "../../model/Vocabulary";
+import {Card, CardBody, CardHeader} from "reactstrap";
 
 interface StoreStateProps {
     resource: Resource;
@@ -85,12 +87,12 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
         return VocabularyUtils.create(fileNamespace + normalizedFileName);
     };
 
-    private getVocabularyIri(): IRI | null {
+    private getVocabularyIri(): IRI | undefined {
         if (Utils.getPrimaryAssetType(this.props.resource) !== VocabularyUtils.FILE) {
-            return null;
+            return undefined;
         }
         const file = this.props.resource as File;
-        return file.owner && file.owner.vocabulary ? VocabularyUtils.create(file.owner.vocabulary.iri!) : null;
+        return file.owner && file.owner.vocabulary ? VocabularyUtils.create(file.owner.vocabulary.iri!) : undefined;
     }
 
     private loadLatestTextAnalysisRecord() {
@@ -103,6 +105,12 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
         });
     }
 
+    public onSelectVocabulary = (voc: Vocabulary | null) => {
+        if (voc) {
+            this.setState({vocabularyIri: VocabularyUtils.create(voc.iri)});
+        }
+    };
+
     public render() {
         const resource = this.props.resource;
         const vocabularyIri = this.state.vocabularyIri;
@@ -111,9 +119,12 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
                 return null;
             }
             if (vocabularyIri === null) {
-                // This is temporary, annotator should support vocabulary selection
-                return <Label id="file-detail-no-vocabulary"
-                              className="italics">{this.props.i18n("file.annotate.unknown-vocabulary")}</Label>
+                return <Card id="file-detail-no-vocabulary" className="w-50 mx-auto">
+                    <CardHeader>{this.props.i18n("file.annotate.selectVocabulary")}</CardHeader>
+                    <CardBody>
+                        <VocabularySelect onVocabularySet={this.onSelectVocabulary} vocabulary={null}/>
+                    </CardBody>
+                </Card>;
             }
             return <ContentDetail iri={this.getFileIri()}
                                   scrollTo={this.state.scrollToSelector} vocabularyIri={vocabularyIri}/>

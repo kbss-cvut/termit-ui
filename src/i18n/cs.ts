@@ -405,7 +405,7 @@ const cs = {
         "file.metadata.startTextAnalysis": "Spustit textovou analýzu",
         "file.metadata.startTextAnalysis.text": "Analyzovat",
         "file.content.upload.success": "Soubor \"{fileName}\" úspěšně nahrán na server.",
-        "file.annotate.unknown-vocabulary": "Nelze určit slovník pro anotování tohoto souboru. Soubor nepatří slovníkovému dokumentu ani nebyl zpracován službou textové analýzy.",
+        "file.annotate.selectVocabulary": "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
 
         "dataset.license": "Licence",
         "dataset.format": "Formát",
