@@ -30,7 +30,7 @@ import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import "./Annotator.scss";
 import HeaderWithActions from "../misc/HeaderWithActions";
-import {Card, CardBody, CardHeader} from "reactstrap";
+import {Card, CardBody, CardHeader, Col, Label, Row} from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
 
@@ -392,12 +392,13 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     };
 
     public render() {
+
         return <>
             <WindowTitle title={this.props.i18n("annotator")}/>
-            <HeaderWithActions title={this.props.file.getLabel()}/>
+            <HeaderWithActions title={this.props.i18n("annotator") + " - " + this.props.file.getLabel()}/>
             <Card>
-                <CardHeader className="text-right">
-                    <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)}/>
+                <CardHeader>
+                    {this.renderMetadata()}
                 </CardHeader>
                 <CardBody>
                     <LegendToggle key="legend-toggle"/>
@@ -430,6 +431,17 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 </CardBody>
             </Card>
         </>
+    }
+
+    private renderMetadata() {
+        return <Row>
+            <Col xl={2} md={4}>
+                <Label className="attribute-label">{this.props.i18n("annotator.vocabulary")}</Label>
+            </Col>
+            <Col xl={10} md={8}>
+                <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)}/>
+            </Col>
+        </Row>;
     }
 
     private generateVirtualPopperAnchor(): HTMLElement {
