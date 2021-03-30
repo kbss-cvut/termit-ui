@@ -461,6 +461,7 @@ const cs = {
 
         "annotator": "Anotátor",
         "annotator.content.loading": "Načítám obsah souboru...",
+        "annotator.vocabulary": "Používá pojmy ze slovníku",
         "annotator.selectionPurpose.dialog.title": "K čemu bude sloužit vybraný text?",
         "annotator.selectionPurpose.create": "Nový pojem",
         "annotator.selectionPurpose.occurrence": "Označení výskytu pojmu",
