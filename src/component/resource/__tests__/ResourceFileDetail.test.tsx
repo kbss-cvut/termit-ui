@@ -11,6 +11,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import Resource, {EMPTY_RESOURCE} from "../../../model/Resource";
 import FileDetail from "../../file/FileContentDetail";
 import Routes from "../../../util/Routes";
+import VocabularySelect from "../../vocabulary/VocabularySelect";
 
 describe("ResourceFileDetail", () => {
 
@@ -146,7 +147,7 @@ describe("ResourceFileDetail", () => {
         });
     });
 
-    it("renders info when no text analysis record exists for a standalone file", () => {
+    it("renders vocabulary selector when no text analysis record exists for a standalone file", () => {
         const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={EMPTY_RESOURCE}
                                                                         routeTransitionPayload={{}}
                                                                         loadResource={loadResource}
@@ -157,7 +158,7 @@ describe("ResourceFileDetail", () => {
         return Promise.resolve().then(() => {
             expect(loadLatestTextAnalysisRecord).toHaveBeenCalledWith(VocabularyUtils.create(resourceNamespace + resourceName));
             expect(wrapper.find(FileDetail).exists()).toBeFalsy();
-            expect(wrapper.exists("#file-detail-no-vocabulary")).toBeTruthy();
+            expect(wrapper.exists(VocabularySelect)).toBeTruthy();
         });
     });
 
@@ -269,6 +270,12 @@ describe("ResourceFileDetail", () => {
     });
 
     it("sets vocabulary in state to undefined to force its reload when namespace in URL changes", () => {
+        resource.owner = {
+            vocabulary: {iri: Generator.generateUri()},
+            iri: Generator.generateUri(),
+            label: "Test document",
+            files: [resource]
+        };
         const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
                                                                         loadResource={loadResource}
                                                                         popRoutingPayload={popRoutingPayload}
