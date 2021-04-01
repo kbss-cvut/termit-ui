@@ -1,9 +1,9 @@
 import * as React from "react";
 import Term from "../../../model/Term";
+import Terms from "./Terms";
 import BasicTermMetadata from "../../term/BasicTermMetadata";
 import {Card, CardBody, Col, Row} from "reactstrap";
 import Vocabulary from "../../../model/Vocabulary";
-import Terms from "./Terms";
 import {RouteComponentProps, withRouter} from "react-router";
 import LanguageSelector from "../../multilingual/LanguageSelector";
 

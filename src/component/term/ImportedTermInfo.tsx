@@ -1,11 +1,11 @@
 import * as React from "react";
 import Term from "../../model/Term";
 import {GoFileSymlinkDirectory} from "react-icons/go";
-import "./ImportedTermInfo.scss";
 import {UncontrolledTooltip} from "reactstrap";
 import Utils from "../../util/Utils";
 import AssetLabel from "../misc/AssetLabel";
 import {useI18n} from "../hook/useI18n";
+import "./ImportedTermInfo.scss";
 
 interface ImportedTermInfoProps {
     term: Term;

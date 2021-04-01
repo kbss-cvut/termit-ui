@@ -133,7 +133,7 @@ export class UnmappedPropertiesEdit extends React.Component<UnmappedPropertiesEd
             const items = values.map(v => <li key={v}>
                 {v}
                 <Badge title={this.props.i18n("properties.edit.remove")}
-                       className="term-edit-source-remove align-middle"
+                       className="list-item-remove-icon align-middle"
                        onClick={this.onRemove.bind(null, k, v)}><FaTrashAlt/>{this.props.i18n("properties.edit.remove.text")}
                 </Badge>
             </li>);

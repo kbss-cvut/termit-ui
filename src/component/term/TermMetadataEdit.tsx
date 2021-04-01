@@ -12,6 +12,8 @@ import Utils from "../../util/Utils";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
+import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
+import TermDefinitionContainer from "./TermDefinitionContainer";
 import StringListEdit from "../misc/StringListEdit";
 import {getLocalized, getLocalizedOrDefault, getLocalizedPlural} from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
@@ -22,8 +24,6 @@ import TermItState from "../../model/TermItState";
 import {ConsolidatedResults} from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/ValidationResult";
 import {renderValidationMessages} from "./forms/FormUtils";
-import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
-import TermDefinitionContainer from "./TermDefinitionContainer";
 
 interface TermMetadataEditProps extends HasI18n {
     term: Term,
