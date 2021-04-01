@@ -404,6 +404,7 @@ const cs = {
         "file.text-analysis.finished.message": "Textová analýza souboru úspěšně dokončena.",
         "file.metadata.startTextAnalysis": "Spustit textovou analýzu",
         "file.metadata.startTextAnalysis.text": "Analyzovat",
+        "file.metadata.startTextAnalysis.vocabularySelect.title": "Vyberte slovník pro automatickou analýzu textu",
         "file.content.upload.success": "Soubor \"{fileName}\" úspěšně nahrán na server.",
         "file.annotate.selectVocabulary": "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
 
