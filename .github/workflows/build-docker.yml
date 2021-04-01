@@ -2,7 +2,6 @@ name: Publish public TermIt
 
 on:
   push:
-    # Publish `termit-public`
     branches:
       - termit-public
 
