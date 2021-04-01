@@ -3,19 +3,19 @@ import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Card, CardBody, Col, Row} from "reactstrap";
 import Term from "../../model/Term";
-import "./TermMetadata.scss";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import TermAssignments from "./TermAssignments";
 import Tabs from "../misc/Tabs";
 import AssetHistory from "../changetracking/AssetHistory";
+import Terms from "./Terms";
 import BasicTermMetadata from "./BasicTermMetadata";
 import Vocabulary from "../../model/Vocabulary";
 import {RouteComponentProps, withRouter} from "react-router";
-import Terms from "./Terms";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import ValidationResults from "./validation/ValidationResults";
 import Utils from "../../util/Utils";
 import Comments from "../comment/Comments";
+import "./TermMetadata.scss";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
