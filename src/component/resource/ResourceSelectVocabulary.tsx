@@ -12,6 +12,7 @@ interface ResourceSelectVocabularyProps {
     defaultVocabularyIri?: string;
     onSubmit: (voc: Vocabulary | null) => void;
     onCancel: () => void;
+    title?: string;
 }
 
 function getVocabulary(selectedVocabulary: Vocabulary | null, vocabularies: { [key: string]: Vocabulary }, defaultVocabularyIri?: string) {
@@ -19,7 +20,7 @@ function getVocabulary(selectedVocabulary: Vocabulary | null, vocabularies: { [k
 }
 
 const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = props => {
-    const {show, defaultVocabularyIri, onSubmit, onCancel} = props;
+    const {show, defaultVocabularyIri, onSubmit, onCancel, title} = props;
     const [selectedVocabulary, setSelectedVocabulary] = React.useState<Vocabulary | null>(null);
     const vocabularies = useSelector((state: TermItState) => state.vocabularies);
     const submit = () => onSubmit(getVocabulary(selectedVocabulary, vocabularies, defaultVocabularyIri));
@@ -30,7 +31,7 @@ const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = props 
     const {i18n} = useI18n();
 
     return <Modal isOpen={show} toggle={cancel} size="lg" className="resource-select-vocabulary-modal">
-        <ModalHeader toggle={cancel}>{i18n("vocabulary.select-vocabulary")}</ModalHeader>
+        <ModalHeader toggle={cancel}>{title ? title : i18n("vocabulary.select-vocabulary")}</ModalHeader>
         <ModalBody>
             <VocabularySelect id="select-vocabulary-analyze-resource"
                               vocabulary={getVocabulary(selectedVocabulary, vocabularies, defaultVocabularyIri)}

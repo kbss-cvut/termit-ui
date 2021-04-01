@@ -63,7 +63,8 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
         return <>
             <ResourceSelectVocabulary show={this.state.showVocabularySelector}
                                       defaultVocabularyIri={this.props.defaultVocabularyIri}
-                                      onCancel={this.closeVocabularySelect} onSubmit={this.onVocabularySelect}/>
+                                      onCancel={this.closeVocabularySelect} onSubmit={this.onVocabularySelect}
+                                      title={i18n("file.metadata.startTextAnalysis.vocabularySelect.title")}/>
             <Button id={this.props.id}
                     size="sm"
                     color="primary"
