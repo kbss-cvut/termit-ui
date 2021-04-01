@@ -1,3 +1,8 @@
+#### Version 2.4.0
+
+- Added a widget with comments to the dashboard.
+- Annotator now displays the vocabulary used to annotate the file content and allows selecting vocabulary for text analysis.
+
 #### Version 2.3.1
 
 - Fixed issues with invocation of text analysis in Docker, as well as working with file contents.
