@@ -2,6 +2,7 @@ import * as React from "react";
 import {injectIntl} from "react-intl";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
+import "intelligent-tree-select/lib/styles.css";
 import FetchOptionsFunction from "../../../model/Functions";
 import Term, {TermData} from "../../../model/Term";
 import Vocabulary from "../../../model/Vocabulary";
@@ -11,17 +12,18 @@ import Utils from "../../../util/Utils";
 import {Location} from "history";
 import {match as Match} from "react-router";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../../util/Types";
-import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../../term/TermTreeSelectHelper";
 import Routing from "../../../util/Routing";
 import classNames from "classnames";
-import IncludeImportedTermsToggle from "../../term/IncludeImportedTermsToggle";
 import {createTermsWithImportsOptionRenderer} from "../../misc/treeselect/Renderers";
+import IncludeImportedTermsToggle from "../../term/IncludeImportedTermsToggle";
+import {commonTermTreeSelectProps, processTermsForTreeSelect} from "../../term/TermTreeSelectHelper";
 import {connect} from "react-redux";
 import TermItState from "../../../model/TermItState";
 import {selectVocabularyTerm} from "../../../action/SyncActions";
 import {loadPublicTerms} from "../../../action/AsyncPublicViewActions";
 import {getLocalized} from "../../../model/MultilingualString";
 import {getShortLocale} from "../../../util/IntlUtil";
+import "../../term/Terms.scss";
 
 
 interface GlossaryTermsProps extends HasI18n {

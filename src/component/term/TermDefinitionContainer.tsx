@@ -1,5 +1,6 @@
 import React from "react";
 import {useI18n} from "../hook/useI18n";
+import "./TermDefinitionBlock.scss";
 
 /**
  * Visual container for term definition-related attributes.

@@ -1,10 +1,10 @@
 import * as React from "react";
 // @ts-ignore
 import {ToggleMinusIcon, TogglePlusIcon} from "intelligent-tree-select";
-import "./ResultItem.scss";
 import Utils from "../../../util/Utils";
 import TooltipItem from "./TooltipItem";
 import {ValueMapper} from "../../../util/Types";
+import "./ResultItem.scss";
 
 interface ResultItemProps {
     option: any;
