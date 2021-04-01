@@ -399,8 +399,9 @@ const en = {
         "file.text-analysis.finished.message": "Text analysis successfully finished.",
         "file.metadata.startTextAnalysis": "Start text analysis",
         "file.metadata.startTextAnalysis.text": "Analyze",
+        "file.metadata.startTextAnalysis.vocabularySelect.title": "Select vocabulary for automatic text analysis",
         "file.content.upload.success": "Content of file \"{fileName}\" successfully uploaded.",
-        "file.annotate.unknown-vocabulary": "Unable to determine vocabulary for annotating this file. It neither belongs to a vocabulary document nor has been processed by text analysis.",
+        "file.annotate.selectVocabulary": "Unable to determine vocabulary for annotating this file. Please, select one...",
 
         "dataset.license": "License",
         "dataset.format": "Format",

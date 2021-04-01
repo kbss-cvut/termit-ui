@@ -1,17 +1,17 @@
 import * as React from "react";
 import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../../hoc/withI18n";
-import withInjectableLoading, {InjectsLoading} from "../../hoc/withInjectableLoading";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import withInjectableLoading, {InjectsLoading} from "../hoc/withInjectableLoading";
 import {GoClippy} from "react-icons/go";
 import {Button} from "reactstrap";
 import {connect} from "react-redux";
-import {ThunkDispatch} from "../../../util/Types";
-import {executeFileTextAnalysis} from "../../../action/AsyncActions";
-import {publishNotification} from "../../../action/SyncActions";
-import NotificationType from "../../../model/NotificationType";
-import ResourceSelectVocabulary from "../ResourceSelectVocabulary";
-import Vocabulary from "../../../model/Vocabulary";
-import {IRI} from "../../../util/VocabularyUtils";
+import {ThunkDispatch} from "../../util/Types";
+import {executeFileTextAnalysis} from "../../action/AsyncActions";
+import {publishNotification} from "../../action/SyncActions";
+import NotificationType from "../../model/NotificationType";
+import ResourceSelectVocabulary from "../resource/ResourceSelectVocabulary";
+import Vocabulary from "../../model/Vocabulary";
+import {IRI} from "../../util/VocabularyUtils";
 
 interface TextAnalysisInvocationButtonProps extends HasI18n, InjectsLoading {
     id?: string;
@@ -35,11 +35,7 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
     }
 
     public onClick = () => {
-        if (this.props.defaultVocabularyIri) {
-            this.invokeTextAnalysis(this.props.fileIri,this.props.defaultVocabularyIri);
-        } else {
-            this.setState({showVocabularySelector: true});
-        }
+        this.setState({showVocabularySelector: true});
     };
 
     private invokeTextAnalysis(fileIri: IRI, vocabularyIri: string) {
@@ -67,13 +63,14 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
         return <>
             <ResourceSelectVocabulary show={this.state.showVocabularySelector}
                                       defaultVocabularyIri={this.props.defaultVocabularyIri}
-                                      onCancel={this.closeVocabularySelect} onSubmit={this.onVocabularySelect}/>
+                                      onCancel={this.closeVocabularySelect} onSubmit={this.onVocabularySelect}
+                                      title={i18n("file.metadata.startTextAnalysis.vocabularySelect.title")}/>
             <Button id={this.props.id}
                     size="sm"
                     color="primary"
                     className={this.props.className}
                     title={i18n("file.metadata.startTextAnalysis")}
-                    onClick={this.onClick}><GoClippy/>&nbsp;{i18n("file.metadata.startTextAnalysis.text")}
+                    onClick={this.onClick}><GoClippy className="mr-1"/>{i18n("file.metadata.startTextAnalysis.text")}
             </Button>
         </>;
     }

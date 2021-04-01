@@ -226,7 +226,7 @@ const cs = {
         "vocabulary.document.remove": "Odpojit dokument",
 
         "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
-        "vocabulary.select-vocabulary": "Vyber slovník",
+        "vocabulary.select-vocabulary": "Vyberte slovník",
 
         "resource.management": "Správa zdrojů",
         "resource.management.resources": "Zdroje",
@@ -404,8 +404,9 @@ const cs = {
         "file.text-analysis.finished.message": "Textová analýza souboru úspěšně dokončena.",
         "file.metadata.startTextAnalysis": "Spustit textovou analýzu",
         "file.metadata.startTextAnalysis.text": "Analyzovat",
+        "file.metadata.startTextAnalysis.vocabularySelect.title": "Vyberte slovník pro automatickou analýzu textu",
         "file.content.upload.success": "Soubor \"{fileName}\" úspěšně nahrán na server.",
-        "file.annotate.unknown-vocabulary": "Nelze určit slovník pro anotování tohoto souboru. Soubor nepatří slovníkovému dokumentu ani nebyl zpracován službou textové analýzy.",
+        "file.annotate.selectVocabulary": "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
 
         "dataset.license": "Licence",
         "dataset.format": "Formát",
