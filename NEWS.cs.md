@@ -1,3 +1,9 @@
+#### Verze 2.3.1
+
+- Opraveny problémy s voláním služby textové analýzy a ukládání souborů v Docker kontejneru.
+- Opraveny problémy s přístupem k veřejnému prohlížení slovníků (expirovaný JWT, zobrazení definice).
+- Optimalizace načítání pojmů.
+
 #### Verze 2.3.0
 
 - Přídána podpora pro vedení diskuse u pojmů (přihlášení uživatelé).
