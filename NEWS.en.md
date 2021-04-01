@@ -1,3 +1,9 @@
+#### Version 2.3.1
+
+- Fixed issues with invocation of text analysis in Docker, as well as working with file contents.
+- Fixed issues with public view (expired JWT, definition display).
+- Optimized term retrieval.
+
 #### Version 2.3.0
 
 - Added support for discussion on terms (logged-in users only).
