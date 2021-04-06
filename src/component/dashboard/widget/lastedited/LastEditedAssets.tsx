@@ -1,23 +1,22 @@
 import * as React from "react";
 import {Card, CardBody, CardHeader} from "reactstrap";
-import {useState} from "react";
 import Tabs from "../../../misc/Tabs";
-import withI18n, {HasI18n} from "../../../hoc/withI18n";
+import withI18n from "../../../hoc/withI18n";
 import {injectIntl} from "react-intl";
 import {useI18n} from "../../../hook/useI18n";
 import AllLastEditedAssets from "./AllLastEditedAssets";
 import MyLastEditedAssets from "./MyLastEditedAssets";
 
-export const LastEditedAssets = (props: HasI18n) => {
+export const LastEditedAssets = () => {
     const {i18n} = useI18n();
-    const [activeTab, setActiveTab] = useState("dashboard.widget.lastEditedAssets.all.title");
+    const [activeTab, setActiveTab] = React.useState("dashboard.widget.lastEditedAssets.all.title");
 
     const toggle = (tab: string) => {
         if (activeTab !== tab) setActiveTab(tab);
     }
     return (<Card>
         <CardHeader tag="h4" color="primary">
-            {i18n('dashboard.widget.lastEditedAssets.title')}
+            {i18n("dashboard.widget.lastEditedAssets.title")}
         </CardHeader>
         <CardBody className="py-0">
             <Tabs navLinkStyle="small" activeTabLabelKey={activeTab} changeTab={toggle} tabs={{
