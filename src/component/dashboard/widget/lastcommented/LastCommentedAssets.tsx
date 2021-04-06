@@ -1,25 +1,24 @@
 import * as React from "react";
 import {Card, CardBody, CardHeader} from "reactstrap";
-import {useState} from "react";
 import MyLastCommentedAssets from "./MyLastCommentedAssets";
 import LastCommentedAssetsInReactionToMine from "./LastCommentedAssetsInReactionToMine";
 import Tabs from "../../../misc/Tabs";
 import AllLastCommentedAssets from "./AllLastCommentedAssets";
-import withI18n, {HasI18n} from "../../../hoc/withI18n";
+import withI18n from "../../../hoc/withI18n";
 import {injectIntl} from "react-intl";
 import {useI18n} from "../../../hook/useI18n";
 import LastCommentedAssetsByMe from "./LastCommentedAssetsByMe";
 
-const LastCommentedAssets = (props: HasI18n) => {
+const LastCommentedAssets = () => {
     const {i18n} = useI18n();
-    const [activeTab, setActiveTab] = useState("dashboard.widget.lastCommentedAssets.all.title");
+    const [activeTab, setActiveTab] = React.useState("dashboard.widget.lastCommentedAssets.all.title");
 
     const toggle = (tab: string) => {
         if (activeTab !== tab) setActiveTab(tab);
     }
-    return (<Card>
+    return <Card>
         <CardHeader tag="h4" color="primary">
-            {i18n('dashboard.widget.lastCommentedAssets.title')}
+            {i18n("dashboard.widget.lastCommentedAssets.title")}
         </CardHeader>
         <CardBody className="py-0">
             <Tabs navLinkStyle="small" activeTabLabelKey={activeTab} changeTab={toggle} tabs={{
@@ -29,7 +28,7 @@ const LastCommentedAssets = (props: HasI18n) => {
                 "dashboard.widget.lastCommentedAssets.byMe.title": <LastCommentedAssetsByMe/>,
             }}/>
         </CardBody>
-    </Card>)
+    </Card>;
 }
 
 export default injectIntl(withI18n(LastCommentedAssets));
