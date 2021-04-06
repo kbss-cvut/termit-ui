@@ -1,21 +1,44 @@
 import Routes from "./Routes";
 
-const SERVER_URL = "__SERVER_URL__";
+/**
+ * Aggregated object of process.env and window.__config__ to allow dynamic configuration
+ */
+const ENV = {
+    ...Object.keys(process.env).reduce<Record<string, string>>((acc, key) => {
+        const strippedKey = key.replace("REACT_APP_", "");
+        acc[strippedKey] = process.env[key]!;
+        return acc;
+    }, {}),
+    ...(window as any).__config__,
+};
+
+/**
+ * Helper to make sure that all envs are defined properly
+ * @param name env variable name (without the REACT_APP prefix)
+ * @param defaultValue Default variable name
+ */
+export function getEnv(name: string, defaultValue?: string): string {
+    const value = ENV[name] || defaultValue;
+    if (value) {
+        return value;
+    }
+    throw new Error(`Missing environment variable: ${name}`);
+}
 
 const API_PREFIX = "/rest";
 const DEFAULT_LANGUAGE = "en";
 
 const constants = {
     // Will be replaced with actual server url during build
-    SERVER_URL,
+    SERVER_URL: getEnv("SERVER_URL"),
     // Prefix of the server REST API
     API_PREFIX,
     PUBLIC_API_PREFIX: `${API_PREFIX}/public`,
     APP_NAME: "TermIt",
     // Will be replaced with actual version during build
-    VERSION: "__VERSION__",
+    VERSION: getEnv("VERSION"),
     // Will be replaced with actual deployment name during build
-    DEPLOYMENT_NAME: "__DEPLOYMENT_NAME__",
+    DEPLOYMENT_NAME: getEnv("DEPLOYMENT_NAME", ""),
     HOME_ROUTE: Routes.dashboard,
     LANG: {
         CS: {
@@ -80,7 +103,7 @@ const constants = {
     LAYOUT_WALLPAPER_NAVBAR_BACKGROUND: "rgba(0,0,0,0.2)",
 
     EMPTY_ASSET_IRI: "http://empty",
-    LAST_COMMENTED_ASSET_LIMIT : 5
+    LAST_COMMENTED_ASSET_LIMIT: 5
 };
 
 const deployment = constants.DEPLOYMENT_NAME.length > 0 ? constants.DEPLOYMENT_NAME + "-" : "";

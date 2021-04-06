@@ -21,7 +21,7 @@ import {withRouter} from "react-router";
 import Routes from "../../util/Routes";
 import {Collapse, Container, Nav, Navbar, NavbarBrand} from "reactstrap";
 import classNames from "classnames";
-import Constants from "../../util/Constants";
+import Constants, {getEnv} from "../../util/Constants";
 import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
 import {ThunkDispatch} from "../../util/Types";
@@ -29,6 +29,7 @@ import {toggleSidebar} from "../../action/SyncActions";
 import {injectIntl} from "react-intl";
 import {NavLinkRoute, Sidebar as DefaultSidebar, SidebarProps} from "../sidebar/Sidebar";
 import "../sidebar/Sidebar.scss";
+import ConfigParam from "../../util/ConfigParam";
 
 const mainNavRoutes: NavLinkRoute[] = [{
     path: Routes.publicVocabularies.path,
@@ -42,7 +43,7 @@ const actionNavRoutes: NavLinkRoute[] = [{
     icon: "fas fa-user"
 }];
 
-if (process.env.REACT_APP_ADMIN_REGISTRATION_ONLY !== true.toString()) {
+if (getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") !== true.toString()) {
     actionNavRoutes.push({
         path: Routes.register.path,
         name: "register.submit",
