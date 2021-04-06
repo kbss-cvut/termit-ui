@@ -3,9 +3,10 @@ import {Button, ButtonToolbar, Container, Jumbotron} from "reactstrap";
 import {Link} from "react-router-dom";
 import Routes from "../../util/Routes";
 import "./Dashboard.scss";
-import Constants from "../../util/Constants";
+import Constants, {getEnv} from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
 import {useI18n} from "../hook/useI18n";
+import ConfigParam from "../../util/ConfigParam";
 
 const Dashboard: React.FC = () => {
     const {i18n} = useI18n();
@@ -17,7 +18,7 @@ const Dashboard: React.FC = () => {
             <hr className="my-2"/>
             <ButtonToolbar>
                 <Link to={Routes.login.path}><Button size="lg">{i18n("public.dashboard.actions.login")}</Button></Link>
-                {process.env.REACT_APP_ADMIN_REGISTRATION_ONLY !== true.toString() &&
+                {getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") !== true.toString() &&
                 <Link to={Routes.register.path} className="ml-3"><Button
                     size="lg">{i18n("public.dashboard.actions.register")}</Button></Link>}
                 <Link to={Routes.publicVocabularies.path} className="ml-3"><Button

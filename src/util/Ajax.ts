@@ -1,10 +1,11 @@
 import axios, {AxiosInstance, AxiosRequestConfig, ResponseType} from "axios";
 import Routing from "./Routing";
-import Constants from "./Constants";
+import Constants, {getEnv} from "./Constants";
 import Routes from "./Routes";
 import MockAdapter from "axios-mock-adapter";
 import Authentication from "./Authentication";
 import fileContent from "../rest-mock/file";
+import ConfigParam from "./ConfigParam";
 
 class RequestConfigBuilder {
     private mContent?: any;
@@ -186,7 +187,7 @@ export class Ajax {
             const response = error.response;
             if (response.status === Constants.STATUS_UNAUTHORIZED) {
                 Routing.saveOriginalTarget();
-                if (process.env.REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED === true.toString()) {
+                if (getEnv(ConfigParam.SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED, "") === true.toString()) {
                     Routing.transitionTo(Routes.publicDashboard);
                 } else {
                     Routing.transitionTo(Routes.login);
@@ -201,7 +202,7 @@ export class Ajax {
                 return Promise.reject(Object.assign({}, response.data, {status: response.status}));
             }
         });
-        if (process.env.REACT_APP_MOCK_REST_API === true.toString()) {
+        if (getEnv(ConfigParam.MOCK_REST_API, "") === true.toString()) {
             // Mock backend REST API if the environment is configured to do so
             mockRestApi(this.axiosInstance);
         }

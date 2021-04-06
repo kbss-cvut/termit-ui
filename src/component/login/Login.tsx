@@ -13,10 +13,11 @@ import {AsyncFailureAction, MessageAction} from "../../action/ActionType";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import {login} from "../../action/AsyncUserActions";
 import EnhancedInput, {LabelDirection} from "../misc/EnhancedInput";
-import Constants from "../../util/Constants";
+import Constants, {getEnv} from "../../util/Constants";
 import "./Login.scss";
 import {Link} from "react-router-dom";
 import WindowTitle from "../misc/WindowTitle";
+import ConfigParam from "../../util/ConfigParam";
 
 interface LoginProps extends HasI18n {
     loading: boolean;
@@ -114,7 +115,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
     }
 
     private renderRegistrationLink() {
-        if (process.env.REACT_APP_ADMIN_REGISTRATION_ONLY === true.toString()) {
+        if (getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") === true.toString()) {
             return null;
         }
         return <div className="text-center mt-2">
