@@ -2,9 +2,7 @@ import * as React from "react";
 import AssetCount from "./assetcount/AssetCount";
 import Vocabulary from "../../util/VocabularyUtils";
 import {default as withI18n, HasI18n} from "../hoc/withI18n";
-import templateAssetCount from "./assetcount/AssetCount.rq";
-import termCount from "./assetcount/TermCount.rq";
-import templateTermTypeFrequency from "./termtypefrequency/TermTypeFrequency.rq";
+import raw from "raw.macro";
 import {injectIntl} from "react-intl";
 import TermTypeFrequency from "./termtypefrequency/TermTypeFrequency";
 import FullscreenablePanelWithActions from "../misc/FullscreenablePanelWithActions";
@@ -15,6 +13,7 @@ import WindowTitle from "../misc/WindowTitle";
 
 const Statistics = (props: HasI18n) => {
 
+    const templateAssetCount = React.useMemo(() => raw("./assetcount/AssetCount.rq"), []);
     const query = (iri: string) => templateAssetCount.split("?assetType").join("<" + iri + ">");
 
     return <div>
@@ -29,7 +28,7 @@ const Statistics = (props: HasI18n) => {
             <Col lg={4} xs={12}>
                 <PanelWithActions
                     title={props.i18n("statistics.term.count")}>
-                    <AssetCount sparqlQuery={termCount}/>
+                    <AssetCount sparqlQuery={raw("./assetcount/TermCount.rq")}/>
                 </PanelWithActions>
             </Col>
             <Col lg={4} xs={12}>
@@ -43,7 +42,7 @@ const Statistics = (props: HasI18n) => {
             <Col>
                 <FullscreenablePanelWithActions actions={[]}
                                                 title={props.i18n("statistics.term.count")}>
-                    <TermTypeFrequency sparqlQuery={templateTermTypeFrequency}
+                    <TermTypeFrequency sparqlQuery={raw("./termtypefrequency/TermTypeFrequency.rq")}
                                        empty={props.i18n("statistics.types.frequency.empty")}
                                        notFilled={props.i18n("statistics.notFilled")}
                                        lang={props.locale}/>
