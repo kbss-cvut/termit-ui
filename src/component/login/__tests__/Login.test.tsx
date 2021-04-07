@@ -7,6 +7,7 @@ import {Alert} from "reactstrap";
 import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {shallow} from "enzyme";
 import {MemoryRouter} from "react-router";
+import * as Constants from "../../../util/Constants";
 
 jest.mock("../../../util/Routing");
 
@@ -106,7 +107,7 @@ describe("Login", () => {
     });
 
     it("does not render registration link when admin registration only is turned on", () => {
-        process.env.REACT_APP_ADMIN_REGISTRATION_ONLY = "true";
+        jest.spyOn(Constants, "getEnv").mockReturnValue(true.toString());
         const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
                                                            login={login} {...intlFunctions()}/></MemoryRouter>);
         expect(wrapper.exists("#login-register")).toBeFalsy();

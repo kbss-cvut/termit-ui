@@ -15,7 +15,7 @@ export const OutgoingLink: React.FC<OutgoingLinkProps> = (props: OutgoingLinkPro
     const {formatMessage} = useI18n();
     return <span>{props.label}
         <a id={props.id} href={props.iri} target="_blank" style={{color: "gray"}} className={props.className}
-           rel="noreferrer"
+           rel="noopener noreferrer"
            title={formatMessage("link.external.title", {url: props.iri})}>
             <span className={props.showLink ? "" : "hidden"}>
                 &nbsp;

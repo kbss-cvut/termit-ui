@@ -52,7 +52,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
                 </div>
                 <Col className="px-2 px-sm-3">
                     <a href="https://kbss.felk.cvut.cz" target="_blank"
-                       rel="noreferrer"
+                       rel="noopener noreferrer"
                        title={i18n("footer.copyright")}>&copy;&nbsp;{i18n("footer.copyright")}, {new Date().getFullYear()}</a>
                 </Col>
                 <div>
