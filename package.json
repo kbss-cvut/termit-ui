@@ -64,7 +64,7 @@
     "start-mock-rest": "cross-env REACT_APP_MOCK_REST_API=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
-    "test-ci": "cross-env =CI=true react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
+    "test-ci": "cross-env =CI=true react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?' --testResultsProcessor='jest-junit'",
     "eject": "react-scripts eject",
     "build-prod": "npm run test-ci && npm run build",
     "analyze": "source-map-explorer 'build/static/js/*.js'"

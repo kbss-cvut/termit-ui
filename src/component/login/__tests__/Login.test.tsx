@@ -8,6 +8,7 @@ import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import {shallow} from "enzyme";
 import {MemoryRouter} from "react-router";
 import * as Constants from "../../../util/Constants";
+import ConfigParam from "../../../util/ConfigParam";
 
 jest.mock("../../../util/Routing");
 
@@ -101,6 +102,9 @@ describe("Login", () => {
     });
 
     it("renders registration link by default", () => {
+        jest.spyOn(Constants, "getEnv").mockImplementation((name: string) => {
+            return (name !== ConfigParam.ADMIN_REGISTRATION_ONLY).toString();
+        });
         const wrapper = mountWithIntl(<MemoryRouter><Login loading={false}
                                                            login={login} {...intlFunctions()}/></MemoryRouter>);
         expect(wrapper.exists("#login-register")).toBeTruthy();
