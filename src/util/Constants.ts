@@ -19,7 +19,7 @@ const ENV = {
  */
 export function getEnv(name: string, defaultValue?: string): string {
     const value = ENV[name] || defaultValue;
-    if (value) {
+    if (value !== undefined) {
         return value;
     }
     throw new Error(`Missing environment variable: ${name}`);

@@ -1,3 +1,4 @@
+import React from "react";
 import {connect} from "react-redux";
 import Utils from "../../util/Utils";
 import {getLocalized} from "../../model/MultilingualString";
