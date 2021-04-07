@@ -1,3 +1,4 @@
+import * as React from "react";
 import Asset from "../../model/Asset";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";

@@ -11,7 +11,7 @@
     ],
     "sourceMap": true,
     "allowJs": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "moduleResolution": "node",
     "downlevelIteration": true,
     "forceConsistentCasingInFileNames": true,

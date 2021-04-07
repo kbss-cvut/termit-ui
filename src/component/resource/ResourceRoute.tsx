@@ -1,9 +1,10 @@
-import {Route, Switch} from "react-router";
-import Routes from "../../util/Routes";
 import * as React from "react";
+import {Switch} from "react-router";
+import Routes from "../../util/Routes";
 import ResourceSummaryRoute from "./ResourceSummaryRoute";
 import Mask from "../misc/Mask";
 import DynamicBreadcrumbRoute from "../breadcrumb/DynamicBreadcrumbRoute";
+import Route from "../misc/Route";
 
 const ResourceFileDetail = React.lazy(() => import("./ResourceFileDetail"));
 
