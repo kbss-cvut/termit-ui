@@ -4,11 +4,12 @@ import * as React from "react";
  * This component only remounts the wrapped component each time the props change.
  * Use-case - Angular component embedded in React.
  */
-export default function withRemounting<P>(Component: React.ComponentType<P>,
-                                          runScriptBeforeUpdate = ( props : P ) => { ; }): React.ComponentClass<P> {
-
-    return class extends React.Component<P, { component: JSX.Element | null }> {
-        constructor(props:P) {
+export default function withRemounting<P>(
+    Component: React.ComponentType<P>,
+    runScriptBeforeUpdate = (props: P) => {}
+): React.ComponentClass<P> {
+    return class extends React.Component<P, {component: JSX.Element | null}> {
+        constructor(props: P) {
             super(props);
             this.state = {
                 component: null
@@ -33,7 +34,7 @@ export default function withRemounting<P>(Component: React.ComponentType<P>,
                 });
             } else if (this.state.component == null) {
                 this.setState({
-                    component : <Component {...this.props}/>
+                    component: <Component {...this.props} />
                 });
             }
         }
@@ -41,5 +42,5 @@ export default function withRemounting<P>(Component: React.ComponentType<P>,
         public render() {
             return this.state.component;
         }
-    }
+    };
 }

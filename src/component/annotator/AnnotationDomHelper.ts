@@ -32,7 +32,6 @@ function getPropertyForAnnotationType(annotationType: string) {
 }
 
 const AnnotationDomHelper = {
-
     isAnnotation(node: DomHandlerNode, prefixMap?: Map<string, string>): boolean {
         if (!node || !(node as DomHandlerElement).attribs) {
             return false;
@@ -41,9 +40,19 @@ const AnnotationDomHelper = {
         return type === AnnotationType.OCCURRENCE || type === AnnotationType.DEFINITION;
     },
 
-    findAnnotation(dom: DomHandlerNode[], annotationId: string, prefixMap?: Map<string, string>): DomHandlerElement | void {
-        const foundResults = DomUtils.find((n: DomHandlerNode) => this.isAnnotation(n, prefixMap) && annotationId === (n as DomHandlerElement).attribs.about, dom, true, 1);
-        if (foundResults && (foundResults.length === 1)) {
+    findAnnotation(
+        dom: DomHandlerNode[],
+        annotationId: string,
+        prefixMap?: Map<string, string>
+    ): DomHandlerElement | void {
+        const foundResults = DomUtils.find(
+            (n: DomHandlerNode) =>
+                this.isAnnotation(n, prefixMap) && annotationId === (n as DomHandlerElement).attribs.about,
+            dom,
+            true,
+            1
+        );
+        if (foundResults && foundResults.length === 1) {
             return foundResults[0] as DomHandlerElement;
         }
     },
@@ -70,14 +79,19 @@ const AnnotationDomHelper = {
     },
 
     createTextualNode(annotation: NodeWithChildren): any {
-        return {data: (annotation.children![0] as DataNode).data, type: "text"}
+        return {data: (annotation.children![0] as DataNode).data, type: "text"};
     },
 
     replaceAnnotation(oldAnnotation: DomHandlerNode, newAnnotation: DomHandlerNode): void {
-        DomUtils.replaceElement(oldAnnotation, newAnnotation)
+        DomUtils.replaceElement(oldAnnotation, newAnnotation);
     },
 
-    createNewAnnotation(about: string, nodeList: NodeList, type: string = AnnotationType.OCCURRENCE, prefixMap?: Map<string, string>): DomHandlerElement {
+    createNewAnnotation(
+        about: string,
+        nodeList: NodeList,
+        type: string = AnnotationType.OCCURRENCE,
+        prefixMap?: Map<string, string>
+    ): DomHandlerElement {
         const newDom = HtmlParserUtils.html2dom(toHtmlString(nodeList));
         const tagName = HtmlDomUtils.containsBlockElement(nodeList) ? "div" : "span";
         const elem = new DomHandlerElement(tagName, {
@@ -101,7 +115,7 @@ const AnnotationDomHelper = {
         return {
             exactMatch: HtmlDomUtils.getTextContent(node),
             types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
-        }
+        };
     }
 };
 

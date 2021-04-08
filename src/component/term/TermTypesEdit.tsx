@@ -21,31 +21,30 @@ interface TermTypesEditProps extends HasI18n {
     onChange: (types: string[]) => void;
     invalid?: boolean;
     invalidMessage?: JSX.Element;
-    availableTypes: { [key: string]: Term };
+    availableTypes: {[key: string]: Term};
     intl: IntlData;
     loadTypes: () => void;
 }
 
-const getTypesForSelector = _.memoize((availableTypes: { [key: string]: Term }) => {
+const getTypesForSelector = _.memoize((availableTypes: {[key: string]: Term}) => {
     if (!availableTypes) {
         return [];
     }
     const typesMap = {};
     // Make a deep copy of the available types since we're going to modify them for the tree select
-    Object.keys(availableTypes).forEach(t => typesMap[t] = new Term(availableTypes[t]));
+    Object.keys(availableTypes).forEach(t => (typesMap[t] = new Term(availableTypes[t])));
     const types = Object.keys(typesMap).map(k => typesMap[k]);
     types.forEach(t => {
         if (t.subTerms) {
             // The tree-select needs parent for proper function
             // @ts-ignore
-            t.subTerms.forEach(st => typesMap[st].parent = t.iri);
+            t.subTerms.forEach(st => (typesMap[st].parent = t.iri));
         }
     });
     return types;
 });
 
 export class TermTypesEdit extends React.Component<TermTypesEditProps> {
-
     public componentDidMount(): void {
         this.props.loadTypes();
     }
@@ -55,7 +54,9 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
     };
 
     private resolveSelectedTypes(types: Term[]): string | undefined {
-        const matching = types.filter(t => t.iri !== VocabularyUtils.TERM && this.props.termTypes.indexOf(t.iri) !== -1);
+        const matching = types.filter(
+            t => t.iri !== VocabularyUtils.TERM && this.props.termTypes.indexOf(t.iri) !== -1
+        );
         return matching.length > 0 ? matching[0].iri : undefined;
     }
 
@@ -63,35 +64,46 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
         const types = getTypesForSelector(this.props.availableTypes);
         const selected = this.resolveSelectedTypes(types);
         const {i18n, intl} = this.props;
-        const style = this.props.invalid ? { borderColor : "red" } : {};
-        return <FormGroup>
-            <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
-            <IntelligentTreeSelect onChange={this.onChange}
-                                   value={selected}
-                                   options={types}
-                                   valueKey="iri"
-                                   getOptionLabel={(option: TermData) => getLocalized(option.label, getShortLocale(intl.locale))}
-                                   childrenKey="subTerms"
-                                   showSettings={false}
-                                   maxHeight={150}
-                                   multi={false}
-                                   displayInfoOnHover={true}
-                                   expanded={true}
-                                   invalid={this.props.invalid}
-                                   invalidMessage={this.props.invalidMessage}
-                                   renderAsTree={true}
-                                   style={style}
-                                   placeholder={i18n("term.metadata.types.select.placeholder")}/>
-            {this.props.invalid ? <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
-            <FormText>{i18n("term.types.help")}</FormText>
-        </FormGroup>;
+        const style = this.props.invalid ? {borderColor: "red"} : {};
+        return (
+            <FormGroup>
+                <Label className="attribute-label">{i18n("term.metadata.types")}</Label>
+                <IntelligentTreeSelect
+                    onChange={this.onChange}
+                    value={selected}
+                    options={types}
+                    valueKey="iri"
+                    getOptionLabel={(option: TermData) => getLocalized(option.label, getShortLocale(intl.locale))}
+                    childrenKey="subTerms"
+                    showSettings={false}
+                    maxHeight={150}
+                    multi={false}
+                    displayInfoOnHover={true}
+                    expanded={true}
+                    invalid={this.props.invalid}
+                    invalidMessage={this.props.invalidMessage}
+                    renderAsTree={true}
+                    style={style}
+                    placeholder={i18n("term.metadata.types.select.placeholder")}
+                />
+                {this.props.invalid ? (
+                    <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback>
+                ) : (
+                    <></>
+                )}
+                <FormText>{i18n("term.types.help")}</FormText>
+            </FormGroup>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {availableTypes: state.types, intl: state.intl};
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadTypes: () => dispatch(loadTypes())
+export default connect(
+    (state: TermItState) => {
+        return {availableTypes: state.types, intl: state.intl};
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadTypes: () => dispatch(loadTypes())
+        };
     }
-})(injectIntl(withI18n(TermTypesEdit)));
+)(injectIntl(withI18n(TermTypesEdit)));

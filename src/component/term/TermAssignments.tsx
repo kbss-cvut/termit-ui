@@ -36,7 +36,9 @@ function isOccurrence(item: AssignmentInfo) {
 }
 
 function isSuggestedOccurrence(item: AssignmentInfo) {
-    return isOccurrence(item) && Utils.sanitizeArray(item.types).indexOf(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE) !== -1;
+    return (
+        isOccurrence(item) && Utils.sanitizeArray(item.types).indexOf(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE) !== -1
+    );
 }
 
 export class TermAssignments extends React.Component<TermAssignmentsProps, TermAssignmentsState> {
@@ -59,50 +61,50 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
     }
 
     private loadAssignments() {
-        this.props.loadTermAssignments(this.props.term)
-            .then((assignments: AssignmentInfo[]) => {
-                    const resources = assignments
-                        .filter(v => !isSuggestedOccurrence(v))
-                        .map(v => ({
-                            iri: v.resource.iri!,
-                            label: v.label
-                        }))
-                        .filter((item, index, array) =>
-                            array.map(c => c.iri).indexOf(item.iri) === index);
-                    this.setState({resources});
-                    this.props.onLoad(resources.map(a => a.iri!).length);
-                }
-            );
+        this.props.loadTermAssignments(this.props.term).then((assignments: AssignmentInfo[]) => {
+            const resources = assignments
+                .filter(v => !isSuggestedOccurrence(v))
+                .map(v => ({
+                    iri: v.resource.iri!,
+                    label: v.label
+                }))
+                .filter((item, index, array) => array.map(c => c.iri).indexOf(item.iri) === index);
+            this.setState({resources});
+            this.props.onLoad(resources.map(a => a.iri!).length);
+        });
     }
 
     public render() {
         const i18n = this.props.i18n;
         const resources = this.state.resources;
         if (!resources) {
-            return <ContainerMask/>;
+            return <ContainerMask />;
         }
         if (resources.length === 0) {
-            return <div
-                className="additional-metadata-container italics">{i18n("term.metadata.assignments.empty")}</div>;
+            return (
+                <div className="additional-metadata-container italics">{i18n("term.metadata.assignments.empty")}</div>
+            );
         }
-        return <div className="additional-metadata-container">
-            <Table borderless={true}>
-                <tbody>
-                {this.renderAssignments()}
-                </tbody>
-            </Table>
-        </div>;
+        return (
+            <div className="additional-metadata-container">
+                <Table borderless={true}>
+                    <tbody>{this.renderAssignments()}</tbody>
+                </Table>
+            </div>
+        );
     }
 
     private renderAssignments() {
         const assignmentsPerResource = this.state.resources!;
         const result: JSX.Element[] = [];
         assignmentsPerResource.forEach((v, k) => {
-            result.push(<tr key={k}>
-                <td>
-                    <ResourceLink resource={new Resource(v)}/>
-                </td>
-            </tr>);
+            result.push(
+                <tr key={k}>
+                    <td>
+                        <ResourceLink resource={new Resource(v)} />
+                    </td>
+                </tr>
+            );
         });
         return result;
     }
@@ -110,12 +112,21 @@ export class TermAssignments extends React.Component<TermAssignmentsProps, TermA
 
 // NOTE: Need to explicitly pass intl to the component in case of merging props interfaces, otherwise, language
 // switching would not work
-export default connect<{ intl: IntlData }, StoreDispatchProps, TermAssignmentsOwnProps, TermItState>((state: TermItState) => {
-    return {
-        intl: state.intl
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadTermAssignments: (term: Term) => dispatch(loadTermAssignmentsInfo(VocabularyUtils.create(term.iri), VocabularyUtils.create(term.vocabulary!.iri!)))
-    };
-})(injectIntl(withI18n(TermAssignments)));
+export default connect<{intl: IntlData}, StoreDispatchProps, TermAssignmentsOwnProps, TermItState>(
+    (state: TermItState) => {
+        return {
+            intl: state.intl
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadTermAssignments: (term: Term) =>
+                dispatch(
+                    loadTermAssignmentsInfo(
+                        VocabularyUtils.create(term.iri),
+                        VocabularyUtils.create(term.vocabulary!.iri!)
+                    )
+                )
+        };
+    }
+)(injectIntl(withI18n(TermAssignments)));

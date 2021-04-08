@@ -20,10 +20,9 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     };
 }
 
-
 export type TermTreeSelectProcessingOptions = {
     searchString?: string;
-}
+};
 
 /**
  * Prepares the specified terms for the tree select component. This consists of removing terms and subterms which are
@@ -32,7 +31,11 @@ export type TermTreeSelectProcessingOptions = {
  * @param vocabularies Vocabularies in which all the terms should be, or null to switch this filtering off
  * @param options Processing options
  */
-export function processTermsForTreeSelect(terms: Term[], vocabularies: (string[] | undefined), options: TermTreeSelectProcessingOptions = {}): Term[] {
+export function processTermsForTreeSelect(
+    terms: Term[],
+    vocabularies: string[] | undefined,
+    options: TermTreeSelectProcessingOptions = {}
+): Term[] {
     let result: Term[] = [];
     for (const t of terms) {
         if (!vocabularyMatches(t, vocabularies)) {
@@ -41,9 +44,11 @@ export function processTermsForTreeSelect(terms: Term[], vocabularies: (string[]
         result.push(t);
         if (t.subTerms) {
             if (vocabularies) {
-                t.subTerms = t.subTerms.filter(st => vocabularyMatches(st, vocabularies)).map(st => {
-                    return st;
-                });
+                t.subTerms = t.subTerms
+                    .filter(st => vocabularyMatches(st, vocabularies))
+                    .map(st => {
+                        return st;
+                    });
             }
             t.syncPlainSubTerms();
         }
@@ -55,7 +60,7 @@ export function processTermsForTreeSelect(terms: Term[], vocabularies: (string[]
 }
 
 function vocabularyMatches(term: Term | TermInfo, vocabularies: string[] | undefined) {
-    return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1
+    return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1;
 }
 
 /**

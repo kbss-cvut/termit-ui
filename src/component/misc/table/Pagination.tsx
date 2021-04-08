@@ -18,15 +18,7 @@ const INFINITE_PAGE = Number.MAX_SAFE_INTEGER;
 
 export const Pagination: React.FC<PaginationProps> = props => {
     const {i18n, formatMessage} = useI18n();
-    const {
-        canPreviousPage,
-        canNextPage,
-        pageCount,
-        gotoPage,
-        nextPage,
-        previousPage,
-        setPageSize
-    } = props.pagingProps;
+    const {canPreviousPage, canNextPage, pageCount, gotoPage, nextPage, previousPage, setPageSize} = props.pagingProps;
     const {pageIndex, pageSize} = props.pagingState;
     React.useEffect(() => {
         const savedPageSize = localStorage.getItem(Constants.STORAGE_TABLE_PAGE_SIZE_KEY);
@@ -38,40 +30,68 @@ export const Pagination: React.FC<PaginationProps> = props => {
         const value = e.target.value;
         localStorage.setItem(Constants.STORAGE_TABLE_PAGE_SIZE_KEY, value);
         setPageSize(Number(value));
-    }
+    };
 
     const items = [];
     for (let i = 0; i < pageCount; i++) {
-        items.push(<PaginationItem key={i} active={i === pageIndex}>
-            <PaginationLink onClick={() => gotoPage(i)}>{i + 1}</PaginationLink>
-        </PaginationItem>);
+        items.push(
+            <PaginationItem key={i} active={i === pageIndex}>
+                <PaginationLink onClick={() => gotoPage(i)}>{i + 1}</PaginationLink>
+            </PaginationItem>
+        );
     }
 
-    return <>
-        {(canNextPage || canPreviousPage) && <BootstrapPagination aria-label="Table page navigation">
-            <PaginationItem disabled={!canPreviousPage}>
-                <PaginationLink first={true} onClick={() => gotoPage(0)} title={i18n("table.paging.first.tooltip")}/>
-            </PaginationItem>
-            <PaginationItem disabled={!canPreviousPage}>
-                <PaginationLink previous={true} onClick={() => previousPage()}
-                                title={i18n("table.paging.previous.tooltip")}/>
-            </PaginationItem>
-            {items}
-            <PaginationItem disabled={!canNextPage}>
-                <PaginationLink next={true} onClick={() => nextPage()} title={i18n("table.paging.next.tooltip")}/>
-            </PaginationItem>
-            <PaginationItem disabled={!canNextPage}>
-                <PaginationLink last={true} onClick={() => gotoPage(pageCount - 1)}
-                                title={i18n("table.paging.last.tooltip")}/>
-            </PaginationItem>
-        </BootstrapPagination>}
-        {props.allowSizeChange &&
-        <div className="page-size-select"><Select value={pageSize.toString()} onChange={onPageSizeSelect}>
-            {PAGE_SIZES.map(s => <option key={s}
-                                         value={s}>{formatMessage("table.paging.pageSize.select", {pageSize: s})}</option>)}
-            <option key={INFINITE_PAGE} value={INFINITE_PAGE}>{i18n("table.paging.pageSize.select.all")}</option>
-        </Select></div>}
-    </>;
+    return (
+        <>
+            {(canNextPage || canPreviousPage) && (
+                <BootstrapPagination aria-label="Table page navigation">
+                    <PaginationItem disabled={!canPreviousPage}>
+                        <PaginationLink
+                            first={true}
+                            onClick={() => gotoPage(0)}
+                            title={i18n("table.paging.first.tooltip")}
+                        />
+                    </PaginationItem>
+                    <PaginationItem disabled={!canPreviousPage}>
+                        <PaginationLink
+                            previous={true}
+                            onClick={() => previousPage()}
+                            title={i18n("table.paging.previous.tooltip")}
+                        />
+                    </PaginationItem>
+                    {items}
+                    <PaginationItem disabled={!canNextPage}>
+                        <PaginationLink
+                            next={true}
+                            onClick={() => nextPage()}
+                            title={i18n("table.paging.next.tooltip")}
+                        />
+                    </PaginationItem>
+                    <PaginationItem disabled={!canNextPage}>
+                        <PaginationLink
+                            last={true}
+                            onClick={() => gotoPage(pageCount - 1)}
+                            title={i18n("table.paging.last.tooltip")}
+                        />
+                    </PaginationItem>
+                </BootstrapPagination>
+            )}
+            {props.allowSizeChange && (
+                <div className="page-size-select">
+                    <Select value={pageSize.toString()} onChange={onPageSizeSelect}>
+                        {PAGE_SIZES.map(s => (
+                            <option key={s} value={s}>
+                                {formatMessage("table.paging.pageSize.select", {pageSize: s})}
+                            </option>
+                        ))}
+                        <option key={INFINITE_PAGE} value={INFINITE_PAGE}>
+                            {i18n("table.paging.pageSize.select.all")}
+                        </option>
+                    </Select>
+                </div>
+            )}
+        </>
+    );
 };
 
 Pagination.defaultProps = {

@@ -3,7 +3,6 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import {PasswordUpdateUser, UserDataWithPassword} from "../User";
 
 describe("User", () => {
-
     describe("isLocked", () => {
         it("returns true when types contain locked user type", () => {
             const sut = Generator.generateUser();

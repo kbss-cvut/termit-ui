@@ -11,26 +11,28 @@ interface Props {
     /**
      * Indicator of being fullscreen. If true, the button should render as Exit fullscreen and vice versa.
      */
-    isFullscreen: boolean,
+    isFullscreen: boolean;
 
     /**
      * An action to call upon the button click.
      */
-    toggleFullscreen: () => void
+    toggleFullscreen: () => void;
 }
 
 export const FullscreenButton: React.FC<Props> = props => {
     const {i18n} = useI18n();
-    return <Button
-        key="btnFullscreen"
-        color="lightgrey"
-        size="md"
-        onClick={props.toggleFullscreen}
-        title={i18n(props.isFullscreen ? "fullscreen.exit" : "fullscreen.enter")}>
-        <IconContext.Provider value={{color: "black", className: "global-class-name"}}>
-            {props.isFullscreen ? <GoScreenNormal/> : <GoScreenFull/>}
-        </IconContext.Provider>
-    </Button>;
-}
+    return (
+        <Button
+            key="btnFullscreen"
+            color="lightgrey"
+            size="md"
+            onClick={props.toggleFullscreen}
+            title={i18n(props.isFullscreen ? "fullscreen.exit" : "fullscreen.enter")}>
+            <IconContext.Provider value={{color: "black", className: "global-class-name"}}>
+                {props.isFullscreen ? <GoScreenNormal /> : <GoScreenFull />}
+            </IconContext.Provider>
+        </Button>
+    );
+};
 
 export default FullscreenButton;

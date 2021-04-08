@@ -17,10 +17,11 @@ const NewsAlert: React.FC = () => {
         }
     }, [displayAlert, version]);
 
-    return showAlert ?
+    return showAlert ? (
         <UncontrolledAlert color="secondary">
             {formatMessage("dashboard.widget.alert.news", {version})}
-        </UncontrolledAlert> : null;
+        </UncontrolledAlert>
+    ) : null;
 };
 
 export default NewsAlert;

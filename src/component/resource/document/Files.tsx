@@ -16,37 +16,41 @@ interface FilesProps {
 export const Files = (props: FilesProps) => {
     const {i18n} = useI18n();
     const files = Utils.sanitizeArray(props.files).slice().sort(Utils.labelComparator);
-    return <div>
-        <Table>
-            <tbody>
-            <tr>
-                <td><Label className="attribute-label mb-3"> {i18n("vocabulary.detail.files")}</Label></td>
-                <td className="fit-content">
-                    <div className="fit-content">
-                        {props.actions}
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </Table>
-        {files.length > 0 ? <Table striped={true} bordered={true}>
-            <tbody>
-            {files.map((v: File) => <tr key={v.label}>
-                <td className="align-middle">
-                    {v.label}
-                </td>
-                <td className="align-middle">
-                    <ButtonToolbar className="float-right">
-                        {props.itemActions(v)}
-                    </ButtonToolbar>
-                </td>
-            </tr>)
-            }
-            </tbody>
-        </Table> : <div id="file-list-empty"
-                        className="italics">{i18n("resource.metadata.document.files.empty")}</div>}
-    </div>;
-}
+    return (
+        <div>
+            <Table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <Label className="attribute-label mb-3"> {i18n("vocabulary.detail.files")}</Label>
+                        </td>
+                        <td className="fit-content">
+                            <div className="fit-content">{props.actions}</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
+            {files.length > 0 ? (
+                <Table striped={true} bordered={true}>
+                    <tbody>
+                        {files.map((v: File) => (
+                            <tr key={v.label}>
+                                <td className="align-middle">{v.label}</td>
+                                <td className="align-middle">
+                                    <ButtonToolbar className="float-right">{props.itemActions(v)}</ButtonToolbar>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            ) : (
+                <div id="file-list-empty" className="italics">
+                    {i18n("resource.metadata.document.files.empty")}
+                </div>
+            )}
+        </div>
+    );
+};
 
 export default connect((state: TermItState) => {
     return {

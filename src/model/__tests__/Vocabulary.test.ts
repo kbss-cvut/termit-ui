@@ -4,13 +4,12 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 
 describe("Vocabulary", () => {
-
     let data: VocabularyData;
 
     beforeEach(() => {
         data = {
-            "iri": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/vocabularies/metropolitan-plan",
-            "label": "Metropolitan plan"
+            iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/vocabularies/metropolitan-plan",
+            label: "Metropolitan plan"
         };
     });
 
@@ -26,11 +25,13 @@ describe("Vocabulary", () => {
             const testVocabulary = new Vocabulary(data);
             expect(testVocabulary.types).toBeDefined();
             expect(testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)).not.toEqual(-1);
-            expect(testVocabulary.types!.lastIndexOf(VocabularyUtils.VOCABULARY)).toEqual(testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY));
+            expect(testVocabulary.types!.lastIndexOf(VocabularyUtils.VOCABULARY)).toEqual(
+                testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)
+            );
         });
 
         it("initializes document when document data are available", () => {
-            const vocData:VocabularyData = {
+            const vocData: VocabularyData = {
                 iri: Generator.generateUri(),
                 label: "Test vocabulary",
                 types: [VocabularyUtils.VOCABULARY],
@@ -38,11 +39,13 @@ describe("Vocabulary", () => {
                     iri: Generator.generateUri(),
                     label: "Test document",
                     types: [VocabularyUtils.DOCUMENT],
-                    files: [{
-                        iri: Generator.generateUri(),
-                        label: "Test file",
-                        types: [VocabularyUtils.FILE]
-                    }]
+                    files: [
+                        {
+                            iri: Generator.generateUri(),
+                            label: "Test file",
+                            types: [VocabularyUtils.FILE]
+                        }
+                    ]
                 }
             };
             const result = new Vocabulary(vocData);
@@ -74,8 +77,6 @@ describe("Vocabulary", () => {
     });
 
     describe("set unmappedProperties", () => {
-
-
         it("merges specified properties into the object state", () => {
             const testVocabulary = new Vocabulary(data);
             const unmappedProps = new Map<string, string[]>();
@@ -109,7 +110,6 @@ describe("Vocabulary", () => {
     });
 
     describe("toJsonLd", () => {
-
         it("removes allImportedVocabularies attribute", () => {
             const sut = new Vocabulary(data);
             sut.allImportedVocabularies = [Generator.generateUri()];

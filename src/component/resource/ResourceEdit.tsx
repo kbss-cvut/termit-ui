@@ -20,7 +20,10 @@ export interface ResourceEditState {
     terms: Term[];
 }
 
-export class ResourceEdit<P extends ResourceEditProps = ResourceEditProps, S extends ResourceEditState = ResourceEditState> extends React.Component<P, S> {
+export class ResourceEdit<
+    P extends ResourceEditProps = ResourceEditProps,
+    S extends ResourceEditState = ResourceEditState
+> extends React.Component<P, S> {
     constructor(props: P) {
         super(props);
         this.state = {
@@ -59,57 +62,83 @@ export class ResourceEdit<P extends ResourceEditProps = ResourceEditProps, S ext
     };
 
     public render() {
-        return <Card>
-            <CardBody>
-                <Form>
-                    {this.renderBasicMetadataInputs()}
-                    {this.renderSubmitButtons()}
-                </Form>
-            </CardBody>
-        </Card>;
+        return (
+            <Card>
+                <CardBody>
+                    <Form>
+                        {this.renderBasicMetadataInputs()}
+                        {this.renderSubmitButtons()}
+                    </Form>
+                </CardBody>
+            </Card>
+        );
     }
 
     protected renderBasicMetadataInputs() {
         const i18n = this.props.i18n;
-        return <>
-            <Row>
-                <Col xs={12}>
-                    <CustomInput name="edit-resource-iri" label={i18n("asset.iri")} value={this.props.resource.iri}
-                                 disabled={true}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
-                    <CustomInput name="edit-resource-label" label={i18n("asset.label")}
-                                 value={this.state.label} onChange={this.onChange}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
-                    <TextArea name="edit-resource-description" label={i18n("resource.metadata.description")}
-                              rows={4} value={this.state.description} onChange={this.onChange}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
-                    <ResourceTermAssignmentsEdit terms={this.state.terms} onChange={this.onTagsChange}/>
-                </Col>
-            </Row>
-        </>;
+        return (
+            <>
+                <Row>
+                    <Col xs={12}>
+                        <CustomInput
+                            name="edit-resource-iri"
+                            label={i18n("asset.iri")}
+                            value={this.props.resource.iri}
+                            disabled={true}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <CustomInput
+                            name="edit-resource-label"
+                            label={i18n("asset.label")}
+                            value={this.state.label}
+                            onChange={this.onChange}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <TextArea
+                            name="edit-resource-description"
+                            label={i18n("resource.metadata.description")}
+                            rows={4}
+                            value={this.state.description}
+                            onChange={this.onChange}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <ResourceTermAssignmentsEdit terms={this.state.terms} onChange={this.onTagsChange} />
+                    </Col>
+                </Row>
+            </>
+        );
     }
 
     protected renderSubmitButtons() {
         const i18n = this.props.i18n;
-        return <Row>
-            <Col xs={12}>
-                <ButtonToolbar className="d-flex justify-content-center mt-4">
-                    <Button id="edit-resource-submit" onClick={this.onSave} color="success"
-                            size="sm">{i18n("save")}</Button>
-                    <Button id="edit-resource-cancel" onClick={this.props.cancel} key="cancel" color="outline-dark"
-                            size="sm">{i18n("cancel")}</Button>
-                </ButtonToolbar>
-            </Col>
-        </Row>
+        return (
+            <Row>
+                <Col xs={12}>
+                    <ButtonToolbar className="d-flex justify-content-center mt-4">
+                        <Button id="edit-resource-submit" onClick={this.onSave} color="success" size="sm">
+                            {i18n("save")}
+                        </Button>
+                        <Button
+                            id="edit-resource-cancel"
+                            onClick={this.props.cancel}
+                            key="cancel"
+                            color="outline-dark"
+                            size="sm">
+                            {i18n("cancel")}
+                        </Button>
+                    </ButtonToolbar>
+                </Col>
+            </Row>
+        );
     }
 }
 

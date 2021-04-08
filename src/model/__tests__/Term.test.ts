@@ -6,7 +6,6 @@ import {TermOccurrenceData} from "../TermOccurrence";
 import {langString} from "../MultilingualString";
 
 describe("Term tests", () => {
-
     let termData: TermData;
     let term: {};
 
@@ -42,26 +41,31 @@ describe("Term tests", () => {
 
         it("sets parent based on parentTerms", () => {
             termData.vocabulary = {iri: Generator.generateUri()};
-            termData.parentTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("Parent"),
-                vocabulary: termData.vocabulary
-            }];
+            termData.parentTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent"),
+                    vocabulary: termData.vocabulary
+                }
+            ];
             const result = new Term(termData);
             expect(result.parent).toEqual(termData.parentTerms[0].iri);
         });
 
         it("sets parent to first parent with same vocabulary", () => {
             termData.vocabulary = {iri: Generator.generateUri()};
-            termData.parentTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("Parent"),
-                vocabulary: {iri: Generator.generateUri()}
-            }, {
-                iri: Generator.generateUri(),
-                label: langString("Parent Two"),
-                vocabulary: {iri: termData.vocabulary.iri}
-            }];
+            termData.parentTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent"),
+                    vocabulary: {iri: Generator.generateUri()}
+                },
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent Two"),
+                    vocabulary: {iri: termData.vocabulary.iri}
+                }
+            ];
             const result = new Term(termData);
             expect(result.parent).toEqual(termData.parentTerms[1].iri);
         });
@@ -111,9 +115,7 @@ describe("Term tests", () => {
             const data: TermData = {
                 iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
                 label: langString("pojem 5"),
-                sources: [
-                    "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"
-                ]
+                sources: ["https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"]
             };
             const value = "value]";
             data[extraProperty] = value;
@@ -129,9 +131,7 @@ describe("Term tests", () => {
             const data: TermData = {
                 iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
                 label: langString("pojem 5"),
-                sources: [
-                    "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"
-                ]
+                sources: ["https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"]
             };
             const values = ["v1", "v2", "v3"];
             data[extraProperty] = values;
@@ -167,15 +167,18 @@ describe("Term tests", () => {
 
     describe("syncPlainSubTerms", () => {
         it("synchronizes plainSubTerms with current subTerms value", () => {
-            const origSubTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("test one"),
-                vocabulary: {iri: Generator.generateUri()}
-            }, {
-                iri: Generator.generateUri(),
-                label: langString("test two"),
-                vocabulary: {iri: Generator.generateUri()}
-            }];
+            const origSubTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test one"),
+                    vocabulary: {iri: Generator.generateUri()}
+                },
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test two"),
+                    vocabulary: {iri: Generator.generateUri()}
+                }
+            ];
             termData.subTerms = origSubTerms;
             const sut = new Term(termData);
             expect(sut.plainSubTerms).toEqual(origSubTerms.map(ti => ti.iri));
@@ -192,11 +195,13 @@ describe("Term tests", () => {
         });
 
         it("is invoked by constructor", () => {
-            const origSubTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("test one"),
-                vocabulary: {iri: Generator.generateUri()}
-            }];
+            const origSubTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test one"),
+                    vocabulary: {iri: Generator.generateUri()}
+                }
+            ];
             termData.subTerms = origSubTerms;
             const sut = new Term(termData);
             expect(sut.plainSubTerms).toEqual(origSubTerms.map(ti => ti.iri));
@@ -209,11 +214,13 @@ describe("Term tests", () => {
                 iri: Generator.generateUri(),
                 term: Generator.generateTerm(),
                 target: {
-                    selectors: [{
-                        iri: Generator.generateUri(),
-                        exactMatch: "Test",
-                        types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
-                    }],
+                    selectors: [
+                        {
+                            iri: Generator.generateUri(),
+                            exactMatch: "Test",
+                            types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
+                        }
+                    ],
                     source: {iri: Generator.generateUri()},
                     types: [VocabularyUtils.DEFINITION_OCCURRENCE_TARGET]
                 },
@@ -225,7 +232,7 @@ describe("Term tests", () => {
                 definitionSource: defSource,
                 types: [VocabularyUtils.TERM]
             });
-            sut.definitionSource!.term = sut;   // Here comes the cycle
+            sut.definitionSource!.term = sut; // Here comes the cycle
 
             const result = sut.toTermData();
             expect(result.definitionSource!.term).not.toEqual(result);

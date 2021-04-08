@@ -91,7 +91,11 @@ export function createVocabulary(vocabulary: Vocabulary) {
             .then((resp: AxiosResponse) => {
                 dispatch(asyncActionSuccess(action));
                 dispatch(loadVocabularies());
-                dispatch(SyncActions.publishMessage(new Message({messageId: "vocabulary.created.message"}, MessageType.SUCCESS)));
+                dispatch(
+                    SyncActions.publishMessage(
+                        new Message({messageId: "vocabulary.created.message"}, MessageType.SUCCESS)
+                    )
+                );
                 return resp.headers[Constants.Headers.LOCATION];
             })
             .catch((error: ErrorData) => {
@@ -109,14 +113,24 @@ export function createTerm(term: Term, vocabularyIri: IRI) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const parents = Utils.sanitizeArray(term.parentTerms);
-        const vocabularyIriToUse = parents.length > 0 ? VocabularyUtils.create(parents[0].vocabulary!.iri!) : vocabularyIri;
+        const vocabularyIriToUse =
+            parents.length > 0 ? VocabularyUtils.create(parents[0].vocabulary!.iri!) : vocabularyIri;
         const url = resolveTermCreationUrl(term, vocabularyIriToUse);
-        const data = Object.assign(term.toJsonLd(), {vocabulary: {iri: vocabularyIri.namespace + vocabularyIri.fragment}});
-        return Ajax.post(url, content(data).contentType(Constants.JSON_LD_MIME_TYPE).param("namespace", vocabularyIriToUse.namespace))
+        const data = Object.assign(term.toJsonLd(), {
+            vocabulary: {iri: vocabularyIri.namespace + vocabularyIri.fragment}
+        });
+        return Ajax.post(
+            url,
+            content(data).contentType(Constants.JSON_LD_MIME_TYPE).param("namespace", vocabularyIriToUse.namespace)
+        )
             .then((resp: AxiosResponse) => {
                 const asyncSuccessAction = asyncActionSuccess(action);
                 dispatch(asyncSuccessAction);
-                dispatch(SyncActions.publishMessage(new Message({messageId: "vocabulary.term.created.message"}, MessageType.SUCCESS)));
+                dispatch(
+                    SyncActions.publishMessage(
+                        new Message({messageId: "vocabulary.term.created.message"}, MessageType.SUCCESS)
+                    )
+                );
                 dispatch(publishNotification({source: asyncSuccessAction}));
                 return resp.headers[Constants.Headers.LOCATION];
             })
@@ -133,14 +147,20 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
     const parents = Utils.sanitizeArray(term.parentTerms);
     if (parents.length > 0) {
         // Assuming there is at most one parent for a newly created term
-        url += targetVocabularyIri.fragment + "/terms/" + VocabularyUtils.create(parents[0].iri!).fragment + "/subterms";
+        url +=
+            targetVocabularyIri.fragment + "/terms/" + VocabularyUtils.create(parents[0].iri!).fragment + "/subterms";
     } else {
-        url += targetVocabularyIri.fragment + "/terms"
+        url += targetVocabularyIri.fragment + "/terms";
     }
     return url;
 }
 
-export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPrefix: string = Constants.API_PREFIX, withValidation = true) {
+export function loadVocabulary(
+    iri: IRI,
+    ignoreLoading: boolean = false,
+    apiPrefix: string = Constants.API_PREFIX,
+    withValidation = true
+) {
     const action = {
         type: ActionType.LOAD_VOCABULARY
     };
@@ -149,8 +169,7 @@ export function loadVocabulary(iri: IRI, ignoreLoading: boolean = false, apiPref
             return Promise.resolve({});
         }
         dispatch(asyncActionRequest(action, ignoreLoading));
-        return Ajax
-            .get(`${apiPrefix}/vocabularies/${iri.fragment}`, param("namespace", iri.namespace))
+        return Ajax.get(`${apiPrefix}/vocabularies/${iri.fragment}`, param("namespace", iri.namespace))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<VocabularyData>(data, VOCABULARY_CONTEXT))
             .then((data: VocabularyData) => {
                 dispatch(loadImportedVocabulariesIntoState(iri, apiPrefix));
@@ -172,13 +191,16 @@ function loadImportedVocabulariesIntoState(vocabularyIri: IRI, apiPrefix: string
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/imports`, param("namespace", vocabularyIri.namespace))
+        return Ajax.get(
+            `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/imports`,
+            param("namespace", vocabularyIri.namespace)
+        )
             .then(data => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 /**
@@ -193,7 +215,10 @@ export function loadImportedVocabularies(vocabularyIri: IRI) {
             return Promise.resolve([]);
         }
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/imports", param("namespace", vocabularyIri.namespace))
+        return Ajax.get(
+            Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/imports",
+            param("namespace", vocabularyIri.namespace)
+        )
             .then(data => {
                 dispatch(asyncActionSuccess(action));
                 return data;
@@ -203,7 +228,7 @@ export function loadImportedVocabularies(vocabularyIri: IRI) {
                 dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
                 return [];
             });
-    }
+    };
 }
 
 export function loadResource(iri: IRI) {
@@ -212,9 +237,10 @@ export function loadResource(iri: IRI) {
     };
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
         dispatch(asyncActionRequest(action));
-        return Ajax
-            .get(Constants.API_PREFIX + "/resources/" + iri.fragment, param("namespace", iri.namespace))
-            .then((data: object) => JsonLdUtils.compactAndResolveReferences<ResourceData>(data, JOINED_RESOURCE_CONTEXT))
+        return Ajax.get(Constants.API_PREFIX + "/resources/" + iri.fragment, param("namespace", iri.namespace))
+            .then((data: object) =>
+                JsonLdUtils.compactAndResolveReferences<ResourceData>(data, JOINED_RESOURCE_CONTEXT)
+            )
             .then((data: ResourceData) => {
                 const resource = AssetFactory.createResource(data);
                 dispatch(asyncActionSuccessWithPayload(action, resource));
@@ -222,7 +248,7 @@ export function loadResource(iri: IRI) {
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
-                dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)))
+                dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
                 return null;
             });
     };
@@ -239,9 +265,18 @@ export function loadResources() {
         dispatch(asyncActionRequest(action));
         return Ajax.get(Constants.API_PREFIX + "/resources")
             .then((data: object[]) =>
-                data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<ResourceData>(data, JOINED_RESOURCE_CONTEXT) : [])
+                data.length !== 0
+                    ? JsonLdUtils.compactAndResolveReferencesAsArray<ResourceData>(data, JOINED_RESOURCE_CONTEXT)
+                    : []
+            )
             .then((data: ResourceData[]) =>
-                dispatch(asyncActionSuccessWithPayload(action, data.map(v => AssetFactory.createResource(v)))))
+                dispatch(
+                    asyncActionSuccessWithPayload(
+                        action,
+                        data.map(v => AssetFactory.createResource(v))
+                    )
+                )
+            )
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
@@ -255,16 +290,29 @@ export function loadResourceTermAssignmentsInfo(resourceIri: IRI) {
     };
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
         dispatch(asyncActionRequest(action));
-        return Ajax.get(Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/assignments/aggregated", param("namespace", resourceIri.namespace))
-            .then((data: object[]) => JsonLdUtils.compactAndResolveReferencesAsArray<ResourceTermAssignments>(data, RESOURCE_TERM_ASSIGNMENTS_CONTEXT))
+        return Ajax.get(
+            Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/assignments/aggregated",
+            param("namespace", resourceIri.namespace)
+        )
+            .then((data: object[]) =>
+                JsonLdUtils.compactAndResolveReferencesAsArray<ResourceTermAssignments>(
+                    data,
+                    RESOURCE_TERM_ASSIGNMENTS_CONTEXT
+                )
+            )
             .then((data: ResourceTermAssignments[]) => {
                 dispatch(asyncActionSuccess(action));
-                const assignedTerms = data.filter(a => a.types.indexOf(VocabularyUtils.TERM_OCCURRENCE) === -1).map(a => new Term({
-                    iri: a.term.iri,
-                    label: langString(a.label),
-                    vocabulary: a.vocabulary,
-                    draft: a.term.draft
-                }));
+                const assignedTerms = data
+                    .filter(a => a.types.indexOf(VocabularyUtils.TERM_OCCURRENCE) === -1)
+                    .map(
+                        a =>
+                            new Term({
+                                iri: a.term.iri,
+                                label: langString(a.label),
+                                vocabulary: a.vocabulary,
+                                draft: a.term.draft
+                            })
+                    );
                 if (getState().resource.iri === resourceIri.namespace + resourceIri.fragment) {
                     dispatch(asyncActionSuccessWithPayload({type: ActionType.LOAD_RESOURCE_TERMS}, assignedTerms));
                 }
@@ -287,7 +335,11 @@ export function createResource(resource: Resource) {
         return Ajax.post(Constants.API_PREFIX + "/resources", content(resource.toJsonLd()))
             .then((resp: AxiosResponse) => {
                 dispatch(asyncActionSuccess(action));
-                dispatch(SyncActions.publishMessage(new Message({messageId: "resource.created.message"}, MessageType.SUCCESS)));
+                dispatch(
+                    SyncActions.publishMessage(
+                        new Message({messageId: "resource.created.message"}, MessageType.SUCCESS)
+                    )
+                );
                 return resp.headers[Constants.Headers.LOCATION];
             })
             .catch((error: ErrorData) => {
@@ -303,7 +355,8 @@ export function createFileInDocument(file: TermitFile, documentIri: IRI) {
         type: ActionType.CREATE_RESOURCE
     };
     return (dispatch: ThunkDispatch) =>
-        Ajax.post(`${Constants.API_PREFIX}/identifiers`,
+        Ajax.post(
+            `${Constants.API_PREFIX}/identifiers`,
             params({
                 name: file.label,
                 contextIri: documentIri,
@@ -312,10 +365,17 @@ export function createFileInDocument(file: TermitFile, documentIri: IRI) {
         ).then(response => {
             dispatch(asyncActionRequest(action));
             file.iri = response.data;
-            return Ajax.post(`${Constants.API_PREFIX}/resources/${documentIri.fragment}/files`, content(file.toJsonLd()).param("namespace", documentIri.namespace))
+            return Ajax.post(
+                `${Constants.API_PREFIX}/resources/${documentIri.fragment}/files`,
+                content(file.toJsonLd()).param("namespace", documentIri.namespace)
+            )
                 .then((resp: AxiosResponse) => {
                     dispatch(asyncActionSuccess(action));
-                    dispatch(SyncActions.publishMessage(new Message({messageId: "resource.created.message"}, MessageType.SUCCESS)));
+                    dispatch(
+                        SyncActions.publishMessage(
+                            new Message({messageId: "resource.created.message"}, MessageType.SUCCESS)
+                        )
+                    );
                     return resp.headers[Constants.Headers.LOCATION];
                 })
                 .catch((error: ErrorData) => {
@@ -324,7 +384,6 @@ export function createFileInDocument(file: TermitFile, documentIri: IRI) {
                     return undefined;
                 });
         });
-
 }
 
 export function removeFileFromDocument(file: TermitFile, documentIri: IRI) {
@@ -334,11 +393,18 @@ export function removeFileFromDocument(file: TermitFile, documentIri: IRI) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const fileIri = VocabularyUtils.create(file.iri);
-        return Ajax.delete(Constants.API_PREFIX + "/resources/" + documentIri.fragment + "/files/" + fileIri.fragment, param("namespace", fileIri.namespace))
+        return Ajax.delete(
+            Constants.API_PREFIX + "/resources/" + documentIri.fragment + "/files/" + fileIri.fragment,
+            param("namespace", fileIri.namespace)
+        )
             .then((resp: AxiosResponse) => {
                 dispatch(asyncActionSuccess(action));
                 dispatch(loadResource(documentIri));
-                dispatch(SyncActions.publishMessage(new Message({messageId: "resource.removed.message"}, MessageType.SUCCESS)));
+                dispatch(
+                    SyncActions.publishMessage(
+                        new Message({messageId: "resource.removed.message"}, MessageType.SUCCESS)
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -355,15 +421,23 @@ export function uploadFileContent(fileIri: IRI, data: File) {
     formData.append("file", data, fileIri.fragment);
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.put(Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
+        return Ajax.put(
+            Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
             contentType(Constants.MULTIPART_FORM_DATA).formData(formData).param("namespace", fileIri.namespace)
         )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(SyncActions.publishMessage(new Message({
-                    messageId: "file.content.upload.success",
-                    values: {fileName: data.name}
-                }, MessageType.SUCCESS)));
+                return dispatch(
+                    SyncActions.publishMessage(
+                        new Message(
+                            {
+                                messageId: "file.content.upload.success",
+                                values: {fileName: data.name}
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -373,7 +447,7 @@ export function uploadFileContent(fileIri: IRI, data: File) {
 }
 
 export function removeResource(resource: Resource) {
-    const iri = VocabularyUtils.create(resource.iri)
+    const iri = VocabularyUtils.create(resource.iri);
     return removeAsset(
         iri,
         iri.namespace,
@@ -415,29 +489,34 @@ export function removeTerm(term: Term) {
     );
 }
 
-export function removeAsset(iri: IRI,
-                            namespace: string | undefined,
-                            type: string,
-                            assetPathFragment: string,
-                            load: () => (dispatch: ThunkDispatch, getState: GetStoreState) => Promise<{}>,
-                            messageId: string,
-                            transitionRoute: Route,
-                            options?: {}) {
+export function removeAsset(
+    iri: IRI,
+    namespace: string | undefined,
+    type: string,
+    assetPathFragment: string,
+    load: () => (dispatch: ThunkDispatch, getState: GetStoreState) => Promise<{}>,
+    messageId: string,
+    transitionRoute: Route,
+    options?: {}
+) {
     const action = {type};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
-        return Ajax.delete(Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
-            param("namespace", namespace)).then(() => {
-            dispatch(asyncActionSuccess(action));
-            dispatch(load());
-            Routing.transitionTo(transitionRoute, options)
-            return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
-        })
+        return Ajax.delete(
+            Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
+            param("namespace", namespace)
+        )
+            .then(() => {
+                dispatch(asyncActionSuccess(action));
+                dispatch(load());
+                Routing.transitionTo(transitionRoute, options);
+                return dispatch(SyncActions.publishMessage(new Message({messageId}, MessageType.SUCCESS)));
+            })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 export function removeOccurrence(occurrence: TermOccurrence) {
@@ -447,16 +526,23 @@ export function removeOccurrence(occurrence: TermOccurrence) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
-        return Ajax.delete(Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment, param("namespace", OccurrenceIri.namespace))
+        return Ajax.delete(
+            Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
+            param("namespace", OccurrenceIri.namespace)
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(SyncActions.publishMessage(new Message({messageId: "term.metadata.assignments.occurrence.remove"}, MessageType.SUCCESS)));
+                return dispatch(
+                    SyncActions.publishMessage(
+                        new Message({messageId: "term.metadata.assignments.occurrence.remove"}, MessageType.SUCCESS)
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 export function approveOccurrence(occurrence: TermOccurrence) {
@@ -466,16 +552,23 @@ export function approveOccurrence(occurrence: TermOccurrence) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
-        return Ajax.put(Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment, param("namespace", OccurrenceIri.namespace))
+        return Ajax.put(
+            Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
+            param("namespace", OccurrenceIri.namespace)
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(SyncActions.publishMessage(new Message({messageId: "term.metadata.assignments.occurrence.approve"}, MessageType.SUCCESS)));
+                return dispatch(
+                    SyncActions.publishMessage(
+                        new Message({messageId: "term.metadata.assignments.occurrence.approve"}, MessageType.SUCCESS)
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
@@ -489,9 +582,18 @@ export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
         dispatch(asyncActionRequest(action));
         return Ajax.get(`${apiPrefix}/vocabularies`)
             .then((data: object[]) =>
-                data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<VocabularyData>(data, VOCABULARY_CONTEXT) : [])
+                data.length !== 0
+                    ? JsonLdUtils.compactAndResolveReferencesAsArray<VocabularyData>(data, VOCABULARY_CONTEXT)
+                    : []
+            )
             .then((data: VocabularyData[]) =>
-                dispatch(asyncActionSuccessWithPayload(action, data.map(v => new Vocabulary(v)))))
+                dispatch(
+                    asyncActionSuccessWithPayload(
+                        action,
+                        data.map(v => new Vocabulary(v))
+                    )
+                )
+            )
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
@@ -507,14 +609,16 @@ export function searchTerms(searchString: string) {
         dispatch(asyncActionRequest(action, true));
         return Ajax.get(Constants.API_PREFIX + "/search/fts", params({searchString}))
             .then((data: object[]) =>
-                data.length > 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(data, SEARCH_RESULT_CONTEXT) : []
+                data.length > 0
+                    ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(data, SEARCH_RESULT_CONTEXT)
+                    : []
             )
             .then((data: SearchResultData[]) => data.map(d => new SearchResult(d)))
             .then((data: SearchResult[]) => {
                 dispatch(SyncActions.asyncActionSuccess(action));
                 return data
                     .filter(d => d.hasType(VocabularyUtils.TERM))
-                    .map(d => new Term({iri: d.iri, label: langString(d.label)}))
+                    .map(d => new Term({iri: d.iri, label: langString(d.label)}));
             })
             .catch((error: ErrorData) => {
                 dispatch(SyncActions.asyncActionFailure(action, error));
@@ -523,7 +627,11 @@ export function searchTerms(searchString: string) {
     };
 }
 
-export function loadTerms(fetchOptions: FetchOptionsFunction, vocabularyIri: IRI, apiPrefix: string = Constants.API_PREFIX) {
+export function loadTerms(
+    fetchOptions: FetchOptionsFunction,
+    vocabularyIri: IRI,
+    apiPrefix: string = Constants.API_PREFIX
+) {
     const action = {
         type: ActionType.FETCH_VOCABULARY_TERMS
     };
@@ -535,14 +643,23 @@ export function loadTerms(fetchOptions: FetchOptionsFunction, vocabularyIri: IRI
         } else if (!fetchOptions.searchString) {
             url += "roots";
         }
-        return Ajax.get(url,
-            params(Object.assign({
-                searchString: fetchOptions.searchString,
-                includeImported: fetchOptions.includeImported,
-                includeTerms: fetchOptions.includeTerms,
-                namespace: vocabularyIri.namespace
-            }, Utils.createPagingParams(fetchOptions.offset, fetchOptions.limit))))
-            .then((data: object[]) => data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : [])
+        return Ajax.get(
+            url,
+            params(
+                Object.assign(
+                    {
+                        searchString: fetchOptions.searchString,
+                        includeImported: fetchOptions.includeImported,
+                        includeTerms: fetchOptions.includeTerms,
+                        namespace: vocabularyIri.namespace
+                    },
+                    Utils.createPagingParams(fetchOptions.offset, fetchOptions.limit)
+                )
+            )
+        )
+            .then((data: object[]) =>
+                data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : []
+            )
             .then((data: TermData[]) => {
                 dispatch(asyncActionSuccess(action));
                 return data.map(d => new Term(d));
@@ -560,7 +677,10 @@ export function loadTerm(termNormalizedName: string, vocabularyIri: IRI, apiPref
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
-        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}`, param("namespace", vocabularyIri.namespace))
+        return Ajax.get(
+            `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}`,
+            param("namespace", vocabularyIri.namespace)
+        )
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<TermData>(data, TERM_CONTEXT))
             .then((data: TermData) => dispatch(asyncActionSuccessWithPayload(action, new Term(data))))
             .catch((error: ErrorData) => {
@@ -581,7 +701,8 @@ export function loadTermByIri(termIri: IRI, apiPrefix: string = Constants.API_PR
             .then((data: TermData) => {
                 dispatch(asyncActionSuccess(action));
                 return new Term(data);
-            }).catch((error: ErrorData) => {
+            })
+            .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return null;
             });
@@ -599,13 +720,19 @@ export function validateVocabulary(vocabularyIri: IRI, apiPrefix: string = Const
         }
 
         dispatch(asyncActionRequest(action));
-        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`, param("namespace", vocabularyIri.namespace))
+        return Ajax.get(
+            `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`,
+            param("namespace", vocabularyIri.namespace)
+        )
             .then((data: object[]) =>
-                data.length !== 0 ? JsonLdUtils
-                    .compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT) : [])
+                data.length !== 0
+                    ? JsonLdUtils.compactAndResolveReferencesAsArray<ValidationResult>(data, VALIDATION_RESULT_CONTEXT)
+                    : []
+            )
             .then((data: ValidationResult[]) => consolidateResults(data))
             .then((data: ConsolidatedResults) =>
-                dispatch(asyncActionSuccessWithPayload(action, {[IRIImpl.toString(vocabularyIri)]: data})))
+                dispatch(asyncActionSuccessWithPayload(action, {[IRIImpl.toString(vocabularyIri)]: data}))
+            )
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return [];
@@ -628,12 +755,9 @@ export function executeQuery(queryString: string) {
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax
-            .get(Constants.API_PREFIX + "/query", params({query: queryString}))
-            .then((data: object) =>
-                jsonld.expand(data))
-            .then((data: object) =>
-                dispatch(SyncActions.executeQuerySuccess(queryString, data)))
+        return Ajax.get(Constants.API_PREFIX + "/query", params({query: queryString}))
+            .then((data: object) => jsonld.expand(data))
+            .then((data: object) => dispatch(SyncActions.executeQuerySuccess(queryString, data)))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
@@ -651,10 +775,10 @@ export function loadTypes() {
             return Promise.resolve([]);
         }
         dispatch(asyncActionRequest(action));
-        return Ajax
-            .get(Constants.API_PREFIX + "/language/types")
+        return Ajax.get(Constants.API_PREFIX + "/language/types")
             .then((data: object[]) =>
-                data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : [])
+                data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : []
+            )
             .then((data: TermData[]) => {
                 return data.map((term: TermData) => {
                     if (term.subTerms) {
@@ -681,15 +805,21 @@ export function executeFileTextAnalysis(fileIri: IRI, vocabularyIri: string) {
         const reqParams: any = {};
         reqParams.namespace = fileIri.namespace;
         if (vocabularyIri) {
-            reqParams.vocabulary = vocabularyIri
+            reqParams.vocabulary = vocabularyIri;
         }
-        return Ajax
-            .put(Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/text-analysis", params(reqParams))
+        return Ajax.put(Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/text-analysis", params(reqParams))
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(publishMessage(new Message({
-                    messageId: "file.text-analysis.finished.message"
-                }, MessageType.SUCCESS)));
+                return dispatch(
+                    publishMessage(
+                        new Message(
+                            {
+                                messageId: "file.text-analysis.finished.message"
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -707,8 +837,10 @@ export function loadFileContent(fileIri: IRI) {
             return Promise.resolve({});
         }
         dispatch(asyncActionRequest(action, true));
-        return Ajax
-            .get(Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content", param("namespace", fileIri.namespace))
+        return Ajax.get(
+            Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
+            param("namespace", fileIri.namespace)
+        )
             .then((data: object) => data.toString())
             .then((data: string) => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch((error: ErrorData) => {
@@ -722,7 +854,10 @@ export function hasFileContent(fileIri: IRI) {
     const action = {type: ActionType.HAS_FILE_CONTENT};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.head(Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content", param("namespace", fileIri.namespace))
+        return Ajax.head(
+            Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
+            param("namespace", fileIri.namespace)
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
                 return true;
@@ -732,7 +867,7 @@ export function hasFileContent(fileIri: IRI) {
                 dispatch(asyncActionSuccess(action));
                 return false;
             });
-    }
+    };
 }
 
 // TODO This has been is superseded by uploadFileContent and should internally make use of it
@@ -745,12 +880,11 @@ export function saveFileContent(fileIri: IRI, fileContent: string) {
     formData.append("file", fileBlob, fileIri.fragment);
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax
-            .put(
-                Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
-                contentType(Constants.MULTIPART_FORM_DATA).formData(formData).param("namespace", fileIri.namespace)
-            )
-            .then((data: object) => fileContent)// TODO load from the service instead
+        return Ajax.put(
+            Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
+            contentType(Constants.MULTIPART_FORM_DATA).formData(formData).param("namespace", fileIri.namespace)
+        )
+            .then((data: object) => fileContent) // TODO load from the service instead
             .then((data: string) => dispatch(asyncActionSuccessWithPayload(action, data)))
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -772,11 +906,13 @@ export function updateTerm(term: Term) {
         return Ajax.put(reqUrl, content(term.toJsonLd()).params({namespace: vocabularyIri.namespace}))
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                dispatch(publishNotification({
-                    source: {type: NotificationType.ASSET_UPDATED},
-                    original: getState().selectedTerm,
-                    updated: term
-                }));
+                dispatch(
+                    publishNotification({
+                        source: {type: NotificationType.ASSET_UPDATED},
+                        original: getState().selectedTerm,
+                        updated: term
+                    })
+                );
                 dispatch(validateVocabulary(vocabularyIri));
                 return dispatch(publishMessage(new Message({messageId: "term.updated.message"}, MessageType.SUCCESS)));
             })
@@ -794,9 +930,12 @@ export function updateResourceTerms(res: Resource) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, false));
         const resourceIri = VocabularyUtils.create(res.iri);
-        return Ajax.put(Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/terms",
+        return Ajax.put(
+            Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/terms",
             content(res.terms!.map(t => t.iri))
-                .params({namespace: resourceIri.namespace}).contentType("application/json"))
+                .params({namespace: resourceIri.namespace})
+                .contentType("application/json")
+        )
             .then(() => {
                 return dispatch(asyncActionSuccess(action));
             })
@@ -813,20 +952,26 @@ export function updateResource(res: Resource) {
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
         dispatch(asyncActionRequest(action));
         const resourceIri = VocabularyUtils.create(res.iri);
-        return Ajax.put(Constants.API_PREFIX + "/resources/" + resourceIri.fragment,
-            content(res.toJsonLd()).params({namespace: resourceIri.namespace}))
+        return Ajax.put(
+            Constants.API_PREFIX + "/resources/" + resourceIri.fragment,
+            content(res.toJsonLd()).params({namespace: resourceIri.namespace})
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                dispatch(publishNotification({
-                    source: {type: NotificationType.ASSET_UPDATED},
-                    original: getState().resource,
-                    updated: res
-                }));
+                dispatch(
+                    publishNotification({
+                        source: {type: NotificationType.ASSET_UPDATED},
+                        original: getState().resource,
+                        updated: res
+                    })
+                );
                 return dispatch(updateResourceTerms(res));
             })
             .then(() => {
                 dispatch(loadResource(resourceIri));
-                return dispatch(publishMessage(new Message({messageId: "resource.updated.message"}, MessageType.SUCCESS)));
+                return dispatch(
+                    publishMessage(new Message({messageId: "resource.updated.message"}, MessageType.SUCCESS))
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -834,7 +979,6 @@ export function updateResource(res: Resource) {
             });
     };
 }
-
 
 export function updateVocabulary(vocabulary: Vocabulary) {
     const action = {
@@ -847,13 +991,17 @@ export function updateVocabulary(vocabulary: Vocabulary) {
         return Ajax.put(reqUrl, content(vocabulary.toJsonLd()).params({namespace: vocabularyIri.namespace}))
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                dispatch(publishNotification({
-                    source: {type: NotificationType.ASSET_UPDATED},
-                    original: getState().vocabulary,
-                    updated: vocabulary
-                }));
+                dispatch(
+                    publishNotification({
+                        source: {type: NotificationType.ASSET_UPDATED},
+                        original: getState().vocabulary,
+                        updated: vocabulary
+                    })
+                );
                 dispatch(loadVocabulary(vocabularyIri));
-                return dispatch(publishMessage(new Message({messageId: "vocabulary.updated.message"}, MessageType.SUCCESS)));
+                return dispatch(
+                    publishMessage(new Message({messageId: "vocabulary.updated.message"}, MessageType.SUCCESS))
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -879,15 +1027,17 @@ function getTextualField(iri: string, field: string, actionType: string) {
             return Promise.resolve(getState().labelCache[iri]);
         }
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(Constants.API_PREFIX + "/data/" + field, param("iri", iri)).then(data => {
-            const payload = {};
-            payload[iri] = data;
-            dispatch(asyncActionSuccessWithPayload(action, payload));
-            return data;
-        }).catch((error: ErrorData) => {
-            dispatch(asyncActionFailure(action, error));
-            return undefined;
-        });
+        return Ajax.get(Constants.API_PREFIX + "/data/" + field, param("iri", iri))
+            .then(data => {
+                const payload = {};
+                payload[iri] = data;
+                dispatch(asyncActionSuccessWithPayload(action, payload));
+                return data;
+            })
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return undefined;
+            });
     };
 }
 
@@ -904,11 +1054,11 @@ export function getRdfsResource(iri: IRI) {
         return Ajax.get(Constants.API_PREFIX + "/data/resource", param("iri", iri.toString()))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<RdfsResource>(data, RDFS_RESOURCE_CONTEXT))
             .then((data: RdfsResource) => {
-                    const res = new RdfsResource(data);
-                    dispatch(asyncActionSuccessWithPayload(action, res));
-                    return res;
-                }
-            ).catch((error: ErrorData) => {
+                const res = new RdfsResource(data);
+                dispatch(asyncActionSuccessWithPayload(action, res));
+                return res;
+            })
+            .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return undefined;
             });
@@ -928,8 +1078,19 @@ export function getProperties() {
         }
         dispatch(asyncActionRequest(action, true));
         return Ajax.get(Constants.API_PREFIX + "/data/properties")
-            .then((data: object[]) => data.length > 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(data, RDFS_RESOURCE_CONTEXT) : [])
-            .then((data: RdfsResourceData[]) => dispatch(asyncActionSuccessWithPayload(action, data.map(d => new RdfsResource(d)))))
+            .then((data: object[]) =>
+                data.length > 0
+                    ? JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(data, RDFS_RESOURCE_CONTEXT)
+                    : []
+            )
+            .then((data: RdfsResourceData[]) =>
+                dispatch(
+                    asyncActionSuccessWithPayload(
+                        action,
+                        data.map(d => new RdfsResource(d))
+                    )
+                )
+            )
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
     };
 }
@@ -943,7 +1104,7 @@ export function createProperty(property: RdfsResource) {
         return Ajax.post(Constants.API_PREFIX + "/data/properties", content(property.toJsonLd()))
             .then(() => dispatch(asyncActionSuccess(action)))
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-    }
+    };
 }
 
 export function loadTermAssignmentsInfo(termIri: IRI, vocabularyIri: IRI) {
@@ -954,7 +1115,9 @@ export function loadTermAssignmentsInfo(termIri: IRI, vocabularyIri: IRI) {
         dispatch(asyncActionRequest(action, true));
         const url = "/vocabularies/" + vocabularyIri.fragment + "/terms/" + termIri.fragment + "/assignments";
         return Ajax.get(Constants.API_PREFIX + url, param("namespace", vocabularyIri.namespace))
-            .then((data: object) => JsonLdUtils.compactAndResolveReferencesAsArray<TermAssignments>(data, TERM_ASSIGNMENTS_CONTEXT))
+            .then((data: object) =>
+                JsonLdUtils.compactAndResolveReferencesAsArray<TermAssignments>(data, TERM_ASSIGNMENTS_CONTEXT)
+            )
             .then((data: TermAssignments[]) => {
                 dispatch(asyncActionSuccess(action));
                 return data;
@@ -973,7 +1136,10 @@ export function exportGlossary(vocabularyIri: IRI, type: ExportType) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const url = Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/terms";
-        return Ajax.getRaw(url, param("namespace", vocabularyIri.namespace).accept(type.mimeType).responseType("arraybuffer"))
+        return Ajax.getRaw(
+            url,
+            param("namespace", vocabularyIri.namespace).accept(type.mimeType).responseType("arraybuffer")
+        )
             .then((resp: AxiosResponse) => {
                 const disposition = resp.headers[Constants.Headers.CONTENT_DISPOSITION];
                 const filenameMatch = disposition ? disposition.match(/filename="(.+\..+)"/) : null;
@@ -987,11 +1153,11 @@ export function exportGlossary(vocabularyIri: IRI, type: ExportType) {
                         messageId: "vocabulary.summary.export.error"
                     };
                     dispatch(asyncActionFailure(action, error));
-                    return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)))
+                    return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
                 }
             })
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-    }
+    };
 }
 
 export function loadLastEditedAssets() {
@@ -1013,7 +1179,12 @@ function loadPredefinedAssetList(at: string, forCurrentUserOnly: boolean) {
             config = config.param("forCurrentUserOnly", "true");
         }
         return Ajax.get(Constants.API_PREFIX + "/assets/last-edited", config)
-            .then((data: object) => JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyModifiedAssetData>(data, RECENTLY_MODIFIED_ASSET_CONTEXT))
+            .then((data: object) =>
+                JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyModifiedAssetData>(
+                    data,
+                    RECENTLY_MODIFIED_ASSET_CONTEXT
+                )
+            )
             .then((data: RecentlyModifiedAssetData[]) => {
                 dispatch(asyncActionSuccess(action));
                 return data.map(item => new RecentlyModifiedAsset(item));
@@ -1022,7 +1193,7 @@ function loadPredefinedAssetList(at: string, forCurrentUserOnly: boolean) {
                 dispatch(asyncActionFailure(action, error));
                 return [];
             });
-    }
+    };
 }
 
 export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
@@ -1031,16 +1202,22 @@ export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
-        return Ajax.get(Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/text-analysis/records/latest", param("namespace", resourceIri.namespace))
-            .then((data: object) => JsonLdUtils.compactAndResolveReferences<TextAnalysisRecordData>(data, TEXT_ANALYSIS_RECORD_CONTEXT))
+        return Ajax.get(
+            Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/text-analysis/records/latest",
+            param("namespace", resourceIri.namespace)
+        )
+            .then((data: object) =>
+                JsonLdUtils.compactAndResolveReferences<TextAnalysisRecordData>(data, TEXT_ANALYSIS_RECORD_CONTEXT)
+            )
             .then((data: TextAnalysisRecordData) => {
                 dispatch(asyncActionSuccess(action));
                 return new TextAnalysisRecord(data);
-            }).catch((error: ErrorData) => {
+            })
+            .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return null;
             });
-    }
+    };
 }
 
 export function exportFileContent(fileIri: IRI) {
@@ -1050,7 +1227,10 @@ export function exportFileContent(fileIri: IRI) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const url = Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content";
-        return Ajax.getRaw(url, param("namespace", fileIri.namespace).param("attachment", "true").responseType("arraybuffer"))
+        return Ajax.getRaw(
+            url,
+            param("namespace", fileIri.namespace).param("attachment", "true").responseType("arraybuffer")
+        )
             .then((resp: AxiosResponse) => {
                 const fileName = fileIri.fragment;
                 const mimeType = resp.headers["content-type"];
@@ -1058,7 +1238,7 @@ export function exportFileContent(fileIri: IRI) {
                 return dispatch(asyncActionSuccess(action));
             })
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-    }
+    };
 }
 
 export function loadUnusedTermsForVocabulary(iri: IRI) {
@@ -1067,8 +1247,10 @@ export function loadUnusedTermsForVocabulary(iri: IRI) {
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
-        return Ajax
-            .get(Constants.API_PREFIX + "/vocabularies/" + iri.fragment + "/unused-terms", param("namespace", iri.namespace))
+        return Ajax.get(
+            Constants.API_PREFIX + "/vocabularies/" + iri.fragment + "/unused-terms",
+            param("namespace", iri.namespace)
+        )
             .then((terms: string[]) => {
                 dispatch(asyncActionSuccess(action));
                 return terms;
@@ -1096,7 +1278,7 @@ export function loadHistory(asset: Asset) {
                 dispatch(asyncActionFailure(action, error));
                 return [];
             });
-    }
+    };
 }
 
 /**
@@ -1109,8 +1291,10 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
     const action = {type: ActionType.LOAD_VOCABULARY_CONTENT_HISTORY};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content`,
-            param("namespace", vocabularyIri.namespace))
+        return Ajax.get(
+            `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content`,
+            param("namespace", vocabularyIri.namespace)
+        )
             .then(data => JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecordData>(data, CHANGE_RECORD_CONTEXT))
             .then((data: ChangeRecordData[]) => {
                 dispatch(asyncActionSuccess(action));
@@ -1120,7 +1304,7 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
                 dispatch(asyncActionFailure(action, error));
                 return [];
             });
-    }
+    };
 }
 
 function resolveHistoryLoadingParams(asset: Asset, assetIri: IRI) {
@@ -1148,7 +1332,10 @@ export function getContentType(fileIri: IRI) {
     const action = {type: ActionType.GET_FILE_CONTENT_TYPE};
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.head(Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content", param("namespace", fileIri.namespace))
+        return Ajax.head(
+            Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
+            param("namespace", fileIri.namespace)
+        )
             .then((resp: AxiosResponse) => {
                 dispatch(asyncActionSuccess(action));
                 const s = resp.headers[Constants.Headers.CONTENT_TYPE];
@@ -1159,9 +1346,8 @@ export function getContentType(fileIri: IRI) {
                 dispatch(asyncActionSuccess(action));
                 return null;
             });
-    }
+    };
 }
-
 
 export function invalidateCaches() {
     const action = {type: ActionType.INVALIDATE_CACHES};
@@ -1169,9 +1355,18 @@ export function invalidateCaches() {
         dispatch(asyncActionRequest(action));
         return Ajax.delete(`${Constants.API_PREFIX}/admin/cache`)
             .then(() => dispatch(asyncActionSuccess(action)))
-            .then(() => dispatch(publishMessage(new Message({messageId: "administration.maintenance.invalidateCaches.success"}, MessageType.SUCCESS))))
+            .then(() =>
+                dispatch(
+                    publishMessage(
+                        new Message(
+                            {messageId: "administration.maintenance.invalidateCaches.success"},
+                            MessageType.SUCCESS
+                        )
+                    )
+                )
+            )
             .catch(error => dispatch(asyncActionFailure(action, error)));
-    }
+    };
 }
 
 export function loadConfiguration() {
@@ -1181,12 +1376,11 @@ export function loadConfiguration() {
         return Ajax.get(`${Constants.API_PREFIX}/configuration`, accept(Constants.JSON_LD_MIME_TYPE))
             .then((data: object) => JsonLdUtils.compactAndResolveReferences<Configuration>(data, CONFIGURATION_CONTEXT))
             .then((data: Configuration) => {
-                    data.roles = Utils.sanitizeArray(data.roles).map((d: UserRoleData) => new UserRole(d));
-                    return dispatch(asyncActionSuccessWithPayload(action, data))
-                }
-            )
+                data.roles = Utils.sanitizeArray(data.roles).map((d: UserRoleData) => new UserRole(d));
+                return dispatch(asyncActionSuccessWithPayload(action, data));
+            })
             .catch(error => dispatch(asyncActionFailure(action, error)));
-    }
+    };
 }
 
 export function loadNews(language: string) {
@@ -1197,9 +1391,10 @@ export function loadNews(language: string) {
             .then((data: string) => {
                 dispatch(asyncActionSuccess(action));
                 return data;
-            }).catch(error => {
+            })
+            .catch(error => {
                 dispatch(asyncActionFailure(action, error));
                 return null;
             });
-    }
+    };
 }

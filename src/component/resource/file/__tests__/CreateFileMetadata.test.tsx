@@ -14,7 +14,6 @@ jest.mock("../../../../util/Ajax", () => {
 });
 
 describe("CreateFileMetadata", () => {
-
     const fileName = "test.html";
     const iri = "http://onto.fel.cvut.cz/ontologies/termit/resource/" + fileName;
 
@@ -33,9 +32,11 @@ describe("CreateFileMetadata", () => {
     });
 
     it("uses name of the selected file as label", () => {
-        const wrapper = mountWithIntl(<CreateFileMetadata onCreate={onCreate} onCancel={onCancel} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <CreateFileMetadata onCreate={onCreate} onCancel={onCancel} {...intlFunctions()} />
+        );
         (wrapper.find(CreateFileMetadata).instance() as CreateFileMetadata).setFile(file as File);
-        const labelInput = wrapper.find("input[name=\"create-resource-label\"]");
+        const labelInput = wrapper.find('input[name="create-resource-label"]');
         expect((labelInput.getDOMNode() as HTMLInputElement).value).toEqual(fileName);
     });
 });

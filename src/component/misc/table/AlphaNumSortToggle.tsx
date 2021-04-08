@@ -12,9 +12,11 @@ interface SortToggleProps {
 const AlphaNumSortToggle: React.FC<SortToggleProps> = props => {
     const {sortProps, isSorted, desc} = props;
     const {i18n} = useI18n();
-    return <span {...sortProps} className="ml-1 sort-icon" title={i18n("table.sort.tooltip")}>
-        {isSorted ? desc ? <FaSortAlphaDownAlt/> : <FaSortAlphaDown/> : <FaSort/>}
-    </span>;
-}
+    return (
+        <span {...sortProps} className="ml-1 sort-icon" title={i18n("table.sort.tooltip")}>
+            {isSorted ? desc ? <FaSortAlphaDownAlt /> : <FaSortAlphaDown /> : <FaSort />}
+        </span>
+    );
+};
 
 export default AlphaNumSortToggle;

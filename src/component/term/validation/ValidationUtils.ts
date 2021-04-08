@@ -1,5 +1,4 @@
 export const ValidationUtils = {
-
     qualityAffectingRules: [
         "https://slovník.gov.cz/jazyk/obecný/g4",
         "https://slovník.gov.cz/jazyk/obecný/m1",
@@ -10,4 +9,4 @@ export const ValidationUtils = {
     qualityAffectingRuleViolationColor: "#ff9999",
 
     qualityNotAffectingRuleViolationColor: "#ffccaa"
-}
+};

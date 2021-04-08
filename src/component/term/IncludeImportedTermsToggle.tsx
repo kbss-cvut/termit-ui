@@ -18,8 +18,11 @@ const IncludeImportedTermsToggle: React.FC<IncludeImportedTermsToggleProps> = pr
     if (props.style) {
         toggleStyle = Object.assign(toggleStyle, props.style);
     }
-    return <>
-        <Toggle id={props.id} onClick={props.onToggle}
+    return (
+        <>
+            <Toggle
+                id={props.id}
+                onClick={props.onToggle}
                 on={i18n("glossary.includeImported")}
                 off={i18n("glossary.excludeImported")}
                 disabled={props.disabled}
@@ -31,11 +34,13 @@ const IncludeImportedTermsToggle: React.FC<IncludeImportedTermsToggleProps> = pr
                 handleClassName="toggle-handle-custom"
                 style={toggleStyle}
                 active={props.includeImported}
-                recalculateOnResize={true}/>
-        <UncontrolledTooltip target={props.id} placement="right">
-            {i18n(props.includeImported ? "glossary.includeImported.help" : "glossary.excludeImported.help")}
-        </UncontrolledTooltip>
-    </>;
+                recalculateOnResize={true}
+            />
+            <UncontrolledTooltip target={props.id} placement="right">
+                {i18n(props.includeImported ? "glossary.includeImported.help" : "glossary.excludeImported.help")}
+            </UncontrolledTooltip>
+        </>
+    );
 };
 
 export default IncludeImportedTermsToggle;

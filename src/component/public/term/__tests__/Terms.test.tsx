@@ -17,7 +17,6 @@ import {langString} from "../../../../model/MultilingualString";
 jest.mock("../../../../util/Routing");
 
 describe("Terms", () => {
-
     const vocabularyName = "test-vocabulary";
     const termName = "test-term";
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
@@ -41,7 +40,7 @@ describe("Terms", () => {
     let match: Match<any>;
 
     beforeEach(() => {
-        jest.resetAllMocks();   // Prevent Routing mock state leaking into subsequent tests
+        jest.resetAllMocks(); // Prevent Routing mock state leaking into subsequent tests
         Utils.calculateAssetListHeight = jest.fn().mockImplementation(() => 100);
         selectVocabularyTerm = jest.fn();
         fetchTerms = jest.fn().mockImplementation(() => Promise.resolve([]));
@@ -68,7 +67,7 @@ describe("Terms", () => {
 
     it("transitions to term detail on term select", () => {
         const wrapper = renderShallow();
-        (wrapper.instance()).onTermSelect(term);
+        wrapper.instance().onTermSelect(term);
         const call = (Routing.transitionToPublicAsset as jest.Mock).mock.calls[0];
         expect(call[0].iri).toEqual(term.iri);
         expect(call[0].vocabulary).toEqual(term.vocabulary);
@@ -76,10 +75,17 @@ describe("Terms", () => {
     });
 
     function renderShallow() {
-        return shallow<Terms>(<Terms selectedTerms={selectedTerms}
-                                     selectVocabularyTerm={selectVocabularyTerm} vocabulary={vocabulary}
-                                     fetchTerms={fetchTerms} {...intlFunctions()}
-                                     location={location} match={match}/>);
+        return shallow<Terms>(
+            <Terms
+                selectedTerms={selectedTerms}
+                selectVocabularyTerm={selectVocabularyTerm}
+                vocabulary={vocabulary}
+                fetchTerms={fetchTerms}
+                {...intlFunctions()}
+                location={location}
+                match={match}
+            />
+        );
     }
 
     it("invokes term selected on term select", () => {
@@ -121,15 +127,17 @@ describe("Terms", () => {
         });
         wrapper.setProps({fetchTerms});
         wrapper.update();
-        return wrapper.instance().fetchOptions({}).then(() => {
-            expect(fetchTerms).toHaveBeenCalled();
-            wrapper.update();
-            expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
-        });
+        return wrapper
+            .instance()
+            .fetchOptions({})
+            .then(() => {
+                expect(fetchTerms).toHaveBeenCalled();
+                wrapper.update();
+                expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
+            });
     });
 
     describe("fetchOptions", () => {
-
         it("filters out terms which are not in the vocabulary import chain", () => {
             const vocabularies = [Generator.generateUri(), Generator.generateUri(), Generator.generateUri()];
             vocabulary.allImportedVocabularies = vocabularies;
@@ -137,7 +145,9 @@ describe("Terms", () => {
             const matching: Term[] = [];
             for (let i = 0; i < 5; i++) {
                 const termMatches = Generator.randomBoolean();
-                const t = Generator.generateTerm(termMatches ? Generator.randomItem(vocabularies) : Generator.generateUri());
+                const t = Generator.generateTerm(
+                    termMatches ? Generator.randomItem(vocabularies) : Generator.generateUri()
+                );
                 terms.push(t);
                 if (termMatches) {
                     matching.push(t);
@@ -146,9 +156,12 @@ describe("Terms", () => {
             fetchTerms = jest.fn().mockResolvedValue(terms);
             const wrapper = renderShallow();
             wrapper.setState({includeImported: true});
-            return wrapper.instance().fetchOptions({}).then(options => {
-                expect(options).toEqual(matching);
-            });
+            return wrapper
+                .instance()
+                .fetchOptions({})
+                .then(options => {
+                    expect(options).toEqual(matching);
+                });
         });
 
         it("filters out terms from different vocabularies when vocabulary has no imports", () => {
@@ -164,33 +177,42 @@ describe("Terms", () => {
             }
             fetchTerms = jest.fn().mockResolvedValue(terms);
             const wrapper = renderShallow();
-            return wrapper.instance().fetchOptions({}).then(options => {
-                expect(options).toEqual(matching);
-            });
+            return wrapper
+                .instance()
+                .fetchOptions({})
+                .then(options => {
+                    expect(options).toEqual(matching);
+                });
         });
 
         it("filters out term's children which are in vocabularies outside of the vocabulary import chain", () => {
             const terms: Term[] = [Generator.generateTerm(vocabulary.iri)];
-            const subTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("child one"),
-                vocabulary: {iri: vocabulary.iri}
-            }, {
-                iri: Generator.generateUri(),
-                label: langString("child two"),
-                vocabulary: {iri: Generator.generateUri()}
-            }];
+            const subTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("child one"),
+                    vocabulary: {iri: vocabulary.iri}
+                },
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("child two"),
+                    vocabulary: {iri: Generator.generateUri()}
+                }
+            ];
             terms[0].subTerms = subTerms;
             terms[0].syncPlainSubTerms();
             fetchTerms = jest.fn().mockResolvedValue(terms);
             const wrapper = renderShallow();
-            return wrapper.instance().fetchOptions({}).then(options => {
-                expect(options.length).toEqual(1);
-                const t = options[0];
-                expect(t.subTerms!.length).toEqual(1);
-                expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
-                expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
-            });
+            return wrapper
+                .instance()
+                .fetchOptions({})
+                .then(options => {
+                    expect(options.length).toEqual(1);
+                    const t = options[0];
+                    expect(t.subTerms!.length).toEqual(1);
+                    expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
+                    expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
+                });
         });
 
         it("flattens loaded terms when search string was provided", () => {
@@ -205,12 +227,15 @@ describe("Terms", () => {
             grandParent.syncPlainSubTerms();
             fetchTerms = jest.fn().mockResolvedValue([child]);
             const wrapper = renderShallow();
-            return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
-                expect(options.length).toEqual(3);
-                expect(options.find(t => t.iri === child.iri)).toBeDefined();
-                expect(options.find(t => t.iri === parent.iri)).toBeDefined();
-                expect(options.find(t => t.iri === grandParent.iri)).toBeDefined();
-            });
+            return wrapper
+                .instance()
+                .fetchOptions({searchString: "test"})
+                .then(options => {
+                    expect(options.length).toEqual(3);
+                    expect(options.find(t => t.iri === child.iri)).toBeDefined();
+                    expect(options.find(t => t.iri === parent.iri)).toBeDefined();
+                    expect(options.find(t => t.iri === grandParent.iri)).toBeDefined();
+                });
         });
 
         it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", () => {
@@ -221,11 +246,14 @@ describe("Terms", () => {
             fetchTerms = jest.fn().mockResolvedValue(terms);
             const spy = jest.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
             const wrapper = renderShallow();
-            return wrapper.instance().fetchOptions({searchString: "test"}).then(options => {
-                expect(options.length).toEqual(1);
-                expect(options).toEqual(terms);
-                expect(spy).toHaveBeenCalledWith(terms, [vocabulary.iri], {searchString: "test"});
-            });
+            return wrapper
+                .instance()
+                .fetchOptions({searchString: "test"})
+                .then(options => {
+                    expect(options.length).toEqual(1);
+                    expect(options).toEqual(terms);
+                    expect(spy).toHaveBeenCalledWith(terms, [vocabulary.iri], {searchString: "test"});
+                });
         });
     });
 });

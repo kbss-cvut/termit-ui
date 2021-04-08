@@ -1,76 +1,76 @@
 @import "../../styles/argon-dashboard-react.scss";
 
 .comments {
-  width: 100%;
+    width: 100%;
 }
 
 .comments .comment {
-  position: relative;
-  line-height: 1.2;
+    position: relative;
+    line-height: 1.2;
 }
 
 .comment .avatar {
-  width: 2.5rem;
-  height: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
 .comment .content {
-  display: block;
-  margin-left: 3.5rem;
-  margin-top: 0;
+    display: block;
+    margin-left: 3.5rem;
+    margin-top: 0;
 }
 
 .comment .author {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 .comment .metadata {
-  margin-left: 1rem;
-  display: inline-block;
-  font-size: 0.875rem;
+    margin-left: 1rem;
+    display: inline-block;
+    font-size: 0.875rem;
 }
 
 .comment .comment-text {
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  hyphens: manual;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    hyphens: manual;
 }
 
 .comment .metadata .actionable-reaction {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .comment .metadata .actionable-reaction:hover {
-  transform: scale(1.2);
+    transform: scale(1.2);
 }
 
 .comment .actions {
-  font-size: 0.875rem;
-  display: inline-block;
+    font-size: 0.875rem;
+    display: inline-block;
 }
 
 .comments .actions .comment-action {
-  cursor: pointer;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
+    cursor: pointer;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
 }
 
 .comments .actions .comment-action:hover {
-  cursor: pointer;
-  color: inherit;
+    cursor: pointer;
+    color: inherit;
 }
 
 .comment .actions {
-  font-size: 0.875rem;
-  display: inline-block;
+    font-size: 0.875rem;
+    display: inline-block;
 }
 
 .comments .actions .comment-action {
-  cursor: pointer;
-  color: $gray-600;
+    cursor: pointer;
+    color: $gray-600;
 }
 
 .comments .actions .comment-action:hover {
-  cursor: pointer;
-  color: inherit;
+    cursor: pointer;
+    color: inherit;
 }

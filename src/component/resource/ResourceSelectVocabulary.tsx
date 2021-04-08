@@ -15,8 +15,16 @@ interface ResourceSelectVocabularyProps {
     title?: string;
 }
 
-function getVocabulary(selectedVocabulary: Vocabulary | null, vocabularies: { [key: string]: Vocabulary }, defaultVocabularyIri?: string) {
-    return selectedVocabulary ? selectedVocabulary : defaultVocabularyIri ? vocabularies[defaultVocabularyIri] || null : null;
+function getVocabulary(
+    selectedVocabulary: Vocabulary | null,
+    vocabularies: {[key: string]: Vocabulary},
+    defaultVocabularyIri?: string
+) {
+    return selectedVocabulary
+        ? selectedVocabulary
+        : defaultVocabularyIri
+        ? vocabularies[defaultVocabularyIri] || null
+        : null;
 }
 
 const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = props => {
@@ -27,25 +35,31 @@ const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = props 
     const cancel = () => {
         onCancel();
         setSelectedVocabulary(null);
-    }
+    };
     const {i18n} = useI18n();
 
-    return <Modal isOpen={show} toggle={cancel} size="lg" className="resource-select-vocabulary-modal">
-        <ModalHeader toggle={cancel}>{title ? title : i18n("vocabulary.select-vocabulary")}</ModalHeader>
-        <ModalBody>
-            <VocabularySelect id="select-vocabulary-analyze-resource"
-                              vocabulary={getVocabulary(selectedVocabulary, vocabularies, defaultVocabularyIri)}
-                              onVocabularySet={setSelectedVocabulary}/>
-        </ModalBody>
-        <ModalFooter>
-            <ButtonToolbar className="pull-right">
-                <Button id="select-vocabulary-submit" color="primary" size="sm"
-                        onClick={submit}>{i18n("file.metadata.startTextAnalysis.text")}</Button>
-                <Button id="select-vocabulary-cancel" color="outline-dark" size="sm"
-                        onClick={cancel}>{i18n("cancel")}</Button>
-            </ButtonToolbar>
-        </ModalFooter>
-    </Modal>;
+    return (
+        <Modal isOpen={show} toggle={cancel} size="lg" className="resource-select-vocabulary-modal">
+            <ModalHeader toggle={cancel}>{title ? title : i18n("vocabulary.select-vocabulary")}</ModalHeader>
+            <ModalBody>
+                <VocabularySelect
+                    id="select-vocabulary-analyze-resource"
+                    vocabulary={getVocabulary(selectedVocabulary, vocabularies, defaultVocabularyIri)}
+                    onVocabularySet={setSelectedVocabulary}
+                />
+            </ModalBody>
+            <ModalFooter>
+                <ButtonToolbar className="pull-right">
+                    <Button id="select-vocabulary-submit" color="primary" size="sm" onClick={submit}>
+                        {i18n("file.metadata.startTextAnalysis.text")}
+                    </Button>
+                    <Button id="select-vocabulary-cancel" color="outline-dark" size="sm" onClick={cancel}>
+                        {i18n("cancel")}
+                    </Button>
+                </ButtonToolbar>
+            </ModalFooter>
+        </Modal>
+    );
 };
 
 export default ResourceSelectVocabulary;

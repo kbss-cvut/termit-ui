@@ -11,7 +11,6 @@ import {BasicRouteProps} from "./Types";
 import _ from "lodash";
 
 const Utils = {
-
     /**
      * Ensures that the specified argument is returned as an array at all conditions.
      *
@@ -27,7 +26,12 @@ const Utils = {
      * @param str
      */
     isLink(str: string): boolean {
-        return str.startsWith("http://") || str.startsWith("https://") || str.startsWith("ftp://") || str.startsWith("sftp://");
+        return (
+            str.startsWith("http://") ||
+            str.startsWith("https://") ||
+            str.startsWith("ftp://") ||
+            str.startsWith("sftp://")
+        );
     },
 
     /**
@@ -38,7 +42,7 @@ const Utils = {
      */
     extractQueryParam(queryString: string, paramName: string): string | undefined {
         queryString = decodeURI(queryString); // TODO This is a nasty hack, the problem with encoding seems to be
-                                              // somewhere in thunk
+        // somewhere in thunk
         const reqexpMatch = queryString.match(new RegExp(paramName + "=([^&]*)"));
         return reqexpMatch ? reqexpMatch[1] : undefined;
     },
@@ -88,7 +92,7 @@ const Utils = {
      * @param offset Result offset
      * @param limit Number of results
      */
-    createPagingParams(offset?: number, limit?: number): { page?: number, size?: number } {
+    createPagingParams(offset?: number, limit?: number): {page?: number; size?: number} {
         if (offset === undefined || !Number.isInteger(offset) || limit === undefined || !Number.isInteger(limit)) {
             return {};
         }
@@ -173,7 +177,7 @@ const Utils = {
      * This renderer takes the specified option and renders its label.
      * @param option Options to render
      */
-    labelValueRenderer(option: { label: string }) {
+    labelValueRenderer(option: {label: string}) {
         return option.label;
     },
 
@@ -184,7 +188,7 @@ const Utils = {
     hashCode(str: string) {
         let h = 0;
         for (let i = 0; i < str.length; i++) {
-            h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+            h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
         }
         return h;
     },
@@ -205,7 +209,7 @@ const Utils = {
             }
             const aun: AssetUpdateNotification<Asset> = n as AssetUpdateNotification<Asset>;
             return aun.updated.hasType(assetType) && aun.updated.getLabel() !== aun.original.getLabel();
-        }
+        };
     },
 
     didNavigationOccur(prevProps: Readonly<BasicRouteProps>, currentProps: Readonly<BasicRouteProps>) {

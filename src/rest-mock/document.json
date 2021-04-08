@@ -1,21 +1,21 @@
 {
-  "@id": "http://onto.fel.cvut.cz/ontologies/termit/document/metropolitan-plan",
-  "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/dokument",
-  "http://www.w3.org/2000/01/rdf-schema#label": "Metropolitní plán",
-  "http://www.w3.org/2000/01/rdf-schema#comment": "Územní plán hlavního města Prahy",
-  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-soubor": [
-    {
-      "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance12345",
-      "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
-      "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p1.html",
-      "http://www.w3.org/2000/01/rdf-schema#comment": "První část metropolitního plánu"
-    },
-    {
-      "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance54321",
-      "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
-      "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p2.html",
-      "http://www.w3.org/2000/01/rdf-schema#comment": "Druhá část metropolitního plánu"
-    }
-  ],
-  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-datum-a-čas-vytvoření": 1534429897893
+    "@id": "http://onto.fel.cvut.cz/ontologies/termit/document/metropolitan-plan",
+    "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/dokument",
+    "http://www.w3.org/2000/01/rdf-schema#label": "Metropolitní plán",
+    "http://www.w3.org/2000/01/rdf-schema#comment": "Územní plán hlavního města Prahy",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-soubor": [
+        {
+            "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance12345",
+            "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
+            "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p1.html",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "První část metropolitního plánu"
+        },
+        {
+            "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance54321",
+            "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
+            "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p2.html",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "Druhá část metropolitního plánu"
+        }
+    ],
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-datum-a-čas-vytvoření": 1534429897893
 }

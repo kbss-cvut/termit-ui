@@ -54,28 +54,42 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
     };
 
     private getText = (keySuffix: string) => {
-        return this.props.i18n(this.props.i18nPrefix + "." + keySuffix)
-    }
+        return this.props.i18n(this.props.i18nPrefix + "." + keySuffix);
+    };
 
     public render() {
-        return <div className="form-group">
-            <Label className="attribute-label">{this.getText("label")}</Label>
-            <InputGroup className="form-group no-bottom-margin">
-                <Input name="add-string-input" value={this.state.inputValue} onChange={this.onChange}
-                       bsSize="sm" onKeyPress={this.onKeyPress}
-                       invalid={this.props.invalid}
-                       placeholder={this.getText("placeholder")}/>
-                <InputGroupAddon addonType="append">
-                    <Button key="add-string-submit" color="primary" size="sm" onClick={this.onAdd}
-                            className="input-group-button" disabled={this.state.inputValue.trim().length === 0}
-                            title={this.getText("placeholder.title")}><GoPlus/>&nbsp;{this.getText("placeholder.text")}
-                    </Button>
-                </InputGroupAddon>
-                {this.props.invalid ? <FormFeedback>{this.props.invalidMessage}</FormFeedback> : <></>}
-            </InputGroup>
-            <FormText>{this.getText("help")}</FormText>
-            {this.renderList()}
-        </div>;
+        return (
+            <div className="form-group">
+                <Label className="attribute-label">{this.getText("label")}</Label>
+                <InputGroup className="form-group no-bottom-margin">
+                    <Input
+                        name="add-string-input"
+                        value={this.state.inputValue}
+                        onChange={this.onChange}
+                        bsSize="sm"
+                        onKeyPress={this.onKeyPress}
+                        invalid={this.props.invalid}
+                        placeholder={this.getText("placeholder")}
+                    />
+                    <InputGroupAddon addonType="append">
+                        <Button
+                            key="add-string-submit"
+                            color="primary"
+                            size="sm"
+                            onClick={this.onAdd}
+                            className="input-group-button"
+                            disabled={this.state.inputValue.trim().length === 0}
+                            title={this.getText("placeholder.title")}>
+                            <GoPlus />
+                            &nbsp;{this.getText("placeholder.text")}
+                        </Button>
+                    </InputGroupAddon>
+                    {this.props.invalid ? <FormFeedback>{this.props.invalidMessage}</FormFeedback> : <></>}
+                </InputGroup>
+                <FormText>{this.getText("help")}</FormText>
+                {this.renderList()}
+            </div>
+        );
     }
 
     private renderList() {
@@ -83,25 +97,29 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
         if (list.length === 0) {
             return null;
         }
-        return <table>
-            <tbody>
-            {list.map(s => <tr key={s}>
-                <td className="align-middle">
-                    <ul className="term-items mt-0 mb-0">
-                        <li>
-                            {s}
-                        </li>
-                    </ul>
-                </td>
-                <td className="align-middle">
-                    <Badge title={this.getText("remove.title")}
-                           className="list-item-remove-icon align-middle"
-                           onClick={this.onRemove.bind(null, s)}><FaTrashAlt/> {this.getText("remove.text")}
-                    </Badge>
-                </td>
-            </tr>)}
-            </tbody>
-        </table>;
+        return (
+            <table>
+                <tbody>
+                    {list.map(s => (
+                        <tr key={s}>
+                            <td className="align-middle">
+                                <ul className="term-items mt-0 mb-0">
+                                    <li>{s}</li>
+                                </ul>
+                            </td>
+                            <td className="align-middle">
+                                <Badge
+                                    title={this.getText("remove.title")}
+                                    className="list-item-remove-icon align-middle"
+                                    onClick={this.onRemove.bind(null, s)}>
+                                    <FaTrashAlt /> {this.getText("remove.text")}
+                                </Badge>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
     }
 }
 

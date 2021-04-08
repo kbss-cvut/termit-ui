@@ -33,7 +33,10 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
     constructor(props: VocabularyMetadataProps) {
         super(props);
         this.state = {
-            activeTab: (Utils.extractQueryParam(this.props.location.search, "activeTab") === "vocabulary.validation.tab") ? "vocabulary.validation.tab" : "glossary.title"
+            activeTab:
+                Utils.extractQueryParam(this.props.location.search, "activeTab") === "vocabulary.validation.tab"
+                    ? "vocabulary.validation.tab"
+                    : "glossary.title"
         };
     }
 
@@ -49,30 +52,30 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         const i18n = this.props.i18n;
         const vocabulary = this.props.vocabulary;
 
-        return <>
-            <Card className="mb-3">
-                <CardBody className="card-body-basic-info">
-                    <Row>
-                        <Col xl={2} md={4}>
-                            <Label className="attribute-label mb-3">{i18n("vocabulary.comment")}</Label>
-                        </Col>
-                        <Col xl={10} md={8}>
-                            <p id="vocabulary-metadata-comment">{vocabulary.comment}</p>
-                        </Col>
-                    </Row>
-                    <ImportedVocabulariesList vocabularies={vocabulary.importedVocabularies}/>
-                </CardBody>
-            </Card>
-            <Card>
-                <CardBody>
-                    <Row>
-                        <Col xs={12}>
-                            {this.renderTabs()}
-                        </Col>
-                    </Row>
-                </CardBody>
-            </Card>
-        </>;
+        return (
+            <>
+                <Card className="mb-3">
+                    <CardBody className="card-body-basic-info">
+                        <Row>
+                            <Col xl={2} md={4}>
+                                <Label className="attribute-label mb-3">{i18n("vocabulary.comment")}</Label>
+                            </Col>
+                            <Col xl={10} md={8}>
+                                <p id="vocabulary-metadata-comment">{vocabulary.comment}</p>
+                            </Col>
+                        </Row>
+                        <ImportedVocabulariesList vocabularies={vocabulary.importedVocabularies} />
+                    </CardBody>
+                </Card>
+                <Card>
+                    <CardBody>
+                        <Row>
+                            <Col xs={12}>{this.renderTabs()}</Col>
+                        </Row>
+                    </CardBody>
+                </Card>
+            </>
+        );
     }
 
     private renderTabs() {
@@ -80,23 +83,37 @@ export class VocabularyMetadata extends React.Component<VocabularyMetadataProps,
         const tabs = {};
         // Ensure order of tabs Terms | (Files) | Unmapped properties | History
 
-        tabs["glossary.title"] =
-            <Terms vocabulary={this.props.vocabulary} match={this.props.match} location={this.props.location}
-                   showTermQualityBadge={true}/>
+        tabs["glossary.title"] = (
+            <Terms
+                vocabulary={this.props.vocabulary}
+                match={this.props.match}
+                location={this.props.location}
+                showTermQualityBadge={true}
+            />
+        );
 
-        tabs["vocabulary.detail.document"] =
-            <OptionalDocumentSummaryInTab vocabulary={vocabulary} onChange={this.props.onChange}/>;
-        tabs["history.label"] = <AssetHistory asset={vocabulary}/>;
+        tabs["vocabulary.detail.document"] = (
+            <OptionalDocumentSummaryInTab vocabulary={vocabulary} onChange={this.props.onChange} />
+        );
+        tabs["history.label"] = <AssetHistory asset={vocabulary} />;
 
-        tabs["changefrequency.label"] = <TermChangeFrequency vocabulary={vocabulary}/>;
+        tabs["changefrequency.label"] = <TermChangeFrequency vocabulary={vocabulary} />;
 
-        tabs["properties.edit.title"] = <UnmappedProperties properties={vocabulary.unmappedProperties}
-                                                            showInfoOnEmpty={true}/>;
+        tabs["properties.edit.title"] = (
+            <UnmappedProperties properties={vocabulary.unmappedProperties} showInfoOnEmpty={true} />
+        );
 
-        return <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={tabs} tabBadges={{
-            "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
-            "vocabulary.detail.document": vocabulary.document ? "1" : "0",
-        }}/>;
+        return (
+            <Tabs
+                activeTabLabelKey={this.state.activeTab}
+                changeTab={this.onTabSelect}
+                tabs={tabs}
+                tabBadges={{
+                    "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
+                    "vocabulary.detail.document": vocabulary.document ? "1" : "0"
+                }}
+            />
+        );
     }
 }
 

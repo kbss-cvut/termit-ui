@@ -39,7 +39,11 @@ describe("AsyncCommentActions", () => {
                 const args = (Ajax.get as jest.Mock).mock.calls[0];
                 expect(args[0]).toContain(`${termIri.fragment}/comments`);
                 expect(args[1].getParams().namespace).toEqual(termIri.namespace);
-                expect(store.getActions().find(a => a.type === ActionType.LOAD_COMMENTS && a.status === AsyncActionStatus.REQUEST)).toBeDefined();
+                expect(
+                    store
+                        .getActions()
+                        .find(a => a.type === ActionType.LOAD_COMMENTS && a.status === AsyncActionStatus.REQUEST)
+                ).toBeDefined();
             });
         });
 
@@ -63,40 +67,47 @@ describe("AsyncCommentActions", () => {
             const termIri = VocabularyUtils.create(Generator.generateUri());
             const comments = generateComments(termIri);
             Ajax.get = jest.fn().mockResolvedValue(comments);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermComments(termIri))).then((result: Comment[]) => {
-                expect(Ajax.get).toHaveBeenCalled();
-                expect(result.length).toEqual(comments.length);
-                expect(result.map(c => c.iri)).toEqual(comments.map(c => c["@id"]));
-                result.forEach(c => expect(c).toBeInstanceOf(Comment));
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermComments(termIri))).then(
+                (result: Comment[]) => {
+                    expect(Ajax.get).toHaveBeenCalled();
+                    expect(result.length).toEqual(comments.length);
+                    expect(result.map(c => c.iri)).toEqual(comments.map(c => c["@id"]));
+                    result.forEach(c => expect(c).toBeInstanceOf(Comment));
+                }
+            );
         });
 
         it("returns empty array on request failure", () => {
             const termIri = VocabularyUtils.create(Generator.generateUri());
             Ajax.get = jest.fn().mockRejectedValue({status: 404, error: {message: "Term not found"}});
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermComments(termIri))).then((result: Comment[]) => {
-                expect(Ajax.get).toHaveBeenCalled();
-                expect(result).toBeDefined();
-                expect(result.length).toEqual(0);
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermComments(termIri))).then(
+                (result: Comment[]) => {
+                    expect(Ajax.get).toHaveBeenCalled();
+                    expect(result).toBeDefined();
+                    expect(result.length).toEqual(0);
+                }
+            );
         });
     });
 
     describe("createTermComment", () => {
-
         it("sends JSON-LD serialization of specified comment to specified term endpoint", () => {
             const termIri = VocabularyUtils.create(Generator.generateUri());
             const comment = new Comment({
                 content: "Test comment"
             });
             Ajax.post = jest.fn().mockResolvedValue({});
-            return Promise.resolve(((store.dispatch as ThunkDispatch)(createTermComment(comment, termIri)))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(createTermComment(comment, termIri))).then(() => {
                 expect(Ajax.post).toHaveBeenCalled();
                 const args = (Ajax.post as jest.Mock).mock.calls[0];
                 expect(args[0]).toContain(`${termIri.fragment}/comments`);
                 expect(args[1].getParams().namespace).toEqual(termIri.namespace);
                 expect(args[1].getContent()).toEqual(comment.toJsonLd());
-                expect(store.getActions().find(a => a.type === ActionType.CREATE_COMMENT && a.status === AsyncActionStatus.SUCCESS)).toBeDefined();
+                expect(
+                    store
+                        .getActions()
+                        .find(a => a.type === ActionType.CREATE_COMMENT && a.status === AsyncActionStatus.SUCCESS)
+                ).toBeDefined();
             });
         });
     });
@@ -109,7 +120,9 @@ describe("AsyncCommentActions", () => {
             });
             const reactionType = "https://www.w3.org/ns/activitystreams#Dislike";
             Ajax.post = jest.fn().mockResolvedValue({});
-            return Promise.resolve(((store.dispatch as ThunkDispatch)(reactToComment(VocabularyUtils.create(comment.iri!), reactionType)))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(reactToComment(VocabularyUtils.create(comment.iri!), reactionType))
+            ).then(() => {
                 expect(Ajax.post).toHaveBeenCalled();
                 const args = (Ajax.post as jest.Mock).mock.calls[0];
                 expect(args[1].getParams().type).toEqual(reactionType);
@@ -124,7 +137,7 @@ describe("AsyncCommentActions", () => {
                 content: "Test comment update"
             });
             Ajax.put = jest.fn().mockResolvedValue({});
-            return Promise.resolve(((store.dispatch as ThunkDispatch)(updateComment(comment)))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateComment(comment))).then(() => {
                 expect(Ajax.put).toHaveBeenCalled();
                 const args = (Ajax.put as jest.Mock).mock.calls[0];
                 expect(args[1].getContent()).toEqual(comment.toJsonLd());

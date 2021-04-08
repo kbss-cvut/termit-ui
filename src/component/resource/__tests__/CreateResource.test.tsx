@@ -26,13 +26,13 @@ describe("CreateResource", () => {
     });
 
     it("returns to Resource Management on cancel", () => {
-        const wrapper = mountWithIntl(<CreateResource/>);
+        const wrapper = mountWithIntl(<CreateResource />);
         wrapper.find("#create-resource-cancel").at(0).simulate("click");
         expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.resources);
     });
 
     it("returns to Resource Management on submit", () => {
-        const wrapper = mountWithIntl(<CreateResource/>);
+        const wrapper = mountWithIntl(<CreateResource />);
         (wrapper.find(CreateResourceForm).instance().props as any).onSuccess(iri);
         expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.resourceSummary, {
             params: new Map([["name", "test"]]),

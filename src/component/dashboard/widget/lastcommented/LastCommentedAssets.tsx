@@ -15,20 +15,29 @@ const LastCommentedAssets = () => {
 
     const toggle = (tab: string) => {
         if (activeTab !== tab) setActiveTab(tab);
-    }
-    return <Card>
-        <CardHeader tag="h4" color="primary">
-            {i18n("dashboard.widget.lastCommentedAssets.title")}
-        </CardHeader>
-        <CardBody className="py-0">
-            <Tabs navLinkStyle="small" activeTabLabelKey={activeTab} changeTab={toggle} tabs={{
-                "dashboard.widget.lastCommentedAssets.all.title": <AllLastCommentedAssets/>,
-                "dashboard.widget.lastCommentedAssets.mine.title": <MyLastCommentedAssets/>,
-                "dashboard.widget.lastCommentedAssets.inReactionToMine.title": <LastCommentedAssetsInReactionToMine/>,
-                "dashboard.widget.lastCommentedAssets.byMe.title": <LastCommentedAssetsByMe/>,
-            }}/>
-        </CardBody>
-    </Card>;
-}
+    };
+    return (
+        <Card>
+            <CardHeader tag="h4" color="primary">
+                {i18n("dashboard.widget.lastCommentedAssets.title")}
+            </CardHeader>
+            <CardBody className="py-0">
+                <Tabs
+                    navLinkStyle="small"
+                    activeTabLabelKey={activeTab}
+                    changeTab={toggle}
+                    tabs={{
+                        "dashboard.widget.lastCommentedAssets.all.title": <AllLastCommentedAssets />,
+                        "dashboard.widget.lastCommentedAssets.mine.title": <MyLastCommentedAssets />,
+                        "dashboard.widget.lastCommentedAssets.inReactionToMine.title": (
+                            <LastCommentedAssetsInReactionToMine />
+                        ),
+                        "dashboard.widget.lastCommentedAssets.byMe.title": <LastCommentedAssetsByMe />
+                    }}
+                />
+            </CardBody>
+        </Card>
+    );
+};
 
 export default injectIntl(withI18n(LastCommentedAssets));

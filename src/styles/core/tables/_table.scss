@@ -2,7 +2,6 @@
 // Table
 //
 
-
 // General styles
 
 .table {
@@ -33,7 +32,6 @@
         white-space: nowrap;
     }
 
-
     // Vetical align table content
 
     &.align-items-center {
@@ -43,16 +41,14 @@
         }
     }
 
+    // Styles for dark table
 
-   // Styles for dark table
-
-   .thead-dark {
+    .thead-dark {
         th {
             background-color: $table-dark-head-bg;
             color: $table-dark-head-color;
         }
     }
-
 
     // Styles for light table
 
@@ -64,7 +60,6 @@
     }
 }
 
-
 // Add transition for hover state
 
 .table-hover {
@@ -72,7 +67,6 @@
         @include transition($transition-base);
     }
 }
-
 
 // Flush tables
 
@@ -101,7 +95,6 @@
         }
     }
 }
-
 
 // Tables inside cards
 

@@ -24,8 +24,25 @@ const ctx = {
 
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, BASE_OCCURRENCE_CONTEXT);
 
-const MAPPED_PROPERTIES = ["@context", "iri", "label", "altLabels", "hiddenLabels", "scopeNote", "definition",
-    "subTerms", "sources", "types", "parentTerms", "parent", "plainSubTerms", "vocabulary", "glossary", "definitionSource", "draft"];
+const MAPPED_PROPERTIES = [
+    "@context",
+    "iri",
+    "label",
+    "altLabels",
+    "hiddenLabels",
+    "scopeNote",
+    "definition",
+    "subTerms",
+    "sources",
+    "types",
+    "parentTerms",
+    "parent",
+    "plainSubTerms",
+    "vocabulary",
+    "glossary",
+    "definitionSource",
+    "draft"
+];
 
 export const TERM_MULTILINGUAL_ATTRIBUTES = ["label", "definition", "altLabels", "hiddenLabels"];
 
@@ -39,8 +56,8 @@ export interface TermData extends AssetData {
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
     parentTerms?: TermData[];
-    parent?: string;    // Introduced in order to support the Intelligent Tree Select component
-    plainSubTerms?: string[];   // Introduced in order to support the Intelligent Tree Select component
+    parent?: string; // Introduced in order to support the Intelligent Tree Select component
+    plainSubTerms?: string[]; // Introduced in order to support the Intelligent Tree Select component
     vocabulary?: AssetData;
     definitionSource?: TermOccurrenceData;
     draft?: boolean;
@@ -56,7 +73,7 @@ export function termInfoComparator(a: TermInfo, b: TermInfo) {
     return getLocalized(a.label).localeCompare(getLocalized(b.label));
 }
 
-declare type TermMap = { [key: string]: Term };
+declare type TermMap = {[key: string]: Term};
 
 export default class Term extends Asset implements TermData {
     public label: MultilingualString;
@@ -83,7 +100,9 @@ export default class Term extends Asset implements TermData {
         }
         if (this.parentTerms) {
             visitedTerms[this.iri] = this;
-            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map(pt => visitedTerms[pt.iri] ? visitedTerms[pt.iri] : new Term(pt, visitedTerms));
+            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map(pt =>
+                visitedTerms[pt.iri] ? visitedTerms[pt.iri] : new Term(pt, visitedTerms)
+            );
             this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
         }
@@ -169,7 +188,9 @@ export default class Term extends Asset implements TermData {
     public static getLanguages(term: Term | TermData): string[] {
         const languages: Set<string> = new Set();
         TERM_MULTILINGUAL_ATTRIBUTES.filter(att => term[att]).forEach(att => {
-            Utils.sanitizeArray(term[att]).forEach(attValue => Object.getOwnPropertyNames(attValue).forEach(n => languages.add(n)))
+            Utils.sanitizeArray(term[att]).forEach(attValue =>
+                Object.getOwnPropertyNames(attValue).forEach(n => languages.add(n))
+            );
         });
         const langArr = Array.from(languages);
         langArr.sort();

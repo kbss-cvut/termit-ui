@@ -15,7 +15,7 @@
     min-width: 12rem;
 
     .dropdown-item {
-        padding: .5rem 1rem;
+        padding: 0.5rem 1rem;
         font-size: $font-size-sm;
         > i,
         > svg {
@@ -30,17 +30,15 @@
     padding-left: 1rem;
     padding-right: 1rem;
     color: $gray-100;
-    font-size: .625rem;
+    font-size: 0.625rem;
     text-transform: uppercase;
     font-weight: 700;
 }
-
 
 // Media components inside dropdown link
 
 .dropdown-menu {
     a.media {
-
         > div {
             &:first-child {
                 line-height: 1;
@@ -59,7 +57,6 @@
         }
     }
 }
-
 
 // Size variations
 

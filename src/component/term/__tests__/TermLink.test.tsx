@@ -13,7 +13,6 @@ import cs from "../../../i18n/cs";
 import * as redux from "react-redux";
 
 describe("TermLink", () => {
-
     const vocFragment = "localVocabularyFragment";
     const vocNamespace = "http://test.org/";
     let testVocabulary: Vocabulary;
@@ -24,7 +23,7 @@ describe("TermLink", () => {
             iri: vocNamespace + vocFragment
         });
         jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
-    })
+    });
 
     it("links to correct internal asset", () => {
         const termFragment = "localTermFragment";
@@ -34,8 +33,14 @@ describe("TermLink", () => {
             vocabulary: testVocabulary
         });
 
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>).find(Link);
-        expect((link.props() as any).to).toEqual(`/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`);
+        const link = mountWithIntl(
+            <MemoryRouter>
+                <TermLink term={term} />
+            </MemoryRouter>
+        ).find(Link);
+        expect((link.props() as any).to).toEqual(
+            `/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`
+        );
     });
 
     it("render outgoing link when term is missing vocabulary", () => {
@@ -43,11 +48,19 @@ describe("TermLink", () => {
             iri: Generator.generateUri(),
             label: langString("Term without vocabulary")
         });
-        const wrapper = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <TermLink term={term} />
+            </MemoryRouter>
+        );
         expect(wrapper.find(Link).exists()).toBeFalsy();
-        expect(wrapper.find("a").contains(<small>
-            <i className="fas fa-external-link-alt text-primary"/>
-        </small>)).toBeTruthy();
+        expect(
+            wrapper.find("a").contains(
+                <small>
+                    <i className="fas fa-external-link-alt text-primary" />
+                </small>
+            )
+        ).toBeTruthy();
     });
 
     it("links to public term view when user is not logged in", () => {
@@ -59,14 +72,20 @@ describe("TermLink", () => {
         });
         jest.spyOn(redux, "useSelector").mockReturnValue(EMPTY_USER);
 
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>).find(Link);
-        expect((link.props() as any).to).toEqual(`/public/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`);
+        const link = mountWithIntl(
+            <MemoryRouter>
+                <TermLink term={term} />
+            </MemoryRouter>
+        ).find(Link);
+        expect((link.props() as any).to).toEqual(
+            `/public/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`
+        );
     });
 
     it("does not change term in props when dealing with multilingual labels", () => {
         const originalLabel: MultilingualString = {
-            "en": "Test term",
-            "cs": "Testovaci pojem"
+            en: "Test term",
+            cs: "Testovaci pojem"
         };
         const term = new Term({
             label: originalLabel,
@@ -74,15 +93,19 @@ describe("TermLink", () => {
             vocabulary: testVocabulary
         });
 
-        mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>).find(Link);
+        mountWithIntl(
+            <MemoryRouter>
+                <TermLink term={term} />
+            </MemoryRouter>
+        ).find(Link);
         expect(term.label).toEqual(originalLabel);
     });
 
     it("renders link with label in language corresponding to current locale", () => {
         const term = new Term({
             label: {
-                "en": "Test term",
-                "cs": "Testovaci pojem"
+                en: "Test term",
+                cs: "Testovaci pojem"
             },
             iri: `${testVocabulary.iri}/pojem/localTestFragment`,
             vocabulary: testVocabulary
@@ -90,21 +113,31 @@ describe("TermLink", () => {
 
         (mockStore.getState() as TermItState).intl.locale = Constants.LANG.CS.locale;
         (mockStore.getState() as TermItState).intl.messages = cs.messages;
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term}/></MemoryRouter>, undefined, cs).find(Link);
+        const link = mountWithIntl(
+            <MemoryRouter>
+                <TermLink term={term} />
+            </MemoryRouter>,
+            undefined,
+            cs
+        ).find(Link);
         expect(link.text()).toEqual(term.label.cs);
     });
 
     it("uses provided language to render link label instead of current locale", () => {
         const term = new Term({
             label: {
-                "en": "Test term",
-                "cs": "Testovaci pojem"
+                en: "Test term",
+                cs: "Testovaci pojem"
             },
             iri: `${testVocabulary.iri}/pojem/localTestFragment`,
             vocabulary: testVocabulary
         });
 
-        const link = mountWithIntl(<MemoryRouter><TermLink term={term} language="cs"/></MemoryRouter>).find(Link);
+        const link = mountWithIntl(
+            <MemoryRouter>
+                <TermLink term={term} language="cs" />
+            </MemoryRouter>
+        ).find(Link);
         expect(link.text()).toEqual(term.label.cs);
     });
 });

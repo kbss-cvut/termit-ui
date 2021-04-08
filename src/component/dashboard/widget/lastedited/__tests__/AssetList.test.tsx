@@ -18,40 +18,49 @@ describe("AssetList", () => {
     });
 
     it("does not render info message during loading", () => {
-        const wrapper = mountWithIntl(<MemoryRouter>
-            <AssetList user={user} assets={[]} loading={true} {...intlFunctions()}/>
-        </MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <AssetList user={user} assets={[]} loading={true} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const info = wrapper.find(".italics");
         expect(info.exists()).toBeFalsy();
     });
 
     it("renders info message when no assets were found", () => {
-        const wrapper = mountWithIntl(<MemoryRouter>
-            <AssetList user={user} assets={[]} loading={false} {...intlFunctions()}/>
-        </MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <AssetList user={user} assets={[]} loading={false} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const info = wrapper.find(".italics");
         expect(info.exists()).toBeTruthy();
         expect(info.text()).toEqual(en.messages["dashboard.widget.assetList.empty"]);
     });
 
     it("renders downloaded assets", () => {
-        const assets = [new RecentlyModifiedAsset({
-            iri: Generator.generateUri(),
-            label: "Term",
-            types: [VocabularyUtils.TERM],
-            vocabulary: {iri: Generator.generateUri()},
-            editor: Generator.generateUser(),
-            modified: Date.now()
-        }), new RecentlyModifiedAsset({
-            iri: Generator.generateUri(),
-            label: "Vocabulary",
-            types: [VocabularyUtils.VOCABULARY],
-            editor: Generator.generateUser(),
-            modified: Date.now()
-        })];
-        const wrapper = mountWithIntl(<MemoryRouter>
-            <AssetList user={user} assets={assets} loading={false} {...intlFunctions()}/>
-        </MemoryRouter>);
+        const assets = [
+            new RecentlyModifiedAsset({
+                iri: Generator.generateUri(),
+                label: "Term",
+                types: [VocabularyUtils.TERM],
+                vocabulary: {iri: Generator.generateUri()},
+                editor: Generator.generateUser(),
+                modified: Date.now()
+            }),
+            new RecentlyModifiedAsset({
+                iri: Generator.generateUri(),
+                label: "Vocabulary",
+                types: [VocabularyUtils.VOCABULARY],
+                editor: Generator.generateUser(),
+                modified: Date.now()
+            })
+        ];
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <AssetList user={user} assets={assets} loading={false} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         return Promise.resolve().then(() => {
             wrapper.update();
             const links = wrapper.find(Link);
@@ -62,17 +71,21 @@ describe("AssetList", () => {
     });
 
     const renderTermInList = (author: User, containedString: string) => {
-        const assets = [new RecentlyModifiedAsset({
-            iri: Generator.generateUri(),
-            label: "Term",
-            types: [VocabularyUtils.TERM],
-            vocabulary: {iri: Generator.generateUri()},
-            editor: author,
-            modified: Date.now()
-        })];
-        const wrapper = mountWithIntl(<MemoryRouter>
-            <AssetList user={user} assets={assets} loading={false} {...intlFunctions()}/>
-        </MemoryRouter>);
+        const assets = [
+            new RecentlyModifiedAsset({
+                iri: Generator.generateUri(),
+                label: "Term",
+                types: [VocabularyUtils.TERM],
+                vocabulary: {iri: Generator.generateUri()},
+                editor: author,
+                modified: Date.now()
+            })
+        ];
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <AssetList user={user} assets={assets} loading={false} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         return Promise.resolve().then(() => {
             wrapper.update();
             const labels = wrapper.find(Label);
@@ -88,6 +101,6 @@ describe("AssetList", () => {
 
     it("renders an asset with user name if the author is not the currently logged user", () => {
         const author = Generator.generateUser();
-        renderTermInList(author, author.fullName)
+        renderTermInList(author, author.fullName);
     });
 });

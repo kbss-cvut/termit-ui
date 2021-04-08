@@ -21,7 +21,6 @@ interface SearchTypeTabsProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export class SearchTypeTabs extends React.Component<SearchTypeTabsProps> {
-
     public componentDidMount() {
         this.props.addSearchListener();
     }
@@ -35,21 +34,26 @@ export class SearchTypeTabs extends React.Component<SearchTypeTabsProps> {
         const path = this.props.location.pathname;
         const loggedIn = Authentication.isLoggedIn(this.props.user);
 
-        const tabs: { route: Route, altExactRoutes: Route[], label: string, id: string }[] = [{
-            route: loggedIn ? Routes.search : Routes.publicSearch,
-            altExactRoutes: [],
-            label: i18n("search.tab.everything"),
-            id: "search-tab-everything"
-        }, {
-            route: loggedIn ? Routes.searchTerms : Routes.publicSearchTerms,
-            altExactRoutes: [],
-            label: i18n("search.tab.terms"), id: "search-tab-terms"
-        }, {
-            route: loggedIn ? Routes.searchVocabularies : Routes.publicSearchVocabularies,
-            altExactRoutes: [],
-            label: i18n("search.tab.vocabularies"),
-            id: "search-tab-vocabularies"
-        }];
+        const tabs: {route: Route; altExactRoutes: Route[]; label: string; id: string}[] = [
+            {
+                route: loggedIn ? Routes.search : Routes.publicSearch,
+                altExactRoutes: [],
+                label: i18n("search.tab.everything"),
+                id: "search-tab-everything"
+            },
+            {
+                route: loggedIn ? Routes.searchTerms : Routes.publicSearchTerms,
+                altExactRoutes: [],
+                label: i18n("search.tab.terms"),
+                id: "search-tab-terms"
+            },
+            {
+                route: loggedIn ? Routes.searchVocabularies : Routes.publicSearchVocabularies,
+                altExactRoutes: [],
+                label: i18n("search.tab.vocabularies"),
+                id: "search-tab-vocabularies"
+            }
+        ];
 
         let activeTab: object | null = null;
         let activeTabDepth = -1;
@@ -67,7 +71,7 @@ export class SearchTypeTabs extends React.Component<SearchTypeTabsProps> {
         // Find an active tab
         if (!activeTab) {
             for (const tab of tabs) {
-                const isActive = (path === tab.route.path || path.startsWith(tab.route.path + "/"));
+                const isActive = path === tab.route.path || path.startsWith(tab.route.path + "/");
                 const slashes = tab.route.path.match("/");
                 const depth = slashes ? slashes.length : 0;
                 if (isActive && depth >= activeTabDepth) {
@@ -78,30 +82,39 @@ export class SearchTypeTabs extends React.Component<SearchTypeTabsProps> {
         }
 
         if (activeTab !== null) {
-            return <div><Nav tabs={true} className="justify-content-center">
-                {tabs.map((tab) => (
-                    <NavItem key={tab.route.name}>
-                        <NavLink id={tab.id} active={tab === activeTab}
-                                 href={"#" + tab.route.link()}>{tab.label}</NavLink>
-                    </NavItem>)
-                )}
-            </Nav></div>;
+            return (
+                <div>
+                    <Nav tabs={true} className="justify-content-center">
+                        {tabs.map(tab => (
+                            <NavItem key={tab.route.name}>
+                                <NavLink id={tab.id} active={tab === activeTab} href={"#" + tab.route.link()}>
+                                    {tab.label}
+                                </NavLink>
+                            </NavItem>
+                        ))}
+                    </Nav>
+                </div>
+            );
         } else {
             return null;
         }
     }
-
 }
 
-export default withRouter(connect((state: TermItState) => {
-    return {
-        searchQuery: state.searchQuery,
-        intl: state.intl,
-        user: state.user
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        addSearchListener: () => dispatch(SearchActions.addSearchListener()),
-        removeSearchListener: () => dispatch(SearchActions.removeSearchListener()),
-    };
-})(injectIntl(withI18n(SearchTypeTabs))));
+export default withRouter(
+    connect(
+        (state: TermItState) => {
+            return {
+                searchQuery: state.searchQuery,
+                intl: state.intl,
+                user: state.user
+            };
+        },
+        (dispatch: ThunkDispatch) => {
+            return {
+                addSearchListener: () => dispatch(SearchActions.addSearchListener()),
+                removeSearchListener: () => dispatch(SearchActions.removeSearchListener())
+            };
+        }
+    )(injectIntl(withI18n(SearchTypeTabs)))
+);

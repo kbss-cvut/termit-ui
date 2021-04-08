@@ -59,7 +59,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
         const userData: UserData = {
             ...this.props.user,
             firstName: this.state.firstName,
-            lastName: this.state.lastName,
+            lastName: this.state.lastName
         };
 
         this.props.updateProfile(new User(userData)).then((asyncResult: AsyncAction) => {
@@ -71,8 +71,11 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
 
     private isValid(): boolean {
         const {user} = this.props;
-        return (this.state.firstName !== user.firstName || this.state.lastName !== user.lastName) &&
-            this.state.firstName.trim().length > 0 && this.state.lastName.trim().length > 0;
+        return (
+            (this.state.firstName !== user.firstName || this.state.lastName !== user.lastName) &&
+            this.state.firstName.trim().length > 0 &&
+            this.state.lastName.trim().length > 0
+        );
     }
 
     private showProfileEdit = () => this.setState({edit: true});
@@ -84,43 +87,61 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
     public render() {
         const {i18n, user} = this.props;
 
-        return <>
-            <WindowTitle title={i18n("main.user-profile")}/>
-            <HeaderWithActions title={ <>
-                {i18n("main.user-profile")}: {user.username}
-                <div className="small italics"><UserRoles user={user}/></div>
-            </>}
-                               actions={this.renderActionButtons()}/>
-            <Card id="panel-profile">
-                <CardBody>
-                    {!this.state.edit ?
-                        <ProfileView user={user}/> :
-                        <ProfileEditForm
-                            firstName={this.state.firstName}
-                            lastName={this.state.lastName}
-                            onChange={this.onChange}
-                            onSubmit={this.onSubmit}
-                            onKeyPress={this.onKeyPress}
-                            showProfileView={this.showProfileView}
-                            isValid={this.isValid()}
-                        />}
-                </CardBody>
-            </Card>
-        </>;
+        return (
+            <>
+                <WindowTitle title={i18n("main.user-profile")} />
+                <HeaderWithActions
+                    title={
+                        <>
+                            {i18n("main.user-profile")}: {user.username}
+                            <div className="small italics">
+                                <UserRoles user={user} />
+                            </div>
+                        </>
+                    }
+                    actions={this.renderActionButtons()}
+                />
+                <Card id="panel-profile">
+                    <CardBody>
+                        {!this.state.edit ? (
+                            <ProfileView user={user} />
+                        ) : (
+                            <ProfileEditForm
+                                firstName={this.state.firstName}
+                                lastName={this.state.lastName}
+                                onChange={this.onChange}
+                                onSubmit={this.onSubmit}
+                                onKeyPress={this.onKeyPress}
+                                showProfileView={this.showProfileView}
+                                isValid={this.isValid()}
+                            />
+                        )}
+                    </CardBody>
+                </Card>
+            </>
+        );
     }
 
     private renderActionButtons() {
-        return <ProfileActionButtons edit={this.state.edit} showProfileEdit={this.showProfileEdit}
-                                     navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}/>;
+        return (
+            <ProfileActionButtons
+                edit={this.state.edit}
+                showProfileEdit={this.showProfileEdit}
+                navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}
+            />
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        user: state.user,
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        updateProfile: (name: User) => dispatch(updateProfile(name))
-    };
-})(injectIntl(withI18n(Profile)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            user: state.user
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            updateProfile: (name: User) => dispatch(updateProfile(name))
+        };
+    }
+)(injectIntl(withI18n(Profile)));

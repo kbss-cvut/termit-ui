@@ -28,7 +28,7 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
         const change = {};
         change[language] = value;
         onChange({definition: Object.assign({}, term.definition, change)});
-    }
+    };
     const onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const src = e.currentTarget.value;
         props.onChange({sources: [src]});
@@ -37,44 +37,66 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
     const validationDefinition = getValidationResults!(VocabularyUtils.DEFINITION);
     const validationSource = getValidationResults!(VocabularyUtils.DC_SOURCE);
 
-    return <>
-        <Row>
-            <Col xs={12}>
-                {props.definitionSelector ?
-                    <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
-                        <Label className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label>
-                        <Button id="create-term-select-definition"
+    return (
+        <>
+            <Row>
+                <Col xs={12}>
+                    {props.definitionSelector ? (
+                        <FormGroup id="create-term-select-definition-group" style={{marginBottom: 0}}>
+                            <Label className="attribute-label definition">
+                                {i18n("term.metadata.definition.text")}
+                            </Label>
+                            <Button
+                                id="create-term-select-definition"
                                 color="muted"
                                 onClick={props.definitionSelector}
-                                size="sm" title={i18n("annotator.createTerm.selectDefinition.tooltip")}
+                                size="sm"
+                                title={i18n("annotator.createTerm.selectDefinition.tooltip")}
                                 style={{float: "right"}}>
-                            {i18n("annotator.createTerm.selectDefinition")}
-                        </Button>
-                    </FormGroup>
-                    : <FormGroup style={{marginBottom: 0}}><Label
-                        className="attribute-label definition">{i18n("term.metadata.definition.text")}</Label></FormGroup>}
-                <TextArea name="edit-term-definition"
-                          value={getLocalizedOrDefault(term.definition, "", language)}
-                          invalid={validationDefinition.length > 0} readOnly={readOnly}
-                          invalidMessage={renderValidationMessages(locale, validationDefinition)}
-                          onChange={onDefinitionChange} rows={4} help={i18n("term.definition.help")}/>
-            </Col>
-        </Row>
-        <Row>
-            <Col xs={12}>
-                <CustomInput name="edit-term-source" value={source} onChange={onSourceChange}
-                             label={i18n("term.metadata.source")} labelClass="definition"
-                             invalid={validationSource.length > 0} readOnly={readOnly}
-                             invalidMessage={renderValidationMessages(locale, validationSource)}
-                             help={i18n("term.source.help")}/>
-            </Col>
-        </Row>
-    </>;
+                                {i18n("annotator.createTerm.selectDefinition")}
+                            </Button>
+                        </FormGroup>
+                    ) : (
+                        <FormGroup style={{marginBottom: 0}}>
+                            <Label className="attribute-label definition">
+                                {i18n("term.metadata.definition.text")}
+                            </Label>
+                        </FormGroup>
+                    )}
+                    <TextArea
+                        name="edit-term-definition"
+                        value={getLocalizedOrDefault(term.definition, "", language)}
+                        invalid={validationDefinition.length > 0}
+                        readOnly={readOnly}
+                        invalidMessage={renderValidationMessages(locale, validationDefinition)}
+                        onChange={onDefinitionChange}
+                        rows={4}
+                        help={i18n("term.definition.help")}
+                    />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12}>
+                    <CustomInput
+                        name="edit-term-source"
+                        value={source}
+                        onChange={onSourceChange}
+                        label={i18n("term.metadata.source")}
+                        labelClass="definition"
+                        invalid={validationSource.length > 0}
+                        readOnly={readOnly}
+                        invalidMessage={renderValidationMessages(locale, validationSource)}
+                        help={i18n("term.source.help")}
+                    />
+                </Col>
+            </Row>
+        </>
+    );
 };
 
 TermDefinitionBlockEdit.defaultProps = {
     getValidationResults: () => [],
     readOnly: false
-}
+};
 
 export default TermDefinitionBlockEdit;

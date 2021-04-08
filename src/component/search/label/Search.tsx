@@ -23,7 +23,6 @@ interface SearchProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export class Search extends React.Component<SearchProps> {
-
     public componentDidMount() {
         this.props.addSearchListener();
     }
@@ -37,28 +36,32 @@ export class Search extends React.Component<SearchProps> {
     }
 
     public render() {
-        const loading = this.props.searchInProgress ? <ContainerMask/> : null;
+        const loading = this.props.searchInProgress ? <ContainerMask /> : null;
         const results = this.getResults();
 
-        return <div className="relative">
-            <WindowTitle title={this.props.i18n("search.title")}/>
-            {results ? <SearchResults results={results}/> : null}
-            {loading}
-        </div>
+        return (
+            <div className="relative">
+                <WindowTitle title={this.props.i18n("search.title")} />
+                {results ? <SearchResults results={results} /> : null}
+                {loading}
+            </div>
+        );
     }
 }
 
-
-export default connect((state: TermItState) => {
-    return {
-        searchQuery: state.searchQuery,
-        searchResults: state.searchResults,
-        searchInProgress: state.searchInProgress,
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        updateSearchFilter: (searchString: string) => dispatch(SearchActions.updateSearchFilter(searchString)),
-        addSearchListener: () => dispatch(SearchActions.addSearchListener()),
-        removeSearchListener: () => dispatch(SearchActions.removeSearchListener()),
-    };
-})(withRouter(injectIntl(withI18n(Search))));
+export default connect(
+    (state: TermItState) => {
+        return {
+            searchQuery: state.searchQuery,
+            searchResults: state.searchResults,
+            searchInProgress: state.searchInProgress
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            updateSearchFilter: (searchString: string) => dispatch(SearchActions.updateSearchFilter(searchString)),
+            addSearchListener: () => dispatch(SearchActions.addSearchListener()),
+            removeSearchListener: () => dispatch(SearchActions.removeSearchListener())
+        };
+    }
+)(withRouter(injectIntl(withI18n(Search))));

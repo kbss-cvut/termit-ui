@@ -7,7 +7,6 @@ import {mountWithIntl} from "../../../__tests__/environment/Environment";
 import * as actions from "../../../action/ComplexActions";
 
 describe("UserDropdown", () => {
-
     const user = new User({
         firstName: "Catherine",
         lastName: "Halsey",
@@ -21,12 +20,20 @@ describe("UserDropdown", () => {
     });
 
     it("renders correct structure of component", () => {
-        const wrapper = mountWithIntl(<UserDropdown dark={true}/>);
+        const wrapper = mountWithIntl(<UserDropdown dark={true} />);
 
-        expect(wrapper.find(UncontrolledDropdown).find(DropdownToggle).contains(<>
-            <i className="fas fa-user-circle align-middle user-icon"/>&nbsp;
-            <span className="user-dropdown">{user.abbreviatedName}</span>
-        </>));
+        expect(
+            wrapper
+                .find(UncontrolledDropdown)
+                .find(DropdownToggle)
+                .contains(
+                    <>
+                        <i className="fas fa-user-circle align-middle user-icon" />
+                        &nbsp;
+                        <span className="user-dropdown">{user.abbreviatedName}</span>
+                    </>
+                )
+        );
 
         expect(wrapper.find(UncontrolledDropdown).find(DropdownMenu).find(DropdownItem).length).toBe(3);
     });

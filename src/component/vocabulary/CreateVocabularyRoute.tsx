@@ -3,7 +3,11 @@ import CreateVocabulary from "./CreateVocabulary";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 const CreateVocabularyRoute: React.FC = () => {
-    return <IfUserAuthorized><CreateVocabulary/></IfUserAuthorized>;
-}
+    return (
+        <IfUserAuthorized>
+            <CreateVocabulary />
+        </IfUserAuthorized>
+    );
+};
 
 export default CreateVocabularyRoute;

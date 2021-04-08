@@ -3,7 +3,6 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import TermOccurrence, {CONTEXT} from "../TermOccurrence";
 
 describe("TermOccurrence", () => {
-
     describe("toJsonLd", () => {
         it("adds context to the object", () => {
             const sut = new TermOccurrence({

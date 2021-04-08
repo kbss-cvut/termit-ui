@@ -9,7 +9,6 @@ import {UnmappedPropertiesEdit} from "../../genericmetadata/UnmappedPropertiesEd
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("VocabularyEdit", () => {
-
     let onSave: (vocabulary: Vocabulary) => void;
     let onCancel: () => void;
     let vocabulary: Vocabulary;
@@ -24,8 +23,9 @@ describe("VocabularyEdit", () => {
     });
 
     it("passes updated vocabulary to onSave", () => {
-        const wrapper = mountWithIntl(<VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel}
-                                                      {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel} {...intlFunctions()} />
+        );
         const nameInput = wrapper.find("input[name='edit-vocabulary-label']");
         const newName = "Metropolitan plan";
         (nameInput.getDOMNode() as HTMLInputElement).value = newName;
@@ -39,8 +39,9 @@ describe("VocabularyEdit", () => {
     });
 
     it("supports updating comment on vocabulary", () => {
-        const wrapper = mountWithIntl(<VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel}
-                                                      {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel} {...intlFunctions()} />
+        );
         const commentInput = wrapper.find("textarea[name='edit-vocabulary-comment']");
         const newComment = "Updated comment";
         (commentInput.getDOMNode() as HTMLInputElement).value = newComment;
@@ -52,8 +53,9 @@ describe("VocabularyEdit", () => {
     });
 
     it("closes editing view on when clicking on cancel", () => {
-        const wrapper = mountWithIntl(<VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel}
-                                                      {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel} {...intlFunctions()} />
+        );
         wrapper.find("button#edit-vocabulary-cancel").simulate("click");
         expect(onCancel).toHaveBeenCalled();
     });
@@ -61,11 +63,12 @@ describe("VocabularyEdit", () => {
     it("correctly sets unmapped properties on save", () => {
         const property = Generator.generateUri();
         vocabulary.unmappedProperties = new Map([[property, ["test"]]]);
-        const wrapper = shallow<VocabularyEdit>(<VocabularyEdit vocabulary={vocabulary} save={onSave}
-                                                                cancel={onCancel} {...intlFunctions()}/>);
+        const wrapper = shallow<VocabularyEdit>(
+            <VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel} {...intlFunctions()} />
+        );
         const updatedProperties = new Map([[property, ["test1", "test2"]]]);
         wrapper.instance().setState({unmappedProperties: updatedProperties});
-        (wrapper.instance()).onSave();
+        wrapper.instance().onSave();
         const result: Vocabulary = (onSave as jest.Mock).mock.calls[0][0];
         expect(result.unmappedProperties).toEqual(updatedProperties);
         expect(result[property]).toBeDefined();
@@ -73,8 +76,9 @@ describe("VocabularyEdit", () => {
     });
 
     it("passes mapped Term properties for ignoring to UnmappedPropertiesEdit", () => {
-        const wrapper = mountWithIntl(<VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel}
-                                                      {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel} {...intlFunctions()} />
+        );
         const ignored = wrapper.find(UnmappedPropertiesEdit).prop("ignoredProperties");
         expect(ignored).toBeDefined();
         expect(ignored!.indexOf(VocabularyUtils.RDF_TYPE)).not.toEqual(-1);
@@ -82,8 +86,9 @@ describe("VocabularyEdit", () => {
     });
 
     it("onChange updates component state", () => {
-        const wrapper = shallow<VocabularyEdit>(<VocabularyEdit vocabulary={vocabulary} save={onSave}
-                                                                cancel={onCancel} {...intlFunctions()}/>);
+        const wrapper = shallow<VocabularyEdit>(
+            <VocabularyEdit vocabulary={vocabulary} save={onSave} cancel={onCancel} {...intlFunctions()} />
+        );
         const importedVocabularies = [{iri: Generator.generateUri()}];
         wrapper.instance().onChange({importedVocabularies});
         wrapper.update();

@@ -9,7 +9,6 @@ import Generator from "../../../__tests__/environment/Generator";
 import {withHooks} from "jest-react-hooks-shallow";
 
 describe("TermOccurrenceAnnotation", () => {
-
     const text = "mesta";
     const suggestedOccProps = {
         about: "_:-421713841",
@@ -39,13 +38,17 @@ describe("TermOccurrenceAnnotation", () => {
     });
 
     it("does not render confirm button for suggested occurrence of an unknown term", () => {
-        const wrapper = shallow(<TermOccurrenceAnnotation
-            {...actions}
-            {...intlFunctions()}
-            {...suggestedOccProps}
-            {...intlFunctions()}
-            annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE} annotationOrigin={AnnotationOrigin.PROPOSED}
-            isOpen={true}/>);
+        const wrapper = shallow(
+            <TermOccurrenceAnnotation
+                {...actions}
+                {...intlFunctions()}
+                {...suggestedOccProps}
+                {...intlFunctions()}
+                annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
+                annotationOrigin={AnnotationOrigin.PROPOSED}
+                isOpen={true}
+            />
+        );
         const buttons = wrapper.find(SimplePopupWithActions).prop("actions");
         expect(buttons.length).toBeGreaterThan(0);
         const confirmButton = buttons.find(b => b.key === "annotation.confirm");
@@ -54,13 +57,17 @@ describe("TermOccurrenceAnnotation", () => {
 
     it("switches from editing to view mode when a term is provided", () => {
         withHooks(() => {
-            const wrapper = shallow(<TermOccurrenceAnnotation
-                {...actions}
-                {...intlFunctions()}
-                {...suggestedOccProps}
-                {...intlFunctions()}
-                annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE} annotationOrigin={AnnotationOrigin.PROPOSED}
-                isOpen={true}/>);
+            const wrapper = shallow(
+                <TermOccurrenceAnnotation
+                    {...actions}
+                    {...intlFunctions()}
+                    {...suggestedOccProps}
+                    {...intlFunctions()}
+                    annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
+                    annotationOrigin={AnnotationOrigin.PROPOSED}
+                    isOpen={true}
+                />
+            );
             const term = Generator.generateTerm();
             wrapper.setProps({term});
             wrapper.update();

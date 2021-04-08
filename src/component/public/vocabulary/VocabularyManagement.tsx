@@ -17,11 +17,13 @@ const VocabularyManagement: React.FC<VocabulariesProps> = () => {
         dispatch(loadPublicVocabularies());
     }, [dispatch]);
 
-    return <div id="public-vocabularies">
-        <WindowTitle title={i18n("vocabulary.management.vocabularies")}/>
-        <HeaderWithActions title={i18n("vocabulary.management.vocabularies")}/>
-        <VocabularyList/>
-    </div>;
+    return (
+        <div id="public-vocabularies">
+            <WindowTitle title={i18n("vocabulary.management.vocabularies")} />
+            <HeaderWithActions title={i18n("vocabulary.management.vocabularies")} />
+            <VocabularyList />
+        </div>
+    );
 };
 
 export default VocabularyManagement;

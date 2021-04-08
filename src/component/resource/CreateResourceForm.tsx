@@ -19,23 +19,22 @@ import RemoveFile from "./document/RemoveFile";
 
 interface CreateResourceFormProps extends HasI18n {
     createResource: (resource: Resource) => Promise<string>;
-    createFile: (file: TermItFile, documentIri: string) => Promise<any>,
-    uploadFileContent: (fileIri: string, file: File) => Promise<any>,
+    createFile: (file: TermItFile, documentIri: string) => Promise<any>;
+    uploadFileContent: (fileIri: string, file: File) => Promise<any>;
     publishNotification: (notification: AppNotification) => void;
     onCancel: () => void;
-    onSuccess: (iri : string, locationIri : string) => void;
-    justDocument: boolean
+    onSuccess: (iri: string, locationIri: string) => void;
+    justDocument: boolean;
 }
 
 interface CreateResourceFormState {
-    type: string
+    type: string;
     files: TermItFile[];
     fileContents: File[];
-    showCreateFile: boolean
+    showCreateFile: boolean;
 }
 
 export class CreateResourceForm extends React.Component<CreateResourceFormProps, CreateResourceFormState> {
-
     constructor(props: CreateResourceFormProps) {
         super(props);
         this.state = {
@@ -55,16 +54,20 @@ export class CreateResourceForm extends React.Component<CreateResourceFormProps,
         const files = this.state.files;
         const fileContents = this.state.fileContents;
         const onSuccess = this.props.onSuccess;
-        return this.props.createResource(resource).then((iri) => {
-            return Promise.all(Utils.sanitizeArray(files).map((f, fIndex) =>
-                    this.props.createFile(f, resource.iri)
-                        .then(() => this.props.uploadFileContent(f.iri, fileContents[fIndex])
-                            .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})))
+        return this.props.createResource(resource).then(iri => {
+            return Promise.all(
+                Utils.sanitizeArray(files).map((f, fIndex) =>
+                    this.props.createFile(f, resource.iri).then(() =>
+                        this.props.uploadFileContent(f.iri, fileContents[fIndex]).then(() =>
+                            this.props.publishNotification({
+                                source: {type: NotificationType.FILE_CONTENT_UPLOADED}
+                            })
+                        )
+                    )
                 )
             )
-                .then(() => onSuccess(resource.iri, iri)
-                )
-                .then(() => iri)
+                .then(() => onSuccess(resource.iri, iri))
+                .then(() => iri);
         });
     };
 
@@ -74,7 +77,7 @@ export class CreateResourceForm extends React.Component<CreateResourceFormProps,
             const fileContents = this.state.fileContents.concat(file);
             this.setState({files, fileContents});
         });
-    }
+    };
 
     private onRemoveFile = (termitFile: Resource): Promise<void> => {
         return Promise.resolve().then(() => {
@@ -87,61 +90,81 @@ export class CreateResourceForm extends React.Component<CreateResourceFormProps,
                 this.setState({files, fileContents});
             }
         });
-    }
+    };
 
     public render() {
         const i18n = this.props.i18n;
-        return <>
-            <Card id="create-resource">
-                <CardBody>
-                    {this.props.justDocument ? undefined:
-                    <Row>
-                        <Col xs={12}>
+        return (
+            <>
+                <Card id="create-resource">
+                    <CardBody>
+                        {this.props.justDocument ? undefined : (
                             <Row>
-                                <Col>
-                                    <Label className="attribute-label">{i18n("resource.create.type")}</Label>
+                                <Col xs={12}>
+                                    <Row>
+                                        <Col>
+                                            <Label className="attribute-label">{i18n("resource.create.type")}</Label>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <ButtonGroup className="d-flex form-group">
+                                                <Button
+                                                    id="create-resource-type-resource"
+                                                    color="primary"
+                                                    size="sm"
+                                                    className="w-100 create-resource-type-select"
+                                                    outline={true}
+                                                    onClick={this.onTypeSelect.bind(null, VocabularyUtils.RESOURCE)}
+                                                    active={this.state.type === VocabularyUtils.RESOURCE}>
+                                                    {i18n("type.resource")}
+                                                </Button>
+                                                <Button
+                                                    id="create-resource-type-document"
+                                                    color="primary"
+                                                    size="sm"
+                                                    className="w-100 create-resource-type-select"
+                                                    outline={true}
+                                                    onClick={this.onTypeSelect.bind(null, VocabularyUtils.DOCUMENT)}
+                                                    active={this.state.type === VocabularyUtils.DOCUMENT}>
+                                                    {i18n("type.document")}
+                                                </Button>
+                                            </ButtonGroup>
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col>
-                                    <ButtonGroup className="d-flex form-group">
-                                        <Button id="create-resource-type-resource" color="primary" size="sm"
-                                                className="w-100 create-resource-type-select" outline={true}
-                                                onClick={this.onTypeSelect.bind(null, VocabularyUtils.RESOURCE)}
-                                                active={this.state.type === VocabularyUtils.RESOURCE}>{i18n("type.resource")}</Button>
-                                        <Button id="create-resource-type-document" color="primary" size="sm"
-                                                className="w-100 create-resource-type-select" outline={true}
-                                                onClick={this.onTypeSelect.bind(null, VocabularyUtils.DOCUMENT)}
-                                                active={this.state.type === VocabularyUtils.DOCUMENT}>{i18n("type.document")}</Button>
-                                    </ButtonGroup>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>}
-                    <CreateResourceMetadata onCreate={this.onCreate} onCancel={this.props.onCancel}>
-                        {
-                            this.state.type === VocabularyUtils.DOCUMENT ?
-                                <Files files={this.state.files}
-                                       actions={[<AddFile key="add-file" performAction={this.onCreateFile}/>]}
-                                       itemActions={(file: TermItFile) => [
-                                           <RemoveFile key="remove-file"
-                                                       file={file}
-                                                       performAction={this.onRemoveFile.bind(this, file)}
-                                                       withConfirmation={false}/>]
-                                       }
-                                /> : null
-                        }
-                    </CreateResourceMetadata>
-                </CardBody>
-            </Card></>;
+                        )}
+                        <CreateResourceMetadata onCreate={this.onCreate} onCancel={this.props.onCancel}>
+                            {this.state.type === VocabularyUtils.DOCUMENT ? (
+                                <Files
+                                    files={this.state.files}
+                                    actions={[<AddFile key="add-file" performAction={this.onCreateFile} />]}
+                                    itemActions={(file: TermItFile) => [
+                                        <RemoveFile
+                                            key="remove-file"
+                                            file={file}
+                                            performAction={this.onRemoveFile.bind(this, file)}
+                                            withConfirmation={false}
+                                        />
+                                    ]}
+                                />
+                            ) : null}
+                        </CreateResourceMetadata>
+                    </CardBody>
+                </Card>
+            </>
+        );
     }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         createResource: (resource: Resource) => dispatch(createResource(resource)),
-        createFile: (file: TermItFile, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
-        uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
+        createFile: (file: TermItFile, documentIri: string) =>
+            dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
+        uploadFileContent: (fileIri: string, file: File) =>
+            dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
         publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
 })(injectIntl(withI18n(CreateResourceForm)));

@@ -28,24 +28,26 @@ export class DocumentSummaryInTab extends ResourceSummary<DocumentSummaryInTabPr
     };
 
     public render() {
-        return <div>{this.renderMetadata()}</div>
-
+        return <div>{this.renderMetadata()}</div>;
     }
 
     protected renderMetadata() {
-        return <div className="metadata-panel">
-            <ResourceMetadata resource={this.props.resource} inTab={true}/>
-            <DocumentFiles document={this.props.resource}
-                           onFileAdded={this.reload}
-                           onFileRemoved={this.reload}/>
-        </div>;
+        return (
+            <div className="metadata-panel">
+                <ResourceMetadata resource={this.props.resource} inTab={true} />
+                <DocumentFiles document={this.props.resource} onFileAdded={this.reload} onFileRemoved={this.reload} />
+            </div>
+        );
     }
 }
 
-export default connect((state: TermItState) => ({intl: state.intl}), (dispatch: ThunkDispatch) => {
-    return {
-        loadResource: (iri: IRI) => dispatch(loadResource(iri)),
-        saveResource: (resource: Resource) => dispatch(updateResource(resource)),
-        removeResource: (resource: Resource) => dispatch(removeResource(resource))
-    };
-})(injectIntl(withI18n(DocumentSummaryInTab)));
+export default connect(
+    (state: TermItState) => ({intl: state.intl}),
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadResource: (iri: IRI) => dispatch(loadResource(iri)),
+            saveResource: (resource: Resource) => dispatch(updateResource(resource)),
+            removeResource: (resource: Resource) => dispatch(removeResource(resource))
+        };
+    }
+)(injectIntl(withI18n(DocumentSummaryInTab)));

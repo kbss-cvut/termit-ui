@@ -34,12 +34,12 @@ export interface ResourceSummaryProps extends HasI18n {
     customDisabledRemoveTooltipKey?: string;
 }
 
-export interface ResourceSummaryState extends EditableComponentState {
-}
+export interface ResourceSummaryState extends EditableComponentState {}
 
-export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryProps, S extends ResourceSummaryState = ResourceSummaryState>
-    extends EditableComponent<P, S> {
-
+export class ResourceSummary<
+    P extends ResourceSummaryProps = ResourceSummaryProps,
+    S extends ResourceSummaryState = ResourceSummaryState
+> extends EditableComponent<P, S> {
     constructor(props: P) {
         super(props);
         this.state = {
@@ -66,59 +66,99 @@ export class ResourceSummary<P extends ResourceSummaryProps = ResourceSummaryPro
     }
 
     public render() {
-        return <div id="resource-detail">
-            <HeaderWithActions title={
-                <>{this.props.resource.label}<CopyIriIcon url={this.props.resource.iri as string}/></>
-            } actions={this.getActionButtons()}/>
+        return (
+            <div id="resource-detail">
+                <HeaderWithActions
+                    title={
+                        <>
+                            {this.props.resource.label}
+                            <CopyIriIcon url={this.props.resource.iri as string} />
+                        </>
+                    }
+                    actions={this.getActionButtons()}
+                />
 
-            <RemoveAssetDialog show={this.state.showRemoveDialog} asset={this.props.resource}
-                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
-            {this.state.edit ? this.renderMetadataEdit() : this.renderMetadata()}
-        </div>;
+                <RemoveAssetDialog
+                    show={this.state.showRemoveDialog}
+                    asset={this.props.resource}
+                    onCancel={this.onCloseRemove}
+                    onSubmit={this.onRemove}
+                />
+                {this.state.edit ? this.renderMetadataEdit() : this.renderMetadata()}
+            </div>
+        );
     }
 
     protected getActionButtons() {
         const i18n = this.props.i18n;
         const buttons = [];
         if (!this.state.edit) {
-            buttons.push(<IfUserAuthorized key="resource-detail-edit" renderUnauthorizedAlert={false}>
-                <Button id="resource-detail-edit" key="resource.summary.edit" size="sm" color="primary"
-                        title={i18n("edit")} onClick={this.onEdit}><GoPencil/>&nbsp;{i18n("edit")}</Button>
-            </IfUserAuthorized>);
+            buttons.push(
+                <IfUserAuthorized key="resource-detail-edit" renderUnauthorizedAlert={false}>
+                    <Button
+                        id="resource-detail-edit"
+                        key="resource.summary.edit"
+                        size="sm"
+                        color="primary"
+                        title={i18n("edit")}
+                        onClick={this.onEdit}>
+                        <GoPencil />
+                        &nbsp;{i18n("edit")}
+                    </Button>
+                </IfUserAuthorized>
+            );
         }
-        buttons.push(<IfUserAuthorized key="resource-detail-remove" renderUnauthorizedAlert={false}>
-            <Button id="resource-detail-remove" key="resource.summary.remove" size="sm" color="outline-danger"
+        buttons.push(
+            <IfUserAuthorized key="resource-detail-remove" renderUnauthorizedAlert={false}>
+                <Button
+                    id="resource-detail-remove"
+                    key="resource.summary.remove"
+                    size="sm"
+                    color="outline-danger"
                     className={classNames({"text-muted": !this.canRemove()})}
-                    title={i18n(!this.canRemove() && this.props.customDisabledRemoveTooltipKey ? this.props.customDisabledRemoveTooltipKey : "asset.remove.tooltip")}
+                    title={i18n(
+                        !this.canRemove() && this.props.customDisabledRemoveTooltipKey
+                            ? this.props.customDisabledRemoveTooltipKey
+                            : "asset.remove.tooltip"
+                    )}
                     disabled={!this.canRemove()}
-                    onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{i18n("remove")}</Button>
-        </IfUserAuthorized>);
+                    onClick={this.onRemoveClick}>
+                    <FaTrashAlt />
+                    &nbsp;{i18n("remove")}
+                </Button>
+            </IfUserAuthorized>
+        );
         return buttons;
     }
 
     protected renderMetadataEdit() {
         if (isFile(this.props.resource)) {
-            return <FileEdit resource={this.props.resource} save={this.onSave} cancel={this.onCloseEdit}/>;
+            return <FileEdit resource={this.props.resource} save={this.onSave} cancel={this.onCloseEdit} />;
         } else {
-            return <ResourceEdit resource={this.props.resource} save={this.onSave} cancel={this.onCloseEdit}/>;
+            return <ResourceEdit resource={this.props.resource} save={this.onSave} cancel={this.onCloseEdit} />;
         }
     }
 
     protected renderMetadata() {
-        return <div className="metadata-panel">
-            <ResourceMetadata resource={this.props.resource}/>
-        </div>;
+        return (
+            <div className="metadata-panel">
+                <ResourceMetadata resource={this.props.resource} />
+            </div>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        intl: state.intl
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadResource: (iri: IRI) => dispatch(loadResource(iri)),
-        saveResource: (resource: Resource) => dispatch(updateResource(resource)),
-        removeResource: (resource: Resource) => dispatch(removeResource(resource))
-    };
-})(injectIntl(withI18n(ResourceSummary)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            intl: state.intl
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadResource: (iri: IRI) => dispatch(loadResource(iri)),
+            saveResource: (resource: Resource) => dispatch(updateResource(resource)),
+            removeResource: (resource: Resource) => dispatch(removeResource(resource))
+        };
+    }
+)(injectIntl(withI18n(ResourceSummary)));

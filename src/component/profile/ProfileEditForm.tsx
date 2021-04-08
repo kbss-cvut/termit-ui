@@ -14,45 +14,59 @@ interface ProfileEditFormProps {
 }
 
 export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
-                                                                    firstName, lastName, onChange, onSubmit, onKeyPress,
-                                                                    showProfileView, isValid
-                                                                }) => {
+    firstName,
+    lastName,
+    onChange,
+    onSubmit,
+    onKeyPress,
+    showProfileView,
+    isValid
+}) => {
     const {i18n} = useI18n();
-    return <Form>
-        <Row>
-            <Col xl={6} md={12}>
-                <CustomInput
-                    name="firstName"
-                    label={i18n("profile.first.name")}
-                    value={firstName}
-                    onChange={onChange}
-                    invalid={firstName.trim().length === 0}
-                    invalidMessage={i18n("profile.legend.invalid.name")}
-                />
-            </Col>
-            <Col xl={6} md={12}>
-                <CustomInput
-                    name="lastName"
-                    label={i18n("profile.last.name")}
-                    value={lastName}
-                    onChange={onChange}
-                    invalid={firstName.trim().length === 0}
-                    invalidMessage={i18n("profile.legend.invalid.name")}
-                    onKeyPress={onKeyPress}
-                />
-            </Col>
-        </Row>
-        <Row>
-            <Col xl={12}>
-                <ButtonToolbar className="justify-content-center">
-                    <Button id="profile-edit-submit" onClick={onSubmit} color="success" size="sm"
-                            disabled={!isValid}>{i18n("save")}</Button>
-                    <Button id="profile-edit-cancel" onClick={showProfileView} size="sm"
-                            color="outline-dark">{i18n("cancel")}</Button>
-                </ButtonToolbar>
-            </Col>
-        </Row>
-    </Form>;
+    return (
+        <Form>
+            <Row>
+                <Col xl={6} md={12}>
+                    <CustomInput
+                        name="firstName"
+                        label={i18n("profile.first.name")}
+                        value={firstName}
+                        onChange={onChange}
+                        invalid={firstName.trim().length === 0}
+                        invalidMessage={i18n("profile.legend.invalid.name")}
+                    />
+                </Col>
+                <Col xl={6} md={12}>
+                    <CustomInput
+                        name="lastName"
+                        label={i18n("profile.last.name")}
+                        value={lastName}
+                        onChange={onChange}
+                        invalid={firstName.trim().length === 0}
+                        invalidMessage={i18n("profile.legend.invalid.name")}
+                        onKeyPress={onKeyPress}
+                    />
+                </Col>
+            </Row>
+            <Row>
+                <Col xl={12}>
+                    <ButtonToolbar className="justify-content-center">
+                        <Button
+                            id="profile-edit-submit"
+                            onClick={onSubmit}
+                            color="success"
+                            size="sm"
+                            disabled={!isValid}>
+                            {i18n("save")}
+                        </Button>
+                        <Button id="profile-edit-cancel" onClick={showProfileView} size="sm" color="outline-dark">
+                            {i18n("cancel")}
+                        </Button>
+                    </ButtonToolbar>
+                </Col>
+            </Row>
+        </Form>
+    );
 };
 
 export default ProfileEditForm;

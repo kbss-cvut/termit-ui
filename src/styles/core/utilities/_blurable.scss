@@ -7,7 +7,7 @@
     position: relative;
 
     .blur-item {
-        transition: 1s cubic-bezier(.19,1,.22,1);
+        transition: 1s cubic-bezier(0.19, 1, 0.22, 1);
         will-change: transform;
         filter: blur(0);
         opacity: 1;
@@ -24,9 +24,9 @@
     }
     &:hover {
         .blur-item {
-            opacity: .8;
+            opacity: 0.8;
             filter: blur(10px);
-            transform: scale(.95);
+            transform: scale(0.95);
             z-index: 1;
         }
         .blur-hidden {

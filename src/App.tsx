@@ -4,9 +4,11 @@ import TermItStore from "./store/TermItStore";
 import IntlApp from "./IntlApp";
 
 const App: React.FC = () => {
-    return <Provider store={TermItStore}>
-            <IntlApp/>
-        </Provider>;
+    return (
+        <Provider store={TermItStore}>
+            <IntlApp />
+        </Provider>
+    );
 };
 
 export default App;

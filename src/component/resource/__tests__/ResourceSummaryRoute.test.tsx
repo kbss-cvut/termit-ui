@@ -12,7 +12,6 @@ import DocumentSummary from "../document/DocumentSummary";
 import Routes from "../../../util/Routes";
 
 describe("ResourceSummaryRoute", () => {
-
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/resources/";
     const resourceName = "test-resource";
 
@@ -37,7 +36,7 @@ describe("ResourceSummaryRoute", () => {
         };
         match = {
             params: {
-                name: resourceName,
+                name: resourceName
             },
             path: location.pathname,
             isExact: true,
@@ -46,18 +45,30 @@ describe("ResourceSummaryRoute", () => {
     });
 
     it("loads resource on mount", () => {
-        shallow(<ResourceSummaryRoute
-            resource={EMPTY_RESOURCE} {...resourceHandlers} {...intlFunctions()}
-            history={history}
-            location={location}
-            match={match}/>);
+        shallow(
+            <ResourceSummaryRoute
+                resource={EMPTY_RESOURCE}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         expect(loadResource).toHaveBeenCalledWith({fragment: resourceName, namespace});
     });
 
     it("does not attempt to reload resource on update when it is empty resource", () => {
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={EMPTY_RESOURCE} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
+        const wrapper = shallow(
+            <ResourceSummaryRoute
+                resource={EMPTY_RESOURCE}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         wrapper.setProps({resource: EMPTY_RESOURCE});
         wrapper.update();
         expect(loadResource).toHaveBeenCalledTimes(1);
@@ -65,9 +76,16 @@ describe("ResourceSummaryRoute", () => {
 
     it("reloads resource when new resource identifier is passed in location props", () => {
         const oldResource = new Resource({iri: namespace + resourceName, label: resourceName, terms: []});
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={oldResource} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
+        const wrapper = shallow(
+            <ResourceSummaryRoute
+                resource={oldResource}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         const newFragment = "another-resource";
         const newMatch = Object.assign({}, match);
         newMatch.params.name = newFragment;
@@ -81,9 +99,16 @@ describe("ResourceSummaryRoute", () => {
             iri: "http://onto.fel.cvut.cz/ontologies/termit/resources/" + resourceName,
             label: resourceName
         });
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={EMPTY_RESOURCE} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
+        const wrapper = shallow(
+            <ResourceSummaryRoute
+                resource={EMPTY_RESOURCE}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         wrapper.setProps({resource});
         wrapper.update();
         expect(loadResource).toHaveBeenCalledTimes(1);
@@ -94,9 +119,16 @@ describe("ResourceSummaryRoute", () => {
             iri: namespace + resourceName,
             label: resourceName
         });
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={resource} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
+        const wrapper = shallow(
+            <ResourceSummaryRoute
+                resource={resource}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         return Promise.resolve().then(() => {
             wrapper.unmount();
             expect(clearResource).toHaveBeenCalled();
@@ -108,9 +140,16 @@ describe("ResourceSummaryRoute", () => {
             iri: namespace + resourceName,
             label: resourceName
         });
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={resource} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
+        const wrapper = shallow(
+            <ResourceSummaryRoute
+                resource={resource}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         const newLocation = Routes.annotateFile.path.replace(":name", resourceName);
         history.push(newLocation);
         wrapper.update();
@@ -126,9 +165,16 @@ describe("ResourceSummaryRoute", () => {
             label: resourceName,
             types: [VocabularyUtils.RESOURCE]
         });
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={resource} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
+        const wrapper = shallow(
+            <ResourceSummaryRoute
+                resource={resource}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         expect(wrapper.exists(ResourceSummary)).toBeTruthy();
     });
 
@@ -139,9 +185,16 @@ describe("ResourceSummaryRoute", () => {
             files: [],
             types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]
         });
-        const wrapper = shallow(<ResourceSummaryRoute
-            resource={doc} {...resourceHandlers} {...intlFunctions()}
-            history={history} location={location} match={match}/>);
+        const wrapper = shallow(
+            <ResourceSummaryRoute
+                resource={doc}
+                {...resourceHandlers}
+                {...intlFunctions()}
+                history={history}
+                location={location}
+                match={match}
+            />
+        );
         expect(wrapper.exists(DocumentSummary)).toBeTruthy();
         expect(wrapper.exists(ResourceSummary)).toBeFalsy();
     });

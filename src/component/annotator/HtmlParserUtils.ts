@@ -4,7 +4,6 @@ import {Element, Node} from "domhandler";
 const RDF_ATTRIBUTE_NAMES = ["about", "property", "resource", "typeof"];
 
 const HtmlParserUtils = {
-
     html2dom(html: string): Node[] {
         // Do not decode HTML entities (e.g., &lt;) when parsing content for object representation, it caused issues
         // with rendering
@@ -29,12 +28,26 @@ const HtmlParserUtils = {
         if ((node as Element).attribs && (node as Element).attribs.prefix) {
             const words = (node as Element).attribs.prefix.split(/\s+/);
             if (words.length % 2) {
-                throw new Error("Failed to parse prefix '" + (node as Element).attribs.prefix + "' defined within tag " + (node as Element).name + ". Length of tokens separated by white-space is not even.");
+                throw new Error(
+                    "Failed to parse prefix '" +
+                        (node as Element).attribs.prefix +
+                        "' defined within tag " +
+                        (node as Element).name +
+                        ". Length of tokens separated by white-space is not even."
+                );
             }
             const map = new Map();
             for (let i = 0; i < words.length; i = i + 2) {
                 if (!words[i].endsWith(":")) {
-                    throw new Error("Failed to parse prefix '" + (node as Element).attribs.prefix + "' defined within tag " + (node as Element).name + ". Token " + words[i] + " does not end with ':'.");
+                    throw new Error(
+                        "Failed to parse prefix '" +
+                            (node as Element).attribs.prefix +
+                            "' defined within tag " +
+                            (node as Element).name +
+                            ". Token " +
+                            words[i] +
+                            " does not end with ':'."
+                    );
                 }
                 const prefix = words[i].substring(0, words[i].length - 1);
                 map.set(prefix, words[i + 1]);

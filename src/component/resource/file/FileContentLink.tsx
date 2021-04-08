@@ -24,7 +24,6 @@ interface FileContentLinkState {
 }
 
 export class FileContentLink extends React.Component<FileContentLinkProps, FileContentLinkState> {
-
     constructor(props: FileContentLinkProps) {
         super(props);
         this.state = {
@@ -52,13 +51,20 @@ export class FileContentLink extends React.Component<FileContentLinkProps, FileC
         const params = {name: documentIri.fragment, fileName: iri.fragment};
         const query = {namespace: documentIri.namespace, fileNamespace: iri.namespace};
         const contentSupported = this.isContentSupported();
-        return contentSupported ? <Link id={this.props.id}
-                                        className="btn btn-primary btn-sm"
-                                        title={this.props.i18n("resource.metadata.file.content.view.tooltip")}
-                                        to={Routes.annotateFile.link(params, query)}><GoFile/>&nbsp;{this.props.i18n("resource.metadata.file.content")}
-        </Link> : <></>;
+        return contentSupported ? (
+            <Link
+                id={this.props.id}
+                className="btn btn-primary btn-sm"
+                title={this.props.i18n("resource.metadata.file.content.view.tooltip")}
+                to={Routes.annotateFile.link(params, query)}>
+                <GoFile />
+                &nbsp;{this.props.i18n("resource.metadata.file.content")}
+            </Link>
+        ) : (
+            <></>
+        );
     }
-};
+}
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {

@@ -26,17 +26,14 @@
     margin-top: 3rem;
 }
 
-
 // Negative margins and paddings
 
-@media(min-width: 992px) {
+@media (min-width: 992px) {
     [class*="mt--"],
     [class*="mr--"],
     [class*="mb--"],
     [class*="ml--"] {
-        
     }
-
 
     // Large negative margins in pixels
 
@@ -71,7 +68,6 @@
         margin-bottom: -300px !important;
     }
 
-
     // Large margins in pixels
 
     .pt-100 {
@@ -99,9 +95,9 @@
         padding-bottom: 250px !important;
     }
     .pt-300 {
-        padding-top: 300px!important;
+        padding-top: 300px !important;
     }
     .pb-300 {
-        padding-bottom: 300px!important;
+        padding-bottom: 300px !important;
     }
 }

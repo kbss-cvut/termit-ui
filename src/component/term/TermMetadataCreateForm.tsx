@@ -22,16 +22,15 @@ interface TermMetadataCreateFormProps extends HasI18n {
     definitionSelector?: () => void;
     termData: TermData;
     vocabularyIri: string;
-    labelExist: { [lang: string]: boolean };
+    labelExist: {[lang: string]: boolean};
     language: string;
 }
 
 interface TermMetadataCreateFormState {
-    generateUri: boolean
+    generateUri: boolean;
 }
 
 export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFormProps, TermMetadataCreateFormState> {
-
     constructor(props: TermMetadataCreateFormProps) {
         super(props);
         this.state = {
@@ -105,7 +104,7 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
     };
 
     private setIdentifier = (newUri: string, callback: () => void = () => null) => {
-        this.props.onChange({iri: newUri}, callback)
+        this.props.onChange({iri: newUri}, callback);
     };
 
     public onTypeSelect = (types: string[]) => {
@@ -121,73 +120,105 @@ export class TermMetadataCreateForm extends React.Component<TermMetadataCreateFo
         const label = getLocalizedOrDefault(termData.label, "", language);
         const labelInLanguageExists = this.props.labelExist[language];
 
-        return <Form>
-            <Row>
-                <Col xs={12}>
-                    <CustomInput name="create-term-label" label={i18n("asset.label")}
-                                 help={this.props.i18n("term.label.help")}
-                                 onChange={this.onLabelChange} autoFocus={true}
-                                 invalid={labelInLanguageExists}
-                                 invalidMessage={labelInLanguageExists ? this.props.formatMessage("term.metadata.labelExists.message", {label}) : undefined}
-                                 value={label}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
-                    <StringListEdit list={getLocalizedPlural(termData.altLabels, language)}
-                                    onChange={this.onAltLabelsChange}
-                                    i18nPrefix={"term.metadata.altLabels"}/>
-                </Col>
-            </Row>
-
-            <TermDefinitionContainer>
-                <TermDefinitionBlockEdit term={termData} onChange={this.props.onChange} language={language}
-                                         definitionSelector={this.props.definitionSelector}/>
-            </TermDefinitionContainer>
-
-            <Row>
-                <Col xs={12}>
-                    <TextArea name="create-term-comment" label={i18n("term.metadata.comment")}
-                              labelClass="attribute-label"
-                              type="textarea" rows={4} value={getLocalizedOrDefault(termData.scopeNote, "", language)}
-                              help={i18n("term.comment.help")}
-                              onChange={this.onCommentChange}/>
-                </Col>
-            </Row>
-
-            <Row>
-                <Col xs={12}>
-                    <ParentTermSelector id="create-term-parent" onChange={this.onParentSelect}
-                                        parentTerms={termData.parentTerms}
-                                        vocabularyIri={this.props.vocabularyIri}/>
-                </Col>
-            </Row>
-
-            <ShowAdvancedAssetFields>
+        return (
+            <Form>
                 <Row>
                     <Col xs={12}>
-                        <TermTypesEdit termTypes={Utils.sanitizeArray(termData.types)} onChange={this.onTypeSelect}/>
+                        <CustomInput
+                            name="create-term-label"
+                            label={i18n("asset.label")}
+                            help={this.props.i18n("term.label.help")}
+                            onChange={this.onLabelChange}
+                            autoFocus={true}
+                            invalid={labelInLanguageExists}
+                            invalidMessage={
+                                labelInLanguageExists
+                                    ? this.props.formatMessage("term.metadata.labelExists.message", {label})
+                                    : undefined
+                            }
+                            value={label}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <StringListEdit
+                            list={getLocalizedPlural(termData.altLabels, language)}
+                            onChange={this.onAltLabelsChange}
+                            i18nPrefix={"term.metadata.altLabels"}
+                        />
+                    </Col>
+                </Row>
+
+                <TermDefinitionContainer>
+                    <TermDefinitionBlockEdit
+                        term={termData}
+                        onChange={this.props.onChange}
+                        language={language}
+                        definitionSelector={this.props.definitionSelector}
+                    />
+                </TermDefinitionContainer>
+
+                <Row>
+                    <Col xs={12}>
+                        <TextArea
+                            name="create-term-comment"
+                            label={i18n("term.metadata.comment")}
+                            labelClass="attribute-label"
+                            type="textarea"
+                            rows={4}
+                            value={getLocalizedOrDefault(termData.scopeNote, "", language)}
+                            help={i18n("term.comment.help")}
+                            onChange={this.onCommentChange}
+                        />
                     </Col>
                 </Row>
 
                 <Row>
                     <Col xs={12}>
-                        <StringListEdit list={getLocalizedPlural(termData.hiddenLabels, language)}
-                                        onChange={this.onHiddenLabelsChange}
-                                        i18nPrefix={"term.metadata.hiddenLabels"}/>
+                        <ParentTermSelector
+                            id="create-term-parent"
+                            onChange={this.onParentSelect}
+                            parentTerms={termData.parentTerms}
+                            vocabularyIri={this.props.vocabularyIri}
+                        />
                     </Col>
                 </Row>
 
-                <Row>
-                    <Col xs={12}>
-                        <CustomInput name="create-term-iri" label={i18n("asset.iri")}
-                                     help={this.props.i18n("term.iri.help")}
-                                     onChange={this.onIdentifierChange}
-                                     value={termData.iri}/>
-                    </Col>
-                </Row>
-            </ShowAdvancedAssetFields>
-        </Form>;
+                <ShowAdvancedAssetFields>
+                    <Row>
+                        <Col xs={12}>
+                            <TermTypesEdit
+                                termTypes={Utils.sanitizeArray(termData.types)}
+                                onChange={this.onTypeSelect}
+                            />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={12}>
+                            <StringListEdit
+                                list={getLocalizedPlural(termData.hiddenLabels, language)}
+                                onChange={this.onHiddenLabelsChange}
+                                i18nPrefix={"term.metadata.hiddenLabels"}
+                            />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={12}>
+                            <CustomInput
+                                name="create-term-iri"
+                                label={i18n("asset.iri")}
+                                help={this.props.i18n("term.iri.help")}
+                                onChange={this.onIdentifierChange}
+                                value={termData.iri}
+                            />
+                        </Col>
+                    </Row>
+                </ShowAdvancedAssetFields>
+            </Form>
+        );
     }
 }
 

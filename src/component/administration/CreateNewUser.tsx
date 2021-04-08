@@ -28,17 +28,20 @@ export const CreateNewUser: React.FC<CreateNewUserProps> = props => {
     };
     const onCancel = () => Routing.transitionTo(Routes.administration);
 
-    return <>
-        <HeaderWithActions title={i18n("administration.users.create")}/>
-        <Card id="administration-new-user-registration">
-            <CardBody>
-                <RegistrationForm loading={false} register={onRegister} cancel={onCancel}/>
-            </CardBody>
-        </Card></>;
+    return (
+        <>
+            <HeaderWithActions title={i18n("administration.users.create")} />
+            <Card id="administration-new-user-registration">
+                <CardBody>
+                    <RegistrationForm loading={false} register={onRegister} cancel={onCancel} />
+                </CardBody>
+            </Card>
+        </>
+    );
 };
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         register: (userData: UserAccountData) => dispatch(createNewUser(userData))
-    }
+    };
 })(CreateNewUser);

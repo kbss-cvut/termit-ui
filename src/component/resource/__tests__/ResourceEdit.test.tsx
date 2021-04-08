@@ -27,29 +27,24 @@ describe("ResourceEdit", () => {
     });
 
     it("calls onSave on Save button click", () => {
-        const component = mountWithIntl(<ResourceEdit {...intlFunctions()}
-                                                      cancel={cancel}
-                                                      resource={resource}
-                                                      save={save}/>);
+        const component = mountWithIntl(
+            <ResourceEdit {...intlFunctions()} cancel={cancel} resource={resource} save={save} />
+        );
         const saveButton = component.find("button#edit-resource-submit");
         saveButton.simulate("click", saveButton);
         expect(save).toHaveBeenCalled();
     });
 
     it("calls onCancel on Cancel button click", () => {
-        const component = mountWithIntl(<ResourceEdit {...intlFunctions()}
-                                                      cancel={cancel}
-                                                      resource={resource}
-                                                      save={save}/>);
+        const component = mountWithIntl(
+            <ResourceEdit {...intlFunctions()} cancel={cancel} resource={resource} save={save} />
+        );
         component.find("button#edit-resource-cancel").simulate("click");
         expect(cancel).toHaveBeenCalled();
     });
 
     it("loads terms on resource update", () => {
-        const wrapper = shallow(<ResourceEdit {...intlFunctions()}
-                                              cancel={cancel}
-                                              resource={resource}
-                                              save={save}/>);
+        const wrapper = shallow(<ResourceEdit {...intlFunctions()} cancel={cancel} resource={resource} save={save} />);
         const newResource = new Resource({
             iri: Generator.generateUri(),
             label: "test term",
@@ -63,8 +58,9 @@ describe("ResourceEdit", () => {
     });
 
     it("passes updated values on save", () => {
-        const component = mountWithIntl(<ResourceEdit {...intlFunctions()} save={save} cancel={cancel}
-                                                      resource={resource}/>);
+        const component = mountWithIntl(
+            <ResourceEdit {...intlFunctions()} save={save} cancel={cancel} resource={resource} />
+        );
         const labelInput = component.find("input[name='edit-resource-label']");
         const newLabel = "New label";
         (labelInput.getDOMNode() as HTMLInputElement).value = newLabel;
@@ -83,11 +79,13 @@ describe("ResourceEdit", () => {
     });
 
     describe("onSave", () => {
-
         it("invokes save handler with updated instance of the correct type", () => {
-            const file = new File(Object.assign(Generator.generateAssetData(), {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]}));
-            const wrapper = shallow<ResourceEdit>(<ResourceEdit resource={file} save={save}
-                                                                cancel={cancel} {...intlFunctions()}/>);
+            const file = new File(
+                Object.assign(Generator.generateAssetData(), {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]})
+            );
+            const wrapper = shallow<ResourceEdit>(
+                <ResourceEdit resource={file} save={save} cancel={cancel} {...intlFunctions()} />
+            );
             wrapper.instance().onSave();
             const update = (save as jest.Mock).mock.calls[0][0];
             expect(update instanceof File);

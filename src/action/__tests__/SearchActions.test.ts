@@ -14,13 +14,12 @@ jest.mock("../../util/Ajax", () => ({
     content: jest.requireActual("../../util/Ajax").content,
     params: jest.requireActual("../../util/Ajax").params,
     param: jest.requireActual("../../util/Ajax").param,
-    accept: jest.requireActual("../../util/Ajax").accept,
+    accept: jest.requireActual("../../util/Ajax").accept
 }));
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("SearchActions", () => {
-
     let store: MockStoreEnhanced<TermItState>;
 
     beforeEach(() => {
@@ -49,44 +48,49 @@ describe("SearchActions", () => {
                     if (r.hasType(Vocabulary2.TERM)) {
                         expect(r.vocabulary).toBeDefined();
                     }
-                })
+                });
             });
         });
     });
 
     describe("updateSearchFilter", () => {
-
         beforeEach(() => {
             jest.useFakeTimers();
         });
 
         it("clears search results", () => {
-            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(() => {
-                const actions = store.getActions();
-                const clearAction = actions.find(a => a.type === ActionType.SEARCH_RESULT);
-                expect(clearAction).toBeDefined();
-                expect(clearAction.searchResults).toBeNull();
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(
+                () => {
+                    const actions = store.getActions();
+                    const clearAction = actions.find(a => a.type === ActionType.SEARCH_RESULT);
+                    expect(clearAction).toBeDefined();
+                    expect(clearAction.searchResults).toBeNull();
+                }
+            );
         });
 
         it("delays search by predefined timeout", () => {
             const initialState = new TermItState();
             initialState.searchQuery.searchQuery = "tes";
             store = mockStore(initialState);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(() => {
-                expect(setTimeout).toHaveBeenCalled();
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(
+                () => {
+                    expect(setTimeout).toHaveBeenCalled();
+                }
+            );
         });
 
         it("runs search after delay timeout expires", () => {
             const initialState = new TermItState();
             initialState.searchQuery.searchQuery = "tes";
             store = mockStore(initialState);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(() => {
-                expect(setTimeout).toHaveBeenCalled();
-                jest.runAllTimers();
-                expect(store.getActions().find(a => a.type === ActionType.SEARCH_START)).toBeDefined();
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(
+                () => {
+                    expect(setTimeout).toHaveBeenCalled();
+                    jest.runAllTimers();
+                    expect(store.getActions().find(a => a.type === ActionType.SEARCH_START)).toBeDefined();
+                }
+            );
         });
 
         it("runs search only once when filter is updated multiple times during interval", () => {
@@ -94,20 +98,24 @@ describe("SearchActions", () => {
             initialState.searchQuery.searchQuery = "tes";
             store = mockStore(initialState);
             (store.dispatch as ThunkDispatch)(updateSearchFilter("test"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("tests")) as Promise<any>).then(() => {
-                jest.runAllTimers();
-                const searchActions = store.getActions().filter(a => a.type === ActionType.SEARCH_START);
-                expect(searchActions.length).toEqual(1);
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("tests")) as Promise<any>).then(
+                () => {
+                    jest.runAllTimers();
+                    const searchActions = store.getActions().filter(a => a.type === ActionType.SEARCH_START);
+                    expect(searchActions.length).toEqual(1);
+                }
+            );
         });
 
         it("runs search immediately to clear results when search string is empty", () => {
-            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(() => {
-                const actions = store.getActions();
-                expect(actions.find(a => a.type === ActionType.SEARCH_RESULT)).toBeDefined();
-                expect(actions.find(a => a.type === ActionType.SEARCH_START)).toBeDefined();
-                expect(actions.find(a => a.type === ActionType.SEARCH_FINISH)).toBeDefined();
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(updateSearchFilter("test")) as Promise<any>).then(
+                () => {
+                    const actions = store.getActions();
+                    expect(actions.find(a => a.type === ActionType.SEARCH_RESULT)).toBeDefined();
+                    expect(actions.find(a => a.type === ActionType.SEARCH_START)).toBeDefined();
+                    expect(actions.find(a => a.type === ActionType.SEARCH_FINISH)).toBeDefined();
+                }
+            );
         });
     });
 });

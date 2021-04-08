@@ -14,5 +14,5 @@ export const VocabularyFileDetail: React.FC<RouteComponentProps<any>> = (props: 
     const fileNamespace = parsedFileNamespace ? parsedFileNamespace : vocabularyNamespace;
     const fileIri = VocabularyUtils.create(fileNamespace + normalizedFileName);
 
-    return <ContentDetail iri={fileIri} vocabularyIri={vocabularyIri}/>
+    return <ContentDetail iri={fileIri} vocabularyIri={vocabularyIri} />;
 };

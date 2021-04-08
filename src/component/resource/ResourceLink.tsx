@@ -14,15 +14,11 @@ interface ResourceLinkProps {
 export const ResourceLink = (props: ResourceLinkProps) => {
     const {i18n} = useI18n();
     const iri = VocabularyUtils.create(props.resource.iri);
-    const path = Routing.getTransitionPath(Routes.resourceSummary,
-        {
-            params: new Map([["name", iri.fragment]]),
-            query: new Map([["namespace", iri.namespace!]])
-        });
-    return <AssetLink id={props.id}
-                      asset={props.resource}
-                      path={path}
-                      tooltip={i18n("asset.link.tooltip")}/>;
+    const path = Routing.getTransitionPath(Routes.resourceSummary, {
+        params: new Map([["name", iri.fragment]]),
+        query: new Map([["namespace", iri.namespace!]])
+    });
+    return <AssetLink id={props.id} asset={props.resource} path={path} tooltip={i18n("asset.link.tooltip")} />;
 };
 
 export default ResourceLink;

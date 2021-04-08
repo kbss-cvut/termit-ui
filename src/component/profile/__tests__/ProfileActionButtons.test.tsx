@@ -7,7 +7,6 @@ import {shallow} from "enzyme";
 import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUtil";
 
 describe("ProfileActionButtons", () => {
-
     let showProfileEdit: () => void;
     let navigateToChangePasswordRoute: () => void;
     let edit: boolean;
@@ -20,16 +19,24 @@ describe("ProfileActionButtons", () => {
     });
 
     it("correctly renders component if !edit", () => {
-        const wrapper = shallow(<ProfileActionButtons
-            edit={edit}
-            showProfileEdit={showProfileEdit}
-            navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-            {...intlFunctions()}
-        />);
+        const wrapper = shallow(
+            <ProfileActionButtons
+                edit={edit}
+                showProfileEdit={showProfileEdit}
+                navigateToChangePasswordRoute={navigateToChangePasswordRoute}
+                {...intlFunctions()}
+            />
+        );
         const buttonToolbar = wrapper.find(ButtonToolbar);
         const buttons = buttonToolbar.find(Button);
-        const buttonEditLabel = buttonToolbar.find(Button).findWhere(b => b.key() === "profile.edit").find(GoPencil);
-        const buttonChangePasswordLabel = buttonToolbar.find(Button).findWhere(b => b.key() === "profile.change.password").find(GoKey);
+        const buttonEditLabel = buttonToolbar
+            .find(Button)
+            .findWhere(b => b.key() === "profile.edit")
+            .find(GoPencil);
+        const buttonChangePasswordLabel = buttonToolbar
+            .find(Button)
+            .findWhere(b => b.key() === "profile.change.password")
+            .find(GoKey);
 
         // expect(buttonToolbar.length).toEqual(1);
         expect(buttons.length).toEqual(2);
@@ -38,11 +45,14 @@ describe("ProfileActionButtons", () => {
     });
 
     it("correctly renders component if edit", () => {
-        const wrapper = shallow(<ProfileActionButtons
-            edit={true}
-            showProfileEdit={showProfileEdit}
-            navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-            {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <ProfileActionButtons
+                edit={true}
+                showProfileEdit={showProfileEdit}
+                navigateToChangePasswordRoute={navigateToChangePasswordRoute}
+                {...intlFunctions()}
+            />
+        );
 
         const buttonToolbar = wrapper.find(ButtonToolbar);
         const buttons = buttonToolbar.find(Button);
@@ -52,25 +62,35 @@ describe("ProfileActionButtons", () => {
     });
 
     it("calls navigateToChangePassword route on change password button click", () => {
-        const wrapper = shallow(<ProfileActionButtons
-            edit={edit}
-            showProfileEdit={showProfileEdit}
-            navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-            {...intlFunctions()}
-        />);
+        const wrapper = shallow(
+            <ProfileActionButtons
+                edit={edit}
+                showProfileEdit={showProfileEdit}
+                navigateToChangePasswordRoute={navigateToChangePasswordRoute}
+                {...intlFunctions()}
+            />
+        );
 
-        wrapper.find(Button).findWhere(b => b.key() === "profile.change.password").simulate("click");
+        wrapper
+            .find(Button)
+            .findWhere(b => b.key() === "profile.change.password")
+            .simulate("click");
         expect(navigateToChangePasswordRoute).toHaveBeenCalled();
     });
 
     it("calls showProfileEdit route on edit profile button click", () => {
-        const wrapper = shallow(<ProfileActionButtons
-            edit={edit}
-            showProfileEdit={showProfileEdit}
-            navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-            {...intlFunctions()}
-        />);
-        wrapper.find(Button).findWhere(b => b.key() === "profile.edit").simulate("click");
+        const wrapper = shallow(
+            <ProfileActionButtons
+                edit={edit}
+                showProfileEdit={showProfileEdit}
+                navigateToChangePasswordRoute={navigateToChangePasswordRoute}
+                {...intlFunctions()}
+            />
+        );
+        wrapper
+            .find(Button)
+            .findWhere(b => b.key() === "profile.edit")
+            .simulate("click");
         expect(showProfileEdit).toHaveBeenCalled();
     });
 });

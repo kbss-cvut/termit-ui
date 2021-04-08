@@ -30,19 +30,26 @@ export function mountWithIntl(node: ReactElement<any>, options?: MountRendererPr
     // See https://github.com/airbnb/enzyme/issues/1925#issuecomment-463248558
     const ComponentUnderTest = node.type;
     const properties = node.props;
-    return mount(React.createElement(
-        props => <Provider store={mockStore}>
-            <IntlProvider {...intl}>
-                <ComponentUnderTest {...props} />
-            </IntlProvider>
-        </Provider>, properties), options);
+    return mount(
+        React.createElement(
+            props => (
+                <Provider store={mockStore}>
+                    <IntlProvider {...intl}>
+                        <ComponentUnderTest {...props} />
+                    </IntlProvider>
+                </Provider>
+            ),
+            properties
+        ),
+        options
+    );
 }
 
 /**
  * Utility function to flush all pending promises in an async test.
  */
 export function flushPromises() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         scheduler(resolve, 0);
     });
 }
@@ -53,10 +60,7 @@ export function flushPromises() {
  */
 export function mockWindowSelection(selection: object) {
     window.getSelection = jest.fn().mockImplementation(() => {
-        return Object.assign(
-            {},
-            selection
-        );
+        return Object.assign({}, selection);
     });
 }
 

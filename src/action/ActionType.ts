@@ -8,47 +8,46 @@ import AppNotification from "../model/AppNotification";
 
 export interface AsyncAction extends Action {
     status: AsyncActionStatus;
-    ignoreLoading?: boolean;    // Allows to prevent loading spinner display on async action
+    ignoreLoading?: boolean; // Allows to prevent loading spinner display on async action
 }
 
 export interface FailureAction extends Action {
-    error: ErrorInfo
+    error: ErrorInfo;
 }
 
-export interface AsyncFailureAction extends AsyncAction, FailureAction {
-}
+export interface AsyncFailureAction extends AsyncAction, FailureAction {}
 
 export interface AsyncActionSuccess<T> extends AsyncAction {
     payload: T;
 }
 
 export interface MessageAction extends Action {
-    message: Message
+    message: Message;
 }
 
 export interface SwitchLanguageAction extends Action {
-    language: string
+    language: string;
 }
 
 export interface SelectingTermsAction extends Action {
-    selectedTerms: Term | null
+    selectedTerms: Term | null;
 }
 
 export interface ExecuteQueryAction extends AsyncAction {
-    queryString: string,
-    queryResult: object
+    queryString: string;
+    queryResult: object;
 }
 
 export interface FacetedSearchAction extends AsyncAction {
-    payload: object
+    payload: object;
 }
 
 export interface SearchAction extends Action {
-    searchString: string
+    searchString: string;
 }
 
 export interface SearchResultAction extends Action {
-    searchResults: SearchResult[]
+    searchResults: SearchResult[];
 }
 
 export interface NotificationAction extends Action {
@@ -101,7 +100,7 @@ const ActionType = {
     FETCH_VALIDATION_RESULTS: "FETCH_VALIDATION_RESULTS",
 
     CREATE_VOCABULARY_TERM: "CREATE_VOCABULARY_TERM",
-    FETCH_VOCABULARY_TERMS: "FETCH_VOCABULARY_TERMS",   // Loads initially only root terms
+    FETCH_VOCABULARY_TERMS: "FETCH_VOCABULARY_TERMS", // Loads initially only root terms
     LOAD_DEFAULT_TERMS: "LOAD_DEFAULT_TERMS",
     FETCH_TERM: "FETCH_TERM",
     LOAD_TERM: "LOAD_TERM",

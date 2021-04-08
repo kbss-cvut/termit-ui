@@ -4,24 +4,25 @@ const cs = {
     locale: Constants.LANG.CS.locale,
     messages: {
         "please-wait": "Prosím, čekejte...",
-        "create": "Vytvořit",
-        "save": "Uložit",
-        "cancel": "Zrušit",
+        create: "Vytvořit",
+        save: "Uložit",
+        cancel: "Zrušit",
         "not-implemented": "Zatím není naimplementováno!",
-        "edit": "Upravit",
-        "remove": "Odstranit",
-        "required": "Povinné",
-        "optional": "Nepovinné",
-        "actions": "Akce",
-        "description": "Popis",
-        "submit": "Předložit",
-        "approve": "Schválit",
+        edit: "Upravit",
+        remove: "Odstranit",
+        required: "Povinné",
+        optional: "Nepovinné",
+        actions: "Akce",
+        description: "Popis",
+        submit: "Předložit",
+        approve: "Schválit",
         "basic-information": "Základní informace",
         "created-info": "Vytvořeno uživatelem {author} dne {date}",
         "select.placeholder": "Vyberte...",
 
         "connection.error": "Nepodařilo se navázat spojení se serverem.",
-        "ajax.unparseable-error": "Akce selhala. Server odpověděl neznámou chybou. Více informací lze nalézt v konzoli prohlížeče.",
+        "ajax.unparseable-error":
+            "Akce selhala. Server odpověděl neznámou chybou. Více informací lze nalézt v konzoli prohlížeče.",
         "ajax.failed": "Nepodařilo se načíst data ze serveru.",
 
         "footer.copyright": "KBSS FEL ČVUT v Praze",
@@ -90,20 +91,17 @@ const cs = {
         "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
         "dashboard.widget.assetList.empty": "Pro tuto část nebyly nalezeny žádné záznamy.",
-        "dashboard.widget.assetList.lastEditMessage": "{operation, select, " +
-            "edit {Upraven}" +
-            "other {Vytvořen}" +
-            "} uživatelem {user} {when}.",
-        "dashboard.widget.assetList.lastEditMessageByYou": "{operation, select, " +
-            "edit {Upraven}" +
-            "other {Vytvořen}" +
-            "} Vámi {when}.",
+        "dashboard.widget.assetList.lastEditMessage":
+            "{operation, select, " + "edit {Upraven}" + "other {Vytvořen}" + "} uživatelem {user} {when}.",
+        "dashboard.widget.assetList.lastEditMessageByYou":
+            "{operation, select, " + "edit {Upraven}" + "other {Vytvořen}" + "} Vámi {when}.",
         "dashboard.widget.lastEditedAssets.title": "Naposledy upravené záznamy",
         "dashboard.widget.lastEditedAssets.all.title": "Všechny",
         "dashboard.widget.lastEditedAssets.mine.title": "Moje",
         "dashboard.widget.lastEditedAssets.lastEditDate": "Naposledy upraven/vytvořen",
         "dashboard.widget.typeFrequency.title": "Počet pojmů ve slovníku",
-        "dashboard.widget.alert.news": "TermIt má novou verzi {version}. Podívejte se, co je nového, klikem na verzi v pravém dolním rohu aplikace.",
+        "dashboard.widget.alert.news":
+            "TermIt má novou verzi {version}. Podívejte se, co je nového, klikem na verzi v pravém dolním rohu aplikace.",
         "dashboard.widget.donut.total-terms": "Celkem pojmů",
         "dashboard.widget.commentList.empty": "Zde uvidíte své poslední komentáře a reakce na ně.",
         "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
@@ -122,9 +120,11 @@ const cs = {
         "administration.users.username": "Uživatelské jméno",
         "administration.users.status": "Status",
         "administration.users.status.locked": "Zablokovaný",
-        "administration.users.status.locked.help": "Uživatelský účet byl zablokován z důvodu příliš mnoha neúspěšných pokusů o přihlášení. Uživatel se nemůže znovu přihlásit, dokud mu administrátor nenastaví nové heslo.",
+        "administration.users.status.locked.help":
+            "Uživatelský účet byl zablokován z důvodu příliš mnoha neúspěšných pokusů o přihlášení. Uživatel se nemůže znovu přihlásit, dokud mu administrátor nenastaví nové heslo.",
         "administration.users.status.disabled": "Neaktivní",
-        "administration.users.status.disabled.help": "Uživatelský účet byl deaktivován administrátorem a nelze se pod ním přihlásit.",
+        "administration.users.status.disabled.help":
+            "Uživatelský účet byl deaktivován administrátorem a nelze se pod ním přihlásit.",
         "administration.users.status.active": "Aktivní",
         "administration.users.status.active.help": "Uživatelský účet je aktivní a lze se pod ním normálně přihlásit.",
         "administration.users.status.action.enable": "Aktivovat",
@@ -142,15 +142,16 @@ const cs = {
         "administration.users.unlock.passwordConfirm": "Potvrzení nového hesla",
         "administration.users.action.changerole.tooltip": "Změnit roli vybraného uživatele",
         "administration.users.action.changerole": "Změnit roli",
-        "administration.users.roles.edit.title": "Role uživatele \"{name}\"",
+        "administration.users.roles.edit.title": 'Role uživatele "{name}"',
         "administration.users.role": "Role",
         "administration.users.create": "Přidat uživatele",
         "administration.users.create.tooltip": "Umožňuje vytvořit nový uživatelský účet",
         "administration.users.create.title": "Nový uživatel",
-        "administration.users.create.created": "Uživatel \"{name}\" úspěšně vytvořen.",
+        "administration.users.create.created": 'Uživatel "{name}" úspěšně vytvořen.',
         "administration.users.you": "Toto je Váš účet",
         "administration.users.types.admin": "Tento uživatel je administrátor",
-        "administration.users.types.oauth2": "Tento účet je externí a jeho uživatel se přihlašuje přes OAuth2 autentizační službu",
+        "administration.users.types.oauth2":
+            "Tento účet je externí a jeho uživatel se přihlašuje přes OAuth2 autentizační službu",
         "administration.maintenance.title": "Údržba",
         "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
         "administration.maintenance.invalidateCaches.tooltip": "Vyprázdnit interní cache systému",
@@ -158,7 +159,8 @@ const cs = {
 
         "asset.link.tooltip": "Zobrazit detail záznamu",
         "asset.iri": "Identifikátor",
-        "asset.create.iri.help": "Identifikátor záznamu ve formě Internationalized Resource Identifier (IRI). Identifikátor " +
+        "asset.create.iri.help":
+            "Identifikátor záznamu ve formě Internationalized Resource Identifier (IRI). Identifikátor " +
             "bude vygenerován automaticky na základě názvu. Můžete ho však též zadat ručně.",
         "asset.label": "Název",
         "asset.label.placeholder": "Zadejte název",
@@ -168,15 +170,16 @@ const cs = {
         "asset.create.showAdvancedSection": "Zobrazit pokročilé možnosti",
         "asset.create.hideAdvancedSection": "Skrýt pokročilé možnosti",
         "asset.remove.tooltip": "Odstranit tento záznam",
-        "asset.remove.dialog.title": "Odstranit {type} \"{label}\"?",
-        "asset.remove.dialog.text": "Určitě chcete odstranit {type} \"{label}\"?",
+        "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
+        "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
 
         "document.remove.tooltip.disabled": "Odstranit dokument je možné po odstranění všech jeho souborů.",
 
         "vocabulary.management": "Správa slovníků",
         "vocabulary.management.vocabularies": "Slovníky",
         "vocabulary.management.empty": "Žádné slovníky nenalezeny. Vytvořte nějaký...",
-        "vocabulary.management.startTextAnalysis.title": "Spustit textovou analýzu definic všech termínů ve všech slovnících",
+        "vocabulary.management.startTextAnalysis.title":
+            "Spustit textovou analýzu definic všech termínů ve všech slovnících",
         "vocabulary.management.new": "Nový slovník",
         "vocabulary.vocabularies.create.tooltip": "Vytvořit nový slovník",
         "vocabulary.vocabularies.select.placeholder": "Začněte psát pro filtrování slovníků dle názvu",
@@ -184,7 +187,8 @@ const cs = {
         "vocabulary.create.title": "Nový slovník",
         "vocabulary.create.submit": "Vytvořit",
         "vocabulary.create.files": "Soubory",
-        "vocabulary.create.files.help": "Nepovinné. Můžete připojit soubory (např. texty zákonů), ze kterých bude slovník vycházet.",
+        "vocabulary.create.files.help":
+            "Nepovinné. Můžete připojit soubory (např. texty zákonů), ze kterých bude slovník vycházet.",
         "vocabulary.comment": "Popis",
         "vocabulary.summary.title": "{name} - přehled",
         "vocabulary.summary.gotodetail.label": "Zobrazit pojmy v tomto slovníku",
@@ -208,8 +212,10 @@ const cs = {
         "vocabulary.detail.imports": "Importuje",
         "vocabulary.detail.imports.edit": "Importuje slovníky",
         "vocabulary.detail.document": "Dokument",
-        "vocabulary.text-analysis.finished.message": "Textová analýza definic pojmů v tomto slovníku úspěšně dokončena.",
-        "vocabulary.all.text-analysis.invoke.message": "Textová analýza definic pojmů ve všech slovnících úspěšně spuštěna.",
+        "vocabulary.text-analysis.finished.message":
+            "Textová analýza definic pojmů v tomto slovníku úspěšně dokončena.",
+        "vocabulary.all.text-analysis.invoke.message":
+            "Textová analýza definic pojmů ve všech slovnících úspěšně spuštěna.",
         "vocabulary.termchanges.creations": "Vytvořené pojmy",
         "vocabulary.termchanges.updates": "Aktualizované pojmy",
         "vocabulary.termchanges.termcount": "Počet změněných pojmů",
@@ -264,26 +270,31 @@ const cs = {
 
         "term.language.selector.item": "Zobrazit data pojmu v jazyce: {nativeLang} ({lang})",
         "term.language.add.placeholder": "Vyberte...",
-        "term.iri.help": "Identifikátor pojmu ve formě Internationalized Resource Identifier (IRI). Je " +
+        "term.iri.help":
+            "Identifikátor pojmu ve formě Internationalized Resource Identifier (IRI). Je " +
             " vygenerován automaticky na základě názvu, ale může být ručně upraven. Jedná se o možnost pro pokročilé uživatele." +
             "Identifikátor může obsahovat pouze " +
-            "alfanumerické znaky a pomlčky (\"-\"). Lomítka (\"/\") se používají pouze k oddělení hierarchických komponent " +
+            'alfanumerické znaky a pomlčky ("-"). Lomítka ("/") se používají pouze k oddělení hierarchických komponent ' +
             "identifikátoru.",
-        "term.label.help": "(Povinné) označení, které daný pojem/význam jednoznačně v rámci slovníku identifikuje. " +
+        "term.label.help":
+            "(Povinné) označení, které daný pojem/význam jednoznačně v rámci slovníku identifikuje. " +
             "Jako názvy pojmů se nepoužívají zkratky ('daň z přidané hodnoty' místo 'DPH'). První písmeno názvu pojmu " +
             "je velké, ostatní písmena jsou malá. Název pojmů není vhodné měnit, jeho změna může ovlivnit význam dat, " +
             "která jsou tímto pojmem popsána.",
-        "term.definition.help": "(Nepovinný) text popisující význam konceptu. Definice jednoznačně popisuje význam pojmu. " +
+        "term.definition.help":
+            "(Nepovinný) text popisující význam konceptu. Definice jednoznačně popisuje význam pojmu. " +
             "Je-li pojem vázán na dokument, je definice přímou citací z daného dokumentu. Definice se používá pouze pro " +
             "plné vymezení významu pojmu (např. 'budova' ve slovníku Zákona č. 256/2013 Sb. by měla definici " +
             "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
             "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
             "z více zdrojů.",
         "term.comment.help": "(Nepovinný) nedefiniční text upřesňující význam pojmu.",
-        "term.parent.help": "(Nepovinný) pojem s širším významem. Slouží k zachycení vazby na obecnější pojem " +
+        "term.parent.help":
+            "(Nepovinný) pojem s širším významem. Slouží k zachycení vazby na obecnější pojem " +
             "(např. 'Kostel' -> 'Budova'), k přiřazení pojmu jeho typu (např. 'Kostel sv. Ludmily na Chvalech' -> 'Kostel'), " +
             "nebo k vyjádření části celku (např. 'Klika' -> 'Dveře')",
-        "term.types.help": "(Nepovinný) charakter pojmu. Rozlišujeme typy a individuály - Typem je například " +
+        "term.types.help":
+            "(Nepovinný) charakter pojmu. Rozlišujeme typy a individuály - Typem je například " +
             "'Městská část', individuálem pak 'Střešovice'. Individuály jsou dále rozděleny na 'Objekty', " +
             "'Vlastnosti', 'Vztahy' a 'Události', typy analogicky na 'Typy objektů', 'Typy vlastností', " +
             "'Typy vztahů' a 'Typy událostí'. 'Objekty' (např. konkrétní městské části, auta, lidé, dokumenty) " +
@@ -295,7 +306,8 @@ const cs = {
             "'Městská část', nebo 'Auto'. 'Barva vlasů' by byl 'Typ vlastnosti'. 'Typem vztahu' je obecně " +
             "'Manželství' a je závislé na dvou 'Typech objektů'. Příkladem 'Typu události' jsou 'Olympijské hry'.  " +
             "V případě, že si nejste jistí, ponechte pole prázdné.",
-        "term.source.help": "(Nepovinný) odkaz na původ definice pojmu. Odkazuje na konkrétní místo v textu dokumentu, " +
+        "term.source.help":
+            "(Nepovinný) odkaz na původ definice pojmu. Odkazuje na konkrétní místo v textu dokumentu, " +
             "například na kapitolu knihy, či konkrétní odstavec v zákoně, např. 'Písmeno b) paragrafu 2 " +
             "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
             "je zdroj vyplňován automaticky.",
@@ -312,24 +324,27 @@ const cs = {
         "term.metadata.status": "Stav pojmu",
         "term.metadata.source": "Zdroj",
         "term.metadata.altLabels.label": "Synonyma",
-        "term.metadata.altLabels.placeholder": "Zadejte nové synonymum a stiskněte tlačítko \"Přidat\"",
+        "term.metadata.altLabels.placeholder": 'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
         "term.metadata.altLabels.placeholder.text": "Přidat",
         "term.metadata.altLabels.remove": "Odebrat synonymum",
         "term.metadata.altLabels.remove.text": "Odebrat",
-        "term.metadata.altLabels.help": "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
+        "term.metadata.altLabels.help":
+            "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
             "s názvem 'Adresa organizace' může mít synonymum 'Adresa', které se však použije jen v určitém kontextu " +
             "(např. ve formuláři, ve kterém se vyplňují informace o organizaci). ",
         "term.metadata.hiddenLabels.label": "Vyhledávací texty",
-        "term.metadata.hiddenLabels.placeholder": "Zadejte nový vyhledávací text a stiskněte tlačítko \"Přidat\"",
+        "term.metadata.hiddenLabels.placeholder": 'Zadejte nový vyhledávací text a stiskněte tlačítko "Přidat"',
         "term.metadata.hiddenLabels.placeholder.text": "Přidat",
         "term.metadata.hiddenLabels.remove": "Odebrat vyhledávací text",
         "term.metadata.hiddenLabels.remove.text": "Odebrat",
-        "term.metadata.hiddenLabels.help": "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
+        "term.metadata.hiddenLabels.help":
+            "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
             " slouží zejména pro vyhledávání. Nemusí se jednat (ani kontextuální) synonyma k názvu pojmu. Např. " +
             "pojem s názvem 'Kopaná' může mít vyhledávací text 'fočus'. ",
         "term.updated.message": "Pojem úspěšně aktualizován.",
-        "term.metadata.labelExists.message": "Pojem s názvem \"{label}\" již v tomto slovníku existuje",
-        "term.metadata.multipleSources.message": "Pojem má více zdrojů, po uložení pojmu bude pouze aktuálně vyplněný zdroj a ostatní budou smazány",
+        "term.metadata.labelExists.message": 'Pojem s názvem "{label}" již v tomto slovníku existuje',
+        "term.metadata.multipleSources.message":
+            "Pojem má více zdrojů, po uložení pojmu bude pouze aktuálně vyplněný zdroj a ostatní budou smazány",
         "term.metadata.source.add.placeholder": "Nový zdroj pojmu",
         "term.metadata.source.add.placeholder.text": "Přidat",
         "term.metadata.source.remove.title": "Odebrat zdroj",
@@ -340,12 +355,16 @@ const cs = {
         "term.metadata.assignments.assignment": "Anotován tímto pojmem?",
         "term.metadata.assignments.assignment.assigned": "Zdroj je anotován pojmem",
         "term.metadata.assignments.assignment.not.assigned": "Zdroj pojmem anotován není",
-        "term.metadata.assignments.assignment.help": "Anotace zdroje pojmem reprezentuje situaci kdy je pojem přiřazen zdroji jako takovému.",
+        "term.metadata.assignments.assignment.help":
+            "Anotace zdroje pojmem reprezentuje situaci kdy je pojem přiřazen zdroji jako takovému.",
         "term.metadata.assignments.occurrence": "Výskyt",
-        "term.metadata.assignments.occurrence.help": "Výskyt pojmu popisuje situaci, kdy je výskyt pojmu lokalizován v obsahu datového zdroje (obvykle v textu).",
+        "term.metadata.assignments.occurrence.help":
+            "Výskyt pojmu popisuje situaci, kdy je výskyt pojmu lokalizován v obsahu datového zdroje (obvykle v textu).",
         "term.metadata.assignments.suggestedOccurrence": "Navržený výskyt",
-        "term.metadata.assignments.suggestedOccurrence.help": "Navržený výskyt reprezentuje výskyt pojmu navržený systémem, např. na základě automatizované analýzy obsahu.",
-        "term.metadata.assignments.count.tooltip": "Pojem se v tomto zdroji vyskytuje {count, plural, one {jednou} other {# -krát}}",
+        "term.metadata.assignments.suggestedOccurrence.help":
+            "Navržený výskyt reprezentuje výskyt pojmu navržený systémem, např. na základě automatizované analýzy obsahu.",
+        "term.metadata.assignments.count.tooltip":
+            "Pojem se v tomto zdroji vyskytuje {count, plural, one {jednou} other {# -krát}}",
         "term.metadata.assignments.count.zero.tooltip": "Pojem se v tomto zdroji nevyskytuje",
         "term.metadata.related.title": "Související pojmy",
         "term.metadata.vocabulary.tooltip": "Slovník, do kterého tento pojem patří",
@@ -373,9 +392,11 @@ const cs = {
         "glossary.new": "Nový pojem",
         "glossary.select.placeholder": "Začněte psát pro filtrování pojmů",
         "glossary.excludeImported": "Včetně importů",
-        "glossary.excludeImported.help": "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte",
+        "glossary.excludeImported.help":
+            "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte",
         "glossary.includeImported": "Včetně importů",
-        "glossary.includeImported.help": "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete",
+        "glossary.includeImported.help":
+            "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete",
         "glossary.importedIncluded": "včetně importovaných",
         "glossary.importedExcluded": "bez importovaných",
         "glossary.filter-draft": "Rozpracované",
@@ -405,7 +426,7 @@ const cs = {
         "file.metadata.startTextAnalysis": "Spustit textovou analýzu",
         "file.metadata.startTextAnalysis.text": "Analyzovat",
         "file.metadata.startTextAnalysis.vocabularySelect.title": "Vyberte slovník pro automatickou analýzu textu",
-        "file.content.upload.success": "Soubor \"{fileName}\" úspěšně nahrán na server.",
+        "file.content.upload.success": 'Soubor "{fileName}" úspěšně nahrán na server.',
         "file.annotate.selectVocabulary": "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
 
         "dataset.license": "Licence",
@@ -416,7 +437,8 @@ const cs = {
         "statistics.user.count": "Počet uživatelů",
         "statistics.notFilled": "Nevyplněno",
         "statistics.types.frequency": "Typy pojmů",
-        "statistics.types.frequency.empty": "Nemáte vytvořen žádný slovník, nebo vaše slovníky neobsahují žádné pojmy. Obojí si můžete vytvořit pomocí akcí v levém liště.",
+        "statistics.types.frequency.empty":
+            "Nemáte vytvořen žádný slovník, nebo vaše slovníky neobsahují žádné pojmy. Obojí si můžete vytvořit pomocí akcí v levém liště.",
 
         "fullscreen.exit": "Vrátit zobrazení do okna",
         "fullscreen.enter": "Zobrazit na celou obrazovku",
@@ -429,7 +451,8 @@ const cs = {
         "search.tab.facets": "Facetové vyhledávání",
         "search.reset": "Vymazat vyhledávání",
         "search.results.title": "Výsledky vyhledávání „{searchString}“",
-        "search.results.countInfo": "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}}.",
+        "search.results.countInfo":
+            "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}}.",
         "search.results.table.label": "Název",
         "search.results.table.label.tooltip": "Zobrazit detail objektu",
         "search.results.table.match": "Nalezená shoda",
@@ -460,7 +483,7 @@ const cs = {
         "change-password.updated.message": "Heslo bylo úspěšně změněno",
         "change-password.passwords.differ.tooltip": "Staré a nové heslo se musí lišit.",
 
-        "annotator": "Anotátor",
+        annotator: "Anotátor",
         "annotator.content.loading": "Načítám obsah souboru...",
         "annotator.vocabulary": "Používá pojmy ze slovníku",
         "annotator.selectionPurpose.dialog.title": "K čemu bude sloužit vybraný text?",
@@ -470,13 +493,13 @@ const cs = {
         "annotator.createTerm.selectDefinition": "Vybrat definici",
         "annotator.createTerm.selectDefinition.tooltip": "Skrýt tento dialog a vybrat definici pojmu v textu",
         "annotator.createTerm.selectDefinition.message": "Vyberte definici nového pojmu v textu.",
-        "annotator.setTermDefinitionSource.success": "Zdroj definice pojmu \"{term}\" nastaven.",
-        "annotator.setTermDefinitionSource.error.exists": "Pojem \"{term}\" již má přiřazen zdroj definice.",
-        "annotator.setTermDefinition.title": "Výběr definice pojmu \"{term}\"",
+        "annotator.setTermDefinitionSource.success": 'Zdroj definice pojmu "{term}" nastaven.',
+        "annotator.setTermDefinitionSource.error.exists": 'Pojem "{term}" již má přiřazen zdroj definice.',
+        "annotator.setTermDefinition.title": 'Výběr definice pojmu "{term}"',
         "annotator.findAnnotation.error": "Anotaci nelze zobrazit.",
 
         "annotation.form.suggested-occurrence.message": "Fráze není přiřazena žádnemu pojmu.",
-        "annotation.form.invalid-occurrence.message": "Pojem \"{term}\" nebyl nalezen v slovníku.",
+        "annotation.form.invalid-occurrence.message": 'Pojem "{term}" nebyl nalezen v slovníku.',
         "annotation.form.assigned-occurrence.termInfoLabel": "Informace o pojmu:",
         "annotation.term.assigned-occurrence.termLabel": "Přiřazený pojem:",
         "annotation.term.occurrence.scoreLabel": "Skóre:",
@@ -490,7 +513,8 @@ const cs = {
         "annotation.definition.title": "Zdroj definice pojmu",
         "annotation.definition.term": "Pojem:",
         "annotation.definition.definition": "Definice:",
-        "annotation.definition.exists.message": "Pojem \"{term}\" již definici má. Níže můžete novou definici s původní porovnat a upravit ji.",
+        "annotation.definition.exists.message":
+            'Pojem "{term}" již definici má. Níže můžete novou definici s původní porovnat a upravit ji.',
         "annotation.definition.original": "Původní definice",
         "annotation.definition.new": "Nová definice",
 
@@ -499,17 +523,21 @@ const cs = {
         "annotator.legend.proposed.loading": "Navrhovaná anotace se načítá",
         "annotator.legend.proposed.loading.tooltip": "Annotace navrhovaná službou textové analýzy se načítá.",
         "annotator.legend.confirmed.unknown.term": "Výskyt neznámého pojmu",
-        "annotator.legend.confirmed.unknown.term.tooltip": "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak nebyl přiřazen konkrétnímu pojmu.",
+        "annotator.legend.confirmed.unknown.term.tooltip":
+            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak nebyl přiřazen konkrétnímu pojmu.",
         "annotator.legend.confirmed.existing.term": "Výskyt existujícího pojmu",
         "annotator.legend.confirmed.existing.term.tooltip": "Výskyt pojmu vytvořený či akceptován uživatelem.",
         "annotator.legend.confirmed.missing.term": "Výskyt chybějícího pojmu",
-        "annotator.legend.confirmed.missing.term.tooltip": "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak přislušný pojem nebyl nalezen.",
+        "annotator.legend.confirmed.missing.term.tooltip":
+            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak přislušný pojem nebyl nalezen.",
         "annotator.legend.proposed.unknown.term": "Navrhovaný výskyt neznámého pojmu",
-        "annotator.legend.proposed.unknown.term.tooltip": "Výskyt pojmu byl identifikován službou textové analýzy, avšak nebyl přiřazen konkrétnímu pojmu.",
+        "annotator.legend.proposed.unknown.term.tooltip":
+            "Výskyt pojmu byl identifikován službou textové analýzy, avšak nebyl přiřazen konkrétnímu pojmu.",
         "annotator.legend.proposed.existing.term": "Navrhovaný výskyt existujícího pojmu",
         "annotator.legend.proposed.existing.term.tooltip": "Výskyt pojmu identifikovaný službou textové analýzy.",
         "annotator.legend.proposed.missing.term": "Navrhovaný výskyt chybějícího pojmu",
-        "annotator.legend.proposed.missing.term.tooltip": "Výskyt pojmu byl identifikován službou textové analýzy, avšak přislušný pojem nebyl nalezen.",
+        "annotator.legend.proposed.missing.term.tooltip":
+            "Výskyt pojmu byl identifikován službou textové analýzy, avšak přislušný pojem nebyl nalezen.",
         "annotator.legend.definition.pending": "Definice neznámého pojmu",
         "annotator.legend.definition.pending.tooltip": "Definice, která zatím nebyla přiřazena žádnému pojmu.",
         "annotator.legend.definition": "Definice pojmu",
@@ -548,7 +576,8 @@ const cs = {
         "log-viewer.error": "Chyba",
         "log-viewer.clear": "Vyčistit",
 
-        "error.vocabulary.update.imports.danglingTermReferences": "Nelze odstranit import slovníku, neboť stále existují vazby mezi pojmy z tohoto a importovaného slovníku (či ze slovníků, které importuje).",
+        "error.vocabulary.update.imports.danglingTermReferences":
+            "Nelze odstranit import slovníku, neboť stále existují vazby mezi pojmy z tohoto a importovaného slovníku (či ze slovníků, které importuje).",
 
         "history.label": "Historie",
         "history.loading": "Načítám historii...",
@@ -566,7 +595,8 @@ const cs = {
         "tooltip.copy-iri": "Zkopírovat IRI",
         "tooltip.copied": "Zkopírováno!",
 
-        "table.filter.text.placeholder": "Filtrovat {count, plural, one {# záznam} few {# záznamy} other {# záznamů}}...",
+        "table.filter.text.placeholder":
+            "Filtrovat {count, plural, one {# záznam} few {# záznamy} other {# záznamů}}...",
         "table.filter.select.all": "Vše",
         "table.sort.tooltip": "Seřadit záznamy",
         "table.paging.first.tooltip": "První strana",

@@ -29,33 +29,43 @@ export const Register: React.FC<RegisterProps> = props => {
 
     const onRegister = (userData: UserAccountData) => props.register(userData);
     const onCancel = () => Routing.transitionTo(Routes.login);
-    return <PublicLayout title={props.i18n("register.title")}>
-        <WindowTitle title={props.i18n("register.title")}/>
-        <Card className="modal-panel">
-            <CardHeader className="text-center pb-0 border-bottom-0">
-                <h1>{Constants.APP_NAME}</h1>
-                <div>{props.i18n("register.subtitle")}</div>
-            </CardHeader>
-            <CardBody>
-                <RegistrationForm register={onRegister} cancel={onCancel} loading={props.loading}/>
-                <div className="text-center">
-                    <FormattedMessage id="register.login.label" values={{
-                        a: (chunks: any) => <Link id="register-login" to={Routes.login.link()}
-                                                  className="bold">{chunks}</Link>
-                    }}
-                    />
-                </div>
-            </CardBody>
-        </Card>
-    </PublicLayout>;
+    return (
+        <PublicLayout title={props.i18n("register.title")}>
+            <WindowTitle title={props.i18n("register.title")} />
+            <Card className="modal-panel">
+                <CardHeader className="text-center pb-0 border-bottom-0">
+                    <h1>{Constants.APP_NAME}</h1>
+                    <div>{props.i18n("register.subtitle")}</div>
+                </CardHeader>
+                <CardBody>
+                    <RegistrationForm register={onRegister} cancel={onCancel} loading={props.loading} />
+                    <div className="text-center">
+                        <FormattedMessage
+                            id="register.login.label"
+                            values={{
+                                a: (chunks: any) => (
+                                    <Link id="register-login" to={Routes.login.link()} className="bold">
+                                        {chunks}
+                                    </Link>
+                                )
+                            }}
+                        />
+                    </div>
+                </CardBody>
+            </Card>
+        </PublicLayout>
+    );
 };
 
-export default connect((state: TermItState) => {
-    return {
-        loading: state.loading
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        register: (user: UserAccountData) => dispatch(register(user))
-    };
-})(injectIntl(withI18n(Register)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            loading: state.loading
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            register: (user: UserAccountData) => dispatch(register(user))
+        };
+    }
+)(injectIntl(withI18n(Register)));

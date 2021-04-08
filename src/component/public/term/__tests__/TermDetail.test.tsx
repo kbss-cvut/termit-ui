@@ -14,7 +14,6 @@ jest.mock("../TermMetadata", () => () => <div>Term metadata</div>);
 jest.mock("../../../misc/HeaderWithActions", () => () => <div>Header</div>);
 
 describe("TermDetail", () => {
-
     const normalizedTermName = "test-term";
     const normalizedVocabName = "test-vocabulary";
 
@@ -53,10 +52,17 @@ describe("TermDetail", () => {
 
     it("resolves language when provided term changes", () => {
         const lang = "cs";
-        const wrapper = mountWithIntl(<TermDetail configuredLanguage={lang} term={null}
-                                                  vocabulary={vocabulary}
-                                                  loadVocabulary={loadVocabulary}
-                                                  loadTerm={loadTerm} {...routingProps} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <TermDetail
+                configuredLanguage={lang}
+                term={null}
+                vocabulary={vocabulary}
+                loadVocabulary={loadVocabulary}
+                loadTerm={loadTerm}
+                {...routingProps}
+                {...intlFunctions()}
+            />
+        );
         const term = Generator.generateTerm(vocabulary.iri);
         delete term.label[Constants.DEFAULT_LANGUAGE];
         term.label[lang] = "test label";

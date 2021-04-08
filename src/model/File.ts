@@ -1,5 +1,5 @@
 import OntologicalVocabulary from "../util/VocabularyUtils";
-import Resource, {ResourceData} from "./Resource"
+import Resource, {ResourceData} from "./Resource";
 import Document, {DocumentData} from "./Document";
 import VocabularyUtils from "../util/VocabularyUtils";
 
@@ -16,7 +16,7 @@ const ctx = {
 export const OWN_CONTEXT = ctx;
 
 export interface FileData extends ResourceData {
-    origin?: string,
+    origin?: string;
     content?: string;
     owner?: DocumentData;
 }

@@ -12,9 +12,9 @@ jest.mock("xpath-range", () => ({
 }));
 
 describe("Html dom utils", () => {
-
     const htmlContent = "<html lang='en'><head><title>Test</title></head><body/></html>";
-    const sampleDivContent = "before div<div>before span<span>sample text pointer in span</span>after span</div>after div";
+    const sampleDivContent =
+        "before div<div>before span<span>sample text pointer in span</span>after span</div>after div";
     const surroundingElementHtml = "<span>text pointer</span>";
     const xpathTextPointerRange: XPathRange = {
         start: "/div[1]/span[1]/text()[1]",
@@ -33,15 +33,14 @@ describe("Html dom utils", () => {
         window.getSelection = jest.fn().mockImplementation(() => {
             return {
                 isCollapsed: true,
-                rangeCount: 1,
-
+                rangeCount: 1
             };
         });
         cloneContents = jest.fn().mockImplementation(() => {
-            return {childNodes: [sampleTextNode]}
+            return {childNodes: [sampleTextNode]};
         });
         getRangeAt = jest.fn().mockImplementation(() => {
-            return {cloneContents}
+            return {cloneContents};
         });
         textPointerRange = {
             extractContents: jest.fn(),
@@ -57,7 +56,6 @@ describe("Html dom utils", () => {
         doc.body.appendChild(sampleDiv);
     });
 
-
     describe("hasSelection", () => {
         it("returns true for a valid selection range", () => {
             mockWindowSelection({isCollapsed: false, rangeCount: 1, getRangeAt});
@@ -71,9 +69,7 @@ describe("Html dom utils", () => {
     });
 
     describe("get selection range", () => {
-
         it("returns range for a text node", () => {
-
             let ret: Range | null;
 
             mockWindowSelection({
@@ -88,16 +84,13 @@ describe("Html dom utils", () => {
             expect(ret!.cloneContents).toEqual(cloneContents);
         });
 
-
         it("returns null if nothing is selected", () => {
-
             let ret: Range | null;
 
             mockWindowSelection({isCollapsed: true});
             ret = HtmlDomUtils.getSelectionRange();
             expect(window.getSelection).toHaveBeenCalledTimes(1);
             expect(ret).toEqual(null);
-
 
             mockWindowSelection({isCollapsed: false, rangeCount: 0, getRangeAt: () => null});
             ret = HtmlDomUtils.getSelectionRange();
@@ -107,9 +100,7 @@ describe("Html dom utils", () => {
     });
 
     describe("replace range", () => {
-
         it("returns clone of input element", () => {
-
             let ret: HTMLElement | null;
             (fromRange as jest.Mock).mockImplementation(() => {
                 return xpathTextPointerRange;
@@ -121,13 +112,14 @@ describe("Html dom utils", () => {
             ret = HtmlDomUtils.replaceRange(sampleDiv, textPointerRange, surroundingElementHtml);
             expect(fromRange).toHaveBeenCalledWith(expect.any(Object), sampleDiv);
             expect(toRange).toHaveBeenCalledWith(
-                xpathTextPointerRange.start, xpathTextPointerRange.startOffset,
-                xpathTextPointerRange.end, xpathTextPointerRange.endOffset,
+                xpathTextPointerRange.start,
+                xpathTextPointerRange.startOffset,
+                xpathTextPointerRange.end,
+                xpathTextPointerRange.endOffset,
                 expect.any(Object)
             );
             expect(ret === sampleDiv).toBe(false);
-            expect(ret.children[0].childNodes[0].nodeValue)
-                .toEqual(sampleDiv.children[0].childNodes[0].nodeValue);
+            expect(ret.children[0].childNodes[0].nodeValue).toEqual(sampleDiv.children[0].childNodes[0].nodeValue);
         });
     });
 
@@ -168,7 +160,9 @@ describe("Html dom utils", () => {
 
     describe("containsBlockElement", () => {
         it("returns false for simple range in text", () => {
-            expect(HtmlDomUtils.containsBlockElement(doc.body.children[0].children[0].childNodes[0].childNodes)).toBeFalsy();
+            expect(
+                HtmlDomUtils.containsBlockElement(doc.body.children[0].children[0].childNodes[0].childNodes)
+            ).toBeFalsy();
         });
 
         it("returns false for range containing a span", () => {
@@ -223,17 +217,25 @@ describe("Html dom utils", () => {
     });
 
     describe("findAnnotationElementBySelector", () => {
-
-        const html = "<html lang='en'><head><title>Test</title></head><body><div id='annotator'>" +
+        const html =
+            "<html lang='en'><head><title>Test</title></head><body><div id='annotator'>" +
             "text before" +
-            "<span about=\"_:123\" property=\"" + VocabularyUtils.IS_OCCURRENCE_OF_TERM + "\"\n" +
-            "                  resource=\"http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29\"\n" +
-            "                  typeof=\"" + VocabularyUtils.TERM_OCCURRENCE + "\">annotated-text</span>" +
+            '<span about="_:123" property="' +
+            VocabularyUtils.IS_OCCURRENCE_OF_TERM +
+            '"\n' +
+            '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+            '                  typeof="' +
+            VocabularyUtils.TERM_OCCURRENCE +
+            '">annotated-text</span>' +
             "\n after annotation span" +
-            "            <span about=\"_:111\" \n>not-annotation</span>" +
-            "            <div about='_:117' property=\"" + VocabularyUtils.IS_DEFINITION_OF_TERM + "\"\n" +
-            "                  resource=\"http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29\"\n" +
-            "                  typeof=\"" + VocabularyUtils.DEFINITION + "\">definition-text separated by spaces</div>text after" +
+            '            <span about="_:111" \n>not-annotation</span>' +
+            "            <div about='_:117' property=\"" +
+            VocabularyUtils.IS_DEFINITION_OF_TERM +
+            '"\n' +
+            '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+            '                  typeof="' +
+            VocabularyUtils.DEFINITION +
+            '">definition-text separated by spaces</div>text after' +
             "</div></body></html>";
 
         beforeEach(() => {
@@ -286,8 +288,9 @@ describe("Html dom utils", () => {
                 exactMatch: "unknown-text",
                 types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
             };
-            expect(() => HtmlDomUtils.findAnnotationElementBySelector(doc, selector))
-                .toThrowError(new Error(`Element with exact match \'${selector.exactMatch}\' not found in document.`));
+            expect(() => HtmlDomUtils.findAnnotationElementBySelector(doc, selector)).toThrowError(
+                new Error(`Element with exact match \'${selector.exactMatch}\' not found in document.`)
+            );
         });
 
         it("finds definition with loose space-less match in case no other match exists", () => {

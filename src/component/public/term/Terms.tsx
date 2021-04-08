@@ -25,7 +25,6 @@ import {getLocalized} from "../../../model/MultilingualString";
 import {getShortLocale} from "../../../util/IntlUtil";
 import "../../term/Terms.scss";
 
-
 interface GlossaryTermsProps extends HasI18n {
     vocabulary?: Vocabulary;
     selectedTerms: Term | null;
@@ -43,7 +42,6 @@ interface TermsState {
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
-
     private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
 
     constructor(props: GlossaryTermsProps) {
@@ -73,16 +71,26 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
         this.setState({disableIncludeImportedToggle: true});
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        const vocabularyIri = fetchOptions.option ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!) : {
-            fragment: this.props.match.params.name,
-            namespace
-        };
-        return this.props.fetchTerms({
-            ...fetchOptions,
-            includeImported: this.state.includeImported
-        }, vocabularyIri)
+        const vocabularyIri = fetchOptions.option
+            ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!)
+            : {
+                  fragment: this.props.match.params.name,
+                  namespace
+              };
+        return this.props
+            .fetchTerms(
+                {
+                    ...fetchOptions,
+                    includeImported: this.state.includeImported
+                },
+                vocabularyIri
+            )
             .then(terms => {
-                const matchingVocabularies = this.state.includeImported ? Utils.sanitizeArray(this.props.vocabulary!.allImportedVocabularies).concat(this.props.vocabulary!.iri) : [this.props.vocabulary!.iri];
+                const matchingVocabularies = this.state.includeImported
+                    ? Utils.sanitizeArray(this.props.vocabulary!.allImportedVocabularies).concat(
+                          this.props.vocabulary!.iri
+                      )
+                    : [this.props.vocabulary!.iri];
                 this.setState({disableIncludeImportedToggle: this.props.isDetailView || false});
                 return processTermsForTreeSelect(terms, matchingVocabularies, fetchOptions);
             });
@@ -103,7 +111,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             delete cloneData.depth;
             const clone = new Term(cloneData);
             this.props.selectVocabularyTerm(clone);
-            Routing.transitionToPublicAsset(clone, {query: new Map([["includeImported", this.state.includeImported.toString()]])});
+            Routing.transitionToPublicAsset(clone, {
+                query: new Map([["includeImported", this.state.includeImported.toString()]])
+            });
         }
     };
 
@@ -112,12 +122,16 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     };
 
     private renderIncludeImported() {
-        return (this.props.vocabulary && this.props.vocabulary.importedVocabularies) ?
+        return this.props.vocabulary && this.props.vocabulary.importedVocabularies ? (
             <div className={classNames({"mb-3": !this.props.isDetailView})}>
-                <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
-                                            includeImported={this.state.includeImported}
-                                            disabled={this.state.disableIncludeImportedToggle}/>
-            </div> : null;
+                <IncludeImportedTermsToggle
+                    id="glossary-include-imported"
+                    onToggle={this.onIncludeImportedToggle}
+                    includeImported={this.state.includeImported}
+                    disabled={this.state.disableIncludeImportedToggle}
+                />
+            </div>
+        ) : null;
     }
 
     public render() {
@@ -126,42 +140,55 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         }
         const {i18n, isDetailView} = this.props;
 
-        return <div id="public-vocabulary-terms">
-            <div className={classNames({
-                "align-items-center card-header": isDetailView,
-                "mb-2 mt-3": !isDetailView
-            }, "d-flex", "flex-wrap", "justify-content-between", "card-header-basic-info")}>
-                <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}</h4>
-                {isDetailView && this.renderIncludeImported()}
+        return (
+            <div id="public-vocabulary-terms">
+                <div
+                    className={classNames(
+                        {
+                            "align-items-center card-header": isDetailView,
+                            "mb-2 mt-3": !isDetailView
+                        },
+                        "d-flex",
+                        "flex-wrap",
+                        "justify-content-between",
+                        "card-header-basic-info"
+                    )}>
+                    <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}</h4>
+                    {isDetailView && this.renderIncludeImported()}
+                </div>
+                <div id="public-glossary-list" className={classNames({"card-header": isDetailView})}>
+                    {!isDetailView && this.renderIncludeImported()}
+                    <IntelligentTreeSelect
+                        ref={this.treeComponent}
+                        clearable={!isDetailView}
+                        onChange={this.onTermSelect}
+                        value={this.props.selectedTerms ? this.props.selectedTerms.iri : null}
+                        fetchOptions={this.fetchOptions}
+                        isMenuOpen={true}
+                        scrollMenuIntoView={false}
+                        multi={false}
+                        maxHeight={Utils.calculateAssetListHeight()}
+                        optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary.iri)}
+                        valueRenderer={(option: Term) => getLocalized(option.label, getShortLocale(this.props.locale))}
+                        {...commonTermTreeSelectProps(this.props)}
+                    />
+                </div>
             </div>
-            <div id="public-glossary-list" className={classNames({"card-header": isDetailView})}>
-                {!isDetailView && this.renderIncludeImported()}
-                <IntelligentTreeSelect
-                    ref={this.treeComponent}
-                    clearable={!isDetailView}
-                    onChange={this.onTermSelect}
-                    value={this.props.selectedTerms ? this.props.selectedTerms.iri : null}
-                    fetchOptions={this.fetchOptions}
-                    isMenuOpen={true}
-                    scrollMenuIntoView={false}
-                    multi={false}
-                    maxHeight={Utils.calculateAssetListHeight()}
-                    optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary.iri)}
-                    valueRenderer={(option: Term) => getLocalized(option.label, getShortLocale(this.props.locale))}
-                    {...commonTermTreeSelectProps(this.props)}
-                />
-            </div>
-        </div>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        selectedTerms: state.selectedTerm,
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        selectVocabularyTerm: (selectedTerm: Term | null) => dispatch(selectVocabularyTerm(selectedTerm)),
-        fetchTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadPublicTerms(fetchOptions, vocabularyIri))
-    };
-})(injectIntl(withI18n(Terms)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            selectedTerms: state.selectedTerm
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            selectVocabularyTerm: (selectedTerm: Term | null) => dispatch(selectVocabularyTerm(selectedTerm)),
+            fetchTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) =>
+                dispatch(loadPublicTerms(fetchOptions, vocabularyIri))
+        };
+    }
+)(injectIntl(withI18n(Terms)));

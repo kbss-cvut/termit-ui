@@ -16,7 +16,11 @@ const ResourceBadge: React.FC<ResourceBadgeProps> = (props: ResourceBadgeProps) 
         typeLabel = "type.resource";
     }
     const {i18n} = useI18n();
-    return <Badge color="orange" className={classNames("asset-badge", props.className)}>{i18n(typeLabel)}</Badge>;
+    return (
+        <Badge color="orange" className={classNames("asset-badge", props.className)}>
+            {i18n(typeLabel)}
+        </Badge>
+    );
 };
 
 export default ResourceBadge;

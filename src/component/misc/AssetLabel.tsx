@@ -49,7 +49,13 @@ export class AssetLabel extends React.Component<AssetLabelProps, AssetLabelState
     }
 
     public render() {
-        return <span>{this.state.label ? this.state.label : this.shrinkFullIri(Namespaces.getPrefixedOrDefault(this.props.iri))}</span>;
+        return (
+            <span>
+                {this.state.label
+                    ? this.state.label
+                    : this.shrinkFullIri(Namespaces.getPrefixedOrDefault(this.props.iri))}
+            </span>
+        );
     }
 
     private shrinkFullIri(iri: string): string {
@@ -57,7 +63,7 @@ export class AssetLabel extends React.Component<AssetLabelProps, AssetLabelState
             return iri; // It is prefixed
         }
         const lastSlashIndex = iri.lastIndexOf("/");
-        const lastHashIndex = iri.lastIndexOf(("#"));
+        const lastHashIndex = iri.lastIndexOf("#");
         return "..." + iri.substring(lastHashIndex > lastSlashIndex ? lastHashIndex : lastSlashIndex);
     }
 }

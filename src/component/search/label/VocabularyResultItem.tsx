@@ -22,23 +22,24 @@ interface VocabularyResultItemDispatchProps {
     getResource: (iri: IRI) => Promise<RdfsResource | undefined>;
 }
 
-interface VocabularyResultItemStateProps {
-}
+interface VocabularyResultItemStateProps {}
 
-interface VocabularyResultItemProps extends VocabularyResultItemOwnProps, VocabularyResultItemDispatchProps, VocabularyResultItemStateProps, HasI18n {
-}
+interface VocabularyResultItemProps
+    extends VocabularyResultItemOwnProps,
+        VocabularyResultItemDispatchProps,
+        VocabularyResultItemStateProps,
+        HasI18n {}
 
 interface VocabularyResultItemState {
     comment?: string | null;
 }
 
 export class VocabularyResultItem extends React.Component<VocabularyResultItemProps, VocabularyResultItemState> {
-
     constructor(props: VocabularyResultItemProps) {
         super(props);
         this.state = {
             comment: null
-        }
+        };
     }
 
     public componentDidMount(): void {
@@ -60,7 +61,7 @@ export class VocabularyResultItem extends React.Component<VocabularyResultItemPr
     public render() {
         let text;
         if (this.getIndexOf("comment") > -1) {
-            text = this.props.result.snippets[this.getIndexOf("comment")]
+            text = this.props.result.snippets[this.getIndexOf("comment")];
         } else {
             text = this.state.comment || "";
         }
@@ -70,19 +71,27 @@ export class VocabularyResultItem extends React.Component<VocabularyResultItemPr
         }
 
         const res = this.props.result;
-        return <>
-            <VocabularyBadge className="search-result-badge"/>
-            <span className="search-result-title">
-                <VocabularyLink vocabulary={AssetFactory.createAsset(res) as Vocabulary}/>
-            </span><br/>
-            <span className="search-result-snippet">
-                <FTSMatch match={text || ""}/>
-            </span>
-        </>;
+        return (
+            <>
+                <VocabularyBadge className="search-result-badge" />
+                <span className="search-result-title">
+                    <VocabularyLink vocabulary={AssetFactory.createAsset(res) as Vocabulary} />
+                </span>
+                <br />
+                <span className="search-result-snippet">
+                    <FTSMatch match={text || ""} />
+                </span>
+            </>
+        );
     }
 }
 
-export default connect<VocabularyResultItemStateProps, VocabularyResultItemDispatchProps, VocabularyResultItemOwnProps, TermItState>(undefined, (dispatch: ThunkDispatch) => {
+export default connect<
+    VocabularyResultItemStateProps,
+    VocabularyResultItemDispatchProps,
+    VocabularyResultItemOwnProps,
+    TermItState
+>(undefined, (dispatch: ThunkDispatch) => {
     return {
         getResource: (iri: IRI) => dispatch(getRdfsResource(iri))
     };

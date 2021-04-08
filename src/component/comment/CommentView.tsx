@@ -24,25 +24,46 @@ const CommentView: React.FC<CommentViewProps> = props => {
     const {comment, addReaction, removeReaction, onEdit, currentUser, formatDate, formatTime} = props;
     const formatter = new TimeAgo(props.locale);
     const canEdit = comment.author!.iri === currentUser.iri;
-    return <div className="comment mt-2 pt-2">
-        <div className="float-left avatar"><FaUserCircle/></div>
-        <div className="content">
-            <span className="author">{comment.author!.fullName}</span>
-            <div className="metadata text-muted">
-                <div className="mr-2 d-inline-block" title={`${formatDate(comment.created!)} ${formatTime(comment.created!)}`}>{formatter.format(comment.created!)}</div>
-                <CommentLikes comment={comment} reactions={Utils.sanitizeArray(comment.reactions)}
-                              addReaction={addReaction} removeReaction={removeReaction}/>
-                <CommentDislikes comment={comment} reactions={Utils.sanitizeArray(comment.reactions)}
-                                 addReaction={addReaction} removeReaction={removeReaction}/>
-                {comment.modified && <div className="ml-3 d-inline-block italics">{props.i18n("comments.comment.edited")}</div>}
+    return (
+        <div className="comment mt-2 pt-2">
+            <div className="float-left avatar">
+                <FaUserCircle />
             </div>
-            <div className="mt-1 mb-2 comment-text">{comment.content}</div>
-            <div className="actions">
-                {canEdit &&
-                <span className="comment-action btn-outline-primary" onClick={() => onEdit(comment)}>{props.i18n("edit")}</span>}
+            <div className="content">
+                <span className="author">{comment.author!.fullName}</span>
+                <div className="metadata text-muted">
+                    <div
+                        className="mr-2 d-inline-block"
+                        title={`${formatDate(comment.created!)} ${formatTime(comment.created!)}`}>
+                        {formatter.format(comment.created!)}
+                    </div>
+                    <CommentLikes
+                        comment={comment}
+                        reactions={Utils.sanitizeArray(comment.reactions)}
+                        addReaction={addReaction}
+                        removeReaction={removeReaction}
+                    />
+                    <CommentDislikes
+                        comment={comment}
+                        reactions={Utils.sanitizeArray(comment.reactions)}
+                        addReaction={addReaction}
+                        removeReaction={removeReaction}
+                    />
+                    {comment.modified && (
+                        <div className="ml-3 d-inline-block italics">{props.i18n("comments.comment.edited")}</div>
+                    )}
+                </div>
+                <div className="mt-1 mb-2 comment-text">{comment.content}</div>
+                <div className="actions">
+                    {canEdit && (
+                        <span className="comment-action btn-outline-primary" onClick={() => onEdit(comment)}>
+                            {props.i18n("edit")}
+                        </span>
+                    )}
+                </div>
             </div>
         </div>
-    </div>;
+    );
 };
 
 export default connect((state: TermItState) => ({currentUser: state.user}))(injectIntl(withI18n(CommentView)));

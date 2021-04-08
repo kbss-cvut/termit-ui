@@ -3,7 +3,6 @@ import JsonLdUtils from "../JsonLdUtils";
 import {CONTEXT as VOCABULARY_CONTEXT} from "../../model/Vocabulary";
 
 describe("JsonLdUtils", () => {
-
     describe("resolveReferences", () => {
         it("replaces reference node with a known instance in a singular property", () => {
             const data = {
@@ -20,7 +19,7 @@ describe("JsonLdUtils", () => {
                 },
                 lastModified: Date.now()
             };
-            const result:any = JsonLdUtils.resolveReferences(data);
+            const result: any = JsonLdUtils.resolveReferences(data);
             expect(result.lastEditor).toEqual(data.author);
         });
 
@@ -34,17 +33,20 @@ describe("JsonLdUtils", () => {
                     types: [VocabularyUtils.USER]
                 },
                 created: Date.now() - 10000,
-                editors: [{
-                    iri: "http://user"
-                }, {
-                    iri: "http://anotherUser",
-                    firstName: "Another first name",
-                    lastName: "Another last name",
-                    types: [VocabularyUtils.USER]
-                }],
+                editors: [
+                    {
+                        iri: "http://user"
+                    },
+                    {
+                        iri: "http://anotherUser",
+                        firstName: "Another first name",
+                        lastName: "Another last name",
+                        types: [VocabularyUtils.USER]
+                    }
+                ],
                 lastModified: Date.now()
             };
-            const result:any = JsonLdUtils.resolveReferences(data);
+            const result: any = JsonLdUtils.resolveReferences(data);
             expect(result.editors[0]).toEqual(data.author);
         });
     });
@@ -55,7 +57,7 @@ describe("JsonLdUtils", () => {
             input[VocabularyUtils.PREFIX + "popisuje-dokument"][VocabularyUtils.PREFIX + "má-dokumentový-slovník"] = {
                 "@id": input["@id"]
             };
-            return JsonLdUtils.compactAndResolveReferences(input, VOCABULARY_CONTEXT).then((result:any) => {
+            return JsonLdUtils.compactAndResolveReferences(input, VOCABULARY_CONTEXT).then((result: any) => {
                 expect(result.document.vocabulary).toBeDefined();
                 expect(result.document.vocabulary).toEqual(result);
             });
@@ -65,10 +67,12 @@ describe("JsonLdUtils", () => {
     describe("compactAndResolveReferencesAsArray", () => {
         it("returns array with items compacted from the specified JSON-LD", () => {
             const input = [require("../../rest-mock/vocabulary"), require("../../rest-mock/vocabulary")];
-            input[0][VocabularyUtils.PREFIX + "popisuje-dokument"][VocabularyUtils.PREFIX + "má-dokumentový-slovník"] = {
+            input[0][VocabularyUtils.PREFIX + "popisuje-dokument"][
+                VocabularyUtils.PREFIX + "má-dokumentový-slovník"
+            ] = {
                 "@id": input[0]["@id"]
             };
-            return JsonLdUtils.compactAndResolveReferencesAsArray(input, VOCABULARY_CONTEXT).then((result:any[]) => {
+            return JsonLdUtils.compactAndResolveReferencesAsArray(input, VOCABULARY_CONTEXT).then((result: any[]) => {
                 expect(Array.isArray(result)).toBeTruthy();
                 expect(result[0].document.vocabulary).toBeDefined();
                 expect(result[0].document.vocabulary).toEqual(result[0]);
@@ -80,7 +84,7 @@ describe("JsonLdUtils", () => {
             input[VocabularyUtils.PREFIX + "popisuje-dokument"][VocabularyUtils.PREFIX + "má-dokumentový-slovník"] = {
                 "@id": input["@id"]
             };
-            return JsonLdUtils.compactAndResolveReferencesAsArray(input, VOCABULARY_CONTEXT).then((result:any[]) => {
+            return JsonLdUtils.compactAndResolveReferencesAsArray(input, VOCABULARY_CONTEXT).then((result: any[]) => {
                 expect(Array.isArray(result)).toBeTruthy();
                 expect(result.length).toEqual(1);
                 expect(result[0].document.vocabulary).toBeDefined();
@@ -89,8 +93,8 @@ describe("JsonLdUtils", () => {
         });
 
         it("returns an empty array when input JSON-LD is an empty array", () => {
-            const input:object = [];
-            return JsonLdUtils.compactAndResolveReferencesAsArray(input, VOCABULARY_CONTEXT).then((result:any[]) => {
+            const input: object = [];
+            return JsonLdUtils.compactAndResolveReferencesAsArray(input, VOCABULARY_CONTEXT).then((result: any[]) => {
                 expect(Array.isArray(result)).toBeTruthy();
                 expect(result.length).toEqual(0);
             });

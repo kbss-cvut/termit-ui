@@ -47,25 +47,61 @@ function renderActionButtons(user: User, actions: UserActions, i18n: (id: string
     const buttons = [];
     if (user.isDisabled()) {
         const btnId = `user-${Utils.hashCode(user.iri)}-enable`;
-        buttons.push(<Button id={btnId} key={btnId} size="sm" onClick={() => actions.enable(user)}
-                             title={i18n(STATUS_MAP.DISABLED.buttonTitle)} className="users-action-button"
-                             color="primary">{i18n(STATUS_MAP.DISABLED.buttonLabel)}</Button>);
+        buttons.push(
+            <Button
+                id={btnId}
+                key={btnId}
+                size="sm"
+                onClick={() => actions.enable(user)}
+                title={i18n(STATUS_MAP.DISABLED.buttonTitle)}
+                className="users-action-button"
+                color="primary">
+                {i18n(STATUS_MAP.DISABLED.buttonLabel)}
+            </Button>
+        );
     } else {
         const btnId = `user-${Utils.hashCode(user.iri)}-disable`;
-        buttons.push(<Button id={btnId} key={btnId} size="sm" onClick={() => actions.disable(user)}
-                             title={i18n(STATUS_MAP.ACTIVE.buttonTitle)} className="users-action-button"
-                             color="warning">{i18n(STATUS_MAP.ACTIVE.buttonLabel)}</Button>);
+        buttons.push(
+            <Button
+                id={btnId}
+                key={btnId}
+                size="sm"
+                onClick={() => actions.disable(user)}
+                title={i18n(STATUS_MAP.ACTIVE.buttonTitle)}
+                className="users-action-button"
+                color="warning">
+                {i18n(STATUS_MAP.ACTIVE.buttonLabel)}
+            </Button>
+        );
     }
     if (user.isLocked()) {
         const btnId = `user-${Utils.hashCode(user.iri)}-unlock`;
-        buttons.push(<Button id={btnId} key={btnId} size="sm" onClick={() => actions.unlock(user)}
-                             title={i18n(STATUS_MAP.LOCKED.buttonTitle)} className="users-action-button"
-                             color="primary">{i18n(STATUS_MAP.LOCKED.buttonLabel)}</Button>);
+        buttons.push(
+            <Button
+                id={btnId}
+                key={btnId}
+                size="sm"
+                onClick={() => actions.unlock(user)}
+                title={i18n(STATUS_MAP.LOCKED.buttonTitle)}
+                className="users-action-button"
+                color="primary">
+                {i18n(STATUS_MAP.LOCKED.buttonLabel)}
+            </Button>
+        );
     }
     const btnId2 = `user-${Utils.hashCode(user.iri)}-changerole`;
-    buttons.push(<Button id={btnId2} key={btnId2} size="sm" onClick={() => actions.changeRole(user)}
-                         title={i18n("administration.users.action.changerole.tooltip")} className="users-action-button"
-                         color="primary">{i18n("administration.users.action.changerole")}</Button>);
+    buttons.push(
+        <Button
+            id={btnId2}
+            key={btnId2}
+            size="sm"
+            onClick={() => actions.changeRole(user)}
+            title={i18n("administration.users.action.changerole.tooltip")}
+            className="users-action-button"
+            color="primary">
+            {i18n("administration.users.action.changerole")}
+        </Button>
+    );
     return buttons;
 }
 
@@ -77,11 +113,21 @@ BADGE_TYPES[VocabularyUtils.USER_ADMIN] = {
 };
 
 function renderUserTypeBadges(user: User, i18n: (id: string) => string) {
-    return user.types.filter(t => BADGE_TYPES.hasOwnProperty(t)).map(t => {
-        const badgeInfo = BADGE_TYPES[t];
-        return <Badge key={t} color="primary" className={`align-middle ml-2 mb-1 ${badgeInfo.className}`}
-                      pill={true} title={i18n(badgeInfo.title)}>{badgeInfo.text}</Badge>;
-    });
+    return user.types
+        .filter(t => BADGE_TYPES.hasOwnProperty(t))
+        .map(t => {
+            const badgeInfo = BADGE_TYPES[t];
+            return (
+                <Badge
+                    key={t}
+                    color="primary"
+                    className={`align-middle ml-2 mb-1 ${badgeInfo.className}`}
+                    pill={true}
+                    title={i18n(badgeInfo.title)}>
+                    {badgeInfo.text}
+                </Badge>
+            );
+        });
 }
 
 export interface UserActions {
@@ -93,7 +139,7 @@ export interface UserActions {
 
 interface UserRowProps {
     user: User;
-    currentUser?: boolean;   // Whether this row represents the currently logged in user
+    currentUser?: boolean; // Whether this row represents the currently logged in user
     actions: UserActions;
 }
 
@@ -102,23 +148,28 @@ export const UserRow: React.FC<UserRowProps> = (props: UserRowProps) => {
     const {i18n} = useI18n();
     const status = resolveStatus(user);
     const isCurrentUser = props.currentUser;
-    return <tr className={classNames({"italics": !user.isActive(), "bold": isCurrentUser})}
-               title={isCurrentUser ? i18n("administration.users.you") : undefined}>
-        <td className="align-middle"
-            title={i18n(status.statusLabel)}>{React.createElement(status.icon)}
-        </td>
-        <td className="align-middle">{user.fullName}</td>
-        <td className="align-middle">{user.username}</td>
-        <td className="align-middle m-user-status">
-            {i18n(status.statusLabel)}
-            <InfoIcon id={`user-${Utils.hashCode(user.iri)}-status-info`} text={i18n(status.help)}/>
-            {renderUserTypeBadges(user, i18n)}
-        </td>
-        <td className="align-middle">
-            <UserRoles user={user}/>
-        </td>
-        <td className="align-middle users-row-actions">{isCurrentUser ? null : renderActionButtons(user, props.actions, i18n)}</td>
-    </tr>;
+    return (
+        <tr
+            className={classNames({italics: !user.isActive(), bold: isCurrentUser})}
+            title={isCurrentUser ? i18n("administration.users.you") : undefined}>
+            <td className="align-middle" title={i18n(status.statusLabel)}>
+                {React.createElement(status.icon)}
+            </td>
+            <td className="align-middle">{user.fullName}</td>
+            <td className="align-middle">{user.username}</td>
+            <td className="align-middle m-user-status">
+                {i18n(status.statusLabel)}
+                <InfoIcon id={`user-${Utils.hashCode(user.iri)}-status-info`} text={i18n(status.help)} />
+                {renderUserTypeBadges(user, i18n)}
+            </td>
+            <td className="align-middle">
+                <UserRoles user={user} />
+            </td>
+            <td className="align-middle users-row-actions">
+                {isCurrentUser ? null : renderActionButtons(user, props.actions, i18n)}
+            </td>
+        </tr>
+    );
 };
 
 UserRow.defaultProps = {

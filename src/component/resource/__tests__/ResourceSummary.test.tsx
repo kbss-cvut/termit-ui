@@ -6,7 +6,6 @@ import Resource from "../../../model/Resource";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 
 describe("ResourceSummary", () => {
-
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/resources/";
     const resourceName = "test-resource";
 
@@ -32,8 +31,9 @@ describe("ResourceSummary", () => {
             iri: namespace + resourceName,
             label: resourceName
         });
-        const wrapper = shallow<ResourceSummary>(<ResourceSummary
-            resource={resource} {...resourceHandlers} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceSummary>(
+            <ResourceSummary resource={resource} {...resourceHandlers} {...intlFunctions()} />
+        );
         wrapper.instance().onRemove();
         expect(removeResource).toHaveBeenCalledWith(resource);
         expect(wrapper.state("showRemoveDialog")).toBeFalsy();
@@ -44,8 +44,9 @@ describe("ResourceSummary", () => {
             iri: namespace + resourceName,
             label: resourceName
         });
-        const wrapper = shallow<ResourceSummary>(<ResourceSummary
-            resource={resource} {...resourceHandlers} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceSummary>(
+            <ResourceSummary resource={resource} {...resourceHandlers} {...intlFunctions()} />
+        );
         wrapper.instance().onSave(resource);
         return Promise.resolve().then(() => {
             expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(resource.iri));

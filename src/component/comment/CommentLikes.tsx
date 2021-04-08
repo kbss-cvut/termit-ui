@@ -31,14 +31,16 @@ const CommentLikes: React.FC<CommentLikesProps> = props => {
     if (isMine(comment, currentUser)) {
         onClick = () => {
             reacted ? removeReaction(comment) : addReaction(comment, ReactionType.LIKE);
-        }
+        };
         iconClass = "actionable-reaction";
     }
-    return <div className="ml-2 d-inline-block">
-        <IconElem className={iconClass} title={props.i18n(title)} onClick={onClick}/>
-        &nbsp;
-        {likes.length}
-    </div>
-}
+    return (
+        <div className="ml-2 d-inline-block">
+            <IconElem className={iconClass} title={props.i18n(title)} onClick={onClick} />
+            &nbsp;
+            {likes.length}
+        </div>
+    );
+};
 
 export default connect((state: TermItState) => ({currentUser: state.user}))(injectIntl(withI18n(CommentLikes)));

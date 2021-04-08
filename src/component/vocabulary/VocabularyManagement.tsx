@@ -23,27 +23,35 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
         loadVocabularies();
     }, [loadVocabularies]);
 
-    const buttons = <IfUserAuthorized renderUnauthorizedAlert={false}>
-        <Link id="vocabularies-create" className="btn btn-primary btn-sm"
-              title={i18n("vocabulary.vocabularies.create.tooltip")}
-              to={Routes.createVocabulary.path}><GoPlus/>&nbsp;{i18n("vocabulary.management.new")}
-        </Link>
-    </IfUserAuthorized>;
+    const buttons = (
+        <IfUserAuthorized renderUnauthorizedAlert={false}>
+            <Link
+                id="vocabularies-create"
+                className="btn btn-primary btn-sm"
+                title={i18n("vocabulary.vocabularies.create.tooltip")}
+                to={Routes.createVocabulary.path}>
+                <GoPlus />
+                &nbsp;{i18n("vocabulary.management.new")}
+            </Link>
+        </IfUserAuthorized>
+    );
 
-    return <>
-        <WindowTitle title={i18n("vocabulary.management.vocabularies")}/>
-        <HeaderWithActions title={i18n("vocabulary.management")} actions={buttons}/>
-        <div className="row">
-            <Col md={12}>
-                <Card>
-                    <CardBody>
-                        <VocabularyList/>
-                    </CardBody>
-                </Card>
-            </Col>
-        </div>
-    </>
-}
+    return (
+        <>
+            <WindowTitle title={i18n("vocabulary.management.vocabularies")} />
+            <HeaderWithActions title={i18n("vocabulary.management")} actions={buttons} />
+            <div className="row">
+                <Col md={12}>
+                    <Card>
+                        <CardBody>
+                            <VocabularyList />
+                        </CardBody>
+                    </Card>
+                </Col>
+            </div>
+        </>
+    );
+};
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {

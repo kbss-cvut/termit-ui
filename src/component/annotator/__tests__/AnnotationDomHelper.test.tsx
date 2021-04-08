@@ -4,22 +4,34 @@ import {Node, Element, DataNode} from "domhandler";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("AnnotationDomHelper", () => {
-
-    const html = "<h1>My Heading</h1>\n" +
+    const html =
+        "<h1>My Heading</h1>\n" +
         "\n" +
         "            <p>First paragraph." +
-        "            <span about=\"_:123\" property=\"" + VocabularyUtils.IS_OCCURRENCE_OF_TERM + "\"\n" +
-        "                  resource=\"http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29\"\n" +
-        "                  typeof=\"" + VocabularyUtils.TERM_OCCURRENCE + "\">annotated-text</span>" +
+        '            <span about="_:123" property="' +
+        VocabularyUtils.IS_OCCURRENCE_OF_TERM +
+        '"\n' +
+        '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+        '                  typeof="' +
+        VocabularyUtils.TERM_OCCURRENCE +
+        '">annotated-text</span>' +
         "            </p>" +
         "\n after annotation span" +
-        "            <span about=\"_:111\" \n>not-annotation</span>" +
-        "            <div about='_:117' property=\"" + VocabularyUtils.IS_OCCURRENCE_OF_TERM + "\"\n" +
-        "                  resource=\"http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29\"\n" +
-        "                  typeof=\"" + VocabularyUtils.TERM_OCCURRENCE + "\">annotated-text</div>" +
-        "            <div about='_:118' property=\"" + VocabularyUtils.IS_OCCURRENCE_OF_TERM + "\"\n" +
-        "                  resource=\"http://example.org/118\"\n" +
-        "                  typeof=\"" + VocabularyUtils.TERM_OCCURRENCE + "\">annotated-text<span id='embedded'>with embedded element</span>and text after</div>" +
+        '            <span about="_:111" \n>not-annotation</span>' +
+        "            <div about='_:117' property=\"" +
+        VocabularyUtils.IS_OCCURRENCE_OF_TERM +
+        '"\n' +
+        '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+        '                  typeof="' +
+        VocabularyUtils.TERM_OCCURRENCE +
+        '">annotated-text</div>' +
+        "            <div about='_:118' property=\"" +
+        VocabularyUtils.IS_OCCURRENCE_OF_TERM +
+        '"\n' +
+        '                  resource="http://example.org/118"\n' +
+        '                  typeof="' +
+        VocabularyUtils.TERM_OCCURRENCE +
+        "\">annotated-text<span id='embedded'>with embedded element</span>and text after</div>" +
         "\n after text span";
     const options = {decodeEntities: true};
     let dom: Node[];
@@ -33,8 +45,18 @@ describe("AnnotationDomHelper", () => {
         const parser = new HtmlParser(handler, options);
         parser.parseComplete(html);
         dom = handler.dom;
-        annotationSpan = du.find((n: Node) => (n as Element).name === "span" && (n as Element).attribs.about === "_:123", dom, true, 1)[0] as Element;
-        otherSpan = du.find((n: Node) => (n as Element).name === "span" && !(n as Element).attribs.property, dom, true, 1)[0] as Element;
+        annotationSpan = du.find(
+            (n: Node) => (n as Element).name === "span" && (n as Element).attribs.about === "_:123",
+            dom,
+            true,
+            1
+        )[0] as Element;
+        otherSpan = du.find(
+            (n: Node) => (n as Element).name === "span" && !(n as Element).attribs.property,
+            dom,
+            true,
+            1
+        )[0] as Element;
     });
 
     describe("isAnnotation", () => {
@@ -44,7 +66,12 @@ describe("AnnotationDomHelper", () => {
         });
 
         it("recognizes annotation in other element that span", () => {
-            const node = du.find((n: Node) => (n as Element).name === "div" && (n as Element).attribs.property !== undefined, dom, true, 1)[0];
+            const node = du.find(
+                (n: Node) => (n as Element).name === "div" && (n as Element).attribs.property !== undefined,
+                dom,
+                true,
+                1
+            )[0];
             expect(node).toBeDefined();
             expect(sut.isAnnotation(node)).toBeTruthy();
         });
@@ -90,7 +117,13 @@ describe("AnnotationDomHelper", () => {
         });
 
         it("removes RDFa attributes from a node containing multiple children", () => {
-            const toRemove = du.find((n: Node) => (n as Element).name === "div" && (n as Element).attribs.resource === "http://example.org/118", dom, true, 1)[0];
+            const toRemove = du.find(
+                (n: Node) =>
+                    (n as Element).name === "div" && (n as Element).attribs.resource === "http://example.org/118",
+                dom,
+                true,
+                1
+            )[0];
             expect(toRemove).toBeDefined();
             const about = (toRemove as Element).attribs!.about;
             expect(html).toContain(about);
@@ -98,12 +131,24 @@ describe("AnnotationDomHelper", () => {
             sut.removeAnnotation(toRemove, dom);
             const newHtml = DomUtils.getOuterHTML(dom);
             expect(newHtml).not.toContain(about);
-            expect(du.find((n: Node) => (n as Element).name === "span" && (n as Element).attribs.id === "embedded", dom, true, 1).length).toBeGreaterThan(0);
+            expect(
+                du.find(
+                    (n: Node) => (n as Element).name === "span" && (n as Element).attribs.id === "embedded",
+                    dom,
+                    true,
+                    1
+                ).length
+            ).toBeGreaterThan(0);
         });
 
         // Bug #1358
         it("replaces annotation node in list of DOM nodes with text node when it is a top-level node", () => {
-            const topLevelAnnotation = du.find((n: Node) => (n as Element).name === "div" && (n as Element).attribs.about === "_:117", dom, true, 1)[0] as Element;
+            const topLevelAnnotation = du.find(
+                (n: Node) => (n as Element).name === "div" && (n as Element).attribs.about === "_:117",
+                dom,
+                true,
+                1
+            )[0] as Element;
             const originalLength = dom.length;
             const annotationIndex = dom.indexOf(topLevelAnnotation);
             expect(annotationIndex).not.toEqual(-1);
@@ -130,7 +175,6 @@ describe("AnnotationDomHelper", () => {
     });
 
     describe("createNewAnnotation", () => {
-
         let htmlDoc: Document;
 
         beforeEach(() => {
@@ -151,7 +195,8 @@ describe("AnnotationDomHelper", () => {
 
         it("wraps text nodes containing a span in an annotation span", () => {
             const about = "_:1";
-            const testHtml = "<html lang='en'><body><div>text before, <span>in</span> and after span</div></body></html>";
+            const testHtml =
+                "<html lang='en'><body><div>text before, <span>in</span> and after span</div></body></html>";
             htmlDoc = new DOMParser().parseFromString(testHtml, "text/html");
             const textNodes = htmlDoc.body.children[0].childNodes;
             const result = sut.createNewAnnotation(about, textNodes);
@@ -166,7 +211,8 @@ describe("AnnotationDomHelper", () => {
 
         it("wraps div with text in an annotation div", () => {
             const about = "_:1";
-            const testHtml = "<html lang='en'><body><div>text before, <span>in</span> and after span</div></body></html>";
+            const testHtml =
+                "<html lang='en'><body><div>text before, <span>in</span> and after span</div></body></html>";
             htmlDoc = new DOMParser().parseFromString(testHtml, "text/html");
             const textNodes = htmlDoc.body.childNodes;
             const result = sut.createNewAnnotation(about, textNodes);
@@ -192,7 +238,7 @@ describe("AnnotationDomHelper", () => {
         it("creates TextQuoteSelector from text content of the specified node", () => {
             const selector = sut.generateSelector(annotationSpan);
             expect(selector).toBeDefined();
-            expect(selector.exactMatch).toEqual(((annotationSpan.children![0]) as DataNode).data);
+            expect(selector.exactMatch).toEqual((annotationSpan.children![0] as DataNode).data);
         });
     });
 });

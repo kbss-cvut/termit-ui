@@ -12,7 +12,6 @@ jest.mock("../../../vocabulary/ImportedVocabulariesList", () => () => <div>Impor
 jest.mock("../../term/Terms", () => () => <div>Terms</div>);
 
 describe("Public VocabularySummary", () => {
-
     const normalizedName = "test-vocabulary";
     const namespace = VocabularyUtils.NS_TERMIT;
 
@@ -46,8 +45,14 @@ describe("Public VocabularySummary", () => {
     });
 
     it("resets selected term on mount", async () => {
-        mountWithIntlAttached(<VocabularySummary vocabulary={EMPTY_VOCABULARY} loadVocabulary={loadVocabulary}
-                                                 resetSelectedTerm={resetSelectedTerm} {...routerProps}/>);
+        mountWithIntlAttached(
+            <VocabularySummary
+                vocabulary={EMPTY_VOCABULARY}
+                loadVocabulary={loadVocabulary}
+                resetSelectedTerm={resetSelectedTerm}
+                {...routerProps}
+            />
+        );
         await act(async () => {
             await flushPromises();
         });

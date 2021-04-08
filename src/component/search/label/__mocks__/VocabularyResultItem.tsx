@@ -13,7 +13,6 @@ interface VocabularyResultItemProps extends HasI18n {
 }
 
 export class VocabularyResultItem extends React.Component<VocabularyResultItemProps> {
-
     private getIndexOf(field: string) {
         return this.props.result.snippetFields.indexOf(field);
     }
@@ -23,15 +22,18 @@ export class VocabularyResultItem extends React.Component<VocabularyResultItemPr
         const text = this.getIndexOf("comment") >= 0 ? snippets[this.getIndexOf("comment")] : "";
 
         const res = this.props.result;
-        return <>
-            <VocabularyBadge className="search-result-badge"/>
-            <span className="search-result-title">
-                <VocabularyLink vocabulary={AssetFactory.createAsset(res) as Vocabulary}/>
-            </span><br/>
-            <span className="search-result-snippet">
-                <FTSMatch match={text || ""}/>
-            </span>
-        </>;
+        return (
+            <>
+                <VocabularyBadge className="search-result-badge" />
+                <span className="search-result-title">
+                    <VocabularyLink vocabulary={AssetFactory.createAsset(res) as Vocabulary} />
+                </span>
+                <br />
+                <span className="search-result-snippet">
+                    <FTSMatch match={text || ""} />
+                </span>
+            </>
+        );
     }
 }
 

@@ -26,7 +26,7 @@ import ValidationResult from "../../model/ValidationResult";
 import {renderValidationMessages} from "./forms/FormUtils";
 
 interface TermMetadataEditProps extends HasI18n {
-    term: Term,
+    term: Term;
     save: (term: Term) => void;
     cancel: () => void;
     language: string;
@@ -42,14 +42,17 @@ interface TermMetadataEditState extends TermData {
 export class TermMetadataEdit extends React.Component<TermMetadataEditProps, TermMetadataEditState> {
     constructor(props: TermMetadataEditProps) {
         super(props);
-        this.state = Object.assign({
-            labelExist: {},
-            unmappedProperties: props.term.unmappedProperties
-        }, props.term);
+        this.state = Object.assign(
+            {
+                labelExist: {},
+                unmappedProperties: props.term.unmappedProperties
+            },
+            props.term
+        );
     }
 
     public componentDidUpdate(prevProps: TermMetadataEditProps, prevState: TermMetadataEditState): void {
-        if (this.props.language && (prevProps.language !== this.props.language)) {
+        if (this.props.language && prevProps.language !== this.props.language) {
             this.onPrefLabelChange(this.state.label[this.props.language] || "");
         }
     }
@@ -88,7 +91,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
     public onChange = (change: Partial<TermData>) => {
         // @ts-ignore
         this.setState(change);
-    }
+    };
 
     public onHiddenLabelsChange = (hiddenLabels: string[]) => {
         const language = this.props.language;
@@ -114,7 +117,7 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
 
     public onStatusChange = () => {
         this.setState({draft: !this.state.draft});
-    }
+    };
 
     private onPropertiesChange = (update: Map<string, string[]>) => {
         this.setState({unmappedProperties: update});
@@ -133,17 +136,16 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         this.setState(copy);
     };
 
-
     private getValidationResults = (prop: string) => {
         const results = this.props.validationResults ? this.props.validationResults[this.props.term.iri] : [];
         return (results || []).filter(r => {
             if (prop !== VocabularyUtils.RDF_TYPE) {
-                return r.resultPath && r.resultPath.iri === prop
+                return r.resultPath && r.resultPath.iri === prop;
             } else {
-                return !r.resultPath
+                return !r.resultPath;
             }
-        })
-    }
+        });
+    };
 
     private renderMessages(results: ValidationResult[]) {
         return renderValidationMessages(this.props.locale, results);
@@ -159,106 +161,149 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps, Ter
         const validationScopeNote = this.getValidationResults(VocabularyUtils.SKOS_SCOPE_NOTE);
         const validationBroader = this.getValidationResults(VocabularyUtils.BROADER);
         const validationType = this.getValidationResults(VocabularyUtils.RDF_TYPE);
-        return <>
-            <EditLanguageSelector key="term-edit-language-selector" term={this.state} language={language}
-                                  onSelect={this.props.selectLanguage} onRemove={this.removeTranslation}/>
-            <Card id="edit-term">
-                <CardBody>
-                    <Form>
-                        <Row>
-                            <Col xs={12}>
-                                <CustomInput name="edit-term-label"
-                                             value={getLocalizedOrDefault(this.state.label, "", language)}
-                                             onChange={this.onLabelChange}
-                                             label={i18n("asset.label")}
-                                             invalid={validationPrefLabel.length > 0 || labelInLanguageInvalid}
-                                             invalidMessage={this.renderMessages(validationPrefLabel) +
-                                             (labelInLanguageInvalid ?
-                                                 this.props.formatMessage("term.metadata.labelExists.message", {label: getLocalized(this.state.label, language)}) :
-                                                 "")}
-                                             help={i18n("term.label.help")}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <StringListEdit list={getLocalizedPlural(this.state.altLabels, language)}
-                                                onChange={this.onAltLabelsChange}
-                                                invalid={validationAltLabel.length > 0 || labelInLanguageInvalid}
-                                                invalidMessage={this.renderMessages(validationAltLabel)}
-                                                i18nPrefix={"term.metadata.altLabels"}/>
-                            </Col>
-                        </Row>
+        return (
+            <>
+                <EditLanguageSelector
+                    key="term-edit-language-selector"
+                    term={this.state}
+                    language={language}
+                    onSelect={this.props.selectLanguage}
+                    onRemove={this.removeTranslation}
+                />
+                <Card id="edit-term">
+                    <CardBody>
+                        <Form>
+                            <Row>
+                                <Col xs={12}>
+                                    <CustomInput
+                                        name="edit-term-label"
+                                        value={getLocalizedOrDefault(this.state.label, "", language)}
+                                        onChange={this.onLabelChange}
+                                        label={i18n("asset.label")}
+                                        invalid={validationPrefLabel.length > 0 || labelInLanguageInvalid}
+                                        invalidMessage={
+                                            this.renderMessages(validationPrefLabel) +
+                                            (labelInLanguageInvalid
+                                                ? this.props.formatMessage("term.metadata.labelExists.message", {
+                                                      label: getLocalized(this.state.label, language)
+                                                  })
+                                                : "")
+                                        }
+                                        help={i18n("term.label.help")}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <StringListEdit
+                                        list={getLocalizedPlural(this.state.altLabels, language)}
+                                        onChange={this.onAltLabelsChange}
+                                        invalid={validationAltLabel.length > 0 || labelInLanguageInvalid}
+                                        invalidMessage={this.renderMessages(validationAltLabel)}
+                                        i18nPrefix={"term.metadata.altLabels"}
+                                    />
+                                </Col>
+                            </Row>
 
-                        <TermDefinitionContainer>
-                            <TermDefinitionBlockEdit term={this.state} language={language}
-                                                     getValidationResults={this.getValidationResults}
-                                                     onChange={this.onChange}/>
-                        </TermDefinitionContainer>
+                            <TermDefinitionContainer>
+                                <TermDefinitionBlockEdit
+                                    term={this.state}
+                                    language={language}
+                                    getValidationResults={this.getValidationResults}
+                                    onChange={this.onChange}
+                                />
+                            </TermDefinitionContainer>
 
-                        <Row>
-                            <Col xs={12}>
-                                <TextArea name="edit-term-comment"
-                                          value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
-                                          invalid={validationScopeNote.length > 0}
-                                          invalidMessage={this.renderMessages(validationScopeNote)}
-                                          onChange={this.onScopeNoteChange} rows={4}
-                                          label={i18n("term.metadata.comment")}
-                                          help={i18n("term.comment.help")}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <ParentTermSelector id="edit-term-parent" termIri={this.props.term.iri}
-                                                    parentTerms={this.state.parentTerms}
-                                                    invalid={validationBroader.length > 0}
-                                                    invalidMessage={this.renderMessages(validationBroader)}
-                                                    vocabularyIri={this.props.term.vocabulary!.iri!}
-                                                    onChange={this.onParentChange}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <TermTypesEdit termTypes={Utils.sanitizeArray(this.state.types)}
-                                               invalid={validationType.length > 0}
-                                               invalidMessage={this.renderMessages(validationType)}
-                                               onChange={this.onTypesChange}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <StringListEdit list={getLocalizedPlural(this.state.hiddenLabels, language)}
-                                                onChange={this.onHiddenLabelsChange}
-                                                i18nPrefix={"term.metadata.hiddenLabels"}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <DraftToggle id="edit-term-status"
-                                             draft={(this.state.draft === undefined) ? true : this.state.draft!}
-                                             onToggle={t}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <UnmappedPropertiesEdit properties={this.state.unmappedProperties}
-                                                        ignoredProperties={TermMetadataEdit.mappedPropertiesToIgnore()}
-                                                        onChange={this.onPropertiesChange}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <ButtonToolbar className="d-flex justify-content-center mt-4">
-                                    <Button id="edit-term-submit" color="success" disabled={invalid} size="sm"
-                                            onClick={this.onSave}>{i18n("save")}</Button>
-                                    <Button id="edit-term-cancel" color="outline-dark" size="sm"
-                                            onClick={this.props.cancel}>{i18n("cancel")}</Button>
-                                </ButtonToolbar>
-                            </Col>
-                        </Row>
-                    </Form>
-                </CardBody>
-            </Card>
-        </>;
+                            <Row>
+                                <Col xs={12}>
+                                    <TextArea
+                                        name="edit-term-comment"
+                                        value={getLocalizedOrDefault(this.state.scopeNote, "", language)}
+                                        invalid={validationScopeNote.length > 0}
+                                        invalidMessage={this.renderMessages(validationScopeNote)}
+                                        onChange={this.onScopeNoteChange}
+                                        rows={4}
+                                        label={i18n("term.metadata.comment")}
+                                        help={i18n("term.comment.help")}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <ParentTermSelector
+                                        id="edit-term-parent"
+                                        termIri={this.props.term.iri}
+                                        parentTerms={this.state.parentTerms}
+                                        invalid={validationBroader.length > 0}
+                                        invalidMessage={this.renderMessages(validationBroader)}
+                                        vocabularyIri={this.props.term.vocabulary!.iri!}
+                                        onChange={this.onParentChange}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <TermTypesEdit
+                                        termTypes={Utils.sanitizeArray(this.state.types)}
+                                        invalid={validationType.length > 0}
+                                        invalidMessage={this.renderMessages(validationType)}
+                                        onChange={this.onTypesChange}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <StringListEdit
+                                        list={getLocalizedPlural(this.state.hiddenLabels, language)}
+                                        onChange={this.onHiddenLabelsChange}
+                                        i18nPrefix={"term.metadata.hiddenLabels"}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <DraftToggle
+                                        id="edit-term-status"
+                                        draft={this.state.draft === undefined ? true : this.state.draft!}
+                                        onToggle={t}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <UnmappedPropertiesEdit
+                                        properties={this.state.unmappedProperties}
+                                        ignoredProperties={TermMetadataEdit.mappedPropertiesToIgnore()}
+                                        onChange={this.onPropertiesChange}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <ButtonToolbar className="d-flex justify-content-center mt-4">
+                                        <Button
+                                            id="edit-term-submit"
+                                            color="success"
+                                            disabled={invalid}
+                                            size="sm"
+                                            onClick={this.onSave}>
+                                            {i18n("save")}
+                                        </Button>
+                                        <Button
+                                            id="edit-term-cancel"
+                                            color="outline-dark"
+                                            size="sm"
+                                            onClick={this.props.cancel}>
+                                            {i18n("cancel")}
+                                        </Button>
+                                    </ButtonToolbar>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </CardBody>
+                </Card>
+            </>
+        );
     }
 
     private static mappedPropertiesToIgnore() {

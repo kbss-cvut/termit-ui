@@ -22,13 +22,16 @@ export const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = props => 
         }
     }, [vocabulary, loadContentChanges]);
 
-    return <>
-        <TermChangeFrequencyUI records={(records || [])}/>
-    </>;
-}
+    return (
+        <>
+            <TermChangeFrequencyUI records={records || []} />
+        </>
+    );
+};
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        loadContentChanges: (vocabulary: Vocabulary) => dispatch(loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri))),
+        loadContentChanges: (vocabulary: Vocabulary) =>
+            dispatch(loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri)))
     };
 })(TermChangeFrequency);

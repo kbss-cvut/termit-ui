@@ -8,12 +8,12 @@
 .has-danger {
     position: relative;
 
-    &:after, {
+    &:after {
         width: 19px;
         height: 19px;
         line-height: 19px;
         text-align: center;
-        font-family: 'NucleoIcons';
+        font-family: "NucleoIcons";
         display: inline-block;
         position: absolute;
         right: 15px;
@@ -31,14 +31,13 @@
         color: daken($form-feedback-valid-color, 18%);
         background-color: $form-feedback-valid-bg;
     }
-    
+
     .form-control {
         background-color: $input-focus-bg;
 
         &:focus {
             border-color: $input-focus-border-color;
         }
-
 
         // Placeholder
 

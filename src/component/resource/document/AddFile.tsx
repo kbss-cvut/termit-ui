@@ -19,30 +19,34 @@ export const AddFile = (props: AddFileProps) => {
 
     const createFile = (termitFile: TermItFile, file: File) => {
         termitFile.addType(VocabularyUtils.FILE);
-        return props.performAction(termitFile, file)
-            .then(toggle)
-    }
+        return props.performAction(termitFile, file).then(toggle);
+    };
 
-    return <IfUserAuthorized renderUnauthorizedAlert={false}>
-        <Modal isOpen={createFileDialogOpen} toggle={toggle}>
-            <ModalBody>
-                <Card id="document-create-file">
-                    <CardHeader color="info">
-                        <h5>{i18n("resource.metadata.document.files.actions.add.dialog.title")}</h5>
-                    </CardHeader>
-                    <CardBody>
-                        <CreateFileMetadata
-                            onCreate={createFile}
-                            onCancel={toggle}/>
-                    </CardBody>
-                </Card>
-            </ModalBody>
-        </Modal>
-        <Button className="mb-2" color="primary" size="sm" onClick={toggle}
+    return (
+        <IfUserAuthorized renderUnauthorizedAlert={false}>
+            <Modal isOpen={createFileDialogOpen} toggle={toggle}>
+                <ModalBody>
+                    <Card id="document-create-file">
+                        <CardHeader color="info">
+                            <h5>{i18n("resource.metadata.document.files.actions.add.dialog.title")}</h5>
+                        </CardHeader>
+                        <CardBody>
+                            <CreateFileMetadata onCreate={createFile} onCancel={toggle} />
+                        </CardBody>
+                    </Card>
+                </ModalBody>
+            </Modal>
+            <Button
+                className="mb-2"
+                color="primary"
+                size="sm"
+                onClick={toggle}
                 title={i18n("resource.metadata.document.files.actions.add.tooltip")}>
-            <GoPlus className="mr-1"/>{i18n("resource.metadata.document.files.actions.add")}
-        </Button>
-    </IfUserAuthorized>;
-}
+                <GoPlus className="mr-1" />
+                {i18n("resource.metadata.document.files.actions.add")}
+            </Button>
+        </IfUserAuthorized>
+    );
+};
 
 export default AddFile;

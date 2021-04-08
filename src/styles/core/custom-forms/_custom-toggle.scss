@@ -12,7 +12,7 @@
         display: none;
 
         &:checked {
-             + .custom-toggle-slider {
+            + .custom-toggle-slider {
                 border: $custom-control-indicator-border-width solid $custom-control-indicator-checked-border-color;
 
                 &:before {
@@ -50,7 +50,6 @@
     border: $custom-control-indicator-border-width solid $input-border-color;
     border-radius: 34px !important;
     background-color: transparent;
-
 
     &:before {
         position: absolute;

@@ -23,7 +23,6 @@ jest.mock("../../util/Ajax", () => ({
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("AsyncAnnotatorActions", () => {
-
     const vocabularyName = "test-vocabulary";
 
     let store: MockStoreEnhanced<TermItState>;
@@ -34,11 +33,12 @@ describe("AsyncAnnotatorActions", () => {
     });
 
     describe("loadTermTerms", () => {
-
         it("provides includeImported with request when specified", () => {
             const terms = require("../../rest-mock/terms");
             Ajax.get = jest.fn().mockResolvedValue(terms);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadAllTerms({fragment: vocabularyName}, true))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadAllTerms({fragment: vocabularyName}, true))
+            ).then(() => {
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
                 expect(callConfig.getParams().includeImported).toBeTruthy();
             });
@@ -48,22 +48,25 @@ describe("AsyncAnnotatorActions", () => {
             store.getState().pendingActions[ActionType.ANNOTATOR_LOAD_TERMS] = AsyncActionStatus.REQUEST;
             const terms = require("../../rest-mock/terms");
             Ajax.get = jest.fn().mockResolvedValue(terms);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadAllTerms({fragment: vocabularyName}, true))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadAllTerms({fragment: vocabularyName}, true))
+            ).then(() => {
                 expect(Ajax.get).not.toHaveBeenCalled();
             });
         });
     });
 
     describe("loadTermByIri", () => {
-
         it("loads required term and returns it", () => {
             const term = require("../../rest-mock/terms")[0];
             Ajax.get = jest.fn().mockResolvedValue(term);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermByIri(term["@id"]))).then((result: Term) => {
-                expect(Ajax.get).toHaveBeenCalled();
-                expect(result).toBeDefined();
-                expect(result.iri).toEqual(term["@id"]);
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermByIri(term["@id"]))).then(
+                (result: Term) => {
+                    expect(Ajax.get).toHaveBeenCalled();
+                    expect(result).toBeDefined();
+                    expect(result.iri).toEqual(term["@id"]);
+                }
+            );
         });
 
         it("returns cached term when it is available", () => {
@@ -79,11 +82,15 @@ describe("AsyncAnnotatorActions", () => {
 
         it("does not trigger success action when result is null", () => {
             Ajax.get = jest.fn().mockRejectedValue({status: 404});
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermByIri(Generator.generateUri()))).then(() => {
-                expect(Ajax.get).toHaveBeenCalled();
-                const successAction = store.getActions().find(a => a.type === ActionType.ANNOTATOR_LOAD_TERM && a.status === AsyncActionStatus.SUCCESS);
-                expect(successAction).not.toBeDefined();
-            });
+            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermByIri(Generator.generateUri()))).then(
+                () => {
+                    expect(Ajax.get).toHaveBeenCalled();
+                    const successAction = store
+                        .getActions()
+                        .find(a => a.type === ActionType.ANNOTATOR_LOAD_TERM && a.status === AsyncActionStatus.SUCCESS);
+                    expect(successAction).not.toBeDefined();
+                }
+            );
         });
     });
 });

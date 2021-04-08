@@ -17,10 +17,12 @@ const CommonLastCommentedAssets: React.FC<CommonLastCommentedAssetsProps> = prop
             .then(() => loadingOff());
     }, [loadAssets, setLastCommentedAssets, loadingOn, loadingOff]);
 
-    return <>
-        {renderMask()}
-        <CommentedAssetList assets={lastCommentedAssets} loading={loading}/>
-    </>;
-}
+    return (
+        <>
+            {renderMask()}
+            <CommentedAssetList assets={lastCommentedAssets} loading={loading} />
+        </>
+    );
+};
 
 export default withInjectableLoading(CommonLastCommentedAssets);

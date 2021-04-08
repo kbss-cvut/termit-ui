@@ -31,7 +31,6 @@ interface LoginState {
 }
 
 export class Login extends React.Component<LoginProps, LoginState> {
-
     constructor(props: LoginProps) {
         super(props);
         this.state = {
@@ -68,41 +67,62 @@ export class Login extends React.Component<LoginProps, LoginState> {
 
     public render() {
         const i18n = this.props.i18n;
-        return <PublicLayout title={i18n("login.title")}>
-            <WindowTitle title={i18n("login.title")}/>
-            <Card className="modal-panel">
-                <CardHeader className="text-center pb-0 border-bottom-0">
-                    <h1>{Constants.APP_NAME}</h1>
-                    <div>{i18n("login.subtitle")}</div>
-                </CardHeader>
-                <CardBody>
-                    {this.renderMask()}
-                    <Form>
-                        {this.renderAlert()}
-                        <EnhancedInput name="username" label={i18n("login.username")} autoComplete="username"
-                                       labelDirection={LabelDirection.vertical}
-                                       value={this.state.username} onKeyPress={this.onKeyPress} onChange={this.onChange}
-                                       autoFocus={true} placeholder={i18n("login.username.placeholder")}/>
-                        <EnhancedInput type="password" name="password" autoComplete="current-password"
-                                       labelDirection={LabelDirection.vertical}
-                                       label={i18n("login.password")} value={this.state.password}
-                                       onKeyPress={this.onKeyPress} onChange={this.onChange}
-                                       placeholder={i18n("login.password.placeholder")}/>
+        return (
+            <PublicLayout title={i18n("login.title")}>
+                <WindowTitle title={i18n("login.title")} />
+                <Card className="modal-panel">
+                    <CardHeader className="text-center pb-0 border-bottom-0">
+                        <h1>{Constants.APP_NAME}</h1>
+                        <div>{i18n("login.subtitle")}</div>
+                    </CardHeader>
+                    <CardBody>
+                        {this.renderMask()}
+                        <Form>
+                            {this.renderAlert()}
+                            <EnhancedInput
+                                name="username"
+                                label={i18n("login.username")}
+                                autoComplete="username"
+                                labelDirection={LabelDirection.vertical}
+                                value={this.state.username}
+                                onKeyPress={this.onKeyPress}
+                                onChange={this.onChange}
+                                autoFocus={true}
+                                placeholder={i18n("login.username.placeholder")}
+                            />
+                            <EnhancedInput
+                                type="password"
+                                name="password"
+                                autoComplete="current-password"
+                                labelDirection={LabelDirection.vertical}
+                                label={i18n("login.password")}
+                                value={this.state.password}
+                                onKeyPress={this.onKeyPress}
+                                onChange={this.onChange}
+                                placeholder={i18n("login.password.placeholder")}
+                            />
 
-                        <Button id="login-submit" color="success" onClick={this.login}
+                            <Button
+                                id="login-submit"
+                                color="success"
+                                onClick={this.login}
                                 className="btn-block"
-                                disabled={this.props.loading || !this.isValid()}>{i18n("login.submit")}</Button>
-                        {this.renderRegistrationLink()}
-                        {this.renderPublicViewLink()}
-                    </Form>
-                </CardBody>
-            </Card>
-        </PublicLayout>;
+                                disabled={this.props.loading || !this.isValid()}>
+                                {i18n("login.submit")}
+                            </Button>
+                            {this.renderRegistrationLink()}
+                            {this.renderPublicViewLink()}
+                        </Form>
+                    </CardBody>
+                </Card>
+            </PublicLayout>
+        );
     }
 
     private renderMask() {
-        return this.props.loading ?
-            <Mask text={this.props.i18n("login.progress-mask")} classes="mask-container"/> : null;
+        return this.props.loading ? (
+            <Mask text={this.props.i18n("login.progress-mask")} classes="mask-container" />
+        ) : null;
     }
 
     private renderAlert() {
@@ -118,32 +138,49 @@ export class Login extends React.Component<LoginProps, LoginState> {
         if (getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") === true.toString()) {
             return null;
         }
-        return <div className="text-center mt-2">
-            <FormattedMessage id="login.register.label" values={{
-                a: (chunks: any) => <Link id="login-register" to={Routes.register.link()}
-                                          className="bold">{chunks}</Link>
-            }}
-            />
-        </div>;
+        return (
+            <div className="text-center mt-2">
+                <FormattedMessage
+                    id="login.register.label"
+                    values={{
+                        a: (chunks: any) => (
+                            <Link id="login-register" to={Routes.register.link()} className="bold">
+                                {chunks}
+                            </Link>
+                        )
+                    }}
+                />
+            </div>
+        );
     }
 
     private renderPublicViewLink() {
-        return <div className="text-center mt-2">
-            <FormattedMessage id="login.public-view-link" values={{
-                a: (chunks: any) => <Link id="login-public-view" to={Routes.publicVocabularies.link()}
-                                          className="bold">{chunks}</Link>
-            }}
-            />
-        </div>;
+        return (
+            <div className="text-center mt-2">
+                <FormattedMessage
+                    id="login.public-view-link"
+                    values={{
+                        a: (chunks: any) => (
+                            <Link id="login-public-view" to={Routes.publicVocabularies.link()} className="bold">
+                                {chunks}
+                            </Link>
+                        )
+                    }}
+                />
+            </div>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        loading: state.loading
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        login: (username: string, password: string) => dispatch(login(username, password))
-    };
-})(injectIntl(withI18n(Login)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            loading: state.loading
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            login: (username: string, password: string) => dispatch(login(username, password))
+        };
+    }
+)(injectIntl(withI18n(Login)));
