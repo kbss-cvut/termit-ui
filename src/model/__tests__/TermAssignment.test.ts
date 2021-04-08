@@ -1,4 +1,4 @@
-import TermAssignment, {CONTEXT} from "../TermAssignment";
+import TermAssignment, { CONTEXT } from "../TermAssignment";
 import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
@@ -8,10 +8,10 @@ describe("TermAssignment", () => {
             const sut = new TermAssignment({
                 term: Generator.generateTerm(),
                 target: {
-                    source: {iri: Generator.generateUri()},
-                    types: [VocabularyUtils.ASSIGNMENT_TARGET]
+                    source: { iri: Generator.generateUri() },
+                    types: [VocabularyUtils.ASSIGNMENT_TARGET],
                 },
-                types: [VocabularyUtils.TERM_ASSIGNMENT]
+                types: [VocabularyUtils.TERM_ASSIGNMENT],
             });
 
             const result = sut.toJsonLd();
@@ -22,10 +22,10 @@ describe("TermAssignment", () => {
             const sut = new TermAssignment({
                 term: Generator.generateTerm(),
                 target: {
-                    source: {iri: Generator.generateUri()},
-                    types: [VocabularyUtils.ASSIGNMENT_TARGET]
+                    source: { iri: Generator.generateUri() },
+                    types: [VocabularyUtils.ASSIGNMENT_TARGET],
                 },
-                types: [VocabularyUtils.TERM_ASSIGNMENT]
+                types: [VocabularyUtils.TERM_ASSIGNMENT],
             });
             jest.spyOn(sut.term, "toTermData");
 

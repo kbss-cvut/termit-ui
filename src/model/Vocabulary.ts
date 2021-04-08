@@ -1,7 +1,10 @@
 import OntologicalVocabulary from "../util/VocabularyUtils";
 import VocabularyUtils from "../util/VocabularyUtils";
-import Asset, {ASSET_CONTEXT, AssetData} from "./Asset";
-import Document, {CONTEXT as DOCUMENT_CONTEXT, DocumentData} from "./Document";
+import Asset, { ASSET_CONTEXT, AssetData } from "./Asset";
+import Document, {
+    CONTEXT as DOCUMENT_CONTEXT,
+    DocumentData,
+} from "./Document";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
@@ -13,7 +16,7 @@ const ctx = {
     document: VocabularyUtils.DESCRIBES_DOCUMENT,
     glossary: VocabularyUtils.HAS_GLOSSARY,
     model: VocabularyUtils.HAS_MODEL,
-    importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY
+    importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
@@ -28,7 +31,7 @@ const MAPPED_PROPERTIES = [
     "glossary",
     "model",
     "importedVocabularies",
-    "allImportedVocabularies"
+    "allImportedVocabularies",
 ];
 
 export interface VocabularyData extends AssetData {
@@ -67,25 +70,32 @@ export default class Vocabulary extends Asset implements VocabularyData {
     }
 
     public toJsonLd(): VocabularyData {
-        const result = Object.assign({}, this, {"@context": CONTEXT});
+        const result = Object.assign({}, this, { "@context": CONTEXT });
         delete result.allImportedVocabularies;
         if (result.document) {
             // Break circular reference between vocabulary and document
-            result.document.vocabulary = {iri: this.iri};
+            result.document.vocabulary = { iri: this.iri };
         }
         return result;
     }
 
     public get unmappedProperties(): Map<string, string[]> {
-        return WithUnmappedProperties.getUnmappedProperties(this, MAPPED_PROPERTIES);
+        return WithUnmappedProperties.getUnmappedProperties(
+            this,
+            MAPPED_PROPERTIES
+        );
     }
 
     public set unmappedProperties(properties: Map<string, string[]>) {
-        WithUnmappedProperties.setUnmappedProperties(this, properties, MAPPED_PROPERTIES);
+        WithUnmappedProperties.setUnmappedProperties(
+            this,
+            properties,
+            MAPPED_PROPERTIES
+        );
     }
 }
 
 export const EMPTY_VOCABULARY = new Vocabulary({
     iri: Constants.EMPTY_ASSET_IRI,
-    label: ""
+    label: "",
 });

@@ -1,84 +1,84 @@
 .legend-list-item {
-    margin-bottom: 2px;
+  margin-bottom: 2px;
 }
 
 .assigned-term-occurrence {
-    background: rgba(188, 239, 184, 0.8);
+  background: rgba(188, 239, 184, 0.8);
 }
 
 .suggested-term-occurrence {
-    background: rgba(239, 207, 184, 0.8);
+  background: rgba(239, 207, 184, 0.8);
 }
 
 .invalid-term-occurrence {
-    background: rgba(239, 66, 24, 0.7);
+  background: rgba(239, 66, 24, 0.7);
 }
 
 .loading-term-occurrence {
-    background: rgba(238, 239, 144, 0.4);
+  background: rgba(238, 239, 144, 0.4);
 }
 
 .assigned-term-occurrence.proposed-occurrence {
-    border: 0.15em dotted green;
+  border: 0.15em dotted green;
 }
 
 .suggested-term-occurrence.proposed-occurrence {
-    border: 0.15em dotted rgb(239, 69, 27);
+  border: 0.15em dotted rgb(239, 69, 27);
 }
 
 .invalid-term-occurrence.proposed-occurrence {
-    border: 0.15em dotted rgb(239, 14, 0);
+  border: 0.15em dotted rgb(239, 14, 0);
 }
 
 .loading-term-occurrence.proposed-occurrence {
-    border: 0.15em dotted rgb(239, 173, 62);
+  border: 0.15em dotted rgb(239, 173, 62);
 }
 
 .term-definition {
-    background: rgba(80, 200, 255, 0.8);
+  background: rgba(80, 200, 255, 0.8);
 }
 
 .pending-term-definition {
-    background: rgba(150, 130, 255, 0.2);
+  background: rgba(150, 130, 255, 0.2);
 }
 
 .selected-occurrence {
 }
 
 .pwa {
-    max-width: none !important;
+  max-width: none !important;
 }
 
 .pwa-popup-title {
-    margin-right: 20px;
+  margin-right: 20px;
 }
 
 .an-info {
-    color: #007bff;
+  color: #007bff;
 }
 
 .an-warning {
-    color: orangered;
+  color: orangered;
 }
 
 .an-error {
-    color: red;
+  color: red;
 }
 
 .popover-body {
-    background-color: rgba(230, 230, 230, 1);
+  background-color: rgba(230, 230, 230, 1);
 }
 
 .popover-body td.label {
-    min-width: 110px;
+  min-width: 110px;
 }
 
 .popover-header {
-    background-color: rgba(220, 220, 220, 1);
+  background-color: rgba(220, 220, 220, 1);
 }
 
 .annotator-highlighted-annotation {
-    background-color: yellow !important;
-    border: 1px solid #6f42c1;
-    border-radius: 0.2rem;
+  background-color: yellow !important;
+  border: 1px solid #6f42c1;
+  border-radius: 0.2rem;
 }

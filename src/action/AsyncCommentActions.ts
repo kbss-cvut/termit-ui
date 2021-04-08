@@ -1,25 +1,37 @@
-import VocabularyUtils, {IRI} from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import {ThunkDispatch} from "../util/Types";
-import {asyncActionFailure, asyncActionRequest, asyncActionSuccess} from "./SyncActions";
-import Ajax, {content, param, params} from "../util/Ajax";
+import { ThunkDispatch } from "../util/Types";
+import {
+    asyncActionFailure,
+    asyncActionRequest,
+    asyncActionSuccess,
+} from "./SyncActions";
+import Ajax, { content, param, params } from "../util/Ajax";
 import Constants from "../util/Constants";
 import JsonLdUtils from "../util/JsonLdUtils";
-import Comment, {CommentData, CONTEXT as COMMENT_CONTEXT} from "../model/Comment";
-import {ErrorData} from "../model/ErrorInfo";
+import Comment, {
+    CommentData,
+    CONTEXT as COMMENT_CONTEXT,
+} from "../model/Comment";
+import { ErrorData } from "../model/ErrorInfo";
 
 export function loadTermComments(termIri: IRI) {
-    const action = {type: ActionType.LOAD_COMMENTS};
+    const action = { type: ActionType.LOAD_COMMENTS };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
         return Ajax.get(
             `${Constants.API_PREFIX}/terms/${termIri.fragment}/comments`,
             param("namespace", termIri.namespace)
         )
-            .then((data: object) => JsonLdUtils.compactAndResolveReferencesAsArray<CommentData>(data, COMMENT_CONTEXT))
+            .then((data: object) =>
+                JsonLdUtils.compactAndResolveReferencesAsArray<CommentData>(
+                    data,
+                    COMMENT_CONTEXT
+                )
+            )
             .then((data: CommentData[]) => {
                 dispatch(asyncActionSuccess(action));
-                return data.map(d => new Comment(d));
+                return data.map((d) => new Comment(d));
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
@@ -29,7 +41,7 @@ export function loadTermComments(termIri: IRI) {
 }
 
 export function createTermComment(comment: Comment, termIri: IRI) {
-    const action = {type: ActionType.CREATE_COMMENT};
+    const action = { type: ActionType.CREATE_COMMENT };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         return Ajax.post(
@@ -37,28 +49,32 @@ export function createTermComment(comment: Comment, termIri: IRI) {
             param("namespace", termIri.namespace).content(comment.toJsonLd())
         )
             .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+            .catch((error: ErrorData) =>
+                dispatch(asyncActionFailure(action, error))
+            );
     };
 }
 
 export function reactToComment(commentIri: IRI, reactionType: string) {
-    const action = {type: ActionType.REACT_TO_COMMENT};
+    const action = { type: ActionType.REACT_TO_COMMENT };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
         return Ajax.post(
             `${Constants.API_PREFIX}/comments/${commentIri.fragment}/reactions`,
             params({
                 namespace: commentIri.namespace,
-                type: reactionType
+                type: reactionType,
             })
         )
             .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+            .catch((error: ErrorData) =>
+                dispatch(asyncActionFailure(action, error))
+            );
     };
 }
 
 export function removeCommentReaction(commentIri: IRI) {
-    const action = {type: ActionType.REMOVE_COMMENT_REACTION};
+    const action = { type: ActionType.REMOVE_COMMENT_REACTION };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
         return Ajax.delete(
@@ -66,12 +82,14 @@ export function removeCommentReaction(commentIri: IRI) {
             param("namespace", commentIri.namespace)
         )
             .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+            .catch((error: ErrorData) =>
+                dispatch(asyncActionFailure(action, error))
+            );
     };
 }
 
 export function updateComment(comment: Comment) {
-    const action = {type: ActionType.UPDATE_COMMENT};
+    const action = { type: ActionType.UPDATE_COMMENT };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
         const commentIri = VocabularyUtils.create(comment.iri!);
@@ -80,6 +98,8 @@ export function updateComment(comment: Comment) {
             content(comment.toJsonLd()).param("namespace", commentIri.namespace)
         )
             .then(() => dispatch(asyncActionSuccess(action)))
-            .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+            .catch((error: ErrorData) =>
+                dispatch(asyncActionFailure(action, error))
+            );
     };
 }

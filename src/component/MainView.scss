@@ -1,141 +1,141 @@
 @import "../styles/variables";
 
 .nav-right {
-    margin: 0 -15px 0 0;
+  margin: 0 -15px 0 0;
 }
 
 .content {
-    min-height: 100%;
-    margin-top: 40px;
+  min-height: 100%;
+  margin-top: 40px;
 }
 
 .attribute-label {
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.7);
-    word-break: break-word;
-    margin-bottom: 0;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+  word-break: break-word;
+  margin-bottom: 0;
 }
 
 .form-group .attribute-label {
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
 }
 
 .option-label {
-    margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .additional-metadata {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .breadcrumb-bar {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0.125rem 1rem;
-    background: #edf8f8 !important;
-    margin-bottom: 0;
-    border-bottom: none !important;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.125rem 1rem;
+  background: #edf8f8 !important;
+  margin-bottom: 0;
+  border-bottom: none !important;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  font-size: 0.9rem;
 
-    @media (min-width: $md) {
-        margin-top: $header-height;
-    }
+  @media (min-width: $md) {
+    margin-top: $header-height;
+  }
 }
 
 .breadcrumbs__separator {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .search-tabs {
-    text-align: center;
-    margin-top: 0.5em;
+  text-align: center;
+  margin-top: 0.5em;
 }
 
 .main-view-sidebar-expanded {
-    @media (min-width: $md) {
-        margin-left: $navbar-vertical-width-expanded;
-        overflow: hidden;
-    }
+  @media (min-width: $md) {
+    margin-left: $navbar-vertical-width-expanded;
+    overflow: hidden;
+  }
 }
 
 .main-view-sidebar-collapsed {
-    @media (min-width: $md) {
-        margin-left: $navbar-vertical-width-collapsed;
-        overflow: hidden;
-    }
+  @media (min-width: $md) {
+    margin-left: $navbar-vertical-width-collapsed;
+    overflow: hidden;
+  }
 }
 
 .navbar-top {
-    height: $header-height;
-    padding: 0 1rem !important;
-    box-shadow: 0 0 2px 0 #ced4da;
+  height: $header-height;
+  padding: 0 1rem !important;
+  box-shadow: 0 0 2px 0 #ced4da;
 }
 
 .main-view-sidebar-expanded .fixed-top {
-    margin-left: $navbar-vertical-width-expanded;
+  margin-left: $navbar-vertical-width-expanded;
 }
 
 .main-view-sidebar-collapsed .fixed-top {
-    margin-left: $navbar-vertical-width-collapsed;
+  margin-left: $navbar-vertical-width-collapsed;
 }
 
 .content-container-dashboard {
-    @media (min-width: $md) {
-        margin-top: $header-height;
-    }
+  @media (min-width: $md) {
+    margin-top: $header-height;
+  }
 }
 
 .nav-search {
-    flex-grow: 1;
-    max-width: 30rem;
+  flex-grow: 1;
+  max-width: 30rem;
 }
 
 .navbar {
-    @media (max-width: $md - 1px) {
-        padding: 0.5rem !important;
-    }
+  @media (max-width: $md - 1px) {
+    padding: 0.5rem !important;
+  }
 }
 
 #content-container {
-    h2 {
-        @media (max-width: $md - 1px) {
-            margin-left: 2px;
-        }
+  h2 {
+    @media (max-width: $md - 1px) {
+      margin-left: 2px;
     }
+  }
 }
 
 .asset-list th {
-    vertical-align: top;
-    text-align: center;
+  vertical-align: top;
+  text-align: center;
 }
 
 .asset-list .filter-wrapper {
-    margin-top: 0.25rem;
+  margin-top: 0.25rem;
 }
 
 .asset-list .sort-icon {
-    vertical-align: text-bottom;
+  vertical-align: text-bottom;
 }
 
 .asset-badge {
-    width: 4.4rem;
+  width: 4.4rem;
 }
 
 /* Reactstrap overrides this by assigning form-control class to all form-controls, including small ones*/
 .form-control-sm {
-    font-size: 0.875rem !important;
+  font-size: 0.875rem !important;
 }
 
 .Select-placeholder {
-    font-size: 0.875rem !important;
+  font-size: 0.875rem !important;
 }
 
 .Select-value {
-    font-size: 0.875rem !important;
+  font-size: 0.875rem !important;
 }

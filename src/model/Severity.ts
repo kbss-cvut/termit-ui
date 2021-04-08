@@ -1,6 +1,6 @@
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
-    "@id": "iri"
+    "@id": "iri",
 };
 
 export const CONTEXT = Object.assign({}, ctx);

@@ -1,7 +1,7 @@
-import {AnnotationSpanProps} from "../Annotator";
-import {ReactElement} from "react";
-import {MountRendererProps} from "enzyme";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import { AnnotationSpanProps } from "../Annotator";
+import { ReactElement } from "react";
+import { MountRendererProps } from "enzyme";
+import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
 export function surroundWithHtml(partialHtmlContent: string): string {
     return (
@@ -14,7 +14,11 @@ export function surroundWithHtml(partialHtmlContent: string): string {
     );
 }
 
-export function createAnnotation(props: AnnotationSpanProps, text: string, element: string = "span") {
+export function createAnnotation(
+    props: AnnotationSpanProps,
+    text: string,
+    element: string = "span"
+) {
     return `<${element} ${Object.keys(props)
         .reduce((a, k) => k + "=" + props[k] + " " + a, " ")
         .trim()}>${text}</${element}>`;
@@ -32,8 +36,11 @@ export function createAnnotation(props: AnnotationSpanProps, text: string, eleme
  * @param options Optional rendering options for Enzyme
  */
 
-export function mountWithIntlAttached(node: ReactElement<any>, options?: MountRendererProps) {
+export function mountWithIntlAttached(
+    node: ReactElement<any>,
+    options?: MountRendererProps
+) {
     const div = document.createElement("div");
     document.body.appendChild(div);
-    return mountWithIntl(node, Object.assign({}, {attachTo: div}, options));
+    return mountWithIntl(node, Object.assign({}, { attachTo: div }, options));
 }

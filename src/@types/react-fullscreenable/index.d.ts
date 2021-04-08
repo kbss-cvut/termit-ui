@@ -6,5 +6,7 @@ declare module "react-fullscreenable" {
 
     export default function Fullscreenable<P>(): (
         c: React.ComponentType<P & FullscreenableProps>
-    ) => React.ComponentType<Pick<P, Exclude<keyof P, keyof FullscreenableProps>>>;
+    ) => React.ComponentType<
+        Pick<P, Exclude<keyof P, keyof FullscreenableProps>>
+    >;
 }

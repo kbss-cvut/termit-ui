@@ -1,5 +1,5 @@
 import VocabularyUtils from "../../util/VocabularyUtils";
-import User, {CONTEXT as USER_CONTEXT, UserData} from "../User";
+import User, { CONTEXT as USER_CONTEXT, UserData } from "../User";
 import Utils from "../../util/Utils";
 
 const ctx = {
@@ -8,7 +8,7 @@ const ctx = {
     changedEntity: `${VocabularyUtils.PREFIX}m\u00e1-zm\u011bn\u011bnou-entitu`,
     changedAttribute: `${VocabularyUtils.PREFIX}m\u00e1-zm\u011bn\u011bn\u00fd-atribut`,
     originalValue: `${VocabularyUtils.PREFIX}m\u00e1-p\u016fvodn\u00ed-hodnotu`,
-    newValue: `${VocabularyUtils.PREFIX}m\u00e1-novou-hodnotu`
+    newValue: `${VocabularyUtils.PREFIX}m\u00e1-novou-hodnotu`,
 };
 
 export const CONTEXT = Object.assign({}, ctx, USER_CONTEXT);
@@ -17,7 +17,7 @@ export interface ChangeRecordData {
     iri: string;
     timestamp: number;
     author: UserData;
-    changedEntity: {iri: string};
+    changedEntity: { iri: string };
     types: string[];
 }
 
@@ -28,7 +28,7 @@ export default abstract class ChangeRecord implements ChangeRecordData {
     public readonly iri: string;
     public readonly timestamp: number;
     public readonly author: User;
-    public readonly changedEntity: {iri: string};
+    public readonly changedEntity: { iri: string };
     public readonly types: string[];
 
     protected constructor(data: ChangeRecordData) {

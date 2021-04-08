@@ -15,7 +15,7 @@ export interface AssetData extends HasTypes {
  */
 export const ASSET_CONTEXT = {
     iri: "@id",
-    types: "@type"
+    types: "@type",
 };
 
 export interface SupportsJsonLd<T extends any> {

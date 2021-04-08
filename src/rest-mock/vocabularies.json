@@ -1,34 +1,34 @@
 [
-    {
-        "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan",
-        "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/slovník",
-        "http://purl.org/dc/terms/title": "Metropolitan plan",
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-glosář": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/termit/glossary/instance12345",
-            "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/glosář"
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan",
+    "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/slovník",
+    "http://purl.org/dc/terms/title": "Metropolitan plan",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-glosář": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/termit/glossary/instance12345",
+      "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/glosář"
+    },
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-model": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/termit/model/instance54321",
+      "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/model"
+    },
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/popisuje-dokument": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/termit/document/metropolitan-plan",
+      "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/dokument",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-soubor": [
+        {
+          "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance12345",
+          "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
+          "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p1.html",
+          "http://purl.org/dc/terms/description": "První část metropolitního plánu"
         },
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-model": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/termit/model/instance54321",
-            "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/model"
-        },
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/popisuje-dokument": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/termit/document/metropolitan-plan",
-            "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/dokument",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-soubor": [
-                {
-                    "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance12345",
-                    "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
-                    "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p1.html",
-                    "http://purl.org/dc/terms/description": "První část metropolitního plánu"
-                },
-                {
-                    "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance54321",
-                    "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
-                    "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p2.html",
-                    "http://purl.org/dc/terms/description": "Druhá část metropolitního plánu"
-                }
-            ]
-        },
-        "http://purl.org/dc/terms/description": "Description of the vocabulary."
-    }
+        {
+          "@id": "http://onto.fel.cvut.cz/ontologies/termit/file/instance54321",
+          "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/soubor",
+          "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p2.html",
+          "http://purl.org/dc/terms/description": "Druhá část metropolitního plánu"
+        }
+      ]
+    },
+    "http://purl.org/dc/terms/description": "Description of the vocabulary."
+  }
 ]

@@ -1,6 +1,6 @@
 const ctx = {
     language: "@language",
-    value: "@value"
+    value: "@value",
 };
 
 export const CONTEXT = Object.assign({}, ctx);

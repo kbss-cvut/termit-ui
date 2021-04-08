@@ -1,5 +1,5 @@
 import Generator from "../../__tests__/environment/Generator";
-import Namespaces, {RDFS, SKOS} from "../Namespaces";
+import Namespaces, { RDFS, SKOS } from "../Namespaces";
 
 describe("Namespaces", () => {
     describe("getPrefixedOrDefault", () => {
@@ -10,7 +10,9 @@ describe("Namespaces", () => {
 
         it("returns local name with prefix when full IRI contains a supported namespace", () => {
             const iri = "http://www.w3.org/2000/01/rdf-schema#label";
-            expect(Namespaces.getPrefixedOrDefault(iri)).toEqual(RDFS.prefix + ":label");
+            expect(Namespaces.getPrefixedOrDefault(iri)).toEqual(
+                RDFS.prefix + ":label"
+            );
         });
     });
 
@@ -27,7 +29,9 @@ describe("Namespaces", () => {
 
         it("returns full IRI for a prefixed version with a supported prefix", () => {
             const prefixed = SKOS.prefix + ":narrower";
-            expect(Namespaces.getFullIri(prefixed)).toEqual("http://www.w3.org/2004/02/skos/core#narrower");
+            expect(Namespaces.getFullIri(prefixed)).toEqual(
+                "http://www.w3.org/2004/02/skos/core#narrower"
+            );
         });
     });
 });

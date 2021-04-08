@@ -1,21 +1,31 @@
 import ActionType from "./ActionType";
-import {ThunkDispatch} from "../util/Types";
-import {asyncActionFailure, asyncActionRequest, asyncActionSuccess} from "./SyncActions";
-import Ajax, {param} from "../util/Ajax";
+import { ThunkDispatch } from "../util/Types";
+import {
+    asyncActionFailure,
+    asyncActionRequest,
+    asyncActionSuccess,
+} from "./SyncActions";
+import Ajax, { param } from "../util/Ajax";
 import Constants from "../util/Constants";
 import JsonLdUtils from "../util/JsonLdUtils";
-import {ErrorData} from "../model/ErrorInfo";
+import { ErrorData } from "../model/ErrorInfo";
 import RecentlyCommentedAsset, {
     CONTEXT as RECENTLY_COMMENTED_ASSET_CONTEXT,
-    RecentlyCommentedAssetData
+    RecentlyCommentedAssetData,
 } from "../model/RecentlyCommentedAsset";
 
 export function loadLastCommentedByMe() {
-    return loadLastCommentedAssetList(ActionType.LOAD_LAST_COMMENTED_BY_ME, "/assets/last-commented-by-me");
+    return loadLastCommentedAssetList(
+        ActionType.LOAD_LAST_COMMENTED_BY_ME,
+        "/assets/last-commented-by-me"
+    );
 }
 
 export function loadLastCommentedAssets() {
-    return loadLastCommentedAssetList(ActionType.LOAD_LAST_COMMENTED, "/assets/last-commented");
+    return loadLastCommentedAssetList(
+        ActionType.LOAD_LAST_COMMENTED,
+        "/assets/last-commented"
+    );
 }
 
 export function loadLastCommentedInReactionToMine() {
@@ -26,16 +36,22 @@ export function loadLastCommentedInReactionToMine() {
 }
 
 export function loadMyLastCommented() {
-    return loadLastCommentedAssetList(ActionType.LOAD_MY_LAST_COMMENTED, "/assets/my-last-commented");
+    return loadLastCommentedAssetList(
+        ActionType.LOAD_MY_LAST_COMMENTED,
+        "/assets/my-last-commented"
+    );
 }
 
 function loadLastCommentedAssetList(at: string, endpoint: string) {
     const action = {
-        type: at
+        type: at,
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(Constants.API_PREFIX + endpoint, param("limit", Constants.LAST_COMMENTED_ASSET_LIMIT + ""))
+        return Ajax.get(
+            Constants.API_PREFIX + endpoint,
+            param("limit", Constants.LAST_COMMENTED_ASSET_LIMIT + "")
+        )
             .then((data: object) =>
                 JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyCommentedAssetData>(
                     data,
@@ -44,7 +60,7 @@ function loadLastCommentedAssetList(at: string, endpoint: string) {
             )
             .then((data: RecentlyCommentedAssetData[]) => {
                 dispatch(asyncActionSuccess(action));
-                return data.map(item => new RecentlyCommentedAsset(item));
+                return data.map((item) => new RecentlyCommentedAsset(item));
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));

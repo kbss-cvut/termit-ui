@@ -1,10 +1,17 @@
-import {ASSET_CONTEXT, AssetData, default as Asset} from "./Asset";
+import { ASSET_CONTEXT, AssetData, default as Asset } from "./Asset";
 import Utils from "../util/Utils";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
-import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData} from "./TermOccurrence";
-import MultilingualString, {context, getLocalized, PluralMultilingualString} from "./MultilingualString";
+import {
+    BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT,
+    TermOccurrenceData,
+} from "./TermOccurrence";
+import MultilingualString, {
+    context,
+    getLocalized,
+    PluralMultilingualString,
+} from "./MultilingualString";
 
 const ctx = {
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
@@ -19,10 +26,14 @@ const ctx = {
     definitionSource: VocabularyUtils.HAS_DEFINITION_SOURCE,
     draft: VocabularyUtils.IS_DRAFT,
     glossary: VocabularyUtils.SKOS_IN_SCHEME,
-    types: "@type"
+    types: "@type",
 };
 
-export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, BASE_OCCURRENCE_CONTEXT);
+export const CONTEXT = Object.assign(
+    ctx,
+    ASSET_CONTEXT,
+    BASE_OCCURRENCE_CONTEXT
+);
 
 const MAPPED_PROPERTIES = [
     "@context",
@@ -41,10 +52,15 @@ const MAPPED_PROPERTIES = [
     "vocabulary",
     "glossary",
     "definitionSource",
-    "draft"
+    "draft",
 ];
 
-export const TERM_MULTILINGUAL_ATTRIBUTES = ["label", "definition", "altLabels", "hiddenLabels"];
+export const TERM_MULTILINGUAL_ATTRIBUTES = [
+    "label",
+    "definition",
+    "altLabels",
+    "hiddenLabels",
+];
 
 export interface TermData extends AssetData {
     label: MultilingualString;
@@ -73,7 +89,7 @@ export function termInfoComparator(a: TermInfo, b: TermInfo) {
     return getLocalized(a.label).localeCompare(getLocalized(b.label));
 }
 
-declare type TermMap = {[key: string]: Term};
+declare type TermMap = { [key: string]: Term };
 
 export default class Term extends Asset implements TermData {
     public label: MultilingualString;
@@ -100,8 +116,10 @@ export default class Term extends Asset implements TermData {
         }
         if (this.parentTerms) {
             visitedTerms[this.iri] = this;
-            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map(pt =>
-                visitedTerms[pt.iri] ? visitedTerms[pt.iri] : new Term(pt, visitedTerms)
+            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map((pt) =>
+                visitedTerms[pt.iri]
+                    ? visitedTerms[pt.iri]
+                    : new Term(pt, visitedTerms)
             );
             this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
@@ -115,7 +133,9 @@ export default class Term extends Asset implements TermData {
     }
 
     private resolveParent(parents: Term[]) {
-        const sameVocabulary = parents.find(t => _.isEqual(t.vocabulary, this.vocabulary));
+        const sameVocabulary = parents.find((t) =>
+            _.isEqual(t.vocabulary, this.vocabulary)
+        );
         if (sameVocabulary) {
             return sameVocabulary.iri;
         }
@@ -127,7 +147,9 @@ export default class Term extends Asset implements TermData {
      */
     public syncPlainSubTerms() {
         if (this.subTerms) {
-            this.plainSubTerms = Utils.sanitizeArray(this.subTerms).map(st => st.iri);
+            this.plainSubTerms = Utils.sanitizeArray(this.subTerms).map(
+                (st) => st.iri
+            );
         } else {
             this.plainSubTerms = undefined;
         }
@@ -144,7 +166,7 @@ export default class Term extends Asset implements TermData {
             });
         }
         if (result.definitionSource) {
-            result.definitionSource.term = {iri: result.iri};
+            result.definitionSource.term = { iri: result.iri };
         }
         delete result.subTerms; // Sub-terms are inferred and inconsequential for data upload to server
         delete result.plainSubTerms;
@@ -153,11 +175,18 @@ export default class Term extends Asset implements TermData {
     }
 
     public get unmappedProperties(): Map<string, string[]> {
-        return WithUnmappedProperties.getUnmappedProperties(this, MAPPED_PROPERTIES);
+        return WithUnmappedProperties.getUnmappedProperties(
+            this,
+            MAPPED_PROPERTIES
+        );
     }
 
     public set unmappedProperties(properties: Map<string, string[]>) {
-        WithUnmappedProperties.setUnmappedProperties(this, properties, MAPPED_PROPERTIES);
+        WithUnmappedProperties.setUnmappedProperties(
+            this,
+            properties,
+            MAPPED_PROPERTIES
+        );
     }
 
     getLabel(lang?: string): string {
@@ -166,7 +195,7 @@ export default class Term extends Asset implements TermData {
 
     public toJsonLd(): TermData {
         const termData = this.toTermData();
-        Object.assign(termData, {"@context": CONTEXT});
+        Object.assign(termData, { "@context": CONTEXT });
         return termData;
     }
 
@@ -178,7 +207,7 @@ export default class Term extends Asset implements TermData {
      * @param lang Language to remove
      */
     public static removeTranslation(data: TermData, lang: string) {
-        TERM_MULTILINGUAL_ATTRIBUTES.forEach(att => {
+        TERM_MULTILINGUAL_ATTRIBUTES.forEach((att) => {
             if (data[att]) {
                 delete data[att][lang];
             }
@@ -187,11 +216,15 @@ export default class Term extends Asset implements TermData {
 
     public static getLanguages(term: Term | TermData): string[] {
         const languages: Set<string> = new Set();
-        TERM_MULTILINGUAL_ATTRIBUTES.filter(att => term[att]).forEach(att => {
-            Utils.sanitizeArray(term[att]).forEach(attValue =>
-                Object.getOwnPropertyNames(attValue).forEach(n => languages.add(n))
-            );
-        });
+        TERM_MULTILINGUAL_ATTRIBUTES.filter((att) => term[att]).forEach(
+            (att) => {
+                Utils.sanitizeArray(term[att]).forEach((attValue) =>
+                    Object.getOwnPropertyNames(attValue).forEach((n) =>
+                        languages.add(n)
+                    )
+                );
+            }
+        );
         const langArr = Array.from(languages);
         langArr.sort();
         return langArr;

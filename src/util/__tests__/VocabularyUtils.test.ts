@@ -1,7 +1,7 @@
 /**
  * Vocabulary used by the application ontological model.
  */
-import VocabularyUtils, {IRI, IRIImpl} from "../VocabularyUtils";
+import VocabularyUtils, { IRI, IRIImpl } from "../VocabularyUtils";
 
 describe("VocabularyUtils", () => {
     const namespace = VocabularyUtils.PREFIX;
@@ -12,7 +12,9 @@ describe("VocabularyUtils", () => {
         });
 
         it("extracts fragment from hash", () => {
-            expect(VocabularyUtils.getFragment("http://test.org/x#y")).toEqual("y");
+            expect(VocabularyUtils.getFragment("http://test.org/x#y")).toEqual(
+                "y"
+            );
         });
     });
 
@@ -46,13 +48,13 @@ describe("VocabularyUtils", () => {
         describe("equals", () => {
             it("returns true for two IRIs with same fragment and namespace", () => {
                 const iri = new IRIImpl("y", namespace);
-                expect(iri.equals({fragment: "y", namespace})).toBeTruthy();
+                expect(iri.equals({ fragment: "y", namespace })).toBeTruthy();
                 expect(iri.equals(iri)).toBeTruthy();
             });
 
             it("returns false for two IRIs with different fragment or namespace", () => {
                 const iri = new IRIImpl("y", namespace);
-                expect(iri.equals({fragment: "y"})).toBeFalsy();
+                expect(iri.equals({ fragment: "y" })).toBeFalsy();
                 expect(iri.equals(new IRIImpl("x", namespace))).toBeFalsy();
             });
 

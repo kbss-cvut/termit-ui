@@ -19,11 +19,11 @@ $enable-print-styles: true !default;
 // Grid breakpoints
 
 $grid-breakpoints: (
-    xs: 0,
-    sm: 576px,
-    md: 768px,
-    lg: 992px,
-    xl: 1200px
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
 );
 
 @include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
@@ -38,41 +38,41 @@ $grid-breakpoints: (
 $spacer: 1rem !default;
 $spacers: () !default;
 $spacers: map-merge(
-    (
-        -9: - ($spacer * 10),
-        -8: - ($spacer * 8),
-        -7: - ($spacer * 6),
-        -6: - ($spacer * 4.5),
-        -5: - ($spacer * 3),
-        -4: - ($spacer * 1.5),
-        -3: -$spacer,
-        -2: - ($spacer * 0.5),
-        -1: - ($spacer * 0.25),
-        0: 0,
-        1: ($spacer * 0.25),
-        2: ($spacer * 0.5),
-        3: $spacer,
-        4: ($spacer * 1.5),
-        5: ($spacer * 3),
-        6: ($spacer * 4.5),
-        7: ($spacer * 6),
-        8: ($spacer * 8),
-        9: ($spacer * 10)
-    ),
-    $spacers
+  (
+    -9: - ($spacer * 10),
+    -8: - ($spacer * 8),
+    -7: - ($spacer * 6),
+    -6: - ($spacer * 4.5),
+    -5: - ($spacer * 3),
+    -4: - ($spacer * 1.5),
+    -3: -$spacer,
+    -2: - ($spacer * 0.5),
+    -1: - ($spacer * 0.25),
+    0: 0,
+    1: ($spacer * 0.25),
+    2: ($spacer * 0.5),
+    3: $spacer,
+    4: ($spacer * 1.5),
+    5: ($spacer * 3),
+    6: ($spacer * 4.5),
+    7: ($spacer * 6),
+    8: ($spacer * 8),
+    9: ($spacer * 10)
+  ),
+  $spacers
 );
 
 // This variable affects the `.h-*` and `.w-*` classes.
 
 $sizes: () !default;
 $sizes: map-merge(
-    (
-        25: 25%,
-        50: 50%,
-        75: 75%,
-        100: 100%
-    ),
-    $sizes
+  (
+    25: 25%,
+    50: 50%,
+    75: 75%,
+    100: 100%,
+  ),
+  $sizes
 );
 
 // Components
@@ -313,8 +313,10 @@ $input-disabled-bg: $gray-200 !default;
 $input-muted-bg: #f7fafe !default;
 $input-focus-muted-bg: lighten($input-muted-bg, 1%) !default;
 
-$input-alternative-box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02) !default;
-$input-focus-alternative-box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08) !default;
+$input-alternative-box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15),
+  0 1px 0 rgba(0, 0, 0, 0.02) !default;
+$input-focus-alternative-box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11),
+  0 1px 3px rgba(0, 0, 0, 0.08) !default;
 
 $input-color: $black !default;
 $input-border-color: $gray-500 !default;
@@ -374,7 +376,10 @@ $custom-control-indicator-checked-color: $component-active-color !default;
 $custom-control-indicator-checked-bg: $component-active-bg !default;
 $custom-control-indicator-checked-border-color: $component-active-border-color !default;
 $custom-control-indicator-checked-box-shadow: $custom-control-indicator-box-shadow !default;
-$custom-control-indicator-checked-disabled-bg: rgba(theme-color("primary"), 0.5) !default;
+$custom-control-indicator-checked-disabled-bg: rgba(
+  theme-color("primary"),
+  0.5
+) !default;
 
 $custom-control-indicator-disabled-bg: $gray-200 !default;
 $custom-control-label-disabled-color: $gray-600 !default;
@@ -408,7 +413,8 @@ $chart-height-sm: 230px !default;
 $chart-legend-margin-top: 2.5rem !default;
 $chart-legend-font-size: $font-size-sm !default;
 $chart-legend-color: $text-muted !default;
-$chart-legend-height: $chart-legend-margin-top + $chart-legend-font-size * $line-height-base !default;
+$chart-legend-height: $chart-legend-margin-top + $chart-legend-font-size *
+  $line-height-base !default;
 
 // Map
 $map-height: 500px !default;
@@ -437,8 +443,8 @@ $dropdown-bg: $white !default;
 $dropdown-border-width: 0 !default;
 $dropdown-border-color: rgba($black, 0.15) !default;
 $dropdown-border-radius: $border-radius-lg !default;
-$dropdown-box-shadow: 0 50px 100px rgba(50, 50, 93, 0.1), 0 15px 35px rgba(50, 50, 93, 0.15),
-    0 5px 15px rgba(0, 0, 0, 0.1) !default;
+$dropdown-box-shadow: 0 50px 100px rgba(50, 50, 93, 0.1),
+  0 15px 35px rgba(50, 50, 93, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1) !default;
 $dropdown-link-hover-bg: lighten($primary, 50%) !default;
 
 // Navs
@@ -656,7 +662,9 @@ $card-spacer-x: 1.25rem !default;
 $card-border-width: $border-width !default;
 $card-border-radius: $border-radius !default;
 $card-border-color: rgba($black, 0.05) !default;
-$card-inner-border-radius: calc(#{$card-border-radius} - #{$card-border-width}) !default;
+$card-inner-border-radius: calc(
+  #{$card-border-radius} - #{$card-border-width}
+) !default;
 $card-cap-bg: $white !default;
 $card-bg: $white !default;
 
@@ -687,8 +695,10 @@ $modal-content-bg: $white !default;
 $modal-content-border-color: rgba($black, 0.2) !default;
 $modal-content-border-width: 0 !default;
 $modal-content-border-radius: $border-radius-lg !default;
-$modal-content-box-shadow-xs: 0 15px 35px rgba(50, 50, 93, 0.2), 0 5px 15px rgba(0, 0, 0, 0.17);
-$modal-content-box-shadow-sm-up: 0 15px 35px rgba(50, 50, 93, 0.2), 0 5px 15px rgba(0, 0, 0, 0.17);
+$modal-content-box-shadow-xs: 0 15px 35px rgba(50, 50, 93, 0.2),
+  0 5px 15px rgba(0, 0, 0, 0.17);
+$modal-content-box-shadow-sm-up: 0 15px 35px rgba(50, 50, 93, 0.2),
+  0 5px 15px rgba(0, 0, 0, 0.17);
 
 $modal-backdrop-bg: $black !default;
 $modal-backdrop-opacity: 0.16 !default;
@@ -719,7 +729,10 @@ $datepicker-active-background: theme-color("primary") !default;
 $datepicker-active-box-shadow: none !default;
 
 $datepicker-range-background: theme-color("primary") !default;
-$datepicker-range-cell-focused-background: darken($datepicker-range-background, 5%);
+$datepicker-range-cell-focused-background: darken(
+  $datepicker-range-background,
+  5%
+);
 $datepicker-range-color: $white !default;
 $datepicker-range-highlighted-bg: $gray-200 !default;
 

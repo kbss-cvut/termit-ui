@@ -1,4 +1,4 @@
-import ChangeRecord, {ChangeRecordData} from "./ChangeRecord";
+import ChangeRecord, { ChangeRecordData } from "./ChangeRecord";
 
 interface ID {
     iri: string;
@@ -16,7 +16,7 @@ export interface UpdateRecordData extends ChangeRecordData {
  * Represents an atomic update to an entity.
  */
 export class UpdateRecord extends ChangeRecord implements UpdateRecordData {
-    public readonly changedAttribute: {iri: string};
+    public readonly changedAttribute: { iri: string };
     public readonly originalValue?: undefined | UpdateValueType;
     public readonly newValue?: undefined | UpdateValueType;
 

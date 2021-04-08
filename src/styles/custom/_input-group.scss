@@ -3,14 +3,14 @@
 //
 
 .form-group {
-    .form-control::placeholder {
-        font-style: italic;
-        font-weight: 300;
-    }
+  .form-control::placeholder {
+    font-style: italic;
+    font-weight: 300;
+  }
 
-    label {
-        font-weight: 600;
-    }
+  label {
+    font-weight: 600;
+  }
 }
 
 @import "../core/forms/input-group";

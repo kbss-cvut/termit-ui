@@ -1,8 +1,8 @@
-import {fromRange, toRange} from "xpath-range";
-import {Node as DomHandlerNode} from "domhandler";
+import { fromRange, toRange } from "xpath-range";
+import { Node as DomHandlerNode } from "domhandler";
 import Utils from "../../util/Utils";
-import {TextQuoteSelector} from "../../model/TermOccurrence";
-import {AnnotationType} from "./AnnotationDomHelper";
+import { TextQuoteSelector } from "../../model/TermOccurrence";
+import { AnnotationType } from "./AnnotationDomHelper";
 
 const BLOCK_ELEMENTS = [
     "address",
@@ -37,7 +37,7 @@ const BLOCK_ELEMENTS = [
     "pre",
     "section",
     "table",
-    "ul"
+    "ul",
 ];
 
 function calculatePathLength(node: Node, ancestor: Node) {
@@ -78,7 +78,10 @@ const HtmlDomUtils = {
      */
     isInPopup(range: Range): boolean {
         const commonAnc = range.commonAncestorContainer;
-        return commonAnc.parentElement !== null && commonAnc.parentElement.closest(".popover") !== null;
+        return (
+            commonAnc.parentElement !== null &&
+            commonAnc.parentElement.closest(".popover") !== null
+        );
     },
 
     extendSelectionToWords() {
@@ -96,8 +99,12 @@ const HtmlDomUtils = {
 
             // modify() works on the focus of the selection
             const endNode = sel.focusNode;
-            const endOffset = sel.focusOffset !== 0 ? sel.focusOffset - 1 : sel.focusOffset;
-            sel.collapse(sel.anchorNode, backwards ? sel.anchorOffset : sel.anchorOffset + 1);
+            const endOffset =
+                sel.focusOffset !== 0 ? sel.focusOffset - 1 : sel.focusOffset;
+            sel.collapse(
+                sel.anchorNode,
+                backwards ? sel.anchorOffset : sel.anchorOffset + 1
+            );
             if (backwards) {
                 // @ts-ignore
                 sel.modify("move", "forward", "word");
@@ -125,8 +132,14 @@ const HtmlDomUtils = {
     doesRangeSpanMultipleElements(range: Range): boolean {
         return (
             range.startContainer !== range.endContainer &&
-            calculatePathLength(range.startContainer, range.commonAncestorContainer) !==
-                calculatePathLength(range.endContainer, range.commonAncestorContainer)
+            calculatePathLength(
+                range.startContainer,
+                range.commonAncestorContainer
+            ) !==
+                calculatePathLength(
+                    range.endContainer,
+                    range.commonAncestorContainer
+                )
         );
     },
 
@@ -136,7 +149,11 @@ const HtmlDomUtils = {
      * @param range range within document referenced by rootElement that should be surrounded.
      * @param surroundingElementHtml string representing surroundingElement.
      */
-    replaceRange(rootElement: HTMLElement, range: Range, surroundingElementHtml: string): HTMLElement {
+    replaceRange(
+        rootElement: HTMLElement,
+        range: Range,
+        surroundingElementHtml: string
+    ): HTMLElement {
         const xpathRange = fromRange(range, rootElement);
         const clonedElement = rootElement.cloneNode(true) as HTMLElement;
         const newRange = toRange(
@@ -219,7 +236,7 @@ const HtmlDomUtils = {
                     top: y,
                     right: x,
                     bottom: y,
-                    left: x
+                    left: x,
                 };
             },
             addEventListener: () => {
@@ -228,17 +245,20 @@ const HtmlDomUtils = {
             removeEventListener: () => {
                 /* Intentionally empty */
             },
-            contains: () => false
+            contains: () => false,
         } as unknown) as HTMLElement;
     },
 
-    findAnnotationElementBySelector(document: Document, selector: TextQuoteSelector): Element {
+    findAnnotationElementBySelector(
+        document: Document,
+        selector: TextQuoteSelector
+    ): Element {
         const occurrences = document
             .getElementById("annotator")!
             .querySelectorAll(`[typeof="${AnnotationType.OCCURRENCE}"]`);
         const matching: Element[] = [];
         const looseCandidates: Element[] = [];
-        occurrences.forEach(o => {
+        occurrences.forEach((o) => {
             if (o.textContent === selector.exactMatch) {
                 matching.push(o);
             }
@@ -246,10 +266,14 @@ const HtmlDomUtils = {
         const definitions = document
             .getElementById("annotator")!
             .querySelectorAll(`[typeof="${AnnotationType.DEFINITION}"]`);
-        definitions.forEach(d => {
+        definitions.forEach((d) => {
             if (d.textContent === selector.exactMatch) {
                 matching.push(d);
-            } else if (d.textContent && d.textContent.replace(/\s/g, "") === selector.exactMatch.replace(/\s/g, "")) {
+            } else if (
+                d.textContent &&
+                d.textContent.replace(/\s/g, "") ===
+                    selector.exactMatch.replace(/\s/g, "")
+            ) {
                 // If the exact match didn't work, try removing all spaces and checking again
                 looseCandidates.push(d);
             }
@@ -270,7 +294,9 @@ const HtmlDomUtils = {
                 return elem;
             }
         }
-        throw new Error(`Element with exact match '${selector.exactMatch}' not found in document.`);
+        throw new Error(
+            `Element with exact match '${selector.exactMatch}' not found in document.`
+        );
     },
 
     addClassToElement(element: Element, className: string) {
@@ -279,7 +305,7 @@ const HtmlDomUtils = {
 
     removeClassFromElement(element: Element, className: string) {
         element.classList.remove(className);
-    }
+    },
 };
 
 function prefixMatch(selector: TextQuoteSelector, element: Element) {
