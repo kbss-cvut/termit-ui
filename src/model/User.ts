@@ -7,8 +7,9 @@ export const CONTEXT = {
     lastName: VocabularyUtils.PREFIX + "má-příjmení",
     username: VocabularyUtils.PREFIX + "má-uživatelské-jméno",
     password: VocabularyUtils.PREFIX + "má-heslo",
-    originalPassword: "http://onto.fel.cvut.cz/ontologies/application/termit/original-password",
-    types: "@type"
+    originalPassword:
+        "http://onto.fel.cvut.cz/ontologies/application/termit/original-password",
+    types: "@type",
 };
 
 export interface UserAccountData {
@@ -79,7 +80,7 @@ export default class User implements UserData {
     }
 
     public toJsonLd(): UserData {
-        return Object.assign({}, this, {"@context": CONTEXT});
+        return Object.assign({}, this, { "@context": CONTEXT });
     }
 }
 
@@ -98,5 +99,5 @@ export const EMPTY_USER = new User({
     iri: "http://empty",
     firstName: "",
     lastName: "",
-    username: ""
+    username: "",
 });

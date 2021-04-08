@@ -26,7 +26,10 @@ declare module "jsonld" {
         options?: JsonLdOptions
     ): Promise<T>;
 
-    export function expand(input: JsonLdInput, options?: JsonLdOptions): Promise<JsonLdDictionary[]>;
+    export function expand(
+        input: JsonLdInput,
+        options?: JsonLdOptions
+    ): Promise<JsonLdDictionary[]>;
 
     export function flatten(
         input: JsonLdInput,

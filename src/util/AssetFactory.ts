@@ -1,17 +1,22 @@
-import Asset, {AssetData} from "../model/Asset";
-import Vocabulary, {VocabularyData} from "../model/Vocabulary";
-import Resource, {ResourceData} from "../model/Resource";
-import Document, {DocumentData} from "../model/Document";
-import File, {FileData} from "../model/File";
-import Term, {TermData} from "../model/Term";
+import Asset, { AssetData } from "../model/Asset";
+import Vocabulary, { VocabularyData } from "../model/Vocabulary";
+import Resource, { ResourceData } from "../model/Resource";
+import Document, { DocumentData } from "../model/Document";
+import File, { FileData } from "../model/File";
+import Term, { TermData } from "../model/Term";
 import Utils from "./Utils";
 import VocabularyUtils from "./VocabularyUtils";
-import TermAssignment, {TermAssignmentData} from "../model/TermAssignment";
-import TermOccurrence, {TermOccurrenceData} from "../model/TermOccurrence";
-import ChangeRecord, {ChangeRecordData} from "../model/changetracking/ChangeRecord";
+import TermAssignment, { TermAssignmentData } from "../model/TermAssignment";
+import TermOccurrence, { TermOccurrenceData } from "../model/TermOccurrence";
+import ChangeRecord, {
+    ChangeRecordData,
+} from "../model/changetracking/ChangeRecord";
 import PersistRecord from "../model/changetracking/PersistRecord";
-import {UpdateRecord, UpdateRecordData} from "../model/changetracking/UpdateRecord";
-import {langString} from "../model/MultilingualString";
+import {
+    UpdateRecord,
+    UpdateRecordData,
+} from "../model/changetracking/UpdateRecord";
+import { langString } from "../model/MultilingualString";
 
 const AssetFactory = {
     /**
@@ -32,7 +37,9 @@ const AssetFactory = {
             case VocabularyUtils.RESOURCE:
                 return new Resource(data as ResourceData);
             default:
-                throw new TypeError("Unsupported type of asset data " + JSON.stringify(data));
+                throw new TypeError(
+                    "Unsupported type of asset data " + JSON.stringify(data)
+                );
         }
     },
 
@@ -50,7 +57,9 @@ const AssetFactory = {
             case VocabularyUtils.RESOURCE:
                 return new Resource(data);
             default:
-                throw new TypeError("Unsupported type of resource data " + JSON.stringify(data));
+                throw new TypeError(
+                    "Unsupported type of resource data " + JSON.stringify(data)
+                );
         }
     },
 
@@ -65,7 +74,9 @@ const AssetFactory = {
         } else if (types.indexOf(VocabularyUtils.TERM_ASSIGNMENT) !== -1) {
             return new TermAssignment(data);
         }
-        throw new TypeError("Unsupported type of assignment data " + JSON.stringify(data));
+        throw new TypeError(
+            "Unsupported type of assignment data " + JSON.stringify(data)
+        );
     },
 
     /**
@@ -88,7 +99,7 @@ const AssetFactory = {
             altLabels: undefined,
             hiddenLabels: undefined,
             definitionSource: undefined,
-            draft: true
+            draft: true,
         };
     },
 
@@ -102,8 +113,10 @@ const AssetFactory = {
         } else if (data.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1) {
             return new UpdateRecord(data as UpdateRecordData);
         }
-        throw new TypeError("Unsupported type of change record data " + JSON.stringify(data));
-    }
+        throw new TypeError(
+            "Unsupported type of change record data " + JSON.stringify(data)
+        );
+    },
 };
 
 export default AssetFactory;

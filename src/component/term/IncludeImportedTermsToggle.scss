@@ -2,26 +2,26 @@
 @import "../../styles/custom/colors";
 
 .toggle-custom {
-    white-space: nowrap !important;
+  white-space: nowrap !important;
 }
 
 .toggle-handle-custom {
-    background-color: #ffffff !important;
-    border-color: rgba(0, 0, 0, 0.125) !important;
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.125) !important;
 }
 
 .toggle-on,
 .toggle-off {
-    position: absolute !important;
+  position: absolute !important;
 }
 
 .toggle.btn-secondary {
-    background-color: $gray-400 !important;
+  background-color: $gray-400 !important;
 }
 
 .toggle-group {
-    .toggle-off,
-    .btn-secondary {
-        background-color: transparent !important;
-    }
+  .toggle-off,
+  .btn-secondary {
+    background-color: transparent !important;
+  }
 }

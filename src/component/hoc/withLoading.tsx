@@ -4,14 +4,14 @@ import getDisplayName from "../../util/getDisplayName";
 import classNames from "classnames";
 
 export interface WithLoadingProps {
-    loading?: boolean;
-    loadingMsg?: string;
+  loading?: boolean;
+  loadingMsg?: string;
 }
 
 export interface WithLoadingStaticOptions {
-    tag?: string;
-    maskClass?: string;
-    containerClass?: string;
+  tag?: string;
+  maskClass?: string;
+  containerClass?: string;
 }
 
 /**
@@ -22,22 +22,26 @@ export interface WithLoadingStaticOptions {
  * @constructor
  */
 const withLoading = <P extends object>(
-    Component: React.ComponentType<P>,
-    options: WithLoadingStaticOptions = {tag: "div"}
+  Component: React.ComponentType<P>,
+  options: WithLoadingStaticOptions = { tag: "div" }
 ): React.FC<P & WithLoadingProps> => {
-    const Wrapped: React.FC<P & WithLoadingProps> = ({loading, loadingMsg, ...props}: P & WithLoadingProps) => {
-        const tag = options.tag ? options.tag : "div";
-        const className = classNames(options.containerClass, "relative");
+  const Wrapped: React.FC<P & WithLoadingProps> = ({
+    loading,
+    loadingMsg,
+    ...props
+  }: P & WithLoadingProps) => {
+    const tag = options.tag ? options.tag : "div";
+    const className = classNames(options.containerClass, "relative");
 
-        return React.createElement(
-            tag,
-            {className},
-            loading && <Mask text={loadingMsg} classes={options.maskClass} />,
-            <Component {...(props as P)} />
-        );
-    };
-    Wrapped.displayName = "LoadingWrapper(" + getDisplayName(Component) + ")";
-    return Wrapped;
+    return React.createElement(
+      tag,
+      { className },
+      loading && <Mask text={loadingMsg} classes={options.maskClass} />,
+      <Component {...(props as P)} />
+    );
+  };
+  Wrapped.displayName = "LoadingWrapper(" + getDisplayName(Component) + ")";
+  return Wrapped;
 };
 
 export default withLoading;

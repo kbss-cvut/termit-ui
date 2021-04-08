@@ -8,7 +8,7 @@ describe("Asset", () => {
         it("initializes types with the specified type when they were undefined", () => {
             const asset = new Resource({
                 iri: Generator.generateUri(),
-                label: "Test"
+                label: "Test",
             });
             asset.types = undefined;
             asset.addType(VocabularyUtils.DOCUMENT);
@@ -19,19 +19,23 @@ describe("Asset", () => {
         it("adds specified type to existing asset types", () => {
             const asset = new Resource({
                 iri: Generator.generateUri(),
-                label: "Test"
+                label: "Test",
             });
             asset.addType(VocabularyUtils.DOCUMENT);
             expect(asset.types).toBeDefined();
-            expect(asset.types!.indexOf(VocabularyUtils.DOCUMENT)).not.toEqual(-1);
+            expect(asset.types!.indexOf(VocabularyUtils.DOCUMENT)).not.toEqual(
+                -1
+            );
         });
 
         it("does not add specified type when it is already present in the types attribute", () => {
             const asset = new Resource({
                 iri: Generator.generateUri(),
-                label: "Test"
+                label: "Test",
             });
-            expect(asset.types!.indexOf(VocabularyUtils.RESOURCE)).not.toEqual(-1);
+            expect(asset.types!.indexOf(VocabularyUtils.RESOURCE)).not.toEqual(
+                -1
+            );
             const origLength = asset.types!.length;
             asset.addType(VocabularyUtils.RESOURCE);
             expect(asset.types!.length).toEqual(origLength);
@@ -52,9 +56,13 @@ describe("Asset", () => {
             expect(Asset.equals(undefined, null)).toBeTruthy();
             expect(Asset.equals(null, undefined)).toBeTruthy();
             expect(Asset.equals(null, null)).toBeTruthy();
-            expect(Asset.equals(Generator.generateTerm(), undefined)).toBeFalsy();
+            expect(
+                Asset.equals(Generator.generateTerm(), undefined)
+            ).toBeFalsy();
             expect(Asset.equals(Generator.generateTerm(), null)).toBeFalsy();
-            expect(Asset.equals(undefined, Generator.generateTerm())).toBeFalsy();
+            expect(
+                Asset.equals(undefined, Generator.generateTerm())
+            ).toBeFalsy();
             expect(Asset.equals(null, Generator.generateTerm())).toBeFalsy();
         });
 

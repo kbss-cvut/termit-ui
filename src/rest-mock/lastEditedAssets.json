@@ -1,50 +1,52 @@
 [
-    {
-        "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/randomInstance-1529066498",
-        "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj",
-        "http://www.w3.org/2000/01/rdf-schema#label": "Resource test 1529066498",
-        "http://onto.fel.cvut.cz/ontologies/slovnik/agendovy/popis-dat/pojem/má-editora": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
-            "@type": [
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu",
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
-            ]
-        },
-        "http://purl.org/dc/terms/modified": 1534429897893
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/randomInstance-1529066498",
+    "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj",
+    "http://www.w3.org/2000/01/rdf-schema#label": "Resource test 1529066498",
+    "http://onto.fel.cvut.cz/ontologies/slovnik/agendovy/popis-dat/pojem/má-editora": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
+      ]
     },
-    {
-        "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-4",
-        "@type": ["http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"],
-        "http://www.w3.org/2000/01/rdf-schema#label": "pojem 4",
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
-            "@type": [
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu",
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
-            ]
-        },
-        "http://purl.org/dc/terms/modified": 1534429896893
+    "http://purl.org/dc/terms/modified": 1534429897893
+  },
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-4",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": "pojem 4",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
+      ]
     },
-    {
-        "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan",
-        "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/slovník",
-        "http://www.w3.org/2000/01/rdf-schema#label": "Metropolitan plan",
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
-            "@type": [
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu",
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
-            ]
-        },
-        "http://purl.org/dc/terms/modified": 1534429895893
-    }
+    "http://purl.org/dc/terms/modified": 1534429896893
+  },
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan",
+    "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/slovník",
+    "http://www.w3.org/2000/01/rdf-schema#label": "Metropolitan plan",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
+      ]
+    },
+    "http://purl.org/dc/terms/modified": 1534429895893
+  }
 ]

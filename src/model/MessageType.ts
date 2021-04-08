@@ -1,4 +1,4 @@
-import {MessageType as Type} from "./Message";
+import { MessageType as Type } from "./Message";
 
 export default class MessageType {
     public static SUCCESS: Type = "success";

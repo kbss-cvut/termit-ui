@@ -1,5 +1,5 @@
 import Generator from "../../__tests__/environment/Generator";
-import Comment, {CommentReaction} from "../Comment";
+import Comment, { CommentReaction } from "../Comment";
 
 describe("Comment", () => {
     describe("toJsonLd", () => {
@@ -7,13 +7,13 @@ describe("Comment", () => {
             const sut = new Comment({
                 iri: Generator.generateUri(),
                 content: "test  comment",
-                author: Generator.generateUser()
+                author: Generator.generateUser(),
             });
             const reaction: CommentReaction = {
                 iri: Generator.generateUri(),
                 actor: sut.author!,
                 types: ["https://www.w3.org/ns/activitystreams#Like"],
-                object: sut
+                object: sut,
             };
             sut.reactions = [reaction];
 

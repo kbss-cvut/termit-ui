@@ -32,18 +32,24 @@ describe("Utils", () => {
         it("extracts parameter value from query string", () => {
             const value = "http://onto.fel.cvut.cz/ontologies/termit/";
             const queryString = "?namespace=" + value;
-            expect(Utils.extractQueryParam(queryString, "namespace")).toEqual(value);
+            expect(Utils.extractQueryParam(queryString, "namespace")).toEqual(
+                value
+            );
         });
 
         it("extracts parameter value from query string containing multiple parameters", () => {
             const value = "http://onto.fel.cvut.cz/ontologies/termit/";
             const queryString = "?namespace=" + value + "&searchString=test";
-            expect(Utils.extractQueryParam(queryString, "namespace")).toEqual(value);
+            expect(Utils.extractQueryParam(queryString, "namespace")).toEqual(
+                value
+            );
         });
 
         it("returns undefined when parameter is not set in query string", () => {
             const queryString = "&searchString=test";
-            expect(Utils.extractQueryParam(queryString, "namespace")).not.toBeDefined();
+            expect(
+                Utils.extractQueryParam(queryString, "namespace")
+            ).not.toBeDefined();
         });
     });
 
@@ -53,12 +59,21 @@ describe("Utils", () => {
         });
 
         it("creates page object for offset and limit", () => {
-            expect(Utils.createPagingParams(0, 100)).toEqual({page: 0, size: 100});
+            expect(Utils.createPagingParams(0, 100)).toEqual({
+                page: 0,
+                size: 100,
+            });
         });
 
         it("rounds offset up to the closest greater page number", () => {
-            expect(Utils.createPagingParams(88, 100)).toEqual({page: 1, size: 100});
-            expect(Utils.createPagingParams(173, 100)).toEqual({page: 2, size: 100});
+            expect(Utils.createPagingParams(88, 100)).toEqual({
+                page: 1,
+                size: 100,
+            });
+            expect(Utils.createPagingParams(173, 100)).toEqual({
+                page: 2,
+                size: 100,
+            });
         });
 
         it("returns empty object when either limit or offset is missing", () => {
@@ -72,7 +87,7 @@ describe("Utils", () => {
             const term: Term = new Term({
                 iri: Generator.generateUri(),
                 label: "Test",
-                types: [VocabularyUtils.TERM]
+                types: [VocabularyUtils.TERM],
             });
             expect(Utils.getAssetTypeLabelId(term)).toEqual("type.term");
         });
@@ -81,18 +96,22 @@ describe("Utils", () => {
             const vocabulary: Vocabulary = new Vocabulary({
                 iri: Generator.generateUri(),
                 label: "Test",
-                types: [VocabularyUtils.VOCABULARY]
+                types: [VocabularyUtils.VOCABULARY],
             });
-            expect(Utils.getAssetTypeLabelId(vocabulary)).toEqual("type.vocabulary");
+            expect(Utils.getAssetTypeLabelId(vocabulary)).toEqual(
+                "type.vocabulary"
+            );
         });
 
         it("returns resource type label message id for resource", () => {
             const resource: Resource = new Resource({
                 iri: Generator.generateUri(),
                 label: "Test",
-                types: VocabularyUtils.RESOURCE
+                types: VocabularyUtils.RESOURCE,
             });
-            expect(Utils.getAssetTypeLabelId(resource)).toEqual("type.resource");
+            expect(Utils.getAssetTypeLabelId(resource)).toEqual(
+                "type.resource"
+            );
         });
 
         it("returns document type label message id for document", () => {
@@ -100,7 +119,7 @@ describe("Utils", () => {
                 iri: Generator.generateUri(),
                 label: "Test",
                 files: [],
-                types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]
+                types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE],
             });
             expect(Utils.getAssetTypeLabelId(doc)).toEqual("type.document");
         });
@@ -109,7 +128,7 @@ describe("Utils", () => {
             const file: File = new File({
                 iri: Generator.generateUri(),
                 label: "Test",
-                types: [VocabularyUtils.FILE, VocabularyUtils.RESOURCE]
+                types: [VocabularyUtils.FILE, VocabularyUtils.RESOURCE],
             });
             expect(Utils.getAssetTypeLabelId(file)).toEqual("type.file");
         });
@@ -117,7 +136,7 @@ describe("Utils", () => {
         it("returns undefined for asset without type definition", () => {
             const asset: Vocabulary = new Vocabulary({
                 iri: Generator.generateUri(),
-                label: "Test"
+                label: "Test",
             });
             asset.types = undefined;
             expect(Utils.getAssetTypeLabelId(asset)).not.toBeDefined();
@@ -126,7 +145,7 @@ describe("Utils", () => {
         it("returns undefined for asset with unknown type definition", () => {
             const resource: Resource = new Resource({
                 iri: Generator.generateUri(),
-                label: "Test"
+                label: "Test",
             });
             resource.types = [VocabularyUtils.RDFS_RESOURCE];
             expect(Utils.getAssetTypeLabelId(resource)).not.toBeDefined();
@@ -135,8 +154,14 @@ describe("Utils", () => {
 
     describe("labelComparator", () => {
         it("compares specified assets by label", () => {
-            const aOne = new Resource({iri: Generator.generateUri(), label: "B"});
-            const aTwo = new Resource({iri: Generator.generateUri(), label: "A"});
+            const aOne = new Resource({
+                iri: Generator.generateUri(),
+                label: "B",
+            });
+            const aTwo = new Resource({
+                iri: Generator.generateUri(),
+                label: "A",
+            });
             expect(Utils.labelComparator(aOne, aTwo)).toEqual(1);
         });
     });

@@ -6,32 +6,32 @@ import ContainerMask from "../misc/ContainerMask";
  * Interface declaring properties of components wrapped in the {@code withInjectableLoading} HOC.
  */
 export interface InjectsLoading {
-    /**
-     * Turns the loading on.
-     * @param message Optional message to display. Without it, a generic "Please wait" message is shown
-     */
-    loadingOn: (message?: string) => void;
-    /**
-     * Turns the loading off.
-     */
-    loadingOff: () => void;
-    /**
-     * Renders the container-based mask element.
-     */
-    renderMask: () => JSX.Element | null;
-    /**
-     * Indicates whether loading is turned on or off.
-     */
-    loading: boolean;
+  /**
+   * Turns the loading on.
+   * @param message Optional message to display. Without it, a generic "Please wait" message is shown
+   */
+  loadingOn: (message?: string) => void;
+  /**
+   * Turns the loading off.
+   */
+  loadingOff: () => void;
+  /**
+   * Renders the container-based mask element.
+   */
+  renderMask: () => JSX.Element | null;
+  /**
+   * Indicates whether loading is turned on or off.
+   */
+  loading: boolean;
 }
 
 interface WithInjectableLoadingStaticOptions {
-    maskClass?: string;
+  maskClass?: string;
 }
 
 interface WithInjectableLoadingState {
-    loading: boolean;
-    message?: string;
+  loading: boolean;
+  message?: string;
 }
 
 /**
@@ -47,41 +47,47 @@ interface WithInjectableLoadingState {
  * @constructor
  */
 const withInjectableLoading = <P extends InjectsLoading>(
-    Component: React.ComponentType<P>,
-    options: WithInjectableLoadingStaticOptions = {}
+  Component: React.ComponentType<P>,
+  options: WithInjectableLoadingStaticOptions = {}
 ): React.ComponentClass<Pick<P, Exclude<keyof P, keyof InjectsLoading>>> => {
-    class Wrapped extends React.Component<P & InjectsLoading, WithInjectableLoadingState> {
-        public static readonly displayName = "LoadingInjectingWrapper(" + getDisplayName(Component) + ")";
+  class Wrapped extends React.Component<
+    P & InjectsLoading,
+    WithInjectableLoadingState
+  > {
+    public static readonly displayName =
+      "LoadingInjectingWrapper(" + getDisplayName(Component) + ")";
 
-        constructor(props: P & InjectsLoading) {
-            super(props);
-            this.state = {loading: false};
-        }
-
-        public loadingOn = (message?: string) => {
-            this.setState({loading: true, message});
-        };
-
-        public loadingOff = () => {
-            this.setState({loading: false, message: undefined});
-        };
-
-        public renderMask = () => {
-            return this.state.loading ? <ContainerMask text={this.state.message} classes={options.maskClass} /> : null;
-        };
-
-        public render() {
-            const props = Object.assign({}, this.props, {
-                loadingOn: this.loadingOn,
-                loadingOff: this.loadingOff,
-                renderMask: this.renderMask,
-                loading: this.state.loading
-            });
-            return <Component {...props} />;
-        }
+    constructor(props: P & InjectsLoading) {
+      super(props);
+      this.state = { loading: false };
     }
 
-    return Wrapped as any;
+    public loadingOn = (message?: string) => {
+      this.setState({ loading: true, message });
+    };
+
+    public loadingOff = () => {
+      this.setState({ loading: false, message: undefined });
+    };
+
+    public renderMask = () => {
+      return this.state.loading ? (
+        <ContainerMask text={this.state.message} classes={options.maskClass} />
+      ) : null;
+    };
+
+    public render() {
+      const props = Object.assign({}, this.props, {
+        loadingOn: this.loadingOn,
+        loadingOff: this.loadingOff,
+        renderMask: this.renderMask,
+        loading: this.state.loading,
+      });
+      return <Component {...props} />;
+    }
+  }
+
+  return Wrapped as any;
 };
 
 export default withInjectableLoading;

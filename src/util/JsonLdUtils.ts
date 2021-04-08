@@ -1,4 +1,4 @@
-import {compact, JsonLdContext, JsonLdDictionary, JsonLdInput} from "jsonld";
+import { compact, JsonLdContext, JsonLdDictionary, JsonLdInput } from "jsonld";
 
 /**
  * Utility functions for processing JSON-LD data.
@@ -16,7 +16,9 @@ export default class JsonLdUtils {
         input: JsonLdInput,
         context: JsonLdContext
     ): Promise<T> {
-        return compact<T>(input, context).then(res => JsonLdUtils.resolveReferences<T>(res));
+        return compact<T>(input, context).then((res) =>
+            JsonLdUtils.resolveReferences<T>(res)
+        );
     }
 
     /**
@@ -28,16 +30,17 @@ export default class JsonLdUtils {
      * @param input The JSON-LD input
      * @param context Context to use for JSON-LD compaction
      */
-    public static compactAndResolveReferencesAsArray<T extends JsonLdDictionary>(
-        input: JsonLdInput,
-        context: JsonLdContext
-    ): Promise<T[]> {
+    public static compactAndResolveReferencesAsArray<
+        T extends JsonLdDictionary
+    >(input: JsonLdInput, context: JsonLdContext): Promise<T[]> {
         if (Array.isArray(input) && input.length === 0) {
             return Promise.resolve([]);
         }
         return compact(input, context)
-            .then(res => JsonLdUtils.loadArrayFromCompactedGraph<T>(res))
-            .then(arr => arr.map(item => JsonLdUtils.resolveReferences<T>(item)));
+            .then((res) => JsonLdUtils.loadArrayFromCompactedGraph<T>(res))
+            .then((arr) =>
+                arr.map((item) => JsonLdUtils.resolveReferences<T>(item))
+            );
     }
 
     /**
@@ -47,12 +50,16 @@ export default class JsonLdUtils {
      * array is returned.
      * @param compacted Compacted JSON-LD
      */
-    public static loadArrayFromCompactedGraph<T extends JsonLdDictionary>(compacted: object): T[] {
+    public static loadArrayFromCompactedGraph<T extends JsonLdDictionary>(
+        compacted: object
+    ): T[] {
         if (!compacted.hasOwnProperty("@context")) {
             return [];
         }
         return compacted.hasOwnProperty("@graph")
-            ? Object.keys(compacted["@graph"]).map(k => compacted["@graph"][k])
+            ? Object.keys(compacted["@graph"]).map(
+                  (k) => compacted["@graph"][k]
+              )
             : [compacted];
     }
 
@@ -61,7 +68,9 @@ export default class JsonLdUtils {
      * in the specified input.
      * @param input JSON-LD compaction result to be processed
      */
-    public static resolveReferences<T extends JsonLdDictionary>(input: JsonLdDictionary): T {
+    public static resolveReferences<T extends JsonLdDictionary>(
+        input: JsonLdDictionary
+    ): T {
         const idMap = new Map<string, object>();
         JsonLdUtils.processNode(input, idMap);
         return input as T;
@@ -75,12 +84,15 @@ export default class JsonLdUtils {
         idMap.set(node.iri, node);
         Object.getOwnPropertyNames(node)
             .sort()
-            .forEach(p => {
+            .forEach((p) => {
                 const val = node[p];
                 if (Array.isArray(val)) {
                     for (let i = 0, len = val.length; i < len; i++) {
                         if (typeof val[i] === "object") {
-                            const reference = JsonLdUtils.getReferencedNodeIfExists(val[i], idMap);
+                            const reference = JsonLdUtils.getReferencedNodeIfExists(
+                                val[i],
+                                idMap
+                            );
                             if (reference) {
                                 val[i] = reference;
                             } else {
@@ -89,7 +101,10 @@ export default class JsonLdUtils {
                         }
                     }
                 } else if (typeof val === "object") {
-                    const reference = JsonLdUtils.getReferencedNodeIfExists(val, idMap);
+                    const reference = JsonLdUtils.getReferencedNodeIfExists(
+                        val,
+                        idMap
+                    );
                     if (reference) {
                         node[p] = reference;
                     } else {
@@ -99,9 +114,16 @@ export default class JsonLdUtils {
             });
     }
 
-    private static getReferencedNodeIfExists(node: any, idMap: Map<string, object>): object | undefined {
+    private static getReferencedNodeIfExists(
+        node: any,
+        idMap: Map<string, object>
+    ): object | undefined {
         const valProps = Object.getOwnPropertyNames(node);
-        if (valProps.length === 1 && valProps[0] === "iri" && idMap.has(node.iri)) {
+        if (
+            valProps.length === 1 &&
+            valProps[0] === "iri" &&
+            idMap.has(node.iri)
+        ) {
             return idMap.get(node.iri);
         } else {
             return undefined;

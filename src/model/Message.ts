@@ -52,12 +52,12 @@ export default class Message {
 }
 
 export function createStringMessage(text: string) {
-    return new Message({message: text});
+    return new Message({ message: text });
 }
 
 export function createFormattedMessage(mId: string, values?: {}) {
     return new Message({
         messageId: mId,
-        values
+        values,
     });
 }

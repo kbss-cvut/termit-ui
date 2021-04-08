@@ -1,6 +1,6 @@
-import RoutingInstance, {Routing} from "../Routing";
+import RoutingInstance, { Routing } from "../Routing";
 import Routes from "../Routes";
-import {createHashHistory} from "history";
+import { createHashHistory } from "history";
 import VocabularyUtils from "../VocabularyUtils";
 import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
@@ -10,8 +10,8 @@ import Generator from "../../__tests__/environment/Generator";
 
 jest.mock("history", () => ({
     createHashHistory: jest.fn().mockReturnValue({
-        push: jest.fn()
-    })
+        push: jest.fn(),
+    }),
 }));
 
 describe("Routing", () => {
@@ -24,14 +24,25 @@ describe("Routing", () => {
     describe("get transition path", () => {
         it("replaces path variables with values", () => {
             const name = "test-vocabulary";
-            const path = Routing.getTransitionPath(Routes.vocabularyDetail, {params: new Map([["name", name]])});
-            const expectedPath = Routes.vocabularyDetail.path.replace(":name", name);
+            const path = Routing.getTransitionPath(Routes.vocabularyDetail, {
+                params: new Map([["name", name]]),
+            });
+            const expectedPath = Routes.vocabularyDetail.path.replace(
+                ":name",
+                name
+            );
             expect(path).toEqual(expectedPath);
         });
         it("adds query parameters when specified for transition", () => {
-            const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/";
-            const path = Routing.getTransitionPath(Routes.vocabularies, {query: new Map([["namespace", namespace]])});
-            const expectedPath = Routes.vocabularies.path.replace(":name", name) + "?namespace=" + namespace;
+            const namespace =
+                "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/";
+            const path = Routing.getTransitionPath(Routes.vocabularies, {
+                query: new Map([["namespace", namespace]]),
+            });
+            const expectedPath =
+                Routes.vocabularies.path.replace(":name", name) +
+                "?namespace=" +
+                namespace;
             expect(path).toEqual(expectedPath);
         });
     });
@@ -39,7 +50,9 @@ describe("Routing", () => {
     describe("transition to", () => {
         it("transitions to route without any parameter", () => {
             RoutingInstance.transitionTo(Routes.vocabularies);
-            expect(historyMock.push).toHaveBeenCalledWith(Routes.vocabularies.path);
+            expect(historyMock.push).toHaveBeenCalledWith(
+                Routes.vocabularies.path
+            );
         });
     });
 
@@ -49,45 +62,58 @@ describe("Routing", () => {
         const iri = namespace + label;
 
         it("transitions to vocabulary summary for a vocabulary", () => {
-            const vocabulary = new Vocabulary({iri, label});
+            const vocabulary = new Vocabulary({ iri, label });
             RoutingInstance.transitionToAsset(vocabulary);
             expect(historyMock.push).toHaveBeenCalledWith(
                 Routing.getTransitionPath(Routes.vocabularySummary, {
                     params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]])
+                    query: new Map([["namespace", namespace]]),
                 })
             );
         });
 
         it("transitions to resource summary for a resource", () => {
-            const resource = new Resource({iri, label, types: [VocabularyUtils.RESOURCE]});
+            const resource = new Resource({
+                iri,
+                label,
+                types: [VocabularyUtils.RESOURCE],
+            });
             RoutingInstance.transitionToAsset(resource);
             expect(historyMock.push).toHaveBeenCalledWith(
                 Routing.getTransitionPath(Routes.resourceSummary, {
                     params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]])
+                    query: new Map([["namespace", namespace]]),
                 })
             );
         });
 
         it("transitions to resource summary for a document", () => {
-            const doc = new Document({iri, label, types: [VocabularyUtils.DOCUMENT], files: []});
+            const doc = new Document({
+                iri,
+                label,
+                types: [VocabularyUtils.DOCUMENT],
+                files: [],
+            });
             RoutingInstance.transitionToAsset(doc);
             expect(historyMock.push).toHaveBeenCalledWith(
                 Routing.getTransitionPath(Routes.resourceSummary, {
                     params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]])
+                    query: new Map([["namespace", namespace]]),
                 })
             );
         });
 
         it("transitions to resource summary for a file", () => {
-            const file = new File({iri, label, types: [VocabularyUtils.FILE]});
+            const file = new File({
+                iri,
+                label,
+                types: [VocabularyUtils.FILE],
+            });
             RoutingInstance.transitionToAsset(file);
             expect(historyMock.push).toHaveBeenCalledWith(
                 Routing.getTransitionPath(Routes.resourceSummary, {
                     params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]])
+                    query: new Map([["namespace", namespace]]),
                 })
             );
         });
@@ -101,9 +127,9 @@ describe("Routing", () => {
                 Routing.getTransitionPath(Routes.vocabularyTermDetail, {
                     params: new Map([
                         ["name", label],
-                        ["termName", term.label]
+                        ["termName", term.label],
                     ]),
-                    query: new Map([["namespace", namespace]])
+                    query: new Map([["namespace", namespace]]),
                 })
             );
         });
@@ -115,12 +141,12 @@ describe("Routing", () => {
         const iri = namespace + label;
 
         it("transitions to public vocabulary summary for a vocabulary", () => {
-            const vocabulary = new Vocabulary({iri, label});
+            const vocabulary = new Vocabulary({ iri, label });
             RoutingInstance.transitionToPublicAsset(vocabulary);
             expect(historyMock.push).toHaveBeenCalledWith(
                 Routing.getTransitionPath(Routes.publicVocabularySummary, {
                     params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]])
+                    query: new Map([["namespace", namespace]]),
                 })
             );
         });
@@ -134,9 +160,9 @@ describe("Routing", () => {
                 Routing.getTransitionPath(Routes.publicVocabularyTermDetail, {
                     params: new Map([
                         ["name", label],
-                        ["termName", term.label]
+                        ["termName", term.label],
                     ]),
-                    query: new Map([["namespace", namespace]])
+                    query: new Map([["namespace", namespace]]),
                 })
             );
         });
@@ -155,10 +181,12 @@ describe("Routing", () => {
                 hash: originalPath,
                 pathname: originalPath,
                 state: null,
-                search: ""
+                search: "",
             };
             RoutingInstance.saveOriginalTarget();
-            expect(RoutingInstance.originalRoutingTarget).toEqual(Routes.administration.path);
+            expect(RoutingInstance.originalRoutingTarget).toEqual(
+                Routes.administration.path
+            );
         });
     });
 
@@ -171,7 +199,9 @@ describe("Routing", () => {
 
         it("transitions to dashboard when no original target is available", () => {
             RoutingInstance.transitionToOriginalTarget();
-            expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.dashboard));
+            expect(historyMock.push).toHaveBeenCalledWith(
+                Routing.getTransitionPath(Routes.dashboard)
+            );
         });
 
         it("transitions to original saved target when there is one", () => {
@@ -180,11 +210,13 @@ describe("Routing", () => {
                 hash: originalPath,
                 pathname: originalPath,
                 state: null,
-                search: ""
+                search: "",
             };
             RoutingInstance.saveOriginalTarget();
             RoutingInstance.transitionToOriginalTarget();
-            expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.administration));
+            expect(historyMock.push).toHaveBeenCalledWith(
+                Routing.getTransitionPath(Routes.administration)
+            );
         });
     });
 });
