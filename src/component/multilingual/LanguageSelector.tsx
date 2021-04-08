@@ -27,10 +27,12 @@ export function renderLanguages(
                 lang: ISO6391.getName(lang),
                 nativeLang: ISO6391.getNativeName(lang)
             })}
-            active={selectedLanguage === lang}>
+            active={selectedLanguage === lang}
+        >
             <NavLink
                 onClick={() => onSelect(lang)}
-                className={selectedLanguage === lang ? "active bg-white" : "language-selector-item"}>
+                className={selectedLanguage === lang ? "active bg-white" : "language-selector-item"}
+            >
                 {ISO6391.getNativeName(lang)}
                 {count > 1 && onRemove && (
                     <FaTimesCircle

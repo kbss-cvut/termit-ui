@@ -19,7 +19,8 @@ const ResourceManagement: React.FC = () => {
                 key="resource.management.create"
                 to={Routes.createResource.path}
                 className="btn btn-primary btn-sm"
-                title={i18n("resource.management.create.tooltip")}>
+                title={i18n("resource.management.create.tooltip")}
+            >
                 <GoPlus />
                 &nbsp;{i18n("resource.management.new")}
             </Link>

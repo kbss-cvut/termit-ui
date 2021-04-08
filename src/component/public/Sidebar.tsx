@@ -81,7 +81,8 @@ export class Sidebar extends DefaultSidebar {
                 className={classNames("navbar-vertical", "navbar-dark", "bg-dark", "py-md-0", {
                     "sidebar-expanded": sidebarExpanded,
                     "sidebar-collapsed": !sidebarExpanded
-                })}>
+                })}
+            >
                 <Container fluid={true}>
                     <div className="d-flex align-items-center header-height justify-content-between">
                         {/* Toggler phone */}
@@ -93,7 +94,8 @@ export class Sidebar extends DefaultSidebar {
                         {(sidebarExpanded || !desktopView) && (
                             <NavbarBrand
                                 className="p-0 ml-2 ml-sm-3 ml-md-0 brand"
-                                href={`#${Routes.publicDashboard.path}`}>
+                                href={`#${Routes.publicDashboard.path}`}
+                            >
                                 {Constants.APP_NAME}
                             </NavbarBrand>
                         )}
@@ -103,7 +105,8 @@ export class Sidebar extends DefaultSidebar {
                             <div
                                 className="menu-collapse d-inline-flex align-items-center"
                                 onClick={this.props.toggleSidebar}
-                                id="toggler">
+                                id="toggler"
+                            >
                                 {sidebarExpanded && <i className="fas fa-chevron-left fa-xs" />}
                                 <i className="fas fa-bars fa-lg line-height-1" />
                                 {!sidebarExpanded && <i className="fas fa-chevron-right fa-xs" />}

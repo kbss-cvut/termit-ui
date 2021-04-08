@@ -93,9 +93,9 @@ const en = {
 
         "dashboard.widget.assetList.empty": "Found no assets to show here.",
         "dashboard.widget.assetList.lastEditMessage":
-            "{operation, select, " + "edit {Edited} " + "other {Created} " + "} by {user} {when}.",
+            "{operation, select, edit {Edited} other {Created}} by {user} {when}.",
         "dashboard.widget.assetList.lastEditMessageByYou":
-            "{operation, select, " + "edit {Edited} " + "other {Created} " + "} by You {when}.",
+            "{operation, select, edit {Edited} other {Created}} by You {when}.",
         "dashboard.widget.lastEditedAssets.title": "Last edited assets",
         "dashboard.widget.lastEditedAssets.all.title": "All",
         "dashboard.widget.lastEditedAssets.mine.title": "Mine",

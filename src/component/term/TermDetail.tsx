@@ -126,7 +126,8 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
                         color="primary"
                         onClick={this.onEdit}
                         key="term-detail-edit"
-                        title={this.props.i18n("edit")}>
+                        title={this.props.i18n("edit")}
+                    >
                         <GoPencil />
                         &nbsp;{this.props.i18n("edit")}
                     </Button>
@@ -141,7 +142,8 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
                     size="sm"
                     color="outline-danger"
                     title={this.props.i18n("asset.remove.tooltip")}
-                    onClick={this.onRemoveClick}>
+                    onClick={this.onRemoveClick}
+                >
                     <FaTrashAlt />
                     &nbsp;{this.props.i18n("remove")}
                 </Button>

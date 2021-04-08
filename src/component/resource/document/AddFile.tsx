@@ -41,7 +41,8 @@ export const AddFile = (props: AddFileProps) => {
                 color="primary"
                 size="sm"
                 onClick={toggle}
-                title={i18n("resource.metadata.document.files.actions.add.tooltip")}>
+                title={i18n("resource.metadata.document.files.actions.add.tooltip")}
+            >
                 <GoPlus className="mr-1" />
                 {i18n("resource.metadata.document.files.actions.add")}
             </Button>

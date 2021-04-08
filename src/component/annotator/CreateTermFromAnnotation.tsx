@@ -93,7 +93,8 @@ export class CreateTermFromAnnotation extends React.Component<
                                     color="success"
                                     onClick={this.onSave}
                                     disabled={invalid}
-                                    size="sm">
+                                    size="sm"
+                                >
                                     {i18n("glossary.form.button.submit")}
                                 </Button>
                                 <Button id="create-term-cancel" color="outline-dark" size="sm" onClick={this.onCancel}>

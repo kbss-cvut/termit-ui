@@ -76,7 +76,8 @@ export class TextAnalysisInvocationButton extends React.Component<
                     color="primary"
                     className={this.props.className}
                     title={i18n("file.metadata.startTextAnalysis")}
-                    onClick={this.onClick}>
+                    onClick={this.onClick}
+                >
                     <GoClippy className="mr-1" />
                     {i18n("file.metadata.startTextAnalysis.text")}
                 </Button>

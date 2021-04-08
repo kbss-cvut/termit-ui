@@ -132,7 +132,8 @@ export class ResourceEdit<
                             onClick={this.props.cancel}
                             key="cancel"
                             color="outline-dark"
-                            size="sm">
+                            size="sm"
+                        >
                             {i18n("cancel")}
                         </Button>
                     </ButtonToolbar>

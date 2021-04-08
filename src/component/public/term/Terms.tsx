@@ -152,7 +152,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                         "flex-wrap",
                         "justify-content-between",
                         "card-header-basic-info"
-                    )}>
+                    )}
+                >
                     <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}</h4>
                     {isDetailView && this.renderIncludeImported()}
                 </div>

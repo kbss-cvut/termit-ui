@@ -35,7 +35,8 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = props => {
                     id="comment-submit"
                     size="sm"
                     disabled={content.trim().length === 0 || submitting}
-                    onClick={submit}>
+                    onClick={submit}
+                >
                     {i18n("comments.create.submit.title")}
                 </Button>
             </ButtonToolbar>

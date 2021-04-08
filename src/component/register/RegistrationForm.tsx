@@ -157,7 +157,8 @@ export class RegistrationForm extends React.Component<RegistrationFormProps, Reg
                         color="success"
                         size="sm"
                         disabled={!this.isValid() || this.props.loading}
-                        onClick={this.onRegister}>
+                        onClick={this.onRegister}
+                    >
                         {i18n("register.submit")}
                     </Button>
                     <br />

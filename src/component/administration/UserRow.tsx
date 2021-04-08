@@ -55,7 +55,8 @@ function renderActionButtons(user: User, actions: UserActions, i18n: (id: string
                 onClick={() => actions.enable(user)}
                 title={i18n(STATUS_MAP.DISABLED.buttonTitle)}
                 className="users-action-button"
-                color="primary">
+                color="primary"
+            >
                 {i18n(STATUS_MAP.DISABLED.buttonLabel)}
             </Button>
         );
@@ -69,7 +70,8 @@ function renderActionButtons(user: User, actions: UserActions, i18n: (id: string
                 onClick={() => actions.disable(user)}
                 title={i18n(STATUS_MAP.ACTIVE.buttonTitle)}
                 className="users-action-button"
-                color="warning">
+                color="warning"
+            >
                 {i18n(STATUS_MAP.ACTIVE.buttonLabel)}
             </Button>
         );
@@ -84,7 +86,8 @@ function renderActionButtons(user: User, actions: UserActions, i18n: (id: string
                 onClick={() => actions.unlock(user)}
                 title={i18n(STATUS_MAP.LOCKED.buttonTitle)}
                 className="users-action-button"
-                color="primary">
+                color="primary"
+            >
                 {i18n(STATUS_MAP.LOCKED.buttonLabel)}
             </Button>
         );
@@ -98,7 +101,8 @@ function renderActionButtons(user: User, actions: UserActions, i18n: (id: string
             onClick={() => actions.changeRole(user)}
             title={i18n("administration.users.action.changerole.tooltip")}
             className="users-action-button"
-            color="primary">
+            color="primary"
+        >
             {i18n("administration.users.action.changerole")}
         </Button>
     );
@@ -123,7 +127,8 @@ function renderUserTypeBadges(user: User, i18n: (id: string) => string) {
                     color="primary"
                     className={`align-middle ml-2 mb-1 ${badgeInfo.className}`}
                     pill={true}
-                    title={i18n(badgeInfo.title)}>
+                    title={i18n(badgeInfo.title)}
+                >
                     {badgeInfo.text}
                 </Badge>
             );
@@ -151,7 +156,8 @@ export const UserRow: React.FC<UserRowProps> = (props: UserRowProps) => {
     return (
         <tr
             className={classNames({italics: !user.isActive(), bold: isCurrentUser})}
-            title={isCurrentUser ? i18n("administration.users.you") : undefined}>
+            title={isCurrentUser ? i18n("administration.users.you") : undefined}
+        >
             <td className="align-middle" title={i18n(status.statusLabel)}>
                 {React.createElement(status.icon)}
             </td>

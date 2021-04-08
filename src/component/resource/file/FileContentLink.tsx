@@ -56,7 +56,8 @@ export class FileContentLink extends React.Component<FileContentLinkProps, FileC
                 id={this.props.id}
                 className="btn btn-primary btn-sm"
                 title={this.props.i18n("resource.metadata.file.content.view.tooltip")}
-                to={Routes.annotateFile.link(params, query)}>
+                to={Routes.annotateFile.link(params, query)}
+            >
                 <GoFile />
                 &nbsp;{this.props.i18n("resource.metadata.file.content")}
             </Link>

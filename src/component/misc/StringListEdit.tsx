@@ -79,7 +79,8 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
                             onClick={this.onAdd}
                             className="input-group-button"
                             disabled={this.state.inputValue.trim().length === 0}
-                            title={this.getText("placeholder.title")}>
+                            title={this.getText("placeholder.title")}
+                        >
                             <GoPlus />
                             &nbsp;{this.getText("placeholder.text")}
                         </Button>
@@ -111,7 +112,8 @@ export class StringListEdit extends React.Component<StringListEditProps, StringL
                                 <Badge
                                     title={this.getText("remove.title")}
                                     className="list-item-remove-icon align-middle"
-                                    onClick={this.onRemove.bind(null, s)}>
+                                    onClick={this.onRemove.bind(null, s)}
+                                >
                                     <FaTrashAlt /> {this.getText("remove.text")}
                                 </Badge>
                             </td>

@@ -103,14 +103,16 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                             "main-view-sidebar-collapsed": !sidebarExpanded
                         },
                         "flex-grow-1"
-                    )}>
+                    )}
+                >
                     <header>
                         {desktopView && (
                             <Navbar
                                 id="navbar"
                                 light={true}
                                 fixed="top"
-                                className={classNames("bg-white", "navbar-top", "d-flex")}>
+                                className={classNames("bg-white", "navbar-top", "d-flex")}
+                            >
                                 <Nav navbar={true} className="nav-search">
                                     <NavbarSearch navbar={true} />
                                 </Nav>
@@ -132,7 +134,8 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                         fluid={true}
                         className={classNames("pt-3", "flex-grow-1", {
                             "content-container-dashboard": this.isDashboardRoute()
-                        })}>
+                        })}
+                    >
                         <React.Suspense fallback={<Mask />}>
                             <Switch>
                                 <BreadcrumbRoute

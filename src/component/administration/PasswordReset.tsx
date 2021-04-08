@@ -51,14 +51,16 @@ export const PasswordReset: React.FC<PasswordResetProps> = (props: PasswordReset
                                     color="success"
                                     size="sm"
                                     onClick={() => props.onSubmit(password)}
-                                    disabled={password.trim().length === 0 || passwordConfirm.trim().length === 0}>
+                                    disabled={password.trim().length === 0 || passwordConfirm.trim().length === 0}
+                                >
                                     {i18n("administration.users.status.action.unlock")}
                                 </Button>
                                 <Button
                                     id="users-unlock-cancel"
                                     color="outline-dark"
                                     size="sm"
-                                    onClick={props.onCancel}>
+                                    onClick={props.onCancel}
+                                >
                                     {i18n("cancel")}
                                 </Button>
                             </ButtonToolbar>

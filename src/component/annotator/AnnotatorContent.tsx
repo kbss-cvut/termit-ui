@@ -66,7 +66,8 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = props => {
                             onCreateTerm={onCreateTerm}
                             sticky={sticky}
                             text={HtmlDomUtils.getTextContent(node)}
-                            {...attribs}>
+                            {...attribs}
+                        >
                             {children}
                         </Annotation>
                     );

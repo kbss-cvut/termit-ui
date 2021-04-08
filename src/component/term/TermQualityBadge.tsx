@@ -69,7 +69,8 @@ export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
                         ? this.props.formatMessage("term.badge.score.tooltip", {score})
                         : this.props.i18n("term.badge.no-score.tooltip")
                 }
-                onClick={this.onBadgeClick}>
+                onClick={this.onBadgeClick}
+            >
                 &nbsp;
             </Badge>
         );

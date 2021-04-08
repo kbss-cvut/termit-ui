@@ -220,7 +220,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                     "mt-2": this.props.isDetailView,
                     "draft-margin-detail": this.props.isDetailView,
                     "draft-margin": !this.props.isDetailView
-                })}>
+                })}
+            >
                 <StatusFilter
                     id="glossary-draftOnly"
                     draft={this.state.draft}
@@ -258,7 +259,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                         "flex-wrap",
                         "justify-content-between",
                         "card-header-basic-info"
-                    )}>
+                    )}
+                >
                     <h4 className={classNames({"mb-0": isDetailView})}>
                         {i18n("glossary.title")}
                         &nbsp;
@@ -281,7 +283,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                                 color="primary"
                                 size="sm"
                                 title={i18n("glossary.createTerm.tooltip")}
-                                onClick={this.onCreateClick}>
+                                onClick={this.onCreateClick}
+                            >
                                 <GoPlus />
                                 &nbsp;{i18n("glossary.new")}
                             </Button>

@@ -18,7 +18,8 @@ export const FooterMenu: React.FC<FooterMenuProps> = props => {
             className={classNames("d-flex", "justify-content-between", "align-items-center", {
                 "footer-sidebar": fixed && sidebarExpanded && desktopView,
                 "text-white-link": fixed && sidebarExpanded && desktopView
-            })}>
+            })}
+        >
             <LanguageSelector fixed={fixed && sidebarExpanded} authenticated={true} />
         </div>
     );

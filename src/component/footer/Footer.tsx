@@ -48,7 +48,8 @@ class Footer extends React.Component<FooterProps, FooterState> {
                     className={classNames("footer-left", {
                         "footer-left-expanded": sidebarExpanded,
                         "footer-left-collapsed": !sidebarExpanded
-                    })}>
+                    })}
+                >
                     <FooterMenu fixed={authenticated} />
                 </div>
                 <Col className="px-2 px-sm-3">
@@ -56,7 +57,8 @@ class Footer extends React.Component<FooterProps, FooterState> {
                         href="https://kbss.felk.cvut.cz"
                         target="_blank"
                         rel="noopener noreferrer"
-                        title={i18n("footer.copyright")}>
+                        title={i18n("footer.copyright")}
+                    >
                         &copy;&nbsp;{i18n("footer.copyright")}, {new Date().getFullYear()}
                     </a>
                 </Col>
@@ -65,13 +67,15 @@ class Footer extends React.Component<FooterProps, FooterState> {
                         onClick={this.toggleLogViewer}
                         className="log-viewer-toggle pl-xs-1 px-2 px-sm-3"
                         title={i18n("log-viewer.title")}
-                        id="log-viewer-toggler">
+                        id="log-viewer-toggler"
+                    >
                         <GoZap />
                     </span>
                     <FooterModalViewer
                         title="log-viewer.title"
                         show={this.state.showLog}
-                        onClose={this.toggleLogViewer}>
+                        onClose={this.toggleLogViewer}
+                    >
                         <ErrorLogViewer />
                     </FooterModalViewer>
                 </div>
@@ -83,7 +87,8 @@ class Footer extends React.Component<FooterProps, FooterState> {
                     <FooterModalViewer
                         title="news-viewer.title"
                         show={this.state.showNews}
-                        onClose={this.toggleNewsViewer}>
+                        onClose={this.toggleNewsViewer}
+                    >
                         <NewsMd />
                     </FooterModalViewer>
                 </div>
