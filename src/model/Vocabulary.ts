@@ -18,7 +18,18 @@ const ctx = {
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
 
-const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "document", "types", "glossary", "model", "importedVocabularies", "allImportedVocabularies"];
+const MAPPED_PROPERTIES = [
+    "@context",
+    "iri",
+    "label",
+    "comment",
+    "document",
+    "types",
+    "glossary",
+    "model",
+    "importedVocabularies",
+    "allImportedVocabularies"
+];
 
 export interface VocabularyData extends AssetData {
     label: string;

@@ -17,10 +17,12 @@ const CommonLastEditedAssets: React.FC<CommonLastEditedAssetsProps> = props => {
             .then(() => loadingOff());
     }, [loadAssets, setLastEditedAssets, loadingOn, loadingOff]);
 
-    return <>
-        {renderMask()}
-        <AssetList assets={lastEditedAssets} loading={loading}/>
-    </>;
-}
+    return (
+        <>
+            {renderMask()}
+            <AssetList assets={lastEditedAssets} loading={loading} />
+        </>
+    );
+};
 
 export default withInjectableLoading(CommonLastEditedAssets);

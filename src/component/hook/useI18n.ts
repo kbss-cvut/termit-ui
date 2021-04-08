@@ -7,8 +7,11 @@ import {useIntl} from "react-intl";
  */
 export function useI18n(): HasI18n {
     const intl = useIntl();
-    const i18n = useCallback((msgId: string) => intl.messages[msgId] as string || ("{" + msgId + "}"), [intl]);
-    const formatMessage = useCallback((msgId: string, values: {} | undefined = {}) => intl.formatMessage({id: msgId}, values), [intl]);
+    const i18n = useCallback((msgId: string) => (intl.messages[msgId] as string) || "{" + msgId + "}", [intl]);
+    const formatMessage = useCallback(
+        (msgId: string, values: {} | undefined = {}) => intl.formatMessage({id: msgId}, values),
+        [intl]
+    );
     return {
         i18n,
         formatMessage,

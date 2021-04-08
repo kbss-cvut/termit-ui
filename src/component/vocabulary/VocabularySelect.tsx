@@ -26,35 +26,39 @@ const VocabularySelect: React.FC<VocabularySelectProps> = props => {
     const {i18n} = useI18n();
 
     const items = Object.keys(vocabularies || []).map(vIri => {
-            return <DropdownItem className="m-vocabulary-select-item" key={vIri} onClick={() => onChange(vIri)}>
+        return (
+            <DropdownItem className="m-vocabulary-select-item" key={vIri} onClick={() => onChange(vIri)}>
                 {vocabularies[vIri].label}
             </DropdownItem>
-        }
-    );
+        );
+    });
 
-    return <UncontrolledDropdown id={props.id} group={true} size="sm" className="w-100">
-        <DropdownToggle caret={true} className="w-100">
-            {vocabulary ? vocabulary.label : i18n("vocabulary.select-vocabulary")}
-        </DropdownToggle>
-        <DropdownMenu modifiers={{
-            setMaxHeight: {
-                enabled: true,
-                order: 890,
-                fn: (data) => {
-                    return {
-                        ...data,
-                        styles: {
-                            ...data.styles,
-                            overflow: "auto",
-                            maxHeight: Utils.calculateAssetListHeight() + "px",
-                        },
-                    };
-                },
-            },
-        }}>
-            {items}
-        </DropdownMenu>
-    </UncontrolledDropdown>;
-}
+    return (
+        <UncontrolledDropdown id={props.id} group={true} size="sm" className="w-100">
+            <DropdownToggle caret={true} className="w-100">
+                {vocabulary ? vocabulary.label : i18n("vocabulary.select-vocabulary")}
+            </DropdownToggle>
+            <DropdownMenu
+                modifiers={{
+                    setMaxHeight: {
+                        enabled: true,
+                        order: 890,
+                        fn: data => {
+                            return {
+                                ...data,
+                                styles: {
+                                    ...data.styles,
+                                    overflow: "auto",
+                                    maxHeight: Utils.calculateAssetListHeight() + "px"
+                                }
+                            };
+                        }
+                    }
+                }}>
+                {items}
+            </DropdownMenu>
+        </UncontrolledDropdown>
+    );
+};
 
 export default VocabularySelect;

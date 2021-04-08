@@ -33,7 +33,6 @@ if (!Intl.RelativeTimeFormat) {
 TimeAgo.addLocale(timeagoEn);
 TimeAgo.addLocale(tiemagoCs);
 
-
-ReactDOM.render(<App/>, document.getElementById("root") as HTMLElement);
+ReactDOM.render(<App />, document.getElementById("root") as HTMLElement);
 
 serviceWorker.unregister();

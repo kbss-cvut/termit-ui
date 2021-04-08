@@ -22,7 +22,6 @@
     margin-bottom: 0;
 }
 
-
 // Alternative style
 
 .custom-control-alternative {
@@ -43,8 +42,8 @@
             }
         }
 
-        &:active~.custom-control-label::before,
-        &:focus~.custom-control-label::before {
+        &:active ~ .custom-control-label::before,
+        &:focus ~ .custom-control-label::before {
             box-shadow: $input-alternative-box-shadow;
         }
     }

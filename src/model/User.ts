@@ -2,13 +2,13 @@ import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 export const CONTEXT = {
-    "iri": "@id",
-    "firstName": VocabularyUtils.PREFIX + "má-křestní-jméno",
-    "lastName": VocabularyUtils.PREFIX + "má-příjmení",
-    "username": VocabularyUtils.PREFIX + "má-uživatelské-jméno",
-    "password": VocabularyUtils.PREFIX + "má-heslo",
-    "originalPassword": "http://onto.fel.cvut.cz/ontologies/application/termit/original-password",
-    "types": "@type"
+    iri: "@id",
+    firstName: VocabularyUtils.PREFIX + "má-křestní-jméno",
+    lastName: VocabularyUtils.PREFIX + "má-příjmení",
+    username: VocabularyUtils.PREFIX + "má-uživatelské-jméno",
+    password: VocabularyUtils.PREFIX + "má-heslo",
+    originalPassword: "http://onto.fel.cvut.cz/ontologies/application/termit/original-password",
+    types: "@type"
 };
 
 export interface UserAccountData {

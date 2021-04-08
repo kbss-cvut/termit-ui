@@ -14,17 +14,24 @@ export interface TermDefinitionBlockProps {
 
 export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = props => {
     const {term, language} = props;
-    return <TermDefinitionContainer>
-        <Row>
-            <Col xs={12}>
-                <p id="term-metadata-definition"
-                   className="lead mb-1">{getLocalizedOrDefault(term.definition, "", language)}</p>
-            </Col>
-        </Row>
-        <Row>
-            <TermDefinitionSource term={term} language={language} withDefinitionSource={props.withDefinitionSource}/>
-        </Row>
-    </TermDefinitionContainer>;
+    return (
+        <TermDefinitionContainer>
+            <Row>
+                <Col xs={12}>
+                    <p id="term-metadata-definition" className="lead mb-1">
+                        {getLocalizedOrDefault(term.definition, "", language)}
+                    </p>
+                </Col>
+            </Row>
+            <Row>
+                <TermDefinitionSource
+                    term={term}
+                    language={language}
+                    withDefinitionSource={props.withDefinitionSource}
+                />
+            </Row>
+        </TermDefinitionContainer>
+    );
 };
 
 TermDefinitionBlock.defaultProps = {

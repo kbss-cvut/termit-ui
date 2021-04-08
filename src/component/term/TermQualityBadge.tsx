@@ -18,7 +18,6 @@ interface TermQualityBadgeProps extends HasI18n, RouteComponentProps<any> {
 }
 
 export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
-
     private computeScore(results: ValidationResult[]): number | undefined {
         return results.reduce((reduceScore, result) => {
             if (ValidationUtils.qualityAffectingRules.indexOf(result.sourceShape?.iri) >= 0) {
@@ -50,8 +49,8 @@ export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
             query.set("namespace", namespace);
         }
         query.set("activeTab", "term.metadata.validation.title");
-        Routing.transitionToAsset(this.props.term!, {query})
-    }
+        Routing.transitionToAsset(this.props.term!, {query});
+    };
 
     public render() {
         let score: number | undefined;
@@ -59,12 +58,21 @@ export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
             const res = this.props.validationResults[this.props.term!.iri];
             score = res ? this.computeScore(res) : undefined;
         }
-        return score === undefined ? <></> : <Badge color={this.setBadgeColor(score)}
-                      className="term-quality-badge"
-                      title={(score !== undefined) ? this.props.formatMessage("term.badge.score.tooltip", {score}) : this.props.i18n("term.badge.no-score.tooltip")}
-                      onClick={this.onBadgeClick}
-        >&nbsp;
-        </Badge>;
+        return score === undefined ? (
+            <></>
+        ) : (
+            <Badge
+                color={this.setBadgeColor(score)}
+                className="term-quality-badge"
+                title={
+                    score !== undefined
+                        ? this.props.formatMessage("term.badge.score.tooltip", {score})
+                        : this.props.i18n("term.badge.no-score.tooltip")
+                }
+                onClick={this.onBadgeClick}>
+                &nbsp;
+            </Badge>
+        );
     }
 }
 

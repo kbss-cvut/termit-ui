@@ -38,7 +38,10 @@ export function langString(str: string, lang: string = Constants.DEFAULT_LANGUAG
  * @param str String or string array to use as value (will always be transformed to an array)
  * @param lang Language (optional), defaults to Constants.DEFAULT_LANGUAGE
  */
-export function pluralLangString(str: string | string[], lang: string = Constants.DEFAULT_LANGUAGE): PluralMultilingualString {
+export function pluralLangString(
+    str: string | string[],
+    lang: string = Constants.DEFAULT_LANGUAGE
+): PluralMultilingualString {
     const result = {};
     result[lang] = Utils.sanitizeArray(str);
     return result;
@@ -102,7 +105,11 @@ export function getLocalizedPlural(str?: PluralMultilingualString, lang: string 
  * @param defaultValue Value to return if translation is not available
  * @param lang Target language
  */
-export function getLocalizedOrDefault(str?: MultilingualString | string, defaultValue: string = "", lang: string = Constants.DEFAULT_LANGUAGE) {
+export function getLocalizedOrDefault(
+    str?: MultilingualString | string,
+    defaultValue: string = "",
+    lang: string = Constants.DEFAULT_LANGUAGE
+) {
     if (typeof str === "string") {
         return str;
     }

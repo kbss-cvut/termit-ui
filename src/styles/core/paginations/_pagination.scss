@@ -2,7 +2,6 @@
 // Pagination
 //
 
-
 .page-item {
     &.active .page-link {
         box-shadow: $pagination-active-box-shadow;
@@ -17,11 +16,10 @@
         margin: 0 3px;
         border-radius: 50% !important;
         width: 36px;
-		height: 36px;
-		font-size: $font-size-sm;
+        height: 36px;
+        font-size: $font-size-sm;
     }
 }
-
 
 // Size variations
 

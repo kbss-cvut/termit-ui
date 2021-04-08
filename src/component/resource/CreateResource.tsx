@@ -16,15 +16,15 @@ export const CreateResource: React.FC = () => {
 
     const onCancel = () => {
         Routing.transitionTo(Routes.resources);
-    }
+    };
 
-    return <IfUserAuthorized>
-        <WindowTitle title={i18n("resource.create.title")}/>
-        <HeaderWithActions title={i18n("resource.create.title")}/>
-        <CreateResourceForm onCancel={onCancel}
-                            onSuccess={onSuccess}
-                            justDocument={false}/>
-    </IfUserAuthorized>;
-}
+    return (
+        <IfUserAuthorized>
+            <WindowTitle title={i18n("resource.create.title")} />
+            <HeaderWithActions title={i18n("resource.create.title")} />
+            <CreateResourceForm onCancel={onCancel} onSuccess={onSuccess} justDocument={false} />
+        </IfUserAuthorized>
+    );
+};
 
 export default CreateResource;

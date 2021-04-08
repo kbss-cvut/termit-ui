@@ -9,8 +9,11 @@ interface TermBadgeProps {
 
 const TermBadge: React.FC<TermBadgeProps> = (props: TermBadgeProps) => {
     const {i18n} = useI18n();
-    return <Badge color="purple" className={classNames("asset-badge", props.className)}>{i18n("type.term")}</Badge>;
+    return (
+        <Badge color="purple" className={classNames("asset-badge", props.className)}>
+            {i18n("type.term")}
+        </Badge>
+    );
 };
-
 
 export default TermBadge;

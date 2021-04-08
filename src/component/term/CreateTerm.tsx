@@ -59,22 +59,27 @@ export class CreateTerm extends React.Component<CreateTermProps> {
     public render() {
         const vocabulary = this.props.vocabulary;
         if (vocabulary !== EMPTY_VOCABULARY) {
-            return <>
-                <WindowTitle title={`${this.props.i18n("glossary.new")} | ${vocabulary.label}`}/>
-                <TermMetadataCreate onCreate={this.onCreate} vocabularyIri={this.props.vocabulary.iri}/>
-            </>
+            return (
+                <>
+                    <WindowTitle title={`${this.props.i18n("glossary.new")} | ${vocabulary.label}`} />
+                    <TermMetadataCreate onCreate={this.onCreate} vocabularyIri={this.props.vocabulary.iri} />
+                </>
+            );
         }
         return null;
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        vocabulary: state.vocabulary
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        createTerm: (term: Term, vocabularyIri: IRI) => dispatch(createTerm(term, vocabularyIri)),
-        loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
-    };
-})(injectIntl(withI18n(CreateTerm)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            vocabulary: state.vocabulary
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            createTerm: (term: Term, vocabularyIri: IRI) => dispatch(createTerm(term, vocabularyIri)),
+            loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri))
+        };
+    }
+)(injectIntl(withI18n(CreateTerm)));

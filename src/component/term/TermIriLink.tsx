@@ -26,10 +26,9 @@ interface TermIriLinkState {
 }
 
 export class TermIriLink extends React.Component<TermIriLinkProps, TermIriLinkState> {
-
     constructor(props: TermIriLinkProps) {
         super(props);
-        this.state = {term: null}
+        this.state = {term: null};
     }
 
     public componentDidMount(): void {
@@ -44,17 +43,24 @@ export class TermIriLink extends React.Component<TermIriLinkProps, TermIriLinkSt
     }
 
     public render() {
-
-        return <>
-            {this.state.term !== null ? <TermLink term={this.state.term}/> :
-                <OutgoingLink label={this.props.iri} iri={this.props.iri}/>}
-        </>
+        return (
+            <>
+                {this.state.term !== null ? (
+                    <TermLink term={this.state.term} />
+                ) : (
+                    <OutgoingLink label={this.props.iri} iri={this.props.iri} />
+                )}
+            </>
+        );
     }
 }
 
-export default connect((state: TermItState) => ({user: state.user}), (dispatch: ThunkDispatch) => {
-    return {
-        loadTermByIri: (iri: IRI) => dispatch(loadTermByIri(iri)),
-        loadPublicTermByIri: (iri: IRI) => dispatch(loadPublicTermByIri(iri))
-    };
-})(injectIntl(withI18n(TermIriLink)));
+export default connect(
+    (state: TermItState) => ({user: state.user}),
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadTermByIri: (iri: IRI) => dispatch(loadTermByIri(iri)),
+            loadPublicTermByIri: (iri: IRI) => dispatch(loadPublicTermByIri(iri))
+        };
+    }
+)(injectIntl(withI18n(TermIriLink)));

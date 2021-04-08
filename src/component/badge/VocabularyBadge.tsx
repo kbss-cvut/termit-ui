@@ -9,9 +9,11 @@ interface VocabularyBadgeProps {
 
 const VocabularyBadge: React.FC<VocabularyBadgeProps> = (props: VocabularyBadgeProps) => {
     const {i18n} = useI18n();
-    return <Badge color="yellow"
-                  className={classNames("asset-badge", props.className)}>{i18n("type.vocabulary")}</Badge>;
-}
-
+    return (
+        <Badge color="yellow" className={classNames("asset-badge", props.className)}>
+            {i18n("type.vocabulary")}
+        </Badge>
+    );
+};
 
 export default VocabularyBadge;

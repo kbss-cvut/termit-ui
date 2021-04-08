@@ -2,7 +2,6 @@
 // Navbar
 //
 
-
 // Navbar links
 
 .navbar-horizontal {
@@ -15,11 +14,10 @@
             @include transition($navbar-transition);
 
             .nav-link-inner--text {
-                margin-left: .25rem;
+                margin-left: 0.25rem;
             }
         }
     }
-
 
     // Navbar brand (logo)
 
@@ -27,8 +25,8 @@
         font-size: $font-size-sm;
         font-weight: 600;
         text-transform: uppercase;
-        font-size: .875rem;
-        letter-spacing: .05px;
+        font-size: 0.875rem;
+        letter-spacing: 0.05px;
 
         img {
             height: 30px;
@@ -48,17 +46,17 @@
     }
 
     .navbar-nav {
-      .nav-item {
-        .media:not(:last-child){
-          margin-bottom: 1.5rem;
+        .nav-item {
+            .media:not(:last-child) {
+                margin-bottom: 1.5rem;
+            }
         }
-      }
     }
 
     @include media-breakpoint-up(lg) {
         .navbar-nav {
             .nav-item {
-                margin-right: .5rem;
+                margin-right: 0.5rem;
 
                 [data-toggle="dropdown"]::after {
                     transition: $transition-base;
@@ -76,13 +74,13 @@
                 border-radius: $navbar-nav-link-border-radius;
 
                 i {
-                    margin-right: .625rem;
+                    margin-right: 0.625rem;
                 }
             }
 
             .nav-link-icon {
-                padding-left: .5rem !important;
-                padding-right: .5rem !important;
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
                 font-size: 1rem;
                 border-radius: $navbar-nav-link-border-radius;
 
@@ -92,7 +90,6 @@
             }
         }
     }
-
 
     // Transparent navbar
 

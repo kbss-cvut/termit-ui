@@ -73,12 +73,11 @@ function stateToPlainObject(state: TermItState): TermItState {
         desktopView: state.desktopView,
         annotatorTerms: state.annotatorTerms,
         configuration: state.configuration,
-        validationResults : state.validationResults
+        validationResults: state.validationResults
     };
 }
 
 describe("Reducers", () => {
-
     let initialState = new TermItState();
 
     beforeEach(() => {
@@ -112,10 +111,12 @@ describe("Reducers", () => {
             });
             const a: AsyncActionSuccess<User> = asyncActionSuccessWithPayload(action, user);
             initialState.loading = true;
-            expect(reducers(stateToPlainObject(initialState), a)).toEqual(Object.assign({}, initialState, {
-                user,
-                loading: false
-            }));
+            expect(reducers(stateToPlainObject(initialState), a)).toEqual(
+                Object.assign({}, initialState, {
+                    user,
+                    loading: false
+                })
+            );
         });
 
         it("sets loading status to false on user load failure", () => {
@@ -159,13 +160,17 @@ describe("Reducers", () => {
                 message: "test"
             });
             const action = publishMessage(mOne);
-            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {messages: [mOne]}));
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+                Object.assign({}, initialState, {messages: [mOne]})
+            );
             const mTwo = new Message({
                 messageId: "connection.error"
             });
             const actionTwo = publishMessage(mTwo);
             initialState.messages = [mOne];
-            expect(reducers(stateToPlainObject(initialState), actionTwo)).toEqual(Object.assign({}, initialState, {messages: [mOne, mTwo]}));
+            expect(reducers(stateToPlainObject(initialState), actionTwo)).toEqual(
+                Object.assign({}, initialState, {messages: [mOne, mTwo]})
+            );
         });
 
         it("removes message from array on dismiss message action", () => {
@@ -177,7 +182,9 @@ describe("Reducers", () => {
             });
             initialState.messages = [mOne, mTwo];
             const action = dismissMessage(mOne);
-            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {messages: [mTwo]}));
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+                Object.assign({}, initialState, {messages: [mTwo]})
+            );
         });
 
         it("clears messages on logout", () => {
@@ -189,7 +196,9 @@ describe("Reducers", () => {
             });
             initialState.messages = [mOne, mTwo];
             const action = userLogout();
-            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {messages: []}));
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+                Object.assign({}, initialState, {messages: []})
+            );
         });
 
         it("clears messages on login", () => {
@@ -201,14 +210,18 @@ describe("Reducers", () => {
             });
             initialState.messages = [mOne, mTwo];
             const action = {type: ActionType.LOGIN};
-            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {messages: []}));
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+                Object.assign({}, initialState, {messages: []})
+            );
         });
     });
 
     describe("intl", () => {
         it("loads localization data on action", () => {
             const action = switchLanguage(Constants.LANG.CS.locale);
-            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign({}, initialState, {intl: require("../../i18n/cs").default}));
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+                Object.assign({}, initialState, {intl: require("../../i18n/cs").default})
+            );
         });
     });
 
@@ -220,36 +233,44 @@ describe("Reducers", () => {
                 lastName: "test",
                 username: "test@kbss.felk.cvut.cz"
             });
-            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(Object.assign({}, initialState, {user: EMPTY_USER}));
+            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
+                Object.assign({}, initialState, {user: EMPTY_USER})
+            );
         });
 
         it("resets vocabularies and current vocabulary", () => {
             initialState.vocabularies = require("../../rest-mock/vocabularies.json");
             initialState.vocabulary = initialState.vocabularies[0];
-            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(Object.assign({}, initialState, {
-                vocabulary: EMPTY_VOCABULARY,
-                vocabularies: {}
-            }));
+            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
+                Object.assign({}, initialState, {
+                    vocabulary: EMPTY_VOCABULARY,
+                    vocabularies: {}
+                })
+            );
         });
 
         it("resets resources, current resource and file content", () => {
             initialState.resources = require("../../rest-mock/resources.json");
             initialState.resource = require("../../rest-mock/resource.json");
             initialState.fileContent = "test";
-            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(Object.assign({}, initialState, {
-                resource: EMPTY_RESOURCE,
-                resources: {},
-                fileContent: null
-            }));
+            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
+                Object.assign({}, initialState, {
+                    resource: EMPTY_RESOURCE,
+                    resources: {},
+                    fileContent: null
+                })
+            );
         });
 
         it("resets selected term and terms counter", () => {
             initialState.selectedTerm = Generator.generateTerm();
             initialState.createdTermsCounter = 2;
-            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(Object.assign({}, initialState, {
-                selectedTerm: null,
-                createdTermsCounter: 0
-            }));
+            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
+                Object.assign({}, initialState, {
+                    selectedTerm: null,
+                    createdTermsCounter: 0
+                })
+            );
         });
 
         it("resets search-related state", () => {
@@ -258,16 +279,18 @@ describe("Reducers", () => {
             initialState.searchQuery.searchQuery = "hello";
             initialState.searchInProgress = true;
             initialState.facetedSearchResult = {search: "test", anotherAtt: "yas"};
-            initialState.queryResults = {"test": new QueryResult("test", {})};
+            initialState.queryResults = {test: new QueryResult("test", {})};
             initialState.searchListenerCount = 2;
-            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(Object.assign({}, initialState, {
-                searchResults: null,
-                searchQuery: new SearchQuery(),
-                searchInProgress: false,
-                facetedSearchResult: {},
-                searchListenerCount: 0,
-                queryResults: {}
-            }));
+            expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
+                Object.assign({}, initialState, {
+                    searchResults: null,
+                    searchQuery: new SearchQuery(),
+                    searchInProgress: false,
+                    facetedSearchResult: {},
+                    searchListenerCount: 0,
+                    queryResults: {}
+                })
+            );
         });
     });
 
@@ -278,8 +301,12 @@ describe("Reducers", () => {
                 label: "Test vocabulary",
                 iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary"
             };
-            expect(reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload(action, new Vocabulary(vocabularyData))))
-                .toEqual(Object.assign({}, initialState, {vocabulary: new Vocabulary(vocabularyData)}));
+            expect(
+                reducers(
+                    stateToPlainObject(initialState),
+                    asyncActionSuccessWithPayload(action, new Vocabulary(vocabularyData))
+                )
+            ).toEqual(Object.assign({}, initialState, {vocabulary: new Vocabulary(vocabularyData)}));
         });
 
         it("sets transitive imports on vocabulary when they are loaded", () => {
@@ -288,7 +315,10 @@ describe("Reducers", () => {
                 label: "Test vocabulary",
                 iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary"
             });
-            const vocabulary = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_VOCABULARY_IMPORTS}, imports)).vocabulary;
+            const vocabulary = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload({type: ActionType.LOAD_VOCABULARY_IMPORTS}, imports)
+            ).vocabulary;
             expect(vocabulary.allImportedVocabularies).toEqual(imports);
         });
 
@@ -301,7 +331,9 @@ describe("Reducers", () => {
                 iri: Generator.generateUri(),
                 types: [VocabularyUtils.VOCABULARY]
             });
-            expect(reducers(stateToPlainObject(initialState), asyncActionSuccess(action)).vocabulary).toEqual(EMPTY_VOCABULARY);
+            expect(reducers(stateToPlainObject(initialState), asyncActionSuccess(action)).vocabulary).toEqual(
+                EMPTY_VOCABULARY
+            );
         });
 
         it("resets vocabulary to empty when resource is created", () => {
@@ -313,7 +345,9 @@ describe("Reducers", () => {
                 iri: Generator.generateUri(),
                 types: [VocabularyUtils.VOCABULARY]
             });
-            expect(reducers(stateToPlainObject(initialState), asyncActionSuccess(action)).vocabulary).toEqual(EMPTY_VOCABULARY);
+            expect(reducers(stateToPlainObject(initialState), asyncActionSuccess(action)).vocabulary).toEqual(
+                EMPTY_VOCABULARY
+            );
         });
     });
 
@@ -323,8 +357,9 @@ describe("Reducers", () => {
                 label: langString("Test term"),
                 iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term"
             };
-            expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(term)))
-                .toEqual(Object.assign({}, initialState, {selectedTerm: new Term(term)}));
+            expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(term))).toEqual(
+                Object.assign({}, initialState, {selectedTerm: new Term(term)})
+            );
         });
 
         it("sets selectedTerm when it was successfully selected then deselect it", () => {
@@ -332,10 +367,12 @@ describe("Reducers", () => {
                 label: langString("Test term"),
                 iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term"
             };
-            expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(term)))
-                .toEqual(Object.assign({}, initialState, {selectedTerm: new Term(term)}));
-            expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(null)))
-                .toEqual(Object.assign({}, initialState, {selectedTerm: null}));
+            expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(term))).toEqual(
+                Object.assign({}, initialState, {selectedTerm: new Term(term)})
+            );
+            expect(reducers(stateToPlainObject(initialState), selectVocabularyTerm(null))).toEqual(
+                Object.assign({}, initialState, {selectedTerm: null})
+            );
         });
     });
 
@@ -353,12 +390,17 @@ describe("Reducers", () => {
             ];
 
             const map = {};
-            terms.forEach((v: TermData) =>
-                map[(v.iri || "")] = new Term(v)
-            );
+            terms.forEach((v: TermData) => (map[v.iri || ""] = new Term(v)));
 
-            expect(reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_TYPES}, terms.map(vt => new Term(vt)))))
-                .toEqual(Object.assign({}, initialState, {types: map}));
+            expect(
+                reducers(
+                    stateToPlainObject(initialState),
+                    asyncActionSuccessWithPayload(
+                        {type: ActionType.LOAD_TYPES},
+                        terms.map(vt => new Term(vt))
+                    )
+                )
+            ).toEqual(Object.assign({}, initialState, {types: map}));
         });
     });
 
@@ -373,22 +415,32 @@ describe("Reducers", () => {
 
     describe("properties", () => {
         it("sets properties when they were successfully loaded", () => {
-            const properties: RdfsResource[] = [new RdfsResource({
-                iri: "http://www.w3.org/2000/01/rdf-schema#label",
-                label: "Label",
-                comment: "RDFS label property"
-            })];
-            expect(reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.GET_PROPERTIES}, properties)))
-                .toEqual(Object.assign({}, initialState, {properties}));
+            const properties: RdfsResource[] = [
+                new RdfsResource({
+                    iri: "http://www.w3.org/2000/01/rdf-schema#label",
+                    label: "Label",
+                    comment: "RDFS label property"
+                })
+            ];
+            expect(
+                reducers(
+                    stateToPlainObject(initialState),
+                    asyncActionSuccessWithPayload({type: ActionType.GET_PROPERTIES}, properties)
+                )
+            ).toEqual(Object.assign({}, initialState, {properties}));
         });
 
         it("clear properties on clearProperties action", () => {
-            initialState.properties = [new RdfsResource({
-                iri: "http://www.w3.org/2000/01/rdf-schema#label",
-                label: "Label",
-                comment: "RDFS label property"
-            })];
-            expect(reducers(stateToPlainObject(initialState), clearProperties())).toEqual(Object.assign({}, initialState, {properties: []}));
+            initialState.properties = [
+                new RdfsResource({
+                    iri: "http://www.w3.org/2000/01/rdf-schema#label",
+                    label: "Label",
+                    comment: "RDFS label property"
+                })
+            ];
+            expect(reducers(stateToPlainObject(initialState), clearProperties())).toEqual(
+                Object.assign({}, initialState, {properties: []})
+            );
         });
     });
 
@@ -400,8 +452,9 @@ describe("Reducers", () => {
                     status: AsyncActionStatus.SUCCESS
                 }
             };
-            expect(reducers(stateToPlainObject(initialState), publishNotification(notification)))
-                .toEqual(Object.assign({}, initialState, {notifications: [notification]}));
+            expect(reducers(stateToPlainObject(initialState), publishNotification(notification))).toEqual(
+                Object.assign({}, initialState, {notifications: [notification]})
+            );
         });
 
         it("removes notification from queue on consume notification action", () => {
@@ -412,8 +465,9 @@ describe("Reducers", () => {
                 }
             };
             initialState.notifications = [notification];
-            expect(reducers(stateToPlainObject(initialState), consumeNotification(notification)))
-                .toEqual(Object.assign({}, initialState, {notifications: []}));
+            expect(reducers(stateToPlainObject(initialState), consumeNotification(notification))).toEqual(
+                Object.assign({}, initialState, {notifications: []})
+            );
         });
 
         it("does nothing when unknown notification is consumed", () => {
@@ -434,7 +488,9 @@ describe("Reducers", () => {
     describe("resource", () => {
         it("resets resource to empty on clear resource action", () => {
             initialState.resource = new Resource({iri: Generator.generateUri(), label: "Resource"});
-            expect(reducers(stateToPlainObject(initialState), clearResource())).toEqual(Object.assign(initialState, {resource: EMPTY_RESOURCE}));
+            expect(reducers(stateToPlainObject(initialState), clearResource())).toEqual(
+                Object.assign(initialState, {resource: EMPTY_RESOURCE})
+            );
         });
     });
 
@@ -443,7 +499,9 @@ describe("Reducers", () => {
             const action = asyncActionRequest({type: ActionType.LOAD_RESOURCES}, true);
             const added = {};
             added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
-            expect(reducers(stateToPlainObject(initialState), action)).toEqual(Object.assign(initialState, {pendingActions: added}));
+            expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+                Object.assign(initialState, {pendingActions: added})
+            );
         });
 
         it("does nothing when action is not asynchronous", () => {
@@ -454,14 +512,24 @@ describe("Reducers", () => {
             const added = {};
             added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
             initialState.pendingActions = added;
-            expect(reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_RESOURCES}, []))).toEqual(Object.assign(initialState, {pendingActions: {}}));
+            expect(
+                reducers(
+                    stateToPlainObject(initialState),
+                    asyncActionSuccessWithPayload({type: ActionType.LOAD_RESOURCES}, [])
+                )
+            ).toEqual(Object.assign(initialState, {pendingActions: {}}));
         });
 
         it("removes action from pendingActions when it is async failure action", () => {
             const added = {};
             added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
             initialState.pendingActions = added;
-            expect(reducers(stateToPlainObject(initialState), asyncActionFailure({type: ActionType.LOAD_RESOURCES}, {status: 404})).pendingActions).toEqual({});
+            expect(
+                reducers(
+                    stateToPlainObject(initialState),
+                    asyncActionFailure({type: ActionType.LOAD_RESOURCES}, {status: 404})
+                ).pendingActions
+            ).toEqual({});
         });
 
         it("does nothing when the same async action request is registered multiple times", () => {
@@ -469,14 +537,22 @@ describe("Reducers", () => {
             added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
             initialState.pendingActions = added;
             const action = asyncActionRequest({type: ActionType.LOAD_RESOURCES}, true);
-            expect(Object.is(reducers(stateToPlainObject(initialState), action).pendingActions, initialState.pendingActions)).toBeTruthy();
+            expect(
+                Object.is(
+                    reducers(stateToPlainObject(initialState), action).pendingActions,
+                    initialState.pendingActions
+                )
+            ).toBeTruthy();
         });
     });
 
     describe("errors", () => {
         it("records error with timestamp", () => {
             const error: ErrorData = {message: "Login failed", status: 500};
-            const result = reducers(stateToPlainObject(initialState), asyncActionFailure({type: ActionType.LOGIN}, error)).errors;
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionFailure({type: ActionType.LOGIN}, error)
+            ).errors;
             expect(result.length).toEqual(1);
             expect(result[0].timestamp).toBeDefined();
             expect(result[0].error).toEqual(new ErrorInfo(ActionType.LOGIN, error));
@@ -485,31 +561,45 @@ describe("Reducers", () => {
         it("records errors from latest to oldest", () => {
             const errorOne: ErrorData = {message: "Fetch user failed", status: 500};
             const errorTwo: ErrorData = {message: "Login failed", status: 400};
-            const tempState = reducers(stateToPlainObject(initialState), asyncActionFailure({type: ActionType.FETCH_USER}, errorOne));
-            const result = reducers(stateToPlainObject(tempState), asyncActionFailure({type: ActionType.LOGIN}, errorTwo)).errors;
+            const tempState = reducers(
+                stateToPlainObject(initialState),
+                asyncActionFailure({type: ActionType.FETCH_USER}, errorOne)
+            );
+            const result = reducers(
+                stateToPlainObject(tempState),
+                asyncActionFailure({type: ActionType.LOGIN}, errorTwo)
+            ).errors;
             expect(result.length).toEqual(2);
             expect(result[0].error.origin).toEqual(ActionType.LOGIN);
             expect(result[1].error.origin).toEqual(ActionType.FETCH_USER);
         });
 
         it("does nothing when action is no error", () => {
-            expect(reducers(stateToPlainObject(initialState), asyncActionSuccess({type: ActionType.LOGIN})).errors).toEqual([]);
+            expect(
+                reducers(stateToPlainObject(initialState), asyncActionSuccess({type: ActionType.LOGIN})).errors
+            ).toEqual([]);
         });
 
         it("clears errors on clear errors action", () => {
-            initialState.errors = [{
-                timestamp: Date.now(),
-                error: new ErrorInfo(ActionType.FETCH_USER, {message: "Connection error"})
-            }];
+            initialState.errors = [
+                {
+                    timestamp: Date.now(),
+                    error: new ErrorInfo(ActionType.FETCH_USER, {message: "Connection error"})
+                }
+            ];
             expect(reducers(stateToPlainObject(initialState), clearErrors()).errors).toEqual([]);
         });
     });
 
     describe("loadResourceTerms", () => {
         it("does not change the type of resource stored in state", () => {
-            initialState.resource = new File(Object.assign(Generator.generateAssetData(), {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]}));
-            const result = reducers(stateToPlainObject(initialState),
-                asyncActionSuccessWithPayload({type: ActionType.LOAD_RESOURCE_TERMS}, [Generator.generateTerm()])).resource;
+            initialState.resource = new File(
+                Object.assign(Generator.generateAssetData(), {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]})
+            );
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload({type: ActionType.LOAD_RESOURCE_TERMS}, [Generator.generateTerm()])
+            ).resource;
             expect(result instanceof File).toBeTruthy();
         });
     });
@@ -517,7 +607,10 @@ describe("Reducers", () => {
     describe("lastModified", () => {
         it("sets last modified value on UpdateLastModified action", () => {
             const value = new Date().toISOString();
-            const result = reducers(stateToPlainObject(initialState), updateLastModified(VocabularyUtils.VOCABULARY, value));
+            const result = reducers(
+                stateToPlainObject(initialState),
+                updateLastModified(VocabularyUtils.VOCABULARY, value)
+            );
             expect(result.lastModified[VocabularyUtils.VOCABULARY]).toEqual(value);
         });
     });
@@ -525,7 +618,10 @@ describe("Reducers", () => {
     describe("fileContent", () => {
         it("resets file content on request for new file content", () => {
             initialState.fileContent = "test file content";
-            const result = reducers(stateToPlainObject(initialState), asyncActionRequest({type: ActionType.LOAD_FILE_CONTENT}));
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionRequest({type: ActionType.LOAD_FILE_CONTENT})
+            );
             expect(result.fileContent).toBeNull();
         });
 
@@ -556,7 +652,10 @@ describe("Reducers", () => {
             const label = "Test label";
             const payload = {};
             payload[iri] = label;
-            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.GET_LABEL}, payload));
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload({type: ActionType.GET_LABEL}, payload)
+            );
             expect(result.labelCache[iri]).toBeDefined();
             expect(result.labelCache[iri]).toEqual(label);
         });
@@ -581,8 +680,7 @@ describe("Reducers", () => {
     });
 
     describe("annotatorTerms", () => {
-
-        let terms: { [key: string]: Term };
+        let terms: {[key: string]: Term};
 
         beforeEach(() => {
             terms = {};
@@ -593,13 +691,19 @@ describe("Reducers", () => {
         });
 
         it("sets loaded terms to state on request success", () => {
-            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.ANNOTATOR_LOAD_TERMS}, terms));
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload({type: ActionType.ANNOTATOR_LOAD_TERMS}, terms)
+            );
             expect(result.annotatorTerms).toEqual(terms);
         });
 
         it("resets state terms on request", () => {
             initialState.annotatorTerms = terms;
-            const result = reducers(stateToPlainObject(initialState), asyncActionRequest({type: ActionType.ANNOTATOR_LOAD_TERMS}));
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionRequest({type: ActionType.ANNOTATOR_LOAD_TERMS})
+            );
             expect(result.annotatorTerms).toEqual({});
         });
 
@@ -608,7 +712,10 @@ describe("Reducers", () => {
             const term = Generator.generateTerm();
             const expected = Object.assign({}, terms);
             expected[term.iri] = term;
-            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.ANNOTATOR_LOAD_TERM}, term));
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload({type: ActionType.ANNOTATOR_LOAD_TERM}, term)
+            );
             expect(result.annotatorTerms).toEqual(expected);
         });
     });
@@ -616,7 +723,10 @@ describe("Reducers", () => {
     describe("configuration", () => {
         it("sets loaded configuration to state on request success", () => {
             const config: Configuration = {language: "es"};
-            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_CONFIGURATION}, config));
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload({type: ActionType.LOAD_CONFIGURATION}, config)
+            );
             expect(result.configuration).toEqual(config);
         });
     });

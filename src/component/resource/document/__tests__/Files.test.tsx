@@ -8,7 +8,6 @@ import Generator from "../../../../__tests__/environment/Generator";
 import {Files} from "../Files";
 
 describe("DocumentFiles", () => {
-
     let document: Document;
 
     let actions: JSX.Element[];
@@ -27,9 +26,7 @@ describe("DocumentFiles", () => {
     });
 
     it("renders notice when no Files exist", () => {
-        const wrapper = shallow(<Files files={document.files}
-                                       actions={actions}
-                                       itemActions={itemActions}/>);
+        const wrapper = shallow(<Files files={document.files} actions={actions} itemActions={itemActions} />);
         expect(wrapper.exists("#file-list-empty")).toBeTruthy();
     });
 });

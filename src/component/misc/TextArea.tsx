@@ -9,7 +9,6 @@ export interface TextAreaProps extends AbstractInputProps {
 }
 
 export default class TextArea extends AbstractInput<TextAreaProps> {
-
     protected readonly input: React.RefObject<Input>;
 
     constructor(props: TextAreaProps) {
@@ -17,14 +16,14 @@ export default class TextArea extends AbstractInput<TextAreaProps> {
         this.input = React.createRef();
     }
 
-
     public render() {
-        return <FormGroup>
-            {this.renderLabel()}
-            <Input type="textarea" style={{resize: "none"}} bsSize="sm"
-                   ref={this.input} {...this.inputProps()}/>
-            <FormFeedback>{this.props.invalidMessage}</FormFeedback>
-            {this.renderHelp()}
-        </FormGroup>;
+        return (
+            <FormGroup>
+                {this.renderLabel()}
+                <Input type="textarea" style={{resize: "none"}} bsSize="sm" ref={this.input} {...this.inputProps()} />
+                <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+                {this.renderHelp()}
+            </FormGroup>
+        );
     }
 }

@@ -9,7 +9,6 @@ import {shallow} from "enzyme";
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 
 describe("ResourceTermAssignmentsEdit", () => {
-
     let onChange: (subTerms: AssetData[]) => void;
     let fetchTerms: (searchString: string) => Promise<Term[]>;
 
@@ -21,28 +20,40 @@ describe("ResourceTermAssignmentsEdit", () => {
         const existingTerms = [Generator.generateTerm(), Generator.generateTerm()];
         const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
         fetchTerms = jest.fn().mockResolvedValue(fetchedTerms);
-        const wrapper = shallow<ResourceTermAssignmentsEdit>(<ResourceTermAssignmentsEdit terms={existingTerms}
-                                                                                          onChange={onChange}
-                                                                                          fetchTerms={fetchTerms} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceTermAssignmentsEdit>(
+            <ResourceTermAssignmentsEdit
+                terms={existingTerms}
+                onChange={onChange}
+                fetchTerms={fetchTerms}
+                {...intlFunctions()}
+            />
+        );
         expect(wrapper.find(IntelligentTreeSelect).prop("getOptionLabel")).toBeDefined();
     });
 
     describe("fetchOptions", () => {
-
         // Bug #1304
         it("creates a shallow copy of props terms to prevent their modification", () => {
             const existingTerms = [Generator.generateTerm(), Generator.generateTerm()];
             const origLength = existingTerms.length;
             const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
             fetchTerms = jest.fn().mockResolvedValue(fetchedTerms);
-            const wrapper = shallow<ResourceTermAssignmentsEdit>(<ResourceTermAssignmentsEdit terms={existingTerms}
-                                                                                              onChange={onChange}
-                                                                                              fetchTerms={fetchTerms} {...intlFunctions()}/>);
-            return wrapper.instance().fetchOptions({}).then((terms) => {
-                expect(existingTerms.length).toEqual(origLength);
-                expect(terms.length).toEqual(origLength + fetchedTerms.length);
-                expect(terms).toEqual([...existingTerms, ...fetchedTerms]);
-            });
+            const wrapper = shallow<ResourceTermAssignmentsEdit>(
+                <ResourceTermAssignmentsEdit
+                    terms={existingTerms}
+                    onChange={onChange}
+                    fetchTerms={fetchTerms}
+                    {...intlFunctions()}
+                />
+            );
+            return wrapper
+                .instance()
+                .fetchOptions({})
+                .then(terms => {
+                    expect(existingTerms.length).toEqual(origLength);
+                    expect(terms.length).toEqual(origLength + fetchedTerms.length);
+                    expect(terms).toEqual([...existingTerms, ...fetchedTerms]);
+                });
         });
     });
 });

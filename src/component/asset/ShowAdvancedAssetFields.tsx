@@ -13,21 +13,14 @@ export const ShowAdvancedAssetFields: React.FC = props => {
     const toggle = () => setIsOpen(!isOpen);
     const {children} = props;
     const {i18n} = useI18n();
-    return <>
-        <Button
-            color="link"
-            id="toggle-advanced"
-            onClick={toggle}>
-            {
-                i18n(isOpen ? "asset.create.hideAdvancedSection" : "asset.create.showAdvancedSection")
-            }
-        </Button>
-        <Collapse
-            isOpen={isOpen}>
-            {children}
-        </Collapse>
-    </>
-}
+    return (
+        <>
+            <Button color="link" id="toggle-advanced" onClick={toggle}>
+                {i18n(isOpen ? "asset.create.hideAdvancedSection" : "asset.create.showAdvancedSection")}
+            </Button>
+            <Collapse isOpen={isOpen}>{children}</Collapse>
+        </>
+    );
+};
 
 export default ShowAdvancedAssetFields;
-

@@ -34,7 +34,6 @@ interface TermMetadataState {
 const DISPLAY_TERMS_WIDTH_BREAKPOINT = 1366;
 
 export class TermMetadata extends React.Component<TermMetadataProps, TermMetadataState> {
-
     constructor(props: TermMetadataProps) {
         super(props);
         this.state = {
@@ -51,14 +50,18 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     }
 
     public componentDidUpdate(prevProps: TermMetadataProps, prevState: TermMetadataState) {
-        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
-        if (this.state.activeTab === prevState.activeTab && this.state.activeTab !== activeTabFromUrl && activeTabFromUrl) {
+        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab");
+        if (
+            this.state.activeTab === prevState.activeTab &&
+            this.state.activeTab !== activeTabFromUrl &&
+            activeTabFromUrl
+        ) {
             this.onTabSelect(activeTabFromUrl);
         }
     }
 
     private updateTabFromUrlIfAny() {
-        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
+        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab");
         if (this.state.activeTab !== activeTabFromUrl && activeTabFromUrl) {
             this.onTabSelect(activeTabFromUrl);
         }
@@ -71,7 +74,7 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
     private handleResize = () => {
         const displayTerms = window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT;
         if (displayTerms !== this.state.displayTerms) {
-            this.setState({displayTerms})
+            this.setState({displayTerms});
         }
     };
 
@@ -89,50 +92,85 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
 
     public render() {
         const {term, language, selectLanguage} = this.props;
-        return <>
-            <LanguageSelector key="term-language-selector" term={term} language={language} onSelect={selectLanguage}/>
-            <Row>
-                <Col lg={this.state.displayTerms ? 9 : 12}>
-                    <Row>
-                        <Col xs={12}>
-                            <Card className="mb-3">
-                                <CardBody className="card-body-basic-info">
-                                    <BasicTermMetadata term={term} withDefinitionSource={true} language={language}/>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
+        return (
+            <>
+                <LanguageSelector
+                    key="term-language-selector"
+                    term={term}
+                    language={language}
+                    onSelect={selectLanguage}
+                />
+                <Row>
+                    <Col lg={this.state.displayTerms ? 9 : 12}>
+                        <Row>
+                            <Col xs={12}>
+                                <Card className="mb-3">
+                                    <CardBody className="card-body-basic-info">
+                                        <BasicTermMetadata
+                                            term={term}
+                                            withDefinitionSource={true}
+                                            language={language}
+                                        />
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <Card>
+                                    <CardBody>
+                                        <Tabs
+                                            activeTabLabelKey={this.state.activeTab}
+                                            changeTab={this.onTabSelect}
+                                            tabs={{
+                                                "term.metadata.assignments.title": (
+                                                    <TermAssignments term={term} onLoad={this.setAssignmentsCount} />
+                                                ),
+                                                "history.label": <AssetHistory asset={term} />,
+                                                "term.metadata.validation.title": <ValidationResults term={term} />,
+                                                "comments.title": (
+                                                    <Comments term={term} onLoad={this.setCommentsCount} />
+                                                ),
+                                                "properties.edit.title": (
+                                                    <UnmappedProperties
+                                                        properties={term.unmappedProperties}
+                                                        showInfoOnEmpty={true}
+                                                    />
+                                                )
+                                            }}
+                                            tabBadges={{
+                                                "properties.edit.title": term.unmappedProperties.size.toFixed(),
+                                                "comments.title":
+                                                    this.state.commentsCount !== null
+                                                        ? this.state.commentsCount.toFixed()
+                                                        : null,
+                                                "term.metadata.assignments.title":
+                                                    this.state.assignmentsCount !== null
+                                                        ? this.state.assignmentsCount.toFixed()
+                                                        : null
+                                            }}
+                                        />
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Col>
+                    {this.state.displayTerms && (
+                        <Col>
                             <Card>
-                                <CardBody>
-                                    <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={{
-                                        "term.metadata.assignments.title": <TermAssignments term={term}
-                                                                                            onLoad={this.setAssignmentsCount}/>,
-                                        "history.label": <AssetHistory asset={term}/>,
-                                        "term.metadata.validation.title": <ValidationResults term={term}/>,
-                                        "comments.title": <Comments term={term} onLoad={this.setCommentsCount}/>,
-                                        "properties.edit.title": <UnmappedProperties
-                                            properties={term.unmappedProperties} showInfoOnEmpty={true}/>
-                                    }} tabBadges={{
-                                        "properties.edit.title": term.unmappedProperties.size.toFixed(),
-                                        "comments.title": this.state.commentsCount !== null ? this.state.commentsCount.toFixed() : null,
-                                        "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,
-                                    }}/>
-                                </CardBody>
+                                <Terms
+                                    vocabulary={this.props.vocabulary}
+                                    match={this.props.match}
+                                    location={this.props.location}
+                                    isDetailView={true}
+                                    showTermQualityBadge={false}
+                                />
                             </Card>
                         </Col>
-                    </Row>
-                </Col>
-                {this.state.displayTerms && <Col>
-                    <Card>
-                        <Terms vocabulary={this.props.vocabulary} match={this.props.match}
-                               location={this.props.location} isDetailView={true}
-                               showTermQualityBadge={false}/>
-                    </Card>
-                </Col>}
-            </Row>
-        </>;
+                    )}
+                </Row>
+            </>
+        );
     }
 }
 

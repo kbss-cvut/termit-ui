@@ -11,9 +11,8 @@
 .alert-heading {
     font-weight: $font-weight-bold;
     font-size: $h4-font-size;
-    margin-top: .15rem;
+    margin-top: 0.15rem;
 }
-
 
 // Alert icon
 .alert-icon {
@@ -28,19 +27,17 @@
     }
 }
 
-
 // Alert text next to an alert icon
 .alert-text {
     display: inline-block;
     vertical-align: middle;
 }
 
-
 // Alert links
 
 [class*="alert-"] {
     .alert-link {
         color: $white;
-        border-bottom: 1px dotted rgba($white, .5);
+        border-bottom: 1px dotted rgba($white, 0.5);
     }
 }

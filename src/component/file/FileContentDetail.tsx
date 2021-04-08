@@ -15,11 +15,10 @@ import NotificationType from "../../model/NotificationType";
 import {loadAllTerms} from "../../action/AsyncAnnotatorActions";
 import Constants from "../../util/Constants";
 
-
 interface FileDetailProvidedProps {
     iri: IRI;
     vocabularyIri: IRI;
-    scrollTo?: TextQuoteSelector;   // Selector of an annotation to scroll to (and highlight) after rendering
+    scrollTo?: TextQuoteSelector; // Selector of an annotation to scroll to (and highlight) after rendering
 }
 
 interface FileDetailOwnProps extends HasI18n {
@@ -41,7 +40,6 @@ interface FileDetailState {
 }
 
 export class FileContentDetail extends React.Component<FileDetailProps, FileDetailState> {
-
     constructor(props: FileDetailProps) {
         super(props);
         this.state = {
@@ -69,13 +67,18 @@ export class FileContentDetail extends React.Component<FileDetailProps, FileDeta
     }
 
     public componentDidUpdate(prevProps: FileDetailProps): void {
-        if (isDifferent(this.props.iri, prevProps.iri) || isDifferent(this.props.vocabularyIri, prevProps.vocabularyIri)) {
+        if (
+            isDifferent(this.props.iri, prevProps.iri) ||
+            isDifferent(this.props.vocabularyIri, prevProps.vocabularyIri)
+        ) {
             this.loadFileContentData();
             this.initializeTermFetching();
             this.props.loadVocabulary(this.props.vocabularyIri);
         }
 
-        const analysisFinishedNotification = this.props.notifications.find(n => n.source.type === NotificationType.TEXT_ANALYSIS_FINISHED);
+        const analysisFinishedNotification = this.props.notifications.find(
+            n => n.source.type === NotificationType.TEXT_ANALYSIS_FINISHED
+        );
         if (analysisFinishedNotification) {
             this.props.consumeNotification(analysisFinishedNotification);
             this.loadFileContentData();
@@ -92,45 +95,56 @@ export class FileContentDetail extends React.Component<FileDetailProps, FileDeta
     }
 
     private onUpdate = (newFileContent: string) => {
-        this.props.saveFileContent({
-            fragment: this.props.iri.fragment,
-            namespace: this.props.iri.namespace
-        }, newFileContent);
+        this.props.saveFileContent(
+            {
+                fragment: this.props.iri.fragment,
+                namespace: this.props.iri.namespace
+            },
+            newFileContent
+        );
     };
 
     public render() {
         if (!this.props.fileContent || this.state.termsLoading) {
-            return <Mask text={this.props.i18n("annotator.content.loading")}/>;
+            return <Mask text={this.props.i18n("annotator.content.loading")} />;
         }
-        return <Annotator key={this.state.fileContentId} fileIri={this.props.iri}
-                          vocabularyIri={this.props.vocabularyIri}
-                          initialHtml={this.props.fileContent}
-                          scrollTo={this.props.scrollTo} onUpdate={this.onUpdate}/>;
+        return (
+            <Annotator
+                key={this.state.fileContentId}
+                fileIri={this.props.iri}
+                vocabularyIri={this.props.vocabularyIri}
+                initialHtml={this.props.fileContent}
+                scrollTo={this.props.scrollTo}
+                onUpdate={this.onUpdate}
+            />
+        );
     }
 }
 
 function isDifferent(iri1?: IRI, iri2?: IRI): boolean {
-
-    const iri1Str = (iri1) ? iri1!.namespace + iri1!.fragment : null;
-    const iri2Str = (iri2) ? iri2!.namespace + iri2!.fragment : null;
+    const iri1Str = iri1 ? iri1!.namespace + iri1!.fragment : null;
+    const iri2Str = iri2 ? iri2!.namespace + iri2!.fragment : null;
 
     return iri1Str !== iri2Str;
 }
 
-
-export default connect((state: TermItState) => {
-    return {
-        fileContent: state.fileContent,
-        notifications: state.notifications,
-        intl: state.intl
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadFileContent: (fileIri: IRI) => dispatch(loadFileContent(fileIri)),
-        saveFileContent: (fileIri: IRI, fileContent: string) => dispatch(saveFileContent(fileIri, fileContent)),
-        clearFileContent: () => dispatch(clearFileContent()),
-        loadVocabulary: (vocabularyIri: IRI) => dispatch(loadVocabulary(vocabularyIri, true, Constants.API_PREFIX, false)),
-        fetchTerms: (vocabularyIri: IRI) => dispatch(loadAllTerms(vocabularyIri, true)),
-        consumeNotification: (notification: AppNotification) => dispatch(consumeNotification(notification))
-    };
-})(injectIntl(withI18n(FileContentDetail)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            fileContent: state.fileContent,
+            notifications: state.notifications,
+            intl: state.intl
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadFileContent: (fileIri: IRI) => dispatch(loadFileContent(fileIri)),
+            saveFileContent: (fileIri: IRI, fileContent: string) => dispatch(saveFileContent(fileIri, fileContent)),
+            clearFileContent: () => dispatch(clearFileContent()),
+            loadVocabulary: (vocabularyIri: IRI) =>
+                dispatch(loadVocabulary(vocabularyIri, true, Constants.API_PREFIX, false)),
+            fetchTerms: (vocabularyIri: IRI) => dispatch(loadAllTerms(vocabularyIri, true)),
+            consumeNotification: (notification: AppNotification) => dispatch(consumeNotification(notification))
+        };
+    }
+)(injectIntl(withI18n(FileContentDetail)));

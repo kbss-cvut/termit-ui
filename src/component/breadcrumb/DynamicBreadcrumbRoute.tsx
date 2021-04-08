@@ -21,19 +21,24 @@ declare type DynamicBreadcrumbRouteProps = DynamicBreadcrumbRouteOwnProps & Dyna
 // This route should extract breadcrumb label from store data, e.g., vocabulary label from currently open vocabulary
 const DynamicBreadcrumbRoute = (props: DynamicBreadcrumbRouteProps) => {
     const {component, includeSearch, ...rest} = {...props};
-    const Component = component;    // lowercase first character does not pass through JSX validation
+    const Component = component; // lowercase first character does not pass through JSX validation
     const {locale} = useI18n();
-    const renderRoute = (routeProps: RouteComponentProps<any>) => <Breadcrumb data={{
-        title: props.state[props.asset] ? (props.state[props.asset] as Asset).getLabel(locale) : "",
-        pathname: routeProps.match.url,
-        search: includeSearch ? routeProps.location.search : undefined
-    }}>
-        <Component {...routeProps}/>
-    </Breadcrumb>;
+    const renderRoute = (routeProps: RouteComponentProps<any>) => (
+        <Breadcrumb
+            data={{
+                title: props.state[props.asset] ? (props.state[props.asset] as Asset).getLabel(locale) : "",
+                pathname: routeProps.match.url,
+                search: includeSearch ? routeProps.location.search : undefined
+            }}>
+            <Component {...routeProps} />
+        </Breadcrumb>
+    );
 
-    return <Route {...rest} render={renderRoute}/>;
+    return <Route {...rest} render={renderRoute} />;
 };
 
-export default connect<DynamicBreadcrumbRouteStoreProps, undefined, DynamicBreadcrumbRouteOwnProps, TermItState>((state: TermItState) => {
-    return {state};
-})(DynamicBreadcrumbRoute);
+export default connect<DynamicBreadcrumbRouteStoreProps, undefined, DynamicBreadcrumbRouteOwnProps, TermItState>(
+    (state: TermItState) => {
+        return {state};
+    }
+)(DynamicBreadcrumbRoute);

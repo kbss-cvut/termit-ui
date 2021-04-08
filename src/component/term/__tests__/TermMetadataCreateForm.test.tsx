@@ -26,7 +26,6 @@ jest.mock("../../../util/Ajax", () => {
 });
 
 describe("TermMetadataCreateForm", () => {
-
     const vocabularyIri = Generator.generateUri();
 
     let onChange: (change: object, callback?: () => void) => void;
@@ -44,10 +43,16 @@ describe("TermMetadataCreateForm", () => {
     it("generates identifier on mount if a valid label is provided", () => {
         Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
         const termData = {label: langString("test label")};
-        shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange} termData={termData}
-                                                                language={Constants.DEFAULT_LANGUAGE}
-                                                                labelExist={({})}
-                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                termData={termData}
+                language={Constants.DEFAULT_LANGUAGE}
+                labelExist={{}}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         expect(Ajax.post).toHaveBeenCalled();
         const config = (Ajax.post as jest.Mock).mock.calls[0][1];
         expect(config.getParams().name).toEqual(getLocalized(termData.label));
@@ -57,11 +62,17 @@ describe("TermMetadataCreateForm", () => {
 
     it("generates identifier on label change for non-empty label", () => {
         Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
-        const wrapper = mountWithIntl(<TermMetadataCreateForm onChange={onChange} language={Constants.DEFAULT_LANGUAGE}
-                                                              labelExist={({})}
-                                                              termData={AssetFactory.createEmptyTermData()}
-                                                              vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
-        const labelInput = wrapper.find("input[name=\"create-term-label\"]");
+        const wrapper = mountWithIntl(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={Constants.DEFAULT_LANGUAGE}
+                labelExist={{}}
+                termData={AssetFactory.createEmptyTermData()}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
+        const labelInput = wrapper.find('input[name="create-term-label"]');
         (labelInput.getDOMNode() as HTMLInputElement).value = "a";
         labelInput.simulate("change", labelInput);
         expect(Ajax.post).toHaveBeenCalled();
@@ -73,14 +84,23 @@ describe("TermMetadataCreateForm", () => {
     it("handles possible race condition when generating identifier multiple times", () => {
         const firstIri = Generator.generateUri();
         const secondIri = Generator.generateUri();
-        Ajax.post = jest.fn().mockImplementationOnce(() => {
-            return promiseDelay(200, {data: firstIri});
-        }).mockImplementationOnce(() => Promise.resolve({data: secondIri}));
-        const wrapper = mountWithIntl(<TermMetadataCreateForm onChange={onChange} language={Constants.DEFAULT_LANGUAGE}
-                                                              labelExist={({})}
-                                                              termData={AssetFactory.createEmptyTermData()}
-                                                              vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
-        const labelInput = wrapper.find("input[name=\"create-term-label\"]");
+        Ajax.post = jest
+            .fn()
+            .mockImplementationOnce(() => {
+                return promiseDelay(200, {data: firstIri});
+            })
+            .mockImplementationOnce(() => Promise.resolve({data: secondIri}));
+        const wrapper = mountWithIntl(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={Constants.DEFAULT_LANGUAGE}
+                labelExist={{}}
+                termData={AssetFactory.createEmptyTermData()}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
+        const labelInput = wrapper.find('input[name="create-term-label"]');
         (labelInput.getDOMNode() as HTMLInputElement).value = "a";
         labelInput.simulate("change", labelInput);
         jest.advanceTimersByTime(100);
@@ -94,35 +114,48 @@ describe("TermMetadataCreateForm", () => {
             changesCalls.forEach(call => {
                 expect(call[0].iri).not.toEqual(firstIri);
             });
-        })
+        });
     });
 
     it("correctly passes selected parent terms to onChange handler", () => {
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={Constants.DEFAULT_LANGUAGE}
-                                                                                labelExist={({})}
-                                                                                termData={AssetFactory.createEmptyTermData()}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={Constants.DEFAULT_LANGUAGE}
+                labelExist={{}}
+                termData={AssetFactory.createEmptyTermData()}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         const parents = [Generator.generateTerm()];
         wrapper.instance().onParentSelect(parents);
         expect(onChange).toHaveBeenCalledWith({parentTerms: parents});
     });
 
     it("checks for label uniqueness in vocabulary on label change", () => {
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={Constants.DEFAULT_LANGUAGE}
-                                                                                labelExist={({})}
-                                                                                termData={AssetFactory.createEmptyTermData()}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={Constants.DEFAULT_LANGUAGE}
+                labelExist={{}}
+                termData={AssetFactory.createEmptyTermData()}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         const mock = jest.fn().mockImplementation(() => Promise.resolve({data: ""}));
         Ajax.post = mock;
         const newLabel = "New label";
-        wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label").simulate("change", {
-            currentTarget: {
-                name: "create-term-label",
-                value: newLabel
-            }
-        });
+        wrapper
+            .find(CustomInput)
+            .findWhere(ci => ci.prop("name") === "create-term-label")
+            .simulate("change", {
+                currentTarget: {
+                    name: "create-term-label",
+                    value: newLabel
+                }
+            });
         return Promise.resolve().then(() => {
             // Label check
             expect(Ajax.head).toHaveBeenCalledTimes(1);
@@ -133,18 +166,26 @@ describe("TermMetadataCreateForm", () => {
     });
 
     it("does not check for label uniqueness for empty label", () => {
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={Constants.DEFAULT_LANGUAGE}
-                                                                                labelExist={({})}
-                                                                                termData={AssetFactory.createEmptyTermData()}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={Constants.DEFAULT_LANGUAGE}
+                labelExist={{}}
+                termData={AssetFactory.createEmptyTermData()}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
-        wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label").simulate("change", {
-            currentTarget: {
-                name: "create-term-label",
-                value: ""
-            }
-        });
+        wrapper
+            .find(CustomInput)
+            .findWhere(ci => ci.prop("name") === "create-term-label")
+            .simulate("change", {
+                currentTarget: {
+                    name: "create-term-label",
+                    value: ""
+                }
+            });
         return Promise.resolve().then(() => {
             // Label check, identifier generation
             expect(Ajax.get).not.toHaveBeenCalled();
@@ -154,47 +195,67 @@ describe("TermMetadataCreateForm", () => {
     it("passes existing label value in selected language to label edit input", () => {
         Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
         const termData = AssetFactory.createEmptyTermData();
-        termData.label = {"en": "Building", "cs": "Budova"};
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={"en"}
-                                                                                labelExist={({})}
-                                                                                termData={termData}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        termData.label = {en: "Building", cs: "Budova"};
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={"en"}
+                labelExist={{}}
+                termData={termData}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         const labelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label");
         expect(labelInput.prop("value")).toEqual(termData.label.en);
     });
 
     it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {
         const termData = AssetFactory.createEmptyTermData();
-        termData.altLabels = {"en": ["building", "construction"], "cs": ["budova", "stavba"]};
-        termData.hiddenLabels = {"en": ["shack"], "cs": ["barák", "dům"]};
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={"cs"}
-                                                                                labelExist={({})}
-                                                                                termData={termData}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        termData.altLabels = {en: ["building", "construction"], cs: ["budova", "stavba"]};
+        termData.hiddenLabels = {en: ["shack"], cs: ["barák", "dům"]};
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={"cs"}
+                labelExist={{}}
+                termData={termData}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         const stringListEdits = wrapper.find(StringListEdit);
         expect(stringListEdits.at(0).prop("list")).toEqual(termData.altLabels.cs);
         expect(stringListEdits.at(1).prop("list")).toEqual(termData.hiddenLabels.cs);
     });
 
     it("maps list of string alt labels to multilingual strings with selected language", () => {
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={"cs"}
-                                                                                labelExist={({})}
-                                                                                termData={AssetFactory.createEmptyTermData("cs")}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={"cs"}
+                labelExist={{}}
+                termData={AssetFactory.createEmptyTermData("cs")}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         const list = ["budova", "stavba"];
         wrapper.instance().onAltLabelsChange(list);
         expect(onChange).toHaveBeenCalledWith({altLabels: pluralLangString(list, "cs")});
     });
 
     it("maps list of string hidden labels to multilingual strings with selected language", () => {
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language={"de"}
-                                                                                labelExist={({})}
-                                                                                termData={AssetFactory.createEmptyTermData("de")}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language={"de"}
+                labelExist={{}}
+                termData={AssetFactory.createEmptyTermData("de")}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         const list = ["bau", "gebäude"];
         wrapper.instance().onHiddenLabelsChange(list);
         expect(onChange).toHaveBeenCalledWith({hiddenLabels: pluralLangString(list, "de")});
@@ -205,12 +266,17 @@ describe("TermMetadataCreateForm", () => {
         const termData = AssetFactory.createEmptyTermData();
         const enLabel = "Building";
         const csLabel = "Budova";
-        termData.label = {"en": enLabel};
-        const wrapper = shallow<TermMetadataCreateForm>(<TermMetadataCreateForm onChange={onChange}
-                                                                                language="cs"
-                                                                                termData={termData}
-                                                                                labelExist={({})}
-                                                                                vocabularyIri={vocabularyIri} {...intlFunctions()}/>);
+        termData.label = {en: enLabel};
+        const wrapper = shallow<TermMetadataCreateForm>(
+            <TermMetadataCreateForm
+                onChange={onChange}
+                language="cs"
+                termData={termData}
+                labelExist={{}}
+                vocabularyIri={vocabularyIri}
+                {...intlFunctions()}
+            />
+        );
         const labelInput = wrapper.find(CustomInput).findWhere(ci => ci.prop("name") === "create-term-label");
         labelInput.simulate("change", {
             currentTarget: {
@@ -218,6 +284,6 @@ describe("TermMetadataCreateForm", () => {
             }
         });
         wrapper.update();
-        expect(onChange).toHaveBeenCalledWith({label: {"en": enLabel, "cs": csLabel}, labelExist: {"cs": false}});
+        expect(onChange).toHaveBeenCalledWith({label: {en: enLabel, cs: csLabel}, labelExist: {cs: false}});
     });
 });

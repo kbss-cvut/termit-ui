@@ -6,7 +6,6 @@ import {UsePaginationInstanceProps} from "react-table";
 import Constants from "../../../../util/Constants";
 
 describe("Pagination", () => {
-
     let pagingProps: UsePaginationInstanceProps<any>;
 
     beforeEach(() => {
@@ -22,11 +21,12 @@ describe("Pagination", () => {
             setPageSize: jest.fn()
         };
         localStorage.clear();
-    })
+    });
 
     it("stores selected page size in local storage", () => {
-        const wrapper = mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
-                                                  allowSizeChange={true}/>);
+        const wrapper = mountWithIntl(
+            <Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps} allowSizeChange={true} />
+        );
         const sizeSelect = wrapper.find("select");
         const value = 20;
         sizeSelect.simulate("change", {target: {value}});
@@ -37,8 +37,9 @@ describe("Pagination", () => {
     it("loads stored page size on mount", () => {
         const size = 20;
         localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] = size.toString();
-        mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
-                                  allowSizeChange={true}/>);
+        mountWithIntl(
+            <Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps} allowSizeChange={true} />
+        );
         expect(pagingProps.setPageSize).toHaveBeenCalledWith(size);
     });
 
@@ -47,8 +48,9 @@ describe("Pagination", () => {
         pagingProps.canPreviousPage = false;
         pagingProps.canNextPage = false;
         localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] = size.toString();
-        const wrapper = mountWithIntl(<Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps}
-                                                  allowSizeChange={true}/>);
+        const wrapper = mountWithIntl(
+            <Pagination pagingState={{pageSize: 10, pageIndex: 0}} pagingProps={pagingProps} allowSizeChange={true} />
+        );
         expect(wrapper.exists(BootstrapPagination)).toBeFalsy();
     });
 });

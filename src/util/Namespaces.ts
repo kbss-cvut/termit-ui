@@ -29,7 +29,6 @@ export const DC_TERMS: Namespace = {
 };
 
 export default class Namespaces {
-
     private static SUPPORTED = [RDF, RDFS, SKOS, DC_TERMS];
 
     /**

@@ -1,11 +1,11 @@
 const DefaultTermCharacteristicsFrequencyChartOptions = {
     chart: {
         id: "types",
-        stacked: true,
+        stacked: true
     },
     plotOptions: {
         bar: {
-            horizontal: true,
+            horizontal: true
         }
     }
 };

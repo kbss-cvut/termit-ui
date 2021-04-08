@@ -9,13 +9,16 @@ import {useI18n} from "../hook/useI18n";
 
 const ProfileRoute: React.FC<HasI18n> = () => {
     const {i18n} = useI18n();
-    return <Switch>
-        <BreadcrumbRoute
-            title={i18n("profile.change-password")}
-            path={Routes.changePassword.path}
-            component={ChangePassword}/>
-        <Route component={Profile}/>
-    </Switch>;
-}
+    return (
+        <Switch>
+            <BreadcrumbRoute
+                title={i18n("profile.change-password")}
+                path={Routes.changePassword.path}
+                component={ChangePassword}
+            />
+            <Route component={Profile} />
+        </Switch>
+    );
+};
 
 export default ProfileRoute;

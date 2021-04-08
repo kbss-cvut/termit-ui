@@ -16,7 +16,6 @@ interface SearchResultVocabulariesProps extends HasI18n, RouteComponentProps<any
 }
 
 export class SearchResultsView extends React.Component<SearchResultVocabulariesProps> {
-
     public componentDidMount() {
         this.props.addSearchListener();
     }
@@ -32,16 +31,18 @@ export class SearchResultsView extends React.Component<SearchResultVocabulariesP
             return null;
         }
     }
-
 }
 
-export default connect((state: TermItState) => {
-    return {
-        searchResults: state.searchResults,
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        addSearchListener: () => dispatch(SearchActions.addSearchListener()),
-        removeSearchListener: () => dispatch(SearchActions.removeSearchListener()),
-    };
-})(withRouter(injectIntl(withI18n(SearchResultsView))));
+export default connect(
+    (state: TermItState) => {
+        return {
+            searchResults: state.searchResults
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            addSearchListener: () => dispatch(SearchActions.addSearchListener()),
+            removeSearchListener: () => dispatch(SearchActions.removeSearchListener())
+        };
+    }
+)(withRouter(injectIntl(withI18n(SearchResultsView))));

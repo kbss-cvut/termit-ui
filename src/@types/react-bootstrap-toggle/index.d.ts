@@ -73,10 +73,11 @@ declare module "react-bootstrap-toggle" {
         recalculateOnResize?: boolean;
     }
 
-    export default class BootstrapToggle extends React.Component<BootstrapToggleProps & React.HTMLAttributes<HTMLDivElement>> {
-    }
+    export default class BootstrapToggle extends React.Component<
+        BootstrapToggleProps & React.HTMLAttributes<HTMLDivElement>
+    > {}
 
-    export class Bootstrap2Toggle extends React.Component<BootstrapToggleProps & React.HTMLAttributes<HTMLDivElement>> {
-    }
-
+    export class Bootstrap2Toggle extends React.Component<
+        BootstrapToggleProps & React.HTMLAttributes<HTMLDivElement>
+    > {}
 }

@@ -2,7 +2,6 @@
 // Forms
 //
 
-
 // Labels
 
 .form-control-label {
@@ -10,7 +9,6 @@
     font-size: $font-size-sm;
     font-weight: $font-weight-bold;
 }
-
 
 // Text inputs
 
@@ -24,25 +22,23 @@
     }
 }
 
-
 // Textarea
 
 textarea[resize="none"] {
-    resize: none!important;
+    resize: none !important;
 }
 
 textarea[resize="both"] {
-    resize: both!important;
+    resize: both !important;
 }
 
 textarea[resize="vertical"] {
-    resize: vertical!important;
+    resize: vertical !important;
 }
 
 textarea[resize="horizontal"] {
-    resize: horizontal!important;
+    resize: horizontal !important;
 }
-
 
 // Form input variations
 
@@ -58,13 +54,12 @@ textarea[resize="horizontal"] {
     }
 }
 
-
 // Alternative input
 
 .form-control-alternative {
     box-shadow: $input-alternative-box-shadow;
     border: 0;
-    transition: box-shadow .15s ease;
+    transition: box-shadow 0.15s ease;
 
     &:focus {
         box-shadow: $input-focus-alternative-box-shadow;

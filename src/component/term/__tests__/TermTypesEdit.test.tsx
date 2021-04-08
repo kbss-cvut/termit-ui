@@ -24,8 +24,16 @@ describe("TermTypesEdit", () => {
         const availableTypes = {};
         availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
         const types = [VocabularyUtils.TERM];
-        const wrapper = mountWithIntl(<TermTypesEdit termTypes={types} availableTypes={availableTypes} intl={intlData}
-                                                     loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <TermTypesEdit
+                termTypes={types}
+                availableTypes={availableTypes}
+                intl={intlData}
+                loadTypes={loadTypes}
+                onChange={onChange}
+                {...intlFunctions()}
+            />
+        );
         const selector = wrapper.find(IntelligentTreeSelect);
         expect(selector.prop("value")).not.toBeDefined();
     });
@@ -36,16 +44,32 @@ describe("TermTypesEdit", () => {
         availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
         availableTypes[iri] = new Term({iri, label: langString("Other type")});
         const types = [VocabularyUtils.TERM, iri];
-        const wrapper = shallow(<TermTypesEdit termTypes={types} availableTypes={availableTypes} intl={intlData}
-                                               loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <TermTypesEdit
+                termTypes={types}
+                availableTypes={availableTypes}
+                intl={intlData}
+                loadTypes={loadTypes}
+                onChange={onChange}
+                {...intlFunctions()}
+            />
+        );
         const selector = wrapper.find(IntelligentTreeSelect);
         expect(selector.prop("value")).toEqual(availableTypes[iri].iri);
     });
 
     it("invokes onChange handler with selected type and the implicit Term type", () => {
         const selected = new Term({iri: Generator.generateUri(), label: langString("Selected term")});
-        const wrapper = shallow(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={{}} intl={intlData}
-                                               loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <TermTypesEdit
+                termTypes={[VocabularyUtils.TERM]}
+                availableTypes={{}}
+                intl={intlData}
+                loadTypes={loadTypes}
+                onChange={onChange}
+                {...intlFunctions()}
+            />
+        );
         (wrapper.instance() as TermTypesEdit).onChange(selected);
         expect(onChange).toHaveBeenCalled();
         const newTypes = (onChange as jest.Mock).mock.calls[0][0];
@@ -60,17 +84,32 @@ describe("TermTypesEdit", () => {
         availableTypes[VocabularyUtils.TERM] = new Term({iri: VocabularyUtils.TERM, label: langString("Term")});
         availableTypes[iri] = new Term({iri, label: langString("Other type")});
         const types = [VocabularyUtils.TERM, iri];
-        const wrapper = shallow<TermTypesEdit>(<TermTypesEdit termTypes={types} availableTypes={availableTypes}
-                                                              loadTypes={loadTypes} intl={intlData}
-                                                              onChange={onChange} {...intlFunctions()}/>);
+        const wrapper = shallow<TermTypesEdit>(
+            <TermTypesEdit
+                termTypes={types}
+                availableTypes={availableTypes}
+                loadTypes={loadTypes}
+                intl={intlData}
+                onChange={onChange}
+                {...intlFunctions()}
+            />
+        );
         // Simulate tree reset (using the real component did not work)
         wrapper.instance().onChange(null);
         expect(onChange).toHaveBeenCalledWith([VocabularyUtils.TERM]);
     });
 
     it("loads types on mount", () => {
-        shallow(<TermTypesEdit termTypes={[VocabularyUtils.TERM]} availableTypes={{}} intl={intlData}
-                               loadTypes={loadTypes} onChange={onChange} {...intlFunctions()}/>);
+        shallow(
+            <TermTypesEdit
+                termTypes={[VocabularyUtils.TERM]}
+                availableTypes={{}}
+                intl={intlData}
+                loadTypes={loadTypes}
+                onChange={onChange}
+                {...intlFunctions()}
+            />
+        );
         expect(loadTypes).toHaveBeenCalled();
     });
 });

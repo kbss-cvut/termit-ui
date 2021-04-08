@@ -10,7 +10,6 @@ import RecentlyCommentedAsset, {
     RecentlyCommentedAssetData
 } from "../model/RecentlyCommentedAsset";
 
-
 export function loadLastCommentedByMe() {
     return loadLastCommentedAssetList(ActionType.LOAD_LAST_COMMENTED_BY_ME, "/assets/last-commented-by-me");
 }
@@ -20,7 +19,10 @@ export function loadLastCommentedAssets() {
 }
 
 export function loadLastCommentedInReactionToMine() {
-    return loadLastCommentedAssetList(ActionType.LOAD_LAST_COMMENTED_IN_REACTION_TO_MINE, "/assets/last-commented-in-reaction-to-mine");
+    return loadLastCommentedAssetList(
+        ActionType.LOAD_LAST_COMMENTED_IN_REACTION_TO_MINE,
+        "/assets/last-commented-in-reaction-to-mine"
+    );
 }
 
 export function loadMyLastCommented() {
@@ -34,7 +36,12 @@ function loadLastCommentedAssetList(at: string, endpoint: string) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
         return Ajax.get(Constants.API_PREFIX + endpoint, param("limit", Constants.LAST_COMMENTED_ASSET_LIMIT + ""))
-            .then((data: object) => JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyCommentedAssetData>(data, RECENTLY_COMMENTED_ASSET_CONTEXT))
+            .then((data: object) =>
+                JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyCommentedAssetData>(
+                    data,
+                    RECENTLY_COMMENTED_ASSET_CONTEXT
+                )
+            )
             .then((data: RecentlyCommentedAssetData[]) => {
                 dispatch(asyncActionSuccess(action));
                 return data.map(item => new RecentlyCommentedAsset(item));
@@ -43,5 +50,5 @@ function loadLastCommentedAssetList(at: string, endpoint: string) {
                 dispatch(asyncActionFailure(action, error));
                 return [];
             });
-    }
+    };
 }

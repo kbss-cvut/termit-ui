@@ -19,17 +19,27 @@ export const RemoveFile = (props: RemoveFileProps) => {
     const toggle = () => setConfirmationDialogOpen(!confirmationDialogOpen);
 
     const performAction = () => {
-        props.performAction()
-            .then(toggle)
+        props.performAction().then(toggle);
     };
 
-    return <IfUserAuthorized renderUnauthorizedAlert={false}>
-        <RemoveAssetDialog onCancel={toggle} onSubmit={performAction} show={confirmationDialogOpen} asset={props.file}/>
-        <Button color="outline-danger" size="sm" onClick={props.withConfirmation ? toggle : performAction}
+    return (
+        <IfUserAuthorized renderUnauthorizedAlert={false}>
+            <RemoveAssetDialog
+                onCancel={toggle}
+                onSubmit={performAction}
+                show={confirmationDialogOpen}
+                asset={props.file}
+            />
+            <Button
+                color="outline-danger"
+                size="sm"
+                onClick={props.withConfirmation ? toggle : performAction}
                 title={i18n("asset.remove.tooltip")}>
-            <FaTrashAlt className="mr-1"/>{i18n("remove")}
-        </Button>
-    </IfUserAuthorized>;
-}
+                <FaTrashAlt className="mr-1" />
+                {i18n("remove")}
+            </Button>
+        </IfUserAuthorized>
+    );
+};
 
 export default RemoveFile;

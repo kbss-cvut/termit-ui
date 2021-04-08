@@ -55,7 +55,6 @@ export function resolveInitialLanguage(props: CommonTermDetailProps) {
 }
 
 export class TermDetail extends EditableComponent<TermDetailProps, TermDetailState> {
-
     constructor(props: TermDetailProps) {
         super(props);
         this.state = {
@@ -73,7 +72,7 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     private loadVocabulary(): void {
         const vocabularyName: string = this.props.match.params.name;
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        this.props.loadVocabulary({fragment: vocabularyName, namespace})
+        this.props.loadVocabulary({fragment: vocabularyName, namespace});
     }
 
     private loadTerm(): void {
@@ -119,20 +118,37 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
     public getActions = () => {
         const actions = [];
         if (!this.state.edit) {
-            actions.push(<IfUserAuthorized key="term-detail-edit" renderUnauthorizedAlert={false}>
-                <Button id="term-detail-edit" size="sm" color="primary" onClick={this.onEdit}
-                        key="term-detail-edit" title={this.props.i18n("edit")}>
-                    <GoPencil/>&nbsp;{this.props.i18n("edit")}
-                </Button>
-            </IfUserAuthorized>);
+            actions.push(
+                <IfUserAuthorized key="term-detail-edit" renderUnauthorizedAlert={false}>
+                    <Button
+                        id="term-detail-edit"
+                        size="sm"
+                        color="primary"
+                        onClick={this.onEdit}
+                        key="term-detail-edit"
+                        title={this.props.i18n("edit")}>
+                        <GoPencil />
+                        &nbsp;{this.props.i18n("edit")}
+                    </Button>
+                </IfUserAuthorized>
+            );
         }
-        actions.push(<IfUserAuthorized key="term-detail-remove" renderUnauthorizedAlert={false}>
-            <Button id="term-detail-remove" key="term.summary.remove" size="sm" color="outline-danger"
+        actions.push(
+            <IfUserAuthorized key="term-detail-remove" renderUnauthorizedAlert={false}>
+                <Button
+                    id="term-detail-remove"
+                    key="term.summary.remove"
+                    size="sm"
+                    color="outline-danger"
                     title={this.props.i18n("asset.remove.tooltip")}
-                    onClick={this.onRemoveClick}><FaTrashAlt/>&nbsp;{this.props.i18n("remove")}</Button>
-        </IfUserAuthorized>);
+                    onClick={this.onRemoveClick}>
+                    <FaTrashAlt />
+                    &nbsp;{this.props.i18n("remove")}
+                </Button>
+            </IfUserAuthorized>
+        );
         return actions;
-    }
+    };
 
     public render() {
         const {term, vocabulary} = this.props;
@@ -140,44 +156,67 @@ export class TermDetail extends EditableComponent<TermDetailProps, TermDetailSta
             return null;
         }
         const buttons = this.getActions();
-        return <div id="term-detail">
-            <WindowTitle title={`${getLocalized(term.label, this.state.language)} | ${vocabulary.label}`}/>
+        return (
+            <div id="term-detail">
+                <WindowTitle title={`${getLocalized(term.label, this.state.language)} | ${vocabulary.label}`} />
 
-            <HeaderWithActions title={this.renderTitle()} actions={buttons}/>
-            <RemoveAssetDialog show={this.state.showRemoveDialog} asset={term}
-                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
-            {this.state.edit ?
-                <TermMetadataEdit save={this.onSave} term={term} cancel={this.onCloseEdit}
-                                  language={this.state.language} selectLanguage={this.setLanguage}/> :
-                <TermMetadata term={term} vocabulary={vocabulary} language={this.state.language}
-                              selectLanguage={this.setLanguage}/>}
-        </div>
+                <HeaderWithActions title={this.renderTitle()} actions={buttons} />
+                <RemoveAssetDialog
+                    show={this.state.showRemoveDialog}
+                    asset={term}
+                    onCancel={this.onCloseRemove}
+                    onSubmit={this.onRemove}
+                />
+                {this.state.edit ? (
+                    <TermMetadataEdit
+                        save={this.onSave}
+                        term={term}
+                        cancel={this.onCloseEdit}
+                        language={this.state.language}
+                        selectLanguage={this.setLanguage}
+                    />
+                ) : (
+                    <TermMetadata
+                        term={term}
+                        vocabulary={vocabulary}
+                        language={this.state.language}
+                        selectLanguage={this.setLanguage}
+                    />
+                )}
+            </div>
+        );
     }
 
     private renderTitle() {
         const term = this.props.term!;
         const altLabels = getLocalizedPlural(term.altLabels, this.state.language).sort().join(", ");
-        return <>
-            <TermQualityBadge term={term}/>
-            {getLocalized(term.label, this.state.language)}
-            <CopyIriIcon url={term.iri as string}/><br/>
-            <div className="small italics">{altLabels.length > 0 ? altLabels : "\u00a0"}</div>
-        </>;
+        return (
+            <>
+                <TermQualityBadge term={term} />
+                {getLocalized(term.label, this.state.language)}
+                <CopyIriIcon url={term.iri as string} />
+                <br />
+                <div className="small italics">{altLabels.length > 0 ? altLabels : "\u00a0"}</div>
+            </>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        term: state.selectedTerm,
-        vocabulary: state.vocabulary,
-        configuredLanguage: state.configuration.language
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
-        loadTerm: (termName: string, vocabularyIri: IRI) => dispatch(loadTerm(termName, vocabularyIri)),
-        updateTerm: (term: Term) => dispatch(updateTerm(term)),
-        removeTerm: (term: Term) => dispatch(removeTerm(term)),
-        publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
-    };
-})(injectIntl(withI18n(withRouter(TermDetail))));
+export default connect(
+    (state: TermItState) => {
+        return {
+            term: state.selectedTerm,
+            vocabulary: state.vocabulary,
+            configuredLanguage: state.configuration.language
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
+            loadTerm: (termName: string, vocabularyIri: IRI) => dispatch(loadTerm(termName, vocabularyIri)),
+            updateTerm: (term: Term) => dispatch(updateTerm(term)),
+            removeTerm: (term: Term) => dispatch(removeTerm(term)),
+            publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
+        };
+    }
+)(injectIntl(withI18n(withRouter(TermDetail))));

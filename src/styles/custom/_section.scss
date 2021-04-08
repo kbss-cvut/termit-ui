@@ -2,11 +2,9 @@
 // Sections
 //
 
-
 // Nucleo icons for presentation purpose
 
 .section-nucleo-icons {
-
     --icon-size: 5rem;
     --icon-sm-size: 3.75rem;
     --gutter: 7rem;
@@ -28,7 +26,7 @@
             z-index: 1;
             transform: translate(-50%, -50%);
             @include box-shadow($box-shadow);
-            transition: all .2s cubic-bezier(.25,.65,.9,.75);
+            transition: all 0.2s cubic-bezier(0.25, 0.65, 0.9, 0.75);
 
             &.icon {
                 width: var(--icon-size);
@@ -62,7 +60,6 @@
         }
 
         &.on-screen {
-
             i {
                 opacity: 1;
 
@@ -133,7 +130,6 @@
                     top: calc(50% - (var(--gutter) * 1.5));
                 }
             }
-
         }
     }
 }

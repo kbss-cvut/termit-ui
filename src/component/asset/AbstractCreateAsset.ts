@@ -9,10 +9,8 @@ export interface AbstractCreateAssetState {
     generateIri: boolean;
 }
 
-let loadIdentifier = <T extends { name: string, assetType: string }>(parameters: T) => {
-    return Ajax.post(`${Constants.API_PREFIX}/identifiers`,
-        params(parameters)
-    );
+let loadIdentifier = <T extends {name: string; assetType: string}>(parameters: T) => {
+    return Ajax.post(`${Constants.API_PREFIX}/identifiers`, params(parameters));
 };
 
 // This will cause the existing still running identifier requests to be ignored in favor of the most recent call
@@ -26,7 +24,6 @@ export {loadIdentifier};
  * It handles automatic generation of identifier and label setting.
  */
 export abstract class AbstractCreateAsset<P, S extends AbstractCreateAssetState> extends React.Component<P, S> {
-
     protected constructor(props: P) {
         super(props);
     }
@@ -50,6 +47,6 @@ export abstract class AbstractCreateAsset<P, S extends AbstractCreateAssetState>
     };
 
     protected onIriChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.setState({iri: (e.currentTarget.value as string), generateIri: false});
+        this.setState({iri: e.currentTarget.value as string, generateIri: false});
     };
 }

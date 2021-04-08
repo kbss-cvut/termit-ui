@@ -8,9 +8,7 @@ const loggerMiddleware = createLogger();
 
 const TermItStore = createStore(
     TermItReducers,
-    composeWithDevTools(
-        applyMiddleware(thunk as ThunkMiddleware, loggerMiddleware)
-    )
+    composeWithDevTools(applyMiddleware(thunk as ThunkMiddleware, loggerMiddleware))
 );
 
 export default TermItStore;

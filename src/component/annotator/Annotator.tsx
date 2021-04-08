@@ -38,7 +38,7 @@ interface AnnotatorProps extends HasI18n {
     fileIri: IRI;
     vocabularyIri: IRI;
     initialHtml: string;
-    scrollTo?: TextQuoteSelector;   // Selector of an annotation to scroll to (and highlight) after rendering
+    scrollTo?: TextQuoteSelector; // Selector of an annotation to scroll to (and highlight) after rendering
     user: User;
     file: File;
 
@@ -57,7 +57,7 @@ interface AnnotatorState {
     stickyAnnotationId: string;
 
     showSelectionPurposeDialog: boolean;
-    selectionPurposeDialogAnchorPosition: { x: number, y: number };
+    selectionPurposeDialogAnchorPosition: {x: number; y: number};
 
     showNewTermDialog: boolean;
     newTermLabelAnnotation?: AnnotationSpanProps; // Annotation which is being used for new term label
@@ -79,9 +79,9 @@ export interface AnnotationSpanProps {
 const ANNOTATION_HIGHLIGHT_TIMEOUT = 5000;
 
 interface HtmlSplit {
-    prefix: string,
-    body: string,
-    suffix: string
+    prefix: string;
+    body: string;
+    suffix: string;
 }
 
 export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
@@ -105,8 +105,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     private static getPrefixesOfHtmlTag(html: string): Map<string, string> {
         const dom = HtmlParserUtils.html2dom(html);
         const htmlNode = DomUtils.findOneChild(
-            (n: DomHandlerNode) => (n as Element).tagName === "html" && (n as Element).attribs && !!(n as Element).attribs.prefix,
-            dom);
+            (n: DomHandlerNode) =>
+                (n as Element).tagName === "html" && (n as Element).attribs && !!(n as Element).attribs.prefix,
+            dom
+        );
         if (htmlNode) {
             return HtmlParserUtils.getPrefixMap(htmlNode);
         }
@@ -124,13 +126,17 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 const highlightedElem = HtmlDomUtils.findAnnotationElementBySelector(document, scrollTo);
                 highlightedElem.scrollIntoView({block: "center"});
                 HtmlDomUtils.addClassToElement(highlightedElem, "annotator-highlighted-annotation");
-                setTimeout(() => HtmlDomUtils.removeClassFromElement(highlightedElem, "annotator-highlighted-annotation"),
-                    ANNOTATION_HIGHLIGHT_TIMEOUT);
+                setTimeout(
+                    () => HtmlDomUtils.removeClassFromElement(highlightedElem, "annotator-highlighted-annotation"),
+                    ANNOTATION_HIGHLIGHT_TIMEOUT
+                );
                 if (highlightedElem.hasAttribute("about")) {
                     this.setState({stickyAnnotationId: highlightedElem.getAttribute("about")!});
                 }
             } catch (e) {
-                this.props.publishMessage(new Message({messageId: "annotator.findAnnotation.error"}, MessageType.ERROR));
+                this.props.publishMessage(
+                    new Message({messageId: "annotator.findAnnotation.error"}, MessageType.ERROR)
+                );
             }
         }
     }
@@ -187,7 +193,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         if (annotationNode.typeof === AnnotationType.DEFINITION) {
             this.setState({
                 selectedTerm: term,
-                existingTermDefinitionAnnotationElement: AnnotationDomHelper.findAnnotation(this.state.internalHtml, annotationNode.about!, this.state.prefixMap) as Element
+                existingTermDefinitionAnnotationElement: AnnotationDomHelper.findAnnotation(
+                    this.state.internalHtml,
+                    annotationNode.about!,
+                    this.state.prefixMap
+                ) as Element
             });
             return false;
         }
@@ -204,7 +214,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                     selectedTerm: undefined
                 });
             });
-    }
+    };
 
     private setTermDefinitionSource(term: Term, annotationElement: Element) {
         const dom = [...this.state.internalHtml];
@@ -218,12 +228,15 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             types: []
         });
         defSource.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
-        return this.props.setTermDefinitionSource(defSource, term).then(() => {
-            this.updateInternalHtml(dom);
-            return Promise.resolve();
-        }).catch(() => {
-            this.onRemove(annotationElement.attribs!.about!);
-        });
+        return this.props
+            .setTermDefinitionSource(defSource, term)
+            .then(() => {
+                this.updateInternalHtml(dom);
+                return Promise.resolve();
+            })
+            .catch(() => {
+                this.onRemove(annotationElement.attribs!.about!);
+            });
     }
 
     public onCloseTermDefinitionDialog = () => {
@@ -232,7 +245,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             existingTermDefinitionAnnotationElement: undefined,
             selectedTerm: undefined
         });
-    }
+    };
 
     public onCreateTerm = (label: string, annotation: AnnotationSpanProps) => {
         this.setState({showNewTermDialog: true, newTermLabelAnnotation: Object.assign({}, annotation)});
@@ -244,7 +257,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     public onCloseCreate = () => {
         const toRemove: string[] = [];
         if (this.shouldRemoveLabelAnnotation()) {
-            toRemove.push(this.state.newTermLabelAnnotation!.about!)
+            toRemove.push(this.state.newTermLabelAnnotation!.about!);
         }
         if (this.state.newTermDefinitionAnnotation) {
             toRemove.push(this.state.newTermDefinitionAnnotation.about!);
@@ -263,21 +276,31 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     }
 
     private onMinimizeTermCreation = () => {
-        this.props.publishMessage(new Message({messageId: "annotator.createTerm.selectDefinition.message"}, MessageType.INFO));
+        this.props.publishMessage(
+            new Message({messageId: "annotator.createTerm.selectDefinition.message"}, MessageType.INFO)
+        );
         this.setState({showNewTermDialog: false});
     };
 
     public assignNewTerm = (newTerm: Term) => {
         const dom = [...this.state.internalHtml];
         if (this.state.newTermLabelAnnotation) {
-            const ann = AnnotationDomHelper.findAnnotation(dom, this.state.newTermLabelAnnotation.about!, this.state.prefixMap);
+            const ann = AnnotationDomHelper.findAnnotation(
+                dom,
+                this.state.newTermLabelAnnotation.about!,
+                this.state.prefixMap
+            );
             if (ann) {
                 ann.attribs.resource = newTerm.iri;
                 delete ann.attribs.score;
             }
         }
         if (this.state.newTermDefinitionAnnotation) {
-            const ann = AnnotationDomHelper.findAnnotation(dom, this.state.newTermDefinitionAnnotation.about!, this.state.prefixMap);
+            const ann = AnnotationDomHelper.findAnnotation(
+                dom,
+                this.state.newTermDefinitionAnnotation.about!,
+                this.state.prefixMap
+            );
             if (ann) {
                 ann.attribs.resource = newTerm.iri;
                 this.setTermDefinitionSource(newTerm, ann);
@@ -368,7 +391,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                         typeof: AnnotationType.DEFINITION,
                         property: VocabularyUtils.IS_DEFINITION_OF_TERM
                     },
-                    stickyAnnotationId: ""  // No sticky definition annotation if new term dialog is open
+                    stickyAnnotationId: "" // No sticky definition annotation if new term dialog is open
                 });
             }
         }
@@ -392,49 +415,68 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     };
 
     public render() {
-        return <>
-            <WindowTitle title={this.props.i18n("annotator")}/>
-            <HeaderWithActions title={this.props.file.getLabel()}/>
-            <Card>
-                <CardHeader className="text-right">
-                    <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)}/>
-                </CardHeader>
-                <CardBody>
-                    <LegendToggle key="legend-toggle"/>
-                    <IfUserAuthorized key="text-analysis-button" renderUnauthorizedAlert={false}>
-                        <TextAnalysisInvocationButton className="analyze-button" fileIri={this.props.fileIri}
-                                                            defaultVocabularyIri={IRIImpl.toString(this.props.vocabularyIri)}/>
-                    </IfUserAuthorized>
-                    <CreateTermFromAnnotation ref={this.createNewTermDialog}
-                                              show={this.state.showNewTermDialog} onClose={this.onCloseCreate}
-                                              onMinimize={this.onMinimizeTermCreation}
-                                              onTermCreated={this.assignNewTerm}
-                                              vocabularyIri={this.props.vocabularyIri}/>
-                    <SelectionPurposeDialog target={this.generateVirtualPopperAnchor()}
-                                            show={this.state.showSelectionPurposeDialog}
-                                            onCreateTerm={this.createTermFromSelection}
-                                            onMarkOccurrence={this.createTermOccurrence}
-                                            onMarkDefinition={this.markTermDefinition}
-                                            onCancel={this.closeSelectionPurposeDialog}/>
-                    <TermDefinitionEdit term={this.state.selectedTerm}
-                                        annotationElement={this.state.existingTermDefinitionAnnotationElement}
-                                        onCancel={this.onCloseTermDefinitionDialog} onSave={this.onSaveTermDefinition}/>
-                    <div id="annotator"
-                         ref={this.containerElement}
-                         onMouseUp={this.handleMouseUp}>
-                        <AnnotatorContent content={this.state.internalHtml} prefixMap={this.state.prefixMap}
-                                          stickyAnnotationId={this.state.stickyAnnotationId}
-                                          onCreateTerm={this.onCreateTerm} onUpdate={this.onAnnotationTermSelected}
-                                          onRemove={this.onRemove} onResetSticky={this.resetStickyAnnotationId}/>
-                    </div>
-                </CardBody>
-            </Card>
-        </>
+        return (
+            <>
+                <WindowTitle title={this.props.i18n("annotator")} />
+                <HeaderWithActions title={this.props.file.getLabel()} />
+                <Card>
+                    <CardHeader className="text-right">
+                        <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)} />
+                    </CardHeader>
+                    <CardBody>
+                        <LegendToggle key="legend-toggle" />
+                        <IfUserAuthorized key="text-analysis-button" renderUnauthorizedAlert={false}>
+                            <TextAnalysisInvocationButton
+                                className="analyze-button"
+                                fileIri={this.props.fileIri}
+                                defaultVocabularyIri={IRIImpl.toString(this.props.vocabularyIri)}
+                            />
+                        </IfUserAuthorized>
+                        <CreateTermFromAnnotation
+                            ref={this.createNewTermDialog}
+                            show={this.state.showNewTermDialog}
+                            onClose={this.onCloseCreate}
+                            onMinimize={this.onMinimizeTermCreation}
+                            onTermCreated={this.assignNewTerm}
+                            vocabularyIri={this.props.vocabularyIri}
+                        />
+                        <SelectionPurposeDialog
+                            target={this.generateVirtualPopperAnchor()}
+                            show={this.state.showSelectionPurposeDialog}
+                            onCreateTerm={this.createTermFromSelection}
+                            onMarkOccurrence={this.createTermOccurrence}
+                            onMarkDefinition={this.markTermDefinition}
+                            onCancel={this.closeSelectionPurposeDialog}
+                        />
+                        <TermDefinitionEdit
+                            term={this.state.selectedTerm}
+                            annotationElement={this.state.existingTermDefinitionAnnotationElement}
+                            onCancel={this.onCloseTermDefinitionDialog}
+                            onSave={this.onSaveTermDefinition}
+                        />
+                        <div id="annotator" ref={this.containerElement} onMouseUp={this.handleMouseUp}>
+                            <AnnotatorContent
+                                content={this.state.internalHtml}
+                                prefixMap={this.state.prefixMap}
+                                stickyAnnotationId={this.state.stickyAnnotationId}
+                                onCreateTerm={this.onCreateTerm}
+                                onUpdate={this.onAnnotationTermSelected}
+                                onRemove={this.onRemove}
+                                onResetSticky={this.resetStickyAnnotationId}
+                            />
+                        </div>
+                    </CardBody>
+                </Card>
+            </>
+        );
     }
 
     private generateVirtualPopperAnchor(): HTMLElement {
         // Based on https://popper.js.org/docs/v2/virtual-elements/
-        return HtmlDomUtils.generateVirtualElement(this.state.selectionPurposeDialogAnchorPosition.x, this.state.selectionPurposeDialogAnchorPosition.y);
+        return HtmlDomUtils.generateVirtualElement(
+            this.state.selectionPurposeDialogAnchorPosition.x,
+            this.state.selectionPurposeDialogAnchorPosition.y
+        );
     }
 
     private reconstructHtml(htmlBodyContent: string) {
@@ -447,7 +489,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
      * @param about
      * @param annotationType Type of the annotation to create
      */
-    private annotateSelection(about: string, annotationType: string): { container: HTMLElement, annotation: Element } | null {
+    private annotateSelection(
+        about: string,
+        annotationType: string
+    ): {container: HTMLElement; annotation: Element} | null {
         const originalRange = HtmlDomUtils.getSelectionRange();
         if (originalRange && !HtmlDomUtils.doesRangeSpanMultipleElements(originalRange)) {
             const rangeContent = HtmlDomUtils.getRangeContent(originalRange);
@@ -465,31 +510,33 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     }
 
     private static matchHtml(htmlContent: string): HtmlSplit {
-        const htmlSplit = htmlContent.split(/(<body.*>|<\/body>)/ig);
+        const htmlSplit = htmlContent.split(/(<body.*>|<\/body>)/gi);
 
         if (htmlSplit.length === 5) {
             return {
                 prefix: htmlSplit[0] + htmlSplit[1],
                 body: htmlSplit[2],
                 suffix: htmlSplit[3] + htmlSplit[4]
-            }
+            };
         }
         return {
             prefix: "",
             body: htmlContent,
             suffix: ""
-        }
-
+        };
     }
 }
 
-export default connect((state: TermItState) => ({
-    user: state.user,
-    file: state.selectedFile
-}), (dispatch: ThunkDispatch) => {
-    return {
-        publishMessage: (message: Message) => dispatch(publishMessage(message)),
-        setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term)),
-        updateTerm: (term: Term) => dispatch(updateTerm(term))
-    };
-})(injectIntl(withI18n(Annotator)));
+export default connect(
+    (state: TermItState) => ({
+        user: state.user,
+        file: state.selectedFile
+    }),
+    (dispatch: ThunkDispatch) => {
+        return {
+            publishMessage: (message: Message) => dispatch(publishMessage(message)),
+            setTermDefinitionSource: (src: TermOccurrence, term: Term) => dispatch(setTermDefinitionSource(src, term)),
+            updateTerm: (term: Term) => dispatch(updateTerm(term))
+        };
+    }
+)(injectIntl(withI18n(Annotator)));

@@ -5,12 +5,7 @@ import withI18n, {HasI18n} from "./hoc/withI18n";
 import withLoading from "./hoc/withLoading";
 import {connect} from "react-redux";
 import TermItState from "../model/TermItState";
-import {
-    Container,
-    Jumbotron,
-    Nav,
-    Navbar,
-} from "reactstrap";
+import {Container, Jumbotron, Nav, Navbar} from "reactstrap";
 import User, {EMPTY_USER} from "../model/User";
 import Routes from "../util/Routes";
 import Footer from "./footer/Footer";
@@ -54,7 +49,6 @@ interface MainViewState {
 }
 
 export class MainView extends React.Component<MainViewProps, MainViewState> {
-
     public static defaultProps: Partial<MainViewProps> = {};
 
     constructor(props: MainViewProps) {
@@ -77,7 +71,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
 
     private handleResize = (): void => {
-
         if (Utils.isDesktopView() !== this.props.desktopView) {
             this.props.changeView();
         }
@@ -100,86 +93,124 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
             return this.renderPlaceholder();
         }
 
-        return <div className="main-container">
-            <Sidebar/>
-            <div className={classNames({
-                "main-view-sidebar-expanded": sidebarExpanded,
-                "main-view-sidebar-collapsed": !sidebarExpanded
-            }, "flex-grow-1")}>
-                <header>
-                    {desktopView && <Navbar id="navbar"
-                                            light={true} fixed="top"
-                                            className={classNames("bg-white", "navbar-top", "d-flex")}>
-                        <Nav navbar={true} className="nav-search">
-                            <NavbarSearch navbar={true}/>
-                        </Nav>
+        return (
+            <div className="main-container">
+                <Sidebar />
+                <div
+                    className={classNames(
+                        {
+                            "main-view-sidebar-expanded": sidebarExpanded,
+                            "main-view-sidebar-collapsed": !sidebarExpanded
+                        },
+                        "flex-grow-1"
+                    )}>
+                    <header>
+                        {desktopView && (
+                            <Navbar
+                                id="navbar"
+                                light={true}
+                                fixed="top"
+                                className={classNames("bg-white", "navbar-top", "d-flex")}>
+                                <Nav navbar={true} className="nav-search">
+                                    <NavbarSearch navbar={true} />
+                                </Nav>
 
-                        <Nav navbar={true} className="nav-menu-user flex-row-reverse">
-                            <UserDropdown dark={false}/>
-                        </Nav>
-                    </Navbar>}
+                                <Nav navbar={true} className="nav-menu-user flex-row-reverse">
+                                    <UserDropdown dark={false} />
+                                </Nav>
+                            </Navbar>
+                        )}
 
-                    {/*
+                        {/*
                         // @ts-ignore */}
-                    {!this.isDashboardRoute() && <Breadcrumbs className="breadcrumb-bar" separator="/"/>}
-
-                </header>
-                <SearchTypeTabs/>
-                <Messages/>
-                <Container id="content-container" fluid={true}
-                           className={
-                               classNames("pt-3", "flex-grow-1",
-                                   {"content-container-dashboard": this.isDashboardRoute()})
-                           }>
-                    <React.Suspense fallback={<Mask/>}>
-                        <Switch>
-                            <BreadcrumbRoute title={i18n("main.nav.admin")} path={Routes.administration.path}
-                                             component={AdministrationRoute}/>
-                            <BreadcrumbRoute title={i18n("main.nav.resources")} path={Routes.resources.path}
-                                             component={ResourceManagementRoute}/>
-                            <BreadcrumbRoute title={i18n("main.nav.vocabularies")} path={Routes.vocabularies.path}
-                                             component={VocabularyManagementRoute}/>
-                            <BreadcrumbRoute title={i18n("main.nav.statistics")} path={Routes.statistics.path}
-                                             component={Statistics}/>
-                            <BreadcrumbRoute title={i18n("main.nav.searchTerms")} path={Routes.searchTerms.path}
-                                             component={SearchTerms}/>
-                            <BreadcrumbRoute title={i18n("main.nav.searchVocabularies")}
-                                             path={Routes.searchVocabularies.path}
-                                             component={SearchVocabularies}/>
-                            <BreadcrumbRoute title={i18n("main.nav.search")} path={Routes.search.path}
-                                             component={Search}/>
-                            <BreadcrumbRoute title={i18n("main.user-profile")} path={Routes.profile.path}
-                                             component={ProfileRoute}/>
-                            <Route component={Dashboard}/>
-                        </Switch>
-                    </React.Suspense>
-                </Container>
+                        {!this.isDashboardRoute() && <Breadcrumbs className="breadcrumb-bar" separator="/" />}
+                    </header>
+                    <SearchTypeTabs />
+                    <Messages />
+                    <Container
+                        id="content-container"
+                        fluid={true}
+                        className={classNames("pt-3", "flex-grow-1", {
+                            "content-container-dashboard": this.isDashboardRoute()
+                        })}>
+                        <React.Suspense fallback={<Mask />}>
+                            <Switch>
+                                <BreadcrumbRoute
+                                    title={i18n("main.nav.admin")}
+                                    path={Routes.administration.path}
+                                    component={AdministrationRoute}
+                                />
+                                <BreadcrumbRoute
+                                    title={i18n("main.nav.resources")}
+                                    path={Routes.resources.path}
+                                    component={ResourceManagementRoute}
+                                />
+                                <BreadcrumbRoute
+                                    title={i18n("main.nav.vocabularies")}
+                                    path={Routes.vocabularies.path}
+                                    component={VocabularyManagementRoute}
+                                />
+                                <BreadcrumbRoute
+                                    title={i18n("main.nav.statistics")}
+                                    path={Routes.statistics.path}
+                                    component={Statistics}
+                                />
+                                <BreadcrumbRoute
+                                    title={i18n("main.nav.searchTerms")}
+                                    path={Routes.searchTerms.path}
+                                    component={SearchTerms}
+                                />
+                                <BreadcrumbRoute
+                                    title={i18n("main.nav.searchVocabularies")}
+                                    path={Routes.searchVocabularies.path}
+                                    component={SearchVocabularies}
+                                />
+                                <BreadcrumbRoute
+                                    title={i18n("main.nav.search")}
+                                    path={Routes.search.path}
+                                    component={Search}
+                                />
+                                <BreadcrumbRoute
+                                    title={i18n("main.user-profile")}
+                                    path={Routes.profile.path}
+                                    component={ProfileRoute}
+                                />
+                                <Route component={Dashboard} />
+                            </Switch>
+                        </React.Suspense>
+                    </Container>
+                </div>
+                <Footer authenticated={true} sidebarExpanded={sidebarExpanded} />
             </div>
-            <Footer authenticated={true} sidebarExpanded={sidebarExpanded}/>
-        </div>;
+        );
     }
 
     private renderPlaceholder() {
-        return <div id="loading-placeholder" className="wrapper center">
-            <Jumbotron>
-                <h1>{this.props.i18n("message.welcome")}</h1>
-            </Jumbotron>
-        </div>;
+        return (
+            <div id="loading-placeholder" className="wrapper center">
+                <Jumbotron>
+                    <h1>{this.props.i18n("message.welcome")}</h1>
+                </Jumbotron>
+            </div>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        loading: state.loading,
-        user: state.user,
-        intl: state.intl,    // Pass intl in props to force UI re-render on language switch
-        sidebarExpanded: state.sidebarExpanded,
-        desktopView: state.desktopView
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadUser: () => dispatch(loadUser()),
-        logout: () => dispatch(logout()),
-        changeView: () => dispatch(changeView())
-    };
-})(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));
+export default connect(
+    (state: TermItState) => {
+        return {
+            loading: state.loading,
+            user: state.user,
+            intl: state.intl, // Pass intl in props to force UI re-render on language switch
+            sidebarExpanded: state.sidebarExpanded,
+            desktopView: state.desktopView
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadUser: () => dispatch(loadUser()),
+            logout: () => dispatch(logout()),
+            changeView: () => dispatch(changeView())
+        };
+    }
+)(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));

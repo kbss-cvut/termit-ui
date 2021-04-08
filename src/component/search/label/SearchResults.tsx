@@ -34,34 +34,35 @@ function scoreSort(a: SearchResultItem, b: SearchResultItem) {
 }
 
 export class SearchResults extends React.Component<SearchResultsProps> {
-
     public render() {
         const i18n = this.props.i18n;
         if (this.props.results.length === 0) {
             return <Label className="italics small text-gray">{i18n("main.search.no-results")}</Label>;
         }
         const rows = this.renderResults();
-        return <div>
-            <div className="italics small text-gray">{this.props.formatMessage("search.results.countInfo", {
-                matches: this.props.results.length,
-                assets: rows.length
-            })}</div>
-            <Table responsive={true} bordered={true} className="search-results">
-                <tbody>
-                {rows}
-                </tbody>
-            </Table>
-        </div>;
+        return (
+            <div>
+                <div className="italics small text-gray">
+                    {this.props.formatMessage("search.results.countInfo", {
+                        matches: this.props.results.length,
+                        assets: rows.length
+                    })}
+                </div>
+                <Table responsive={true} bordered={true} className="search-results">
+                    <tbody>{rows}</tbody>
+                </Table>
+            </div>
+        );
     }
 
     private renderResults() {
         const items = SearchResults.mergeDuplicates(this.props.results);
         return items.map(r => {
-            return <tr key={r.iri} className="search-result-match-row">
-                <td className="align-middle">
-                    {SearchResults.renderMatch(r)}
-                </td>
-            </tr>;
+            return (
+                <tr key={r.iri} className="search-result-match-row">
+                    <td className="align-middle">{SearchResults.renderMatch(r)}</td>
+                </tr>
+            );
         });
     }
 
@@ -93,7 +94,11 @@ export class SearchResults extends React.Component<SearchResultsProps> {
     }
 
     private static renderMatch(item: SearchResultItem) {
-        return item.hasType(VocabularyUtils.VOCABULARY) ? <VocabularyResultItem result={item}/> : <TermResultItem result={item}/>;
+        return item.hasType(VocabularyUtils.VOCABULARY) ? (
+            <VocabularyResultItem result={item} />
+        ) : (
+            <TermResultItem result={item} />
+        );
     }
 }
 

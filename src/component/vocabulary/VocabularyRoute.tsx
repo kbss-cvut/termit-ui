@@ -11,15 +11,28 @@ import Route from "../misc/Route";
 
 const VocabularyRoute: React.FC = () => {
     const {i18n} = useI18n();
-    return <Switch>
-        <BreadcrumbRoute title={i18n("glossary.createTerm.breadcrumb")}
-                         path={Routes.createVocabularyTerm.path} component={CreateTerm}
-                         includeSearch={true}/>
-        <DynamicBreadcrumbRoute asset="selectedTerm" path={Routes.vocabularyTermDetail.path}
-                                component={TermDetail} includeSearch={true}/>
-        <Route asset="vocabulary" path={Routes.vocabularySummary.path}
-               includeSearch={true} component={VocabularySummary}/>
-    </Switch>;
+    return (
+        <Switch>
+            <BreadcrumbRoute
+                title={i18n("glossary.createTerm.breadcrumb")}
+                path={Routes.createVocabularyTerm.path}
+                component={CreateTerm}
+                includeSearch={true}
+            />
+            <DynamicBreadcrumbRoute
+                asset="selectedTerm"
+                path={Routes.vocabularyTermDetail.path}
+                component={TermDetail}
+                includeSearch={true}
+            />
+            <Route
+                asset="vocabulary"
+                path={Routes.vocabularySummary.path}
+                includeSearch={true}
+                component={VocabularySummary}
+            />
+        </Switch>
+    );
 };
 
 export default VocabularyRoute;

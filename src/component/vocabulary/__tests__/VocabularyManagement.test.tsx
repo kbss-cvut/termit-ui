@@ -19,8 +19,11 @@ describe("VocabularyList", () => {
 
     it("loads vocabularies on mount", async () => {
         jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
-        mountWithIntl(<MemoryRouter><VocabularyManagement
-            loadVocabularies={loadVocabularies} {...intlFunctions()}/></MemoryRouter>);
+        mountWithIntl(
+            <MemoryRouter>
+                <VocabularyManagement loadVocabularies={loadVocabularies} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         await act(async () => {
             await flushPromises();
         });
@@ -31,8 +34,11 @@ describe("VocabularyList", () => {
         const user = Generator.generateUser();
         user.types.push(VocabularyUtils.USER_RESTRICTED);
         jest.spyOn(redux, "useSelector").mockReturnValue(user);
-        const wrapper = mountWithIntl(<MemoryRouter><VocabularyManagement
-            loadVocabularies={loadVocabularies} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <VocabularyManagement loadVocabularies={loadVocabularies} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         await act(async () => {
             await flushPromises();
         });

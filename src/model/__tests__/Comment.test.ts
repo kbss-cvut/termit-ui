@@ -2,10 +2,13 @@ import Generator from "../../__tests__/environment/Generator";
 import Comment, {CommentReaction} from "../Comment";
 
 describe("Comment", () => {
-
     describe("toJsonLd", () => {
         it("breaks circular dependencies between comment and reactions by replacing reaction object with comment iri only", () => {
-            const sut = new Comment({iri: Generator.generateUri(), content: "test  comment", author: Generator.generateUser()});
+            const sut = new Comment({
+                iri: Generator.generateUri(),
+                content: "test  comment",
+                author: Generator.generateUser()
+            });
             const reaction: CommentReaction = {
                 iri: Generator.generateUri(),
                 actor: sut.author!,

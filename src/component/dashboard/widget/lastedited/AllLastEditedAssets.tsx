@@ -9,9 +9,8 @@ interface AllLastEditedAssetsProps {
     loadAssets: () => Promise<RecentlyModifiedAsset[]>;
 }
 
-export const AllLastEditedAssets: React.FC<AllLastEditedAssetsProps> = props =>
-    <CommonLastEditedAssets {...props}/>
+export const AllLastEditedAssets: React.FC<AllLastEditedAssetsProps> = props => <CommonLastEditedAssets {...props} />;
 
 export default connect(undefined, (dispatch: ThunkDispatch) => ({
     loadAssets: () => dispatch(loadLastEditedAssets())
-}))(AllLastEditedAssets)
+}))(AllLastEditedAssets);

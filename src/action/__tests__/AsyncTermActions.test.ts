@@ -25,7 +25,6 @@ jest.mock("../../util/Ajax", () => {
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("AsyncTermActions", () => {
-
     const namespace = VocabularyUtils.NS_TERMIT + "/vocabularies/";
     const vocabularyName = "test-vocabulary";
     const termName = "test-term";
@@ -38,7 +37,6 @@ describe("AsyncTermActions", () => {
     });
 
     describe("setTermDefinitionSource", () => {
-
         const term = new Term({
             iri: `${namespace}${vocabularyName}/terms/${termName}`,
             label: langString(termName)
@@ -55,7 +53,9 @@ describe("AsyncTermActions", () => {
 
         it("sends PUT request with term definition source data to REST endpoint", () => {
             Ajax.put = jest.fn().mockResolvedValue(null);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))
+            ).then(() => {
                 expect(Ajax.put).toHaveBeenCalled();
                 const call = (Ajax.put as jest.Mock).mock.calls[0];
                 const url = call[0];
@@ -67,7 +67,9 @@ describe("AsyncTermActions", () => {
 
         it("publishes success message after successful request", () => {
             Ajax.put = jest.fn().mockResolvedValue(null);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))
+            ).then(() => {
                 expect(Ajax.put).toHaveBeenCalled();
                 const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(messageAction).toBeDefined();
@@ -78,7 +80,9 @@ describe("AsyncTermActions", () => {
         // Bug #1449
         it("handles multilingual term label by showing localized label when publishing success message", () => {
             Ajax.put = jest.fn().mockResolvedValue(null);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))
+            ).then(() => {
                 expect(Ajax.put).toHaveBeenCalled();
                 const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(messageAction).toBeDefined();
@@ -88,7 +92,9 @@ describe("AsyncTermActions", () => {
 
         it("publishes error message when server responds with CONFLICT", () => {
             Ajax.put = jest.fn().mockRejectedValue({status: 409});
-            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).catch(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))
+            ).catch(() => {
                 expect(Ajax.put).toHaveBeenCalled();
                 const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(messageAction).toBeDefined();
@@ -99,7 +105,9 @@ describe("AsyncTermActions", () => {
         // Bug #1449
         it("handles multilingual term label by showing localized label when publishing error message", () => {
             Ajax.put = jest.fn().mockRejectedValue({status: 409});
-            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))).catch(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(setTermDefinitionSource(definitionSource, term))
+            ).catch(() => {
                 expect(Ajax.put).toHaveBeenCalled();
                 const messageAction = store.getActions().find(a => a.type === ActionType.PUBLISH_MESSAGE);
                 expect(messageAction).toBeDefined();

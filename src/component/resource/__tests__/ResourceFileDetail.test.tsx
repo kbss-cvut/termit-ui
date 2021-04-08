@@ -14,14 +14,12 @@ import Routes from "../../../util/Routes";
 import VocabularySelect from "../../vocabulary/VocabularySelect";
 
 describe("ResourceFileDetail", () => {
-
     const resourceName = "test-resource";
     const resourceNamespace = VocabularyUtils.FILE + "/";
 
     let loadResource: (resourceIri: IRI) => void;
     let loadLatestTextAnalysisRecord: (resourceIri: IRI) => Promise<TextAnalysisRecord | null>;
     let popRoutingPayload: () => void;
-
 
     let location: Location;
     const history = createMemoryHistory();
@@ -43,7 +41,7 @@ describe("ResourceFileDetail", () => {
         };
         match = {
             params: {
-                fileName: resourceName,
+                fileName: resourceName
             },
             path: location.pathname,
             isExact: true,
@@ -58,9 +56,17 @@ describe("ResourceFileDetail", () => {
     });
 
     it("loads resource on mount", () => {
-        shallow(<ResourceFileDetail resource={resource} routeTransitionPayload={{}} loadResource={loadResource}
-                                    popRoutingPayload={popRoutingPayload}
-                                    loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        shallow(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(resourceNamespace + resourceName));
     });
 
@@ -72,10 +78,17 @@ describe("ResourceFileDetail", () => {
             vocabulary: {iri: vocabularyIri},
             files: [resource]
         };
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         const fileDetail = wrapper.find(FileDetail);
         expect(fileDetail.exists()).toBeTruthy();
         expect(fileDetail.prop("vocabularyIri")).toEqual(VocabularyUtils.create(vocabularyIri));
@@ -90,11 +103,17 @@ describe("ResourceFileDetail", () => {
             vocabulary: {iri: vocabularyIri},
             files: [resource]
         };
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={EMPTY_RESOURCE}
-                                                                        routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={EMPTY_RESOURCE}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         wrapper.setProps({resource});
         wrapper.update();
         const fileDetail = wrapper.find(FileDetail);
@@ -111,12 +130,21 @@ describe("ResourceFileDetail", () => {
             vocabularies: [{iri: vocabularyIri}]
         });
         (loadLatestTextAnalysisRecord as jest.Mock).mockImplementation(() => Promise.resolve(record));
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         return Promise.resolve().then(() => {
-            expect(loadLatestTextAnalysisRecord).toHaveBeenCalledWith(VocabularyUtils.create(resourceNamespace + resourceName));
+            expect(loadLatestTextAnalysisRecord).toHaveBeenCalledWith(
+                VocabularyUtils.create(resourceNamespace + resourceName)
+            );
             const fileDetail = wrapper.find(FileDetail);
             expect(fileDetail.exists()).toBeTruthy();
             expect(fileDetail.prop("vocabularyIri")).toEqual(VocabularyUtils.create(vocabularyIri));
@@ -132,15 +160,23 @@ describe("ResourceFileDetail", () => {
             vocabularies: [{iri: vocabularyIri}]
         });
         (loadLatestTextAnalysisRecord as jest.Mock).mockImplementation(() => Promise.resolve(record));
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={EMPTY_RESOURCE}
-                                                                        routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={EMPTY_RESOURCE}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         wrapper.setProps({resource});
         wrapper.update();
         return Promise.resolve().then(() => {
-            expect(loadLatestTextAnalysisRecord).toHaveBeenCalledWith(VocabularyUtils.create(resourceNamespace + resourceName));
+            expect(loadLatestTextAnalysisRecord).toHaveBeenCalledWith(
+                VocabularyUtils.create(resourceNamespace + resourceName)
+            );
             const fileDetail = wrapper.find(FileDetail);
             expect(fileDetail.exists()).toBeTruthy();
             expect(fileDetail.prop("vocabularyIri")).toEqual(VocabularyUtils.create(vocabularyIri));
@@ -148,15 +184,23 @@ describe("ResourceFileDetail", () => {
     });
 
     it("renders vocabulary selector when no text analysis record exists for a standalone file", () => {
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={EMPTY_RESOURCE}
-                                                                        routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={EMPTY_RESOURCE}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         wrapper.setProps({resource});
         wrapper.update();
         return Promise.resolve().then(() => {
-            expect(loadLatestTextAnalysisRecord).toHaveBeenCalledWith(VocabularyUtils.create(resourceNamespace + resourceName));
+            expect(loadLatestTextAnalysisRecord).toHaveBeenCalledWith(
+                VocabularyUtils.create(resourceNamespace + resourceName)
+            );
             expect(wrapper.find(FileDetail).exists()).toBeFalsy();
             expect(wrapper.exists(VocabularySelect)).toBeTruthy();
         });
@@ -170,10 +214,17 @@ describe("ResourceFileDetail", () => {
             vocabulary: {iri: vocabularyIri},
             files: [resource]
         };
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         const anotherFile = new File({
             iri: Generator.generateUri(),
             label: resourceName,
@@ -192,10 +243,17 @@ describe("ResourceFileDetail", () => {
     });
 
     it("does not attempt to load text analysis record when current resource is empty", () => {
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         jest.resetAllMocks();
         wrapper.setProps({resource: EMPTY_RESOURCE});
         wrapper.update();
@@ -208,10 +266,17 @@ describe("ResourceFileDetail", () => {
             label: "test resource",
             types: [VocabularyUtils.RESOURCE]
         });
-        shallow<ResourceFileDetail>(<ResourceFileDetail resource={res} routeTransitionPayload={{}}
-                                                        loadResource={loadResource}
-                                                        popRoutingPayload={popRoutingPayload}
-                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={res}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         expect(loadLatestTextAnalysisRecord).not.toHaveBeenCalled();
     });
 
@@ -225,27 +290,47 @@ describe("ResourceFileDetail", () => {
         };
         const payloadCache = {};
         payloadCache[Routes.annotateFile.name] = payload;
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource}
-                                                                        routeTransitionPayload={payloadCache}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={payloadCache}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         expect(wrapper.state().scrollToSelector).toEqual(payload.selector);
     });
 
     it("clears route transition payload for file annotation route after mount", () => {
-        shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                        loadResource={loadResource}
-                                                        popRoutingPayload={popRoutingPayload}
-                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         expect(popRoutingPayload).toHaveBeenCalled();
     });
 
     it("reloads resource when filename in URL changes", () => {
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         const newResourceName = "different-resource";
         const newMatch = Object.assign({}, match, {
             url: "http://localhost:3000/" + location.pathname + location.search,
@@ -257,13 +342,22 @@ describe("ResourceFileDetail", () => {
     });
 
     it("reloads resource when namespace in URL changes", () => {
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         const newNamespace = `${Generator.generateUri()}/`;
         const newLocation = Object.assign({}, location, {search: `?fileNamespace=${newNamespace}`});
-        const newMatch = Object.assign({}, match, {url: "http://localhost:3000/" + newLocation.pathname + newLocation.search});
+        const newMatch = Object.assign({}, match, {
+            url: "http://localhost:3000/" + newLocation.pathname + newLocation.search
+        });
         wrapper.setProps({match: newMatch, location: newLocation});
         wrapper.update();
         expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(newNamespace + resourceName));
@@ -276,10 +370,17 @@ describe("ResourceFileDetail", () => {
             label: "Test document",
             files: [resource]
         };
-        const wrapper = shallow<ResourceFileDetail>(<ResourceFileDetail resource={resource} routeTransitionPayload={{}}
-                                                                        loadResource={loadResource}
-                                                                        popRoutingPayload={popRoutingPayload}
-                                                                        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord} {...routeProps} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceFileDetail>(
+            <ResourceFileDetail
+                resource={resource}
+                routeTransitionPayload={{}}
+                loadResource={loadResource}
+                popRoutingPayload={popRoutingPayload}
+                loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+                {...routeProps}
+                {...intlFunctions()}
+            />
+        );
         expect(wrapper.state().vocabularyIri).toBeDefined();
         const newResourceName = "different-resource";
         const newMatch = Object.assign({}, match, {

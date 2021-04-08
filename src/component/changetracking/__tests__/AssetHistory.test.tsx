@@ -13,7 +13,6 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 jest.mock("../../misc/AssetLabel", () => () => <label>Asset</label>);
 
 describe("AssetHistory", () => {
-
     let loadHistory: (asset: Asset) => Promise<ChangeRecord[]>;
 
     beforeEach(() => {
@@ -22,7 +21,7 @@ describe("AssetHistory", () => {
 
     it("loads asset history on mount", async () => {
         const asset = Generator.generateTerm();
-        mountWithIntl(<AssetHistory asset={asset} loadHistory={loadHistory} {...intlFunctions()}/>);
+        mountWithIntl(<AssetHistory asset={asset} loadHistory={loadHistory} {...intlFunctions()} />);
         await act(async () => {
             await flushPromises();
         });
@@ -31,14 +30,16 @@ describe("AssetHistory", () => {
 
     it("renders table with history records when they are available", async () => {
         const asset = Generator.generateTerm();
-        loadHistory = jest.fn().mockResolvedValue([new PersistRecord({
-            iri: Generator.generateUri(),
-            timestamp: Date.now(),
-            author: Generator.generateUser(),
-            changedEntity: {iri: asset.iri},
-            types: [VocabularyUtils.PERSIST_EVENT]
-        })]);
-        const wrapper = mountWithIntl(<AssetHistory asset={asset} loadHistory={loadHistory} {...intlFunctions()}/>);
+        loadHistory = jest.fn().mockResolvedValue([
+            new PersistRecord({
+                iri: Generator.generateUri(),
+                timestamp: Date.now(),
+                author: Generator.generateUser(),
+                changedEntity: {iri: asset.iri},
+                types: [VocabularyUtils.PERSIST_EVENT]
+            })
+        ]);
+        const wrapper = mountWithIntl(<AssetHistory asset={asset} loadHistory={loadHistory} {...intlFunctions()} />);
         await act(async () => {
             await flushPromises();
         });
@@ -48,7 +49,7 @@ describe("AssetHistory", () => {
 
     it("shows notice about empty history when no records are found", async () => {
         const asset = Generator.generateTerm();
-        const wrapper = mountWithIntl(<AssetHistory asset={asset} loadHistory={loadHistory} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<AssetHistory asset={asset} loadHistory={loadHistory} {...intlFunctions()} />);
         await act(async () => {
             await flushPromises();
         });

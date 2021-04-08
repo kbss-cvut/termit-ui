@@ -2,7 +2,6 @@
 // Bootstrap datepicker
 //
 
-
 .datepicker {
     border-radius: $datepicker-border-radius;
 
@@ -119,7 +118,7 @@
             border-radius: 0;
 
             &.focused {
-                background: $datepicker-highlighted-bg
+                background: $datepicker-highlighted-bg;
             }
 
             &.disabled,
@@ -238,7 +237,7 @@
             &.active:hover,
             &.active.disabled,
             &.active.disabled:hover {
-                text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
+                text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
             }
 
             &.old,

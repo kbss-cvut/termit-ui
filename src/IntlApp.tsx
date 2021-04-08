@@ -15,26 +15,31 @@ const PublicMainView = React.lazy(() => import("./component/public/MainView"));
 const MainView = React.lazy(() => import("./component/MainView"));
 
 interface IntlWrapperProps {
-    intl: IntlData
+    intl: IntlData;
 }
 
-const IntlWrapper: React.FC<IntlWrapperProps> = (props) => {
+const IntlWrapper: React.FC<IntlWrapperProps> = props => {
     const {intl} = props;
-    return <IntlProvider {...intl}>
-        <Router history={Routing.history}>
-            <React.Suspense fallback={<Mask/>}>
-                <Switch>
-                    <Route path={Routes.login.path} component={Login}/>
-                    <Route path={Routes.register.path} component={Register}/>
-                    <BreadcrumbRoute path={Routes.publicDashboard.path} title={intl.messages["main.nav.dashboard"]}
-                                     component={PublicMainView}/>
-                    <BreadcrumbRoute title={intl.messages["main.nav.dashboard"]} component={MainView}/>
-                </Switch>
-            </React.Suspense>
-        </Router>
-    </IntlProvider>;
+    return (
+        <IntlProvider {...intl}>
+            <Router history={Routing.history}>
+                <React.Suspense fallback={<Mask />}>
+                    <Switch>
+                        <Route path={Routes.login.path} component={Login} />
+                        <Route path={Routes.register.path} component={Register} />
+                        <BreadcrumbRoute
+                            path={Routes.publicDashboard.path}
+                            title={intl.messages["main.nav.dashboard"]}
+                            component={PublicMainView}
+                        />
+                        <BreadcrumbRoute title={intl.messages["main.nav.dashboard"]} component={MainView} />
+                    </Switch>
+                </React.Suspense>
+            </Router>
+        </IntlProvider>
+    );
 };
 
 export default connect((state: TermItState) => {
-    return {intl: state.intl}
+    return {intl: state.intl};
 })(IntlWrapper);

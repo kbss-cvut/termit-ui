@@ -60,10 +60,13 @@ export function login(username: string, password: string) {
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
-        return Ajax.post("/j_spring_security_check", params({
-            username,
-            password
-        }).contentType(Constants.X_WWW_FORM_URLENCODED))
+        return Ajax.post(
+            "/j_spring_security_check",
+            params({
+                username,
+                password
+            }).contentType(Constants.X_WWW_FORM_URLENCODED)
+        )
             .then((resp: AxiosResponse) => {
                 const data = resp.data;
                 if (!data.loggedIn) {
@@ -104,12 +107,21 @@ export function createNewUser(user: UserAccountData) {
         dispatch(asyncActionRequest(action));
         return Ajax.post(Constants.API_PREFIX + "/users", content(user).contentType("application/json"))
             .then(() => dispatch(asyncActionSuccess(action)))
-            .then(() => dispatch(publishMessage(new Message({
-                messageId: "administration.users.create.created",
-                values: {name: `${user.firstName} ${user.lastName}`}
-            }, MessageType.SUCCESS))))
+            .then(() =>
+                dispatch(
+                    publishMessage(
+                        new Message(
+                            {
+                                messageId: "administration.users.create.created",
+                                values: {name: `${user.firstName} ${user.lastName}`}
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                )
+            )
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-    }
+    };
 }
 
 export function loadUsers() {
@@ -142,19 +154,29 @@ export function disableUser(user: User) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const iri = VocabularyUtils.create(user.iri);
-        return Ajax.delete(`${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/status`, param("namespace", iri.namespace))
+        return Ajax.delete(
+            `${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/status`,
+            param("namespace", iri.namespace)
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(publishMessage(new Message({
-                    messageId: "administration.users.status.action.disable.success",
-                    values: {name: user.fullName}
-                }, MessageType.SUCCESS)));
+                return dispatch(
+                    publishMessage(
+                        new Message(
+                            {
+                                messageId: "administration.users.status.action.disable.success",
+                                values: {name: user.fullName}
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 export function changeRole(user: User, role: UserRoleData) {
@@ -164,17 +186,26 @@ export function changeRole(user: User, role: UserRoleData) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const iri = VocabularyUtils.create(user.iri);
-        return Ajax.put(`${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/role`,
-            param("namespace", iri.namespace).content(role.iri).contentType(Constants.TEXT_MIME_TYPE))
+        return Ajax.put(
+            `${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/role`,
+            param("namespace", iri.namespace).content(role.iri).contentType(Constants.TEXT_MIME_TYPE)
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(publishMessage(new Message({ messageId: "administration.users.status.action.changeRole.success" }, MessageType.SUCCESS)));
+                return dispatch(
+                    publishMessage(
+                        new Message(
+                            {messageId: "administration.users.status.action.changeRole.success"},
+                            MessageType.SUCCESS
+                        )
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 export function enableUser(user: User) {
@@ -184,19 +215,29 @@ export function enableUser(user: User) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const iri = VocabularyUtils.create(user.iri);
-        return Ajax.post(`${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/status`, param("namespace", iri.namespace))
+        return Ajax.post(
+            `${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/status`,
+            param("namespace", iri.namespace)
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(publishMessage(new Message({
-                    messageId: "administration.users.status.action.enable.success",
-                    values: {name: user.fullName}
-                }, MessageType.SUCCESS)));
+                return dispatch(
+                    publishMessage(
+                        new Message(
+                            {
+                                messageId: "administration.users.status.action.enable.success",
+                                values: {name: user.fullName}
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 export function unlockUser(user: User, newPassword: string) {
@@ -206,20 +247,29 @@ export function unlockUser(user: User, newPassword: string) {
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action));
         const iri = VocabularyUtils.create(user.iri);
-        return Ajax.delete(`${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/lock`,
-            content(newPassword).contentType(Constants.TEXT_MIME_TYPE).param("namespace", iri.namespace))
+        return Ajax.delete(
+            `${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/lock`,
+            content(newPassword).contentType(Constants.TEXT_MIME_TYPE).param("namespace", iri.namespace)
+        )
             .then(() => {
                 dispatch(asyncActionSuccess(action));
-                return dispatch(publishMessage(new Message({
-                    messageId: "administration.users.status.action.unlock.success",
-                    values: {name: user.fullName}
-                }, MessageType.SUCCESS)));
+                return dispatch(
+                    publishMessage(
+                        new Message(
+                            {
+                                messageId: "administration.users.status.action.unlock.success",
+                                values: {name: user.fullName}
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                );
             })
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
             });
-    }
+    };
 }
 
 export function updateProfile(user: User) {
@@ -238,7 +288,8 @@ function updateUser(user: User, action: Action, messageId: string) {
             .then(() => {
                 dispatch(publishMessage(new Message({messageId}, MessageType.SUCCESS)));
                 return dispatch(asyncActionSuccess(action));
-            }).catch((error: ErrorData) => {
+            })
+            .catch((error: ErrorData) => {
                 dispatch(publishMessage(new Message(error, MessageType.ERROR)));
                 return dispatch(asyncActionFailure(action, error));
             });

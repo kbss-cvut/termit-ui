@@ -9,11 +9,10 @@ import Term from "../../../model/Term";
 
 interface ValidationResultsProps extends HasI18n {
     term: Term;
-    validationResults: { [vocabularyIri: string]: ValidationResult[] };
+    validationResults: {[vocabularyIri: string]: ValidationResult[]};
 }
 
 export class ValidationResults extends React.Component<ValidationResultsProps> {
-
     private renderResultMessage(result: ValidationResult) {
         let message;
         if (Array.isArray(result.message)) {
@@ -22,24 +21,21 @@ export class ValidationResults extends React.Component<ValidationResultsProps> {
         } else {
             message = result.message;
         }
-        return <ValidationMessage key={result.iri} sourceShapeIri={result.sourceShape?.iri} message={message!.value}/>;
+        return <ValidationMessage key={result.iri} sourceShapeIri={result.sourceShape?.iri} message={message!.value} />;
     }
 
     render() {
         const termResults = (this.props.validationResults || [])[this.props.term.iri] || [];
-        return <div id="validation-result-list" className="additional-metadata-container">
-            {
-                termResults.map(result => this.renderResultMessage(result))
-            }
-        </div>;
-    };
+        return (
+            <div id="validation-result-list" className="additional-metadata-container">
+                {termResults.map(result => this.renderResultMessage(result))}
+            </div>
+        );
+    }
 }
 
-export default connect(
-    (state: TermItState) => {
-        return {
-            validationResults: state.validationResults[state.vocabulary.iri]
-        };
-    }, {})
-(injectIntl(withI18n(ValidationResults)));
-
+export default connect((state: TermItState) => {
+    return {
+        validationResults: state.validationResults[state.vocabulary.iri]
+    };
+}, {})(injectIntl(withI18n(ValidationResults)));

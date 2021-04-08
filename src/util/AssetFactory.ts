@@ -13,7 +13,6 @@ import PersistRecord from "../model/changetracking/PersistRecord";
 import {UpdateRecord, UpdateRecordData} from "../model/changetracking/UpdateRecord";
 import {langString} from "../model/MultilingualString";
 
-
 const AssetFactory = {
     /**
      * Creates an instance of the appropriate asset class based on the specified data.

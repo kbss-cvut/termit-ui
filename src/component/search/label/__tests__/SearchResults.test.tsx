@@ -20,13 +20,12 @@ jest.mock("../VocabularyResultItem");
 jest.mock("../TermResultItem");
 
 describe("SearchResults", () => {
-
     beforeEach(() => {
         Ajax.get = jest.fn().mockResolvedValue({});
     });
 
     it("render no results info when no results are found", () => {
-        const wrapper = mountWithIntl(<SearchResults results={[]} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<SearchResults results={[]} {...intlFunctions()} />);
         const label = wrapper.find(Label);
         expect(label.exists()).toBeTruthy();
         expect(label.text()).toContain(en.messages["main.search.no-results"]);
@@ -46,8 +45,11 @@ describe("SearchResults", () => {
 
     it("renders term results", () => {
         const result = generateTermResult();
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={[result]} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={[result]} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const rows = wrapper.find("tr");
         // result row
         expect(rows.length).toEqual(1);
@@ -69,8 +71,11 @@ describe("SearchResults", () => {
 
     it("renders vocabulary results", () => {
         const result = generateVocabularyResult();
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={[result]} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={[result]} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const rows = wrapper.find("tr");
         // Result row
         expect(rows.length).toEqual(1);
@@ -81,8 +86,11 @@ describe("SearchResults", () => {
 
     it("renders both vocabulary and term results", () => {
         const results = [generateTermResult(), generateVocabularyResult()];
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={results} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={results} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const rows = wrapper.find("tr");
         // Header + result row
         expect(rows.length).toEqual(2);
@@ -92,38 +100,50 @@ describe("SearchResults", () => {
 
     it("renders VocabularyLink for vocabulary result", () => {
         const result = generateVocabularyResult();
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={[result]} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={[result]} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         expect(wrapper.find(VocabularyLink).exists()).toBeTruthy();
     });
 
     it("renders TermLink for term result", () => {
         const result = generateTermResult();
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={[result]} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={[result]} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         expect(wrapper.find(AssetLink).exists()).toBeTruthy();
     });
 
     it("merges multiple matches of one field of one asset into one result row", () => {
         const iri = Generator.generateUri();
         const vocabularyIri = Generator.generateUri();
-        const results = [new SearchResult({
-            iri,
-            label: "Test",
-            snippetText: "<em>Match</em> and another <em>match</em>",
-            snippetField: "comment",
-            vocabulary: {iri: vocabularyIri},
-            types: [VocabularyUtils.VOCABULARY]
-        }), new SearchResult({
-            iri,
-            label: "Test",
-            snippetText: "<em>Match</em> and another <em>match</em>",
-            snippetField: "comment",
-            vocabulary: {iri: vocabularyIri},
-            types: [VocabularyUtils.VOCABULARY]
-        })];
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={results} {...intlFunctions()}/></MemoryRouter>);
+        const results = [
+            new SearchResult({
+                iri,
+                label: "Test",
+                snippetText: "<em>Match</em> and another <em>match</em>",
+                snippetField: "comment",
+                vocabulary: {iri: vocabularyIri},
+                types: [VocabularyUtils.VOCABULARY]
+            }),
+            new SearchResult({
+                iri,
+                label: "Test",
+                snippetText: "<em>Match</em> and another <em>match</em>",
+                snippetField: "comment",
+                vocabulary: {iri: vocabularyIri},
+                types: [VocabularyUtils.VOCABULARY]
+            })
+        ];
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={results} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const rows = wrapper.find("tr");
         // result row
         expect(rows.length).toEqual(1);
@@ -140,23 +160,29 @@ describe("SearchResults", () => {
     it("merges matches of multiple fields of one asset into one result row", () => {
         const iri = Generator.generateUri();
         const vocabularyIri = Generator.generateUri();
-        const results = [new SearchResult({
-            iri,
-            label: "Test",
-            snippetText: "<em>Match</em> in label",
-            snippetField: "label",
-            vocabulary: {iri: vocabularyIri},
-            types: [VocabularyUtils.VOCABULARY]
-        }), new SearchResult({
-            iri,
-            label: "Test",
-            snippetText: "<em>Match</em> in comment",
-            snippetField: "comment",
-            vocabulary: {iri: vocabularyIri},
-            types: [VocabularyUtils.VOCABULARY]
-        })];
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={results} {...intlFunctions()}/></MemoryRouter>);
+        const results = [
+            new SearchResult({
+                iri,
+                label: "Test",
+                snippetText: "<em>Match</em> in label",
+                snippetField: "label",
+                vocabulary: {iri: vocabularyIri},
+                types: [VocabularyUtils.VOCABULARY]
+            }),
+            new SearchResult({
+                iri,
+                label: "Test",
+                snippetText: "<em>Match</em> in comment",
+                snippetField: "comment",
+                vocabulary: {iri: vocabularyIri},
+                types: [VocabularyUtils.VOCABULARY]
+            })
+        ];
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={results} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const rows = wrapper.find("tr");
         // result row
         expect(rows.length).toEqual(1);
@@ -168,8 +194,11 @@ describe("SearchResults", () => {
 
     it("ensures results are sorted by score descending", () => {
         const results = [generateTermResult(1.1), generateVocabularyResult(2.5)];
-        const wrapper = mountWithIntl(<MemoryRouter><SearchResults
-            results={results} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResults results={results} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const rows = wrapper.find(AssetLink);
         expect(rows.at(0).text().startsWith(results[1].label)).toBeTruthy();
     });

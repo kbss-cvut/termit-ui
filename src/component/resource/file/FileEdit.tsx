@@ -39,10 +39,11 @@ export class FileEdit extends ResourceEdit<FileEditProps, FileEditState> {
         const r = this.getCurrentResource();
         this.props.save(r).then(() => {
             if (this.state.file) {
-                this.props.uploadFileContent(this.props.resource.iri, this.state.file)
-                    .then(() => this.props.publishNotification({
+                this.props.uploadFileContent(this.props.resource.iri, this.state.file).then(() =>
+                    this.props.publishNotification({
                         source: {type: NotificationType.FILE_CONTENT_UPLOADED}
-                    }));
+                    })
+                );
             }
         });
     };
@@ -53,21 +54,24 @@ export class FileEdit extends ResourceEdit<FileEditProps, FileEditState> {
 
     public render() {
         const setFile = this.setFile.bind(this);
-        return <Card>
-            <CardBody>
-                <Form>
-                    <UploadFile resource={this.props.resource} setFile={setFile}/>
-                    {this.renderBasicMetadataInputs()}
-                    {this.renderSubmitButtons()}
-                </Form>
-            </CardBody>
-        </Card>;
+        return (
+            <Card>
+                <CardBody>
+                    <Form>
+                        <UploadFile resource={this.props.resource} setFile={setFile} />
+                        {this.renderBasicMetadataInputs()}
+                        {this.renderSubmitButtons()}
+                    </Form>
+                </CardBody>
+            </Card>
+        );
     }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
+        uploadFileContent: (fileIri: string, file: File) =>
+            dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
         publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
 })(injectIntl(withI18n(FileEdit)));

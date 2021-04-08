@@ -9,10 +9,10 @@ import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../../hoc/withI18n";
 
 interface Props extends PublicProps, HasI18n {
-    lang: string
+    lang: string;
 }
 
-const TermFrequency: React.FC<Props> = (props) => {
+const TermFrequency: React.FC<Props> = props => {
     const queryResult = props.queryResults;
     if (!queryResult || !queryResult.result) {
         return <div>{props.renderMask()}</div>;
@@ -25,17 +25,15 @@ const TermFrequency: React.FC<Props> = (props) => {
         vocabularies[r["@id"]] = {value, label};
     });
 
-    const vocList: { id: string, label: string, value: number }[] = Object.keys(vocabularies).map(key => (
-        {
-            id: key,
-            label: vocabularies[key].label,
-            value: parseInt(vocabularies[key].value, 10)
-        })
-    );
+    const vocList: {id: string; label: string; value: number}[] = Object.keys(vocabularies).map(key => ({
+        id: key,
+        label: vocabularies[key].label,
+        value: parseInt(vocabularies[key].value, 10)
+    }));
 
     const total = vocList.reduce((a, b) => a + b.value, 0);
 
-    const sortOutedList = vocList.filter(t => (t.value / total >= 0.025));
+    const sortOutedList = vocList.filter(t => t.value / total >= 0.025);
 
     const othersTotal = total - sortOutedList.reduce((a, b) => a + b.value, 0);
 
@@ -49,7 +47,18 @@ const TermFrequency: React.FC<Props> = (props) => {
         legend: {
             show: false
         },
-        colors: ["#2bffc6", "#ffd600", "#29AB87", "#f3a4b5", "#11cdef", "#fb6340", "#5603ad", "#ff6666", "#5e72e4", "#8965e0"],
+        colors: [
+            "#2bffc6",
+            "#ffd600",
+            "#29AB87",
+            "#f3a4b5",
+            "#11cdef",
+            "#fb6340",
+            "#5603ad",
+            "#ff6666",
+            "#5e72e4",
+            "#8965e0"
+        ],
         plotOptions: {
             pie: {
                 donut: {
@@ -58,7 +67,7 @@ const TermFrequency: React.FC<Props> = (props) => {
                         total: {
                             showAlways: true,
                             show: true,
-                            label: props.i18n("dashboard.widget.donut.total-terms"),
+                            label: props.i18n("dashboard.widget.donut.total-terms")
                         }
                     }
                 }
@@ -67,8 +76,7 @@ const TermFrequency: React.FC<Props> = (props) => {
         labels: sortOutedList.map(t => t.label),
         donut: {
             total: {
-                show: true,
-
+                show: true
             }
         },
         chart: {
@@ -91,15 +99,12 @@ const TermFrequency: React.FC<Props> = (props) => {
         }
     };
 
-    return <>
-        {props.renderMask()}
-        <Chart
-            options={options}
-            type="donut"
-            series={sortOutedList.map(t => t.value)}
-            width="100%"
-            height="auto"/>
-    </>;
+    return (
+        <>
+            {props.renderMask()}
+            <Chart options={options} type="donut" series={sortOutedList.map(t => t.value)} width="100%" height="auto" />
+        </>
+    );
 };
 
 export default withInjectableLoading(SparqlWidget(injectIntl(withI18n(TermFrequency))));

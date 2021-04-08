@@ -11,7 +11,7 @@ describe("AssetLabel", () => {
         const iri = Generator.generateUri();
         const label = "Test";
         getLabel = jest.fn().mockImplementation(() => Promise.resolve(label));
-        shallow(<AssetLabel iri={iri} getLabel={getLabel}/>);
+        shallow(<AssetLabel iri={iri} getLabel={getLabel} />);
         expect(getLabel).toHaveBeenCalledWith(iri);
     });
 
@@ -19,7 +19,7 @@ describe("AssetLabel", () => {
         const iri = Generator.generateUri();
         const label = "Test";
         getLabel = jest.fn().mockImplementation(() => Promise.resolve(label));
-        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel}/>);
+        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel} />);
         return Promise.resolve().then(() => {
             wrapper.update();
             expect(wrapper.text()).toEqual(label);
@@ -29,7 +29,7 @@ describe("AssetLabel", () => {
     it("renders IRI passed as props when label cannot be loaded", () => {
         const iri = Generator.generateUri();
         getLabel = jest.fn().mockImplementation(() => Promise.resolve(undefined));
-        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel}/>);
+        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel} />);
         return Promise.resolve().then(() => {
             expect(wrapper.text()).toEqual(iri);
         });
@@ -38,7 +38,7 @@ describe("AssetLabel", () => {
     it("renders prefixed IRI if label cannot be loaded", () => {
         const iri = "http://www.w3.org/2004/02/skos/core#narrower";
         getLabel = jest.fn().mockImplementation(() => Promise.resolve(undefined));
-        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel}/>);
+        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel} />);
         return Promise.resolve().then(() => {
             expect(wrapper.text()).toEqual(SKOS.prefix + ":narrower");
         });
@@ -47,7 +47,7 @@ describe("AssetLabel", () => {
     it("renders shrunk IRI when label cannot be loaded and shrinkFullIri is specified", () => {
         const iri = "http://onto.fel.cvut.cz/ontologies/termit/test-vocabulary";
         getLabel = jest.fn().mockImplementation(() => Promise.resolve(undefined));
-        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel} shrinkFullIri={true}/>);
+        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel} shrinkFullIri={true} />);
         return Promise.resolve().then(() => {
             expect(wrapper.text()).toEqual(".../test-vocabulary");
         });
@@ -56,7 +56,7 @@ describe("AssetLabel", () => {
     it("renders shrunk IRI with hash when label cannot be loaded and shrinkFullIri is specified", () => {
         const iri = "http://onto.fel.cvut.cz/ontologies/termit#test-vocabulary";
         getLabel = jest.fn().mockImplementation(() => Promise.resolve(undefined));
-        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel} shrinkFullIri={true}/>);
+        const wrapper = mount(<AssetLabel iri={iri} getLabel={getLabel} shrinkFullIri={true} />);
         return Promise.resolve().then(() => {
             expect(wrapper.text()).toEqual("...#test-vocabulary");
         });
@@ -66,7 +66,7 @@ describe("AssetLabel", () => {
         const iriOne = Generator.generateUri();
         const iriTwo = Generator.generateUri();
         getLabel = jest.fn().mockImplementation(() => Promise.resolve("Test"));
-        const wrapper = shallow<AssetLabel>(<AssetLabel iri={iriOne} getLabel={getLabel}/>);
+        const wrapper = shallow<AssetLabel>(<AssetLabel iri={iriOne} getLabel={getLabel} />);
         expect(getLabel).toHaveBeenCalledWith(iriOne);
         return Promise.resolve().then(() => {
             wrapper.setProps({iri: iriTwo});

@@ -21,15 +21,31 @@ describe("AssetFactory", () => {
         };
 
         it("creates correct asset instance based on data", () => {
-            expect(AssetFactory.createAsset(Object.assign({}, basicData, {types: VocabularyUtils.TERM}))).toBeInstanceOf(Term);
-            expect(AssetFactory.createAsset(Object.assign({}, basicData, {types: VocabularyUtils.VOCABULARY}))).toBeInstanceOf(Vocabulary);
-            expect(AssetFactory.createAsset(Object.assign({}, basicData, {types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]}))).toBeInstanceOf(Document);
-            expect(AssetFactory.createAsset(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]}))).toBeInstanceOf(File);
-            expect(AssetFactory.createAsset(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE]}))).toBeInstanceOf(Resource);
+            expect(
+                AssetFactory.createAsset(Object.assign({}, basicData, {types: VocabularyUtils.TERM}))
+            ).toBeInstanceOf(Term);
+            expect(
+                AssetFactory.createAsset(Object.assign({}, basicData, {types: VocabularyUtils.VOCABULARY}))
+            ).toBeInstanceOf(Vocabulary);
+            expect(
+                AssetFactory.createAsset(
+                    Object.assign({}, basicData, {types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]})
+                )
+            ).toBeInstanceOf(Document);
+            expect(
+                AssetFactory.createAsset(
+                    Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]})
+                )
+            ).toBeInstanceOf(File);
+            expect(
+                AssetFactory.createAsset(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE]}))
+            ).toBeInstanceOf(Resource);
         });
 
         it("throws unsupported asset type exception when data of unknown type are passed in", () => {
-            expect(() => AssetFactory.createAsset(basicData)).toThrow(new TypeError("Unsupported type of asset data " + JSON.stringify(basicData)));
+            expect(() => AssetFactory.createAsset(basicData)).toThrow(
+                new TypeError("Unsupported type of asset data " + JSON.stringify(basicData))
+            );
         });
     });
 
@@ -40,46 +56,49 @@ describe("AssetFactory", () => {
         };
 
         it("creates correct resource (sub)type instance from data", () => {
-            expect(AssetFactory.createResource(Object.assign({}, basicData, {types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]}))).toBeInstanceOf(Document);
-            expect(AssetFactory.createResource(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]}))).toBeInstanceOf(File);
-            expect(AssetFactory.createResource(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE]}))).toBeInstanceOf(Resource);
+            expect(
+                AssetFactory.createResource(
+                    Object.assign({}, basicData, {types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]})
+                )
+            ).toBeInstanceOf(Document);
+            expect(
+                AssetFactory.createResource(
+                    Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]})
+                )
+            ).toBeInstanceOf(File);
+            expect(
+                AssetFactory.createResource(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE]}))
+            ).toBeInstanceOf(Resource);
         });
 
         it("throws unsupported asset type exception when data of unknown type are passed in", () => {
             const data = Object.assign({}, basicData, {types: VocabularyUtils.TERM});
-            expect(() => AssetFactory.createResource(data)).toThrow(new TypeError("Unsupported type of resource data " + JSON.stringify(data)));
+            expect(() => AssetFactory.createResource(data)).toThrow(
+                new TypeError("Unsupported type of resource data " + JSON.stringify(data))
+            );
         });
     });
 
     describe("createTermAssignment", () => {
         const data = {
-            iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
-            types: [
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu"
-            ],
+            iri:
+                "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
+            types: ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu"],
             term: {
                 iri: "http://onto.fel.cvut.cz/ontologies/slovnik/sb-z-2006-183/pojem/nezastavene-uzemi",
-                types: [
-                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
-                ],
+                types: ["http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"],
                 label: "Nezastavene uzemi"
             },
             target: {
                 iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
-                types: [
-                    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl"
-                ],
+                types: ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl"],
                 source: {
                     iri: "http://onto.fel.cvut.cz/ontologies/zdroj/ml-test",
-                    types: [
-                        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj"
-                    ],
+                    types: ["http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj"],
                     label: "ML test",
                     author: {
                         iri: "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
-                        types: [
-                            "http://onto.fel.cvut.cz/ontologies/application/termit/uzivatel-termitu"
-                        ],
+                        types: ["http://onto.fel.cvut.cz/ontologies/application/termit/uzivatel-termitu"],
                         firstName: "Catherine",
                         lastName: "Halsey",
                         username: "halsey@unsc.org"
@@ -104,12 +123,13 @@ describe("AssetFactory", () => {
 
         it("throws unsupported type exception when data of unknown type are passed in", () => {
             data.types = [];
-            expect(() => AssetFactory.createTermAssignment(data)).toThrow(new TypeError("Unsupported type of assignment data " + JSON.stringify(data)));
+            expect(() => AssetFactory.createTermAssignment(data)).toThrow(
+                new TypeError("Unsupported type of assignment data " + JSON.stringify(data))
+            );
         });
     });
 
     describe("createChangeRecord", () => {
-
         const changeClass = `${VocabularyUtils.PREFIX}zm\u011bna`;
 
         it("creates a persist record for persist event data", () => {
@@ -148,7 +168,9 @@ describe("AssetFactory", () => {
                 changedEntity: {iri: Generator.generateUri()},
                 types: [changeClass]
             };
-            expect(() => AssetFactory.createChangeRecord(record)).toThrow(new TypeError("Unsupported type of change record data " + JSON.stringify(record)));
+            expect(() => AssetFactory.createChangeRecord(record)).toThrow(
+                new TypeError("Unsupported type of change record data " + JSON.stringify(record))
+            );
         });
     });
 });

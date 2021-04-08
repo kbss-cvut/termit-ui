@@ -10,7 +10,6 @@ import {Location} from "history";
 import {match as Match} from "react-router";
 
 describe("VocabularyMetadata", () => {
-
     const normalizedVocabularyName = "test-vocabulary";
 
     let onFileAdded: () => void;
@@ -38,7 +37,7 @@ describe("VocabularyMetadata", () => {
         };
         match = {
             params: {
-                name: normalizedVocabularyName,
+                name: normalizedVocabularyName
             },
             path: location.pathname,
             isExact: true,
@@ -56,8 +55,13 @@ describe("VocabularyMetadata", () => {
         const wrapper = shallow<VocabularyMetadata>(
             <VocabularyMetadata
                 resetSelectedTerm={resetSelectedTerm}
-                vocabulary={vocabulary} location={location} match={match}
-                onFileAdded={onFileAdded} {...intlFunctions()}/>);
+                vocabulary={vocabulary}
+                location={location}
+                match={match}
+                onFileAdded={onFileAdded}
+                {...intlFunctions()}
+            />
+        );
         expect(wrapper.state().activeTab).toEqual("glossary.title");
     });
 
@@ -68,9 +72,16 @@ describe("VocabularyMetadata", () => {
             files: [],
             types: [VocabularyUtils.RESOURCE, VocabularyUtils.DOCUMENT]
         });
-        shallow<VocabularyMetadata>(<VocabularyMetadata resetSelectedTerm={resetSelectedTerm} vocabulary={vocabulary}
-                                                        location={location} match={match}
-                                                        onFileAdded={onFileAdded} {...intlFunctions()}/>);
+        shallow<VocabularyMetadata>(
+            <VocabularyMetadata
+                resetSelectedTerm={resetSelectedTerm}
+                vocabulary={vocabulary}
+                location={location}
+                match={match}
+                onFileAdded={onFileAdded}
+                {...intlFunctions()}
+            />
+        );
         expect(resetSelectedTerm).toHaveBeenCalled();
     });
 });

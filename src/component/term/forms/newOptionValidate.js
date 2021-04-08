@@ -1,13 +1,9 @@
 const validateLengthMin5 = (value, values, i18n) => {
-    return !value || value.length < 5
-        ? i18n('glossary.form.validation.validateLengthMin5')
-        : null;
+    return !value || value.length < 5 ? i18n("glossary.form.validation.validateLengthMin5") : null;
 };
 
 const validateLengthMin3 = (value, values, i18n) => {
-    return !value || value.length < 3
-        ? i18n('glossary.form.validation.validateLengthMin3')
-        : null;
+    return !value || value.length < 3 ? i18n("glossary.form.validation.validateLengthMin3") : null;
 };
 
 // tslint:disable:no-console
@@ -15,7 +11,7 @@ const validateNotSameAsParent = (value, values, i18n, valueKey) => {
     if (values.parentOption && value) {
         for (let i = 0; i < value.length; i++) {
             if (value[i][valueKey] === values.parentOption[valueKey]) {
-                return i18n('glossary.form.validation.validateNotSameAsParent')
+                return i18n("glossary.form.validation.validateNotSameAsParent");
             }
         }
     }
@@ -48,5 +44,4 @@ function isEquivalent(a, b) {
     return true;
 }
 
-
-export {validateLengthMin3, validateLengthMin5, validateNotSameAsParent}
+export {validateLengthMin3, validateLengthMin5, validateNotSameAsParent};

@@ -30,10 +30,10 @@ import RemoveFile from "../resource/document/RemoveFile";
 import WindowTitle from "../misc/WindowTitle";
 
 interface CreateVocabularyProps extends HasI18n {
-    createFile: (file: TermItFile, documentIri: string) => Promise<any>,
-    createVocabulary: (vocabulary: Vocabulary) => Promise<string>,
-    uploadFileContent: (fileIri: string, file: File) => Promise<any>,
-    publishNotification: (notification: AppNotification) => void
+    createFile: (file: TermItFile, documentIri: string) => Promise<any>;
+    createVocabulary: (vocabulary: Vocabulary) => Promise<string>;
+    uploadFileContent: (fileIri: string, file: File) => Promise<any>;
+    publishNotification: (notification: AppNotification) => void;
 }
 
 interface CreateAllVocabulariesState extends AbstractCreateAssetState {
@@ -41,11 +41,10 @@ interface CreateAllVocabulariesState extends AbstractCreateAssetState {
     // document vocabulary
     files: TermItFile[];
     fileContents: File[];
-    showCreateFile: boolean
+    showCreateFile: boolean;
 }
 
 export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps, CreateAllVocabulariesState> {
-
     constructor(props: CreateVocabularyProps) {
         super(props);
         this.state = {
@@ -82,15 +81,20 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
         });
         document.addType(VocabularyUtils.DOCUMENT);
         vocabulary.document = document;
-        this.props.createVocabulary(vocabulary)
-            .then((location) => {
-                    return Promise.all(Utils.sanitizeArray(files).map((f, fIndex) =>
-                        this.props.createFile(f, document.iri)
-                            .then(() => this.props.uploadFileContent(f.iri, fileContents[fIndex]))
-                            .then(() => this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}}))
-                    )).then(() => Routing.transitionTo(Routes.vocabularySummary, IdentifierResolver.routingOptionsFromLocation(location)))
-                }
+        this.props.createVocabulary(vocabulary).then(location => {
+            return Promise.all(
+                Utils.sanitizeArray(files).map((f, fIndex) =>
+                    this.props
+                        .createFile(f, document.iri)
+                        .then(() => this.props.uploadFileContent(f.iri, fileContents[fIndex]))
+                        .then(() =>
+                            this.props.publishNotification({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})
+                        )
+                )
+            ).then(() =>
+                Routing.transitionTo(Routes.vocabularySummary, IdentifierResolver.routingOptionsFromLocation(location))
             );
+        });
     };
 
     public static onCancel(): void {
@@ -99,7 +103,7 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
 
     private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({comment: e.currentTarget.value});
-    }
+    };
 
     private isFormValid() {
         return this.state.label.trim().length > 0;
@@ -111,7 +115,7 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
             const fileContents = this.state.fileContents.concat(file);
             this.setState({files, fileContents});
         });
-    }
+    };
 
     private onRemoveFile = (termitFile: Resource): Promise<void> => {
         return Promise.resolve().then(() => {
@@ -124,76 +128,106 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                 this.setState({files, fileContents});
             }
         });
-    }
+    };
 
     public render() {
         const i18n = this.props.i18n;
         const onCancel = CreateVocabulary.onCancel;
 
-        return <>
-            <WindowTitle title={i18n("vocabulary.create.title")}/>
-            <HeaderWithActions title={i18n("vocabulary.create.title")}/>
-            <Card id="create-vocabulary">
-                <CardBody>
-                    <Row>
-                        <Col xs={12}>
-                            <Row>
-                                <Col xs={12}>
-                                    <CustomInput name="create-vocabulary-label" label={i18n("asset.label")}
-                                                 value={this.state.label} help={i18n("required")}
-                                                 onChange={this.onLabelChange}/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={12}>
-                                    <TextArea name="create-vocabulary-comment" label={i18n("vocabulary.comment")}
-                                              type="textarea" rows={4} value={this.state.comment}
-                                              help={i18n("optional")}
-                                              onChange={this.onCommentChange}/>
-                                </Col>
-                            </Row>
-                            <Files files={this.state.files}
-                                   actions={[<AddFile key="add-file" performAction={this.onCreateFile}/>]}
-                                   itemActions={(file: TermItFile) => [
-                                       <RemoveFile key="remove-file"
-                                                   file={file}
-                                                   performAction={this.onRemoveFile.bind(this, file)}
-                                                   withConfirmation={false}/>
-                                   ]
-                                   }
-                            />
-                            <ShowAdvanceAssetFields>
+        return (
+            <>
+                <WindowTitle title={i18n("vocabulary.create.title")} />
+                <HeaderWithActions title={i18n("vocabulary.create.title")} />
+                <Card id="create-vocabulary">
+                    <CardBody>
+                        <Row>
+                            <Col xs={12}>
                                 <Row>
                                     <Col xs={12}>
-                                        <CustomInput name="create-vocabulary-iri" label={i18n("asset.iri")}
-                                                     value={this.state.iri}
-                                                     onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
+                                        <CustomInput
+                                            name="create-vocabulary-label"
+                                            label={i18n("asset.label")}
+                                            value={this.state.label}
+                                            help={i18n("required")}
+                                            onChange={this.onLabelChange}
+                                        />
                                     </Col>
                                 </Row>
-                            </ShowAdvanceAssetFields>
-                            <Row>
-                                <Col xs={12}>
-                                    <ButtonToolbar className="d-flex justify-content-center mt-4">
-                                        <Button id="create-vocabulary-submit" onClick={this.onCreate} color="success"
+                                <Row>
+                                    <Col xs={12}>
+                                        <TextArea
+                                            name="create-vocabulary-comment"
+                                            label={i18n("vocabulary.comment")}
+                                            type="textarea"
+                                            rows={4}
+                                            value={this.state.comment}
+                                            help={i18n("optional")}
+                                            onChange={this.onCommentChange}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Files
+                                    files={this.state.files}
+                                    actions={[<AddFile key="add-file" performAction={this.onCreateFile} />]}
+                                    itemActions={(file: TermItFile) => [
+                                        <RemoveFile
+                                            key="remove-file"
+                                            file={file}
+                                            performAction={this.onRemoveFile.bind(this, file)}
+                                            withConfirmation={false}
+                                        />
+                                    ]}
+                                />
+                                <ShowAdvanceAssetFields>
+                                    <Row>
+                                        <Col xs={12}>
+                                            <CustomInput
+                                                name="create-vocabulary-iri"
+                                                label={i18n("asset.iri")}
+                                                value={this.state.iri}
+                                                onChange={this.onIriChange}
+                                                help={i18n("asset.create.iri.help")}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </ShowAdvanceAssetFields>
+                                <Row>
+                                    <Col xs={12}>
+                                        <ButtonToolbar className="d-flex justify-content-center mt-4">
+                                            <Button
+                                                id="create-vocabulary-submit"
+                                                onClick={this.onCreate}
+                                                color="success"
                                                 size="sm"
-                                                disabled={!this.isFormValid()}>{i18n("vocabulary.create.submit")}</Button>
-                                        <Button id="create-vocabulary-cancel" onClick={onCancel}
-                                                color="outline-dark" size="sm">{i18n("cancel")}</Button>
-                                    </ButtonToolbar>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                </CardBody>
-            </Card></>;
+                                                disabled={!this.isFormValid()}>
+                                                {i18n("vocabulary.create.submit")}
+                                            </Button>
+                                            <Button
+                                                id="create-vocabulary-cancel"
+                                                onClick={onCancel}
+                                                color="outline-dark"
+                                                size="sm">
+                                                {i18n("cancel")}
+                                            </Button>
+                                        </ButtonToolbar>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </CardBody>
+                </Card>
+            </>
+        );
     }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
         createVocabulary: (vocabulary: Vocabulary) => dispatch(createVocabulary(vocabulary)),
-        createFile: (file: TermItFile, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
-        uploadFileContent: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
+        createFile: (file: TermItFile, documentIri: string) =>
+            dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
+        uploadFileContent: (fileIri: string, file: File) =>
+            dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
         publishNotification: (notification: AppNotification) => dispatch(publishNotification(notification))
     };
 })(injectIntl(withI18n(withLoading(CreateVocabulary))));

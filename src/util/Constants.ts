@@ -9,7 +9,7 @@ const ENV = {
         acc[strippedKey] = process.env[key]!;
         return acc;
     }, {}),
-    ...(window as any).__config__,
+    ...(window as any).__config__
 };
 
 /**
@@ -88,8 +88,8 @@ const constants = {
 
     // News
     NEWS_MD_URL: {
-        "cs": window.location.origin + window.location.pathname + "NEWS.cs.md",
-        "en": window.location.origin + window.location.pathname + "NEWS.en.md",
+        cs: window.location.origin + window.location.pathname + "NEWS.cs.md",
+        en: window.location.origin + window.location.pathname + "NEWS.en.md"
     },
 
     // Wallpaper: ~60% color saturation + some blur (~4px radius) + JPEG compression to <150KB.

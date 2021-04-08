@@ -12,10 +12,10 @@ const ctx = {
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT);
 
 export interface ResourceData extends AssetData {
-    iri: string,
-    label: string,
-    description?: string,
-    terms?: Term[]
+    iri: string;
+    label: string;
+    description?: string;
+    terms?: Term[];
 }
 
 export default class Resource extends Asset implements ResourceData {

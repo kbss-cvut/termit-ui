@@ -1,11 +1,11 @@
 [
-  {
-    "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/slovník",
-    "http://onto.fel.cvut.cz/ontologies/termit/has-count": [
-      {
-        "@type": "http://www.w3.org/2001/XMLSchema#integer",
-        "@value": "2"
-      }
-    ]
-  }
+    {
+        "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/slovník",
+        "http://onto.fel.cvut.cz/ontologies/termit/has-count": [
+            {
+                "@type": "http://www.w3.org/2001/XMLSchema#integer",
+                "@value": "2"
+            }
+        ]
+    }
 ]

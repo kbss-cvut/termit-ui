@@ -86,7 +86,7 @@ describe("AssetLinkFactory", () => {
         it("creates a plain label when link cannot be created", () => {
             const resource = new Resource({
                 iri: Generator.generateUri(),
-                label: "Dataset",
+                label: "Dataset"
             });
             resource.types = undefined;
             const result = mountWithIntl(<MemoryRouter>{AssetLinkFactory.createAssetLink(resource)}</MemoryRouter>);

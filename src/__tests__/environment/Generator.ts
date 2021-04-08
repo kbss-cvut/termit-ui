@@ -7,7 +7,6 @@ import {langString} from "../../model/MultilingualString";
 import Comment from "../../model/Comment";
 
 export default class Generator {
-
     public static readonly URI_BASE = "http://onto.fel.cvut.cz/ontologies/application/termit";
 
     public static randomInt(min: number = 0, max: number = Number.MAX_SAFE_INTEGER) {
@@ -70,7 +69,7 @@ export default class Generator {
         return new Resource(this.generateAssetData("Resource " + this.randomInt(0, 10000)));
     }
 
-    public static generateAssetData(label?: string): { iri: string, label: string } {
+    public static generateAssetData(label?: string): {iri: string; label: string} {
         return {
             iri: Generator.generateUri(),
             label: label ? label : "Asset " + Generator.randomInt(0, 100)

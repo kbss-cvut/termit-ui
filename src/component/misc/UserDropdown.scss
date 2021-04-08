@@ -2,27 +2,29 @@
 @import "../../styles/variables";
 
 .user-icon {
-  font-size: 2rem;
+    font-size: 2rem;
 }
 
 .dropdown {
-  .text-dropdown:hover span, .text-dropdown:hover:after {
-    color: $secondary !important;
-  }
-
-  &.show {
-    .text-dropdown span, .text-dropdown:after {
-      color: $primary !important;
+    .text-dropdown:hover span,
+    .text-dropdown:hover:after {
+        color: $secondary !important;
     }
-  }
+
+    &.show {
+        .text-dropdown span,
+        .text-dropdown:after {
+            color: $primary !important;
+        }
+    }
 }
 
 .user-dropdown {
-  @media (max-width: $sm - 1px), (min-width: $md) and (max-width: $lg - 1px) {
-    clear: both;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 4.5rem;
-  }
+    @media (max-width: $sm - 1px), (min-width: $md) and (max-width: $lg - 1px) {
+        clear: both;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 4.5rem;
+    }
 }

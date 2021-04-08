@@ -5,4 +5,4 @@ export default class MessageType {
     public static INFO: Type = "info";
     public static WARNING: Type = "warning";
     public static ERROR: Type = "danger";
-};
+}

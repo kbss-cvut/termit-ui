@@ -18,13 +18,18 @@ import {useI18n} from "../hook/useI18n";
 const AdministrationRoute: React.FC = () => {
     const {i18n} = useI18n();
     const user = useSelector((state: TermItState) => state.user);
-    return <IfGranted expected={VocabularyUtils.USER_ADMIN} actual={user.types} unauthorized={<Unauthorized/>}>
-        <Switch>
-            <BreadcrumbRoute title={i18n("administration.users.create")}
-                             path={Routes.createNewUser.path} component={CreateNewUser}/>
-            <Route path={Routes.administration.path} component={Administration} exact={true}/>
-        </Switch>
-    </IfGranted>;
+    return (
+        <IfGranted expected={VocabularyUtils.USER_ADMIN} actual={user.types} unauthorized={<Unauthorized />}>
+            <Switch>
+                <BreadcrumbRoute
+                    title={i18n("administration.users.create")}
+                    path={Routes.createNewUser.path}
+                    component={CreateNewUser}
+                />
+                <Route path={Routes.administration.path} component={Administration} exact={true} />
+            </Switch>
+        </IfGranted>
+    );
 };
 
 export default AdministrationRoute;

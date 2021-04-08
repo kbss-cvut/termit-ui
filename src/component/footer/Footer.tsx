@@ -43,26 +43,36 @@ class Footer extends React.Component<FooterProps, FooterState> {
         const {i18n, transparent, authenticated, sidebarExpanded} = this.props;
 
         return (
-            <footer className={classNames("footer-row", {"transparent": transparent})}>
-                <div className={classNames("footer-left", {
-                    "footer-left-expanded": sidebarExpanded,
-                    "footer-left-collapsed": !sidebarExpanded
-                })}>
-                    <FooterMenu fixed={authenticated}/>
+            <footer className={classNames("footer-row", {transparent: transparent})}>
+                <div
+                    className={classNames("footer-left", {
+                        "footer-left-expanded": sidebarExpanded,
+                        "footer-left-collapsed": !sidebarExpanded
+                    })}>
+                    <FooterMenu fixed={authenticated} />
                 </div>
                 <Col className="px-2 px-sm-3">
-                    <a href="https://kbss.felk.cvut.cz" target="_blank"
-                       rel="noopener noreferrer"
-                       title={i18n("footer.copyright")}>&copy;&nbsp;{i18n("footer.copyright")}, {new Date().getFullYear()}</a>
+                    <a
+                        href="https://kbss.felk.cvut.cz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={i18n("footer.copyright")}>
+                        &copy;&nbsp;{i18n("footer.copyright")}, {new Date().getFullYear()}
+                    </a>
                 </Col>
                 <div>
-                <span onClick={this.toggleLogViewer} className="log-viewer-toggle pl-xs-1 px-2 px-sm-3"
-                      title={i18n("log-viewer.title")} id="log-viewer-toggler"><GoZap/></span>
+                    <span
+                        onClick={this.toggleLogViewer}
+                        className="log-viewer-toggle pl-xs-1 px-2 px-sm-3"
+                        title={i18n("log-viewer.title")}
+                        id="log-viewer-toggler">
+                        <GoZap />
+                    </span>
                     <FooterModalViewer
                         title="log-viewer.title"
                         show={this.state.showLog}
                         onClose={this.toggleLogViewer}>
-                        <ErrorLogViewer/>
+                        <ErrorLogViewer />
                     </FooterModalViewer>
                 </div>
                 <div className="news-viewer-toggle px-1 px-sm-2 px-sm-3 text-right">
@@ -74,10 +84,11 @@ class Footer extends React.Component<FooterProps, FooterState> {
                         title="news-viewer.title"
                         show={this.state.showNews}
                         onClose={this.toggleNewsViewer}>
-                        <NewsMd/>
+                        <NewsMd />
                     </FooterModalViewer>
                 </div>
-            </footer>);
+            </footer>
+        );
     }
 }
 

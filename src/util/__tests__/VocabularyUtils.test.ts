@@ -4,7 +4,6 @@
 import VocabularyUtils, {IRI, IRIImpl} from "../VocabularyUtils";
 
 describe("VocabularyUtils", () => {
-
     const namespace = VocabularyUtils.PREFIX;
 
     describe("getFragment", () => {
@@ -32,7 +31,6 @@ describe("VocabularyUtils", () => {
     });
 
     describe("IRIImpl", () => {
-
         describe("toString", () => {
             it("returns namespace concatenated with fragment", () => {
                 const iri = new IRIImpl("y", namespace);

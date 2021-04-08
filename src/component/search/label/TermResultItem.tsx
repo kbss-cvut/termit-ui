@@ -33,20 +33,22 @@ interface TermResultItemStateProps {
     user: User;
 }
 
-interface TermResultItemProps extends TermResultItemOwnProps, TermResultItemDispatchProps, TermResultItemStateProps, HasI18n {
-}
+interface TermResultItemProps
+    extends TermResultItemOwnProps,
+        TermResultItemDispatchProps,
+        TermResultItemStateProps,
+        HasI18n {}
 
 interface TermResultItemState {
     text: string | undefined;
 }
 
 export class TermResultItem extends React.Component<TermResultItemProps, TermResultItemState> {
-
     constructor(props: TermResultItemProps) {
         super(props);
         this.state = {
             text: undefined
-        }
+        };
     }
 
     public componentDidMount(): void {
@@ -56,8 +58,11 @@ export class TermResultItem extends React.Component<TermResultItemProps, TermRes
             const loader = Authentication.isLoggedIn(this.props.user) ? this.props.loadTerm : this.props.loadPublicTerm;
             loader(iri).then(term => {
                 if (term) {
-                    this.setState({text: term!.definition ? getLocalized(term!.definition, getShortLocale(this.props.locale)) :
-                            getLocalized(term!.scopeNote, getShortLocale(this.props.locale))});
+                    this.setState({
+                        text: term!.definition
+                            ? getLocalized(term!.definition, getShortLocale(this.props.locale))
+                            : getLocalized(term!.scopeNote, getShortLocale(this.props.locale))
+                    });
                 }
             });
         }
@@ -71,16 +76,24 @@ export class TermResultItem extends React.Component<TermResultItemProps, TermRes
         const i18n = this.props.i18n;
         const t = {
             iri: this.props.result.iri,
-            label: <><span className="search-result-title">{this.props.result.label}</span>&nbsp;
-                {this.props.result.vocabulary ? <>
-                    {i18n("search.results.vocabulary.from")}&nbsp;
-                    <AssetLabel iri={this.props.result.vocabulary!.iri}/>
-                </> : <></>}</>
-        }
+            label: (
+                <>
+                    <span className="search-result-title">{this.props.result.label}</span>&nbsp;
+                    {this.props.result.vocabulary ? (
+                        <>
+                            {i18n("search.results.vocabulary.from")}&nbsp;
+                            <AssetLabel iri={this.props.result.vocabulary!.iri} />
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                </>
+            )
+        };
 
         let text;
         if (this.getIndexOf("definition") > -1) {
-            text = this.props.result.snippets[this.getIndexOf("definition")]
+            text = this.props.result.snippets[this.getIndexOf("definition")];
         } else {
             text = this.state.text;
         }
@@ -90,24 +103,31 @@ export class TermResultItem extends React.Component<TermResultItemProps, TermRes
         }
 
         const asset = AssetFactory.createAsset(this.props.result);
-        return <>
-            <TermBadge className="search-result-badge"/>
-            <AssetLink
-                asset={t}
-                path={getTermPath(asset as Term, this.props.user)}
-                tooltip={i18n("asset.link.tooltip")}/><br/>
-            <span className="search-result-snippet">{this.getIndexOf("definition") > -1 ?
-                <FTSMatch match={text || ""}/> : text
-            }</span>
-        </>;
+        return (
+            <>
+                <TermBadge className="search-result-badge" />
+                <AssetLink
+                    asset={t}
+                    path={getTermPath(asset as Term, this.props.user)}
+                    tooltip={i18n("asset.link.tooltip")}
+                />
+                <br />
+                <span className="search-result-snippet">
+                    {this.getIndexOf("definition") > -1 ? <FTSMatch match={text || ""} /> : text}
+                </span>
+            </>
+        );
     }
 }
 
-export default connect<TermResultItemStateProps, TermResultItemDispatchProps, TermResultItemOwnProps, TermItState>((state: TermItState) => {
-    return {user: state.user};
-}, ((dispatch: ThunkDispatch) => {
-    return {
-        loadTerm: (termIri: IRI) => dispatch(loadTermByIri(termIri)),
-        loadPublicTerm: (termIri: IRI) => dispatch(loadPublicTermByIri(termIri))
+export default connect<TermResultItemStateProps, TermResultItemDispatchProps, TermResultItemOwnProps, TermItState>(
+    (state: TermItState) => {
+        return {user: state.user};
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadTerm: (termIri: IRI) => dispatch(loadTermByIri(termIri)),
+            loadPublicTerm: (termIri: IRI) => dispatch(loadPublicTermByIri(termIri))
+        };
     }
-}))(injectIntl(withI18n(TermResultItem)));
+)(injectIntl(withI18n(TermResultItem)));

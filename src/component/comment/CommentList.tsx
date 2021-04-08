@@ -17,17 +17,28 @@ const CommentList: React.FC<CommentListProps> = props => {
 
     const [editedComment, setEditedComment] = React.useState<Comment | null>(null);
     if (comments.length === 0) {
-        return <span className="italics">{props.i18n("comments.list.empty")}</span>
+        return <span className="italics">{props.i18n("comments.list.empty")}</span>;
     }
     const onUpdate = (c: Comment) => {
         updateComment(c).then(() => setEditedComment(null));
     };
-    return <>
-        {comments.map(c => editedComment != null && c.iri === editedComment.iri ?
-            <CommentEdit key={c.iri} comment={c} onCancel={() => setEditedComment(null)} onSubmit={onUpdate}/> :
-            <CommentView key={c.iri} comment={c} addReaction={addReaction}
-                         removeReaction={removeReaction} onEdit={setEditedComment}/>)}
-    </>;
-}
+    return (
+        <>
+            {comments.map(c =>
+                editedComment != null && c.iri === editedComment.iri ? (
+                    <CommentEdit key={c.iri} comment={c} onCancel={() => setEditedComment(null)} onSubmit={onUpdate} />
+                ) : (
+                    <CommentView
+                        key={c.iri}
+                        comment={c}
+                        addReaction={addReaction}
+                        removeReaction={removeReaction}
+                        onEdit={setEditedComment}
+                    />
+                )
+            )}
+        </>
+    );
+};
 
 export default injectIntl(withI18n(CommentList));

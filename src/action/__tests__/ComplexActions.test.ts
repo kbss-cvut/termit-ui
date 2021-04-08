@@ -13,7 +13,6 @@ jest.mock("../../util/Routing");
 const mockStore = configureMockStore([thunk]);
 
 describe("Complex actions", () => {
-
     describe("logout", () => {
         it("invokes authentication logout in order to invalidate authentication token", () => {
             Authentication.clearToken = jest.fn();

@@ -21,7 +21,7 @@ import {Card, CardBody, CardHeader} from "reactstrap";
 
 interface StoreStateProps {
     resource: Resource;
-    routeTransitionPayload: { [key: string]: any };
+    routeTransitionPayload: {[key: string]: any};
 }
 
 interface DispatchProps {
@@ -42,8 +42,9 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
         super(props);
         this.state = {
             vocabularyIri: this.getVocabularyIri(),
-            scrollToSelector: props.routeTransitionPayload[Routes.annotateFile.name] ?
-                props.routeTransitionPayload[Routes.annotateFile.name].selector : undefined
+            scrollToSelector: props.routeTransitionPayload[Routes.annotateFile.name]
+                ? props.routeTransitionPayload[Routes.annotateFile.name].selector
+                : undefined
         };
     }
 
@@ -72,13 +73,19 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
     }
 
     private hasResourceIriChanged(prevProps: Readonly<ResourceFileDetailProps>) {
-        return this.props.match.params.fileName !== prevProps.match.params.fileName || this.props.location.search !== prevProps.location.search;
+        return (
+            this.props.match.params.fileName !== prevProps.match.params.fileName ||
+            this.props.location.search !== prevProps.location.search
+        );
     }
 
     private shouldLoadVocabularyIri(prevProps: Readonly<ResourceFileDetailProps>) {
         const {resource} = this.props;
-        return resource && resource !== EMPTY_RESOURCE &&
-            (!prevProps.resource || prevProps.resource === EMPTY_RESOURCE || prevProps.resource.iri !== resource.iri);
+        return (
+            resource &&
+            resource !== EMPTY_RESOURCE &&
+            (!prevProps.resource || prevProps.resource === EMPTY_RESOURCE || prevProps.resource.iri !== resource.iri)
+        );
     }
 
     private getFileIri = (): IRI => {
@@ -119,29 +126,39 @@ export class ResourceFileDetail extends React.Component<ResourceFileDetailProps,
                 return null;
             }
             if (vocabularyIri === null) {
-                return <Card id="file-detail-no-vocabulary" className="w-50 mx-auto">
-                    <CardHeader>{this.props.i18n("file.annotate.selectVocabulary")}</CardHeader>
-                    <CardBody>
-                        <VocabularySelect onVocabularySet={this.onSelectVocabulary} vocabulary={null}/>
-                    </CardBody>
-                </Card>;
+                return (
+                    <Card id="file-detail-no-vocabulary" className="w-50 mx-auto">
+                        <CardHeader>{this.props.i18n("file.annotate.selectVocabulary")}</CardHeader>
+                        <CardBody>
+                            <VocabularySelect onVocabularySet={this.onSelectVocabulary} vocabulary={null} />
+                        </CardBody>
+                    </Card>
+                );
             }
-            return <ContentDetail iri={this.getFileIri()}
-                                  scrollTo={this.state.scrollToSelector} vocabularyIri={vocabularyIri}/>
+            return (
+                <ContentDetail
+                    iri={this.getFileIri()}
+                    scrollTo={this.state.scrollToSelector}
+                    vocabularyIri={vocabularyIri}
+                />
+            );
         }
         return null;
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        resource: state.selectedFile,
-        routeTransitionPayload: state.routeTransitionPayload
+export default connect(
+    (state: TermItState) => {
+        return {
+            resource: state.selectedFile,
+            routeTransitionPayload: state.routeTransitionPayload
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadResource: (resourceIri: IRI) => dispatch(loadResource(resourceIri)),
+            loadLatestTextAnalysisRecord: (resourceIri: IRI) => dispatch(loadLatestTextAnalysisRecord(resourceIri)),
+            popRoutingPayload: () => dispatch(popRoutingPayload(Routes.annotateFile))
+        };
     }
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadResource: (resourceIri: IRI) => dispatch(loadResource(resourceIri)),
-        loadLatestTextAnalysisRecord: (resourceIri: IRI) => dispatch(loadLatestTextAnalysisRecord(resourceIri)),
-        popRoutingPayload: () => dispatch(popRoutingPayload(Routes.annotateFile))
-    };
-})(injectIntl(withI18n(withRouter(ResourceFileDetail))));
+)(injectIntl(withI18n(withRouter(ResourceFileDetail))));

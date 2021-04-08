@@ -3,7 +3,6 @@ import RdfsResource, {CONTEXT, RdfsResourceData} from "../RdfsResource";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 describe("RdfsResource", () => {
-
     it("constructor is symmetrical to toJsonLd", () => {
         const data: RdfsResourceData = {
             iri: Generator.generateUri(),

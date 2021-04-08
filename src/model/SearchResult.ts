@@ -4,13 +4,13 @@ import {AssetData} from "./Asset";
 import Utils from "../util/Utils";
 
 export const CONTEXT = {
-    "iri": "@id",
-    "label": VocabularyUtils.RDFS_LABEL,
-    "vocabulary": VocabularyUtils.IS_TERM_FROM_VOCABULARY,
-    "snippetText": "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text",
-    "snippetField": "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-field",
-    "score": "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score",
-    "types": "@type"
+    iri: "@id",
+    label: VocabularyUtils.RDFS_LABEL,
+    vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+    snippetText: "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text",
+    snippetField: "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-field",
+    score: "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score",
+    types: "@type"
 };
 
 export interface SearchResultData extends AssetData {
@@ -20,7 +20,7 @@ export interface SearchResultData extends AssetData {
     snippetField: string;
     score?: number;
     types: string[];
-    vocabulary?: { iri: string };
+    vocabulary?: {iri: string};
 }
 
 export default class SearchResult implements AssetData {
@@ -30,7 +30,7 @@ export default class SearchResult implements AssetData {
     public readonly snippetField: string;
     public readonly score?: number;
     public readonly types: string[];
-    public readonly vocabulary?: { iri: string };
+    public readonly vocabulary?: {iri: string};
 
     constructor(data: SearchResultData) {
         this.iri = data.iri;

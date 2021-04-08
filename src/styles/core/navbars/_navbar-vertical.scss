@@ -2,18 +2,16 @@
 // Vertical navbar
 //
 
-
 // Vertical
 //
 // Creates a vertically aligned version of the navbar
 .navbar-vertical {
     box-shadow: $navbar-vertical-box-shadow;
-    
+
     .navbar {
         border-width: 0 0 1px 0;
         border-style: solid;
     }
-
 
     // Navbar light
 
@@ -21,7 +19,6 @@
         background-color: $navbar-light-bg;
         border-color: $navbar-light-border-color;
     }
-
 
     // Navbar brand
 
@@ -35,7 +32,6 @@
         max-height: 2rem;
     }
 
-
     // Navbar collapse
 
     @include media-breakpoint-up(md) {
@@ -46,21 +42,18 @@
             padding-right: $navbar-padding-x;
 
             &:before {
-                content: '';
+                content: "";
                 display: block;
                 margin: $navbar-padding-y (-$navbar-padding-x);
             }
         }
     }
 
-
-
     // Navbar navigaton
 
     .navbar-nav {
         margin-left: -$navbar-padding-x;
         margin-right: -$navbar-padding-x;
-
 
         // Navbar link
 
@@ -73,7 +66,7 @@
                 position: relative;
 
                 &:before {
-                    content: '';
+                    content: "";
                     position: absolute;
                     left: 0;
                     top: $nav-link-padding-y;
@@ -82,15 +75,13 @@
                 }
             }
 
-
             // Icon
 
             > i {
                 min-width: $navbar-icon-min-width;
-                font-size: .9375rem;
+                font-size: 0.9375rem;
                 line-height: ($font-size-base * $line-height-base);
             }
-
 
             // Dropdown
 
@@ -103,7 +94,6 @@
             }
         }
     }
-
 
     // Navbar navigation
     .navbar-nav .nav-link {
@@ -118,7 +108,7 @@
             font-variant: normal;
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
-            font-family: 'Font Awesome 5 Free';
+            font-family: "Font Awesome 5 Free";
             font-weight: 700;
             content: "\f105";
             margin-left: auto;
@@ -126,7 +116,6 @@
             transition: $transition-base;
         } // Expanded
         &[aria-expanded="true"] {
-
             &:after {
                 transform: rotate(90deg);
             }
@@ -143,22 +132,18 @@
         padding-left: $navbar-padding-x * 1.5 + $navbar-icon-min-width;
     }
 
-
     // Navbar heading
     .navbar-heading {
         padding-top: $nav-link-padding-y;
         padding-bottom: $nav-link-padding-y;
         font-size: $font-size-xs;
         text-transform: uppercase;
-        letter-spacing: .04em;
+        letter-spacing: 0.04em;
     }
-
 
     // Expanded navbar specific styles
     &.navbar-expand {
-        @each $breakpoint,
-        $dimension in $grid-breakpoints {
-
+        @each $breakpoint, $dimension in $grid-breakpoints {
             &-#{$breakpoint} {
                 @include media-breakpoint-up(#{$breakpoint}) {
                     display: block;
@@ -173,7 +158,7 @@
                     overflow-y: auto;
 
                     // Container
-                    >[class*="container"] {
+                    > [class*="container"] {
                         flex-direction: column;
                         align-items: stretch;
                         min-height: 100%;
@@ -185,20 +170,17 @@
                         }
                     }
 
-
                     // Fixes the vertical navbar to the left
                     &.fixed-left {
                         left: 0;
                         border-width: 0 1px 0 0;
                     }
 
-
                     // Fixed the vertical navbar to the right
                     &.fixed-right {
                         right: 0;
                         border-width: 0 0 0 1px;
                     }
-
 
                     // Navbar collapse
                     .navbar-collapse {
@@ -215,7 +197,6 @@
                             min-width: 100%;
                         }
                     }
-
 
                     // Navbar navigation
                     .navbar-nav {
@@ -239,12 +220,10 @@
                         }
                     }
 
-
                     // Second level
                     .navbar-nav .nav .nav-link {
                         padding-left: $navbar-vertical-padding-x + $navbar-icon-min-width;
                     }
-
 
                     // Third level
                     .navbar-nav .nav .nav .nav-link {

@@ -7,7 +7,6 @@ import User from "../../../model/User";
 import Generator from "../../../__tests__/environment/Generator";
 
 describe("ProfileView", () => {
-
     let user: User;
 
     beforeEach(() => {
@@ -15,7 +14,7 @@ describe("ProfileView", () => {
     });
 
     it("correctly renders component with user details", () => {
-        const wrapper = mountWithIntl(<ProfileView user={user}/>);
+        const wrapper = mountWithIntl(<ProfileView user={user} />);
         const labels = wrapper.find(Row).find(Col).find(Label);
 
         expect(labels.length).toEqual(4);

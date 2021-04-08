@@ -14,8 +14,10 @@ export interface EditableComponentState {
  * Typically, this state will switch the UI content and allow the user to perform editing, after which the state
  * changes back to read only.
  */
-export default class EditableComponent<P = {}, S extends EditableComponentState = EditableComponentState> extends React.Component<P, S> {
-
+export default class EditableComponent<
+    P = {},
+    S extends EditableComponentState = EditableComponentState
+> extends React.Component<P, S> {
     public onEdit = () => {
         this.setState({edit: true});
     };

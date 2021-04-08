@@ -1,26 +1,26 @@
 @import "../../styles/custom/colors";
 
 hr.hr-text {
-  position: relative;
-  border: none;
-  height: 1px;
-  background: $gray-500;
-  margin-top: 1.2rem !important;
-  margin-bottom: 1rem;
+    position: relative;
+    border: none;
+    height: 1px;
+    background: $gray-500;
+    margin-top: 1.2rem !important;
+    margin-bottom: 1rem;
 }
 
 hr.hr-text::before {
-  content: attr(data-content);
-  display: inline-block;
-  background: #fff;
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: $gray-500;
-  border-radius: 30rem;
-  padding: 0.2rem 2rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-transform: uppercase;
+    content: attr(data-content);
+    display: inline-block;
+    background: #fff;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: $gray-500;
+    border-radius: 30rem;
+    padding: 0.2rem 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-transform: uppercase;
 }

@@ -34,7 +34,15 @@ interface NavbarSearchState {
 /**
  * Routes for which the results results preview popup should not be displayed.
  */
-const ROUTES_WITHOUT_SEARCH_OVERLAY = [Routes.search, Routes.searchTerms, Routes.searchVocabularies, Routes.facetedSearch, Routes.publicSearch, Routes.publicSearchTerms, Routes.publicSearchVocabularies];
+const ROUTES_WITHOUT_SEARCH_OVERLAY = [
+    Routes.search,
+    Routes.searchTerms,
+    Routes.searchVocabularies,
+    Routes.facetedSearch,
+    Routes.publicSearch,
+    Routes.publicSearchTerms,
+    Routes.publicSearchVocabularies
+];
 
 export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearchState> {
     constructor(props: NavbarSearchProps) {
@@ -69,10 +77,12 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
     public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         this.closeResults();
-        this.props.updateSearchFilter(value).then(() => this.setState({
-            showResults: true,
-            searchOriginNavbar: this.props.navbar
-        }));
+        this.props.updateSearchFilter(value).then(() =>
+            this.setState({
+                showResults: true,
+                searchOriginNavbar: this.props.navbar
+            })
+        );
     };
 
     private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -106,34 +116,41 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
         const searchIcon = (
             <InputGroupAddon addonType="prepend" id="icon">
                 <InputGroupText>
-                    <span className="fas fa-search"/>
+                    <span className="fas fa-search" />
                 </InputGroupText>
-            </InputGroupAddon>);
+            </InputGroupAddon>
+        );
 
         const clearIcon = (
             <InputGroupAddon addonType="append" id="search-reset" onClick={this.resetSearch} className="float-right">
                 <Button title={this.props.i18n("search.reset")} color="outline-dark" style={{zIndex: 5}}>
-                    <FaTimes style={{marginBottom: 4}}/>
+                    <FaTimes style={{marginBottom: 4}} />
                 </Button>
-            </InputGroupAddon>);
+            </InputGroupAddon>
+        );
 
-        return <div className={classNames({"search": navbar}, "flex-grow-1")}>
-            <InputGroup className="input-group-rounded input-group-merge">
-                {navbar && searchIcon}
-                <Input
-                    aria-label="Search"
-                    className="form-control-rounded form-control-prepended"
-                    placeholder={i18n("main.search.placeholder")}
-                    type="search"
-                    id={`main-search-input${navbar ? "-navbar" : ""}`}
-                    autoFocus={true} autoComplete="off"
-                    value={this.props.searchString} onChange={this.onChange} onKeyPress={this.onKeyPress}
-                />
-                {!navbar && searchIcon}
-                {this.props.searchString && clearIcon}
-            </InputGroup>
-            {this.renderResultsOverlay()}
-        </div>;
+        return (
+            <div className={classNames({search: navbar}, "flex-grow-1")}>
+                <InputGroup className="input-group-rounded input-group-merge">
+                    {navbar && searchIcon}
+                    <Input
+                        aria-label="Search"
+                        className="form-control-rounded form-control-prepended"
+                        placeholder={i18n("main.search.placeholder")}
+                        type="search"
+                        id={`main-search-input${navbar ? "-navbar" : ""}`}
+                        autoFocus={true}
+                        autoComplete="off"
+                        value={this.props.searchString}
+                        onChange={this.onChange}
+                        onKeyPress={this.onKeyPress}
+                    />
+                    {!navbar && searchIcon}
+                    {this.props.searchString && clearIcon}
+                </InputGroup>
+                {this.renderResultsOverlay()}
+            </div>
+        );
     }
 
     protected resetSearch = () => {
@@ -144,27 +161,35 @@ export class NavbarSearch extends React.Component<NavbarSearchProps, NavbarSearc
         const {searchResults, navbar} = this.props;
 
         if (searchResults && this.state.searchOriginNavbar === navbar) {
-            return <SearchResultsOverlay
-                show={this.shouldDisplayResults()} searchResults={searchResults}
-                onClose={this.closeResults}
-                targetId={`main-search-input${navbar ? "-navbar" : ""}`}
-                onOpenSearch={this.openSearchView}/>;
+            return (
+                <SearchResultsOverlay
+                    show={this.shouldDisplayResults()}
+                    searchResults={searchResults}
+                    onClose={this.closeResults}
+                    targetId={`main-search-input${navbar ? "-navbar" : ""}`}
+                    onOpenSearch={this.openSearchView}
+                />
+            );
         }
 
         return null;
     }
-
 }
 
-export default withRouter(connect((state: TermItState) => {
-    return {
-        searchString: state.searchQuery.searchQuery,
-        searchResults: state.searchResults,
-        intl: state.intl,        // Pass intl in props to force UI re-render on language switch
-        user: state.user
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        updateSearchFilter: (searchString: string) => dispatch(updateSearchFilter(searchString))
-    };
-})(injectIntl(withI18n(NavbarSearch))));
+export default withRouter(
+    connect(
+        (state: TermItState) => {
+            return {
+                searchString: state.searchQuery.searchQuery,
+                searchResults: state.searchResults,
+                intl: state.intl, // Pass intl in props to force UI re-render on language switch
+                user: state.user
+            };
+        },
+        (dispatch: ThunkDispatch) => {
+            return {
+                updateSearchFilter: (searchString: string) => dispatch(updateSearchFilter(searchString))
+            };
+        }
+    )(injectIntl(withI18n(NavbarSearch)))
+);

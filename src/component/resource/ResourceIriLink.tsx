@@ -18,12 +18,11 @@ interface ResourceIriLinkProps {
 const ResourceIriLink: React.FC<ResourceIriLinkProps> = (props: ResourceIriLinkProps) => {
     const {i18n} = useI18n();
     const iri = VocabularyUtils.create(props.iri);
-    const path = Routing.getTransitionPath(Routes.resourceSummary,
-        {
-            params: new Map([["name", iri.fragment]]),
-            query: new Map([["namespace", iri.namespace!]])
-        });
-    return <AssetIriLink assetIri={iri.toString()} path={path} tooltip={i18n("asset.link.tooltip")}/>;
+    const path = Routing.getTransitionPath(Routes.resourceSummary, {
+        params: new Map([["name", iri.fragment]]),
+        query: new Map([["namespace", iri.namespace!]])
+    });
+    return <AssetIriLink assetIri={iri.toString()} path={path} tooltip={i18n("asset.link.tooltip")} />;
 };
 
 export default ResourceIriLink;

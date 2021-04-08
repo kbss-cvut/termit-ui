@@ -23,7 +23,6 @@ interface DocumentSummaryProps extends ResourceSummaryProps {
 }
 
 export class DocumentSummary extends ResourceSummary<DocumentSummaryProps> {
-
     protected canRemove(): false | boolean {
         return Utils.sanitizeArray(this.props.resource.files).length === 0;
     }
@@ -34,49 +33,72 @@ export class DocumentSummary extends ResourceSummary<DocumentSummaryProps> {
 
     private renderVocabulary(): null | JSX.Element {
         if (this.props.resource.vocabulary) {
-            return <Row>
-                <Col xl={2} md={4}>
-                    <Label className="attribute-label mb-3">{this.props.i18n("resource.metadata.document.vocabulary")}</Label>
-                </Col>
-                <Col xl={10} md={8}>
-                    <VocabularyIriLink iri={this.props.resource.vocabulary.iri!}/>
-                </Col>
-            </Row>;
+            return (
+                <Row>
+                    <Col xl={2} md={4}>
+                        <Label className="attribute-label mb-3">
+                            {this.props.i18n("resource.metadata.document.vocabulary")}
+                        </Label>
+                    </Col>
+                    <Col xl={10} md={8}>
+                        <VocabularyIriLink iri={this.props.resource.vocabulary.iri!} />
+                    </Col>
+                </Row>
+            );
         } else {
             return null;
         }
     }
 
     public render() {
-        return <div id="resource-detail">
-            <HeaderWithActions title={
-                <>{this.props.resource.label}<CopyIriIcon url={this.props.resource.iri as string}/></>
-            } actions={this.getActionButtons()}/>
+        return (
+            <div id="resource-detail">
+                <HeaderWithActions
+                    title={
+                        <>
+                            {this.props.resource.label}
+                            <CopyIriIcon url={this.props.resource.iri as string} />
+                        </>
+                    }
+                    actions={this.getActionButtons()}
+                />
 
-            <RemoveAssetDialog show={this.state.showRemoveDialog} asset={this.props.resource}
-                               onCancel={this.onCloseRemove} onSubmit={this.onRemove}/>
-            {this.state.edit ? this.renderMetadataEdit() : this.renderMetadata()}
-        </div>
+                <RemoveAssetDialog
+                    show={this.state.showRemoveDialog}
+                    asset={this.props.resource}
+                    onCancel={this.onCloseRemove}
+                    onSubmit={this.onRemove}
+                />
+                {this.state.edit ? this.renderMetadataEdit() : this.renderMetadata()}
+            </div>
+        );
     }
 
     protected renderMetadata() {
-        return <div className="metadata-panel">
-            <ResourceMetadata resource={this.props.resource} additionalColumns={this.renderVocabulary()}/>
-            <Card>
-                <CardBody>
-                    <DocumentFiles document={this.props.resource}
-                                   onFileAdded={this.reload}
-                                   onFileRemoved={this.reload}/>
-                </CardBody>
-            </Card>
-        </div>;
+        return (
+            <div className="metadata-panel">
+                <ResourceMetadata resource={this.props.resource} additionalColumns={this.renderVocabulary()} />
+                <Card>
+                    <CardBody>
+                        <DocumentFiles
+                            document={this.props.resource}
+                            onFileAdded={this.reload}
+                            onFileRemoved={this.reload}
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+        );
     }
 }
 
-export default connect((state: TermItState) => ({intl: state.intl}), (dispatch: ThunkDispatch) => {
-    return {
-        loadResource: (iri: IRI) => dispatch(loadResource(iri)),
-        saveResource: (resource: Resource) => dispatch(updateResource(resource)),
-        removeResource: (resource: Resource) => dispatch(removeResource(resource))
-    };
-})(injectIntl(withI18n(DocumentSummary)));
+export default connect(
+    (state: TermItState) => ({intl: state.intl}),
+    (dispatch: ThunkDispatch) => {
+        return {
+            loadResource: (iri: IRI) => dispatch(loadResource(iri)),
+            saveResource: (resource: Resource) => dispatch(updateResource(resource)),
+            removeResource: (resource: Resource) => dispatch(removeResource(resource))
+        };
+    }
+)(injectIntl(withI18n(DocumentSummary)));

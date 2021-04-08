@@ -7,13 +7,11 @@
     height: $chart-height;
 }
 
-
 // Size variations
 
 .chart-sm {
     height: $chart-height-sm;
 }
-
 
 // Legend
 
@@ -43,7 +41,6 @@
     border-radius: 50%;
 }
 
-
 // Tooltip
 
 #chart-tooltip {
@@ -52,18 +49,17 @@
     .arrow {
         top: 100%;
         left: 50%;
-        transform: translateX(-50%) translateX(-.5rem);
+        transform: translateX(-50%) translateX(-0.5rem);
     }
 }
-
 
 // Chart info overlay
 
 .chart-info-overlay {
-  position: absolute;
-  top: 0;
-  left: 5%;
-  max-width: 350px;
-  padding: 20px;
-  z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 5%;
+    max-width: 350px;
+    padding: 20px;
+    z-index: 1;
 }

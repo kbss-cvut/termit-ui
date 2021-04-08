@@ -10,13 +10,22 @@ import {useI18n} from "../hook/useI18n";
 
 const ResourceManagementRoute: React.FC = () => {
     const {i18n} = useI18n();
-    return <Switch>
-        <BreadcrumbRoute title={i18n("resource.create.title")} path={Routes.createResource.path}
-                         component={CreateResource}/>
-        <DynamicBreadcrumbRoute asset="resource" path={Routes.resourceSummary.path}
-                                includeSearch={true} component={ResourceRoute}/>
-        <Route component={ResourceManagement} path={Routes.resources.path}/>
-    </Switch>;
+    return (
+        <Switch>
+            <BreadcrumbRoute
+                title={i18n("resource.create.title")}
+                path={Routes.createResource.path}
+                component={CreateResource}
+            />
+            <DynamicBreadcrumbRoute
+                asset="resource"
+                path={Routes.resourceSummary.path}
+                includeSearch={true}
+                component={ResourceRoute}
+            />
+            <Route component={ResourceManagement} path={Routes.resources.path} />
+        </Switch>
+    );
 };
 
 export default ResourceManagementRoute;
