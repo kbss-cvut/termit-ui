@@ -33,7 +33,8 @@ export const ErrorLogViewer: React.SFC<ErrorLogViewerProps> = props => {
                                     size="sm"
                                     color="danger"
                                     outline={true}
-                                    onClick={props.clearErrors}>
+                                    onClick={props.clearErrors}
+                                >
                                     <GoTrashcan />
                                     {i18n("log-viewer.clear")}
                                 </Button>

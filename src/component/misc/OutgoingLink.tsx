@@ -23,7 +23,8 @@ export const OutgoingLink: React.FC<OutgoingLinkProps> = (props: OutgoingLinkPro
                 style={{color: "gray"}}
                 className={props.className}
                 rel="noopener noreferrer"
-                title={formatMessage("link.external.title", {url: props.iri})}>
+                title={formatMessage("link.external.title", {url: props.iri})}
+            >
                 <span className={props.showLink ? "" : "hidden"}>
                     &nbsp;
                     <small>

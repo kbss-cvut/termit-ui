@@ -101,7 +101,8 @@ export class ResourceSummary<
                         size="sm"
                         color="primary"
                         title={i18n("edit")}
-                        onClick={this.onEdit}>
+                        onClick={this.onEdit}
+                    >
                         <GoPencil />
                         &nbsp;{i18n("edit")}
                     </Button>
@@ -122,7 +123,8 @@ export class ResourceSummary<
                             : "asset.remove.tooltip"
                     )}
                     disabled={!this.canRemove()}
-                    onClick={this.onRemoveClick}>
+                    onClick={this.onRemoveClick}
+                >
                     <FaTrashAlt />
                     &nbsp;{i18n("remove")}
                 </Button>

@@ -96,7 +96,8 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
                                 color="primary"
                                 title={i18n("glossary.createTerm.tooltip")}
                                 size="sm"
-                                onClick={this.props.onCreateTerm}>
+                                onClick={this.props.onCreateTerm}
+                            >
                                 <GoPlus />
                             </Button>
                         )}

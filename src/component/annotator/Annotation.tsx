@@ -243,7 +243,8 @@ export class Annotation extends React.Component<AnnotationProps, AnnotationState
                 {...contentProps}
                 typeof={this.props.typeof}
                 {...scoreProps}
-                className={termClassName + " " + termCreatorClassName}>
+                className={termClassName + " " + termCreatorClassName}
+            >
                 {this.props.children}
                 {this.props.typeof === AnnotationType.DEFINITION
                     ? this.renderDefinitionAnnotation(id)

@@ -29,7 +29,8 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = props =
                 id="vocabularies-create"
                 className="btn btn-primary btn-sm"
                 title={i18n("vocabulary.vocabularies.create.tooltip")}
-                to={Routes.createVocabulary.path}>
+                to={Routes.createVocabulary.path}
+            >
                 <GoPlus />
                 &nbsp;{i18n("vocabulary.management.new")}
             </Link>

@@ -30,7 +30,8 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (props:
                 key="full-info"
                 className="btn-link search-result-no-results"
                 onClick={props.onOpenSearch}
-                title={props.i18n("main.search.tooltip")}>
+                title={props.i18n("main.search.tooltip")}
+            >
                 {props.i18n("main.search.no-results")}
             </li>
         );
@@ -64,7 +65,8 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (props:
                     id="search-results-link"
                     key="full-info"
                     className="btn-link search-result-info"
-                    onClick={props.onOpenSearch}>
+                    onClick={props.onOpenSearch}
+                >
                     {props.formatMessage("main.search.count-info-and-link", {
                         displayed: MAX_RENDERED_RESULTS,
                         count: mergedResults.length
@@ -81,7 +83,8 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (props:
             target={props.targetId}
             placement="bottom-start"
             hideArrow={true}
-            className="search-results-overlay">
+            className="search-results-overlay"
+        >
             <PopoverBody>
                 <ul>{items}</ul>
             </PopoverBody>

@@ -34,7 +34,8 @@ const CommentView: React.FC<CommentViewProps> = props => {
                 <div className="metadata text-muted">
                     <div
                         className="mr-2 d-inline-block"
-                        title={`${formatDate(comment.created!)} ${formatTime(comment.created!)}`}>
+                        title={`${formatDate(comment.created!)} ${formatTime(comment.created!)}`}
+                    >
                         {formatter.format(comment.created!)}
                     </div>
                     <CommentLikes

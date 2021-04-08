@@ -52,7 +52,8 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = p
                                 onClick={props.definitionSelector}
                                 size="sm"
                                 title={i18n("annotator.createTerm.selectDefinition.tooltip")}
-                                style={{float: "right"}}>
+                                style={{float: "right"}}
+                            >
                                 {i18n("annotator.createTerm.selectDefinition")}
                             </Button>
                         </FormGroup>

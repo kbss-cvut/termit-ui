@@ -109,7 +109,8 @@ export class Users extends React.Component<UsersProps, UsersState> {
                             id="administration-users-create"
                             to={Routes.createNewUser.path}
                             title={i18n("administration.users.create.tooltip")}
-                            className="btn btn-primary btn-sm users-action-button">
+                            className="btn btn-primary btn-sm users-action-button"
+                        >
                             <GoPlus />
                             &nbsp;{i18n("administration.users.create")}
                         </Link>

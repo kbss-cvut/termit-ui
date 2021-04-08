@@ -129,7 +129,6 @@
     "trailingComma": "none",
     "tabWidth": 4,
     "bracketSpacing": false,
-    "jsxBracketSameLine": true,
     "arrowParens": "avoid"
   }
 }

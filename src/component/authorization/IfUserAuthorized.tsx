@@ -20,7 +20,8 @@ const IfUserAuthorized: React.FC<IfUserAuthorizedProps> = props => {
         <IfNoneGranted
             expected={VocabularyUtils.USER_RESTRICTED}
             actual={user.types}
-            unauthorized={renderUnauthorizedAlert && (unauthorized ? unauthorized : <Unauthorized />)}>
+            unauthorized={renderUnauthorizedAlert && (unauthorized ? unauthorized : <Unauthorized />)}
+        >
             {children}
         </IfNoneGranted>
     );

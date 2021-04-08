@@ -43,7 +43,8 @@ function createActionButtons(
                     color="primary"
                     title={i18n("annotation.confirm")}
                     size="sm"
-                    onClick={() => props.onSelectTerm(t)}>
+                    onClick={() => props.onSelectTerm(t)}
+                >
                     <FaCheck />
                 </Button>
             </IfUserAuthorized>
@@ -71,7 +72,8 @@ function createActionButtons(
             color="primary"
             title={i18n("annotation.close")}
             size="sm"
-            onClick={props.onClose}>
+            onClick={props.onClose}
+        >
             <TiTimes />
         </Button>
     );

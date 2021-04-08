@@ -25,7 +25,8 @@ const SimplePopupWithActions: React.FC<PopupWithActionsProps> = props => {
             trigger="focus"
             isOpen={props.isOpen}
             target={props.target}
-            toggle={props.toggle}>
+            toggle={props.toggle}
+        >
             <div onClick={handler}>
                 <PopoverHeader className="d-flex align-items-center">
                     <div className="pwa-popup-title flex-grow-1">{props.title}</div>

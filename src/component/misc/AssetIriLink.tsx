@@ -45,7 +45,8 @@ export default class AssetIriLink extends React.Component<AssetIriLinkProps, Ass
                         <Link
                             id={this.props.id}
                             title={this.props.tooltip ? this.props.tooltip : undefined}
-                            to={props.path}>
+                            to={props.path}
+                        >
                             <AssetLabel iri={props.assetIri} />
                         </Link>
                     }

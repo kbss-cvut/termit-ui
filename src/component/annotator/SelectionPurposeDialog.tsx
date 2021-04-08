@@ -28,7 +28,8 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = pro
             popperClassName="pwa"
             isOpen={props.show}
             target={props.target}
-            toggle={props.onCancel}>
+            toggle={props.onCancel}
+        >
             <div onClick={handler}>
                 <PopoverHeader className="d-flex">
                     <div className="flex-grow-1">{i18n("annotator.selectionPurpose.dialog.title")}</div>
@@ -37,7 +38,8 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = pro
                             id="annotator-selection-dialog-cancel"
                             onClick={props.onCancel}
                             color="secondary"
-                            size="sm">
+                            size="sm"
+                        >
                             <TiTimes />
                         </Button>
                     </div>
@@ -48,14 +50,16 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = pro
                             id="annotator-selection-dialog-mark-occurrence"
                             color="primary"
                             size="sm"
-                            onClick={props.onMarkOccurrence}>
+                            onClick={props.onMarkOccurrence}
+                        >
                             {i18n("annotator.selectionPurpose.occurrence")}
                         </Button>
                         <Button
                             id="annotator-selection-dialog-mark-definition"
                             color="primary"
                             size="sm"
-                            onClick={props.onMarkDefinition}>
+                            onClick={props.onMarkDefinition}
+                        >
                             {i18n("annotator.selectionPurpose.definition")}
                         </Button>
                     </ButtonToolbar>

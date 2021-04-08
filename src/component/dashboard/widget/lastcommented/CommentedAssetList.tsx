@@ -67,7 +67,8 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = props => {
                         <Col xs={12}>
                             <Label
                                 className="italics asset-list-title-message"
-                                title={new Date(lastEdited!).toLocaleString(locale)}>
+                                title={new Date(lastEdited!).toLocaleString(locale)}
+                            >
                                 {renderMessage(lastEdited!, new User(commentedAsset.lastComment.author!))}
                             </Label>
                         </Col>

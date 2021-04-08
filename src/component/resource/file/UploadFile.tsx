@@ -66,7 +66,8 @@ export class UploadFile extends React.Component<UploadFileProps, UploadFileState
                         onDrop={this.onFileSelected}
                         onDragEnter={this.onDragEnter}
                         onDragLeave={this.onDragLeave}
-                        multiple={false}>
+                        multiple={false}
+                    >
                         {({getRootProps, getInputProps}) => (
                             <div {...getRootProps()} className={containerClasses}>
                                 <input {...getInputProps()} />

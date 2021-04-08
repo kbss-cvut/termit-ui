@@ -27,7 +27,8 @@ export const FullscreenButton: React.FC<Props> = props => {
             color="lightgrey"
             size="md"
             onClick={props.toggleFullscreen}
-            title={i18n(props.isFullscreen ? "fullscreen.exit" : "fullscreen.enter")}>
+            title={i18n(props.isFullscreen ? "fullscreen.exit" : "fullscreen.enter")}
+        >
             <IconContext.Provider value={{color: "black", className: "global-class-name"}}>
                 {props.isFullscreen ? <GoScreenNormal /> : <GoScreenFull />}
             </IconContext.Provider>

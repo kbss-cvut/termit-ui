@@ -130,7 +130,8 @@ export class UnmappedPropertiesEdit extends React.Component<UnmappedPropertiesEd
                             size="sm"
                             title={i18n("properties.edit.add.title")}
                             onClick={this.onAdd}
-                            disabled={!this.isValid()}>
+                            disabled={!this.isValid()}
+                        >
                             <GoPlus /> {i18n("properties.edit.add.text")}
                         </Button>
                     </Col>
@@ -148,7 +149,8 @@ export class UnmappedPropertiesEdit extends React.Component<UnmappedPropertiesEd
                     <Badge
                         title={this.props.i18n("properties.edit.remove")}
                         className="list-item-remove-icon align-middle"
-                        onClick={this.onRemove.bind(null, k, v)}>
+                        onClick={this.onRemove.bind(null, k, v)}
+                    >
                         <FaTrashAlt />
                         {this.props.i18n("properties.edit.remove.text")}
                     </Badge>

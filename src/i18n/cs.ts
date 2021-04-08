@@ -92,9 +92,9 @@ const cs = {
 
         "dashboard.widget.assetList.empty": "Pro tuto část nebyly nalezeny žádné záznamy.",
         "dashboard.widget.assetList.lastEditMessage":
-            "{operation, select, " + "edit {Upraven}" + "other {Vytvořen}" + "} uživatelem {user} {when}.",
+            "{operation, select, edit {Upraven} other {Vytvořen}} uživatelem {user} {when}.",
         "dashboard.widget.assetList.lastEditMessageByYou":
-            "{operation, select, " + "edit {Upraven}" + "other {Vytvořen}" + "} Vámi {when}.",
+            "{operation, select, edit {Upraven} other {Vytvořen}} Vámi {when}.",
         "dashboard.widget.lastEditedAssets.title": "Naposledy upravené záznamy",
         "dashboard.widget.lastEditedAssets.all.title": "Všechny",
         "dashboard.widget.lastEditedAssets.mine.title": "Moje",

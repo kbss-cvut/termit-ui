@@ -120,14 +120,16 @@ export class VocabularyEdit extends React.Component<VocabularyEditProps, Vocabul
                                         onClick={this.onSave}
                                         color="success"
                                         size="sm"
-                                        disabled={this.state.label.trim().length === 0}>
+                                        disabled={this.state.label.trim().length === 0}
+                                    >
                                         {i18n("save")}
                                     </Button>
                                     <Button
                                         id="edit-vocabulary-cancel"
                                         onClick={this.props.cancel}
                                         color="outline-dark"
-                                        size="sm">
+                                        size="sm"
+                                    >
                                         {i18n("cancel")}
                                     </Button>
                                 </ButtonToolbar>

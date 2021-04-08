@@ -56,7 +56,8 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                             onClick={onSubmit}
                             color="success"
                             size="sm"
-                            disabled={!isValid}>
+                            disabled={!isValid}
+                        >
                             {i18n("save")}
                         </Button>
                         <Button id="profile-edit-cancel" onClick={showProfileView} size="sm" color="outline-dark">

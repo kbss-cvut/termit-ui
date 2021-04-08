@@ -47,7 +47,8 @@ export class LanguageSelector extends React.Component<LanguageSelectorProps> {
             <UncontrolledDropdown
                 className={classNames({
                     "p-3": !authenticated
-                })}>
+                })}
+            >
                 <DropdownToggle
                     name="language-selector"
                     className={classNames("d-flex", "align-items-center", "language-selector", {
@@ -56,13 +57,15 @@ export class LanguageSelector extends React.Component<LanguageSelectorProps> {
                     })}
                     caret={true}
                     nav={authenticated}
-                    title={this.props.i18n("main.lang-selector.tooltip")}>
+                    title={this.props.i18n("main.lang-selector.tooltip")}
+                >
                     {this.resolveSelectedLanguage()}
                 </DropdownToggle>
                 <DropdownMenu right={true}>
                     <DropdownItem
                         name="language-selector.cs"
-                        onClick={this.onSelect.bind(null, Constants.LANG.CS.locale)}>
+                        onClick={this.onSelect.bind(null, Constants.LANG.CS.locale)}
+                    >
                         <img src={Constants.LANG.CS.flag} className="flag" alt={Constants.LANG.CS.label} />
                         &nbsp;&nbsp;{Constants.LANG.CS.label}
                     </DropdownItem>
@@ -70,7 +73,8 @@ export class LanguageSelector extends React.Component<LanguageSelectorProps> {
 
                     <DropdownItem
                         nane="language-selector.en"
-                        onClick={this.onSelect.bind(null, Constants.LANG.EN.locale)}>
+                        onClick={this.onSelect.bind(null, Constants.LANG.EN.locale)}
+                    >
                         <img src={Constants.LANG.EN.flag} className="flag" alt={Constants.LANG.EN.label} />
                         &nbsp;&nbsp;{Constants.LANG.EN.label}
                     </DropdownItem>

@@ -119,7 +119,8 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                         size="sm"
                         color="primary"
                         title={i18n("edit")}
-                        onClick={this.onEdit}>
+                        onClick={this.onEdit}
+                    >
                         <GoPencil />
                         &nbsp;{i18n("edit")}
                     </Button>
@@ -135,7 +136,8 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                     size="sm"
                     color="outline-danger"
                     title={i18n("asset.remove.tooltip")}
-                    onClick={this.onRemoveClick}>
+                    onClick={this.onRemoveClick}
+                >
                     <FaTrashAlt />
                     &nbsp;{i18n("remove")}
                 </Button>
@@ -183,7 +185,8 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                 className="ml-0"
                 key="vocabulary.summary.export"
                 size="sm"
-                title={i18n("vocabulary.summary.export.title")}>
+                title={i18n("vocabulary.summary.export.title")}
+            >
                 <DropdownToggle caret={false} color="primary" style={{borderRadius: "0.2rem"}}>
                     <GoCloudDownload />{" "}
                     <span className="dropdown-toggle">{i18n("vocabulary.summary.export.text")}</span>
@@ -193,21 +196,24 @@ export class VocabularySummary extends EditableComponent<VocabularySummaryProps,
                         name="vocabulary-export-csv"
                         className="btn-sm"
                         onClick={this.onExportToCsv}
-                        title={i18n("vocabulary.summary.export.csv.title")}>
+                        title={i18n("vocabulary.summary.export.csv.title")}
+                    >
                         {i18n("vocabulary.summary.export.csv")}
                     </DropdownItem>
                     <DropdownItem
                         name="vocabulary-export-excel"
                         className="btn-sm"
                         onClick={this.onExportToExcel}
-                        title={i18n("vocabulary.summary.export.excel.title")}>
+                        title={i18n("vocabulary.summary.export.excel.title")}
+                    >
                         {i18n("vocabulary.summary.export.excel")}
                     </DropdownItem>
                     <DropdownItem
                         name="vocabulary-export-ttl"
                         className="btn-sm"
                         onClick={this.onExportToTurtle}
-                        title={i18n("vocabulary.summary.export.ttl.title")}>
+                        title={i18n("vocabulary.summary.export.ttl.title")}
+                    >
                         {i18n("vocabulary.summary.export.ttl")}
                     </DropdownItem>
                 </DropdownMenu>

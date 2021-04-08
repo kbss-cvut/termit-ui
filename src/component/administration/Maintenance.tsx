@@ -20,7 +20,8 @@ export const Maintenance: React.FC<MaintenanceProps> = props => {
                     color="primary"
                     size="sm"
                     title={i18n("administration.maintenance.invalidateCaches.tooltip")}
-                    onClick={invalidateCache}>
+                    onClick={invalidateCache}
+                >
                     {i18n("administration.maintenance.invalidateCaches")}
                 </Button>
             </ButtonToolbar>

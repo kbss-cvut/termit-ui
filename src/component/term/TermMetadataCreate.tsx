@@ -106,7 +106,8 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
                                         color="success"
                                         onClick={this.onSave}
                                         size="sm"
-                                        disabled={invalid}>
+                                        disabled={invalid}
+                                    >
                                         {i18n("glossary.form.button.submit")}
                                     </Button>
                                     <Button
@@ -114,14 +115,16 @@ export class TermMetadataCreate extends React.Component<TermMetadataCreateProps,
                                         color="success"
                                         onClick={this.onSaveAndGoToNewTerm}
                                         size="sm"
-                                        disabled={invalid}>
+                                        disabled={invalid}
+                                    >
                                         {i18n("glossary.form.button.submitAndGoToNewTerm")}
                                     </Button>
                                     <Button
                                         id="create-term-cancel"
                                         color="outline-dark"
                                         size="sm"
-                                        onClick={this.cancelCreation}>
+                                        onClick={this.cancelCreation}
+                                    >
                                         {i18n("glossary.form.button.cancel")}
                                     </Button>
                                 </ButtonToolbar>

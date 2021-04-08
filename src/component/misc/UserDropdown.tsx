@@ -35,7 +35,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = props => {
                     "align-items-center",
                     "px-2",
                     "px-sm-3"
-                )}>
+                )}
+            >
                 <i className="fas fa-user-circle align-middle user-icon" />
                 &nbsp;
                 <span className="user-dropdown">{user.abbreviatedName}</span>

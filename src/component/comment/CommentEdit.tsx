@@ -45,7 +45,8 @@ const CommentEdit: React.FC<CommentEditProps> = props => {
                         id="comment-edit-submit"
                         size="sm"
                         disabled={content.trim().length === 0}
-                        onClick={() => props.onSubmit(comment)}>
+                        onClick={() => props.onSubmit(comment)}
+                    >
                         {i18n("save")}
                     </Button>
                     <Button color="outline-dark" id="comment-edit-cancel" size="sm" onClick={onCancel}>
