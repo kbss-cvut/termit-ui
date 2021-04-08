@@ -125,10 +125,7 @@
     ]
   },
   "prettier": {
-    "semi": true,
-    "singleQuote": false,
     "printWidth": 120,
-    "endOfLine": "auto",
     "trailingComma": "none",
     "tabWidth": 4,
     "bracketSpacing": false,
