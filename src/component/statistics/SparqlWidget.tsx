@@ -60,7 +60,7 @@ export default function SparqlWidget<P extends PublicProps>(
             return {
                 executeQuery: (queryString: string) => dispatch(executeQuery(queryString))
             };
-            // @ts-ignore
         }
+        // @ts-ignore
     )(Wrapper);
 }

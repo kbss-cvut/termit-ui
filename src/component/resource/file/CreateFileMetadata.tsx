@@ -74,14 +74,16 @@ export class CreateFileMetadata extends React.Component<CreateFileMetadataProps,
                                 onClick={this.onCreate}
                                 color="success"
                                 size="sm"
-                                disabled={this.cannotSubmit()}>
+                                disabled={this.cannotSubmit()}
+                            >
                                 {i18n("create")}
                             </Button>
                             <Button
                                 id="create-resource-cancel"
                                 onClick={this.props.onCancel}
                                 color="outline-dark"
-                                size="sm">
+                                size="sm"
+                            >
                                 {i18n("cancel")}
                             </Button>
                         </ButtonToolbar>

@@ -17,7 +17,8 @@ const BreadcrumbRoute = (props: BreadcrumbRouteProps) => {
                 title,
                 pathname: routeProps.match.url,
                 search: includeSearch ? routeProps.location.search : undefined
-            }}>
+            }}
+        >
             <Component {...routeProps} />
         </Breadcrumb>
     );

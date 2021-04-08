@@ -47,7 +47,8 @@ export const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
             isOpen={true}
             toggle={onCancel}
             size="lg"
-            className={classNames({wide: hasExisting})}>
+            className={classNames({wide: hasExisting})}
+        >
             <ModalHeader>
                 {formatMessage("annotator.setTermDefinition.title", {
                     term: getLocalized(data.label, getShortLocale(locale))
@@ -93,14 +94,16 @@ export const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = props => {
                                     id="annotator-set-definition-save"
                                     color="success"
                                     size="sm"
-                                    onClick={() => onSave(data!)}>
+                                    onClick={() => onSave(data!)}
+                                >
                                     {i18n("save")}
                                 </Button>
                                 <Button
                                     id="annotator-set-definition-cancel"
                                     color="outline-dark"
                                     size="sm"
-                                    onClick={onCancel}>
+                                    onClick={onCancel}
+                                >
                                     {i18n("cancel")}
                                 </Button>
                             </ButtonToolbar>

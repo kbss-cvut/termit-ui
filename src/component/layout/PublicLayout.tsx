@@ -16,10 +16,12 @@ const PublicLayout: React.FC<PublicLayoutProps> = props => {
             style={{
                 backgroundImage: `url(${Constants.LAYOUT_WALLPAPER})`,
                 backgroundPosition: "center"
-            }}>
+            }}
+        >
             <Container
                 fluid={true}
-                className="pt-3 flex-grow-1 main-container align-items-center justify-content-center">
+                className="pt-3 flex-grow-1 main-container align-items-center justify-content-center"
+            >
                 {props.children}
             </Container>
             <Footer transparent={true} authenticated={false} sidebarExpanded={false} />

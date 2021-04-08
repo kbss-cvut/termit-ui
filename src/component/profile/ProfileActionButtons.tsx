@@ -25,7 +25,8 @@ export const ProfileActionButtons: React.FC<ProfileActionButtonsProps> = ({
                         size="sm"
                         color="primary"
                         title={i18n("edit")}
-                        onClick={showProfileEdit}>
+                        onClick={showProfileEdit}
+                    >
                         <GoPencil />
                         &nbsp;{i18n("edit")}
                     </Button>
@@ -35,7 +36,8 @@ export const ProfileActionButtons: React.FC<ProfileActionButtonsProps> = ({
                         size="sm"
                         color="primary"
                         title={i18n("profile.change-password")}
-                        onClick={navigateToChangePasswordRoute}>
+                        onClick={navigateToChangePasswordRoute}
+                    >
                         <GoKey />
                         &nbsp;{i18n("profile.change-password")}
                     </Button>

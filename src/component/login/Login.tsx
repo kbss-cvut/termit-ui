@@ -107,7 +107,8 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                 color="success"
                                 onClick={this.login}
                                 className="btn-block"
-                                disabled={this.props.loading || !this.isValid()}>
+                                disabled={this.props.loading || !this.isValid()}
+                            >
                                 {i18n("login.submit")}
                             </Button>
                             {this.renderRegistrationLink()}

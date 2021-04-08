@@ -63,7 +63,8 @@ class TooltipItem extends React.Component<TooltipItemProps, TooltipItemState> {
                             preventOverflow: {
                                 escapeWithReference: false
                             }
-                        }}>
+                        }}
+                    >
                         {this.getTooltipData()}
                     </Tooltip>
                 )}

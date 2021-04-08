@@ -199,14 +199,16 @@ export class CreateVocabulary extends AbstractCreateAsset<CreateVocabularyProps,
                                                 onClick={this.onCreate}
                                                 color="success"
                                                 size="sm"
-                                                disabled={!this.isFormValid()}>
+                                                disabled={!this.isFormValid()}
+                                            >
                                                 {i18n("vocabulary.create.submit")}
                                             </Button>
                                             <Button
                                                 id="create-vocabulary-cancel"
                                                 onClick={onCancel}
                                                 color="outline-dark"
-                                                size="sm">
+                                                size="sm"
+                                            >
                                                 {i18n("cancel")}
                                             </Button>
                                         </ButtonToolbar>

@@ -37,7 +37,8 @@ function createActionButtons(
                     color="primary"
                     title={i18n("edit")}
                     size="sm"
-                    onClick={onEdit}>
+                    onClick={onEdit}
+                >
                     <GoPencil />
                 </Button>
             </IfUserAuthorized>
@@ -50,7 +51,8 @@ function createActionButtons(
                 color="primary"
                 title={i18n("remove")}
                 size="sm"
-                onClick={props.onRemove}>
+                onClick={props.onRemove}
+            >
                 <TiTrash />
             </Button>
         </IfUserAuthorized>
@@ -62,7 +64,8 @@ function createActionButtons(
             color="primary"
             title={i18n("annotation.close")}
             size="sm"
-            onClick={props.onClose}>
+            onClick={props.onClose}
+        >
             <TiTimes />
         </Button>
     );

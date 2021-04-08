@@ -59,7 +59,8 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
                             value={roleObject.iri}
                             onChange={(e: any) => setRole(e.target.value)}
                             placeholder={i18n("select.placeholder")}
-                            help={description}>
+                            help={description}
+                        >
                             {options}
                         </Select>
                         <ButtonToolbar className="float-right">
@@ -68,14 +69,16 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
                                 className="users-action-button"
                                 size="sm"
                                 disabled={!role}
-                                onClick={save}>
+                                onClick={save}
+                            >
                                 {i18n("save")}
                             </Button>
                             <Button
                                 variant="outline-primary"
                                 className="users-action-button"
                                 size="sm"
-                                onClick={onCancel}>
+                                onClick={onCancel}
+                            >
                                 {i18n("cancel")}
                             </Button>
                         </ButtonToolbar>

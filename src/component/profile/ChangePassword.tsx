@@ -138,14 +138,16 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
                                             onClick={this.onChangePassword}
                                             color="success"
                                             size="sm"
-                                            disabled={!this.isValid()}>
+                                            disabled={!this.isValid()}
+                                        >
                                             {i18n("save")}
                                         </Button>
                                         <Button
                                             id="change-password-cancel"
                                             onClick={this.navigateToProfileRoute}
                                             size="sm"
-                                            color="outline-dark">
+                                            color="outline-dark"
+                                        >
                                             {i18n("cancel")}
                                         </Button>
                                     </ButtonToolbar>

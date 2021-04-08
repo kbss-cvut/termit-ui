@@ -32,7 +32,8 @@ const CopyIriIcon: React.FC<CopyIriIconProps> = ({url}) => {
                 offset="1rem"
                 target="link-icon"
                 fade={true}
-                delay={{show: 0, hide: 500}}>
+                delay={{show: 0, hide: 500}}
+            >
                 {i18n("tooltip.copy-iri")}
             </UncontrolledTooltip>
         </>

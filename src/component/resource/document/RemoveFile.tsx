@@ -34,7 +34,8 @@ export const RemoveFile = (props: RemoveFileProps) => {
                 color="outline-danger"
                 size="sm"
                 onClick={props.withConfirmation ? toggle : performAction}
-                title={i18n("asset.remove.tooltip")}>
+                title={i18n("asset.remove.tooltip")}
+            >
                 <FaTrashAlt className="mr-1" />
                 {i18n("remove")}
             </Button>

@@ -85,14 +85,16 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                             "main-view-sidebar-collapsed": !sidebarExpanded
                         },
                         "flex-grow-1"
-                    )}>
+                    )}
+                >
                     <header>
                         {desktopView && (
                             <Navbar
                                 id="navbar"
                                 light={true}
                                 fixed="top"
-                                className={classNames("bg-white", "navbar-top", "d-flex")}>
+                                className={classNames("bg-white", "navbar-top", "d-flex")}
+                            >
                                 <Nav navbar={true} className="nav-search">
                                     <NavbarSearch navbar={true} />
                                 </Nav>
@@ -101,7 +103,8 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                                         <Link
                                             to={Routes.login.path}
                                             className="mx-3 text-dark"
-                                            title={i18n("public.nav.user")}>
+                                            title={i18n("public.nav.user")}
+                                        >
                                             <FaUserSlash className="user-icon" />
                                         </Link>
                                     </NavItem>
@@ -120,7 +123,8 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                         fluid={true}
                         className={classNames("pt-3", "flex-grow-1", {
                             "content-container-dashboard": this.isDashboardRoute()
-                        })}>
+                        })}
+                    >
                         <Switch>
                             <BreadcrumbRoute
                                 title={i18n("main.nav.vocabularies")}

@@ -116,7 +116,8 @@ export class CreateResourceForm extends React.Component<CreateResourceFormProps,
                                                     className="w-100 create-resource-type-select"
                                                     outline={true}
                                                     onClick={this.onTypeSelect.bind(null, VocabularyUtils.RESOURCE)}
-                                                    active={this.state.type === VocabularyUtils.RESOURCE}>
+                                                    active={this.state.type === VocabularyUtils.RESOURCE}
+                                                >
                                                     {i18n("type.resource")}
                                                 </Button>
                                                 <Button
@@ -126,7 +127,8 @@ export class CreateResourceForm extends React.Component<CreateResourceFormProps,
                                                     className="w-100 create-resource-type-select"
                                                     outline={true}
                                                     onClick={this.onTypeSelect.bind(null, VocabularyUtils.DOCUMENT)}
-                                                    active={this.state.type === VocabularyUtils.DOCUMENT}>
+                                                    active={this.state.type === VocabularyUtils.DOCUMENT}
+                                                >
                                                     {i18n("type.document")}
                                                 </Button>
                                             </ButtonGroup>

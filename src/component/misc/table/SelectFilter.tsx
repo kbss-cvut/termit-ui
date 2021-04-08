@@ -30,7 +30,8 @@ export function createSelectFilter(getValue: (row: any) => string, getLabel: (va
                 className="m-table-select-filter"
                 onChange={e => {
                     setFilter(e.target.value || undefined);
-                }}>
+                }}
+            >
                 <option value="">{props.i18n("table.filter.select.all")}</option>
                 {options.map((option: string, i: number) => (
                     <option key={i} value={option}>

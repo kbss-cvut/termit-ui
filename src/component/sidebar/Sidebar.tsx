@@ -138,7 +138,8 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                         tag={NavLinkRRD}
                         onClick={this.closeCollapse}
                         activeClassName=""
-                        className={classNames({"sup-icon-margin-fix": route.supIcon})}>
+                        className={classNames({"sup-icon-margin-fix": route.supIcon})}
+                    >
                         <i className={route.icon}>
                             {route.supIcon && <sup className={`${route.supIcon} fa-xs sup-icon`} />}
                         </i>
@@ -159,7 +160,8 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                         to={route.path}
                         tag={NavLinkRRD}
                         onClick={this.closeCollapse}
-                        activeClassName={this.activeRoute(route.path)}>
+                        activeClassName={this.activeRoute(route.path)}
+                    >
                         <i className={route.icon} />
                         {(sidebarExpanded || !desktopView) && i18n(route.name)}
                     </NavLink>
@@ -188,7 +190,8 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                 className={classNames("navbar-vertical", "navbar-dark", "bg-dark", "py-md-0", {
                     "sidebar-expanded": sidebarExpanded,
                     "sidebar-collapsed": !sidebarExpanded
-                })}>
+                })}
+            >
                 <Container fluid={true}>
                     <div className="d-flex align-items-center header-height justify-content-between">
                         {/* Toggler phone */}
@@ -208,7 +211,8 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                             <div
                                 className="menu-collapse d-inline-flex align-items-center"
                                 onClick={this.props.toggleSidebar}
-                                id="toggler">
+                                id="toggler"
+                            >
                                 {sidebarExpanded && <i className="fas fa-chevron-left fa-xs" />}
                                 <i className="fas fa-bars fa-lg line-height-1" />
                                 {!sidebarExpanded && <i className="fas fa-chevron-right fa-xs" />}

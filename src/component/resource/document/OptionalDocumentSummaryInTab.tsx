@@ -49,7 +49,8 @@ export const OptionalDocumentSummaryInTab: React.FC<OptionalDocumentSummaryInTab
                         className="float-right"
                         size="sm"
                         title={i18n("vocabulary.document.remove")}
-                        onClick={onVocabularyDocumentRemove}>
+                        onClick={onVocabularyDocumentRemove}
+                    >
                         <GoX />
                         &nbsp;{i18n("vocabulary.document.remove")}
                     </Button>

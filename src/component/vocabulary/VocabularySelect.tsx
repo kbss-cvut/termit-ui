@@ -54,7 +54,8 @@ const VocabularySelect: React.FC<VocabularySelectProps> = props => {
                             };
                         }
                     }
-                }}>
+                }}
+            >
                 {items}
             </DropdownMenu>
         </UncontrolledDropdown>

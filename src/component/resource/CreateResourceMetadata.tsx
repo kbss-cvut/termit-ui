@@ -113,14 +113,16 @@ export class CreateResourceMetadata<
                             onClick={this.onCreate}
                             color="success"
                             size="sm"
-                            disabled={this.state.label.trim().length === 0}>
+                            disabled={this.state.label.trim().length === 0}
+                        >
                             {i18n("create")}
                         </Button>
                         <Button
                             id="create-resource-cancel"
                             onClick={this.props.onCancel}
                             color="outline-dark"
-                            size="sm">
+                            size="sm"
+                        >
                             {i18n("cancel")}
                         </Button>
                     </ButtonToolbar>

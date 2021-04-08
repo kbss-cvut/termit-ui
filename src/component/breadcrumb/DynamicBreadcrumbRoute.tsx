@@ -29,7 +29,8 @@ const DynamicBreadcrumbRoute = (props: DynamicBreadcrumbRouteProps) => {
                 title: props.state[props.asset] ? (props.state[props.asset] as Asset).getLabel(locale) : "",
                 pathname: routeProps.match.url,
                 search: includeSearch ? routeProps.location.search : undefined
-            }}>
+            }}
+        >
             <Component {...routeProps} />
         </Breadcrumb>
     );
