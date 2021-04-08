@@ -67,7 +67,9 @@
     "test-ci": "cross-env =CI=true react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?' --testResultsProcessor='jest-junit'",
     "eject": "react-scripts eject",
     "build-prod": "npm run test-ci && npm run build",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "prettier:check": "prettier --check ./src",
+    "prettier:fix": "prettier --write ./src"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.11",
@@ -98,6 +100,7 @@
     "jest-react-hooks-shallow": "^1.5.1",
     "jest-watch-typeahead": "^0.6.1",
     "node-sass": "^4.14.1",
+    "prettier": "^2.2.1",
     "raw.macro": "^0.4.2",
     "redux-devtools-extension": "^2.13.9",
     "redux-mock-store": "^1.5.4",
@@ -120,5 +123,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": false,
+    "endOfLine": "auto",
+    "tabWidth": 4,
+    "bracketSpacing": false,
+    "jsxBracketSameLine": true,
+    "arrowParens": "avoid"
   }
 }
