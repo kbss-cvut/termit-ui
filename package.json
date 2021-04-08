@@ -123,12 +123,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "prettier": {
-    "printWidth": 120,
-    "trailingComma": "none",
-    "tabWidth": 4,
-    "bracketSpacing": false,
-    "arrowParens": "avoid"
   }
 }

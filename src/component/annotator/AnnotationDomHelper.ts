@@ -1,14 +1,19 @@
-import {DomUtils} from "htmlparser2";
-import {DataNode, Element as DomHandlerElement, Node as DomHandlerNode, NodeWithChildren} from "domhandler";
+import { DomUtils } from "htmlparser2";
+import {
+    DataNode,
+    Element as DomHandlerElement,
+    Node as DomHandlerNode,
+    NodeWithChildren,
+} from "domhandler";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import HtmlParserUtils from "./HtmlParserUtils";
 import HtmlDomUtils from "./HtmlDomUtils";
-import {TextQuoteSelector} from "../../model/TermOccurrence";
+import { TextQuoteSelector } from "../../model/TermOccurrence";
 import Utils from "../../util/Utils";
 
 export const AnnotationType = {
     OCCURRENCE: VocabularyUtils.TERM_OCCURRENCE,
-    DEFINITION: VocabularyUtils.DEFINITION
+    DEFINITION: VocabularyUtils.DEFINITION,
 };
 
 function toHtmlString(nodeList: NodeList): string {
@@ -32,12 +37,21 @@ function getPropertyForAnnotationType(annotationType: string) {
 }
 
 const AnnotationDomHelper = {
-    isAnnotation(node: DomHandlerNode, prefixMap?: Map<string, string>): boolean {
+    isAnnotation(
+        node: DomHandlerNode,
+        prefixMap?: Map<string, string>
+    ): boolean {
         if (!node || !(node as DomHandlerElement).attribs) {
             return false;
         }
-        const type = HtmlParserUtils.resolveIri((node as DomHandlerElement).attribs.typeof, prefixMap);
-        return type === AnnotationType.OCCURRENCE || type === AnnotationType.DEFINITION;
+        const type = HtmlParserUtils.resolveIri(
+            (node as DomHandlerElement).attribs.typeof,
+            prefixMap
+        );
+        return (
+            type === AnnotationType.OCCURRENCE ||
+            type === AnnotationType.DEFINITION
+        );
     },
 
     findAnnotation(
@@ -47,7 +61,8 @@ const AnnotationDomHelper = {
     ): DomHandlerElement | void {
         const foundResults = DomUtils.find(
             (n: DomHandlerNode) =>
-                this.isAnnotation(n, prefixMap) && annotationId === (n as DomHandlerElement).attribs.about,
+                this.isAnnotation(n, prefixMap) &&
+                annotationId === (n as DomHandlerElement).attribs.about,
             dom,
             true,
             1
@@ -60,7 +75,10 @@ const AnnotationDomHelper = {
     removeAnnotation(annotation: DomHandlerNode, dom: DomHandlerNode[]): void {
         // assuming annotation.type === "tag"
         const elem = annotation as DomHandlerElement;
-        if (Utils.sanitizeArray(elem.children).length === 1 && elem.children![0].type === "text") {
+        if (
+            Utils.sanitizeArray(elem.children).length === 1 &&
+            elem.children![0].type === "text"
+        ) {
             const newNode = this.createTextualNode(elem);
             DomUtils.replaceElement(elem, newNode);
             const elemInd = dom.indexOf(elem);
@@ -79,10 +97,16 @@ const AnnotationDomHelper = {
     },
 
     createTextualNode(annotation: NodeWithChildren): any {
-        return {data: (annotation.children![0] as DataNode).data, type: "text"};
+        return {
+            data: (annotation.children![0] as DataNode).data,
+            type: "text",
+        };
     },
 
-    replaceAnnotation(oldAnnotation: DomHandlerNode, newAnnotation: DomHandlerNode): void {
+    replaceAnnotation(
+        oldAnnotation: DomHandlerNode,
+        newAnnotation: DomHandlerNode
+    ): void {
         DomUtils.replaceElement(oldAnnotation, newAnnotation);
     },
 
@@ -93,17 +117,25 @@ const AnnotationDomHelper = {
         prefixMap?: Map<string, string>
     ): DomHandlerElement {
         const newDom = HtmlParserUtils.html2dom(toHtmlString(nodeList));
-        const tagName = HtmlDomUtils.containsBlockElement(nodeList) ? "div" : "span";
+        const tagName = HtmlDomUtils.containsBlockElement(nodeList)
+            ? "div"
+            : "span";
         const elem = new DomHandlerElement(tagName, {
             about,
-            property: HtmlParserUtils.shortenIri(getPropertyForAnnotationType(type), prefixMap),
-            typeof: HtmlParserUtils.shortenIri(type, prefixMap)
+            property: HtmlParserUtils.shortenIri(
+                getPropertyForAnnotationType(type),
+                prefixMap
+            ),
+            typeof: HtmlParserUtils.shortenIri(type, prefixMap),
         });
         elem.children = newDom;
         return elem;
     },
 
-    isAnnotationWithMinimumScore(node: DomHandlerElement, score: number): boolean {
+    isAnnotationWithMinimumScore(
+        node: DomHandlerElement,
+        score: number
+    ): boolean {
         // assert this.isAnnotation(node, prefixMap)
         if (!node.attribs.score) {
             return true;
@@ -114,9 +146,9 @@ const AnnotationDomHelper = {
     generateSelector(node: DomHandlerNode): TextQuoteSelector {
         return {
             exactMatch: HtmlDomUtils.getTextContent(node),
-            types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
+            types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
         };
-    }
+    },
 };
 
 export default AnnotationDomHelper;

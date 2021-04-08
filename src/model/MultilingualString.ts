@@ -1,11 +1,11 @@
 import Constants from "../util/Constants";
 import Utils from "../util/Utils";
-import {getShortLocale} from "../util/IntlUtil";
+import { getShortLocale } from "../util/IntlUtil";
 
 export function context(propertyIri: string) {
     return {
         "@id": propertyIri,
-        "@container": "@language"
+        "@container": "@language",
     };
 }
 
@@ -27,7 +27,10 @@ export const NO_LANG = "@none";
  * @param str String to use as value
  * @param lang Language (optional), defaults to Constants.DEFAULT_LANGUAGE
  */
-export function langString(str: string, lang: string = Constants.DEFAULT_LANGUAGE): MultilingualString {
+export function langString(
+    str: string,
+    lang: string = Constants.DEFAULT_LANGUAGE
+): MultilingualString {
     const result = {};
     result[lang] = str;
     return result;
@@ -57,7 +60,10 @@ export function pluralLangString(
  * @param str String to get localized value from
  * @param lang Target language
  */
-export function getLocalized(str?: MultilingualString | string, lang: string = Constants.DEFAULT_LANGUAGE) {
+export function getLocalized(
+    str?: MultilingualString | string,
+    lang: string = Constants.DEFAULT_LANGUAGE
+) {
     if (typeof str === "string") {
         return str;
     }
@@ -72,7 +78,9 @@ export function getLocalized(str?: MultilingualString | string, lang: string = C
     } else if (str[Constants.DEFAULT_LANGUAGE]) {
         return str[Constants.DEFAULT_LANGUAGE];
     }
-    return str[NO_LANG] !== undefined ? str[NO_LANG] : str[Object.getOwnPropertyNames(str)[0]];
+    return str[NO_LANG] !== undefined
+        ? str[NO_LANG]
+        : str[Object.getOwnPropertyNames(str)[0]];
 }
 
 /**
@@ -84,7 +92,10 @@ export function getLocalized(str?: MultilingualString | string, lang: string = C
  * @param str String to get localized value from
  * @param lang Target language
  */
-export function getLocalizedPlural(str?: PluralMultilingualString, lang: string = Constants.DEFAULT_LANGUAGE) {
+export function getLocalizedPlural(
+    str?: PluralMultilingualString,
+    lang: string = Constants.DEFAULT_LANGUAGE
+) {
     if (!str) {
         return [];
     }
@@ -117,7 +128,11 @@ export function getLocalizedOrDefault(
         return "";
     }
     lang = lang.toLowerCase();
-    return str[lang] !== undefined ? str[lang] : str[NO_LANG] !== undefined ? str[NO_LANG] : defaultValue;
+    return str[lang] !== undefined
+        ? str[lang]
+        : str[NO_LANG] !== undefined
+        ? str[NO_LANG]
+        : defaultValue;
 }
 
 export default MultilingualString;

@@ -1,7 +1,7 @@
-import Term, {TermData, TermInfo} from "../../model/Term";
-import {getLocalized} from "../../model/MultilingualString";
-import {HasI18n} from "../hoc/withI18n";
-import {getShortLocale} from "../../util/IntlUtil";
+import Term, { TermData, TermInfo } from "../../model/Term";
+import { getLocalized } from "../../model/MultilingualString";
+import { HasI18n } from "../hoc/withI18n";
+import { getShortLocale } from "../../util/IntlUtil";
 
 /**
  * Common properties for a tree selector containing terms
@@ -10,13 +10,14 @@ import {getShortLocale} from "../../util/IntlUtil";
 export function commonTermTreeSelectProps(intl: HasI18n) {
     return {
         valueKey: "iri",
-        getOptionLabel: (option: Term | TermData) => getLocalized(option.label, getShortLocale(intl.locale)),
+        getOptionLabel: (option: Term | TermData) =>
+            getLocalized(option.label, getShortLocale(intl.locale)),
         childrenKey: "plainSubTerms",
         renderAsTree: true,
         simpleTreeData: true,
         showSettings: false,
         noResultsText: intl.i18n("main.search.no-results"),
-        placeholder: intl.i18n("glossary.select.placeholder")
+        placeholder: intl.i18n("glossary.select.placeholder"),
     };
 }
 
@@ -45,21 +46,28 @@ export function processTermsForTreeSelect(
         if (t.subTerms) {
             if (vocabularies) {
                 t.subTerms = t.subTerms
-                    .filter(st => vocabularyMatches(st, vocabularies))
-                    .map(st => {
+                    .filter((st) => vocabularyMatches(st, vocabularies))
+                    .map((st) => {
                         return st;
                     });
             }
             t.syncPlainSubTerms();
         }
         if (options.searchString && t.parentTerms) {
-            result = result.concat(flattenAncestors(t.parentTerms).filter(pt => vocabularyMatches(pt, vocabularies)));
+            result = result.concat(
+                flattenAncestors(t.parentTerms).filter((pt) =>
+                    vocabularyMatches(pt, vocabularies)
+                )
+            );
         }
     }
     return result;
 }
 
-function vocabularyMatches(term: Term | TermInfo, vocabularies: string[] | undefined) {
+function vocabularyMatches(
+    term: Term | TermInfo,
+    vocabularies: string[] | undefined
+) {
     return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1;
 }
 

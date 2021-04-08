@@ -1,7 +1,9 @@
-import {Route} from "../Routes";
+import { Route } from "../Routes";
 
 export class Routing {
-    public static getTransitionPath = jest.fn().mockImplementation((route: Route) => route.path);
+    public static getTransitionPath = jest
+        .fn()
+        .mockImplementation((route: Route) => route.path);
 }
 
 class RoutingMock {

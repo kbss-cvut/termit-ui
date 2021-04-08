@@ -1,40 +1,40 @@
 @import "../../styles/variables";
 
 .message-container {
-    width: 25%;
-    min-width: 220px;
-    height: 25%;
-    position: fixed;
-    top: 60px;
-    right: $grid-gutter-width / 2;
-    margin: auto;
-    z-index: 1030;
-    @media (min-width: $md) {
-        top: 50px;
-        right: $grid-gutter-width;
-    }
+  width: 25%;
+  min-width: 220px;
+  height: 25%;
+  position: fixed;
+  top: 60px;
+  right: $grid-gutter-width / 2;
+  margin: auto;
+  z-index: 1030;
+  @media (min-width: $md) {
+    top: 50px;
+    right: $grid-gutter-width;
+  }
 }
 
 .messages-0 {
-    height: 0;
+  height: 0;
 }
 
 .messages-1 {
-    height: 4.125rem;
+  height: 4.125rem;
 }
 
 .messages-2 {
-    height: 8.25rem;
+  height: 8.25rem;
 }
 
 .messages-3 {
-    height: 12.375rem;
+  height: 12.375rem;
 }
 
 .messages-4 {
-    height: 16.5rem;
+  height: 16.5rem;
 }
 
 .messages-5 {
-    height: 20.625rem;
+  height: 20.625rem;
 }

@@ -19,18 +19,18 @@ export default class EditableComponent<
     S extends EditableComponentState = EditableComponentState
 > extends React.Component<P, S> {
     public onEdit = () => {
-        this.setState({edit: true});
+        this.setState({ edit: true });
     };
 
     public onCloseEdit = () => {
-        this.setState({edit: false});
+        this.setState({ edit: false });
     };
 
     protected onRemoveClick = () => {
-        this.setState({showRemoveDialog: true});
+        this.setState({ showRemoveDialog: true });
     };
 
     public onCloseRemove = () => {
-        this.setState({showRemoveDialog: false});
+        this.setState({ showRemoveDialog: false });
     };
 }

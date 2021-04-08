@@ -2,19 +2,19 @@
 @import "../../styles/variables";
 
 .footer-help {
-    z-index: 20;
+  z-index: 20;
 
-    i {
-        font-size: 1.4em;
-    }
+  i {
+    font-size: 1.4em;
+  }
 }
 
 .footer-sidebar {
-    border-top: 1px solid rgba($white, 0.1);
-    padding: 0 0.5rem;
-    position: fixed;
-    bottom: 0;
-    height: $footer-height;
-    background-color: $gray-900;
-    width: $navbar-vertical-width-expanded;
+  border-top: 1px solid rgba($white, 0.1);
+  padding: 0 0.5rem;
+  position: fixed;
+  bottom: 0;
+  height: $footer-height;
+  background-color: $gray-900;
+  width: $navbar-vertical-width-expanded;
 }

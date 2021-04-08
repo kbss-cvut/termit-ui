@@ -6,21 +6,26 @@
  */
 import VocabularyUtils from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import {GetStoreState, ThunkDispatch} from "../util/Types";
-import {asyncActionFailure, asyncActionRequest, asyncActionSuccess, publishMessage} from "./SyncActions";
-import Ajax, {param} from "../util/Ajax";
+import { GetStoreState, ThunkDispatch } from "../util/Types";
+import {
+    asyncActionFailure,
+    asyncActionRequest,
+    asyncActionSuccess,
+    publishMessage,
+} from "./SyncActions";
+import Ajax, { param } from "../util/Ajax";
 import Term from "../model/Term";
-import {ErrorData} from "../model/ErrorInfo";
+import { ErrorData } from "../model/ErrorInfo";
 import Constants from "../util/Constants";
 import TermOccurrence from "../model/TermOccurrence";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
-import {getLocalized} from "../model/MultilingualString";
-import {getShortLocale} from "../util/IntlUtil";
+import { getLocalized } from "../model/MultilingualString";
+import { getShortLocale } from "../util/IntlUtil";
 
 export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
     const termIri = VocabularyUtils.create(term.iri);
-    const action = {type: ActionType.SET_TERM_DEFINITION_SOURCE};
+    const action = { type: ActionType.SET_TERM_DEFINITION_SOURCE };
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
         dispatch(asyncActionRequest(action));
         return Ajax.put(
@@ -33,8 +38,14 @@ export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
                     publishMessage(
                         new Message(
                             {
-                                messageId: "annotator.setTermDefinitionSource.success",
-                                values: {term: getLocalized(term.label, getShortLocale(getState().intl.locale))}
+                                messageId:
+                                    "annotator.setTermDefinitionSource.success",
+                                values: {
+                                    term: getLocalized(
+                                        term.label,
+                                        getShortLocale(getState().intl.locale)
+                                    ),
+                                },
                             },
                             MessageType.SUCCESS
                         )
@@ -48,8 +59,16 @@ export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
                         publishMessage(
                             new Message(
                                 {
-                                    messageId: "annotator.setTermDefinitionSource.error.exists",
-                                    values: {term: getLocalized(term.label, getShortLocale(getState().intl.locale))}
+                                    messageId:
+                                        "annotator.setTermDefinitionSource.error.exists",
+                                    values: {
+                                        term: getLocalized(
+                                            term.label,
+                                            getShortLocale(
+                                                getState().intl.locale
+                                            )
+                                        ),
+                                    },
                                 },
                                 MessageType.ERROR
                             )

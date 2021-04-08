@@ -1,10 +1,10 @@
 import VocabularyUtils from "../util/VocabularyUtils";
-import {TermData} from "./Term";
-import {CONTEXT as TERM_CONTEXT} from "./Term";
-import {CONTEXT as LANG_STRING_CONTEXT, LangString} from "./LangString";
-import {Severity} from "./Severity";
-import {SourceShape} from "./SourceShape";
-import {ResultPath} from "./ResultPath";
+import { TermData } from "./Term";
+import { CONTEXT as TERM_CONTEXT } from "./Term";
+import { CONTEXT as LANG_STRING_CONTEXT, LangString } from "./LangString";
+import { Severity } from "./Severity";
+import { SourceShape } from "./SourceShape";
+import { ResultPath } from "./ResultPath";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
@@ -12,10 +12,15 @@ const ctx = {
     severity: VocabularyUtils.SH_RESULT_SEVERITY,
     message: VocabularyUtils.SH_RESULT_MESSAGE,
     sourceShape: VocabularyUtils.SH_SOURCE_SHAPE,
-    resultPath: VocabularyUtils.SH_RESULT_PATH
+    resultPath: VocabularyUtils.SH_RESULT_PATH,
 };
 
-export const CONTEXT = Object.assign({}, TERM_CONTEXT, LANG_STRING_CONTEXT, ctx);
+export const CONTEXT = Object.assign(
+    {},
+    TERM_CONTEXT,
+    LANG_STRING_CONTEXT,
+    ctx
+);
 
 export default class ValidationResult {
     public iri: string;

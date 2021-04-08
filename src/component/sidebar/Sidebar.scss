@@ -2,54 +2,54 @@
 @import "../../styles/variables";
 
 .brand {
-    color: $primary !important;
-    font-weight: 700;
-    font-size: 1.7rem !important;
+  color: $primary !important;
+  font-weight: 700;
+  font-size: 1.7rem !important;
 
-    &:hover {
-        color: $secondary !important;
-    }
+  &:hover {
+    color: $secondary !important;
+  }
 }
 
 .header-height {
-    height: $navbar-vertical-width-collapsed;
+  height: $navbar-vertical-width-collapsed;
 }
 
 .menu-collapse {
-    color: rgba(255, 255, 255, 0.95);
-    cursor: pointer;
-    margin-left: -0.15rem;
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  margin-left: -0.15rem;
 
-    i:nth-child(2) {
-        padding-left: 0.2rem;
-    }
+  i:nth-child(2) {
+    padding-left: 0.2rem;
+  }
 
-    &:hover {
-        color: $secondary !important;
-    }
+  &:hover {
+    color: $secondary !important;
+  }
 }
 
 .sup-icon {
-    padding-left: 0.1rem;
+  padding-left: 0.1rem;
 }
 
 .sidebar-expanded {
-    @media (min-width: $md) {
-        max-width: $navbar-vertical-width-expanded !important;
-    }
+  @media (min-width: $md) {
+    max-width: $navbar-vertical-width-expanded !important;
+  }
 }
 
 .sidebar-collapsed {
-    @media (min-width: $md) {
-        max-width: $navbar-vertical-width-collapsed !important;
-        padding-left: 1.45rem !important;
-    }
+  @media (min-width: $md) {
+    max-width: $navbar-vertical-width-collapsed !important;
+    padding-left: 1.45rem !important;
+  }
 }
 
 .navbar-collapse .navbar-toggler span {
-    width: 120% !important;
+  width: 120% !important;
 }
 
 .sup-icon-margin-fix {
-    margin-left: -1px;
+  margin-left: -1px;
 }

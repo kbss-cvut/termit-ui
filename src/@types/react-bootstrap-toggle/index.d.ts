@@ -1,7 +1,14 @@
 declare module "react-bootstrap-toggle" {
     import * as React from "react";
 
-    type BootstrapStyle = "default" | "primary" | "secondary" | "success" | "info" | "warning" | "danger";
+    type BootstrapStyle =
+        | "default"
+        | "primary"
+        | "secondary"
+        | "success"
+        | "info"
+        | "warning"
+        | "danger";
 
     type BootstrapSize = "lg" | "normal" | "sm" | "xs";
 
@@ -62,7 +69,11 @@ declare module "react-bootstrap-toggle" {
          * @param parent Parent node
          * @param evt The click event
          */
-        onClick: (active: boolean, parent: React.ReactNode, evt: React.MouseEvent) => void;
+        onClick: (
+            active: boolean,
+            parent: React.ReactNode,
+            evt: React.MouseEvent
+        ) => void;
         /**
          * CSS class name for the whole toggle
          */

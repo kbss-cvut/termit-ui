@@ -1,11 +1,11 @@
 import OntologicalVocabulary from "../util/VocabularyUtils";
-import Resource, {ResourceData} from "./Resource";
-import Document, {DocumentData} from "./Document";
+import Resource, { ResourceData } from "./Resource";
+import Document, { DocumentData } from "./Document";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
     content: VocabularyUtils.CONTENT,
-    owner: VocabularyUtils.IS_PART_OF_DOCUMENT
+    owner: VocabularyUtils.IS_PART_OF_DOCUMENT,
 };
 
 /**
@@ -41,13 +41,17 @@ export default class File extends Resource implements FileData {
         const jsonLd: any = Object.assign({}, this, {
             // Import lazily to evade circular dependency in context definition between File and Document
             "@context": require("./Document").CONTEXT,
-            types: [OntologicalVocabulary.RESOURCE, OntologicalVocabulary.FILE]
+            types: [OntologicalVocabulary.RESOURCE, OntologicalVocabulary.FILE],
         });
         if (jsonLd.owner) {
-            const ind = jsonLd.owner.files.findIndex((item: any) => item.iri === this.iri);
+            const ind = jsonLd.owner.files.findIndex(
+                (item: any) => item.iri === this.iri
+            );
             // Replace reference to myself with an IRI reference only to prevent serialization cycle errors
-            jsonLd.owner.files.splice(ind, 1, {iri: this.iri});
-            jsonLd.owner.files = Document.replaceCircularReferencesToOwnerWithOwnerId(jsonLd.owner.files);
+            jsonLd.owner.files.splice(ind, 1, { iri: this.iri });
+            jsonLd.owner.files = Document.replaceCircularReferencesToOwnerWithOwnerId(
+                jsonLd.owner.files
+            );
         }
         return jsonLd;
     }
@@ -56,5 +60,5 @@ export default class File extends Resource implements FileData {
 export const EMPTY_FILE = new File({
     iri: "http://empty",
     label: "",
-    terms: []
+    terms: [],
 });

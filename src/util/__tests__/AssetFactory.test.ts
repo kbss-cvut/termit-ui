@@ -1,4 +1,4 @@
-import {AssetData} from "../../model/Asset";
+import { AssetData } from "../../model/Asset";
 import Generator from "../../__tests__/environment/Generator";
 import AssetFactory from "../AssetFactory";
 import VocabularyUtils from "../VocabularyUtils";
@@ -6,45 +6,70 @@ import Term from "../../model/Term";
 import Vocabulary from "../../model/Vocabulary";
 import Document from "../../model/Document";
 import File from "../../model/File";
-import Resource, {ResourceData} from "../../model/Resource";
+import Resource, { ResourceData } from "../../model/Resource";
 import TermAssignment from "../../model/TermAssignment";
 import TermOccurrence from "../../model/TermOccurrence";
-import {ChangeRecordData} from "../../model/changetracking/ChangeRecord";
+import { ChangeRecordData } from "../../model/changetracking/ChangeRecord";
 import PersistRecord from "../../model/changetracking/PersistRecord";
-import {UpdateRecord, UpdateRecordData} from "../../model/changetracking/UpdateRecord";
+import {
+    UpdateRecord,
+    UpdateRecordData,
+} from "../../model/changetracking/UpdateRecord";
 
 describe("AssetFactory", () => {
     describe("createAsset", () => {
         const basicData: AssetData = {
             iri: Generator.generateUri(),
-            label: "Test"
+            label: "Test",
         };
 
         it("creates correct asset instance based on data", () => {
             expect(
-                AssetFactory.createAsset(Object.assign({}, basicData, {types: VocabularyUtils.TERM}))
+                AssetFactory.createAsset(
+                    Object.assign({}, basicData, {
+                        types: VocabularyUtils.TERM,
+                    })
+                )
             ).toBeInstanceOf(Term);
             expect(
-                AssetFactory.createAsset(Object.assign({}, basicData, {types: VocabularyUtils.VOCABULARY}))
+                AssetFactory.createAsset(
+                    Object.assign({}, basicData, {
+                        types: VocabularyUtils.VOCABULARY,
+                    })
+                )
             ).toBeInstanceOf(Vocabulary);
             expect(
                 AssetFactory.createAsset(
-                    Object.assign({}, basicData, {types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]})
+                    Object.assign({}, basicData, {
+                        types: [
+                            VocabularyUtils.DOCUMENT,
+                            VocabularyUtils.RESOURCE,
+                        ],
+                    })
                 )
             ).toBeInstanceOf(Document);
             expect(
                 AssetFactory.createAsset(
-                    Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]})
+                    Object.assign({}, basicData, {
+                        types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE],
+                    })
                 )
             ).toBeInstanceOf(File);
             expect(
-                AssetFactory.createAsset(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE]}))
+                AssetFactory.createAsset(
+                    Object.assign({}, basicData, {
+                        types: [VocabularyUtils.RESOURCE],
+                    })
+                )
             ).toBeInstanceOf(Resource);
         });
 
         it("throws unsupported asset type exception when data of unknown type are passed in", () => {
             expect(() => AssetFactory.createAsset(basicData)).toThrow(
-                new TypeError("Unsupported type of asset data " + JSON.stringify(basicData))
+                new TypeError(
+                    "Unsupported type of asset data " +
+                        JSON.stringify(basicData)
+                )
             );
         });
     });
@@ -52,29 +77,44 @@ describe("AssetFactory", () => {
     describe("createResource", () => {
         const basicData: ResourceData = {
             iri: Generator.generateUri(),
-            label: "Test"
+            label: "Test",
         };
 
         it("creates correct resource (sub)type instance from data", () => {
             expect(
                 AssetFactory.createResource(
-                    Object.assign({}, basicData, {types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE]})
+                    Object.assign({}, basicData, {
+                        types: [
+                            VocabularyUtils.DOCUMENT,
+                            VocabularyUtils.RESOURCE,
+                        ],
+                    })
                 )
             ).toBeInstanceOf(Document);
             expect(
                 AssetFactory.createResource(
-                    Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE]})
+                    Object.assign({}, basicData, {
+                        types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE],
+                    })
                 )
             ).toBeInstanceOf(File);
             expect(
-                AssetFactory.createResource(Object.assign({}, basicData, {types: [VocabularyUtils.RESOURCE]}))
+                AssetFactory.createResource(
+                    Object.assign({}, basicData, {
+                        types: [VocabularyUtils.RESOURCE],
+                    })
+                )
             ).toBeInstanceOf(Resource);
         });
 
         it("throws unsupported asset type exception when data of unknown type are passed in", () => {
-            const data = Object.assign({}, basicData, {types: VocabularyUtils.TERM});
+            const data = Object.assign({}, basicData, {
+                types: VocabularyUtils.TERM,
+            });
             expect(() => AssetFactory.createResource(data)).toThrow(
-                new TypeError("Unsupported type of resource data " + JSON.stringify(data))
+                new TypeError(
+                    "Unsupported type of resource data " + JSON.stringify(data)
+                )
             );
         });
     });
@@ -83,29 +123,42 @@ describe("AssetFactory", () => {
         const data = {
             iri:
                 "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
-            types: ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu"],
+            types: [
+                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu",
+            ],
             term: {
-                iri: "http://onto.fel.cvut.cz/ontologies/slovnik/sb-z-2006-183/pojem/nezastavene-uzemi",
-                types: ["http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"],
-                label: "Nezastavene uzemi"
+                iri:
+                    "http://onto.fel.cvut.cz/ontologies/slovnik/sb-z-2006-183/pojem/nezastavene-uzemi",
+                types: [
+                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term",
+                ],
+                label: "Nezastavene uzemi",
             },
             target: {
-                iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
-                types: ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl"],
+                iri:
+                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
+                types: [
+                    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl",
+                ],
                 source: {
                     iri: "http://onto.fel.cvut.cz/ontologies/zdroj/ml-test",
-                    types: ["http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj"],
+                    types: [
+                        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj",
+                    ],
                     label: "ML test",
                     author: {
-                        iri: "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
-                        types: ["http://onto.fel.cvut.cz/ontologies/application/termit/uzivatel-termitu"],
+                        iri:
+                            "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
+                        types: [
+                            "http://onto.fel.cvut.cz/ontologies/application/termit/uzivatel-termitu",
+                        ],
                         firstName: "Catherine",
                         lastName: "Halsey",
-                        username: "halsey@unsc.org"
+                        username: "halsey@unsc.org",
                     },
-                    created: 1548760789068
-                }
-            }
+                    created: 1548760789068,
+                },
+            },
         };
 
         it("creates term assignment when data are for assignment only", () => {
@@ -124,7 +177,10 @@ describe("AssetFactory", () => {
         it("throws unsupported type exception when data of unknown type are passed in", () => {
             data.types = [];
             expect(() => AssetFactory.createTermAssignment(data)).toThrow(
-                new TypeError("Unsupported type of assignment data " + JSON.stringify(data))
+                new TypeError(
+                    "Unsupported type of assignment data " +
+                        JSON.stringify(data)
+                )
             );
         });
     });
@@ -137,8 +193,8 @@ describe("AssetFactory", () => {
                 iri: Generator.generateUri(),
                 timestamp: Date.now(),
                 author: Generator.generateUser(),
-                changedEntity: {iri: Generator.generateUri()},
-                types: [changeClass, VocabularyUtils.PERSIST_EVENT]
+                changedEntity: { iri: Generator.generateUri() },
+                types: [changeClass, VocabularyUtils.PERSIST_EVENT],
             };
             const result = AssetFactory.createChangeRecord(persistRecord);
             expect(result).toBeDefined();
@@ -150,10 +206,10 @@ describe("AssetFactory", () => {
                 iri: Generator.generateUri(),
                 timestamp: Date.now(),
                 author: Generator.generateUser(),
-                changedEntity: {iri: Generator.generateUri()},
-                changedAttribute: {iri: VocabularyUtils.SKOS_PREF_LABEL},
+                changedEntity: { iri: Generator.generateUri() },
+                changedAttribute: { iri: VocabularyUtils.SKOS_PREF_LABEL },
                 newValue: "Test term",
-                types: [changeClass, VocabularyUtils.UPDATE_EVENT]
+                types: [changeClass, VocabularyUtils.UPDATE_EVENT],
             };
             const result = AssetFactory.createChangeRecord(updateRecord);
             expect(result).toBeDefined();
@@ -165,11 +221,14 @@ describe("AssetFactory", () => {
                 iri: Generator.generateUri(),
                 timestamp: Date.now(),
                 author: Generator.generateUser(),
-                changedEntity: {iri: Generator.generateUri()},
-                types: [changeClass]
+                changedEntity: { iri: Generator.generateUri() },
+                types: [changeClass],
             };
             expect(() => AssetFactory.createChangeRecord(record)).toThrow(
-                new TypeError("Unsupported type of change record data " + JSON.stringify(record))
+                new TypeError(
+                    "Unsupported type of change record data " +
+                        JSON.stringify(record)
+                )
             );
         });
     });

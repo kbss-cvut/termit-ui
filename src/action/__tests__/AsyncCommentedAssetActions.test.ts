@@ -1,16 +1,16 @@
-import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
+import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import Constants from "../../util/Constants";
-import Ajax, {param} from "../../util/Ajax";
+import Ajax, { param } from "../../util/Ajax";
 import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
-import {ThunkDispatch} from "../../util/Types";
+import { ThunkDispatch } from "../../util/Types";
 import TermItState from "../../model/TermItState";
 import {
     loadLastCommentedAssets,
     loadLastCommentedByMe,
     loadLastCommentedInReactionToMine,
-    loadMyLastCommented
+    loadMyLastCommented,
 } from "../AsyncCommentedAssetActions";
 import RecentlyCommentedAsset from "../../model/RecentlyCommentedAsset";
 
@@ -19,7 +19,7 @@ jest.mock("../../util/Ajax", () => {
     const originalModule = jest.requireActual("../../util/Ajax");
     return {
         ...originalModule,
-        default: jest.fn()
+        default: jest.fn(),
     };
 });
 
@@ -32,24 +32,24 @@ describe("Async commented asset actions", () => {
         {
             "@id": Generator.generateUri(),
             "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem": {
-                "@id": Generator.generateUri()
+                "@id": Generator.generateUri(),
             },
-            "@type": [VocabularyUtils.TERM]
+            "@type": [VocabularyUtils.TERM],
         },
         {
             "@id": Generator.generateUri(),
             "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem": {
-                "@id": Generator.generateUri()
+                "@id": Generator.generateUri(),
             },
-            "@type": [VocabularyUtils.TERM]
+            "@type": [VocabularyUtils.TERM],
         },
         {
             "@id": Generator.generateUri(),
             "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem": {
-                "@id": Generator.generateUri()
+                "@id": Generator.generateUri(),
             },
-            "@type": [VocabularyUtils.TERM]
-        }
+            "@type": [VocabularyUtils.TERM],
+        },
     ];
 
     beforeEach(() => {
@@ -59,64 +59,86 @@ describe("Async commented asset actions", () => {
 
     describe("load last commented assets", () => {
         it("returns correct instances of received last commented asset data", () => {
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadLastCommentedAssets())).then(
-                (result: RecentlyCommentedAsset[]) => {
-                    expect(Ajax.get).toHaveBeenCalledWith(
-                        Constants.API_PREFIX + "/assets/last-commented",
-                        param("limit", "5")
-                    );
-                    expect(result.length).toEqual(data.length);
-                    result.forEach(r => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
-                }
-            );
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(data));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadLastCommentedAssets())
+            ).then((result: RecentlyCommentedAsset[]) => {
+                expect(Ajax.get).toHaveBeenCalledWith(
+                    Constants.API_PREFIX + "/assets/last-commented",
+                    param("limit", "5")
+                );
+                expect(result.length).toEqual(data.length);
+                result.forEach((r) =>
+                    expect(r).toBeInstanceOf(RecentlyCommentedAsset)
+                );
+            });
         });
     });
 
     describe("load my last commented assets", () => {
         it("returns correct instances of received my last commented asset data", () => {
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadMyLastCommented())).then(
-                (result: RecentlyCommentedAsset[]) => {
-                    expect(Ajax.get).toHaveBeenCalledWith(
-                        Constants.API_PREFIX + "/assets/my-last-commented",
-                        param("limit", "5")
-                    );
-                    expect(result.length).toEqual(data.length);
-                    result.forEach(r => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
-                }
-            );
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(data));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadMyLastCommented())
+            ).then((result: RecentlyCommentedAsset[]) => {
+                expect(Ajax.get).toHaveBeenCalledWith(
+                    Constants.API_PREFIX + "/assets/my-last-commented",
+                    param("limit", "5")
+                );
+                expect(result.length).toEqual(data.length);
+                result.forEach((r) =>
+                    expect(r).toBeInstanceOf(RecentlyCommentedAsset)
+                );
+            });
         });
     });
 
     describe("load last commented assets in reaction to mine", () => {
         it("returns correct instances of received last commented assets in reaction to mine", () => {
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadLastCommentedInReactionToMine())).then(
-                (result: RecentlyCommentedAsset[]) => {
-                    expect(Ajax.get).toHaveBeenCalledWith(
-                        Constants.API_PREFIX + "/assets/last-commented-in-reaction-to-mine",
-                        param("limit", "5")
-                    );
-                    expect(result.length).toEqual(data.length);
-                    result.forEach(r => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
-                }
-            );
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(data));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadLastCommentedInReactionToMine()
+                )
+            ).then((result: RecentlyCommentedAsset[]) => {
+                expect(Ajax.get).toHaveBeenCalledWith(
+                    Constants.API_PREFIX +
+                        "/assets/last-commented-in-reaction-to-mine",
+                    param("limit", "5")
+                );
+                expect(result.length).toEqual(data.length);
+                result.forEach((r) =>
+                    expect(r).toBeInstanceOf(RecentlyCommentedAsset)
+                );
+            });
         });
     });
 
     describe("load last assets last commented by me", () => {
         it("returns correct instances of received assets last commented by me", () => {
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(data));
             return Promise.resolve(
-                (store.dispatch as ThunkDispatch)(loadLastCommentedByMe()).then((result: RecentlyCommentedAsset[]) => {
-                    expect(Ajax.get).toHaveBeenCalledWith(
-                        Constants.API_PREFIX + "/assets/last-commented-by-me",
-                        param("limit", "5")
-                    );
-                    expect(result.length).toEqual(data.length);
-                    result.forEach(r => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
-                })
+                (store.dispatch as ThunkDispatch)(loadLastCommentedByMe()).then(
+                    (result: RecentlyCommentedAsset[]) => {
+                        expect(Ajax.get).toHaveBeenCalledWith(
+                            Constants.API_PREFIX +
+                                "/assets/last-commented-by-me",
+                            param("limit", "5")
+                        );
+                        expect(result.length).toEqual(data.length);
+                        result.forEach((r) =>
+                            expect(r).toBeInstanceOf(RecentlyCommentedAsset)
+                        );
+                    }
+                )
             );
         });
     });

@@ -13,18 +13,18 @@ $gray-input: #5d5d5d !default;
 
 $grays: () !default;
 $grays: map-merge(
-    (
-        "100": $gray-100,
-        "200": $gray-200,
-        "300": $gray-300,
-        "400": $gray-400,
-        "500": $gray-500,
-        "600": $gray-600,
-        "700": $gray-700,
-        "800": $gray-800,
-        "900": $gray-900
-    ),
-    $grays
+  (
+    "100": $gray-100,
+    "200": $gray-200,
+    "300": $gray-300,
+    "400": $gray-400,
+    "500": $gray-500,
+    "600": $gray-600,
+    "700": $gray-700,
+    "800": $gray-800,
+    "900": $gray-900,
+  ),
+  $grays
 );
 
 $blue: #5e72e4 !default;
@@ -43,24 +43,24 @@ $dark-yellow: #9bab11 !default;
 
 $colors: () !default;
 $colors: map-merge(
-    (
-        "blue": $blue,
-        "indigo": $indigo,
-        "purple": $purple,
-        "pink": $pink,
-        "red": $red,
-        "orange": $orange,
-        "yellow": $yellow,
-        "green": $green,
-        "teal": $teal,
-        "cyan": $cyan,
-        "white": $white,
-        "gray": $gray-600,
-        "light": $gray-400,
-        "lighter": $gray-200,
-        "gray-dark": $gray-800
-    ),
-    $colors
+  (
+    "blue": $blue,
+    "indigo": $indigo,
+    "purple": $purple,
+    "pink": $pink,
+    "red": $red,
+    "orange": $orange,
+    "yellow": $yellow,
+    "green": $green,
+    "teal": $teal,
+    "cyan": $cyan,
+    "white": $white,
+    "gray": $gray-600,
+    "light": $gray-400,
+    "lighter": $gray-200,
+    "gray-dark": $gray-800,
+  ),
+  $colors
 );
 
 $default: #172b4d !default;
@@ -87,116 +87,116 @@ $github: #222222 !default;
 
 $theme-colors: () !default;
 $theme-colors: map-merge(
-    (
-        "default": $default,
-        "primary": $primary,
-        "secondary": $secondary,
-        "success": $success,
-        "info": $info,
-        "warning": $warning,
-        "danger": $danger,
-        "white": $white,
-        "neutral": $white,
-        "dark": $dark,
-        "darker": $darker,
-        "purple": $purple,
-        "yellow": $yellow,
-        "orange": $orange,
-        "pink": $pink,
-        "red": $red,
-        "dark-green": $dark-green,
-        "dark-red": $dark-red,
-        "dark-yellow": $dark-yellow
-    ),
-    $theme-colors
+  (
+    "default": $default,
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
+    "white": $white,
+    "neutral": $white,
+    "dark": $dark,
+    "darker": $darker,
+    "purple": $purple,
+    "yellow": $yellow,
+    "orange": $orange,
+    "pink": $pink,
+    "red": $red,
+    "dark-green": $dark-green,
+    "dark-red": $dark-red,
+    "dark-yellow": $dark-yellow,
+  ),
+  $theme-colors
 );
 
 $brand-colors: () !default;
 $brand-colors: map-merge(
-    (
-        "facebook": $facebook,
-        "twitter": $twitter,
-        "google-plus": $google-plus,
-        "instagram": $instagram,
-        "pinterest": $pinterest,
-        "youtube": $youtube,
-        "slack": $slack,
-        "dribbble": $dribbble,
-        "github": $github
-    ),
-    $brand-colors
+  (
+    "facebook": $facebook,
+    "twitter": $twitter,
+    "google-plus": $google-plus,
+    "instagram": $instagram,
+    "pinterest": $pinterest,
+    "youtube": $youtube,
+    "slack": $slack,
+    "dribbble": $dribbble,
+    "github": $github,
+  ),
+  $brand-colors
 );
 
 $shape-colors: () !default;
 $shape-colors: map-merge(
-    (
-        "default": #32325d,
-        "primary": #5533ff,
-        "secondary": #24b47e,
-        "neutral": #e9ecef,
-        "blue-gray": #b2cbe1
-    ),
-    $shape-colors
+  (
+    "default": #32325d,
+    "primary": #5533ff,
+    "secondary": #24b47e,
+    "neutral": #e9ecef,
+    "blue-gray": #b2cbe1,
+  ),
+  $shape-colors
 );
 
 $shapes-primary-colors: () !default;
 $shapes-primary-colors: map-merge(
-    (
-        "step-1-gradient-bg": #281483,
-        "step-2-gradient-bg": #8f6ed5,
-        "step-3-gradient-bg": #d782d9,
-        "span-1-bg": #53f,
-        "span-2-bg": #4553ff,
-        "span-3-bg": #4f40ff,
-        "span-4-bg": #25ddf5,
-        "span-5-bg": #1fa2ff
-    ),
-    $shapes-primary-colors
+  (
+    "step-1-gradient-bg": #281483,
+    "step-2-gradient-bg": #8f6ed5,
+    "step-3-gradient-bg": #d782d9,
+    "span-1-bg": #53f,
+    "span-2-bg": #4553ff,
+    "span-3-bg": #4f40ff,
+    "span-4-bg": #25ddf5,
+    "span-5-bg": #1fa2ff,
+  ),
+  $shapes-primary-colors
 );
 
 $shapes-default-colors: () !default;
 $shapes-default-colors: map-merge(
-    (
-        "step-1-gradient-bg": #7795f8,
-        "step-2-gradient-bg": #6772e5,
-        "step-3-gradient-bg": #555abf,
-        "span-1-bg": #7795f8,
-        "span-2-bg": #7b9aff,
-        "span-3-bg": #6f8ff8,
-        "span-4-bg": #76eea7,
-        "span-5-bg": #6adaff
-    ),
-    $shapes-default-colors
+  (
+    "step-1-gradient-bg": #7795f8,
+    "step-2-gradient-bg": #6772e5,
+    "step-3-gradient-bg": #555abf,
+    "span-1-bg": #7795f8,
+    "span-2-bg": #7b9aff,
+    "span-3-bg": #6f8ff8,
+    "span-4-bg": #76eea7,
+    "span-5-bg": #6adaff,
+  ),
+  $shapes-default-colors
 );
 
 $shapes-light-colors: () !default;
 $shapes-light-colors: map-merge(
-    (
-        "step-1-gradient-bg": #b2cbe1,
-        "step-2-gradient-bg": #f6f9fc,
-        "step-3-gradient-bg": #f6f9fc,
-        "span-1-bg": #b4cce1,
-        "span-2-bg": #c5dbef,
-        "span-3-bg": #b9d5ed,
-        "span-4-bg": #74e4a2,
-        "span-5-bg": #008169
-    ),
-    $shapes-light-colors
+  (
+    "step-1-gradient-bg": #b2cbe1,
+    "step-2-gradient-bg": #f6f9fc,
+    "step-3-gradient-bg": #f6f9fc,
+    "span-1-bg": #b4cce1,
+    "span-2-bg": #c5dbef,
+    "span-3-bg": #b9d5ed,
+    "span-4-bg": #74e4a2,
+    "span-5-bg": #008169,
+  ),
+  $shapes-light-colors
 );
 
 $shapes-dark-colors: () !default;
 $shapes-dark-colors: map-merge(
-    (
-        "step-1-gradient-bg": #32325d,
-        "step-2-gradient-bg": #32325d,
-        "step-3-gradient-bg": #32325d,
-        "span-1-bg": #2e2e57,
-        "span-2-bg": #2b2b58,
-        "span-3-bg": #25254d,
-        "span-4-bg": #d782d9,
-        "span-5-bg": #008169
-    ),
-    $shapes-dark-colors
+  (
+    "step-1-gradient-bg": #32325d,
+    "step-2-gradient-bg": #32325d,
+    "step-3-gradient-bg": #32325d,
+    "span-1-bg": #2e2e57,
+    "span-2-bg": #2b2b58,
+    "span-3-bg": #25254d,
+    "span-4-bg": #d782d9,
+    "span-5-bg": #008169,
+  ),
+  $shapes-dark-colors
 );
 
 // Translucent color variations
@@ -230,14 +230,14 @@ $body-color: $black !default;
 
 $section-colors: () !default;
 $section-colors: map-merge(
-    (
-        "primary": $body-bg,
-        "secondary": $secondary,
-        "light": $gray-400,
-        "dark": $dark,
-        "darker": $darker
-    ),
-    $section-colors
+  (
+    "primary": $body-bg,
+    "secondary": $secondary,
+    "light": $gray-400,
+    "dark": $dark,
+    "darker": $darker,
+  ),
+  $section-colors
 );
 
 // Links

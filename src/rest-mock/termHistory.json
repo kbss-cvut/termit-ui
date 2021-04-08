@@ -1,29 +1,29 @@
 [
-    {
-        "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/úprava-entity/instance2050168894",
-        "@type": [
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/úprava-entity",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/změna"
-        ],
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-datum-a-čas-modifikace": "2020-03-18T15:43:22.667Z",
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-změněnou-entitu": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test/pojem/term-one"
-        },
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-změněný-atribut": {
-            "@id": "http://www.w3.org/2004/02/skos/core#definition"
-        },
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": {
-            "@id": "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
-            "@type": [
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu",
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"
-            ],
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org"
-        },
-        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-novou-hodnotu": [
-            "Definice pojmu jedna začíná takto jednoduše."
-        ]
-    }
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/úprava-entity/instance2050168894",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/úprava-entity",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/změna"
+    ],
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-datum-a-čas-modifikace": "2020-03-18T15:43:22.667Z",
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-změněnou-entitu": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test/pojem/term-one"
+    },
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-změněný-atribut": {
+      "@id": "http://www.w3.org/2004/02/skos/core#definition"
+    },
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": {
+      "@id": "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
+      "@type": [
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"
+      ],
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org"
+    },
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-novou-hodnotu": [
+      "Definice pojmu jedna začíná takto jednoduše."
+    ]
+  }
 ]

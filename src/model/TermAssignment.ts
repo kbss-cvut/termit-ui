@@ -1,6 +1,6 @@
-import {TermData} from "./Term";
-import {CONTEXT as RESOURCE_CONTEXT} from "./Resource";
-import {AssetData, SupportsJsonLd} from "./Asset";
+import { TermData } from "./Term";
+import { CONTEXT as RESOURCE_CONTEXT } from "./Resource";
+import { AssetData, SupportsJsonLd } from "./Asset";
 import VocabularyUtils from "../util/VocabularyUtils";
 import Utils from "../util/Utils";
 
@@ -8,7 +8,7 @@ const ctx = {
     term: VocabularyUtils.NS_TERMIT + "je-přiřazením-termu",
     description: VocabularyUtils.DC_DESCRIPTION,
     target: VocabularyUtils.NS_TERMIT + "má-cíl",
-    source: VocabularyUtils.PREFIX + "má-zdroj"
+    source: VocabularyUtils.PREFIX + "má-zdroj",
 };
 
 /**
@@ -31,7 +31,8 @@ export interface TermAssignmentData {
     types: string[];
 }
 
-export default class TermAssignment implements TermAssignmentData, SupportsJsonLd<TermAssignmentData> {
+export default class TermAssignment
+    implements TermAssignmentData, SupportsJsonLd<TermAssignmentData> {
     public iri?: string;
     public term: TermData;
     public target: Target;
@@ -51,6 +52,6 @@ export default class TermAssignment implements TermAssignmentData, SupportsJsonL
     }
 
     public toJsonLd(): TermAssignmentData {
-        return Object.assign({}, this, {"@context": CONTEXT});
+        return Object.assign({}, this, { "@context": CONTEXT });
     }
 }

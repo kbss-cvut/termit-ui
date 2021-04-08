@@ -1,5 +1,5 @@
-import {DomHandler, DomUtils, Parser as HtmlParser} from "htmlparser2";
-import {Element, Node} from "domhandler";
+import { DomHandler, DomUtils, Parser as HtmlParser } from "htmlparser2";
+import { Element, Node } from "domhandler";
 
 const RDF_ATTRIBUTE_NAMES = ["about", "property", "resource", "typeof"];
 
@@ -7,7 +7,7 @@ const HtmlParserUtils = {
     html2dom(html: string): Node[] {
         // Do not decode HTML entities (e.g., &lt;) when parsing content for object representation, it caused issues
         // with rendering
-        const options = {decodeEntities: false};
+        const options = { decodeEntities: false };
         const handler = new DomHandler();
         const parser = new HtmlParser(handler, options);
         parser.parseComplete(html);
@@ -89,7 +89,7 @@ const HtmlParserUtils = {
      * @return Copy of attrs with resolved rdf properties.
      */
     resolveRDFAttributes(attrs: any, prefixMap?: Map<string, string>): any {
-        const newAttrs = {...attrs};
+        const newAttrs = { ...attrs };
 
         for (const name of RDF_ATTRIBUTE_NAMES) {
             if (attrs[name]) {
@@ -97,7 +97,7 @@ const HtmlParserUtils = {
             }
         }
         return newAttrs;
-    }
+    },
 };
 
 export default HtmlParserUtils;

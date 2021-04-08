@@ -3,14 +3,17 @@
  */
 
 import * as SyncActions from "./SyncActions";
-import Ajax, {params} from "../util/Ajax";
-import {ThunkDispatch} from "../util/Types";
+import Ajax, { params } from "../util/Ajax";
+import { ThunkDispatch } from "../util/Types";
 import Constants from "../util/Constants";
-import {ErrorData} from "../model/ErrorInfo";
+import { ErrorData } from "../model/ErrorInfo";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import ActionType from "./ActionType";
-import SearchResult, {CONTEXT as SEARCH_RESULT_CONTEXT, SearchResultData} from "../model/SearchResult";
+import SearchResult, {
+    CONTEXT as SEARCH_RESULT_CONTEXT,
+    SearchResultData,
+} from "../model/SearchResult";
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
 
@@ -21,7 +24,7 @@ import JsonLdUtils from "../util/JsonLdUtils";
 export function addSearchListener() {
     return (dispatch: ThunkDispatch, getState: () => TermItState) => {
         dispatch({
-            type: ActionType.ADD_SEARCH_LISTENER
+            type: ActionType.ADD_SEARCH_LISTENER,
         });
 
         // Trigger the search when the first search listener appears
@@ -39,7 +42,7 @@ export function addSearchListener() {
  */
 export function removeSearchListener() {
     return {
-        type: ActionType.REMOVE_SEARCH_LISTENER
+        type: ActionType.REMOVE_SEARCH_LISTENER,
     };
 }
 
@@ -56,11 +59,11 @@ export function updateSearchFilter(searchString: string) {
     return (dispatch: ThunkDispatch, getState: () => TermItState) => {
         dispatch({
             type: ActionType.UPDATE_SEARCH_FILTER,
-            searchString
+            searchString,
         });
 
         // Clear search results
-        dispatch({type: ActionType.SEARCH_RESULT, searchResults: null});
+        dispatch({ type: ActionType.SEARCH_RESULT, searchResults: null });
 
         // Stop waiting after previous update
         if (updateSearchTimer) {
@@ -88,12 +91,12 @@ export function updateSearchFilter(searchString: string) {
  */
 export function searchEverything() {
     return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-        dispatch({type: ActionType.SEARCH_START});
+        dispatch({ type: ActionType.SEARCH_START });
         const state: TermItState = getState();
         if (state.searchListenerCount > 0 && !state.searchQuery.isEmpty()) {
             return dispatch(search(state.searchQuery.searchQuery, true));
         } else {
-            dispatch({type: ActionType.SEARCH_FINISH});
+            dispatch({ type: ActionType.SEARCH_FINISH });
             return Promise.resolve();
         }
     };
@@ -101,30 +104,40 @@ export function searchEverything() {
 
 export function search(searchString: string, disableLoading: boolean = true) {
     const action = {
-        type: ActionType.SEARCH
+        type: ActionType.SEARCH,
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(SyncActions.asyncActionRequest(action, disableLoading));
-        return Ajax.get(Constants.API_PREFIX + "/search/fts", params({searchString}))
+        return Ajax.get(
+            Constants.API_PREFIX + "/search/fts",
+            params({ searchString })
+        )
             .then((data: object[]) =>
                 data.length > 0
-                    ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(data, SEARCH_RESULT_CONTEXT)
+                    ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
+                          data,
+                          SEARCH_RESULT_CONTEXT
+                      )
                     : []
             )
             .then((data: SearchResultData[]) => {
-                dispatch(searchResult(data.map(d => new SearchResult(d))));
+                dispatch(searchResult(data.map((d) => new SearchResult(d))));
                 return dispatch(SyncActions.asyncActionSuccess(action));
             })
             .catch((error: ErrorData) => {
                 dispatch(SyncActions.asyncActionFailure(action, error));
-                return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
+                return dispatch(
+                    SyncActions.publishMessage(
+                        new Message(error, MessageType.ERROR)
+                    )
+                );
             });
     };
 }
 
 export function searchResult(searchResults: SearchResult[]) {
     return (dispatch: ThunkDispatch) => {
-        dispatch({type: ActionType.SEARCH_RESULT, searchResults});
-        dispatch({type: ActionType.SEARCH_FINISH});
+        dispatch({ type: ActionType.SEARCH_RESULT, searchResults });
+        dispatch({ type: ActionType.SEARCH_FINISH });
     };
 }

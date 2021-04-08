@@ -1,28 +1,28 @@
 [
-    {
-        "@id": "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik",
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/has-count": [
-            {
-                "@value": "5"
-            }
-        ],
-        "http://www.w3.org/2000/01/rdf-schema#label": [
-            {
-                "@value": "Testovací slovník"
-            }
-        ]
-    },
-    {
-        "@id": "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik-2",
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/has-count": [
-            {
-                "@value": "10"
-            }
-        ],
-        "http://www.w3.org/2000/01/rdf-schema#label": [
-            {
-                "@value": "Testovací slovník 2"
-            }
-        ]
-    }
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik",
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/has-count": [
+      {
+        "@value": "5"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Testovací slovník"
+      }
+    ]
+  },
+  {
+    "@id": "http://data.iprpraha.cz/zdroj/slovník/agendový/testovaci-slovnik-2",
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/has-count": [
+      {
+        "@value": "10"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Testovací slovník 2"
+      }
+    ]
+  }
 ]

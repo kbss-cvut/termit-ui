@@ -46,9 +46,11 @@ const en = {
         "login.public-view-link": "Or <a>explore</a> vocabularies and terms",
         "login.oauth2.divider": "or",
         "login.oauth2.google": "Login with Google",
-        "login.oauth2.google.tooltip": "Use your Google account to log into TermIt.",
+        "login.oauth2.google.tooltip":
+            "Use your Google account to log into TermIt.",
         "login.oauth2.github": "Login with GitHub",
-        "login.oauth2.github.tooltip": "Use your GitHub account to log into TermIt.",
+        "login.oauth2.github.tooltip":
+            "Use your GitHub account to log into TermIt.",
 
         "register.title": "Registration",
         "register.subtitle": "Please register to continue",
@@ -67,7 +69,8 @@ const en = {
         "register.mask": "Registering...",
         "register.error": "Unable to register user account.",
         "register.login": "Log in",
-        "register.login.error": "Unable to login into the newly created account.",
+        "register.login.error":
+            "Unable to login into the newly created account.",
         "register.login.label": "Already a member? <a>Log in</a>",
         "register.username-exists.tooltip": "Username already exists",
 
@@ -86,7 +89,8 @@ const en = {
         "main.logout": "Log out",
         "main.search.placeholder": "Search",
         "main.search.tooltip": "Go to the search screen",
-        "main.search.count-info-and-link": "Showing {displayed} of {count} results. See all results.",
+        "main.search.count-info-and-link":
+            "Showing {displayed} of {count} results. See all results.",
         "main.search.no-results": "No results found.",
         "main.lang-selector.tooltip": "Select user interface language",
 
@@ -103,14 +107,16 @@ const en = {
         "dashboard.widget.alert.news":
             "TermIt is released in a new version {version}. Have a look at what's new by clicking on Version in the bottom right corner of application.",
         "dashboard.widget.donut.total-terms": "Total terms",
-        "dashboard.widget.commentList.empty": "You will see here Your last comments and reactions to them.",
+        "dashboard.widget.commentList.empty":
+            "You will see here Your last comments and reactions to them.",
         "dashboard.widget.commentList.lastComment": "Last comment of the term.",
         "dashboard.widget.commentList.message": "{when} by {user} .",
         "dashboard.widget.commentList.messageByYou": "{when} by You .",
         "dashboard.widget.lastCommentedAssets.title": "Last commented terms",
         "dashboard.widget.lastCommentedAssets.all.title": "All",
         "dashboard.widget.lastCommentedAssets.mine.title": "Mine",
-        "dashboard.widget.lastCommentedAssets.inReactionToMine.title": "With reaction to my comment",
+        "dashboard.widget.lastCommentedAssets.inReactionToMine.title":
+            "With reaction to my comment",
         "dashboard.widget.lastCommentedAssets.byMe.title": "With my comment",
 
         "unauthorized.message": "You are not authorized to access this part.",
@@ -126,36 +132,47 @@ const en = {
         "administration.users.status.disabled.help":
             "User account has been disabled by an administrator and cannot be used to log in.",
         "administration.users.status.active": "Active",
-        "administration.users.status.active.help": "User account is active and can be used to log in as usual.",
+        "administration.users.status.active.help":
+            "User account is active and can be used to log in as usual.",
         "administration.users.status.action.enable": "Enable",
         "administration.users.status.action.enable.tooltip": "Enable this user",
-        "administration.users.status.action.enable.success": "User {name} successfully enabled.",
+        "administration.users.status.action.enable.success":
+            "User {name} successfully enabled.",
         "administration.users.status.action.disable": "Disable",
-        "administration.users.status.action.disable.tooltip": "Disable this user",
-        "administration.users.status.action.disable.success": "User {name} successfully disabled.",
+        "administration.users.status.action.disable.tooltip":
+            "Disable this user",
+        "administration.users.status.action.disable.success":
+            "User {name} successfully disabled.",
         "administration.users.status.action.unlock": "Unlock",
         "administration.users.status.action.unlock.tooltip": "Unlock this user",
-        "administration.users.status.action.unlock.success": "User {name} successfully unlocked.",
-        "administration.users.status.action.changeRole.success": "The role was changed.",
+        "administration.users.status.action.unlock.success":
+            "User {name} successfully unlocked.",
+        "administration.users.status.action.changeRole.success":
+            "The role was changed.",
         "administration.users.unlock.title": "Unlock user {name}",
         "administration.users.unlock.password": "New password",
         "administration.users.unlock.passwordConfirm": "Confirm new password",
-        "administration.users.action.changerole.tooltip": "Change role of the selected user",
+        "administration.users.action.changerole.tooltip":
+            "Change role of the selected user",
         "administration.users.action.changerole": "Change role",
         "administration.users.roles.edit.title": 'Role of the user "{name}"',
         "administration.users.role": "Role",
         "administration.users.create": "Create user",
-        "administration.users.create.tooltip": "Allows to create new user account",
+        "administration.users.create.tooltip":
+            "Allows to create new user account",
         "administration.users.create.title": "New user",
-        "administration.users.create.created": 'User "{name}" successfully created.',
+        "administration.users.create.created":
+            'User "{name}" successfully created.',
         "administration.users.you": "This is you",
         "administration.users.types.admin": "This user is an administrator",
         "administration.users.types.oauth2":
             "This user account is external and the user logs in via an OAuth2 authentication service",
         "administration.maintenance.title": "Maintenance",
         "administration.maintenance.invalidateCaches": "Invalidate caches",
-        "administration.maintenance.invalidateCaches.tooltip": "Invalidate system's internal caches",
-        "administration.maintenance.invalidateCaches.success": "Caches successfully cleared.",
+        "administration.maintenance.invalidateCaches.tooltip":
+            "Invalidate system's internal caches",
+        "administration.maintenance.invalidateCaches.success":
+            "Caches successfully cleared.",
 
         "asset.link.tooltip": "View detail of this asset",
         "asset.iri": "Identifier",
@@ -171,36 +188,44 @@ const en = {
         "asset.create.hideAdvancedSection": "Hide advanced options",
         "asset.remove.tooltip": "Remove this asset",
         "asset.remove.dialog.title": 'Remove {type} "{label}"?',
-        "asset.remove.dialog.text": 'Are you sure you want to remove {type} "{label}"?',
+        "asset.remove.dialog.text":
+            'Are you sure you want to remove {type} "{label}"?',
 
-        "document.remove.tooltip.disabled": "In order to delete the document, delete the files first.",
+        "document.remove.tooltip.disabled":
+            "In order to delete the document, delete the files first.",
 
         "vocabulary.management": "Vocabulary Management",
         "vocabulary.management.vocabularies": "Vocabularies",
-        "vocabulary.management.empty": "No vocabularies found. Start by creating one.",
+        "vocabulary.management.empty":
+            "No vocabularies found. Start by creating one.",
         "vocabulary.management.startTextAnalysis.title":
             "Start text analysis on definitions of terms in all vocabularies",
         "vocabulary.management.new": "New Vocabulary",
         "vocabulary.vocabularies.create.tooltip": "Create new vocabulary",
-        "vocabulary.vocabularies.select.placeholder": "Start typing to filter vocabularies by name",
+        "vocabulary.vocabularies.select.placeholder":
+            "Start typing to filter vocabularies by name",
         "vocabulary.title": "Title",
         "vocabulary.create.title": "Create Vocabulary",
         "vocabulary.create.submit": "Create",
         "vocabulary.create.files": "Files",
-        "vocabulary.create.files.help": "Optional. You can upload files (e.g. a texts of law) here.",
+        "vocabulary.create.files.help":
+            "Optional. You can upload files (e.g. a texts of law) here.",
         "vocabulary.comment": "Description",
         "vocabulary.summary.title": "{name} - Summary",
         "vocabulary.summary.gotodetail.label": "View terms in this vocabulary",
         "vocabulary.summary.gotodetail.text": "View",
-        "vocabulary.summary.export.title": "Export glossary terms from this vocabulary",
+        "vocabulary.summary.export.title":
+            "Export glossary terms from this vocabulary",
         "vocabulary.summary.export.text": "Export",
         "vocabulary.summary.export.csv": "CSV",
         "vocabulary.summary.export.csv.title": "Export to CSV",
         "vocabulary.summary.export.excel": "Excel",
         "vocabulary.summary.export.excel.title": "Export to MS Excel",
         "vocabulary.summary.export.ttl": "SKOS (Turtle)",
-        "vocabulary.summary.export.ttl.title": "Export SKOS-compatible glossary serialized as Turtle",
-        "vocabulary.summary.export.error": "Unable to retrieve exported data from server response.",
+        "vocabulary.summary.export.ttl.title":
+            "Export SKOS-compatible glossary serialized as Turtle",
+        "vocabulary.summary.export.error":
+            "Unable to retrieve exported data from server response.",
         "vocabulary.summary.startTextAnalysis.title":
             "Start text analysis on definitions of all terms in this vocabulary",
         "vocabulary.updated.message": "Vocabulary successfully updated.",
@@ -237,8 +262,10 @@ const en = {
 
         "resource.management": "Resources management",
         "resource.management.resources": "Resources",
-        "resource.management.empty": "No resources found. Start by registering some.",
-        "resource.management.select.placeholder": "Start typing to filter resources by name",
+        "resource.management.empty":
+            "No resources found. Start by registering some.",
+        "resource.management.select.placeholder":
+            "Start typing to filter resources by name",
         "resource.management.create.tooltip": "Create or upload a new resource",
         "resource.management.new": "New Resource",
         "resource.created.message": "Resource successfully created.",
@@ -247,29 +274,39 @@ const en = {
 
         "resource.create.title": "Create resource",
         "resource.create.type": "Type",
-        "resource.create.file.select.label": "Drag & drop a file here, or click to select file",
+        "resource.create.file.select.label":
+            "Drag & drop a file here, or click to select file",
         "resource.metadata.description": "Description",
         "resource.metadata.terms.assigned": "Assigned terms",
-        "resource.metadata.terms.assigned.tooltip": "Terms assigned to the resource as a whole",
+        "resource.metadata.terms.assigned.tooltip":
+            "Terms assigned to the resource as a whole",
         "resource.metadata.terms.occurrences": "Occurring terms",
-        "resource.metadata.terms.occurrences.tooltip": "Terms occurring in the resource content",
+        "resource.metadata.terms.occurrences.tooltip":
+            "Terms occurring in the resource content",
         "resource.metadata.terms.occurrences.confirmed": "{count} - confirmed",
-        "resource.metadata.terms.occurrences.confirmed.tooltip": "Occurrence confirmed/created by a user",
+        "resource.metadata.terms.occurrences.confirmed.tooltip":
+            "Occurrence confirmed/created by a user",
         "resource.metadata.terms.occurrences.suggested": "{count} - suggested",
-        "resource.metadata.terms.occurrences.suggested.tooltip": "Occurrence suggested by the system",
-        "resource.metadata.terms.edit.select.placeholder": "Start typing to search for relevant terms",
+        "resource.metadata.terms.occurrences.suggested.tooltip":
+            "Occurrence suggested by the system",
+        "resource.metadata.terms.edit.select.placeholder":
+            "Start typing to search for relevant terms",
         "resource.metadata.file.content": "Content",
         "resource.metadata.file.content.view": "View",
-        "resource.metadata.file.content.view.tooltip": "View file content and annotate it",
+        "resource.metadata.file.content.view.tooltip":
+            "View file content and annotate it",
         "resource.metadata.file.content.download": "Download",
         "resource.metadata.document.vocabulary": "Document vocabulary",
         "resource.metadata.document.files.actions.add": "Add",
-        "resource.metadata.document.files.actions.add.tooltip": "Add new file to this document",
+        "resource.metadata.document.files.actions.add.tooltip":
+            "Add new file to this document",
         "resource.metadata.document.files.actions.add.dialog.title": "New file",
-        "resource.metadata.document.files.empty": "No files found. Start by adding some.",
+        "resource.metadata.document.files.empty":
+            "No files found. Start by adding some.",
         "resource.file.vocabulary.create": "Add File",
 
-        "term.language.selector.item": "View term data in language: {nativeLang} ({lang})",
+        "term.language.selector.item":
+            "View term data in language: {nativeLang} ({lang})",
         "term.language.add.placeholder": "Select...",
         "term.iri.help":
             "Term identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
@@ -286,7 +323,8 @@ const en = {
             "concept meaning. If a concept is defined in a document, its definition is precise quotation of the respective part " +
             "of the document. Definition is used for full specification of concept meaning (e.g. 'Man' can be defined as 'a male person'). " +
             "Definition is always unique and cannot be combined from multiple sources.",
-        "term.comment.help": "(Optional) non-definitorial text clarifying the meaning of the term.",
+        "term.comment.help":
+            "(Optional) non-definitorial text clarifying the meaning of the term.",
         "term.parent.help":
             "(Optional) broader term. It is used to model relationships to broader terms " +
             "(e.g. Church -> Building), types of instances (e.g. St. Paul's -> Cathedral), or parthood relationships (e.g. Handle -> Door).",
@@ -310,16 +348,19 @@ const en = {
         "term.metadata.definition": "Definition",
         "term.metadata.definition.text": "Text",
         "term.metadata.definitionSource": "Document",
-        "term.metadata.definitionSource.title": "The source of the definition of this term",
+        "term.metadata.definitionSource.title":
+            "The source of the definition of this term",
         "term.metadata.definitionSource.goto": "See in the document",
-        "term.metadata.definitionSource.goto.tooltip": "Go to definition source in the corresponding document",
+        "term.metadata.definitionSource.goto.tooltip":
+            "Go to definition source in the corresponding document",
         "term.metadata.comment": "Scope note",
         "term.metadata.parent": "Parent terms",
         "term.metadata.subTerms": "Sub terms",
         "term.metadata.types": "Type",
         "term.metadata.source": "Source",
         "term.metadata.altLabels.label": "Synonyms",
-        "term.metadata.altLabels.placeholder": "Enter a new synonym and press 'Add'",
+        "term.metadata.altLabels.placeholder":
+            "Enter a new synonym and press 'Add'",
         "term.metadata.altLabels.placeholder.text": "Add",
         "term.metadata.altLabels.remove": "Remove synonym",
         "term.metadata.altLabels.remove.text": "Remove",
@@ -328,7 +369,8 @@ const en = {
             "named 'Organization address' can have a synonym 'Address', which is used in a specific context only " +
             "(e.g. in a form gathering information about an organization). ",
         "term.metadata.hiddenLabels.label": "Search strings",
-        "term.metadata.hiddenLabels.placeholder": "Enter a new search string and press 'Add'",
+        "term.metadata.hiddenLabels.placeholder":
+            "Enter a new search string and press 'Add'",
         "term.metadata.hiddenLabels.placeholder.text": "Add",
         "term.metadata.hiddenLabels.remove": "Remove search string",
         "term.metadata.hiddenLabels.remove.text": "Remove",
@@ -338,7 +380,8 @@ const en = {
             "a term with label 'potato' can have search string 'spud'. ",
         "term.metadata.status": "Status",
         "term.updated.message": "Term successfully updated.",
-        "term.metadata.labelExists.message": 'Term with label "{label}" already exists in this vocabulary',
+        "term.metadata.labelExists.message":
+            'Term with label "{label}" already exists in this vocabulary',
         "term.metadata.multipleSources.message":
             "Term has multiple sources. Upon save, only the current value will be saved and the remaining will be deleted.",
         "term.metadata.source.add.placeholder": "Add source",
@@ -347,10 +390,13 @@ const en = {
         "term.metadata.source.remove.text": "Remove",
         "term.metadata.subterm.link": "View detail of this term",
         "term.metadata.assignments.title": "Anotated resources",
-        "term.metadata.assignments.empty": "This term is not assigned to any resources.",
+        "term.metadata.assignments.empty":
+            "This term is not assigned to any resources.",
         "term.metadata.assignments.assignment": "Assigned to the resource?",
-        "term.metadata.assignments.assignment.assigned": "Term is assigned to this resource",
-        "term.metadata.assignments.assignment.not.assigned": "Term is not assigned to this resource",
+        "term.metadata.assignments.assignment.assigned":
+            "Term is assigned to this resource",
+        "term.metadata.assignments.assignment.not.assigned":
+            "Term is not assigned to this resource",
         "term.metadata.assignments.assignment.help":
             "Term assignment represents situations when term is assigned to the resource as a whole.",
         "term.metadata.assignments.occurrence": "Occurrence",
@@ -361,37 +407,50 @@ const en = {
             "Suggested term occurrence represents a term occurrence suggested by the system, e.g., based on the analysis of the content.",
         "term.metadata.assignments.count.tooltip":
             "The term occurs {count, plural, one {# time} other {# times}} in this resource",
-        "term.metadata.assignments.count.zero.tooltip": "The term does not occur in this resource",
+        "term.metadata.assignments.count.zero.tooltip":
+            "The term does not occur in this resource",
         "term.metadata.related.title": "Related terms",
         "term.metadata.vocabulary.tooltip": "Vocabulary this term belongs to",
         "term.metadata.related.ontologically": "Ontologically",
         "term.metadata.related.definitionally": "Definitionally",
-        "term.metadata.related.definitionally.targeting": "Terms that occurred in the definition of this term",
-        "term.metadata.related.definitionally.of": "Terms in whose definition this term appeared",
+        "term.metadata.related.definitionally.targeting":
+            "Terms that occurred in the definition of this term",
+        "term.metadata.related.definitionally.of":
+            "Terms in whose definition this term appeared",
         "term.metadata.related.ontologically.tooltip":
             "Terms which are related to this term via selected ontological relationships.",
-        "term.metadata.related.definitionally.tooltip": "Terms which are related to this term via definition.",
-        "term.metadata.assignments.occurrence.remove": "Occurrence successfully removed.",
-        "term.metadata.assignments.occurrence.remove.tooltip": "Remove suggested occurrence",
-        "term.metadata.assignments.occurrence.approve": "Occurrence successfully approved.",
-        "term.metadata.assignments.occurrence.approve.tooltip": "Approve suggested occurrence",
+        "term.metadata.related.definitionally.tooltip":
+            "Terms which are related to this term via definition.",
+        "term.metadata.assignments.occurrence.remove":
+            "Occurrence successfully removed.",
+        "term.metadata.assignments.occurrence.remove.tooltip":
+            "Remove suggested occurrence",
+        "term.metadata.assignments.occurrence.approve":
+            "Occurrence successfully approved.",
+        "term.metadata.assignments.occurrence.approve.tooltip":
+            "Approve suggested occurrence",
         "term.metadata.comments.title": "Comments",
         "term.metadata.status.draft": "Draft",
         "term.metadata.status.confirmed": "Confirmed",
-        "term.metadata.status.help": "Draft term is not ready to be used yet, while Confirmed term is.",
+        "term.metadata.status.help":
+            "Draft term is not ready to be used yet, while Confirmed term is.",
         "term.metadata.types.select.placeholder": "Select type",
         "term.metadata.validation.title": "Validation",
         "term.removed.message": "Term successfully removed.",
-        "term.badge.score.tooltip": "The score of this term is {score}%. Click to see the validation results",
-        "term.badge.no-score.tooltip": "There is no available score for this term",
+        "term.badge.score.tooltip":
+            "The score of this term is {score}%. Click to see the validation results",
+        "term.badge.no-score.tooltip":
+            "There is no available score for this term",
 
         "glossary.title": "Terms",
         "glossary.new": "New Term",
         "glossary.select.placeholder": "Start typing to filter terms by label",
         "glossary.excludeImported": "Include imported",
-        "glossary.excludeImported.help": "Terms from imported vocabularies are hidden in this view, click to show them",
+        "glossary.excludeImported.help":
+            "Terms from imported vocabularies are hidden in this view, click to show them",
         "glossary.includeImported": "Include imported",
-        "glossary.includeImported.help": "Terms from imported vocabularies are shown in this view, click to hide them",
+        "glossary.includeImported.help":
+            "Terms from imported vocabularies are shown in this view, click to hide them",
         "glossary.importedIncluded": "with imported",
         "glossary.importedExcluded": "without imported",
         "glossary.filter-draft": "Draft",
@@ -412,15 +471,21 @@ const en = {
         "glossary.form.button.submitAndGoToNewTerm": "Create and Start New",
         "glossary.form.button.cancel": "Cancel",
 
-        "glossary.form.validation.validateLengthMin5": "Field must be at least 5 characters",
-        "glossary.form.validation.validateLengthMin3": "Field must be at least 3 characters",
-        "glossary.form.validation.validateNotSameAsParent": "Child option cannot be same as parent option",
+        "glossary.form.validation.validateLengthMin5":
+            "Field must be at least 5 characters",
+        "glossary.form.validation.validateLengthMin3":
+            "Field must be at least 3 characters",
+        "glossary.form.validation.validateNotSameAsParent":
+            "Child option cannot be same as parent option",
 
-        "file.text-analysis.finished.message": "Text analysis successfully finished.",
+        "file.text-analysis.finished.message":
+            "Text analysis successfully finished.",
         "file.metadata.startTextAnalysis": "Start text analysis",
         "file.metadata.startTextAnalysis.text": "Analyze",
-        "file.metadata.startTextAnalysis.vocabularySelect.title": "Select vocabulary for automatic text analysis",
-        "file.content.upload.success": 'Content of file "{fileName}" successfully uploaded.',
+        "file.metadata.startTextAnalysis.vocabularySelect.title":
+            "Select vocabulary for automatic text analysis",
+        "file.content.upload.success":
+            'Content of file "{fileName}" successfully uploaded.',
         "file.annotate.selectVocabulary":
             "Unable to determine vocabulary for annotating this file. Please, select one...",
 
@@ -446,7 +511,8 @@ const en = {
         "search.tab.facets": "Faceted search",
         "search.reset": "Reset search",
         "search.results.title": 'Results for "{searchString}"',
-        "search.results.countInfo": "Found {matches} matches in {assets} assets.",
+        "search.results.countInfo":
+            "Found {matches} matches in {assets} assets.",
         "search.results.table.label": "Label",
         "search.results.table.label.tooltip": "Open asset detail",
         "search.results.table.match": "Match",
@@ -475,25 +541,34 @@ const en = {
         "change-password.new.password": "New password",
         "change-password.confirm.password": "Confirm password",
         "change-password.updated.message": "Password successfully updated",
-        "change-password.passwords.differ.tooltip": "Old password and new password should not be same.",
+        "change-password.passwords.differ.tooltip":
+            "Old password and new password should not be same.",
 
         annotator: "Annotator",
         "annotator.content.loading": "Loading file content...",
         "annotator.vocabulary": "Uses terms from vocabulary",
-        "annotator.selectionPurpose.dialog.title": "What is the purpose of the selected text?",
+        "annotator.selectionPurpose.dialog.title":
+            "What is the purpose of the selected text?",
         "annotator.selectionPurpose.create": "Create term",
         "annotator.selectionPurpose.occurrence": "Mark term occurrence",
         "annotator.selectionPurpose.definition": "Mark term definition",
         "annotator.createTerm.selectDefinition": "Select definition",
-        "annotator.createTerm.selectDefinition.tooltip": "Hide this dialog and select term definition in text",
-        "annotator.createTerm.selectDefinition.message": "Select definition of the new term in text.",
-        "annotator.setTermDefinitionSource.success": 'Definition source of term "{term}" successfully set.',
-        "annotator.setTermDefinitionSource.error.exists": 'Term "{term}" already has a definition source.',
-        "annotator.setTermDefinition.title": 'Select definition of term "{term}"',
+        "annotator.createTerm.selectDefinition.tooltip":
+            "Hide this dialog and select term definition in text",
+        "annotator.createTerm.selectDefinition.message":
+            "Select definition of the new term in text.",
+        "annotator.setTermDefinitionSource.success":
+            'Definition source of term "{term}" successfully set.',
+        "annotator.setTermDefinitionSource.error.exists":
+            'Term "{term}" already has a definition source.',
+        "annotator.setTermDefinition.title":
+            'Select definition of term "{term}"',
         "annotator.findAnnotation.error": "Unable to highlight annotation.",
 
-        "annotation.form.suggested-occurrence.message": "Phrase is not assigned to a vocabulary term.",
-        "annotation.form.invalid-occurrence.message": 'Term "{term}" not found in vocabulary.',
+        "annotation.form.suggested-occurrence.message":
+            "Phrase is not assigned to a vocabulary term.",
+        "annotation.form.invalid-occurrence.message":
+            'Term "{term}" not found in vocabulary.',
         "annotation.form.assigned-occurrence.termInfoLabel": "Term info : ",
         "annotation.term.assigned-occurrence.termLabel": "Assigned term : ",
         "annotation.term.occurrence.scoreLabel": "Score:",
@@ -513,33 +588,41 @@ const en = {
         "annotation.definition.new": "New definition",
 
         "annotator.legend.confirmed.loading": "Loading annotation",
-        "annotator.legend.confirmed.loading.tooltip": "Annotation that was created or accepted by a user is loading.",
+        "annotator.legend.confirmed.loading.tooltip":
+            "Annotation that was created or accepted by a user is loading.",
         "annotator.legend.proposed.loading": "Loading proposed annotation",
         "annotator.legend.proposed.loading.tooltip":
             "Annotation that was proposed by the annotation service is loading.",
-        "annotator.legend.confirmed.unknown.term": "Occurrence of an unknown term",
+        "annotator.legend.confirmed.unknown.term":
+            "Occurrence of an unknown term",
         "annotator.legend.confirmed.unknown.term.tooltip":
             "Term occurrence was created or accepted by a user but not assigned to any vocabulary term, yet.",
-        "annotator.legend.confirmed.existing.term": "Occurrence of an existing term",
+        "annotator.legend.confirmed.existing.term":
+            "Occurrence of an existing term",
         "annotator.legend.confirmed.existing.term.tooltip":
             "Occurrence of a known term was created or accepted by a user.",
-        "annotator.legend.confirmed.missing.term": "Occurrence of a missing term",
+        "annotator.legend.confirmed.missing.term":
+            "Occurrence of a missing term",
         "annotator.legend.confirmed.missing.term.tooltip":
             "Term occurrence of was created or accepted by a user but the corresponding term could not be found.",
-        "annotator.legend.proposed.unknown.term": "Proposed occurrence of an unknown term",
+        "annotator.legend.proposed.unknown.term":
+            "Proposed occurrence of an unknown term",
         "annotator.legend.proposed.unknown.term.tooltip":
             "Occurrence of a term was identified by the text analysis service but not assigned to any vocabulary term, yet.",
-        "annotator.legend.proposed.existing.term": "Proposed occurrence of an existing term",
+        "annotator.legend.proposed.existing.term":
+            "Proposed occurrence of an existing term",
         "annotator.legend.proposed.existing.term.tooltip":
             "Occurrence of a known term was identified by the text analysis service.",
-        "annotator.legend.proposed.missing.term": "Proposed occurrence of a missing term",
+        "annotator.legend.proposed.missing.term":
+            "Proposed occurrence of a missing term",
         "annotator.legend.proposed.missing.term.tooltip":
             "Term occurrence was proposed by the text analysis service but the corresponding term could not be found.",
         "annotator.legend.definition.pending": "Definition of an unknown term",
         "annotator.legend.definition.pending.tooltip":
             "Term definition was marked by a user but not assigned to any vocabulary term, yet.",
         "annotator.legend.definition": "Term definition",
-        "annotator.legend.definition.tooltip": "Definition of a known term created by a user.",
+        "annotator.legend.definition.tooltip":
+            "Definition of a known term created by a user.",
         "annotator.legend.toggle.show": "Show legend",
         "annotator.legend.toggle.hide": "Hide legend",
         "annotator.unknown.unauthorized": "Term not selected.",
@@ -605,10 +688,12 @@ const en = {
 
         "public.nav.user": "User not logged in. Click to log in.",
         "public.dashboard.title": "Welcome to TermIt!",
-        "public.dashboard.intro": "TermIt is an easy-to-use vocabulary manager and terminology editor.",
+        "public.dashboard.intro":
+            "TermIt is an easy-to-use vocabulary manager and terminology editor.",
         "public.dashboard.actions.login": "Log in",
         "public.dashboard.actions.register": "Create account",
-        "public.dashboard.actions.vocabularies": "Browse vocabularies and terms",
+        "public.dashboard.actions.vocabularies":
+            "Browse vocabularies and terms",
 
         "comments.title": "Comments",
         "comments.create.placeholder": "Type your comment...",
@@ -618,8 +703,8 @@ const en = {
         "comments.comment.like.on": "Don't like any more",
         "comments.comment.dislike": "Dislike this comment",
         "comments.comment.dislike.on": "Cancel reaction",
-        "comments.comment.edited": "Edited"
-    }
+        "comments.comment.edited": "Edited",
+    },
 };
 
 export default en;

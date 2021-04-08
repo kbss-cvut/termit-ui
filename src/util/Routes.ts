@@ -16,7 +16,12 @@ export class Route {
         if (query) {
             // TODO: Encode URI components properly (and parse them too)
             const queryPart = Object.keys(query)
-                .map(key => /*encodeURIComponent*/ key + "=" + /*encodeURIComponent*/ query[key])
+                .map(
+                    (key) =>
+                        /*encodeURIComponent*/ key +
+                        "=" +
+                        /*encodeURIComponent*/ query[key]
+                )
                 .join("&");
             return path + "?" + queryPart;
         } else {
@@ -41,22 +46,40 @@ const Routes = {
     vocabularies: new Route("vocabulary", "/vocabularies"),
     resources: new Route("resource", "/resources"),
     createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
-    vocabularyDetail: new Route("vocabularyDetail", "/vocabularies/:name/terms"),
+    vocabularyDetail: new Route(
+        "vocabularyDetail",
+        "/vocabularies/:name/terms"
+    ),
     vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
     annotateFile: new Route("annotateFile", "/resources/:name/files/:fileName"),
     createResource: new Route("createResource", "/resources/create"),
     resourceSummary: new Route("resourceSummary", "/resources/:name"),
-    createVocabularyTerm: new Route("createVocabularyTerm", "/vocabularies/:name/terms/create"),
-    vocabularyTermDetail: new Route("vocabularyTermDetail", "/vocabularies/:name/terms/:termName"),
+    createVocabularyTerm: new Route(
+        "createVocabularyTerm",
+        "/vocabularies/:name/terms/create"
+    ),
+    vocabularyTermDetail: new Route(
+        "vocabularyTermDetail",
+        "/vocabularies/:name/terms/:termName"
+    ),
 
     // Public views
     publicDashboard: new Route("publicDashboard", "/public"),
     publicVocabularies: new Route("publicVocabularies", "/public/vocabularies"),
-    publicVocabularySummary: new Route("publicVocabularySummary", "/public/vocabularies/:name"),
-    publicVocabularyTermDetail: new Route("publicVocabularyTermDetail", "/public/vocabularies/:name/terms/:termName"),
+    publicVocabularySummary: new Route(
+        "publicVocabularySummary",
+        "/public/vocabularies/:name"
+    ),
+    publicVocabularyTermDetail: new Route(
+        "publicVocabularyTermDetail",
+        "/public/vocabularies/:name/terms/:termName"
+    ),
     publicSearch: new Route("publicSearch", "/public/search"),
     publicSearchTerms: new Route("publicSearchTerms", "/public/search/terms"),
-    publicSearchVocabularies: new Route("publicSearchVocabularies", "/public/search/vocabularies")
+    publicSearchVocabularies: new Route(
+        "publicSearchVocabularies",
+        "/public/search/vocabularies"
+    ),
 };
 
 export default Routes;

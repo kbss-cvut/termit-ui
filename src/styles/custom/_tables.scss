@@ -5,29 +5,29 @@
 @import "../core/tables/table";
 
 .fit-content {
-    width: 1%;
+  width: 1%;
 }
 
 .text-ellipsis {
-    height: 2rem;
-    display: block;
-    overflow: hidden;
+  height: 2rem;
+  display: block;
+  overflow: hidden;
 }
 
 .text-ellipsis:after {
-    content: "...";
-    background: inherit;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    box-shadow: 0 0 5px red;
+  content: "...";
+  background: inherit;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  box-shadow: 0 0 5px red;
 }
 
 .card .table {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .table td {
-    white-space: normal;
-    overflow-wrap: normal;
+  white-space: normal;
+  overflow-wrap: normal;
 }
