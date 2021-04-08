@@ -7,7 +7,6 @@ import {intlFunctions, mockUseI18n} from "../../../__tests__/environment/IntlUti
 import {shallow} from "enzyme";
 
 describe("ProfileEditForm", () => {
-
     let firstName: string;
     let lastName: string;
     let onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,20 +26,22 @@ describe("ProfileEditForm", () => {
     });
 
     it("correctly renders component with firstName and lastName set", () => {
-        const wrapper = mountWithIntl(<ProfileEditForm
-            firstName={firstName}
-            lastName={lastName}
-            onChange={onChange}
-            onSubmit={onSubmit}
-            onKeyPress={onKeyPress}
-            showProfileView={showProfileView}
-            isValid={isValid}
-            {...intlFunctions()}
-        />);
+        const wrapper = mountWithIntl(
+            <ProfileEditForm
+                firstName={firstName}
+                lastName={lastName}
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onKeyPress={onKeyPress}
+                showProfileView={showProfileView}
+                isValid={isValid}
+                {...intlFunctions()}
+            />
+        );
 
         const form = wrapper.find(Form);
-        const firstNameInput = form.find("input[name=\"firstName\"]").getDOMNode() as HTMLInputElement;
-        const lastNameInput = form.find("input[name=\"lastName\"]").getDOMNode() as HTMLInputElement;
+        const firstNameInput = form.find('input[name="firstName"]').getDOMNode() as HTMLInputElement;
+        const lastNameInput = form.find('input[name="lastName"]').getDOMNode() as HTMLInputElement;
         const buttons = form.find(ButtonToolbar).find(Button);
 
         expect(firstNameInput.value).toEqual(firstName);
@@ -51,16 +52,18 @@ describe("ProfileEditForm", () => {
     });
 
     it("calls onSubmit function on save button click if isValid", () => {
-        const wrapper = mountWithIntl(<ProfileEditForm
-            firstName={firstName}
-            lastName={lastName}
-            onChange={onChange}
-            onSubmit={onSubmit}
-            onKeyPress={onKeyPress}
-            showProfileView={showProfileView}
-            isValid={isValid}
-            {...intlFunctions()}
-        />);
+        const wrapper = mountWithIntl(
+            <ProfileEditForm
+                firstName={firstName}
+                lastName={lastName}
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onKeyPress={onKeyPress}
+                showProfileView={showProfileView}
+                isValid={isValid}
+                {...intlFunctions()}
+            />
+        );
 
         const button = wrapper.find("button#profile-edit-submit");
         button.simulate("click");
@@ -69,16 +72,18 @@ describe("ProfileEditForm", () => {
     });
 
     it("renders disabled submit button if !isValid", () => {
-        const wrapper = mountWithIntl(<ProfileEditForm
-            firstName={firstName}
-            lastName={lastName}
-            onChange={onChange}
-            onSubmit={onSubmit}
-            onKeyPress={onKeyPress}
-            showProfileView={showProfileView}
-            isValid={false}
-            {...intlFunctions()}
-        />);
+        const wrapper = mountWithIntl(
+            <ProfileEditForm
+                firstName={firstName}
+                lastName={lastName}
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onKeyPress={onKeyPress}
+                showProfileView={showProfileView}
+                isValid={false}
+                {...intlFunctions()}
+            />
+        );
 
         const button = wrapper.find("button#profile-edit-submit");
         button.simulate("click");
@@ -88,34 +93,41 @@ describe("ProfileEditForm", () => {
 
     it("calls showProfileView on cancel button click", () => {
         mockUseI18n();
-        const wrapper = shallow(<ProfileEditForm
-            firstName={firstName}
-            lastName={lastName}
-            onChange={onChange}
-            onSubmit={onSubmit}
-            onKeyPress={onKeyPress}
-            showProfileView={showProfileView}
-            isValid={isValid}
-            {...intlFunctions()}
-        />);
+        const wrapper = shallow(
+            <ProfileEditForm
+                firstName={firstName}
+                lastName={lastName}
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onKeyPress={onKeyPress}
+                showProfileView={showProfileView}
+                isValid={isValid}
+                {...intlFunctions()}
+            />
+        );
 
-        wrapper.find(Button).findWhere(b => b.prop("id") === "profile-edit-cancel").simulate("click");
+        wrapper
+            .find(Button)
+            .findWhere(b => b.prop("id") === "profile-edit-cancel")
+            .simulate("click");
         expect(showProfileView).toHaveBeenCalled();
     });
 
     it("invokes onKeyPress function when enter is pressed", () => {
-        const wrapper = mountWithIntl(<ProfileEditForm
-            firstName={firstName}
-            lastName={lastName}
-            onChange={onChange}
-            onSubmit={onSubmit}
-            onKeyPress={onKeyPress}
-            showProfileView={showProfileView}
-            isValid={isValid}
-            {...intlFunctions()}
-        />);
+        const wrapper = mountWithIntl(
+            <ProfileEditForm
+                firstName={firstName}
+                lastName={lastName}
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onKeyPress={onKeyPress}
+                showProfileView={showProfileView}
+                isValid={isValid}
+                {...intlFunctions()}
+            />
+        );
 
-        const lastNameInput = wrapper.find("input[name=\"lastName\"]");
+        const lastNameInput = wrapper.find('input[name="lastName"]');
         lastNameInput.simulate("keyPress", {key: "Enter"});
         expect(onKeyPress).toHaveBeenCalled();
     });

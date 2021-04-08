@@ -7,7 +7,6 @@ import {ThunkDispatch} from "../../util/Types";
 import {loadNews} from "../../action/AsyncActions";
 import {useI18n} from "../hook/useI18n";
 
-
 const NewsMd: React.FC = () => {
     const {locale} = useI18n();
     const [newsMd, setNewsMd] = React.useState<string | null>(null);
@@ -16,7 +15,7 @@ const NewsMd: React.FC = () => {
         dispatch(loadNews(getShortLocale(locale))).then(data => setNewsMd(data));
     }, [locale, dispatch]);
 
-    return newsMd ? <ReactMarkdown source={newsMd}/> : <ContainerMask/>;
-}
+    return newsMd ? <ReactMarkdown source={newsMd} /> : <ContainerMask />;
+};
 
 export default NewsMd;

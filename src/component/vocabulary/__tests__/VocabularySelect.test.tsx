@@ -10,11 +10,9 @@ import {shallow} from "enzyme";
 import * as Actions from "../../../action/AsyncActions";
 
 describe("VocabularySelect", () => {
-
     let voc: Vocabulary;
     let onVocabularySet: (voc: Vocabulary) => void;
-    let vocabularies: { [key: string]: Vocabulary };
-
+    let vocabularies: {[key: string]: Vocabulary};
 
     beforeEach(() => {
         onVocabularySet = jest.fn();
@@ -30,7 +28,7 @@ describe("VocabularySelect", () => {
         jest.spyOn(Actions, "loadVocabularies").mockReturnValue(jest.fn());
         withHooks(() => {
             mockUseI18n();
-            shallow(<VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet}/>);
+            shallow(<VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />);
             expect(fakeDispatch).toHaveBeenCalled();
             expect(Actions.loadVocabularies).toHaveBeenCalled();
         });
@@ -43,17 +41,14 @@ describe("VocabularySelect", () => {
         jest.spyOn(Actions, "loadVocabularies").mockReturnValue(jest.fn());
         withHooks(() => {
             mockUseI18n();
-            shallow(<VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet}/>);
+            shallow(<VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />);
             expect(fakeDispatch).not.toHaveBeenCalled();
         });
     });
 
     it("VocabularySelect Selection calls the callback", () => {
         jest.spyOn(redux, "useSelector").mockReturnValue(vocabularies);
-        const wrapper = mountWithIntl(<VocabularySelect
-            vocabulary={voc}
-            onVocabularySet={onVocabularySet}
-        />);
+        const wrapper = mountWithIntl(<VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />);
         wrapper.find(DropdownToggle).simulate("click");
         wrapper.find(DropdownItem).simulate("click");
         expect(onVocabularySet).toHaveBeenCalled();

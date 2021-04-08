@@ -3,7 +3,6 @@ import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 describe("TermAssignment", () => {
-
     describe("toJsonLd", () => {
         it("adds context to the object", () => {
             const sut = new TermAssignment({

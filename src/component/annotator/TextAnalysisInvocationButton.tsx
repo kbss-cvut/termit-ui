@@ -19,16 +19,17 @@ interface TextAnalysisInvocationButtonProps extends HasI18n, InjectsLoading {
     defaultVocabularyIri?: string;
     executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) => Promise<any>;
     notifyAnalysisFinish: () => void;
-    className?: string
+    className?: string;
 }
 
 interface TextAnalysisInvocationButtonState {
     showVocabularySelector: boolean;
-
 }
 
-export class TextAnalysisInvocationButton extends React.Component<TextAnalysisInvocationButtonProps, TextAnalysisInvocationButtonState> {
-
+export class TextAnalysisInvocationButton extends React.Component<
+    TextAnalysisInvocationButtonProps,
+    TextAnalysisInvocationButtonState
+> {
     constructor(props: InjectsLoading & TextAnalysisInvocationButtonProps) {
         super(props);
         this.state = {showVocabularySelector: false};
@@ -60,25 +61,35 @@ export class TextAnalysisInvocationButton extends React.Component<TextAnalysisIn
 
     public render() {
         const i18n = this.props.i18n;
-        return <>
-            <ResourceSelectVocabulary show={this.state.showVocabularySelector}
-                                      defaultVocabularyIri={this.props.defaultVocabularyIri}
-                                      onCancel={this.closeVocabularySelect} onSubmit={this.onVocabularySelect}
-                                      title={i18n("file.metadata.startTextAnalysis.vocabularySelect.title")}/>
-            <Button id={this.props.id}
+        return (
+            <>
+                <ResourceSelectVocabulary
+                    show={this.state.showVocabularySelector}
+                    defaultVocabularyIri={this.props.defaultVocabularyIri}
+                    onCancel={this.closeVocabularySelect}
+                    onSubmit={this.onVocabularySelect}
+                    title={i18n("file.metadata.startTextAnalysis.vocabularySelect.title")}
+                />
+                <Button
+                    id={this.props.id}
                     size="sm"
                     color="primary"
                     className={this.props.className}
                     title={i18n("file.metadata.startTextAnalysis")}
-                    onClick={this.onClick}><GoClippy className="mr-1"/>{i18n("file.metadata.startTextAnalysis.text")}
-            </Button>
-        </>;
+                    onClick={this.onClick}>
+                    <GoClippy className="mr-1" />
+                    {i18n("file.metadata.startTextAnalysis.text")}
+                </Button>
+            </>
+        );
     }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) => dispatch(executeFileTextAnalysis(fileIri, vocabularyIri)),
-        notifyAnalysisFinish: () => dispatch(publishNotification({source: {type: NotificationType.TEXT_ANALYSIS_FINISHED}}))
+        executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) =>
+            dispatch(executeFileTextAnalysis(fileIri, vocabularyIri)),
+        notifyAnalysisFinish: () =>
+            dispatch(publishNotification({source: {type: NotificationType.TEXT_ANALYSIS_FINISHED}}))
     };
 })(injectIntl(withI18n(withInjectableLoading(TextAnalysisInvocationButton))));

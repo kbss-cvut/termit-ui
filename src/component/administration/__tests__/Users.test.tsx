@@ -8,7 +8,6 @@ import {shallow} from "enzyme";
 import PasswordReset from "../PasswordReset";
 
 describe("Users", () => {
-
     const currentUser = Generator.generateUser();
     const users = [Generator.generateUser(), Generator.generateUser(), currentUser];
 
@@ -25,9 +24,16 @@ describe("Users", () => {
     });
 
     function render() {
-        return shallow<Users>(<Users loadUsers={loadUsers} disableUser={disableUser} enableUser={enableUser}
-                                     unlockUser={unlockUser}
-                                     currentUser={currentUser} {...intlFunctions()}/>);
+        return shallow<Users>(
+            <Users
+                loadUsers={loadUsers}
+                disableUser={disableUser}
+                enableUser={enableUser}
+                unlockUser={unlockUser}
+                currentUser={currentUser}
+                {...intlFunctions()}
+            />
+        );
     }
 
     it("loads users on mount", async () => {

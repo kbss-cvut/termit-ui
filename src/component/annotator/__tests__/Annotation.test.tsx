@@ -15,8 +15,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import {langString} from "../../../model/MultilingualString";
 
 function assumeProps(wrapper: ReactWrapper, component: ComponentClass<any>, props: {}) {
-    expect(wrapper.find(component).props())
-        .toEqual(expect.objectContaining(props));
+    expect(wrapper.find(component).props()).toEqual(expect.objectContaining(props));
 }
 
 function showOccurrenceViewForm(wrapper: ReactWrapper, popupComponent: ComponentClass<any>) {
@@ -28,7 +27,6 @@ function showOccurrenceViewForm(wrapper: ReactWrapper, popupComponent: Component
 jest.mock("popper.js");
 
 describe("Annotation", () => {
-
     const term = new Term({
         label: langString("Mesto"),
         iri: "http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/mesto"
@@ -54,54 +52,36 @@ describe("Annotation", () => {
         assignedOccProps = {
             ...suggestedOccProps,
             resource: term.iri,
-            score: "1.0",
+            score: "1.0"
         };
         mockedFunctions = {
             onFetchTerm: jest.fn().mockResolvedValue(term),
             onCreateTerm: jest.fn(),
             onResetSticky: jest.fn(),
             onUpdate: jest.fn()
-        }
+        };
     });
 
     /* --- recognizes occurrence --- */
     it("recognizes suggested occurrence", () => {
-        const wrapper = shallow(
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                {...suggestedOccProps}
-            />);
+        const wrapper = shallow(<Annotation {...mockedFunctions} {...intlFunctions()} {...suggestedOccProps} />);
 
         expect(wrapper.find(".suggested-term-occurrence").exists()).toBeTruthy();
     });
 
     it("recognizes assigned occurrence", () => {
-        const wrapper = shallow(
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                {...assignedOccProps}
-            />);
+        const wrapper = shallow(<Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />);
 
         return Promise.resolve().then(() => expect(wrapper.exists(".assigned-term-occurrence")).toBeTruthy());
     });
 
     it("fetches assigned term on mount", () => {
-        shallow(<Annotation
-            {...mockedFunctions}
-            {...intlFunctions()}
-            {...assignedOccProps}
-        />);
+        shallow(<Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />);
         expect(mockedFunctions.onFetchTerm).toHaveBeenCalledWith(assignedOccProps.resource);
     });
 
     it("fetches assigned term when it changes on update", () => {
-        const wrapper = shallow(<Annotation
-            {...mockedFunctions}
-            {...intlFunctions()}
-            {...assignedOccProps}
-        />);
+        const wrapper = shallow(<Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />);
         const newResource = Generator.generateUri();
         wrapper.setProps({resource: newResource});
         wrapper.update();
@@ -110,12 +90,7 @@ describe("Annotation", () => {
 
     it("recognizes invalid occurrence", () => {
         mockedFunctions.onFetchTerm = jest.fn().mockRejectedValue("Term not found.");
-        const wrapper = shallow(
-            <Annotation
-                {...intlFunctions()}
-                {...assignedOccProps}
-                {...mockedFunctions}
-            />);
+        const wrapper = shallow(<Annotation {...intlFunctions()} {...assignedOccProps} {...mockedFunctions} />);
 
         // Had to use double promise because the test evaluation was being called before catch handler in the component
         return Promise.resolve().then(() => {
@@ -131,12 +106,7 @@ describe("Annotation", () => {
             property: VocabularyUtils.IS_DEFINITION_OF_TERM
         });
         mockedFunctions.onFetchTerm = jest.fn().mockResolvedValue(term);
-        const wrapper = shallow(
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                {...props}
-            />);
+        const wrapper = shallow(<Annotation {...mockedFunctions} {...intlFunctions()} {...props} />);
 
         return Promise.resolve().then(() => {
             expect(wrapper.exists(TermDefinitionAnnotation)).toBeTruthy();
@@ -150,12 +120,7 @@ describe("Annotation", () => {
         });
         // No term assigned, yet
         delete props.resource;
-        const wrapper = shallow(
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                {...props}
-            />);
+        const wrapper = shallow(<Annotation {...mockedFunctions} {...intlFunctions()} {...props} />);
 
         return Promise.resolve().then(() => {
             expect(wrapper.exists(".pending-term-definition")).toBeTruthy();
@@ -164,16 +129,14 @@ describe("Annotation", () => {
 
     /* --- pinning --- */
     it("renders occurrence view form on mouse leave if pinned", () => {
-        const wrapper = mountWithIntlAttached(<MemoryRouter>
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                {...assignedOccProps}
-            /></MemoryRouter>);
+        const wrapper = mountWithIntlAttached(
+            <MemoryRouter>
+                <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+            </MemoryRouter>
+        );
 
         showOccurrenceViewForm(wrapper, popupComponentClass);
         expect(wrapper.find(Annotation).state().detailOpened).toBeTruthy();
-
 
         wrapper.find(Annotation).simulate("mouseLeave");
 
@@ -181,15 +144,17 @@ describe("Annotation", () => {
     });
 
     it("automatically renders annotation popup open on mount if sticky is passed", () => {
-        const wrapper = shallow<Annotation>(<Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}
-                                                        sticky={true}/>);
+        const wrapper = shallow<Annotation>(
+            <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} sticky={true} />
+        );
         const occurrencePopup = wrapper.find(TermOccurrenceAnnotation);
         expect(occurrencePopup.prop("isOpen")).toBeTruthy();
     });
 
     it("renders annotation popup open and pinned when sticky becomes true on update", () => {
         const wrapper = shallow<Annotation>(
-            <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+            <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+        );
         let occurrencePopup = wrapper.find(TermOccurrenceAnnotation);
         expect(occurrencePopup.prop("isOpen")).toBeFalsy();
         expect(occurrencePopup.prop("pinned")).toBeFalsy();
@@ -202,51 +167,55 @@ describe("Annotation", () => {
     // This means that the annotation is new, so let the user directly edit it
     it("renders annotation popup open and in edit mode on mount if sticky is passed and no term is associated with annotation", () => {
         assignedOccProps.resource = "";
-        const wrapper = shallow<Annotation>(<Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}
-                                                        sticky={true}/>);
+        const wrapper = shallow<Annotation>(
+            <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} sticky={true} />
+        );
         const occurrencePopup = wrapper.find(TermOccurrenceAnnotation);
         expect(occurrencePopup.prop("isOpen")).toBeTruthy();
     });
 
     /* --- registers actions --- */
     it("registers remove action if onRemove is bound", () => {
-        const wrapper = mountWithIntlAttached(<MemoryRouter>
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                sticky={true}
-                {...assignedOccProps}
-                onRemove={jest.fn()}/>
-        </MemoryRouter>);
+        const wrapper = mountWithIntlAttached(
+            <MemoryRouter>
+                <Annotation
+                    {...mockedFunctions}
+                    {...intlFunctions()}
+                    sticky={true}
+                    {...assignedOccProps}
+                    onRemove={jest.fn()}
+                />
+            </MemoryRouter>
+        );
 
-        expect(wrapper.find(popupComponentClass)
-            .props().actions.some((a: any) => a.key === "annotation.remove")
+        expect(
+            wrapper
+                .find(popupComponentClass)
+                .props()
+                .actions.some((a: any) => a.key === "annotation.remove")
         ).toEqual(true);
     });
 
     it("registers close action for occurrence form", () => {
-        const wrapper = mountWithIntlAttached(<MemoryRouter>
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                {...assignedOccProps}
-                sticky={true}/>
-        </MemoryRouter>);
+        const wrapper = mountWithIntlAttached(
+            <MemoryRouter>
+                <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} sticky={true} />
+            </MemoryRouter>
+        );
 
-        expect(wrapper.find(popupComponentClass)
-            .props().actions.some((a: any) => a.key === "annotation.close")
+        expect(
+            wrapper
+                .find(popupComponentClass)
+                .props()
+                .actions.some((a: any) => a.key === "annotation.close")
         ).toEqual(true);
     });
 
     it("renders annotation in div when specified", () => {
         mockedFunctions.onFetchTerm = jest.fn().mockResolvedValue(term);
         const wrapper = shallow(
-            <Annotation
-                {...mockedFunctions}
-                {...intlFunctions()}
-                {...assignedOccProps}
-                tag="div"
-            />);
+            <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} tag="div" />
+        );
         expect(wrapper.type()).toEqual("div");
     });
 
@@ -254,7 +223,7 @@ describe("Annotation", () => {
         it("passes content to term creation handler when it is available", () => {
             const props: any = Object.assign({}, assignedOccProps);
             props.content = "test content";
-            const wrapper = shallow<Annotation>(<Annotation {...mockedFunctions} {...intlFunctions()} {...props}/>);
+            const wrapper = shallow<Annotation>(<Annotation {...mockedFunctions} {...intlFunctions()} {...props} />);
             wrapper.instance().onCreateTerm();
             expect(mockedFunctions.onCreateTerm).toHaveBeenCalled();
             expect((mockedFunctions.onCreateTerm as jest.Mock).mock.calls[0][0]).toEqual(props.content);
@@ -262,7 +231,8 @@ describe("Annotation", () => {
 
         it("passes the text of the annotation to term creation handler when content is not available", () => {
             const wrapper = shallow<Annotation>(
-                <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+                <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+            );
             wrapper.instance().onCreateTerm();
             expect(mockedFunctions.onCreateTerm).toHaveBeenCalled();
             expect((mockedFunctions.onCreateTerm as jest.Mock).mock.calls[0][0]).toEqual(assignedOccProps.text);
@@ -271,7 +241,7 @@ describe("Annotation", () => {
         it("passes current annotation as the second argument to term creation handler", () => {
             const props: any = Object.assign({}, assignedOccProps);
             props.content = "test content";
-            const wrapper = shallow<Annotation>(<Annotation {...mockedFunctions} {...intlFunctions()} {...props}/>);
+            const wrapper = shallow<Annotation>(<Annotation {...mockedFunctions} {...intlFunctions()} {...props} />);
             wrapper.instance().onCreateTerm();
             expect(mockedFunctions.onCreateTerm).toHaveBeenCalled();
             expect((mockedFunctions.onCreateTerm as jest.Mock).mock.calls[0][1]).toEqual({
@@ -285,7 +255,8 @@ describe("Annotation", () => {
 
         it("closes the detail popup", () => {
             const wrapper = shallow<Annotation>(
-                <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+                <Annotation {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+            );
             wrapper.setState({detailOpened: true});
             wrapper.update();
             expect(wrapper.state().detailOpened).toBeTruthy();
@@ -298,7 +269,8 @@ describe("Annotation", () => {
     describe("onCloseDetail", () => {
         it("resets sticky status if annotation was sticky", () => {
             const wrapper = shallow<Annotation>(
-                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+            );
             wrapper.instance().onCloseDetail();
             expect(mockedFunctions.onResetSticky).toHaveBeenCalled();
         });
@@ -306,13 +278,11 @@ describe("Annotation", () => {
 
     describe("onClick", () => {
         it("closes annotation if it were previously open", () => {
-            const wrapper = mountWithIntlAttached(<MemoryRouter>
-                <Annotation
-                    {...mockedFunctions}
-                    {...intlFunctions()}
-                    sticky={true}
-                    {...assignedOccProps}
-                /></MemoryRouter>);
+            const wrapper = mountWithIntlAttached(
+                <MemoryRouter>
+                    <Annotation {...mockedFunctions} {...intlFunctions()} sticky={true} {...assignedOccProps} />
+                </MemoryRouter>
+            );
             assumeProps(wrapper, popupComponentClass, {isOpen: true});
 
             wrapper.find("#idabcdef").simulate("click");
@@ -324,7 +294,8 @@ describe("Annotation", () => {
         // Bug #1359, #1360
         it("sets current term to the selected one", () => {
             const wrapper = shallow<Annotation>(
-                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+            );
             return Promise.resolve().then(() => {
                 expect(wrapper.state().term).toEqual(term);
                 const selectedTerm = Generator.generateTerm();
@@ -336,7 +307,8 @@ describe("Annotation", () => {
 
         it("passes selected term to update handler", () => {
             const wrapper = shallow<Annotation>(
-                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+            );
             return Promise.resolve().then(() => {
                 expect(wrapper.state().term).toEqual(term);
                 const selectedTerm = Generator.generateTerm();
@@ -350,7 +322,8 @@ describe("Annotation", () => {
         // Bug #1399
         it("sets annotation resource to undefined when null term is selected", () => {
             const wrapper = shallow<Annotation>(
-                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps}/>);
+                <Annotation sticky={true} {...mockedFunctions} {...intlFunctions()} {...assignedOccProps} />
+            );
             return Promise.resolve().then(() => {
                 wrapper.instance().onSelectTerm(null);
                 const args = (mockedFunctions.onUpdate as jest.Mock).mock.calls[0];

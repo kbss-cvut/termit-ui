@@ -25,30 +25,32 @@ export function getTermPath(term: Term | TermInfo, user?: User | null) {
     }
     const vocIri = VocabularyUtils.create(term.vocabulary!.iri!);
     const iri = VocabularyUtils.create(term.iri);
-    return Routing.getTransitionPath(Authentication.isLoggedIn(user) ? Routes.vocabularyTermDetail : Routes.publicVocabularyTermDetail,
+    return Routing.getTransitionPath(
+        Authentication.isLoggedIn(user) ? Routes.vocabularyTermDetail : Routes.publicVocabularyTermDetail,
         {
-            params: new Map([["name", vocIri.fragment], ["termName", iri.fragment]]),
+            params: new Map([
+                ["name", vocIri.fragment],
+                ["termName", iri.fragment]
+            ]),
             query: new Map([["namespace", vocIri.namespace!]])
-        });
+        }
+    );
 }
 
-export const TermLink: React.FC<TermLinkProps> = (props) => {
+export const TermLink: React.FC<TermLinkProps> = props => {
     const {term, id, language} = props;
     const user = useSelector((state: TermItState) => state.user);
     const {i18n, locale} = useI18n();
     const label = getLocalized(term.label, language ? language : getShortLocale(locale));
     if (!term.vocabulary) {
         // This can happen e.g. when FTS returns a term in the predefined language used for term types
-        return <OutgoingLink label={label} iri={term.iri}/>;
+        return <OutgoingLink label={label} iri={term.iri} />;
     }
     const path = getTermPath(term, user);
     // Make a copy of the term with a simple localized label for the AssetLink component
     const t = Object.assign({}, term, {label});
 
-    return <AssetLink id={id}
-                      asset={t}
-                      path={path}
-                      tooltip={i18n("asset.link.tooltip")}/>
+    return <AssetLink id={id} asset={t} path={path} tooltip={i18n("asset.link.tooltip")} />;
 };
 
 export default TermLink;

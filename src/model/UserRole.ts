@@ -4,7 +4,7 @@ import MultilingualString, {context, getLocalized} from "./MultilingualString";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
-    "iri": "@id",
+    iri: "@id",
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
     description: context(VocabularyUtils.SKOS_SCOPE_NOTE)
 };

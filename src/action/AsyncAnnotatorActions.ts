@@ -19,15 +19,21 @@ export function loadAllTerms(vocabularyIri: IRI, includeImported: boolean = fals
         }
         dispatch(asyncActionRequest(action, true));
         const url = `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms`;
-        return Ajax.get(url,
-            params(Object.assign({
-                includeImported,
-                namespace: vocabularyIri.namespace
-            })))
-            .then((data: object[]) => data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : [])
+        return Ajax.get(
+            url,
+            params(
+                Object.assign({
+                    includeImported,
+                    namespace: vocabularyIri.namespace
+                })
+            )
+        )
+            .then((data: object[]) =>
+                data.length !== 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(data, TERM_CONTEXT) : []
+            )
             .then((data: TermData[]) => {
                 const terms = {};
-                data.forEach(d => terms[d.iri!] = new Term(d));
+                data.forEach(d => (terms[d.iri!] = new Term(d)));
                 return dispatch(asyncActionSuccessWithPayload(action, terms));
             })
             .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
@@ -35,7 +41,7 @@ export function loadAllTerms(vocabularyIri: IRI, includeImported: boolean = fals
 }
 
 // Cache of pending term fetches, used to prevent repeated concurrent attempts at fetching the same term
-const pendingTermFetches: { [key: string]: Promise<Term | null> } = {};
+const pendingTermFetches: {[key: string]: Promise<Term | null>} = {};
 
 export function loadTermByIri(termIri: string) {
     const action = {type: ActionType.ANNOTATOR_LOAD_TERM};

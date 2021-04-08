@@ -12,7 +12,7 @@
             &:before {
                 background: $dropdown-bg;
                 box-shadow: none;
-                content: '';
+                content: "";
                 display: block;
                 height: 12px;
                 width: 12px;
@@ -37,12 +37,12 @@
                 &.show {
                     opacity: 1;
                     pointer-events: auto;
-                    animation: show-navbar-dropdown .25s ease forwards;
+                    animation: show-navbar-dropdown 0.25s ease forwards;
                 }
 
                 &.close {
                     display: block;
-                    animation: hide-navbar-dropdown .15s ease backwards;
+                    animation: hide-navbar-dropdown 0.15s ease backwards;
                 }
             }
         }
@@ -70,7 +70,6 @@
             position: relative;
             padding: 1rem;
         }
-
 
         // Keyframes
 

@@ -21,7 +21,7 @@ import JsonLdUtils from "../util/JsonLdUtils";
 export function addSearchListener() {
     return (dispatch: ThunkDispatch, getState: () => TermItState) => {
         dispatch({
-            type: ActionType.ADD_SEARCH_LISTENER,
+            type: ActionType.ADD_SEARCH_LISTENER
         });
 
         // Trigger the search when the first search listener appears
@@ -39,7 +39,7 @@ export function addSearchListener() {
  */
 export function removeSearchListener() {
     return {
-        type: ActionType.REMOVE_SEARCH_LISTENER,
+        type: ActionType.REMOVE_SEARCH_LISTENER
     };
 }
 
@@ -56,7 +56,7 @@ export function updateSearchFilter(searchString: string) {
     return (dispatch: ThunkDispatch, getState: () => TermItState) => {
         dispatch({
             type: ActionType.UPDATE_SEARCH_FILTER,
-            searchString,
+            searchString
         });
 
         // Clear search results
@@ -106,11 +106,16 @@ export function search(searchString: string, disableLoading: boolean = true) {
     return (dispatch: ThunkDispatch) => {
         dispatch(SyncActions.asyncActionRequest(action, disableLoading));
         return Ajax.get(Constants.API_PREFIX + "/search/fts", params({searchString}))
-            .then((data: object[]) => data.length > 0 ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(data, SEARCH_RESULT_CONTEXT) : [])
+            .then((data: object[]) =>
+                data.length > 0
+                    ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(data, SEARCH_RESULT_CONTEXT)
+                    : []
+            )
             .then((data: SearchResultData[]) => {
                 dispatch(searchResult(data.map(d => new SearchResult(d))));
                 return dispatch(SyncActions.asyncActionSuccess(action));
-            }).catch((error: ErrorData) => {
+            })
+            .catch((error: ErrorData) => {
                 dispatch(SyncActions.asyncActionFailure(action, error));
                 return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
             });
@@ -123,4 +128,3 @@ export function searchResult(searchResults: SearchResult[]) {
         dispatch({type: ActionType.SEARCH_FINISH});
     };
 }
-

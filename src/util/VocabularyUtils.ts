@@ -21,7 +21,12 @@ export class IRIImpl implements IRI {
     }
 
     public equals(other?: IRI | null): boolean {
-        return other !== undefined && other !== null && this.fragment === other.fragment && this.namespace === other.namespace;
+        return (
+            other !== undefined &&
+            other !== null &&
+            this.fragment === other.fragment &&
+            this.namespace === other.namespace
+        );
     }
 
     public static create(iri: IRI): IRIImpl {

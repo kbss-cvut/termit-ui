@@ -7,7 +7,7 @@ import ActionType, {
     NotificationAction,
     SelectingTermsAction,
     SwitchLanguageAction,
-    UpdateLastModifiedAction,
+    UpdateLastModifiedAction
 } from "./ActionType";
 import ErrorInfo, {ErrorData} from "../model/ErrorInfo";
 import Message from "../model/Message";
@@ -75,7 +75,7 @@ export function executeQuerySuccess(queryString: string, result: object): Execut
 export function selectVocabularyTerm(data: TermData | null): SelectingTermsAction {
     return {
         type: ActionType.SELECT_VOCABULARY_TERM,
-        selectedTerms: data ? new Term(data) : data,
+        selectedTerms: data ? new Term(data) : data
     };
 }
 

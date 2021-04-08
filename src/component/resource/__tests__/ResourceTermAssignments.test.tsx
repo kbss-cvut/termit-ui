@@ -28,9 +28,15 @@ describe("ResourceTermAssignments", () => {
     });
 
     it("loads term assignments on mount", () => {
-        shallow(<ResourceTermAssignments resource={file} notifications={[]}
-                                         consumeNotification={consumeNotification}
-                                         loadTermAssignments={onLoadAssignments} {...intlFunctions()}/>);
+        shallow(
+            <ResourceTermAssignments
+                resource={file}
+                notifications={[]}
+                consumeNotification={consumeNotification}
+                loadTermAssignments={onLoadAssignments}
+                {...intlFunctions()}
+            />
+        );
         expect(onLoadAssignments).toHaveBeenCalledWith(file);
     });
 
@@ -39,9 +45,15 @@ describe("ResourceTermAssignments", () => {
             iri: Generator.generateUri(),
             label: "Different resource"
         });
-        const wrapper = shallow(<ResourceTermAssignments resource={file} notifications={[]}
-                                                         consumeNotification={consumeNotification}
-                                                         loadTermAssignments={onLoadAssignments} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <ResourceTermAssignments
+                resource={file}
+                notifications={[]}
+                consumeNotification={consumeNotification}
+                loadTermAssignments={onLoadAssignments}
+                {...intlFunctions()}
+            />
+        );
         wrapper.setProps({resource: differentResource});
         wrapper.update();
         expect(onLoadAssignments).toHaveBeenCalledWith(differentResource);
@@ -49,9 +61,15 @@ describe("ResourceTermAssignments", () => {
     });
 
     it("does nothing on update when resource is the same", () => {
-        const wrapper = shallow(<ResourceTermAssignments resource={file} notifications={[]}
-                                                         consumeNotification={consumeNotification}
-                                                         loadTermAssignments={onLoadAssignments} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <ResourceTermAssignments
+                resource={file}
+                notifications={[]}
+                consumeNotification={consumeNotification}
+                loadTermAssignments={onLoadAssignments}
+                {...intlFunctions()}
+            />
+        );
         wrapper.setProps({resource: file});
         wrapper.update();
         expect(onLoadAssignments).toHaveBeenCalledWith(file);
@@ -59,22 +77,32 @@ describe("ResourceTermAssignments", () => {
     });
 
     it("renders assigned terms", () => {
-        const assignments: TermAssignmentInfo[] = [{
-            term: {
-                iri: Generator.generateUri(),
-                label: {"cs" : "Test term"}
-            },
-            label: "Test term",
-            resource: file,
-            vocabulary: {
-                iri: Generator.generateUri()
-            },
-            types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }];
+        const assignments: TermAssignmentInfo[] = [
+            {
+                term: {
+                    iri: Generator.generateUri(),
+                    label: {cs: "Test term"}
+                },
+                label: "Test term",
+                resource: file,
+                vocabulary: {
+                    iri: Generator.generateUri()
+                },
+                types: [VocabularyUtils.TERM_ASSIGNMENT]
+            }
+        ];
         onLoadAssignments = jest.fn().mockImplementation(() => Promise.resolve(assignments));
-        const wrapper = mountWithIntl(<MemoryRouter><ResourceTermAssignments resource={file} notifications={[]}
-                                                                             consumeNotification={consumeNotification}
-                                                                             loadTermAssignments={onLoadAssignments} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <ResourceTermAssignments
+                    resource={file}
+                    notifications={[]}
+                    consumeNotification={consumeNotification}
+                    loadTermAssignments={onLoadAssignments}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>
+        );
         return Promise.resolve().then(() => {
             wrapper.update();
             expect(wrapper.find(TermLink).length).toEqual(1);
@@ -83,9 +111,15 @@ describe("ResourceTermAssignments", () => {
     });
 
     it("reloads assignments when text analysis finished notification is received", () => {
-        const wrapper = shallow<ResourceTermAssignments>(<ResourceTermAssignments resource={file} notifications={[]}
-                                                                                  consumeNotification={consumeNotification}
-                                                                                  loadTermAssignments={onLoadAssignments} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceTermAssignments>(
+            <ResourceTermAssignments
+                resource={file}
+                notifications={[]}
+                consumeNotification={consumeNotification}
+                loadTermAssignments={onLoadAssignments}
+                {...intlFunctions()}
+            />
+        );
         const notification: AppNotification = {source: {type: NotificationType.TEXT_ANALYSIS_FINISHED}};
         wrapper.setProps({notifications: [notification]});
         wrapper.update();
@@ -96,9 +130,15 @@ describe("ResourceTermAssignments", () => {
     });
 
     it("consumes the published text analysis finished notification", () => {
-        const wrapper = shallow<ResourceTermAssignments>(<ResourceTermAssignments resource={file} notifications={[]}
-                                                                                  consumeNotification={consumeNotification}
-                                                                                  loadTermAssignments={onLoadAssignments} {...intlFunctions()}/>);
+        const wrapper = shallow<ResourceTermAssignments>(
+            <ResourceTermAssignments
+                resource={file}
+                notifications={[]}
+                consumeNotification={consumeNotification}
+                loadTermAssignments={onLoadAssignments}
+                {...intlFunctions()}
+            />
+        );
         const notification: AppNotification = {source: {type: NotificationType.TEXT_ANALYSIS_FINISHED}};
         wrapper.setProps({notifications: [notification]});
         wrapper.update();
@@ -114,22 +154,32 @@ describe("ResourceTermAssignments", () => {
             label: "Test resource"
         });
         const term = {iri: Generator.generateUri(), label: "Test term"};
-        const assignments = [{
-            term: {
-                iri: term.iri
-            },
-            label: term.label,
-            resource: file,
-            vocabulary: {
-                iri: Generator.generateUri()
-            },
-            count: 2,
-            types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }];
+        const assignments = [
+            {
+                term: {
+                    iri: term.iri
+                },
+                label: term.label,
+                resource: file,
+                vocabulary: {
+                    iri: Generator.generateUri()
+                },
+                count: 2,
+                types: [VocabularyUtils.TERM_ASSIGNMENT]
+            }
+        ];
         onLoadAssignments = jest.fn().mockImplementation(() => Promise.resolve(assignments));
-        const wrapper = mountWithIntl(<MemoryRouter><ResourceTermAssignments resource={resource} notifications={[]}
-                                                                             consumeNotification={consumeNotification}
-                                                                             loadTermAssignments={onLoadAssignments} {...intlFunctions()}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <ResourceTermAssignments
+                    resource={resource}
+                    notifications={[]}
+                    consumeNotification={consumeNotification}
+                    loadTermAssignments={onLoadAssignments}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>
+        );
         return Promise.resolve().then(() => {
             expect(wrapper.exists(".m-resource-term-occurrences-container")).toBeFalsy();
         });
@@ -140,21 +190,29 @@ describe("ResourceTermAssignments", () => {
             iri: Generator.generateUri(),
             label: "Different resource"
         });
-        const wrapper = shallow<ResourceTermAssignments>(<ResourceTermAssignments resource={file} notifications={[]}
-                                                                                  consumeNotification={consumeNotification}
-                                                                                  loadTermAssignments={onLoadAssignments} {...intlFunctions()}/>);
-        const existingAssignments: TermAssignmentInfo[] = [{
-            term: {
-                iri: Generator.generateUri(),
-                label: { "cs" : "Test term" }
-            },
-            label: "Test term",
-            resource: file,
-            vocabulary: {
-                iri: Generator.generateUri()
-            },
-            types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }];
+        const wrapper = shallow<ResourceTermAssignments>(
+            <ResourceTermAssignments
+                resource={file}
+                notifications={[]}
+                consumeNotification={consumeNotification}
+                loadTermAssignments={onLoadAssignments}
+                {...intlFunctions()}
+            />
+        );
+        const existingAssignments: TermAssignmentInfo[] = [
+            {
+                term: {
+                    iri: Generator.generateUri(),
+                    label: {cs: "Test term"}
+                },
+                label: "Test term",
+                resource: file,
+                vocabulary: {
+                    iri: Generator.generateUri()
+                },
+                types: [VocabularyUtils.TERM_ASSIGNMENT]
+            }
+        ];
         wrapper.setState({assignments: existingAssignments});
         wrapper.setProps({resource: differentResource});
         wrapper.update();

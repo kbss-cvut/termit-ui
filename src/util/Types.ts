@@ -41,7 +41,6 @@ export interface TreeSelectFetchOptionsParams<T> {
  */
 export type Literal = number | string | boolean;
 
-
 export interface BasicRouteProps {
     match: match<any>;
     location: Location;

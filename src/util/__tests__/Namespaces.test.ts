@@ -2,7 +2,6 @@ import Generator from "../../__tests__/environment/Generator";
 import Namespaces, {RDFS, SKOS} from "../Namespaces";
 
 describe("Namespaces", () => {
-
     describe("getPrefixedOrDefault", () => {
         it("returns full IRI if it does not contain any supported namespace", () => {
             const iri = Generator.generateUri();

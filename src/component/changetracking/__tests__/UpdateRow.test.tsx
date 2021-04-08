@@ -10,7 +10,6 @@ import {Label} from "reactstrap";
 import Constants from "../../../util/Constants";
 
 describe("UpdateRow", () => {
-
     beforeEach(() => {
         mockUseI18n();
     });
@@ -26,7 +25,7 @@ describe("UpdateRow", () => {
             newValue: {iri: newValue},
             types: [VocabularyUtils.UPDATE_EVENT]
         });
-        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()}/>);
+        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
         const link = wrapper.find(OutgoingLink);
         expect(link.exists()).toBeTruthy();
         expect(link.prop("iri")).toEqual(newValue);
@@ -44,7 +43,7 @@ describe("UpdateRow", () => {
             originalValue: [{iri: idValue}, literalValue],
             types: [VocabularyUtils.UPDATE_EVENT]
         });
-        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()}/>);
+        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
         const link = wrapper.find(OutgoingLink);
         expect(link.exists()).toBeTruthy();
         expect(link.prop("iri")).toEqual(idValue);
@@ -57,7 +56,7 @@ describe("UpdateRow", () => {
         const newValue = {
             "@language": Constants.DEFAULT_LANGUAGE,
             "@value": "Test value"
-        }
+        };
         const record = new UpdateRecord({
             iri: Generator.generateUri(),
             timestamp: Date.now(),
@@ -67,7 +66,7 @@ describe("UpdateRow", () => {
             newValue,
             types: [VocabularyUtils.UPDATE_EVENT]
         });
-        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()}/>);
+        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
         const label = wrapper.find(Label);
         expect(label.exists()).toBeTruthy();
         expect(label.childAt(1).childAt(0).text()).toContain(Constants.DEFAULT_LANGUAGE);
@@ -75,13 +74,16 @@ describe("UpdateRow", () => {
     });
 
     it("renders multilingual string value change", () => {
-        const newValue = [{
-            "@language": Constants.DEFAULT_LANGUAGE,
-            "@value": "Test value"
-        }, {
-            "@language": "cs",
-            "@value": "Testovaci hodnota"
-        }];
+        const newValue = [
+            {
+                "@language": Constants.DEFAULT_LANGUAGE,
+                "@value": "Test value"
+            },
+            {
+                "@language": "cs",
+                "@value": "Testovaci hodnota"
+            }
+        ];
         const record = new UpdateRecord({
             iri: Generator.generateUri(),
             timestamp: Date.now(),
@@ -91,7 +93,7 @@ describe("UpdateRow", () => {
             newValue,
             types: [VocabularyUtils.UPDATE_EVENT]
         });
-        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()}/>);
+        const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
         const label = wrapper.find(Label);
         expect(label.exists()).toBeTruthy();
         expect(label.length).toEqual(newValue.length);
@@ -99,6 +101,6 @@ describe("UpdateRow", () => {
             const matching = label.filterWhere(lab => lab.childAt(1).childAt(0).text().indexOf(nv["@language"]) !== -1);
             expect(matching.exists()).toBeTruthy();
             expect(matching.childAt(0).text()).toContain(nv["@value"]);
-        })
+        });
     });
 });

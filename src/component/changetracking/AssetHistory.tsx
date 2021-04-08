@@ -29,31 +29,39 @@ export const AssetHistory: React.FC<AssetHistoryProps> = props => {
         }
     }, [asset, loadHistory]);
     if (!records) {
-        return <ContainerMask text={i18n("history.loading")}/>;
+        return <ContainerMask text={i18n("history.loading")} />;
     }
     if (records.length === 0) {
-        return <div id="history-empty-notice" className="additional-metadata-container italics">
-            {i18n("history.empty")}
-        </div>;
+        return (
+            <div id="history-empty-notice" className="additional-metadata-container italics">
+                {i18n("history.empty")}
+            </div>
+        );
     }
-    return <div className="additional-metadata-container">
-        <Table striped={true}>
-            <thead>
-            <tr>
-                <th className="col-xs-2">{i18n("history.whenwho")}</th>
-                <th className="col-xs-1">{i18n("history.type")}</th>
-                <th className="col-xs-2">{i18n("history.changedAttribute")}</th>
-                <th className="col-xs-2">{i18n("history.originalValue")}</th>
-                <th className="col-xs-2">{i18n("history.newValue")}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {records.map(r => r instanceof UpdateRecord ?
-                <UpdateRow key={r.iri} record={r as UpdateRecord}/> :
-                <PersistRow key={r.iri} record={r as PersistRecord}/>)}
-            </tbody>
-        </Table>
-    </div>;
+    return (
+        <div className="additional-metadata-container">
+            <Table striped={true}>
+                <thead>
+                    <tr>
+                        <th className="col-xs-2">{i18n("history.whenwho")}</th>
+                        <th className="col-xs-1">{i18n("history.type")}</th>
+                        <th className="col-xs-2">{i18n("history.changedAttribute")}</th>
+                        <th className="col-xs-2">{i18n("history.originalValue")}</th>
+                        <th className="col-xs-2">{i18n("history.newValue")}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {records.map(r =>
+                        r instanceof UpdateRecord ? (
+                            <UpdateRow key={r.iri} record={r as UpdateRecord} />
+                        ) : (
+                            <PersistRow key={r.iri} record={r as PersistRecord} />
+                        )
+                    )}
+                </tbody>
+            </Table>
+        </div>
+    );
 };
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {

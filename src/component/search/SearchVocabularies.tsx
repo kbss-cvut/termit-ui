@@ -9,22 +9,26 @@ import SearchResult from "../../model/SearchResult";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 export class SearchVocabularies extends Search {
-
     protected getResults(): SearchResult[] | null {
-        return this.props.searchResults ? this.props.searchResults.filter(r => r.hasType(VocabularyUtils.VOCABULARY)) : null;
+        return this.props.searchResults
+            ? this.props.searchResults.filter(r => r.hasType(VocabularyUtils.VOCABULARY))
+            : null;
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        searchQuery: state.searchQuery,
-        searchResults: state.searchResults,
-        searchInProgress: state.searchInProgress,
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        updateSearchFilter: (searchString: string) => dispatch(SearchActions.updateSearchFilter(searchString)),
-        addSearchListener: () => dispatch(SearchActions.addSearchListener()),
-        removeSearchListener: () => dispatch(SearchActions.removeSearchListener()),
-    };
-})(injectIntl(withI18n(SearchVocabularies)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            searchQuery: state.searchQuery,
+            searchResults: state.searchResults,
+            searchInProgress: state.searchInProgress
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            updateSearchFilter: (searchString: string) => dispatch(SearchActions.updateSearchFilter(searchString)),
+            addSearchListener: () => dispatch(SearchActions.addSearchListener()),
+            removeSearchListener: () => dispatch(SearchActions.removeSearchListener())
+        };
+    }
+)(injectIntl(withI18n(SearchVocabularies)));

@@ -3,9 +3,7 @@ import {DocumentData} from "../Document";
 import Generator from "../../__tests__/environment/Generator";
 
 describe("File", () => {
-
     describe("toJsonLd", () => {
-
         function generateDocumentData(): DocumentData {
             return {
                 iri: Generator.generateUri(),

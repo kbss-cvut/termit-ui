@@ -21,14 +21,15 @@ interface AnnotatorContentProps {
 }
 
 const ANNOTATION_MINIMUM_SCORE_THRESHOLD = 0.65;
-const PREPROCESSING_INSTRUCTIONS = [{
-    shouldPreprocessNode: (node: any): boolean =>
-        node.name && node.name === "a",
-    preprocessNode: (node: any) => {
-        node.attribs["data-href"] = node.attribs.href;
-        delete node.attribs.href;
+const PREPROCESSING_INSTRUCTIONS = [
+    {
+        shouldPreprocessNode: (node: any): boolean => node.name && node.name === "a",
+        preprocessNode: (node: any) => {
+            node.attribs["data-href"] = node.attribs.href;
+            delete node.attribs.href;
+        }
     }
-}];
+];
 
 function trueFunc() {
     return true;
@@ -41,44 +42,58 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = props => {
     const reactComponents = React.useMemo(() => {
         const htmlToReactParser = new HtmlToReactParser();
         const processNodeDefinitions = new ProcessNodeDefinitions(React);
-        const processingInstructions = [{
-            // Custom annotated element processing
-            shouldProcessNode: (node: any): boolean =>
-                AnnotationDomHelper.isAnnotation(node, prefixMap),
-            processNode: (node: DomHandlerNode, children?: React.ReactNode[]) => {
-                const elem = node as DomHandlerElement;
-                // filter annotations by score
-                if (!AnnotationDomHelper.isAnnotationWithMinimumScore(elem, ANNOTATION_MINIMUM_SCORE_THRESHOLD)) {
-                    return <React.Fragment key={elem.attribs.about}>{children}</React.Fragment>;
+        const processingInstructions = [
+            {
+                // Custom annotated element processing
+                shouldProcessNode: (node: any): boolean => AnnotationDomHelper.isAnnotation(node, prefixMap),
+                processNode: (node: DomHandlerNode, children?: React.ReactNode[]) => {
+                    const elem = node as DomHandlerElement;
+                    // filter annotations by score
+                    if (!AnnotationDomHelper.isAnnotationWithMinimumScore(elem, ANNOTATION_MINIMUM_SCORE_THRESHOLD)) {
+                        return <React.Fragment key={elem.attribs.about}>{children}</React.Fragment>;
+                    }
+                    const sticky = stickyAnnotationId === elem.attribs.about;
+
+                    const attribs = HtmlParserUtils.resolveRDFAttributes(elem.attribs, prefixMap);
+
+                    return (
+                        <Annotation
+                            key={elem.attribs.about}
+                            tag={elem.name}
+                            onRemove={onRemove}
+                            onUpdate={onUpdate}
+                            onResetSticky={onResetSticky}
+                            onCreateTerm={onCreateTerm}
+                            sticky={sticky}
+                            text={HtmlDomUtils.getTextContent(node)}
+                            {...attribs}>
+                            {children}
+                        </Annotation>
+                    );
                 }
-                const sticky = stickyAnnotationId === elem.attribs.about;
-
-                const attribs = HtmlParserUtils.resolveRDFAttributes(elem.attribs, prefixMap);
-
-                return <Annotation key={elem.attribs.about} tag={elem.name} onRemove={onRemove}
-                                   onUpdate={onUpdate}
-                                   onResetSticky={onResetSticky}
-                                   onCreateTerm={onCreateTerm}
-                                   sticky={sticky} text={HtmlDomUtils.getTextContent(node)} {...attribs}>
-                    {children}
-                </Annotation>;
+            },
+            {
+                // Anything else
+                shouldProcessNode: trueFunc,
+                processNode: processNodeDefinitions.processDefaultNode
             }
-        }, {
-            // Anything else
-            shouldProcessNode: trueFunc,
-            processNode: processNodeDefinitions.processDefaultNode
-        }];
+        ];
 
         return htmlToReactParser.parseWithInstructions(
             HtmlParserUtils.dom2html(content),
             trueFunc,
             processingInstructions,
-            PREPROCESSING_INSTRUCTIONS);
+            PREPROCESSING_INSTRUCTIONS
+        );
     }, [prefixMap, stickyAnnotationId, content, onRemove, onUpdate, onResetSticky, onCreateTerm]);
 
-    return <>
-        {Utils.sanitizeArray(reactComponents).map((n, i) => <React.Fragment key={i}>{n}</React.Fragment>)}
-    </>;
-}
+    return (
+        <>
+            {Utils.sanitizeArray(reactComponents).map((n, i) => (
+                <React.Fragment key={i}>{n}</React.Fragment>
+            ))}
+        </>
+    );
+};
 
 export default AnnotatorContent;

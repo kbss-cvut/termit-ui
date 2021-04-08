@@ -10,7 +10,6 @@ import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
 import {withHooks} from "jest-react-hooks-shallow";
 
 describe("TermDefinitionAnnotation", () => {
-
     const annotationProps = {
         target: "id_:123",
         resource: Generator.generateUri(),
@@ -35,21 +34,42 @@ describe("TermDefinitionAnnotation", () => {
     });
 
     it("renders term definition view by default", () => {
-        const wrapper = shallow(<TermDefinitionAnnotation isOpen={true}
-                                                          term={Generator.generateTerm()} {...annotationProps} {...actions} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <TermDefinitionAnnotation
+                isOpen={true}
+                term={Generator.generateTerm()}
+                {...annotationProps}
+                {...actions}
+                {...intlFunctions()}
+            />
+        );
         expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(TermDefinitionAnnotationView);
     });
 
     it("renders term definition edit when no term is provided", () => {
-        const wrapper = shallow(<TermDefinitionAnnotation isOpen={true}
-                                                          term={null} {...annotationProps} {...actions} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <TermDefinitionAnnotation
+                isOpen={true}
+                term={null}
+                {...annotationProps}
+                {...actions}
+                {...intlFunctions()}
+            />
+        );
         expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(AnnotationTerms);
     });
 
     it("switches from editing to view mode when a term is provided", () => {
         withHooks(() => {
-            const wrapper = shallow(<TermDefinitionAnnotation isOpen={true}
-                                                              term={null} {...annotationProps} {...actions} {...intlFunctions()}/>);
+            const wrapper = shallow(
+                <TermDefinitionAnnotation
+                    isOpen={true}
+                    term={null}
+                    {...annotationProps}
+                    {...actions}
+                    {...intlFunctions()}
+                />
+            );
             expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(AnnotationTerms);
             const term = Generator.generateTerm();
             wrapper.setProps({term});

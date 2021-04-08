@@ -2,7 +2,6 @@ import Constants from "./Constants";
 import User, {EMPTY_USER} from "../model/User";
 
 export default class Authentication {
-
     public static saveToken(jwt: string): void {
         localStorage.setItem(Constants.STORAGE_JWT_KEY, jwt);
     }

@@ -23,7 +23,7 @@ function formatBytes(bytes: number, decimals = 2) {
 
 interface UploadFileProps extends HasI18n {
     resource?: Resource | undefined;
-    setFile: (file : File) => void;
+    setFile: (file: File) => void;
 }
 
 interface UploadFileState {
@@ -58,28 +58,40 @@ export class UploadFile extends React.Component<UploadFileProps, UploadFileState
     };
 
     public render() {
-        const containerClasses = classNames("form-group", "create-resource-dropzone", {"active": this.state.dragActive});
-        return <Row>
+        const containerClasses = classNames("form-group", "create-resource-dropzone", {active: this.state.dragActive});
+        return (
+            <Row>
                 <Col xs={12}>
-                    <Dropzone onDrop={this.onFileSelected} onDragEnter={this.onDragEnter}
-                              onDragLeave={this.onDragLeave} multiple={false}>
+                    <Dropzone
+                        onDrop={this.onFileSelected}
+                        onDragEnter={this.onDragEnter}
+                        onDragLeave={this.onDragLeave}
+                        multiple={false}>
                         {({getRootProps, getInputProps}) => (
                             <div {...getRootProps()} className={containerClasses}>
                                 <input {...getInputProps()} />
                                 <div>
-                                    <Label
-                                        className="placeholder-text w-100 text-center">{this.props.i18n("resource.create.file.select.label")}</Label>
+                                    <Label className="placeholder-text w-100 text-center">
+                                        {this.props.i18n("resource.create.file.select.label")}
+                                    </Label>
                                 </div>
-                                <div className="w-100 icon-container text-center"><GoCloudUpload/></div>
-                                {this.state.file && <div className="w-100 text-center">
-                                    <Label>{this.state.file.name + " - " + formatBytes(this.state.file.size)}</Label>
-                                </div>}
+                                <div className="w-100 icon-container text-center">
+                                    <GoCloudUpload />
+                                </div>
+                                {this.state.file && (
+                                    <div className="w-100 text-center">
+                                        <Label>
+                                            {this.state.file.name + " - " + formatBytes(this.state.file.size)}
+                                        </Label>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </Dropzone>
                 </Col>
-            </Row>;
+            </Row>
+        );
     }
 }
 
-export default (injectIntl(withI18n(UploadFile)));
+export default injectIntl(withI18n(UploadFile));

@@ -39,7 +39,6 @@ jest.mock("../../util/Ajax", () => {
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("AsyncUserActions", () => {
-
     const name = "test-user";
     const namespace = VocabularyUtils.NS_TERMIT + "users/";
 
@@ -91,7 +90,6 @@ describe("AsyncUserActions", () => {
     });
 
     describe("register", () => {
-
         const userInfo: UserAccountData = {
             firstName: "test",
             lastName: "testowitch",
@@ -108,10 +106,12 @@ describe("AsyncUserActions", () => {
 
         it("returns error info on error", () => {
             const message = "User already exists";
-            Ajax.post = jest.fn().mockImplementation(() => Promise.reject({
-                status: 409,
-                message
-            }));
+            Ajax.post = jest.fn().mockImplementation(() =>
+                Promise.reject({
+                    status: 409,
+                    message
+                })
+            );
             return Promise.resolve((store.dispatch as ThunkDispatch)(register(userInfo))).then(result => {
                 expect(result.type).toEqual(ActionType.REGISTER);
                 expect((result as AsyncFailureAction).error).toBeDefined();
@@ -293,7 +293,6 @@ describe("AsyncUserActions", () => {
     });
 
     describe("change password", () => {
-
         beforeEach(() => {
             Ajax.get = jest.fn().mockImplementation(() => Promise.resolve({}));
         });
@@ -345,7 +344,9 @@ describe("AsyncUserActions", () => {
             });
             Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
             return Promise.resolve((store.dispatch as ThunkDispatch)(changePassword(userWithPassword))).then(() => {
-                const action: AsyncAction = store.getActions().find(a => a.type === ActionType.CHANGE_PASSWORD && a.status === AsyncActionStatus.SUCCESS);
+                const action: AsyncAction = store
+                    .getActions()
+                    .find(a => a.type === ActionType.CHANGE_PASSWORD && a.status === AsyncActionStatus.SUCCESS);
                 expect(action).toBeDefined();
             });
         });

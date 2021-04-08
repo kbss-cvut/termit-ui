@@ -33,7 +33,6 @@ function generateResults(type: string, count: number = 5): SearchResult[] {
 }
 
 describe("SearchResultsOverlay", () => {
-
     let onClose: () => void;
     let onOpenSearch: () => void;
 
@@ -57,17 +56,37 @@ describe("SearchResultsOverlay", () => {
 
     it("shows only first x search results, others can be viewed on dedicated search page", () => {
         const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const items = document.getElementsByClassName("search-result-link");
         expect(items.length).toEqual(MAX_RENDERED_RESULTS);
     });
 
     it("renders info message about no results when empty results are provided", () => {
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={[]}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={[]}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const items = document.getElementsByClassName("search-result-link");
         expect(items.length).toEqual(0);
         expect(document.getElementsByClassName("search-result-no-results").length).toEqual(1);
@@ -75,26 +94,56 @@ describe("SearchResultsOverlay", () => {
 
     it("renders count info when more results than displayable count are provided", () => {
         const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         expect(document.getElementsByClassName("search-result-link").length).toEqual(MAX_RENDERED_RESULTS);
         expect(document.getElementsByClassName("search-result-info").length).toEqual(1);
     });
 
     it("renders results as links leading to result details", () => {
         const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS);
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const links = document.getElementsByClassName("m-asset-link");
         expect(links.length).toEqual(MAX_RENDERED_RESULTS);
     });
 
     it("invokes search open when no results info link is clicked", () => {
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={[]}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={[]}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const noResultsInfo = document.getElementsByClassName("search-result-no-results")[0];
         Simulate.click(noResultsInfo);
         expect(onOpenSearch).toHaveBeenCalled();
@@ -102,9 +151,19 @@ describe("SearchResultsOverlay", () => {
 
     it("invokes search open when count info link is clicked", () => {
         const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const infoLink = document.getElementsByClassName("search-result-info")[0];
         Simulate.click(infoLink);
         expect(onOpenSearch).toHaveBeenCalled();
@@ -113,24 +172,37 @@ describe("SearchResultsOverlay", () => {
     it("merges duplicate results to prevent rendering issues", () => {
         const iri = Generator.generateUri();
         const vocabularyIri = Generator.generateUri();
-        const results = [new SearchResult({
-            iri,
-            label: "Result",
-            snippetText: "<em>Match</em> multiple times. <em>Match</em> again",
-            snippetField: "comment",
-            vocabulary: {iri: vocabularyIri},
-            types: [Vocabulary.TERM]
-        }), new SearchResult({
-            iri,
-            label: "Result",
-            snippetText: "<em>Match</em> multiple times. <em>Match</em> again",
-            snippetField: "comment",
-            vocabulary: {iri: vocabularyIri},
-            types: [Vocabulary.TERM]
-        })];
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        const results = [
+            new SearchResult({
+                iri,
+                label: "Result",
+                snippetText: "<em>Match</em> multiple times. <em>Match</em> again",
+                snippetField: "comment",
+                vocabulary: {iri: vocabularyIri},
+                types: [Vocabulary.TERM]
+            }),
+            new SearchResult({
+                iri,
+                label: "Result",
+                snippetText: "<em>Match</em> multiple times. <em>Match</em> again",
+                snippetField: "comment",
+                vocabulary: {iri: vocabularyIri},
+                types: [Vocabulary.TERM]
+            })
+        ];
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const items = document.getElementsByClassName("search-result-link");
         expect(items.length).toEqual(1);
     });
@@ -138,9 +210,19 @@ describe("SearchResultsOverlay", () => {
     it("reports correct result count after merging duplicates", () => {
         const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
         results.push(results[0].copy());
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const infoLink = document.getElementsByClassName("search-result-info")[0];
         const expCount = results.length - 1;
         expect(infoLink.textContent).toContain(expCount.toString());
@@ -158,9 +240,19 @@ describe("SearchResultsOverlay", () => {
             types: [VocabularyUtils.TERM]
         });
         results.push(newItem);
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const items = document.getElementsByClassName("search-result-link");
         expect(items.length).toEqual(results.length - 1);
         expect(items[0].id).toContain(newItem.iri);
@@ -169,9 +261,19 @@ describe("SearchResultsOverlay", () => {
     it("shows correct number of results when there are fewer than threshold and some are merged", () => {
         const results = generateResults(Vocabulary.TERM, 1);
         results.push(results[0].copy());
-        wrapper = mountWithIntl(<MemoryRouter><SearchResultsOverlay targetId="root" show={true} searchResults={results}
-                                                                    onClose={onClose}
-                                                                    onOpenSearch={onOpenSearch} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        wrapper = mountWithIntl(
+            <MemoryRouter>
+                <SearchResultsOverlay
+                    targetId="root"
+                    show={true}
+                    searchResults={results}
+                    onClose={onClose}
+                    onOpenSearch={onOpenSearch}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         const infoLink = document.getElementById("search-results-link");
         expect(infoLink).toBeNull();
         const items = document.getElementsByClassName("search-result-link");

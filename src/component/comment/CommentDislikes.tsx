@@ -31,11 +31,13 @@ const CommentDislikes: React.FC<CommentDislikesProps> = props => {
         };
         iconClass = "actionable-reaction";
     }
-    return <div className="ml-2 d-inline-block">
-        <IconElem className={iconClass} title={props.i18n(title)} onClick={onClick}/>
-        &nbsp;
-        {dislikes.length}
-    </div>;
-}
+    return (
+        <div className="ml-2 d-inline-block">
+            <IconElem className={iconClass} title={props.i18n(title)} onClick={onClick} />
+            &nbsp;
+            {dislikes.length}
+        </div>
+    );
+};
 
 export default connect((state: TermItState) => ({currentUser: state.user}))(injectIntl(withI18n(CommentDislikes)));

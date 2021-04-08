@@ -1,30 +1,30 @@
 .users-action-button {
-  min-width: 6.7rem;
+    min-width: 6.7rem;
 }
 
 .users-row-actions {
-  text-align: center;
-  @media screen and (min-width: 1280px) {
-    width: 18rem;
-    & > button {
-      margin-right: 0.5rem;
+    text-align: center;
+    @media screen and (min-width: 1280px) {
+        width: 18rem;
+        & > button {
+            margin-right: 0.5rem;
 
-      &:last-child {
-        margin-right: 0;
-      }
+            &:last-child {
+                margin-right: 0;
+            }
+        }
     }
-  }
 
-  @media screen and (max-width: 1280px) {
-    width: 7.25rem;
-  }
+    @media screen and (max-width: 1280px) {
+        width: 7.25rem;
+    }
 
-  & > button {
-    margin-top: 0.125rem;
-    margin-bottom: 0.125rem;
-  }
+    & > button {
+        margin-top: 0.125rem;
+        margin-bottom: 0.125rem;
+    }
 }
 
 .m-user-status .info-icon {
-  margin-left: 0.25rem;
+    margin-left: 0.25rem;
 }

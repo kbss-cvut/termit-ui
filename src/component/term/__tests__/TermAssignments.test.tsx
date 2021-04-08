@@ -11,7 +11,6 @@ import {ResourceLink} from "../../resource/ResourceLink";
 import {TermAssignments as AssignmentInfo} from "../../../model/TermAssignments";
 
 describe("TermAssignments", () => {
-
     let loadTermAssignments: (term: Term) => Promise<any>;
     const onAssignmentsLoad: (assignmentsCount: number) => void = jest.fn();
     let term: Term;
@@ -23,7 +22,7 @@ describe("TermAssignments", () => {
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve([]));
         term = new Term({
             iri: Generator.generateUri(),
-            label:  {"en":"Test term"},
+            label: {en: "Test term"},
             vocabulary: {
                 iri: Generator.generateUri()
             }
@@ -40,29 +39,50 @@ describe("TermAssignments", () => {
     });
 
     it("does not render anything when no assignments are available", () => {
-        mounted = mountWithIntl(<TermAssignments term={term} onLoad={onAssignmentsLoad}
-                                                 loadTermAssignments={loadTermAssignments} {...intlFunctions()}/>);
+        mounted = mountWithIntl(
+            <TermAssignments
+                term={term}
+                onLoad={onAssignmentsLoad}
+                loadTermAssignments={loadTermAssignments}
+                {...intlFunctions()}
+            />
+        );
         expect(mounted.find(".additional-metadata").exists()).toBeFalsy();
     });
 
     it("loads assignments on mount", () => {
-        shallow(<TermAssignments term={term} loadTermAssignments={loadTermAssignments}
-                                 onLoad={onAssignmentsLoad}
-                                 {...intlFunctions()}/>);
+        shallow(
+            <TermAssignments
+                term={term}
+                loadTermAssignments={loadTermAssignments}
+                onLoad={onAssignmentsLoad}
+                {...intlFunctions()}
+            />
+        );
         expect(loadTermAssignments).toHaveBeenCalledWith(term);
     });
 
     it("renders assignments when they are loaded", () => {
-        const assignments: AssignmentInfo[] = [{
-            term: {iri: term.iri},
-            resource: {iri: Generator.generateUri()},
-            label: "Test resource",
-            types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }];
+        const assignments: AssignmentInfo[] = [
+            {
+                term: {iri: term.iri},
+                resource: {iri: Generator.generateUri()},
+                label: "Test resource",
+                types: [VocabularyUtils.TERM_ASSIGNMENT]
+            }
+        ];
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve(assignments));
-        mounted = mountWithIntl(<MemoryRouter><TermAssignments term={term} onLoad={onAssignmentsLoad}
-                                                               loadTermAssignments={loadTermAssignments} {...intlFunctions()}/>
-        </MemoryRouter>, {attachTo: element});
+        mounted = mountWithIntl(
+            <MemoryRouter>
+                <TermAssignments
+                    term={term}
+                    onLoad={onAssignmentsLoad}
+                    loadTermAssignments={loadTermAssignments}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         return Promise.resolve().then(() => {
             mounted.update();
             expect(mounted.find(".additional-metadata-container").exists()).toBeTruthy();
@@ -70,13 +90,18 @@ describe("TermAssignments", () => {
     });
 
     it("reloads assignments on update", () => {
-        const wrapper = shallow(<TermAssignments term={term} loadTermAssignments={loadTermAssignments}
-                                                 onLoad={onAssignmentsLoad}
-                                                 {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <TermAssignments
+                term={term}
+                loadTermAssignments={loadTermAssignments}
+                onLoad={onAssignmentsLoad}
+                {...intlFunctions()}
+            />
+        );
         expect(loadTermAssignments).toHaveBeenCalledWith(term);
         const differentTerm = new Term({
             iri: Generator.generateUri(),
-            label: {"en":"Different term"},
+            label: {en: "Different term"},
             vocabulary: {
                 iri: Generator.generateUri()
             }
@@ -88,24 +113,39 @@ describe("TermAssignments", () => {
     });
 
     it("does not reload assignments if the term is still the same", () => {
-        const wrapper = shallow(<TermAssignments term={term} loadTermAssignments={loadTermAssignments}
-                                                 onLoad={onAssignmentsLoad}
-                                                 {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <TermAssignments
+                term={term}
+                loadTermAssignments={loadTermAssignments}
+                onLoad={onAssignmentsLoad}
+                {...intlFunctions()}
+            />
+        );
         wrapper.update();
         expect(loadTermAssignments).toHaveBeenCalledTimes(1);
     });
 
     it("renders assignment target resource name as link", () => {
-        const assignments: AssignmentInfo[] = [{
-            term: {iri: term.iri},
-            resource: {iri: Generator.generateUri()},
-            label: "Test resource",
-            types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }];
+        const assignments: AssignmentInfo[] = [
+            {
+                term: {iri: term.iri},
+                resource: {iri: Generator.generateUri()},
+                label: "Test resource",
+                types: [VocabularyUtils.TERM_ASSIGNMENT]
+            }
+        ];
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve(assignments));
-        mounted = mountWithIntl(<MemoryRouter><TermAssignments term={term} onLoad={onAssignmentsLoad}
-                                                               loadTermAssignments={loadTermAssignments} {...intlFunctions()}/>
-        </MemoryRouter>, {attachTo: element});
+        mounted = mountWithIntl(
+            <MemoryRouter>
+                <TermAssignments
+                    term={term}
+                    onLoad={onAssignmentsLoad}
+                    loadTermAssignments={loadTermAssignments}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         return Promise.resolve().then(() => {
             mounted.update();
             const link = mounted.find(ResourceLink);
@@ -117,15 +157,26 @@ describe("TermAssignments", () => {
     it("renders term assignments for the same resource correctly", () => {
         const fileIri = Generator.generateUri();
         const fileName = "Test file";
-        const occurrences = [{
-            term: {iri: term.iri},
-            resource: {iri: fileIri},
-            label: fileName,
-            types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }];
+        const occurrences = [
+            {
+                term: {iri: term.iri},
+                resource: {iri: fileIri},
+                label: fileName,
+                types: [VocabularyUtils.TERM_ASSIGNMENT]
+            }
+        ];
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve(occurrences));
-        mounted = mountWithIntl(<MemoryRouter><TermAssignments term={term} onLoad={onAssignmentsLoad}
-                                                               loadTermAssignments={loadTermAssignments} {...intlFunctions()}/></MemoryRouter>, {attachTo: element});
+        mounted = mountWithIntl(
+            <MemoryRouter>
+                <TermAssignments
+                    term={term}
+                    onLoad={onAssignmentsLoad}
+                    loadTermAssignments={loadTermAssignments}
+                    {...intlFunctions()}
+                />
+            </MemoryRouter>,
+            {attachTo: element}
+        );
         return Promise.resolve().then(() => {
             mounted.update();
             const badges = mounted.find(ResourceLink);
@@ -135,27 +186,41 @@ describe("TermAssignments", () => {
 
     it("passes correct number of unique resources to which term is assigned on load", () => {
         const fileIri = Generator.generateUri();
-        const occurrences = [{
-            term: {iri: term.iri},
-            resource: {iri: Generator.generateUri()},
-            label: "a",
-            count: 2,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE]
-        }, {
-            term: {iri: term.iri},
-            resource: {iri: fileIri},
-            label: "b",
-            types: [VocabularyUtils.TERM_ASSIGNMENT]
-        }, {
-            term: {iri: term.iri},
-            resource: {iri: fileIri},
-            label: "b",
-            count: 3,
-            types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE, VocabularyUtils.SUGGESTED_TERM_OCCURRENCE]
-        }];
+        const occurrences = [
+            {
+                term: {iri: term.iri},
+                resource: {iri: Generator.generateUri()},
+                label: "a",
+                count: 2,
+                types: [VocabularyUtils.TERM_ASSIGNMENT, VocabularyUtils.TERM_OCCURRENCE]
+            },
+            {
+                term: {iri: term.iri},
+                resource: {iri: fileIri},
+                label: "b",
+                types: [VocabularyUtils.TERM_ASSIGNMENT]
+            },
+            {
+                term: {iri: term.iri},
+                resource: {iri: fileIri},
+                label: "b",
+                count: 3,
+                types: [
+                    VocabularyUtils.TERM_ASSIGNMENT,
+                    VocabularyUtils.TERM_OCCURRENCE,
+                    VocabularyUtils.SUGGESTED_TERM_OCCURRENCE
+                ]
+            }
+        ];
         loadTermAssignments = jest.fn().mockImplementation(() => Promise.resolve(occurrences));
-        shallow(<TermAssignments term={term} loadTermAssignments={loadTermAssignments}
-                                 onLoad={onAssignmentsLoad} {...intlFunctions()}/>);
+        shallow(
+            <TermAssignments
+                term={term}
+                loadTermAssignments={loadTermAssignments}
+                onLoad={onAssignmentsLoad}
+                {...intlFunctions()}
+            />
+        );
         return Promise.resolve().then(() => {
             expect(onAssignmentsLoad).toHaveBeenCalledWith(2);
         });

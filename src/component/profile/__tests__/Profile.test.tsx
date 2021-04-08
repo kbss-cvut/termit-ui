@@ -12,7 +12,6 @@ import ProfileEditForm from "../ProfileEditForm";
 import HeaderWithActions from "../../misc/HeaderWithActions";
 
 describe("Profile", () => {
-
     let updateProfile: (user: User) => Promise<AsyncAction>;
     let user: User;
 
@@ -22,7 +21,7 @@ describe("Profile", () => {
     });
 
     it("correctly renders component if !this.state.edit", () => {
-        const wrapper = mountWithIntl(<Profile updateProfile={updateProfile} user={user} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<Profile updateProfile={updateProfile} user={user} {...intlFunctions()} />);
         (wrapper.find(Profile).instance() as Profile).setState({edit: false});
         wrapper.update();
 
@@ -33,7 +32,7 @@ describe("Profile", () => {
     });
 
     it("correctly renders component if this.state.edit", () => {
-        const wrapper = mountWithIntl(<Profile updateProfile={updateProfile} user={user} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(<Profile updateProfile={updateProfile} user={user} {...intlFunctions()} />);
         (wrapper.find(Profile).instance() as Profile).setState({edit: true});
         wrapper.update();
 

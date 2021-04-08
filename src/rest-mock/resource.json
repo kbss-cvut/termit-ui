@@ -1,6 +1,6 @@
 {
-  "@id" : "http://onto.fel.cvut.cz/ontologies/application/termit/randomInstance-1529066498",
-  "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj",
-  "http://www.w3.org/2000/01/rdf-schema#label" : "Resource test 1829248856",
-  "http://www.w3.org/2000/01/rdf-schema#comment" : "Resource test description"
+    "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/randomInstance-1529066498",
+    "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj",
+    "http://www.w3.org/2000/01/rdf-schema#label": "Resource test 1829248856",
+    "http://www.w3.org/2000/01/rdf-schema#comment": "Resource test description"
 }

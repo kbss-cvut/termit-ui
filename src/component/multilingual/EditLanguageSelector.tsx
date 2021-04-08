@@ -35,7 +35,10 @@ function prioritizeLanguages(options: Language[], languages: string[]) {
     return options;
 }
 
-const OPTIONS = prioritizeLanguages(ISO6391.getLanguages(ISO6391.getAllCodes()), Object.getOwnPropertyNames(Constants.LANG).map(lang => getShortLocale(Constants.LANG[lang].locale)));
+const OPTIONS = prioritizeLanguages(
+    ISO6391.getLanguages(ISO6391.getAllCodes()),
+    Object.getOwnPropertyNames(Constants.LANG).map(lang => getShortLocale(Constants.LANG[lang].locale))
+);
 
 const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = props => {
     const {language, term, onSelect, onRemove} = props;
@@ -54,26 +57,35 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = props => {
         options.splice(toRemove, 1);
     }
 
-    return <div><Nav id="term-edit-language-selector" tabs={true} className="language-selector-nav">
-        {renderLanguages(existingLanguages, language, formatMessage, onSelect, onRemove)}
-        <NavItem key="add-language" className={classNames({"edit-language-selector": adding})}>
-            {!adding ?
-                <NavLink onClick={() => setAdding(true)} className="language-selector-item"><FaPlusCircle
-                    className="align-baseline"/></NavLink> :
-                <IntelligentTreeSelect onChange={(item: Language) => onSelect(item.code)}
-                                       options={options}
-                                       maxHeight={200}
-                                       multi={false}
-                                       labelKey="nativeName"
-                                       valueKey="code"
-                                       simpleTreeData={true}
-                                       renderAsTree={false}
-                                       showSettings={false}
-                                       clearable={false}
-                                       placeholder={i18n("term.language.add.placeholder")}
-                                       noResultsText={i18n("main.search.no-results")}/>}
-        </NavItem>
-    </Nav></div>;
+    return (
+        <div>
+            <Nav id="term-edit-language-selector" tabs={true} className="language-selector-nav">
+                {renderLanguages(existingLanguages, language, formatMessage, onSelect, onRemove)}
+                <NavItem key="add-language" className={classNames({"edit-language-selector": adding})}>
+                    {!adding ? (
+                        <NavLink onClick={() => setAdding(true)} className="language-selector-item">
+                            <FaPlusCircle className="align-baseline" />
+                        </NavLink>
+                    ) : (
+                        <IntelligentTreeSelect
+                            onChange={(item: Language) => onSelect(item.code)}
+                            options={options}
+                            maxHeight={200}
+                            multi={false}
+                            labelKey="nativeName"
+                            valueKey="code"
+                            simpleTreeData={true}
+                            renderAsTree={false}
+                            showSettings={false}
+                            clearable={false}
+                            placeholder={i18n("term.language.add.placeholder")}
+                            noResultsText={i18n("main.search.no-results")}
+                        />
+                    )}
+                </NavItem>
+            </Nav>
+        </div>
+    );
 };
 
 export default EditLanguageSelector;

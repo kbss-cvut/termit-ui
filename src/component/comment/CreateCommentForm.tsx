@@ -21,14 +21,26 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = props => {
         });
     };
 
-    return <div className="comments-create mt-3">
-        <TextArea value={content} onChange={(e) => setContent(e.target.value)}
-                  placeholder={i18n("comments.create.placeholder")} rows={5}/>
-        <ButtonToolbar className="justify-content-end">
-            <Button color="success" id="comment-submit" size="sm" disabled={content.trim().length === 0 || submitting}
-                    onClick={submit}>{i18n("comments.create.submit.title")}</Button>
-        </ButtonToolbar>
-    </div>;
+    return (
+        <div className="comments-create mt-3">
+            <TextArea
+                value={content}
+                onChange={e => setContent(e.target.value)}
+                placeholder={i18n("comments.create.placeholder")}
+                rows={5}
+            />
+            <ButtonToolbar className="justify-content-end">
+                <Button
+                    color="success"
+                    id="comment-submit"
+                    size="sm"
+                    disabled={content.trim().length === 0 || submitting}
+                    onClick={submit}>
+                    {i18n("comments.create.submit.title")}
+                </Button>
+            </ButtonToolbar>
+        </div>
+    );
 };
 
 export default injectIntl(withI18n(CreateCommentForm));

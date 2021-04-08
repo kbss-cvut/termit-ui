@@ -13,12 +13,11 @@ import {langString} from "../../../model/MultilingualString";
 import ActionType from "../../../action/ActionType";
 
 describe("TermDefinitionSourceLink", () => {
-
     it("pushes definition source selector to transition payload store when transition to definition source is triggered", async () => {
         const vocabulary: VocabularyData = {
             iri: Generator.generateUri(),
             label: "Test vocabulary"
-        }
+        };
         const selector: TextQuoteSelector = {
             iri: Generator.generateUri(),
             exactMatch: "test",
@@ -40,7 +39,11 @@ describe("TermDefinitionSourceLink", () => {
             }
         });
         term.definitionSource!.term = term;
-        const wrapper = mountWithIntl(<MemoryRouter><TermDefinitionSourceLink term={term}/></MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <TermDefinitionSourceLink term={term} />
+            </MemoryRouter>
+        );
         await act(async () => {
             await flushPromises();
         });

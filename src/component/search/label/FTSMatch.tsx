@@ -10,17 +10,22 @@ interface FTSMatchProps extends HasI18n {
 
 const isValidNode = () => true;
 
-const processingInstructions: Instruction[] = [{
-    shouldProcessNode: node => {
-        // Process only nodes representing the mach
-        return node && node.name === "em";
-    },
+const processingInstructions: Instruction[] = [
+    {
+        shouldProcessNode: node => {
+            // Process only nodes representing the mach
+            return node && node.name === "em";
+        },
 
-    processNode: (node: any, children: any) => {
-        // Render matches in the snippet with some sort of emphasis
-        return <span key={Math.random()} className="search-result-snippet-match">{children}</span>;
-    }
-},
+        processNode: (node: any, children: any) => {
+            // Render matches in the snippet with some sort of emphasis
+            return (
+                <span key={Math.random()} className="search-result-snippet-match">
+                    {children}
+                </span>
+            );
+        }
+    },
     {
         // Anything else
         shouldProcessNode: (): boolean => {
@@ -35,11 +40,15 @@ const processingInstructions: Instruction[] = [{
  */
 export const FTSMatch: React.FC<FTSMatchProps> = (props: FTSMatchProps) => {
     const parser = new HtmlToReactParser();
-    return <Row key={props.match}>
-        <Col md={9} lg={10} xl={11}>
-            <React.Fragment>{parser.parseWithInstructions(props.match, isValidNode, processingInstructions)}</React.Fragment>
-        </Col>
-    </Row>;
-}
+    return (
+        <Row key={props.match}>
+            <Col md={9} lg={10} xl={11}>
+                <React.Fragment>
+                    {parser.parseWithInstructions(props.match, isValidNode, processingInstructions)}
+                </React.Fragment>
+            </Col>
+        </Row>
+    );
+};
 
 export default injectIntl(withI18n(FTSMatch));

@@ -59,11 +59,10 @@ interface TermsState {
     // Whether confirmed terms should be shown
     confirmed: boolean;
     disableIncludeImportedToggle: boolean;
-    unusedTermsForVocabulary: { [key: string]: string[] };
+    unusedTermsForVocabulary: {[key: string]: string[]};
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
-
     private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
 
     constructor(props: GlossaryTermsProps) {
@@ -85,11 +84,17 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         if (prevProps.counter < this.props.counter) {
             this.forceUpdate();
         }
-        const matchingNotification = this.props.notifications.find(n => Terms.isNotificationRelevant(n) || Utils.generateIsAssetLabelUpdate(VocabularyUtils.TERM)(n));
+        const matchingNotification = this.props.notifications.find(
+            n => Terms.isNotificationRelevant(n) || Utils.generateIsAssetLabelUpdate(VocabularyUtils.TERM)(n)
+        );
         if (matchingNotification && this.treeComponent.current) {
             this.treeComponent.current.resetOptions();
             this.props.consumeNotification(matchingNotification);
-        } else if (Utils.didNavigationOccur(prevProps, this.props) && this.treeComponent.current && !this.props.isDetailView) {
+        } else if (
+            Utils.didNavigationOccur(prevProps, this.props) &&
+            this.treeComponent.current &&
+            !this.props.isDetailView
+        ) {
             this.treeComponent.current.resetOptions();
         }
         if (prevProps.locale !== this.props.locale) {
@@ -98,8 +103,10 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
 
     private static isNotificationRelevant(n: AppNotification) {
-        return (n.source.type === ActionType.CREATE_VOCABULARY_TERM && n.source.status === AsyncActionStatus.SUCCESS)
-            || n.source.type === NotificationType.TERM_HIERARCHY_UPDATED;
+        return (
+            (n.source.type === ActionType.CREATE_VOCABULARY_TERM && n.source.status === AsyncActionStatus.SUCCESS) ||
+            n.source.type === NotificationType.TERM_HIERARCHY_UPDATED
+        );
     }
 
     public componentWillUnmount() {
@@ -111,27 +118,36 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => {
         this.setState({disableIncludeImportedToggle: true});
         const namespace = Utils.extractQueryParam(this.props.location.search, "namespace");
-        const vocabularyIri = fetchOptions.option ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!) : {
-            fragment: this.props.match.params.name,
-            namespace
-        };
+        const vocabularyIri = fetchOptions.option
+            ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!)
+            : {
+                  fragment: this.props.match.params.name,
+                  namespace
+              };
         this.props.fetchUnusedTerms(vocabularyIri).then(data => {
             const unusedTermsForVocabulary = this.state.unusedTermsForVocabulary;
             unusedTermsForVocabulary[vocabularyIri.toString()] = data;
             this.setState({unusedTermsForVocabulary});
         });
-        return this.props.fetchTerms({
-            ...fetchOptions,
-            includeImported: this.state.includeImported
-        }, vocabularyIri)
-            .then(terms => terms.filter(t =>
-                (this.state.confirmed && !t.draft)
-                ||
-                (this.state.draft && t.draft)))
+        return this.props
+            .fetchTerms(
+                {
+                    ...fetchOptions,
+                    includeImported: this.state.includeImported
+                },
+                vocabularyIri
+            )
+            .then(terms => terms.filter(t => (this.state.confirmed && !t.draft) || (this.state.draft && t.draft)))
             .then(terms => {
-                const matchingVocabularies = this.state.includeImported ? Utils.sanitizeArray(this.props.vocabulary!.allImportedVocabularies).concat(this.props.vocabulary!.iri) : [this.props.vocabulary!.iri];
+                const matchingVocabularies = this.state.includeImported
+                    ? Utils.sanitizeArray(this.props.vocabulary!.allImportedVocabularies).concat(
+                          this.props.vocabulary!.iri
+                      )
+                    : [this.props.vocabulary!.iri];
                 this.setState({disableIncludeImportedToggle: this.props.isDetailView || false});
-                return processTermsForTreeSelect(terms, matchingVocabularies, {searchString: fetchOptions.searchString});
+                return processTermsForTreeSelect(terms, matchingVocabularies, {
+                    searchString: fetchOptions.searchString
+                });
             });
     };
 
@@ -162,7 +178,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             delete cloneData.depth;
             const clone = new Term(cloneData);
             this.props.selectVocabularyTerm(clone);
-            Routing.transitionToAsset(clone, {query: new Map([["includeImported", this.state.includeImported.toString()]])});
+            Routing.transitionToAsset(clone, {
+                query: new Map([["includeImported", this.state.includeImported.toString()]])
+            });
         }
     };
 
@@ -171,14 +189,20 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     };
 
     private renderIncludeImported() {
-        return <div className={classNames({"mb-3": !this.props.isDetailView})}>
-            {this.props.isDetailView ? <></> :
-                <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
-                                            includeImported={this.state.includeImported}
-                                            disabled={this.state.disableIncludeImportedToggle}/>
-
-            }
-        </div>;
+        return (
+            <div className={classNames({"mb-3": !this.props.isDetailView})}>
+                {this.props.isDetailView ? (
+                    <></>
+                ) : (
+                    <IncludeImportedTermsToggle
+                        id="glossary-include-imported"
+                        onToggle={this.onIncludeImportedToggle}
+                        includeImported={this.state.includeImported}
+                        disabled={this.state.disableIncludeImportedToggle}
+                    />
+                )}
+            </div>
+        );
     }
 
     private onDraftOnlyToggle = () => {
@@ -190,12 +214,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     };
 
     private renderDraftOnly() {
-        return (this.props.vocabulary && this.props.vocabulary.glossary) ?
-            <div className={classNames({
-                "mt-2": this.props.isDetailView,
-                "draft-margin-detail": this.props.isDetailView,
-                "draft-margin": !this.props.isDetailView
-            })}>
+        return this.props.vocabulary && this.props.vocabulary.glossary ? (
+            <div
+                className={classNames({
+                    "mt-2": this.props.isDetailView,
+                    "draft-margin-detail": this.props.isDetailView,
+                    "draft-margin": !this.props.isDetailView
+                })}>
                 <StatusFilter
                     id="glossary-draftOnly"
                     draft={this.state.draft}
@@ -203,7 +228,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                     onDraftOnlyToggle={this.onDraftOnlyToggle}
                     onConfirmedOnlyToggle={this.onConfirmedOnlyToggle}
                 />
-            </div> : null;
+            </div>
+        ) : null;
     }
 
     public render() {
@@ -220,57 +246,92 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         const includeImported = this.state.includeImported;
         const renderIncludeImported = this.props.vocabulary && this.props.vocabulary.importedVocabularies;
 
-        return <div id="vocabulary-terms">
-            <div className={classNames({
-                "align-items-center card-header": isDetailView,
-                "mb-2 mt-3": !isDetailView
-            }, "d-flex", "flex-wrap", "justify-content-between", "card-header-basic-info")}>
-                <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}
-                    &nbsp;{(isDetailView && renderIncludeImported) ? <>({this.props.i18n(includeImported ? "glossary.importedIncluded" : "glossary.importedExcluded")})</> : <></>}
-                </h4>
-                {!isDetailView && <IfUserAuthorized renderUnauthorizedAlert={false}>
-                    <Button id="terms-create" color="primary" size="sm"
-                            title={i18n("glossary.createTerm.tooltip")}
-                            onClick={this.onCreateClick}><GoPlus/>&nbsp;{i18n("glossary.new")}
-                    </Button>
-                </IfUserAuthorized>
-                }
-                {(isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
-                {isDetailView && this.renderDraftOnly()}
+        return (
+            <div id="vocabulary-terms">
+                <div
+                    className={classNames(
+                        {
+                            "align-items-center card-header": isDetailView,
+                            "mb-2 mt-3": !isDetailView
+                        },
+                        "d-flex",
+                        "flex-wrap",
+                        "justify-content-between",
+                        "card-header-basic-info"
+                    )}>
+                    <h4 className={classNames({"mb-0": isDetailView})}>
+                        {i18n("glossary.title")}
+                        &nbsp;
+                        {isDetailView && renderIncludeImported ? (
+                            <>
+                                (
+                                {this.props.i18n(
+                                    includeImported ? "glossary.importedIncluded" : "glossary.importedExcluded"
+                                )}
+                                )
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                    </h4>
+                    {!isDetailView && (
+                        <IfUserAuthorized renderUnauthorizedAlert={false}>
+                            <Button
+                                id="terms-create"
+                                color="primary"
+                                size="sm"
+                                title={i18n("glossary.createTerm.tooltip")}
+                                onClick={this.onCreateClick}>
+                                <GoPlus />
+                                &nbsp;{i18n("glossary.new")}
+                            </Button>
+                        </IfUserAuthorized>
+                    )}
+                    {isDetailView && renderIncludeImported ? this.renderIncludeImported() : <></>}
+                    {isDetailView && this.renderDraftOnly()}
+                </div>
+                <div id="glossary-list" className={classNames({"card-header": isDetailView})}>
+                    {!isDetailView && renderIncludeImported ? this.renderIncludeImported() : <></>}
+                    {!isDetailView && this.renderDraftOnly()}
+                    <IntelligentTreeSelect
+                        ref={this.treeComponent}
+                        clearable={!isDetailView}
+                        onChange={this.onTermSelect}
+                        value={this.props.selectedTerms ? this.props.selectedTerms.iri : null}
+                        fetchOptions={this.fetchOptions}
+                        isMenuOpen={true}
+                        scrollMenuIntoView={false}
+                        multi={false}
+                        maxHeight={Utils.calculateAssetListHeight()}
+                        optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(
+                            unusedTerms,
+                            this.props.vocabulary.iri,
+                            this.props.showTermQualityBadge
+                        )}
+                        valueRenderer={(option: Term) => getLocalized(option.label, getShortLocale(this.props.locale))}
+                        {...commonTermTreeSelectProps(this.props)}
+                    />
+                </div>
             </div>
-            <div id="glossary-list" className={classNames({"card-header": isDetailView})}>
-                {(!isDetailView && renderIncludeImported) ? this.renderIncludeImported() : <></>}
-                {!isDetailView && this.renderDraftOnly()}
-                <IntelligentTreeSelect
-                    ref={this.treeComponent}
-                    clearable={!isDetailView}
-                    onChange={this.onTermSelect}
-                    value={this.props.selectedTerms ? this.props.selectedTerms.iri : null}
-                    fetchOptions={this.fetchOptions}
-                    isMenuOpen={true}
-                    scrollMenuIntoView={false}
-                    multi={false}
-                    maxHeight={Utils.calculateAssetListHeight()}
-                    optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, this.props.vocabulary.iri, this.props.showTermQualityBadge)}
-                    valueRenderer={(option: Term) => getLocalized(option.label, getShortLocale(this.props.locale))}
-                    {...commonTermTreeSelectProps(this.props)}
-                />
-            </div>
-        </div>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        selectedTerms: state.selectedTerm,
-        counter: state.createdTermsCounter,
-        notifications: state.notifications
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        selectVocabularyTerm: (selectedTerm: Term | null) => dispatch(selectVocabularyTerm(selectedTerm)),
-        fetchTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
-        consumeNotification: (notification: AppNotification) => dispatch(consumeNotification(notification)),
-        fetchUnusedTerms: (vocabularyIri: IRI) => dispatch(loadUnusedTermsForVocabulary(vocabularyIri)),
-    };
-})(injectIntl(withI18n(Terms)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            selectedTerms: state.selectedTerm,
+            counter: state.createdTermsCounter,
+            notifications: state.notifications
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            selectVocabularyTerm: (selectedTerm: Term | null) => dispatch(selectVocabularyTerm(selectedTerm)),
+            fetchTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) =>
+                dispatch(loadTerms(fetchOptions, vocabularyIri)),
+            consumeNotification: (notification: AppNotification) => dispatch(consumeNotification(notification)),
+            fetchUnusedTerms: (vocabularyIri: IRI) => dispatch(loadUnusedTermsForVocabulary(vocabularyIri))
+        };
+    }
+)(injectIntl(withI18n(Terms)));

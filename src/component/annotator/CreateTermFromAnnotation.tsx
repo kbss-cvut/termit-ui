@@ -25,17 +25,16 @@ interface CreateTermFromAnnotationProps extends HasI18n {
 }
 
 interface CreateTermFromAnnotationState extends TermData {
-    labelExists : LabelExists;
+    labelExists: LabelExists;
 }
 
-export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnnotationProps, CreateTermFromAnnotationState> {
-
+export class CreateTermFromAnnotation extends React.Component<
+    CreateTermFromAnnotationProps,
+    CreateTermFromAnnotationState
+> {
     constructor(props: CreateTermFromAnnotationProps) {
         super(props);
-        this.state = Object.assign({},
-            AssetFactory.createEmptyTermData(props.language),
-            { labelExists : {} }
-        );
+        this.state = Object.assign({}, AssetFactory.createEmptyTermData(props.language), {labelExists: {}});
     }
 
     /**
@@ -55,7 +54,7 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
     }
 
     public onChange = (change: object, callback?: () => void) => {
-        this.setState(change, callback)
+        this.setState(change, callback);
     };
 
     public onSave = () => {
@@ -73,37 +72,49 @@ export class CreateTermFromAnnotation extends React.Component<CreateTermFromAnno
 
     public render() {
         const i18n = this.props.i18n;
-        const invalid = !isTermValid(this.state,this.state.labelExists);
-        return <Modal id="annotator-create-term" isOpen={this.props.show} toggle={this.onCancel} size="lg">
-            <ModalHeader>
-                {i18n("glossary.form.header")}
-            </ModalHeader>
-            <ModalBody>
-                <TermMetadataCreateForm onChange={this.onChange} termData={this.state}
-                                        language={this.props.language} definitionSelector={this.props.onMinimize}
-                                        vocabularyIri={this.props.vocabularyIri.namespace + this.props.vocabularyIri.fragment}
-                                        labelExist={this.state.labelExists}/>
-                <Row>
-                    <Col xs={12}>
-                        <ButtonToolbar className="d-flex justify-content-center mt-4">
-                            <Button id="create-term-submit" color="success" onClick={this.onSave}
+        const invalid = !isTermValid(this.state, this.state.labelExists);
+        return (
+            <Modal id="annotator-create-term" isOpen={this.props.show} toggle={this.onCancel} size="lg">
+                <ModalHeader>{i18n("glossary.form.header")}</ModalHeader>
+                <ModalBody>
+                    <TermMetadataCreateForm
+                        onChange={this.onChange}
+                        termData={this.state}
+                        language={this.props.language}
+                        definitionSelector={this.props.onMinimize}
+                        vocabularyIri={this.props.vocabularyIri.namespace + this.props.vocabularyIri.fragment}
+                        labelExist={this.state.labelExists}
+                    />
+                    <Row>
+                        <Col xs={12}>
+                            <ButtonToolbar className="d-flex justify-content-center mt-4">
+                                <Button
+                                    id="create-term-submit"
+                                    color="success"
+                                    onClick={this.onSave}
                                     disabled={invalid}
-                                    size="sm">{i18n("glossary.form.button.submit")}</Button>
-                            <Button id="create-term-cancel" color="outline-dark" size="sm"
-                                    onClick={this.onCancel}>{i18n("glossary.form.button.cancel")}</Button>
-                        </ButtonToolbar>
-                    </Col>
-                </Row>
-            </ModalBody>
-        </Modal>;
+                                    size="sm">
+                                    {i18n("glossary.form.button.submit")}
+                                </Button>
+                                <Button id="create-term-cancel" color="outline-dark" size="sm" onClick={this.onCancel}>
+                                    {i18n("glossary.form.button.cancel")}
+                                </Button>
+                            </ButtonToolbar>
+                        </Col>
+                    </Row>
+                </ModalBody>
+            </Modal>
+        );
     }
 }
 
-export default connect((state: TermItState) => ({language: state.configuration.language}), (dispatch: ThunkDispatch) => {
-    return {
-        createTerm: (term: Term, vocabularyIri: IRI) => dispatch(createTerm(term, vocabularyIri))
-    };
-}, undefined, {forwardRef: true})(injectIntl(withI18n(CreateTermFromAnnotation, {forwardRef: true}), {forwardRef: true}));
-
-
-
+export default connect(
+    (state: TermItState) => ({language: state.configuration.language}),
+    (dispatch: ThunkDispatch) => {
+        return {
+            createTerm: (term: Term, vocabularyIri: IRI) => dispatch(createTerm(term, vocabularyIri))
+        };
+    },
+    undefined,
+    {forwardRef: true}
+)(injectIntl(withI18n(CreateTermFromAnnotation, {forwardRef: true}), {forwardRef: true}));

@@ -18,7 +18,7 @@
 
 import React from "react";
 import {NavLink as NavLinkRRD} from "react-router-dom";
-import {Collapse, Container, Form, Nav, Navbar, NavbarBrand, NavItem, NavLink,} from "reactstrap";
+import {Collapse, Container, Form, Nav, Navbar, NavbarBrand, NavItem, NavLink} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {RouteComponentProps, withRouter} from "react-router";
 import Routes from "../../util/Routes";
@@ -49,41 +49,56 @@ export interface SidebarState {
 }
 
 export interface NavLinkRoute {
-    path: string,
-    name: string,
-    icon: string,
-    supIcon?: string,
-    adminRoute?: boolean
+    path: string;
+    name: string;
+    icon: string;
+    supIcon?: string;
+    adminRoute?: boolean;
 }
 
-const mainNavRoutes: NavLinkRoute[] = [{
-    path: Routes.dashboard.path,
-    name: "main.nav.dashboard",
-    icon: "fas fa-home"
-}, {
-    path: Routes.vocabularies.path,
-    name: "main.nav.vocabularies",
-    icon: "fas fa-book"
-}, {
-    path: Routes.resources.path,
-    name: "main.nav.resources",
-    icon: "fas fa-clipboard"
-}, {
-    path: Routes.statistics.path,
-    name: "main.nav.statistics",
-    icon: "fas fa-chart-pie"
-}, {
-    path: Routes.administration.path,
-    name: "main.nav.admin",
-    icon: "fas fa-user-shield",
-    adminRoute: true
-}];
+const mainNavRoutes: NavLinkRoute[] = [
+    {
+        path: Routes.dashboard.path,
+        name: "main.nav.dashboard",
+        icon: "fas fa-home"
+    },
+    {
+        path: Routes.vocabularies.path,
+        name: "main.nav.vocabularies",
+        icon: "fas fa-book"
+    },
+    {
+        path: Routes.resources.path,
+        name: "main.nav.resources",
+        icon: "fas fa-clipboard"
+    },
+    {
+        path: Routes.statistics.path,
+        name: "main.nav.statistics",
+        icon: "fas fa-chart-pie"
+    },
+    {
+        path: Routes.administration.path,
+        name: "main.nav.admin",
+        icon: "fas fa-user-shield",
+        adminRoute: true
+    }
+];
 
-const createNewNavRoutes: NavLinkRoute[] = [{
-    path: Routes.createVocabulary.path, name: "main.nav.create-vocabulary", icon: "fas fa-book", supIcon: "fas fa-plus"
-}, {
-    path: Routes.createResource.path, name: "main.nav.create-resource", icon: "fas fa-clipboard", supIcon: "fas fa-plus"
-}];
+const createNewNavRoutes: NavLinkRoute[] = [
+    {
+        path: Routes.createVocabulary.path,
+        name: "main.nav.create-vocabulary",
+        icon: "fas fa-book",
+        supIcon: "fas fa-plus"
+    },
+    {
+        path: Routes.createResource.path,
+        name: "main.nav.create-resource",
+        icon: "fas fa-clipboard",
+        supIcon: "fas fa-plus"
+    }
+];
 
 export class Sidebar extends React.Component<SidebarProps, SidebarState> {
     constructor(props: SidebarProps) {
@@ -123,10 +138,9 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                         tag={NavLinkRRD}
                         onClick={this.closeCollapse}
                         activeClassName=""
-                        className={classNames({"sup-icon-margin-fix": route.supIcon})}
-                    >
+                        className={classNames({"sup-icon-margin-fix": route.supIcon})}>
                         <i className={route.icon}>
-                            {route.supIcon && <sup className={`${route.supIcon} fa-xs sup-icon`}/>}
+                            {route.supIcon && <sup className={`${route.supIcon} fa-xs sup-icon`} />}
                         </i>
                         {(sidebarExpanded || !desktopView) && i18n(route.name)}
                     </NavLink>
@@ -145,17 +159,19 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                         to={route.path}
                         tag={NavLinkRRD}
                         onClick={this.closeCollapse}
-                        activeClassName={this.activeRoute(route.path)}
-                    >
-                        <i className={route.icon}/>
+                        activeClassName={this.activeRoute(route.path)}>
+                        <i className={route.icon} />
                         {(sidebarExpanded || !desktopView) && i18n(route.name)}
                     </NavLink>
                 </NavItem>
             );
 
             if (route.adminRoute) {
-                return <IfGranted key={key} expected={VocabularyUtils.USER_ADMIN}
-                                  actual={user.types}>{navItem}</IfGranted>;
+                return (
+                    <IfGranted key={key} expected={VocabularyUtils.USER_ADMIN} actual={user.types}>
+                        {navItem}
+                    </IfGranted>
+                );
             }
 
             return navItem;
@@ -166,85 +182,83 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
         const {sidebarExpanded, desktopView} = this.props;
 
         return (
-            <Navbar expand="md" id="sidenav-main"
-                    className={classNames("navbar-vertical", "navbar-dark", "bg-dark", "py-md-0",
-                        {
-                            "sidebar-expanded": sidebarExpanded,
-                            "sidebar-collapsed": !sidebarExpanded
-                        })}>
+            <Navbar
+                expand="md"
+                id="sidenav-main"
+                className={classNames("navbar-vertical", "navbar-dark", "bg-dark", "py-md-0", {
+                    "sidebar-expanded": sidebarExpanded,
+                    "sidebar-collapsed": !sidebarExpanded
+                })}>
                 <Container fluid={true}>
                     <div className="d-flex align-items-center header-height justify-content-between">
                         {/* Toggler phone */}
-                        <button
-                            className="navbar-toggler"
-                            type="button"
-                            onClick={this.toggleCollapse}
-                        >
-                            <i className="fas fa-bars fa-lg line-height-1"/>
+                        <button className="navbar-toggler" type="button" onClick={this.toggleCollapse}>
+                            <i className="fas fa-bars fa-lg line-height-1" />
                         </button>
 
                         {/* Brand */}
-                        {(sidebarExpanded || !desktopView) && <NavbarBrand
-                            className="p-0 ml-2 ml-sm-3 ml-md-0 brand"
-                            href={`#${Routes.dashboard.path}`}>
-                            {Constants.APP_NAME}
-                        </NavbarBrand>}
-
+                        {(sidebarExpanded || !desktopView) && (
+                            <NavbarBrand className="p-0 ml-2 ml-sm-3 ml-md-0 brand" href={`#${Routes.dashboard.path}`}>
+                                {Constants.APP_NAME}
+                            </NavbarBrand>
+                        )}
 
                         {/* Toggler desktop */}
-                        {desktopView && <div className="menu-collapse d-inline-flex align-items-center"
-                                             onClick={this.props.toggleSidebar} id="toggler">
-                            {sidebarExpanded && <i className="fas fa-chevron-left fa-xs"/>}
-                            <i className="fas fa-bars fa-lg line-height-1"/>
-                            {!sidebarExpanded && <i className="fas fa-chevron-right fa-xs"/>}
-                        </div>}
+                        {desktopView && (
+                            <div
+                                className="menu-collapse d-inline-flex align-items-center"
+                                onClick={this.props.toggleSidebar}
+                                id="toggler">
+                                {sidebarExpanded && <i className="fas fa-chevron-left fa-xs" />}
+                                <i className="fas fa-bars fa-lg line-height-1" />
+                                {!sidebarExpanded && <i className="fas fa-chevron-right fa-xs" />}
+                            </div>
+                        )}
                     </div>
 
                     {/* User phone */}
-                    {!desktopView && <Nav className="align-items-center" id="dropdown">
-                        <UserDropdown dark={true}/>
-                    </Nav>}
+                    {!desktopView && (
+                        <Nav className="align-items-center" id="dropdown">
+                            <UserDropdown dark={true} />
+                        </Nav>
+                    )}
 
                     {/* Collapse */}
                     <Collapse navbar={true} isOpen={this.state.collapseOpen} className="no-before-after">
                         {/* Collapse header */}
-                        {!desktopView && <div
-                            className="navbar-collapse-header d-flex justify-content-between align-items-center">
+                        {!desktopView && (
+                            <div className="navbar-collapse-header d-flex justify-content-between align-items-center">
+                                <NavbarBrand className="brand p-0" href={`#${Routes.dashboard.path}`}>
+                                    {Constants.APP_NAME}
+                                </NavbarBrand>
 
-                            <NavbarBrand
-                                className="brand p-0"
-                                href={`#${Routes.dashboard.path}`}>
-                                {Constants.APP_NAME}
-                            </NavbarBrand>
-
-                            {/* Close button X */}
-                            <button
-                                className="navbar-toggler"
-                                type="button"
-                                onClick={this.toggleCollapse}>
-                                <span/><span/>
-                            </button>
-                        </div>}
+                                {/* Close button X */}
+                                <button className="navbar-toggler" type="button" onClick={this.toggleCollapse}>
+                                    <span />
+                                    <span />
+                                </button>
+                            </div>
+                        )}
 
                         {/* Search mobile */}
-                        {!desktopView && <Form className="mt-4 mb-3">
-                            <NavbarSearch navbar={false} closeCollapse={this.closeCollapse}/>
-                        </Form>}
+                        {!desktopView && (
+                            <Form className="mt-4 mb-3">
+                                <NavbarSearch navbar={false} closeCollapse={this.closeCollapse} />
+                            </Form>
+                        )}
 
-                        <hr className="mb-2 mt-0"/>
+                        <hr className="mb-2 mt-0" />
 
-                        <Nav navbar={true}>
-                            {this.createLinks(mainNavRoutes)}
-                        </Nav>
+                        <Nav navbar={true}>{this.createLinks(mainNavRoutes)}</Nav>
 
-                        {desktopView && <IfUserAuthorized renderUnauthorizedAlert={false}>
-                            <div className="d-block">
-                                <hr className="mb-2 mt-2"/>
-                                <Nav navbar={true}>
-                                    {this.createActionLinks(createNewNavRoutes)}
-                                </Nav>
-                            </div>
-                        </IfUserAuthorized>}
+                        {desktopView && (
+                            <IfUserAuthorized renderUnauthorizedAlert={false}>
+                                <div className="d-block">
+                                    <hr className="mb-2 mt-2" />
+                                    <Nav navbar={true}>{this.createActionLinks(createNewNavRoutes)}</Nav>
+                                </div>
+                            </IfUserAuthorized>
+                        )}
                     </Collapse>
                 </Container>
             </Navbar>
@@ -252,15 +266,17 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        user: state.user,
-        sidebarExpanded: state.sidebarExpanded,
-        desktopView: state.desktopView
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        toggleSidebar: () => dispatch(toggleSidebar())
-    };
-})(injectIntl(withI18n(withRouter(Sidebar))));
-
+export default connect(
+    (state: TermItState) => {
+        return {
+            user: state.user,
+            sidebarExpanded: state.sidebarExpanded,
+            desktopView: state.desktopView
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            toggleSidebar: () => dispatch(toggleSidebar())
+        };
+    }
+)(injectIntl(withI18n(withRouter(Sidebar))));

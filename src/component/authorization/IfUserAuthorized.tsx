@@ -6,7 +6,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Unauthorized from "./Unauthorized";
 
 interface IfUserAuthorizedProps {
-    renderUnauthorizedAlert?: boolean;  // Whether an alert should be rendered if user is not authorized. Defaults to true
+    renderUnauthorizedAlert?: boolean; // Whether an alert should be rendered if user is not authorized. Defaults to true
     unauthorized?: React.ReactNode;
 }
 
@@ -16,10 +16,14 @@ interface IfUserAuthorizedProps {
 const IfUserAuthorized: React.FC<IfUserAuthorizedProps> = props => {
     const {renderUnauthorizedAlert, unauthorized, children} = props;
     const user = useSelector((state: TermItState) => state.user);
-    return <IfNoneGranted expected={VocabularyUtils.USER_RESTRICTED} actual={user.types}
-                          unauthorized={renderUnauthorizedAlert && (unauthorized ? unauthorized : <Unauthorized/>)}>
-        {children}
-    </IfNoneGranted>
+    return (
+        <IfNoneGranted
+            expected={VocabularyUtils.USER_RESTRICTED}
+            actual={user.types}
+            unauthorized={renderUnauthorizedAlert && (unauthorized ? unauthorized : <Unauthorized />)}>
+            {children}
+        </IfNoneGranted>
+    );
 };
 
 IfUserAuthorized.defaultProps = {

@@ -17,7 +17,7 @@ export interface ChangeRecordData {
     iri: string;
     timestamp: number;
     author: UserData;
-    changedEntity: { iri: string };
+    changedEntity: {iri: string};
     types: string[];
 }
 
@@ -25,11 +25,10 @@ export interface ChangeRecordData {
  * Allows to track the history of an entity.
  */
 export default abstract class ChangeRecord implements ChangeRecordData {
-
     public readonly iri: string;
     public readonly timestamp: number;
     public readonly author: User;
-    public readonly changedEntity: { iri: string };
+    public readonly changedEntity: {iri: string};
     public readonly types: string[];
 
     protected constructor(data: ChangeRecordData) {

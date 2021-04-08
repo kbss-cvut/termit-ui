@@ -20,11 +20,14 @@ export const Message: React.FC<MessageProps> = (props: MessageProps) => {
         const timer = setTimeout(() => {
             dismiss();
         }, Constants.MESSAGE_DISPLAY_TIMEOUT);
-        return () => clearTimeout(timer)
+        return () => clearTimeout(timer);
     }, [dismiss, message]);
 
-    return <Alert color={message.type} isOpen={true}
-                  toggle={dismiss}>{message.messageId ? formatMessage(message.messageId, message.values) : message.message}</Alert>;
+    return (
+        <Alert color={message.type} isOpen={true} toggle={dismiss}>
+            {message.messageId ? formatMessage(message.messageId, message.values) : message.message}
+        </Alert>
+    );
 };
 
 export default Message;

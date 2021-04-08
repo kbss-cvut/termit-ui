@@ -17,50 +17,56 @@
 @import "../core/mixins/modals";
 @import "../core/mixins/popover";
 
-
-@mixin button-variant($background, $border, $hover-background: darken($background, 0%), $hover-border: darken($border, 0%), $active-background: darken($background, 10%), $active-border: darken($border, 0%)) {
-  color: color-yiq($background);
-  @include gradient-bg($background);
-  @include box-shadow($btn-box-shadow);
-
-  @include hover {
-    color: color-yiq($hover-background);
-    @include gradient-bg(lighten($hover-background, 10%));
-  }
-
-  &:focus,
-  &.focus {
-    // Avoid using mixin so we can pass custom focus shadow properly
-    @if $enable-shadows {
-      box-shadow: $btn-box-shadow, 0 0 0 $btn-focus-width rgba($border, .5);
-    } @else {
-      box-shadow: 0 0 0 $btn-focus-width rgba($border, .5);
-    }
-  }
-  // Disabled comes first so active can properly restyle
-  &.disabled,
-  &:disabled {
+@mixin button-variant(
+    $background,
+    $border,
+    $hover-background: darken($background, 0%),
+    $hover-border: darken($border, 0%),
+    $active-background: darken($background, 10%),
+    $active-border: darken($border, 0%)
+) {
     color: color-yiq($background);
-    background-color: $background;
-    border-color: $border;
-  }
+    @include gradient-bg($background);
+    @include box-shadow($btn-box-shadow);
 
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active,
-  .show > &.dropdown-toggle {
-    color: color-yiq($hover-background);
-    @include gradient-bg(lighten($hover-background, 10%));
-    @if $enable-gradients {
-      background-image: none; // Remove the gradient for the pressed/active state
+    @include hover {
+        color: color-yiq($hover-background);
+        @include gradient-bg(lighten($hover-background, 10%));
     }
 
-    &:focus {
-      // Avoid using mixin so we can pass custom focus shadow properly
-      @if $enable-shadows {
-        box-shadow: $btn-active-box-shadow, 0 0 0 $btn-focus-width rgba($border, .5);
-      } @else {
-        box-shadow: 0 0 0 $btn-focus-width rgba($border, .5);
-      }
+    &:focus,
+    &.focus {
+        // Avoid using mixin so we can pass custom focus shadow properly
+        @if $enable-shadows {
+            box-shadow: $btn-box-shadow, 0 0 0 $btn-focus-width rgba($border, 0.5);
+        } @else {
+            box-shadow: 0 0 0 $btn-focus-width rgba($border, 0.5);
+        }
     }
-  }
+    // Disabled comes first so active can properly restyle
+    &.disabled,
+    &:disabled {
+        color: color-yiq($background);
+        background-color: $background;
+        border-color: $border;
+    }
+
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active,
+    .show > &.dropdown-toggle {
+        color: color-yiq($hover-background);
+        @include gradient-bg(lighten($hover-background, 10%));
+        @if $enable-gradients {
+            background-image: none; // Remove the gradient for the pressed/active state
+        }
+
+        &:focus {
+            // Avoid using mixin so we can pass custom focus shadow properly
+            @if $enable-shadows {
+                box-shadow: $btn-active-box-shadow, 0 0 0 $btn-focus-width rgba($border, 0.5);
+            } @else {
+                box-shadow: 0 0 0 $btn-focus-width rgba($border, 0.5);
+            }
+        }
+    }
 }

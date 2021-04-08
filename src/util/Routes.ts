@@ -1,5 +1,4 @@
 export class Route {
-
     public readonly name: string;
     public readonly path: string;
 
@@ -10,11 +9,15 @@ export class Route {
 
     public link(params?: object, query?: object): string {
         const path = params
-            ? this.path.replace(/:([A-Za-z0-9]+)/g, (match, placeholder) => encodeURIComponent(params[placeholder] || placeholder))
+            ? this.path.replace(/:([A-Za-z0-9]+)/g, (match, placeholder) =>
+                  encodeURIComponent(params[placeholder] || placeholder)
+              )
             : this.path;
         if (query) {
             // TODO: Encode URI components properly (and parse them too)
-            const queryPart = Object.keys(query).map((key) => (/*encodeURIComponent*/(key) + "=" + /*encodeURIComponent*/(query[key]))).join("&");
+            const queryPart = Object.keys(query)
+                .map(key => /*encodeURIComponent*/ key + "=" + /*encodeURIComponent*/ query[key])
+                .join("&");
             return path + "?" + queryPart;
         } else {
             return path;
@@ -53,7 +56,7 @@ const Routes = {
     publicVocabularyTermDetail: new Route("publicVocabularyTermDetail", "/public/vocabularies/:name/terms/:termName"),
     publicSearch: new Route("publicSearch", "/public/search"),
     publicSearchTerms: new Route("publicSearchTerms", "/public/search/terms"),
-    publicSearchVocabularies: new Route("publicSearchVocabularies", "/public/search/vocabularies"),
+    publicSearchVocabularies: new Route("publicSearchVocabularies", "/public/search/vocabularies")
 };
 
 export default Routes;

@@ -8,7 +8,6 @@ import Document from "../../model/Document";
 import File from "../../model/File";
 
 describe("Utils", () => {
-
     describe("sanitizeArray", () => {
         it("returns array as it is", () => {
             const arr = ["1", "2", "3"];

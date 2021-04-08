@@ -20,7 +20,7 @@ import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
     vocabulary?: Vocabulary;
-    terms: { [key: string]: Term };
+    terms: {[key: string]: Term};
     counter: number;
     selectVocabularyTerm: (selectedTerms: Term | null) => void;
 }
@@ -33,7 +33,6 @@ interface AnnotationTermsProps extends GlossaryTermsProps {
 }
 
 export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
-
     private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
 
     public static defaultProps: Partial<AnnotationTermsProps> = {
@@ -81,42 +80,56 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
 
     public render() {
         const {i18n, vocabulary} = this.props;
-        const terms = processTermsForTreeSelect(Object.keys(this.props.terms).map(k => this.props.terms[k]),
-            Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(vocabulary!.iri));
+        const terms = processTermsForTreeSelect(
+            Object.keys(this.props.terms).map(k => this.props.terms[k]),
+            Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(vocabulary!.iri)
+        );
 
-        return <IfUserAuthorized unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}>
-            <FormGroup>
-                <div>
-                    <Label className="attribute-label mr-1">{i18n("type.term") + ":"}</Label>
-                    {this.props.canCreateTerm && <Button key="annotator.createTerm" color="primary"
-                                                         title={i18n("glossary.createTerm.tooltip")}
-                                                         size="sm" onClick={this.props.onCreateTerm}><GoPlus/></Button>}
-                </div>
-                <IntelligentTreeSelect
-                    ref={this.treeComponent}
-                    className="p-0 mt-1"
-                    onChange={this.handleChange}
-                    value={this.props.selectedTerm}
-                    options={terms}
-                    isMenuOpen={false}
-                    multi={false}
-                    optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary!.iri)}
-                    valueRenderer={createTermValueRenderer()}
-                    {...commonTermTreeSelectProps(this.props)}
-                />
-            </FormGroup>
-        </IfUserAuthorized>;
+        return (
+            <IfUserAuthorized unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}>
+                <FormGroup>
+                    <div>
+                        <Label className="attribute-label mr-1">{i18n("type.term") + ":"}</Label>
+                        {this.props.canCreateTerm && (
+                            <Button
+                                key="annotator.createTerm"
+                                color="primary"
+                                title={i18n("glossary.createTerm.tooltip")}
+                                size="sm"
+                                onClick={this.props.onCreateTerm}>
+                                <GoPlus />
+                            </Button>
+                        )}
+                    </div>
+                    <IntelligentTreeSelect
+                        ref={this.treeComponent}
+                        className="p-0 mt-1"
+                        onChange={this.handleChange}
+                        value={this.props.selectedTerm}
+                        options={terms}
+                        isMenuOpen={false}
+                        multi={false}
+                        optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabulary!.iri)}
+                        valueRenderer={createTermValueRenderer()}
+                        {...commonTermTreeSelectProps(this.props)}
+                    />
+                </FormGroup>
+            </IfUserAuthorized>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        vocabulary: state.vocabulary,
-        terms: state.annotatorTerms,
-        counter: state.createdTermsCounter
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        selectVocabularyTerm: (selectedTerm: Term | null) => dispatch(selectVocabularyTerm(selectedTerm))
-    };
-})(injectIntl(withI18n(withRouter(AnnotationTerms))));
+export default connect(
+    (state: TermItState) => {
+        return {
+            vocabulary: state.vocabulary,
+            terms: state.annotatorTerms,
+            counter: state.createdTermsCounter
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            selectVocabularyTerm: (selectedTerm: Term | null) => dispatch(selectVocabularyTerm(selectedTerm))
+        };
+    }
+)(injectIntl(withI18n(withRouter(AnnotationTerms))));

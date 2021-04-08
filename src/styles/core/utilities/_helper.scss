@@ -3,13 +3,12 @@
 // helper classes for different cases
 //
 
-
 // Clearfix for sections that use float property
 
 .floatfix {
     &:before,
     &:after {
-        content: '';
+        content: "";
         display: table;
     }
     &:after {

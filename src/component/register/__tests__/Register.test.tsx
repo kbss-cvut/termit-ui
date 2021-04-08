@@ -12,7 +12,6 @@ jest.mock("../../../util/Ajax");
 jest.mock("../../../util/Authentication");
 
 describe("Registration", () => {
-
     let register: ({}) => Promise<AsyncFailureAction>;
 
     beforeEach(() => {
@@ -20,8 +19,11 @@ describe("Registration", () => {
     });
 
     it("clears potentially existing JWT on mount", async () => {
-        mountWithIntl(<MemoryRouter><Register loading={false}
-                                              register={register} {...intlFunctions()}/></MemoryRouter>);
+        mountWithIntl(
+            <MemoryRouter>
+                <Register loading={false} register={register} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         await act(async () => {
             await flushPromises();
         });

@@ -4,7 +4,6 @@ import {EMPTY_USER} from "../../model/User";
 import Generator from "../../__tests__/environment/Generator";
 
 describe("Authentication", () => {
-
     const jwt = "jwt12345";
 
     beforeEach(() => {

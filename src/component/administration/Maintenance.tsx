@@ -13,14 +13,19 @@ interface MaintenanceProps {
 export const Maintenance: React.FC<MaintenanceProps> = props => {
     const {invalidateCache} = props;
     const {i18n} = useI18n();
-    return <PanelWithActions title={i18n("administration.maintenance.title")}>
-        <ButtonToolbar>
-            <Button color="primary" size="sm" title={i18n("administration.maintenance.invalidateCaches.tooltip")}
+    return (
+        <PanelWithActions title={i18n("administration.maintenance.title")}>
+            <ButtonToolbar>
+                <Button
+                    color="primary"
+                    size="sm"
+                    title={i18n("administration.maintenance.invalidateCaches.tooltip")}
                     onClick={invalidateCache}>
-                {i18n("administration.maintenance.invalidateCaches")}
-            </Button>
-        </ButtonToolbar>
-    </PanelWithActions>;
+                    {i18n("administration.maintenance.invalidateCaches")}
+                </Button>
+            </ButtonToolbar>
+        </PanelWithActions>
+    );
 };
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {

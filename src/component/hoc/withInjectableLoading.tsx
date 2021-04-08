@@ -46,7 +46,10 @@ interface WithInjectableLoadingState {
  * @param options Configuration for the generated wrapper. Allows to specify a custom CSS class for the mask
  * @constructor
  */
-const withInjectableLoading = <P extends InjectsLoading>(Component: React.ComponentType<P>, options: WithInjectableLoadingStaticOptions = {}): React.ComponentClass<Pick<P, Exclude<keyof P, keyof InjectsLoading>>> => {
+const withInjectableLoading = <P extends InjectsLoading>(
+    Component: React.ComponentType<P>,
+    options: WithInjectableLoadingStaticOptions = {}
+): React.ComponentClass<Pick<P, Exclude<keyof P, keyof InjectsLoading>>> => {
     class Wrapped extends React.Component<P & InjectsLoading, WithInjectableLoadingState> {
         public static readonly displayName = "LoadingInjectingWrapper(" + getDisplayName(Component) + ")";
 
@@ -64,7 +67,7 @@ const withInjectableLoading = <P extends InjectsLoading>(Component: React.Compon
         };
 
         public renderMask = () => {
-            return this.state.loading ? <ContainerMask text={this.state.message} classes={options.maskClass}/> : null;
+            return this.state.loading ? <ContainerMask text={this.state.message} classes={options.maskClass} /> : null;
         };
 
         public render() {
@@ -74,9 +77,8 @@ const withInjectableLoading = <P extends InjectsLoading>(Component: React.Compon
                 renderMask: this.renderMask,
                 loading: this.state.loading
             });
-            return <Component {...props}/>;
+            return <Component {...props} />;
         }
-
     }
 
     return Wrapped as any;

@@ -47,7 +47,6 @@ describe("Asset", () => {
     });
 
     describe("equals", () => {
-
         it("handles null, undefined arguments", () => {
             expect(Asset.equals(undefined, undefined)).toBeTruthy();
             expect(Asset.equals(undefined, null)).toBeTruthy();

@@ -9,7 +9,6 @@ import {mountWithIntl} from "../../../__tests__/environment/Environment";
 jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
 describe("TermDefinitionBlockEdit", () => {
-
     let onChange: (change: Partial<TermData>) => void;
 
     beforeEach(() => {
@@ -21,10 +20,15 @@ describe("TermDefinitionBlockEdit", () => {
         const czechValue = "Term definition in Czech";
         const englishValue = "Term definition in English";
         term.definition = {cs: czechValue};
-        const wrapper = mountWithIntl(<TermDefinitionBlockEdit term={term} onChange={onChange}
-                                                               language={Constants.DEFAULT_LANGUAGE}
-                                                               getValidationResults={jest.fn().mockReturnValue([])}
-                                                               {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <TermDefinitionBlockEdit
+                term={term}
+                onChange={onChange}
+                language={Constants.DEFAULT_LANGUAGE}
+                getValidationResults={jest.fn().mockReturnValue([])}
+                {...intlFunctions()}
+            />
+        );
         const textarea = wrapper.find("textarea");
         (textarea.getDOMNode() as HTMLTextAreaElement).value = englishValue;
         textarea.simulate("change", {currentTarget: {value: englishValue}});
@@ -34,11 +38,16 @@ describe("TermDefinitionBlockEdit", () => {
 
     it("passes definition value in selected language to definition text textarea", () => {
         const term = Generator.generateTerm();
-        term.definition = {"en": "Building is a kind of construction", "cs": "Budova je typem stavby"};
-        const wrapper = mountWithIntl(<TermDefinitionBlockEdit term={term} onChange={onChange}
-                                                               language={Constants.DEFAULT_LANGUAGE}
-                                                               getValidationResults={jest.fn().mockReturnValue([])}
-                                                               {...intlFunctions()}/>);
+        term.definition = {en: "Building is a kind of construction", cs: "Budova je typem stavby"};
+        const wrapper = mountWithIntl(
+            <TermDefinitionBlockEdit
+                term={term}
+                onChange={onChange}
+                language={Constants.DEFAULT_LANGUAGE}
+                getValidationResults={jest.fn().mockReturnValue([])}
+                {...intlFunctions()}
+            />
+        );
         const textarea = wrapper.find("textarea");
         expect(textarea.prop("value")).toEqual(term.definition[Constants.DEFAULT_LANGUAGE]);
     });

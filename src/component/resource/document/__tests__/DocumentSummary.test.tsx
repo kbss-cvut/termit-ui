@@ -12,7 +12,6 @@ jest.mock("../../ResourceTermAssignments");
 jest.mock("../../../misc/AssetIriLink");
 
 describe("DocumentSummary", () => {
-
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/resources/";
     const resourceName = "test-document";
 
@@ -43,14 +42,16 @@ describe("DocumentSummary", () => {
 
     it("does not render remove button for Document containing files", () => {
         doc.files = [new File({iri: Generator.generateUri(), label: "test.html"})];
-        const wrapper = shallow<DocumentSummary>(<DocumentSummary
-            resource={doc} {...resourceHandlers} {...intlFunctions()}/>);
+        const wrapper = shallow<DocumentSummary>(
+            <DocumentSummary resource={doc} {...resourceHandlers} {...intlFunctions()} />
+        );
         expect(wrapper.exists("button#resource-detail-remove")).toBeFalsy();
     });
 
     it("reloads document when file was added into it", () => {
-        const wrapper = shallow<DocumentSummary>(<DocumentSummary
-            resource={doc} {...resourceHandlers} {...intlFunctions()}/>);
+        const wrapper = shallow<DocumentSummary>(
+            <DocumentSummary resource={doc} {...resourceHandlers} {...intlFunctions()} />
+        );
         wrapper.instance().reload();
         expect(loadResource).toHaveBeenCalledWith(VocabularyUtils.create(doc.iri));
     });

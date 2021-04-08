@@ -21,7 +21,6 @@ export class MockableAjax extends Ajax {
 }
 
 describe("Ajax", () => {
-
     const sut = new MockableAjax();
     const mock = new MockAdapter(sut.axios);
     const jwt = "12345";
@@ -62,7 +61,6 @@ describe("Ajax", () => {
     });
 
     describe("error handling", () => {
-
         const oldEnv = process.env;
 
         beforeEach(() => {
@@ -72,7 +70,7 @@ describe("Ajax", () => {
 
         afterEach(() => {
             process.env = oldEnv;
-        })
+        });
 
         it("directly transitions to login route when 401 Unauthorized is received", () => {
             jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
@@ -120,7 +118,7 @@ describe("Ajax", () => {
         });
 
         it("returns unparseable error info message when response indicates error but its content is not error info in JSON", () => {
-            mock.onAny().reply(500, "<html lang=\"en\">Fatal error occurred on server</html>");
+            mock.onAny().reply(500, '<html lang="en">Fatal error occurred on server</html>');
             return sut.get("/users").catch(error => {
                 expect(error.messageId).toBeDefined();
                 return expect(error.messageId).toEqual("ajax.unparseable-error");
@@ -141,7 +139,7 @@ describe("Ajax", () => {
 
         it("provides response status when response content is not parseable JSON error info", () => {
             const status = 500;
-            mock.onAny().reply(status, "<html lang=\"en\">Fatal error occurred on server</html>");
+            mock.onAny().reply(status, '<html lang="en">Fatal error occurred on server</html>');
             return sut.get("/users").catch(error => {
                 expect(error.status).toEqual(status);
                 return expect(error.messageId).toEqual("ajax.unparseable-error");
@@ -157,7 +155,7 @@ describe("Ajax", () => {
             };
             mock.onAny().reply(200, {}, headers);
             const spy = jest.spyOn(sut.axios, "get");
-            spy.mockClear();    // Safeguard because the spy tends to leak into subsequent test specs
+            spy.mockClear(); // Safeguard because the spy tends to leak into subsequent test specs
             return sut.get("/terms", params(qParams)).then(() => {
                 const reqConfig = spy.mock.calls[0][1];
                 return expect(reqConfig!.params).toEqual(qParams);
@@ -315,7 +313,11 @@ describe("Ajax", () => {
 
     describe("getRaw", () => {
         it("returns response object", () => {
-            mock.onAny().reply(200, {}, Object.assign({}, headers, {"content-disposition": "attachment; filename=test.txt"}));
+            mock.onAny().reply(
+                200,
+                {},
+                Object.assign({}, headers, {"content-disposition": "attachment; filename=test.txt"})
+            );
             return sut.getRaw("/vocabularies?test/terms", accept(Constants.CSV_MIME_TYPE)).then((resp: any) => {
                 expect(resp.status).toEqual(200);
                 expect(resp.headers).toBeDefined();
@@ -339,12 +341,15 @@ describe("Ajax", () => {
             mock.onAny().reply(304, undefined, headers);
             const spy = jest.spyOn(sut.axios, "get");
             spy.mockClear();
-            return sut.getResponse("/vocabularies").then((resp: AxiosResponse) => {
-                expect(resp.status).toEqual(304);
-                expect(resp.headers).toEqual(headers);
-            }).catch(() => {
-                fail("Should not have been called.");
-            });
+            return sut
+                .getResponse("/vocabularies")
+                .then((resp: AxiosResponse) => {
+                    expect(resp.status).toEqual(304);
+                    expect(resp.headers).toEqual(headers);
+                })
+                .catch(() => {
+                    fail("Should not have been called.");
+                });
         });
     });
 
@@ -390,6 +395,10 @@ describe("paramsSerializer", () => {
             includeTerms: [Generator.generateUri(), Generator.generateUri()]
         };
         const result = paramsSerializer(parameters);
-        expect(result).toEqual(`includeTerms=${encodeURIComponent(parameters.includeTerms[0])}&includeTerms=${encodeURIComponent(parameters.includeTerms[1])}`);
+        expect(result).toEqual(
+            `includeTerms=${encodeURIComponent(parameters.includeTerms[0])}&includeTerms=${encodeURIComponent(
+                parameters.includeTerms[1]
+            )}`
+        );
     });
 });

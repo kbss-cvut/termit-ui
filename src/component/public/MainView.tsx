@@ -40,7 +40,6 @@ interface MainViewState {
 }
 
 export class MainView extends React.Component<MainViewProps, MainViewState> {
-
     constructor(props: MainViewProps) {
         super(props);
         this.state = {
@@ -76,67 +75,96 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     public render() {
         const {i18n, sidebarExpanded, desktopView} = this.props;
 
-        return <div className="main-container">
-            <Sidebar/>
-            <div className={classNames({
-                "main-view-sidebar-expanded": sidebarExpanded,
-                "main-view-sidebar-collapsed": !sidebarExpanded
-            }, "flex-grow-1")}>
-                <header>
-                    {desktopView && <Navbar id="navbar"
-                                            light={true} fixed="top"
-                                            className={classNames("bg-white", "navbar-top", "d-flex")}>
-                        <Nav navbar={true} className="nav-search">
-                            <NavbarSearch navbar={true}/>
-                        </Nav>
-                        <Nav navbar={true} className="nav-menu-user flex-row-reverse">
-                            <NavItem>
-                                <Link to={Routes.login.path} className="mx-3 text-dark"
-                                      title={i18n("public.nav.user")}><FaUserSlash className="user-icon"/></Link>
-                            </NavItem>
-                        </Nav>
-                    </Navbar>}
+        return (
+            <div className="main-container">
+                <Sidebar />
+                <div
+                    className={classNames(
+                        {
+                            "main-view-sidebar-expanded": sidebarExpanded,
+                            "main-view-sidebar-collapsed": !sidebarExpanded
+                        },
+                        "flex-grow-1"
+                    )}>
+                    <header>
+                        {desktopView && (
+                            <Navbar
+                                id="navbar"
+                                light={true}
+                                fixed="top"
+                                className={classNames("bg-white", "navbar-top", "d-flex")}>
+                                <Nav navbar={true} className="nav-search">
+                                    <NavbarSearch navbar={true} />
+                                </Nav>
+                                <Nav navbar={true} className="nav-menu-user flex-row-reverse">
+                                    <NavItem>
+                                        <Link
+                                            to={Routes.login.path}
+                                            className="mx-3 text-dark"
+                                            title={i18n("public.nav.user")}>
+                                            <FaUserSlash className="user-icon" />
+                                        </Link>
+                                    </NavItem>
+                                </Nav>
+                            </Navbar>
+                        )}
 
-                    {/*
+                        {/*
                         // @ts-ignore */}
-                    {!this.isDashboardRoute() && <Breadcrumbs className="breadcrumb-bar" separator="/"/>}
-
-                </header>
-                <SearchTypeTabs/>
-                <Messages/>
-                <Container id="content-container" fluid={true}
-                           className={
-                               classNames("pt-3", "flex-grow-1",
-                                   {"content-container-dashboard": this.isDashboardRoute()})
-                           }>
-                    <Switch>
-                        <BreadcrumbRoute title={i18n("main.nav.vocabularies")} path={Routes.publicVocabularies.path}
-                                         component={VocabularyManagementRoute}/>
-                        <BreadcrumbRoute title={i18n("main.nav.searchTerms")} path={Routes.publicSearchTerms.path}
-                                         component={SearchTerms}/>
-                        <BreadcrumbRoute title={i18n("main.nav.searchVocabularies")}
-                                         path={Routes.publicSearchVocabularies.path} component={SearchVocabularies}/>
-                        <BreadcrumbRoute title={i18n("main.nav.search")} path={Routes.publicSearch.path}
-                                         component={Search}/>
-                        <Route component={Dashboard}/>
-                    </Switch>
-                </Container>
+                        {!this.isDashboardRoute() && <Breadcrumbs className="breadcrumb-bar" separator="/" />}
+                    </header>
+                    <SearchTypeTabs />
+                    <Messages />
+                    <Container
+                        id="content-container"
+                        fluid={true}
+                        className={classNames("pt-3", "flex-grow-1", {
+                            "content-container-dashboard": this.isDashboardRoute()
+                        })}>
+                        <Switch>
+                            <BreadcrumbRoute
+                                title={i18n("main.nav.vocabularies")}
+                                path={Routes.publicVocabularies.path}
+                                component={VocabularyManagementRoute}
+                            />
+                            <BreadcrumbRoute
+                                title={i18n("main.nav.searchTerms")}
+                                path={Routes.publicSearchTerms.path}
+                                component={SearchTerms}
+                            />
+                            <BreadcrumbRoute
+                                title={i18n("main.nav.searchVocabularies")}
+                                path={Routes.publicSearchVocabularies.path}
+                                component={SearchVocabularies}
+                            />
+                            <BreadcrumbRoute
+                                title={i18n("main.nav.search")}
+                                path={Routes.publicSearch.path}
+                                component={Search}
+                            />
+                            <Route component={Dashboard} />
+                        </Switch>
+                    </Container>
+                </div>
+                <Footer authenticated={false} sidebarExpanded={sidebarExpanded} />
             </div>
-            <Footer authenticated={false} sidebarExpanded={sidebarExpanded}/>
-        </div>;
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        loading: state.loading,
-        intl: state.intl,    // Pass intl in props to force UI re-render on language switch
-        sidebarExpanded: state.sidebarExpanded,
-        desktopView: state.desktopView
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        changeView: () => dispatch(changeView()),
-        loadConfiguration: () => dispatch(loadConfiguration())
-    };
-})(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));
+export default connect(
+    (state: TermItState) => {
+        return {
+            loading: state.loading,
+            intl: state.intl, // Pass intl in props to force UI re-render on language switch
+            sidebarExpanded: state.sidebarExpanded,
+            desktopView: state.desktopView
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            changeView: () => dispatch(changeView()),
+            loadConfiguration: () => dispatch(loadConfiguration())
+        };
+    }
+)(injectIntl(withI18n(withLoading(withRouter(MainView), {containerClass: "app-container"}))));

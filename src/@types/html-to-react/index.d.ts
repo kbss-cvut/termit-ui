@@ -2,7 +2,6 @@
  * Type declarations for html-to-react library.
  */
 declare module "html-to-react" {
-
     interface Node {
         type?: string;
         name?: string;
@@ -29,9 +28,11 @@ declare module "html-to-react" {
     class Parser {
         constructor(options?: any);
 
-        public parseWithInstructions(html: any,
-                                     isValidNode: any,
-                                     processingInstructions: Instruction[],
-                                     preprocessingInstructions?: PreprocessingInstruction[]): any;
+        public parseWithInstructions(
+            html: any,
+            isValidNode: any,
+            processingInstructions: Instruction[],
+            preprocessingInstructions?: PreprocessingInstruction[]
+        ): any;
     }
 }

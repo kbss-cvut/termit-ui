@@ -7,7 +7,6 @@ import {Badge, Button} from "reactstrap";
 jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
 describe("StringListEdit", () => {
-
     let onChange: (list: string[]) => void;
 
     beforeEach(() => {
@@ -15,7 +14,9 @@ describe("StringListEdit", () => {
     });
 
     it("adds current input value to list and invokes onChange on add click", () => {
-        const wrapper = mountWithIntl(<StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()} />
+        );
         const input = wrapper.find("input");
         const value = "new item";
         (input.getDOMNode() as HTMLInputElement).value = value;
@@ -25,7 +26,9 @@ describe("StringListEdit", () => {
     });
 
     it("clears input value after adding new item", () => {
-        const wrapper = mountWithIntl(<StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()} />
+        );
         const input = wrapper.find("input");
         (input.getDOMNode() as HTMLInputElement).value = "new item";
         input.simulate("change", input);
@@ -35,7 +38,9 @@ describe("StringListEdit", () => {
     });
 
     it("supports adding input value as item on enter", () => {
-        const wrapper = mountWithIntl(<StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()} />
+        );
         const input = wrapper.find("input");
         const value = "new item";
         (input.getDOMNode() as HTMLInputElement).value = value;
@@ -45,7 +50,9 @@ describe("StringListEdit", () => {
     });
 
     it("does nothing on add when input is empty", () => {
-        const wrapper = mountWithIntl(<StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()} />
+        );
         const input = wrapper.find("input");
         (input.getDOMNode() as HTMLInputElement).value = "";
         input.simulate("change", input);
@@ -55,13 +62,17 @@ describe("StringListEdit", () => {
 
     it("removes item and calls onChange with updated items when item remove button is clicked", () => {
         const items = ["first", "second"];
-        const wrapper = mountWithIntl(<StringListEdit onChange={onChange} list={items} i18nPrefix={""} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <StringListEdit onChange={onChange} list={items} i18nPrefix={""} {...intlFunctions()} />
+        );
         wrapper.find(Badge).at(0).simulate("click");
         expect(onChange).toHaveBeenCalledWith([items[1]]);
     });
 
     it("renders add button disabled when input is empty", () => {
-        const wrapper = mountWithIntl(<StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()}/>);
+        const wrapper = mountWithIntl(
+            <StringListEdit onChange={onChange} list={[]} i18nPrefix={""} {...intlFunctions()} />
+        );
         expect(wrapper.find(Button).prop("disabled")).toBeTruthy();
         const input = wrapper.find("input");
         (input.getDOMNode() as HTMLInputElement).value = "aaa";

@@ -20,9 +20,10 @@ export interface CreateResourceMetadataState extends AbstractCreateAssetState, R
     types: string;
 }
 
-export class CreateResourceMetadata<P extends CreateResourceMetadataProps = CreateResourceMetadataProps, S extends CreateResourceMetadataState = CreateResourceMetadataState>
-    extends AbstractCreateAsset<P, S> {
-
+export class CreateResourceMetadata<
+    P extends CreateResourceMetadataProps = CreateResourceMetadataProps,
+    S extends CreateResourceMetadataState = CreateResourceMetadataState
+> extends AbstractCreateAsset<P, S> {
     constructor(props: P) {
         super(props);
         this.state = {
@@ -48,54 +49,84 @@ export class CreateResourceMetadata<P extends CreateResourceMetadataProps = Crea
     };
 
     public render() {
-        return <Form>
-            {this.renderBasicMetadataInputs()}
-            {this.renderSubmitButtons()}
-        </Form>;
+        return (
+            <Form>
+                {this.renderBasicMetadataInputs()}
+                {this.renderSubmitButtons()}
+            </Form>
+        );
     }
 
     protected renderBasicMetadataInputs() {
         const i18n = this.props.i18n;
-        return <>
-            <Row>
-                <Col xs={12}>
-                    <CustomInput name="create-resource-label" label={i18n("asset.label")}
-                                 value={this.state.label}
-                                 onChange={this.onLabelChange}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
-                    <TextArea name="create-resource-description" label={i18n("resource.metadata.description")}
-                              type="textarea" rows={4} value={this.state.description} help={i18n("optional")}
-                              onChange={this.onDescriptionChange}/>
-                </Col>
-            </Row>
-            {this.props.children}
-            <ShowAdvanceAssetFields>
+        return (
+            <>
                 <Row>
                     <Col xs={12}>
-                        <CustomInput name="create-resource-iri" label={i18n("asset.iri")}
-                                     value={this.state.iri}
-                                     onChange={this.onIriChange} help={i18n("asset.create.iri.help")}/>
+                        <CustomInput
+                            name="create-resource-label"
+                            label={i18n("asset.label")}
+                            value={this.state.label}
+                            onChange={this.onLabelChange}
+                        />
                     </Col>
                 </Row>
-            </ShowAdvanceAssetFields>
-        </>;
+                <Row>
+                    <Col xs={12}>
+                        <TextArea
+                            name="create-resource-description"
+                            label={i18n("resource.metadata.description")}
+                            type="textarea"
+                            rows={4}
+                            value={this.state.description}
+                            help={i18n("optional")}
+                            onChange={this.onDescriptionChange}
+                        />
+                    </Col>
+                </Row>
+                {this.props.children}
+                <ShowAdvanceAssetFields>
+                    <Row>
+                        <Col xs={12}>
+                            <CustomInput
+                                name="create-resource-iri"
+                                label={i18n("asset.iri")}
+                                value={this.state.iri}
+                                onChange={this.onIriChange}
+                                help={i18n("asset.create.iri.help")}
+                            />
+                        </Col>
+                    </Row>
+                </ShowAdvanceAssetFields>
+            </>
+        );
     }
 
     protected renderSubmitButtons() {
         const i18n = this.props.i18n;
-        return <Row>
-            <Col xs={12}>
-                <ButtonToolbar className="d-flex justify-content-center mt-4">
-                    <Button id="create-resource-submit" onClick={this.onCreate} color="success" size="sm"
-                            disabled={this.state.label.trim().length === 0}>{i18n("create")}</Button>
-                    <Button id="create-resource-cancel" onClick={this.props.onCancel}
-                            color="outline-dark" size="sm">{i18n("cancel")}</Button>
-                </ButtonToolbar>
-            </Col>
-        </Row>;
+        return (
+            <Row>
+                <Col xs={12}>
+                    <ButtonToolbar className="d-flex justify-content-center mt-4">
+                        <Button
+                            id="create-resource-submit"
+                            onClick={this.onCreate}
+                            color="success"
+                            size="sm"
+                            disabled={this.state.label.trim().length === 0}>
+                            {i18n("create")}
+                        </Button>
+                        <Button
+                            id="create-resource-cancel"
+                            onClick={this.props.onCancel}
+                            color="outline-dark"
+                            size="sm">
+                            {i18n("cancel")}
+                        </Button>
+                    </ButtonToolbar>
+                </Col>
+            </Row>
+        );
     }
 }
 

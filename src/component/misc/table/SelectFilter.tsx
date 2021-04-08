@@ -8,7 +8,7 @@ interface SelectFilterProps extends HasI18n {
         filterValue?: string;
         setFilter: (value?: string) => void;
         preFilteredRows: any[];
-    }
+    };
 }
 
 export function createSelectFilter(getValue: (row: any) => string, getLabel: (value: string) => string) {
@@ -22,17 +22,23 @@ export function createSelectFilter(getValue: (row: any) => string, getLabel: (va
             return [...opts.values()];
         }, [preFilteredRows]);
 
-        return <Input bsSize="sm" type="select" value={filterValue} className="m-table-select-filter"
-                      onChange={e => {
-                          setFilter(e.target.value || undefined);
-                      }}>
-            <option value="">{props.i18n("table.filter.select.all")}</option>
-            {options.map((option: string, i: number) => (
-                <option key={i} value={option}>
-                    {getLabel(option)}
-                </option>
-            ))}
-        </Input>;
+        return (
+            <Input
+                bsSize="sm"
+                type="select"
+                value={filterValue}
+                className="m-table-select-filter"
+                onChange={e => {
+                    setFilter(e.target.value || undefined);
+                }}>
+                <option value="">{props.i18n("table.filter.select.all")}</option>
+                {options.map((option: string, i: number) => (
+                    <option key={i} value={option}>
+                        {getLabel(option)}
+                    </option>
+                ))}
+            </Input>
+        );
     };
 
     SelectFilter = injectIntl(withI18n(SelectFilter));

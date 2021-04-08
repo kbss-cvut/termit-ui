@@ -13,17 +13,17 @@ const TYPES = [
     "https://slovník.gov.cz/základní/pojem/typ-vlastnosti",
     "https://slovník.gov.cz/základní/pojem/typ-vztahu",
     "https://slovník.gov.cz/základní/pojem/typ-události",
-    TYPE_NOT_FILLED];
+    TYPE_NOT_FILLED
+];
 
 interface Props extends PublicProps {
-    empty: string,
-    notFilled: string,
-    lang: string
+    empty: string;
+    notFilled: string;
+    lang: string;
 }
 
 class TermTypeFrequency extends React.Component<Props> {
-
-    private cx = LD({"p": VocabularyUtils.PREFIX, "rdfs": VocabularyUtils.PREFIX_RDFS});
+    private cx = LD({p: VocabularyUtils.PREFIX, rdfs: VocabularyUtils.PREFIX_RDFS});
 
     private getLabel(res: any, iri: string) {
         if (TYPE_NOT_FILLED === iri) {
@@ -32,8 +32,8 @@ class TermTypeFrequency extends React.Component<Props> {
         const labels = this.cx(res).queryAll("[@id=" + iri + "] rdfs:label");
         for (const label of labels) {
             const q = label.query("@language");
-            if (q && (q.json() === this.props.lang)) {
-                return label.query("@value")
+            if (q && q.json() === this.props.lang) {
+                return label.query("@value");
             }
         }
         return this.cx(res).query("[@id=" + iri + "] rdfs:label @value");
@@ -49,7 +49,7 @@ class TermTypeFrequency extends React.Component<Props> {
         const res = queryResult.result;
         const types: object = {};
 
-        TYPES.forEach(t => types[t] = TermTypeFrequencyI.getLabel(res, t) || t);
+        TYPES.forEach(t => (types[t] = TermTypeFrequencyI.getLabel(res, t) || t));
 
         const vocabularies = {};
         res.filter((r: any) => {
@@ -61,7 +61,7 @@ class TermTypeFrequency extends React.Component<Props> {
             if (!vocO) {
                 vocO = {name: TermTypeFrequencyI.getLabel(res, vocabulary)};
                 Object.keys(types).forEach(type => {
-                    vocO[types[type]] = 0
+                    vocO[types[type]] = 0;
                 });
                 vocabularies[vocabulary] = vocO;
             }
@@ -92,25 +92,21 @@ class TermTypeFrequency extends React.Component<Props> {
             return {
                 name: types[t],
                 data: Object.keys(vocabularies).map(v => vocabularies[v][types[t]])
-            }
+            };
         });
 
         const options = Object.assign(defaultChartOptions, {
             xaxis: {
                 categories: Object.keys(vocabularies).map(v => vocabularies[v].name)
-            },
+            }
         });
 
         // Height is given by the number of vocabularies + a fixed value for the legend
         if (Object.keys(vocabularies).length === 0) {
-            return <h4>{this.props.empty}</h4>
+            return <h4>{this.props.empty}</h4>;
         } else {
             const height = Object.keys(vocabularies).length * 35 + 60;
-            return <Chart options={options}
-                          series={series}
-                          type="bar"
-                          width="100%"
-                          height={`${height}px`}/>;
+            return <Chart options={options} series={series} type="bar" width="100%" height={`${height}px`} />;
         }
     }
 }

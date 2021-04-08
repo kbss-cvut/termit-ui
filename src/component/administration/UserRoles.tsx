@@ -11,8 +11,8 @@ export function filterActualRoles(types: string[], roles: UserRoleData[]) {
 }
 
 interface UserRoleProps {
-    user: User,
-    availableRoles: UserRole[],
+    user: User;
+    availableRoles: UserRole[];
     locale: string;
 }
 
@@ -22,10 +22,8 @@ const UserRoles = (props: UserRoleProps) => {
     if (actualRoles.length === 0) {
         return null;
     }
-    return <div>
-        {actualRoles.map(r => getLocalized(r.label, locale)).join(", ")}
-    </div>;
-}
+    return <div>{actualRoles.map(r => getLocalized(r.label, locale)).join(", ")}</div>;
+};
 
 export default connect((state: TermItState) => ({
     availableRoles: state.configuration.roles,

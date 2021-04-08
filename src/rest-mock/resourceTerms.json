@@ -1,23 +1,21 @@
 [
-  {
-    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-1",
-    "@type": [
-      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term",
-      "http://www.w3.org/2004/02/skos/core#Concept"
-    ],
-    "http://www.w3.org/2000/01/rdf-schema#label": "pojem 1",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
-      "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+    {
+        "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-1",
+        "@type": [
+            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term",
+            "http://www.w3.org/2004/02/skos/core#Concept"
+        ],
+        "http://www.w3.org/2000/01/rdf-schema#label": "pojem 1",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+            "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+        }
+    },
+    {
+        "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-2",
+        "@type": ["http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"],
+        "http://www.w3.org/2000/01/rdf-schema#label": "pojem 2",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
+            "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
+        }
     }
-  },
-  {
-    "@id": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-2",
-    "@type": [
-      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term"
-    ],
-    "http://www.w3.org/2000/01/rdf-schema#label": "pojem 2",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku": {
-      "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan"
-    }
-  }
 ]

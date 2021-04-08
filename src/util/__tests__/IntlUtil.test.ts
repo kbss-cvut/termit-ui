@@ -2,7 +2,6 @@ import {loadInitialLocalizationData, loadLocalizationData, saveLanguagePreferenc
 import Constants from "../Constants";
 
 describe("IntlUtil", () => {
-
     beforeEach(() => {
         localStorage.clear();
     });

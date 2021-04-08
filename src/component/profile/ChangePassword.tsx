@@ -31,7 +31,7 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
         this.state = {
             currentPassword: "",
             newPassword: "",
-            confirmPassword: "",
+            confirmPassword: ""
         };
     }
 
@@ -55,7 +55,7 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
         const userDataWithPassword: UserDataWithPassword = {
             ...this.props.user,
             originalPassword: this.state.currentPassword,
-            password: this.state.newPassword,
+            password: this.state.newPassword
         };
 
         this.props.changePassword(new PasswordUpdateUser(userDataWithPassword)).then((asyncResult: AsyncAction) => {
@@ -74,10 +74,13 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
     }
 
     private isValid(): boolean {
-        return this.state.currentPassword.trim().length > 0 &&
+        return (
+            this.state.currentPassword.trim().length > 0 &&
             this.state.newPassword.trim().length > 0 &&
             this.state.confirmPassword.trim().length > 0 &&
-            this.passwordsMatch() && this.passwordsDiffer();
+            this.passwordsMatch() &&
+            this.passwordsDiffer()
+        );
     }
 
     private navigateToProfileRoute = () => Routing.transitionTo(Routes.profile);
@@ -85,67 +88,86 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
     public render() {
         const {i18n} = this.props;
 
-        return <>
-            <HeaderWithActions title={i18n("profile.change-password")}/>
-            <Card id="change-password">
-                <CardBody>
-                    <Form>
-                        <Row>
-                            <Col xl={6} md={12}>
-                                <CustomInput
-                                    type="password"
-                                    name="currentPassword"
-                                    label={i18n("change-password.current.password")}
-                                    value={this.state.currentPassword}
-                                    onChange={this.onInputChange}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xl={6} md={12}>
-                                <CustomInput
-                                    type="password"
-                                    name="newPassword"
-                                    label={i18n("change-password.new.password")}
-                                    value={this.state.newPassword}
-                                    invalid={this.state.newPassword.trim().length > 0 && !this.passwordsDiffer()}
-                                    invalidMessage={i18n("change-password.passwords.differ.tooltip")}
-                                    onChange={this.onInputChange}/>
-                            </Col>
-                            <Col xl={6} md={12}>
-                                <CustomInput
-                                    type="password"
-                                    name="confirmPassword"
-                                    label={i18n("change-password.confirm.password")}
-                                    value={this.state.confirmPassword}
-                                    invalid={this.state.newPassword.trim().length > 0 && !this.passwordsMatch()}
-                                    invalidMessage={i18n("register.passwords-not-matching.tooltip")}
-                                    onChange={this.onInputChange}
-                                    onKeyPress={this.onKeyPress}/>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xl={12}>
-                                <ButtonToolbar className="justify-content-center">
-                                    <Button id="change-password-submit" onClick={this.onChangePassword} color="success"
-                                            size="sm" disabled={!this.isValid()}>{i18n("save")}</Button>
-                                    <Button id="change-password-cancel" onClick={this.navigateToProfileRoute}
-                                            size="sm" color="outline-dark">{i18n("cancel")}</Button>
-                                </ButtonToolbar>
-                            </Col>
-                        </Row>
-                    </Form>
-                </CardBody>
-            </Card>
-        </>;
+        return (
+            <>
+                <HeaderWithActions title={i18n("profile.change-password")} />
+                <Card id="change-password">
+                    <CardBody>
+                        <Form>
+                            <Row>
+                                <Col xl={6} md={12}>
+                                    <CustomInput
+                                        type="password"
+                                        name="currentPassword"
+                                        label={i18n("change-password.current.password")}
+                                        value={this.state.currentPassword}
+                                        onChange={this.onInputChange}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xl={6} md={12}>
+                                    <CustomInput
+                                        type="password"
+                                        name="newPassword"
+                                        label={i18n("change-password.new.password")}
+                                        value={this.state.newPassword}
+                                        invalid={this.state.newPassword.trim().length > 0 && !this.passwordsDiffer()}
+                                        invalidMessage={i18n("change-password.passwords.differ.tooltip")}
+                                        onChange={this.onInputChange}
+                                    />
+                                </Col>
+                                <Col xl={6} md={12}>
+                                    <CustomInput
+                                        type="password"
+                                        name="confirmPassword"
+                                        label={i18n("change-password.confirm.password")}
+                                        value={this.state.confirmPassword}
+                                        invalid={this.state.newPassword.trim().length > 0 && !this.passwordsMatch()}
+                                        invalidMessage={i18n("register.passwords-not-matching.tooltip")}
+                                        onChange={this.onInputChange}
+                                        onKeyPress={this.onKeyPress}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xl={12}>
+                                    <ButtonToolbar className="justify-content-center">
+                                        <Button
+                                            id="change-password-submit"
+                                            onClick={this.onChangePassword}
+                                            color="success"
+                                            size="sm"
+                                            disabled={!this.isValid()}>
+                                            {i18n("save")}
+                                        </Button>
+                                        <Button
+                                            id="change-password-cancel"
+                                            onClick={this.navigateToProfileRoute}
+                                            size="sm"
+                                            color="outline-dark">
+                                            {i18n("cancel")}
+                                        </Button>
+                                    </ButtonToolbar>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </CardBody>
+                </Card>
+            </>
+        );
     }
 }
 
-export default connect((state: TermItState) => {
-    return {
-        user: state.user,
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        changePassword: (name: User) => dispatch(changePassword(name))
-    };
-})(injectIntl(withI18n(ChangePassword)));
+export default connect(
+    (state: TermItState) => {
+        return {
+            user: state.user
+        };
+    },
+    (dispatch: ThunkDispatch) => {
+        return {
+            changePassword: (name: User) => dispatch(changePassword(name))
+        };
+    }
+)(injectIntl(withI18n(ChangePassword)));

@@ -15,34 +15,51 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = props => {
     const definitionText = getLocalizedOrDefault(term.definition, "", language);
     const sources = Utils.sanitizeArray(term.sources);
     if (definitionText.length === 0 && sources.length > 0) {
-        return <>
-            <Col xl={2} md={4}>
-                <Label className="attribute-label definition">{i18n("term.metadata.source")}</Label>
-            </Col>
-            <Col xl={10} md={8}>
-                <List type="unstyled" className="mb-0">
-                    {sources.map(s => <>{Utils.isLink(s) ?
-                        <OutgoingLink iri={s} label={<AssetLabel iri={s}/>}/> : <>{s}</>}
-                        {withDefinitionSource && term.definitionSource &&
-                        <TermDefinitionSourceLink term={term}/>}</>)}
-                </List>
-            </Col>
-        </>
+        return (
+            <>
+                <Col xl={2} md={4}>
+                    <Label className="attribute-label definition">{i18n("term.metadata.source")}</Label>
+                </Col>
+                <Col xl={10} md={8}>
+                    <List type="unstyled" className="mb-0">
+                        {sources.map(s => (
+                            <>
+                                {Utils.isLink(s) ? <OutgoingLink iri={s} label={<AssetLabel iri={s} />} /> : <>{s}</>}
+                                {withDefinitionSource && term.definitionSource && (
+                                    <TermDefinitionSourceLink term={term} />
+                                )}
+                            </>
+                        ))}
+                    </List>
+                </Col>
+            </>
+        );
     } else {
-        return <Col xs={12}>
-            {sources.length > 0 && <footer className="blockquote-footer mb-1 term-metadata-definition-source">
-                {sources.map(s => {
-                    return <>
-                        <cite key={s} title={i18n("term.metadata.definitionSource.title")}>
-                            {Utils.isLink(s) ? <OutgoingLink iri={s} label={<AssetLabel iri={s}/>}/> : <>{s}</>}
-                        </cite>
-                        {props.withDefinitionSource && term.definitionSource &&
-                        <TermDefinitionSourceLink term={term}/>}
-                    </>;
-                })}
-            </footer>}
-        </Col>;
+        return (
+            <Col xs={12}>
+                {sources.length > 0 && (
+                    <footer className="blockquote-footer mb-1 term-metadata-definition-source">
+                        {sources.map(s => {
+                            return (
+                                <>
+                                    <cite key={s} title={i18n("term.metadata.definitionSource.title")}>
+                                        {Utils.isLink(s) ? (
+                                            <OutgoingLink iri={s} label={<AssetLabel iri={s} />} />
+                                        ) : (
+                                            <>{s}</>
+                                        )}
+                                    </cite>
+                                    {props.withDefinitionSource && term.definitionSource && (
+                                        <TermDefinitionSourceLink term={term} />
+                                    )}
+                                </>
+                            );
+                        })}
+                    </footer>
+                )}
+            </Col>
+        );
     }
-}
+};
 
 export default TermDefinitionSource;

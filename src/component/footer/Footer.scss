@@ -2,79 +2,79 @@
 @import "../../styles/variables";
 
 footer {
-  background-color: rgba(255, 255, 255, 1);
-  color: black;
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
 
-  &.transparent {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
+    &.transparent {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
 
-  a {
-    color: inherit;
-  }
+    a {
+        color: inherit;
+    }
 }
 
 .footer-row {
-  display: flex;
-  align-items: center;
-  height: $footer-height;
-  font-size: 0.875rem;
-  z-index: 10;
+    display: flex;
+    align-items: center;
+    height: $footer-height;
+    font-size: 0.875rem;
+    z-index: 10;
 
-  @media (max-width: $sm - 1px) {
-    font-size: 0.6875rem;
-  }
+    @media (max-width: $sm - 1px) {
+        font-size: 0.6875rem;
+    }
 }
 
 .log-viewer-toggle {
-  display: block;
-  cursor: pointer;
-  padding: 8px 16px;
+    display: block;
+    cursor: pointer;
+    padding: 8px 16px;
 
-  svg {
-    height: 1.5em;
+    svg {
+        height: 1.5em;
 
-    &:hover {
-      color: $secondary;
+        &:hover {
+            color: $secondary;
+        }
     }
-  }
 }
 
 .news-viewer-toggle {
-  cursor: pointer;
+    cursor: pointer;
 
-  &:hover {
-    color: $secondary;
-  }
+    &:hover {
+        color: $secondary;
+    }
 }
 
 .footer-left {
-  width: $navbar-vertical-width-expanded;
-  height: 100%;
-  border-right: 1px solid $gray-700;
-  display: flex;
-  align-items: center;
+    width: $navbar-vertical-width-expanded;
+    height: 100%;
+    border-right: 1px solid $gray-700;
+    display: flex;
+    align-items: center;
 
-  @media (max-width: $md - 1px) {
-    width: auto !important;
-  }
+    @media (max-width: $md - 1px) {
+        width: auto !important;
+    }
 }
 
 .footer-left-expanded {
-  width: $navbar-vertical-width-expanded;
+    width: $navbar-vertical-width-expanded;
 }
 
 .footer-left-collapsed {
-  width: auto;
+    width: auto;
 }
 
 .footer-version {
-  @media (max-width: $sm - 1px) {
-    width: 1ch;
-    display: inline-flex;
-    white-space: nowrap;
-    overflow: hidden;
-    text-transform: lowercase;
-    text-overflow: ellipsis;
-  }
+    @media (max-width: $sm - 1px) {
+        width: 1ch;
+        display: inline-flex;
+        white-space: nowrap;
+        overflow: hidden;
+        text-transform: lowercase;
+        text-overflow: ellipsis;
+    }
 }

@@ -19,44 +19,58 @@ interface DocumentFilesProps {
     onFileRemoved: () => void;
     addFile: (file: TermItFile, documentIri: string) => Promise<void>;
     onFileAdded: () => void;
-    uploadFile: (fileIri: string, file: File) => Promise<any>,
-    notify: (notification: AppNotification) => void
+    uploadFile: (fileIri: string, file: File) => Promise<any>;
+    notify: (notification: AppNotification) => void;
 }
 
 export const DocumentFiles = (props: DocumentFilesProps) => {
     const {document, addFile, removeFile, uploadFile, notify, onFileAdded, onFileRemoved} = props;
 
-    document.files.forEach(f => f.owner = document)
+    document.files.forEach(f => (f.owner = document));
 
-    const createFile = useCallback((termitFile: TermItFile, file: File): Promise<void> => (
-        addFile(termitFile, document.iri)
-            .then(() => uploadFile(termitFile.iri, file)
-                .then(() => notify({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})))
-            .then(onFileAdded)), [document, notify, onFileAdded, addFile, uploadFile]);
+    const createFile = useCallback(
+        (termitFile: TermItFile, file: File): Promise<void> =>
+            addFile(termitFile, document.iri)
+                .then(() =>
+                    uploadFile(termitFile.iri, file).then(() =>
+                        notify({source: {type: NotificationType.FILE_CONTENT_UPLOADED}})
+                    )
+                )
+                .then(onFileAdded),
+        [document, notify, onFileAdded, addFile, uploadFile]
+    );
 
-    const deleteFile = useCallback((termitFile: TermItFile): Promise<void> => (
-        removeFile(termitFile, document.iri)
-            .then(onFileRemoved)), [document, onFileRemoved, removeFile]);
+    const deleteFile = useCallback(
+        (termitFile: TermItFile): Promise<void> => removeFile(termitFile, document.iri).then(onFileRemoved),
+        [document, onFileRemoved, removeFile]
+    );
 
     if (!document) {
         return null;
     }
-    return <Files files={document.files}
-                  actions={[<AddFile key="add-file" performAction={createFile}/>]}
-                  itemActions={(file: TermItFile) => [
-                      <FileContentLink key="show-content-file" file={file}/>,
-                      <RemoveFile key="remove-file"
-                                  file={file}
-                                  performAction={deleteFile.bind(this, file)}
-                                  withConfirmation={true}/>
-                  ]}
-    />
-}
+    return (
+        <Files
+            files={document.files}
+            actions={[<AddFile key="add-file" performAction={createFile} />]}
+            itemActions={(file: TermItFile) => [
+                <FileContentLink key="show-content-file" file={file} />,
+                <RemoveFile
+                    key="remove-file"
+                    file={file}
+                    performAction={deleteFile.bind(this, file)}
+                    withConfirmation={true}
+                />
+            ]}
+        />
+    );
+};
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
     return {
-        addFile: (file: TermItFile, documentIri: string) => dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
-        removeFile: (file: TermItFile, documentIri: string) => dispatch(removeFileFromDocument(file, VocabularyUtils.create(documentIri))),
+        addFile: (file: TermItFile, documentIri: string) =>
+            dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
+        removeFile: (file: TermItFile, documentIri: string) =>
+            dispatch(removeFileFromDocument(file, VocabularyUtils.create(documentIri))),
         uploadFile: (fileIri: string, file: File) => dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
         notify: (notification: AppNotification) => dispatch(publishNotification(notification))
     };

@@ -16,7 +16,6 @@ const spy = jest.spyOn(redux, "useSelector");
 spy.mockReturnValue(Constants.DEFAULT_LANGUAGE);
 
 describe("TermDefinitionEdit", () => {
-
     let onSave: (update: Term) => void;
     let onCancel: () => void;
 
@@ -27,7 +26,7 @@ describe("TermDefinitionEdit", () => {
 
     it("returns null when no element and term are provided", () => {
         mockUseI18n();
-        const wrapper = shallow(<TermDefinitionEdit onSave={onSave} onCancel={onCancel} {...intlFunctions()}/>);
+        const wrapper = shallow(<TermDefinitionEdit onSave={onSave} onCancel={onCancel} {...intlFunctions()} />);
         expect(wrapper.isEmptyRender()).toBeTruthy();
     });
 
@@ -41,8 +40,15 @@ describe("TermDefinitionEdit", () => {
                 resource: term.iri
             }
         };
-        const wrapper = mountWithIntlAttached(<TermDefinitionEdit onSave={onSave} onCancel={onCancel} term={term}
-                                                                  annotationElement={annotatedElement} {...intlFunctions()}/>);
+        const wrapper = mountWithIntlAttached(
+            <TermDefinitionEdit
+                onSave={onSave}
+                onCancel={onCancel}
+                term={term}
+                annotationElement={annotatedElement}
+                {...intlFunctions()}
+            />
+        );
         const definitionEdit = wrapper.find(TermDefinitionBlockEdit);
         expect(definitionEdit.exists()).toBeTruthy();
         expect(definitionEdit.length).toEqual(1);
@@ -60,8 +66,15 @@ describe("TermDefinitionEdit", () => {
                 resource: term.iri
             }
         };
-        const wrapper = mountWithIntlAttached(<TermDefinitionEdit onSave={onSave} onCancel={onCancel} term={term}
-                                                                  annotationElement={annotatedElement} {...intlFunctions()}/>);
+        const wrapper = mountWithIntlAttached(
+            <TermDefinitionEdit
+                onSave={onSave}
+                onCancel={onCancel}
+                term={term}
+                annotationElement={annotatedElement}
+                {...intlFunctions()}
+            />
+        );
         const definitionEdit = wrapper.find(TermDefinitionBlockEdit);
         expect(definitionEdit.exists()).toBeTruthy();
         expect(definitionEdit.length).toEqual(2);
@@ -83,8 +96,15 @@ describe("TermDefinitionEdit", () => {
                 resource: term.iri
             }
         };
-        const wrapper = mountWithIntlAttached(<TermDefinitionEdit onSave={onSave} onCancel={onCancel} term={term}
-                                                                  annotationElement={annotatedElement} {...intlFunctions()}/>);
+        const wrapper = mountWithIntlAttached(
+            <TermDefinitionEdit
+                onSave={onSave}
+                onCancel={onCancel}
+                term={term}
+                annotationElement={annotatedElement}
+                {...intlFunctions()}
+            />
+        );
         const definitionEdit = wrapper.find(TermDefinitionBlockEdit);
         expect(definitionEdit.get(0).props.readOnly).toBeTruthy();
     });
@@ -102,8 +122,15 @@ describe("TermDefinitionEdit", () => {
                     resource: term.iri
                 }
             };
-            const wrapper = mountWithIntlAttached(<TermDefinitionEdit onSave={onSave} onCancel={onCancel} term={term}
-                                                                      annotationElement={annotatedElement} {...intlFunctions()}/>);
+            const wrapper = mountWithIntlAttached(
+                <TermDefinitionEdit
+                    onSave={onSave}
+                    onCancel={onCancel}
+                    term={term}
+                    annotationElement={annotatedElement}
+                    {...intlFunctions()}
+                />
+            );
             wrapper.find("button#annotator-set-definition-save").simulate("click");
             expect(onSave).toHaveBeenCalled();
             expect((onSave as jest.Mock).mock.calls[0][0].definition).toEqual({en: annotatedElement.data});

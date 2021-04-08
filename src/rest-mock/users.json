@@ -1,29 +1,23 @@
 [
-  {
-    "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
-    "@type": [
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
-    ]
-  },
-  {
-    "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/thomas-lasky",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Thomas",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Lasky",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "lasky@unsc.org",
-    "@type": [
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"
-    ]
-  },
-  {
-    "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/sarah-palmer",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Sarah",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Palmer",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "palmer@unsc.org",
-    "@type": [
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"
-    ]
-  }
+    {
+        "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
+        "@type": ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"]
+    },
+    {
+        "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/thomas-lasky",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Thomas",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Lasky",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "lasky@unsc.org",
+        "@type": ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"]
+    },
+    {
+        "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/sarah-palmer",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Sarah",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Palmer",
+        "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "palmer@unsc.org",
+        "@type": ["http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"]
+    }
 ]

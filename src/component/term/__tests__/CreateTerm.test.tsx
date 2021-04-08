@@ -17,9 +17,10 @@ import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 jest.mock("../../../util/Routing");
 
 describe("CreateTerm", () => {
-
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
-    const iri = "http://localhost:8080/termit/rest/vocabularies/test-vocabulary/terms/test-term?namespace=" + encodeURI(namespace);
+    const iri =
+        "http://localhost:8080/termit/rest/vocabularies/test-vocabulary/terms/test-term?namespace=" +
+        encodeURI(namespace);
 
     let onCreate: (term: Term, iri: IRI) => Promise<string>;
     let vocabulary: Vocabulary;
@@ -51,7 +52,7 @@ describe("CreateTerm", () => {
         };
         match = {
             params: {
-                name: normalizedVocabName,
+                name: normalizedVocabName
             },
             path: location.pathname,
             isExact: true,
@@ -60,17 +61,33 @@ describe("CreateTerm", () => {
     });
 
     it("invokes on create on create call", () => {
-        const wrapper = shallow(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history}
-                                            location={location} match={match}
-                                            loadVocabulary={loadVocabulary} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <CreateTerm
+                createTerm={onCreate}
+                vocabulary={vocabulary}
+                history={history}
+                location={location}
+                match={match}
+                loadVocabulary={loadVocabulary}
+                {...intlFunctions()}
+            />
+        );
         (wrapper.instance() as CreateTerm).onCreate(term, false);
         expect(onCreate).toHaveBeenCalledWith(term, VocabularyUtils.create(vocabulary.iri));
     });
 
     it("invokes transition to term detail on successful creation", () => {
-        const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history}
-                                                        location={location} match={match}
-                                                        loadVocabulary={loadVocabulary}  {...intlFunctions()}/>);
+        const wrapper = shallow<CreateTerm>(
+            <CreateTerm
+                createTerm={onCreate}
+                vocabulary={vocabulary}
+                history={history}
+                location={location}
+                match={match}
+                loadVocabulary={loadVocabulary}
+                {...intlFunctions()}
+            />
+        );
         (wrapper.instance() as CreateTerm).onCreate(term, false);
         return Promise.resolve().then(() => {
             expect(Routing.transitionTo).toHaveBeenCalled();
@@ -79,14 +96,24 @@ describe("CreateTerm", () => {
             expect(call[0]).toEqual(Routes.vocabularyTermDetail);
             expect((call[1].params as Map<string, string>).get("name")).toEqual("test-vocabulary");
             expect((call[1].params as Map<string, string>).get("termName")).toEqual("test-term");
-            expect((call[1].query as Map<string, string>).get("namespace")).toEqual("http://onto.fel.cvut.cz/ontologies/termit/vocabularies/");
+            expect((call[1].query as Map<string, string>).get("namespace")).toEqual(
+                "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/"
+            );
         });
     });
 
     it("invokes transition to new term on successful creation", () => {
-        const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={vocabulary} history={history}
-                                                        location={location} match={match}
-                                                        loadVocabulary={loadVocabulary}  {...intlFunctions()}/>);
+        const wrapper = shallow<CreateTerm>(
+            <CreateTerm
+                createTerm={onCreate}
+                vocabulary={vocabulary}
+                history={history}
+                location={location}
+                match={match}
+                loadVocabulary={loadVocabulary}
+                {...intlFunctions()}
+            />
+        );
         (wrapper.instance() as CreateTerm).onCreate(term, true);
         return Promise.resolve().then(() => {
             expect(Routing.transitionTo).toHaveBeenCalled();
@@ -94,14 +121,24 @@ describe("CreateTerm", () => {
             const call = mock.calls[mock.calls.length - 1];
             expect(call[0]).toEqual(Routes.createVocabularyTerm);
             expect((call[1].params as Map<string, string>).get("name")).toEqual("test-vocabulary");
-            expect((call[1].query as Map<string, string>).get("namespace")).toEqual("http://onto.fel.cvut.cz/ontologies/termit/vocabularies/");
+            expect((call[1].query as Map<string, string>).get("namespace")).toEqual(
+                "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/"
+            );
         });
     });
 
     it("does not render component while vocabulary is empty", () => {
-        const wrapper = shallow<CreateTerm>(<CreateTerm createTerm={onCreate} vocabulary={EMPTY_VOCABULARY}
-                                                        history={history} location={location} match={match}
-                                                        loadVocabulary={loadVocabulary}  {...intlFunctions()}/>);
+        const wrapper = shallow<CreateTerm>(
+            <CreateTerm
+                createTerm={onCreate}
+                vocabulary={EMPTY_VOCABULARY}
+                history={history}
+                location={location}
+                match={match}
+                loadVocabulary={loadVocabulary}
+                {...intlFunctions()}
+            />
+        );
         expect(wrapper.exists(TermMetadataCreate)).toBeFalsy();
         wrapper.setProps({vocabulary});
         expect(wrapper.exists(TermMetadataCreate)).toBeTruthy();

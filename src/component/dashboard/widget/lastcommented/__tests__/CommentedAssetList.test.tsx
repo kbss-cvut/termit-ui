@@ -17,37 +17,49 @@ describe("CommentedAssetList", () => {
     });
 
     it("does not render info message during loading", () => {
-        const wrapper = mountWithIntl(<MemoryRouter>
-            <CommentedAssetList user={user} assets={[]} loading={true} {...intlFunctions()}/>
-        </MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <CommentedAssetList user={user} assets={[]} loading={true} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const info = wrapper.find(".italics");
         expect(info.exists()).toBeFalsy();
     });
 
     it("renders info message when no assets were found", () => {
-        const wrapper = mountWithIntl(<MemoryRouter>
-            <CommentedAssetList user={user} assets={[]} loading={false} {...intlFunctions()}/>
-        </MemoryRouter>);
+        const wrapper = mountWithIntl(
+            <MemoryRouter>
+                <CommentedAssetList user={user} assets={[]} loading={false} {...intlFunctions()} />
+            </MemoryRouter>
+        );
         const info = wrapper.find(".italics");
         expect(info.exists()).toBeTruthy();
         expect(info.text()).toEqual(en.messages["dashboard.widget.commentList.empty"]);
     });
 
     describe("comment content cutting", () => {
-
         it("renders substring of the comment text if its length exceeds defined threshold", () => {
             let content = "a";
             while (content.length < DISPLAY_LENGTH_THRESHOLD + 10) {
                 content += "a";
             }
             const comment = createComment(content);
-            const wrapper = mountWithIntl(<MemoryRouter>
-                <CommentedAssetList user={user} assets={[{
-                    lastComment: comment,
-                    iri: Generator.generateUri(),
-                    type: VocabularyUtils.COMMENT
-                }]} loading={false} {...intlFunctions()}/>
-            </MemoryRouter>);
+            const wrapper = mountWithIntl(
+                <MemoryRouter>
+                    <CommentedAssetList
+                        user={user}
+                        assets={[
+                            {
+                                lastComment: comment,
+                                iri: Generator.generateUri(),
+                                type: VocabularyUtils.COMMENT
+                            }
+                        ]}
+                        loading={false}
+                        {...intlFunctions()}
+                    />
+                </MemoryRouter>
+            );
             const renderedContent = wrapper.find(".comment-text").text();
             expect(renderedContent.length).toEqual(DISPLAY_LENGTH_THRESHOLD + ELLIPSIS.length);
         });
@@ -67,26 +79,44 @@ describe("CommentedAssetList", () => {
                 content += " auto";
             }
             const comment = createComment(content);
-            const wrapper = mountWithIntl(<MemoryRouter>
-                <CommentedAssetList user={user} assets={[{
-                    lastComment: comment,
-                    iri: Generator.generateUri(),
-                    type: VocabularyUtils.COMMENT
-                }]} loading={false} {...intlFunctions()}/>
-            </MemoryRouter>);
+            const wrapper = mountWithIntl(
+                <MemoryRouter>
+                    <CommentedAssetList
+                        user={user}
+                        assets={[
+                            {
+                                lastComment: comment,
+                                iri: Generator.generateUri(),
+                                type: VocabularyUtils.COMMENT
+                            }
+                        ]}
+                        loading={false}
+                        {...intlFunctions()}
+                    />
+                </MemoryRouter>
+            );
             const renderedContent = wrapper.find(".comment-text").text();
             expect(renderedContent.endsWith("auto" + ELLIPSIS)).toBeTruthy();
         });
 
         it("does not substring comment content when it fits display length threshold", () => {
             const comment = createComment("test comment 12345");
-            const wrapper = mountWithIntl(<MemoryRouter>
-                <CommentedAssetList user={user} assets={[{
-                    lastComment: comment,
-                    iri: Generator.generateUri(),
-                    type: VocabularyUtils.COMMENT
-                }]} loading={false} {...intlFunctions()}/>
-            </MemoryRouter>);
+            const wrapper = mountWithIntl(
+                <MemoryRouter>
+                    <CommentedAssetList
+                        user={user}
+                        assets={[
+                            {
+                                lastComment: comment,
+                                iri: Generator.generateUri(),
+                                type: VocabularyUtils.COMMENT
+                            }
+                        ]}
+                        loading={false}
+                        {...intlFunctions()}
+                    />
+                </MemoryRouter>
+            );
             const renderedContent = wrapper.find(".comment-text").text();
             expect(renderedContent).toEqual(comment.content);
         });

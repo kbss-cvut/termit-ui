@@ -7,7 +7,6 @@ import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("CreatePropertyForm", () => {
-
     let onCreate: (data: RdfsResourceData) => void;
     let toggleModal: () => void;
 
@@ -17,8 +16,9 @@ describe("CreatePropertyForm", () => {
     });
 
     it("adds rdf:Property to types on create", () => {
-        const wrapper = shallow(<CreatePropertyForm onOptionCreate={onCreate}
-                                                    toggleModal={toggleModal} {...intlFunctions()}/>);
+        const wrapper = shallow(
+            <CreatePropertyForm onOptionCreate={onCreate} toggleModal={toggleModal} {...intlFunctions()} />
+        );
         wrapper.instance().setState({iri: Generator.generateUri(), label: "test"});
         (wrapper.instance() as CreatePropertyForm).onCreate();
         expect(onCreate).toHaveBeenCalled();

@@ -2,7 +2,6 @@
 // Footer
 //
 
-
 // General styles
 
 .footer {
@@ -31,7 +30,7 @@
 
     .list-unstyled li a {
         display: inline-block;
-        padding: .125rem 0;
+        padding: 0.125rem 0;
         color: $footer-link-color;
         font-size: $footer-link-font-size;
 
@@ -45,7 +44,6 @@
     }
 }
 
-
 // Dark footer
 
 .footer-dark {
@@ -53,7 +51,6 @@
         color: $white;
     }
 }
-
 
 // Footer nav used for copyright and some links, but not limited to this
 
@@ -68,7 +65,6 @@
         }
     }
 }
-
 
 // Footer with cards over
 
@@ -88,7 +84,7 @@
         top: 600px;
         height: 2000px;
         background: theme-color("secondary");
-        transform: skew(0,-8deg);
+        transform: skew(0, -8deg);
     }
 
     .container {

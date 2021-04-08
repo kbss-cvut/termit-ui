@@ -24,12 +24,14 @@ interface VocabularyIriLinkProps {
 export const VocabularyIriLink: React.FC<VocabularyIriLinkProps> = (props: VocabularyIriLinkProps) => {
     const {i18n} = useI18n();
     const iri = VocabularyUtils.create(props.iri);
-    const path = Routing.getTransitionPath(Authentication.isLoggedIn(props.user) ? Routes.vocabularySummary : Routes.publicVocabularySummary,
+    const path = Routing.getTransitionPath(
+        Authentication.isLoggedIn(props.user) ? Routes.vocabularySummary : Routes.publicVocabularySummary,
         {
             params: new Map([["name", iri.fragment]]),
             query: new Map([["namespace", iri.namespace!]])
-        });
-    return <AssetIriLink assetIri={iri.toString()} path={path} tooltip={i18n("asset.link.tooltip")}/>;
+        }
+    );
+    return <AssetIriLink assetIri={iri.toString()} path={path} tooltip={i18n("asset.link.tooltip")} />;
 };
 
 export default connect((state: TermItState) => ({user: state.user}))(VocabularyIriLink);
