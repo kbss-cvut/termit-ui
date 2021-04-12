@@ -17,23 +17,18 @@
 */
 import * as React from "react";
 import withI18n from "../hoc/withI18n";
-import { withRouter } from "react-router";
+import {withRouter} from "react-router";
 import Routes from "../../util/Routes";
-import { Collapse, Container, Nav, Navbar, NavbarBrand } from "reactstrap";
+import {Collapse, Container, Nav, Navbar, NavbarBrand} from "reactstrap";
 import classNames from "classnames";
-import Constants, { getEnv } from "../../util/Constants";
-import { connect } from "react-redux";
+import Constants from "../../util/Constants";
+import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
-import { ThunkDispatch } from "../../util/Types";
-import { toggleSidebar } from "../../action/SyncActions";
-import { injectIntl } from "react-intl";
-import {
-  NavLinkRoute,
-  Sidebar as DefaultSidebar,
-  SidebarProps,
-} from "../sidebar/Sidebar";
+import {ThunkDispatch} from "../../util/Types";
+import {toggleSidebar} from "../../action/SyncActions";
+import {injectIntl} from "react-intl";
+import {NavLinkRoute, Sidebar as DefaultSidebar, SidebarProps,} from "../sidebar/Sidebar";
 import "../sidebar/Sidebar.scss";
-import ConfigParam from "../../util/ConfigParam";
 
 const mainNavRoutes: NavLinkRoute[] = [
   {

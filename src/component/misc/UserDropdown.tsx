@@ -1,19 +1,12 @@
 import React from "react";
-import {
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledDropdown,
-} from "reactstrap";
-import Routes from "../../util/Routes";
-import { useDispatch, useSelector } from "react-redux";
+import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,} from "reactstrap";
+import {useDispatch} from "react-redux";
 import classNames from "classnames";
-import TermItState from "../../model/TermItState";
-import { logout } from "../../action/ComplexActions";
+import {logout} from "../../action/ComplexActions";
 import "./UserDropdown.scss";
 import {useKeycloak} from "@react-keycloak/web";
 import Utils from "../../util/Utils";
-import { useI18n } from "../hook/useI18n";
+import {useI18n} from "../hook/useI18n";
 
 interface UserDropdownProps {
   dark: boolean;
@@ -22,7 +15,6 @@ interface UserDropdownProps {
 export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
     const {keycloak} = useKeycloak();
     const { i18n } = useI18n();
-    const user = useSelector((state: TermItState) => state.user);
     const dispatch = useDispatch();
     const onLogout = () => dispatch(logout());
 
@@ -45,7 +37,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
                 <i className="fas fa-user"/><span>{i18n("main.user-profile")}</span>
             </DropdownItem>
             <DropdownItem divider={true}/>
-            <DropdownItem id="user-dropdown-logout" onClick={props.logout}>
+            <DropdownItem id="user-dropdown-logout" onClick={onLogout}>
                 <i className="fas fa-sign-out-alt"/><span>{i18n("main.logout")}</span></DropdownItem>
         </DropdownMenu>
     </UncontrolledDropdown>;

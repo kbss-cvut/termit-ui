@@ -1,14 +1,12 @@
 import * as React from "react";
-import { Card, CardBody, Col } from "reactstrap";
-import Routes from "../../util/Routes";
-import { connect } from "react-redux";
-import { ThunkDispatch } from "../../util/Types";
-import { loadVocabularies as loadVocabulariesAction } from "../../action/AsyncActions";
+import {Card, CardBody, Col} from "reactstrap";
+import {connect} from "react-redux";
+import {ThunkDispatch} from "../../util/Types";
+import {loadVocabularies as loadVocabulariesAction} from "../../action/AsyncActions";
 import VocabularyList from "./VocabularyList";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
-import { useI18n } from "../hook/useI18n";
+import {useI18n} from "../hook/useI18n";
 
 interface VocabularyManagementProps {
   loadVocabularies: () => void;

@@ -3,26 +3,20 @@ import {injectIntl} from "react-intl";
 import {Button, Col, Row} from "reactstrap";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
+import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
 // @ts-ignore
-import { IntelligentTreeSelect } from "intelligent-tree-select";
+import {IntelligentTreeSelect} from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import TermItState from "../../model/TermItState";
-import {
-  consumeNotification,
-  selectVocabularyTerm,
-} from "../../action/SyncActions";
+import {consumeNotification, selectVocabularyTerm,} from "../../action/SyncActions";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
 import FetchOptionsFunction from "../../model/Functions";
-import Term, { TermData } from "../../model/Term";
-import {
-  loadTerms,
-  loadUnusedTermsForVocabulary,
-} from "../../action/AsyncActions";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
-import { GoPlus } from "react-icons/go";
+import Term, {TermData} from "../../model/Term";
+import {loadTerms, loadUnusedTermsForVocabulary,} from "../../action/AsyncActions";
+import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
+import {GoPlus} from "react-icons/go";
 import Utils from "../../util/Utils";
 import AppNotification from "../../model/AppNotification";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
@@ -36,9 +30,8 @@ import classNames from "classnames";
 import StatusFilter from "./StatusFilter";
 import TermTypeFrequency from "../statistics/termtypefrequency/TermTypeFrequency";
 import "./Terms.scss";
-import { getLocalized } from "../../model/MultilingualString";
-import { getShortLocale } from "../../util/IntlUtil";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import {getLocalized} from "../../model/MultilingualString";
+import {getShortLocale} from "../../util/IntlUtil";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;

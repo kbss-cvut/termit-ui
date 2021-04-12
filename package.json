@@ -104,7 +104,6 @@
     "jest-watch-typeahead": "^0.6.1",
     "node-sass": "^4.14.1",
     "prettier": "^2.2.1",
-    "raw.macro": "^0.4.2",
     "redux-devtools-extension": "^2.13.9",
     "redux-mock-store": "^1.5.4",
     "source-map-explorer": "^2.5.2",

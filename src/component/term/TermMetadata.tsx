@@ -152,7 +152,7 @@ export class TermMetadata extends React.Component<
                                         "term.metadata.assignments.title": <TermAssignments term={term}
                                                                                             onLoad={this.setAssignmentsCount}/>,
                                         "history.label": <AssetHistory asset={term}/>,
-                                        "comments.title": <Comments term={term}/>,
+                                        "comments.title": <Comments term={term} onLoad={this.setCommentsCount}/>,
                                         "term.metadata.validation.title": <ValidationResults term={term}/>
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),

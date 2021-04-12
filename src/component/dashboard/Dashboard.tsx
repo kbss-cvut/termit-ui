@@ -9,10 +9,9 @@ import Constants from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
 import { useI18n } from "../hook/useI18n";
 import LastCommentedAssets from "./widget/lastcommented/LastCommentedAssets";
-import raw from "raw.macro";
 
 const Dashboard: React.FC = () => {
-  const { i18n, locale } = useI18n();
+  const { i18n } = useI18n();
   return (
     <>
       <WindowTitle title={Constants.APP_NAME} appendAppName={false} />
