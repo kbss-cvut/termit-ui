@@ -146,14 +146,14 @@ export class TermMetadata extends React.Component<
                             <Card>
                                 <CardBody>
                                     <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={{
-                                        "properties.edit.title": <UnmappedProperties
-                                            properties={term.unmappedProperties}
-                                            showInfoOnEmpty={true}/>,
                                         "term.metadata.assignments.title": <TermAssignments term={term}
                                                                                             onLoad={this.setAssignmentsCount}/>,
                                         "history.label": <AssetHistory asset={term}/>,
+                                        "term.metadata.validation.title": <ValidationResults term={term}/>,
                                         "comments.title": <Comments term={term} onLoad={this.setCommentsCount}/>,
-                                        "term.metadata.validation.title": <ValidationResults term={term}/>
+                                        "properties.edit.title": <UnmappedProperties
+                                            properties={term.unmappedProperties}
+                                            showInfoOnEmpty={true}/>,
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),
                                         "comments.title":
