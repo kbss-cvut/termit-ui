@@ -1,8 +1,8 @@
 import Authentication from "../util/Authentication";
-import {userLogout} from "./SyncActions";
-import {ThunkDispatch} from "../util/Types";
+import { userLogout } from "./SyncActions";
+import { ThunkDispatch } from "../util/Types";
 import keycloak from "../util/Keycloak";
-import {Routing} from "../util/Routing";
+import { Routing } from "../util/Routing";
 import Routes from "../util/Routes";
 
 /*
@@ -12,7 +12,9 @@ import Routes from "../util/Routes";
  */
 
 export function logout() {
-    keycloak.logout({redirectUri: Routing.buildFullUrl(Routes.publicDashboard)});
+    keycloak.logout({
+        redirectUri: Routing.buildFullUrl(Routes.publicDashboard),
+    });
     Authentication.clearToken();
     return (dispatch: ThunkDispatch) => {
         dispatch(userLogout());

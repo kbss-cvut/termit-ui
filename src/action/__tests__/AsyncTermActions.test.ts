@@ -3,19 +3,19 @@ import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
-import {ThunkDispatch} from "../../util/Types";
+import { ThunkDispatch } from "../../util/Types";
 import {
     loadTermsFromWorkspace,
     loadTermsIncludingCanonical,
     setTermDefinitionSource,
-    setTermStatus
+    setTermStatus,
 } from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
 import Term from "../../model/Term";
 import ActionType from "../ActionType";
 import MessageType from "../../model/MessageType";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 import TermStatus from "../../model/TermStatus";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Constants from "../../util/Constants";
@@ -156,22 +156,40 @@ describe("AsyncTermActions", () => {
     });
 
     describe("setTermStatus", () => {
-        const termIri = VocabularyUtils.create(`${namespace}${vocabularyName}/terms/${termName}`);
+        const termIri = VocabularyUtils.create(
+            `${namespace}${vocabularyName}/terms/${termName}`
+        );
 
         it("sends PUT request with new term status to REST endpoint", () => {
             Ajax.put = jest.fn().mockResolvedValue(null);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermStatus(termIri, TermStatus.CONFIRMED))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    setTermStatus(termIri, TermStatus.CONFIRMED)
+                )
+            ).then(() => {
                 expect(Ajax.put).toHaveBeenCalled();
-                expect((Ajax.put as jest.Mock).mock.calls[0][1].getContent()).toEqual(TermStatus.CONFIRMED);
+                expect(
+                    (Ajax.put as jest.Mock).mock.calls[0][1].getContent()
+                ).toEqual(TermStatus.CONFIRMED);
             });
         });
 
         it("publishes success action with new status as payload on success", () => {
             Ajax.put = jest.fn().mockResolvedValue(null);
             const status = TermStatus.CONFIRMED;
-            return Promise.resolve((store.dispatch as ThunkDispatch)(setTermStatus(termIri, status))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    setTermStatus(termIri, status)
+                )
+            ).then(() => {
                 expect(Ajax.put).toHaveBeenCalled();
-                const successAction = store.getActions().find(a => a.type === ActionType.SET_TERM_STATUS && a.status === AsyncActionStatus.SUCCESS);
+                const successAction = store
+                    .getActions()
+                    .find(
+                        (a) =>
+                            a.type === ActionType.SET_TERM_STATUS &&
+                            a.status === AsyncActionStatus.SUCCESS
+                    );
                 expect(successAction).toBeDefined();
                 expect(successAction.payload).toEqual(status);
             });
@@ -181,54 +199,91 @@ describe("AsyncTermActions", () => {
     describe("loadTermsFromWorkspace", () => {
         it("gets all root terms when parent option is not specified", () => {
             const terms = require("../../rest-mock/terms");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace({}))).then(() => {
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadTermsFromWorkspace({}))
+            ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual(expect.objectContaining({rootsOnly: true}));
+                expect(callConfig.getParams()).toEqual(
+                    expect.objectContaining({ rootsOnly: true })
+                );
             });
         });
 
         it("gets subterms when parent option is specified", () => {
             const terms = require("../../rest-mock/terms");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-            const termNamespace = "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/";
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            const termNamespace =
+                "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/";
             const fragment = "pojem-3";
             const parentUri = termNamespace + fragment;
             const params: FetchOptionsFunction = {
-                optionID: parentUri
+                optionID: parentUri,
             };
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace(params))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsFromWorkspace(params)
+                )
+            ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
-                expect(targetUri).toEqual(`${Constants.API_PREFIX}/terms/${fragment}/subterms`);
+                expect(targetUri).toEqual(
+                    `${Constants.API_PREFIX}/terms/${fragment}/subterms`
+                );
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual(expect.objectContaining({namespace: termNamespace}));
+                expect(callConfig.getParams()).toEqual(
+                    expect.objectContaining({ namespace: termNamespace })
+                );
             });
         });
 
         it("specifies correct paging params for offset and limit", () => {
             const terms = require("../../rest-mock/terms");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
             const params: FetchOptionsFunction = {
                 offset: 88,
-                limit: 100
+                limit: 100,
             };
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace(params))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsFromWorkspace(params)
+                )
+            ).then(() => {
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual(expect.objectContaining({page: 1, size: 100, rootsOnly: true}));
+                expect(callConfig.getParams()).toEqual(
+                    expect.objectContaining({
+                        page: 1,
+                        size: 100,
+                        rootsOnly: true,
+                    })
+                );
             });
         });
 
         it("specifies search string when search string option is provided", () => {
             const searchString = "label";
             const terms = require("../../rest-mock/terms");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsFromWorkspace({searchString}))).then(() => {
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsFromWorkspace({ searchString })
+                )
+            ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual(expect.objectContaining({rootsOnly: false, searchString}));
+                expect(callConfig.getParams()).toEqual(
+                    expect.objectContaining({ rootsOnly: false, searchString })
+                );
             });
         });
     });
@@ -236,8 +291,14 @@ describe("AsyncTermActions", () => {
     describe("loadTermsIncludingCanonical", () => {
         it("passes includeCanonical parameter to endpoint call", () => {
             const terms = require("../../rest-mock/terms");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsIncludingCanonical({}))).then(() => {
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsIncludingCanonical({})
+                )
+            ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
@@ -248,12 +309,23 @@ describe("AsyncTermActions", () => {
         it("supports using search string and canonical terms inclusion in the same request", () => {
             const searchString = "label";
             const terms = require("../../rest-mock/terms");
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadTermsIncludingCanonical({searchString}))).then(() => {
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsIncludingCanonical({ searchString })
+                )
+            ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams()).toEqual(expect.objectContaining({searchString, includeCanonical: true}));
+                expect(callConfig.getParams()).toEqual(
+                    expect.objectContaining({
+                        searchString,
+                        includeCanonical: true,
+                    })
+                );
             });
         });
     });

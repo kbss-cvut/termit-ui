@@ -245,19 +245,31 @@ export function loadVocabulary(
                 if (error.status === Constants.STATUS_NOT_FOUND) {
                     Routing.transitionTo(Routes.vocabularies);
                 }
-                return dispatch(SyncActions.publishMessage(new Message(error, MessageType.ERROR)));
+                return dispatch(
+                    SyncActions.publishMessage(
+                        new Message(error, MessageType.ERROR)
+                    )
+                );
             });
     };
 }
 
-function loadVocabularyDependenciesIntoState(vocabularyIri: IRI, apiPrefix: string) {
+function loadVocabularyDependenciesIntoState(
+    vocabularyIri: IRI,
+    apiPrefix: string
+) {
     const action = {
-        type: ActionType.LOAD_VOCABULARY_DEPENDENCIES
+        type: ActionType.LOAD_VOCABULARY_DEPENDENCIES,
     };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${apiPrefix}/vocabularies/${vocabularyIri.fragment}/dependencies`, param("namespace", vocabularyIri.namespace))
-            .then(data => dispatch(asyncActionSuccessWithPayload(action, data)))
+        return Ajax.get(
+            `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/dependencies`,
+            param("namespace", vocabularyIri.namespace)
+        )
+            .then((data) =>
+                dispatch(asyncActionSuccessWithPayload(action, data))
+            )
             .catch((error: ErrorData) => {
                 dispatch(asyncActionFailure(action, error));
                 return dispatch(
@@ -274,15 +286,21 @@ function loadVocabularyDependenciesIntoState(vocabularyIri: IRI, apiPrefix: stri
  */
 export function loadVocabularyDependencies(vocabularyIri: IRI) {
     const action = {
-        type: ActionType.LOAD_VOCABULARY_DEPENDENCIES
+        type: ActionType.LOAD_VOCABULARY_DEPENDENCIES,
     };
     return (dispatch: ThunkDispatch, getState: GetStoreState) => {
         if (isActionRequestPending(getState(), action)) {
             return Promise.resolve([]);
         }
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment + "/dependencies", param("namespace", vocabularyIri.namespace))
-            .then(data => {
+        return Ajax.get(
+            Constants.API_PREFIX +
+                "/vocabularies/" +
+                vocabularyIri.fragment +
+                "/dependencies",
+            param("namespace", vocabularyIri.namespace)
+        )
+            .then((data) => {
                 dispatch(asyncActionSuccess(action));
                 return data;
             })
@@ -1777,21 +1795,36 @@ export function invalidateCaches() {
         dispatch(asyncActionRequest(action));
         return Ajax.delete(`${Constants.API_PREFIX}/admin/cache`)
             .then(() => dispatch(asyncActionSuccess(action)))
-            .then(() => dispatch(publishMessage(new Message({messageId: "administration.maintenance.invalidateCaches.success"}, MessageType.SUCCESS))))
-            .catch(error => dispatch(asyncActionFailure(action, error)));
-    }
+            .then(() =>
+                dispatch(
+                    publishMessage(
+                        new Message(
+                            {
+                                messageId:
+                                    "administration.maintenance.invalidateCaches.success",
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                )
+            )
+            .catch((error) => dispatch(asyncActionFailure(action, error)));
+    };
 }
 
 export function loadStatistics(type: string, parameters: {} = {}) {
-    const action = {type: ActionType.LOAD_STATISTICS};
+    const action = { type: ActionType.LOAD_STATISTICS };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        return Ajax.get(`${Constants.API_PREFIX}/statistics/${type}`, params(parameters))
+        return Ajax.get(
+            `${Constants.API_PREFIX}/statistics/${type}`,
+            params(parameters)
+        )
             .then((data: any) => {
                 dispatch(asyncActionSuccess(action));
                 return data;
             })
-            .catch(error => dispatch(asyncActionFailure(action, error)));
+            .catch((error) => dispatch(asyncActionFailure(action, error)));
     };
 }
 

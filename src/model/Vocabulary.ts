@@ -16,12 +16,23 @@ const ctx = {
     document: VocabularyUtils.DESCRIBES_DOCUMENT,
     glossary: VocabularyUtils.HAS_GLOSSARY,
     model: VocabularyUtils.HAS_MODEL,
-    dependencies: VocabularyUtils.VOCABULARY_DEPENDENCY
+    dependencies: VocabularyUtils.VOCABULARY_DEPENDENCY,
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
 
-const MAPPED_PROPERTIES = ["@context", "iri", "label", "comment", "document", "types", "glossary", "model", "dependencies", "allImportedVocabularies"];
+const MAPPED_PROPERTIES = [
+    "@context",
+    "iri",
+    "label",
+    "comment",
+    "document",
+    "types",
+    "glossary",
+    "model",
+    "dependencies",
+    "allImportedVocabularies",
+];
 
 export interface VocabularyData extends AssetData {
     label: string;

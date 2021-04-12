@@ -1,9 +1,9 @@
 import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
-import {Card, CardBody, Col, Label, Row} from "reactstrap";
+import { Card, CardBody, Col, Label, Row } from "reactstrap";
 import VocabularyDependenciesList from "../../vocabulary/VocabularyDependenciesList";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { ThunkDispatch } from "../../../util/Types";
 import { loadPublicVocabulary } from "../../../action/AsyncPublicViewActions";
@@ -48,34 +48,54 @@ export const VocabularySummary: React.FC<VocabularySummaryProps> = (props) => {
     }
   }, [vocabulary, location, match, loadVocabulary]);
 
-    return <div id="public-vocabulary-detail">
-        <WindowTitle
-            title={`${vocabulary.label} | ${i18n("vocabulary.management.vocabularies")}`}/>
-        <HeaderWithActions id="public-vocabulary-summary" title={
-            <>{vocabulary.label}<CopyIriIcon url={vocabulary.iri as string}/></>}/>
-        <Card className="mb-3">
-            <CardBody className="card-body-basic-info">
-                <Row>
-                    <Col xl={2} md={4}>
-                        <Label className="attribute-label">{i18n("vocabulary.comment")}</Label>
-                    </Col>
-                    <Col xl={10} md={8}>
-                        <Label id="vocabulary-metadata-comment">{vocabulary.comment}</Label>
-                    </Col>
-                </Row>
-                <VocabularyDependenciesList vocabularies={vocabulary.dependencies}/>
-            </CardBody>
-        </Card>
-        <Card>
-            <CardBody>
-                <Row>
-                    <Col xs={12}>
-                        <Terms vocabulary={vocabulary} match={match} location={location}/>
-                    </Col>
-                </Row>
-            </CardBody>
-        </Card>
-    </div>;
+  return (
+    <div id="public-vocabulary-detail">
+      <WindowTitle
+        title={`${vocabulary.label} | ${i18n(
+          "vocabulary.management.vocabularies"
+        )}`}
+      />
+      <HeaderWithActions
+        id="public-vocabulary-summary"
+        title={
+          <>
+            {vocabulary.label}
+            <CopyIriIcon url={vocabulary.iri as string} />
+          </>
+        }
+      />
+      <Card className="mb-3">
+        <CardBody className="card-body-basic-info">
+          <Row>
+            <Col xl={2} md={4}>
+              <Label className="attribute-label">
+                {i18n("vocabulary.comment")}
+              </Label>
+            </Col>
+            <Col xl={10} md={8}>
+              <Label id="vocabulary-metadata-comment">
+                {vocabulary.comment}
+              </Label>
+            </Col>
+          </Row>
+          <VocabularyDependenciesList vocabularies={vocabulary.dependencies} />
+        </CardBody>
+      </Card>
+      <Card>
+        <CardBody>
+          <Row>
+            <Col xs={12}>
+              <Terms
+                vocabulary={vocabulary}
+                match={match}
+                location={location}
+              />
+            </Col>
+          </Row>
+        </CardBody>
+      </Card>
+    </div>
+  );
 };
 
 export default connect(

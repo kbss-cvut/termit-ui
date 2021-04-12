@@ -2,9 +2,11 @@ import * as React from "react";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary from "../../model/Vocabulary";
-import {Table} from "reactstrap";
+import { Table } from "reactstrap";
 import "./VocabularyList.scss";
-import TextBasedFilter, {textContainsFilter} from "../misc/table/TextBasedFilter";
+import TextBasedFilter, {
+  textContainsFilter,
+} from "../misc/table/TextBasedFilter";
 import VocabularyLink from "./VocabularyLink";
 import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
 import {

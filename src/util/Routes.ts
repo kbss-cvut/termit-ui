@@ -39,7 +39,10 @@ const Routes = {
     facetedSearch: new Route("facetedSearch", "/facetedSearch"),
     vocabularies: new Route("vocabulary", "/vocabularies"),
     resources: new Route("resource", "/resources"),
-    vocabularyDetail: new Route("vocabularyDetail", "/vocabularies/:name/terms"),
+    vocabularyDetail: new Route(
+        "vocabularyDetail",
+        "/vocabularies/:name/terms"
+    ),
     vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
     annotateFile: new Route("annotateFile", "/resources/:name/files/:fileName"),
     createResource: new Route("createResource", "/resources/create"),

@@ -13,9 +13,9 @@ import SearchQuery from "./SearchQuery";
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import { ErrorLogItem } from "./ErrorInfo";
 import Utils from "../util/Utils";
-import {Configuration, DEFAULT_CONFIGURATION} from "./Configuration";
-import Workspace, {EMPTY_WORKSPACE} from "./Workspace";
-import {ConsolidatedResults} from "./ConsolidatedResults";
+import { Configuration, DEFAULT_CONFIGURATION } from "./Configuration";
+import Workspace, { EMPTY_WORKSPACE } from "./Workspace";
+import { ConsolidatedResults } from "./ConsolidatedResults";
 import File, { EMPTY_FILE } from "./File";
 
 /**

@@ -3,7 +3,10 @@ export default class StorageUtils {
         localStorage.setItem(key, value);
     }
 
-    public static load(key: string, defaultValue: string | null = null): string | null {
+    public static load(
+        key: string,
+        defaultValue: string | null = null
+    ): string | null {
         const item = localStorage.getItem(key);
         return item !== null ? item : defaultValue;
     }

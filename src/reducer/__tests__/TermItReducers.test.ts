@@ -45,9 +45,9 @@ import QueryResult from "../../model/QueryResult";
 import File from "../../model/File";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
-import {langString} from "../../model/MultilingualString";
-import {Configuration} from "../../model/Configuration";
-import Workspace, {EMPTY_WORKSPACE} from "../../model/Workspace";
+import { langString } from "../../model/MultilingualString";
+import { Configuration } from "../../model/Configuration";
+import Workspace, { EMPTY_WORKSPACE } from "../../model/Workspace";
 import TermStatus from "../../model/TermStatus";
 
 function stateToPlainObject(state: TermItState): TermItState {
@@ -364,7 +364,13 @@ describe("Reducers", () => {
                 iri:
                     "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary",
             });
-            const vocabulary = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_VOCABULARY_DEPENDENCIES}, imports)).vocabulary;
+            const vocabulary = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload(
+                    { type: ActionType.LOAD_VOCABULARY_DEPENDENCIES },
+                    imports
+                )
+            ).vocabulary;
             expect(vocabulary.allImportedVocabularies).toEqual(imports);
         });
 
@@ -449,9 +455,15 @@ describe("Reducers", () => {
         it("updates selected term draft status on successful status change action completion", () => {
             initialState.selectedTerm = new Term({
                 iri: Generator.generateUri(),
-                label: langString("test term")
+                label: langString("test term"),
             });
-            const resultTerm = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.SET_TERM_STATUS}, TermStatus.CONFIRMED)).selectedTerm!;
+            const resultTerm = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload(
+                    { type: ActionType.SET_TERM_STATUS },
+                    TermStatus.CONFIRMED
+                )
+            ).selectedTerm!;
             expect(resultTerm.draft).toBeDefined();
             expect(resultTerm.draft).toBeFalsy();
         });
@@ -898,27 +910,67 @@ describe("Reducers", () => {
 
     describe("workspace", () => {
         it("sets loaded workspace as current one in store after workspace select", () => {
-            const ws = new Workspace({iri: Generator.generateUri(), label: "Test workspace", vocabularies: []});
-            expect(stateToPlainObject(initialState).workspace).toEqual(EMPTY_WORKSPACE);
-            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.SELECT_WORKSPACE}, ws));
+            const ws = new Workspace({
+                iri: Generator.generateUri(),
+                label: "Test workspace",
+                vocabularies: [],
+            });
+            expect(stateToPlainObject(initialState).workspace).toEqual(
+                EMPTY_WORKSPACE
+            );
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload(
+                    { type: ActionType.SELECT_WORKSPACE },
+                    ws
+                )
+            );
             expect(result.workspace).toEqual(ws);
         });
 
         it("sets loaded workspace as current one in store after workspace loaded", () => {
-            const ws = new Workspace({iri: Generator.generateUri(), label: "Test workspace", vocabularies: []});
-            expect(stateToPlainObject(initialState).workspace).toEqual(EMPTY_WORKSPACE);
-            const result = reducers(stateToPlainObject(initialState), asyncActionSuccessWithPayload({type: ActionType.LOAD_WORKSPACE}, ws));
+            const ws = new Workspace({
+                iri: Generator.generateUri(),
+                label: "Test workspace",
+                vocabularies: [],
+            });
+            expect(stateToPlainObject(initialState).workspace).toEqual(
+                EMPTY_WORKSPACE
+            );
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionSuccessWithPayload(
+                    { type: ActionType.LOAD_WORKSPACE },
+                    ws
+                )
+            );
             expect(result.workspace).toEqual(ws);
         });
 
         it("clears stored workspace on logout", () => {
-            initialState.workspace = new Workspace({iri: Generator.generateUri(), label: "Test workspace", vocabularies: []});
-            expect(reducers(stateToPlainObject(initialState), {type: ActionType.LOGOUT}).workspace).toEqual(EMPTY_WORKSPACE);
+            initialState.workspace = new Workspace({
+                iri: Generator.generateUri(),
+                label: "Test workspace",
+                vocabularies: [],
+            });
+            expect(
+                reducers(stateToPlainObject(initialState), {
+                    type: ActionType.LOGOUT,
+                }).workspace
+            ).toEqual(EMPTY_WORKSPACE);
         });
 
         it("sets workspace to null when loading request fails", () => {
-            expect(stateToPlainObject(initialState).workspace).toEqual(EMPTY_WORKSPACE);
-            const result = reducers(stateToPlainObject(initialState), asyncActionFailure({type: ActionType.LOAD_WORKSPACE}, {message: "Error", status: 409}));
+            expect(stateToPlainObject(initialState).workspace).toEqual(
+                EMPTY_WORKSPACE
+            );
+            const result = reducers(
+                stateToPlainObject(initialState),
+                asyncActionFailure(
+                    { type: ActionType.LOAD_WORKSPACE },
+                    { message: "Error", status: 409 }
+                )
+            );
             expect(result.workspace).toBeNull();
         });
     });

@@ -4,18 +4,18 @@ const cs = {
     locale: Constants.LANG.CS.locale,
     messages: {
         "please-wait": "Prosím, čekejte...",
-        "create": "Vytvořit",
-        "save": "Uložit",
-        "cancel": "Zrušit",
+        create: "Vytvořit",
+        save: "Uložit",
+        cancel: "Zrušit",
         "not-implemented": "Zatím není naimplementováno!",
-        "edit": "Upravit",
-        "remove": "Odstranit",
-        "required": "Povinné",
-        "optional": "Nepovinné",
-        "actions": "Akce",
-        "description": "Popis",
-        "submit": "Předložit",
-        "approve": "Schválit",
+        edit: "Upravit",
+        remove: "Odstranit",
+        required: "Povinné",
+        optional: "Nepovinné",
+        actions: "Akce",
+        description: "Popis",
+        submit: "Předložit",
+        approve: "Schválit",
         "basic-information": "Základní informace",
         "created-info": "Vytvořeno uživatelem {author} dne {date}",
         "select.placeholder": "Vyberte...",
@@ -29,12 +29,15 @@ const cs = {
         "footer.copyright.mvcr": "MVČR",
         "footer.copyright.mvcr.tooltip": "Ministerstvo vnitra České republiky",
         "footer.version": "Verze",
-        "footer.grant.text": "Tato aplikace je vyvíjena a udržována v rámci projektu OPZ č. CZ.03.4.74/0.0/0.0/15_025/0013983.",
+        "footer.grant.text":
+            "Tato aplikace je vyvíjena a udržována v rámci projektu OPZ č. CZ.03.4.74/0.0/0.0/15_025/0013983.",
 
         "news-viewer.title": "Novinky",
 
-        "auth.redirect-message": "Za moment budete přesměrováni na autorizační službu.",
-        "auth.unavailable-message": "Autorizační služba bohužel není dostupná. Kontaktujte, prosím, správce systému.",
+        "auth.redirect-message":
+            "Za moment budete přesměrováni na autorizační službu.",
+        "auth.unavailable-message":
+            "Autorizační služba bohužel není dostupná. Kontaktujte, prosím, správce systému.",
 
         "login.title": "Přihlášení",
         "login.error": "Přihlášení se nezdařilo.",
@@ -54,7 +57,8 @@ const cs = {
         "main.logout": "Odhlásit se",
         "main.search.placeholder": "Hledat v aktuálním pracovním prostoru",
         "main.search.tooltip": "Přejít na stránku hledání",
-        "main.search.count-info-and-link": "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
+        "main.search.count-info-and-link":
+            "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
         "main.search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
         "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
         "main.issue-tracker.reportBug": "Nahlásit chybu",
@@ -175,8 +179,10 @@ const cs = {
 
         "resource.management": "Správa zdrojů",
         "resource.management.resources": "Zdroje",
-        "resource.management.empty": "Žádné zdroje nenalezeny. Vytvořte nějaký...",
-        "resource.management.select.placeholder": "Začněte psát pro filtrování zdrojů dle názvu",
+        "resource.management.empty":
+            "Žádné zdroje nenalezeny. Vytvořte nějaký...",
+        "resource.management.select.placeholder":
+            "Začněte psát pro filtrování zdrojů dle názvu",
         "resource.management.create.tooltip": "Vytvořit či zaregistrovat zdroj",
         "resource.management.new": "Nový zdroj",
         "resource.created.message": "Zdroj úspěšně vytvořen.",
@@ -185,7 +191,8 @@ const cs = {
 
         "resource.create.title": "Vytvořit zdroj",
         "resource.create.type": "Typ zdroje",
-        "resource.create.file.select.label": "Přetáhněte sem soubor myší, nebo klikněte pro výběr pomocí dialogu",
+        "resource.create.file.select.label":
+            "Přetáhněte sem soubor myší, nebo klikněte pro výběr pomocí dialogu",
         "resource.metadata.description": "Popis",
         "resource.metadata.terms.assigned": "Přiřazené pojmy",
         "resource.metadata.terms.assigned.tooltip":
@@ -261,7 +268,8 @@ const cs = {
             "například na kapitolu knihy, či konkrétní odstavec v zákoně, např. 'Písmeno b) paragrafu 2 " +
             "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
             "je zdroj vyplňován automaticky.",
-        "term.edit.confirmed.tooltip": "Pojem je schválený, nemůže tedy být editován.",
+        "term.edit.confirmed.tooltip":
+            "Pojem je schválený, nemůže tedy být editován.",
         "term.metadata.definition": "Definice",
         "term.metadata.definition.text": "Text",
         "term.metadata.definitionSource": "Dokument",
@@ -271,32 +279,41 @@ const cs = {
             "Zobrazit zdroj definice přímo v příslušném dokumentu",
         "term.metadata.comment": "Doplňující poznámka",
         "term.metadata.parent": "Nadřazené pojmy",
-        "term.metadata.parent.range.vocabulary": "Použít pojmy z aktuálního slovníku",
-        "term.metadata.parent.range.workspace": "Použít pojmy z celého pracovního prostoru",
-        "term.metadata.parent.range.canonical": "Použít pojmy z pracovního prostoru a z publikovaného SSP",
-        'term.metadata.subTerms': 'Podřazené pojmy',
-        'term.metadata.types': 'Typ pojmu',
-        'term.metadata.status': 'Stav pojmu',
-        'term.metadata.source': 'Zdroj',
-        'term.metadata.altLabels.label': 'Synonyma',
-        'term.metadata.altLabels.placeholder': 'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
-        'term.metadata.altLabels.placeholder.text': 'Přidat',
-        'term.metadata.altLabels.remove': 'Odebrat synonymum',
-        'term.metadata.altLabels.remove.text': 'Odebrat',
-        "term.metadata.altLabels.help": "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
+        "term.metadata.parent.range.vocabulary":
+            "Použít pojmy z aktuálního slovníku",
+        "term.metadata.parent.range.workspace":
+            "Použít pojmy z celého pracovního prostoru",
+        "term.metadata.parent.range.canonical":
+            "Použít pojmy z pracovního prostoru a z publikovaného SSP",
+        "term.metadata.subTerms": "Podřazené pojmy",
+        "term.metadata.types": "Typ pojmu",
+        "term.metadata.status": "Stav pojmu",
+        "term.metadata.source": "Zdroj",
+        "term.metadata.altLabels.label": "Synonyma",
+        "term.metadata.altLabels.placeholder":
+            'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
+        "term.metadata.altLabels.placeholder.text": "Přidat",
+        "term.metadata.altLabels.remove": "Odebrat synonymum",
+        "term.metadata.altLabels.remove.text": "Odebrat",
+        "term.metadata.altLabels.help":
+            "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
             "s názvem 'Adresa organizace' může mít synonymum 'Adresa', které se však použije jen v určitém kontextu " +
             "(např. ve formuláři, ve kterém se vyplňují informace o organizaci). ",
         "term.metadata.hiddenLabels.label": "Vyhledávací texty",
-        "term.metadata.hiddenLabels.placeholder": "Zadejte nový vyhledávací text a stiskněte tlačítko \"Přidat\"",
+        "term.metadata.hiddenLabels.placeholder":
+            'Zadejte nový vyhledávací text a stiskněte tlačítko "Přidat"',
         "term.metadata.hiddenLabels.placeholder.text": "Přidat",
         "term.metadata.hiddenLabels.remove": "Odebrat vyhledávací text",
         "term.metadata.hiddenLabels.remove.text": "Odebrat",
-        "term.metadata.hiddenLabels.help": "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
+        "term.metadata.hiddenLabels.help":
+            "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
             " slouží zejména pro vyhledávání. Nemusí se jednat (ani kontextuální) synonyma k názvu pojmu. Např. " +
             "pojem s názvem 'Kopaná' může mít vyhledávací text 'fočus'. ",
         "term.updated.message": "Pojem úspěšně aktualizován.",
-        "term.metadata.labelExists.message": "Pojem s názvem \"{label}\" již v tomto slovníku existuje",
-        "term.metadata.multipleSources.message": "Pojem má více zdrojů, po uložení pojmu bude pouze aktuálně vyplněný zdroj a ostatní budou smazány",
+        "term.metadata.labelExists.message":
+            'Pojem s názvem "{label}" již v tomto slovníku existuje',
+        "term.metadata.multipleSources.message":
+            "Pojem má více zdrojů, po uložení pojmu bude pouze aktuálně vyplněný zdroj a ostatní budou smazány",
         "term.metadata.source.add.placeholder": "Nový zdroj pojmu",
         "term.metadata.source.add.placeholder.text": "Přidat",
         "term.metadata.source.remove.title": "Odebrat zdroj",
@@ -386,9 +403,12 @@ const cs = {
         "glossary.form.button.submitAndGoToNewTerm": "Vytvořit a začít nový",
         "glossary.form.button.cancel": "Zrušit",
 
-        "glossary.form.validation.validateLengthMin5": "Pole musí mít alespoň 5 znaků",
-        "glossary.form.validation.validateLengthMin3": "Pole musí mít alespoň 3 znaky",
-        "glossary.form.validation.validateNotSameAsParent": "Potomek nemůže být stejný jako předchůdce",
+        "glossary.form.validation.validateLengthMin5":
+            "Pole musí mít alespoň 5 znaků",
+        "glossary.form.validation.validateLengthMin3":
+            "Pole musí mít alespoň 3 znaky",
+        "glossary.form.validation.validateNotSameAsParent":
+            "Potomek nemůže být stejný jako předchůdce",
 
         "file.text-analysis.finished.message":
             "Textová analýza souboru úspěšně dokončena.",
@@ -406,7 +426,8 @@ const cs = {
         "statistics.user.count": "Počet uživatelů",
         "statistics.notFilled": "Nevyplněno",
         "statistics.types.frequency": "Typy pojmů",
-        "statistics.types.frequency.empty": "Nemáte vytvořen žádný slovník, nebo vaše slovníky neobsahují žádné pojmy. Obojí si můžete vytvořit pomocí akcí v levém liště.",
+        "statistics.types.frequency.empty":
+            "Nemáte vytvořen žádný slovník, nebo vaše slovníky neobsahují žádné pojmy. Obojí si můžete vytvořit pomocí akcí v levém liště.",
 
         "fullscreen.exit": "Vrátit zobrazení do okna",
         "fullscreen.enter": "Zobrazit na celou obrazovku",
@@ -419,7 +440,8 @@ const cs = {
         "search.tab.facets": "Facetové vyhledávání",
         "search.reset": "Vymazat vyhledávání",
         "search.results.title": "Výsledky vyhledávání „{searchString}“",
-        "search.results.countInfo": "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}} v aktuálním pracovním prostoru.",
+        "search.results.countInfo":
+            "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}} v aktuálním pracovním prostoru.",
         "search.results.table.label": "Název",
         "search.results.table.label.tooltip": "Zobrazit detail objektu",
         "search.results.table.match": "Nalezená shoda",
@@ -448,7 +470,8 @@ const cs = {
         "change-password.new.password": "Nové heslo",
         "change-password.confirm.password": "Potvrzení hesla",
         "change-password.updated.message": "Heslo bylo úspěšně změněno",
-        "change-password.passwords.differ.tooltip": "Staré a nové heslo se musí lišit.",
+        "change-password.passwords.differ.tooltip":
+            "Staré a nové heslo se musí lišit.",
 
         annotator: "Anotátor",
         "annotator.content.loading": "Načítám obsah souboru...",
@@ -597,13 +620,16 @@ const cs = {
             "TermIt je správce slovníků a editor terminologií.",
         "public.dashboard.actions.login": "Přihlaste se",
         "public.dashboard.actions.register": "Vytvořte si účet",
-        "public.dashboard.actions.vocabularies": "Prohlédněte si slovníky a pojmy",
+        "public.dashboard.actions.vocabularies":
+            "Prohlédněte si slovníky a pojmy",
 
-        "workspace.select.success": "Pracovní prostor \"{name}\" úspěšně načten.",
+        "workspace.select.success": 'Pracovní prostor "{name}" úspěšně načten.',
         "workspace.loading": "Načítám aktuální pracovní prostor...",
-        "workspace.current.empty": "Aktuálně nemáte načtený žádný pracovní prostor.",
+        "workspace.current.empty":
+            "Aktuálně nemáte načtený žádný pracovní prostor.",
         "workspace.indicator": "Pracovní prostor: {name}",
-        "workspace.indicator.controlPanelLink.tooltip": "Zobrazit detail pracovního prostoru v kontrolním panelu",
+        "workspace.indicator.controlPanelLink.tooltip":
+            "Zobrazit detail pracovního prostoru v kontrolním panelu",
 
         "comments.title": "Komentáře",
         "comments.create.placeholder": "Napište komentář...",
@@ -613,8 +639,8 @@ const cs = {
         "comments.comment.like.on": "Už se mi nelíbí",
         "comments.comment.dislike": "Nelíbí se mi",
         "comments.comment.dislike.on": "Zrušit reakci",
-        "comments.comment.edited": "Upraveno"
-    }
+        "comments.comment.edited": "Upraveno",
+    },
 };
 
 export default cs;

@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Button, ButtonToolbar, Container, Jumbotron} from "reactstrap";
-import {Link} from "react-router-dom";
+import { Button, ButtonToolbar, Container, Jumbotron } from "reactstrap";
+import { Link } from "react-router-dom";
 import Routes from "../../util/Routes";
 import "./Dashboard.scss";
 import Constants from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
-import {useI18n} from "../hook/useI18n";
+import { useI18n } from "../hook/useI18n";
 
 const Dashboard: React.FC = () => {
   const { i18n } = useI18n();

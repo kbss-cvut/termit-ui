@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
             className="p-0"
             title={i18n("dashboard.widget.typeFrequency.title")}
           >
-            <TermFrequency/>
+            <TermFrequency />
           </PanelWithActions>
         </Col>
       </Row>

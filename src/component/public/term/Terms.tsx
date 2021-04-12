@@ -150,14 +150,18 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     );
   };
 
-    private renderIncludeImported() {
-        return (this.props.vocabulary && this.props.vocabulary.dependencies) ?
-            <div className={classNames({"mb-3": !this.props.isDetailView})}>
-                <IncludeImportedTermsToggle id="glossary-include-imported" onToggle={this.onIncludeImportedToggle}
-                                            includeImported={this.state.includeImported}
-                                            disabled={this.state.disableIncludeImportedToggle}/>
-            </div> : null;
-    }
+  private renderIncludeImported() {
+    return this.props.vocabulary && this.props.vocabulary.dependencies ? (
+      <div className={classNames({ "mb-3": !this.props.isDetailView })}>
+        <IncludeImportedTermsToggle
+          id="glossary-include-imported"
+          onToggle={this.onIncludeImportedToggle}
+          includeImported={this.state.includeImported}
+          disabled={this.state.disableIncludeImportedToggle}
+        />
+      </div>
+    ) : null;
+  }
 
   public render() {
     if (!this.props.vocabulary) {

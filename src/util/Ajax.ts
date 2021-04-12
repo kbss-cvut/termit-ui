@@ -172,50 +172,48 @@ export class Ajax {
     });
 
     constructor() {
-        this.axiosInstance.interceptors.request.use(reqConfig => {
+        this.axiosInstance.interceptors.request.use((reqConfig) => {
             const token = Authentication.loadToken();
             if (token) {
-                reqConfig.headers[Constants.Headers.AUTHORIZATION] = `Bearer ${token}`;
+                reqConfig.headers[
+                    Constants.Headers.AUTHORIZATION
+                ] = `Bearer ${token}`;
                 reqConfig.withCredentials = true;
             }
             return reqConfig;
         });
-        this.axiosInstance.interceptors.response.use(undefined,
-            (error) => {
-                if (!error.response) {
-                    return Promise.reject({
-                        message: error.message ? error.message : undefined,
-                        messageId: "connection.error",
-                    });
-                }
-                const response = error.response;
-                if (response.status === Constants.STATUS_UNAUTHORIZED) {
-                    Routing.saveOriginalTarget();
-                    if (
-                        getEnv(
-                            ConfigParam.SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED,
-                            ""
-                        ) === true.toString()
-                    ) {
-                        Routing.transitionTo(Routes.publicDashboard);
-                    } else {
-                        Routing.transitionTo(Routes.login);
-                    }
-                }
-                if (typeof response.data === "string") {
-                    return Promise.reject({
-                        messageId: "ajax.unparseable-error",
-                        status: response.status,
-                    });
+        this.axiosInstance.interceptors.response.use(undefined, (error) => {
+            if (!error.response) {
+                return Promise.reject({
+                    message: error.message ? error.message : undefined,
+                    messageId: "connection.error",
+                });
+            }
+            const response = error.response;
+            if (response.status === Constants.STATUS_UNAUTHORIZED) {
+                Routing.saveOriginalTarget();
+                if (
+                    getEnv(ConfigParam.SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED, "") ===
+                    true.toString()
+                ) {
+                    Routing.transitionTo(Routes.publicDashboard);
                 } else {
-                    return Promise.reject(
-                        Object.assign({}, response.data, {
-                            status: response.status,
-                        })
-                    );
+                    Routing.transitionTo(Routes.login);
                 }
             }
-        );
+            if (typeof response.data === "string") {
+                return Promise.reject({
+                    messageId: "ajax.unparseable-error",
+                    status: response.status,
+                });
+            } else {
+                return Promise.reject(
+                    Object.assign({}, response.data, {
+                        status: response.status,
+                    })
+                );
+            }
+        });
         if (getEnv(ConfigParam.MOCK_REST_API, "") === true.toString()) {
             // Mock backend REST API if the environment is configured to do so
             mockRestApi(this.axiosInstance);

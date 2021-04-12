@@ -24,12 +24,12 @@ describe("VocabularySummary", () => {
   const history = createMemoryHistory();
   let match: Match<any>;
 
-    let onLoad: (iri: IRI) => void;
-    let exportToCsv: (iri: IRI) => void;
-    let exportToExcel: (iri: IRI) => void;
-    let exportToTurtle: (iri: IRI) => void;
-    let validateVocabulary: (iri: IRI) => void;
-    let exportFunctions: any;
+  let onLoad: (iri: IRI) => void;
+  let exportToCsv: (iri: IRI) => void;
+  let exportToExcel: (iri: IRI) => void;
+  let exportToTurtle: (iri: IRI) => void;
+  let validateVocabulary: (iri: IRI) => void;
+  let exportFunctions: any;
 
   let vocabulary: Vocabulary;
 
@@ -61,84 +61,149 @@ describe("VocabularySummary", () => {
     jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
   });
 
-    it("loads vocabulary on mount", () => {
-        shallow(<VocabularySummary vocabulary={EMPTY_VOCABULARY} loadVocabulary={onLoad}
-                                   history={history} location={location} {...exportFunctions}
-                                   validateVocabulary={validateVocabulary}
-                                   match={match} {...intlFunctions()}/>);
-        expect(onLoad).toHaveBeenCalledWith({fragment: normalizedName, namespace});
+  it("loads vocabulary on mount", () => {
+    shallow(
+      <VocabularySummary
+        vocabulary={EMPTY_VOCABULARY}
+        loadVocabulary={onLoad}
+        history={history}
+        location={location}
+        {...exportFunctions}
+        validateVocabulary={validateVocabulary}
+        match={match}
+        {...intlFunctions()}
+      />
+    );
+    expect(onLoad).toHaveBeenCalledWith({
+      fragment: normalizedName,
+      namespace,
     });
+  });
 
-    it("passes namespace to vocabulary loading when specified", () => {
-        location.search = "?namespace=" + namespace;
-        shallow(<VocabularySummary vocabulary={EMPTY_VOCABULARY} loadVocabulary={onLoad}
-                                   history={history} location={location} {...exportFunctions}
-                                   validateVocabulary={validateVocabulary}
-                                   match={match} {...intlFunctions()}/>);
-        expect(onLoad).toHaveBeenCalledWith({fragment: normalizedName, namespace});
+  it("passes namespace to vocabulary loading when specified", () => {
+    location.search = "?namespace=" + namespace;
+    shallow(
+      <VocabularySummary
+        vocabulary={EMPTY_VOCABULARY}
+        loadVocabulary={onLoad}
+        history={history}
+        location={location}
+        {...exportFunctions}
+        validateVocabulary={validateVocabulary}
+        match={match}
+        {...intlFunctions()}
+      />
+    );
+    expect(onLoad).toHaveBeenCalledWith({
+      fragment: normalizedName,
+      namespace,
     });
+  });
 
-    it("does not attempt to reload vocabulary when namespace is missing in location and fragment is identical", () => {
-        const wrapper = shallow<VocabularySummary>(<VocabularySummary vocabulary={EMPTY_VOCABULARY}
-                                                                      loadVocabulary={onLoad}
-                                                                      history={history}
-                                                                      location={location} {...exportFunctions}
-                                                                      validateVocabulary={validateVocabulary}
-                                                                      match={match} {...intlFunctions()}/>);
-        wrapper.setProps({vocabulary});
-        wrapper.update();
-        expect(onLoad).toHaveBeenCalledTimes(1);
-    });
+  it("does not attempt to reload vocabulary when namespace is missing in location and fragment is identical", () => {
+    const wrapper = shallow<VocabularySummary>(
+      <VocabularySummary
+        vocabulary={EMPTY_VOCABULARY}
+        loadVocabulary={onLoad}
+        history={history}
+        location={location}
+        {...exportFunctions}
+        validateVocabulary={validateVocabulary}
+        match={match}
+        {...intlFunctions()}
+      />
+    );
+    wrapper.setProps({ vocabulary });
+    wrapper.update();
+    expect(onLoad).toHaveBeenCalledTimes(1);
+  });
 
-    it("invokes export to CSV when exportToCsv is triggered", () => {
-        const div = document.createElement("div");
-        document.body.appendChild(div);
+  it("invokes export to CSV when exportToCsv is triggered", () => {
+    const div = document.createElement("div");
+    document.body.appendChild(div);
 
-        const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary}
-                                                         loadVocabulary={onLoad} {...exportFunctions}
-                                                         history={history} location={location}
-                                                         validateVocabulary={validateVocabulary}
-                                                         match={match} {...intlFunctions()}/>, {attachTo: div});
-        wrapper.find(DropdownToggle).simulate("click");
-        wrapper.find("button[name=\"vocabulary-export-csv\"]").simulate("click");
-        expect(exportToCsv).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
-    });
+    const wrapper = mountWithIntl(
+      <VocabularySummary
+        vocabulary={vocabulary}
+        loadVocabulary={onLoad}
+        {...exportFunctions}
+        history={history}
+        location={location}
+        validateVocabulary={validateVocabulary}
+        match={match}
+        {...intlFunctions()}
+      />,
+      { attachTo: div }
+    );
+    wrapper.find(DropdownToggle).simulate("click");
+    wrapper.find('button[name="vocabulary-export-csv"]').simulate("click");
+    expect(exportToCsv).toHaveBeenCalledWith(
+      VocabularyUtils.create(vocabulary.iri)
+    );
+  });
 
   it("invokes export to Excel when exportToExcel is triggered", () => {
     const div = document.createElement("div");
     document.body.appendChild(div);
 
-        const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary}
-                                                         loadVocabulary={onLoad} {...exportFunctions}
-                                                         history={history} location={location}
-                                                         validateVocabulary={validateVocabulary}
-                                                         match={match} {...intlFunctions()}/>, {attachTo: div});
-        wrapper.find(DropdownToggle).simulate("click");
-        wrapper.find("button[name=\"vocabulary-export-excel\"]").simulate("click");
-        expect(exportToExcel).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
-    });
+    const wrapper = mountWithIntl(
+      <VocabularySummary
+        vocabulary={vocabulary}
+        loadVocabulary={onLoad}
+        {...exportFunctions}
+        history={history}
+        location={location}
+        validateVocabulary={validateVocabulary}
+        match={match}
+        {...intlFunctions()}
+      />,
+      { attachTo: div }
+    );
+    wrapper.find(DropdownToggle).simulate("click");
+    wrapper.find('button[name="vocabulary-export-excel"]').simulate("click");
+    expect(exportToExcel).toHaveBeenCalledWith(
+      VocabularyUtils.create(vocabulary.iri)
+    );
+  });
 
   it("invokes export to Turtle when exportToTurtle is triggered", () => {
     const div = document.createElement("div");
     document.body.appendChild(div);
 
-        const wrapper = mountWithIntl(<VocabularySummary vocabulary={vocabulary}
-                                                         loadVocabulary={onLoad} {...exportFunctions}
-                                                         history={history} location={location}
-                                                         validateVocabulary={validateVocabulary}
-                                                         match={match} {...intlFunctions()}/>, {attachTo: div});
-        wrapper.find(DropdownToggle).simulate("click");
-        wrapper.find("button[name=\"vocabulary-export-ttl\"]").simulate("click");
-        expect(exportToTurtle).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
-    });
+    const wrapper = mountWithIntl(
+      <VocabularySummary
+        vocabulary={vocabulary}
+        loadVocabulary={onLoad}
+        {...exportFunctions}
+        history={history}
+        location={location}
+        validateVocabulary={validateVocabulary}
+        match={match}
+        {...intlFunctions()}
+      />,
+      { attachTo: div }
+    );
+    wrapper.find(DropdownToggle).simulate("click");
+    wrapper.find('button[name="vocabulary-export-ttl"]').simulate("click");
+    expect(exportToTurtle).toHaveBeenCalledWith(
+      VocabularyUtils.create(vocabulary.iri)
+    );
+  });
 
-    it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
-        const wrapper = shallow<VocabularySummary>(<VocabularySummary vocabulary={EMPTY_VOCABULARY}
-                                                                      loadVocabulary={onLoad} {...exportFunctions}
-                                                                      history={history} location={location}
-                                                                      validateVocabulary={validateVocabulary}
-                                                                      match={match} {...intlFunctions()}/>);
-        wrapper.instance().loadVocabulary();
-        expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
-    });
+  it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
+    const wrapper = shallow<VocabularySummary>(
+      <VocabularySummary
+        vocabulary={EMPTY_VOCABULARY}
+        loadVocabulary={onLoad}
+        {...exportFunctions}
+        history={history}
+        location={location}
+        validateVocabulary={validateVocabulary}
+        match={match}
+        {...intlFunctions()}
+      />
+    );
+    wrapper.instance().loadVocabulary();
+    expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
+  });
 });

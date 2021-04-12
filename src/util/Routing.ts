@@ -7,7 +7,6 @@ import VocabularyUtils from "./VocabularyUtils";
 import Term from "../model/Term";
 
 export class Routing {
-
     private readonly mHistory: History;
     private originalTarget?: string;
 
@@ -52,9 +51,20 @@ export class Routing {
         return path;
     }
 
-    public static buildFullUrl(route: Route | string, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) {
-        const innerPath = typeof route === "string" ? route : Routing.buildUrl(route, options);
-        return window.location.origin + window.location.pathname + "#" + innerPath;
+    public static buildFullUrl(
+        route: Route | string,
+        options: {
+            params?: Map<string, string>;
+            query?: Map<string, string>;
+        } = {}
+    ) {
+        const innerPath =
+            typeof route === "string"
+                ? route
+                : Routing.buildUrl(route, options);
+        return (
+            window.location.origin + window.location.pathname + "#" + innerPath
+        );
     }
 
     public saveOriginalTarget = () => {

@@ -94,12 +94,10 @@ describe("AsyncCommentActions", () => {
 
         it("returns empty array on request failure", () => {
             const termIri = VocabularyUtils.create(Generator.generateUri());
-            Ajax.get = jest
-                .fn()
-                .mockRejectedValue({
-                    status: 404,
-                    error: { message: "Term not found" },
-                });
+            Ajax.get = jest.fn().mockRejectedValue({
+                status: 404,
+                error: { message: "Term not found" },
+            });
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadTermComments(termIri))
             ).then((result: Comment[]) => {

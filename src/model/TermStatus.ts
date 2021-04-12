@@ -3,7 +3,7 @@
  */
 enum TermStatus {
     DRAFT = "DRAFT",
-    CONFIRMED = "CONFIRMED"
+    CONFIRMED = "CONFIRMED",
 }
 
 export default TermStatus;

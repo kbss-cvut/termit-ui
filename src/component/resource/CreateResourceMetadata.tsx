@@ -110,20 +110,34 @@ export class CreateResourceMetadata<
     );
   }
 
-    protected renderSubmitButtons() {
-        const i18n = this.props.i18n;
-        return <Row>
-            <Col xs={12}>
-                <ButtonToolbar className="d-flex justify-content-center mt-4">
-                    <Button id="create-resource-submit" onClick={this.onCreate} color={Constants.SUBMIT_BUTTON_VARIANT}
-                            size="sm"
-                            disabled={this.state.label.trim().length === 0}>{i18n("create")}</Button>
-                    <Button id="create-resource-cancel" onClick={this.props.onCancel}
-                            color={Constants.CANCEL_BUTTON_VARIANT} size="sm">{i18n("cancel")}</Button>
-                </ButtonToolbar>
-            </Col>
-        </Row>;
-    }
+  protected renderSubmitButtons() {
+    const i18n = this.props.i18n;
+    return (
+      <Row>
+        <Col xs={12}>
+          <ButtonToolbar className="d-flex justify-content-center mt-4">
+            <Button
+              id="create-resource-submit"
+              onClick={this.onCreate}
+              color={Constants.SUBMIT_BUTTON_VARIANT}
+              size="sm"
+              disabled={this.state.label.trim().length === 0}
+            >
+              {i18n("create")}
+            </Button>
+            <Button
+              id="create-resource-cancel"
+              onClick={this.props.onCancel}
+              color={Constants.CANCEL_BUTTON_VARIANT}
+              size="sm"
+            >
+              {i18n("cancel")}
+            </Button>
+          </ButtonToolbar>
+        </Col>
+      </Row>
+    );
+  }
 }
 
 export default injectIntl(withI18n(CreateResourceMetadata));

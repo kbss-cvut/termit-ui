@@ -1,7 +1,7 @@
 import * as React from "react";
-import {UncontrolledTooltip} from "reactstrap";
+import { UncontrolledTooltip } from "reactstrap";
 import Toggle from "react-bootstrap-toggle";
-import {useI18n} from "../hook/useI18n";
+import { useI18n } from "../hook/useI18n";
 
 interface DraftToggleProps {
   id: string; // Toggle id, required by the tooltip component
@@ -26,8 +26,10 @@ const DraftToggle: React.FC<DraftToggleProps> = (props) => {
         active={!props.draft}
         recalculateOnResize={false}
       />
-        <UncontrolledTooltip target={props.id}>{i18n("term.metadata.status.help")}</UncontrolledTooltip>
-        </>
+      <UncontrolledTooltip target={props.id}>
+        {i18n("term.metadata.status.help")}
+      </UncontrolledTooltip>
+    </>
   );
 };
 

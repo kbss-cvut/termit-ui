@@ -271,7 +271,7 @@ const Utils = {
      * @param url URL to add slash to
      */
     withTrailingSlash(url?: string): string | undefined {
-        return url && url.charAt(url.length - 1) !== "/" ? (url + "/") : url;
+        return url && url.charAt(url.length - 1) !== "/" ? url + "/" : url;
     },
 };
 

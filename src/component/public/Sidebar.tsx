@@ -17,17 +17,21 @@
 */
 import * as React from "react";
 import withI18n from "../hoc/withI18n";
-import {withRouter} from "react-router";
+import { withRouter } from "react-router";
 import Routes from "../../util/Routes";
-import {Collapse, Container, Nav, Navbar, NavbarBrand} from "reactstrap";
+import { Collapse, Container, Nav, Navbar, NavbarBrand } from "reactstrap";
 import classNames from "classnames";
 import Constants from "../../util/Constants";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
-import {ThunkDispatch} from "../../util/Types";
-import {toggleSidebar} from "../../action/SyncActions";
-import {injectIntl} from "react-intl";
-import {NavLinkRoute, Sidebar as DefaultSidebar, SidebarProps,} from "../sidebar/Sidebar";
+import { ThunkDispatch } from "../../util/Types";
+import { toggleSidebar } from "../../action/SyncActions";
+import { injectIntl } from "react-intl";
+import {
+  NavLinkRoute,
+  Sidebar as DefaultSidebar,
+  SidebarProps,
+} from "../sidebar/Sidebar";
 import "../sidebar/Sidebar.scss";
 
 const mainNavRoutes: NavLinkRoute[] = [
@@ -42,9 +46,9 @@ const actionNavRoutes: NavLinkRoute[] = [
   {
     path: Routes.login.path,
     name: "login.title",
-    icon: "fas fa-user"
-}];
-
+    icon: "fas fa-user",
+  },
+];
 
 export class Sidebar extends DefaultSidebar {
   constructor(props: SidebarProps) {

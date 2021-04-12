@@ -1,7 +1,7 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Card, CardBody, Col, Label, Row} from "reactstrap";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import { Card, CardBody, Col, Label, Row } from "reactstrap";
 import Term from "../../model/Term";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import TermAssignments from "./TermAssignments";
@@ -9,27 +9,27 @@ import Tabs from "../misc/Tabs";
 import AssetHistory from "../changetracking/AssetHistory";
 import BasicTermMetadata from "./BasicTermMetadata";
 import Vocabulary from "../../model/Vocabulary";
-import {RouteComponentProps, withRouter} from "react-router";
+import { RouteComponentProps, withRouter } from "react-router";
 import Terms from "./Terms";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import DraftToggle from "./DraftToggle";
-import {connect} from "react-redux";
-import {ThunkDispatch} from "../../util/Types";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import { connect } from "react-redux";
+import { ThunkDispatch } from "../../util/Types";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import TermStatus from "../../model/TermStatus";
-import {setTermStatus} from "../../action/AsyncTermActions";
+import { setTermStatus } from "../../action/AsyncTermActions";
 import ValidationResults from "./validation/ValidationResults";
 import Utils from "../../util/Utils";
 import Comments from "../comment/Comments";
 import "./TermMetadata.scss";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
-    term: Term;
-    vocabulary: Vocabulary;
-    language: string;
-    selectLanguage: (lang: string) => void;
+  term: Term;
+  vocabulary: Vocabulary;
+  language: string;
+  selectLanguage: (lang: string) => void;
 
-    setStatus: (termIri: IRI, status: TermStatus) => void;
+  setStatus: (termIri: IRI, status: TermStatus) => void;
 }
 
 interface TermMetadataState {
@@ -106,81 +106,127 @@ export class TermMetadata extends React.Component<
     this.setState({ assignmentsCount });
   };
 
-    private setCommentsCount = (commentsCount: number) => {
-        this.setState({ commentsCount });
-    };
+  private setCommentsCount = (commentsCount: number) => {
+    this.setState({ commentsCount });
+  };
 
-    public onToggleDraft = () => {
-        const {term, setStatus} = this.props;
-        const nextStatus = Term.isDraft(term) ? TermStatus.CONFIRMED : TermStatus.DRAFT;
-        setStatus(VocabularyUtils.create(term.iri), nextStatus);
-    };
+  public onToggleDraft = () => {
+    const { term, setStatus } = this.props;
+    const nextStatus = Term.isDraft(term)
+      ? TermStatus.CONFIRMED
+      : TermStatus.DRAFT;
+    setStatus(VocabularyUtils.create(term.iri), nextStatus);
+  };
 
-    public render() {
-        const {term, language, selectLanguage} = this.props;
-        return <>
-            <LanguageSelector key="term-language-selector" term={term} language={language} onSelect={selectLanguage}/>
+  public render() {
+    const { term, language, selectLanguage } = this.props;
+    return (
+      <>
+        <LanguageSelector
+          key="term-language-selector"
+          term={term}
+          language={language}
+          onSelect={selectLanguage}
+        />
+        <Row>
+          <Col lg={this.state.displayTerms ? 9 : 12}>
             <Row>
-                <Col lg={this.state.displayTerms ? 9 : 12}>
+              <Col xs={12}>
+                <Card className="mb-3">
+                  <CardBody className="card-body-basic-info">
+                    <BasicTermMetadata
+                      term={term}
+                      withDefinitionSource={true}
+                      language={language}
+                    />
                     <Row>
-                        <Col xs={12}>
-                            <Card className="mb-3">
-                                <CardBody className="card-body-basic-info">
-                                    <BasicTermMetadata term={term} withDefinitionSource={true} language={language}/>
-                                    <Row>
-                                        <Col xl={2} md={4}>
-                                            <Label
-                                                className="attribute-label term-status-label">{this.props.i18n("term.metadata.status")}</Label>
-                                        </Col>
-                                        <Col xl={10} md={8}>
-                                            <DraftToggle id="term-detail-draft-toggle"
-                                                         draft={Term.isDraft(term)} onToggle={this.onToggleDraft}/>
-                                        </Col>
-                                    </Row>
-                                </CardBody>
-                            </Card>
-                        </Col>
+                      <Col xl={2} md={4}>
+                        <Label className="attribute-label term-status-label">
+                          {this.props.i18n("term.metadata.status")}
+                        </Label>
+                      </Col>
+                      <Col xl={10} md={8}>
+                        <DraftToggle
+                          id="term-detail-draft-toggle"
+                          draft={Term.isDraft(term)}
+                          onToggle={this.onToggleDraft}
+                        />
+                      </Col>
                     </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <Card>
-                                <CardBody>
-                                    <Tabs activeTabLabelKey={this.state.activeTab} changeTab={this.onTabSelect} tabs={{
-                                        "term.metadata.assignments.title": <TermAssignments term={term}
-                                                                                            onLoad={this.setAssignmentsCount}/>,
-                                        "history.label": <AssetHistory asset={term}/>,
-                                        "term.metadata.validation.title": <ValidationResults term={term}/>,
-                                        "comments.title": <Comments term={term} onLoad={this.setCommentsCount}/>,
-                                        "properties.edit.title": <UnmappedProperties
-                                            properties={term.unmappedProperties}
-                                            showInfoOnEmpty={true}/>,
-                                    }} tabBadges={{
-                                        "properties.edit.title": term.unmappedProperties.size.toFixed(),
-                                        "comments.title":
-                                            this.state.commentsCount !== null
-                                                ? this.state.commentsCount.toFixed()
-                                                : null,
-                                        "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,
-                                    }}/>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Col>
-                {this.state.displayTerms && <Col>
-                    <Card>
-                        <Terms vocabulary={this.props.vocabulary} match={this.props.match}
-                               location={this.props.location} isDetailView={true}
-                               showTermQualityBadge={false}/>
-                    </Card>
-                </Col>}
+                  </CardBody>
+                </Card>
+              </Col>
             </Row>
-        </>;
-    }
+            <Row>
+              <Col xs={12}>
+                <Card>
+                  <CardBody>
+                    <Tabs
+                      activeTabLabelKey={this.state.activeTab}
+                      changeTab={this.onTabSelect}
+                      tabs={{
+                        "term.metadata.assignments.title": (
+                          <TermAssignments
+                            term={term}
+                            onLoad={this.setAssignmentsCount}
+                          />
+                        ),
+                        "history.label": <AssetHistory asset={term} />,
+                        "term.metadata.validation.title": (
+                          <ValidationResults term={term} />
+                        ),
+                        "comments.title": (
+                          <Comments
+                            term={term}
+                            onLoad={this.setCommentsCount}
+                          />
+                        ),
+                        "properties.edit.title": (
+                          <UnmappedProperties
+                            properties={term.unmappedProperties}
+                            showInfoOnEmpty={true}
+                          />
+                        ),
+                      }}
+                      tabBadges={{
+                        "properties.edit.title": term.unmappedProperties.size.toFixed(),
+                        "comments.title":
+                          this.state.commentsCount !== null
+                            ? this.state.commentsCount.toFixed()
+                            : null,
+                        "term.metadata.assignments.title":
+                          this.state.assignmentsCount !== null
+                            ? this.state.assignmentsCount.toFixed()
+                            : null,
+                      }}
+                    />
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
+          {this.state.displayTerms && (
+            <Col>
+              <Card>
+                <Terms
+                  vocabulary={this.props.vocabulary}
+                  match={this.props.match}
+                  location={this.props.location}
+                  isDetailView={true}
+                  showTermQualityBadge={false}
+                />
+              </Card>
+            </Col>
+          )}
+        </Row>
+      </>
+    );
+  }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
-    return {
-        setStatus: (iri: IRI, status: TermStatus) => dispatch(setTermStatus(iri, status))
-    };
+  return {
+    setStatus: (iri: IRI, status: TermStatus) =>
+      dispatch(setTermStatus(iri, status)),
+  };
 })(injectIntl(withI18n(withRouter(TermMetadata))));

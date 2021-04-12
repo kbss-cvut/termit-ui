@@ -20,7 +20,8 @@ import {
     loadMyAssets,
     loadResource,
     loadResources,
-    loadResourceTermAssignmentsInfo, loadStatistics,
+    loadResourceTermAssignmentsInfo,
+    loadStatistics,
     loadTerm,
     loadTermAssignmentsInfo,
     loadTerms,
@@ -212,9 +213,22 @@ describe("Async actions", () => {
         });
 
         it("dispatches vocabulary imports loading on success", () => {
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(require("../../rest-mock/vocabulary")));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
-                const loadImportsAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES);
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() =>
+                    Promise.resolve(require("../../rest-mock/vocabulary"))
+                );
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadVocabulary({ fragment: "metropolitan-plan" })
+                )
+            ).then(() => {
+                const loadImportsAction = store
+                    .getActions()
+                    .find(
+                        (a) =>
+                            a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES
+                    );
                 expect(loadImportsAction).toBeDefined();
             });
         });
@@ -240,7 +254,10 @@ describe("Async actions", () => {
         });
 
         it("passes loaded vocabulary dependencies to store", () => {
-            const dependencies = [Generator.generateUri(), Generator.generateUri()];
+            const dependencies = [
+                Generator.generateUri(),
+                Generator.generateUri(),
+            ];
             Ajax.get = jest.fn().mockImplementation((url) => {
                 if (url.endsWith("/dependencies")) {
                     return Promise.resolve(dependencies);
@@ -250,17 +267,34 @@ describe("Async actions", () => {
                     );
                 }
             });
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
-                const loadImportsSuccessAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES && a.status === AsyncActionStatus.SUCCESS);
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadVocabulary({ fragment: "metropolitan-plan" })
+                )
+            ).then(() => {
+                const loadImportsSuccessAction = store
+                    .getActions()
+                    .find(
+                        (a) =>
+                            a.type ===
+                                ActionType.LOAD_VOCABULARY_DEPENDENCIES &&
+                            a.status === AsyncActionStatus.SUCCESS
+                    );
                 expect(loadImportsSuccessAction).toBeDefined();
                 expect(loadImportsSuccessAction.payload).toEqual(dependencies);
             });
         });
 
         it("transitions to vocabulary list when vocabulary is not found", () => {
-            Ajax.get = jest.fn().mockRejectedValue({status: 404});
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabulary({fragment: "metropolitan-plan"}))).then(() => {
-                expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies);
+            Ajax.get = jest.fn().mockRejectedValue({ status: 404 });
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadVocabulary({ fragment: "metropolitan-plan" })
+                )
+            ).then(() => {
+                expect(Routing.transitionTo).toHaveBeenCalledWith(
+                    Routes.vocabularies
+                );
             });
         });
     });
@@ -576,8 +610,17 @@ describe("Async actions", () => {
         });
 
         it("publishes message on error", () => {
-            Ajax.put = jest.fn().mockImplementation(() => Promise.reject("An error"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri), Generator.generateUri()))).then(() => {
+            Ajax.put = jest
+                .fn()
+                .mockImplementation(() => Promise.reject("An error"));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    executeFileTextAnalysis(
+                        VocabularyUtils.create(file.iri),
+                        Generator.generateUri()
+                    )
+                )
+            ).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(
                     (a) => a.type === ActionType.PUBLISH_MESSAGE
@@ -590,8 +633,17 @@ describe("Async actions", () => {
         });
 
         it("publishes message on success", () => {
-            Ajax.put = jest.fn().mockImplementation(() => Promise.resolve("Success"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri), Generator.generateUri()))).then(() => {
+            Ajax.put = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve("Success"));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    executeFileTextAnalysis(
+                        VocabularyUtils.create(file.iri),
+                        Generator.generateUri()
+                    )
+                )
+            ).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(
                     (a) => a.type === ActionType.PUBLISH_MESSAGE
@@ -2440,23 +2492,45 @@ describe("Async actions", () => {
     });
 
     describe("loadVocabularyDependencies", () => {
-
         it("loads dependencies for the specified vocabulary IRI", () => {
-            const dependencies = [Generator.generateUri(), Generator.generateUri()];
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(dependencies));
+            const dependencies = [
+                Generator.generateUri(),
+                Generator.generateUri(),
+            ];
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(dependencies));
             const iri = VocabularyUtils.create(Generator.generateUri());
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabularyDependencies(iri))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadVocabularyDependencies(iri)
+                )
+            ).then(() => {
                 expect(Ajax.get).toHaveBeenCalled();
                 const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-                expect(url).toEqual(Constants.API_PREFIX + "/vocabularies/" + iri.fragment + "/dependencies");
+                expect(url).toEqual(
+                    Constants.API_PREFIX +
+                        "/vocabularies/" +
+                        iri.fragment +
+                        "/dependencies"
+                );
             });
         });
 
         it("returns loaded dependencies", () => {
-            const dependencies = [Generator.generateUri(), Generator.generateUri()];
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(dependencies));
+            const dependencies = [
+                Generator.generateUri(),
+                Generator.generateUri(),
+            ];
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(dependencies));
             const iri = VocabularyUtils.create(Generator.generateUri());
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabularyDependencies(iri))).then((result) => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadVocabularyDependencies(iri)
+                )
+            ).then((result) => {
                 expect(result).toEqual(dependencies);
             });
         });
@@ -2464,7 +2538,11 @@ describe("Async actions", () => {
         it("returns empty array on error on request error", () => {
             Ajax.get = jest.fn().mockImplementation(() => Promise.reject({}));
             const iri = VocabularyUtils.create(Generator.generateUri());
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadVocabularyDependencies(iri))).then((result) => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadVocabularyDependencies(iri)
+                )
+            ).then((result) => {
                 expect(result).toEqual([]);
             });
         });
@@ -2641,9 +2719,21 @@ describe("Async actions", () => {
 
     describe("loadStatistics", () => {
         it("uses provided type argument as part of URL when loading statistics", () => {
-            Ajax.get = jest.fn().mockResolvedValue({result: [{id: Generator.generateUri(), count: 1, label: "Test"}]});
+            Ajax.get = jest
+                .fn()
+                .mockResolvedValue({
+                    result: [
+                        {
+                            id: Generator.generateUri(),
+                            count: 1,
+                            label: "Test",
+                        },
+                    ],
+                });
             const type = "term-frequency";
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadStatistics(type))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadStatistics(type))
+            ).then(() => {
                 const url = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(url).toContain(`/statistics/${type}`);
             });
@@ -2658,7 +2748,9 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadNews(lang))
             ).then((result: any) => {
-                return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result: any) => {
+                return Promise.resolve(
+                    (store.dispatch as ThunkDispatch)(loadNews(lang))
+                ).then((result: any) => {
                     expect(result).toEqual(news);
                     expect((Ajax.get as jest.Mock).mock.calls[0][0]).toEqual(
                         Constants.NEWS_MD_URL[lang]

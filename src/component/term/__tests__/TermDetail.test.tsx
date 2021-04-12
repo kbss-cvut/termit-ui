@@ -14,7 +14,7 @@ import { IRI } from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router-dom";
 import en from "../../../i18n/en";
 
@@ -22,8 +22,8 @@ jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
 jest.mock("../../misc/AssetLabel");
 jest.mock("../../changetracking/AssetHistory");
-jest.mock("../../misc/CopyIriIcon", () => () => <span/>);
-jest.mock("../DraftToggle", () => () => <span/>);
+jest.mock("../../misc/CopyIriIcon", () => () => <span />);
+jest.mock("../DraftToggle", () => () => <span />);
 
 describe("TermDetail", () => {
   const normalizedTermName = "test-term";
@@ -389,64 +389,94 @@ describe("TermDetail", () => {
     expect(wrapper.find(TermMetadata).prop("language")).toEqual(lang);
   });
 
-    it("postpones language resolution until term is loaded", () => {
-        const wrapper = shallow<TermDetail>(<TermDetail term={null} configuredLanguage="cs"
-                                                        loadTerm={onLoad}
-                                                        updateTerm={onUpdate}
-                                                        removeTerm={removeTerm}
-                                                        loadVocabulary={loadVocabulary}
-                                                        vocabulary={vocabulary}
-                                                        history={history}
-                                                        location={location}
-                                                        match={match}
-                                                        publishNotification={onPublishNotification}
-                                                        {...intlFunctions()}/>);
-        wrapper.setProps({term});
-        wrapper.update();
-        expect(wrapper.find(TermMetadata).prop("language")).toEqual(Constants.DEFAULT_LANGUAGE);
-    });
+  it("postpones language resolution until term is loaded", () => {
+    const wrapper = shallow<TermDetail>(
+      <TermDetail
+        term={null}
+        configuredLanguage="cs"
+        loadTerm={onLoad}
+        updateTerm={onUpdate}
+        removeTerm={removeTerm}
+        loadVocabulary={loadVocabulary}
+        vocabulary={vocabulary}
+        history={history}
+        location={location}
+        match={match}
+        publishNotification={onPublishNotification}
+        {...intlFunctions()}
+      />
+    );
+    wrapper.setProps({ term });
+    wrapper.update();
+    expect(wrapper.find(TermMetadata).prop("language")).toEqual(
+      Constants.DEFAULT_LANGUAGE
+    );
+  });
 
-    it("displays edit button as disabled when term is in confirmed state", () => {
-        term.draft = false;
-        const wrapper = mountWithIntl(<MemoryRouter><TermDetail term={term} configuredLanguage={Constants.DEFAULT_LANGUAGE}
-                                                        loadTerm={onLoad}
-                                                        updateTerm={onUpdate}
-                                                        removeTerm={removeTerm}
-                                                        loadVocabulary={loadVocabulary}
-                                                        vocabulary={vocabulary}
-                                                        history={history}
-                                                        location={location}
-                                                        match={match}
-                                                        publishNotification={onPublishNotification}
-                                                                {...intlFunctions()}/></MemoryRouter>);
-        const editButton = wrapper.find("button#term-detail-edit");
-        expect(editButton).toBeDefined();
-        expect(editButton.prop("disabled")).toBeTruthy();
-        expect(editButton.prop("title")).toEqual(en.messages["term.edit.confirmed.tooltip"]);
-    });
+  it("displays edit button as disabled when term is in confirmed state", () => {
+    term.draft = false;
+    const wrapper = mountWithIntl(
+      <MemoryRouter>
+        <TermDetail
+          term={term}
+          configuredLanguage={Constants.DEFAULT_LANGUAGE}
+          loadTerm={onLoad}
+          updateTerm={onUpdate}
+          removeTerm={removeTerm}
+          loadVocabulary={loadVocabulary}
+          vocabulary={vocabulary}
+          history={history}
+          location={location}
+          match={match}
+          publishNotification={onPublishNotification}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
+    );
+    const editButton = wrapper.find("button#term-detail-edit");
+    expect(editButton).toBeDefined();
+    expect(editButton.prop("disabled")).toBeTruthy();
+    expect(editButton.prop("title")).toEqual(
+      en.messages["term.edit.confirmed.tooltip"]
+    );
+  });
 
-    it("loads term and vocabulary when term with the same name but in different vocabulary is selected", () => {
-        const wrapper = shallow(<TermDetail term={term} loadTerm={onLoad} updateTerm={onUpdate}
-                                            removeTerm={removeTerm} configuredLanguage={Constants.DEFAULT_LANGUAGE}
-                                            loadVocabulary={loadVocabulary} vocabulary={vocabulary}
-                                            history={history} location={location} match={match}
-                                            publishNotification={onPublishNotification}
-                                            {...intlFunctions()}/>);
-        (wrapper.instance() as TermDetail).onEdit();
-        wrapper.update();
-        expect((wrapper.instance() as TermDetail).state.edit).toBeTruthy();
-        const newMatch = {
-            params: {
-                name: "differentVocabularyName",
-                termName: normalizedTermName
-            },
-            path: "/differentVocabularyName/terms/" + normalizedTermName,
-            isExact: true,
-            url: "http://localhost:3000/different"
-        };
-        wrapper.setProps({match: newMatch});
-        wrapper.update();
-        expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {fragment: newMatch.params.name});
-        expect(loadVocabulary).toHaveBeenCalledWith({fragment: newMatch.params.name});
+  it("loads term and vocabulary when term with the same name but in different vocabulary is selected", () => {
+    const wrapper = shallow(
+      <TermDetail
+        term={term}
+        loadTerm={onLoad}
+        updateTerm={onUpdate}
+        removeTerm={removeTerm}
+        configuredLanguage={Constants.DEFAULT_LANGUAGE}
+        loadVocabulary={loadVocabulary}
+        vocabulary={vocabulary}
+        history={history}
+        location={location}
+        match={match}
+        publishNotification={onPublishNotification}
+        {...intlFunctions()}
+      />
+    );
+    (wrapper.instance() as TermDetail).onEdit();
+    wrapper.update();
+    expect((wrapper.instance() as TermDetail).state.edit).toBeTruthy();
+    const newMatch = {
+      params: {
+        name: "differentVocabularyName",
+        termName: normalizedTermName,
+      },
+      path: "/differentVocabularyName/terms/" + normalizedTermName,
+      isExact: true,
+      url: "http://localhost:3000/different",
+    };
+    wrapper.setProps({ match: newMatch });
+    wrapper.update();
+    expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {
+      fragment: newMatch.params.name,
     });
+    expect(loadVocabulary).toHaveBeenCalledWith({
+      fragment: newMatch.params.name,
+    });
+  });
 });

@@ -33,10 +33,10 @@ import SearchResult from "../model/SearchResult";
 import SearchQuery from "../model/SearchQuery";
 import { ErrorLogItem } from "../model/ErrorInfo";
 import Utils from "../util/Utils";
-import {Configuration, DEFAULT_CONFIGURATION} from "../model/Configuration";
-import Workspace, {EMPTY_WORKSPACE} from "../model/Workspace";
+import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
+import Workspace, { EMPTY_WORKSPACE } from "../model/Workspace";
 import TermStatus from "../model/TermStatus";
-import {ConsolidatedResults} from "../model/ConsolidatedResults";
+import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
 import Document from "../model/Document";
 
@@ -119,9 +119,17 @@ function vocabulary(
 ): Vocabulary {
     switch (action.type) {
         case ActionType.LOAD_VOCABULARY:
-            return action.status === AsyncActionStatus.SUCCESS ? action.payload as Vocabulary : state;
+            return action.status === AsyncActionStatus.SUCCESS
+                ? (action.payload as Vocabulary)
+                : state;
         case ActionType.LOAD_VOCABULARY_DEPENDENCIES:
-            return action.status === AsyncActionStatus.SUCCESS ? new Vocabulary(Object.assign(state, {allImportedVocabularies: action.payload as string[]})) : state;
+            return action.status === AsyncActionStatus.SUCCESS
+                ? new Vocabulary(
+                      Object.assign(state, {
+                          allImportedVocabularies: action.payload as string[],
+                      })
+                  )
+                : state;
         case ActionType.LOGOUT:
             return EMPTY_VOCABULARY;
         case ActionType.REMOVE_RESOURCE:
@@ -222,7 +230,10 @@ function vocabularies(
     }
 }
 
-function selectedTerm(state: Term | null = null, action: SelectingTermsAction | AsyncActionSuccess<Term | TermStatus>) {
+function selectedTerm(
+    state: Term | null = null,
+    action: SelectingTermsAction | AsyncActionSuccess<Term | TermStatus>
+) {
     switch (action.type) {
         case ActionType.SELECT_VOCABULARY_TERM:
             return (action as SelectingTermsAction).selectedTerms;
@@ -231,7 +242,13 @@ function selectedTerm(state: Term | null = null, action: SelectingTermsAction | 
             return aa.status === AsyncActionStatus.SUCCESS ? aa.payload : state;
         case ActionType.SET_TERM_STATUS:
             const sts = action as AsyncActionSuccess<TermStatus>;
-            return sts.status === AsyncActionStatus.SUCCESS ? new Term(Object.assign({}, state, {draft: sts.payload === TermStatus.DRAFT})) : state;
+            return sts.status === AsyncActionStatus.SUCCESS
+                ? new Term(
+                      Object.assign({}, state, {
+                          draft: sts.payload === TermStatus.DRAFT,
+                      })
+                  )
+                : state;
         case ActionType.LOGOUT:
             return null;
         default:
@@ -544,9 +561,12 @@ function annotatorTerms(
     }
 }
 
-function workspace(state: Workspace | null = EMPTY_WORKSPACE, action: AsyncActionSuccess<Workspace>) {
-    switch(action.type) {
-        case ActionType.SELECT_WORKSPACE:   // Intentional fall-through
+function workspace(
+    state: Workspace | null = EMPTY_WORKSPACE,
+    action: AsyncActionSuccess<Workspace>
+) {
+    switch (action.type) {
+        case ActionType.SELECT_WORKSPACE: // Intentional fall-through
         case ActionType.LOAD_WORKSPACE:
             if (action.status === AsyncActionStatus.SUCCESS) {
                 return action.payload;

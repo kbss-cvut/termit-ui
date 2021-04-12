@@ -88,9 +88,22 @@ describe("AsyncPublicViewActions", () => {
         });
 
         it("uses public API endpoint to load vocabulary's dependencies as well", () => {
-            Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(require("../../rest-mock/vocabulary")));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadPublicVocabulary({fragment: "metropolitan-plan"}))).then(() => {
-                const loadDependenciesAction = store.getActions().find(a => a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES);
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() =>
+                    Promise.resolve(require("../../rest-mock/vocabulary"))
+                );
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadPublicVocabulary({ fragment: "metropolitan-plan" })
+                )
+            ).then(() => {
+                const loadDependenciesAction = store
+                    .getActions()
+                    .find(
+                        (a) =>
+                            a.type === ActionType.LOAD_VOCABULARY_DEPENDENCIES
+                    );
                 expect(loadDependenciesAction).toBeDefined();
                 expect((Ajax.get as jest.Mock).mock.calls.length).toEqual(3);
                 const url = (Ajax.get as jest.Mock).mock.calls[1][0];

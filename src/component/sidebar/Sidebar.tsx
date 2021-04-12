@@ -79,12 +79,18 @@ const mainNavRoutes: NavLinkRoute[] = [
   {
     path: Routes.resources.path,
     name: "main.nav.resources",
-    icon: "fas fa-clipboard"
-}];
+    icon: "fas fa-clipboard",
+  },
+];
 
-const createNewNavRoutes: NavLinkRoute[] = [{
-    path: Routes.createResource.path, name: "main.nav.create-resource", icon: "fas fa-clipboard", supIcon: "fas fa-plus"
-}];
+const createNewNavRoutes: NavLinkRoute[] = [
+  {
+    path: Routes.createResource.path,
+    name: "main.nav.create-resource",
+    icon: "fas fa-clipboard",
+    supIcon: "fas fa-plus",
+  },
+];
 
 export class Sidebar extends React.Component<SidebarProps, SidebarState> {
   constructor(props: SidebarProps) {
@@ -177,31 +183,44 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
   public render() {
     const { sidebarExpanded, desktopView } = this.props;
 
-        return (
-            <Navbar expand="md" id="sidenav-main"
-                    className={classNames("navbar-vertical", "navbar-dark", "sidebar", "py-md-0",
-                        {
-                            "sidebar-expanded": sidebarExpanded,
-                            "sidebar-collapsed": !sidebarExpanded
-                        })}>
-                <Container fluid={true}>
-                    <div className="d-flex align-items-center header-height justify-content-between">
-                        {/* Toggler phone */}
-                        <button
-                            className="navbar-toggler"
-                            type="button"
-                            onClick={this.toggleCollapse}
-                        >
-                            <i className="fas fa-bars fa-lg line-height-1"/>
-                        </button>
+    return (
+      <Navbar
+        expand="md"
+        id="sidenav-main"
+        className={classNames(
+          "navbar-vertical",
+          "navbar-dark",
+          "sidebar",
+          "py-md-0",
+          {
+            "sidebar-expanded": sidebarExpanded,
+            "sidebar-collapsed": !sidebarExpanded,
+          }
+        )}
+      >
+        <Container fluid={true}>
+          <div className="d-flex align-items-center header-height justify-content-between">
+            {/* Toggler phone */}
+            <button
+              className="navbar-toggler"
+              type="button"
+              onClick={this.toggleCollapse}
+            >
+              <i className="fas fa-bars fa-lg line-height-1" />
+            </button>
 
-                        {/* Brand */}
-                        {(sidebarExpanded || !desktopView) && <NavbarBrand
-                            className={classNames("p-0 ml-2 ml-sm-3 ml-md-0 brand", "brand-light")}
-                            href={`#${Routes.dashboard.path}`}>
-                            {Constants.APP_NAME}
-                        </NavbarBrand>}
-
+            {/* Brand */}
+            {(sidebarExpanded || !desktopView) && (
+              <NavbarBrand
+                className={classNames(
+                  "p-0 ml-2 ml-sm-3 ml-md-0 brand",
+                  "brand-light"
+                )}
+                href={`#${Routes.dashboard.path}`}
+              >
+                {Constants.APP_NAME}
+              </NavbarBrand>
+            )}
 
             {/* Toggler desktop */}
             {desktopView && (
@@ -226,17 +245,21 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
             </Nav>
           )}
 
-                    {/* Collapse */}
-                    <Collapse navbar={true} isOpen={this.state.collapseOpen} className="no-before-after">
-                        {/* Collapse header */}
-                        {!desktopView && (<div
-                            className="navbar-collapse-header d-flex justify-content-between align-items-center">
-
-                            <NavbarBrand
-                                className="brand p-0 brand-dark"
-                                href={`#${Routes.dashboard.path}`}>
-                                {Constants.APP_NAME}
-                            </NavbarBrand>
+          {/* Collapse */}
+          <Collapse
+            navbar={true}
+            isOpen={this.state.collapseOpen}
+            className="no-before-after"
+          >
+            {/* Collapse header */}
+            {!desktopView && (
+              <div className="navbar-collapse-header d-flex justify-content-between align-items-center">
+                <NavbarBrand
+                  className="brand p-0 brand-dark"
+                  href={`#${Routes.dashboard.path}`}
+                >
+                  {Constants.APP_NAME}
+                </NavbarBrand>
 
                 {/* Close button X */}
                 <button

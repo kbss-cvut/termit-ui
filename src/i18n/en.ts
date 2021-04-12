@@ -29,12 +29,15 @@ const en = {
         "footer.copyright.mvcr": "Ministry of the Interior",
         "footer.copyright.mvcr.tooltip": "Ministry of the Interior",
         "footer.version": "Version",
-        "footer.grant.text": "This application is developed as part of the project OPZ no. CZ.03.4.74/0.0/0.0/15_025/0013983.",
+        "footer.grant.text":
+            "This application is developed as part of the project OPZ no. CZ.03.4.74/0.0/0.0/15_025/0013983.",
 
         "news-viewer.title": "News",
 
-        "auth.redirect-message": "Redirecting you to the authorization service.",
-        "auth.unavailable-message": "Authorization service is not available. Please contact system administrators.",
+        "auth.redirect-message":
+            "Redirecting you to the authorization service.",
+        "auth.unavailable-message":
+            "Authorization service is not available. Please contact system administrators.",
 
         "login.title": "Log in",
         "login.error": "Authentication failed.",
@@ -54,7 +57,8 @@ const en = {
         "main.logout": "Log out",
         "main.search.placeholder": "Search in the current workspace",
         "main.search.tooltip": "Go to the search screen",
-        "main.search.count-info-and-link": "Showing {displayed} of {count} results. See all results.",
+        "main.search.count-info-and-link":
+            "Showing {displayed} of {count} results. See all results.",
         "main.search.no-results": "No results found.",
         "main.lang-selector.tooltip": "Select user interface language",
         "main.issue-tracker.reportBug": "Report a bug",
@@ -135,9 +139,12 @@ const en = {
         "vocabulary.summary.export.excel": "Excel",
         "vocabulary.summary.export.excel.title": "Export to MS Excel",
         "vocabulary.summary.export.ttl": "SKOS (Turtle)",
-        "vocabulary.summary.export.ttl.title": "Export SKOS-compatible glossary serialized as Turtle",
-        "vocabulary.summary.export.error": "Unable to retrieve exported data from server response.",
-        "vocabulary.summary.startTextAnalysis.title": "Start text analysis on definitions of all terms in this vocabulary",
+        "vocabulary.summary.export.ttl.title":
+            "Export SKOS-compatible glossary serialized as Turtle",
+        "vocabulary.summary.export.error":
+            "Unable to retrieve exported data from server response.",
+        "vocabulary.summary.startTextAnalysis.title":
+            "Start text analysis on definitions of all terms in this vocabulary",
         "vocabulary.updated.message": "Vocabulary successfully updated.",
         "vocabulary.created.message": "Vocabulary successfully created.",
         "vocabulary.detail.subtitle": "Created by {author} on ",
@@ -145,7 +152,8 @@ const en = {
         "vocabulary.detail.tabs.termdetail": "Term Detail",
         "vocabulary.detail.files": "Files",
         "vocabulary.detail.files.file": "Filename",
-        "vocabulary.detail.noTermSelected": "Start by selecting a term in the tree on the left.",
+        "vocabulary.detail.noTermSelected":
+            "Start by selecting a term in the tree on the left.",
         "vocabulary.detail.imports": "Dependencies",
         "vocabulary.detail.imports.edit": "Depends on vocabularies",
         "vocabulary.detail.document": "Document",
@@ -256,7 +264,8 @@ const en = {
         "term.source.help":
             "(Optional) reference to the origin of the term definition. It might refer to a particular " +
             "law section, or paragraph. Whenever the definition is marked in the document text, the source is filled automatically.",
-        "term.edit.confirmed.tooltip": "Term is confirmed, therefore it cannot be edited.",
+        "term.edit.confirmed.tooltip":
+            "Term is confirmed, therefore it cannot be edited.",
         "term.metadata.definition": "Definition",
         "term.metadata.definition.text": "Text",
         "term.metadata.definitionSource": "Document",
@@ -267,18 +276,23 @@ const en = {
             "Go to definition source in the corresponding document",
         "term.metadata.comment": "Scope note",
         "term.metadata.parent": "Parent terms",
-        "term.metadata.parent.range.vocabulary": "Terms from current vocabulary",
-        "term.metadata.parent.range.workspace": "Terms from the whole workspace",
-        "term.metadata.parent.range.canonical": "Terms from the workspace and published SSP",
+        "term.metadata.parent.range.vocabulary":
+            "Terms from current vocabulary",
+        "term.metadata.parent.range.workspace":
+            "Terms from the whole workspace",
+        "term.metadata.parent.range.canonical":
+            "Terms from the workspace and published SSP",
         "term.metadata.subTerms": "Sub terms",
         "term.metadata.types": "Type",
         "term.metadata.source": "Source",
         "term.metadata.altLabels.label": "Synonyms",
-        "term.metadata.altLabels.placeholder": "Enter a new synonym and press \"Add\"",
+        "term.metadata.altLabels.placeholder":
+            'Enter a new synonym and press "Add"',
         "term.metadata.altLabels.placeholder.text": "Add",
         "term.metadata.altLabels.remove": "Remove synonym",
         "term.metadata.altLabels.remove.text": "Remove",
-        "term.metadata.altLabels.help": "(Optional) synonyms of the label. Synonyms can be contextual - e.g. term " +
+        "term.metadata.altLabels.help":
+            "(Optional) synonyms of the label. Synonyms can be contextual - e.g. term " +
             "named 'Organization address' can have a synonym 'Address', which is used in a specific context only " +
             "(e.g. in a form gathering information about an organization). ",
         "term.metadata.hiddenLabels.label": "Search strings",
@@ -407,7 +421,8 @@ const en = {
         "statistics.user.count": "User Count",
         "statistics.notFilled": "Not Filled",
         "statistics.types.frequency": "Term Types",
-        "statistics.types.frequency.empty": "There is no vocabulary or existing vocabularies contain no terms. Use left sidebar actions to create some.",
+        "statistics.types.frequency.empty":
+            "There is no vocabulary or existing vocabularies contain no terms. Use left sidebar actions to create some.",
 
         "fullscreen.exit": "Exit fullscreen",
         "fullscreen.enter": "Enter fullscreen",
@@ -419,8 +434,9 @@ const en = {
         "search.tab.vocabularies": "Vocabularies",
         "search.tab.facets": "Faceted search",
         "search.reset": "Reset search",
-        "search.results.title": "Results for \"{searchString}\"",
-        "search.results.countInfo": "Found {matches} matches in {assets} assets in the current workspace.",
+        "search.results.title": 'Results for "{searchString}"',
+        "search.results.countInfo":
+            "Found {matches} matches in {assets} assets in the current workspace.",
         "search.results.table.label": "Label",
         "search.results.table.label.tooltip": "Open asset detail",
         "search.results.table.match": "Match",
@@ -600,13 +616,15 @@ const en = {
             "TermIt is an easy-to-use vocabulary manager and terminology editor.",
         "public.dashboard.actions.login": "Log in",
         "public.dashboard.actions.register": "Create account",
-        "public.dashboard.actions.vocabularies": "Browse vocabularies and terms",
+        "public.dashboard.actions.vocabularies":
+            "Browse vocabularies and terms",
 
-        "workspace.select.success": "Workspace \"{name}\" successfully loaded.",
+        "workspace.select.success": 'Workspace "{name}" successfully loaded.',
         "workspace.loading": "Loading current workspace...",
         "workspace.current.empty": "No workspace is currently loaded.",
         "workspace.indicator": "Workspace: {name}",
-        "workspace.indicator.controlPanelLink.tooltip": "Show workspace detail in the control panel",
+        "workspace.indicator.controlPanelLink.tooltip":
+            "Show workspace detail in the control panel",
 
         "comments.title": "Comments",
         "comments.create.placeholder": "Type your comment...",
@@ -616,8 +634,8 @@ const en = {
         "comments.comment.like.on": "Don't like any more",
         "comments.comment.dislike": "Dislike this comment",
         "comments.comment.dislike.on": "Cancel reaction",
-        "comments.comment.edited": "Edited"
-    }
+        "comments.comment.edited": "Edited",
+    },
 };
 
 export default en;

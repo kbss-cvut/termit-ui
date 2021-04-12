@@ -7,7 +7,7 @@ import Resource from "../../model/Resource";
 import Document from "../../model/Document";
 import File from "../../model/File";
 import Generator from "../../__tests__/environment/Generator";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 
 jest.mock("history", () => ({
     createHashHistory: jest.fn().mockReturnValue({
@@ -36,10 +36,16 @@ describe("Routing", () => {
         });
 
         it("adds query parameters when specified for transition", () => {
-            const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/";
+            const namespace =
+                "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/";
             const name = "test-vocabulary";
-            const path = Routing.getTransitionPath(Routes.vocabularies, {query: new Map([["namespace", namespace]])});
-            const expectedPath = Routes.vocabularies.path.replace(":name", name) + "?namespace=" + namespace;
+            const path = Routing.getTransitionPath(Routes.vocabularies, {
+                query: new Map([["namespace", namespace]]),
+            });
+            const expectedPath =
+                Routes.vocabularies.path.replace(":name", name) +
+                "?namespace=" +
+                namespace;
             expect(path).toEqual(expectedPath);
         });
     });
@@ -120,10 +126,15 @@ describe("Routing", () => {
             term.label = langString("test-term");
             term.iri = iri + "/pojem/" + term.label.en;
             RoutingInstance.transitionToAsset(term);
-            expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.vocabularyTermDetail, {
-                params: new Map([["name", label], ["termName", term.label.en]]),
-                query: new Map([["namespace", namespace]])
-            }));
+            expect(historyMock.push).toHaveBeenCalledWith(
+                Routing.getTransitionPath(Routes.vocabularyTermDetail, {
+                    params: new Map([
+                        ["name", label],
+                        ["termName", term.label.en],
+                    ]),
+                    query: new Map([["namespace", namespace]]),
+                })
+            );
         });
     });
 
@@ -148,10 +159,15 @@ describe("Routing", () => {
             term.label = langString("test-term");
             term.iri = iri + "/pojem/" + term.label.en;
             RoutingInstance.transitionToPublicAsset(term);
-            expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.publicVocabularyTermDetail, {
-                params: new Map([["name", label], ["termName", term.label.en]]),
-                query: new Map([["namespace", namespace]])
-            }));
+            expect(historyMock.push).toHaveBeenCalledWith(
+                Routing.getTransitionPath(Routes.publicVocabularyTermDetail, {
+                    params: new Map([
+                        ["name", label],
+                        ["termName", term.label.en],
+                    ]),
+                    query: new Map([["namespace", namespace]]),
+                })
+            );
         });
     });
 
@@ -172,7 +188,9 @@ describe("Routing", () => {
                 search: "",
             };
             RoutingInstance.saveOriginalTarget();
-            expect(RoutingInstance.originalRoutingTarget).toEqual(Routes.vocabularies.path);
+            expect(RoutingInstance.originalRoutingTarget).toEqual(
+                Routes.vocabularies.path
+            );
         });
     });
 
@@ -201,7 +219,9 @@ describe("Routing", () => {
             };
             RoutingInstance.saveOriginalTarget();
             RoutingInstance.transitionToOriginalTarget();
-            expect(historyMock.push).toHaveBeenCalledWith(Routing.getTransitionPath(Routes.vocabularies));
+            expect(historyMock.push).toHaveBeenCalledWith(
+                Routing.getTransitionPath(Routes.vocabularies)
+            );
         });
     });
 });

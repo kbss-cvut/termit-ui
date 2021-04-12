@@ -1,12 +1,13 @@
 import VocabularyUtils from "../util/VocabularyUtils";
-import Asset, {ASSET_CONTEXT, AssetData} from "./Asset";
+import Asset, { ASSET_CONTEXT, AssetData } from "./Asset";
 import Utils from "../util/Utils";
 
 const ctx = {
     label: VocabularyUtils.DC_TITLE,
     description: VocabularyUtils.DC_DESCRIPTION,
-    vocabularies: "https://slovn\u00edk.gov.cz/datov\u00fd/pracovn\u00ed-prostor/pojem/obsahuje-slovn\u00edk"
-}
+    vocabularies:
+        "https://slovn\u00edk.gov.cz/datov\u00fd/pracovn\u00ed-prostor/pojem/obsahuje-slovn\u00edk",
+};
 
 export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT);
 
@@ -33,16 +34,19 @@ export default class Workspace extends Asset implements WorkspaceData {
     }
 
     public containsVocabulary(vocabularyIri?: string) {
-        return vocabularyIri && this.vocabularies.find(v => v.iri === vocabularyIri);
+        return (
+            vocabularyIri &&
+            this.vocabularies.find((v) => v.iri === vocabularyIri)
+        );
     }
 
     public toJsonLd(): {} {
-        return Object.assign({}, this, {"@context": CONTEXT});
+        return Object.assign({}, this, { "@context": CONTEXT });
     }
 }
 
 export const EMPTY_WORKSPACE = new Workspace({
     iri: "http://empty",
     label: "",
-    vocabularies: []
+    vocabularies: [],
 });

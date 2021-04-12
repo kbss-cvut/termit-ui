@@ -1,35 +1,34 @@
-import YAML from 'yaml'
+import YAML from "yaml";
 import Routes from "./Routes";
 
 type Component<T = {}> = {
-    name: string
-    url: string
-    meta: T
-}
+    name: string;
+    url: string;
+    meta: T;
+};
 
 type Components = {
-    'al-sgov-server': Component
-    'al-db-server': Component
-    'al-auth-server': Component
-    'al-ontographer': Component<{ 'workspace-path': string }>
-    'al-termit-server': Component
-    'al-termit': Component<{ 'workspace-path': string }>
-    'al-mission-control': Component
-    'al-issue-tracker': Component<{ 'new-bug': string; 'new-feature': string }>
-  }
-
+    "al-sgov-server": Component;
+    "al-db-server": Component;
+    "al-auth-server": Component;
+    "al-ontographer": Component<{ "workspace-path": string }>;
+    "al-termit-server": Component;
+    "al-termit": Component<{ "workspace-path": string }>;
+    "al-mission-control": Component;
+    "al-issue-tracker": Component<{ "new-bug": string; "new-feature": string }>;
+};
 
 /**
  * Aggregated object of process.env and window.__config__ to allow dynamic configuration
  */
 const ENV = {
     ...Object.keys(process.env).reduce<Record<string, string>>((acc, key) => {
-        const strippedKey = key.replace("REACT_APP_", "")
-        acc[strippedKey] = process.env[key]!
-        return acc
+        const strippedKey = key.replace("REACT_APP_", "");
+        acc[strippedKey] = process.env[key]!;
+        return acc;
     }, {}),
     ...(window as any).__config__,
-}
+};
 
 /**
  * Helper to make sure that all envs are defined properly
@@ -37,34 +36,37 @@ const ENV = {
  * @param defaultValue Default variable name
  */
 export const getEnv = (name: string, defaultValue?: string): string => {
-    const value = ENV[name] || defaultValue
+    const value = ENV[name] || defaultValue;
     if (value !== undefined) {
         return value;
     }
     throw new Error(`Missing environment variable: ${name}`);
-}
+};
 
 /**
  * Components configuration
  */
 const COMPONENTS: Components = (() => {
-    const base64String = getEnv("COMPONENTS")
+    const base64String = getEnv("COMPONENTS");
     try {
         // Use TextDecoder interface to properly decode UTF-8 characters
         const yamlString = new TextDecoder("utf-8").decode(
             Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0))
-        )
-        return YAML.parse(yamlString)
+        );
+        return YAML.parse(yamlString);
     } catch (error: any) {
-        throw new Error("Unable to decode COMPONENTS configuration. Error: " + error);
+        throw new Error(
+            "Unable to decode COMPONENTS configuration. Error: " + error
+        );
     }
-})()
+})();
 
 const APP_NAME = "TermIt";
 const API_PREFIX = "/rest";
 const DEFAULT_LANGUAGE = "en";
 const DEPLOYMENT_NAME = getEnv("CONTEXT");
-const DEPLOYMENT_INFIX = DEPLOYMENT_NAME.length > 0 ? DEPLOYMENT_NAME + "-" : "";
+const DEPLOYMENT_INFIX =
+    DEPLOYMENT_NAME.length > 0 ? DEPLOYMENT_NAME + "-" : "";
 const AUTHORIZATION = "authorization";
 
 const constants = {
@@ -73,9 +75,9 @@ const constants = {
     // Will be replaced with actual server url during runtime
     COMPONENTS,
     // Will be replaced with actual server url during runtime
-    SERVER_URL: COMPONENTS['al-termit-server'].url,
+    SERVER_URL: COMPONENTS["al-termit-server"].url,
     // Will be replaced with actual control panel url during runtime
-    CONTROL_PANEL_URL: COMPONENTS['al-mission-control'].url,
+    CONTROL_PANEL_URL: COMPONENTS["al-mission-control"].url,
     // Prefix of the server REST API
     API_PREFIX,
     PUBLIC_API_PREFIX: `${API_PREFIX}/public`,
@@ -156,7 +158,7 @@ const constants = {
     LAST_COMMENTED_ASSET_LIMIT: 5,
 
     SUBMIT_BUTTON_VARIANT: "primary",
-    CANCEL_BUTTON_VARIANT: "outline-primary"
+    CANCEL_BUTTON_VARIANT: "outline-primary",
 } as const;
 
 export default constants;

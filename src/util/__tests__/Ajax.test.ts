@@ -56,7 +56,9 @@ describe("Ajax", () => {
     it("does not add authorization header when no JWT is loaded from localStorage", () => {
         Authentication.loadToken = jest.fn().mockReturnValue(undefined);
         mock.onGet("/users/current").reply((config: AxiosRequestConfig) => {
-            expect(config.headers[Constants.Headers.AUTHORIZATION]).not.toBeDefined();
+            expect(
+                config.headers[Constants.Headers.AUTHORIZATION]
+            ).not.toBeDefined();
             return [200, require("../../rest-mock/current"), headers];
         });
         return sut.get("/users/current");

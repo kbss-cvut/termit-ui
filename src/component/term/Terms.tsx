@@ -1,37 +1,46 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import {Button, Col, Row} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
+import { injectIntl } from "react-intl";
+import { Button, Col, Row } from "reactstrap";
+import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
-import {consumeNotification, selectVocabularyTerm,} from "../../action/SyncActions";
+import {
+  consumeNotification,
+  selectVocabularyTerm,
+} from "../../action/SyncActions";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
 import FetchOptionsFunction from "../../model/Functions";
-import Term, {TermData} from "../../model/Term";
-import {loadTerms, loadUnusedTermsForVocabulary,} from "../../action/AsyncActions";
-import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {GoPlus} from "react-icons/go";
+import Term, { TermData } from "../../model/Term";
+import {
+  loadTerms,
+  loadUnusedTermsForVocabulary,
+} from "../../action/AsyncActions";
+import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import { GoPlus } from "react-icons/go";
 import Utils from "../../util/Utils";
 import AppNotification from "../../model/AppNotification";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
-import {createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge} from "../misc/treeselect/Renderers";
-import {commonTermTreeSelectProps, processTermsForTreeSelect} from "./TermTreeSelectHelper";
-import {Location} from "history";
-import {match as Match} from "react-router";
+import { createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge } from "../misc/treeselect/Renderers";
+import {
+  commonTermTreeSelectProps,
+  processTermsForTreeSelect,
+} from "./TermTreeSelectHelper";
+import { Location } from "history";
+import { match as Match } from "react-router";
 import classNames from "classnames";
 import StatusFilter from "./StatusFilter";
 import TermTypeFrequency from "../statistics/termtypefrequency/TermTypeFrequency";
 import "./Terms.scss";
-import {getLocalized} from "../../model/MultilingualString";
-import {getShortLocale} from "../../util/IntlUtil";
+import { getLocalized } from "../../model/MultilingualString";
+import { getShortLocale } from "../../util/IntlUtil";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -84,25 +93,32 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     };
   }
 
-    public componentDidUpdate(prevProps: GlossaryTermsProps) {
-        if (prevProps.counter < this.props.counter) {
-            this.forceUpdate();
-        }
-        const matchingNotification = this.props.notifications.find(n => Terms.isNotificationRelevant(n) || Utils.generateIsAssetLabelUpdate(VocabularyUtils.TERM)(n));
-        if (this.treeComponent.current) {
-            if (matchingNotification) {
-                this.treeComponent.current.resetOptions();
-                this.props.consumeNotification(matchingNotification);
-            } else if (Utils.didNavigationOccur(prevProps, this.props) && !this.props.isDetailView) {
-                this.treeComponent.current.resetOptions();
-            } else if (this.props.match.params.name !== prevProps.match.params.name) {
-                this.treeComponent.current.resetOptions();
-            }
-            if (prevProps.locale !== this.props.locale) {
-                this.treeComponent.current.forceUpdate();
-            }
-        }
+  public componentDidUpdate(prevProps: GlossaryTermsProps) {
+    if (prevProps.counter < this.props.counter) {
+      this.forceUpdate();
     }
+    const matchingNotification = this.props.notifications.find(
+      (n) =>
+        Terms.isNotificationRelevant(n) ||
+        Utils.generateIsAssetLabelUpdate(VocabularyUtils.TERM)(n)
+    );
+    if (this.treeComponent.current) {
+      if (matchingNotification) {
+        this.treeComponent.current.resetOptions();
+        this.props.consumeNotification(matchingNotification);
+      } else if (
+        Utils.didNavigationOccur(prevProps, this.props) &&
+        !this.props.isDetailView
+      ) {
+        this.treeComponent.current.resetOptions();
+      } else if (this.props.match.params.name !== prevProps.match.params.name) {
+        this.treeComponent.current.resetOptions();
+      }
+      if (prevProps.locale !== this.props.locale) {
+        this.treeComponent.current.forceUpdate();
+      }
+    }
+  }
 
   private static isNotificationRelevant(n: AppNotification) {
     return (
@@ -204,9 +220,11 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
   };
 
-    private onDraftOnlyToggle = () => {
-        this.setState({draft: !this.state.draft}, () => this.treeComponent.current.resetOptions());
-    };
+  private onDraftOnlyToggle = () => {
+    this.setState({ draft: !this.state.draft }, () =>
+      this.treeComponent.current.resetOptions()
+    );
+  };
 
   private onConfirmedOnlyToggle = () => {
     this.setState({ confirmed: !this.state.confirmed }, () =>
@@ -248,53 +266,95 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       )
     );
 
-        const includeImported = this.state.includeImported;
-        const renderIncludeImported = this.props.vocabulary && this.props.vocabulary.dependencies;
+    const includeImported = this.state.includeImported;
+    const renderIncludeImported =
+      this.props.vocabulary && this.props.vocabulary.dependencies;
 
-        return <div id="vocabulary-terms">
-            <div className={classNames({
-                "align-items-center card-header": isDetailView,
-                "mb-2 mt-3": !isDetailView
-            }, "d-flex", "flex-wrap", "justify-content-between", "card-header-basic-info")}>
-                <h4 className={classNames({"mb-0": isDetailView})}>{i18n("glossary.title")}
-                    &nbsp;{(isDetailView && renderIncludeImported) ? <>({this.props.i18n(includeImported ? "glossary.importedIncluded" : "glossary.importedExcluded")})</> : <></>}
-                </h4>
-                {!isDetailView && <Button
-                    id="terms-create"
-                    color="primary"
-                    title={i18n("glossary.createTerm.tooltip")}
-                    size="sm"
-                    onClick={this.onCreateClick}><GoPlus/>&nbsp;{i18n("glossary.new")}
-                </Button>
-                }
-                {isDetailView && this.renderDraftOnly()}
-            </div>
-            <div id="glossary-list" className={classNames({"card-header": isDetailView})}>
-                <Row>
-                    <Col lg={isDetailView ? 12 : 9} md={12}>
-                        {!isDetailView && this.renderDraftOnly()}
-                        <IntelligentTreeSelect
-                            ref={this.treeComponent}
-                            clearable={!isDetailView}
-                            onChange={this.onTermSelect}
-                            value={this.props.selectedTerms ? this.props.selectedTerms.iri : null}
-                            fetchOptions={this.fetchOptions}
-                            isMenuOpen={true}
-                            scrollMenuIntoView={false}
-                            multi={false}
-                            maxHeight={Utils.calculateAssetListHeight()}
-                            optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(unusedTerms, this.props.vocabulary.iri, this.props.showTermQualityBadge)}
-                            valueRenderer={(option: Term) => getLocalized(option.label, getShortLocale(this.props.locale))}
-                            {...commonTermTreeSelectProps(this.props)}
-                        />
-                    </Col>
-                    {!isDetailView && <Col lg={3} className="term-type-frequency">
-                        <TermTypeFrequency vocabularyIri={this.props.vocabulary.iri}/>
-                    </Col>}
-                </Row>
-            </div>
+    return (
+      <div id="vocabulary-terms">
+        <div
+          className={classNames(
+            {
+              "align-items-center card-header": isDetailView,
+              "mb-2 mt-3": !isDetailView,
+            },
+            "d-flex",
+            "flex-wrap",
+            "justify-content-between",
+            "card-header-basic-info"
+          )}
+        >
+          <h4 className={classNames({ "mb-0": isDetailView })}>
+            {i18n("glossary.title")}
+            &nbsp;
+            {isDetailView && renderIncludeImported ? (
+              <>
+                (
+                {this.props.i18n(
+                  includeImported
+                    ? "glossary.importedIncluded"
+                    : "glossary.importedExcluded"
+                )}
+                )
+              </>
+            ) : (
+              <></>
+            )}
+          </h4>
+          {!isDetailView && (
+            <Button
+              id="terms-create"
+              color="primary"
+              title={i18n("glossary.createTerm.tooltip")}
+              size="sm"
+              onClick={this.onCreateClick}
+            >
+              <GoPlus />
+              &nbsp;{i18n("glossary.new")}
+            </Button>
+          )}
+          {isDetailView && this.renderDraftOnly()}
         </div>
-    }
+        <div
+          id="glossary-list"
+          className={classNames({ "card-header": isDetailView })}
+        >
+          <Row>
+            <Col lg={isDetailView ? 12 : 9} md={12}>
+              {!isDetailView && this.renderDraftOnly()}
+              <IntelligentTreeSelect
+                ref={this.treeComponent}
+                clearable={!isDetailView}
+                onChange={this.onTermSelect}
+                value={
+                  this.props.selectedTerms ? this.props.selectedTerms.iri : null
+                }
+                fetchOptions={this.fetchOptions}
+                isMenuOpen={true}
+                scrollMenuIntoView={false}
+                multi={false}
+                maxHeight={Utils.calculateAssetListHeight()}
+                optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(
+                  unusedTerms,
+                  this.props.vocabulary.iri,
+                  this.props.showTermQualityBadge
+                )}
+                valueRenderer={(option: Term) =>
+                  getLocalized(option.label, getShortLocale(this.props.locale))
+                }
+                {...commonTermTreeSelectProps(this.props)}
+              />
+            </Col>
+            {!isDetailView && (
+              <Col lg={3} className="term-type-frequency">
+                <TermTypeFrequency vocabularyIri={this.props.vocabulary.iri} />
+              </Col>
+            )}
+          </Row>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default connect(

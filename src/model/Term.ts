@@ -36,8 +36,26 @@ export const CONTEXT = Object.assign(
     BASE_OCCURRENCE_CONTEXT
 );
 
-const MAPPED_PROPERTIES = ["@context", "iri", "label", "altLabels", "hiddenLabels", "scopeNote", "definition",
-    "subTerms", "sources", "types", "parentTerms", "parent", "plainSubTerms", "vocabulary", "glossary", "definitionSource", "draft", "published"];
+const MAPPED_PROPERTIES = [
+    "@context",
+    "iri",
+    "label",
+    "altLabels",
+    "hiddenLabels",
+    "scopeNote",
+    "definition",
+    "subTerms",
+    "sources",
+    "types",
+    "parentTerms",
+    "parent",
+    "plainSubTerms",
+    "vocabulary",
+    "glossary",
+    "definitionSource",
+    "draft",
+    "published",
+];
 
 export const TERM_MULTILINGUAL_ATTRIBUTES = [
     "label",
@@ -145,7 +163,9 @@ export default class Term extends Asset implements TermData {
             if (withoutParents) {
                 result.parentTerms = undefined;
             } else {
-                result.parentTerms = result.parentTerms.map((pt: Term) => pt.toTermData(true));
+                result.parentTerms = result.parentTerms.map((pt: Term) =>
+                    pt.toTermData(true)
+                );
             }
         }
         if (result.definitionSource) {
