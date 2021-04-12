@@ -1,5 +1,5 @@
 import Authentication from "../../util/Authentication";
-import {logout} from "../ComplexActions";
+import { logout } from "../ComplexActions";
 import configureMockStore from "redux-mock-store";
 import thunk, {ThunkDispatch} from "redux-thunk";
 import {Action} from "redux";
@@ -16,7 +16,6 @@ jest.mock("../../util/Keycloak", () => ({
 const mockStore = configureMockStore([thunk]);
 
 describe("Complex actions", () => {
-
     describe("logout", () => {
         it("invokes authentication logout in order to invalidate authentication token", () => {
             Authentication.clearToken = jest.fn();
@@ -26,7 +25,9 @@ describe("Complex actions", () => {
 
         it("dispatches logout action to store", () => {
             const store = mockStore({});
-            (store.dispatch as ThunkDispatch<object, undefined, Action>)(logout());
+            (store.dispatch as ThunkDispatch<object, undefined, Action>)(
+                logout()
+            );
             expect(store.getActions()[0]).toEqual(userLogout());
         });
 

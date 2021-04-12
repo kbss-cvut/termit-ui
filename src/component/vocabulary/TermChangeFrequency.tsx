@@ -1,36 +1,41 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
-import {injectIntl} from "react-intl";
-import {loadVocabularyContentChanges} from "../../action/AsyncActions";
-import {ThunkDispatch} from "../../util/Types";
-import {connect} from "react-redux";
+import { loadVocabularyContentChanges } from "../../action/AsyncActions";
+import { ThunkDispatch } from "../../util/Types";
+import { connect } from "react-redux";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import TermChangeFrequencyUI from "./TermChangeFrequencyUI";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Constants from "../../util/Constants";
 
-interface TermChangeFrequencyProps extends HasI18n {
-    vocabulary: Vocabulary;
-    loadContentChanges: (vocabulary: Vocabulary) => Promise<any>;
+interface TermChangeFrequencyProps {
+  vocabulary: Vocabulary;
+  loadContentChanges: (vocabulary: Vocabulary) => Promise<any>;
 }
 
-export const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = props => {
-    const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
-    const {vocabulary, loadContentChanges} = props;
-    React.useEffect(() => {
-        if (vocabulary.iri !== Constants.EMPTY_ASSET_IRI) {
-            loadContentChanges(vocabulary).then(recs => setRecords(recs));
-        }
-    }, [vocabulary, loadContentChanges]);
+export const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (
+  props
+) => {
+  const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
+  const { vocabulary, loadContentChanges } = props;
+  React.useEffect(() => {
+    if (vocabulary.iri !== Constants.EMPTY_ASSET_IRI) {
+      loadContentChanges(vocabulary).then((recs) => setRecords(recs));
+    }
+  }, [vocabulary, loadContentChanges]);
 
-    return <>
-        <TermChangeFrequencyUI records={(records || [])}/>
-    </>;
-}
+  return (
+    <>
+      <TermChangeFrequencyUI records={records || []} />
+    </>
+  );
+};
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
-    return {
-        loadContentChanges: (vocabulary: Vocabulary) => dispatch(loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri))),
-    };
-})(injectIntl(withI18n(TermChangeFrequency)));
+  return {
+    loadContentChanges: (vocabulary: Vocabulary) =>
+      dispatch(
+        loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri))
+      ),
+  };
+})(TermChangeFrequency);

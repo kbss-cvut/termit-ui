@@ -3,7 +3,6 @@ import {injectIntl} from "react-intl";
 import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Card, CardBody, Col, Label, Row} from "reactstrap";
 import Term from "../../model/Term";
-import "./TermMetadata.scss";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import TermAssignments from "./TermAssignments";
 import Tabs from "../misc/Tabs";
@@ -12,7 +11,6 @@ import BasicTermMetadata from "./BasicTermMetadata";
 import Vocabulary from "../../model/Vocabulary";
 import {RouteComponentProps, withRouter} from "react-router";
 import Terms from "./Terms";
-import Comments from "../comment/Comments";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import DraftToggle from "./DraftToggle";
 import {connect} from "react-redux";
@@ -22,6 +20,8 @@ import TermStatus from "../../model/TermStatus";
 import {setTermStatus} from "../../action/AsyncTermActions";
 import ValidationResults from "./validation/ValidationResults";
 import Utils from "../../util/Utils";
+import Comments from "../comment/Comments";
+import "./TermMetadata.scss";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
     term: Term;
@@ -33,60 +33,81 @@ interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
 }
 
 interface TermMetadataState {
-    activeTab: string;
-    assignmentsCount: number | null;
-    displayTerms: boolean;
+  activeTab: string;
+  assignmentsCount: number | null;
+  commentsCount: number | null;
+  displayTerms: boolean;
 }
 
 const DISPLAY_TERMS_WIDTH_BREAKPOINT = 1366;
 
-export class TermMetadata extends React.Component<TermMetadataProps, TermMetadataState> {
-
-    constructor(props: TermMetadataProps) {
-        super(props);
-        this.state = {
-            activeTab:  "properties.edit.title",
-            assignmentsCount: null,
-            displayTerms: window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT
-        };
-    }
-
-    public componentDidMount() {
-        window.addEventListener("resize", this.handleResize);
-        this.updateTabFromUrlIfAny();
-    }
-
-    public componentDidUpdate(prevProps : TermMetadataProps, prevState: TermMetadataState) {
-        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
-        if ( this.state.activeTab === prevState.activeTab && this.state.activeTab !== activeTabFromUrl && activeTabFromUrl ) {
-            this.onTabSelect(activeTabFromUrl);
-        }
-    }
-
-    private updateTabFromUrlIfAny() {
-        const activeTabFromUrl = Utils.extractQueryParam(this.props.location.search, "activeTab")
-        if ( this.state.activeTab !== activeTabFromUrl && activeTabFromUrl ) {
-            this.onTabSelect(activeTabFromUrl);
-        }
-    }
-
-    public componentWillUnmount() {
-        window.removeEventListener("resize", this.handleResize);
-    }
-
-    private handleResize = () => {
-        const displayTerms = window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT;
-        if (displayTerms !== this.state.displayTerms) {
-            this.setState({displayTerms})
-        }
+export class TermMetadata extends React.Component<
+  TermMetadataProps,
+  TermMetadataState
+> {
+  constructor(props: TermMetadataProps) {
+    super(props);
+    this.state = {
+      activeTab: "term.metadata.assignments.title",
+      assignmentsCount: null,
+      commentsCount: null,
+      displayTerms: window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT,
     };
+  }
 
-    private onTabSelect = (tabId: string) => {
-        this.setState({activeTab: tabId});
-    };
+  public componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
+    this.updateTabFromUrlIfAny();
+  }
 
-    private setAssignmentsCount = (assignmentsCount: number) => {
-        this.setState({assignmentsCount});
+  public componentDidUpdate(
+    prevProps: TermMetadataProps,
+    prevState: TermMetadataState
+  ) {
+    const activeTabFromUrl = Utils.extractQueryParam(
+      this.props.location.search,
+      "activeTab"
+    );
+    if (
+      this.state.activeTab === prevState.activeTab &&
+      this.state.activeTab !== activeTabFromUrl &&
+      activeTabFromUrl
+    ) {
+      this.onTabSelect(activeTabFromUrl);
+    }
+  }
+
+  private updateTabFromUrlIfAny() {
+    const activeTabFromUrl = Utils.extractQueryParam(
+      this.props.location.search,
+      "activeTab"
+    );
+    if (this.state.activeTab !== activeTabFromUrl && activeTabFromUrl) {
+      this.onTabSelect(activeTabFromUrl);
+    }
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+  }
+
+  private handleResize = () => {
+    const displayTerms = window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT;
+    if (displayTerms !== this.state.displayTerms) {
+      this.setState({ displayTerms });
+    }
+  };
+
+  private onTabSelect = (tabId: string) => {
+    this.setState({ activeTab: tabId });
+  };
+
+  private setAssignmentsCount = (assignmentsCount: number) => {
+    this.setState({ assignmentsCount });
+  };
+
+    private setCommentsCount = (commentsCount: number) => {
+        this.setState({ commentsCount });
     };
 
     public onToggleDraft = () => {
@@ -135,6 +156,10 @@ export class TermMetadata extends React.Component<TermMetadataProps, TermMetadat
                                         "term.metadata.validation.title": <ValidationResults term={term}/>
                                     }} tabBadges={{
                                         "properties.edit.title": term.unmappedProperties.size.toFixed(),
+                                        "comments.title":
+                                            this.state.commentsCount !== null
+                                                ? this.state.commentsCount.toFixed()
+                                                : null,
                                         "term.metadata.assignments.title": this.state.assignmentsCount !== null ? this.state.assignmentsCount.toFixed() : null,
                                     }}/>
                                 </CardBody>

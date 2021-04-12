@@ -2,57 +2,52 @@ import ErrorInfo from "../model/ErrorInfo";
 import Message from "../model/Message";
 import AsyncActionStatus from "./AsyncActionStatus";
 import Term from "../model/Term";
-import {Action} from "redux";
+import { Action } from "redux";
 import SearchResult from "../model/SearchResult";
 import AppNotification from "../model/AppNotification";
 
 export interface AsyncAction extends Action {
     status: AsyncActionStatus;
-    ignoreLoading?: boolean;    // Allows to prevent loading spinner display on async action
+    ignoreLoading?: boolean; // Allows to prevent loading spinner display on async action
 }
 
 export interface FailureAction extends Action {
-    error: ErrorInfo
+    error: ErrorInfo;
 }
 
-export interface AsyncFailureAction extends AsyncAction, FailureAction {
-}
+export interface AsyncFailureAction extends AsyncAction, FailureAction {}
 
 export interface AsyncActionSuccess<T> extends AsyncAction {
     payload: T;
 }
 
 export interface MessageAction extends Action {
-    message: Message
+    message: Message;
 }
 
 export interface SwitchLanguageAction extends Action {
-    language: string
+    language: string;
 }
 
 export interface SelectingTermsAction extends Action {
-    selectedTerms: Term | null
+    selectedTerms: Term | null;
 }
 
 export interface ExecuteQueryAction extends AsyncAction {
-    queryString: string,
-    queryResult: object
+    queryString: string;
+    queryResult: object;
 }
 
 export interface FacetedSearchAction extends AsyncAction {
-    payload: object
-}
-
-export interface FileSelectingAction extends Action {
-    fileIri: string | null
+    payload: object;
 }
 
 export interface SearchAction extends Action {
-    searchString: string
+    searchString: string;
 }
 
 export interface SearchResultAction extends Action {
-    searchResults: SearchResult[]
+    searchResults: SearchResult[];
 }
 
 export interface NotificationAction extends Action {
@@ -109,7 +104,8 @@ const ActionType = {
     UPDATE_TERM: "UPDATE_TERM",
     LOAD_TERM_ASSIGNMENTS: "LOAD_TERM_ASSIGNMENTS",
     LOAD_RELATED_TERMS: "LOAD_RELATED_TERMS",
-    LOAD_DEFINITION_RELATED_TERMS_TARGETING: "LOAD_DEFINITION_RELATED_TERMS_TARGETING",
+    LOAD_DEFINITION_RELATED_TERMS_TARGETING:
+        "LOAD_DEFINITION_RELATED_TERMS_TARGETING",
     LOAD_DEFINITION_RELATED_TERMS_OF: "LOAD_DEFINITION_RELATED_TERMS_OF",
     REMOVE_VOCABULARY_TERM: "REMOVE_VOCABULARY_TERM",
     SET_TERM_STATUS: "SET_TERM_STATUS",
@@ -157,8 +153,10 @@ const ActionType = {
     EXECUTE_FILE_TEXT_ANALYSIS: "EXECUTE_FILE_TEXT_ANALYSIS",
     LOAD_LATEST_TEXT_ANALYSIS_RECORD: "LOAD_LATEST_TEXT_ANALYSIS_RECORD",
     EXECUTE_TEXT_ANALYSIS_ON_DEFINITION: "EXECUTE_TEXT_ANALYSIS_ON_DEFINITION",
-    EXECUTE_TEXT_ANALYSIS_ON_ALL_DEFINITIONS: "EXECUTE_TEXT_ANALYSIS_ON_ALL_DEFINITIONS",
-    EXECUTE_TEXT_ANALYSIS_ON_ALL_VOCABULARIES: "EXECUTE_TEXT_ANALYSIS_ON_ALL_VOCABULARIES",
+    EXECUTE_TEXT_ANALYSIS_ON_ALL_DEFINITIONS:
+        "EXECUTE_TEXT_ANALYSIS_ON_ALL_DEFINITIONS",
+    EXECUTE_TEXT_ANALYSIS_ON_ALL_VOCABULARIES:
+        "EXECUTE_TEXT_ANALYSIS_ON_ALL_VOCABULARIES",
 
     GET_LABEL: "GET_LABEL",
     GET_RESOURCE: "GET_RESOURCE",
@@ -170,6 +168,11 @@ const ActionType = {
 
     LOAD_MY: "LOAD_MY",
     LOAD_LAST_EDITED: "LOAD_LAST_EDITED",
+    LOAD_LAST_COMMENTED: "LOAD_LAST_COMMENTED",
+    LOAD_LAST_COMMENTED_IN_REACTION_TO_MINE:
+        "LOAD_LAST_COMMENTED_IN_REACTION_TO_MINE",
+    LOAD_LAST_COMMENTED_BY_ME: "LOAD_LAST_COMMENTED_BY_ME",
+    LOAD_MY_LAST_COMMENTED: "LOAD_MY_LAST_COMMENTED",
 
     TOGGLE_SIDEBAR: "TOGGLE_SIDEBAR",
     DESKTOP_VIEW: "DESKTOP_VIEW",

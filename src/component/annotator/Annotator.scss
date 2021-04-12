@@ -1,0 +1,37 @@
+.legend {
+  opacity: 0.9;
+  display: inline-block;
+  position: fixed !important;
+  bottom: 120px;
+  right: 15px;
+  width: 230px;
+  margin-right: 0.5rem;
+  background-color: whitesmoke;
+}
+
+.legend-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.legend-button {
+  position: fixed !important;
+  bottom: 80px;
+  right: 15px;
+  float: right;
+  min-width: 8.75rem;
+}
+
+.analyze-button {
+  position: fixed !important;
+  bottom: 40px;
+  right: 15px;
+  float: right;
+  min-width: 8.75rem;
+}
+
+.legend-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}

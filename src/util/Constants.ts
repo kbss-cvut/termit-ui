@@ -17,7 +17,7 @@ type Components = {
     'al-mission-control': Component
     'al-issue-tracker': Component<{ 'new-bug': string; 'new-feature': string }>
   }
-  
+
 
 /**
  * Aggregated object of process.env and window.__config__ to allow dynamic configuration
@@ -89,13 +89,13 @@ const constants = {
         CS: {
             locale: "cs-CZ",
             label: "Čestina",
-            flag: "flags/cz.svg"
+            flag: "flags/cz.svg",
         },
         EN: {
             locale: DEFAULT_LANGUAGE,
             label: "English",
-            flag: "flags/gb.svg"
-        }
+            flag: "flags/gb.svg",
+        },
     },
     DEFAULT_LANGUAGE,
     // Error origin caused by the inability to connect to the backend server
@@ -106,8 +106,9 @@ const constants = {
     HTML_MIME_TYPE: "text/html",
     CSV_MIME_TYPE: "text/csv",
     TTL_MIME_TYPE: "text/turtle",
-    EXCEL_MIME_TYPE: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    X_WWW_FORM_URLENCODED: "application/x-www-form-urlencoded",
+    EXCEL_MIME_TYPE:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    X_WWW_FORM_URLENCODED: "application/x-www-form-urlencoded;charset=UTF-8",
     MULTIPART_FORM_DATA: "multipart/form-data",
     // HTTP response status 401 Unauthorized
     STATUS_UNAUTHORIZED: 401,
@@ -123,7 +124,7 @@ const constants = {
         CONTENT_TYPE: "content-type",
         IF_MODIFIED_SINCE: "if-modified-since",
         LAST_MODIFIED: "last-modified",
-        LOCATION: "location"
+        LOCATION: "location",
     },
     STORAGE_JWT_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}${AUTHORIZATION}`,
     STORAGE_LANG_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}LANG`,
@@ -136,21 +137,23 @@ const constants = {
 
     // News
     NEWS_MD_URL: {
-        "cs": window.location.origin + window.location.pathname + "NEWS.cs.md",
-        "en": window.location.origin + window.location.pathname + "NEWS.en.md",
+        cs: window.location.origin + window.location.pathname + "NEWS.cs.md",
+        en: window.location.origin + window.location.pathname + "NEWS.en.md",
     },
 
     // Wallpaper: ~60% color saturation + some blur (~4px radius) + JPEG compression to <150KB.
     // LAYOUT_WALLPAPER: null,
     // LAYOUT_WALLPAPER: "/background/Magnetic_Termite_Mounds.small-blur.jpg",
     // LAYOUT_WALLPAPER_POSITION: "center center", // CSS background-position property
-    LAYOUT_WALLPAPER: "background/people-on-the-bridge-with-cityscape-in-prague-czech-republic.small-blur.jpg",
+    LAYOUT_WALLPAPER:
+        "background/people-on-the-bridge-with-cityscape-in-prague-czech-republic.small-blur.jpg",
 
     // Navbar background when LAYOUT_WALLPAPER is in use
     LAYOUT_WALLPAPER_NAVBAR_BACKGROUND_IS_LIGHT: false,
     LAYOUT_WALLPAPER_NAVBAR_BACKGROUND: "rgba(0,0,0,0.2)",
 
     EMPTY_ASSET_IRI: "http://empty",
+    LAST_COMMENTED_ASSET_LIMIT: 5,
 
     SUBMIT_BUTTON_VARIANT: "primary",
     CANCEL_BUTTON_VARIANT: "outline-primary"

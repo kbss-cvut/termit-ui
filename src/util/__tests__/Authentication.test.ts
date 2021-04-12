@@ -1,10 +1,9 @@
 import Authentication from "../Authentication";
 import Constants from "../Constants";
-import {EMPTY_USER} from "../../model/User";
+import { EMPTY_USER } from "../../model/User";
 import Generator from "../../__tests__/environment/Generator";
 
 describe("Authentication", () => {
-
     const jwt = "jwt12345";
 
     beforeEach(() => {
@@ -13,7 +12,10 @@ describe("Authentication", () => {
 
     it("saves JWT into local storage on saveJwt", () => {
         Authentication.saveToken(jwt);
-        expect(localStorage.setItem).toHaveBeenCalledWith(Constants.STORAGE_JWT_KEY, jwt);
+        expect(localStorage.setItem).toHaveBeenCalledWith(
+            Constants.STORAGE_JWT_KEY,
+            jwt
+        );
     });
 
     it("loads JWT from local storage", () => {
@@ -29,7 +31,9 @@ describe("Authentication", () => {
     it("clears local storage on clearJwt", () => {
         localStorage.__STORE__[Constants.STORAGE_JWT_KEY] = jwt;
         Authentication.clearToken();
-        expect(localStorage.__STORE__[Constants.STORAGE_JWT_KEY]).not.toBeDefined();
+        expect(
+            localStorage.__STORE__[Constants.STORAGE_JWT_KEY]
+        ).not.toBeDefined();
     });
 
     describe("isLoggedIn", () => {
@@ -40,7 +44,9 @@ describe("Authentication", () => {
         });
 
         it("returns true for non-empty user", () => {
-            expect(Authentication.isLoggedIn(Generator.generateUser())).toBeTruthy();
+            expect(
+                Authentication.isLoggedIn(Generator.generateUser())
+            ).toBeTruthy();
         });
     });
 });

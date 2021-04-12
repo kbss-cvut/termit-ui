@@ -1,7 +1,8 @@
-import { TextDecoder } from 'util'
+import { TextDecoder } from "util";
 import "jest-localstorage-mock";
-import {configure} from "enzyme";
+import { configure } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import enableHooks from "jest-react-hooks-shallow";
 
 configure({ adapter: new Adapter() });
 
@@ -16,7 +17,13 @@ configure({ adapter: new Adapter() });
     setStart: () => {},
     setEnd: () => {},
     commonAncestorContainer: {
-        nodeName: 'BODY',
+        nodeName: "BODY",
         ownerDocument: document,
     },
 });
+
+enableHooks(jest, { dontMockByDefault: true });
+
+process.env.REACT_APP_VERSION = "0.0.1";
+process.env.REACT_APP_SERVER_URL = "http://localhost:8080/termit";
+process.env.REACT_APP_DEPLOYMENT_NAME = "";

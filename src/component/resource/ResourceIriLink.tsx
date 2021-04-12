@@ -1,14 +1,13 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {Routing} from "../../util/Routing";
+import { Routing } from "../../util/Routing";
 import Routes from "../../util/Routes";
 import AssetIriLink from "../misc/AssetIriLink";
-import {injectIntl} from "react-intl";
+import { useI18n } from "../hook/useI18n";
 
-interface ResourceIriLinkProps extends HasI18n {
-    iri: string;
-    id?: string;
+interface ResourceIriLinkProps {
+  iri: string;
+  id?: string;
 }
 
 /**
@@ -16,14 +15,22 @@ interface ResourceIriLinkProps extends HasI18n {
  *
  * The link will fetch the corresponding label and display it.
  */
-const ResourceIriLink: React.FC<ResourceIriLinkProps> = (props: ResourceIriLinkProps) => {
-    const iri = VocabularyUtils.create(props.iri);
-    const path = Routing.getTransitionPath(Routes.resourceSummary,
-        {
-            params: new Map([["name", iri.fragment]]),
-            query: new Map([["namespace", iri.namespace!]])
-        });
-    return <AssetIriLink assetIri={iri.toString()} path={path} tooltip={props.i18n("asset.link.tooltip")}/>;
+const ResourceIriLink: React.FC<ResourceIriLinkProps> = (
+  props: ResourceIriLinkProps
+) => {
+  const { i18n } = useI18n();
+  const iri = VocabularyUtils.create(props.iri);
+  const path = Routing.getTransitionPath(Routes.resourceSummary, {
+    params: new Map([["name", iri.fragment]]),
+    query: new Map([["namespace", iri.namespace!]]),
+  });
+  return (
+    <AssetIriLink
+      assetIri={iri.toString()}
+      path={path}
+      tooltip={i18n("asset.link.tooltip")}
+    />
+  );
 };
 
-export default injectIntl(withI18n(ResourceIriLink));
+export default ResourceIriLink;

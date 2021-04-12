@@ -17,53 +17,66 @@
 */
 
 import React from "react";
-import {NavLink as NavLinkRRD} from "react-router-dom";
-import {Collapse, Container, Form, Nav, Navbar, NavbarBrand, NavItem, NavLink,} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {RouteComponentProps, withRouter} from "react-router";
+import { NavLink as NavLinkRRD } from "react-router-dom";
+import {
+  Collapse,
+  Container,
+  Form,
+  Nav,
+  Navbar,
+  NavbarBrand,
+  NavItem,
+  NavLink,
+} from "reactstrap";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import { RouteComponentProps, withRouter } from "react-router";
 import Routes from "../../util/Routes";
-import {injectIntl} from "react-intl";
-import {IfGranted} from "react-authorization";
+import { injectIntl } from "react-intl";
+import { IfGranted } from "react-authorization";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import classNames from "classnames";
 import Constants from "../../util/Constants";
-import {ThunkDispatch} from "../../util/Types";
+import { ThunkDispatch } from "../../util/Types";
 import NavbarSearch from "../search/label/NavbarSearch";
-import {toggleSidebar} from "../../action/SyncActions";
+import { toggleSidebar } from "../../action/SyncActions";
 import UserDropdown from "../misc/UserDropdown";
 import "./Sidebar.scss";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
 
 export interface SidebarProps extends HasI18n, RouteComponentProps<any> {
-    user: User;
-    toggleSidebar: () => void;
-    sidebarExpanded: boolean;
-    desktopView: boolean;
+  user: User;
+  toggleSidebar: () => void;
+  sidebarExpanded: boolean;
+  desktopView: boolean;
 }
 
 export interface SidebarState {
-    collapseOpen: boolean;
+  collapseOpen: boolean;
 }
 
 export interface NavLinkRoute {
-    path: string,
-    name: string,
-    icon: string,
-    supIcon?: string,
-    adminRoute?: boolean
+  path: string;
+  name: string;
+  icon: string;
+  supIcon?: string;
+  adminRoute?: boolean;
 }
 
-const mainNavRoutes: NavLinkRoute[] = [{
+const mainNavRoutes: NavLinkRoute[] = [
+  {
     path: Routes.dashboard.path,
     name: "main.nav.dashboard",
-    icon: "fas fa-home"
-}, {
+    icon: "fas fa-home",
+  },
+  {
     path: Routes.vocabularies.path,
     name: "main.nav.vocabularies",
-    icon: "fas fa-book"
-}, {
+    icon: "fas fa-book",
+  },
+  {
     path: Routes.resources.path,
     name: "main.nav.resources",
     icon: "fas fa-clipboard"
@@ -74,84 +87,95 @@ const createNewNavRoutes: NavLinkRoute[] = [{
 }];
 
 export class Sidebar extends React.Component<SidebarProps, SidebarState> {
-    constructor(props: SidebarProps) {
-        super(props);
-        this.state = {
-            collapseOpen: false
-        };
+  constructor(props: SidebarProps) {
+    super(props);
+    this.state = {
+      collapseOpen: false,
+    };
+  }
+
+  protected activeRoute = (path: NavLinkRoute["path"]): string => {
+    if (path === Routes.dashboard.path) {
+      return this.props.location.pathname === Routes.dashboard.path
+        ? "active"
+        : "";
     }
+    return this.props.location.pathname.startsWith(path) ? "active" : "";
+  };
 
-    protected activeRoute = (path: NavLinkRoute["path"]): string => {
-        if (path === Routes.dashboard.path) {
-            return this.props.location.pathname === Routes.dashboard.path ? "active" : "";
-        }
-        return this.props.location.pathname.startsWith(path) ? "active" : "";
-    };
+  // toggles collapse between opened and closed (mobile menu)
+  protected toggleCollapse = (): void => {
+    this.setState({
+      collapseOpen: !this.state.collapseOpen,
+    });
+  };
 
-    // toggles collapse between opened and closed (mobile menu)
-    protected toggleCollapse = (): void => {
-        this.setState({
-            collapseOpen: !this.state.collapseOpen
-        });
-    };
+  protected closeCollapse = (): void => {
+    this.setState({
+      collapseOpen: false,
+    });
+  };
 
-    protected closeCollapse = (): void => {
-        this.setState({
-            collapseOpen: false
-        });
-    };
+  protected createActionLinks = (routes: NavLinkRoute[]): JSX.Element[] => {
+    const { i18n, sidebarExpanded, desktopView } = this.props;
+    return routes.map((route, key) => {
+      return (
+        <NavItem key={key}>
+          <NavLink
+            to={route.path}
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName=""
+            className={classNames({ "sup-icon-margin-fix": route.supIcon })}
+          >
+            <i className={route.icon}>
+              {route.supIcon && (
+                <sup className={`${route.supIcon} fa-xs sup-icon`} />
+              )}
+            </i>
+            {(sidebarExpanded || !desktopView) && i18n(route.name)}
+          </NavLink>
+        </NavItem>
+      );
+    });
+  };
 
-    protected createActionLinks = (routes: NavLinkRoute[]): JSX.Element[] => {
-        const {i18n, sidebarExpanded, desktopView} = this.props;
-        return routes.map((route, key) => {
-            return (
-                <NavItem key={key}>
-                    <NavLink
-                        to={route.path}
-                        tag={NavLinkRRD}
-                        onClick={this.closeCollapse}
-                        activeClassName=""
-                        className={classNames({"sup-icon-margin-fix": route.supIcon})}
-                    >
-                        <i className={route.icon}>
-                            {route.supIcon && <sup className={`${route.supIcon} fa-xs sup-icon`}/>}
-                        </i>
-                        {(sidebarExpanded || !desktopView) && i18n(route.name)}
-                    </NavLink>
-                </NavItem>
-            );
-        });
-    };
+  protected createLinks = (routes: NavLinkRoute[]): JSX.Element[] => {
+    const { i18n, sidebarExpanded, user, desktopView } = this.props;
 
-    protected createLinks = (routes: NavLinkRoute[]): JSX.Element[] => {
-        const {i18n, sidebarExpanded, user, desktopView} = this.props;
+    return routes.map((route, key) => {
+      const navItem = (
+        <NavItem key={key}>
+          <NavLink
+            to={route.path}
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName={this.activeRoute(route.path)}
+          >
+            <i className={route.icon} />
+            {(sidebarExpanded || !desktopView) && i18n(route.name)}
+          </NavLink>
+        </NavItem>
+      );
 
-        return routes.map((route, key) => {
-            const navItem = (
-                <NavItem key={key}>
-                    <NavLink
-                        to={route.path}
-                        tag={NavLinkRRD}
-                        onClick={this.closeCollapse}
-                        activeClassName={this.activeRoute(route.path)}
-                    >
-                        <i className={route.icon}/>
-                        {(sidebarExpanded || !desktopView) && i18n(route.name)}
-                    </NavLink>
-                </NavItem>
-            );
+      if (route.adminRoute) {
+        return (
+          <IfGranted
+            key={key}
+            expected={VocabularyUtils.USER_ADMIN}
+            actual={user.types}
+          >
+            {navItem}
+          </IfGranted>
+        );
+      }
 
-            if (route.adminRoute) {
-                return <IfGranted key={key} expected={VocabularyUtils.USER_ADMIN}
-                                  actual={user.types}>{navItem}</IfGranted>;
-            }
+      return navItem;
+    });
+  };
 
-            return navItem;
-        });
-    };
-
-    public render() {
-        const {sidebarExpanded, desktopView} = this.props;
+  public render() {
+    const { sidebarExpanded, desktopView } = this.props;
 
         return (
             <Navbar expand="md" id="sidenav-main"
@@ -179,19 +203,28 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                         </NavbarBrand>}
 
 
-                        {/* Toggler desktop */}
-                        {desktopView && <div className="menu-collapse d-inline-flex align-items-center"
-                                             onClick={this.props.toggleSidebar} id="toggler">
-                            {sidebarExpanded && <i className="fas fa-chevron-left fa-xs"/>}
-                            <i className="fas fa-bars fa-lg line-height-1"/>
-                            {!sidebarExpanded && <i className="fas fa-chevron-right fa-xs"/>}
-                        </div>}
-                    </div>
+            {/* Toggler desktop */}
+            {desktopView && (
+              <div
+                className="menu-collapse d-inline-flex align-items-center"
+                onClick={this.props.toggleSidebar}
+                id="toggler"
+              >
+                {sidebarExpanded && <i className="fas fa-chevron-left fa-xs" />}
+                <i className="fas fa-bars fa-lg line-height-1" />
+                {!sidebarExpanded && (
+                  <i className="fas fa-chevron-right fa-xs" />
+                )}
+              </div>
+            )}
+          </div>
 
-                    {/* User phone */}
-                    {!desktopView && <Nav className="align-items-center" id="dropdown">
-                        <UserDropdown dark={true}/>
-                    </Nav>}
+          {/* User phone */}
+          {!desktopView && (
+            <Nav className="align-items-center" id="dropdown">
+              <UserDropdown dark={true} />
+            </Nav>
+          )}
 
                     {/* Collapse */}
                     <Collapse navbar={true} isOpen={this.state.collapseOpen} className="no-before-after">
@@ -205,48 +238,60 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                                 {Constants.APP_NAME}
                             </NavbarBrand>
 
-                            {/* Close button X */}
-                            <button
-                                className="navbar-toggler"
-                                type="button"
-                                onClick={this.toggleCollapse}>
-                                <span/><span/>
-                            </button>
-                        </div>}
+                {/* Close button X */}
+                <button
+                  className="navbar-toggler"
+                  type="button"
+                  onClick={this.toggleCollapse}
+                >
+                  <span />
+                  <span />
+                </button>
+              </div>
+            )}
 
-                        {/* Search mobile */}
-                        {!desktopView && <Form className="mt-4 mb-3">
-                            <NavbarSearch navbar={false} closeCollapse={this.closeCollapse}/>
-                        </Form>}
+            {/* Search mobile */}
+            {!desktopView && (
+              <Form className="mt-4 mb-3">
+                <NavbarSearch
+                  navbar={false}
+                  closeCollapse={this.closeCollapse}
+                />
+              </Form>
+            )}
 
-                        <hr className="mb-2 mt-0"/>
+            <hr className="mb-2 mt-0" />
 
-                        <Nav navbar={true}>
-                            {this.createLinks(mainNavRoutes)}
-                        </Nav>
+            <Nav navbar={true}>{this.createLinks(mainNavRoutes)}</Nav>
 
-                        {desktopView && <div className="d-block">
-                            <hr className="mb-2 mt-2"/>
-                            <Nav navbar={true}>
-                                {this.createActionLinks(createNewNavRoutes)}
-                            </Nav>
-                        </div>}
-                    </Collapse>
-                </Container>
-            </Navbar>
-        );
-    }
+            {desktopView && (
+              <IfUserAuthorized renderUnauthorizedAlert={false}>
+                <div className="d-block">
+                  <hr className="mb-2 mt-2" />
+                  <Nav navbar={true}>
+                    {this.createActionLinks(createNewNavRoutes)}
+                  </Nav>
+                </div>
+              </IfUserAuthorized>
+            )}
+          </Collapse>
+        </Container>
+      </Navbar>
+    );
+  }
 }
 
-export default connect((state: TermItState) => {
+export default connect(
+  (state: TermItState) => {
     return {
-        user: state.user,
-        sidebarExpanded: state.sidebarExpanded,
-        desktopView: state.desktopView
+      user: state.user,
+      sidebarExpanded: state.sidebarExpanded,
+      desktopView: state.desktopView,
     };
-}, (dispatch: ThunkDispatch) => {
+  },
+  (dispatch: ThunkDispatch) => {
     return {
-        toggleSidebar: () => dispatch(toggleSidebar())
+      toggleSidebar: () => dispatch(toggleSidebar()),
     };
-})(injectIntl(withI18n(withRouter(Sidebar))));
-
+  }
+)(injectIntl(withI18n(withRouter(Sidebar))));

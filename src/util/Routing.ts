@@ -1,6 +1,6 @@
-import {createHashHistory, History} from "history";
+import { createHashHistory, History } from "history";
 import Constants from "./Constants";
-import Routes, {Route} from "./Routes";
+import Routes, { Route } from "./Routes";
 import Asset from "../model/Asset";
 import Utils from "./Utils";
 import VocabularyUtils from "./VocabularyUtils";
@@ -27,11 +27,21 @@ export class Routing {
     }
 
     private static setQueryParams(path: string, params: Map<string, string>) {
-        const paramValuePairs = Array.from(params.entries()).map((pair) => pair[0] + "=" + pair[1]);
-        return paramValuePairs.length > 0 ? path + "?" + paramValuePairs.join("&") : path;
+        const paramValuePairs = Array.from(params.entries()).map(
+            (pair) => pair[0] + "=" + pair[1]
+        );
+        return paramValuePairs.length > 0
+            ? path + "?" + paramValuePairs.join("&")
+            : path;
     }
 
-    public static buildUrl(route: Route, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) {
+    public static buildUrl(
+        route: Route,
+        options: {
+            params?: Map<string, string>;
+            query?: Map<string, string>;
+        } = {}
+    ) {
         let path = route.path;
         if (options.params) {
             path = Routing.setPathParams(path, options.params);
@@ -40,7 +50,7 @@ export class Routing {
             path = Routing.setQueryParams(path, options.query);
         }
         return path;
-    };
+    }
 
     public static buildFullUrl(route: Route | string, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) {
         const innerPath = typeof route === "string" ? route : Routing.buildUrl(route, options);
@@ -48,7 +58,8 @@ export class Routing {
     }
 
     public saveOriginalTarget = () => {
-        this.originalTarget = this.mHistory.location.pathname + this.mHistory.location.search;
+        this.originalTarget =
+            this.mHistory.location.pathname + this.mHistory.location.search;
     };
 
     /**
@@ -56,7 +67,13 @@ export class Routing {
      * @param route Route object
      * @param options Transition options, can specify path parameters and query parameters.
      */
-    public static getTransitionPath = (route: Route, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) => {
+    public static getTransitionPath = (
+        route: Route,
+        options: {
+            params?: Map<string, string>;
+            query?: Map<string, string>;
+        } = {}
+    ) => {
         return Routing.buildUrl(route, options);
     };
 
@@ -65,7 +82,13 @@ export class Routing {
      * @param route Route object
      * @param options Transition options, can specify path parameters and query parameters.
      */
-    public transitionTo = (route: Route, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) => {
+    public transitionTo = (
+        route: Route,
+        options: {
+            params?: Map<string, string>;
+            query?: Map<string, string>;
+        } = {}
+    ) => {
         this.mHistory.push(Routing.getTransitionPath(route, options));
     };
 
@@ -73,7 +96,7 @@ export class Routing {
      * Reloads the current route
      */
     public reload = () => {
-        this.mHistory.go(0)
+        this.mHistory.go(0);
     };
 
     public transitionToHome = () => {
@@ -97,11 +120,24 @@ export class Routing {
      * @param asset Asset to transition to
      * @param options Transition options, can specify path parameters and query parameters.
      */
-    public transitionToAsset = (asset: Asset, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) => {
+    public transitionToAsset = (
+        asset: Asset,
+        options: {
+            params?: Map<string, string>;
+            query?: Map<string, string>;
+        } = {}
+    ) => {
         this.makeAssetTransition(false, asset, options);
     };
 
-    private makeAssetTransition(isPublic: boolean, asset: Asset, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) {
+    private makeAssetTransition(
+        isPublic: boolean,
+        asset: Asset,
+        options: {
+            params?: Map<string, string>;
+            query?: Map<string, string>;
+        } = {}
+    ) {
         const primaryType = Utils.getPrimaryAssetType(asset);
         const iri = VocabularyUtils.create(asset.iri);
 
@@ -110,25 +146,47 @@ export class Routing {
 
         switch (primaryType) {
             case VocabularyUtils.VOCABULARY:
-                this.transitionTo(isPublic ? Routes.publicVocabularySummary : Routes.vocabularySummary, {
-                    params: new Map([["name", iri.fragment], ...params]),
-                    query: new Map([["namespace", iri.namespace!], ...query])
-                });
+                this.transitionTo(
+                    isPublic
+                        ? Routes.publicVocabularySummary
+                        : Routes.vocabularySummary,
+                    {
+                        params: new Map([["name", iri.fragment], ...params]),
+                        query: new Map([
+                            ["namespace", iri.namespace!],
+                            ...query,
+                        ]),
+                    }
+                );
                 break;
             case VocabularyUtils.RESOURCE:
             case VocabularyUtils.DOCUMENT:
             case VocabularyUtils.FILE:
                 this.transitionTo(Routes.resourceSummary, {
                     params: new Map([["name", iri.fragment], ...params]),
-                    query: new Map([["namespace", iri.namespace!], ...query])
+                    query: new Map([["namespace", iri.namespace!], ...query]),
                 });
                 break;
             case VocabularyUtils.TERM:
-                const vocIri = VocabularyUtils.create((asset as Term).vocabulary!.iri!);
-                this.transitionTo(isPublic ? Routes.publicVocabularyTermDetail : Routes.vocabularyTermDetail, {
-                    params: new Map([["name", vocIri.fragment], ["termName", iri.fragment], ...params]),
-                    query: new Map([["namespace", vocIri.namespace!], ...query])
-                });
+                const vocIri = VocabularyUtils.create(
+                    (asset as Term).vocabulary!.iri!
+                );
+                this.transitionTo(
+                    isPublic
+                        ? Routes.publicVocabularyTermDetail
+                        : Routes.vocabularyTermDetail,
+                    {
+                        params: new Map([
+                            ["name", vocIri.fragment],
+                            ["termName", iri.fragment],
+                            ...params,
+                        ]),
+                        query: new Map([
+                            ["namespace", vocIri.namespace!],
+                            ...query,
+                        ]),
+                    }
+                );
                 break;
         }
     }
@@ -139,7 +197,13 @@ export class Routing {
      * @param options Transition options, can specify path parameters and query parameters
      * @see #transitionToAsset
      */
-    public transitionToPublicAsset = (asset: Asset, options: { params?: Map<string, string>, query?: Map<string, string> } = {}) => {
+    public transitionToPublicAsset = (
+        asset: Asset,
+        options: {
+            params?: Map<string, string>;
+            query?: Map<string, string>;
+        } = {}
+    ) => {
         this.makeAssetTransition(true, asset, options);
     };
 }

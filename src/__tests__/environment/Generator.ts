@@ -3,13 +3,17 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Term from "../../model/Term";
 import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
+import Comment from "../../model/Comment";
 
 export default class Generator {
+    public static readonly URI_BASE =
+        "http://onto.fel.cvut.cz/ontologies/application/termit";
 
-    public static readonly URI_BASE = "http://onto.fel.cvut.cz/ontologies/application/termit";
-
-    public static randomInt(min: number = 0, max: number = Number.MAX_SAFE_INTEGER) {
+    public static randomInt(
+        min: number = 0,
+        max: number = Number.MAX_SAFE_INTEGER
+    ) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
@@ -27,7 +31,7 @@ export default class Generator {
             firstName: "FirstName" + Generator.randomInt(0, 10000),
             lastName: "LastName" + Generator.randomInt(0, 10000),
             username: "username" + Generator.randomInt() + "@kbss.felk.cvut.cz",
-            types: [VocabularyUtils.USER]
+            types: [VocabularyUtils.USER],
         });
     }
 
@@ -57,22 +61,37 @@ export default class Generator {
         return new Term({
             iri: Generator.generateUri(),
             label: langString("Term " + Generator.randomInt(0, 10000)),
-            vocabulary: vocabularyIri ? {iri: vocabularyIri} : undefined
+            vocabulary: vocabularyIri ? { iri: vocabularyIri } : undefined,
         });
     }
 
     public static generateVocabulary() {
-        return new Vocabulary(this.generateAssetData("Vocabulary " + this.randomInt(0, 10000)));
+        return new Vocabulary(
+            this.generateAssetData("Vocabulary " + this.randomInt(0, 10000))
+        );
     }
 
     public static generateResource() {
-        return new Resource(this.generateAssetData("Resource " + this.randomInt(0, 10000)));
+        return new Resource(
+            this.generateAssetData("Resource " + this.randomInt(0, 10000))
+        );
     }
 
-    public static generateAssetData(label?: string): { iri: string, label: string } {
+    public static generateAssetData(
+        label?: string
+    ): { iri: string; label: string } {
         return {
             iri: Generator.generateUri(),
-            label: label ? label : "Asset " + Generator.randomInt(0, 100)
+            label: label ? label : "Asset " + Generator.randomInt(0, 100),
         };
+    }
+
+    public static generateComment() {
+        return new Comment({
+            iri: Generator.generateUri(),
+            content: "Comment " + Generator.randomInt(0, 100),
+            asset: Generator.generateTerm(),
+            author: Generator.generateUser(),
+        });
     }
 }

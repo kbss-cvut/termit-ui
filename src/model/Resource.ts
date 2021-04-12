@@ -1,4 +1,4 @@
-import Asset, {ASSET_CONTEXT, AssetData} from "./Asset";
+import Asset, { ASSET_CONTEXT, AssetData } from "./Asset";
 import Term from "./Term";
 import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
@@ -6,16 +6,16 @@ import Constants from "../util/Constants";
 
 const ctx = {
     label: VocabularyUtils.DC_TITLE,
-    description: VocabularyUtils.DC_DESCRIPTION
+    description: VocabularyUtils.DC_DESCRIPTION,
 };
 
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT);
 
 export interface ResourceData extends AssetData {
-    iri: string,
-    label: string,
-    description?: string,
-    terms?: Term[]
+    iri: string;
+    label: string;
+    description?: string;
+    terms?: Term[];
 }
 
 export default class Resource extends Asset implements ResourceData {
@@ -43,12 +43,12 @@ export default class Resource extends Asset implements ResourceData {
     }
 
     public toJsonLd(): {} {
-        return Object.assign({}, this, {"@context": CONTEXT});
+        return Object.assign({}, this, { "@context": CONTEXT });
     }
 }
 
 export const EMPTY_RESOURCE = new Resource({
     iri: Constants.EMPTY_ASSET_IRI,
     label: "",
-    terms: []
+    terms: [],
 });

@@ -18,7 +18,7 @@ export interface MessageData {
 export default class Message {
     private readonly mMessage?: string;
     private readonly mMessageId?: string;
-    private readonly mValues?: {};    // Values for message formatting, relevant only for messageId
+    private readonly mValues?: {}; // Values for message formatting, relevant only for messageId
     private readonly mType: MessageType;
     private readonly mTimestamp: number;
 
@@ -52,12 +52,12 @@ export default class Message {
 }
 
 export function createStringMessage(text: string) {
-    return new Message({message: text});
+    return new Message({ message: text });
 }
 
 export function createFormattedMessage(mId: string, values?: {}) {
     return new Message({
         messageId: mId,
-        values
+        values,
     });
 }

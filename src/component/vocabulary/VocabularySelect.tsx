@@ -1,87 +1,79 @@
 import * as React from "react";
-import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown} from "reactstrap";
+import {
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown,
+} from "reactstrap";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
-import {connect} from "react-redux";
-import {ThunkDispatch} from "../../util/Types";
-import {loadVocabularies} from "../../action/AsyncActions";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {injectIntl} from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
+import { loadVocabularies } from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
+import { useI18n } from "../hook/useI18n";
 
-interface PropsExt {
-    vocabulary: Vocabulary | null;
-    id?: string;
+interface VocabularySelectProps {
+  id?: string;
+  vocabulary: Vocabulary | null;
+  onVocabularySet: (vocabulary: Vocabulary) => void;
 }
 
-interface DispatchExt {
-    onVocabularySet: (voc: Vocabulary) => void;
-}
-
-interface PropsCon {
-    vocabularies: { [key: string]: Vocabulary },
-}
-
-interface DispatchCon {
-    loadVocabularies: () => void
-}
-
-interface Props extends PropsExt, DispatchExt,
-    PropsCon, HasI18n, DispatchCon {
-}
-
-export class VocabularySelect extends React.Component<Props> {
-
-    public componentDidMount() {
-        this.props.loadVocabularies();
+const VocabularySelect: React.FC<VocabularySelectProps> = (props) => {
+  const { vocabulary, onVocabularySet } = props;
+  const vocabularies = useSelector((state: TermItState) => state.vocabularies);
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    if (Object.getOwnPropertyNames(vocabularies).length === 0) {
+      dispatch(loadVocabularies());
     }
+  });
+  const onChange = (vIri: string) => onVocabularySet(vocabularies[vIri]);
+  const { i18n } = useI18n();
 
-    private changeValue(vIri: string) {
-        this.props.onVocabularySet(this.props.vocabularies[vIri]);
-    }
+  const items = Object.keys(vocabularies || []).map((vIri) => {
+    return (
+      <DropdownItem
+        className="m-vocabulary-select-item"
+        key={vIri}
+        onClick={() => onChange(vIri)}
+      >
+        {vocabularies[vIri].label}
+      </DropdownItem>
+    );
+  });
 
-    public render() {
-        const that = this;
-        const items = Object.keys(this.props.vocabularies || []).map(vIri => {
-                const onClick = () => that.changeValue(vIri);
-                return <DropdownItem className="m-vocabulary-select-item" key={vIri} onClick={onClick}>
-                    {this.props.vocabularies[vIri].label}
-                </DropdownItem>
-            }
-        );
-
-        return <UncontrolledDropdown id={this.props.id} group={true} size="sm">
-            <DropdownToggle caret={true}>
-                {this.props.vocabulary ? this.props.vocabulary.label : that.props.i18n("vocabulary.select-vocabulary")}
-            </DropdownToggle>
-            <DropdownMenu modifiers={{
-                setMaxHeight: {
-                    enabled: true,
-                    order: 890,
-                    fn: (data) => {
-                        return {
-                            ...data,
-                            styles: {
-                                ...data.styles,
-                                overflow: "auto",
-                                maxHeight: Utils.calculateAssetListHeight() + "px",
-                            },
-                        };
-                    },
+  return (
+    <UncontrolledDropdown
+      id={props.id}
+      group={true}
+      size="sm"
+      className="w-100"
+    >
+      <DropdownToggle caret={true} className="w-100">
+        {vocabulary ? vocabulary.label : i18n("vocabulary.select-vocabulary")}
+      </DropdownToggle>
+      <DropdownMenu
+        modifiers={{
+          setMaxHeight: {
+            enabled: true,
+            order: 890,
+            fn: (data) => {
+              return {
+                ...data,
+                styles: {
+                  ...data.styles,
+                  overflow: "auto",
+                  maxHeight: Utils.calculateAssetListHeight() + "px",
                 },
-            }}>
-                {items}
-            </DropdownMenu>
-        </UncontrolledDropdown>;
-    }
-}
+              };
+            },
+          },
+        }}
+      >
+        {items}
+      </DropdownMenu>
+    </UncontrolledDropdown>
+  );
+};
 
-export default connect<PropsCon, DispatchCon, PropsExt, TermItState>((state: TermItState) => {
-    return {
-        vocabularies: state.vocabularies
-    };
-}, (dispatch: ThunkDispatch) => {
-    return {
-        loadVocabularies: () => dispatch(loadVocabularies())
-    };
-})(injectIntl(withI18n(VocabularySelect)));
+export default VocabularySelect;

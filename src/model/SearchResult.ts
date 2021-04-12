@@ -1,16 +1,18 @@
 import Vocabulary from "../util/VocabularyUtils";
 import VocabularyUtils from "../util/VocabularyUtils";
-import {AssetData} from "./Asset";
+import { AssetData } from "./Asset";
 import Utils from "../util/Utils";
 
 export const CONTEXT = {
-    "iri": "@id",
-    "label": VocabularyUtils.RDFS_LABEL,
-    "vocabulary": VocabularyUtils.IS_TERM_FROM_VOCABULARY,
-    "snippetText": "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text",
-    "snippetField": "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-field",
-    "score": "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score",
-    "types": "@type"
+    iri: "@id",
+    label: VocabularyUtils.RDFS_LABEL,
+    vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+    snippetText:
+        "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text",
+    snippetField:
+        "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-field",
+    score: "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score",
+    types: "@type",
 };
 
 export interface SearchResultData extends AssetData {

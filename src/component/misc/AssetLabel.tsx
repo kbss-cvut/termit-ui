@@ -1,17 +1,17 @@
 import * as React from "react";
-import {connect} from "react-redux";
-import {ThunkDispatch} from "../../util/Types";
-import {getLabel} from "../../action/AsyncActions";
+import { connect } from "react-redux";
+import { ThunkDispatch } from "../../util/Types";
+import { getLabel } from "../../action/AsyncActions";
 import Namespaces from "../../util/Namespaces";
 
 interface AssetLabelProps {
-    iri: string;
-    shrinkFullIri?: boolean;
-    getLabel: (iri: string) => Promise<string>;
+  iri: string;
+  shrinkFullIri?: boolean;
+  getLabel: (iri: string) => Promise<string>;
 }
 
 interface AssetLabelState {
-    label?: string;
+  label?: string;
 }
 
 /**
@@ -22,48 +22,64 @@ interface AssetLabelState {
  * Note that the value is returned directly, not wrapped in any component, so the parent component should provide a
  * suitable container (span, div, etc.).
  */
-export class AssetLabel extends React.Component<AssetLabelProps, AssetLabelState> {
-    public static defaultProps: Partial<AssetLabelProps> = {
-        shrinkFullIri: false
+export class AssetLabel extends React.Component<
+  AssetLabelProps,
+  AssetLabelState
+> {
+  public static defaultProps: Partial<AssetLabelProps> = {
+    shrinkFullIri: false,
+  };
+
+  constructor(props: AssetLabelProps) {
+    super(props);
+    this.state = {
+      label: undefined,
     };
+  }
 
-    constructor(props: AssetLabelProps) {
-        super(props);
-        this.state = {
-            label: undefined
-        };
-    }
+  public componentDidMount() {
+    this.loadLabel(this.props.iri);
+  }
 
-    public componentDidMount() {
-        this.loadLabel(this.props.iri);
+  public componentDidUpdate(prevProps: AssetLabelProps): void {
+    if (prevProps.iri !== this.props.iri) {
+      this.loadLabel(this.props.iri);
     }
+  }
 
-    public componentDidUpdate(prevProps: AssetLabelProps): void {
-        if (prevProps.iri !== this.props.iri) {
-            this.loadLabel(this.props.iri);
-        }
-    }
+  private loadLabel(iri: string) {
+    this.props
+      .getLabel(iri)
+      .then((data: string) => this.setState({ label: data }));
+  }
 
-    private loadLabel(iri: string) {
-        this.props.getLabel(iri).then((data: string) => this.setState({label: data}));
-    }
+  public render() {
+    return (
+      <span>
+        {this.state.label
+          ? this.state.label
+          : this.shrinkFullIri(Namespaces.getPrefixedOrDefault(this.props.iri))}
+      </span>
+    );
+  }
 
-    public render() {
-        return <span>{this.state.label ? this.state.label : this.shrinkFullIri(Namespaces.getPrefixedOrDefault(this.props.iri))}</span>;
+  private shrinkFullIri(iri: string): string {
+    if (!this.props.shrinkFullIri || iri.indexOf("://") === -1) {
+      return iri; // It is prefixed
     }
-
-    private shrinkFullIri(iri: string): string {
-        if (!this.props.shrinkFullIri || iri.indexOf("://") === -1) {
-            return iri; // It is prefixed
-        }
-        const lastSlashIndex = iri.lastIndexOf("/");
-        const lastHashIndex = iri.lastIndexOf(("#"));
-        return "..." + iri.substring(lastHashIndex > lastSlashIndex ? lastHashIndex : lastSlashIndex);
-    }
+    const lastSlashIndex = iri.lastIndexOf("/");
+    const lastHashIndex = iri.lastIndexOf("#");
+    return (
+      "..." +
+      iri.substring(
+        lastHashIndex > lastSlashIndex ? lastHashIndex : lastSlashIndex
+      )
+    );
+  }
 }
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
-    return {
-        getLabel: (iri: string) => dispatch(getLabel(iri))
-    };
+  return {
+    getLabel: (iri: string) => dispatch(getLabel(iri)),
+  };
 })(AssetLabel);

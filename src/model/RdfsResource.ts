@@ -1,4 +1,4 @@
-import {AssetData, HasLabel} from "./Asset";
+import { AssetData, HasLabel } from "./Asset";
 import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
 
@@ -6,7 +6,7 @@ export const CONTEXT = {
     iri: "@id",
     label: VocabularyUtils.RDFS_LABEL,
     comment: VocabularyUtils.RDFS_COMMENT,
-    types: "@type"
+    types: "@type",
 };
 
 export interface RdfsResourceData extends AssetData {
@@ -40,6 +40,6 @@ export default class RdfsResource implements RdfsResourceData, HasLabel {
     }
 
     public toJsonLd() {
-        return Object.assign({}, this, {"@context": CONTEXT});
+        return Object.assign({}, this, { "@context": CONTEXT });
     }
 }
