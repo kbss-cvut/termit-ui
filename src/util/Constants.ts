@@ -36,12 +36,12 @@ const ENV = {
  * @param name env variable name
  * @param defaultValue Default variable name
  */
-const getEnv = (name: string, defaultValue?: string): string => {
+export const getEnv = (name: string, defaultValue?: string): string => {
     const value = ENV[name] || defaultValue
-    if (value) {
-        return value
+    if (value !== undefined) {
+        return value;
     }
-    throw new Error(`Missing environment variable: ${name}`)
+    throw new Error(`Missing environment variable: ${name}`);
 }
 
 /**

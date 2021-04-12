@@ -577,7 +577,7 @@ describe("Async actions", () => {
 
         it("publishes message on error", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.reject("An error"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri)))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri), Generator.generateUri()))).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(
                     (a) => a.type === ActionType.PUBLISH_MESSAGE
@@ -591,7 +591,7 @@ describe("Async actions", () => {
 
         it("publishes message on success", () => {
             Ajax.put = jest.fn().mockImplementation(() => Promise.resolve("Success"));
-            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri)))).then(() => {
+            return Promise.resolve((store.dispatch as ThunkDispatch)(executeFileTextAnalysis(VocabularyUtils.create(file.iri), Generator.generateUri()))).then(() => {
                 const actions: Action[] = store.getActions();
                 const found = actions.find(
                     (a) => a.type === ActionType.PUBLISH_MESSAGE
@@ -2658,11 +2658,12 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadNews(lang))
             ).then((result: any) => {
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result: any) => {
-                expect(result).toEqual(news);
-                expect((Ajax.get as jest.Mock).mock.calls[0][0]).toEqual(
-                    Constants.NEWS_MD_URL[lang]
-                );
+                return Promise.resolve((store.dispatch as ThunkDispatch)(loadNews(lang))).then((result: any) => {
+                    expect(result).toEqual(news);
+                    expect((Ajax.get as jest.Mock).mock.calls[0][0]).toEqual(
+                        Constants.NEWS_MD_URL[lang]
+                    );
+                });
             });
         });
     });

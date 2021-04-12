@@ -400,7 +400,6 @@ describe("TermDetail", () => {
                                                         location={location}
                                                         match={match}
                                                         publishNotification={onPublishNotification}
-                                                        validationResults={validationResults}
                                                         {...intlFunctions()}/>);
         wrapper.setProps({term});
         wrapper.update();
@@ -419,7 +418,6 @@ describe("TermDetail", () => {
                                                         location={location}
                                                         match={match}
                                                         publishNotification={onPublishNotification}
-                                                        validationResults={validationResults}
                                                                 {...intlFunctions()}/></MemoryRouter>);
         const editButton = wrapper.find("button#term-detail-edit");
         expect(editButton).toBeDefined();
@@ -433,7 +431,6 @@ describe("TermDetail", () => {
                                             loadVocabulary={loadVocabulary} vocabulary={vocabulary}
                                             history={history} location={location} match={match}
                                             publishNotification={onPublishNotification}
-                                            validationResults={validationResults}
                                             {...intlFunctions()}/>);
         (wrapper.instance() as TermDetail).onEdit();
         wrapper.update();

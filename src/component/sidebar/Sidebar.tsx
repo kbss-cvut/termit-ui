@@ -229,7 +229,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
                     {/* Collapse */}
                     <Collapse navbar={true} isOpen={this.state.collapseOpen} className="no-before-after">
                         {/* Collapse header */}
-                        {!desktopView && <div
+                        {!desktopView && (<div
                             className="navbar-collapse-header d-flex justify-content-between align-items-center">
 
                             <NavbarBrand
