@@ -2,18 +2,22 @@
  * Declaration of useful, reusable types.
  */
 
-import {ThunkDispatch as TDispatch} from "redux-thunk";
+import { ThunkDispatch as TDispatch } from "redux-thunk";
 import TermItState from "../model/TermItState";
-import {Action} from "redux";
-import {match} from "react-router";
-import {Location} from "history";
+import { Action } from "redux";
+import { match } from "react-router";
+import { Location } from "history";
 
 /**
  * Simple name for Thunk Dispatch, providing the required generic type arguments.
  *
  * Action can be specified.
  */
-export type ThunkDispatch<A extends Action = Action> = TDispatch<TermItState, null, Action>;
+export type ThunkDispatch<A extends Action = Action> = TDispatch<
+    TermItState,
+    null,
+    Action
+>;
 
 /**
  * Simple name for a function retrieving state from the store.
@@ -40,7 +44,6 @@ export interface TreeSelectFetchOptionsParams<T> {
  * Type representing literal values.
  */
 export type Literal = number | string | boolean;
-
 
 export interface BasicRouteProps {
     match: match<any>;

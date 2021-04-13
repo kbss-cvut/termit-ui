@@ -1,27 +1,21 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import ReactMarkdown from "react-markdown";
 import ContainerMask from "../misc/ContainerMask";
-import {getShortLocale} from "../../util/IntlUtil";
-import {connect} from "react-redux";
-import {ThunkDispatch} from "../../util/Types";
-import {loadNews as loadNewsAction} from "../../action/AsyncActions";
+import { getShortLocale } from "../../util/IntlUtil";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../util/Types";
+import { loadNews } from "../../action/AsyncActions";
+import { useI18n } from "../hook/useI18n";
 
-interface NewsMdProps extends HasI18n {
-    loadNews: (lang: string) => Promise<string | null>;
-}
+const NewsMd: React.FC = () => {
+  const { locale } = useI18n();
+  const [newsMd, setNewsMd] = React.useState<string | null>(null);
+  const dispatch: ThunkDispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(loadNews(getShortLocale(locale))).then((data) => setNewsMd(data));
+  }, [locale, dispatch]);
 
-const NewsMd: React.FC<NewsMdProps> = props => {
-    const {locale, loadNews} = props;
-    const [newsMd, setNewsMd] = React.useState<string | null>(null);
-    React.useEffect(() => {
-        loadNews(getShortLocale(locale)).then(data => setNewsMd(data));
-    }, [locale, loadNews]);
+  return newsMd ? <ReactMarkdown source={newsMd} /> : <ContainerMask />;
+};
 
-    return newsMd ? <ReactMarkdown source={newsMd}/> : <ContainerMask/>;
-}
-
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-    return {loadNews: (lang: string) => dispatch(loadNewsAction(lang))};
-})(injectIntl(withI18n(NewsMd)));
+export default NewsMd;

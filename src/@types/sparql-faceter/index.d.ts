@@ -1,3 +1,1 @@
-declare module 'sparql-faceter' {
-
-}
+declare module "sparql-faceter" {}

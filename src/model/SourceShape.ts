@@ -7,4 +7,4 @@ export const CONTEXT = Object.assign({}, ctx);
 
 export type SourceShape = {
     iri: string;
-}
+};

@@ -1,7 +1,7 @@
-import Term, {TermData, TermInfo} from "../../model/Term";
-import {getLocalized} from "../../model/MultilingualString";
-import {HasI18n} from "../hoc/withI18n";
-import {getShortLocale} from "../../util/IntlUtil";
+import Term, { TermData, TermInfo } from "../../model/Term";
+import { getLocalized } from "../../model/MultilingualString";
+import { HasI18n } from "../hoc/withI18n";
+import { getShortLocale } from "../../util/IntlUtil";
 
 /**
  * Common properties for a tree selector containing terms
@@ -10,20 +10,20 @@ import {getShortLocale} from "../../util/IntlUtil";
 export function commonTermTreeSelectProps(intl: HasI18n) {
     return {
         valueKey: "iri",
-        getOptionLabel: (option: Term | TermData) => getLocalized(option.label, getShortLocale(intl.locale)),
+        getOptionLabel: (option: Term | TermData) =>
+            getLocalized(option.label, getShortLocale(intl.locale)),
         childrenKey: "plainSubTerms",
         renderAsTree: true,
         simpleTreeData: true,
         showSettings: false,
         noResultsText: intl.i18n("main.search.no-results"),
-        placeholder: intl.i18n("glossary.select.placeholder")
+        placeholder: intl.i18n("glossary.select.placeholder"),
     };
 }
 
-
 export type TermTreeSelectProcessingOptions = {
     searchString?: string;
-}
+};
 
 /**
  * Prepares the specified terms for the tree select component. This consists of removing terms and subterms which are
@@ -32,7 +32,11 @@ export type TermTreeSelectProcessingOptions = {
  * @param vocabularies Vocabularies in which all the terms should be, or null to switch this filtering off
  * @param options Processing options
  */
-export function processTermsForTreeSelect(terms: Term[], vocabularies: (string[] | undefined), options: TermTreeSelectProcessingOptions = {}): Term[] {
+export function processTermsForTreeSelect(
+    terms: Term[],
+    vocabularies: string[] | undefined,
+    options: TermTreeSelectProcessingOptions = {}
+): Term[] {
     let result: Term[] = [];
     for (const t of terms) {
         if (!vocabularyMatches(t, vocabularies)) {
@@ -41,21 +45,30 @@ export function processTermsForTreeSelect(terms: Term[], vocabularies: (string[]
         result.push(t);
         if (t.subTerms) {
             if (vocabularies) {
-                t.subTerms = t.subTerms.filter(st => vocabularyMatches(st, vocabularies)).map(st => {
-                    return st;
-                });
+                t.subTerms = t.subTerms
+                    .filter((st) => vocabularyMatches(st, vocabularies))
+                    .map((st) => {
+                        return st;
+                    });
             }
             t.syncPlainSubTerms();
         }
         if (options.searchString && t.parentTerms) {
-            result = result.concat(flattenAncestors(t.parentTerms).filter(pt => vocabularyMatches(pt, vocabularies)));
+            result = result.concat(
+                flattenAncestors(t.parentTerms).filter((pt) =>
+                    vocabularyMatches(pt, vocabularies)
+                )
+            );
         }
     }
     return result;
 }
 
-function vocabularyMatches(term: Term | TermInfo, vocabularies: string[] | undefined) {
-    return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1
+function vocabularyMatches(
+    term: Term | TermInfo,
+    vocabularies: string[] | undefined
+) {
+    return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1;
 }
 
 /**

@@ -1,10 +1,11 @@
-import axios, {AxiosInstance, AxiosRequestConfig, ResponseType} from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios";
 import Routing from "./Routing";
-import Constants from "./Constants";
+import Constants, { getEnv } from "./Constants";
 import Routes from "./Routes";
 import MockAdapter from "axios-mock-adapter";
 import Authentication from "./Authentication";
 import fileContent from "../rest-mock/file";
+import ConfigParam from "./ConfigParam";
 
 class RequestConfigBuilder {
     private mContent?: any;
@@ -15,7 +16,8 @@ class RequestConfigBuilder {
 
     constructor() {
         this.mHeaders = {};
-        this.mHeaders[Constants.Headers.CONTENT_TYPE] = Constants.JSON_LD_MIME_TYPE;
+        this.mHeaders[Constants.Headers.CONTENT_TYPE] =
+            Constants.JSON_LD_MIME_TYPE;
         this.mHeaders[Constants.Headers.ACCEPT] = Constants.JSON_LD_MIME_TYPE;
         this.mResponseType = undefined;
     }
@@ -132,7 +134,10 @@ export function headers(value: {}) {
 }
 
 export function ifModifiedSince(value?: string) {
-    return new RequestConfigBuilder().header(Constants.Headers.IF_MODIFIED_SINCE, value);
+    return new RequestConfigBuilder().header(
+        Constants.Headers.IF_MODIFIED_SINCE,
+        value
+    );
 }
 
 export function paramsSerializer(paramData: {}) {
@@ -141,7 +146,8 @@ export function paramsSerializer(paramData: {}) {
 
     keys.forEach((key) => {
         const isParamTypeObject = typeof paramData[key] === "object";
-        const isParamTypeArray = isParamTypeObject && (paramData[key].length >= 0);
+        const isParamTypeArray =
+            isParamTypeObject && paramData[key].length >= 0;
         if (!paramData[key]) {
             return;
         }
@@ -161,16 +167,17 @@ export function paramsSerializer(paramData: {}) {
 }
 
 export class Ajax {
-
     protected axiosInstance = axios.create({
-        baseURL: Constants.SERVER_URL
+        baseURL: Constants.SERVER_URL,
     });
 
     constructor() {
-        this.axiosInstance.interceptors.request.use(reqConfig => {
+        this.axiosInstance.interceptors.request.use((reqConfig) => {
             const token = Authentication.loadToken();
             if (token) {
-                reqConfig.headers[Constants.Headers.AUTHORIZATION] = `Bearer ${token}`;
+                reqConfig.headers[
+                    Constants.Headers.AUTHORIZATION
+                ] = `Bearer ${token}`;
                 reqConfig.withCredentials = true;
             }
             return reqConfig;
@@ -179,28 +186,35 @@ export class Ajax {
             if (!error.response) {
                 return Promise.reject({
                     message: error.message ? error.message : undefined,
-                    messageId: "connection.error"
+                    messageId: "connection.error",
                 });
             }
             const response = error.response;
             if (response.status === Constants.STATUS_UNAUTHORIZED) {
                 Routing.saveOriginalTarget();
-                if (process.env.REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED === true.toString()) {
+                if (
+                    getEnv(ConfigParam.SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED, "") ===
+                    true.toString()
+                ) {
                     Routing.transitionTo(Routes.publicDashboard);
                 } else {
                     Routing.transitionTo(Routes.login);
                 }
             }
-            if (typeof response.data === "string" && response.data.length > 0) {
+            if (typeof response.data === "string") {
                 return Promise.reject({
                     messageId: "ajax.unparseable-error",
-                    status: response.status
+                    status: response.status,
                 });
             } else {
-                return Promise.reject(Object.assign({}, response.data, {status: response.status}));
+                return Promise.reject(
+                    Object.assign({}, response.data, {
+                        status: response.status,
+                    })
+                );
             }
         });
-        if (process.env.REACT_APP_MOCK_REST_API === true.toString()) {
+        if (getEnv(ConfigParam.MOCK_REST_API, "") === true.toString()) {
             // Mock backend REST API if the environment is configured to do so
             mockRestApi(this.axiosInstance);
         }
@@ -219,10 +233,13 @@ export class Ajax {
      * @param path URL path
      * @param config Request configuration
      */
-    public head(path: string, config: RequestConfigBuilder = new RequestConfigBuilder()) {
+    public head(
+        path: string,
+        config: RequestConfigBuilder = new RequestConfigBuilder()
+    ) {
         const conf = {
             params: config.getParams(),
-            paramsSerializer
+            paramsSerializer,
         };
         return this.axiosInstance.head(path, conf);
     }
@@ -230,20 +247,26 @@ export class Ajax {
     /**
      * Gets response from the server and returns its content.
      */
-    public get(path: string, config: RequestConfigBuilder = new RequestConfigBuilder()) {
-        return this.getResponse(path, config).then(resp => resp.data);
+    public get(
+        path: string,
+        config: RequestConfigBuilder = new RequestConfigBuilder()
+    ) {
+        return this.getResponse(path, config).then((resp) => resp.data);
     }
 
     /**
      * Gets response from the server and returns it.
      */
-    public getResponse(path: string, config: RequestConfigBuilder = new RequestConfigBuilder()) {
+    public getResponse(
+        path: string,
+        config: RequestConfigBuilder = new RequestConfigBuilder()
+    ) {
         const conf = {
             params: config.getParams(),
             headers: config.getHeaders(),
             responseType: config.getResponseType(),
             validateStatus: Ajax.validateGetStatus,
-            paramsSerializer
+            paramsSerializer,
         };
         return this.axiosInstance.get(path, conf);
     }
@@ -251,7 +274,10 @@ export class Ajax {
     /**
      * Performs a GET request and returns the raw Axios response object with arraybuffer response type.
      */
-    public getRaw(path: string, config: RequestConfigBuilder = new RequestConfigBuilder()) {
+    public getRaw(
+        path: string,
+        config: RequestConfigBuilder = new RequestConfigBuilder()
+    ) {
         config.responseType("arraybuffer");
         return this.getResponse(path, config);
     }
@@ -259,23 +285,31 @@ export class Ajax {
     public post(path: string, config: RequestConfigBuilder) {
         const conf = {
             headers: config.getHeaders(),
-            paramsSerializer
+            paramsSerializer,
         };
         delete conf.headers[Constants.Headers.ACCEPT];
         const par = new URLSearchParams();
         // @ts-ignore
-        const paramData: object = config.getParams() !== undefined ? config.getParams() : {};
-        Object.keys(paramData).forEach(n => par.append(n, paramData[n]));
+        const paramData: object =
+            config.getParams() !== undefined ? config.getParams() : {};
+        Object.keys(paramData).forEach((n) => par.append(n, paramData[n]));
 
-        const formData: object = config.getFormData() !== undefined ? config.getFormData()! : {};
+        const formData: object =
+            config.getFormData() !== undefined ? config.getFormData()! : {};
 
         if (config.getContentType() === Constants.X_WWW_FORM_URLENCODED) {
             return this.axiosInstance.post(path, par, conf);
         } else if (config.getContentType() === Constants.MULTIPART_FORM_DATA) {
             return this.axiosInstance.post(path, formData, conf);
         } else {
-            const query: string = config.getParams() ? "?" + par.toString() : "";
-            return this.axiosInstance.post(path + query, config.getContent(), conf);
+            const query: string = config.getParams()
+                ? "?" + par.toString()
+                : "";
+            return this.axiosInstance.post(
+                path + query,
+                config.getContent(),
+                conf
+            );
         }
     }
 
@@ -283,9 +317,12 @@ export class Ajax {
         const conf = {
             params: config.getParams(),
             headers: config.getHeaders(),
-            paramsSerializer
+            paramsSerializer,
         };
-        if (config.getContentType() === Constants.MULTIPART_FORM_DATA && config.getFormData()) {
+        if (
+            config.getContentType() === Constants.MULTIPART_FORM_DATA &&
+            config.getFormData()
+        ) {
             return this.axiosInstance.put(path, config.getFormData(), conf);
         }
         return this.axiosInstance.put(path, config.getContent(), conf);
@@ -296,7 +333,7 @@ export class Ajax {
         if (config) {
             conf = {
                 params: config.getParams(),
-                paramsSerializer
+                paramsSerializer,
             };
             if (config.getContent()) {
                 conf.data = config.getContent();
@@ -309,77 +346,137 @@ export class Ajax {
 }
 
 function mockRestApi(axiosInst: AxiosInstance): void {
-    const mock = new MockAdapter(axiosInst, {delayResponse: 500});
+    const mock = new MockAdapter(axiosInst, { delayResponse: 500 });
     const respHeaders = {};
     respHeaders[Constants.Headers.AUTHORIZATION] = "12345";
 
     // Mock term history
-    mock.onGet(/\/rest\/terms\/.+\/history/).reply(200, require("../rest-mock/termHistory"), respHeaders);
+    mock.onGet(/\/rest\/terms\/.+\/history/).reply(
+        200,
+        require("../rest-mock/termHistory"),
+        respHeaders
+    );
     // Mock current user data
-    mock.onGet(Constants.API_PREFIX + "/users/current").reply(200, require("../rest-mock/current"), respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/users/current").reply(
+        200,
+        require("../rest-mock/current"),
+        respHeaders
+    );
     // Mock login return value
-    mock.onPost("/j_spring_security_check").reply(200, {
-        loggedIn: true,
-        success: true
-    }, respHeaders);
+    mock.onPost("/j_spring_security_check").reply(
+        200,
+        {
+            loggedIn: true,
+            success: true,
+        },
+        respHeaders
+    );
     // Mock registration request
     mock.onPost(Constants.API_PREFIX + "/users").reply(201);
     // Mock users retrieval
-    mock.onGet(Constants.API_PREFIX + "/users").reply(200, require("../rest-mock/users"), respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/users").reply(
+        200,
+        require("../rest-mock/users"),
+        respHeaders
+    );
     // Mock username existence check
-    mock.onGet(Constants.API_PREFIX + "/users/username").reply((config: AxiosRequestConfig) => {
-        if (config.params.username.charAt(0) === "a") {
-            return [200, true];
-        } else {
-            return [200, false]
-        }
-    }, respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/users/username").reply(
+        (config: AxiosRequestConfig) => {
+            if (config.params.username.charAt(0) === "a") {
+                return [200, true];
+            } else {
+                return [200, false];
+            }
+        },
+        respHeaders
+    );
     // Mock vocabulary IRI generator
-    mock.onGet(Constants.API_PREFIX + "/vocabularies/identifier").reply(200, "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test", respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/vocabularies/identifier").reply(
+        200,
+        "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test",
+        respHeaders
+    );
     // Mock get vocabularies
-    mock.onGet(Constants.API_PREFIX + "/vocabularies").reply(200, require("../rest-mock/vocabularies"), respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/vocabularies").reply(
+        200,
+        require("../rest-mock/vocabularies"),
+        respHeaders
+    );
     // Mock vocabulary create endpoint
-    mock.onPost(Constants.API_PREFIX + "/vocabularies").reply(201, null, Object.assign({}, respHeaders, {
-        "location": "http://kbss.felk.cvut.cz/termit/rest/vocabularies/metropolitan-plan"
-    }));
+    mock.onPost(Constants.API_PREFIX + "/vocabularies").reply(
+        201,
+        null,
+        Object.assign({}, respHeaders, {
+            location:
+                "http://kbss.felk.cvut.cz/termit/rest/vocabularies/metropolitan-plan",
+        })
+    );
     // mock.onPost(Constants.API_PREFIX + "/vocabularies").reply(500, {
     //     message: "Unable to create vocabulary!"
     // });
     // Mock term IRI generator
-    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/identifier/).reply(200, "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test/term-one", respHeaders);
+    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/identifier/).reply(
+        200,
+        "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test/term-one",
+        respHeaders
+    );
     // Mock getting subterms of a vocabulary term
-    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/.+\/subterms/).reply((config) => {
-        const url: string = config.url!;
-        if (url.indexOf("pojem-4")) {
-            return [200, require("../rest-mock/subterms"), respHeaders];
-        } else {
-            return [200, [], respHeaders];
+    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/.+\/subterms/).reply(
+        (config) => {
+            const url: string = config.url!;
+            if (url.indexOf("pojem-4")) {
+                return [200, require("../rest-mock/subterms"), respHeaders];
+            } else {
+                return [200, [], respHeaders];
+            }
         }
-    });
+    );
 
     // Mock getting term assignments
-    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/.+\/assignments/).reply(config => {
-        const iri = config.url;
-        const head = Object.assign({}, respHeaders, {
-            "content-type": Constants.JSON_LD_MIME_TYPE
-        });
-        if (iri!.indexOf("pojem-1") !== -1 || iri!.indexOf("pojem-2") !== -1) {
-            return [200, require("../rest-mock/termAssignments.json"), head];
-        } else {
-            return [200, [], head];
+    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/.+\/assignments/).reply(
+        (config) => {
+            const iri = config.url;
+            const head = Object.assign({}, respHeaders, {
+                "content-type": Constants.JSON_LD_MIME_TYPE,
+            });
+            if (
+                iri!.indexOf("pojem-1") !== -1 ||
+                iri!.indexOf("pojem-2") !== -1
+            ) {
+                return [
+                    200,
+                    require("../rest-mock/termAssignments.json"),
+                    head,
+                ];
+            } else {
+                return [200, [], head];
+            }
         }
-    });
+    );
 
     // Mock term creation
-    mock.onPost(/\/rest\/vocabularies\/.+\/terms/).reply(201, null, Object.assign({}, respHeaders, {
-        "location": "http://kbss.felk.cvut.cz/termit/rest/vocabularies/metropolitan-plan/terms/test-term"
-    }));
+    mock.onPost(/\/rest\/vocabularies\/.+\/terms/).reply(
+        201,
+        null,
+        Object.assign({}, respHeaders, {
+            location:
+                "http://kbss.felk.cvut.cz/termit/rest/vocabularies/metropolitan-plan/terms/test-term",
+        })
+    );
 
     // Mock getting vocabulary terms
-    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/roots/).reply(200, require("../rest-mock/terms"), respHeaders);
+    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/roots/).reply(
+        200,
+        require("../rest-mock/terms"),
+        respHeaders
+    );
 
     // Mock term update
-    mock.onPut(/\/rest\/vocabularies\/.+\/terms\/.+/).reply(204, null, respHeaders);
+    mock.onPut(/\/rest\/vocabularies\/.+\/terms\/.+/).reply(
+        204,
+        null,
+        respHeaders
+    );
 
     // Mock getting vocabulary term
     mock.onGet(/\/rest\/vocabularies\/.+\/terms\/.+/).reply((config) => {
@@ -395,64 +492,122 @@ function mockRestApi(axiosInst: AxiosInstance): void {
     });
 
     // Mock term label uniqueness in vocabulary check
-    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/name/).reply((config: AxiosRequestConfig) => {
-        if (config.params.value === "test") {
-            return [200, true];
-        } else {
-            return [200, false];
+    mock.onGet(/\/rest\/vocabularies\/.+\/terms\/name/).reply(
+        (config: AxiosRequestConfig) => {
+            if (config.params.value === "test") {
+                return [200, true];
+            } else {
+                return [200, false];
+            }
         }
-    });
+    );
 
     // Mock vocabulary terms export
-    mock.onGet(/\/rest\/vocabularies\/.+\/terms/).reply((config: AxiosRequestConfig) => {
-        if (config.headers.Accept === Constants.CSV_MIME_TYPE) {
-            const exportData = "IRI,Label,Comment,Types,Sources,SubTerms\nhttp://test.org,Test,Test comment,,,";
-            const attachmentHeader = {};
-            attachmentHeader[Constants.Headers.CONTENT_DISPOSITION] = "attachment; filename=\"export.csv\"";
-            return [200, exportData, Object.assign({}, respHeaders, attachmentHeader)];
+    mock.onGet(/\/rest\/vocabularies\/.+\/terms/).reply(
+        (config: AxiosRequestConfig) => {
+            if (config.headers.Accept === Constants.CSV_MIME_TYPE) {
+                const exportData =
+                    "IRI,Label,Comment,Types,Sources,SubTerms\nhttp://test.org,Test,Test comment,,,";
+                const attachmentHeader = {};
+                attachmentHeader[Constants.Headers.CONTENT_DISPOSITION] =
+                    'attachment; filename="export.csv"';
+                return [
+                    200,
+                    exportData,
+                    Object.assign({}, respHeaders, attachmentHeader),
+                ];
+            }
+            return [415, null];
         }
-        return [415, null];
-    });
+    );
 
     // Mock vocabulary retrieval endpoint
-    mock.onGet(/\/rest\/vocabularies\/.+/).reply(200, require("../rest-mock/vocabulary"), Object.assign({}, respHeaders, {
-        "content-type": Constants.JSON_LD_MIME_TYPE
-    }));
+    mock.onGet(/\/rest\/vocabularies\/.+/).reply(
+        200,
+        require("../rest-mock/vocabulary"),
+        Object.assign({}, respHeaders, {
+            "content-type": Constants.JSON_LD_MIME_TYPE,
+        })
+    );
     // Mock resources
-    mock.onGet(Constants.API_PREFIX + "/resources").reply(200, require("../rest-mock/resources"), respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/resources").reply(
+        200,
+        require("../rest-mock/resources"),
+        respHeaders
+    );
 
     // Mock resource IRI generator
-    mock.onGet(Constants.API_PREFIX + "/resources/identifier").reply(200, "http://onto.fel.cvut.cz/ontologies/termit/resource/test-resource", respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/resources/identifier").reply(
+        200,
+        "http://onto.fel.cvut.cz/ontologies/termit/resource/test-resource",
+        respHeaders
+    );
 
     // Mock text analysis invocation
-    mock.onPut(/\/rest\/resources\/.+\/text-analysis/).reply(204, null, respHeaders);
+    mock.onPut(/\/rest\/resources\/.+\/text-analysis/).reply(
+        204,
+        null,
+        respHeaders
+    );
 
     // Mock getting file content
-    mock.onGet(/\/rest\/resources\/.+\/content/).reply(200, fileContent, Object.assign({}, respHeaders, {"content-type": Constants.HTML_MIME_TYPE}));
+    mock.onGet(/\/rest\/resources\/.+\/content/).reply(
+        200,
+        fileContent,
+        Object.assign({}, respHeaders, {
+            "content-type": Constants.HTML_MIME_TYPE,
+        })
+    );
 
     // Mock update file content
-    mock.onPut(/\/rest\/resources\/.+\/content/).reply(204, fileContent, Object.assign({}, respHeaders, {"content-type": Constants.HTML_MIME_TYPE}));
+    mock.onPut(/\/rest\/resources\/.+\/content/).reply(
+        204,
+        fileContent,
+        Object.assign({}, respHeaders, {
+            "content-type": Constants.HTML_MIME_TYPE,
+        })
+    );
 
     // Mock resource terms retrieval endpoint
-    mock.onGet(/\/rest\/resources\/.+\/terms/).reply(200, require("../rest-mock/resourceTerms"), Object.assign({}, respHeaders, {
-        "content-type": Constants.JSON_LD_MIME_TYPE
-    }));
+    mock.onGet(/\/rest\/resources\/.+\/terms/).reply(
+        200,
+        require("../rest-mock/resourceTerms"),
+        Object.assign({}, respHeaders, {
+            "content-type": Constants.JSON_LD_MIME_TYPE,
+        })
+    );
     // Mock resource retrieval endpoint
-    mock.onGet(/\/rest\/resources\/.+/).reply(config => {
-        if (config.params.namespace && config.params.namespace.indexOf("document") !== -1) {
-            return [200, require("../rest-mock/document"), Object.assign({}, respHeaders, {
-                "content-type": Constants.JSON_LD_MIME_TYPE
-            })];
+    mock.onGet(/\/rest\/resources\/.+/).reply((config) => {
+        if (
+            config.params.namespace &&
+            config.params.namespace.indexOf("document") !== -1
+        ) {
+            return [
+                200,
+                require("../rest-mock/document"),
+                Object.assign({}, respHeaders, {
+                    "content-type": Constants.JSON_LD_MIME_TYPE,
+                }),
+            ];
         } else {
-            return [200, require("../rest-mock/resource"), Object.assign({}, respHeaders, {
-                "content-type": Constants.JSON_LD_MIME_TYPE
-            })];
+            return [
+                200,
+                require("../rest-mock/resource"),
+                Object.assign({}, respHeaders, {
+                    "content-type": Constants.JSON_LD_MIME_TYPE,
+                }),
+            ];
         }
     });
     // Mock resource creation
-    mock.onPost(Constants.API_PREFIX + "/resources").reply(201, null, Object.assign({}, respHeaders, {
-        "location": "http://onto.fel.cvut.cz/ontologies/application/termit/randomInstance-1529066498"
-    }));
+    mock.onPost(Constants.API_PREFIX + "/resources").reply(
+        201,
+        null,
+        Object.assign({}, respHeaders, {
+            location:
+                "http://onto.fel.cvut.cz/ontologies/application/termit/randomInstance-1529066498",
+        })
+    );
 
     // Mock resource tags update
     mock.onPut("/rest/resources/resource/terms").reply(204, null, respHeaders);
@@ -462,24 +617,36 @@ function mockRestApi(axiosInst: AxiosInstance): void {
 
     mock.onGet(/\/rest\/query/).reply((config) => {
         if (config.params.query.includes("?asset")) {
-            return [200, require("../rest-mock/assetCount"), respHeaders]
+            return [200, require("../rest-mock/assetCount"), respHeaders];
         } else if (config.params.query.includes("DISTINCT ?pojem")) {
-            return [200, require("../rest-mock/termFrequency"), respHeaders]
+            return [200, require("../rest-mock/termFrequency"), respHeaders];
         } else if (config.params.query.includes("?typ")) {
-            return [200, require("../rest-mock/termTypeFrequency"), respHeaders]
+            return [
+                200,
+                require("../rest-mock/termTypeFrequency"),
+                respHeaders,
+            ];
         } else {
             return [200, [], respHeaders];
         }
     });
 
     // Mock label search results
-    mock.onGet(Constants.API_PREFIX + "/search/label").reply(200, require("../rest-mock/searchResults"), respHeaders);
+    mock.onGet(Constants.API_PREFIX + "/search/label").reply(
+        200,
+        require("../rest-mock/searchResults"),
+        respHeaders
+    );
 
     // Mock get types
-    mock.onGet(/\/rest\/language\/types/).reply(200, require("../rest-mock/types"), respHeaders);
+    mock.onGet(/\/rest\/language\/types/).reply(
+        200,
+        require("../rest-mock/types"),
+        respHeaders
+    );
 
     // Mock get label
-    mock.onGet(Constants.API_PREFIX + "/data/label").reply(config => {
+    mock.onGet(Constants.API_PREFIX + "/data/label").reply((config) => {
         const iri: string = config.params.iri;
         if (iri.indexOf("#") !== -1) {
             return [404, undefined, respHeaders];
@@ -487,17 +654,29 @@ function mockRestApi(axiosInst: AxiosInstance): void {
         return [200, iri.substring(iri.lastIndexOf("/") + 1), respHeaders];
     });
     // Mock getting known properties
-    mock.onGet(Constants.API_PREFIX + "/data/properties").reply(200, require("../rest-mock/properties"), Object.assign({}, respHeaders, {
-        "content-type": Constants.JSON_LD_MIME_TYPE
-    }));
+    mock.onGet(Constants.API_PREFIX + "/data/properties").reply(
+        200,
+        require("../rest-mock/properties"),
+        Object.assign({}, respHeaders, {
+            "content-type": Constants.JSON_LD_MIME_TYPE,
+        })
+    );
     // Mock creating new property
-    mock.onPost(Constants.API_PREFIX + "/data/properties").reply(201, undefined, Object.assign({}, respHeaders, {
-        "location": "http://kbss.felk.cvut.cz/termit/rest/data/properties"
-    }));
+    mock.onPost(Constants.API_PREFIX + "/data/properties").reply(
+        201,
+        undefined,
+        Object.assign({}, respHeaders, {
+            location: "http://kbss.felk.cvut.cz/termit/rest/data/properties",
+        })
+    );
     // Mock getting last edited assets
-    mock.onGet(Constants.API_PREFIX + "/assets/last-edited").reply(200, require("../rest-mock/lastEditedAssets"), Object.assign({}, respHeaders, {
-        "content-type": Constants.JSON_LD_MIME_TYPE
-    }));
+    mock.onGet(Constants.API_PREFIX + "/assets/last-edited").reply(
+        200,
+        require("../rest-mock/lastEditedAssets"),
+        Object.assign({}, respHeaders, {
+            "content-type": Constants.JSON_LD_MIME_TYPE,
+        })
+    );
 }
 
 const instance = new Ajax();

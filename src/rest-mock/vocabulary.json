@@ -26,7 +26,7 @@
         "http://www.w3.org/2000/01/rdf-schema#label": "metropolitan-plan-p2.html",
         "http://purl.org/dc/terms/description": "Druhá část metropolitního plánu"
       }
-      ]
+    ]
   },
   "http://purl.org/dc/terms/description": "Description of the vocabulary."
 }

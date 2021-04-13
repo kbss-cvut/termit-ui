@@ -1,9 +1,8 @@
 import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {PasswordUpdateUser, UserDataWithPassword} from "../User";
+import { PasswordUpdateUser, UserDataWithPassword } from "../User";
 
 describe("User", () => {
-
     describe("isLocked", () => {
         it("returns true when types contain locked user type", () => {
             const sut = Generator.generateUser();
@@ -50,7 +49,9 @@ describe("User", () => {
         it("returns false for regular or restricted user", () => {
             const sut = Generator.generateUser();
             expect(sut.isAdmin()).toBeFalsy();
-            sut.types.push("http://onto.fel.cvut.cz/ontologies/application/termit/pojem/omezený-uživatel-termitu");
+            sut.types.push(
+                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/omezený-uživatel-termitu"
+            );
             expect(sut.isAdmin()).toBeFalsy();
         });
 
@@ -67,10 +68,14 @@ describe("PasswordUpdateUser", () => {
         it("supports passing password and originalPassword", () => {
             const password = "b";
             const originalPassword = "a";
-            const userData: UserDataWithPassword = Object.assign({}, Generator.generateUser(), {
-                password,
-                originalPassword
-            });
+            const userData: UserDataWithPassword = Object.assign(
+                {},
+                Generator.generateUser(),
+                {
+                    password,
+                    originalPassword,
+                }
+            );
             const sut = new PasswordUpdateUser(userData);
             expect(sut.password).toEqual(password);
             expect(sut.originalPassword).toEqual(originalPassword);

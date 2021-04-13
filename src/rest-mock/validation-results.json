@@ -1,9 +1,7 @@
 [
   {
     "@id": "_:1361102128",
-    "@type": [
-      "http://www.w3.org/ns/shacl#ValidationResult"
-    ],
+    "@type": ["http://www.w3.org/ns/shacl#ValidationResult"],
     "http://www.w3.org/ns/shacl#resultSeverity": {
       "@id": "http://www.w3.org/ns/shacl#Violation"
     },

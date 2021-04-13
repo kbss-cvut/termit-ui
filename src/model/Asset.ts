@@ -2,7 +2,6 @@ export interface HasTypes {
     types?: string[] | string;
 }
 
-
 export interface HasLabel {
     getLabel: () => string;
 }
@@ -16,9 +15,8 @@ export interface AssetData extends HasTypes {
  */
 export const ASSET_CONTEXT = {
     iri: "@id",
-    types: "@type"
+    types: "@type",
 };
-
 
 export interface SupportsJsonLd<T extends any> {
     toJsonLd(): T;

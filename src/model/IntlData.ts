@@ -1,4 +1,4 @@
 export default interface IntlData {
-    locale: string,
-    messages: {}
+    locale: string;
+    messages: {};
 }

@@ -19,7 +19,7 @@
     },
     "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text": "<em>Match</em> can be found in multiple <em>matching</em> places.",
     "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-field": "comment",
-    "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score": 5.00
+    "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score": 5.0
   },
   {
     "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan",
@@ -27,7 +27,7 @@
     "@type": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/slovník",
     "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text": "<em>Metropolitan</em> plan is the plan of urban development of a particular city.",
     "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-field": "comment",
-    "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score": 1.20
+    "http://onto.fel.cvut.cz/ontologies/application/termit/fts/score": 1.2
   },
   {
     "@id": "http://data.iprpraha.cz/zdroj/slovnik/metropolitan-plan",

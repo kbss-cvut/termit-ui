@@ -1,64 +1,120 @@
 import * as React from "react";
-import withI18n, {HasI18n} from "../hoc/withI18n";
 import Term from "../../model/Term";
-import {Button} from "reactstrap";
-import {TiTimes, TiTrash} from "react-icons/ti";
-import {injectIntl} from "react-intl";
+import { Button } from "reactstrap";
+import { TiTimes, TiTrash } from "react-icons/ti";
 import SimplePopupWithActions from "./SimplePopupWithActions";
 import AnnotationTerms from "./AnnotationTerms";
 import TermDefinitionAnnotationView from "./TermDefinitionAnnotationView";
-import {GoPencil} from "react-icons/go";
+import { GoPencil } from "react-icons/go";
+import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import { useI18n } from "../hook/useI18n";
 
-interface TermDefinitionAnnotationProps extends HasI18n {
-    target: string;
-    term?: Term | null;
-    resource?: string;
-    text: string;
-    isOpen: boolean;
+interface TermDefinitionAnnotationProps {
+  target: string;
+  term?: Term | null;
+  resource?: string;
+  text: string;
+  isOpen: boolean;
 
-    onRemove: () => void;
-    onSelectTerm: (term: Term | null) => void;
-    onToggleDetailOpen: () => void;
-    onClose: () => void;
+  onRemove: () => void;
+  onSelectTerm: (term: Term | null) => void;
+  onToggleDetailOpen: () => void;
+  onClose: () => void;
 }
 
-function createActionButtons(props: TermDefinitionAnnotationProps, editing: boolean, onEdit: () => void) {
-    const i18n = props.i18n;
-    const actions = [];
-    if (!editing) {
-        actions.push(<Button key="annotation.definition.edit"
-                             className="m-annotation-definition-edit"
-                             color="primary"
-                             title={i18n("edit")}
-                             size="sm"
-                             onClick={onEdit}><GoPencil/></Button>);
+function createActionButtons(
+  props: TermDefinitionAnnotationProps,
+  i18n: (msgId: string) => string,
+  editing: boolean,
+  onEdit: () => void
+) {
+  const actions = [];
+  if (!editing) {
+    actions.push(
+      <IfUserAuthorized
+        renderUnauthorizedAlert={false}
+        key="annotation.definition.edit"
+      >
+        <Button
+          className="m-annotation-definition-edit"
+          color="primary"
+          title={i18n("edit")}
+          size="sm"
+          onClick={onEdit}
+        >
+          <GoPencil />
+        </Button>
+      </IfUserAuthorized>
+    );
+  }
+  actions.push(
+    <IfUserAuthorized
+      renderUnauthorizedAlert={false}
+      key="annotation.definition.remove"
+    >
+      <Button
+        className="m-annotation-definition-remove"
+        color="primary"
+        title={i18n("remove")}
+        size="sm"
+        onClick={props.onRemove}
+      >
+        <TiTrash />
+      </Button>
+    </IfUserAuthorized>
+  );
+  actions.push(
+    <Button
+      key="annotation.definition.close"
+      className="m-annotation-definition-close"
+      color="primary"
+      title={i18n("annotation.close")}
+      size="sm"
+      onClick={props.onClose}
+    >
+      <TiTimes />
+    </Button>
+  );
+  return actions;
+}
+
+export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> = (
+  props
+) => {
+  const { i18n } = useI18n();
+  const term = props.term !== undefined ? props.term : null;
+  const [editing, setEditing] = React.useState(term === null);
+  React.useEffect(() => {
+    if (term) {
+      setEditing(false);
     }
-    actions.push(<Button key="annotation.definition.remove"
-                         className="m-annotation-definition-remove"
-                         color="primary"
-                         title={i18n("remove")}
-                         size="sm"
-                         onClick={props.onRemove}><TiTrash/></Button>);
-    actions.push(<Button key="annotation.definition.close"
-                         className="m-annotation-definition-close"
-                         color="primary"
-                         title={i18n("annotation.close")}
-                         size="sm"
-                         onClick={props.onClose}><TiTimes/></Button>);
-    return actions;
-}
+  }, [term]);
+  const bodyContent = editing ? (
+    <AnnotationTerms
+      onChange={props.onSelectTerm}
+      canCreateTerm={false}
+      selectedTerm={term}
+    />
+  ) : (
+    <TermDefinitionAnnotationView
+      term={term}
+      resource={props.resource}
+      textContent={props.text}
+    />
+  );
 
-export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> = props => {
-    const term = props.term !== undefined ? props.term : null;
-    const [editing, setEditing] = React.useState(term === null);
-    const bodyContent = editing ? <AnnotationTerms onChange={props.onSelectTerm} canCreateTerm={false}
-                                                   selectedTerm={term}/> :
-        <TermDefinitionAnnotationView term={term} resource={props.resource} textContent={props.text}/>;
-
-    return <SimplePopupWithActions isOpen={props.isOpen} target={props.target} toggle={props.onToggleDetailOpen}
-                                   component={bodyContent}
-                                   actions={createActionButtons(props, editing, () => setEditing(!editing))}
-                                   title={props.i18n("annotation.definition.title")}/>;
+  return (
+    <SimplePopupWithActions
+      isOpen={props.isOpen}
+      target={props.target}
+      toggle={props.onToggleDetailOpen}
+      component={bodyContent}
+      actions={createActionButtons(props, i18n, editing, () =>
+        setEditing(!editing)
+      )}
+      title={i18n("annotation.definition.title")}
+    />
+  );
 };
 
-export default injectIntl(withI18n(TermDefinitionAnnotation));
+export default TermDefinitionAnnotation;

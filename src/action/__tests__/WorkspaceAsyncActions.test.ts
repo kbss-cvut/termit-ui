@@ -1,10 +1,13 @@
-import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
+import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
-import {ThunkDispatch} from "../../util/Types";
-import {loadCurrentWorkspace, selectWorkspace} from "../WorkspaceAsyncActions";
+import { ThunkDispatch } from "../../util/Types";
+import {
+    loadCurrentWorkspace,
+    selectWorkspace,
+} from "../WorkspaceAsyncActions";
 import ActionType from "../ActionType";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Workspace from "../../model/Workspace";
@@ -14,14 +17,13 @@ jest.mock("../../util/Ajax", () => {
     const originalModule = jest.requireActual("../../util/Ajax");
     return {
         ...originalModule,
-        default: jest.fn()
+        default: jest.fn(),
     };
 });
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("WorkspaceAsyncActions", () => {
-
     let store: MockStoreEnhanced<TermItState>;
 
     beforeEach(() => {
@@ -32,41 +34,65 @@ describe("WorkspaceAsyncActions", () => {
     describe("selectWorkspace", () => {
         it("sends request for selecting workspace to server API", () => {
             const fragment = "test-workspace";
-            const iri = VocabularyUtils.create(`${VocabularyUtils.NS_TERMIT}${fragment}`);
+            const iri = VocabularyUtils.create(
+                `${VocabularyUtils.NS_TERMIT}${fragment}`
+            );
             Ajax.put = jest.fn().mockResolvedValue({});
-            return Promise.resolve((store.dispatch as ThunkDispatch)(selectWorkspace(iri))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(selectWorkspace(iri))
+            ).then(() => {
                 expect(Ajax.put).toHaveBeenCalled();
                 const url = (Ajax.put as jest.Mock).mock.calls[0][0];
                 expect(url).toContain(`/workspaces/${fragment}`);
                 const config = (Ajax.put as jest.Mock).mock.calls[0][1];
-                expect(config.getParams().namespace).toEqual(VocabularyUtils.NS_TERMIT);
+                expect(config.getParams().namespace).toEqual(
+                    VocabularyUtils.NS_TERMIT
+                );
             });
         });
 
         it("saves returned workspace in application store", () => {
             const fragment = "test-workspace";
-            const iri = VocabularyUtils.create(`${VocabularyUtils.NS_TERMIT}${fragment}`);
+            const iri = VocabularyUtils.create(
+                `${VocabularyUtils.NS_TERMIT}${fragment}`
+            );
             const ws = require("../../rest-mock/workspace.json");
-            Ajax.put = jest.fn().mockResolvedValue({data: ws, status: 200});
-            return Promise.resolve((store.dispatch as ThunkDispatch)(selectWorkspace(iri))).then(() => {
-                const successAction = store.getActions().find(a => a.type === ActionType.SELECT_WORKSPACE && a.status === AsyncActionStatus.SUCCESS);
+            Ajax.put = jest.fn().mockResolvedValue({ data: ws, status: 200 });
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(selectWorkspace(iri))
+            ).then(() => {
+                const successAction = store
+                    .getActions()
+                    .find(
+                        (a) =>
+                            a.type === ActionType.SELECT_WORKSPACE &&
+                            a.status === AsyncActionStatus.SUCCESS
+                    );
                 expect(successAction).toBeDefined();
                 expect(successAction.payload).toBeDefined();
                 expect(successAction.payload.iri).toEqual(ws["@id"]);
-                expect(successAction.payload.label).toEqual(ws[VocabularyUtils.DC_TITLE]);
-                expect(successAction.payload.description).toEqual(ws[VocabularyUtils.DC_DESCRIPTION]);
+                expect(successAction.payload.label).toEqual(
+                    ws[VocabularyUtils.DC_TITLE]
+                );
+                expect(successAction.payload.description).toEqual(
+                    ws[VocabularyUtils.DC_DESCRIPTION]
+                );
             });
         });
 
         it("does not send request when workspace is already loaded in state", () => {
             const fragment = "test-workspace";
-            const iri = VocabularyUtils.create(`${VocabularyUtils.NS_TERMIT}${fragment}`);
+            const iri = VocabularyUtils.create(
+                `${VocabularyUtils.NS_TERMIT}${fragment}`
+            );
             Ajax.put = jest.fn().mockResolvedValue({});
             store.getState().workspace = new Workspace({
                 iri: iri.toString(),
-                label: "Test ws"
+                label: "Test ws",
             });
-            return Promise.resolve((store.dispatch as ThunkDispatch)(selectWorkspace(iri))).then(() => {
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(selectWorkspace(iri))
+            ).then(() => {
                 expect(Ajax.put).not.toHaveBeenCalled();
             });
         });
@@ -76,16 +102,28 @@ describe("WorkspaceAsyncActions", () => {
         it("sends workspace loading request to server API", () => {
             const ws = require("../../rest-mock/workspace.json");
             Ajax.get = jest.fn().mockResolvedValue(ws);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadCurrentWorkspace())).then(() => {
-                expect((Ajax.get as jest.Mock).mock.calls[0][0]).toContain("workspaces/current");
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadCurrentWorkspace())
+            ).then(() => {
+                expect((Ajax.get as jest.Mock).mock.calls[0][0]).toContain(
+                    "workspaces/current"
+                );
             });
         });
 
         it("passes loaded workspace as payload to store on success", () => {
             const ws = require("../../rest-mock/workspace.json");
             Ajax.get = jest.fn().mockResolvedValue(ws);
-            return Promise.resolve((store.dispatch as ThunkDispatch)(loadCurrentWorkspace())).then(() => {
-                const successAction = store.getActions().find(a => a.type === ActionType.LOAD_WORKSPACE && a.status === AsyncActionStatus.SUCCESS);
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(loadCurrentWorkspace())
+            ).then(() => {
+                const successAction = store
+                    .getActions()
+                    .find(
+                        (a) =>
+                            a.type === ActionType.LOAD_WORKSPACE &&
+                            a.status === AsyncActionStatus.SUCCESS
+                    );
                 expect(successAction).toBeDefined();
                 expect(successAction.payload).toBeInstanceOf(Workspace);
                 expect(successAction.payload.iri).toEqual(ws["@id"]);

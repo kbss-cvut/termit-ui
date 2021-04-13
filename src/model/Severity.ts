@@ -7,6 +7,4 @@ export const CONTEXT = Object.assign({}, ctx);
 
 export type Severity = {
     iri: string;
-}
-
-
+};

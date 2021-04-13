@@ -31,7 +31,9 @@
 }
 
 .comment .comment-text {
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  hyphens: manual;
 }
 
 .comment .metadata .actionable-reaction {
@@ -49,9 +51,24 @@
 
 .comments .actions .comment-action {
   cursor: pointer;
-  //color: $gray-600;
   padding: 0.125rem 0.25rem;
-  //border: 1px solid #e9ecef;
+  border-radius: 0.25rem;
+}
+
+.comments .actions .comment-action:hover {
+  cursor: pointer;
+  color: inherit;
+}
+
+.comment .actions {
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.comments .actions .comment-action {
+  cursor: pointer;
+  color: $gray-600;
+  padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
 }
 

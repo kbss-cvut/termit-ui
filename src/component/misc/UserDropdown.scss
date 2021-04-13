@@ -10,16 +10,19 @@
 }
 
 .dropdown {
-  .text-dropdown span, .text-dropdown:after {
+  .text-dropdown span,
+  .text-dropdown:after {
     color: $link-color !important;
   }
 
-  .text-dropdown:hover span, .text-dropdown:hover:after {
+  .text-dropdown:hover span,
+  .text-dropdown:hover:after {
     color: $link-hover-color !important;
   }
 
   &.show {
-    .text-dropdown span, .text-dropdown:after {
+    .text-dropdown span,
+    .text-dropdown:after {
       color: $link-hover-color !important;
     }
   }

@@ -10,7 +10,8 @@
   border-color: rgba(0, 0, 0, 0.125) !important;
 }
 
-.toggle-on, .toggle-off {
+.toggle-on,
+.toggle-off {
   position: absolute !important;
 }
 
@@ -19,7 +20,8 @@
 }
 
 .toggle-group {
-  .toggle-off, .btn-secondary {
+  .toggle-off,
+  .btn-secondary {
     background-color: transparent !important;
   }
 }

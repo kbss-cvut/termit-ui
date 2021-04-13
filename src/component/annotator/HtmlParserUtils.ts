@@ -1,14 +1,13 @@
-import {DomHandler, DomUtils, Parser as HtmlParser} from "htmlparser2";
-import {Element, Node} from "domhandler";
+import { DomHandler, DomUtils, Parser as HtmlParser } from "htmlparser2";
+import { Element, Node } from "domhandler";
 
 const RDF_ATTRIBUTE_NAMES = ["about", "property", "resource", "typeof"];
 
 const HtmlParserUtils = {
-
     html2dom(html: string): Node[] {
         // Do not decode HTML entities (e.g., &lt;) when parsing content for object representation, it caused issues
         // with rendering
-        const options = {decodeEntities: false};
+        const options = { decodeEntities: false };
         const handler = new DomHandler();
         const parser = new HtmlParser(handler, options);
         parser.parseComplete(html);
@@ -29,12 +28,26 @@ const HtmlParserUtils = {
         if ((node as Element).attribs && (node as Element).attribs.prefix) {
             const words = (node as Element).attribs.prefix.split(/\s+/);
             if (words.length % 2) {
-                throw new Error("Failed to parse prefix '" + (node as Element).attribs.prefix + "' defined within tag " + (node as Element).name + ". Length of tokens separated by white-space is not even.");
+                throw new Error(
+                    "Failed to parse prefix '" +
+                        (node as Element).attribs.prefix +
+                        "' defined within tag " +
+                        (node as Element).name +
+                        ". Length of tokens separated by white-space is not even."
+                );
             }
             const map = new Map();
             for (let i = 0; i < words.length; i = i + 2) {
                 if (!words[i].endsWith(":")) {
-                    throw new Error("Failed to parse prefix '" + (node as Element).attribs.prefix + "' defined within tag " + (node as Element).name + ". Token " + words[i] + " does not end with ':'.");
+                    throw new Error(
+                        "Failed to parse prefix '" +
+                            (node as Element).attribs.prefix +
+                            "' defined within tag " +
+                            (node as Element).name +
+                            ". Token " +
+                            words[i] +
+                            " does not end with ':'."
+                    );
                 }
                 const prefix = words[i].substring(0, words[i].length - 1);
                 map.set(prefix, words[i + 1]);
@@ -76,7 +89,7 @@ const HtmlParserUtils = {
      * @return Copy of attrs with resolved rdf properties.
      */
     resolveRDFAttributes(attrs: any, prefixMap?: Map<string, string>): any {
-        const newAttrs = {...attrs};
+        const newAttrs = { ...attrs };
 
         for (const name of RDF_ATTRIBUTE_NAMES) {
             if (attrs[name]) {
@@ -84,7 +97,7 @@ const HtmlParserUtils = {
             }
         }
         return newAttrs;
-    }
+    },
 };
 
 export default HtmlParserUtils;

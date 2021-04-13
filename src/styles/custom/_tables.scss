@@ -15,12 +15,12 @@
 }
 
 .text-ellipsis:after {
-  content:'...';
-  background:inherit;
-  position:absolute;
-  bottom:0;
-  right:0;
-  box-shadow:0 0 5px red
+  content: "...";
+  background: inherit;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  box-shadow: 0 0 5px red;
 }
 
 .card .table {
