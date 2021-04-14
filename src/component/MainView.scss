@@ -60,14 +60,12 @@
 .main-view-sidebar-expanded {
   @media (min-width: $md) {
     margin-left: $navbar-vertical-width-expanded;
-    overflow: hidden;
   }
 }
 
 .main-view-sidebar-collapsed {
   @media (min-width: $md) {
     margin-left: $navbar-vertical-width-collapsed;
-    overflow: hidden;
   }
 }
 
