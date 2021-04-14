@@ -1,11 +1,10 @@
 .legend {
   opacity: 0.9;
-  display: inline-block;
   position: fixed !important;
-  bottom: 120px;
+  top: 150px;
   right: 15px;
   width: 230px;
-  margin-right: 0.5rem;
+  margin-right: 0.25rem;
   background-color: whitesmoke;
 }
 
@@ -16,22 +15,21 @@
 }
 
 .legend-button {
-  position: fixed !important;
-  bottom: 80px;
-  right: 15px;
-  float: right;
   min-width: 8.75rem;
 }
 
 .analyze-button {
-  position: fixed !important;
-  bottom: 40px;
-  right: 15px;
-  float: right;
   min-width: 8.75rem;
 }
 
 .legend-title {
   font-size: 1.2rem;
   font-weight: 600;
+}
+
+.annotator-header {
+  position: sticky;
+  top: 85px;
+  z-index: 101;
+  background-color: #e9eaec;
 }

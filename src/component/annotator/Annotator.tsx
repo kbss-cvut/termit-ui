@@ -1,37 +1,35 @@
 import * as React from "react";
-import { Element, Node as DomHandlerNode } from "domhandler";
+import {Element, Node as DomHandlerNode} from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
-import AnnotationDomHelper, { AnnotationType } from "./AnnotationDomHelper";
+import AnnotationDomHelper, {AnnotationType} from "./AnnotationDomHelper";
 import Term from "../../model/Term";
 import HtmlDomUtils from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
-import { DomUtils } from "htmlparser2";
-import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
-import CreateTermFromAnnotation, {
-  CreateTermFromAnnotation as CT,
-} from "./CreateTermFromAnnotation";
+import {DomUtils} from "htmlparser2";
+import VocabularyUtils, {IRI, IRIImpl} from "../../util/VocabularyUtils";
+import CreateTermFromAnnotation, {CreateTermFromAnnotation as CT,} from "./CreateTermFromAnnotation";
 import SelectionPurposeDialog from "./SelectionPurposeDialog";
-import { connect } from "react-redux";
-import { ThunkDispatch } from "../../util/Types";
+import {connect} from "react-redux";
+import {ThunkDispatch} from "../../util/Types";
 import Message from "../../model/Message";
-import { publishMessage } from "../../action/SyncActions";
+import {publishMessage} from "../../action/SyncActions";
 import MessageType from "../../model/MessageType";
-import TermOccurrence, { TextQuoteSelector } from "../../model/TermOccurrence";
-import { setTermDefinitionSource } from "../../action/AsyncTermActions";
+import TermOccurrence, {TextQuoteSelector} from "../../model/TermOccurrence";
+import {setTermDefinitionSource} from "../../action/AsyncTermActions";
 import JsonLdUtils from "../../util/JsonLdUtils";
 import Utils from "../../util/Utils";
 import AnnotatorContent from "./AnnotatorContent";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import { injectIntl } from "react-intl";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import {injectIntl} from "react-intl";
 import WindowTitle from "../misc/WindowTitle";
 import TermDefinitionEdit from "./TermDefinitionEdit";
-import { updateTerm } from "../../action/AsyncActions";
+import {updateTerm} from "../../action/AsyncActions";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import "./Annotator.scss";
 import HeaderWithActions from "../misc/HeaderWithActions";
-import { Card, CardBody, CardHeader } from "reactstrap";
+import {Card, CardBody} from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
 import TextAnalysisInvocationButton from "./TextAnalysisInvocationButton";
@@ -493,27 +491,20 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     return (
       <>
         <WindowTitle title={this.props.i18n("annotator")} />
-        <HeaderWithActions title={this.props.file.getLabel()} />
-        <Card>
-          <CardHeader className="text-right">
-            <VocabularyIriLink
-              iri={IRIImpl.toString(this.props.vocabularyIri)}
-            />
-          </CardHeader>
-          <CardBody>
-            <LegendToggle key="legend-toggle" />
-            <IfUserAuthorized
-              key="text-analysis-button"
-              renderUnauthorizedAlert={false}
-            >
-              <TextAnalysisInvocationButton
-                className="analyze-button"
-                fileIri={this.props.fileIri}
-                defaultVocabularyIri={IRIImpl.toString(
+        <HeaderWithActions title={this.renderTitle()} className="annotator-header" actions={[<IfUserAuthorized
+            key="text-analysis-button"
+            renderUnauthorizedAlert={false}
+        >
+          <TextAnalysisInvocationButton
+              className="analyze-button"
+              fileIri={this.props.fileIri}
+              defaultVocabularyIri={IRIImpl.toString(
                   this.props.vocabularyIri
-                )}
-              />
-            </IfUserAuthorized>
+              )}
+          />
+        </IfUserAuthorized>, <LegendToggle/>]} />
+        <Card>
+          <CardBody>
             <CreateTermFromAnnotation
               ref={this.createNewTermDialog}
               show={this.state.showNewTermDialog}
@@ -557,6 +548,15 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         </Card>
       </>
     );
+  }
+
+  private renderTitle() {
+    return <>
+      {this.props.file.getLabel()}
+      <div className="small italics">
+        <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)}/>
+      </div>
+    </>;
   }
 
   private generateVirtualPopperAnchor(): HTMLElement {
