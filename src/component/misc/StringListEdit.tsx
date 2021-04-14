@@ -4,9 +4,9 @@ import withI18n, {HasI18n} from "../hoc/withI18n";
 import {Badge, Button, FormFeedback, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
 import {GoPlus} from "react-icons/go";
 import {FaTrashAlt} from "react-icons/fa";
-import "./StringListEdit.scss";
 import Utils from "../../util/Utils";
 import HelpIcon from "./HelpIcon";
+import "./StringListEdit.scss";
 
 interface StringListEditProps extends HasI18n {
     list?: string[];

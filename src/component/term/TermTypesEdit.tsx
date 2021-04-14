@@ -85,7 +85,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
                                    invalidMessage={this.props.invalidMessage}
                                    renderAsTree={true}
                                    style={style}
-                                   placeholder={i18n("term.metadata.types.select.placeholder")}/>
+                                   placeholder=""/>
             {this.props.invalid ?
                 <FormFeedback style={{display: "block"}}>{this.props.invalidMessage}</FormFeedback> : <></>}
         </FormGroup>;
