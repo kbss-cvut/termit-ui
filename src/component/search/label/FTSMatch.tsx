@@ -1,14 +1,11 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
 import {
   Instruction,
   Parser as HtmlToReactParser,
   ProcessNodeDefinitions,
 } from "html-to-react";
-import { Col, Row } from "reactstrap";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
 
-interface FTSMatchProps extends HasI18n {
+interface FTSMatchProps {
   match: string;
 }
 
@@ -45,18 +42,16 @@ const processingInstructions: Instruction[] = [
 export const FTSMatch: React.FC<FTSMatchProps> = (props: FTSMatchProps) => {
   const parser = new HtmlToReactParser();
   return (
-    <Row key={props.match}>
-      <Col md={9} lg={10} xl={11}>
-        <React.Fragment>
-          {parser.parseWithInstructions(
-            props.match,
-            isValidNode,
-            processingInstructions
-          )}
-        </React.Fragment>
-      </Col>
-    </Row>
+    <div key={props.match}>
+      <React.Fragment>
+        {parser.parseWithInstructions(
+          props.match,
+          isValidNode,
+          processingInstructions
+        )}
+      </React.Fragment>
+    </div>
   );
 };
 
-export default injectIntl(withI18n(FTSMatch));
+export default FTSMatch;
