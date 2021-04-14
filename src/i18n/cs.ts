@@ -599,6 +599,7 @@ const cs = {
         "annotation.definition.original": "Původní definice",
         "annotation.definition.new": "Nová definice",
 
+        "annotator.legend.title": "Legenda",
         "annotator.legend.confirmed.loading": "Anotace se načítá",
         "annotator.legend.confirmed.loading.tooltip":
             "Annotace, kterou vytvořil či akceptoval uživatel, se načítá.",

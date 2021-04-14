@@ -587,6 +587,7 @@ const en = {
         "annotation.definition.original": "Original definition",
         "annotation.definition.new": "New definition",
 
+        "annotator.legend.title": "Legend",
         "annotator.legend.confirmed.loading": "Loading annotation",
         "annotator.legend.confirmed.loading.tooltip":
             "Annotation that was created or accepted by a user is loading.",
