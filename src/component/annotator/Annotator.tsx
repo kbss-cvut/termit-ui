@@ -509,7 +509,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 )}
               />
             </IfUserAuthorized>,
-            <LegendToggle />,
+            <LegendToggle key="legend-toggle" />,
           ]}
         />
         <Card>
