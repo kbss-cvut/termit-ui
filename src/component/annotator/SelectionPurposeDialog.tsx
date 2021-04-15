@@ -39,7 +39,7 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = (
       toggle={props.onCancel}
     >
       <div onClick={handler}>
-        <PopoverHeader className="d-flex">
+        <PopoverHeader className="d-flex align-items-center">
           <div className="flex-grow-1">
             {i18n("annotator.selectionPurpose.dialog.title")}
           </div>
@@ -47,7 +47,7 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = (
             <Button
               id="annotator-selection-dialog-cancel"
               onClick={props.onCancel}
-              color="secondary"
+              color="primary"
               size="sm"
             >
               <TiTimes />

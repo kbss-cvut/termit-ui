@@ -98,10 +98,12 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
         unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}
       >
         <FormGroup>
-          <div>
-            <Label className="attribute-label mr-1">
-              {i18n("type.term") + ":"}
-            </Label>
+          <div className="align-items-center d-flex mb-2">
+            <div className="flex-grow-1">
+              <Label className="attribute-label mb-0">
+                {i18n("type.term") + ":"}
+              </Label>
+            </div>
             {this.props.canCreateTerm && (
               <Button
                 key="annotator.createTerm"
@@ -109,8 +111,10 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
                 title={i18n("glossary.createTerm.tooltip")}
                 size="sm"
                 onClick={this.props.onCreateTerm}
+                className="pull-right"
               >
-                <GoPlus />
+                <GoPlus className="mr-1" />
+                {i18n("glossary.new")}
               </Button>
             )}
           </div>
@@ -122,6 +126,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             options={terms}
             isMenuOpen={false}
             multi={false}
+            autoFocus={true}
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabulary!.iri
             )}
