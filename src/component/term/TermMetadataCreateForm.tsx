@@ -146,7 +146,8 @@ export class TermMetadataCreateForm extends React.Component<
             <CustomInput
               name="create-term-label"
               label={i18n("asset.label")}
-              help={this.props.i18n("term.label.help")}
+              help={i18n("term.label.help")}
+              hint={i18n("required")}
               onChange={this.onLabelChange}
               autoFocus={true}
               invalid={labelInLanguageExists}

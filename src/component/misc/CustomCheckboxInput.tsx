@@ -24,6 +24,7 @@ export default class CustomCheckBoxInput extends AbstractInput<InputProps> {
             &nbsp;
             {this.renderLabel()}
             <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+            {this.renderHint()}
         </>;
     }
 }

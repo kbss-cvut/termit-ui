@@ -24,6 +24,7 @@ export default class TextArea extends AbstractInput<TextAreaProps> {
             <Input type="textarea" style={{resize: "none"}} bsSize="sm"
                    ref={this.input} {...this.inputProps()}/>
             <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+            {this.renderHint()}
         </FormGroup>;
     }
 }

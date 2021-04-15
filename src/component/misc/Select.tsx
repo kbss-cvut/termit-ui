@@ -13,6 +13,7 @@ export default class Select extends AbstractInput<AbstractInputProps> {
                 {this.props.children}
             </Input>
             <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+            {this.renderHint()}
         </FormGroup>;
     }
 }

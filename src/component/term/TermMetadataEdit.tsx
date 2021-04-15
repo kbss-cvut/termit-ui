@@ -244,6 +244,7 @@ export class TermMetadataEdit extends React.Component<
                         : "")
                     }
                     help={i18n("term.label.help")}
+                    hint={i18n("required")}
                   />
                 </Col>
               </Row>
