@@ -20,6 +20,8 @@ const en = {
         "created-info": "Created by {author} on {date}",
         "select.placeholder": "Select...",
         "help.title": "Help",
+        "multilingual.title":
+            "Attribute value can be provided in multiple languages",
 
         "connection.error": "Unable to connect to the server.",
         "ajax.unparseable-error":

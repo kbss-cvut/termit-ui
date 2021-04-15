@@ -20,6 +20,7 @@ import {
 import { checkLabelUniqueness } from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/AbstractCreateAsset";
+import MultilingualIcon from "../misc/MultilingualIcon";
 
 interface TermMetadataCreateFormProps extends HasI18n {
   onChange: (change: object, callback?: () => void) => void;
@@ -145,7 +146,12 @@ export class TermMetadataCreateForm extends React.Component<
           <Col xs={12}>
             <CustomInput
               name="create-term-label"
-              label={i18n("asset.label")}
+              label={
+                <>
+                  {i18n("asset.label")}
+                  <MultilingualIcon id="create-term-label-multilingual" />
+                </>
+              }
               help={i18n("term.label.help")}
               hint={i18n("required")}
               onChange={this.onLabelChange}
@@ -186,7 +192,12 @@ export class TermMetadataCreateForm extends React.Component<
           <Col xs={12}>
             <TextArea
               name="create-term-comment"
-              label={i18n("term.metadata.comment")}
+              label={
+                <>
+                  {i18n("term.metadata.comment")}
+                  <MultilingualIcon id="create-term-comment-multilingual" />
+                </>
+              }
               labelClass="attribute-label"
               type="textarea"
               rows={4}
