@@ -114,7 +114,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
                 className="pull-right"
               >
                 <GoPlus className="mr-1" />
-                {i18n("glossary.new")}
+                {i18n("annotator.createTerm.button")}
               </Button>
             )}
           </div>

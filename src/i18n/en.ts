@@ -552,6 +552,7 @@ const en = {
         "annotator.selectionPurpose.create": "Create term",
         "annotator.selectionPurpose.occurrence": "Mark term occurrence",
         "annotator.selectionPurpose.definition": "Mark term definition",
+        "annotator.createTerm.button": "New",
         "annotator.createTerm.selectDefinition": "Select definition",
         "annotator.createTerm.selectDefinition.tooltip":
             "Hide this dialog and select term definition in text",

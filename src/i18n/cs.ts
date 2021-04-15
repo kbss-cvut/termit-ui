@@ -564,6 +564,7 @@ const cs = {
         "annotator.selectionPurpose.create": "Nový pojem",
         "annotator.selectionPurpose.occurrence": "Označení výskytu pojmu",
         "annotator.selectionPurpose.definition": "Označení definice pojmu",
+        "annotator.createTerm.button": "Nový",
         "annotator.createTerm.selectDefinition": "Vybrat definici",
         "annotator.createTerm.selectDefinition.tooltip":
             "Skrýt tento dialog a vybrat definici pojmu v textu",
