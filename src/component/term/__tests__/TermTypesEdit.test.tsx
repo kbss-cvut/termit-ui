@@ -13,8 +13,6 @@ import { langString } from "../../../model/MultilingualString";
 
 jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
-jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
-
 describe("TermTypesEdit", () => {
   let onChange: (types: string[]) => void;
   let loadTypes: () => void;
