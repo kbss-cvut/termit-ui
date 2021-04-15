@@ -126,7 +126,6 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             options={terms}
             isMenuOpen={false}
             multi={false}
-            autoFocus={true}
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabulary!.iri
             )}
