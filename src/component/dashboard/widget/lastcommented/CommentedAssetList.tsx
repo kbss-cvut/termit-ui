@@ -1,14 +1,15 @@
 import * as React from "react";
-import { useCallback } from "react";
-import { Col, Label, Row, Table } from "reactstrap";
+import {useCallback} from "react";
+import {Col, Label, Row, Table} from "reactstrap";
 import TimeAgo from "javascript-time-ago";
 import User from "../../../../model/User";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import TermItState from "../../../../model/TermItState";
 import TermIriLink from "../../../term/TermIriLink";
 import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
-import { useI18n } from "../../../hook/useI18n";
+import {useI18n} from "../../../hook/useI18n";
 import "./CommentedAssetList.scss";
+import Comment from "../../../../model/Comment";
 
 export const DISPLAY_LENGTH_THRESHOLD = 65;
 export const ELLIPSIS = "...";
@@ -58,36 +59,47 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
     [formatMessage, user, locale]
   );
 
+    const renderComment = useCallback(
+        (comment: Comment) => {
+            const lastEdited = comment.modified
+                ? comment.modified
+                : comment.created;
+            return (<>
+                    <div className="comment-text"
+                         title={i18n("dashboard.widget.commentList.lastComment")}>
+                        {renderCommentText(comment.content)}
+                    </div>
+                    <Row>
+                        <Col xs={12}>
+                            <Label
+                                className="italics asset-list-title-message"
+                                title={new Date(lastEdited!).toLocaleString(locale)}
+                            >
+                                {renderMessage(
+                                    lastEdited!,
+                                    new User(comment.author!)
+                                )}
+                            </Label>
+                        </Col>
+                    </Row>
+                </>
+            );
+        },
+        [renderMessage, i18n, locale]
+    );
+
   const renderCommentedAsset = useCallback(
     (commentedAsset: RecentlyCommentedAsset) => {
-      const lastEdited = commentedAsset.lastComment.modified
-        ? commentedAsset.lastComment.modified
-        : commentedAsset.lastComment.created;
+      commentedAsset.lastMyComment = commentedAsset.lastComment;
       return (
         <td className="col-xs-12 px-0">
           <div>
             <TermIriLink iri={commentedAsset.iri!} />
             <br />
-            <div
-              className="comment-text"
-              title={i18n("dashboard.widget.commentList.lastComment")}
-            >
-              {renderCommentText(commentedAsset.lastComment.content)}
+              {renderComment(commentedAsset.lastComment)}
+              {commentedAsset.lastMyComment ?
+                  <div style={{marginLeft:30}}>{i18n("dashboard.widget.commentList.lastMyComment")} {renderComment(commentedAsset.lastMyComment)}</div>: undefined}
             </div>
-          </div>
-          <Row>
-            <Col xs={12}>
-              <Label
-                className="italics asset-list-title-message"
-                title={new Date(lastEdited!).toLocaleString(locale)}
-              >
-                {renderMessage(
-                  lastEdited!,
-                  new User(commentedAsset.lastComment.author!)
-                )}
-              </Label>
-            </Col>
-          </Row>
         </td>
       );
     },
