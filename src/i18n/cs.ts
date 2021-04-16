@@ -113,7 +113,7 @@ const cs = {
         "dashboard.widget.commentList.empty":
             "Zde uvidíte své poslední komentáře a reakce na ně.",
         "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
-        "dashboard.widget.commentList.lastMyComment": "s poslední reakcí:",
+        "dashboard.widget.commentList.lastMyComment": "...",
         "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
         "dashboard.widget.commentList.messageByYou": "{when} Vámi .",
         "dashboard.widget.lastCommentedAssets.title":

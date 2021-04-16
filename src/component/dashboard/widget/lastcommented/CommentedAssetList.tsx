@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useCallback} from "react";
-import {Col, Label, Row, Table} from "reactstrap";
+import {Table} from "reactstrap";
 import TimeAgo from "javascript-time-ago";
 import User from "../../../../model/User";
 import {connect} from "react-redux";
@@ -69,19 +69,14 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
                          title={i18n("dashboard.widget.commentList.lastComment")}>
                         {renderCommentText(comment.content)}
                     </div>
-                    <Row>
-                        <Col xs={12}>
-                            <Label
-                                className="italics asset-list-title-message"
-                                title={new Date(lastEdited!).toLocaleString(locale)}
-                            >
-                                {renderMessage(
-                                    lastEdited!,
-                                    new User(comment.author!)
-                                )}
-                            </Label>
-                        </Col>
-                    </Row>
+                    <div className="italics asset-list-title-message"
+                          title={new Date(lastEdited!).toLocaleString(locale)}
+                    >
+                        {renderMessage(
+                            lastEdited!,
+                            new User(comment.author!)
+                        )}
+                    </div>
                 </>
             );
         },
@@ -90,15 +85,15 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
 
   const renderCommentedAsset = useCallback(
     (commentedAsset: RecentlyCommentedAsset) => {
-      commentedAsset.lastMyComment = commentedAsset.lastComment;
       return (
         <td className="col-xs-12 px-0">
           <div>
             <TermIriLink iri={commentedAsset.iri!} />
             <br />
-              {renderComment(commentedAsset.lastComment)}
-              {commentedAsset.lastMyComment ?
-                  <div style={{marginLeft:30}}>{i18n("dashboard.widget.commentList.lastMyComment")} {renderComment(commentedAsset.lastMyComment)}</div>: undefined}
+              {commentedAsset.lastMyComment ?<>{renderComment(commentedAsset.lastMyComment)}
+                  <div className="ml-4"><span className="text-muted">{i18n("dashboard.widget.commentList.lastMyComment")}</span>
+                      {renderComment(commentedAsset.lastComment)}</div></>
+                  : renderComment(commentedAsset.lastComment)}
             </div>
         </td>
       );
