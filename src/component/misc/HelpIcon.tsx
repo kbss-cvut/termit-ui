@@ -18,8 +18,8 @@ const HelpIcon: React.FC<InfoIconProps> = (props) => {
     }
   };
   const onClick = () => {
-    setPinned(!pinned);
     setOpen(!pinned);
+    setPinned(!pinned);
   };
 
   return (
