@@ -7,7 +7,7 @@ const ctx = {
     editor: VocabularyUtils.PREFIX + "má-editora",
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
     lastComment: VocabularyUtils.JE_TEMATEM,
-    lastMyComment: VocabularyUtils.MA_MUJ_POSLEDNI_KOMENTAR,
+    myLastComment: VocabularyUtils.MA_MUJ_POSLEDNI_KOMENTAR,
 };
 
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, COMMENT_CONTEXT);
