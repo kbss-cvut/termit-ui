@@ -1,7 +1,7 @@
 import React from "react";
 import { Placement } from "popper.js";
 import classNames from "classnames";
-import { HiTranslate } from "react-icons/hi";
+import { FaGlobe } from "react-icons/fa";
 import { UncontrolledTooltip } from "reactstrap";
 import "./InfoIcon.scss";
 import { useI18n } from "../hook/useI18n";
@@ -17,7 +17,7 @@ const MultilingualIcon: React.FC<MultilingualIconProps> = (props) => {
   const cls = classNames("info-icon", props.className);
   return (
     <>
-      <HiTranslate id={props.id} className={cls} />
+      <FaGlobe id={props.id} className={cls} />
       <UncontrolledTooltip target={props.id} placement={props.placement}>
         {i18n("multilingual.title")}
       </UncontrolledTooltip>
