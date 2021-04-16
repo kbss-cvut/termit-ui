@@ -1,3 +1,14 @@
+#### Verze 2.4.0
+
+- Na hlavní stránku byl přidán widget komentářů.
+- Anotátor nyní zobrazuje slovník, kterým je soubor anotován a umožňuje vybrat slovník, který bude použit pro textovou analýzu.
+
+#### Verze 2.3.1
+
+- Opraveny problémy s voláním služby textové analýzy a ukládání souborů v Docker kontejneru.
+- Opraveny problémy s přístupem k veřejnému prohlížení slovníků (expirovaný JWT, zobrazení definice).
+- Optimalizace načítání pojmů.
+
 #### Verze 2.3.0
 
 - Přídána podpora pro vedení diskuse u pojmů (přihlášení uživatelé).

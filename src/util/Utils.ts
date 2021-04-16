@@ -1,17 +1,18 @@
 /**
  * General utility functions.
  */
-import Asset, {HasLabel, HasTypes} from "../model/Asset";
+import Asset, { HasLabel, HasTypes } from "../model/Asset";
 import VocabularyUtils from "./VocabularyUtils";
-import {match} from "react-router";
-import {Location} from "history";
-import AppNotification, {AssetUpdateNotification} from "../model/AppNotification";
+import { match } from "react-router";
+import { Location } from "history";
+import AppNotification, {
+    AssetUpdateNotification,
+} from "../model/AppNotification";
 import NotificationType from "../model/NotificationType";
-import {BasicRouteProps} from "./Types";
+import { BasicRouteProps } from "./Types";
 import _ from "lodash";
 
 const Utils = {
-
     /**
      * Ensures that the specified argument is returned as an array at all conditions.
      *
@@ -27,7 +28,12 @@ const Utils = {
      * @param str
      */
     isLink(str: string): boolean {
-        return str.startsWith("http://") || str.startsWith("https://") || str.startsWith("ftp://") || str.startsWith("sftp://");
+        return (
+            str.startsWith("http://") ||
+            str.startsWith("https://") ||
+            str.startsWith("ftp://") ||
+            str.startsWith("sftp://")
+        );
     },
 
     /**
@@ -36,10 +42,15 @@ const Utils = {
      * @param paramName Name of the parameter to extract
      * @return extracted parameter value or undefined if the parameter is not present in the query
      */
-    extractQueryParam(queryString: string, paramName: string): string | undefined {
+    extractQueryParam(
+        queryString: string,
+        paramName: string
+    ): string | undefined {
         queryString = decodeURI(queryString); // TODO This is a nasty hack, the problem with encoding seems to be
-                                              // somewhere in thunk
-        const reqexpMatch = queryString.match(new RegExp(paramName + "=([^&]*)"));
+        // somewhere in thunk
+        const reqexpMatch = queryString.match(
+            new RegExp(paramName + "=([^&]*)")
+        );
         return reqexpMatch ? reqexpMatch[1] : undefined;
     },
 
@@ -51,7 +62,7 @@ const Utils = {
     extractAssetIri(routeMatch: match<any>, location: Location) {
         const namespace = this.extractQueryParam(location.search, "namespace");
         const normalizedName = routeMatch.params.name;
-        return {fragment: normalizedName, namespace};
+        return { fragment: normalizedName, namespace };
     },
 
     /**
@@ -62,8 +73,12 @@ const Utils = {
      * @param filename Name of the file
      * @param mimeType Type of data
      */
-    fileDownload(data: any, filename: string, mimeType: string = "application/octet-stream") {
-        const blob = new Blob([data], {type: mimeType});
+    fileDownload(
+        data: any,
+        filename: string,
+        mimeType: string = "application/octet-stream"
+    ) {
+        const blob = new Blob([data], { type: mimeType });
         const blobURL = window.URL.createObjectURL(blob);
         const tempLink = document.createElement("a");
         tempLink.style.display = "none";
@@ -88,13 +103,21 @@ const Utils = {
      * @param offset Result offset
      * @param limit Number of results
      */
-    createPagingParams(offset?: number, limit?: number): { page?: number, size?: number } {
-        if (offset === undefined || !Number.isInteger(offset) || limit === undefined || !Number.isInteger(limit)) {
+    createPagingParams(
+        offset?: number,
+        limit?: number
+    ): { page?: number; size?: number } {
+        if (
+            offset === undefined ||
+            !Number.isInteger(offset) ||
+            limit === undefined ||
+            !Number.isInteger(limit)
+        ) {
             return {};
         }
         return {
             size: limit,
-            page: Math.ceil(offset! / limit!)
+            page: Math.ceil(offset! / limit!),
         };
     },
 
@@ -153,7 +176,9 @@ const Utils = {
      * Calculates the height of the asset tree selector.
      */
     calculateAssetListHeight() {
-        return window.innerHeight >= 950 ? window.innerHeight * 0.66 : window.innerHeight / 2;
+        return window.innerHeight >= 950
+            ? window.innerHeight * 0.66
+            : window.innerHeight / 2;
     },
 
     /**
@@ -184,7 +209,7 @@ const Utils = {
     hashCode(str: string) {
         let h = 0;
         for (let i = 0; i < str.length; i++) {
-            h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+            h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
         }
         return h;
     },
@@ -204,18 +229,32 @@ const Utils = {
                 return false;
             }
             const aun: AssetUpdateNotification<Asset> = n as AssetUpdateNotification<Asset>;
-            return aun.updated.hasType(assetType) && aun.updated.getLabel() !== aun.original.getLabel();
-        }
+            return (
+                aun.updated.hasType(assetType) &&
+                aun.updated.getLabel() !== aun.original.getLabel()
+            );
+        };
     },
 
-    didNavigationOccur(prevProps: Readonly<BasicRouteProps>, currentProps: Readonly<BasicRouteProps>) {
-        const prevNamespace = this.extractQueryParam(prevProps.location.search, "namespace");
-        const namespace = this.extractQueryParam(currentProps.location.search, "namespace");
+    didNavigationOccur(
+        prevProps: Readonly<BasicRouteProps>,
+        currentProps: Readonly<BasicRouteProps>
+    ) {
+        const prevNamespace = this.extractQueryParam(
+            prevProps.location.search,
+            "namespace"
+        );
+        const namespace = this.extractQueryParam(
+            currentProps.location.search,
+            "namespace"
+        );
         if (prevNamespace !== namespace) {
             return true;
         }
         const prevParams = Object.getOwnPropertyNames(prevProps.match.params);
-        const currentParams = Object.getOwnPropertyNames(currentProps.match.params);
+        const currentParams = Object.getOwnPropertyNames(
+            currentProps.match.params
+        );
         if (!_.isEqual(prevParams.sort(), currentParams.sort())) {
             return true;
         }
@@ -225,7 +264,7 @@ const Utils = {
             }
         }
         return false;
-    }
+    },
 };
 
 export default Utils;

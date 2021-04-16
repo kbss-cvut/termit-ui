@@ -26,7 +26,7 @@ header .breadcrumb-bar {
 }
 
 .nav-link {
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
 }
 
 header .nav-tabs {
@@ -167,7 +167,8 @@ header .nav-tabs {
 }
 
 .no-before-after {
-  &:after, &:before {
+  &:after,
+  &:before {
     content: none !important;
   }
 }
@@ -183,4 +184,13 @@ header .nav-tabs {
 
 .Select-placeholder {
   font-style: italic;
+}
+
+.input-group-button {
+  z-index: 0 !important;
+}
+
+.list-item-remove-icon {
+  margin-left: 0.5rem;
+  cursor: pointer;
 }

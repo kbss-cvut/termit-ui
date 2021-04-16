@@ -2,27 +2,37 @@ import TermAssignment, {
     BASE_CONTEXT as BASE_ASSIGNMENT_CONTEXT,
     CONTEXT as ASSIGNMENT_CONTEXT,
     Target,
-    TermAssignmentData
+    TermAssignmentData,
 } from "./TermAssignment";
 import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
-    "selectors": VocabularyUtils.NS_TERMIT + "má-selektor"
+    selectors: VocabularyUtils.NS_TERMIT + "má-selektor",
 };
 
 const textQuoteSelectorCtx = {
-    "exactMatch": VocabularyUtils.NS_TERMIT + "má-přesný-text-quote",
-    "prefix": VocabularyUtils.NS_TERMIT + "má-prefix-text-quote",
-    "suffix": VocabularyUtils.NS_TERMIT + "má-suffix-text-quote"
+    exactMatch: VocabularyUtils.NS_TERMIT + "má-přesný-text-quote",
+    prefix: VocabularyUtils.NS_TERMIT + "má-prefix-text-quote",
+    suffix: VocabularyUtils.NS_TERMIT + "má-suffix-text-quote",
 };
 
 /**
  * Context of the assignment itself, without term or resource context.
  */
-export const BASE_CONTEXT = Object.assign({}, BASE_ASSIGNMENT_CONTEXT, ctx, textQuoteSelectorCtx);
+export const BASE_CONTEXT = Object.assign(
+    {},
+    BASE_ASSIGNMENT_CONTEXT,
+    ctx,
+    textQuoteSelectorCtx
+);
 
-export const CONTEXT = Object.assign({}, ASSIGNMENT_CONTEXT, ctx, textQuoteSelectorCtx);
+export const CONTEXT = Object.assign(
+    {},
+    ASSIGNMENT_CONTEXT,
+    ctx,
+    textQuoteSelectorCtx
+);
 
 export interface Selector {
     iri?: string;
@@ -53,14 +63,17 @@ export default class TermOccurrence extends TermAssignment {
     }
 
     public isSuggested(): boolean {
-        return Utils.sanitizeArray(this.types).indexOf(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE) !== -1;
+        return (
+            Utils.sanitizeArray(this.types).indexOf(
+                VocabularyUtils.SUGGESTED_TERM_OCCURRENCE
+            ) !== -1
+        );
     }
 
     public toJsonLd(): TermOccurrenceData {
-        const result = Object.assign({}, this, {"@context": CONTEXT});
+        const result = Object.assign({}, this, { "@context": CONTEXT });
         // Prevent possible circular JSON reference issue
-        (result as any).term = {iri: this.term?.iri};
+        (result as any).term = { iri: this.term?.iri };
         return result;
     }
 }
-

@@ -1,26 +1,27 @@
 // @ts-ignore
-import {fromRange, toRange, XPathRange} from "xpath-range";
+import { fromRange, toRange, XPathRange } from "xpath-range";
 import HtmlDomUtils from "../HtmlDomUtils";
-import {mockWindowSelection} from "../../../__tests__/environment/Environment";
+import { mockWindowSelection } from "../../../__tests__/environment/Environment";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import {TextQuoteSelector} from "../../../model/TermOccurrence";
+import { TextQuoteSelector } from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
 
 jest.mock("xpath-range", () => ({
     fromRange: jest.fn(),
-    toRange: jest.fn()
+    toRange: jest.fn(),
 }));
 
 describe("Html dom utils", () => {
-
-    const htmlContent = "<html lang='en'><head><title>Test</title></head><body/></html>";
-    const sampleDivContent = "before div<div>before span<span>sample text pointer in span</span>after span</div>after div";
+    const htmlContent =
+        "<html lang='en'><head><title>Test</title></head><body/></html>";
+    const sampleDivContent =
+        "before div<div>before span<span>sample text pointer in span</span>after span</div>after div";
     const surroundingElementHtml = "<span>text pointer</span>";
     const xpathTextPointerRange: XPathRange = {
         start: "/div[1]/span[1]/text()[1]",
         end: "/div[1]/span[1]/text()[1]",
         startOffset: 7,
-        endOffset: 19
+        endOffset: 19,
     };
     let sampleDiv: HTMLDivElement;
     let doc: Document;
@@ -34,19 +35,18 @@ describe("Html dom utils", () => {
             return {
                 isCollapsed: true,
                 rangeCount: 1,
-
             };
         });
         cloneContents = jest.fn().mockImplementation(() => {
-            return {childNodes: [sampleTextNode]}
+            return { childNodes: [sampleTextNode] };
         });
         getRangeAt = jest.fn().mockImplementation(() => {
-            return {cloneContents}
+            return { cloneContents };
         });
         textPointerRange = {
             extractContents: jest.fn(),
             surroundContents: jest.fn(),
-            insertNode: jest.fn()
+            insertNode: jest.fn(),
         };
 
         const parser = new DOMParser();
@@ -57,29 +57,34 @@ describe("Html dom utils", () => {
         doc.body.appendChild(sampleDiv);
     });
 
-
     describe("hasSelection", () => {
         it("returns true for a valid selection range", () => {
-            mockWindowSelection({isCollapsed: false, rangeCount: 1, getRangeAt});
+            mockWindowSelection({
+                isCollapsed: false,
+                rangeCount: 1,
+                getRangeAt,
+            });
             expect(HtmlDomUtils.hasSelection()).toBeTruthy();
         });
 
         it("returns false for collapsed selection", () => {
-            mockWindowSelection({isCollapsed: true, rangeCount: 1, getRangeAt});
+            mockWindowSelection({
+                isCollapsed: true,
+                rangeCount: 1,
+                getRangeAt,
+            });
             expect(HtmlDomUtils.hasSelection()).toBeFalsy();
         });
     });
 
     describe("get selection range", () => {
-
         it("returns range for a text node", () => {
-
             let ret: Range | null;
 
             mockWindowSelection({
                 isCollapsed: false,
                 rangeCount: 1,
-                getRangeAt
+                getRangeAt,
             });
             ret = HtmlDomUtils.getSelectionRange();
             expect(window.getSelection).toHaveBeenCalled();
@@ -88,18 +93,19 @@ describe("Html dom utils", () => {
             expect(ret!.cloneContents).toEqual(cloneContents);
         });
 
-
         it("returns null if nothing is selected", () => {
-
             let ret: Range | null;
 
-            mockWindowSelection({isCollapsed: true});
+            mockWindowSelection({ isCollapsed: true });
             ret = HtmlDomUtils.getSelectionRange();
             expect(window.getSelection).toHaveBeenCalledTimes(1);
             expect(ret).toEqual(null);
 
-
-            mockWindowSelection({isCollapsed: false, rangeCount: 0, getRangeAt: () => null});
+            mockWindowSelection({
+                isCollapsed: false,
+                rangeCount: 0,
+                getRangeAt: () => null,
+            });
             ret = HtmlDomUtils.getSelectionRange();
             expect(window.getSelection).toHaveBeenCalledTimes(1);
             expect(ret).toEqual(null);
@@ -107,9 +113,7 @@ describe("Html dom utils", () => {
     });
 
     describe("replace range", () => {
-
         it("returns clone of input element", () => {
-
             let ret: HTMLElement | null;
             (fromRange as jest.Mock).mockImplementation(() => {
                 return xpathTextPointerRange;
@@ -118,16 +122,26 @@ describe("Html dom utils", () => {
             (toRange as jest.Mock).mockImplementation(() => {
                 return textPointerRange;
             });
-            ret = HtmlDomUtils.replaceRange(sampleDiv, textPointerRange, surroundingElementHtml);
-            expect(fromRange).toHaveBeenCalledWith(expect.any(Object), sampleDiv);
+            ret = HtmlDomUtils.replaceRange(
+                sampleDiv,
+                textPointerRange,
+                surroundingElementHtml
+            );
+            expect(fromRange).toHaveBeenCalledWith(
+                expect.any(Object),
+                sampleDiv
+            );
             expect(toRange).toHaveBeenCalledWith(
-                xpathTextPointerRange.start, xpathTextPointerRange.startOffset,
-                xpathTextPointerRange.end, xpathTextPointerRange.endOffset,
+                xpathTextPointerRange.start,
+                xpathTextPointerRange.startOffset,
+                xpathTextPointerRange.end,
+                xpathTextPointerRange.endOffset,
                 expect.any(Object)
             );
             expect(ret === sampleDiv).toBe(false);
-            expect(ret.children[0].childNodes[0].nodeValue)
-                .toEqual(sampleDiv.children[0].childNodes[0].nodeValue);
+            expect(ret.children[0].childNodes[0].nodeValue).toEqual(
+                sampleDiv.children[0].childNodes[0].nodeValue
+            );
         });
     });
 
@@ -138,9 +152,11 @@ describe("Html dom utils", () => {
                 startOffset: 2,
                 endContainer: doc.body.children[0].children[0].childNodes[0],
                 endOffset: 10,
-                commonAncestorContainer: doc.body.children[0].children[0]
+                commonAncestorContainer: doc.body.children[0].children[0],
             };
-            expect(HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)).toBeFalsy();
+            expect(
+                HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)
+            ).toBeFalsy();
         });
 
         it("returns false for range containing an element", () => {
@@ -149,34 +165,51 @@ describe("Html dom utils", () => {
                 startOffset: 2,
                 endContainer: doc.body.children[0].children[0].childNodes[2],
                 endOffset: 3,
-                commonAncestorContainer: doc.body.children[0].children[0]
+                commonAncestorContainer: doc.body.children[0].children[0],
             };
-            expect(HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)).toBeFalsy();
+            expect(
+                HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)
+            ).toBeFalsy();
         });
 
         it("returns true for range spanning two elements", () => {
             const range: any = {
-                startContainer: doc.body.children[0].children[0].childNodes[1].firstChild,
+                startContainer:
+                    doc.body.children[0].children[0].childNodes[1].firstChild,
                 startOffset: 2,
                 endContainer: doc.body.children[0].children[0].childNodes[2],
                 endOffset: 3,
-                commonAncestorContainer: doc.body.children[0].children[0]
+                commonAncestorContainer: doc.body.children[0].children[0],
             };
-            expect(HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)).toBeTruthy();
+            expect(
+                HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)
+            ).toBeTruthy();
         });
     });
 
     describe("containsBlockElement", () => {
         it("returns false for simple range in text", () => {
-            expect(HtmlDomUtils.containsBlockElement(doc.body.children[0].children[0].childNodes[0].childNodes)).toBeFalsy();
+            expect(
+                HtmlDomUtils.containsBlockElement(
+                    doc.body.children[0].children[0].childNodes[0].childNodes
+                )
+            ).toBeFalsy();
         });
 
         it("returns false for range containing a span", () => {
-            expect(HtmlDomUtils.containsBlockElement(doc.body.children[0].children[0].childNodes)).toBeFalsy();
+            expect(
+                HtmlDomUtils.containsBlockElement(
+                    doc.body.children[0].children[0].childNodes
+                )
+            ).toBeFalsy();
         });
 
         it("returns true for range containing a div", () => {
-            expect(HtmlDomUtils.containsBlockElement(doc.body.children[0].childNodes)).toBeTruthy();
+            expect(
+                HtmlDomUtils.containsBlockElement(
+                    doc.body.children[0].childNodes
+                )
+            ).toBeTruthy();
         });
     });
 
@@ -185,7 +218,7 @@ describe("Html dom utils", () => {
             const text = "aaaa";
             const node = {
                 type: "text",
-                data: text
+                data: text,
             };
             const result = HtmlDomUtils.getTextContent(node);
             expect(result).toEqual(text);
@@ -196,11 +229,11 @@ describe("Html dom utils", () => {
             const textTwo = "bbbb";
             const nodeOne = {
                 type: "text",
-                data: textOne
+                data: textOne,
             };
             const nodeTwo = {
                 type: "text",
-                data: textTwo
+                data: textTwo,
             };
             const result = HtmlDomUtils.getTextContent([nodeOne, nodeTwo]);
             expect(result).toEqual(textOne + textTwo);
@@ -211,11 +244,11 @@ describe("Html dom utils", () => {
             const textTwo = "bbbb";
             const nodeOne = {
                 type: "text",
-                data: textOne
+                data: textOne,
             };
             const nodeTwo = {
                 type: "tag",
-                children: [{type: "text", data: textTwo}]
+                children: [{ type: "text", data: textTwo }],
             };
             const result = HtmlDomUtils.getTextContent([nodeOne, nodeTwo]);
             expect(result).toEqual(textOne + textTwo);
@@ -223,17 +256,25 @@ describe("Html dom utils", () => {
     });
 
     describe("findAnnotationElementBySelector", () => {
-
-        const html = "<html lang='en'><head><title>Test</title></head><body><div id='annotator'>" +
+        const html =
+            "<html lang='en'><head><title>Test</title></head><body><div id='annotator'>" +
             "text before" +
-            "<span about=\"_:123\" property=\"" + VocabularyUtils.IS_OCCURRENCE_OF_TERM + "\"\n" +
-            "                  resource=\"http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29\"\n" +
-            "                  typeof=\"" + VocabularyUtils.TERM_OCCURRENCE + "\">annotated-text</span>" +
+            '<span about="_:123" property="' +
+            VocabularyUtils.IS_OCCURRENCE_OF_TERM +
+            '"\n' +
+            '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+            '                  typeof="' +
+            VocabularyUtils.TERM_OCCURRENCE +
+            '">annotated-text</span>' +
             "\n after annotation span" +
-            "            <span about=\"_:111\" \n>not-annotation</span>" +
-            "            <div about='_:117' property=\"" + VocabularyUtils.IS_DEFINITION_OF_TERM + "\"\n" +
-            "                  resource=\"http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29\"\n" +
-            "                  typeof=\"" + VocabularyUtils.DEFINITION + "\">definition-text separated by spaces</div>text after" +
+            '            <span about="_:111" \n>not-annotation</span>' +
+            "            <div about='_:117' property=\"" +
+            VocabularyUtils.IS_DEFINITION_OF_TERM +
+            '"\n' +
+            '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+            '                  typeof="' +
+            VocabularyUtils.DEFINITION +
+            '">definition-text separated by spaces</div>text after' +
             "</div></body></html>";
 
         beforeEach(() => {
@@ -244,9 +285,12 @@ describe("Html dom utils", () => {
         it("finds unique term occurrence span", () => {
             const selector: TextQuoteSelector = {
                 exactMatch: "annotated-text",
-                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
+                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
             };
-            const result = HtmlDomUtils.findAnnotationElementBySelector(doc, selector);
+            const result = HtmlDomUtils.findAnnotationElementBySelector(
+                doc,
+                selector
+            );
             expect(result).toBeDefined();
             expect(result.getAttribute("about")).toEqual("_:123");
         });
@@ -254,9 +298,12 @@ describe("Html dom utils", () => {
         it("finds unique term definition div", () => {
             const selector: TextQuoteSelector = {
                 exactMatch: "definition-text separated by spaces",
-                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
+                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
             };
-            const result = HtmlDomUtils.findAnnotationElementBySelector(doc, selector);
+            const result = HtmlDomUtils.findAnnotationElementBySelector(
+                doc,
+                selector
+            );
             expect(result).toBeDefined();
             expect(result.getAttribute("about")).toEqual("_:117");
         });
@@ -265,18 +312,30 @@ describe("Html dom utils", () => {
             const alternativeAnnotation = doc.createElement("div");
             alternativeAnnotation.textContent = "annotated-text";
             alternativeAnnotation.setAttribute("about", "_:586");
-            alternativeAnnotation.setAttribute("typeof", VocabularyUtils.TERM_OCCURRENCE);
-            alternativeAnnotation.setAttribute("resource", Generator.generateUri());
-            alternativeAnnotation.setAttribute("property", VocabularyUtils.IS_OCCURRENCE_OF_TERM);
+            alternativeAnnotation.setAttribute(
+                "typeof",
+                VocabularyUtils.TERM_OCCURRENCE
+            );
+            alternativeAnnotation.setAttribute(
+                "resource",
+                Generator.generateUri()
+            );
+            alternativeAnnotation.setAttribute(
+                "property",
+                VocabularyUtils.IS_OCCURRENCE_OF_TERM
+            );
             doc.getElementById("annotator")!.appendChild(alternativeAnnotation);
             const selector: TextQuoteSelector = {
                 exactMatch: "annotated-text",
                 prefix: "text before",
                 suffix: "\n after annotation span",
-                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
+                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
             };
 
-            const result = HtmlDomUtils.findAnnotationElementBySelector(doc, selector);
+            const result = HtmlDomUtils.findAnnotationElementBySelector(
+                doc,
+                selector
+            );
             expect(result).toBeDefined();
             expect(result.getAttribute("about")).toEqual("_:123");
         });
@@ -284,18 +343,26 @@ describe("Html dom utils", () => {
         it("throws error when matching element is not found", () => {
             const selector: TextQuoteSelector = {
                 exactMatch: "unknown-text",
-                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
+                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
             };
-            expect(() => HtmlDomUtils.findAnnotationElementBySelector(doc, selector))
-                .toThrowError(new Error(`Element with exact match \'${selector.exactMatch}\' not found in document.`));
+            expect(() =>
+                HtmlDomUtils.findAnnotationElementBySelector(doc, selector)
+            ).toThrowError(
+                new Error(
+                    `Element with exact match \'${selector.exactMatch}\' not found in document.`
+                )
+            );
         });
 
         it("finds definition with loose space-less match in case no other match exists", () => {
             const selector: TextQuoteSelector = {
                 exactMatch: "definition-text separatedby spaces",
-                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
+                types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
             };
-            const result = HtmlDomUtils.findAnnotationElementBySelector(doc, selector);
+            const result = HtmlDomUtils.findAnnotationElementBySelector(
+                doc,
+                selector
+            );
             expect(result).toBeDefined();
             expect(result.getAttribute("about")).toEqual("_:117");
         });

@@ -1,23 +1,32 @@
-import {Route, Switch} from "react-router";
-import Routes from "../../util/Routes";
 import * as React from "react";
+import { Switch } from "react-router";
+import Routes from "../../util/Routes";
 import ResourceSummaryRoute from "./ResourceSummaryRoute";
-import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import Mask from "../misc/Mask";
-import {useI18n} from "../hook/useI18n";
+import DynamicBreadcrumbRoute from "../breadcrumb/DynamicBreadcrumbRoute";
+import Route from "../misc/Route";
 
 const ResourceFileDetail = React.lazy(() => import("./ResourceFileDetail"));
 
 const ResourceRoute: React.FC = () => {
-    const {i18n} = useI18n();
-    return <React.Suspense fallback={<Mask/>}>
-        <Switch>
-            <BreadcrumbRoute title={i18n("annotator.annotate-content")} path={Routes.annotateFile.path}
-                             component={ResourceFileDetail}/>
-            <Route asset="resource" path={Routes.resourceSummary.path}
-                   includeSearch={true} component={ResourceSummaryRoute}/>
-        </Switch>
-    </React.Suspense>;
+  return (
+    <React.Suspense fallback={<Mask />}>
+      <Switch>
+        <DynamicBreadcrumbRoute
+          asset="selectedFile"
+          path={Routes.annotateFile.path}
+          component={ResourceFileDetail}
+          includeSearch={true}
+        />
+        <Route
+          asset="resource"
+          path={Routes.resourceSummary.path}
+          includeSearch={true}
+          component={ResourceSummaryRoute}
+        />
+      </Switch>
+    </React.Suspense>
+  );
 };
 
 export default ResourceRoute;

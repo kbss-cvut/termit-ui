@@ -20,7 +20,11 @@ declare module "javascript-time-ago" {
 
         public format(input: Date | number, style?: object): string;
 
-        public formatValue(value: number, unit: string, localeData: object): string;
+        public formatValue(
+            value: number,
+            unit: string,
+            localeData: object
+        ): string;
 
         public getRule(value: number, unit: string, localeData: object): string;
 

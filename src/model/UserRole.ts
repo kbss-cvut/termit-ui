@@ -1,12 +1,15 @@
 // @id and @type are merged from ASSET_CONTEXT
-import Asset, {ASSET_CONTEXT} from "./Asset";
-import MultilingualString, {context, getLocalized} from "./MultilingualString";
+import Asset, { ASSET_CONTEXT } from "./Asset";
+import MultilingualString, {
+    context,
+    getLocalized,
+} from "./MultilingualString";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
-    "iri": "@id",
+    iri: "@id",
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
-    description: context(VocabularyUtils.SKOS_SCOPE_NOTE)
+    description: context(VocabularyUtils.SKOS_SCOPE_NOTE),
 };
 
 export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT);
@@ -38,6 +41,6 @@ export default class UserRole extends Asset implements UserRoleData {
     }
 
     public toJsonLd(): {} {
-        return Object.assign({}, this, {"@context": CONTEXT});
+        return Object.assign({}, this, { "@context": CONTEXT });
     }
 }

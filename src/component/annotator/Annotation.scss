@@ -1,5 +1,5 @@
 .legend-list-item {
-  margin-bottom:2px;
+  margin-bottom: 2px;
 }
 
 .assigned-term-occurrence {
@@ -23,15 +23,15 @@
 }
 
 .suggested-term-occurrence.proposed-occurrence {
-  border: 0.15em dotted rgb(239, 69, 27)
+  border: 0.15em dotted rgb(239, 69, 27);
 }
 
 .invalid-term-occurrence.proposed-occurrence {
-  border: 0.15em dotted rgb(239, 14, 0)
+  border: 0.15em dotted rgb(239, 14, 0);
 }
 
 .loading-term-occurrence.proposed-occurrence {
-  border: 0.15em dotted rgb(239, 173, 62)
+  border: 0.15em dotted rgb(239, 173, 62);
 }
 
 .term-definition {
@@ -70,7 +70,7 @@
 }
 
 .popover-body td.label {
-  min-width: 110px
+  min-width: 110px;
 }
 
 .popover-header {

@@ -1,16 +1,16 @@
-import Vocabulary, {VocabularyData} from "../Vocabulary";
+import Vocabulary, { VocabularyData } from "../Vocabulary";
 import Document from "../Document";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 
 describe("Vocabulary", () => {
-
     let data: VocabularyData;
 
     beforeEach(() => {
         data = {
-            "iri": "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/vocabularies/metropolitan-plan",
-            "label": "Metropolitan plan"
+            iri:
+                "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/vocabularies/metropolitan-plan",
+            label: "Metropolitan plan",
         };
     });
 
@@ -18,19 +18,27 @@ describe("Vocabulary", () => {
         it("adds vocabulary type when it is missing", () => {
             const testVocabulary = new Vocabulary(data);
             expect(testVocabulary.types).toBeDefined();
-            expect(testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)).not.toEqual(-1);
+            expect(
+                testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)
+            ).not.toEqual(-1);
         });
 
         it("does not add vocabulary type when it is already present", () => {
             data.types = [VocabularyUtils.VOCABULARY];
             const testVocabulary = new Vocabulary(data);
             expect(testVocabulary.types).toBeDefined();
-            expect(testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)).not.toEqual(-1);
-            expect(testVocabulary.types!.lastIndexOf(VocabularyUtils.VOCABULARY)).toEqual(testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY));
+            expect(
+                testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)
+            ).not.toEqual(-1);
+            expect(
+                testVocabulary.types!.lastIndexOf(VocabularyUtils.VOCABULARY)
+            ).toEqual(
+                testVocabulary.types!.indexOf(VocabularyUtils.VOCABULARY)
+            );
         });
 
         it("initializes document when document data are available", () => {
-            const vocData:VocabularyData = {
+            const vocData: VocabularyData = {
                 iri: Generator.generateUri(),
                 label: "Test vocabulary",
                 types: [VocabularyUtils.VOCABULARY],
@@ -38,12 +46,14 @@ describe("Vocabulary", () => {
                     iri: Generator.generateUri(),
                     label: "Test document",
                     types: [VocabularyUtils.DOCUMENT],
-                    files: [{
-                        iri: Generator.generateUri(),
-                        label: "Test file",
-                        types: [VocabularyUtils.FILE]
-                    }]
-                }
+                    files: [
+                        {
+                            iri: Generator.generateUri(),
+                            label: "Test file",
+                            types: [VocabularyUtils.FILE],
+                        },
+                    ],
+                },
             };
             const result = new Vocabulary(vocData);
             expect(result.document).toBeInstanceOf(Document);
@@ -52,7 +62,8 @@ describe("Vocabulary", () => {
 
     describe("get unmappedProperties", () => {
         it("returns map of unmapped properties with values in vocabulary", () => {
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const value = "value]";
             data[extraProperty] = value;
             const testVocabulary = new Vocabulary(data);
@@ -63,7 +74,8 @@ describe("Vocabulary", () => {
         });
 
         it("returns map of unmapped properties with values containing multiple values per property", () => {
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const values = ["v1", "v2", "v3"];
             data[extraProperty] = values;
             const testVocabulary = new Vocabulary(data);
@@ -74,12 +86,11 @@ describe("Vocabulary", () => {
     });
 
     describe("set unmappedProperties", () => {
-
-
         it("merges specified properties into the object state", () => {
             const testVocabulary = new Vocabulary(data);
             const unmappedProps = new Map<string, string[]>();
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const value = ["1", "2"];
             unmappedProps.set(extraProperty, value);
             testVocabulary.unmappedProperties = unmappedProps;
@@ -90,7 +101,8 @@ describe("Vocabulary", () => {
         it("is symmetric to getter", () => {
             const testVocabulary = new Vocabulary(data);
             const unmappedProps = new Map<string, string[]>();
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const value = ["1", "2"];
             unmappedProps.set(extraProperty, value);
             testVocabulary.unmappedProperties = unmappedProps;
@@ -102,14 +114,15 @@ describe("Vocabulary", () => {
             data[extraProperty] = "test";
             const testVocabulary = new Vocabulary(data);
             const newProperty = Generator.generateUri();
-            testVocabulary.unmappedProperties = new Map([[newProperty, ["test1"]]]);
+            testVocabulary.unmappedProperties = new Map([
+                [newProperty, ["test1"]],
+            ]);
             expect(testVocabulary[newProperty]).toEqual(["test1"]);
             expect(testVocabulary[extraProperty]).not.toBeDefined();
         });
     });
 
     describe("toJsonLd", () => {
-
         it("removes allImportedVocabularies attribute", () => {
             const sut = new Vocabulary(data);
             sut.allImportedVocabularies = [Generator.generateUri()];
@@ -124,7 +137,7 @@ describe("Vocabulary", () => {
                 label: "test",
                 types: [VocabularyUtils.DOCUMENT],
                 vocabulary: sut,
-                files: []
+                files: [],
             });
             const result = sut.toJsonLd();
             const json = JSON.stringify(result);

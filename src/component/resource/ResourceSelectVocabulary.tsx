@@ -1,73 +1,101 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import {Button, ButtonToolbar, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
-import withI18n, {HasI18n} from "../hoc/withI18n";
+import {
+  Button,
+  ButtonToolbar,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "reactstrap";
 import Vocabulary from "../../model/Vocabulary";
 import VocabularySelect from "../vocabulary/VocabularySelect";
-import {connect} from "react-redux";
+import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
+import { useI18n } from "../hook/useI18n";
+import "./ResourceSelectVocabulary.scss";
 
-interface PropsConnected {
-    vocabularies: Vocabulary[]
+interface ResourceSelectVocabularyProps {
+  show: boolean;
+  defaultVocabularyIri?: string;
+  onSubmit: (voc: Vocabulary | null) => void;
+  onCancel: () => void;
+  title?: string;
 }
 
-interface ResourceSelectVocabularyOwnProps {
-    show: boolean;
-    defaultVocabularyIri?: string;
-    onSubmit: (voc: Vocabulary | null) => void;
-    onCancel: () => void;
+function getVocabulary(
+  selectedVocabulary: Vocabulary | null,
+  vocabularies: { [key: string]: Vocabulary },
+  defaultVocabularyIri?: string
+) {
+  return selectedVocabulary
+    ? selectedVocabulary
+    : defaultVocabularyIri
+    ? vocabularies[defaultVocabularyIri] || null
+    : null;
 }
 
-type ResourceSelectVocabularyProps = PropsConnected & ResourceSelectVocabularyOwnProps & HasI18n;
+const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = (
+  props
+) => {
+  const { show, defaultVocabularyIri, onSubmit, onCancel, title } = props;
+  const [
+    selectedVocabulary,
+    setSelectedVocabulary,
+  ] = React.useState<Vocabulary | null>(null);
+  const vocabularies = useSelector((state: TermItState) => state.vocabularies);
+  const submit = () =>
+    onSubmit(
+      getVocabulary(selectedVocabulary, vocabularies, defaultVocabularyIri)
+    );
+  const cancel = () => {
+    onCancel();
+    setSelectedVocabulary(null);
+  };
+  const { i18n } = useI18n();
 
-interface ResourceSelectVocabularyState {
-    vocabularySelect: Vocabulary | null;
-}
+  return (
+    <Modal
+      isOpen={show}
+      toggle={cancel}
+      size="lg"
+      className="resource-select-vocabulary-modal"
+    >
+      <ModalHeader toggle={cancel}>
+        {title ? title : i18n("vocabulary.select-vocabulary")}
+      </ModalHeader>
+      <ModalBody>
+        <VocabularySelect
+          id="select-vocabulary-analyze-resource"
+          vocabulary={getVocabulary(
+            selectedVocabulary,
+            vocabularies,
+            defaultVocabularyIri
+          )}
+          onVocabularySet={setSelectedVocabulary}
+        />
+      </ModalBody>
+      <ModalFooter>
+        <ButtonToolbar className="pull-right">
+          <Button
+            id="select-vocabulary-submit"
+            color="primary"
+            size="sm"
+            onClick={submit}
+          >
+            {i18n("file.metadata.startTextAnalysis.text")}
+          </Button>
+          <Button
+            id="select-vocabulary-cancel"
+            color="outline-dark"
+            size="sm"
+            onClick={cancel}
+          >
+            {i18n("cancel")}
+          </Button>
+        </ButtonToolbar>
+      </ModalFooter>
+    </Modal>
+  );
+};
 
-class ResourceSelectVocabulary extends React.Component<ResourceSelectVocabularyProps, ResourceSelectVocabularyState> {
-    public constructor(props: ResourceSelectVocabularyProps) {
-        super(props);
-        this.state = {
-            vocabularySelect: null,
-        };
-    }
-
-    private onVocabularySet(voc: Vocabulary): void {
-        this.setState({vocabularySelect: voc});
-    }
-
-    private onSubmit = () => {
-        this.props.onSubmit(this.getVocabulary());
-    };
-
-    private getVocabulary() {
-        return this.state.vocabularySelect ? this.state.vocabularySelect : this.props.vocabularies
-            .find( v => v.iri === this.props.defaultVocabularyIri) || null;
-    }
-
-    public render() {
-        const onVocabularySet = this.onVocabularySet.bind(this);
-        const onSubmit = this.onSubmit.bind(this);
-        const vocabulary = this.getVocabulary();
-        return <Modal isOpen={this.props.show} toggle={this.props.onCancel}>
-            <ModalHeader toggle={this.props.onCancel}>{this.props.i18n("vocabulary.select-vocabulary")}</ModalHeader>
-            <ModalBody>
-                <VocabularySelect id="select-vocabulary-analyze-resource" vocabulary={vocabulary} onVocabularySet={onVocabularySet}/>
-            </ModalBody>
-            <ModalFooter>
-                <ButtonToolbar className="pull-right">
-                    <Button id="select-vocabulary-submit" color="primary" size="sm"
-                            onClick={onSubmit}>{this.props.i18n("file.metadata.startTextAnalysis.text")}</Button>
-                    <Button id="select-vocabulary-cancel" color="outline-dark" size="sm"
-                            onClick={this.props.onCancel}>{this.props.i18n("cancel")}</Button>
-                </ButtonToolbar>
-            </ModalFooter>
-        </Modal>;
-    }
-}
-
-export default connect<PropsConnected, undefined, ResourceSelectVocabularyOwnProps, TermItState>((state: TermItState) => {
-    return {
-        vocabularies: Object.keys(state.vocabularies).map(value => state.vocabularies[value]),
-    };
-}) (injectIntl(withI18n(ResourceSelectVocabulary)));
+export default ResourceSelectVocabulary;

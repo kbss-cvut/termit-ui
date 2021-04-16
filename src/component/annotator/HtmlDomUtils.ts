@@ -1,13 +1,44 @@
-import {fromRange, toRange} from "xpath-range";
-import {Node as DomHandlerNode} from "domhandler";
+import { fromRange, toRange } from "xpath-range";
+import { Node as DomHandlerNode } from "domhandler";
 import Utils from "../../util/Utils";
-import {TextQuoteSelector} from "../../model/TermOccurrence";
-import {AnnotationType} from "./AnnotationDomHelper";
+import { TextQuoteSelector } from "../../model/TermOccurrence";
+import { AnnotationType } from "./AnnotationDomHelper";
 
-const BLOCK_ELEMENTS = ["address", "article", "aside", "blockquote", "details", "dialog", "dd", "div", "dl", "dt", "fieldset",
-    "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hgroup", "hr", "li", "main",
-    "nav", "ol", "p", "pre", "section", "table", "ul"];
-
+const BLOCK_ELEMENTS = [
+    "address",
+    "article",
+    "aside",
+    "blockquote",
+    "details",
+    "dialog",
+    "dd",
+    "div",
+    "dl",
+    "dt",
+    "fieldset",
+    "figcaption",
+    "figure",
+    "footer",
+    "form",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "header",
+    "hgroup",
+    "hr",
+    "li",
+    "main",
+    "nav",
+    "ol",
+    "p",
+    "pre",
+    "section",
+    "table",
+    "ul",
+];
 
 function calculatePathLength(node: Node, ancestor: Node) {
     let parent = node.parentNode;
@@ -20,7 +51,6 @@ function calculatePathLength(node: Node, ancestor: Node) {
 }
 
 const HtmlDomUtils = {
-
     /**
      * Returns true if there is a non-empty selection in the current window.
      */
@@ -48,7 +78,10 @@ const HtmlDomUtils = {
      */
     isInPopup(range: Range): boolean {
         const commonAnc = range.commonAncestorContainer;
-        return commonAnc.parentElement !== null && commonAnc.parentElement.closest(".popover") !== null;
+        return (
+            commonAnc.parentElement !== null &&
+            commonAnc.parentElement.closest(".popover") !== null
+        );
     },
 
     extendSelectionToWords() {
@@ -66,8 +99,12 @@ const HtmlDomUtils = {
 
             // modify() works on the focus of the selection
             const endNode = sel.focusNode;
-            const endOffset = sel.focusOffset !== 0 ? sel.focusOffset - 1 : sel.focusOffset;
-            sel.collapse(sel.anchorNode, backwards ? sel.anchorOffset : sel.anchorOffset + 1);
+            const endOffset =
+                sel.focusOffset !== 0 ? sel.focusOffset - 1 : sel.focusOffset;
+            sel.collapse(
+                sel.anchorNode,
+                backwards ? sel.anchorOffset : sel.anchorOffset + 1
+            );
             if (backwards) {
                 // @ts-ignore
                 sel.modify("move", "forward", "word");
@@ -75,7 +112,6 @@ const HtmlDomUtils = {
                 sel.extend(endNode, endOffset);
                 // @ts-ignore
                 sel.modify("extend", "backward", "word");
-
             } else {
                 // @ts-ignore
                 sel.modify("move", "backward", "word");
@@ -94,8 +130,17 @@ const HtmlDomUtils = {
      * @param range Range to check
      */
     doesRangeSpanMultipleElements(range: Range): boolean {
-        return range.startContainer !== range.endContainer &&
-            calculatePathLength(range.startContainer, range.commonAncestorContainer) !== calculatePathLength(range.endContainer, range.commonAncestorContainer);
+        return (
+            range.startContainer !== range.endContainer &&
+            calculatePathLength(
+                range.startContainer,
+                range.commonAncestorContainer
+            ) !==
+                calculatePathLength(
+                    range.endContainer,
+                    range.commonAncestorContainer
+                )
+        );
     },
 
     /**
@@ -104,13 +149,20 @@ const HtmlDomUtils = {
      * @param range range within document referenced by rootElement that should be surrounded.
      * @param surroundingElementHtml string representing surroundingElement.
      */
-    replaceRange(rootElement: HTMLElement,
-                 range: Range,
-                 surroundingElementHtml: string
+    replaceRange(
+        rootElement: HTMLElement,
+        range: Range,
+        surroundingElementHtml: string
     ): HTMLElement {
         const xpathRange = fromRange(range, rootElement);
         const clonedElement = rootElement.cloneNode(true) as HTMLElement;
-        const newRange = toRange(xpathRange.start, xpathRange.startOffset, xpathRange.end, xpathRange.endOffset, clonedElement);
+        const newRange = toRange(
+            xpathRange.start,
+            xpathRange.startOffset,
+            xpathRange.end,
+            xpathRange.endOffset,
+            clonedElement
+        );
 
         const doc = clonedElement.ownerDocument;
         const template = doc!.createElement("template");
@@ -130,13 +182,15 @@ const HtmlDomUtils = {
      * @param nodes Nodes to process
      */
     getTextContent(nodes: DomHandlerNode[] | DomHandlerNode): string {
-        return Utils.sanitizeArray(nodes).map((n: any) => {
-            if (n.type === "text") {
-                return n.data;
-            } else {
-                return this.getTextContent(n.children);
-            }
-        }).join("");
+        return Utils.sanitizeArray(nodes)
+            .map((n: any) => {
+                if (n.type === "text") {
+                    return n.data;
+                } else {
+                    return this.getTextContent(n.children);
+                }
+            })
+            .join("");
     },
 
     getRangeContent(range: Range) {
@@ -174,7 +228,7 @@ const HtmlDomUtils = {
      * @param y Y-coordinate of the virtual element
      */
     generateVirtualElement(x: number, y: number): HTMLElement {
-        return {
+        return ({
             getBoundingClientRect: () => {
                 return {
                     width: 0,
@@ -183,30 +237,43 @@ const HtmlDomUtils = {
                     right: x,
                     bottom: y,
                     left: x,
-                }
+                };
             },
-            addEventListener: () => { /* Intentionally empty */
+            addEventListener: () => {
+                /* Intentionally empty */
             },
-            removeEventListener: () => { /* Intentionally empty */
+            removeEventListener: () => {
+                /* Intentionally empty */
             },
-            contains: () => false
-        } as unknown as HTMLElement;
+            contains: () => false,
+        } as unknown) as HTMLElement;
     },
 
-    findAnnotationElementBySelector(document: Document, selector: TextQuoteSelector): Element {
-        const occurrences = document.getElementById("annotator")!.querySelectorAll(`[typeof="${AnnotationType.OCCURRENCE}"]`);
+    findAnnotationElementBySelector(
+        document: Document,
+        selector: TextQuoteSelector
+    ): Element {
+        const occurrences = document
+            .getElementById("annotator")!
+            .querySelectorAll(`[typeof="${AnnotationType.OCCURRENCE}"]`);
         const matching: Element[] = [];
         const looseCandidates: Element[] = [];
-        occurrences.forEach(o => {
+        occurrences.forEach((o) => {
             if (o.textContent === selector.exactMatch) {
                 matching.push(o);
             }
         });
-        const definitions = document.getElementById("annotator")!.querySelectorAll(`[typeof="${AnnotationType.DEFINITION}"]`);
-        definitions.forEach(d => {
+        const definitions = document
+            .getElementById("annotator")!
+            .querySelectorAll(`[typeof="${AnnotationType.DEFINITION}"]`);
+        definitions.forEach((d) => {
             if (d.textContent === selector.exactMatch) {
                 matching.push(d);
-            } else if (d.textContent && d.textContent.replace(/\s/g, "") === selector.exactMatch.replace(/\s/g, "")) {
+            } else if (
+                d.textContent &&
+                d.textContent.replace(/\s/g, "") ===
+                    selector.exactMatch.replace(/\s/g, "")
+            ) {
                 // If the exact match didn't work, try removing all spaces and checking again
                 looseCandidates.push(d);
             }
@@ -227,7 +294,9 @@ const HtmlDomUtils = {
                 return elem;
             }
         }
-        throw new Error(`Element with exact match '${selector.exactMatch}' not found in document.`);
+        throw new Error(
+            `Element with exact match '${selector.exactMatch}' not found in document.`
+        );
     },
 
     addClassToElement(element: Element, className: string) {
@@ -236,17 +305,25 @@ const HtmlDomUtils = {
 
     removeClassFromElement(element: Element, className: string) {
         element.classList.remove(className);
-    }
-}
+    },
+};
 
 function prefixMatch(selector: TextQuoteSelector, element: Element) {
-    return selector.prefix && element.previousSibling &&
-        element.previousSibling.textContent && element.previousSibling.textContent!.indexOf(selector.prefix) !== -1;
+    return (
+        selector.prefix &&
+        element.previousSibling &&
+        element.previousSibling.textContent &&
+        element.previousSibling.textContent!.indexOf(selector.prefix) !== -1
+    );
 }
 
 function suffixMatch(selector: TextQuoteSelector, element: Element) {
-    return selector.suffix && element.nextSibling &&
-        element.nextSibling.textContent && element.nextSibling.textContent!.indexOf(selector.suffix) !== -1;
+    return (
+        selector.suffix &&
+        element.nextSibling &&
+        element.nextSibling.textContent &&
+        element.nextSibling.textContent!.indexOf(selector.suffix) !== -1
+    );
 }
 
 export default HtmlDomUtils;

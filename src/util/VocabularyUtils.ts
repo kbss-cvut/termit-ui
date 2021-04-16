@@ -21,7 +21,12 @@ export class IRIImpl implements IRI {
     }
 
     public equals(other?: IRI | null): boolean {
-        return other !== undefined && other !== null && this.fragment === other.fragment && this.namespace === other.namespace;
+        return (
+            other !== undefined &&
+            other !== null &&
+            this.fragment === other.fragment &&
+            this.namespace === other.namespace
+        );
     }
 
     public static create(iri: IRI): IRIImpl {
@@ -33,8 +38,10 @@ export class IRIImpl implements IRI {
     }
 }
 
-const _NS_POPIS_DAT = "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/";
-const _NS_TERMIT = "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/";
+const _NS_POPIS_DAT =
+    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/";
+const _NS_TERMIT =
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/";
 const _NS_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 const _NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
@@ -75,8 +82,10 @@ const VocabularyUtils = {
     JE_TEMATEM: _NS_TERMIT + "je-tématem",
     SUGGESTED_TERM_OCCURRENCE: _NS_TERMIT + "navržený-výskyt-termu",
     ASSIGNMENT_TARGET: _NS_TERMIT + "c\u00edl",
-    FILE_OCCURRENCE_TARGET: _NS_TERMIT + "c\u00edl-souborov\u00e9ho-v\u00fdskytu",
-    DEFINITION_OCCURRENCE_TARGET: _NS_TERMIT + "c\u00edl-defini\u010dn\u00edho-v\u00fdskytu",
+    FILE_OCCURRENCE_TARGET:
+        _NS_TERMIT + "c\u00edl-souborov\u00e9ho-v\u00fdskytu",
+    DEFINITION_OCCURRENCE_TARGET:
+        _NS_TERMIT + "c\u00edl-defini\u010dn\u00edho-v\u00fdskytu",
     TEXT_QUOTE_SELECTOR: _NS_TERMIT + "selektor-text-quote",
     HAS_DEFINITION_SOURCE: _NS_TERMIT + "m\u00e1-zdroj-definice-termu",
     HAS_FILE: _NS_POPIS_DAT + "má-soubor",
@@ -133,8 +142,11 @@ const VocabularyUtils = {
         const hashFragment = iri.indexOf("#");
         const slashFragment = iri.lastIndexOf("/");
         const fragment = hashFragment < 0 ? slashFragment : hashFragment;
-        return new IRIImpl(iri.substr(fragment + 1), iri.substr(0, fragment + 1));
-    }
+        return new IRIImpl(
+            iri.substr(fragment + 1),
+            iri.substr(0, fragment + 1)
+        );
+    },
 };
 
 export default VocabularyUtils;

@@ -4,10 +4,10 @@ export interface ErrorLogItem {
 }
 
 export interface ErrorData {
-    requestUrl?: string,
-    messageId?: string,
-    message?: string,
-    status?: number  // Response status
+    requestUrl?: string;
+    messageId?: string;
+    message?: string;
+    status?: number; // Response status
 }
 
 /**

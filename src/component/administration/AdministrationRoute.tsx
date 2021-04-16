@@ -1,30 +1,43 @@
 import * as React from "react";
-import {IfGranted} from "react-authorization";
+import { IfGranted } from "react-authorization";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
-import {Route, Switch} from "react-router";
+import { Route, Switch } from "react-router";
 import Routes from "../../util/Routes";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import CreateNewUser from "./CreateNewUser";
 import Administration from "./Administration";
 import Unauthorized from "../authorization/Unauthorized";
-import {useI18n} from "../hook/useI18n";
+import { useI18n } from "../hook/useI18n";
 
 /**
  * Wraps administration in authorization to be able to display an error message in case an unauthorized user attempts
  * to open it by directly changing browser URL.
  */
 const AdministrationRoute: React.FC = () => {
-    const {i18n} = useI18n();
-    const user = useSelector((state: TermItState) => state.user);
-    return <IfGranted expected={VocabularyUtils.USER_ADMIN} actual={user.types} unauthorized={<Unauthorized/>}>
-        <Switch>
-            <BreadcrumbRoute title={i18n("administration.users.create")}
-                             path={Routes.createNewUser.path} component={CreateNewUser}/>
-            <Route path={Routes.administration.path} component={Administration} exact={true}/>
-        </Switch>
-    </IfGranted>;
+  const { i18n } = useI18n();
+  const user = useSelector((state: TermItState) => state.user);
+  return (
+    <IfGranted
+      expected={VocabularyUtils.USER_ADMIN}
+      actual={user.types}
+      unauthorized={<Unauthorized />}
+    >
+      <Switch>
+        <BreadcrumbRoute
+          title={i18n("administration.users.create")}
+          path={Routes.createNewUser.path}
+          component={CreateNewUser}
+        />
+        <Route
+          path={Routes.administration.path}
+          component={Administration}
+          exact={true}
+        />
+      </Switch>
+    </IfGranted>
+  );
 };
 
 export default AdministrationRoute;

@@ -1,12 +1,11 @@
 import OntologicalVocabulary from "../../util/VocabularyUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import Term, {TermData} from "../Term";
+import Term, { TermData } from "../Term";
 import Generator from "../../__tests__/environment/Generator";
-import {TermOccurrenceData} from "../TermOccurrence";
-import {langString} from "../MultilingualString";
+import { TermOccurrenceData } from "../TermOccurrence";
+import { langString } from "../MultilingualString";
 
 describe("Term tests", () => {
-
     let termData: TermData;
     let term: {};
 
@@ -15,14 +14,14 @@ describe("Term tests", () => {
             iri: "http://example.org/term1",
             label: langString("test term 1"),
             types: ["http://example.org/type1", OntologicalVocabulary.TERM],
-            draft: true
+            draft: true,
         };
 
         term = {
             iri: "http://example.org/term1",
             label: langString("test term 1"),
             types: ["http://example.org/type1", OntologicalVocabulary.TERM],
-            draft: true
+            draft: true,
         };
     });
 
@@ -41,34 +40,43 @@ describe("Term tests", () => {
         });
 
         it("sets parent based on parentTerms", () => {
-            termData.vocabulary = {iri: Generator.generateUri()};
-            termData.parentTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("Parent"),
-                vocabulary: termData.vocabulary
-            }];
+            termData.vocabulary = { iri: Generator.generateUri() };
+            termData.parentTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent"),
+                    vocabulary: termData.vocabulary,
+                },
+            ];
             const result = new Term(termData);
             expect(result.parent).toEqual(termData.parentTerms[0].iri);
         });
 
         it("sets parent to first parent with same vocabulary", () => {
-            termData.vocabulary = {iri: Generator.generateUri()};
-            termData.parentTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("Parent"),
-                vocabulary: {iri: Generator.generateUri()}
-            }, {
-                iri: Generator.generateUri(),
-                label: langString("Parent Two"),
-                vocabulary: {iri: termData.vocabulary.iri}
-            }];
+            termData.vocabulary = { iri: Generator.generateUri() };
+            termData.parentTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent"),
+                    vocabulary: { iri: Generator.generateUri() },
+                },
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent Two"),
+                    vocabulary: { iri: termData.vocabulary.iri },
+                },
+            ];
             const result = new Term(termData);
             expect(result.parent).toEqual(termData.parentTerms[1].iri);
         });
 
         it("sanitizes subTerms to an array in case it is a singular object", () => {
-            const subTerm = {iri: Generator.generateUri(), label: "test", vocabulary: {iri: Generator.generateUri()}};
-            Object.assign(termData, {subTerms: subTerm});
+            const subTerm = {
+                iri: Generator.generateUri(),
+                label: "test",
+                vocabulary: { iri: Generator.generateUri() },
+            };
+            Object.assign(termData, { subTerms: subTerm });
             const result = new Term(termData);
             expect(result.subTerms).toEqual([subTerm]);
         });
@@ -77,43 +85,51 @@ describe("Term tests", () => {
             const parentData: TermData = {
                 iri: Generator.generateUri(),
                 label: langString("Parent"),
-                vocabulary: {iri: Generator.generateUri()}
+                vocabulary: { iri: Generator.generateUri() },
             };
             const grandParentData: TermData = {
                 iri: Generator.generateUri(),
                 label: langString("Grandparent"),
-                vocabulary: {iri: Generator.generateUri()},
-                parentTerms: [termData]
+                vocabulary: { iri: Generator.generateUri() },
+                parentTerms: [termData],
             };
             parentData.parentTerms = [grandParentData];
             termData.parentTerms = [parentData];
             const result = new Term(termData);
             expect(result.parentTerms![0].iri).toEqual(parentData.iri);
-            expect(result.parentTerms![0].parentTerms![0].iri).toEqual(grandParentData.iri);
+            expect(result.parentTerms![0].parentTerms![0].iri).toEqual(
+                grandParentData.iri
+            );
             // Here the cycle closes
-            expect(result.parentTerms![0].parentTerms![0].parentTerms![0]).toEqual(result);
+            expect(
+                result.parentTerms![0].parentTerms![0].parentTerms![0]
+            ).toEqual(result);
         });
     });
 
     it("adds term type in constructor when it is missing in specified data", () => {
         const data = {
             iri: Generator.generateUri(),
-            label: langString("New term")
+            label: langString("New term"),
         };
         const result = new Term(data);
         expect(result.types).toBeDefined();
-        expect(result.types!.indexOf(OntologicalVocabulary.TERM)).not.toEqual(-1);
+        expect(result.types!.indexOf(OntologicalVocabulary.TERM)).not.toEqual(
+            -1
+        );
     });
 
     describe("get unmappedProperties", () => {
         it("returns map of unmapped properties with values in term", () => {
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const data: TermData = {
-                iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
+                iri:
+                    "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
                 label: langString("pojem 5"),
                 sources: [
-                    "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"
-                ]
+                    "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology",
+                ],
             };
             const value = "value]";
             data[extraProperty] = value;
@@ -125,13 +141,15 @@ describe("Term tests", () => {
         });
 
         it("returns map of unmapped properties with values containing multiple values per property", () => {
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const data: TermData = {
-                iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
+                iri:
+                    "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
                 label: langString("pojem 5"),
                 sources: [
-                    "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology"
-                ]
+                    "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology",
+                ],
             };
             const values = ["v1", "v2", "v3"];
             data[extraProperty] = values;
@@ -146,7 +164,8 @@ describe("Term tests", () => {
         it("merges specified properties into the object state", () => {
             const testTerm = new Term(termData);
             const unmappedProps = new Map<string, string[]>();
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const value = ["1", "2"];
             unmappedProps.set(extraProperty, value);
             testTerm.unmappedProperties = unmappedProps;
@@ -157,7 +176,8 @@ describe("Term tests", () => {
         it("is symmetric to getter", () => {
             const testTerm = new Term(termData);
             const unmappedProps = new Map<string, string[]>();
-            const extraProperty = "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
+            const extraProperty =
+                "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const value = ["1", "2"];
             unmappedProps.set(extraProperty, value);
             testTerm.unmappedProperties = unmappedProps;
@@ -167,39 +187,44 @@ describe("Term tests", () => {
 
     describe("syncPlainSubTerms", () => {
         it("synchronizes plainSubTerms with current subTerms value", () => {
-            const origSubTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("test one"),
-                vocabulary: {iri: Generator.generateUri()}
-            }, {
-                iri: Generator.generateUri(),
-                label: langString("test two"),
-                vocabulary: {iri: Generator.generateUri()}
-            }];
+            const origSubTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test one"),
+                    vocabulary: { iri: Generator.generateUri() },
+                },
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test two"),
+                    vocabulary: { iri: Generator.generateUri() },
+                },
+            ];
             termData.subTerms = origSubTerms;
             const sut = new Term(termData);
-            expect(sut.plainSubTerms).toEqual(origSubTerms.map(ti => ti.iri));
+            expect(sut.plainSubTerms).toEqual(origSubTerms.map((ti) => ti.iri));
             const newSubTerms = origSubTerms.slice();
             newSubTerms.splice(newSubTerms.length - 1, 1);
             newSubTerms.push({
                 iri: Generator.generateUri(),
                 label: langString("test three"),
-                vocabulary: {iri: Generator.generateUri()}
+                vocabulary: { iri: Generator.generateUri() },
             });
             sut.subTerms = newSubTerms;
             sut.syncPlainSubTerms();
-            expect(sut.plainSubTerms).toEqual(newSubTerms.map(ti => ti.iri));
+            expect(sut.plainSubTerms).toEqual(newSubTerms.map((ti) => ti.iri));
         });
 
         it("is invoked by constructor", () => {
-            const origSubTerms = [{
-                iri: Generator.generateUri(),
-                label: langString("test one"),
-                vocabulary: {iri: Generator.generateUri()}
-            }];
+            const origSubTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test one"),
+                    vocabulary: { iri: Generator.generateUri() },
+                },
+            ];
             termData.subTerms = origSubTerms;
             const sut = new Term(termData);
-            expect(sut.plainSubTerms).toEqual(origSubTerms.map(ti => ti.iri));
+            expect(sut.plainSubTerms).toEqual(origSubTerms.map((ti) => ti.iri));
         });
     });
 
@@ -209,27 +234,29 @@ describe("Term tests", () => {
                 iri: Generator.generateUri(),
                 term: Generator.generateTerm(),
                 target: {
-                    selectors: [{
-                        iri: Generator.generateUri(),
-                        exactMatch: "Test",
-                        types: [VocabularyUtils.TEXT_QUOTE_SELECTOR]
-                    }],
-                    source: {iri: Generator.generateUri()},
-                    types: [VocabularyUtils.DEFINITION_OCCURRENCE_TARGET]
+                    selectors: [
+                        {
+                            iri: Generator.generateUri(),
+                            exactMatch: "Test",
+                            types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
+                        },
+                    ],
+                    source: { iri: Generator.generateUri() },
+                    types: [VocabularyUtils.DEFINITION_OCCURRENCE_TARGET],
                 },
-                types: [VocabularyUtils.TERM_DEFINITION_SOURCE]
+                types: [VocabularyUtils.TERM_DEFINITION_SOURCE],
             };
             const sut: Term = new Term({
                 iri: Generator.generateUri(),
                 label: langString("Test term"),
                 definitionSource: defSource,
-                types: [VocabularyUtils.TERM]
+                types: [VocabularyUtils.TERM],
             });
-            sut.definitionSource!.term = sut;   // Here comes the cycle
+            sut.definitionSource!.term = sut; // Here comes the cycle
 
             const result = sut.toTermData();
             expect(result.definitionSource!.term).not.toEqual(result);
-            expect(result.definitionSource!.term).toEqual({iri: sut.iri});
+            expect(result.definitionSource!.term).toEqual({ iri: sut.iri });
         });
     });
 
@@ -237,9 +264,9 @@ describe("Term tests", () => {
         it("deletes values in specified language from multilingual attributes", () => {
             const data: TermData = {
                 iri: Generator.generateUri(),
-                label: {en: "test term", cs: "testovaci pojem"},
-                definition: {en: "Term definition.", cs: "Definice pojmu"},
-                types: [VocabularyUtils.TERM]
+                label: { en: "test term", cs: "testovaci pojem" },
+                definition: { en: "Term definition.", cs: "Definice pojmu" },
+                types: [VocabularyUtils.TERM],
             };
 
             Term.removeTranslation(data, "cs");
@@ -250,9 +277,12 @@ describe("Term tests", () => {
         it("handles plural attribute translation removal as well", () => {
             const data: TermData = {
                 iri: Generator.generateUri(),
-                label: {en: "test term", cs: "testovaci pojem"},
-                altLabels: {en: ["test term", "test"], cs: ["testovaci pojem", "testovaci term"]},
-                types: [VocabularyUtils.TERM]
+                label: { en: "test term", cs: "testovaci pojem" },
+                altLabels: {
+                    en: ["test term", "test"],
+                    cs: ["testovaci pojem", "testovaci term"],
+                },
+                types: [VocabularyUtils.TERM],
             };
 
             Term.removeTranslation(data, "cs");

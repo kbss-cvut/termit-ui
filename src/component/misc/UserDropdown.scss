@@ -6,12 +6,14 @@
 }
 
 .dropdown {
-  .text-dropdown:hover span, .text-dropdown:hover:after {
+  .text-dropdown:hover span,
+  .text-dropdown:hover:after {
     color: $secondary !important;
   }
 
   &.show {
-    .text-dropdown span, .text-dropdown:after {
+    .text-dropdown span,
+    .text-dropdown:after {
       color: $primary !important;
     }
   }

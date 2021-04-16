@@ -10,7 +10,8 @@ export default interface AppNotification {
     source: any;
 }
 
-export interface AssetUpdateNotification<T extends Asset> extends AppNotification {
+export interface AssetUpdateNotification<T extends Asset>
+    extends AppNotification {
     original: T;
     updated: T;
 }

@@ -14,21 +14,23 @@ export interface EditableComponentState {
  * Typically, this state will switch the UI content and allow the user to perform editing, after which the state
  * changes back to read only.
  */
-export default class EditableComponent<P = {}, S extends EditableComponentState = EditableComponentState> extends React.Component<P, S> {
-
+export default class EditableComponent<
+    P = {},
+    S extends EditableComponentState = EditableComponentState
+> extends React.Component<P, S> {
     public onEdit = () => {
-        this.setState({edit: true});
+        this.setState({ edit: true });
     };
 
     public onCloseEdit = () => {
-        this.setState({edit: false});
+        this.setState({ edit: false });
     };
 
     protected onRemoveClick = () => {
-        this.setState({showRemoveDialog: true});
+        this.setState({ showRemoveDialog: true });
     };
 
     public onCloseRemove = () => {
-        this.setState({showRemoveDialog: false});
+        this.setState({ showRemoveDialog: false });
     };
 }
