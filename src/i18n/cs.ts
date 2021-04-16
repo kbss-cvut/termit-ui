@@ -603,33 +603,20 @@ const cs = {
         "annotation.definition.new": "Nová definice",
 
         "annotator.legend.title": "Legenda",
-        "annotator.legend.confirmed.loading": "Anotace se načítá",
-        "annotator.legend.confirmed.loading.tooltip":
-            "Annotace, kterou vytvořil či akceptoval uživatel, se načítá.",
-        "annotator.legend.proposed.loading": "Navrhovaná anotace se načítá",
-        "annotator.legend.proposed.loading.tooltip":
-            "Annotace navrhovaná službou textové analýzy se načítá.",
         "annotator.legend.confirmed.unknown.term": "Výskyt neznámého pojmu",
         "annotator.legend.confirmed.unknown.term.tooltip":
-            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak nebyl přiřazen konkrétnímu pojmu.",
+            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak konkrétní pojem nebyl zatím vybrán.",
         "annotator.legend.confirmed.existing.term": "Výskyt existujícího pojmu",
         "annotator.legend.confirmed.existing.term.tooltip":
-            "Výskyt pojmu vytvořený či akceptován uživatelem.",
-        "annotator.legend.confirmed.missing.term": "Výskyt chybějícího pojmu",
-        "annotator.legend.confirmed.missing.term.tooltip":
-            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak přislušný pojem nebyl nalezen.",
+            "Výskyt pojmu vytvořený či schválený uživatelem.",
         "annotator.legend.proposed.unknown.term":
-            "Navrhovaný výskyt neznámého pojmu",
+            "Navrhovaný výskyt nového pojmu",
         "annotator.legend.proposed.unknown.term.tooltip":
-            "Výskyt pojmu byl identifikován službou textové analýzy, avšak nebyl přiřazen konkrétnímu pojmu.",
+            "Výskyt potenciálního nového pojmu byl identifikován službou textové analýzy, avšak nebyl ještě schválen uživatelem.",
         "annotator.legend.proposed.existing.term":
             "Navrhovaný výskyt existujícího pojmu",
         "annotator.legend.proposed.existing.term.tooltip":
             "Výskyt pojmu identifikovaný službou textové analýzy.",
-        "annotator.legend.proposed.missing.term":
-            "Navrhovaný výskyt chybějícího pojmu",
-        "annotator.legend.proposed.missing.term.tooltip":
-            "Výskyt pojmu byl identifikován službou textové analýzy, avšak přislušný pojem nebyl nalezen.",
         "annotator.legend.definition.pending": "Definice neznámého pojmu",
         "annotator.legend.definition.pending.tooltip":
             "Definice, která zatím nebyla přiřazena žádnému pojmu.",
