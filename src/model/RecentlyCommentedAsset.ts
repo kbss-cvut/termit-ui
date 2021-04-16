@@ -16,7 +16,7 @@ export interface RecentlyCommentedAssetData extends HasTypes {
     iri: string;
     type: string;
     lastComment: Comment;
-    lastMyComment?: Comment;
+    myLastComment?: Comment;
 }
 
 export default class RecentlyCommentedAsset
@@ -24,12 +24,12 @@ export default class RecentlyCommentedAsset
     public readonly iri: string;
     public readonly type: string;
     lastComment: Comment;
-    lastMyComment?: Comment;
+    myLastComment?: Comment;
 
     constructor(data: RecentlyCommentedAssetData) {
         this.iri = data.iri;
         this.lastComment = data.lastComment;
-        this.lastMyComment = data.lastMyComment;
+        this.myLastComment = data.myLastComment;
         this.type = data.type;
     }
 }

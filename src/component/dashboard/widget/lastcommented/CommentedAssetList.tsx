@@ -90,8 +90,8 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
           <div>
             <TermIriLink iri={commentedAsset.iri!} />
             <br />
-              {commentedAsset.lastMyComment ?<>{renderComment(commentedAsset.lastMyComment)}
-                  <div className="ml-4"><span className="text-muted">{i18n("dashboard.widget.commentList.lastMyComment")}</span>
+              {commentedAsset.myLastComment ?<>{renderComment(commentedAsset.myLastComment)}
+                  <div className="ml-4"><span className="text-muted">{i18n("dashboard.widget.commentList.myLastComment")}</span>
                       {renderComment(commentedAsset.lastComment)}</div></>
                   : renderComment(commentedAsset.lastComment)}
             </div>
