@@ -18,11 +18,13 @@ import {getLocalized} from "../../model/MultilingualString";
 
 function enhanceWithCurrentTerm(
   terms: Term[],
+  vocabularyIri: string,
   currentTermIri?: string,
   parentTerms?: Term[]
 ): Term[] {
   if (currentTermIri) {
     const currentParents = Utils.sanitizeArray(parentTerms).slice();
+    const currentVocResult = [];
     const result = [];
     for (const t of terms) {
       if (t.iri === currentTermIri) {
@@ -33,11 +35,16 @@ function enhanceWithCurrentTerm(
       }
       const parentIndex = currentParents.findIndex((p) => p.iri === t.iri);
       if (parentIndex === -1) {
-        result.push(t);
+        if (t.vocabulary && t.vocabulary.iri === vocabularyIri) {
+          // Prioritize current vocabulary terms
+          currentVocResult.push(t);
+        } else {
+          result.push(t);
+        }
       }
     }
     // Add parents which are not in the loaded terms so that they show up in the list
-    return currentParents.concat(result);
+    return currentParents.concat(currentVocResult).concat(result);
   } else {
     return terms;
   }
@@ -96,6 +103,7 @@ export class ParentTermSelector extends React.Component<
           processTermsForTreeSelect(terms, undefined, {
             searchString: fetchOptions.searchString,
           }),
+          this.props.vocabularyIri,
           this.props.termIri,
           this.props.parentTerms
       );

@@ -241,8 +241,7 @@ describe("ParentTermSelector", () => {
     it("add term's parents to the beginning of the options list", () => {
       const options: Term[] = [];
       for (let i = 0; i < Generator.randomInt(5, 10); i++) {
-        const t = Generator.generateTerm(vocabularyIri);
-        options.push(t);
+        options.push(Generator.generateTerm(vocabularyIri));
       }
       const parentTerms = [
         Generator.generateTerm(vocabularyIri),
@@ -266,5 +265,39 @@ describe("ParentTermSelector", () => {
         .then((terms) => {
           expect(terms).toEqual(parentTerms.concat(options));
         });
+    });
+
+    it("prioritizes terms from the current vocabulary", () => {
+      const currentVocOptions: Term[] = [];
+      for (let i = 0; i < Generator.randomInt(5, 10); i++) {
+        currentVocOptions.push(Generator.generateTerm(vocabularyIri));
+      }
+      const otherOptions: Term[] = [];
+      const otherVocabularyIri = Generator.generateUri();
+      for (let i = 0; i < 5; i++) {
+        otherOptions.push(Generator.generateTerm(otherVocabularyIri));
+      }
+      const options = currentVocOptions.concat(otherOptions);
+      Generator.shuffleArray(options);
+      (loadTerms as jest.Mock).mockResolvedValue(options);
+      const wrapper = shallow<ParentTermSelector>(
+          <ParentTermSelector
+              id="test"
+              termIri={Generator.generateUri()}
+              parentTerms={[]}
+              vocabularyIri={vocabularyIri}
+              onChange={onChange}
+              {...fetchFunctions}
+              {...intlFunctions()}
+          />
+      );
+      return wrapper
+          .instance()
+          .fetchOptions({})
+          .then((terms) => {
+            for (let i = 0; i < currentVocOptions.length; i++) {
+              expect(terms[i].vocabulary!.iri).toEqual(vocabularyIri);
+            }
+          });
     });
   });
