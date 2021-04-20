@@ -110,6 +110,7 @@ const en = {
         "dashboard.widget.commentList.empty":
             "You will see here Your last comments and reactions to them.",
         "dashboard.widget.commentList.lastComment": "Last comment of the term.",
+        "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} by {user} .",
         "dashboard.widget.commentList.messageByYou": "{when} by You .",
         "dashboard.widget.lastCommentedAssets.title": "Last commented terms",
