@@ -2719,17 +2719,15 @@ describe("Async actions", () => {
 
     describe("loadStatistics", () => {
         it("uses provided type argument as part of URL when loading statistics", () => {
-            Ajax.get = jest
-                .fn()
-                .mockResolvedValue({
-                    result: [
-                        {
-                            id: Generator.generateUri(),
-                            count: 1,
-                            label: "Test",
-                        },
-                    ],
-                });
+            Ajax.get = jest.fn().mockResolvedValue({
+                result: [
+                    {
+                        id: Generator.generateUri(),
+                        count: 1,
+                        label: "Test",
+                    },
+                ],
+            });
             const type = "term-frequency";
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadStatistics(type))

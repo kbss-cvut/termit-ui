@@ -8,6 +8,7 @@ import TermQualityBadge from "../../term/TermQualityBadge";
 import TermLink from "../../term/TermLink";
 import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
+import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
 
 interface TreeOption {
   disabled: boolean;
@@ -28,6 +29,69 @@ interface OptionRendererParams<T> {
   valueArray: T & TreeOption[];
   toggleOption: (option: T & TreeOption) => void;
   searchString: string;
+}
+
+export function createTermsWithVocabularyInfoRenderer() {
+  return (params: OptionRendererParams<Term>) => {
+    const { option } = { ...params };
+    const addonBefore = option.vocabulary ? (
+      <span>
+        <VocabularyNameBadge vocabulary={option.vocabulary} className="mr-1" />
+      </span>
+    ) : undefined;
+
+    return renderResultItem(params, addonBefore);
+  };
+}
+
+function renderResultItem(
+  params: OptionRendererParams<Term>,
+  addonBefore?: JSX.Element
+) {
+  const {
+    option,
+    focusedOption,
+    optionStyle,
+    selectValue,
+    focusOption,
+    toggleOption,
+    valueArray,
+  } = { ...params };
+  const className = classNames(
+    "VirtualizedSelectOption",
+    {
+      VirtualizedSelectFocusedOption: option === focusedOption,
+      VirtualizedSelectDisabledOption: option.disabled,
+      VirtualizedSelectSelectedOption:
+        valueArray && valueArray.indexOf(option) >= 0,
+    },
+    option.className
+  );
+
+  const eventHandlers = option.disabled
+    ? {}
+    : {
+        onClick: () => selectValue(option),
+        onMouseEnter: () => focusOption(option),
+        onToggleClick: () => toggleOption(option),
+      };
+  return (
+    <ResultItem
+      key={params.key}
+      renderAsTree={params.renderAsTree}
+      className={className}
+      option={option}
+      childrenKey="plainSubTerms"
+      labelKey={params.labelKey}
+      valueKey={params.valueKey}
+      getOptionLabel={params.getOptionLabel}
+      style={optionStyle}
+      searchString={params.searchString}
+      addonBefore={addonBefore}
+      displayInfoOnHover={false}
+      {...eventHandlers}
+    />
+  );
 }
 
 /**
@@ -74,33 +138,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
   qualityBadge?: boolean
 ) {
   return (params: OptionRendererParams<Term>) => {
-    const {
-      option,
-      focusedOption,
-      optionStyle,
-      selectValue,
-      focusOption,
-      toggleOption,
-      valueArray,
-    } = { ...params };
-    const className = classNames(
-      "VirtualizedSelectOption",
-      {
-        VirtualizedSelectFocusedOption: option === focusedOption,
-        VirtualizedSelectDisabledOption: option.disabled,
-        VirtualizedSelectSelectedOption:
-          valueArray && valueArray.indexOf(option) >= 0,
-      },
-      option.className
-    );
-
-    const eventHandlers = option.disabled
-      ? {}
-      : {
-          onClick: () => selectValue(option),
-          onMouseEnter: () => focusOption(option),
-          onToggleClick: () => toggleOption(option),
-        };
+    const { option } = { ...params };
 
     const addonBefore = (
       <span>
@@ -117,23 +155,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       </span>
     );
 
-    return (
-      <ResultItem
-        key={params.key}
-        renderAsTree={params.renderAsTree}
-        className={className}
-        option={option}
-        childrenKey="plainSubTerms"
-        labelKey={params.labelKey}
-        valueKey={params.valueKey}
-        getOptionLabel={params.getOptionLabel}
-        style={optionStyle}
-        searchString={params.searchString}
-        addonBefore={addonBefore}
-        displayInfoOnHover={false}
-        {...eventHandlers}
-      />
-    );
+    return renderResultItem(params, addonBefore);
   };
 }
 
