@@ -1,16 +1,20 @@
-import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
+import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
-import {ThunkDispatch} from "../../util/Types";
-import {loadTermsForParentSelector, setTermDefinitionSource, setTermStatus,} from "../AsyncTermActions";
+import { ThunkDispatch } from "../../util/Types";
+import {
+    loadTermsForParentSelector,
+    setTermDefinitionSource,
+    setTermStatus,
+} from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
 import Term from "../../model/Term";
 import ActionType from "../ActionType";
 import MessageType from "../../model/MessageType";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 import TermStatus from "../../model/TermStatus";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Constants from "../../util/Constants";
@@ -198,7 +202,9 @@ describe("AsyncTermActions", () => {
                 .fn()
                 .mockImplementation(() => Promise.resolve(terms));
             return Promise.resolve(
-                (store.dispatch as ThunkDispatch)(loadTermsForParentSelector({}))
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsForParentSelector({})
+                )
             ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");

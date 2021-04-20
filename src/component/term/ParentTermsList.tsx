@@ -35,10 +35,24 @@ const ParentTermsList: React.FC<ParentTermsListProps> = (props) => {
           {parents.map((item) => (
             <li key={item.iri}>
               {workspace.containsVocabulary(item.vocabulary!.iri!) ? (
-                <><VocabularyNameBadge className="mr-1 align-text-bottom" vocabulary={item.vocabulary}/><TermLink term={item} language={language} /></>
+                <>
+                  <VocabularyNameBadge
+                    className="mr-1 align-text-bottom"
+                    vocabulary={item.vocabulary}
+                  />
+                  <TermLink term={item} language={language} />
+                </>
               ) : (
                 <OutgoingLink
-                  label={<><VocabularyNameBadge className="mr-1 align-text-bottom" vocabulary={item.vocabulary}/>{getLocalized(item.label, language)}</>}
+                  label={
+                    <>
+                      <VocabularyNameBadge
+                        className="mr-1 align-text-bottom"
+                        vocabulary={item.vocabulary}
+                      />
+                      {getLocalized(item.label, language)}
+                    </>
+                  }
                   iri={item.iri}
                 />
               )}

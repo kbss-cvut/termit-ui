@@ -35,8 +35,8 @@ export function createTermsWithVocabularyInfoRenderer() {
   return (params: OptionRendererParams<Term>) => {
     const { option } = { ...params };
     const addonBefore = option.vocabulary ? (
-        <span>
-        <VocabularyNameBadge vocabulary={option.vocabulary} className="mr-1"/>
+      <span>
+        <VocabularyNameBadge vocabulary={option.vocabulary} className="mr-1" />
       </span>
     ) : undefined;
 
@@ -44,7 +44,10 @@ export function createTermsWithVocabularyInfoRenderer() {
   };
 }
 
-function renderResultItem(params: OptionRendererParams<Term>, addonBefore?: JSX.Element) {
+function renderResultItem(
+  params: OptionRendererParams<Term>,
+  addonBefore?: JSX.Element
+) {
   const {
     option,
     focusedOption,
@@ -55,39 +58,39 @@ function renderResultItem(params: OptionRendererParams<Term>, addonBefore?: JSX.
     valueArray,
   } = { ...params };
   const className = classNames(
-      "VirtualizedSelectOption",
-      {
-        VirtualizedSelectFocusedOption: option === focusedOption,
-        VirtualizedSelectDisabledOption: option.disabled,
-        VirtualizedSelectSelectedOption:
-            valueArray && valueArray.indexOf(option) >= 0,
-      },
-      option.className
+    "VirtualizedSelectOption",
+    {
+      VirtualizedSelectFocusedOption: option === focusedOption,
+      VirtualizedSelectDisabledOption: option.disabled,
+      VirtualizedSelectSelectedOption:
+        valueArray && valueArray.indexOf(option) >= 0,
+    },
+    option.className
   );
 
   const eventHandlers = option.disabled
-      ? {}
-      : {
+    ? {}
+    : {
         onClick: () => selectValue(option),
         onMouseEnter: () => focusOption(option),
         onToggleClick: () => toggleOption(option),
       };
   return (
-      <ResultItem
-          key={params.key}
-          renderAsTree={params.renderAsTree}
-          className={className}
-          option={option}
-          childrenKey="plainSubTerms"
-          labelKey={params.labelKey}
-          valueKey={params.valueKey}
-          getOptionLabel={params.getOptionLabel}
-          style={optionStyle}
-          searchString={params.searchString}
-          addonBefore={addonBefore}
-          displayInfoOnHover={false}
-          {...eventHandlers}
-      />
+    <ResultItem
+      key={params.key}
+      renderAsTree={params.renderAsTree}
+      className={className}
+      option={option}
+      childrenKey="plainSubTerms"
+      labelKey={params.labelKey}
+      valueKey={params.valueKey}
+      getOptionLabel={params.getOptionLabel}
+      style={optionStyle}
+      searchString={params.searchString}
+      addonBefore={addonBefore}
+      displayInfoOnHover={false}
+      {...eventHandlers}
+    />
   );
 }
 

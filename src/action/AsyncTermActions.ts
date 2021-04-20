@@ -133,9 +133,9 @@ export function loadTermsForParentSelector(fetchOptions: FetchOptionsFunction) {
             .then((data: object[]) =>
                 data.length !== 0
                     ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(
-                    data,
-                    TERM_CONTEXT
-                    )
+                          data,
+                          TERM_CONTEXT
+                      )
                     : []
             )
             .then((data: TermData[]) => {

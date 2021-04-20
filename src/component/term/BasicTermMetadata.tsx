@@ -140,7 +140,11 @@ export class BasicTermMetadata extends React.Component<
           <List type="unstyled" id="term-metadata-subterms" className="mb-3">
             {source.map((item) => (
               <li key={item.iri}>
-                <VocabularyNameBadge className="mr-1 align-text-bottom" vocabulary={item.vocabulary}/><TermLink term={item} language={this.props.language} />
+                <VocabularyNameBadge
+                  className="mr-1 align-text-bottom"
+                  vocabulary={item.vocabulary}
+                />
+                <TermLink term={item} language={this.props.language} />
               </li>
             ))}
           </List>

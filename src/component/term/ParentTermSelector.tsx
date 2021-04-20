@@ -1,20 +1,23 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import Term, {TermData} from "../../model/Term";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import Term, { TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import {connect} from "react-redux";
-import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {FormFeedback, FormGroup, FormText, Label,} from "reactstrap";
+import { connect } from "react-redux";
+import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import { FormFeedback, FormGroup, FormText, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithVocabularyInfoRenderer} from "../misc/treeselect/Renderers";
-import {commonTermTreeSelectProps, processTermsForTreeSelect,} from "./TermTreeSelectHelper";
-import {loadTermsForParentSelector,} from "../../action/AsyncTermActions";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
+import { createTermsWithVocabularyInfoRenderer } from "../misc/treeselect/Renderers";
+import {
+  commonTermTreeSelectProps,
+  processTermsForTreeSelect,
+} from "./TermTreeSelectHelper";
+import { loadTermsForParentSelector } from "../../action/AsyncTermActions";
 import OutgoingLink from "../misc/OutgoingLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
-import {getLocalized} from "../../model/MultilingualString";
+import { getLocalized } from "../../model/MultilingualString";
 
 function enhanceWithCurrentTerm(
   terms: Term[],
@@ -52,7 +55,18 @@ function enhanceWithCurrentTerm(
 
 function createValueRenderer() {
   return (term: Term) => (
-    <OutgoingLink label={<><VocabularyNameBadge className="mr-1 align-text-top" vocabulary={term.vocabulary}/>{getLocalized(term.label)}</>} iri={term.iri} />
+    <OutgoingLink
+      label={
+        <>
+          <VocabularyNameBadge
+            className="mr-1 align-text-top"
+            vocabulary={term.vocabulary}
+          />
+          {getLocalized(term.label)}
+        </>
+      }
+      iri={term.iri}
+    />
   );
 }
 
@@ -64,14 +78,10 @@ interface ParentTermSelectorProps extends HasI18n {
   invalidMessage?: JSX.Element;
   vocabularyIri: string;
   onChange: (newParents: Term[]) => void;
-  loadTerms: (
-    fetchOptions: FetchOptionsFunction,
-  ) => Promise<Term[]>;
+  loadTerms: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
 }
 
-export class ParentTermSelector extends React.Component<
-  ParentTermSelectorProps
-> {
+export class ParentTermSelector extends React.Component<ParentTermSelectorProps> {
   private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
 
   constructor(props: ParentTermSelectorProps) {
@@ -100,12 +110,12 @@ export class ParentTermSelector extends React.Component<
     return this.props.loadTerms(fetchOptions).then((terms) => {
       this.setState({ disableConfig: false });
       return enhanceWithCurrentTerm(
-          processTermsForTreeSelect(terms, undefined, {
-            searchString: fetchOptions.searchString,
-          }),
-          this.props.vocabularyIri,
-          this.props.termIri,
-          this.props.parentTerms
+        processTermsForTreeSelect(terms, undefined, {
+          searchString: fetchOptions.searchString,
+        }),
+        this.props.vocabularyIri,
+        this.props.termIri,
+        this.props.parentTerms
       );
     });
   };
@@ -164,8 +174,7 @@ export class ParentTermSelector extends React.Component<
 
 export default connect(undefined, (dispatch: ThunkDispatch) => {
   return {
-    loadTerms: (
-      fetchOptions: FetchOptionsFunction
-    ) => dispatch(loadTermsForParentSelector(fetchOptions)),
+    loadTerms: (fetchOptions: FetchOptionsFunction) =>
+      dispatch(loadTermsForParentSelector(fetchOptions)),
   };
 })(injectIntl(withI18n(ParentTermSelector)));
