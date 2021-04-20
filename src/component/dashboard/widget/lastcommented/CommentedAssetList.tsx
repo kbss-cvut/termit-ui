@@ -87,7 +87,7 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
       return (
         <td className="col-xs-12 px-0">
           <div>
-            <TermIriLink iri={commentedAsset.iri!} />
+            <TermIriLink iri={commentedAsset.iri!} activeTab="comments.title" />
             <br />
             {commentedAsset.myLastComment ? (
               <>
