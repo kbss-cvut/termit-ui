@@ -9,10 +9,11 @@ import {FormFeedback, FormGroup, FormText, Label,} from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithImportsOptionRenderer} from "../misc/treeselect/Renderers";
+import {createTermsWithVocabularyInfoRenderer} from "../misc/treeselect/Renderers";
 import {commonTermTreeSelectProps, processTermsForTreeSelect,} from "./TermTreeSelectHelper";
 import {loadTermsForParentSelector,} from "../../action/AsyncTermActions";
 import OutgoingLink from "../misc/OutgoingLink";
+import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 import {getLocalized} from "../../model/MultilingualString";
 
 function enhanceWithCurrentTerm(
@@ -44,7 +45,7 @@ function enhanceWithCurrentTerm(
 
 function createValueRenderer() {
   return (term: Term) => (
-    <OutgoingLink label={getLocalized(term.label)} iri={term.iri} />
+    <OutgoingLink label={<><VocabularyNameBadge className="mr-1 align-text-top" vocabulary={term.vocabulary}/>{getLocalized(term.label)}</>} iri={term.iri} />
   );
 }
 
@@ -135,9 +136,7 @@ export class ParentTermSelector extends React.Component<
           fetchLimit={100}
           maxHeight={200}
           multi={true}
-          optionRenderer={createTermsWithImportsOptionRenderer(
-            this.props.vocabularyIri
-          )}
+          optionRenderer={createTermsWithVocabularyInfoRenderer()}
           valueRenderer={createValueRenderer()}
           style={style}
           {...commonTermTreeSelectProps(this.props)}
