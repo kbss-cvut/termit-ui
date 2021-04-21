@@ -60,6 +60,7 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = (
               id="annotator-selection-dialog-mark-occurrence"
               color="primary"
               size="sm"
+              className="flex-grow-1"
               onClick={props.onMarkOccurrence}
             >
               {i18n("annotator.selectionPurpose.occurrence")}
@@ -68,6 +69,7 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = (
               id="annotator-selection-dialog-mark-definition"
               color="primary"
               size="sm"
+              className="flex-grow-1"
               onClick={props.onMarkDefinition}
             >
               {i18n("annotator.selectionPurpose.definition")}
