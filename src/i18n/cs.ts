@@ -19,6 +19,8 @@ const cs = {
         "basic-information": "Základní informace",
         "created-info": "Vytvořeno uživatelem {author} dne {date}",
         "select.placeholder": "Vyberte...",
+        "help.title": "Nápověda",
+        "multilingual.title": "Hodnotu atributu lze vyplnit ve více jazycích",
 
         "connection.error": "Nepodařilo se navázat spojení se serverem.",
         "ajax.unparseable-error":
