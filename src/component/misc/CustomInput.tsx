@@ -1,7 +1,6 @@
 import * as React from "react";
-import { Input, FormGroup } from "reactstrap";
+import { FormFeedback, FormGroup, Input } from "reactstrap";
 import AbstractInput, { AbstractInputProps } from "./AbstractInput";
-import { FormFeedback } from "reactstrap";
 
 export interface InputProps extends AbstractInputProps {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -24,7 +23,7 @@ export default class CustomInput extends AbstractInput<InputProps> {
           {...this.inputProps()}
         />
         <FormFeedback>{this.props.invalidMessage}</FormFeedback>
-        {this.renderHelp()}
+        {this.renderHint()}
       </FormGroup>
     );
   }

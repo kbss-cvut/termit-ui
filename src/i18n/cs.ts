@@ -19,6 +19,8 @@ const cs = {
         "basic-information": "Základní informace",
         "created-info": "Vytvořeno uživatelem {author} dne {date}",
         "select.placeholder": "Vyberte...",
+        "help.title": "Nápověda",
+        "multilingual.title": "Hodnotu atributu lze vyplnit ve více jazycích",
 
         "connection.error": "Nepodařilo se navázat spojení se serverem.",
         "ajax.unparseable-error":
@@ -113,6 +115,7 @@ const cs = {
         "dashboard.widget.commentList.empty":
             "Zde uvidíte své poslední komentáře a reakce na ně.",
         "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
+        "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
         "dashboard.widget.commentList.messageByYou": "{when} Vámi .",
         "dashboard.widget.lastCommentedAssets.title":

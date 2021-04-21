@@ -165,7 +165,7 @@ export class CreateVocabulary extends AbstractCreateAsset<
                       name="create-vocabulary-label"
                       label={i18n("asset.label")}
                       value={this.state.label}
-                      help={i18n("required")}
+                      hint={i18n("required")}
                       onChange={this.onLabelChange}
                     />
                   </Col>
@@ -178,7 +178,6 @@ export class CreateVocabulary extends AbstractCreateAsset<
                       type="textarea"
                       rows={4}
                       value={this.state.comment}
-                      help={i18n("optional")}
                       onChange={this.onCommentChange}
                     />
                   </Col>
