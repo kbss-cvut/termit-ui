@@ -1,6 +1,6 @@
 import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { termInfoComparator } from "../../model/Term";
+import Term, {TermInfo, termInfoComparator} from "../../model/Term";
 import { injectIntl } from "react-intl";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
@@ -124,50 +124,37 @@ export class BasicTermMetadata extends React.Component<
     }
   }
 
+  private renderTermList( list : (Term | TermInfo)[], labelKey : string, listId : string ) {
+    return (
+        <Row>
+          <Col xl={2} md={4}>
+            <Label className="attribute-label mb-3">
+              {this.props.i18n( labelKey )}
+            </Label>
+          </Col>
+          <Col xl={10} md={8}>
+            <List type="unstyled" id={ listId } className="mb-3">
+              {list.map((item) => (
+                  <li key={item.iri}>
+                    <TermLink term={item} language={this.props.language} />
+                  </li>
+              ))}
+            </List>
+          </Col>
+        </Row>
+    );
+  }
+
   private renderParentTerms() {
     const parents = Utils.sanitizeArray(this.props.term.parentTerms);
     parents.sort(Utils.labelComparator);
-    return (
-      <Row>
-        <Col xl={2} md={4}>
-          <Label className="attribute-label mb-3">
-            {this.props.i18n("term.metadata.parent")}
-          </Label>
-        </Col>
-        <Col xl={10} md={8}>
-          <List type="unstyled" id="term-metadata-parentterms" className="mb-3">
-            {parents.map((item) => (
-              <li key={item.iri}>
-                <TermLink term={item} language={this.props.language} />
-              </li>
-            ))}
-          </List>
-        </Col>
-      </Row>
-    );
+    return this.renderTermList( parents, "term.metadata.parent", "term-metadata-parentterms");
   }
 
   private renderSubTerms() {
     const source = Utils.sanitizeArray(this.props.term.subTerms);
     source.sort(termInfoComparator);
-    return (
-      <Row>
-        <Col xl={2} md={4}>
-          <Label className="attribute-label mb-3">
-            {this.props.i18n("term.metadata.subTerms")}
-          </Label>
-        </Col>
-        <Col xl={10} md={8}>
-          <List type="unstyled" id="term-metadata-subterms" className="mb-3">
-            {source.map((item) => (
-              <li key={item.iri}>
-                <TermLink term={item} language={this.props.language} />
-              </li>
-            ))}
-          </List>
-        </Col>
-      </Row>
-    );
+    return this.renderTermList( source, "term.metadata.subTerms", "term-metadata-subterms");
   }
 }
 
