@@ -26,9 +26,9 @@ jobs:
       with:
         node-version: '12.x'
     - name: Install
-      run: npm install
+      run: npm --add-python-to-path='true' install
     - name: Build
-      run: npm run-script build
+      run: npm run-script build 
       env:
         CI: ""
     - name: Test
