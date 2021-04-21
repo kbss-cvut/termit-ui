@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 FROM base AS dependencies
 # install node packages
 RUN npm set progress=false && npm config set depth 0
-RUN npm install
+RUN apk add --no-cache make gcc g++ python && npm install
 
 # TEST STAGE
 # run linters, setup and tests
