@@ -8,7 +8,7 @@ on:
 env:
   IMAGE_NAME: termit-public
   SERVER_URL: https://slovník.gov.cz
-  PATH: /prohlížíme
+  CONTEXT_PATH: /prohlížíme
   
 jobs:
   # Push image to GitHub Packages.
@@ -24,7 +24,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
       - name: Build image
-        run: docker build --build-arg PUBLIC_PATH=$PATH --build-arg REACT_APP_SERVER_URL=$SERVER_URL -t $IMAGE_NAME .
+        run: docker build --build-arg PUBLIC_PATH=$CONTEXT_PATH --build-arg REACT_APP_SERVER_URL=$SERVER_URL -t $IMAGE_NAME .
       - name: Push image
         run: |
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
