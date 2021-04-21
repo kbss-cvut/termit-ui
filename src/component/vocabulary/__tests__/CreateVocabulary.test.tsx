@@ -24,6 +24,7 @@ jest.mock("../../../util/Ajax", () => {
     default: jest.fn(),
   };
 });
+jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
 describe("Create vocabulary view", () => {
   const iri = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test";

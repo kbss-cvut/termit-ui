@@ -151,7 +151,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
             activeClassName=""
             className={classNames({ "sup-icon-margin-fix": route.supIcon })}
           >
-            <i className={route.icon}>
+            <i className={route.icon} title={i18n(route.name)}>
               {route.supIcon && (
                 <sup className={`${route.supIcon} fa-xs sup-icon`} />
               )}
@@ -175,7 +175,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
             onClick={this.closeCollapse}
             activeClassName={this.activeRoute(route.path)}
           >
-            <i className={route.icon} />
+            <i className={route.icon} title={i18n(route.name)} />
             {(sidebarExpanded || !desktopView) && i18n(route.name)}
           </NavLink>
         </NavItem>
