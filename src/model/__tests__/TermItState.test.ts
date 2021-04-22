@@ -11,7 +11,7 @@ describe("TermItState", () => {
             const sut = new TermItState();
             const vocabulary = new Vocabulary({
                 iri: Generator.generateUri(),
-                label: "Test vocabulary"
+                label: "Test vocabulary",
             });
             const document = new Document({
                 iri: Generator.generateUri(),
@@ -36,7 +36,9 @@ describe("TermItState", () => {
             const result = TermItState.toLoggable(sut);
             const json = JSON.stringify(result);
             expect(json).toBeDefined();
-            expect(result.vocabulary.document.vocabulary).not.toEqual(result.vocabulary.vocabulary);
+            expect(result.vocabulary.document.vocabulary).not.toEqual(
+                result.vocabulary.vocabulary
+            );
         });
     });
 });

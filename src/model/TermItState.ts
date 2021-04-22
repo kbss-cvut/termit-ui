@@ -1,21 +1,21 @@
-import User, {EMPTY_USER} from "./User";
+import User, { EMPTY_USER } from "./User";
 import Message from "./Message";
 import en from "../i18n/en";
 import IntlData from "./IntlData";
-import Vocabulary, {EMPTY_VOCABULARY} from "./Vocabulary";
-import {QueryResultIF} from "./QueryResult";
+import Vocabulary, { EMPTY_VOCABULARY } from "./Vocabulary";
+import { QueryResultIF } from "./QueryResult";
 import Term from "./Term";
-import Resource, {EMPTY_RESOURCE} from "./Resource";
+import Resource, { EMPTY_RESOURCE } from "./Resource";
 import RdfsResource from "./RdfsResource";
 import AppNotification from "./AppNotification";
 import SearchResult from "./SearchResult";
 import SearchQuery from "./SearchQuery";
 import AsyncActionStatus from "../action/AsyncActionStatus";
-import {ErrorLogItem} from "./ErrorInfo";
+import { ErrorLogItem } from "./ErrorInfo";
 import Utils from "../util/Utils";
-import {Configuration, DEFAULT_CONFIGURATION} from "./Configuration";
-import {ConsolidatedResults} from "./ConsolidatedResults";
-import File, {EMPTY_FILE} from "./File";
+import { Configuration, DEFAULT_CONFIGURATION } from "./Configuration";
+import { ConsolidatedResults } from "./ConsolidatedResults";
+import File, { EMPTY_FILE } from "./File";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.

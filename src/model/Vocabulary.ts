@@ -70,7 +70,9 @@ export default class Vocabulary extends Asset implements VocabularyData {
     }
 
     public toJsonLd(): VocabularyData {
-        const result:VocabularyData = Object.assign({}, this, { "@context": CONTEXT });
+        const result: VocabularyData = Object.assign({}, this, {
+            "@context": CONTEXT,
+        });
         delete (result as any).allImportedVocabularies;
         if (result.document) {
             result.document = this.document?.toJsonLd();
