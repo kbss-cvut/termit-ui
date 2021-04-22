@@ -21,28 +21,17 @@ RUN  npm run prettier:check
 # run NPM build
 FROM test as build
 # If an app is supposed to be deployed in a subdir, this is the place to specify that
-ARG PUBLIC_PATH=/
-ARG REACT_APP_SERVER_URL=/
-ARG SERVER_URL=http://localhost:8080/termit
-ARG DEPLOYMENT=dev
-ARG REACT_APP_ADMIN_REGISTRATION_ONLY=false
-ARG REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED=false
-ARG REACT_APP_GOOGLE_LOGIN=false
-ARG REACT_APP_GITHUB_LOGIN=false
-
 # Make sure that React app is built using the right path context
-ENV PUBLIC_URL=${PUBLIC_PATH}
-ENV REACT_APP_SERVER_URL=${REACT_APP_SERVER_URL}
-ENV REACT_APP_ADMIN_REGISTRATION_ONLY=${REACT_APP_ADMIN_REGISTRATION_ONLY}
-ENV REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED=${REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED}
-ENV REACT_APP_GOOGLE_LOGIN=${REACT_APP_GOOGLE_LOGIN}
-ENV REACT_APP_GITHUB_LOGIN=${REACT_APP_GITHUB_LOGIN}
 RUN set -ex; \
   npm run build
+
 # RELEASE STAGE
 # Only include the static files in the final image
-FROM nginx:alpine
+FROM nginx
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
+# Make env var substitution happen on *.template files in the html dir
+ENV NGINX_ENVSUBST_TEMPLATE_DIR=/usr/share/nginx/html
+ENV NGINX_ENVSUBST_OUTPUT_DIR=/usr/share/nginx/html
 RUN chmod a+r -R /usr/share/nginx/html
 RUN chmod ag+x /usr/share/nginx/html/flags
 RUN chmod ag+x /usr/share/nginx/html/background

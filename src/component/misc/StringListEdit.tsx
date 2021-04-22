@@ -5,7 +5,6 @@ import {
   Badge,
   Button,
   FormFeedback,
-  FormText,
   Input,
   InputGroup,
   InputGroupAddon,
@@ -14,7 +13,9 @@ import {
 import { GoPlus } from "react-icons/go";
 import { FaTrashAlt } from "react-icons/fa";
 import Utils from "../../util/Utils";
+import HelpIcon from "./HelpIcon";
 import "./StringListEdit.scss";
+import MultilingualIcon from "./MultilingualIcon";
 
 interface StringListEditProps extends HasI18n {
   list?: string[];
@@ -72,7 +73,14 @@ export class StringListEdit extends React.Component<
   public render() {
     return (
       <div className="form-group">
-        <Label className="attribute-label">{this.getText("label")}</Label>
+        <Label className="attribute-label">
+          {this.getText("label")}
+          <MultilingualIcon id={"string-list-edit-multilingual" + Date.now()} />
+          <HelpIcon
+            id={"string-list-edit" + Date.now()}
+            text={this.getText("help")}
+          />
+        </Label>
         <InputGroup className="form-group no-bottom-margin">
           <Input
             name="add-string-input"
@@ -89,7 +97,7 @@ export class StringListEdit extends React.Component<
               color="primary"
               size="sm"
               onClick={this.onAdd}
-              className="input-group-button"
+              className="term-edit-source-add-button"
               disabled={this.state.inputValue.trim().length === 0}
               title={this.getText("placeholder.title")}
             >
@@ -103,7 +111,6 @@ export class StringListEdit extends React.Component<
             <></>
           )}
         </InputGroup>
-        <FormText>{this.getText("help")}</FormText>
         {this.renderList()}
       </div>
     );
@@ -127,7 +134,7 @@ export class StringListEdit extends React.Component<
               <td className="align-middle">
                 <Badge
                   title={this.getText("remove.title")}
-                  className="list-item-remove-icon align-middle"
+                  className="term-edit-source-remove align-middle"
                   onClick={this.onRemove.bind(null, s)}
                 >
                   <FaTrashAlt /> {this.getText("remove.text")}

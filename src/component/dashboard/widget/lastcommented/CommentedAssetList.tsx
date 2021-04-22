@@ -106,7 +106,7 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
         </td>
       );
     },
-    [renderMessage, i18n, locale]
+    [renderComment, i18n]
   );
 
   const renderNonEmptyContent = () => {
