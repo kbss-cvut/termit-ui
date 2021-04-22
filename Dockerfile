@@ -32,3 +32,6 @@ COPY --from=build /usr/src/app/build /usr/share/nginx/html
 # Make env var substitution happen on *.template files in the html dir
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=/usr/share/nginx/html
 ENV NGINX_ENVSUBST_OUTPUT_DIR=/usr/share/nginx/html
+RUN chmod a+r -R /usr/share/nginx/html
+RUN chmod ag+x /usr/share/nginx/html/flags
+RUN chmod ag+x /usr/share/nginx/html/background
