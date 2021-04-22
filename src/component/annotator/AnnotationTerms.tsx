@@ -50,6 +50,15 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
     this.treeComponent = React.createRef();
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      if (this.treeComponent.current) {
+        // This is a workaround because autoFocus was causing issues with scrolling (screen would jump to the top due to the initial position of the popover)
+        this.treeComponent.current.focus();
+      }
+    }, 100);
+  }
+
   public componentDidUpdate(prevProps: AnnotationTermsProps) {
     if (prevProps.counter < this.props.counter) {
       this.forceUpdate();
