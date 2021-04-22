@@ -108,11 +108,11 @@ Further documentation is in the [doc folder](doc/index.md).
 ## Dockerization
 
 The docker image of TermIt UI can be built by 
-`docker build -t kbss-cvut:termit-ui .` 
-An optional argument is `SERVER_URL` pointing to the TermIt backend.
+`docker build -t termit .` 
 
 Then, TermIt UI can be run and exposed at the port 3000 as 
-`sudo docker run -p 3000:80 kbss-cvut:termit-ui`
+`sudo docker run -e SERVER_URL=<TERMIT_BACKEND_URL> -p 3000:80 termit`
+where `<TERMIT_BACKEND_URL>` denotes the URL where (TermIt backend)[https://github.com/kbss-cvut/termit] is running.
 
 ## License
 
