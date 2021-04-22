@@ -1,6 +1,6 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
-import {Button, FormGroup, FormText, Label} from "reactstrap";
+import { Button, FormGroup, FormText, Label } from "reactstrap";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 // @ts-ignore
@@ -141,7 +141,9 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
-          <FormText>{i18n("resource.metadata.terms.edit.select.placeholder")}</FormText>
+          <FormText>
+            {i18n("resource.metadata.terms.edit.select.placeholder")}
+          </FormText>
         </FormGroup>
       </IfUserAuthorized>
     );
