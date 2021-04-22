@@ -112,7 +112,7 @@ The docker image of TermIt UI can be built by
 
 Then, TermIt UI can be run and exposed at the port 3000 as 
 `sudo docker run -e SERVER_URL=<TERMIT_BACKEND_URL> -p 3000:80 termit`
-where `<TERMIT_BACKEND_URL>` denotes the URL where (TermIt backend)[https://github.com/kbss-cvut/termit] is running.
+where `<TERMIT_BACKEND_URL>` denotes the URL where [TermIt backend](https://github.com/kbss-cvut/termit) is running.
 
 ## License
 
