@@ -37,7 +37,7 @@ export default class Document extends Resource implements DocumentData {
         return new Document(this);
     }
 
-    public toJsonLd(): {} {
+    public toJsonLd(): DocumentData {
         const result: any = Object.assign({}, this, {
             "@context": CONTEXT,
             types: [
@@ -49,6 +49,7 @@ export default class Document extends Resource implements DocumentData {
         result.files = Document.replaceCircularReferencesToOwnerWithOwnerId(
             result.files
         );
+        result.vocabulary = this.vocabulary ? this.vocabulary.iri : undefined;
         return result;
     }
 
