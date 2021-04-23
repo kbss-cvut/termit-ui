@@ -9,9 +9,15 @@ import TermDefinitionSourceLink from "./TermDefinitionSourceLink";
 import { TermDefinitionBlockProps } from "./TermDefinitionBlock";
 import { useI18n } from "../hook/useI18n";
 
+function renderDefinitionSourceLink(props: TermDefinitionBlockProps) {
+  const {term, withDefinitionSource} = props;
+  return withDefinitionSource && term.definitionSource ? (
+      <TermDefinitionSourceLink term={term} />) : null;
+}
+
 const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
   const { i18n } = useI18n();
-  const { language, term, withDefinitionSource } = props;
+  const { language, term } = props;
   const definitionText = getLocalizedOrDefault(term.definition, "", language);
   const sources = Utils.sanitizeArray(term.sources);
   if (definitionText.length === 0 && sources.length > 0) {
@@ -31,9 +37,7 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
                 ) : (
                   <>{s}</>
                 )}
-                {withDefinitionSource && term.definitionSource && (
-                  <TermDefinitionSourceLink term={term} />
-                )}
+                {renderDefinitionSourceLink(props)}
               </>
             ))}
           </List>
@@ -43,7 +47,7 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
   } else {
     return (
       <Col xs={12}>
-        {sources.length > 0 && (
+        {sources.length > 0 ? (
           <footer className="blockquote-footer mb-1 term-metadata-definition-source">
             {sources.map((s) => {
               return (
@@ -58,14 +62,12 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
                       <>{s}</>
                     )}
                   </cite>
-                  {props.withDefinitionSource && term.definitionSource && (
-                    <TermDefinitionSourceLink term={term} />
-                  )}
+                  {renderDefinitionSourceLink(props)}
                 </>
               );
             })}
           </footer>
-        )}
+        ) : renderDefinitionSourceLink(props)}
       </Col>
     );
   }
