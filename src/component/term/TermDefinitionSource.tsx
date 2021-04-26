@@ -10,9 +10,10 @@ import { TermDefinitionBlockProps } from "./TermDefinitionBlock";
 import { useI18n } from "../hook/useI18n";
 
 function renderDefinitionSourceLink(props: TermDefinitionBlockProps) {
-  const {term, withDefinitionSource} = props;
+  const { term, withDefinitionSource } = props;
   return withDefinitionSource && term.definitionSource ? (
-      <TermDefinitionSourceLink term={term} />) : null;
+    <TermDefinitionSourceLink term={term} />
+  ) : null;
 }
 
 const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
@@ -33,7 +34,11 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
             {sources.map((s) => (
               <React.Fragment key={s}>
                 {Utils.isLink(s) ? (
-                  <OutgoingLink key={s} iri={s} label={<AssetLabel iri={s} />} />
+                  <OutgoingLink
+                    key={s}
+                    iri={s}
+                    label={<AssetLabel iri={s} />}
+                  />
                 ) : (
                   <>{s}</>
                 )}
@@ -67,7 +72,9 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
               );
             })}
           </footer>
-        ) : renderDefinitionSourceLink(props)}
+        ) : (
+          renderDefinitionSourceLink(props)
+        )}
       </Col>
     );
   }
