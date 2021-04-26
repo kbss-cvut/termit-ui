@@ -31,14 +31,14 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
         <Col xl={10} md={8}>
           <List type="unstyled" className="mb-0">
             {sources.map((s) => (
-              <>
+              <React.Fragment key={s}>
                 {Utils.isLink(s) ? (
-                  <OutgoingLink iri={s} label={<AssetLabel iri={s} />} />
+                  <OutgoingLink key={s} iri={s} label={<AssetLabel iri={s} />} />
                 ) : (
                   <>{s}</>
                 )}
                 {renderDefinitionSourceLink(props)}
-              </>
+              </React.Fragment>
             ))}
           </List>
         </Col>
@@ -51,7 +51,7 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
           <footer className="blockquote-footer mb-1 term-metadata-definition-source">
             {sources.map((s) => {
               return (
-                <>
+                <React.Fragment key={s}>
                   <cite
                     key={s}
                     title={i18n("term.metadata.definitionSource.title")}
@@ -63,7 +63,7 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
                     )}
                   </cite>
                   {renderDefinitionSourceLink(props)}
-                </>
+                </React.Fragment>
               );
             })}
           </footer>
