@@ -1,3 +1,10 @@
+#### Verze 2.4.1
+
+- Přepracován vzhled formulářů (nápověda se nově zobrazuje v popup okně).
+- Upraven vzhled anotátoru.
+- Zjednodušení infrastruktury aplikace.
+- Opravy menších chyb.
+
 #### Verze 2.4.0
 
 - Na hlavní stránku byl přidán widget komentářů.
