@@ -1,3 +1,10 @@
+#### Version 2.4.1
+
+- Redesigned forms (field help is now displayed on demand in popups).
+- Improvements in the annotator UI.
+- Simplified application infrastructure.
+- Minor bug fixes.
+
 #### Version 2.4.0
 
 - Added a widget with comments to the dashboard.
