@@ -83,6 +83,7 @@ interface ParentTermSelectorState {
   allWorkspaceTerms: boolean;
   vocabularyTermCount: number;
   workspaceTermCount: number;
+  lastSearchString: string;
 }
 
 const PAGE_SIZE = 50;
@@ -97,7 +98,8 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
       allVocabularyTerms: false,
       allWorkspaceTerms: false,
       vocabularyTermCount: 0,
-      workspaceTermCount: 0
+      workspaceTermCount: 0,
+      lastSearchString: ""
     }
   }
 
@@ -118,10 +120,17 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    const {allVocabularyTerms, allWorkspaceTerms, vocabularyTermCount, workspaceTermCount} = this.state;
+    let {allVocabularyTerms, allWorkspaceTerms, vocabularyTermCount, workspaceTermCount, lastSearchString} = this.state;
     let fetchFunction: (fetchOptions: TreeSelectFetchOptionsParams<TermData>) => Promise<Term[]>;
     const offset = fetchOptions.offset || 0;
     const fetchOptionsCopy = Object.assign({}, fetchOptions);
+    if (fetchOptions.searchString?.indexOf(lastSearchString) === -1 || (lastSearchString.length === 0 && fetchOptions.searchString!.length > 0)) {
+      this.setState({allVocabularyTerms: false, allWorkspaceTerms: false, vocabularyTermCount: 0, workspaceTermCount: 0});
+      // Set these to false to ensure the effect right now
+      allVocabularyTerms = false;
+      allWorkspaceTerms = false;
+      fetchOptionsCopy.offset = 0;
+    }
     if (allVocabularyTerms) {
       if (allWorkspaceTerms) {
         fetchOptionsCopy.offset = offset - (vocabularyTermCount + workspaceTermCount);
@@ -133,6 +142,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
     } else {
       fetchFunction = this.fetchVocabularyTerms;
     }
+    this.setState({lastSearchString: fetchOptions.searchString || ""});
     return fetchFunction(fetchOptionsCopy).then((terms) => {
       return enhanceWithCurrentTerm(
         processTermsForTreeSelect(terms, undefined, {
