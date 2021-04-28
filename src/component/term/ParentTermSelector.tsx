@@ -97,7 +97,7 @@ interface ParentTermSelectorState {
   lastSearchString: string;
 }
 
-const PAGE_SIZE = 50;
+export const PAGE_SIZE = 50;
 const SEARCH_DELAY = 300;
 
 export class ParentTermSelector extends React.Component<
@@ -149,7 +149,8 @@ export class ParentTermSelector extends React.Component<
     const fetchOptionsCopy = Object.assign({}, fetchOptions);
     if (
       fetchOptions.searchString?.indexOf(lastSearchString) === -1 ||
-      (lastSearchString.length === 0 && fetchOptions.searchString!.length > 0)
+      (lastSearchString.length === 0 &&
+        (fetchOptions.searchString || "").length > 0)
     ) {
       this.setState({
         allVocabularyTerms: false,

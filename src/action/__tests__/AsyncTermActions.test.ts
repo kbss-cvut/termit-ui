@@ -5,7 +5,8 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
 import { ThunkDispatch } from "../../util/Types";
 import {
-    loadTermsForParentSelector,
+    loadTermsFromCanonical,
+    loadTermsFromCurrentWorkspace,
     setTermDefinitionSource,
     setTermStatus,
 } from "../AsyncTermActions";
@@ -195,7 +196,7 @@ describe("AsyncTermActions", () => {
         });
     });
 
-    describe("loadTermsForParentSelector", () => {
+    describe("loadTermsFromCurrentWorkspace", () => {
         it("gets all root terms when parent option is not specified", () => {
             const terms = require("../../rest-mock/terms");
             Ajax.get = jest
@@ -203,11 +204,13 @@ describe("AsyncTermActions", () => {
                 .mockImplementation(() => Promise.resolve(terms));
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(
-                    loadTermsForParentSelector({})
+                    loadTermsFromCurrentWorkspace({}, Generator.generateUri())
                 )
             ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
-                expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
+                expect(targetUri).toEqual(
+                    Constants.API_PREFIX + "/terms/workspace"
+                );
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
                 expect(callConfig.getParams()).toEqual(
                     expect.objectContaining({ rootsOnly: true })
@@ -229,7 +232,10 @@ describe("AsyncTermActions", () => {
             };
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(
-                    loadTermsForParentSelector(params)
+                    loadTermsFromCurrentWorkspace(
+                        params,
+                        Generator.generateUri()
+                    )
                 )
             ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
@@ -254,7 +260,10 @@ describe("AsyncTermActions", () => {
             };
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(
-                    loadTermsForParentSelector(params)
+                    loadTermsFromCurrentWorkspace(
+                        params,
+                        Generator.generateUri()
+                    )
                 )
             ).then(() => {
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
@@ -276,14 +285,72 @@ describe("AsyncTermActions", () => {
                 .mockImplementation(() => Promise.resolve(terms));
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(
-                    loadTermsForParentSelector({ searchString })
+                    loadTermsFromCurrentWorkspace(
+                        { searchString },
+                        Generator.generateUri()
+                    )
                 )
             ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
-                expect(targetUri).toEqual(Constants.API_PREFIX + "/terms");
+                expect(targetUri).toEqual(
+                    Constants.API_PREFIX + "/terms/workspace"
+                );
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
                 expect(callConfig.getParams()).toEqual(
                     expect.objectContaining({ rootsOnly: false, searchString })
+                );
+            });
+        });
+
+        it("specifies provided vocabulary whose terms to exclude from results as query parameter", () => {
+            const terms = require("../../rest-mock/terms");
+            const excludeVocabulary = Generator.generateUri();
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsFromCurrentWorkspace({}, excludeVocabulary)
+                )
+            ).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(
+                    Constants.API_PREFIX + "/terms/workspace"
+                );
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams()).toEqual(
+                    expect.objectContaining({ excludeVocabulary })
+                );
+            });
+        });
+    });
+
+    describe("loadTermsFromCanonical", () => {
+        it("specifies correct paging params for offset and limit", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            const params: FetchOptionsFunction = {
+                offset: 88,
+                limit: 100,
+            };
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadTermsFromCanonical(params)
+                )
+            ).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(
+                    Constants.API_PREFIX + "/terms/canonical"
+                );
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams()).toEqual(
+                    expect.objectContaining({
+                        page: 1,
+                        size: 100,
+                        rootsOnly: true,
+                    })
                 );
             });
         });
