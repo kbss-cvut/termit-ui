@@ -1,6 +1,6 @@
 # BASE STAGE
 # Prepare node, copy package.json
-FROM node:alpine AS base
+FROM node AS base
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
@@ -9,13 +9,13 @@ COPY package.json package-lock.json ./
 FROM base AS dependencies
 # install node packages
 RUN npm set progress=false && npm config set depth 0
-RUN npm install
+RUN npm ci
 
 # TEST STAGE
 # run linters, setup and tests
 FROM dependencies AS test
 COPY . .
-RUN  npm test
+RUN  npm run test-ci
 
 # BUILD STAGE
 # run NPM build

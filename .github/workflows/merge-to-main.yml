@@ -28,7 +28,7 @@ jobs:
     - name: Install
       run: npm install
     - name: Build
-      run: npm run-script build
+      run: npm run-script build 
       env:
         CI: ""
     - name: Test
