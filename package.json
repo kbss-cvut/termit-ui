@@ -19,7 +19,7 @@
     "domhandler": "^3.0.0",
     "html-to-react": "1.4.5",
     "htmlparser2": "^4.1.0",
-    "intelligent-tree-select": "0.7.10",
+    "intelligent-tree-select": "0.8.0",
     "iso-639-1": "^2.1.8",
     "javascript-time-ago": "2.3.4",
     "jquery": "^3.5.1",
@@ -64,7 +64,7 @@
     "yaml": "^1.10.0"
   },
   "scripts": {
-    "start": "cross-env HTTPS=true react-scripts start",
+    "start": "cross-env react-scripts start",
     "start-mock-rest": "cross-env REACT_APP_MOCK_REST_API=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",

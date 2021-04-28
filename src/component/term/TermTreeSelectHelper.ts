@@ -68,7 +68,7 @@ function vocabularyMatches(
     term: Term | TermInfo,
     vocabularies: string[] | undefined
 ) {
-    return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1;
+    return !vocabularies || (term.vocabulary && vocabularies.indexOf(term.vocabulary.iri!) !== -1);
 }
 
 /**

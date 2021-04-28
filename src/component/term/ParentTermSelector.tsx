@@ -87,6 +87,7 @@ interface ParentTermSelectorState {
 }
 
 const PAGE_SIZE = 50;
+const SEARCH_DELAY = 300;
 
 export class ParentTermSelector extends React.Component<ParentTermSelectorProps, ParentTermSelectorState> {
   private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
@@ -216,6 +217,7 @@ export class ParentTermSelector extends React.Component<ParentTermSelectorProps,
           value={this.resolveSelectedParents()}
           fetchOptions={this.fetchOptions}
           fetchLimit={PAGE_SIZE}
+          searchDelay={SEARCH_DELAY}
           maxHeight={200}
           multi={true}
           optionRenderer={createTermsWithVocabularyInfoRenderer()}
