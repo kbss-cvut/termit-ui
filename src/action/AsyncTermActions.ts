@@ -102,15 +102,26 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
     };
 }
 
-export function loadTermsFromCurrentWorkspace(fetchOptions: FetchOptionsFunction, excludeVocabulary: string) {
-    return loadTermsForParentSelector(fetchOptions, "workspace", excludeVocabulary);
+export function loadTermsFromCurrentWorkspace(
+    fetchOptions: FetchOptionsFunction,
+    excludeVocabulary: string
+) {
+    return loadTermsForParentSelector(
+        fetchOptions,
+        "workspace",
+        excludeVocabulary
+    );
 }
 
 export function loadTermsFromCanonical(fetchOptions: FetchOptionsFunction) {
     return loadTermsForParentSelector(fetchOptions, "canonical");
 }
 
-function loadTermsForParentSelector(fetchOptions: FetchOptionsFunction, path: string, excludeVocabulary?: string) {
+function loadTermsForParentSelector(
+    fetchOptions: FetchOptionsFunction,
+    path: string,
+    excludeVocabulary?: string
+) {
     const action = {
         type: ActionType.FETCH_VOCABULARY_TERMS,
     };
