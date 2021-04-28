@@ -102,7 +102,26 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
     };
 }
 
-export function loadTermsForParentSelector(fetchOptions: FetchOptionsFunction) {
+export function loadTermsFromCurrentWorkspace(
+    fetchOptions: FetchOptionsFunction,
+    excludeVocabulary: string
+) {
+    return loadTermsForParentSelector(
+        fetchOptions,
+        "workspace",
+        excludeVocabulary
+    );
+}
+
+export function loadTermsFromCanonical(fetchOptions: FetchOptionsFunction) {
+    return loadTermsForParentSelector(fetchOptions, "canonical");
+}
+
+function loadTermsForParentSelector(
+    fetchOptions: FetchOptionsFunction,
+    path: string,
+    excludeVocabulary?: string
+) {
     const action = {
         type: ActionType.FETCH_VOCABULARY_TERMS,
     };
@@ -115,8 +134,12 @@ export function loadTermsForParentSelector(fetchOptions: FetchOptionsFunction) {
             url += `/${parentIri.fragment}/subterms`;
             parameters.namespace = parentIri.namespace;
         } else {
+            url += `/${path}`;
             parameters.searchString = fetchOptions.searchString;
             parameters.rootsOnly = !fetchOptions.searchString;
+        }
+        if (excludeVocabulary) {
+            parameters.excludeVocabulary = excludeVocabulary;
         }
         return Ajax.get(
             url,

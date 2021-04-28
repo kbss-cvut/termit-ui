@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { ParentTermSelector } from "../ParentTermSelector";
+import { PAGE_SIZE, ParentTermSelector } from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
 import Term from "../../../model/Term";
@@ -9,6 +9,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
+import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 
 jest.mock("../../../util/StorageUtils");
 
@@ -16,14 +17,28 @@ describe("ParentTermSelector", () => {
   const vocabularyIri = Generator.generateUri();
 
   let onChange: (parents: Term[]) => void;
-  let loadTerms: (fetchOptions: FetchOptionsFunction) => Promise<Term[]>;
+  let loadTermsFromVocabulary: (
+    fetchOptions: FetchOptionsFunction,
+    vocabularyIri: IRI
+  ) => Promise<Term[]>;
+  let loadTermsFromCurrentWorkspace: (
+    fetchOptions: FetchOptionsFunction,
+    excludeVocabulary: string
+  ) => Promise<Term[]>;
+  let loadTermsFromCanonical: (
+    fetchOptions: FetchOptionsFunction
+  ) => Promise<Term[]>;
   let fetchFunctions: any;
 
   beforeEach(() => {
     onChange = jest.fn();
-    loadTerms = jest.fn().mockResolvedValue([]);
+    loadTermsFromVocabulary = jest.fn().mockResolvedValue([]);
+    loadTermsFromCurrentWorkspace = jest.fn().mockResolvedValue([]);
+    loadTermsFromCanonical = jest.fn().mockResolvedValue([]);
     fetchFunctions = {
-      loadTerms,
+      loadTermsFromVocabulary,
+      loadTermsFromCurrentWorkspace,
+      loadTermsFromCanonical,
     };
   });
 
@@ -45,11 +60,16 @@ describe("ParentTermSelector", () => {
     ]);
   });
 
+  function generateTerms(count: number, vocabularyIri?: string) {
+    const options: Term[] = [];
+    for (let i = 0; i < count; i++) {
+      options.push(Generator.generateTerm(vocabularyIri));
+    }
+    return options;
+  }
+
   it("passes selected parents as value to tree component when there are multiple", () => {
-    const parents = [
-      Generator.generateTerm(vocabularyIri),
-      Generator.generateTerm(vocabularyIri),
-    ];
+    const parents = generateTerms(2, vocabularyIri);
     const wrapper = shallow(
       <ParentTermSelector
         id="test"
@@ -83,7 +103,7 @@ describe("ParentTermSelector", () => {
   });
 
   it("supports selection of multiple parents", () => {
-    const terms = [Generator.generateTerm(), Generator.generateTerm()];
+    const terms = generateTerms(2);
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
@@ -148,19 +168,17 @@ describe("ParentTermSelector", () => {
     );
     wrapper.update();
     wrapper.instance().fetchOptions({ optionID: parent.iri, option: parent });
-    expect((loadTerms as jest.Mock).mock.calls[0][0]).toMatchObject({
+    expect(
+      (loadTermsFromVocabulary as jest.Mock).mock.calls[0][0]
+    ).toMatchObject({
       optionID: parent.iri,
     });
   });
 
   it("filters out option with the term IRI", () => {
-    const options: Term[] = [];
-    for (let i = 0; i < Generator.randomInt(5, 10); i++) {
-      const t = Generator.generateTerm(vocabularyIri);
-      options.push(t);
-    }
+    const options: Term[] = generateTerms(PAGE_SIZE, vocabularyIri);
     const currentTerm = options[Generator.randomInt(0, options.length)];
-    (loadTerms as jest.Mock).mockResolvedValue(options);
+    (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(options);
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
@@ -180,13 +198,10 @@ describe("ParentTermSelector", () => {
   });
 
   it("removes term IRI from options subterms as well", () => {
-    const options: Term[] = [
-      Generator.generateTerm(vocabularyIri),
-      Generator.generateTerm(vocabularyIri),
-    ];
+    const options: Term[] = generateTerms(PAGE_SIZE, vocabularyIri);
     const currentTerm = options[1];
     options[0].plainSubTerms = [currentTerm.iri];
-    (loadTerms as jest.Mock).mockResolvedValue(options);
+    (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(options);
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
@@ -210,7 +225,7 @@ describe("ParentTermSelector", () => {
     const terms = [Generator.generateTerm(vocabularyIri)];
     const parent = Generator.generateTerm(Generator.generateUri());
     terms[0].parentTerms = [parent];
-    (loadTerms as jest.Mock).mockResolvedValue(terms);
+    (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(terms);
     const spy = jest.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
@@ -236,15 +251,9 @@ describe("ParentTermSelector", () => {
   });
 
   it("add term's parents to the beginning of the options list", () => {
-    const options: Term[] = [];
-    for (let i = 0; i < Generator.randomInt(5, 10); i++) {
-      options.push(Generator.generateTerm(vocabularyIri));
-    }
-    const parentTerms = [
-      Generator.generateTerm(vocabularyIri),
-      Generator.generateTerm(vocabularyIri),
-    ];
-    (loadTerms as jest.Mock).mockResolvedValue(options);
+    const options: Term[] = generateTerms(PAGE_SIZE, vocabularyIri);
+    const parentTerms = generateTerms(2, vocabularyIri);
+    (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(options);
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
@@ -264,24 +273,15 @@ describe("ParentTermSelector", () => {
       });
   });
 
-  it("prioritizes terms from the current vocabulary", () => {
-    const currentVocOptions: Term[] = [];
-    for (let i = 0; i < Generator.randomInt(5, 10); i++) {
-      currentVocOptions.push(Generator.generateTerm(vocabularyIri));
-    }
-    const otherOptions: Term[] = [];
-    const otherVocabularyIri = Generator.generateUri();
-    for (let i = 0; i < 5; i++) {
-      otherOptions.push(Generator.generateTerm(otherVocabularyIri));
-    }
-    const options = currentVocOptions.concat(otherOptions);
-    Generator.shuffleArray(options);
-    (loadTerms as jest.Mock).mockResolvedValue(options);
+  it("fetches workspace terms after vocabulary terms when vocabulary terms page is less than configured", () => {
+    const vocOptions: Term[] = generateTerms(2, vocabularyIri);
+    const wsOptions: Term[] = generateTerms(PAGE_SIZE);
+    (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(vocOptions);
+    (loadTermsFromCurrentWorkspace as jest.Mock).mockResolvedValue(wsOptions);
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
         termIri={Generator.generateUri()}
-        parentTerms={[]}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -292,9 +292,138 @@ describe("ParentTermSelector", () => {
       .instance()
       .fetchOptions({})
       .then((terms) => {
-        for (let i = 0; i < currentVocOptions.length; i++) {
-          expect(terms[i].vocabulary!.iri).toEqual(vocabularyIri);
-        }
+        expect(loadTermsFromVocabulary).toHaveBeenCalled();
+        expect(loadTermsFromCurrentWorkspace).toHaveBeenCalled();
+        expect(terms).toEqual(vocOptions.concat(wsOptions));
+      });
+  });
+
+  it("fetches canonical container terms after vocabulary and workspace terms when their pages together are less than configured", () => {
+    const vocOptions: Term[] = generateTerms(2, vocabularyIri);
+    const wsOptions: Term[] = generateTerms(2);
+    const canOptions: Term[] = generateTerms(5);
+    (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(vocOptions);
+    (loadTermsFromCurrentWorkspace as jest.Mock).mockResolvedValue(wsOptions);
+    (loadTermsFromCanonical as jest.Mock).mockResolvedValue(canOptions);
+    const wrapper = shallow<ParentTermSelector>(
+      <ParentTermSelector
+        id="test"
+        termIri={Generator.generateUri()}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
+    );
+    return wrapper
+      .instance()
+      .fetchOptions({})
+      .then((terms) => {
+        expect(loadTermsFromVocabulary).toHaveBeenCalled();
+        expect(loadTermsFromCurrentWorkspace).toHaveBeenCalled();
+        expect(loadTermsFromCanonical).toHaveBeenCalled();
+        expect(terms).toEqual(vocOptions.concat(wsOptions).concat(canOptions));
+      });
+  });
+
+  it("fetches workspace terms with correct offset when vocabulary terms are all already loaded", () => {
+    const wsOptions: Term[] = generateTerms(PAGE_SIZE);
+    (loadTermsFromCurrentWorkspace as jest.Mock).mockResolvedValue(wsOptions);
+    const wrapper = shallow<ParentTermSelector>(
+      <ParentTermSelector
+        id="test"
+        termIri={Generator.generateUri()}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
+    );
+    const vocabularyTermCount = Generator.randomInt(0, PAGE_SIZE - 1);
+    wrapper.setState({ allVocabularyTerms: true, vocabularyTermCount });
+    const offset = vocabularyTermCount + PAGE_SIZE - 5;
+    return wrapper
+      .instance()
+      .fetchOptions({ offset })
+      .then(() => {
+        expect(loadTermsFromCurrentWorkspace).toHaveBeenCalledWith(
+          expect.objectContaining({ offset: offset - vocabularyTermCount }),
+          vocabularyIri
+        );
+      });
+  });
+
+  it("fetches canonical container terms with correct offset when vocabulary and workspace terms are all alraedy loaded", () => {
+    const canOptions: Term[] = generateTerms(PAGE_SIZE);
+    (loadTermsFromCanonical as jest.Mock).mockResolvedValue(canOptions);
+    const wrapper = shallow<ParentTermSelector>(
+      <ParentTermSelector
+        id="test"
+        termIri={Generator.generateUri()}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
+    );
+    const vocabularyTermCount = Generator.randomInt(0, PAGE_SIZE - 1);
+    const workspaceTermCount = PAGE_SIZE + Generator.randomInt(5, 10);
+    wrapper.setState({
+      allVocabularyTerms: true,
+      vocabularyTermCount,
+      allWorkspaceTerms: true,
+      workspaceTermCount,
+    });
+    const offset = vocabularyTermCount + workspaceTermCount + PAGE_SIZE - 3;
+    return wrapper
+      .instance()
+      .fetchOptions({ offset })
+      .then(() => {
+        expect(loadTermsFromCanonical).toHaveBeenCalledWith(
+          expect.objectContaining({
+            offset: offset - (vocabularyTermCount + workspaceTermCount),
+          })
+        );
+      });
+  });
+
+  it("resets vocabulary and workspace term fetch status when search string is provided", () => {
+    const vocOptions: Term[] = generateTerms(PAGE_SIZE, vocabularyIri);
+    (loadTermsFromVocabulary as jest.Mock).mockResolvedValue(vocOptions);
+    const wrapper = shallow<ParentTermSelector>(
+      <ParentTermSelector
+        id="test"
+        termIri={Generator.generateUri()}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
+    );
+    const searchString = "te";
+    wrapper.setState({
+      allVocabularyTerms: true,
+      vocabularyTermCount: 30,
+      allWorkspaceTerms: true,
+      workspaceTermCount: 100,
+    });
+    return wrapper
+      .instance()
+      .fetchOptions({ searchString })
+      .then(() => {
+        wrapper.update();
+        expect(wrapper.state()).toEqual(
+          expect.objectContaining({
+            allVocabularyTerms: false,
+            vocabularyTermCount: vocOptions.length,
+            allWorkspaceTerms: false,
+            workspaceTermCount: 0,
+          })
+        );
+        expect(loadTermsFromVocabulary).toHaveBeenCalledWith(
+          expect.objectContaining({ offset: 0, searchString }),
+          VocabularyUtils.create(vocabularyIri)
+        );
       });
   });
 });
