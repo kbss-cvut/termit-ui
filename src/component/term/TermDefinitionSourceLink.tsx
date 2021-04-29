@@ -10,8 +10,8 @@ import { useDispatch } from "react-redux";
 import { pushRoutingPayload } from "../../action/SyncActions";
 import { useI18n } from "../hook/useI18n";
 import File from "../../model/File";
-import {loadFileMetadata} from "../../action/AsyncResourceActions";
-import {ThunkDispatch} from "../../util/Types";
+import { loadFileMetadata } from "../../action/AsyncResourceActions";
+import { ThunkDispatch } from "../../util/Types";
 
 interface TermDefinitionSourceLinkProps {
   term: Term;
@@ -28,7 +28,9 @@ export const TermDefinitionSourceLink: React.FC<TermDefinitionSourceLinkProps> =
   const targetIri = VocabularyUtils.create(target.source.iri!);
   React.useEffect(() => {
     if (defSource) {
-      dispatch(loadFileMetadata(VocabularyUtils.create(defSource.target!.source!.iri!))).then((file?: File) => setFile(file));
+      dispatch(
+        loadFileMetadata(VocabularyUtils.create(defSource.target!.source!.iri!))
+      ).then((file?: File) => setFile(file));
     }
   }, [defSource, dispatch]);
   const navigateToDefinitionSource = () => {
@@ -43,8 +45,14 @@ export const TermDefinitionSourceLink: React.FC<TermDefinitionSourceLinkProps> =
     );
     const ownerIri = VocabularyUtils.create(file.owner.iri!);
     Routing.transitionTo(Routes.annotateFile, {
-      params: new Map([["name", ownerIri.fragment], ["fileName", targetIri.fragment]]),
-      query: new Map([["namespace", ownerIri.namespace!], ["fileNamespace", targetIri.namespace!]]),
+      params: new Map([
+        ["name", ownerIri.fragment],
+        ["fileName", targetIri.fragment],
+      ]),
+      query: new Map([
+        ["namespace", ownerIri.namespace!],
+        ["fileNamespace", targetIri.namespace!],
+      ]),
     });
   };
 

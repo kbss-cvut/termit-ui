@@ -1,26 +1,33 @@
 import * as React from "react";
-import {TextQuoteSelector} from "../../../model/TermOccurrence";
+import { TextQuoteSelector } from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Term from "../../../model/Term";
 import Routes from "../../../util/Routes";
-import {VocabularyData} from "../../../model/Vocabulary";
-import {TermDefinitionSourceLink} from "../TermDefinitionSourceLink";
-import {flushPromises, mockStore, mountWithIntl,} from "../../../__tests__/environment/Environment";
-import {act} from "react-dom/test-utils";
-import {MemoryRouter} from "react-router";
-import {langString} from "../../../model/MultilingualString";
+import { VocabularyData } from "../../../model/Vocabulary";
+import { TermDefinitionSourceLink } from "../TermDefinitionSourceLink";
+import {
+  flushPromises,
+  mockStore,
+  mountWithIntl,
+} from "../../../__tests__/environment/Environment";
+import { act } from "react-dom/test-utils";
+import { MemoryRouter } from "react-router";
+import { langString } from "../../../model/MultilingualString";
 import ActionType from "../../../action/ActionType";
 import * as Actions from "../../../action/AsyncResourceActions";
 import File from "../../../model/File";
 import * as redux from "react-redux";
-import {withHooks} from "jest-react-hooks-shallow";
-import {mockUseI18n} from "../../../__tests__/environment/IntlUtil";
-import {shallow} from "enzyme";
+import { withHooks } from "jest-react-hooks-shallow";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
+import { shallow } from "enzyme";
 
 describe("TermDefinitionSourceLink", () => {
-
-  const file:File = new File(Object.assign(Generator.generateAssetData(), {owner: {iri: Generator.generateUri(), label: "document", files: []}}));
+  const file: File = new File(
+    Object.assign(Generator.generateAssetData(), {
+      owner: { iri: Generator.generateUri(), label: "document", files: [] },
+    })
+  );
   let term: Term;
 
   beforeEach(() => {
@@ -83,7 +90,9 @@ describe("TermDefinitionSourceLink", () => {
       shallow(<TermDefinitionSourceLink term={term} />);
     });
     return Promise.resolve().then(() => {
-      expect(Actions.loadFileMetadata).toHaveBeenCalledWith(VocabularyUtils.create(term.definitionSource!.target!.source!.iri!));
+      expect(Actions.loadFileMetadata).toHaveBeenCalledWith(
+        VocabularyUtils.create(term.definitionSource!.target!.source!.iri!)
+      );
     });
   });
 });
