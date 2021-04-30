@@ -847,7 +847,7 @@ export function loadAllTerms(
         {
             searchString: fetchOptions.searchString,
             includeTerms: fetchOptions.includeTerms,
-            namespace
+            namespace,
         },
         fetchOptions
     );
@@ -882,7 +882,9 @@ export function genericLoadTerms(
         dispatch(asyncActionRequest(action, true));
         let url = `${prefix}/terms/`;
         if (fetchOptions.optionID) {
-            url += `${VocabularyUtils.getFragment( fetchOptions.optionID )}/subterms`;
+            url += `${VocabularyUtils.getFragment(
+                fetchOptions.optionID
+            )}/subterms`;
         } else if (!fetchOptions.searchString) {
             url += "roots";
         }
@@ -901,9 +903,9 @@ export function genericLoadTerms(
             .then((data: object[]) =>
                 data.length !== 0
                     ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(
-                    data,
-                    TERM_CONTEXT
-                    )
+                          data,
+                          TERM_CONTEXT
+                      )
                     : []
             )
             .then((data: TermData[]) => {

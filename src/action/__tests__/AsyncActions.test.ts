@@ -41,7 +41,8 @@ import {
     updateVocabulary,
     uploadFileContent,
     loadNews,
-    loadConfiguration, loadAllTerms,
+    loadConfiguration,
+    loadAllTerms,
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, { param } from "../../util/Ajax";
@@ -791,13 +792,15 @@ describe("Async actions", () => {
                 .mockImplementation(() => Promise.resolve(terms));
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(
-                    loadAllTerms({}, "http://onto.fel.cvut.cz/ontologies/termit/")
+                    loadAllTerms(
+                        {},
+                        "http://onto.fel.cvut.cz/ontologies/termit/"
+                    )
                 )
             ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(
-                    Constants.API_PREFIX +
-                    "/terms/roots"
+                    Constants.API_PREFIX + "/terms/roots"
                 );
             });
         });
@@ -814,13 +817,15 @@ describe("Async actions", () => {
             };
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(
-                    loadAllTerms(params, "http://onto.fel.cvut.cz/ontologies/termit/")
+                    loadAllTerms(
+                        params,
+                        "http://onto.fel.cvut.cz/ontologies/termit/"
+                    )
                 )
             ).then(() => {
                 const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
                 expect(targetUri).toEqual(
-                    Constants.API_PREFIX +
-                    "/terms/pojem-3/subterms"
+                    Constants.API_PREFIX + "/terms/pojem-3/subterms"
                 );
             });
         });
@@ -836,12 +841,15 @@ describe("Async actions", () => {
             };
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(
-                    loadAllTerms(params, "http://onto.fel.cvut.cz/ontologies/termit/")
+                    loadAllTerms(
+                        params,
+                        "http://onto.fel.cvut.cz/ontologies/termit/"
+                    )
                 )
             ).then(() => {
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-                expect(callConfig.getParams().page).toEqual(1 );
-                expect(callConfig.getParams().size).toEqual( 100 );
+                expect(callConfig.getParams().page).toEqual(1);
+                expect(callConfig.getParams().size).toEqual(100);
             });
         });
     });

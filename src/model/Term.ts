@@ -54,7 +54,7 @@ const MAPPED_PROPERTIES = [
     "glossary",
     "definitionSource",
     "draft",
-    "exactMatches"
+    "exactMatches",
 ];
 
 export const TERM_MULTILINGUAL_ATTRIBUTES = [
@@ -130,7 +130,9 @@ export default class Term extends Asset implements TermData {
         }
         if (this.exactMatches) {
             visitedTerms[this.iri] = this;
-            this.exactMatches = Utils.sanitizeArray(this.exactMatches).map((pt) =>
+            this.exactMatches = Utils.sanitizeArray(
+                this.exactMatches
+            ).map((pt) =>
                 visitedTerms[pt.iri]
                     ? visitedTerms[pt.iri]
                     : new Term(pt, visitedTerms)
@@ -168,7 +170,7 @@ export default class Term extends Asset implements TermData {
         }
     }
 
-    public toTermData( withoutExacts : boolean = false): TermData {
+    public toTermData(withoutExacts: boolean = false): TermData {
         const result: any = Object.assign({}, this);
         if (result.parentTerms) {
             result.parentTerms = result.parentTerms.map((pt: Term) => {
@@ -178,10 +180,12 @@ export default class Term extends Asset implements TermData {
                 return res;
             });
         }
-        if ( withoutExacts ) {
+        if (withoutExacts) {
             delete result.exactMatches;
-        } else if ( result.exactMatches ) {
-            result.exactMatches = result.exactMatches.map((pt: Term) => pt.toTermData(true) );
+        } else if (result.exactMatches) {
+            result.exactMatches = result.exactMatches.map((pt: Term) =>
+                pt.toTermData(true)
+            );
         }
         if (result.definitionSource) {
             result.definitionSource.term = { iri: result.iri };

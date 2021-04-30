@@ -2,14 +2,14 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
-import VocabularyUtils  from "../../../util/VocabularyUtils";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 import Term from "../../../model/Term";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
-import {ExactMatchesSelector} from "../ExactMatchesSelector";
+import { ExactMatchesSelector } from "../ExactMatchesSelector";
 
 describe("ExactMatchesSelector", () => {
   const vocabularyIri = Generator.generateUri();
@@ -155,7 +155,9 @@ describe("ExactMatchesSelector", () => {
           {...intlFunctions()}
         />
       );
-      wrapper.instance().fetchOptions({ optionID: exactMatch.iri, option: exactMatch });
+      wrapper
+        .instance()
+        .fetchOptions({ optionID: exactMatch.iri, option: exactMatch });
       expect((loadTerms as jest.Mock).mock.calls[0][1]).toEqual(
         VocabularyUtils.create(exactMatch.vocabulary!.iri!).namespace
       );

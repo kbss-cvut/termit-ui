@@ -125,24 +125,28 @@ export class BasicTermMetadata extends React.Component<
     }
   }
 
-  private renderTermList( list : (Term | TermInfo)[], labelKey : string, listId : string ) {
+  private renderTermList(
+    list: (Term | TermInfo)[],
+    labelKey: string,
+    listId: string
+  ) {
     return (
-        <Row>
-          <Col xl={2} md={4}>
-            <Label className="attribute-label mb-3">
-              {this.props.i18n( labelKey )}
-            </Label>
-          </Col>
-          <Col xl={10} md={8}>
-            <List type="unstyled" id={ listId } className="mb-3">
-              {list.map((item) => (
-                  <li key={item.iri}>
-                    <TermLink term={item} language={this.props.language} />
-                  </li>
-              ))}
-            </List>
-          </Col>
-        </Row>
+      <Row>
+        <Col xl={2} md={4}>
+          <Label className="attribute-label mb-3">
+            {this.props.i18n(labelKey)}
+          </Label>
+        </Col>
+        <Col xl={10} md={8}>
+          <List type="unstyled" id={listId} className="mb-3">
+            {list.map((item) => (
+              <li key={item.iri}>
+                <TermLink term={item} language={this.props.language} />
+              </li>
+            ))}
+          </List>
+        </Col>
+      </Row>
     );
   }
 
@@ -159,13 +163,21 @@ export class BasicTermMetadata extends React.Component<
   private renderParentTerms() {
     const parents = Utils.sanitizeArray(this.props.term.parentTerms);
     parents.sort(Utils.labelComparator);
-    return this.renderTermList( parents, "term.metadata.parent", "term-metadata-parentterms");
+    return this.renderTermList(
+      parents,
+      "term.metadata.parent",
+      "term-metadata-parentterms"
+    );
   }
 
   private renderSubTerms() {
     const source = Utils.sanitizeArray(this.props.term.subTerms);
     source.sort(termInfoComparator);
-    return this.renderTermList( source, "term.metadata.subTerms", "term-metadata-subterms");
+    return this.renderTermList(
+      source,
+      "term.metadata.subTerms",
+      "term-metadata-subterms"
+    );
   }
 }
 
