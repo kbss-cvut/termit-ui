@@ -42,6 +42,7 @@ import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
 import ExactMatchesSelector from "./ExactMatchesSelector";
+import MultilingualIcon from "../misc/MultilingualIcon";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -233,7 +234,12 @@ export class TermMetadataEdit extends React.Component<
                       language
                     )}
                     onChange={this.onLabelChange}
-                    label={i18n("asset.label")}
+                    label={
+                      <>
+                        {i18n("asset.label")}
+                        <MultilingualIcon id="edit-term-label-multilingual" />
+                      </>
+                    }
                     invalid={
                       validationPrefLabel.length > 0 || labelInLanguageInvalid
                     }
@@ -251,6 +257,7 @@ export class TermMetadataEdit extends React.Component<
                       </>
                     }
                     help={i18n("term.label.help")}
+                    hint={i18n("required")}
                   />
                 </Col>
               </Row>
@@ -290,7 +297,12 @@ export class TermMetadataEdit extends React.Component<
                     invalidMessage={this.renderMessages(validationScopeNote)}
                     onChange={this.onScopeNoteChange}
                     rows={4}
-                    label={i18n("term.metadata.comment")}
+                    label={
+                      <>
+                        {i18n("term.metadata.comment")}
+                        <MultilingualIcon id="edit-term-comment-multilingual" />
+                      </>
+                    }
                     help={i18n("term.comment.help")}
                   />
                 </Col>

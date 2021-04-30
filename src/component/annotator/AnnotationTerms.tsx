@@ -1,6 +1,6 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
-import { Button, FormGroup, Label } from "reactstrap";
+import { Button, FormGroup, FormText, Label } from "reactstrap";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 // @ts-ignore
@@ -48,6 +48,15 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
   constructor(props: AnnotationTermsProps) {
     super(props);
     this.treeComponent = React.createRef();
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      if (this.treeComponent.current) {
+        // This is a workaround because autoFocus was causing issues with scrolling (screen would jump to the top due to the initial position of the popover)
+        this.treeComponent.current.focus();
+      }
+    }, 100);
   }
 
   public componentDidUpdate(prevProps: AnnotationTermsProps) {
@@ -98,10 +107,12 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
         unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}
       >
         <FormGroup>
-          <div>
-            <Label className="attribute-label mr-1">
-              {i18n("type.term") + ":"}
-            </Label>
+          <div className="align-items-center d-flex mb-2">
+            <div className="flex-grow-1">
+              <Label className="attribute-label mb-0">
+                {i18n("type.term") + ":"}
+              </Label>
+            </div>
             {this.props.canCreateTerm && (
               <Button
                 key="annotator.createTerm"
@@ -109,8 +120,10 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
                 title={i18n("glossary.createTerm.tooltip")}
                 size="sm"
                 onClick={this.props.onCreateTerm}
+                className="pull-right"
               >
-                <GoPlus />
+                <GoPlus className="mr-1" />
+                {i18n("annotator.createTerm.button")}
               </Button>
             )}
           </div>
@@ -128,6 +141,9 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
+          <FormText>
+            {i18n("resource.metadata.terms.edit.select.placeholder")}
+          </FormText>
         </FormGroup>
       </IfUserAuthorized>
     );

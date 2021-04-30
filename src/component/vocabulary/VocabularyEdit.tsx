@@ -97,6 +97,7 @@ export class VocabularyEdit extends React.Component<
                   label={i18n("asset.label")}
                   value={this.state.label}
                   onChange={this.onInputChange}
+                  hint={i18n("required")}
                 />
               </Col>
             </Row>
