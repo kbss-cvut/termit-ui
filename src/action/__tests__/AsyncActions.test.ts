@@ -34,7 +34,6 @@ import {
     removeTerm,
     removeVocabulary,
     saveFileContent,
-    searchTerms,
     updateResource,
     updateResourceTerms,
     updateTerm,
@@ -851,16 +850,6 @@ describe("Async actions", () => {
                 expect(callConfig.getParams().page).toEqual(1);
                 expect(callConfig.getParams().size).toEqual(100);
             });
-        });
-    });
-
-    describe("search terms", () => {
-        it("extracts terms from incoming JSON-LD", () => {
-            const terms = require("../../rest-mock/terms");
-            Ajax.get = jest.fn().mockResolvedValue(terms);
-            return Promise.resolve(
-                (store.dispatch as ThunkDispatch)(searchTerms(""))
-            ).then((data: Term[]) => compareTerms(data, terms));
         });
     });
 

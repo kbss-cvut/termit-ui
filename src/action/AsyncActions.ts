@@ -68,10 +68,6 @@ import RecentlyModifiedAsset, {
     RecentlyModifiedAssetData,
 } from "../model/RecentlyModifiedAsset";
 import TermOccurrence from "../model/TermOccurrence";
-import SearchResult, {
-    CONTEXT as SEARCH_RESULT_CONTEXT,
-    SearchResultData,
-} from "../model/SearchResult";
 import NotificationType from "../model/NotificationType";
 import { langString } from "../model/MultilingualString";
 import { Configuration } from "../model/Configuration";
@@ -795,43 +791,6 @@ export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
                         new Message(error, MessageType.ERROR)
                     )
                 );
-            });
-    };
-}
-
-export function searchTerms(searchString: string) {
-    const action = {
-        type: ActionType.FETCH_VOCABULARY_TERMS,
-    };
-    return (dispatch: ThunkDispatch) => {
-        dispatch(asyncActionRequest(action, true));
-        return Ajax.get(
-            Constants.API_PREFIX + "/search/fts",
-            params({ searchString })
-        )
-            .then((data: object[]) =>
-                data.length > 0
-                    ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
-                          data,
-                          SEARCH_RESULT_CONTEXT
-                      )
-                    : []
-            )
-            .then((data: SearchResultData[]) =>
-                data.map((d) => new SearchResult(d))
-            )
-            .then((data: SearchResult[]) => {
-                dispatch(SyncActions.asyncActionSuccess(action));
-                return data
-                    .filter((d) => d.hasType(VocabularyUtils.TERM))
-                    .map(
-                        (d) =>
-                            new Term({ iri: d.iri, label: langString(d.label) })
-                    );
-            })
-            .catch((error: ErrorData) => {
-                dispatch(SyncActions.asyncActionFailure(action, error));
-                return [];
             });
     };
 }
