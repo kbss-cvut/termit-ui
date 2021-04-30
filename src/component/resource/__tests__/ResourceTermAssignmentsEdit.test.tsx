@@ -11,8 +11,10 @@ import FetchOptionsFunction from "../../../model/Functions";
 
 describe("ResourceTermAssignmentsEdit", () => {
   let onChange: (subTerms: AssetData[]) => void;
-  let loadTerms: (fetchOptions: FetchOptionsFunction,
-                  namespace: string) => Promise<Term[]>;
+  let loadTerms: (
+    fetchOptions: FetchOptionsFunction,
+    namespace: string
+  ) => Promise<Term[]>;
 
   beforeEach(() => {
     onChange = jest.fn();
@@ -44,7 +46,9 @@ describe("ResourceTermAssignmentsEdit", () => {
       ];
       const origLength = existingTerms.length;
       const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
-      loadTerms = jest.fn().mockResolvedValue([...existingTerms,...fetchedTerms]);
+      loadTerms = jest
+        .fn()
+        .mockResolvedValue([...existingTerms, ...fetchedTerms]);
       const wrapper = shallow<ResourceTermAssignmentsEdit>(
         <ResourceTermAssignmentsEdit
           terms={existingTerms}
