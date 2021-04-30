@@ -20,6 +20,7 @@ const ctx = {
     definition: context(VocabularyUtils.DEFINITION),
     scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
     parentTerms: VocabularyUtils.BROADER,
+    exactMatches: VocabularyUtils.PRESNE_ODPOVIDA,
     subTerms: VocabularyUtils.NARROWER,
     sources: VocabularyUtils.DC_SOURCE,
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
@@ -53,6 +54,7 @@ const MAPPED_PROPERTIES = [
     "glossary",
     "definitionSource",
     "draft",
+    "exactMatches"
 ];
 
 export const TERM_MULTILINGUAL_ATTRIBUTES = [
@@ -68,6 +70,7 @@ export interface TermData extends AssetData {
     hiddenLabels?: PluralMultilingualString;
     scopeNote?: MultilingualString;
     definition?: MultilingualString;
+    exactMatches?: TermData[];
     subTerms?: TermInfo[];
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
@@ -97,6 +100,7 @@ export default class Term extends Asset implements TermData {
     public hiddenLabels?: PluralMultilingualString;
     public scopeNote?: MultilingualString;
     public definition?: MultilingualString;
+    public exactMatches?: Term[];
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
     public readonly parent?: string;
@@ -123,6 +127,15 @@ export default class Term extends Asset implements TermData {
             );
             this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
+        }
+        if (this.exactMatches) {
+            visitedTerms[this.iri] = this;
+            this.exactMatches = Utils.sanitizeArray(this.exactMatches).map((pt) =>
+                visitedTerms[pt.iri]
+                    ? visitedTerms[pt.iri]
+                    : new Term(pt, visitedTerms)
+            );
+            this.exactMatches.sort(Utils.labelComparator);
         }
         if (this.subTerms) {
             // jsonld replaces single-element arrays with singular elements, which we don't want here
@@ -155,7 +168,7 @@ export default class Term extends Asset implements TermData {
         }
     }
 
-    public toTermData(): TermData {
+    public toTermData( withoutExacts : boolean = false): TermData {
         const result: any = Object.assign({}, this);
         if (result.parentTerms) {
             result.parentTerms = result.parentTerms.map((pt: Term) => {
@@ -164,6 +177,11 @@ export default class Term extends Asset implements TermData {
                 delete res.parentTerms;
                 return res;
             });
+        }
+        if ( withoutExacts ) {
+            delete result.exactMatches;
+        } else if ( result.exactMatches ) {
+            result.exactMatches = result.exactMatches.map((pt: Term) => pt.toTermData(true) );
         }
         if (result.definitionSource) {
             result.definitionSource.term = { iri: result.iri };

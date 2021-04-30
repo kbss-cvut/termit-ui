@@ -1,6 +1,6 @@
 import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, {TermInfo, termInfoComparator} from "../../model/Term";
+import Term, { TermInfo, termInfoComparator } from "../../model/Term";
 import { injectIntl } from "react-intl";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
@@ -47,6 +47,7 @@ export class BasicTermMetadata extends React.Component<
             {this.renderTypes()}
           </Col>
         </Row>
+        {this.renderExactMatchInferred()}
         {this.renderParentTerms()}
         {this.renderSubTerms()}
         <Row>
@@ -142,6 +143,16 @@ export class BasicTermMetadata extends React.Component<
             </List>
           </Col>
         </Row>
+    );
+  }
+
+  private renderExactMatchInferred() {
+    const exactMatches = Utils.sanitizeArray(this.props.term.exactMatches);
+    exactMatches.sort(Utils.labelComparator);
+    return this.renderTermList(
+      exactMatches,
+      "term.metadata.exactMatches",
+      "term-metadata-exactmatches"
     );
   }
 

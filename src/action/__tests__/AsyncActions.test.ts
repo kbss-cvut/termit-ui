@@ -41,7 +41,7 @@ import {
     updateVocabulary,
     uploadFileContent,
     loadNews,
-    loadConfiguration,
+    loadConfiguration, loadAllTerms,
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, { param } from "../../util/Ajax";
@@ -759,6 +759,89 @@ describe("Async actions", () => {
             ).then(() => {
                 const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
                 expect(callConfig.getParams()).toEqual(params);
+            });
+        });
+    });
+
+    describe("load all terms", () => {
+        it("extracts terms from incoming JSON-LD", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadAllTerms(
+                        {
+                            searchString: "",
+                            limit: 5,
+                            offset: 0,
+                            optionID: "",
+                        },
+                        "http://onto.fel.cvut.cz/ontologies/termit/"
+                    )
+                )
+            ).then((data: Term[]) => compareTerms(data, terms));
+        });
+
+        it("gets all root terms when parent option is not specified", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadAllTerms({}, "http://onto.fel.cvut.cz/ontologies/termit/")
+                )
+            ).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(
+                    Constants.API_PREFIX +
+                    "/terms/roots"
+                );
+            });
+        });
+
+        it("gets subterms when parent option is specified", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            const parentUri =
+                "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3";
+            const params: FetchOptionsFunction = {
+                optionID: parentUri,
+            };
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadAllTerms(params, "http://onto.fel.cvut.cz/ontologies/termit/")
+                )
+            ).then(() => {
+                const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
+                expect(targetUri).toEqual(
+                    Constants.API_PREFIX +
+                    "/terms/pojem-3/subterms"
+                );
+            });
+        });
+
+        it("specifies correct paging params for offset and limit", () => {
+            const terms = require("../../rest-mock/terms");
+            Ajax.get = jest
+                .fn()
+                .mockImplementation(() => Promise.resolve(terms));
+            const params: FetchOptionsFunction = {
+                offset: 88,
+                limit: 100,
+            };
+            return Promise.resolve(
+                (store.dispatch as ThunkDispatch)(
+                    loadAllTerms(params, "http://onto.fel.cvut.cz/ontologies/termit/")
+                )
+            ).then(() => {
+                const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+                expect(callConfig.getParams().page).toEqual(1 );
+                expect(callConfig.getParams().size).toEqual( 100 );
             });
         });
     });

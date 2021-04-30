@@ -836,21 +836,53 @@ export function searchTerms(searchString: string) {
     };
 }
 
+export function loadAllTerms(
+    fetchOptions: FetchOptionsFunction,
+    namespace: string,
+    apiPrefix: string = Constants.API_PREFIX
+) {
+    return genericLoadTerms(
+        ActionType.FETCH_ALL_TERMS,
+        `${apiPrefix}`,
+        {
+            searchString: fetchOptions.searchString,
+            includeTerms: fetchOptions.includeTerms,
+            namespace
+        },
+        fetchOptions
+    );
+}
+
 export function loadTerms(
     fetchOptions: FetchOptionsFunction,
     vocabularyIri: IRI,
     apiPrefix: string = Constants.API_PREFIX
 ) {
-    const action = {
-        type: ActionType.FETCH_VOCABULARY_TERMS,
-    };
+    return genericLoadTerms(
+        ActionType.FETCH_VOCABULARY_TERMS,
+        `${apiPrefix}/vocabularies/${vocabularyIri.fragment}`,
+        {
+            searchString: fetchOptions.searchString,
+            includeImported: fetchOptions.includeImported,
+            includeTerms: fetchOptions.includeTerms,
+            namespace: vocabularyIri.namespace,
+        },
+        fetchOptions
+    );
+}
+
+export function genericLoadTerms(
+    type: string,
+    prefix: string,
+    target: object,
+    fetchOptions: FetchOptionsFunction
+) {
+    const action = { type };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        let url = `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/`;
+        let url = `${prefix}/terms/`;
         if (fetchOptions.optionID) {
-            url += `${VocabularyUtils.getFragment(
-                fetchOptions.optionID
-            )}/subterms`;
+            url += `${VocabularyUtils.getFragment( fetchOptions.optionID )}/subterms`;
         } else if (!fetchOptions.searchString) {
             url += "roots";
         }
@@ -858,12 +890,7 @@ export function loadTerms(
             url,
             params(
                 Object.assign(
-                    {
-                        searchString: fetchOptions.searchString,
-                        includeImported: fetchOptions.includeImported,
-                        includeTerms: fetchOptions.includeTerms,
-                        namespace: vocabularyIri.namespace,
-                    },
+                    target,
                     Utils.createPagingParams(
                         fetchOptions.offset,
                         fetchOptions.limit
@@ -874,9 +901,9 @@ export function loadTerms(
             .then((data: object[]) =>
                 data.length !== 0
                     ? JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(
-                          data,
-                          TERM_CONTEXT
-                      )
+                    data,
+                    TERM_CONTEXT
+                    )
                     : []
             )
             .then((data: TermData[]) => {

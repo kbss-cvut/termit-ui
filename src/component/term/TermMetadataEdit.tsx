@@ -41,6 +41,7 @@ import TermItState from "../../model/TermItState";
 import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
+import ExactMatchesSelector from "./ExactMatchesSelector";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -147,6 +148,10 @@ export class TermMetadataEdit extends React.Component<
 
   public onParentChange = (parentTerms?: Term[]) => {
     this.setState({ parentTerms });
+  };
+
+  public onExactMatchesChange = (exactMatches?: Term[]) => {
+    this.setState({ exactMatches });
   };
 
   public onStatusChange = () => {
@@ -287,6 +292,17 @@ export class TermMetadataEdit extends React.Component<
                     rows={4}
                     label={i18n("term.metadata.comment")}
                     help={i18n("term.comment.help")}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <ExactMatchesSelector
+                    id="exact-matches"
+                    termIri={this.props.term.iri}
+                    selected={this.state.exactMatches}
+                    vocabularyIri={this.props.term.vocabulary!.iri!}
+                    onChange={this.onExactMatchesChange}
                   />
                 </Col>
               </Row>

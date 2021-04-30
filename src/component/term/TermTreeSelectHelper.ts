@@ -29,7 +29,7 @@ export type TermTreeSelectProcessingOptions = {
  * Prepares the specified terms for the tree select component. This consists of removing terms and subterms which are
  * not in the specified vocabularies and flattening term ancestors if necessary.
  * @param terms Terms to process
- * @param vocabularies Vocabularies in which all the terms should be, or null to switch this filtering off
+ * @param vocabularies Vocabularies in which all the terms should be, or undefined to switch this filtering off
  * @param options Processing options
  */
 export function processTermsForTreeSelect(
