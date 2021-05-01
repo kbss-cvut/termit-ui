@@ -47,7 +47,7 @@ export class BasicTermMetadata extends React.Component<
             {this.renderTypes()}
           </Col>
         </Row>
-        {this.renderExactMatchInferred()}
+        {this.renderExactMatchTerms()}
         {this.renderParentTerms()}
         {this.renderSubTerms()}
         <Row>
@@ -150,11 +150,11 @@ export class BasicTermMetadata extends React.Component<
     );
   }
 
-  private renderExactMatchInferred() {
-    const exactMatches = Utils.sanitizeArray(this.props.term.exactMatches);
-    exactMatches.sort(Utils.labelComparator);
+  private renderExactMatchTerms() {
+    const exactMatchTerms = Utils.sanitizeArray(this.props.term.exactMatchTerms);
+    exactMatchTerms.sort(termInfoComparator);
     return this.renderTermList(
-      exactMatches,
+      exactMatchTerms,
       "term.metadata.exactMatches",
       "term-metadata-exactmatches"
     );

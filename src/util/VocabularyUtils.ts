@@ -72,7 +72,6 @@ const VocabularyUtils = {
     SKOS_SCOPE_NOTE: _NS_SKOS + "scopeNote",
     SKOS_IN_SCHEME: _NS_SKOS + "inScheme",
     SKOS_EXACT_MATCH: _NS_SKOS + "exactMatch",
-    PRESNE_ODPOVIDA: _NS_TERMIT + "přesně-odpovídá",
     IS_TERM_FROM_VOCABULARY: _NS_POPIS_DAT + "je-pojmem-ze-slovníku",
     IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "je-výskytem-termu",
     IS_DEFINITION_OF_TERM: _NS_TERMIT + "je-výskytem-definice-termu",

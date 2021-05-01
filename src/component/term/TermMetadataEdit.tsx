@@ -10,7 +10,7 @@ import {
   Form,
   Row,
 } from "reactstrap";
-import Term, { CONTEXT, TermData } from "../../model/Term";
+import Term, {CONTEXT, TermData, TermInfo} from "../../model/Term";
 import "./TermMetadata.scss";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
@@ -151,8 +151,8 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ parentTerms });
   };
 
-  public onExactMatchesChange = (exactMatches?: Term[]) => {
-    this.setState({ exactMatches });
+  public onExactMatchesChange = (exactMatchTerms?: Term[]) => {
+    this.setState({ exactMatchTerms : exactMatchTerms?.map( e => e as TermInfo) });
   };
 
   public onStatusChange = () => {
@@ -312,7 +312,7 @@ export class TermMetadataEdit extends React.Component<
                   <ExactMatchesSelector
                     id="exact-matches"
                     termIri={this.props.term.iri}
-                    selected={this.state.exactMatches}
+                    selected={this.state.exactMatchTerms}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onExactMatchesChange}
                   />
