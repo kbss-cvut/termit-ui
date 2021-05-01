@@ -151,7 +151,9 @@ export class BasicTermMetadata extends React.Component<
   }
 
   private renderExactMatchTerms() {
-    const exactMatchTerms = Utils.sanitizeArray(this.props.term.exactMatchTerms);
+    const exactMatchTerms = Utils.sanitizeArray(
+      this.props.term.exactMatchTerms
+    );
     exactMatchTerms.sort(termInfoComparator);
     return this.renderTermList(
       exactMatchTerms,
