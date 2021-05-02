@@ -172,16 +172,6 @@ export default class Term extends Asset implements TermData {
                 return res;
             });
         }
-        if (result.exactMatchTerms) {
-            result.exactMatchTerms = result.exactMatchTerms.map((em: Term) => {
-                return {
-                    types: em.types,
-                    iri: em.iri,
-                    label: em.label,
-                    vocabulary: em.vocabulary,
-                };
-            });
-        }
         if (result.definitionSource) {
             result.definitionSource.term = { iri: result.iri };
         }
