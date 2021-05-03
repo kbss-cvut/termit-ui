@@ -5,15 +5,24 @@ import { FormGroup, Label } from "reactstrap";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
-import Term from "../../model/Term";
+import Term, { TermData } from "../../model/Term";
 import { connect } from "react-redux";
-import { ThunkDispatch } from "../../util/Types";
+import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import FetchOptionsFunction from "../../model/Functions";
-import { searchTerms } from "../../action/AsyncActions";
+import { loadAllTerms } from "../../action/AsyncActions";
 import {
   commonTermTreeSelectProps,
   processTermsForTreeSelect,
 } from "../term/TermTreeSelectHelper";
+import Utils from "../../util/Utils";
+import VocabularyUtils from "../../util/VocabularyUtils";
+
+function normalizeTerms(terms: Term[]) {
+  terms
+    .filter((t) => t.plainSubTerms)
+    .forEach((t) => (t.plainSubTerms = t.subTerms!.map((st) => st.iri)));
+  return terms;
+}
 
 interface PropsExternal {
   terms: Term[];
@@ -23,7 +32,10 @@ interface PropsExternal {
 interface PropsConnected {}
 
 interface DispatchConnected {
-  fetchTerms: (searchString: string) => Promise<Term[]>;
+  loadTerms: (
+    fetchOptions: FetchOptionsFunction,
+    namespace: string
+  ) => Promise<Term[]>;
 }
 
 interface ResourceTermAssignmentsEditProps
@@ -55,28 +67,36 @@ export class ResourceTermAssignmentsEdit extends React.Component<
     this.props.onChange(val);
   };
 
-  public fetchOptions = (fetchOptions: FetchOptionsFunction) => {
-    const all = [...this.props.terms]; // Make a copy of the resource's terms to prevent their accidental editing
-
-    // TODO hack to have the search fast - looks for vowels and syllabic consonants in czech and english. Thus works
-    // only for terms which are words.
-    const searchString = fetchOptions.searchString || "a e i o u y r l s m n";
-
+  public fetchOptions = (
+    fetchOptions: TreeSelectFetchOptionsParams<TermData>
+  ) => {
+    const selected = Utils.sanitizeArray(this.props.terms).map((p) => p.iri!);
     return this.props
-      .fetchTerms(searchString)
-      .then((terms) =>
-        processTermsForTreeSelect(terms, undefined, { searchString })
+      .loadTerms(
+        {
+          ...fetchOptions,
+          includeTerms: selected,
+        },
+        VocabularyUtils.create(
+          fetchOptions.option ? fetchOptions.option.iri! : ""
+        ).namespace!
       )
       .then((terms) => {
-        const toReturn = processTermsForTreeSelect(all, undefined, {
-          searchString,
-        });
-        return toReturn.concat(terms);
+        return normalizeTerms(
+          processTermsForTreeSelect(terms, undefined, {
+            searchString: fetchOptions.searchString,
+          })
+        );
       });
   };
 
+  private resolveSelected() {
+    return Utils.sanitizeArray(this.props.terms)
+      .filter((p) => p.vocabulary !== undefined)
+      .map((p) => p.iri);
+  }
+
   public render() {
-    const selected = (this.props.terms || []).map((t) => t.iri!);
     const treeProps = commonTermTreeSelectProps(this.props);
     treeProps.noResultsText = "";
     treeProps.placeholder = this.props.i18n(
@@ -92,7 +112,7 @@ export class ResourceTermAssignmentsEdit extends React.Component<
           id="edit-resource-tags"
           className="resource-tags-edit"
           onChange={this.onChange}
-          value={selected}
+          value={this.resolveSelected()}
           fetchOptions={this.fetchOptions}
           fetchLimit={300}
           maxHeight={150}
@@ -109,7 +129,8 @@ export default connect<PropsConnected, DispatchConnected>(
   undefined,
   (dispatch: ThunkDispatch) => {
     return {
-      fetchTerms: (searchString: string) => dispatch(searchTerms(searchString)),
+      loadTerms: (fetchOptions: FetchOptionsFunction, namespace: string) =>
+        dispatch(loadAllTerms(fetchOptions, namespace)),
     };
   }
 )(injectIntl(withI18n(ResourceTermAssignmentsEdit)));
