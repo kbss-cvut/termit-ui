@@ -329,6 +329,8 @@ const en = {
             "Definition is always unique and cannot be combined from multiple sources.",
         "term.comment.help":
             "(Optional) non-definitorial text clarifying the meaning of the term.",
+        "term.exactMatches.help":
+            "(Optional) term exactly matching the meaning of the current term. It serves to map the term to another one from a different vocabulary.",
         "term.parent.help":
             "(Optional) broader term. It is used to model relationships to broader terms " +
             "(e.g. Church -> Building), types of instances (e.g. St. Paul's -> Cathedral), or parthood relationships (e.g. Handle -> Door).",
@@ -357,6 +359,7 @@ const en = {
         "term.metadata.definitionSource.goto": "See in the document",
         "term.metadata.definitionSource.goto.tooltip":
             "Go to definition source in the corresponding document",
+        "term.metadata.exactMatches": "Exact matches",
         "term.metadata.comment": "Scope note",
         "term.metadata.parent": "Parent terms",
         "term.metadata.subTerms": "Sub terms",
