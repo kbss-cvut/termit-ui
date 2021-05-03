@@ -74,6 +74,7 @@ export class CreateResourceMetadata<
             <CustomInput
               name="create-resource-label"
               label={i18n("asset.label")}
+              hint={i18n("required")}
               value={this.state.label}
               onChange={this.onLabelChange}
             />
@@ -87,7 +88,6 @@ export class CreateResourceMetadata<
               type="textarea"
               rows={4}
               value={this.state.description}
-              help={i18n("optional")}
               onChange={this.onDescriptionChange}
             />
           </Col>

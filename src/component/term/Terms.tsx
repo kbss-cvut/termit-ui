@@ -333,6 +333,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 isMenuOpen={true}
                 scrollMenuIntoView={false}
                 multi={false}
+                autoFocus={!isDetailView}
                 maxHeight={Utils.calculateAssetListHeight()}
                 optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(
                   unusedTerms,

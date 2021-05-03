@@ -17,7 +17,7 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
         simpleTreeData: true,
         showSettings: false,
         noResultsText: intl.i18n("main.search.no-results"),
-        placeholder: intl.i18n("glossary.select.placeholder"),
+        placeholder: "",
     };
 }
 

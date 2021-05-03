@@ -17,6 +17,7 @@ jest.mock("../../../util/Ajax", () => {
     default: jest.fn(),
   };
 });
+jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
 describe("CreateResourceMetadata", () => {
   const iri = "http://onto.fel.cvut.cz/ontologies/termit/resource/test";

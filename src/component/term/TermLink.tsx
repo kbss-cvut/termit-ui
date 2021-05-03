@@ -17,14 +17,28 @@ interface TermLinkProps {
   term: Term | TermInfo;
   id?: string;
   language?: string;
+  activeTab?: string;
 }
 
 export function getTermPath(term: Term | TermInfo, user?: User | null) {
+  return getTermPathWithTab(term, user, undefined);
+}
+
+function getTermPathWithTab(
+  term: Term | TermInfo,
+  user?: User | null,
+  activeTab?: string
+) {
   if (!term.vocabulary) {
     return Routing.getTransitionPath(Routes.dashboard);
   }
   const vocIri = VocabularyUtils.create(term.vocabulary!.iri!);
   const iri = VocabularyUtils.create(term.iri);
+  const queryParams = [];
+  queryParams.push(["namespace", vocIri.namespace!]);
+  if (activeTab) {
+    queryParams.push(["activeTab", activeTab]);
+  }
   return Routing.getTransitionPath(
     Authentication.isLoggedIn(user)
       ? Routes.vocabularyTermDetail
@@ -34,7 +48,8 @@ export function getTermPath(term: Term | TermInfo, user?: User | null) {
         ["name", vocIri.fragment],
         ["termName", iri.fragment],
       ]),
-      query: new Map([["namespace", vocIri.namespace!]]),
+      // @ts-ignore
+      query: new Map(queryParams),
     }
   );
 }
@@ -51,7 +66,7 @@ export const TermLink: React.FC<TermLinkProps> = (props) => {
     // This can happen e.g. when FTS returns a term in the predefined language used for term types
     return <OutgoingLink label={label} iri={term.iri} />;
   }
-  const path = getTermPath(term, user);
+  const path = getTermPathWithTab(term, user, props.activeTab);
   // Make a copy of the term with a simple localized label for the AssetLink component
   const t = Object.assign({}, term, { label });
 

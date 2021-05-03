@@ -26,6 +26,8 @@ const SimplePopupWithActions: React.FC<PopupWithActionsProps> = (props) => {
       isOpen={props.isOpen}
       target={props.target}
       toggle={props.toggle}
+      fade={false}
+      delay={0}
     >
       <div onClick={handler}>
         <PopoverHeader className="d-flex align-items-center">

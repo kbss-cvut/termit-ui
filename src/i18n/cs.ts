@@ -19,6 +19,8 @@ const cs = {
         "basic-information": "Základní informace",
         "created-info": "Vytvořeno uživatelem {author} dne {date}",
         "select.placeholder": "Vyberte...",
+        "help.title": "Nápověda",
+        "multilingual.title": "Hodnotu atributu lze vyplnit ve více jazycích",
 
         "connection.error": "Nepodařilo se navázat spojení se serverem.",
         "ajax.unparseable-error":
@@ -82,6 +84,7 @@ const cs = {
         "dashboard.widget.commentList.empty":
             "Zde uvidíte své poslední komentáře a reakce na ně.",
         "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
+        "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
         "dashboard.widget.commentList.messageByYou": "{when} Vámi .",
         "dashboard.widget.lastCommentedAssets.title":
@@ -481,6 +484,7 @@ const cs = {
         "annotator.selectionPurpose.create": "Nový pojem",
         "annotator.selectionPurpose.occurrence": "Označení výskytu pojmu",
         "annotator.selectionPurpose.definition": "Označení definice pojmu",
+        "annotator.createTerm.button": "Nový",
         "annotator.createTerm.selectDefinition": "Vybrat definici",
         "annotator.createTerm.selectDefinition.tooltip":
             "Skrýt tento dialog a vybrat definici pojmu v textu",
@@ -516,33 +520,21 @@ const cs = {
         "annotation.definition.original": "Původní definice",
         "annotation.definition.new": "Nová definice",
 
-        "annotator.legend.confirmed.loading": "Anotace se načítá",
-        "annotator.legend.confirmed.loading.tooltip":
-            "Annotace, kterou vytvořil či akceptoval uživatel, se načítá.",
-        "annotator.legend.proposed.loading": "Navrhovaná anotace se načítá",
-        "annotator.legend.proposed.loading.tooltip":
-            "Annotace navrhovaná službou textové analýzy se načítá.",
+        "annotator.legend.title": "Legenda",
         "annotator.legend.confirmed.unknown.term": "Výskyt neznámého pojmu",
         "annotator.legend.confirmed.unknown.term.tooltip":
-            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak nebyl přiřazen konkrétnímu pojmu.",
+            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak konkrétní pojem nebyl zatím vybrán.",
         "annotator.legend.confirmed.existing.term": "Výskyt existujícího pojmu",
         "annotator.legend.confirmed.existing.term.tooltip":
-            "Výskyt pojmu vytvořený či akceptován uživatelem.",
-        "annotator.legend.confirmed.missing.term": "Výskyt chybějícího pojmu",
-        "annotator.legend.confirmed.missing.term.tooltip":
-            "Výskyt pojmu byl vytvořen či akceptován uživatelem, avšak přislušný pojem nebyl nalezen.",
+            "Výskyt pojmu vytvořený či schválený uživatelem.",
         "annotator.legend.proposed.unknown.term":
-            "Navrhovaný výskyt neznámého pojmu",
+            "Navrhovaný výskyt nového pojmu",
         "annotator.legend.proposed.unknown.term.tooltip":
-            "Výskyt pojmu byl identifikován službou textové analýzy, avšak nebyl přiřazen konkrétnímu pojmu.",
+            "Výskyt potenciálního nového pojmu byl identifikován službou textové analýzy, avšak nebyl ještě schválen uživatelem.",
         "annotator.legend.proposed.existing.term":
             "Navrhovaný výskyt existujícího pojmu",
         "annotator.legend.proposed.existing.term.tooltip":
             "Výskyt pojmu identifikovaný službou textové analýzy.",
-        "annotator.legend.proposed.missing.term":
-            "Navrhovaný výskyt chybějícího pojmu",
-        "annotator.legend.proposed.missing.term.tooltip":
-            "Výskyt pojmu byl identifikován službou textové analýzy, avšak přislušný pojem nebyl nalezen.",
         "annotator.legend.definition.pending": "Definice neznámého pojmu",
         "annotator.legend.definition.pending.tooltip":
             "Definice, která zatím nebyla přiřazena žádnému pojmu.",

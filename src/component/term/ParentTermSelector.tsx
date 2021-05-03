@@ -23,6 +23,7 @@ import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 import { getLocalized } from "../../model/MultilingualString";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { loadTerms } from "../../action/AsyncActions";
+import HelpIcon from "../misc/HelpIcon";
 
 function enhanceWithCurrentTerm(
   terms: Term[],
@@ -251,6 +252,7 @@ export class ParentTermSelector extends React.Component<
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
           {i18n("term.metadata.parent")}
+          <HelpIcon id={"parent-term-select"} text={i18n("term.parent.help")} />
         </Label>
         {this.renderSelector()}
       </FormGroup>
@@ -287,7 +289,6 @@ export class ParentTermSelector extends React.Component<
         ) : (
           <></>
         )}
-        <FormText>{this.props.i18n("term.parent.help")}</FormText>
       </>
     );
   }

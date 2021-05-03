@@ -16,6 +16,7 @@ import Authentication from "../../util/Authentication";
 interface TermIriLinkProps extends HasI18n {
   iri: string;
   id?: string;
+  activeTab?: string;
   loadTermByIri: (iri: IRI) => Promise<Term | null>;
   loadPublicTermByIri: (iri: IRI) => Promise<Term | null>;
   user: User;
@@ -49,7 +50,7 @@ export class TermIriLink extends React.Component<
     return (
       <>
         {this.state.term !== null ? (
-          <TermLink term={this.state.term} />
+          <TermLink term={this.state.term} activeTab={this.props.activeTab} />
         ) : (
           <OutgoingLink label={this.props.iri} iri={this.props.iri} />
         )}
