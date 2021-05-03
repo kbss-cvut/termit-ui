@@ -235,13 +235,15 @@ export class TermMetadataEdit extends React.Component<
                     }
                     invalidMessage={
                       <>
-                      {this.renderMessages(validationPrefLabel)}
+                        {this.renderMessages(validationPrefLabel)}
                         {labelInLanguageInvalid
-                        ? this.props.formatMessage(
-                            "term.metadata.labelExists.message",
-                            { label: getLocalized(this.state.label, language) }
-                          )
-                        : ""}
+                          ? this.props.formatMessage(
+                              "term.metadata.labelExists.message",
+                              {
+                                label: getLocalized(this.state.label, language),
+                              }
+                            )
+                          : ""}
                       </>
                     }
                     help={i18n("term.label.help")}

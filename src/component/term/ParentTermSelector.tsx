@@ -5,7 +5,7 @@ import Term, { TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
-import { FormFeedback, FormGroup, FormText, Label } from "reactstrap";
+import { FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
