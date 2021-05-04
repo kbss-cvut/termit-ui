@@ -94,4 +94,17 @@ export default class TermItState {
         this.configuration = DEFAULT_CONFIGURATION;
         this.validationResults = {};
     }
+
+    /**
+     * Transforms the specified state to a loggable object (mainly breaking possible circular references).
+     * @param state State to log
+     */
+    public static toLoggable(state: TermItState): any {
+        const result: any = Object.assign({}, state);
+        result.vocabulary = state.vocabulary.toJsonLd();
+        result.resource = state.resource.toJsonLd();
+        result.selectedFile = state.selectedFile.toJsonLd();
+        result.selectedTerm = state.resource.toJsonLd();
+        return result;
+    }
 }

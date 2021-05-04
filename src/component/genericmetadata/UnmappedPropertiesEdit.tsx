@@ -205,7 +205,7 @@ export class UnmappedPropertiesEdit extends React.Component<
             onOptionCreate={this.onCreateProperty}
             openButtonLabel={i18n("properties.edit.new")}
             openButtonTooltipLabel={i18n("properties.edit.new")}
-            placeholder={i18n("properties.edit.property.select.placeholder")}
+            placeholder=""
             noResultsText={i18n("main.search.no-results")}
             formComponent={CreatePropertyForm}
             valueRenderer={UnmappedPropertiesEdit.valueRenderer}

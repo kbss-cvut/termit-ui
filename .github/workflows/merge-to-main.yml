@@ -27,6 +27,8 @@ jobs:
         node-version: '12.x'
     - name: Install
       run: npm install
+    - name: Prettier Check
+      run: npm run prettier:check
     - name: Build
       run: npm run-script build 
       env:

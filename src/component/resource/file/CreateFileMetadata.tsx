@@ -66,6 +66,7 @@ export class CreateFileMetadata extends React.Component<
               label={i18n("asset.label")}
               value={this.state.label}
               onChange={this.onLabelChange}
+              hint={i18n("required")}
             />
           </Col>
         </Row>

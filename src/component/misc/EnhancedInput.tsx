@@ -37,7 +37,7 @@ export default class EnhancedInputPropsInput extends AbstractInput<EnhancedInput
         <FormFeedback>
           <i className="fas fa-exclamation-triangle" /> {invalidMessage}
         </FormFeedback>
-        {this.renderHelp()}
+        {this.renderHint()}
       </React.Fragment>
     );
 

@@ -19,6 +19,9 @@ const en = {
         "basic-information": "Basic Information",
         "created-info": "Created by {author} on {date}",
         "select.placeholder": "Select...",
+        "help.title": "Help",
+        "multilingual.title":
+            "Attribute value can be provided in multiple languages",
 
         "connection.error": "Unable to connect to the server.",
         "ajax.unparseable-error":
@@ -80,6 +83,7 @@ const en = {
         "dashboard.widget.commentList.empty":
             "You will see here Your last comments and reactions to them.",
         "dashboard.widget.commentList.lastComment": "Last comment of the term.",
+        "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} by {user} .",
         "dashboard.widget.commentList.messageByYou": "{when} by You .",
         "dashboard.widget.lastCommentedAssets.title": "Last commented terms",
@@ -472,10 +476,11 @@ const en = {
         "annotator.content.loading": "Loading file content...",
         "annotator.vocabulary": "Uses terms from vocabulary",
         "annotator.selectionPurpose.dialog.title":
-            "What is the purpose of the selected text?",
+            "What do you want to do with the selected text?",
         "annotator.selectionPurpose.create": "Create term",
         "annotator.selectionPurpose.occurrence": "Mark term occurrence",
         "annotator.selectionPurpose.definition": "Mark term definition",
+        "annotator.createTerm.button": "New",
         "annotator.createTerm.selectDefinition": "Select definition",
         "annotator.createTerm.selectDefinition.tooltip":
             "Hide this dialog and select term definition in text",
@@ -511,36 +516,23 @@ const en = {
         "annotation.definition.original": "Original definition",
         "annotation.definition.new": "New definition",
 
-        "annotator.legend.confirmed.loading": "Loading annotation",
-        "annotator.legend.confirmed.loading.tooltip":
-            "Annotation that was created or accepted by a user is loading.",
-        "annotator.legend.proposed.loading": "Loading proposed annotation",
-        "annotator.legend.proposed.loading.tooltip":
-            "Annotation that was proposed by the annotation service is loading.",
+        "annotator.legend.title": "Legend",
         "annotator.legend.confirmed.unknown.term":
             "Occurrence of an unknown term",
         "annotator.legend.confirmed.unknown.term.tooltip":
-            "Term occurrence was created or accepted by a user but not assigned to any vocabulary term, yet.",
+            "Term occurrence was created or accepted by a user but not assigned any vocabulary term, yet.",
         "annotator.legend.confirmed.existing.term":
             "Occurrence of an existing term",
         "annotator.legend.confirmed.existing.term.tooltip":
             "Occurrence of a known term was created or accepted by a user.",
-        "annotator.legend.confirmed.missing.term":
-            "Occurrence of a missing term",
-        "annotator.legend.confirmed.missing.term.tooltip":
-            "Term occurrence of was created or accepted by a user but the corresponding term could not be found.",
         "annotator.legend.proposed.unknown.term":
-            "Proposed occurrence of an unknown term",
+            "Proposed occurrence of an new term",
         "annotator.legend.proposed.unknown.term.tooltip":
-            "Occurrence of a term was identified by the text analysis service but not assigned to any vocabulary term, yet.",
+            "Occurrence of a possible new term was identified by the text analysis service but not accepter by a user, yet.",
         "annotator.legend.proposed.existing.term":
             "Proposed occurrence of an existing term",
         "annotator.legend.proposed.existing.term.tooltip":
             "Occurrence of a known term was identified by the text analysis service.",
-        "annotator.legend.proposed.missing.term":
-            "Proposed occurrence of a missing term",
-        "annotator.legend.proposed.missing.term.tooltip":
-            "Term occurrence was proposed by the text analysis service but the corresponding term could not be found.",
         "annotator.legend.definition.pending": "Definition of an unknown term",
         "annotator.legend.definition.pending.tooltip":
             "Term definition was marked by a user but not assigned to any vocabulary term, yet.",

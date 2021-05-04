@@ -31,7 +31,7 @@ import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import "./Annotator.scss";
 import HeaderWithActions from "../misc/HeaderWithActions";
-import { Card, CardBody, CardHeader } from "reactstrap";
+import { Card, CardBody } from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
 import TextAnalysisInvocationButton from "./TextAnalysisInvocationButton";
@@ -493,15 +493,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     return (
       <>
         <WindowTitle title={this.props.i18n("annotator")} />
-        <HeaderWithActions title={this.props.file.getLabel()} />
-        <Card>
-          <CardHeader className="text-right">
-            <VocabularyIriLink
-              iri={IRIImpl.toString(this.props.vocabularyIri)}
-            />
-          </CardHeader>
-          <CardBody>
-            <LegendToggle key="legend-toggle" />
+        <HeaderWithActions
+          title={this.renderTitle()}
+          className="annotator-header"
+          actions={[
             <IfUserAuthorized
               key="text-analysis-button"
               renderUnauthorizedAlert={false}
@@ -513,7 +508,12 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                   this.props.vocabularyIri
                 )}
               />
-            </IfUserAuthorized>
+            </IfUserAuthorized>,
+            <LegendToggle key="legend-toggle" />,
+          ]}
+        />
+        <Card>
+          <CardBody>
             <CreateTermFromAnnotation
               ref={this.createNewTermDialog}
               show={this.state.showNewTermDialog}
@@ -555,6 +555,17 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             </div>
           </CardBody>
         </Card>
+      </>
+    );
+  }
+
+  private renderTitle() {
+    return (
+      <>
+        {this.props.file.getLabel()}
+        <div className="small italics">
+          <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)} />
+        </div>
       </>
     );
   }
