@@ -66,6 +66,11 @@ export const TERM_MULTILINGUAL_ATTRIBUTES = [
     "hiddenLabels",
 ];
 
+export const TERM_BROADER_SUBPROPERTIES = [{
+    attribute: "superTypes",
+    i18nKey: "term.metadata.superTypes"
+}]
+
 export interface TermData extends AssetData {
     label: MultilingualString;
     altLabels?: PluralMultilingualString;

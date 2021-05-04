@@ -282,6 +282,7 @@ const en = {
             "Terms from the whole workspace",
         "term.metadata.parent.range.canonical":
             "Terms from the workspace and published SSP",
+        "term.metadata.superTypes": "Superclasses",
         "term.metadata.subTerms": "Sub terms",
         "term.metadata.types": "Type",
         "term.metadata.source": "Source",

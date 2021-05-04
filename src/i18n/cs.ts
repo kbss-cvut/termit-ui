@@ -285,6 +285,7 @@ const cs = {
             "Použít pojmy z celého pracovního prostoru",
         "term.metadata.parent.range.canonical":
             "Použít pojmy z pracovního prostoru a z publikovaného SSP",
+        "term.metadata.superTypes": "Nadtřídy",
         "term.metadata.subTerms": "Podřazené pojmy",
         "term.metadata.types": "Typ pojmu",
         "term.metadata.status": "Stav pojmu",

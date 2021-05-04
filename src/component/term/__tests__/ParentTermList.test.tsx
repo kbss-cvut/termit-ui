@@ -19,7 +19,8 @@ describe("ParentTermsList", () => {
 
   it("renders parent terms in current workspace as links", () => {
     jest.spyOn(redux, "useSelector").mockReturnValue(workspace);
-    const parentTerms = [
+    const term = Generator.generateTerm(vocabularyIri);
+    term.parentTerms = [
       Generator.generateTerm(vocabularyIri),
       Generator.generateTerm(vocabularyIri),
     ];
@@ -27,16 +28,17 @@ describe("ParentTermsList", () => {
       <MemoryRouter>
         <ParentTermsList
           language={Constants.DEFAULT_LANGUAGE}
-          parentTerms={parentTerms}
+          term={term}
         />
       </MemoryRouter>
     );
-    expect(wrapper.find(TermLink).length).toEqual(parentTerms.length);
+    expect(wrapper.find(TermLink).length).toEqual(term.parentTerms.length);
   });
 
   it("renders parent terms outside current workspace as outgoing links", () => {
     jest.spyOn(redux, "useSelector").mockReturnValue(workspace);
-    const parentTerms = [
+    const term = Generator.generateTerm(vocabularyIri);
+    term.parentTerms = [
       Generator.generateTerm(vocabularyIri),
       Generator.generateTerm(Generator.generateUri()),
     ];
@@ -44,7 +46,7 @@ describe("ParentTermsList", () => {
       <MemoryRouter>
         <ParentTermsList
           language={Constants.DEFAULT_LANGUAGE}
-          parentTerms={parentTerms}
+          term={term}
         />
       </MemoryRouter>
     );
@@ -53,7 +55,7 @@ describe("ParentTermsList", () => {
       wrapper
         .findWhere(
           (w) =>
-            w.type() === OutgoingLink && w.prop("iri") === parentTerms[1].iri
+            w.type() === OutgoingLink && w.prop("iri") === term.parentTerms![1].iri
         )
         .exists()
     ).toBeTruthy();
