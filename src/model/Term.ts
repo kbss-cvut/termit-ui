@@ -1,4 +1,4 @@
-import { ASSET_CONTEXT, AssetData, default as Asset } from "./Asset";
+import {ASSET_CONTEXT, AssetData, default as Asset} from "./Asset";
 import Utils from "../util/Utils";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
@@ -20,6 +20,7 @@ const ctx = {
     definition: context(VocabularyUtils.DEFINITION),
     scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
     parentTerms: VocabularyUtils.BROADER,
+    superTypes: VocabularyUtils.RDFS_SUB_CLASS_OF,
     subTerms: VocabularyUtils.NARROWER,
     sources: VocabularyUtils.DC_SOURCE,
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
@@ -48,6 +49,7 @@ const MAPPED_PROPERTIES = [
     "sources",
     "types",
     "parentTerms",
+    "superTypes",
     "parent",
     "plainSubTerms",
     "vocabulary",
@@ -74,6 +76,7 @@ export interface TermData extends AssetData {
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
     parentTerms?: TermData[];
+    superTypes?: TermData[];
     parent?: string; // Introduced in order to support the Intelligent Tree Select component
     plainSubTerms?: string[]; // Introduced in order to support the Intelligent Tree Select component
     vocabulary?: AssetData;
@@ -101,6 +104,7 @@ export default class Term extends Asset implements TermData {
     public definition?: MultilingualString;
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
+    public superTypes?: Term[];
     public readonly parent?: string;
     public sources?: string[];
     public plainSubTerms?: string[];
@@ -117,14 +121,12 @@ export default class Term extends Asset implements TermData {
             this.types.push(VocabularyUtils.TERM);
         }
         if (this.parentTerms) {
-            visitedTerms[this.iri] = this;
-            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map((pt) =>
-                visitedTerms[pt.iri]
-                    ? visitedTerms[pt.iri]
-                    : new Term(pt, visitedTerms)
-            );
-            this.parentTerms.sort(Utils.labelComparator);
+            this.parentTerms = this.sanitizeTermReferences(this.parentTerms, visitedTerms);
             this.parent = this.resolveParent(this.parentTerms);
+        }
+        if (this.superTypes) {
+            this.superTypes = this.sanitizeTermReferences(this.superTypes, visitedTerms);
+            this.superTypes.sort(Utils.labelComparator);
         }
         if (this.subTerms) {
             // jsonld replaces single-element arrays with singular elements, which we don't want here
@@ -132,6 +134,17 @@ export default class Term extends Asset implements TermData {
         }
         this.syncPlainSubTerms();
         this.draft = termData.draft !== undefined ? termData.draft : true;
+    }
+
+    private sanitizeTermReferences(references: Term[], visitedTerms: TermMap) {
+        visitedTerms[this.iri] = this;
+        const result = Utils.sanitizeArray(references).map((pt) =>
+            visitedTerms[pt.iri]
+                ? visitedTerms[pt.iri]
+                : new Term(pt, visitedTerms)
+        );
+        result.sort(Utils.labelComparator);
+        return result;
     }
 
     private resolveParent(parents: Term[]) {
@@ -168,8 +181,15 @@ export default class Term extends Asset implements TermData {
                 );
             }
         }
+        if (result.superTypes) {
+            if (withoutParents) {
+                result.superTypes = undefined;
+            } else {
+                result.superTypes = result.superTypes.map((pt: Term) => pt.toTermData(true));
+            }
+        }
         if (result.definitionSource) {
-            result.definitionSource.term = { iri: result.iri };
+            result.definitionSource.term = {iri: result.iri};
         }
         delete result.subTerms; // Sub-terms are inferred and inconsequential for data upload to server
         delete result.plainSubTerms;
@@ -198,7 +218,7 @@ export default class Term extends Asset implements TermData {
 
     public toJsonLd(): TermData {
         const termData = this.toTermData();
-        Object.assign(termData, { "@context": CONTEXT });
+        Object.assign(termData, {"@context": CONTEXT});
         return termData;
     }
 
