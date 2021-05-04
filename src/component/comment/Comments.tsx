@@ -68,25 +68,31 @@ const Comments: React.FC<CommentsProps> = (props) => {
     );
   };
 
-  const renderForward = () => <>
-    <CommentList
+  const renderForward = () => (
+    <>
+      <CommentList
         comments={comments}
         addReaction={onAddReaction}
         removeReaction={onRemoveReaction}
         updateComment={onUpdate}
-    />
-    {comments.length > 0 && <hr className="mt-3 mb-1 border-top"/>}
-    <CreateCommentForm onSubmit={onSubmit}/>
-  </>;
+      />
+      {comments.length > 0 && <hr className="mt-3 mb-1 border-top" />}
+      <CreateCommentForm onSubmit={onSubmit} />
+    </>
+  );
 
-  const renderReverse = () => <><CreateCommentForm onSubmit={onSubmit}/>
-    {comments.length > 0 && <hr className="mt-3 mb-1 border-top"/>}
-    <CommentList
+  const renderReverse = () => (
+    <>
+      <CreateCommentForm onSubmit={onSubmit} />
+      {comments.length > 0 && <hr className="mt-3 mb-1 border-top" />}
+      <CommentList
         comments={comments.reverse()}
         addReaction={onAddReaction}
         removeReaction={onRemoveReaction}
         updateComment={onUpdate}
-    /></>;
+      />
+    </>
+  );
 
   return (
     <div id="term-comments" className="comments m-1 mt-3">
