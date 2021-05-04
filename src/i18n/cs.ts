@@ -113,7 +113,7 @@ const cs = {
             "TermIt má novou verzi {version}. Podívejte se, co je nového, klikem na verzi v pravém dolním rohu aplikace.",
         "dashboard.widget.donut.total-terms": "Celkem pojmů",
         "dashboard.widget.commentList.empty":
-            "Zde uvidíte své poslední komentáře a reakce na ně.",
+            "Zde uvidíte naposledy komentované pojmy.",
         "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
         "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
