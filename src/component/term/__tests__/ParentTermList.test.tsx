@@ -60,4 +60,24 @@ describe("ParentTermsList", () => {
         .exists()
     ).toBeTruthy();
   });
+
+  it("renders superTypes under parent terms as well", () => {
+    jest.spyOn(redux, "useSelector").mockReturnValue(workspace);
+    const term = Generator.generateTerm(vocabularyIri);
+    term.parentTerms = [
+      Generator.generateTerm(vocabularyIri),
+    ];
+    term.superTypes = [
+        Generator.generateTerm(vocabularyIri)
+    ]
+    const wrapper = mountWithIntl(
+        <MemoryRouter>
+          <ParentTermsList
+              language={Constants.DEFAULT_LANGUAGE}
+              term={term}
+          />
+        </MemoryRouter>
+    );
+    expect(wrapper.find(TermLink).length).toEqual(term.parentTerms.length + term.superTypes.length);
+  });
 });
