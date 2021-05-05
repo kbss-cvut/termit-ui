@@ -453,6 +453,7 @@ const cs = {
             "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
         "term.metadata.types.select.placeholder": "Vyberte typ",
         "term.metadata.validation.title": "Kontrola",
+        "term.metadata.validation.empty": "Pojem je v pořádku, bez chyb.",
         "term.removed.message": "Pojem by odstraněn.",
         "term.badge.score.tooltip":
             "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
