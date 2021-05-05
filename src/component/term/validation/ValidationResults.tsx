@@ -34,17 +34,17 @@ export class ValidationResults extends React.Component<ValidationResultsProps> {
 
   render() {
     if (!this.props.validationResults) {
-      return <div>#{this.props.i18n("#{valida}")}</div>
+      return <div>#{this.props.i18n("#{valida}")}</div>;
     } else {
       const termResults =
-          (this.props.validationResults || [])[this.props.term.iri] || [];
+        (this.props.validationResults || [])[this.props.term.iri] || [];
       return (
-          <div
-              id="validation-result-list"
-              className="additional-metadata-container"
-          >
-            {termResults.map((result) => this.renderResultMessage(result))}
-          </div>
+        <div
+          id="validation-result-list"
+          className="additional-metadata-container"
+        >
+          {termResults.map((result) => this.renderResultMessage(result))}
+        </div>
       );
     }
   }
