@@ -282,13 +282,12 @@ const cs = {
             "Zobrazit zdroj definice přímo v příslušném dokumentu",
         "term.metadata.comment": "Doplňující poznámka",
         "term.metadata.parent": "Nadřazené pojmy",
-        "term.metadata.parent.range.vocabulary":
-            "Použít pojmy z aktuálního slovníku",
-        "term.metadata.parent.range.workspace":
-            "Použít pojmy z celého pracovního prostoru",
-        "term.metadata.parent.range.canonical":
-            "Použít pojmy z pracovního prostoru a z publikovaného SSP",
         "term.metadata.superTypes": "Nadtřídy",
+        "term.metadata.broader.selector.title": "Vyberte typ vztahu",
+        "term.metadata.broader": "Nadřazený",
+        "term.metadata.broader.hint": "Vybraný pojem má obecně širší význam, přesnější typ vztahu nelze určit",
+        "term.metadata.broader.subClassOf": "Nadtřída",
+        "term.metadata.broader.subClassOf.hint": "Pojem je podkategorií vybraného pojmu",
         "term.metadata.subTerms": "Podřazené pojmy",
         "term.metadata.types": "Typ pojmu",
         "term.metadata.status": "Stav pojmu",

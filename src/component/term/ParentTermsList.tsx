@@ -56,7 +56,7 @@ function renderParentSubProperties(term: Term, workspace: Workspace, i18n: (msgI
             <Col xl={2} md={4}>
                 <Label className="attribute-label ml-2 term-broader-subproperty-label">
                     <FaAngleRight className="mr-1 mb-1"/>
-                    {i18n(bsp.i18nKey)}
+                    {i18n(bsp.labelKey)}
                 </Label>
             </Col>
             <Col xl={10} md={8}>

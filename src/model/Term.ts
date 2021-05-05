@@ -68,8 +68,11 @@ export const TERM_MULTILINGUAL_ATTRIBUTES = [
 
 export const TERM_BROADER_SUBPROPERTIES = [{
     attribute: "superTypes",
-    i18nKey: "term.metadata.superTypes"
-}]
+    property: VocabularyUtils.RDFS_SUB_CLASS_OF,
+    labelKey: "term.metadata.superTypes",
+    selectorLabelKey: "term.metadata.broader.subClassOf",
+    selectorHintKey: "term.metadata.broader.subClassOf.hint",
+}];
 
 export interface TermData extends AssetData {
     label: MultilingualString;

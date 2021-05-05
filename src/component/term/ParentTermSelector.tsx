@@ -24,6 +24,7 @@ import { getLocalized } from "../../model/MultilingualString";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { loadTerms } from "../../action/AsyncActions";
 import HelpIcon from "../misc/HelpIcon";
+import BroaderTypeSelector from "./BroaderTypeSelector";
 
 function enhanceWithCurrentTerm(
   terms: Term[],
@@ -69,6 +70,16 @@ function createValueRenderer() {
   );
 }
 
+function findNewlySelectedTerm(existing: Term[], newValue: Term[]):Term {
+  for (let t of newValue) {
+    if (!existing.find(ex => ex.iri === t.iri)) {
+      return t;
+    }
+  }
+  // This should not happen, we assume there is a newly selected term
+  throw new Error("Expected newValue to contain a previously not selected term!");
+}
+
 interface ParentTermSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
@@ -96,6 +107,9 @@ interface ParentTermSelectorState {
   vocabularyTermCount: number;
   workspaceTermCount: number;
   lastSearchString: string;
+
+  lastSelectedTerm: Term | null;
+  showBroaderTypeSelector: boolean;
 }
 
 export const PAGE_SIZE = 50;
@@ -116,6 +130,8 @@ export class ParentTermSelector extends React.Component<
       vocabularyTermCount: 0,
       workspaceTermCount: 0,
       lastSearchString: "",
+      lastSelectedTerm: null,
+      showBroaderTypeSelector: false
     };
   }
 
@@ -123,15 +139,31 @@ export class ParentTermSelector extends React.Component<
     if (!val) {
       this.props.onChange([]);
     } else {
-      if (!this.props.termIri) {
-        this.props.onChange(Utils.sanitizeArray(val));
+      const valArr = Utils.sanitizeArray(val);
+      const parentArr = Utils.sanitizeArray(this.props.parentTerms);
+      if (valArr.length > parentArr.length) {
+        const newlySelected = findNewlySelectedTerm(parentArr, valArr)!;
+        this.setState({lastSelectedTerm: newlySelected, showBroaderTypeSelector: true});
       } else {
-        this.props.onChange(
-          Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
-        );
+        if (!this.props.termIri) {
+          this.props.onChange(valArr);
+        } else {
+          this.props.onChange(
+              valArr.filter((v) => v.iri !== this.props.termIri)
+          );
+        }
       }
     }
   };
+
+  public onBroaderTypeSelect = (property: string) => {
+    // TODO
+    this.closeBroaderTypeSelect();
+};
+
+  public closeBroaderTypeSelect = () => {
+    this.setState({lastSelectedTerm: null, showBroaderTypeSelector: false});
+  }
 
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
@@ -268,6 +300,7 @@ export class ParentTermSelector extends React.Component<
     }
     return (
       <>
+        <BroaderTypeSelector onSelect={this.onBroaderTypeSelect} onCancel={this.closeBroaderTypeSelect} show={this.state.showBroaderTypeSelector}/>
         <IntelligentTreeSelect
           onChange={this.onChange}
           ref={this.treeComponent}
