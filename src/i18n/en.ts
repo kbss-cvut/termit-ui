@@ -111,7 +111,7 @@ const en = {
             "TermIt is released in a new version {version}. Have a look at what's new by clicking on Version in the bottom right corner of application.",
         "dashboard.widget.donut.total-terms": "Total terms",
         "dashboard.widget.commentList.empty":
-            "You will see here Your last comments and reactions to them.",
+            "You will see here last comments.",
         "dashboard.widget.commentList.lastComment": "Last comment of the term.",
         "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} by {user} .",
