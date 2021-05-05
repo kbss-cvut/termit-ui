@@ -443,6 +443,7 @@ const en = {
             "Draft term is not ready to be used yet, while Confirmed term is.",
         "term.metadata.types.select.placeholder": "Select type",
         "term.metadata.validation.title": "Validation",
+        "term.metadata.validation.empty": "The term does not have any issues.",
         "term.removed.message": "Term successfully removed.",
         "term.badge.score.tooltip":
             "The score of this term is {score}%. Click to see the validation results",
