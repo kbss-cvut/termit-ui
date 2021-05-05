@@ -6,6 +6,9 @@ import { TermData } from "../../../model/Term";
 import Constants from "../../../util/Constants";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
+jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
+jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
+
 describe("TermDefinitionBlockEdit", () => {
   let onChange: (change: Partial<TermData>) => void;
 

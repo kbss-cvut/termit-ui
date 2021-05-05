@@ -14,13 +14,6 @@ import RecentlyCommentedAsset, {
     RecentlyCommentedAssetData,
 } from "../model/RecentlyCommentedAsset";
 
-export function loadLastCommentedByMe() {
-    return loadLastCommentedAssetList(
-        ActionType.LOAD_LAST_COMMENTED_BY_ME,
-        "/assets/last-commented-by-me"
-    );
-}
-
 export function loadLastCommentedAssets() {
     return loadLastCommentedAssetList(
         ActionType.LOAD_LAST_COMMENTED,

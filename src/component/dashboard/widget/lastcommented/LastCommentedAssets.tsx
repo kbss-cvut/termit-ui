@@ -7,7 +7,6 @@ import AllLastCommentedAssets from "./AllLastCommentedAssets";
 import withI18n from "../../../hoc/withI18n";
 import { injectIntl } from "react-intl";
 import { useI18n } from "../../../hook/useI18n";
-import LastCommentedAssetsByMe from "./LastCommentedAssetsByMe";
 
 const LastCommentedAssets = () => {
   const { i18n } = useI18n();
@@ -37,9 +36,6 @@ const LastCommentedAssets = () => {
             ),
             "dashboard.widget.lastCommentedAssets.inReactionToMine.title": (
               <LastCommentedAssetsInReactionToMine />
-            ),
-            "dashboard.widget.lastCommentedAssets.byMe.title": (
-              <LastCommentedAssetsByMe />
             ),
           }}
         />

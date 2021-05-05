@@ -5,7 +5,7 @@ import Term, { TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
-import { FormFeedback, FormGroup, FormText, Label } from "reactstrap";
+import { FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
@@ -23,6 +23,7 @@ import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 import { getLocalized } from "../../model/MultilingualString";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { loadTerms } from "../../action/AsyncActions";
+import HelpIcon from "../misc/HelpIcon";
 
 function enhanceWithCurrentTerm(
   terms: Term[],
@@ -251,6 +252,7 @@ export class ParentTermSelector extends React.Component<
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
           {i18n("term.metadata.parent")}
+          <HelpIcon id={"parent-term-select"} text={i18n("term.parent.help")} />
         </Label>
         {this.renderSelector()}
       </FormGroup>
@@ -287,7 +289,6 @@ export class ParentTermSelector extends React.Component<
         ) : (
           <></>
         )}
-        <FormText>{this.props.i18n("term.parent.help")}</FormText>
       </>
     );
   }
