@@ -7,6 +7,7 @@ import AllLastCommentedAssets from "./AllLastCommentedAssets";
 import withI18n from "../../../hoc/withI18n";
 import { injectIntl } from "react-intl";
 import { useI18n } from "../../../hook/useI18n";
+import IfUserAuthorized from "../../../authorization/IfUserAuthorized";
 
 const LastCommentedAssets = () => {
   const { i18n } = useI18n();
@@ -23,22 +24,40 @@ const LastCommentedAssets = () => {
         {i18n("dashboard.widget.lastCommentedAssets.title")}
       </CardHeader>
       <CardBody className="py-0">
-        <Tabs
-          navLinkStyle="small"
-          activeTabLabelKey={activeTab}
-          changeTab={toggle}
-          tabs={{
-            "dashboard.widget.lastCommentedAssets.all.title": (
-              <AllLastCommentedAssets />
-            ),
-            "dashboard.widget.lastCommentedAssets.mine.title": (
-              <MyLastCommentedAssets />
-            ),
-            "dashboard.widget.lastCommentedAssets.inReactionToMine.title": (
-              <LastCommentedAssetsInReactionToMine />
-            ),
-          }}
-        />
+        <IfUserAuthorized
+          unauthorized={
+            <Tabs
+              navLinkStyle="small"
+              activeTabLabelKey={activeTab}
+              changeTab={toggle}
+              tabs={{
+                "dashboard.widget.lastCommentedAssets.all.title": (
+                  <AllLastCommentedAssets />
+                ),
+                "dashboard.widget.lastCommentedAssets.inReactionToMine.title": (
+                  <LastCommentedAssetsInReactionToMine />
+                ),
+              }}
+            />
+          }
+        >
+          <Tabs
+            navLinkStyle="small"
+            activeTabLabelKey={activeTab}
+            changeTab={toggle}
+            tabs={{
+              "dashboard.widget.lastCommentedAssets.all.title": (
+                <AllLastCommentedAssets />
+              ),
+              "dashboard.widget.lastCommentedAssets.mine.title": (
+                <MyLastCommentedAssets />
+              ),
+              "dashboard.widget.lastCommentedAssets.inReactionToMine.title": (
+                <LastCommentedAssetsInReactionToMine />
+              ),
+            }}
+          />
+        </IfUserAuthorized>
       </CardBody>
     </Card>
   );
