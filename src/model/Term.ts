@@ -1,17 +1,10 @@
-import { ASSET_CONTEXT, AssetData, default as Asset } from "./Asset";
+import {ASSET_CONTEXT, AssetData, default as Asset} from "./Asset";
 import Utils from "../util/Utils";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
-import {
-    BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT,
-    TermOccurrenceData,
-} from "./TermOccurrence";
-import MultilingualString, {
-    context,
-    getLocalized,
-    PluralMultilingualString,
-} from "./MultilingualString";
+import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData,} from "./TermOccurrence";
+import MultilingualString, {context, getLocalized, PluralMultilingualString,} from "./MultilingualString";
 
 const ctx = {
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
@@ -196,6 +189,14 @@ export default class Term extends Asset implements TermData {
         return result;
     }
 
+    public toTermInfo(): TermInfo {
+        return {
+            iri: this.iri,
+            label: Object.assign({}, this.label),
+            vocabulary: Object.assign({}, this.vocabulary)
+        }
+    }
+
     public get unmappedProperties(): Map<string, string[]> {
         return WithUnmappedProperties.getUnmappedProperties(
             this,
@@ -250,5 +251,9 @@ export default class Term extends Asset implements TermData {
         const langArr = Array.from(languages);
         langArr.sort();
         return langArr;
+    }
+
+    public static consolidateRelatedAndRelatedMatch(term: Term | TermData): TermInfo[] {
+        return [...Utils.sanitizeArray(term.relatedTerms), ...Utils.sanitizeArray(term.relatedMatchTerms)];
     }
 }

@@ -402,4 +402,25 @@ describe("Term edit", () => {
       expect(wrapper.state().label[langToRemove]).not.toBeDefined();
     });
   });
+
+  describe("onRelatedChange", () => {
+    it("distributes provided value into related and relatedMatch attributes based on their membership in the current term's vocabulary", () => {
+      const related = [Generator.generateTerm(term.vocabulary!.iri)];
+      const relatedMatch = [Generator.generateTerm(Generator.generateUri())];
+      const wrapper = shallow<TermMetadataEdit>(
+          <TermMetadataEdit
+              save={onSave}
+              term={term}
+              cancel={onCancel}
+              language="en"
+              selectLanguage={selectLanguage}
+              validationResults={validationResults}
+              {...intlFunctions()}
+          />
+      );
+      wrapper.instance().onRelatedChange([...related, ...relatedMatch]);
+      expect(wrapper.state().relatedTerms).toEqual(related.map(t => t.toTermInfo()));
+      expect(wrapper.state().relatedMatchTerms).toEqual(relatedMatch.map(t => t.toTermInfo()));
+    });
+  });
 });

@@ -12,7 +12,6 @@ import {createTermsWithImportsOptionRenderer, createTermValueRenderer} from "../
 import {connect} from "react-redux";
 import {loadAllTerms} from "../../action/AsyncActions";
 import {injectIntl} from "react-intl";
-import {ExactMatchesSelector} from "./ExactMatchesSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface RelatedTermsSelectorProps extends HasI18n {
@@ -85,4 +84,4 @@ export default connect(undefined,
         loadTerms: (fetchOptions: FetchOptionsFunction, namespace?: string) =>
             dispatch(loadAllTerms(fetchOptions, namespace)),
     })
-)(injectIntl(withI18n(ExactMatchesSelector)));
+)(injectIntl(withI18n(RelatedTermsSelector)));
