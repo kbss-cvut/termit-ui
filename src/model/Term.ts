@@ -85,6 +85,7 @@ export interface TermInfo {
     iri: string;
     label: MultilingualString; // Multilingual string due to the same context item (see ctx above)
     vocabulary: AssetData;
+    types?: string[];
 }
 
 export function termInfoComparator(a: TermInfo, b: TermInfo) {
@@ -189,11 +190,12 @@ export default class Term extends Asset implements TermData {
         return result;
     }
 
-    public toTermInfo(): TermInfo {
+    public static toTermInfo(t: Term | TermData): TermInfo {
         return {
-            iri: this.iri,
-            label: Object.assign({}, this.label),
-            vocabulary: Object.assign({}, this.vocabulary)
+            iri: t.iri!,
+            label: Object.assign({}, t.label),
+            vocabulary: Object.assign({}, t.vocabulary),
+            types: [VocabularyUtils.TERM]
         }
     }
 

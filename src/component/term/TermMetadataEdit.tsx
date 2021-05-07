@@ -160,18 +160,18 @@ export class TermMetadataEdit extends React.Component<TermMetadataEditProps,
      * Distributes the specified value into related and relatedMatch based on each term's membership in the current term's vocabulary.
      * @param value Selected terms
      */
-    public onRelatedChange(value: Term[]) {
+    public onRelatedChange = (value: Term[]) => {
         const relatedTerms: TermInfo[] = [];
         const relatedMatchTerms: TermInfo[] = [];
         value.forEach(v => {
             if (v.vocabulary!.iri === this.props.term.vocabulary!.iri) {
-                relatedTerms.push(v.toTermInfo());
+                relatedTerms.push(Term.toTermInfo(v));
             } else {
-                relatedMatchTerms.push(v.toTermInfo());
+                relatedMatchTerms.push(Term.toTermInfo(v));
             }
         });
         this.setState({relatedTerms, relatedMatchTerms});
-    }
+    };
 
     public onStatusChange = () => {
         this.setState({draft: !this.state.draft});

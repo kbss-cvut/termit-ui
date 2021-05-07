@@ -49,10 +49,6 @@ interface ExactMatchesSelectorProps extends HasI18n {
 
 export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorProps> {
 
-  constructor(props: ExactMatchesSelectorProps) {
-    super(props);
-  }
-
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
       this.props.onChange([]);
