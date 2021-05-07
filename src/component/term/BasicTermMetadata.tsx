@@ -50,6 +50,7 @@ export class BasicTermMetadata extends React.Component<
         {this.renderExactMatchTerms()}
         {this.renderParentTerms()}
         {this.renderSubTerms()}
+        {this.renderRelatedTerms()}
         <Row>
           <Col xl={2} md={4}>
             <Label className="attribute-label mb-3">
@@ -180,6 +181,23 @@ export class BasicTermMetadata extends React.Component<
       "term.metadata.subTerms",
       "term-metadata-subterms"
     );
+  }
+
+  /**
+   * Renders related and relatedMatch together.
+   * @private
+   */
+  private renderRelatedTerms() {
+    const term = this.props.term;
+    const terms = [];
+    if (term.relatedTerms) {
+      terms.push(...term.relatedTerms);
+    }
+    if (term.relatedMatchTerms) {
+      terms.push(...term.relatedMatchTerms);
+    }
+    terms.sort(termInfoComparator);
+    return this.renderTermList(terms, "term.metadata.related.title", "term-metadata-related");
   }
 }
 
