@@ -21,6 +21,8 @@ const ctx = {
     scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
     parentTerms: VocabularyUtils.BROADER,
     exactMatchTerms: VocabularyUtils.SKOS_EXACT_MATCH,
+    relatedTerms: VocabularyUtils.SKOS_RELATED,
+    relatedMatchTerms: VocabularyUtils.SKOS_RELATED_MATCH,
     subTerms: VocabularyUtils.NARROWER,
     sources: VocabularyUtils.DC_SOURCE,
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
@@ -49,6 +51,8 @@ const MAPPED_PROPERTIES = [
     "types",
     "parentTerms",
     "parent",
+    "relatedTerms",
+    "relatedMatchTerms",
     "plainSubTerms",
     "vocabulary",
     "glossary",
@@ -71,6 +75,8 @@ export interface TermData extends AssetData {
     scopeNote?: MultilingualString;
     definition?: MultilingualString;
     exactMatchTerms?: TermInfo[];
+    relatedTerms?: TermInfo[];
+    relatedMatchTerms?: TermInfo[];
     subTerms?: TermInfo[];
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
@@ -101,6 +107,8 @@ export default class Term extends Asset implements TermData {
     public scopeNote?: MultilingualString;
     public definition?: MultilingualString;
     public exactMatchTerms?: TermInfo[];
+    public relatedTerms?: TermInfo[];
+    public relatedMatchTerms?: TermInfo[];
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
     public readonly parent?: string;
@@ -128,15 +136,22 @@ export default class Term extends Asset implements TermData {
             this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
         }
-        if (this.exactMatchTerms) {
-            this.exactMatchTerms = Utils.sanitizeArray(this.exactMatchTerms);
-        }
-        if (this.subTerms) {
-            // jsonld replaces single-element arrays with singular elements, which we don't want here
-            this.subTerms = Utils.sanitizeArray(this.subTerms);
-        }
+        this.sanitizeTermInfoArrays();
         this.syncPlainSubTerms();
         this.draft = termData.draft !== undefined ? termData.draft : true;
+    }
+
+    /**
+     * jsonld replaces single-element arrays with singular elements, which we don't want here
+     * @private
+     */
+    private sanitizeTermInfoArrays() {
+        const toSanitize = ["exactMatchTerms", "subTerms", "relatedTerms", "relatedMatchTerms"];
+        toSanitize.forEach(n => {
+            if (this[n]) {
+                this[n] = Utils.sanitizeArray(this[n]);
+            }
+        })
     }
 
     private resolveParent(parents: Term[]) {
