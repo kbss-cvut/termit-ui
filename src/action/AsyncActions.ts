@@ -797,7 +797,7 @@ export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
 
 export function loadAllTerms(
     fetchOptions: FetchOptionsFunction,
-    namespace: string,
+    namespace?: string,
     apiPrefix: string = Constants.API_PREFIX
 ) {
     return genericLoadTerms(

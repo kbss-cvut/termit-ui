@@ -426,6 +426,9 @@ const cs = {
         "term.metadata.assignments.count.zero.tooltip":
             "Pojem se v tomto zdroji nevyskytuje",
         "term.metadata.related.title": "Související pojmy",
+        "term.metadata.related.help": "(Nepovinný) související pojem (bez bližšího určení o jakou souvislost se jedná). " +
+            "Může se jednat o pojem z aktuálního slovníku nebo z jiného slovníku. Např. pojem 'vozidlo' souvisí s pojmem 'řidič'. " +
+            "Nevybírejte pojem, který už je označen jako 'nadřazený pojem', nebo 'pojem se stejným významem'.",
         "term.metadata.vocabulary.tooltip":
             "Slovník, do kterého tento pojem patří",
         "term.metadata.related.ontologically": "Ontologicky",
