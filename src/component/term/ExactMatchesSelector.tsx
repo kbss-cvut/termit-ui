@@ -1,20 +1,27 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import Term, {TermData} from "../../model/Term";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import Term, { TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {connect} from "react-redux";
-import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {loadAllTerms} from "../../action/AsyncActions";
-import {FormGroup, FormText, Label} from "reactstrap";
+import { connect } from "react-redux";
+import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import { loadAllTerms } from "../../action/AsyncActions";
+import { FormGroup, FormText, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithImportsOptionRenderer, createTermValueRenderer,} from "../misc/treeselect/Renderers";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
+import {
+  createTermsWithImportsOptionRenderer,
+  createTermValueRenderer,
+} from "../misc/treeselect/Renderers";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
-import {commonTermTreeSelectProps, processTermsForTreeSelect, resolveSelectedIris,} from "./TermTreeSelectHelper";
+import {
+  commonTermTreeSelectProps,
+  processTermsForTreeSelect,
+  resolveSelectedIris,
+} from "./TermTreeSelectHelper";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -48,7 +55,6 @@ interface ExactMatchesSelectorProps extends HasI18n {
 }
 
 export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorProps> {
-
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
       this.props.onChange([]);

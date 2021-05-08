@@ -1,10 +1,17 @@
-import {ASSET_CONTEXT, AssetData, default as Asset} from "./Asset";
+import { ASSET_CONTEXT, AssetData, default as Asset } from "./Asset";
 import Utils from "../util/Utils";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
 import * as _ from "lodash";
-import {BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT, TermOccurrenceData,} from "./TermOccurrence";
-import MultilingualString, {context, getLocalized, PluralMultilingualString,} from "./MultilingualString";
+import {
+    BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT,
+    TermOccurrenceData,
+} from "./TermOccurrence";
+import MultilingualString, {
+    context,
+    getLocalized,
+    PluralMultilingualString,
+} from "./MultilingualString";
 
 const ctx = {
     label: context(VocabularyUtils.SKOS_PREF_LABEL),
@@ -140,12 +147,17 @@ export default class Term extends Asset implements TermData {
      * @private
      */
     private sanitizeTermInfoArrays() {
-        const toSanitize = ["exactMatchTerms", "subTerms", "relatedTerms", "relatedMatchTerms"];
-        toSanitize.forEach(n => {
+        const toSanitize = [
+            "exactMatchTerms",
+            "subTerms",
+            "relatedTerms",
+            "relatedMatchTerms",
+        ];
+        toSanitize.forEach((n) => {
             if (this[n]) {
                 this[n] = Utils.sanitizeArray(this[n]);
             }
-        })
+        });
     }
 
     private resolveParent(parents: Term[]) {
@@ -195,8 +207,8 @@ export default class Term extends Asset implements TermData {
             iri: t.iri!,
             label: Object.assign({}, t.label),
             vocabulary: Object.assign({}, t.vocabulary),
-            types: [VocabularyUtils.TERM]
-        }
+            types: [VocabularyUtils.TERM],
+        };
     }
 
     public get unmappedProperties(): Map<string, string[]> {
@@ -255,10 +267,12 @@ export default class Term extends Asset implements TermData {
         return langArr;
     }
 
-    public static consolidateRelatedAndRelatedMatch(term: Term | TermData): TermInfo[] {
+    public static consolidateRelatedAndRelatedMatch(
+        term: Term | TermData
+    ): TermInfo[] {
         const result = [...Utils.sanitizeArray(term.relatedTerms)];
         for (let rt of Utils.sanitizeArray(term.relatedMatchTerms)) {
-            if (!result.find(e => e.iri === rt.iri)) {
+            if (!result.find((e) => e.iri === rt.iri)) {
                 result.push(rt);
             }
         }

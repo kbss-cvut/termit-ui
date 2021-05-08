@@ -408,19 +408,23 @@ describe("Term edit", () => {
       const related = [Generator.generateTerm(term.vocabulary!.iri)];
       const relatedMatch = [Generator.generateTerm(Generator.generateUri())];
       const wrapper = shallow<TermMetadataEdit>(
-          <TermMetadataEdit
-              save={onSave}
-              term={term}
-              cancel={onCancel}
-              language="en"
-              selectLanguage={selectLanguage}
-              validationResults={validationResults}
-              {...intlFunctions()}
-          />
+        <TermMetadataEdit
+          save={onSave}
+          term={term}
+          cancel={onCancel}
+          language="en"
+          selectLanguage={selectLanguage}
+          validationResults={validationResults}
+          {...intlFunctions()}
+        />
       );
       wrapper.instance().onRelatedChange([...related, ...relatedMatch]);
-      expect(wrapper.state().relatedTerms).toEqual(related.map(t => Term.toTermInfo(t)));
-      expect(wrapper.state().relatedMatchTerms).toEqual(relatedMatch.map(t => Term.toTermInfo(t)));
+      expect(wrapper.state().relatedTerms).toEqual(
+        related.map((t) => Term.toTermInfo(t))
+      );
+      expect(wrapper.state().relatedMatchTerms).toEqual(
+        relatedMatch.map((t) => Term.toTermInfo(t))
+      );
     });
   });
 });

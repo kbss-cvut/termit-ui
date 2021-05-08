@@ -1,7 +1,7 @@
-import Term, {TermData, TermInfo} from "../../model/Term";
-import {getLocalized} from "../../model/MultilingualString";
-import {HasI18n} from "../hoc/withI18n";
-import {getShortLocale} from "../../util/IntlUtil";
+import Term, { TermData, TermInfo } from "../../model/Term";
+import { getLocalized } from "../../model/MultilingualString";
+import { HasI18n } from "../hoc/withI18n";
+import { getShortLocale } from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
 
 /**
@@ -93,6 +93,10 @@ function flattenAncestors(terms: Term[]) {
  * Resolves identifiers of the specified selected terms.
  * @param selected Array of selected Term-based values (optional)
  */
-export function resolveSelectedIris(selected?: TermInfo[] | TermData[]): string[] {
-    return Utils.sanitizeArray(selected as TermInfo[]).filter((t) => t.vocabulary !== undefined).map((t) => t.iri);
+export function resolveSelectedIris(
+    selected?: TermInfo[] | TermData[]
+): string[] {
+    return Utils.sanitizeArray(selected as TermInfo[])
+        .filter((t) => t.vocabulary !== undefined)
+        .map((t) => t.iri);
 }

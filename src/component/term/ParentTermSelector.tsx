@@ -1,22 +1,29 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import Term, {TermData} from "../../model/Term";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import Term, { TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
-import {connect} from "react-redux";
-import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {loadImportedVocabularies, loadTerms} from "../../action/AsyncActions";
-import {FormFeedback, FormGroup, Label} from "reactstrap";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
+import { connect } from "react-redux";
+import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import { loadImportedVocabularies, loadTerms } from "../../action/AsyncActions";
+import { FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithImportsOptionRenderer, createTermValueRenderer,} from "../misc/treeselect/Renderers";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
+import {
+  createTermsWithImportsOptionRenderer,
+  createTermValueRenderer,
+} from "../misc/treeselect/Renderers";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import CustomInput from "../misc/CustomInput";
-import {commonTermTreeSelectProps, processTermsForTreeSelect, resolveSelectedIris,} from "./TermTreeSelectHelper";
+import {
+  commonTermTreeSelectProps,
+  processTermsForTreeSelect,
+  resolveSelectedIris,
+} from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
