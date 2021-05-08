@@ -327,5 +327,32 @@ describe("Term tests", () => {
             }];
             expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual(t.relatedMatchTerms);
         });
+
+        it("removes duplicates", () => {
+            const related = {
+                iri: Generator.generateUri(),
+                label: langString("test related/relatedMatch"),
+                vocabulary: {iri: Generator.generateUri()}
+            };
+            const t = new Term(termData);
+            t.relatedTerms = [related];
+            t.relatedMatchTerms = [related];
+            expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual([related]);
+        });
+
+        it("returns results ordered by label", () => {
+            const t = new Term(termData);
+            t.relatedTerms = [{
+                iri: Generator.generateUri(),
+                label: langString("second"),
+                vocabulary: {iri: t.vocabulary!.iri}
+            }];
+            t.relatedMatchTerms = [{
+                iri: Generator.generateUri(),
+                label: langString("first"),
+                vocabulary: {iri: Generator.generateUri()}
+            }];
+            expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual([...t.relatedMatchTerms, ...t.relatedTerms]);
+        });
     });
 });

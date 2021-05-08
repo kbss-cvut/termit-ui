@@ -419,8 +419,8 @@ describe("Term edit", () => {
           />
       );
       wrapper.instance().onRelatedChange([...related, ...relatedMatch]);
-      expect(wrapper.state().relatedTerms).toEqual(related.map(t => t.toTermInfo()));
-      expect(wrapper.state().relatedMatchTerms).toEqual(relatedMatch.map(t => t.toTermInfo()));
+      expect(wrapper.state().relatedTerms).toEqual(related.map(t => Term.toTermInfo(t)));
+      expect(wrapper.state().relatedMatchTerms).toEqual(relatedMatch.map(t => Term.toTermInfo(t)));
     });
   });
 });

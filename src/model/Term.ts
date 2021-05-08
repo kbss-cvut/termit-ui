@@ -256,6 +256,13 @@ export default class Term extends Asset implements TermData {
     }
 
     public static consolidateRelatedAndRelatedMatch(term: Term | TermData): TermInfo[] {
-        return [...Utils.sanitizeArray(term.relatedTerms), ...Utils.sanitizeArray(term.relatedMatchTerms)];
+        const result = [...Utils.sanitizeArray(term.relatedTerms)];
+        for (let rt of Utils.sanitizeArray(term.relatedMatchTerms)) {
+            if (!result.find(e => e.iri === rt.iri)) {
+                result.push(rt);
+            }
+        }
+        result.sort(termInfoComparator);
+        return result;
     }
 }

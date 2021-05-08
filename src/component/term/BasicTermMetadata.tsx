@@ -189,14 +189,7 @@ export class BasicTermMetadata extends React.Component<
    */
   private renderRelatedTerms() {
     const term = this.props.term;
-    const terms = [];
-    if (term.relatedTerms) {
-      terms.push(...term.relatedTerms);
-    }
-    if (term.relatedMatchTerms) {
-      terms.push(...term.relatedMatchTerms);
-    }
-    terms.sort(termInfoComparator);
+    const terms = Term.consolidateRelatedAndRelatedMatch(term);
     return this.renderTermList(terms, "term.metadata.related.title", "term-metadata-related");
   }
 }
