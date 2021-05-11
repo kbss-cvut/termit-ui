@@ -107,8 +107,9 @@ describe("ParentTermSelector", () => {
     expect(wrapper.state().lastSelectedTerm).toEqual(terms[0]);
   });
 
-  it("supports selection of multiple parents", () => {
-    const terms = generateTerms(2);
+  it("populates parentTerms in change object based on selected values", () => {
+    const terms = generateTerms(3);
+    term.parentTerms = terms;
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
@@ -119,8 +120,46 @@ describe("ParentTermSelector", () => {
         {...intlFunctions()}
       />
     );
-    wrapper.instance().onChange(terms);
-    expect(onChange).toHaveBeenCalledWith(terms);
+    wrapper.instance().onChange(terms.slice(0, terms.length - 1));
+    expect(onChange).toHaveBeenCalledWith({parentTerms: terms.slice(0, terms.length - 1), superTypes: []});
+  });
+
+  it("populates correct attributes in change object based on existing values", () => {
+    const parents = generateTerms(3, vocabularyIri);
+    term.parentTerms = parents;
+    const superTypes = generateTerms(2);
+    term.superTypes = superTypes;
+    const wrapper = shallow<ParentTermSelector>(
+        <ParentTermSelector
+            id="test"
+            term={term}
+            vocabularyIri={vocabularyIri}
+            onChange={onChange}
+            {...fetchFunctions}
+            {...intlFunctions()}
+        />
+    );
+    wrapper.instance().onChange([...parents, ...superTypes.slice(0, superTypes.length - 1)]);
+    expect(onChange).toHaveBeenCalledWith({parentTerms: parents, superTypes: superTypes.slice(0, superTypes.length - 1)});
+  });
+
+  it("passes update object with correct attribute based on existing value plus selected term on broader type selection", () => {
+    const superTypes = generateTerms(2);
+    term.superTypes = superTypes;
+    const selected = Generator.generateTerm();
+    const wrapper = shallow<ParentTermSelector>(
+        <ParentTermSelector
+            id="test"
+            term={term}
+            vocabularyIri={vocabularyIri}
+            onChange={onChange}
+            {...fetchFunctions}
+            {...intlFunctions()}
+        />
+    );
+    wrapper.setState({lastSelectedTerm: selected});
+    wrapper.instance().onBroaderTypeSelect("superTypes");
+    expect(onChange).toHaveBeenCalledWith({superTypes: [...superTypes, selected]});
   });
 
   it("filters out selected parent if it is the same as the term itself", () => {

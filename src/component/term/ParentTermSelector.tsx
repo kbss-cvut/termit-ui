@@ -163,8 +163,11 @@ export class ParentTermSelector extends React.Component<
   }
 
 
-  public onBroaderTypeSelect = (property: string) => {
-    // TODO
+  public onBroaderTypeSelect = (attribute: string) => {
+    const update: Partial<Term> = {};
+    update[attribute] = Utils.sanitizeArray(this.props.term[attribute]).slice();
+    update[attribute].push(this.state.lastSelectedTerm!);
+    this.props.onChange(update);
     this.closeBroaderTypeSelect();
 };
 
