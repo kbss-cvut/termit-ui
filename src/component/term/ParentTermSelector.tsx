@@ -1,7 +1,7 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { TermData } from "../../model/Term";
+import Term, {TERM_BROADER_SUBPROPERTIES, TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
@@ -82,12 +82,11 @@ function findNewlySelectedTerm(existing: Term[], newValue: Term[]):Term {
 
 interface ParentTermSelectorProps extends HasI18n {
   id: string;
-  termIri?: string;
-  parentTerms?: Term[];
+  term: Term | TermData;
+  vocabularyIri: string;
   invalid?: boolean;
   invalidMessage?: JSX.Element;
-  vocabularyIri: string;
-  onChange: (newParents: Term[]) => void;
+  onChange: (change: Partial<TermData>) => void;
   loadTermsFromVocabulary: (
     fetchOptions: FetchOptionsFunction,
     vocabularyIri: IRI
@@ -137,24 +136,32 @@ export class ParentTermSelector extends React.Component<
 
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
-      this.props.onChange([]);
+      this.valueToTermUpdate([]);
     } else {
       const valArr = Utils.sanitizeArray(val);
-      const parentArr = Utils.sanitizeArray(this.props.parentTerms);
+      const parentArr = Term.consolidateBroaderTerms(this.props.term);
       if (valArr.length > parentArr.length) {
         const newlySelected = findNewlySelectedTerm(parentArr, valArr)!;
-        this.setState({lastSelectedTerm: newlySelected, showBroaderTypeSelector: true});
-      } else {
-        if (!this.props.termIri) {
-          this.props.onChange(valArr);
-        } else {
-          this.props.onChange(
-              valArr.filter((v) => v.iri !== this.props.termIri)
-          );
+        if (newlySelected.iri !== this.props.term.iri) {
+          this.setState({lastSelectedTerm: newlySelected, showBroaderTypeSelector: true});
         }
+      } else {
+        this.valueToTermUpdate(valArr);
       }
     }
   };
+
+  private valueToTermUpdate(value: Term[]) {
+    const update: Partial<Term> = {};
+    const term = this.props.term;
+    const valueIris = value.map(t => t.iri);
+    TERM_BROADER_SUBPROPERTIES.forEach(sp => {
+      update[sp.attribute] = Utils.sanitizeArray(term[sp.attribute]).filter(t => valueIris.indexOf(t.iri) !== -1);
+    });
+    update.parentTerms = Utils.sanitizeArray(term.parentTerms as Term[]).filter(t => valueIris.indexOf(t.iri) !== -1);
+    this.props.onChange(update);
+  }
+
 
   public onBroaderTypeSelect = (property: string) => {
     // TODO
@@ -214,8 +221,8 @@ export class ParentTermSelector extends React.Component<
         processTermsForTreeSelect(terms, undefined, {
           searchString: fetchOptionsCopy.searchString,
         }),
-        this.props.termIri,
-        this.props.parentTerms
+        this.props.term.iri,
+        Term.consolidateBroaderTerms(this.props.term)
       );
     });
   };
@@ -274,7 +281,7 @@ export class ParentTermSelector extends React.Component<
   };
 
   private resolveSelectedParents() {
-    const parents = Utils.sanitizeArray(this.props.parentTerms);
+    const parents = Term.consolidateBroaderTerms(this.props.term);
     return parents.filter((p) => p.vocabulary !== undefined).map((p) => p.iri);
   }
 

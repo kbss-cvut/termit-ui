@@ -134,7 +134,6 @@ export default class Term extends Asset implements TermData {
         }
         if (this.superTypes) {
             this.superTypes = this.sanitizeTermReferences(this.superTypes, visitedTerms);
-            this.superTypes.sort(Utils.labelComparator);
         }
         if (this.subTerms) {
             // jsonld replaces single-element arrays with singular elements, which we don't want here
@@ -263,5 +262,16 @@ export default class Term extends Asset implements TermData {
         const langArr = Array.from(languages);
         langArr.sort();
         return langArr;
+    }
+
+    public static consolidateBroaderTerms(t: Term| TermData): Term[] {
+        const resultSet = new Set<Term>();
+        TERM_BROADER_SUBPROPERTIES.forEach(p => {
+            Utils.sanitizeArray(t[p.attribute]).forEach(t => resultSet.add(new Term(t)));
+        });
+        Utils.sanitizeArray(t.parentTerms).forEach(t => resultSet.add(new Term(t)));
+        const result:Term[] = Array.from(resultSet);
+        result.sort(Utils.labelComparator);
+        return result;
     }
 }

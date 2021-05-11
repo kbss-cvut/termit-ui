@@ -1,25 +1,21 @@
 import * as React from "react";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { TermData } from "../../model/Term";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import {TermData} from "../../model/Term";
 import Utils from "../../util/Utils";
-import { Col, Form, Row } from "reactstrap";
+import {Col, Form, Row} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import { injectIntl } from "react-intl";
+import {injectIntl} from "react-intl";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
 import TermDefinitionContainer from "./TermDefinitionContainer";
 import StringListEdit from "../misc/StringListEdit";
-import {
-  getLocalized,
-  getLocalizedOrDefault,
-  getLocalizedPlural,
-} from "../../model/MultilingualString";
-import { checkLabelUniqueness } from "./TermValidationUtils";
+import {getLocalized, getLocalizedOrDefault, getLocalizedPlural,} from "../../model/MultilingualString";
+import {checkLabelUniqueness} from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
-import { loadIdentifier } from "../asset/AbstractCreateAsset";
+import {loadIdentifier} from "../asset/AbstractCreateAsset";
 import MultilingualIcon from "../misc/MultilingualIcon";
 
 interface TermMetadataCreateFormProps extends HasI18n {
@@ -131,10 +127,6 @@ export class TermMetadataCreateForm extends React.Component<
     this.props.onChange({ types });
   };
 
-  public onParentSelect = (parentTerms: Term[]) => {
-    this.props.onChange({ parentTerms });
-  };
-
   public render() {
     const { termData, i18n, language } = this.props;
     const label = getLocalizedOrDefault(termData.label, "", language);
@@ -212,8 +204,8 @@ export class TermMetadataCreateForm extends React.Component<
           <Col xs={12}>
             <ParentTermSelector
               id="create-term-parent"
-              onChange={this.onParentSelect}
-              parentTerms={termData.parentTerms as Term[]}
+              term={termData}
+              onChange={this.props.onChange}
               vocabularyIri={this.props.vocabularyIri}
             />
           </Col>
