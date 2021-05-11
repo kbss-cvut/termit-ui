@@ -26,10 +26,7 @@ describe("ParentTermsList", () => {
     ];
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ParentTermsList
-          language={Constants.DEFAULT_LANGUAGE}
-          term={term}
-        />
+        <ParentTermsList language={Constants.DEFAULT_LANGUAGE} term={term} />
       </MemoryRouter>
     );
     expect(wrapper.find(TermLink).length).toEqual(term.parentTerms.length);
@@ -44,10 +41,7 @@ describe("ParentTermsList", () => {
     ];
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ParentTermsList
-          language={Constants.DEFAULT_LANGUAGE}
-          term={term}
-        />
+        <ParentTermsList language={Constants.DEFAULT_LANGUAGE} term={term} />
       </MemoryRouter>
     );
     expect(wrapper.find(TermLink).length).toEqual(1);
@@ -55,7 +49,8 @@ describe("ParentTermsList", () => {
       wrapper
         .findWhere(
           (w) =>
-            w.type() === OutgoingLink && w.prop("iri") === term.parentTerms![1].iri
+            w.type() === OutgoingLink &&
+            w.prop("iri") === term.parentTerms![1].iri
         )
         .exists()
     ).toBeTruthy();
@@ -64,20 +59,15 @@ describe("ParentTermsList", () => {
   it("renders superTypes under parent terms as well", () => {
     jest.spyOn(redux, "useSelector").mockReturnValue(workspace);
     const term = Generator.generateTerm(vocabularyIri);
-    term.parentTerms = [
-      Generator.generateTerm(vocabularyIri),
-    ];
-    term.superTypes = [
-        Generator.generateTerm(vocabularyIri)
-    ]
+    term.parentTerms = [Generator.generateTerm(vocabularyIri)];
+    term.superTypes = [Generator.generateTerm(vocabularyIri)];
     const wrapper = mountWithIntl(
-        <MemoryRouter>
-          <ParentTermsList
-              language={Constants.DEFAULT_LANGUAGE}
-              term={term}
-          />
-        </MemoryRouter>
+      <MemoryRouter>
+        <ParentTermsList language={Constants.DEFAULT_LANGUAGE} term={term} />
+      </MemoryRouter>
     );
-    expect(wrapper.find(TermLink).length).toEqual(term.parentTerms.length + term.superTypes.length);
+    expect(wrapper.find(TermLink).length).toEqual(
+      term.parentTerms.length + term.superTypes.length
+    );
   });
 });

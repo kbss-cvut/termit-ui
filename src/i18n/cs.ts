@@ -285,9 +285,11 @@ const cs = {
         "term.metadata.superTypes": "Nadtřídy",
         "term.metadata.broader.selector.title": "Vyberte typ vztahu",
         "term.metadata.broader": "Nadřazený",
-        "term.metadata.broader.hint": "Vybraný pojem má obecně širší význam, přesnější typ vztahu nelze určit",
+        "term.metadata.broader.hint":
+            "Vybraný pojem má obecně širší význam, přesnější typ vztahu nelze určit",
         "term.metadata.broader.subClassOf": "Nadtřída",
-        "term.metadata.broader.subClassOf.hint": "Pojem je speciálním případem vybraného pojmu",
+        "term.metadata.broader.subClassOf.hint":
+            "Pojem je speciálním případem vybraného pojmu",
         "term.metadata.subTerms": "Podřazené pojmy",
         "term.metadata.types": "Typ pojmu",
         "term.metadata.status": "Stav pojmu",

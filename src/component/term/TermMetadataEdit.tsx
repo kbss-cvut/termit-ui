@@ -1,8 +1,16 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Button, ButtonToolbar, Card, CardBody, Col, Form, Row,} from "reactstrap";
-import Term, {CONTEXT, TermData} from "../../model/Term";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import {
+  Button,
+  ButtonToolbar,
+  Card,
+  CardBody,
+  Col,
+  Form,
+  Row,
+} from "reactstrap";
+import Term, { CONTEXT, TermData } from "../../model/Term";
 import "./TermMetadata.scss";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
@@ -12,16 +20,25 @@ import Utils from "../../util/Utils";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import StringListEdit from "../misc/StringListEdit";
-import {getLocalized, getLocalizedOrDefault, getLocalizedPlural,} from "../../model/MultilingualString";
+import {
+  getLocalized,
+  getLocalizedOrDefault,
+  getLocalizedPlural,
+} from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import * as _ from "lodash";
-import {checkLabelUniqueness, isLabelValid, isTermValid, LabelExists,} from "./TermValidationUtils";
+import {
+  checkLabelUniqueness,
+  isLabelValid,
+  isTermValid,
+  LabelExists,
+} from "./TermValidationUtils";
 import Constants from "../../util/Constants";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
-import {ConsolidatedResults} from "../../model/ConsolidatedResults";
+import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/ValidationResult";
-import {renderValidationMessages} from "./forms/FormUtils";
+import { renderValidationMessages } from "./forms/FormUtils";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
 import TermDefinitionContainer from "./TermDefinitionContainer";
 import MultilingualIcon from "../misc/MultilingualIcon";

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, {TERM_BROADER_SUBPROPERTIES, TermData} from "../../model/Term";
+import Term, { TERM_BROADER_SUBPROPERTIES, TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
@@ -70,14 +70,16 @@ function createValueRenderer() {
   );
 }
 
-function findNewlySelectedTerm(existing: Term[], newValue: Term[]):Term {
+function findNewlySelectedTerm(existing: Term[], newValue: Term[]): Term {
   for (let t of newValue) {
-    if (!existing.find(ex => ex.iri === t.iri)) {
+    if (!existing.find((ex) => ex.iri === t.iri)) {
       return t;
     }
   }
   // This should not happen, we assume there is a newly selected term
-  throw new Error("Expected newValue to contain a previously not selected term!");
+  throw new Error(
+    "Expected newValue to contain a previously not selected term!"
+  );
 }
 
 interface ParentTermSelectorProps extends HasI18n {
@@ -130,7 +132,7 @@ export class ParentTermSelector extends React.Component<
       workspaceTermCount: 0,
       lastSearchString: "",
       lastSelectedTerm: null,
-      showBroaderTypeSelector: false
+      showBroaderTypeSelector: false,
     };
   }
 
@@ -143,7 +145,10 @@ export class ParentTermSelector extends React.Component<
       if (valArr.length > parentArr.length) {
         const newlySelected = findNewlySelectedTerm(parentArr, valArr)!;
         if (newlySelected.iri !== this.props.term.iri) {
-          this.setState({lastSelectedTerm: newlySelected, showBroaderTypeSelector: true});
+          this.setState({
+            lastSelectedTerm: newlySelected,
+            showBroaderTypeSelector: true,
+          });
         }
       } else {
         this.valueToTermUpdate(valArr);
@@ -154,14 +159,17 @@ export class ParentTermSelector extends React.Component<
   private valueToTermUpdate(value: Term[]) {
     const update: Partial<Term> = {};
     const term = this.props.term;
-    const valueIris = value.map(t => t.iri);
-    TERM_BROADER_SUBPROPERTIES.forEach(sp => {
-      update[sp.attribute] = Utils.sanitizeArray(term[sp.attribute]).filter(t => valueIris.indexOf(t.iri) !== -1);
+    const valueIris = value.map((t) => t.iri);
+    TERM_BROADER_SUBPROPERTIES.forEach((sp) => {
+      update[sp.attribute] = Utils.sanitizeArray(term[sp.attribute]).filter(
+        (t) => valueIris.indexOf(t.iri) !== -1
+      );
     });
-    update.parentTerms = Utils.sanitizeArray(term.parentTerms as Term[]).filter(t => valueIris.indexOf(t.iri) !== -1);
+    update.parentTerms = Utils.sanitizeArray(term.parentTerms as Term[]).filter(
+      (t) => valueIris.indexOf(t.iri) !== -1
+    );
     this.props.onChange(update);
   }
-
 
   public onBroaderTypeSelect = (attribute: string) => {
     const update: Partial<Term> = {};
@@ -169,11 +177,11 @@ export class ParentTermSelector extends React.Component<
     update[attribute].push(this.state.lastSelectedTerm!);
     this.props.onChange(update);
     this.closeBroaderTypeSelect();
-};
+  };
 
   public closeBroaderTypeSelect = () => {
-    this.setState({lastSelectedTerm: null, showBroaderTypeSelector: false});
-  }
+    this.setState({ lastSelectedTerm: null, showBroaderTypeSelector: false });
+  };
 
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
@@ -310,7 +318,11 @@ export class ParentTermSelector extends React.Component<
     }
     return (
       <>
-        <BroaderTypeSelector onSelect={this.onBroaderTypeSelect} onCancel={this.closeBroaderTypeSelect} show={this.state.showBroaderTypeSelector}/>
+        <BroaderTypeSelector
+          onSelect={this.onBroaderTypeSelect}
+          onCancel={this.closeBroaderTypeSelect}
+          show={this.state.showBroaderTypeSelector}
+        />
         <IntelligentTreeSelect
           onChange={this.onChange}
           ref={this.treeComponent}

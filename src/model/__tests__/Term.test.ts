@@ -1,9 +1,9 @@
 import OntologicalVocabulary from "../../util/VocabularyUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import Term, {TermData} from "../Term";
+import Term, { TermData } from "../Term";
 import Generator from "../../__tests__/environment/Generator";
-import {TermOccurrenceData} from "../TermOccurrence";
-import {langString} from "../MultilingualString";
+import { TermOccurrenceData } from "../TermOccurrence";
+import { langString } from "../MultilingualString";
 
 describe("Term tests", () => {
     let termData: TermData;
@@ -41,13 +41,17 @@ describe("Term tests", () => {
         });
 
         it("initializes superTypes based on superType data", () => {
-            termData.superTypes = [{
-                iri: Generator.generateUri(),
-                label: langString("Parent"),
-                vocabulary: termData.vocabulary,
-            }];
+            termData.superTypes = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent"),
+                    vocabulary: termData.vocabulary,
+                },
+            ];
             const result = new Term(termData);
-            expect(result.superTypes).toEqual([new Term(termData.superTypes[0])]);
+            expect(result.superTypes).toEqual([
+                new Term(termData.superTypes[0]),
+            ]);
         });
 
         it("sets draft to true when draft attribute is undefined in term data", () => {
@@ -285,10 +289,12 @@ describe("Term tests", () => {
             const sut = new Term({
                 iri: Generator.generateUri(),
                 label: langString("test term"),
-                superTypes: [{
-                    iri: Generator.generateUri(),
-                    label: langString("Super type")
-                }]
+                superTypes: [
+                    {
+                        iri: Generator.generateUri(),
+                        label: langString("Super type"),
+                    },
+                ],
             });
             const result = sut.toTermData();
             expect(result.superTypes!.length).toEqual(1);

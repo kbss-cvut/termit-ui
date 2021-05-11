@@ -1,4 +1,4 @@
-import {ASSET_CONTEXT, AssetData, default as Asset} from "./Asset";
+import { ASSET_CONTEXT, AssetData, default as Asset } from "./Asset";
 import Utils from "../util/Utils";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
@@ -66,13 +66,15 @@ export const TERM_MULTILINGUAL_ATTRIBUTES = [
     "hiddenLabels",
 ];
 
-export const TERM_BROADER_SUBPROPERTIES = [{
-    attribute: "superTypes",
-    property: VocabularyUtils.RDFS_SUB_CLASS_OF,
-    labelKey: "term.metadata.superTypes",
-    selectorLabelKey: "term.metadata.broader.subClassOf",
-    selectorHintKey: "term.metadata.broader.subClassOf.hint",
-}];
+export const TERM_BROADER_SUBPROPERTIES = [
+    {
+        attribute: "superTypes",
+        property: VocabularyUtils.RDFS_SUB_CLASS_OF,
+        labelKey: "term.metadata.superTypes",
+        selectorLabelKey: "term.metadata.broader.subClassOf",
+        selectorHintKey: "term.metadata.broader.subClassOf.hint",
+    },
+];
 
 export interface TermData extends AssetData {
     label: MultilingualString;
@@ -129,11 +131,17 @@ export default class Term extends Asset implements TermData {
             this.types.push(VocabularyUtils.TERM);
         }
         if (this.parentTerms) {
-            this.parentTerms = this.sanitizeTermReferences(this.parentTerms, visitedTerms);
+            this.parentTerms = this.sanitizeTermReferences(
+                this.parentTerms,
+                visitedTerms
+            );
             this.parent = this.resolveParent(this.parentTerms);
         }
         if (this.superTypes) {
-            this.superTypes = this.sanitizeTermReferences(this.superTypes, visitedTerms);
+            this.superTypes = this.sanitizeTermReferences(
+                this.superTypes,
+                visitedTerms
+            );
         }
         if (this.subTerms) {
             // jsonld replaces single-element arrays with singular elements, which we don't want here
@@ -192,11 +200,13 @@ export default class Term extends Asset implements TermData {
             if (withoutParents) {
                 result.superTypes = undefined;
             } else {
-                result.superTypes = result.superTypes.map((pt: Term) => pt.toTermData(true));
+                result.superTypes = result.superTypes.map((pt: Term) =>
+                    pt.toTermData(true)
+                );
             }
         }
         if (result.definitionSource) {
-            result.definitionSource.term = {iri: result.iri};
+            result.definitionSource.term = { iri: result.iri };
         }
         delete result.subTerms; // Sub-terms are inferred and inconsequential for data upload to server
         delete result.plainSubTerms;
@@ -225,7 +235,7 @@ export default class Term extends Asset implements TermData {
 
     public toJsonLd(): TermData {
         const termData = this.toTermData();
-        Object.assign(termData, {"@context": CONTEXT});
+        Object.assign(termData, { "@context": CONTEXT });
         return termData;
     }
 
@@ -264,13 +274,17 @@ export default class Term extends Asset implements TermData {
         return langArr;
     }
 
-    public static consolidateBroaderTerms(t: Term| TermData): Term[] {
+    public static consolidateBroaderTerms(t: Term | TermData): Term[] {
         const resultSet = new Set<Term>();
-        TERM_BROADER_SUBPROPERTIES.forEach(p => {
-            Utils.sanitizeArray(t[p.attribute]).forEach(t => resultSet.add(new Term(t)));
+        TERM_BROADER_SUBPROPERTIES.forEach((p) => {
+            Utils.sanitizeArray(t[p.attribute]).forEach((t) =>
+                resultSet.add(new Term(t))
+            );
         });
-        Utils.sanitizeArray(t.parentTerms).forEach(t => resultSet.add(new Term(t)));
-        const result:Term[] = Array.from(resultSet);
+        Utils.sanitizeArray(t.parentTerms).forEach((t) =>
+            resultSet.add(new Term(t))
+        );
+        const result: Term[] = Array.from(resultSet);
         result.sort(Utils.labelComparator);
         return result;
     }

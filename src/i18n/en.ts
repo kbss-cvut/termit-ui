@@ -281,11 +281,14 @@ const en = {
         "term.metadata.comment": "Scope note",
         "term.metadata.parent": "Parent terms",
         "term.metadata.superTypes": "Superclasses",
-        "term.metadata.broader.selector.title": "Select the type of the broader relationship",
+        "term.metadata.broader.selector.title":
+            "Select the type of the broader relationship",
         "term.metadata.broader": "Broader",
-        "term.metadata.broader.hint": "The selected term is has generally a broader meaning, more specific relation type cannot be determined",
+        "term.metadata.broader.hint":
+            "The selected term is has generally a broader meaning, more specific relation type cannot be determined",
         "term.metadata.broader.subClassOf": "Superclass",
-        "term.metadata.broader.subClassOf.hint": "The term is a subclass of the selected one",
+        "term.metadata.broader.subClassOf.hint":
+            "The term is a subclass of the selected one",
         "term.metadata.subTerms": "Sub terms",
         "term.metadata.types": "Type",
         "term.metadata.source": "Source",

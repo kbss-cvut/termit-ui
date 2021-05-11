@@ -3,7 +3,7 @@ import { shallow } from "enzyme";
 import { PAGE_SIZE, ParentTermSelector } from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
-import Term, {TERM_BROADER_SUBPROPERTIES} from "../../../model/Term";
+import Term, { TERM_BROADER_SUBPROPERTIES } from "../../../model/Term";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
@@ -121,7 +121,10 @@ describe("ParentTermSelector", () => {
       />
     );
     wrapper.instance().onChange(terms.slice(0, terms.length - 1));
-    expect(onChange).toHaveBeenCalledWith({parentTerms: terms.slice(0, terms.length - 1), superTypes: []});
+    expect(onChange).toHaveBeenCalledWith({
+      parentTerms: terms.slice(0, terms.length - 1),
+      superTypes: [],
+    });
   });
 
   it("populates correct attributes in change object based on existing values", () => {
@@ -130,17 +133,22 @@ describe("ParentTermSelector", () => {
     const superTypes = generateTerms(2);
     term.superTypes = superTypes;
     const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-            id="test"
-            term={term}
-            vocabularyIri={vocabularyIri}
-            onChange={onChange}
-            {...fetchFunctions}
-            {...intlFunctions()}
-        />
+      <ParentTermSelector
+        id="test"
+        term={term}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
     );
-    wrapper.instance().onChange([...parents, ...superTypes.slice(0, superTypes.length - 1)]);
-    expect(onChange).toHaveBeenCalledWith({parentTerms: parents, superTypes: superTypes.slice(0, superTypes.length - 1)});
+    wrapper
+      .instance()
+      .onChange([...parents, ...superTypes.slice(0, superTypes.length - 1)]);
+    expect(onChange).toHaveBeenCalledWith({
+      parentTerms: parents,
+      superTypes: superTypes.slice(0, superTypes.length - 1),
+    });
   });
 
   it("passes update object with correct attribute based on existing value plus selected term on broader type selection", () => {
@@ -148,18 +156,20 @@ describe("ParentTermSelector", () => {
     term.superTypes = superTypes;
     const selected = Generator.generateTerm();
     const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-            id="test"
-            term={term}
-            vocabularyIri={vocabularyIri}
-            onChange={onChange}
-            {...fetchFunctions}
-            {...intlFunctions()}
-        />
+      <ParentTermSelector
+        id="test"
+        term={term}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
     );
-    wrapper.setState({lastSelectedTerm: selected});
+    wrapper.setState({ lastSelectedTerm: selected });
     wrapper.instance().onBroaderTypeSelect("superTypes");
-    expect(onChange).toHaveBeenCalledWith({superTypes: [...superTypes, selected]});
+    expect(onChange).toHaveBeenCalledWith({
+      superTypes: [...superTypes, selected],
+    });
   });
 
   it("filters out selected parent if it is the same as the term itself", () => {
@@ -191,7 +201,7 @@ describe("ParentTermSelector", () => {
     );
     wrapper.instance().onChange(null);
     const expected: Partial<Term> = {};
-    TERM_BROADER_SUBPROPERTIES.forEach(sp => expected[sp.attribute] = []);
+    TERM_BROADER_SUBPROPERTIES.forEach((sp) => (expected[sp.attribute] = []));
     expected.parentTerms = [];
     expect(onChange).toHaveBeenCalledWith(expected);
   });
