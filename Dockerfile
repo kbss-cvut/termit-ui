@@ -1,6 +1,6 @@
 # BASE STAGE
 # Prepare node, copy package.json
-FROM node AS base
+FROM node:14 AS base
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
