@@ -20,6 +20,7 @@ const ctx = {
     definition: context(VocabularyUtils.DEFINITION),
     scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
     parentTerms: VocabularyUtils.BROADER,
+    exactMatchTerms: VocabularyUtils.SKOS_EXACT_MATCH,
     subTerms: VocabularyUtils.NARROWER,
     sources: VocabularyUtils.DC_SOURCE,
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
@@ -53,6 +54,7 @@ const MAPPED_PROPERTIES = [
     "glossary",
     "definitionSource",
     "draft",
+    "exactMatchTerms",
 ];
 
 export const TERM_MULTILINGUAL_ATTRIBUTES = [
@@ -68,6 +70,7 @@ export interface TermData extends AssetData {
     hiddenLabels?: PluralMultilingualString;
     scopeNote?: MultilingualString;
     definition?: MultilingualString;
+    exactMatchTerms?: TermInfo[];
     subTerms?: TermInfo[];
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
@@ -97,6 +100,7 @@ export default class Term extends Asset implements TermData {
     public hiddenLabels?: PluralMultilingualString;
     public scopeNote?: MultilingualString;
     public definition?: MultilingualString;
+    public exactMatchTerms?: TermInfo[];
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
     public readonly parent?: string;
@@ -123,6 +127,9 @@ export default class Term extends Asset implements TermData {
             );
             this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
+        }
+        if (this.exactMatchTerms) {
+            this.exactMatchTerms = Utils.sanitizeArray(this.exactMatchTerms);
         }
         if (this.subTerms) {
             // jsonld replaces single-element arrays with singular elements, which we don't want here

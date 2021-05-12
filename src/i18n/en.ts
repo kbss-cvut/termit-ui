@@ -111,7 +111,7 @@ const en = {
             "TermIt is released in a new version {version}. Have a look at what's new by clicking on Version in the bottom right corner of application.",
         "dashboard.widget.donut.total-terms": "Total terms",
         "dashboard.widget.commentList.empty":
-            "You will see here Your last comments and reactions to them.",
+            "You will see here last comments.",
         "dashboard.widget.commentList.lastComment": "Last comment of the term.",
         "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} by {user} .",
@@ -329,6 +329,8 @@ const en = {
             "Definition is always unique and cannot be combined from multiple sources.",
         "term.comment.help":
             "(Optional) non-definitorial text clarifying the meaning of the term.",
+        "term.exactMatches.help":
+            "(Optional) term exactly matching the meaning of the current term. It serves to map the term to another one from a different vocabulary.",
         "term.parent.help":
             "(Optional) broader term. It is used to model relationships to broader terms " +
             "(e.g. Church -> Building), types of instances (e.g. St. Paul's -> Cathedral), or parthood relationships (e.g. Handle -> Door).",
@@ -357,6 +359,7 @@ const en = {
         "term.metadata.definitionSource.goto": "See in the document",
         "term.metadata.definitionSource.goto.tooltip":
             "Go to definition source in the corresponding document",
+        "term.metadata.exactMatches": "Exact matches",
         "term.metadata.comment": "Scope note",
         "term.metadata.parent": "Parent terms",
         "term.metadata.subTerms": "Sub terms",
@@ -440,6 +443,7 @@ const en = {
             "Draft term is not ready to be used yet, while Confirmed term is.",
         "term.metadata.types.select.placeholder": "Select type",
         "term.metadata.validation.title": "Validation",
+        "term.metadata.validation.empty": "The term does not have any issues.",
         "term.removed.message": "Term successfully removed.",
         "term.badge.score.tooltip":
             "The score of this term is {score}%. Click to see the validation results",

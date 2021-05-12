@@ -113,7 +113,7 @@ const cs = {
             "TermIt má novou verzi {version}. Podívejte se, co je nového, klikem na verzi v pravém dolním rohu aplikace.",
         "dashboard.widget.donut.total-terms": "Celkem pojmů",
         "dashboard.widget.commentList.empty":
-            "Zde uvidíte své poslední komentáře a reakce na ně.",
+            "Zde uvidíte naposledy komentované pojmy.",
         "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
         "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
@@ -335,6 +335,8 @@ const cs = {
             "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
             "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
             "z více zdrojů.",
+        "term.exactMatches.help":
+            "(Nepovinný) pojem se stejným významem. Slouží k mapování na pojmy z jiných slovníků.",
         "term.comment.help":
             "(Nepovinný) nedefiniční text upřesňující význam pojmu.",
         "term.parent.help":
@@ -366,6 +368,7 @@ const cs = {
         "term.metadata.definitionSource.goto": "Zobrazit v dokumentu",
         "term.metadata.definitionSource.goto.tooltip":
             "Zobrazit zdroj definice přímo v příslušném dokumentu",
+        "term.metadata.exactMatches": "Pojmy se stejným významem",
         "term.metadata.comment": "Doplňující poznámka",
         "term.metadata.parent": "Nadřazené pojmy",
         "term.metadata.subTerms": "Podřazené pojmy",
@@ -450,6 +453,7 @@ const cs = {
             "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
         "term.metadata.types.select.placeholder": "Vyberte typ",
         "term.metadata.validation.title": "Kontrola",
+        "term.metadata.validation.empty": "Pojem je bez chyb.",
         "term.removed.message": "Pojem by odstraněn.",
         "term.badge.score.tooltip":
             "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",

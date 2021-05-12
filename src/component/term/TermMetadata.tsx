@@ -149,6 +149,7 @@ export class TermMetadata extends React.Component<
                           <Comments
                             term={term}
                             onLoad={this.setCommentsCount}
+                            reverseOrder={true}
                           />
                         ),
                         "properties.edit.title": (

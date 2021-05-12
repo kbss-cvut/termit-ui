@@ -10,7 +10,7 @@ import {
   Form,
   Row,
 } from "reactstrap";
-import Term, { CONTEXT, TermData } from "../../model/Term";
+import Term, { CONTEXT, TermData, TermInfo } from "../../model/Term";
 import "./TermMetadata.scss";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
@@ -41,6 +41,7 @@ import TermItState from "../../model/TermItState";
 import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
+import ExactMatchesSelector from "./ExactMatchesSelector";
 import MultilingualIcon from "../misc/MultilingualIcon";
 
 interface TermMetadataEditProps extends HasI18n {
@@ -148,6 +149,12 @@ export class TermMetadataEdit extends React.Component<
 
   public onParentChange = (parentTerms?: Term[]) => {
     this.setState({ parentTerms });
+  };
+
+  public onExactMatchesChange = (exactMatchTerms?: Term[]) => {
+    this.setState({
+      exactMatchTerms: exactMatchTerms?.map((e) => e as TermInfo),
+    });
   };
 
   public onStatusChange = () => {
@@ -299,6 +306,17 @@ export class TermMetadataEdit extends React.Component<
                       </>
                     }
                     help={i18n("term.comment.help")}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <ExactMatchesSelector
+                    id="exact-matches"
+                    termIri={this.props.term.iri}
+                    selected={this.state.exactMatchTerms}
+                    vocabularyIri={this.props.term.vocabulary!.iri!}
+                    onChange={this.onExactMatchesChange}
                   />
                 </Col>
               </Row>
