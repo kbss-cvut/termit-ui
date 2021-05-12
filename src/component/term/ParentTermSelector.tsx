@@ -160,14 +160,13 @@ export class ParentTermSelector extends React.Component<
     const update: Partial<Term> = {};
     const term = this.props.term;
     const valueIris = value.map((t) => t.iri);
-    TERM_BROADER_SUBPROPERTIES.forEach((sp) => {
-      update[sp.attribute] = Utils.sanitizeArray(term[sp.attribute]).filter(
+    const attributes = TERM_BROADER_SUBPROPERTIES.map((sp) => sp.attribute);
+    attributes.push("parentTerms");
+    attributes.forEach((att) => {
+      update[att] = Utils.sanitizeArray(term[att]).filter(
         (t) => valueIris.indexOf(t.iri) !== -1
       );
     });
-    update.parentTerms = Utils.sanitizeArray(term.parentTerms as Term[]).filter(
-      (t) => valueIris.indexOf(t.iri) !== -1
-    );
     this.props.onChange(update);
   }
 
