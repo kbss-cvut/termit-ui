@@ -417,6 +417,10 @@ const en = {
         "term.metadata.assignments.count.zero.tooltip":
             "The term does not occur in this resource",
         "term.metadata.related.title": "Related terms",
+        "term.metadata.related.help":
+            "(Optional) related term (without being specific about the type of relationship). " +
+            "It can be a term from the current vocabulary, or another vocabulary. For example, 'car' is related to 'driver'. " +
+            "Do not pick a term which is already selected as a 'parent term', or an 'exact match'.",
         "term.metadata.vocabulary.tooltip": "Vocabulary this term belongs to",
         "term.metadata.related.ontologically": "Ontologically",
         "term.metadata.related.definitionally": "Definitionally",

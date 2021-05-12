@@ -21,6 +21,8 @@ const ctx = {
     scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
     parentTerms: VocabularyUtils.BROADER,
     exactMatchTerms: VocabularyUtils.SKOS_EXACT_MATCH,
+    relatedTerms: VocabularyUtils.SKOS_RELATED,
+    relatedMatchTerms: VocabularyUtils.SKOS_RELATED_MATCH,
     subTerms: VocabularyUtils.NARROWER,
     sources: VocabularyUtils.DC_SOURCE,
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
@@ -49,6 +51,8 @@ const MAPPED_PROPERTIES = [
     "types",
     "parentTerms",
     "parent",
+    "relatedTerms",
+    "relatedMatchTerms",
     "plainSubTerms",
     "vocabulary",
     "glossary",
@@ -71,6 +75,8 @@ export interface TermData extends AssetData {
     scopeNote?: MultilingualString;
     definition?: MultilingualString;
     exactMatchTerms?: TermInfo[];
+    relatedTerms?: TermInfo[];
+    relatedMatchTerms?: TermInfo[];
     subTerms?: TermInfo[];
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
@@ -86,6 +92,7 @@ export interface TermInfo {
     iri: string;
     label: MultilingualString; // Multilingual string due to the same context item (see ctx above)
     vocabulary: AssetData;
+    types?: string[];
 }
 
 export function termInfoComparator(a: TermInfo, b: TermInfo) {
@@ -101,6 +108,8 @@ export default class Term extends Asset implements TermData {
     public scopeNote?: MultilingualString;
     public definition?: MultilingualString;
     public exactMatchTerms?: TermInfo[];
+    public relatedTerms?: TermInfo[];
+    public relatedMatchTerms?: TermInfo[];
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
     public readonly parent?: string;
@@ -128,15 +137,27 @@ export default class Term extends Asset implements TermData {
             this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
         }
-        if (this.exactMatchTerms) {
-            this.exactMatchTerms = Utils.sanitizeArray(this.exactMatchTerms);
-        }
-        if (this.subTerms) {
-            // jsonld replaces single-element arrays with singular elements, which we don't want here
-            this.subTerms = Utils.sanitizeArray(this.subTerms);
-        }
+        this.sanitizeTermInfoArrays();
         this.syncPlainSubTerms();
         this.draft = termData.draft !== undefined ? termData.draft : true;
+    }
+
+    /**
+     * jsonld replaces single-element arrays with singular elements, which we don't want here
+     * @private
+     */
+    private sanitizeTermInfoArrays() {
+        const toSanitize = [
+            "exactMatchTerms",
+            "subTerms",
+            "relatedTerms",
+            "relatedMatchTerms",
+        ];
+        toSanitize.forEach((n) => {
+            if (this[n]) {
+                this[n] = Utils.sanitizeArray(this[n]);
+            }
+        });
     }
 
     private resolveParent(parents: Term[]) {
@@ -179,6 +200,15 @@ export default class Term extends Asset implements TermData {
         delete result.plainSubTerms;
         delete result.parent;
         return result;
+    }
+
+    public static toTermInfo(t: Term | TermData): TermInfo {
+        return {
+            iri: t.iri!,
+            label: Object.assign({}, t.label),
+            vocabulary: Object.assign({}, t.vocabulary),
+            types: [VocabularyUtils.TERM],
+        };
     }
 
     public get unmappedProperties(): Map<string, string[]> {
@@ -235,5 +265,18 @@ export default class Term extends Asset implements TermData {
         const langArr = Array.from(languages);
         langArr.sort();
         return langArr;
+    }
+
+    public static consolidateRelatedAndRelatedMatch(
+        term: Term | TermData
+    ): TermInfo[] {
+        const result = [...Utils.sanitizeArray(term.relatedTerms)];
+        for (let rt of Utils.sanitizeArray(term.relatedMatchTerms)) {
+            if (!result.find((e) => e.iri === rt.iri)) {
+                result.push(rt);
+            }
+        }
+        result.sort(termInfoComparator);
+        return result;
     }
 }

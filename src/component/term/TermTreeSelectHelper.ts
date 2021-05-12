@@ -2,6 +2,7 @@ import Term, { TermData, TermInfo } from "../../model/Term";
 import { getLocalized } from "../../model/MultilingualString";
 import { HasI18n } from "../hoc/withI18n";
 import { getShortLocale } from "../../util/IntlUtil";
+import Utils from "../../util/Utils";
 
 /**
  * Common properties for a tree selector containing terms
@@ -86,4 +87,16 @@ function flattenAncestors(terms: Term[]) {
         }
     }
     return result;
+}
+
+/**
+ * Resolves identifiers of the specified selected terms.
+ * @param selected Array of selected Term-based values (optional)
+ */
+export function resolveSelectedIris(
+    selected?: TermInfo[] | TermData[]
+): string[] {
+    return Utils.sanitizeArray(selected as TermInfo[])
+        .filter((t) => t.vocabulary !== undefined)
+        .map((t) => t.iri);
 }
