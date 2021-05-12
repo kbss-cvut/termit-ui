@@ -1,6 +1,6 @@
 import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { TermData } from "../../model/Term";
+import { TermData } from "../../model/Term";
 import Utils from "../../util/Utils";
 import { Col, Form, Row } from "reactstrap";
 import CustomInput from "../misc/CustomInput";
@@ -131,10 +131,6 @@ export class TermMetadataCreateForm extends React.Component<
     this.props.onChange({ types });
   };
 
-  public onParentSelect = (parentTerms: Term[]) => {
-    this.props.onChange({ parentTerms });
-  };
-
   public render() {
     const { termData, i18n, language } = this.props;
     const label = getLocalizedOrDefault(termData.label, "", language);
@@ -212,8 +208,8 @@ export class TermMetadataCreateForm extends React.Component<
           <Col xs={12}>
             <ParentTermSelector
               id="create-term-parent"
-              onChange={this.onParentSelect}
-              parentTerms={termData.parentTerms as Term[]}
+              term={termData}
+              onChange={this.props.onChange}
               vocabularyIri={this.props.vocabularyIri}
             />
           </Col>

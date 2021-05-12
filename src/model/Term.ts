@@ -20,6 +20,7 @@ const ctx = {
     definition: context(VocabularyUtils.DEFINITION),
     scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
     parentTerms: VocabularyUtils.BROADER,
+    superTypes: VocabularyUtils.RDFS_SUB_CLASS_OF,
     subTerms: VocabularyUtils.NARROWER,
     sources: VocabularyUtils.DC_SOURCE,
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
@@ -48,6 +49,7 @@ const MAPPED_PROPERTIES = [
     "sources",
     "types",
     "parentTerms",
+    "superTypes",
     "parent",
     "plainSubTerms",
     "vocabulary",
@@ -64,6 +66,16 @@ export const TERM_MULTILINGUAL_ATTRIBUTES = [
     "hiddenLabels",
 ];
 
+export const TERM_BROADER_SUBPROPERTIES = [
+    {
+        attribute: "superTypes",
+        property: VocabularyUtils.RDFS_SUB_CLASS_OF,
+        labelKey: "term.metadata.superTypes",
+        selectorLabelKey: "term.metadata.broader.subClassOf",
+        selectorHintKey: "term.metadata.broader.subClassOf.hint",
+    },
+];
+
 export interface TermData extends AssetData {
     label: MultilingualString;
     altLabels?: PluralMultilingualString;
@@ -74,6 +86,7 @@ export interface TermData extends AssetData {
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
     parentTerms?: TermData[];
+    superTypes?: TermData[];
     parent?: string; // Introduced in order to support the Intelligent Tree Select component
     plainSubTerms?: string[]; // Introduced in order to support the Intelligent Tree Select component
     vocabulary?: AssetData;
@@ -101,6 +114,7 @@ export default class Term extends Asset implements TermData {
     public definition?: MultilingualString;
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
+    public superTypes?: Term[];
     public readonly parent?: string;
     public sources?: string[];
     public plainSubTerms?: string[];
@@ -117,14 +131,17 @@ export default class Term extends Asset implements TermData {
             this.types.push(VocabularyUtils.TERM);
         }
         if (this.parentTerms) {
-            visitedTerms[this.iri] = this;
-            this.parentTerms = Utils.sanitizeArray(this.parentTerms).map((pt) =>
-                visitedTerms[pt.iri]
-                    ? visitedTerms[pt.iri]
-                    : new Term(pt, visitedTerms)
+            this.parentTerms = this.sanitizeTermReferences(
+                this.parentTerms,
+                visitedTerms
             );
-            this.parentTerms.sort(Utils.labelComparator);
             this.parent = this.resolveParent(this.parentTerms);
+        }
+        if (this.superTypes) {
+            this.superTypes = this.sanitizeTermReferences(
+                this.superTypes,
+                visitedTerms
+            );
         }
         if (this.subTerms) {
             // jsonld replaces single-element arrays with singular elements, which we don't want here
@@ -132,6 +149,17 @@ export default class Term extends Asset implements TermData {
         }
         this.syncPlainSubTerms();
         this.draft = termData.draft !== undefined ? termData.draft : true;
+    }
+
+    private sanitizeTermReferences(references: Term[], visitedTerms: TermMap) {
+        visitedTerms[this.iri] = this;
+        const result = Utils.sanitizeArray(references).map((pt) =>
+            visitedTerms[pt.iri]
+                ? visitedTerms[pt.iri]
+                : new Term(pt, visitedTerms)
+        );
+        result.sort(Utils.labelComparator);
+        return result;
     }
 
     private resolveParent(parents: Term[]) {
@@ -164,6 +192,15 @@ export default class Term extends Asset implements TermData {
                 result.parentTerms = undefined;
             } else {
                 result.parentTerms = result.parentTerms.map((pt: Term) =>
+                    pt.toTermData(true)
+                );
+            }
+        }
+        if (result.superTypes) {
+            if (withoutParents) {
+                result.superTypes = undefined;
+            } else {
+                result.superTypes = result.superTypes.map((pt: Term) =>
                     pt.toTermData(true)
                 );
             }
@@ -235,5 +272,20 @@ export default class Term extends Asset implements TermData {
         const langArr = Array.from(languages);
         langArr.sort();
         return langArr;
+    }
+
+    public static consolidateBroaderTerms(t: Term | TermData): Term[] {
+        const resultSet = new Set<Term>();
+        TERM_BROADER_SUBPROPERTIES.forEach((p) => {
+            Utils.sanitizeArray(t[p.attribute]).forEach((t) =>
+                resultSet.add(new Term(t))
+            );
+        });
+        Utils.sanitizeArray(t.parentTerms).forEach((t) =>
+            resultSet.add(new Term(t))
+        );
+        const result: Term[] = Array.from(resultSet);
+        result.sort(Utils.labelComparator);
+        return result;
     }
 }

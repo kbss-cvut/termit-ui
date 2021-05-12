@@ -130,22 +130,6 @@ describe("TermMetadataCreateForm", () => {
     });
   });
 
-  it("correctly passes selected parent terms to onChange handler", () => {
-    const wrapper = shallow<TermMetadataCreateForm>(
-      <TermMetadataCreateForm
-        onChange={onChange}
-        language={Constants.DEFAULT_LANGUAGE}
-        labelExist={{}}
-        termData={AssetFactory.createEmptyTermData()}
-        vocabularyIri={vocabularyIri}
-        {...intlFunctions()}
-      />
-    );
-    const parents = [Generator.generateTerm()];
-    wrapper.instance().onParentSelect(parents);
-    expect(onChange).toHaveBeenCalledWith({ parentTerms: parents });
-  });
-
   it("checks for label uniqueness in vocabulary on label change", () => {
     const wrapper = shallow<TermMetadataCreateForm>(
       <TermMetadataCreateForm

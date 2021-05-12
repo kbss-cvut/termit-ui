@@ -49,7 +49,7 @@ export class BasicTermMetadata extends React.Component<
             {this.renderTypes()}
           </Col>
         </Row>
-        <ParentTermsList parentTerms={term.parentTerms} language={language} />
+        <ParentTermsList term={term} language={language} />
         {this.renderSubTerms()}
         <Row>
           <Col xl={2} md={4}>

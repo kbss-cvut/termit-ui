@@ -40,6 +40,20 @@ describe("Term tests", () => {
             expect(result.parent).toEqual(termData.parentTerms[0].iri);
         });
 
+        it("initializes superTypes based on superType data", () => {
+            termData.superTypes = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("Parent"),
+                    vocabulary: termData.vocabulary,
+                },
+            ];
+            const result = new Term(termData);
+            expect(result.superTypes).toEqual([
+                new Term(termData.superTypes[0]),
+            ]);
+        });
+
         it("sets draft to true when draft attribute is undefined in term data", () => {
             delete termData.draft;
             const result = new Term(termData);
@@ -269,6 +283,22 @@ describe("Term tests", () => {
             const result = sut.toTermData();
             expect(result.parentTerms!.length).toEqual(1);
             expect(result.parentTerms![0].iri).toEqual(parent.iri);
+        });
+
+        it("transforms superTypes to TermData as well", () => {
+            const sut = new Term({
+                iri: Generator.generateUri(),
+                label: langString("test term"),
+                superTypes: [
+                    {
+                        iri: Generator.generateUri(),
+                        label: langString("Super type"),
+                    },
+                ],
+            });
+            const result = sut.toTermData();
+            expect(result.superTypes!.length).toEqual(1);
+            expect(result.superTypes![0]).not.toBeInstanceOf(Term);
         });
     });
 

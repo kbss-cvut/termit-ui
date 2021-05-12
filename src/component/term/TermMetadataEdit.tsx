@@ -146,10 +146,6 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ types: newTypes });
   };
 
-  public onParentChange = (parentTerms?: Term[]) => {
-    this.setState({ parentTerms });
-  };
-
   private onPropertiesChange = (update: Map<string, string[]>) => {
     this.setState({ unmappedProperties: update });
   };
@@ -301,12 +297,11 @@ export class TermMetadataEdit extends React.Component<
                 <Col xs={12}>
                   <ParentTermSelector
                     id="edit-term-parent"
-                    termIri={this.props.term.iri}
-                    parentTerms={this.state.parentTerms as Term[]}
+                    term={this.state}
                     invalid={validationBroader.length > 0}
                     invalidMessage={this.renderMessages(validationBroader)}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
-                    onChange={this.onParentChange}
+                    onChange={this.onChange}
                   />
                 </Col>
               </Row>
