@@ -11,7 +11,7 @@ import {
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import Utils from "../../util/Utils";
-import { FormGroup, FormText, Label } from "reactstrap";
+import { FormGroup, Label } from "reactstrap";
 import {
   createTermsWithImportsOptionRenderer,
   createTermValueRenderer,
@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import { loadAllTerms } from "../../action/AsyncActions";
 import { injectIntl } from "react-intl";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import HelpIcon from "../misc/HelpIcon";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
@@ -71,6 +72,10 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
           {this.props.i18n("term.metadata.related.title")}
+          <HelpIcon
+            id="related-term-select"
+            text={this.props.i18n("term.metadata.related.help")}
+          />
         </Label>
         <>
           <IntelligentTreeSelect
@@ -85,7 +90,6 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
-          <FormText>{this.props.i18n("term.metadata.related.help")}</FormText>
         </>
       </FormGroup>
     );
