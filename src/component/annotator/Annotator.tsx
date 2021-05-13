@@ -505,7 +505,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         <WindowTitle title={this.props.i18n("annotator")} />
         <HeaderWithActions
           title={this.renderTitle()}
-          className={classNames("annotator-header", {"annotator-header-scrolled": window.pageYOffset > 0})}
+          className={classNames("annotator-header", {
+            "annotator-header-scrolled": window.pageYOffset > 0,
+          })}
           actions={[
             <IfUserAuthorized
               key="text-analysis-button"

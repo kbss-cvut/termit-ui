@@ -11,7 +11,11 @@ const LegendToggle = () => {
   return (
     <>
       <Collapse isOpen={showLegend}>
-        <Card className={classNames("legend", "mb-0", {"legend-scrolled": window.pageYOffset > 0})}>
+        <Card
+          className={classNames("legend", "mb-0", {
+            "legend-scrolled": window.pageYOffset > 0,
+          })}
+        >
           <CardHeader className="py-2">
             {i18n("annotator.legend.title")}
           </CardHeader>
