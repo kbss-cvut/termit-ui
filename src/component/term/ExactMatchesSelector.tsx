@@ -7,7 +7,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { loadAllTerms } from "../../action/AsyncActions";
-import { FormGroup, FormText, Label } from "reactstrap";
+import { FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
@@ -22,6 +22,7 @@ import {
   processTermsForTreeSelect,
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
+import HelpIcon from "../misc/HelpIcon";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -100,6 +101,10 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
           {this.props.i18n("term.metadata.exactMatches")}
+          <HelpIcon
+            id="exact-match-select"
+            text={this.props.i18n("term.exactMatches.help")}
+          />
         </Label>
         <>
           <IntelligentTreeSelect
@@ -116,7 +121,6 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
-          <FormText>{this.props.i18n("term.exactMatches.help")}</FormText>
         </>
       </FormGroup>
     );
