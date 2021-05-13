@@ -23,3 +23,7 @@ ul.term-items button {
 #create-term-toggle-advanced {
   margin-left: -0.75rem;
 }
+
+.Select-menu-outer {
+  z-index: 3; // Increase z-index to prevent collisions with input group addon buttons in StringListEdits
+}
