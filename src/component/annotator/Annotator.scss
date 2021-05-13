@@ -8,6 +8,10 @@
   background-color: whitesmoke;
 }
 
+.legend-scrolled {
+  top: 125px;
+}
+
 .legend-list {
   list-style-type: none;
   padding-left: 0;
@@ -29,7 +33,11 @@
 
 .annotator-header {
   position: sticky;
-  top: 85px;
+  top: 60px;
   z-index: 101;
   background-color: #e9eaec;
+}
+
+.annotator-header-scrolled {
+  padding-top: 16px;
 }
