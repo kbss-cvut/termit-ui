@@ -2,6 +2,7 @@ import * as React from "react";
 import Legend from "./Legend";
 import { Button, Card, CardBody, CardHeader, Collapse } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
+import classNames from "classnames";
 
 const LegendToggle = () => {
   const [showLegend, setShowLegend] = React.useState(true);
@@ -10,7 +11,7 @@ const LegendToggle = () => {
   return (
     <>
       <Collapse isOpen={showLegend}>
-        <Card className="legend mb-0">
+        <Card className={classNames("legend", "mb-0", {"legend-scrolled": window.pageYOffset > 0})}>
           <CardHeader className="py-2">
             {i18n("annotator.legend.title")}
           </CardHeader>
