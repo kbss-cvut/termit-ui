@@ -369,8 +369,7 @@ const en = {
         "term.metadata.altLabels.placeholder":
             "Enter a new synonym and press 'Add'",
         "term.metadata.altLabels.addButton.text": "Add",
-        "term.metadata.altLabels.addButton.title":
-            "Click to add the synonym",
+        "term.metadata.altLabels.addButton.title": "Click to add the synonym",
         "term.metadata.altLabels.remove": "Remove synonym",
         "term.metadata.altLabels.remove.text": "Remove",
         "term.metadata.altLabels.help":
