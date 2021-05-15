@@ -49,9 +49,10 @@ export default class File extends Resource implements FileData {
             );
             // Replace reference to myself with an IRI reference only to prevent serialization cycle errors
             jsonLd.owner.files.splice(ind, 1, { iri: this.iri });
-            jsonLd.owner.files = Document.replaceCircularReferencesToOwnerWithOwnerId(
-                jsonLd.owner.files
-            );
+            jsonLd.owner.files =
+                Document.replaceCircularReferencesToOwnerWithOwnerId(
+                    jsonLd.owner.files
+                );
         }
         return jsonLd;
     }

@@ -43,9 +43,8 @@ describe("Pagination", () => {
 
   it("loads stored page size on mount", () => {
     const size = 20;
-    localStorage.__STORE__[
-      Constants.STORAGE_TABLE_PAGE_SIZE_KEY
-    ] = size.toString();
+    localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] =
+      size.toString();
     mountWithIntl(
       <Pagination
         pagingState={{ pageSize: 10, pageIndex: 0 }}
@@ -60,9 +59,8 @@ describe("Pagination", () => {
     const size = 20;
     pagingProps.canPreviousPage = false;
     pagingProps.canNextPage = false;
-    localStorage.__STORE__[
-      Constants.STORAGE_TABLE_PAGE_SIZE_KEY
-    ] = size.toString();
+    localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] =
+      size.toString();
     const wrapper = mountWithIntl(
       <Pagination
         pagingState={{ pageSize: 10, pageIndex: 0 }}

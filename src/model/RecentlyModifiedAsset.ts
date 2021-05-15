@@ -22,7 +22,8 @@ export interface RecentlyModifiedAssetData extends HasTypes {
 }
 
 export default class RecentlyModifiedAssets
-    implements RecentlyModifiedAssetData {
+    implements RecentlyModifiedAssetData
+{
     public readonly iri: string;
     public readonly label: string;
     public readonly types: string[];
