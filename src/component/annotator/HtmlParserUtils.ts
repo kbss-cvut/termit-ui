@@ -11,7 +11,7 @@ const HtmlParserUtils = {
         const handler = new DomHandler();
         const parser = new HtmlParser(handler, options);
         parser.parseComplete(html);
-        return handler.dom;
+        return handler.dom as Node[];
     },
 
     dom2html(dom: Node[]): string {
