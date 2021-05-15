@@ -93,54 +93,53 @@ function createActionButtons(
   return actions;
 }
 
-export const TermOccurrenceAnnotation: React.FC<TermOccurrenceAnnotationProps> = (
-  props
-) => {
-  const { i18n } = useI18n();
-  const term = props.term !== undefined ? props.term : null;
-  const [editing, setEditing] = React.useState(term === null);
-  React.useEffect(() => {
-    if (term) {
+export const TermOccurrenceAnnotation: React.FC<TermOccurrenceAnnotationProps> =
+  (props) => {
+    const { i18n } = useI18n();
+    const term = props.term !== undefined ? props.term : null;
+    const [editing, setEditing] = React.useState(term === null);
+    React.useEffect(() => {
+      if (term) {
+        setEditing(false);
+      }
+    }, [term]);
+    const onClose = () => {
       setEditing(false);
-    }
-  }, [term]);
-  const onClose = () => {
-    setEditing(false);
-    props.onClose();
-  };
-  const popupBody = editing ? (
-    <AnnotationTerms
-      selectedTerm={term}
-      onChange={props.onSelectTerm}
-      onCreateTerm={props.onCreateTerm}
-    />
-  ) : (
-    <TermOccurrenceAnnotationView
-      term={term}
-      score={props.score}
-      resource={props.resource}
-      annotationClass={props.annotationClass}
-    />
-  );
+      props.onClose();
+    };
+    const popupBody = editing ? (
+      <AnnotationTerms
+        selectedTerm={term}
+        onChange={props.onSelectTerm}
+        onCreateTerm={props.onCreateTerm}
+      />
+    ) : (
+      <TermOccurrenceAnnotationView
+        term={term}
+        score={props.score}
+        resource={props.resource}
+        annotationClass={props.annotationClass}
+      />
+    );
 
-  return (
-    <SimplePopupWithActions
-      isOpen={props.isOpen}
-      target={props.target}
-      toggle={props.onToggleDetailOpen}
-      component={popupBody}
-      actions={createActionButtons(
-        Object.assign({}, props, {
-          onSelectTerm: props.onSelectTerm,
-          onClose,
-        }),
-        i18n,
-        editing,
-        () => setEditing(!editing)
-      )}
-      title={i18n("annotation.occurrence.title")}
-    />
-  );
-};
+    return (
+      <SimplePopupWithActions
+        isOpen={props.isOpen}
+        target={props.target}
+        toggle={props.onToggleDetailOpen}
+        component={popupBody}
+        actions={createActionButtons(
+          Object.assign({}, props, {
+            onSelectTerm: props.onSelectTerm,
+            onClose,
+          }),
+          i18n,
+          editing,
+          () => setEditing(!editing)
+        )}
+        title={i18n("annotation.occurrence.title")}
+      />
+    );
+  };
 
 export default TermOccurrenceAnnotation;

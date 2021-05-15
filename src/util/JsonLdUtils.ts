@@ -89,10 +89,11 @@ export default class JsonLdUtils {
                 if (Array.isArray(val)) {
                     for (let i = 0, len = val.length; i < len; i++) {
                         if (typeof val[i] === "object") {
-                            const reference = JsonLdUtils.getReferencedNodeIfExists(
-                                val[i],
-                                idMap
-                            );
+                            const reference =
+                                JsonLdUtils.getReferencedNodeIfExists(
+                                    val[i],
+                                    idMap
+                                );
                             if (reference) {
                                 val[i] = reference;
                             } else {

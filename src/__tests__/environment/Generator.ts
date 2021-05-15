@@ -77,9 +77,10 @@ export default class Generator {
         );
     }
 
-    public static generateAssetData(
-        label?: string
-    ): { iri: string; label: string } {
+    public static generateAssetData(label?: string): {
+        iri: string;
+        label: string;
+    } {
         return {
             iri: Generator.generateUri(),
             label: label ? label : "Asset " + Generator.randomInt(0, 100),
