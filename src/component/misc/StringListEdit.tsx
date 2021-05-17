@@ -132,7 +132,7 @@ export class StringListEdit extends React.Component<
                 </ul>
               </td>
               <td className="align-middle">
-                <Badge
+                <Badge color="danger"
                   title={this.getText("remove.title")}
                   className="term-edit-source-remove align-middle"
                   onClick={this.onRemove.bind(null, s)}

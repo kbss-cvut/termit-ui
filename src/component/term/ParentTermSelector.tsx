@@ -1,30 +1,33 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { TERM_BROADER_SUBPROPERTIES, TermData } from "../../model/Term";
+import {injectIntl} from "react-intl";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import Term, {TERM_BROADER_SUBPROPERTIES, TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import { connect } from "react-redux";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
-import { FormFeedback, FormGroup, Label } from "reactstrap";
+import {connect} from "react-redux";
+import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
+import {Badge, FormFeedback, FormGroup, Label} from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
-import { IntelligentTreeSelect } from "intelligent-tree-select";
-import { createTermsWithVocabularyInfoRenderer } from "../misc/treeselect/Renderers";
-import {
-  commonTermTreeSelectProps,
-  processTermsForTreeSelect,
-} from "./TermTreeSelectHelper";
-import {
-  loadTermsFromCanonical,
-  loadTermsFromCurrentWorkspace,
-} from "../../action/AsyncTermActions";
+import {IntelligentTreeSelect} from "intelligent-tree-select";
+import {createTermsWithVocabularyInfoRenderer} from "../misc/treeselect/Renderers";
+import {commonTermTreeSelectProps, processTermsForTreeSelect,} from "./TermTreeSelectHelper";
+import {loadTermsFromCanonical, loadTermsFromCurrentWorkspace,} from "../../action/AsyncTermActions";
 import OutgoingLink from "../misc/OutgoingLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
-import { getLocalized } from "../../model/MultilingualString";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-import { loadTerms } from "../../action/AsyncActions";
+import {getLocalized} from "../../model/MultilingualString";
+import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import {loadTerms} from "../../action/AsyncActions";
 import HelpIcon from "../misc/HelpIcon";
-import BroaderTypeSelector from "./BroaderTypeSelector";
+import {FaPencilAlt, FaTrashAlt} from "react-icons/fa";
+import TermItState from "../../model/TermItState";
+import Workspace from "../../model/Workspace";
+import TermLink from "./TermLink";
+
+const PARENT_ATTRIBUTES = [{
+  attribute: "parentTerms",
+  selectorLabelKey: "term.metadata.broader",
+    selectorHintKey: "term.metadata.broader.hint"
+},...TERM_BROADER_SUBPROPERTIES.slice()];
 
 function enhanceWithCurrentTerm(
   terms: Term[],
@@ -70,24 +73,13 @@ function createValueRenderer() {
   );
 }
 
-function findNewlySelectedTerm(existing: Term[], newValue: Term[]): Term {
-  for (let t of newValue) {
-    if (!existing.find((ex) => ex.iri === t.iri)) {
-      return t;
-    }
-  }
-  // This should not happen, we assume there is a newly selected term
-  throw new Error(
-    "Expected newValue to contain a previously not selected term!"
-  );
-}
-
 interface ParentTermSelectorProps extends HasI18n {
   id: string;
   term: Term | TermData;
   vocabularyIri: string;
   invalid?: boolean;
   invalidMessage?: JSX.Element;
+  workspace: Workspace;
   onChange: (change: Partial<TermData>) => void;
   loadTermsFromVocabulary: (
     fetchOptions: FetchOptionsFunction,
@@ -136,39 +128,14 @@ export class ParentTermSelector extends React.Component<
     };
   }
 
-  public onChange = (val: Term[] | Term | null) => {
+  public onChange = (val: Term | Term[] | null) => {
     if (!val) {
-      this.valueToTermUpdate([]);
+      this.props.onChange({parentTerms: []});
     } else {
-      const valArr = Utils.sanitizeArray(val);
-      const parentArr = Term.consolidateBroaderTerms(this.props.term);
-      if (valArr.length > parentArr.length) {
-        const newlySelected = findNewlySelectedTerm(parentArr, valArr)!;
-        if (newlySelected.iri !== this.props.term.iri) {
-          this.setState({
-            lastSelectedTerm: newlySelected,
-            showBroaderTypeSelector: true,
-          });
-        }
-      } else {
-        this.valueToTermUpdate(valArr);
-      }
+      const newParents = Utils.sanitizeArray(this.props.term.parentTerms).concat(Utils.sanitizeArray(val));
+      this.props.onChange({parentTerms: newParents});
     }
   };
-
-  private valueToTermUpdate(value: Term[]) {
-    const update: Partial<Term> = {};
-    const term = this.props.term;
-    const valueIris = value.map((t) => t.iri);
-    const attributes = TERM_BROADER_SUBPROPERTIES.map((sp) => sp.attribute);
-    attributes.push("parentTerms");
-    attributes.forEach((att) => {
-      update[att] = Utils.sanitizeArray(term[att]).filter(
-        (t) => valueIris.indexOf(t.iri) !== -1
-      );
-    });
-    this.props.onChange(update);
-  }
 
   public onBroaderTypeSelect = (attribute: string) => {
     const update: Partial<Term> = {};
@@ -290,11 +257,6 @@ export class ParentTermSelector extends React.Component<
     return this.props.loadTermsFromCanonical(fetchOptions);
   };
 
-  private resolveSelectedParents() {
-    const parents = Term.consolidateBroaderTerms(this.props.term);
-    return parents.filter((p) => p.vocabulary !== undefined).map((p) => p.iri);
-  }
-
   public render() {
     const i18n = this.props.i18n;
     return (
@@ -304,6 +266,7 @@ export class ParentTermSelector extends React.Component<
           <HelpIcon id={"parent-term-select"} text={i18n("term.parent.help")} />
         </Label>
         {this.renderSelector()}
+        {this.renderSelected()}
       </FormGroup>
     );
   }
@@ -317,15 +280,10 @@ export class ParentTermSelector extends React.Component<
     }
     return (
       <>
-        <BroaderTypeSelector
-          onSelect={this.onBroaderTypeSelect}
-          onCancel={this.closeBroaderTypeSelect}
-          show={this.state.showBroaderTypeSelector}
-        />
         <IntelligentTreeSelect
           onChange={this.onChange}
           ref={this.treeComponent}
-          value={this.resolveSelectedParents()}
+          value={[]}
           fetchOptions={this.fetchOptions}
           fetchLimit={PAGE_SIZE}
           searchDelay={SEARCH_DELAY}
@@ -346,9 +304,41 @@ export class ParentTermSelector extends React.Component<
       </>
     );
   }
+
+  private renderSelected() {
+      const {i18n, term, workspace} = this.props;
+    return <table className="mt-1">
+      <tbody>
+      {PARENT_ATTRIBUTES.map(pt => Utils.sanitizeArray(term[pt.attribute]).map(value => <tr key={value.iri}>
+        <td className="align-middle">
+          <ul className="term-items mt-0 mb-0">
+          <li>
+              <VocabularyNameBadge
+            className="mr-1 align-text-top"
+            vocabulary={value.vocabulary}
+        />
+        {workspace.containsVocabulary(value.vocabulary.iri) ? <TermLink term={value}/> : getLocalized(value.label)}
+      </li>
+          </ul>
+        </td>
+          <td className="align-middle pl-2">
+              <Badge color="primary" className="align-text-top vocabulary-name-badge" title={i18n(pt.selectorHintKey)}>
+                  <FaPencilAlt className="mr-1"/>
+                  {i18n(pt.selectorLabelKey)}
+              </Badge>
+              <Badge color="danger"
+                  className="list-item-remove-icon align-middle"
+              >
+                  <FaTrashAlt /> {i18n("remove")}
+              </Badge>
+          </td>
+      </tr>))}
+    </tbody>
+    </table>;
+  }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
+export default connect((state: TermItState) => ({workspace: state.workspace!}), (dispatch: ThunkDispatch) => {
   return {
     loadTermsFromVocabulary: (
       fetchOptions: FetchOptionsFunction,
