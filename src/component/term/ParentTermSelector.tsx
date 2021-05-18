@@ -5,7 +5,7 @@ import Term, {TERM_BROADER_SUBPROPERTIES, TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import {connect} from "react-redux";
 import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {Badge, FormFeedback, FormGroup, Label} from "reactstrap";
+import {ButtonToolbar, FormFeedback, FormGroup, Label} from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
@@ -22,6 +22,7 @@ import {FaPencilAlt, FaTrashAlt} from "react-icons/fa";
 import TermItState from "../../model/TermItState";
 import Workspace from "../../model/Workspace";
 import TermLink from "./TermLink";
+import BadgeButton from "../misc/BadgeButton";
 
 const PARENT_ATTRIBUTES = [{
   attribute: "parentTerms",
@@ -321,16 +322,16 @@ export class ParentTermSelector extends React.Component<
       </li>
           </ul>
         </td>
-          <td className="align-middle pl-2">
-              <Badge color="primary" className="align-text-top vocabulary-name-badge" title={i18n(pt.selectorHintKey)}>
+          <td className="align-middle pl-3">
+            <ButtonToolbar>
+              <BadgeButton color="primary" title={i18n(pt.selectorHintKey)} className="term-broader-selector">
                   <FaPencilAlt className="mr-1"/>
                   {i18n(pt.selectorLabelKey)}
-              </Badge>
-              <Badge color="danger"
-                  className="list-item-remove-icon align-middle"
-              >
-                  <FaTrashAlt /> {i18n("remove")}
-              </Badge>
+              </BadgeButton>
+              <BadgeButton color="danger" outline={true}>
+                  <FaTrashAlt className="mr-1" />{i18n("properties.edit.remove.text")}
+              </BadgeButton>
+            </ButtonToolbar>
           </td>
       </tr>))}
     </tbody>

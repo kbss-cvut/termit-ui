@@ -5,10 +5,6 @@ ul.term-items {
   padding-left: 1.2rem;
 }
 
-ul.term-items button {
-  padding: 0;
-}
-
 .term-edit .Select-placeholder {
   line-height: 1.5;
   font-size: 0.875rem;
@@ -36,4 +32,8 @@ ul.term-items button {
 
 .term-broader-subproperty-label {
   font-size: 90%;
+}
+
+.term-broader-selector {
+  min-width: 6rem;
 }
