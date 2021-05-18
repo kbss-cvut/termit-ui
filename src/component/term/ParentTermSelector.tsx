@@ -25,8 +25,10 @@ import TermLink from "./TermLink";
 import BadgeButton from "../misc/BadgeButton";
 import BroaderTypeSelector from "./BroaderTypeSelector";
 
-const PARENT_ATTRIBUTES = [{
+export const PARENT_ATTRIBUTES = [{
   attribute: "parentTerms",
+  property: VocabularyUtils.BROADER,
+  labelKey: "term.metadata.parent",
   selectorLabelKey: "term.metadata.broader",
     selectorHintKey: "term.metadata.broader.hint"
 },...TERM_BROADER_SUBPROPERTIES.slice()];
@@ -308,7 +310,7 @@ export class ParentTermSelector extends React.Component<
     }
     return (
       <>
-        <BroaderTypeSelector onSelect={this.onBroaderTypeSelect} onCancel={this.closeBroaderTypeSelect} show={this.state.showBroaderTypeSelector}/>
+        <BroaderTypeSelector onSelect={this.onBroaderTypeSelect} onCancel={this.closeBroaderTypeSelect} show={this.state.showBroaderTypeSelector} currentValue={this.state.currentBroaderAttribute!}/>
         <IntelligentTreeSelect
           onChange={this.onChange}
           ref={this.treeComponent}
