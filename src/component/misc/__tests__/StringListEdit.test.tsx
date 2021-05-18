@@ -1,8 +1,8 @@
 import * as React from "react";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
-import {StringListEdit} from "../StringListEdit";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
-import {Button} from "reactstrap";
+import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { StringListEdit } from "../StringListEdit";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import { Button } from "reactstrap";
 import BadgeButton from "../BadgeButton";
 
 jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);

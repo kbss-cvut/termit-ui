@@ -1,13 +1,13 @@
 import * as React from "react";
-import {shallow} from "enzyme";
-import {PAGE_SIZE, ParentTermSelector} from "../ParentTermSelector";
+import { shallow } from "enzyme";
+import { PAGE_SIZE, ParentTermSelector } from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
-import Term, {TERM_BROADER_SUBPROPERTIES} from "../../../model/Term";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import Term, { TERM_BROADER_SUBPROPERTIES } from "../../../model/Term";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
-import {langString} from "../../../model/MultilingualString";
-import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
+import { langString } from "../../../model/MultilingualString";
+import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
 import Workspace from "../../../model/Workspace";
 
@@ -37,7 +37,7 @@ describe("ParentTermSelector", () => {
     workspace = new Workspace({
       iri: Generator.generateUri(),
       label: "Test workspace",
-      vocabularies: []
+      vocabularies: [],
     });
     onChange = jest.fn();
     loadTermsFromVocabulary = jest.fn().mockResolvedValue([]);
@@ -93,7 +93,7 @@ describe("ParentTermSelector", () => {
       />
     );
     wrapper.instance().onChange([term]);
-    expect(onChange).toHaveBeenCalledWith({parentTerms: []});
+    expect(onChange).toHaveBeenCalledWith({ parentTerms: [] });
   });
 
   it("handles selection reset by passing object with empty values to onChange handler", () => {
@@ -412,15 +412,15 @@ describe("ParentTermSelector", () => {
     const broader = generateTerms(3, vocabularyIri);
     term[attribute] = broader;
     const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-            id="test"
-            term={term}
-            workspace={workspace}
-            vocabularyIri={vocabularyIri}
-            onChange={onChange}
-            {...fetchFunctions}
-            {...intlFunctions()}
-        />
+      <ParentTermSelector
+        id="test"
+        term={term}
+        workspace={workspace}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
     );
     wrapper.find(".m-broader-remove").at(0).simulate("click");
     const expected = {};
@@ -429,22 +429,24 @@ describe("ParentTermSelector", () => {
   }
 
   it("removes item from other broader subproperty attributes on remove click", () => {
-    TERM_BROADER_SUBPROPERTIES.forEach(sp => testBroaderRemoval(sp.attribute));
+    TERM_BROADER_SUBPROPERTIES.forEach((sp) =>
+      testBroaderRemoval(sp.attribute)
+    );
   });
 
   it("adds term from parentTerms to superTypes when broader property is edited", () => {
     const broader = Generator.generateTerm(vocabularyIri);
     term.parentTerms = [broader];
     const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-            id="test"
-            term={term}
-            workspace={workspace}
-            vocabularyIri={vocabularyIri}
-            onChange={onChange}
-            {...fetchFunctions}
-            {...intlFunctions()}
-        />
+      <ParentTermSelector
+        id="test"
+        term={term}
+        workspace={workspace}
+        vocabularyIri={vocabularyIri}
+        onChange={onChange}
+        {...fetchFunctions}
+        {...intlFunctions()}
+      />
     );
     wrapper.find(".term-broader-selector").at(0).simulate("click");
     expect(wrapper.state().showBroaderTypeSelector).toBeTruthy();

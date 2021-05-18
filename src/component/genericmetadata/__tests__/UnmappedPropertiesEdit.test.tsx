@@ -1,10 +1,10 @@
 import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
-import {UnmappedPropertiesEdit} from "../UnmappedPropertiesEdit";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
-import {GoPlus} from "react-icons/go";
-import {shallow} from "enzyme";
+import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { UnmappedPropertiesEdit } from "../UnmappedPropertiesEdit";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import { GoPlus } from "react-icons/go";
+import { shallow } from "enzyme";
 import RdfsResource from "../../../model/RdfsResource";
 import BadgeButton from "../../misc/BadgeButton";
 

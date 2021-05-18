@@ -1,7 +1,15 @@
 import * as React from "react";
-import {useI18n} from "../hook/useI18n";
-import {FormGroup, FormText, Input, Label, Modal, ModalBody, ModalHeader,} from "reactstrap";
-import {PARENT_ATTRIBUTES} from "./ParentTermSelector";
+import { useI18n } from "../hook/useI18n";
+import {
+  FormGroup,
+  FormText,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+} from "reactstrap";
+import { PARENT_ATTRIBUTES } from "./ParentTermSelector";
 
 interface BroaderTypeSelectorProps {
   onSelect: (property: string) => void;
@@ -14,7 +22,7 @@ const BroaderTypeSelector: React.FC<BroaderTypeSelectorProps> = ({
   onSelect,
   onCancel,
   show,
-    currentValue,
+  currentValue,
 }) => {
   const { i18n } = useI18n();
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
