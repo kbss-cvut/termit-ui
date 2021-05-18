@@ -5,8 +5,6 @@ import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
 import Term, {TERM_BROADER_SUBPROPERTIES} from "../../../model/Term";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
-// @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import {langString} from "../../../model/MultilingualString";
 import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
@@ -75,8 +73,10 @@ describe("ParentTermSelector", () => {
       />
     );
     wrapper.instance().onChange([terms[terms.length - 1]]);
+    const expected = terms.slice();
+    expected.sort(Utils.labelComparator);
     expect(onChange).toHaveBeenCalledWith({
-      parentTerms: terms,
+      parentTerms: expected,
     });
   });
 
@@ -93,7 +93,7 @@ describe("ParentTermSelector", () => {
       />
     );
     wrapper.instance().onChange([term]);
-    expect(wrapper.state().lastSelectedTerm).toBeNull();
+    expect(onChange).toHaveBeenCalledWith({parentTerms: []});
   });
 
   it("handles selection reset by passing object with empty values to onChange handler", () => {
@@ -430,5 +430,29 @@ describe("ParentTermSelector", () => {
 
   it("removes item from other broader subproperty attributes on remove click", () => {
     TERM_BROADER_SUBPROPERTIES.forEach(sp => testBroaderRemoval(sp.attribute));
+  });
+
+  it("adds term from parentTerms to superTypes when broader property is edited", () => {
+    const broader = Generator.generateTerm(vocabularyIri);
+    term.parentTerms = [broader];
+    const wrapper = shallow<ParentTermSelector>(
+        <ParentTermSelector
+            id="test"
+            term={term}
+            workspace={workspace}
+            vocabularyIri={vocabularyIri}
+            onChange={onChange}
+            {...fetchFunctions}
+            {...intlFunctions()}
+        />
+    );
+    wrapper.find(".term-broader-selector").at(0).simulate("click");
+    expect(wrapper.state().showBroaderTypeSelector).toBeTruthy();
+    const newAttribute = TERM_BROADER_SUBPROPERTIES[0].attribute;
+    wrapper.instance().onBroaderTypeSelect(newAttribute);
+    const expected: Partial<Term> = {};
+    expected.parentTerms = [];
+    expected[newAttribute] = [broader];
+    expect(onChange).toHaveBeenCalledWith(expected);
   });
 });

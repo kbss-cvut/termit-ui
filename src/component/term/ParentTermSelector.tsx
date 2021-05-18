@@ -23,6 +23,7 @@ import TermItState from "../../model/TermItState";
 import Workspace from "../../model/Workspace";
 import TermLink from "./TermLink";
 import BadgeButton from "../misc/BadgeButton";
+import BroaderTypeSelector from "./BroaderTypeSelector";
 
 const PARENT_ATTRIBUTES = [{
   attribute: "parentTerms",
@@ -102,7 +103,8 @@ interface ParentTermSelectorState {
   workspaceTermCount: number;
   lastSearchString: string;
 
-  lastSelectedTerm: Term | null;
+  currentBroaderAttribute: string | null;
+  currentBroaderTerm: Term | null;
   showBroaderTypeSelector: boolean;
 }
 
@@ -124,41 +126,55 @@ export class ParentTermSelector extends React.Component<
       vocabularyTermCount: 0,
       workspaceTermCount: 0,
       lastSearchString: "",
-      lastSelectedTerm: null,
+      currentBroaderAttribute: null,
+      currentBroaderTerm: null,
       showBroaderTypeSelector: false,
     };
   }
 
   public onChange = (val: Term | Term[] | null) => {
     if (!val) {
+      // This should not happen since there actually is no value to remove from the tree select
       const change = {};
       PARENT_ATTRIBUTES.forEach(pa => change[pa.attribute] = []);
       this.props.onChange(change);
     } else {
-      const newParents = Utils.sanitizeArray(this.props.term.parentTerms).concat(Utils.sanitizeArray(val));
+      const term = this.props.term;
+      const newParents = Utils.sanitizeArray(term.parentTerms).concat(Utils.sanitizeArray(val).filter(t => t.iri !== term.iri));
+      newParents.sort(Term.labelComparator);
       this.props.onChange({parentTerms: newParents});
     }
   };
 
   private onRemove = (toRemove: Term, attribute: string) => {
+    this.props.onChange(this.constructBroaderRemovalChange(toRemove, attribute));
+  }
+
+  private constructBroaderRemovalChange(toRemove: Term, attribute: string): Partial<Term> {
     // Assume the value is not empty
     const newValue: Term[] = this.props.term[attribute].slice();
     newValue.splice(newValue.indexOf(toRemove), 1);
-    const change = {};
+    const change: Partial<Term> = {};
     change[attribute] = newValue;
-    this.props.onChange(change);
+    return change;
   }
+
+  private onEditBroaderProperty = (term: Term, currentBroaderAttribute: string) => {
+    this.setState({currentBroaderTerm: term, currentBroaderAttribute, showBroaderTypeSelector: true});
+  };
 
   public onBroaderTypeSelect = (attribute: string) => {
     const update: Partial<Term> = {};
     update[attribute] = Utils.sanitizeArray(this.props.term[attribute]).slice();
-    update[attribute].push(this.state.lastSelectedTerm!);
+    update[attribute].push(this.state.currentBroaderTerm!);
+    update[attribute].sort(Term.labelComparator);
+    Object.assign(update, this.constructBroaderRemovalChange(this.state.currentBroaderTerm!, this.state.currentBroaderAttribute!));
     this.props.onChange(update);
     this.closeBroaderTypeSelect();
   };
 
   public closeBroaderTypeSelect = () => {
-    this.setState({ lastSelectedTerm: null, showBroaderTypeSelector: false });
+    this.setState({ currentBroaderTerm: null, currentBroaderAttribute: null, showBroaderTypeSelector: false });
   };
 
   public fetchOptions = (
@@ -292,6 +308,7 @@ export class ParentTermSelector extends React.Component<
     }
     return (
       <>
+        <BroaderTypeSelector onSelect={this.onBroaderTypeSelect} onCancel={this.closeBroaderTypeSelect} show={this.state.showBroaderTypeSelector}/>
         <IntelligentTreeSelect
           onChange={this.onChange}
           ref={this.treeComponent}
@@ -335,7 +352,8 @@ export class ParentTermSelector extends React.Component<
         </td>
           <td className="align-middle pl-3">
             <ButtonToolbar>
-              <BadgeButton color="primary" title={i18n(pt.selectorHintKey)} className="term-broader-selector">
+              <BadgeButton color="primary" title={i18n(pt.selectorHintKey)} className="term-broader-selector"
+              onClick={() => this.onEditBroaderProperty(value, pt.attribute)}>
                   <FaPencilAlt className="mr-1"/>
                   {i18n(pt.selectorLabelKey)}
               </BadgeButton>

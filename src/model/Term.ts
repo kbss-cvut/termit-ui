@@ -288,4 +288,8 @@ export default class Term extends Asset implements TermData {
         result.sort(Utils.labelComparator);
         return result;
     }
+
+    public static labelComparator(a: Term | TermData, b: Term | TermData) {
+        return getLocalized(a.label).localeCompare(getLocalized(b.label));
+    }
 }
