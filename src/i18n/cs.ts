@@ -234,6 +234,9 @@ const cs = {
             "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle",
         "vocabulary.summary.export.error":
             "Nepodařilo se získat data z odpovědi serveru.",
+        "vocabulary.summary.import.action": "Importovat",
+        "vocabulary.summary.import.action.tooltip": "Import SKOS slovníku.",
+        "vocabulary.summary.import.dialog.title": "Importovat SKOS slovník.",
         "vocabulary.summary.startTextAnalysis.title":
             "Spustit textovou analýzu definic všech termínů v tomto slovníku",
         "vocabulary.updated.message": "Slovník úspěšně uložen.",

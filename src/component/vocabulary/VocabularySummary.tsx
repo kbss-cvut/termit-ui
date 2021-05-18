@@ -7,6 +7,7 @@ import TermItState from "../../model/TermItState";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../model/Vocabulary";
 import {
   exportGlossary,
+  importSkosThesaurus,
   loadResource,
   loadVocabulary,
   removeVocabulary,
@@ -37,6 +38,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import ImportVocabulary from "./ImportVocabulary";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -45,6 +47,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   validateVocabulary: (iri: IRI) => Promise<any>;
+  importSkos: (iri: IRI, file: File) => Promise<any>;
   exportToCsv: (iri: IRI) => void;
   exportToExcel: (iri: IRI) => void;
   exportToTurtle: (iri: IRI) => void;
@@ -116,19 +119,22 @@ export class VocabularySummary extends EditableComponent<
     );
   };
 
-  private onExportToCsv = () => {
+  private onExportToCsv = () =>
     this.props.exportToCsv(VocabularyUtils.create(this.props.vocabulary.iri));
-  };
 
-  private onExportToExcel = () => {
+  private onExportToExcel = () =>
     this.props.exportToExcel(VocabularyUtils.create(this.props.vocabulary.iri));
-  };
 
-  private onExportToTurtle = () => {
+  private onExportToTurtle = () =>
     this.props.exportToTurtle(
       VocabularyUtils.create(this.props.vocabulary.iri)
     );
-  };
+
+  private onImport = (file: File) =>
+    this.props.importSkos(
+      VocabularyUtils.create(this.props.vocabulary.iri),
+      file
+    );
 
   public render() {
     const { i18n, vocabulary } = this.props;
@@ -153,6 +159,12 @@ export class VocabularySummary extends EditableComponent<
         </IfUserAuthorized>
       );
     }
+    buttons.push(
+      <ImportVocabulary
+        key="vocabulary.summary.import"
+        performAction={this.onImport}
+      />
+    );
     buttons.push(this.renderExportDropdown());
     buttons.push(
       <IfUserAuthorized
@@ -281,6 +293,8 @@ export default connect(
       removeVocabulary: (vocabulary: Vocabulary) =>
         dispatch(removeVocabulary(vocabulary)),
       validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
+      importSkos: (iri: IRI, file: File) =>
+        dispatch(importSkosThesaurus(iri, file)),
       exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
       exportToExcel: (iri: IRI) =>
         dispatch(exportGlossary(iri, ExportType.Excel)),

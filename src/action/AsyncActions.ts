@@ -1836,3 +1836,40 @@ export function loadNews(language: string) {
             });
     };
 }
+
+export function importSkosThesaurus(vocabularyIri: IRI, data: File) {
+    const action = { type: ActionType.IMPORT_SKOS };
+    const formData = new FormData();
+    formData.append("file", data, "glossary");
+    formData.append("namespace", vocabularyIri.namespace!);
+    return (dispatch: ThunkDispatch) => {
+        dispatch(asyncActionRequest(action, true));
+        return Ajax.post(
+            `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/import`,
+            contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
+        )
+            .then(() => {
+                dispatch(asyncActionSuccess(action));
+                dispatch(loadVocabulary(vocabularyIri));
+                return dispatch(
+                    SyncActions.publishMessage(
+                        new Message(
+                            {
+                                messageId: "vocabulary.import.success",
+                                values: { fileName: data.name },
+                            },
+                            MessageType.SUCCESS
+                        )
+                    )
+                );
+            })
+            .catch((error: ErrorData) => {
+                dispatch(asyncActionFailure(action, error));
+                return dispatch(
+                    SyncActions.publishMessage(
+                        new Message(error, MessageType.ERROR)
+                    )
+                );
+            });
+    };
+}

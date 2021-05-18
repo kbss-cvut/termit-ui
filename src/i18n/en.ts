@@ -230,6 +230,9 @@ const en = {
             "Export SKOS-compatible glossary serialized as Turtle",
         "vocabulary.summary.export.error":
             "Unable to retrieve exported data from server response.",
+        "vocabulary.summary.import.action": "Import",
+        "vocabulary.summary.import.action.tooltip": "SKOS vocabulary import.",
+        "vocabulary.summary.import.dialog.title": "Import SKOS vocabulary.",
         "vocabulary.summary.startTextAnalysis.title":
             "Start text analysis on definitions of all terms in this vocabulary",
         "vocabulary.updated.message": "Vocabulary successfully updated.",
