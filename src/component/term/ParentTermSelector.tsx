@@ -131,12 +131,23 @@ export class ParentTermSelector extends React.Component<
 
   public onChange = (val: Term | Term[] | null) => {
     if (!val) {
-      this.props.onChange({parentTerms: []});
+      const change = {};
+      PARENT_ATTRIBUTES.forEach(pa => change[pa.attribute] = []);
+      this.props.onChange(change);
     } else {
       const newParents = Utils.sanitizeArray(this.props.term.parentTerms).concat(Utils.sanitizeArray(val));
       this.props.onChange({parentTerms: newParents});
     }
   };
+
+  private onRemove = (toRemove: Term, attribute: string) => {
+    // Assume the value is not empty
+    const newValue: Term[] = this.props.term[attribute].slice();
+    newValue.splice(newValue.indexOf(toRemove), 1);
+    const change = {};
+    change[attribute] = newValue;
+    this.props.onChange(change);
+  }
 
   public onBroaderTypeSelect = (attribute: string) => {
     const update: Partial<Term> = {};
@@ -318,7 +329,7 @@ export class ParentTermSelector extends React.Component<
             className="mr-1 align-text-top"
             vocabulary={value.vocabulary}
         />
-        {workspace.containsVocabulary(value.vocabulary.iri) ? <TermLink term={value}/> : getLocalized(value.label)}
+        {value.vocabulary && workspace.containsVocabulary(value.vocabulary.iri) ? <TermLink term={value}/> : getLocalized(value.label)}
       </li>
           </ul>
         </td>
@@ -328,7 +339,7 @@ export class ParentTermSelector extends React.Component<
                   <FaPencilAlt className="mr-1"/>
                   {i18n(pt.selectorLabelKey)}
               </BadgeButton>
-              <BadgeButton color="danger" outline={true}>
+              <BadgeButton color="danger" outline={true} className="m-broader-remove" onClick={() => this.onRemove(value, pt.attribute)}>
                   <FaTrashAlt className="mr-1" />{i18n("properties.edit.remove.text")}
               </BadgeButton>
             </ButtonToolbar>

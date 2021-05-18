@@ -1,16 +1,17 @@
 import * as React from "react";
-import { shallow } from "enzyme";
-import { PAGE_SIZE, ParentTermSelector } from "../ParentTermSelector";
+import {shallow} from "enzyme";
+import {PAGE_SIZE, ParentTermSelector} from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
-import Term, { TERM_BROADER_SUBPROPERTIES } from "../../../model/Term";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import Term, {TERM_BROADER_SUBPROPERTIES} from "../../../model/Term";
+import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
-import { IntelligentTreeSelect } from "intelligent-tree-select";
+import {IntelligentTreeSelect} from "intelligent-tree-select";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
-import { langString } from "../../../model/MultilingualString";
-import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
+import {langString} from "../../../model/MultilingualString";
+import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
+import Workspace from "../../../model/Workspace";
 
 jest.mock("../../../util/StorageUtils");
 
@@ -18,6 +19,7 @@ describe("ParentTermSelector", () => {
   const vocabularyIri = Generator.generateUri();
 
   let term: Term;
+  let workspace: Workspace;
   let onChange: (update: Partial<Term>) => void;
   let loadTermsFromVocabulary: (
     fetchOptions: FetchOptionsFunction,
@@ -34,6 +36,11 @@ describe("ParentTermSelector", () => {
 
   beforeEach(() => {
     term = Generator.generateTerm();
+    workspace = new Workspace({
+      iri: Generator.generateUri(),
+      label: "Test workspace",
+      vocabularies: []
+    });
     onChange = jest.fn();
     loadTermsFromVocabulary = jest.fn().mockResolvedValue([]);
     loadTermsFromCurrentWorkspace = jest.fn().mockResolvedValue([]);
@@ -45,24 +52,6 @@ describe("ParentTermSelector", () => {
     };
   });
 
-  it("passes selected parent as value to tree component", () => {
-    const parent = [Generator.generateTerm(vocabularyIri)];
-    term.parentTerms = parent;
-    const wrapper = shallow(
-      <ParentTermSelector
-        id="test"
-        term={term}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        {...fetchFunctions}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([
-      parent[0].iri,
-    ]);
-  });
-
   function generateTerms(count: number, vocabularyIri?: string) {
     const options: Term[] = [];
     for (let i = 0; i < count; i++) {
@@ -71,104 +60,23 @@ describe("ParentTermSelector", () => {
     return options;
   }
 
-  it("passes selected parents as value to tree component when there are multiple", () => {
-    const parents = generateTerms(2, vocabularyIri);
-    parents.sort(Utils.labelComparator);
-    term.parentTerms = parents;
-    const wrapper = shallow(
-      <ParentTermSelector
-        id="test"
-        term={term}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        {...fetchFunctions}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual(
-      parents.map((p) => p.iri)
-    );
-  });
-
-  it("shows broader type selector on term selection", () => {
-    const terms = [Generator.generateTerm()];
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        term={term}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        {...fetchFunctions}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onChange([terms[0]]);
-    expect(wrapper.state().showBroaderTypeSelector).toBeTruthy();
-    expect(wrapper.state().lastSelectedTerm).toEqual(terms[0]);
-  });
-
   it("populates parentTerms in change object based on selected values", () => {
     const terms = generateTerms(3);
-    term.parentTerms = terms;
+    term.parentTerms = terms.slice(0, terms.length - 1);
     const wrapper = shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
         {...intlFunctions()}
       />
     );
-    wrapper.instance().onChange(terms.slice(0, terms.length - 1));
+    wrapper.instance().onChange([terms[terms.length - 1]]);
     expect(onChange).toHaveBeenCalledWith({
-      parentTerms: terms.slice(0, terms.length - 1),
-      superTypes: [],
-    });
-  });
-
-  it("populates correct attributes in change object based on existing values", () => {
-    const parents = generateTerms(3, vocabularyIri);
-    term.parentTerms = parents;
-    const superTypes = generateTerms(2);
-    term.superTypes = superTypes;
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        term={term}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        {...fetchFunctions}
-        {...intlFunctions()}
-      />
-    );
-    wrapper
-      .instance()
-      .onChange([...parents, ...superTypes.slice(0, superTypes.length - 1)]);
-    expect(onChange).toHaveBeenCalledWith({
-      parentTerms: parents,
-      superTypes: superTypes.slice(0, superTypes.length - 1),
-    });
-  });
-
-  it("passes update object with correct attribute based on existing value plus selected term on broader type selection", () => {
-    const superTypes = generateTerms(2);
-    term.superTypes = superTypes;
-    const selected = Generator.generateTerm();
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        term={term}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        {...fetchFunctions}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.setState({ lastSelectedTerm: selected });
-    wrapper.instance().onBroaderTypeSelect("superTypes");
-    expect(onChange).toHaveBeenCalledWith({
-      superTypes: [...superTypes, selected],
+      parentTerms: terms,
     });
   });
 
@@ -177,6 +85,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -193,6 +102,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={Generator.generateUri()}
         onChange={onChange}
         {...fetchFunctions}
@@ -216,6 +126,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={Generator.generateUri()}
         onChange={onChange}
         {...fetchFunctions}
@@ -239,6 +150,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={currentTerm}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -262,6 +174,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={currentTerm}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -288,6 +201,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -316,6 +230,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -339,6 +254,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -366,6 +282,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -390,6 +307,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -417,6 +335,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -451,6 +370,7 @@ describe("ParentTermSelector", () => {
       <ParentTermSelector
         id="test"
         term={term}
+        workspace={workspace}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
         {...fetchFunctions}
@@ -482,5 +402,33 @@ describe("ParentTermSelector", () => {
           VocabularyUtils.create(vocabularyIri)
         );
       });
+  });
+
+  it("removes item from parent terms on remove click", () => {
+    testBroaderRemoval("parentTerms");
+  });
+
+  function testBroaderRemoval(attribute: string) {
+    const broader = generateTerms(3, vocabularyIri);
+    term[attribute] = broader;
+    const wrapper = shallow<ParentTermSelector>(
+        <ParentTermSelector
+            id="test"
+            term={term}
+            workspace={workspace}
+            vocabularyIri={vocabularyIri}
+            onChange={onChange}
+            {...fetchFunctions}
+            {...intlFunctions()}
+        />
+    );
+    wrapper.find(".m-broader-remove").at(0).simulate("click");
+    const expected = {};
+    expected[attribute] = broader.slice(1);
+    expect(onChange).toHaveBeenCalledWith(expected);
+  }
+
+  it("removes item from other broader subproperty attributes on remove click", () => {
+    TERM_BROADER_SUBPROPERTIES.forEach(sp => testBroaderRemoval(sp.attribute));
   });
 });
