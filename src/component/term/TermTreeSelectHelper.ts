@@ -1,7 +1,7 @@
-import Term, {TermData, TermInfo} from "../../model/Term";
-import {getLocalized} from "../../model/MultilingualString";
-import {HasI18n} from "../hoc/withI18n";
-import {getShortLocale} from "../../util/IntlUtil";
+import Term, { TermData, TermInfo } from "../../model/Term";
+import { getLocalized } from "../../model/MultilingualString";
+import { HasI18n } from "../hoc/withI18n";
+import { getShortLocale } from "../../util/IntlUtil";
 
 /**
  * Common properties for a tree selector containing terms
@@ -81,7 +81,10 @@ function vocabularyMatches(
  * @param terms Terms to flatten
  * @param visited Set of already visited terms. Used to prevent recursion cycles
  */
-function flattenAncestors(terms: Term[], visited: Set<string> = new Set<string>()) {
+function flattenAncestors(
+    terms: Term[],
+    visited: Set<string> = new Set<string>()
+) {
     let result: Term[] = [];
     for (const t of terms) {
         if (visited.has(t.iri)) {
