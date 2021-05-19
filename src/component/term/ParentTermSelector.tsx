@@ -39,7 +39,7 @@ export const PARENT_ATTRIBUTES = [
     selectorLabelKey: "term.metadata.broader",
     selectorHintKey: "term.metadata.broader.hint",
   },
-  ...TERM_BROADER_SUBPROPERTIES.slice(),
+  ...TERM_BROADER_SUBPROPERTIES,
 ];
 
 function enhanceWithCurrentTerm(

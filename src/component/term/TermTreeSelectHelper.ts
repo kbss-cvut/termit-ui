@@ -79,13 +79,21 @@ function vocabularyMatches(
  *
  * This is necessary for proper functionality of the tree select.
  * @param terms Terms to flatten
+ * @param visited Set of already visited terms. Used to prevent recursion cycles
  */
-function flattenAncestors(terms: Term[]) {
+function flattenAncestors(
+    terms: Term[],
+    visited: Set<string> = new Set<string>()
+) {
     let result: Term[] = [];
     for (const t of terms) {
+        if (visited.has(t.iri)) {
+            continue;
+        }
+        visited.add(t.iri);
         result.push(t);
         if (t.parentTerms) {
-            result = result.concat(flattenAncestors(t.parentTerms));
+            result = result.concat(flattenAncestors(t.parentTerms, visited));
         }
     }
     return result;
