@@ -60,7 +60,9 @@ export default class Comment
         const result = Object.assign(
             { types: [VocabularyUtils.COMMENT] },
             this,
-            { "@context": CONTEXT }
+            {
+                "@context": CONTEXT,
+            }
         );
         if (result.reactions) {
             Utils.sanitizeArray(result.reactions).forEach(

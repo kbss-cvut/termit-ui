@@ -2,7 +2,6 @@ import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import {
-  Badge,
   Button,
   FormFeedback,
   Input,
@@ -16,6 +15,7 @@ import Utils from "../../util/Utils";
 import HelpIcon from "./HelpIcon";
 import "./StringListEdit.scss";
 import MultilingualIcon from "./MultilingualIcon";
+import BadgeButton from "./BadgeButton";
 
 interface StringListEditProps extends HasI18n {
   list?: string[];
@@ -122,7 +122,7 @@ export class StringListEdit extends React.Component<
       return null;
     }
     return (
-      <table>
+      <table className="mt-1">
         <tbody>
           {list.map((s) => (
             <tr key={s}>
@@ -132,13 +132,15 @@ export class StringListEdit extends React.Component<
                 </ul>
               </td>
               <td className="align-middle">
-                <Badge
+                <BadgeButton
+                  color="danger"
+                  outline={true}
+                  className="ml-3"
                   title={this.getText("remove.title")}
-                  className="term-edit-source-remove align-middle"
                   onClick={this.onRemove.bind(null, s)}
                 >
                   <FaTrashAlt /> {this.getText("remove.text")}
-                </Badge>
+                </BadgeButton>
               </td>
             </tr>
           ))}

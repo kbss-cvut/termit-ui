@@ -41,7 +41,7 @@ function renderTermList(
               label={
                 <>
                   <VocabularyNameBadge
-                    className="mr-1 align-text-bottom"
+                    className="mr-1 align-text-top"
                     vocabulary={item.vocabulary}
                   />
                   {getLocalized(item.label, language)}

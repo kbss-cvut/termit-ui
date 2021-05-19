@@ -5,7 +5,7 @@ import Term, { TERM_BROADER_SUBPROPERTIES, TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
-import { FormFeedback, FormGroup, Label } from "reactstrap";
+import { ButtonToolbar, FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
@@ -24,7 +24,23 @@ import { getLocalized } from "../../model/MultilingualString";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { loadTerms } from "../../action/AsyncActions";
 import HelpIcon from "../misc/HelpIcon";
+import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import TermItState from "../../model/TermItState";
+import Workspace from "../../model/Workspace";
+import TermLink from "./TermLink";
+import BadgeButton from "../misc/BadgeButton";
 import BroaderTypeSelector from "./BroaderTypeSelector";
+
+export const PARENT_ATTRIBUTES = [
+  {
+    attribute: "parentTerms",
+    property: VocabularyUtils.BROADER,
+    labelKey: "term.metadata.parent",
+    selectorLabelKey: "term.metadata.broader",
+    selectorHintKey: "term.metadata.broader.hint",
+  },
+  ...TERM_BROADER_SUBPROPERTIES.slice(),
+];
 
 function enhanceWithCurrentTerm(
   terms: Term[],
@@ -70,24 +86,13 @@ function createValueRenderer() {
   );
 }
 
-function findNewlySelectedTerm(existing: Term[], newValue: Term[]): Term {
-  for (let t of newValue) {
-    if (!existing.find((ex) => ex.iri === t.iri)) {
-      return t;
-    }
-  }
-  // This should not happen, we assume there is a newly selected term
-  throw new Error(
-    "Expected newValue to contain a previously not selected term!"
-  );
-}
-
 interface ParentTermSelectorProps extends HasI18n {
   id: string;
   term: Term | TermData;
   vocabularyIri: string;
   invalid?: boolean;
   invalidMessage?: JSX.Element;
+  workspace: Workspace;
   onChange: (change: Partial<TermData>) => void;
   loadTermsFromVocabulary: (
     fetchOptions: FetchOptionsFunction,
@@ -109,7 +114,8 @@ interface ParentTermSelectorState {
   workspaceTermCount: number;
   lastSearchString: string;
 
-  lastSelectedTerm: Term | null;
+  currentBroaderAttribute: string | null;
+  currentBroaderTerm: Term | null;
   showBroaderTypeSelector: boolean;
 }
 
@@ -131,55 +137,79 @@ export class ParentTermSelector extends React.Component<
       vocabularyTermCount: 0,
       workspaceTermCount: 0,
       lastSearchString: "",
-      lastSelectedTerm: null,
+      currentBroaderAttribute: null,
+      currentBroaderTerm: null,
       showBroaderTypeSelector: false,
     };
   }
 
-  public onChange = (val: Term[] | Term | null) => {
+  public onChange = (val: Term | Term[] | null) => {
     if (!val) {
-      this.valueToTermUpdate([]);
+      // This should not happen since there actually is no value to remove from the tree select
+      const change = {};
+      PARENT_ATTRIBUTES.forEach((pa) => (change[pa.attribute] = []));
+      this.props.onChange(change);
     } else {
-      const valArr = Utils.sanitizeArray(val);
-      const parentArr = Term.consolidateBroaderTerms(this.props.term);
-      if (valArr.length > parentArr.length) {
-        const newlySelected = findNewlySelectedTerm(parentArr, valArr)!;
-        if (newlySelected.iri !== this.props.term.iri) {
-          this.setState({
-            lastSelectedTerm: newlySelected,
-            showBroaderTypeSelector: true,
-          });
-        }
-      } else {
-        this.valueToTermUpdate(valArr);
-      }
+      const term = this.props.term;
+      const newParents = Utils.sanitizeArray(term.parentTerms).concat(
+        Utils.sanitizeArray(val).filter((t) => t.iri !== term.iri)
+      );
+      newParents.sort(Term.labelComparator);
+      this.props.onChange({ parentTerms: newParents });
     }
   };
 
-  private valueToTermUpdate(value: Term[]) {
-    const update: Partial<Term> = {};
-    const term = this.props.term;
-    const valueIris = value.map((t) => t.iri);
-    const attributes = TERM_BROADER_SUBPROPERTIES.map((sp) => sp.attribute);
-    attributes.push("parentTerms");
-    attributes.forEach((att) => {
-      update[att] = Utils.sanitizeArray(term[att]).filter(
-        (t) => valueIris.indexOf(t.iri) !== -1
-      );
-    });
-    this.props.onChange(update);
+  private onRemove = (toRemove: Term, attribute: string) => {
+    this.props.onChange(
+      this.constructBroaderRemovalChange(toRemove, attribute)
+    );
+  };
+
+  private constructBroaderRemovalChange(
+    toRemove: Term,
+    attribute: string
+  ): Partial<Term> {
+    // Assume the value is not empty
+    const newValue: Term[] = this.props.term[attribute].slice();
+    newValue.splice(newValue.indexOf(toRemove), 1);
+    const change: Partial<Term> = {};
+    change[attribute] = newValue;
+    return change;
   }
+
+  private onEditBroaderProperty = (
+    term: Term,
+    currentBroaderAttribute: string
+  ) => {
+    this.setState({
+      currentBroaderTerm: term,
+      currentBroaderAttribute,
+      showBroaderTypeSelector: true,
+    });
+  };
 
   public onBroaderTypeSelect = (attribute: string) => {
     const update: Partial<Term> = {};
     update[attribute] = Utils.sanitizeArray(this.props.term[attribute]).slice();
-    update[attribute].push(this.state.lastSelectedTerm!);
+    update[attribute].push(this.state.currentBroaderTerm!);
+    update[attribute].sort(Term.labelComparator);
+    Object.assign(
+      update,
+      this.constructBroaderRemovalChange(
+        this.state.currentBroaderTerm!,
+        this.state.currentBroaderAttribute!
+      )
+    );
     this.props.onChange(update);
     this.closeBroaderTypeSelect();
   };
 
   public closeBroaderTypeSelect = () => {
-    this.setState({ lastSelectedTerm: null, showBroaderTypeSelector: false });
+    this.setState({
+      currentBroaderTerm: null,
+      currentBroaderAttribute: null,
+      showBroaderTypeSelector: false,
+    });
   };
 
   public fetchOptions = (
@@ -290,11 +320,6 @@ export class ParentTermSelector extends React.Component<
     return this.props.loadTermsFromCanonical(fetchOptions);
   };
 
-  private resolveSelectedParents() {
-    const parents = Term.consolidateBroaderTerms(this.props.term);
-    return parents.filter((p) => p.vocabulary !== undefined).map((p) => p.iri);
-  }
-
   public render() {
     const i18n = this.props.i18n;
     return (
@@ -304,6 +329,7 @@ export class ParentTermSelector extends React.Component<
           <HelpIcon id={"parent-term-select"} text={i18n("term.parent.help")} />
         </Label>
         {this.renderSelector()}
+        {this.renderSelected()}
       </FormGroup>
     );
   }
@@ -321,11 +347,12 @@ export class ParentTermSelector extends React.Component<
           onSelect={this.onBroaderTypeSelect}
           onCancel={this.closeBroaderTypeSelect}
           show={this.state.showBroaderTypeSelector}
+          currentValue={this.state.currentBroaderAttribute!}
         />
         <IntelligentTreeSelect
           onChange={this.onChange}
           ref={this.treeComponent}
-          value={this.resolveSelectedParents()}
+          value={[]}
           fetchOptions={this.fetchOptions}
           fetchLimit={PAGE_SIZE}
           searchDelay={SEARCH_DELAY}
@@ -346,20 +373,81 @@ export class ParentTermSelector extends React.Component<
       </>
     );
   }
+
+  private renderSelected() {
+    const { i18n, term, workspace } = this.props;
+    return (
+      <table className="mt-1">
+        <tbody>
+          {PARENT_ATTRIBUTES.map((pt) =>
+            Utils.sanitizeArray(term[pt.attribute]).map((value) => (
+              <tr key={value.iri}>
+                <td className="align-middle">
+                  <ul className="term-items mt-0 mb-0">
+                    <li>
+                      <VocabularyNameBadge
+                        className="mr-1 align-text-top"
+                        vocabulary={value.vocabulary}
+                      />
+                      {value.vocabulary &&
+                      workspace.containsVocabulary(value.vocabulary.iri) ? (
+                        <TermLink term={value} />
+                      ) : (
+                        getLocalized(value.label)
+                      )}
+                    </li>
+                  </ul>
+                </td>
+                <td className="align-middle pl-3">
+                  <ButtonToolbar>
+                    <BadgeButton
+                      color="primary"
+                      title={i18n(pt.selectorHintKey)}
+                      className="term-broader-selector"
+                      onClick={() =>
+                        this.onEditBroaderProperty(value, pt.attribute)
+                      }
+                    >
+                      <FaPencilAlt className="mr-1" />
+                      {i18n(pt.selectorLabelKey)}
+                    </BadgeButton>
+                    <BadgeButton
+                      color="danger"
+                      outline={true}
+                      className="m-broader-remove"
+                      onClick={() => this.onRemove(value, pt.attribute)}
+                    >
+                      <FaTrashAlt className="mr-1" />
+                      {i18n("properties.edit.remove.text")}
+                    </BadgeButton>
+                  </ButtonToolbar>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    );
+  }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    loadTermsFromVocabulary: (
-      fetchOptions: FetchOptionsFunction,
-      vocabularyIri: IRI
-    ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
-    loadTermsFromCurrentWorkspace: (
-      fetchOptions: FetchOptionsFunction,
-      excludeVocabulary: string
-    ) =>
-      dispatch(loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)),
-    loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
-      dispatch(loadTermsFromCanonical(fetchOptions)),
-  };
-})(injectIntl(withI18n(ParentTermSelector)));
+export default connect(
+  (state: TermItState) => ({ workspace: state.workspace! }),
+  (dispatch: ThunkDispatch) => {
+    return {
+      loadTermsFromVocabulary: (
+        fetchOptions: FetchOptionsFunction,
+        vocabularyIri: IRI
+      ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
+      loadTermsFromCurrentWorkspace: (
+        fetchOptions: FetchOptionsFunction,
+        excludeVocabulary: string
+      ) =>
+        dispatch(
+          loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)
+        ),
+      loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
+        dispatch(loadTermsFromCanonical(fetchOptions)),
+    };
+  }
+)(injectIntl(withI18n(ParentTermSelector)));

@@ -9,18 +9,20 @@ import {
   ModalBody,
   ModalHeader,
 } from "reactstrap";
-import { TERM_BROADER_SUBPROPERTIES } from "../../model/Term";
+import { PARENT_ATTRIBUTES } from "./ParentTermSelector";
 
 interface BroaderTypeSelectorProps {
   onSelect: (property: string) => void;
   onCancel: () => void;
   show: boolean;
+  currentValue: string;
 }
 
 const BroaderTypeSelector: React.FC<BroaderTypeSelectorProps> = ({
   onSelect,
   onCancel,
   show,
+  currentValue,
 }) => {
   const { i18n } = useI18n();
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,19 +36,7 @@ const BroaderTypeSelector: React.FC<BroaderTypeSelectorProps> = ({
       </ModalHeader>
       <ModalBody>
         <FormGroup tag="fieldset">
-          <FormGroup check={true}>
-            <Label check={true} className="attribute-label mb-0">
-              <Input
-                type="radio"
-                name="parentTerms"
-                className="mr-1"
-                onChange={onChange}
-              />
-              {i18n("term.metadata.broader")}
-            </Label>
-            <FormText>{i18n("term.metadata.broader.hint")}</FormText>
-          </FormGroup>
-          {TERM_BROADER_SUBPROPERTIES.map((bsp) => (
+          {PARENT_ATTRIBUTES.map((bsp) => (
             <FormGroup key={bsp.attribute} check={true} className="mt-2">
               <Label check={true} className="attribute-label mb-0">
                 <Input
@@ -54,6 +44,7 @@ const BroaderTypeSelector: React.FC<BroaderTypeSelectorProps> = ({
                   name={bsp.attribute}
                   className="mr-1"
                   onChange={onChange}
+                  checked={currentValue === bsp.attribute}
                 />
                 {i18n(bsp.selectorLabelKey)}
               </Label>
