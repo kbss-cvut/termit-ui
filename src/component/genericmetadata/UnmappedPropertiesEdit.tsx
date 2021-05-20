@@ -1,21 +1,21 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Button, Col, FormGroup, Label, Row} from "reactstrap";
-import {GoPlus} from "react-icons/go";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import { Button, Col, FormGroup, Label, Row } from "reactstrap";
+import { GoPlus } from "react-icons/go";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
 import OutgoingLink from "../misc/OutgoingLink";
 import AssetLabel from "../misc/AssetLabel";
 import CustomInput from "../misc/CustomInput";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
-import {ThunkDispatch} from "../../util/Types";
-import {createProperty, getProperties} from "../../action/AsyncActions";
-import RdfsResource, {RdfsResourceData} from "../../model/RdfsResource";
+import { ThunkDispatch } from "../../util/Types";
+import { createProperty, getProperties } from "../../action/AsyncActions";
+import RdfsResource, { RdfsResourceData } from "../../model/RdfsResource";
 import CreatePropertyForm from "./CreatePropertyForm";
-import {clearProperties} from "../../action/SyncActions";
-import {FaTrashAlt} from "react-icons/fa";
+import { clearProperties } from "../../action/SyncActions";
+import { FaTrashAlt } from "react-icons/fa";
 import "./UnmappedProperties.scss";
 import BadgeButton from "../misc/BadgeButton";
 
@@ -150,7 +150,9 @@ export class UnmappedPropertiesEdit extends React.Component<
       const items = values.map((v) => (
         <li key={v}>
           {v}
-          <BadgeButton color="danger" outline={true}
+          <BadgeButton
+            color="danger"
+            outline={true}
             title={this.props.i18n("properties.edit.remove")}
             className="ml-3"
             onClick={this.onRemove.bind(null, k, v)}

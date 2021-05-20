@@ -1,5 +1,5 @@
-import {DomHandler, Parser as HtmlParser} from "htmlparser2";
-import {Element, Node} from "domhandler";
+import { DomHandler, Parser as HtmlParser } from "htmlparser2";
+import { Element, Node } from "domhandler";
 import render from "dom-serializer";
 
 const RDF_ATTRIBUTE_NAMES = ["about", "property", "resource", "typeof"];
@@ -16,7 +16,7 @@ const HtmlParserUtils = {
     },
 
     dom2html(dom: Node[]): string {
-        return render(dom, {decodeEntities: false});
+        return render(dom, { decodeEntities: false });
     },
     /**
      * Returns prefix map defined in attribute 'prefix' of an html node.
