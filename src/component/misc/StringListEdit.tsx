@@ -1,9 +1,16 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Button, FormFeedback, Input, InputGroup, InputGroupAddon, Label,} from "reactstrap";
-import {GoPlus} from "react-icons/go";
-import {FaTrashAlt} from "react-icons/fa";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import {
+  Button,
+  FormFeedback,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  Label,
+} from "reactstrap";
+import { GoPlus } from "react-icons/go";
+import { FaTrashAlt } from "react-icons/fa";
 import Utils from "../../util/Utils";
 import HelpIcon from "./HelpIcon";
 import "./StringListEdit.scss";
@@ -125,7 +132,9 @@ export class StringListEdit extends React.Component<
                 </ul>
               </td>
               <td className="align-middle">
-                <BadgeButton color="danger" outline={true}
+                <BadgeButton
+                  color="danger"
+                  outline={true}
                   title={this.getText("remove.title")}
                   className="ml-3"
                   onClick={this.onRemove.bind(null, s)}
