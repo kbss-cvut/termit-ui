@@ -381,7 +381,7 @@ const cs = {
         "term.metadata.altLabels.addButton.text": "Přidat",
         "term.metadata.altLabels.addButton.title":
             "Kliknutím přidáte synonymum",
-        "term.metadata.altLabels.remove": "Odebrat synonymum",
+        "term.metadata.altLabels.remove.title": "Odebrat synonymum",
         "term.metadata.altLabels.remove.text": "Odebrat",
         "term.metadata.altLabels.help":
             "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
@@ -393,7 +393,7 @@ const cs = {
         "term.metadata.hiddenLabels.addButton.text": "Přidat",
         "term.metadata.hiddenLabels.addButton.title":
             "Kliknutím přidáte hodnotu vyhledávacího textu",
-        "term.metadata.hiddenLabels.remove": "Odebrat vyhledávací text",
+        "term.metadata.hiddenLabels.remove.title": "Odebrat vyhledávací text",
         "term.metadata.hiddenLabels.remove.text": "Odebrat",
         "term.metadata.hiddenLabels.help":
             "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
