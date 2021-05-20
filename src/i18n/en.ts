@@ -370,7 +370,7 @@ const en = {
             "Enter a new synonym and press 'Add'",
         "term.metadata.altLabels.addButton.text": "Add",
         "term.metadata.altLabels.addButton.title": "Click to add the synonym",
-        "term.metadata.altLabels.remove": "Remove synonym",
+        "term.metadata.altLabels.remove.title": "Remove synonym",
         "term.metadata.altLabels.remove.text": "Remove",
         "term.metadata.altLabels.help":
             "(Optional) synonyms of the label. Synonyms can be contextual - e.g. term " +
@@ -382,7 +382,7 @@ const en = {
         "term.metadata.hiddenLabels.addButton.text": "Add",
         "term.metadata.hiddenLabels.addButton.title":
             "Click to add the search string",
-        "term.metadata.hiddenLabels.remove": "Remove search string",
+        "term.metadata.hiddenLabels.remove.title": "Remove search string",
         "term.metadata.hiddenLabels.remove.text": "Remove",
         "term.metadata.hiddenLabels.help":
             "(Optional) search strings, which are not meant for visual presentation of terms and" +
