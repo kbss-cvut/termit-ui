@@ -39,7 +39,8 @@ export interface CommentData {
 }
 
 export default class Comment
-    implements CommentData, SupportsJsonLd<CommentData> {
+    implements CommentData, SupportsJsonLd<CommentData>
+{
     public iri?: string;
     public content: string;
     public author?: User;

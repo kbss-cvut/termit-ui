@@ -368,8 +368,9 @@ const en = {
         "term.metadata.altLabels.label": "Synonyms",
         "term.metadata.altLabels.placeholder":
             "Enter a new synonym and press 'Add'",
-        "term.metadata.altLabels.placeholder.text": "Add",
-        "term.metadata.altLabels.remove": "Remove synonym",
+        "term.metadata.altLabels.addButton.text": "Add",
+        "term.metadata.altLabels.addButton.title": "Click to add the synonym",
+        "term.metadata.altLabels.remove.title": "Remove synonym",
         "term.metadata.altLabels.remove.text": "Remove",
         "term.metadata.altLabels.help":
             "(Optional) synonyms of the label. Synonyms can be contextual - e.g. term " +
@@ -378,8 +379,10 @@ const en = {
         "term.metadata.hiddenLabels.label": "Search strings",
         "term.metadata.hiddenLabels.placeholder":
             "Enter a new search string and press 'Add'",
-        "term.metadata.hiddenLabels.placeholder.text": "Add",
-        "term.metadata.hiddenLabels.remove": "Remove search string",
+        "term.metadata.hiddenLabels.addButton.text": "Add",
+        "term.metadata.hiddenLabels.addButton.title":
+            "Click to add the search string",
+        "term.metadata.hiddenLabels.remove.title": "Remove search string",
         "term.metadata.hiddenLabels.remove.text": "Remove",
         "term.metadata.hiddenLabels.help":
             "(Optional) search strings, which are not meant for visual presentation of terms and" +

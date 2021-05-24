@@ -2,7 +2,6 @@ import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import {
-  Badge,
   Button,
   FormFeedback,
   Input,
@@ -16,6 +15,7 @@ import Utils from "../../util/Utils";
 import HelpIcon from "./HelpIcon";
 import "./StringListEdit.scss";
 import MultilingualIcon from "./MultilingualIcon";
+import BadgeButton from "./BadgeButton";
 
 interface StringListEditProps extends HasI18n {
   list?: string[];
@@ -99,10 +99,10 @@ export class StringListEdit extends React.Component<
               onClick={this.onAdd}
               className="term-edit-source-add-button"
               disabled={this.state.inputValue.trim().length === 0}
-              title={this.getText("placeholder.title")}
+              title={this.getText("addButton.title")}
             >
               <GoPlus />
-              &nbsp;{this.getText("placeholder.text")}
+              &nbsp;{this.getText("addButton.text")}
             </Button>
           </InputGroupAddon>
           {this.props.invalid ? (
@@ -132,13 +132,15 @@ export class StringListEdit extends React.Component<
                 </ul>
               </td>
               <td className="align-middle">
-                <Badge
+                <BadgeButton
+                  color="danger"
+                  outline={true}
                   title={this.getText("remove.title")}
-                  className="term-edit-source-remove align-middle"
+                  className="ml-3"
                   onClick={this.onRemove.bind(null, s)}
                 >
                   <FaTrashAlt /> {this.getText("remove.text")}
-                </Badge>
+                </BadgeButton>
               </td>
             </tr>
           ))}

@@ -345,9 +345,8 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadVocabularies())
             ).then(() => {
-                const loadSuccessAction: AsyncActionSuccess<
-                    Vocabulary[]
-                > = store.getActions()[1];
+                const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> =
+                    store.getActions()[1];
                 const result = loadSuccessAction.payload;
                 verifyExpectedAssets(vocabularies, result);
             });
@@ -361,9 +360,8 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadVocabularies())
             ).then(() => {
-                const loadSuccessAction: AsyncActionSuccess<
-                    Vocabulary[]
-                > = store.getActions()[1];
+                const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> =
+                    store.getActions()[1];
                 const result = loadSuccessAction.payload;
                 expect(Array.isArray(result)).toBeTruthy();
                 expect(result.length).toEqual(1);
@@ -394,7 +392,8 @@ describe("Async actions", () => {
                     loadFileContent({ fragment: "metropolitan-plan" })
                 )
             ).then(() => {
-                const loadSuccessAction: AsyncActionSuccess<string> = store.getActions()[1];
+                const loadSuccessAction: AsyncActionSuccess<string> =
+                    store.getActions()[1];
                 expect(loadSuccessAction.payload).toContain("html");
             });
         });
@@ -861,15 +860,14 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadTypes())
             ).then(() => {
-                const loadSuccessAction: AsyncActionSuccess<
-                    Vocabulary[]
-                > = store
-                    .getActions()
-                    .find(
-                        (a) =>
-                            a.type === ActionType.LOAD_TYPES &&
-                            a.status === AsyncActionStatus.SUCCESS
-                    );
+                const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> =
+                    store
+                        .getActions()
+                        .find(
+                            (a) =>
+                                a.type === ActionType.LOAD_TYPES &&
+                                a.status === AsyncActionStatus.SUCCESS
+                        );
                 expect(loadSuccessAction).toBeDefined();
                 const data = loadSuccessAction.payload;
                 verifyExpectedAssets(types, data);
@@ -928,8 +926,7 @@ describe("Async actions", () => {
                 label: langString("Test"),
                 scopeNote: langString("Test term"),
                 vocabulary: {
-                    iri:
-                        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary",
+                    iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary",
                 },
             });
             const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -1339,9 +1336,8 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(getProperties())!
             ).then(() => {
-                const action: AsyncActionSuccess<
-                    RdfsResource[]
-                > = store.getActions()[1];
+                const action: AsyncActionSuccess<RdfsResource[]> =
+                    store.getActions()[1];
                 expect(action.payload.length).toEqual(1);
                 expect(action.payload[0].iri).toEqual(result[0]["@id"]);
                 expect(action.payload[0].label).toEqual(
@@ -1384,7 +1380,9 @@ describe("Async actions", () => {
                 (store.dispatch as ThunkDispatch)(createProperty(data))
             ).then(() => {
                 expect(Ajax.post).toHaveBeenCalled();
-                const payload = (Ajax.post as jest.Mock).mock.calls[0][1].getContent();
+                const payload = (
+                    Ajax.post as jest.Mock
+                ).mock.calls[0][1].getContent();
                 expect(payload.iri).toEqual(data.iri);
                 expect(payload.label).toEqual(data.label);
                 expect(payload.comment).toEqual(data.comment);
@@ -1402,9 +1400,8 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadResources())
             ).then(() => {
-                const loadSuccessAction: AsyncActionSuccess<
-                    Resource[]
-                > = store.getActions()[1];
+                const loadSuccessAction: AsyncActionSuccess<Resource[]> =
+                    store.getActions()[1];
                 const result = loadSuccessAction.payload;
                 expect(result.length).toEqual(resources.length);
                 result.sort((a, b) => a.iri.localeCompare(b.iri));
@@ -1425,9 +1422,8 @@ describe("Async actions", () => {
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(loadResources())
             ).then(() => {
-                const loadSuccessAction: AsyncActionSuccess<
-                    Resource[]
-                > = store.getActions()[1];
+                const loadSuccessAction: AsyncActionSuccess<Resource[]> =
+                    store.getActions()[1];
                 const result = loadSuccessAction.payload;
                 expect(Array.isArray(result)).toBeTruthy();
                 expect(result.length).toEqual(1);
@@ -1556,7 +1552,8 @@ describe("Async actions", () => {
                     loadResource(VocabularyUtils.create(iri))
                 )
             ).then(() => {
-                const loadSuccessAction: AsyncActionSuccess<Resource> = store.getActions()[1];
+                const loadSuccessAction: AsyncActionSuccess<Resource> =
+                    store.getActions()[1];
                 const result = loadSuccessAction.payload;
                 expect(result instanceof TermItFile).toBeTruthy();
             });
@@ -1852,9 +1849,10 @@ describe("Async actions", () => {
                     "@id": Generator.generateUri(),
                     "http://www.w3.org/2004/02/skos/core#prefLabel":
                         "Test term",
-                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku": {
-                        "@id": Generator.generateUri(),
-                    },
+                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
+                        {
+                            "@id": Generator.generateUri(),
+                        },
                     "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
                     "http://purl.org/dc/terms/modified": Date.now(),
                     "@type": [VocabularyUtils.TERM],
@@ -1883,17 +1881,19 @@ describe("Async actions", () => {
                     "@id": Generator.generateUri(),
                     "http://www.w3.org/2004/02/skos/core#prefLabel":
                         "Test term",
-                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku": {
-                        "@id": Generator.generateUri(),
-                    },
+                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
+                        {
+                            "@id": Generator.generateUri(),
+                        },
                     "http://www.w3.org/2004/02/skos/core#broader": [
                         {
                             "@id": Generator.generateUri(),
                             "http://www.w3.org/2004/02/skos/core#prefLabel":
                                 "Test parent one",
-                            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku": {
-                                "@id": Generator.generateUri(),
-                            },
+                            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
+                                {
+                                    "@id": Generator.generateUri(),
+                                },
                             "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
                             "http://purl.org/dc/terms/modified": Date.now(),
                             "@type": [VocabularyUtils.TERM],
@@ -1902,9 +1902,10 @@ describe("Async actions", () => {
                             "@id": Generator.generateUri(),
                             "http://www.w3.org/2004/02/skos/core#prefLabel":
                                 "Test parent two",
-                            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku": {
-                                "@id": Generator.generateUri(),
-                            },
+                            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
+                                {
+                                    "@id": Generator.generateUri(),
+                                },
                             "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
                             "http://purl.org/dc/terms/modified": Date.now(),
                             "@type": [VocabularyUtils.TERM],
@@ -1953,9 +1954,10 @@ describe("Async actions", () => {
                     "http://www.w3.org/2000/01/rdf-schema#label": "Test term",
                     "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
                     "http://purl.org/dc/terms/modified": Date.now(),
-                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku": {
-                        "@id": Generator.generateUri(),
-                    },
+                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
+                        {
+                            "@id": Generator.generateUri(),
+                        },
                     "@type": [VocabularyUtils.TERM],
                 },
             ];
@@ -1992,9 +1994,10 @@ describe("Async actions", () => {
                     "http://www.w3.org/2000/01/rdf-schema#label": termLabel,
                     "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
                     "http://purl.org/dc/terms/modified": Date.now(),
-                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku": {
-                        "@id": Generator.generateUri(),
-                    },
+                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
+                        {
+                            "@id": Generator.generateUri(),
+                        },
                     "@type": [VocabularyUtils.TERM],
                 },
             ];
@@ -2039,8 +2042,7 @@ describe("Async actions", () => {
 
         it("returns new resource IRI on success", () => {
             const resource = new Resource({
-                iri:
-                    "http://onto.fel.cvut.cz/ontologies/termit/resources/test-resource",
+                iri: "http://onto.fel.cvut.cz/ontologies/termit/resources/test-resource",
                 label: "Test resource",
             });
             Ajax.post = jest
@@ -2783,27 +2785,26 @@ describe("Async actions", () => {
     describe("loadConfiguration", () => {
         it("maps returned role data to UserRole instances", () => {
             const data = {
-                "@id":
-                    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/konfigurace/default",
+                "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/konfigurace/default",
                 "@type": [
                     "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/konfigurace",
                 ],
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/má-uživatelskou-roli": [
-                    {
-                        "@id":
-                            "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/plný-uživatel-termitu",
-                        "@type": [
-                            "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatelská-role",
-                        ],
-                        "http://www.w3.org/2004/02/skos/core#prefLabel": [
-                            {
-                                "@language": "cs",
-                                "@value": "Editor",
-                            },
-                            { "@language": "en", "@value": "Editor" },
-                        ],
-                    },
-                ],
+                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/má-uživatelskou-roli":
+                    [
+                        {
+                            "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/plný-uživatel-termitu",
+                            "@type": [
+                                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatelská-role",
+                            ],
+                            "http://www.w3.org/2004/02/skos/core#prefLabel": [
+                                {
+                                    "@language": "cs",
+                                    "@value": "Editor",
+                                },
+                                { "@language": "en", "@value": "Editor" },
+                            ],
+                        },
+                    ],
                 "http://purl.org/dc/terms/language": "cs",
             };
             Ajax.get = jest.fn().mockResolvedValue(data);
