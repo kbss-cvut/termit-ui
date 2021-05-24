@@ -2,6 +2,7 @@ import Term, { TermData, TermInfo } from "../../model/Term";
 import { getLocalized } from "../../model/MultilingualString";
 import { HasI18n } from "../hoc/withI18n";
 import { getShortLocale } from "../../util/IntlUtil";
+import Utils from "../../util/Utils";
 
 /**
  * Common properties for a tree selector containing terms
@@ -29,7 +30,7 @@ export type TermTreeSelectProcessingOptions = {
  * Prepares the specified terms for the tree select component. This consists of removing terms and subterms which are
  * not in the specified vocabularies and flattening term ancestors if necessary.
  * @param terms Terms to process
- * @param vocabularies Vocabularies in which all the terms should be, or null to switch this filtering off
+ * @param vocabularies Vocabularies in which all the terms should be, or undefined to switch this filtering off
  * @param options Processing options
  */
 export function processTermsForTreeSelect(
@@ -97,4 +98,16 @@ function flattenAncestors(
         }
     }
     return result;
+}
+
+/**
+ * Resolves identifiers of the specified selected terms.
+ * @param selected Array of selected Term-based values (optional)
+ */
+export function resolveSelectedIris(
+    selected?: TermInfo[] | TermData[]
+): string[] {
+    return Utils.sanitizeArray(selected as TermInfo[])
+        .filter((t) => t.vocabulary !== undefined)
+        .map((t) => t.iri);
 }

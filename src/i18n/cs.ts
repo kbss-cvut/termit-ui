@@ -82,7 +82,7 @@ const cs = {
             "TermIt má novou verzi {version}. Podívejte se, co je nového, klikem na verzi v pravém dolním rohu aplikace.",
         "dashboard.widget.donut.total-terms": "Celkem pojmů",
         "dashboard.widget.commentList.empty":
-            "Zde uvidíte své poslední komentáře a reakce na ně.",
+            "Zde uvidíte naposledy komentované pojmy.",
         "dashboard.widget.commentList.lastComment": "Poslední komentář pojmu.",
         "dashboard.widget.commentList.myLastComment": "...",
         "dashboard.widget.commentList.message": "{when} uživatelem {user} .",
@@ -247,6 +247,8 @@ const cs = {
             "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
             "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
             "z více zdrojů.",
+        "term.exactMatches.help":
+            "(Nepovinný) pojem se stejným významem. Slouží k mapování na pojmy z jiných slovníků.",
         "term.comment.help":
             "(Nepovinný) nedefiniční text upřesňující význam pojmu.",
         "term.parent.help":
@@ -280,6 +282,7 @@ const cs = {
         "term.metadata.definitionSource.goto": "Zobrazit v dokumentu",
         "term.metadata.definitionSource.goto.tooltip":
             "Zobrazit zdroj definice přímo v příslušném dokumentu",
+        "term.metadata.exactMatches": "Pojmy se stejným významem",
         "term.metadata.comment": "Doplňující poznámka",
         "term.metadata.parent": "Nadřazené pojmy",
         "term.metadata.superTypes": "Nadtřídy",
@@ -297,8 +300,10 @@ const cs = {
         "term.metadata.altLabels.label": "Synonyma",
         "term.metadata.altLabels.placeholder":
             'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
-        "term.metadata.altLabels.placeholder.text": "Přidat",
-        "term.metadata.altLabels.remove": "Odebrat synonymum",
+        "term.metadata.altLabels.addButton.text": "Přidat",
+        "term.metadata.altLabels.addButton.title":
+            "Kliknutím přidáte synonymum",
+        "term.metadata.altLabels.remove.title": "Odebrat synonymum",
         "term.metadata.altLabels.remove.text": "Odebrat",
         "term.metadata.altLabels.help":
             "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
@@ -307,8 +312,10 @@ const cs = {
         "term.metadata.hiddenLabels.label": "Vyhledávací texty",
         "term.metadata.hiddenLabels.placeholder":
             'Zadejte nový vyhledávací text a stiskněte tlačítko "Přidat"',
-        "term.metadata.hiddenLabels.placeholder.text": "Přidat",
-        "term.metadata.hiddenLabels.remove": "Odebrat vyhledávací text",
+        "term.metadata.hiddenLabels.addButton.text": "Přidat",
+        "term.metadata.hiddenLabels.addButton.title":
+            "Kliknutím přidáte hodnotu vyhledávacího textu",
+        "term.metadata.hiddenLabels.remove.title": "Odebrat vyhledávací text",
         "term.metadata.hiddenLabels.remove.text": "Odebrat",
         "term.metadata.hiddenLabels.help":
             "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
@@ -345,6 +352,10 @@ const cs = {
         "term.metadata.assignments.count.zero.tooltip":
             "Pojem se v tomto zdroji nevyskytuje",
         "term.metadata.related.title": "Související pojmy",
+        "term.metadata.related.help":
+            "(Nepovinný) související pojem (bez bližšího určení o jakou souvislost se jedná). " +
+            "Může se jednat o pojem z aktuálního slovníku nebo z jiného slovníku. Např. pojem 'vozidlo' souvisí s pojmem 'řidič'. " +
+            "Nevybírejte pojem, který už je označen jako 'nadřazený pojem', nebo 'pojem se stejným významem'.",
         "term.metadata.vocabulary.tooltip":
             "Slovník, do kterého tento pojem patří",
         "term.metadata.related.ontologically": "Ontologicky",
@@ -372,6 +383,7 @@ const cs = {
             "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
         "term.metadata.types.select.placeholder": "Vyberte typ",
         "term.metadata.validation.title": "Kontrola",
+        "term.metadata.validation.empty": "Pojem je bez chyb.",
         "term.removed.message": "Pojem by odstraněn.",
         "term.badge.score.tooltip":
             "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",

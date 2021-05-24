@@ -14,6 +14,7 @@ describe("Term tests", () => {
             label: langString("test term 1"),
             types: ["http://example.org/type1", OntologicalVocabulary.TERM],
             draft: true,
+            vocabulary: { iri: Generator.generateUri() },
         };
     });
 
@@ -138,8 +139,7 @@ describe("Term tests", () => {
             const extraProperty =
                 "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const data: TermData = {
-                iri:
-                    "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
+                iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
                 label: langString("pojem 5"),
                 sources: [
                     "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology",
@@ -158,8 +158,7 @@ describe("Term tests", () => {
             const extraProperty =
                 "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
             const data: TermData = {
-                iri:
-                    "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
+                iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
                 label: langString("pojem 5"),
                 sources: [
                     "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology",
@@ -346,6 +345,94 @@ describe("Term tests", () => {
         it("returns false when draft value is false", () => {
             termData.draft = false;
             expect(Term.isDraft(termData)).toBeFalsy();
+        });
+    });
+
+    describe("consolidateRelatedAndRelatedMatch", () => {
+        it("returns consolidated related and relatedMatch values", () => {
+            const t = new Term(termData);
+            t.relatedTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test related"),
+                    vocabulary: { iri: t.vocabulary!.iri },
+                },
+            ];
+            t.relatedMatchTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test related"),
+                    vocabulary: { iri: Generator.generateUri() },
+                },
+            ];
+            expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual([
+                ...t.relatedTerms,
+                ...t.relatedMatchTerms,
+            ]);
+        });
+
+        it("handles related match being undefined", () => {
+            const t = new Term(termData);
+            t.relatedTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test related"),
+                    vocabulary: { iri: t.vocabulary!.iri },
+                },
+            ];
+            expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual(
+                t.relatedTerms
+            );
+        });
+
+        it("handles related being undefined", () => {
+            const t = new Term(termData);
+            t.relatedMatchTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("test related"),
+                    vocabulary: { iri: Generator.generateUri() },
+                },
+            ];
+            expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual(
+                t.relatedMatchTerms
+            );
+        });
+
+        it("removes duplicates", () => {
+            const related = {
+                iri: Generator.generateUri(),
+                label: langString("test related/relatedMatch"),
+                vocabulary: { iri: Generator.generateUri() },
+            };
+            const t = new Term(termData);
+            t.relatedTerms = [related];
+            t.relatedMatchTerms = [related];
+            expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual([
+                related,
+            ]);
+        });
+
+        it("returns results ordered by label", () => {
+            const t = new Term(termData);
+            t.relatedTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("second"),
+                    vocabulary: { iri: t.vocabulary!.iri },
+                },
+            ];
+            t.relatedMatchTerms = [
+                {
+                    iri: Generator.generateUri(),
+                    label: langString("first"),
+                    vocabulary: { iri: Generator.generateUri() },
+                },
+            ];
+            expect(Term.consolidateRelatedAndRelatedMatch(t)).toEqual([
+                ...t.relatedMatchTerms,
+                ...t.relatedTerms,
+            ]);
         });
     });
 });

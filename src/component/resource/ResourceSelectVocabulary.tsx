@@ -38,10 +38,8 @@ const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = (
   props
 ) => {
   const { show, defaultVocabularyIri, onSubmit, onCancel, title } = props;
-  const [
-    selectedVocabulary,
-    setSelectedVocabulary,
-  ] = React.useState<Vocabulary | null>(null);
+  const [selectedVocabulary, setSelectedVocabulary] =
+    React.useState<Vocabulary | null>(null);
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const submit = () =>
     onSubmit(

@@ -21,6 +21,10 @@ ul.term-items {
   margin-left: -0.75rem;
 }
 
+.Select-menu-outer {
+  z-index: 3; // Increase z-index to prevent collisions with input group addon buttons in StringListEdits
+}
+
 .term-status-label {
   margin-top: 3px;
 }

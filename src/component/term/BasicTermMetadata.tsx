@@ -1,6 +1,6 @@
 import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { termInfoComparator } from "../../model/Term";
+import Term, { TermInfo, termInfoComparator } from "../../model/Term";
 import { injectIntl } from "react-intl";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";

@@ -68,10 +68,6 @@ import RecentlyModifiedAsset, {
     RecentlyModifiedAssetData,
 } from "../model/RecentlyModifiedAsset";
 import TermOccurrence from "../model/TermOccurrence";
-import SearchResult, {
-    CONTEXT as SEARCH_RESULT_CONTEXT,
-    SearchResultData,
-} from "../model/SearchResult";
 import NotificationType from "../model/NotificationType";
 import { langString } from "../model/MultilingualString";
 import { Configuration } from "../model/Configuration";
@@ -802,41 +798,21 @@ export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
     };
 }
 
-export function searchTerms(searchString: string) {
-    const action = {
-        type: ActionType.FETCH_VOCABULARY_TERMS,
-    };
-    return (dispatch: ThunkDispatch) => {
-        dispatch(asyncActionRequest(action, true));
-        return Ajax.get(
-            Constants.API_PREFIX + "/search/fts",
-            params({ searchString })
-        )
-            .then((data: object[]) =>
-                data.length > 0
-                    ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
-                          data,
-                          SEARCH_RESULT_CONTEXT
-                      )
-                    : []
-            )
-            .then((data: SearchResultData[]) =>
-                data.map((d) => new SearchResult(d))
-            )
-            .then((data: SearchResult[]) => {
-                dispatch(SyncActions.asyncActionSuccess(action));
-                return data
-                    .filter((d) => d.hasType(VocabularyUtils.TERM))
-                    .map(
-                        (d) =>
-                            new Term({ iri: d.iri, label: langString(d.label) })
-                    );
-            })
-            .catch((error: ErrorData) => {
-                dispatch(SyncActions.asyncActionFailure(action, error));
-                return [];
-            });
-    };
+export function loadAllTerms(
+    fetchOptions: FetchOptionsFunction,
+    namespace?: string,
+    apiPrefix: string = Constants.API_PREFIX
+) {
+    return genericLoadTerms(
+        ActionType.FETCH_ALL_TERMS,
+        `${apiPrefix}`,
+        {
+            searchString: fetchOptions.searchString,
+            includeTerms: fetchOptions.includeTerms,
+            namespace,
+        },
+        fetchOptions
+    );
 }
 
 export function loadTerms(
@@ -844,12 +820,29 @@ export function loadTerms(
     vocabularyIri: IRI,
     apiPrefix: string = Constants.API_PREFIX
 ) {
-    const action = {
-        type: ActionType.FETCH_VOCABULARY_TERMS,
-    };
+    return genericLoadTerms(
+        ActionType.FETCH_VOCABULARY_TERMS,
+        `${apiPrefix}/vocabularies/${vocabularyIri.fragment}`,
+        {
+            searchString: fetchOptions.searchString,
+            includeImported: fetchOptions.includeImported,
+            includeTerms: fetchOptions.includeTerms,
+            namespace: vocabularyIri.namespace,
+        },
+        fetchOptions
+    );
+}
+
+export function genericLoadTerms(
+    type: string,
+    prefix: string,
+    target: object,
+    fetchOptions: FetchOptionsFunction
+) {
+    const action = { type };
     return (dispatch: ThunkDispatch) => {
         dispatch(asyncActionRequest(action, true));
-        let url = `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/`;
+        let url = `${prefix}/terms/`;
         if (fetchOptions.optionID) {
             url += `${VocabularyUtils.getFragment(
                 fetchOptions.optionID
@@ -861,12 +854,7 @@ export function loadTerms(
             url,
             params(
                 Object.assign(
-                    {
-                        searchString: fetchOptions.searchString,
-                        includeImported: fetchOptions.includeImported,
-                        includeTerms: fetchOptions.includeTerms,
-                        namespace: vocabularyIri.namespace,
-                    },
+                    target,
                     Utils.createPagingParams(
                         fetchOptions.offset,
                         fetchOptions.limit

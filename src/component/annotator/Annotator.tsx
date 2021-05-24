@@ -35,6 +35,7 @@ import { Card, CardBody } from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
 import TextAnalysisInvocationButton from "./TextAnalysisInvocationButton";
+import classNames from "classnames";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -123,7 +124,16 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   public componentDidMount(): void {
     this.highlightAnnotation();
+    document.addEventListener("scroll", this.onScroll);
   }
+
+  public componentWillUnmount() {
+    document.removeEventListener("scroll", this.onScroll);
+  }
+
+  private onScroll = () => {
+    this.forceUpdate();
+  };
 
   private highlightAnnotation(): void {
     const scrollTo = this.props.scrollTo;
@@ -228,11 +238,12 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     if (annotationNode.typeof === AnnotationType.DEFINITION) {
       this.setState({
         selectedTerm: term,
-        existingTermDefinitionAnnotationElement: AnnotationDomHelper.findAnnotation(
-          this.state.internalHtml,
-          annotationNode.about!,
-          this.state.prefixMap
-        ) as Element,
+        existingTermDefinitionAnnotationElement:
+          AnnotationDomHelper.findAnnotation(
+            this.state.internalHtml,
+            annotationNode.about!,
+            this.state.prefixMap
+          ) as Element,
       });
       return false;
     }
@@ -387,9 +398,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         } else {
           this.setState({
             showSelectionPurposeDialog: true,
-            selectionPurposeDialogAnchorPosition: Annotator.resolvePopupPosition(
-              e
-            ),
+            selectionPurposeDialogAnchorPosition:
+              Annotator.resolvePopupPosition(e),
           });
         }
       } else {
@@ -495,7 +505,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         <WindowTitle title={this.props.i18n("annotator")} />
         <HeaderWithActions
           title={this.renderTitle()}
-          className="annotator-header"
+          className={classNames("annotator-header", {
+            "annotator-header-scrolled": window.pageYOffset > 0,
+          })}
           actions={[
             <IfUserAuthorized
               key="text-analysis-button"

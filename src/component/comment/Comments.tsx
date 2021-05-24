@@ -24,6 +24,7 @@ interface CommentsProps {
   updateComment: (comment: Comment) => Promise<any>;
   addReaction: (comment: Comment, reactionType: string) => Promise<any>;
   removeReaction: (comment: Comment) => Promise<any>;
+  reverseOrder: boolean;
 }
 
 const Comments: React.FC<CommentsProps> = (props) => {
@@ -67,8 +68,8 @@ const Comments: React.FC<CommentsProps> = (props) => {
     );
   };
 
-  return (
-    <div id="term-comments" className="comments m-1 mt-3">
+  const renderForward = () => (
+    <>
       <CommentList
         comments={comments}
         addReaction={onAddReaction}
@@ -77,6 +78,25 @@ const Comments: React.FC<CommentsProps> = (props) => {
       />
       {comments.length > 0 && <hr className="mt-3 mb-1 border-top" />}
       <CreateCommentForm onSubmit={onSubmit} />
+    </>
+  );
+
+  const renderReverse = () => (
+    <>
+      <CreateCommentForm onSubmit={onSubmit} />
+      {comments.length > 0 && <hr className="mt-3 mb-1 border-top" />}
+      <CommentList
+        comments={comments.reverse()}
+        addReaction={onAddReaction}
+        removeReaction={onRemoveReaction}
+        updateComment={onUpdate}
+      />
+    </>
+  );
+
+  return (
+    <div id="term-comments" className="comments m-1 mt-3">
+      {props.reverseOrder ? renderReverse() : renderForward()}
     </div>
   );
 };

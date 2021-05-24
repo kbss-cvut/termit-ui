@@ -339,8 +339,7 @@ describe("Reducers", () => {
             const action = { type: ActionType.LOAD_VOCABULARY };
             const vocabularyData: VocabularyData = {
                 label: "Test vocabulary",
-                iri:
-                    "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary",
+                iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary",
             };
             expect(
                 reducers(
@@ -361,8 +360,7 @@ describe("Reducers", () => {
             const imports = [Generator.generateUri(), Generator.generateUri()];
             initialState.vocabulary = new Vocabulary({
                 label: "Test vocabulary",
-                iri:
-                    "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary",
+                iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary",
             });
             const vocabulary = reducers(
                 stateToPlainObject(initialState),
@@ -413,8 +411,7 @@ describe("Reducers", () => {
         it("sets selectedTerm when it was successfully selected", () => {
             const term: TermData = {
                 label: langString("Test term"),
-                iri:
-                    "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term",
+                iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term",
             };
             expect(
                 reducers(
@@ -431,8 +428,7 @@ describe("Reducers", () => {
         it("sets selectedTerm when it was successfully selected then deselect it", () => {
             const term: TermData = {
                 label: langString("Test term"),
-                iri:
-                    "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term",
+                iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term",
             };
             expect(
                 reducers(
@@ -474,13 +470,11 @@ describe("Reducers", () => {
             const terms: TermData[] = [
                 {
                     label: langString("Test type 1"),
-                    iri:
-                        "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-1",
+                    iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-1",
                 },
                 {
                     label: langString("Test type 2"),
-                    iri:
-                        "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-2",
+                    iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-2",
                 },
             ];
 

@@ -21,6 +21,9 @@ const ctx = {
     scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
     parentTerms: VocabularyUtils.BROADER,
     superTypes: VocabularyUtils.RDFS_SUB_CLASS_OF,
+    exactMatchTerms: VocabularyUtils.SKOS_EXACT_MATCH,
+    relatedTerms: VocabularyUtils.SKOS_RELATED,
+    relatedMatchTerms: VocabularyUtils.SKOS_RELATED_MATCH,
     subTerms: VocabularyUtils.NARROWER,
     sources: VocabularyUtils.DC_SOURCE,
     vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
@@ -51,11 +54,14 @@ const MAPPED_PROPERTIES = [
     "parentTerms",
     "superTypes",
     "parent",
+    "relatedTerms",
+    "relatedMatchTerms",
     "plainSubTerms",
     "vocabulary",
     "glossary",
     "definitionSource",
     "draft",
+    "exactMatchTerms",
     "published",
 ];
 
@@ -82,6 +88,9 @@ export interface TermData extends AssetData {
     hiddenLabels?: PluralMultilingualString;
     scopeNote?: MultilingualString;
     definition?: MultilingualString;
+    exactMatchTerms?: TermInfo[];
+    relatedTerms?: TermInfo[];
+    relatedMatchTerms?: TermInfo[];
     subTerms?: TermInfo[];
     sources?: string[];
     // Represents proper parent Term, stripped of broader terms representing other model relationships
@@ -98,6 +107,7 @@ export interface TermInfo {
     iri: string;
     label: MultilingualString; // Multilingual string due to the same context item (see ctx above)
     vocabulary: AssetData;
+    types?: string[];
 }
 
 export function termInfoComparator(a: TermInfo, b: TermInfo) {
@@ -112,6 +122,9 @@ export default class Term extends Asset implements TermData {
     public hiddenLabels?: PluralMultilingualString;
     public scopeNote?: MultilingualString;
     public definition?: MultilingualString;
+    public exactMatchTerms?: TermInfo[];
+    public relatedTerms?: TermInfo[];
+    public relatedMatchTerms?: TermInfo[];
     public subTerms?: TermInfo[];
     public parentTerms?: Term[];
     public superTypes?: Term[];
@@ -137,6 +150,7 @@ export default class Term extends Asset implements TermData {
             );
             this.parent = this.resolveParent(this.parentTerms);
         }
+        this.sanitizeTermInfoArrays();
         if (this.superTypes) {
             this.superTypes = this.sanitizeTermReferences(
                 this.superTypes,
@@ -149,6 +163,24 @@ export default class Term extends Asset implements TermData {
         }
         this.syncPlainSubTerms();
         this.draft = termData.draft !== undefined ? termData.draft : true;
+    }
+
+    /**
+     * jsonld replaces single-element arrays with singular elements, which we don't want here
+     * @private
+     */
+    private sanitizeTermInfoArrays() {
+        const toSanitize = [
+            "exactMatchTerms",
+            "subTerms",
+            "relatedTerms",
+            "relatedMatchTerms",
+        ];
+        toSanitize.forEach((n) => {
+            if (this[n]) {
+                this[n] = Utils.sanitizeArray(this[n]);
+            }
+        });
     }
 
     private sanitizeTermReferences(references: Term[], visitedTerms: TermMap) {
@@ -214,6 +246,15 @@ export default class Term extends Asset implements TermData {
         return result;
     }
 
+    public static toTermInfo(t: Term | TermData): TermInfo {
+        return {
+            iri: t.iri!,
+            label: Object.assign({}, t.label),
+            vocabulary: Object.assign({}, t.vocabulary),
+            types: [VocabularyUtils.TERM],
+        };
+    }
+
     public get unmappedProperties(): Map<string, string[]> {
         return WithUnmappedProperties.getUnmappedProperties(
             this,
@@ -272,6 +313,19 @@ export default class Term extends Asset implements TermData {
         const langArr = Array.from(languages);
         langArr.sort();
         return langArr;
+    }
+
+    public static consolidateRelatedAndRelatedMatch(
+        term: Term | TermData
+    ): TermInfo[] {
+        const result = [...Utils.sanitizeArray(term.relatedTerms)];
+        for (let rt of Utils.sanitizeArray(term.relatedMatchTerms)) {
+            if (!result.find((e) => e.iri === rt.iri)) {
+                result.push(rt);
+            }
+        }
+        result.sort(termInfoComparator);
+        return result;
     }
 
     public static consolidateBroaderTerms(t: Term | TermData): Term[] {

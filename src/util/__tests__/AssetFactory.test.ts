@@ -121,22 +121,19 @@ describe("AssetFactory", () => {
 
     describe("createTermAssignment", () => {
         const data = {
-            iri:
-                "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
+            iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
             types: [
                 "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu",
             ],
             term: {
-                iri:
-                    "http://onto.fel.cvut.cz/ontologies/slovnik/sb-z-2006-183/pojem/nezastavene-uzemi",
+                iri: "http://onto.fel.cvut.cz/ontologies/slovnik/sb-z-2006-183/pojem/nezastavene-uzemi",
                 types: [
                     "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term",
                 ],
                 label: "Nezastavene uzemi",
             },
             target: {
-                iri:
-                    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
+                iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
                 types: [
                     "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl",
                 ],
@@ -147,8 +144,7 @@ describe("AssetFactory", () => {
                     ],
                     label: "ML test",
                     author: {
-                        iri:
-                            "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
+                        iri: "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
                         types: [
                             "http://onto.fel.cvut.cz/ontologies/application/termit/uzivatel-termitu",
                         ],

@@ -10,7 +10,7 @@ import {
   Form,
   Row,
 } from "reactstrap";
-import Term, { CONTEXT, TermData } from "../../model/Term";
+import Term, { CONTEXT, TermData, TermInfo } from "../../model/Term";
 import "./TermMetadata.scss";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
@@ -39,9 +39,11 @@ import TermItState from "../../model/TermItState";
 import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
+import ExactMatchesSelector from "./ExactMatchesSelector";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
 import TermDefinitionContainer from "./TermDefinitionContainer";
 import MultilingualIcon from "../misc/MultilingualIcon";
+import RelatedTermsSelector from "./RelatedTermsSelector";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -144,6 +146,37 @@ export class TermMetadataEdit extends React.Component<
 
   private onTypesChange = (newTypes: string[]) => {
     this.setState({ types: newTypes });
+  };
+
+  public onParentChange = (parentTerms?: Term[]) => {
+    this.setState({ parentTerms });
+  };
+
+  public onExactMatchesChange = (exactMatchTerms: Term[]) => {
+    this.setState({
+      exactMatchTerms: exactMatchTerms.map((e) => e as TermInfo),
+    });
+  };
+
+  /**
+   * Distributes the specified value into related and relatedMatch based on each term's membership in the current term's vocabulary.
+   * @param value Selected terms
+   */
+  public onRelatedChange = (value: Term[]) => {
+    const relatedTerms: TermInfo[] = [];
+    const relatedMatchTerms: TermInfo[] = [];
+    value.forEach((v) => {
+      if (v.vocabulary!.iri === this.props.term.vocabulary!.iri) {
+        relatedTerms.push(Term.toTermInfo(v));
+      } else {
+        relatedMatchTerms.push(Term.toTermInfo(v));
+      }
+    });
+    this.setState({ relatedTerms, relatedMatchTerms });
+  };
+
+  public onStatusChange = () => {
+    this.setState({ draft: !this.state.draft });
   };
 
   private onPropertiesChange = (update: Map<string, string[]>) => {
@@ -295,6 +328,17 @@ export class TermMetadataEdit extends React.Component<
               </Row>
               <Row>
                 <Col xs={12}>
+                  <ExactMatchesSelector
+                    id="exact-matches"
+                    termIri={this.props.term.iri}
+                    selected={this.state.exactMatchTerms}
+                    vocabularyIri={this.props.term.vocabulary!.iri!}
+                    onChange={this.onExactMatchesChange}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
                   <ParentTermSelector
                     id="edit-term-parent"
                     term={this.state}
@@ -312,6 +356,18 @@ export class TermMetadataEdit extends React.Component<
                     invalid={validationType.length > 0}
                     invalidMessage={this.renderMessages(validationType)}
                     onChange={this.onTypesChange}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <RelatedTermsSelector
+                    id="edit-term-related"
+                    termIri={this.props.term.iri}
+                    selected={Term.consolidateRelatedAndRelatedMatch(
+                      this.state
+                    )}
+                    onChange={this.onRelatedChange}
                   />
                 </Col>
               </Row>
