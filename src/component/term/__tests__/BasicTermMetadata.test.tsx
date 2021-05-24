@@ -1,16 +1,16 @@
 import * as React from "react";
 import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
-import Term, { TermInfo } from "../../../model/Term";
-import { shallow } from "enzyme";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import Term, {TermInfo} from "../../../model/Term";
+import {shallow} from "enzyme";
+import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import TermLink from "../TermLink";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import OutgoingLink from "../../misc/OutgoingLink";
-import { BasicTermMetadata } from "../BasicTermMetadata";
-import { langString } from "../../../model/MultilingualString";
+import {BasicTermMetadata} from "../BasicTermMetadata";
+import {langString} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import {mountWithIntl} from "../../../__tests__/environment/Environment";
 
 jest.mock("../TermLink", () => () => <span>Term link</span>);
 jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);
@@ -64,25 +64,6 @@ describe("BasicTermMetadata", () => {
     const renderedTypes = wrapper.find(OutgoingLink);
     expect(renderedTypes.length).toEqual(1);
     expect(renderedTypes.get(0).props.iri).toEqual(term.types[1]);
-  });
-
-  it("renders parent term link when parent term exists", () => {
-    term.parentTerms = [
-      new Term({
-        iri: Generator.generateUri(),
-        label: langString("Parent"),
-        vocabulary: { iri: Generator.generateUri() },
-      }),
-    ];
-    const wrapper = shallow(
-      <BasicTermMetadata
-        term={term}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    const parentLinks = wrapper.find(TermLink);
-    expect(parentLinks.length).toEqual(term.parentTerms.length);
   });
 
   it("consolidates related and relatedMatch terms and renders them in one list", () => {

@@ -804,7 +804,7 @@ export function loadAllTerms(
     apiPrefix: string = Constants.API_PREFIX
 ) {
     return genericLoadTerms(
-        ActionType.FETCH_ALL_TERMS,
+        ActionType.LOAD_ALL_TERMS,
         `${apiPrefix}`,
         {
             searchString: fetchOptions.searchString,
