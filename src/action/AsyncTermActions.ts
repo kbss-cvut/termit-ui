@@ -104,7 +104,7 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
 
 export function loadTermsFromCurrentWorkspace(
     fetchOptions: FetchOptionsFunction,
-    excludeVocabulary: string
+    excludeVocabulary?: string
 ) {
     return loadTermsForParentSelector(
         fetchOptions,
