@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { PAGE_SIZE, ParentTermSelector } from "../ParentTermSelector";
+import { ParentTermSelector } from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
 import Term, { TERM_BROADER_SUBPROPERTIES } from "../../../model/Term";
@@ -10,6 +10,7 @@ import { langString } from "../../../model/MultilingualString";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
 import Workspace from "../../../model/Workspace";
+import {PAGE_SIZE} from "../BaseRelatedTermSelector";
 
 jest.mock("../../../util/StorageUtils");
 

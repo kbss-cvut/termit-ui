@@ -1,39 +1,46 @@
 import * as React from "react";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { TermData, TermInfo } from "../../model/Term";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import Term, {TermData, TermInfo} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
 // @ts-ignore
-import { IntelligentTreeSelect } from "intelligent-tree-select";
-import {
-  commonTermTreeSelectProps,
-  processTermsForTreeSelect,
-  resolveSelectedIris,
-} from "./TermTreeSelectHelper";
+import {IntelligentTreeSelect} from "intelligent-tree-select";
+import {commonTermTreeSelectProps, resolveSelectedIris,} from "./TermTreeSelectHelper";
 import Utils from "../../util/Utils";
-import { FormGroup, Label } from "reactstrap";
-import {
-  createTermsWithImportsOptionRenderer,
-  createTermValueRenderer,
-} from "../misc/treeselect/Renderers";
-import { connect } from "react-redux";
-import { loadAllTerms } from "../../action/AsyncActions";
-import { injectIntl } from "react-intl";
-import VocabularyUtils from "../../util/VocabularyUtils";
+import {FormGroup, Label} from "reactstrap";
+import {createTermsWithImportsOptionRenderer, createTermValueRenderer,} from "../misc/treeselect/Renderers";
+import {connect} from "react-redux";
+import {loadTerms} from "../../action/AsyncActions";
+import {injectIntl} from "react-intl";
+import {IRI} from "../../util/VocabularyUtils";
 import HelpIcon from "../misc/HelpIcon";
+import BaseRelatedTermSelector, {
+  BaseRelatedTermSelectorProps,
+  BaseRelatedTermSelectorState, PAGE_SIZE, SEARCH_DELAY
+} from "./BaseRelatedTermSelector";
+import TermItState from "../../model/TermItState";
+import {loadTermsFromCanonical, loadTermsFromCurrentWorkspace} from "../../action/AsyncTermActions";
 
-interface RelatedTermsSelectorProps extends HasI18n {
+interface RelatedTermsSelectorProps extends HasI18n, BaseRelatedTermSelectorProps {
   id: string;
   termIri?: string;
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
-  loadTerms: (
-    fetchOptions: FetchOptionsFunction,
-    namespace?: string
-  ) => Promise<Term[]>;
 }
 
-export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorProps> {
+export class RelatedTermsSelector extends BaseRelatedTermSelector<RelatedTermsSelectorProps, BaseRelatedTermSelectorState> {
+
+  constructor(props: RelatedTermsSelectorProps) {
+    super(props);
+    this.state = {
+      allVocabularyTerms: false,
+      allWorkspaceTerms: false,
+      vocabularyTermCount: 0,
+      workspaceTermCount: 0,
+      lastSearchString: ""
+    };
+  }
+
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
       this.props.onChange([]);
@@ -47,24 +54,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    return this.props
-      .loadTerms(
-        {
-          ...fetchOptions,
-          includeTerms: resolveSelectedIris(this.props.selected),
-        },
-        fetchOptions.optionID
-          ? VocabularyUtils.create(fetchOptions.optionID).namespace
-          : undefined
-      )
-      .then((terms) => {
-        if (!this.props.termIri) {
-          return terms;
-        }
-        return processTermsForTreeSelect(terms, undefined, {
-          searchString: fetchOptions.searchString,
-        });
-      });
+    return super.fetchOptions(fetchOptions);
   };
 
   public render() {
@@ -82,11 +72,11 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             onChange={this.onChange}
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
-            fetchLimit={100}
-            searchDelay={300}
+            fetchLimit={PAGE_SIZE}
+            searchDelay={SEARCH_DELAY}
             maxHeight={200}
             multi={true}
-            optionRenderer={createTermsWithImportsOptionRenderer()}
+            optionRenderer={createTermsWithImportsOptionRenderer(this.props.vocabularyIri)}
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
@@ -96,7 +86,23 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
   }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => ({
-  loadTerms: (fetchOptions: FetchOptionsFunction, namespace?: string) =>
-    dispatch(loadAllTerms(fetchOptions, namespace)),
-}))(injectIntl(withI18n(RelatedTermsSelector)));
+export default connect(
+    (state: TermItState) => ({ workspace: state.workspace! }),
+    (dispatch: ThunkDispatch) => {
+      return {
+        loadTermsFromVocabulary: (
+            fetchOptions: FetchOptionsFunction,
+            vocabularyIri: IRI
+        ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
+        loadTermsFromCurrentWorkspace: (
+            fetchOptions: FetchOptionsFunction,
+            excludeVocabulary: string
+        ) =>
+            dispatch(
+                loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)
+            ),
+        loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
+            dispatch(loadTermsFromCanonical(fetchOptions)),
+      };
+    }
+)(injectIntl(withI18n(RelatedTermsSelector)));

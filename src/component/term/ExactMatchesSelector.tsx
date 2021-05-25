@@ -1,61 +1,49 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { TermData } from "../../model/Term";
+import {injectIntl} from "react-intl";
+import withI18n, {HasI18n} from "../hoc/withI18n";
+import Term, {TermData} from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import VocabularyUtils from "../../util/VocabularyUtils";
-import { connect } from "react-redux";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
-import { loadAllTerms } from "../../action/AsyncActions";
-import { FormGroup, Label } from "reactstrap";
+import {connect} from "react-redux";
+import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
+import {loadTerms} from "../../action/AsyncActions";
+import {FormGroup, Label} from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
-import { IntelligentTreeSelect } from "intelligent-tree-select";
-import {
-  createTermsWithImportsOptionRenderer,
-  createTermValueRenderer,
-} from "../misc/treeselect/Renderers";
+import {IntelligentTreeSelect} from "intelligent-tree-select";
+import {createTermsWithImportsOptionRenderer, createTermValueRenderer,} from "../misc/treeselect/Renderers";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
-import {
-  commonTermTreeSelectProps,
-  processTermsForTreeSelect,
-  resolveSelectedIris,
-} from "./TermTreeSelectHelper";
+import {commonTermTreeSelectProps, processTermsForTreeSelect, resolveSelectedIris,} from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
+import BaseRelatedTermSelector, {
+  BaseRelatedTermSelectorProps,
+  PAGE_SIZE,
+  SEARCH_DELAY
+} from "./BaseRelatedTermSelector";
+import {IRI} from "../../util/VocabularyUtils";
+import {loadTermsFromCanonical, loadTermsFromCurrentWorkspace} from "../../action/AsyncTermActions";
 
-function filterOutTermsFromCurrentVocabulary(
-  terms: Term[],
-  currentVocabularyIri: string
-) {
-  const result = terms.filter(
-    (t) => t.vocabulary!.iri !== currentVocabularyIri
-  );
-  result
-    .filter((t) => t.plainSubTerms)
-    .forEach(
-      (t) =>
-        (t.plainSubTerms = t
-          .subTerms!.filter((st) => st.vocabulary!.iri !== currentVocabularyIri)
-          .map((st) => st.iri))
-    );
-  return result;
-}
-
-interface ExactMatchesSelectorProps extends HasI18n {
+interface ExactMatchesSelectorProps extends HasI18n, BaseRelatedTermSelectorProps {
   id: string;
   termIri?: string;
   selected?: TermData[];
-  vocabularyIri: string;
   currentVocabulary?: Vocabulary;
   onChange: (exactMatches: Term[]) => void;
-  loadTerms: (
-    fetchOptions: FetchOptionsFunction,
-    namespace: string
-  ) => Promise<Term[]>;
 }
 
-export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorProps> {
+export class ExactMatchesSelector extends BaseRelatedTermSelector<ExactMatchesSelectorProps> {
+
+  constructor(props: ExactMatchesSelectorProps) {
+    super(props);
+    this.state = {
+      allVocabularyTerms: true,
+      allWorkspaceTerms: false,
+      vocabularyTermCount: 0,
+      workspaceTermCount: 0,
+      lastSearchString: ""
+    }
+  }
+
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
       this.props.onChange([]);
@@ -67,33 +55,45 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
   };
 
   public fetchOptions = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
+      fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    // Use option vocabulary when present, it may differ from the current vocabulary (when option is from imported
-    // vocabulary)
-    return this.props
-      .loadTerms(
-        {
-          ...fetchOptions,
-          includeTerms: resolveSelectedIris(this.props.selected),
-        },
-        VocabularyUtils.create(
-          fetchOptions.option
-            ? fetchOptions.option.iri!
-            : this.props.vocabularyIri
-        ).namespace!
-      )
-      .then((terms) => {
-        if (!this.props.termIri) {
-          return terms;
-        }
-        return filterOutTermsFromCurrentVocabulary(
-          processTermsForTreeSelect(terms, undefined, {
-            searchString: fetchOptions.searchString,
-          }),
-          this.props.vocabularyIri
-        );
+    let {
+      allWorkspaceTerms,
+      workspaceTermCount,
+      lastSearchString,
+    } = this.state;
+    let fetchFunction: (
+        fetchOptions: TreeSelectFetchOptionsParams<TermData>
+    ) => Promise<Term[]>;
+    const offset = fetchOptions.offset || 0;
+    const fetchOptionsCopy = Object.assign({}, fetchOptions);
+    if (
+        fetchOptions.searchString?.indexOf(lastSearchString) === -1 ||
+        (lastSearchString.length === 0 &&
+            (fetchOptions.searchString || "").length > 0)
+    ) {
+      this.setState({
+        allWorkspaceTerms: false,
+        workspaceTermCount: 0,
       });
+      // Set these to false to ensure the effect right now
+      allWorkspaceTerms = false;
+      fetchOptionsCopy.offset = 0;
+    }
+      if (allWorkspaceTerms) {
+        fetchOptionsCopy.offset =
+            offset - workspaceTermCount;
+        fetchFunction = this.fetchCanonicalTerms;
+      } else {
+        fetchOptionsCopy.offset = offset;
+        fetchFunction = this.fetchWorkspaceTerms;
+      }
+    this.setState({ lastSearchString: fetchOptions.searchString || "" });
+    return fetchFunction(fetchOptionsCopy).then((terms) => {
+      return processTermsForTreeSelect(terms, undefined, {
+        searchString: fetchOptionsCopy.searchString,
+      });
+    });
   };
 
   public render() {
@@ -111,8 +111,8 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
             onChange={this.onChange}
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
-            fetchLimit={300}
-            searchDelay={300}
+            fetchLimit={PAGE_SIZE}
+            searchDelay={SEARCH_DELAY}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(
@@ -128,11 +128,23 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
 }
 
 export default connect(
-  (state: TermItState) => ({
-    currentVocabulary: state.vocabulary,
-  }),
-  (dispatch: ThunkDispatch) => ({
-    loadTerms: (fetchOptions: FetchOptionsFunction, namespace: string) =>
-      dispatch(loadAllTerms(fetchOptions, namespace)),
-  })
+    (state: TermItState) => ({ workspace: state.workspace! }),
+    (dispatch: ThunkDispatch) => {
+      return {
+        // Won't be used anyway, but is required by the props
+        loadTermsFromVocabulary: (
+            fetchOptions: FetchOptionsFunction,
+            vocabularyIri: IRI
+        ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
+        loadTermsFromCurrentWorkspace: (
+            fetchOptions: FetchOptionsFunction,
+            excludeVocabulary: string
+        ) =>
+            dispatch(
+                loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)
+            ),
+        loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
+            dispatch(loadTermsFromCanonical(fetchOptions)),
+      };
+    }
 )(injectIntl(withI18n(ExactMatchesSelector)));
