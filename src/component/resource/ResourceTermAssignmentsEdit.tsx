@@ -1,24 +1,31 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {FormGroup, Label} from "reactstrap";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import { FormGroup, Label } from "reactstrap";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
-import Term, {TermData} from "../../model/Term";
-import {connect} from "react-redux";
-import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
+import Term, { TermData } from "../../model/Term";
+import { connect } from "react-redux";
+import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import FetchOptionsFunction from "../../model/Functions";
-import {loadTerms} from "../../action/AsyncActions";
-import {commonTermTreeSelectProps, processTermsForTreeSelect, resolveSelectedIris,} from "../term/TermTreeSelectHelper";
+import { loadTerms } from "../../action/AsyncActions";
+import {
+  commonTermTreeSelectProps,
+  processTermsForTreeSelect,
+  resolveSelectedIris,
+} from "../term/TermTreeSelectHelper";
 import BaseRelatedTermSelector, {
   BaseRelatedTermSelectorProps,
   PAGE_SIZE,
-  SEARCH_DELAY
+  SEARCH_DELAY,
 } from "../term/BaseRelatedTermSelector";
 import TermItState from "../../model/TermItState";
-import {IRI} from "../../util/VocabularyUtils";
-import {loadTermsFromCanonical, loadTermsFromCurrentWorkspace} from "../../action/AsyncTermActions";
+import { IRI } from "../../util/VocabularyUtils";
+import {
+  loadTermsFromCanonical,
+  loadTermsFromCurrentWorkspace,
+} from "../../action/AsyncTermActions";
 
 interface PropsExternal {
   terms: Term[];
@@ -41,8 +48,8 @@ export class ResourceTermAssignmentsEdit extends BaseRelatedTermSelector<Resourc
       allWorkspaceTerms: false,
       vocabularyTermCount: 0,
       workspaceTermCount: 0,
-      lastSearchString: ""
-    }
+      lastSearchString: "",
+    };
   }
 
   public componentDidUpdate(
@@ -58,22 +65,19 @@ export class ResourceTermAssignmentsEdit extends BaseRelatedTermSelector<Resourc
   };
 
   public fetchOptions = (
-      fetchOptions: TreeSelectFetchOptionsParams<TermData>
+    fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    let {
-      allWorkspaceTerms,
-      workspaceTermCount,
-      lastSearchString,
-    } = this.state;
+    let { allWorkspaceTerms, workspaceTermCount, lastSearchString } =
+      this.state;
     let fetchFunction: (
-        fetchOptions: TreeSelectFetchOptionsParams<TermData>
+      fetchOptions: TreeSelectFetchOptionsParams<TermData>
     ) => Promise<Term[]>;
     const offset = fetchOptions.offset || 0;
     const fetchOptionsCopy = Object.assign({}, fetchOptions);
     if (
-        fetchOptions.searchString?.indexOf(lastSearchString) === -1 ||
-        (lastSearchString.length === 0 &&
-            (fetchOptions.searchString || "").length > 0)
+      fetchOptions.searchString?.indexOf(lastSearchString) === -1 ||
+      (lastSearchString.length === 0 &&
+        (fetchOptions.searchString || "").length > 0)
     ) {
       this.setState({
         allWorkspaceTerms: false,
@@ -84,8 +88,7 @@ export class ResourceTermAssignmentsEdit extends BaseRelatedTermSelector<Resourc
       fetchOptionsCopy.offset = 0;
     }
     if (allWorkspaceTerms) {
-      fetchOptionsCopy.offset =
-          offset - workspaceTermCount;
+      fetchOptionsCopy.offset = offset - workspaceTermCount;
       fetchFunction = this.fetchCanonicalTerms;
     } else {
       fetchOptionsCopy.offset = offset;
@@ -93,9 +96,13 @@ export class ResourceTermAssignmentsEdit extends BaseRelatedTermSelector<Resourc
     }
     this.setState({ lastSearchString: fetchOptions.searchString || "" });
     return fetchFunction(fetchOptionsCopy).then((terms) => {
-      return BaseRelatedTermSelector.enhanceWithCurrent(processTermsForTreeSelect(terms, undefined, {
-        searchString: fetchOptionsCopy.searchString,
-      }), undefined, this.props.terms);
+      return BaseRelatedTermSelector.enhanceWithCurrent(
+        processTermsForTreeSelect(terms, undefined, {
+          searchString: fetchOptionsCopy.searchString,
+        }),
+        undefined,
+        this.props.terms
+      );
     });
   };
 
@@ -130,23 +137,23 @@ export class ResourceTermAssignmentsEdit extends BaseRelatedTermSelector<Resourc
 }
 
 export default connect(
-    (state: TermItState) => ({ workspace: state.workspace! }),
-    (dispatch: ThunkDispatch) => {
-      return {
-        // Won't be used anyway, but is required by the props
-        loadTermsFromVocabulary: (
-            fetchOptions: FetchOptionsFunction,
-            vocabularyIri: IRI
-        ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
-        loadTermsFromCurrentWorkspace: (
-            fetchOptions: FetchOptionsFunction,
-            excludeVocabulary: string
-        ) =>
-            dispatch(
-                loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)
-            ),
-        loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
-            dispatch(loadTermsFromCanonical(fetchOptions)),
-      };
-    }
+  (state: TermItState) => ({ workspace: state.workspace! }),
+  (dispatch: ThunkDispatch) => {
+    return {
+      // Won't be used anyway, but is required by the props
+      loadTermsFromVocabulary: (
+        fetchOptions: FetchOptionsFunction,
+        vocabularyIri: IRI
+      ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
+      loadTermsFromCurrentWorkspace: (
+        fetchOptions: FetchOptionsFunction,
+        excludeVocabulary: string
+      ) =>
+        dispatch(
+          loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)
+        ),
+      loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
+        dispatch(loadTermsFromCanonical(fetchOptions)),
+    };
+  }
 )(injectIntl(withI18n(ResourceTermAssignmentsEdit)));

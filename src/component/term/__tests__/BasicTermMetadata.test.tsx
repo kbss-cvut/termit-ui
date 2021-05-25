@@ -1,16 +1,16 @@
 import * as React from "react";
 import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
-import Term, {TermInfo} from "../../../model/Term";
-import {shallow} from "enzyme";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import Term, { TermInfo } from "../../../model/Term";
+import { shallow } from "enzyme";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import TermLink from "../TermLink";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import OutgoingLink from "../../misc/OutgoingLink";
-import {BasicTermMetadata} from "../BasicTermMetadata";
-import {langString} from "../../../model/MultilingualString";
+import { BasicTermMetadata } from "../BasicTermMetadata";
+import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import {mountWithIntl} from "../../../__tests__/environment/Environment";
+import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
 jest.mock("../TermLink", () => () => <span>Term link</span>);
 jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);

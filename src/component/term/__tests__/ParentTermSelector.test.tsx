@@ -10,7 +10,7 @@ import { langString } from "../../../model/MultilingualString";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
 import Workspace from "../../../model/Workspace";
-import {PAGE_SIZE} from "../BaseRelatedTermSelector";
+import { PAGE_SIZE } from "../BaseRelatedTermSelector";
 
 jest.mock("../../../util/StorageUtils");
 

@@ -1,31 +1,36 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import Term, {TERM_BROADER_SUBPROPERTIES, TermData} from "../../model/Term";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import Term, { TERM_BROADER_SUBPROPERTIES, TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import {connect} from "react-redux";
-import {ThunkDispatch, TreeSelectFetchOptionsParams} from "../../util/Types";
-import {ButtonToolbar, FormFeedback, FormGroup, Label} from "reactstrap";
+import { connect } from "react-redux";
+import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import { ButtonToolbar, FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
-import {createTermsWithVocabularyInfoRenderer} from "../misc/treeselect/Renderers";
-import {commonTermTreeSelectProps,} from "./TermTreeSelectHelper";
-import {loadTermsFromCanonical, loadTermsFromCurrentWorkspace,} from "../../action/AsyncTermActions";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
+import { createTermsWithVocabularyInfoRenderer } from "../misc/treeselect/Renderers";
+import { commonTermTreeSelectProps } from "./TermTreeSelectHelper";
+import {
+  loadTermsFromCanonical,
+  loadTermsFromCurrentWorkspace,
+} from "../../action/AsyncTermActions";
 import OutgoingLink from "../misc/OutgoingLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
-import {getLocalized} from "../../model/MultilingualString";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
-import {loadTerms} from "../../action/AsyncActions";
+import { getLocalized } from "../../model/MultilingualString";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
+import { loadTerms } from "../../action/AsyncActions";
 import HelpIcon from "../misc/HelpIcon";
-import {FaPencilAlt, FaTrashAlt} from "react-icons/fa";
+import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import TermItState from "../../model/TermItState";
 import TermLink from "./TermLink";
 import BadgeButton from "../misc/BadgeButton";
 import BroaderTypeSelector from "./BroaderTypeSelector";
 import BaseRelatedTermSelector, {
   BaseRelatedTermSelectorProps,
-  BaseRelatedTermSelectorState, PAGE_SIZE, SEARCH_DELAY
+  BaseRelatedTermSelectorState,
+  PAGE_SIZE,
+  SEARCH_DELAY,
 } from "./BaseRelatedTermSelector";
 
 export const PARENT_ATTRIBUTES = [
@@ -56,7 +61,9 @@ function createValueRenderer() {
   );
 }
 
-interface ParentTermSelectorProps extends HasI18n, BaseRelatedTermSelectorProps {
+interface ParentTermSelectorProps
+  extends HasI18n,
+    BaseRelatedTermSelectorProps {
   id: string;
   term: Term | TermData;
   invalid?: boolean;
@@ -163,7 +170,15 @@ export class ParentTermSelector extends BaseRelatedTermSelector<
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    return super.fetchOptions(fetchOptions).then(terms => BaseRelatedTermSelector.enhanceWithCurrent(terms, this.props.term.iri, Term.consolidateBroaderTerms(this.props.term)));
+    return super
+      .fetchOptions(fetchOptions)
+      .then((terms) =>
+        BaseRelatedTermSelector.enhanceWithCurrent(
+          terms,
+          this.props.term.iri,
+          Term.consolidateBroaderTerms(this.props.term)
+        )
+      );
   };
 
   public render() {

@@ -1,42 +1,48 @@
 import * as React from "react";
-import {shallow} from "enzyme";
+import { shallow } from "enzyme";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
-import {IRI} from "../../../util/VocabularyUtils";
-import Term, {TermInfo} from "../../../model/Term";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import { IRI } from "../../../util/VocabularyUtils";
+import Term, { TermInfo } from "../../../model/Term";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
-import {IntelligentTreeSelect} from "intelligent-tree-select";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
-import {ExactMatchesSelector} from "../ExactMatchesSelector";
-import {langString} from "../../../model/MultilingualString";
+import { ExactMatchesSelector } from "../ExactMatchesSelector";
+import { langString } from "../../../model/MultilingualString";
 
 describe("ExactMatchesSelector", () => {
   const vocabularyIri = Generator.generateUri();
 
   let onChange: (exactMatches: Term[]) => void;
   let loadTermsFromVocabulary: (
-      fetchOptions: FetchOptionsFunction,
-      vocabularyIri: IRI
+    fetchOptions: FetchOptionsFunction,
+    vocabularyIri: IRI
   ) => Promise<Term[]>;
   let loadTermsFromCurrentWorkspace: (
-      fetchOptions: FetchOptionsFunction,
-      excludeVocabulary: string
+    fetchOptions: FetchOptionsFunction,
+    excludeVocabulary: string
   ) => Promise<Term[]>;
   let loadTermsFromCanonical: (
-      fetchOptions: FetchOptionsFunction
+    fetchOptions: FetchOptionsFunction
   ) => Promise<Term[]>;
   let loadFunctions: any;
 
   beforeEach(() => {
     onChange = jest.fn();
-    loadTermsFromVocabulary = jest.fn().mockImplementation(() => Promise.resolve([]));
-    loadTermsFromCurrentWorkspace = jest.fn().mockImplementation(() => Promise.resolve([]));
-    loadTermsFromCanonical = jest.fn().mockImplementation(() => Promise.resolve([]));
+    loadTermsFromVocabulary = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([]));
+    loadTermsFromCurrentWorkspace = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([]));
+    loadTermsFromCanonical = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([]));
     loadFunctions = {
       loadTermsFromVocabulary,
       loadTermsFromCurrentWorkspace,
-      loadTermsFromCanonical
+      loadTermsFromCanonical,
     };
   });
 
@@ -154,7 +160,6 @@ describe("ExactMatchesSelector", () => {
   });
 
   describe("fetchOptions", () => {
-
     it("filters out option with the term IRI", () => {
       const options: Term[] = [];
       for (let i = 0; i < Generator.randomInt(5, 10); i++) {
@@ -162,7 +167,9 @@ describe("ExactMatchesSelector", () => {
         options.push(t);
       }
       const currentTerm = options[Generator.randomInt(0, options.length)];
-      loadTermsFromCurrentWorkspace = jest.fn().mockImplementation(() => Promise.resolve(options));
+      loadTermsFromCurrentWorkspace = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(options));
       const wrapper = shallow<ExactMatchesSelector>(
         <ExactMatchesSelector
           id="test"
@@ -182,26 +189,38 @@ describe("ExactMatchesSelector", () => {
     });
 
     it("passes existing values to with options to ensure they are displayed even if there were not loaded due to paging", () => {
-      const options = [Generator.generateTerm(), Generator.generateTerm(), Generator.generateTerm()];
-      const existing: TermInfo[] = [{iri: Generator.generateUri(), label: langString("testExact"), vocabulary: {iri: Generator.generateUri()}}];
-      loadTermsFromCurrentWorkspace = jest.fn().mockImplementation(() => Promise.resolve(options));
+      const options = [
+        Generator.generateTerm(),
+        Generator.generateTerm(),
+        Generator.generateTerm(),
+      ];
+      const existing: TermInfo[] = [
+        {
+          iri: Generator.generateUri(),
+          label: langString("testExact"),
+          vocabulary: { iri: Generator.generateUri() },
+        },
+      ];
+      loadTermsFromCurrentWorkspace = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(options));
       const wrapper = shallow<ExactMatchesSelector>(
-          <ExactMatchesSelector
-              id="test"
-              termIri={Generator.generateUri()}
-              vocabularyIri={vocabularyIri}
-              onChange={onChange}
-              selected={existing}
-              {...loadFunctions}
-              {...intlFunctions()}
-          />
+        <ExactMatchesSelector
+          id="test"
+          termIri={Generator.generateUri()}
+          vocabularyIri={vocabularyIri}
+          onChange={onChange}
+          selected={existing}
+          {...loadFunctions}
+          {...intlFunctions()}
+        />
       );
       return wrapper
-          .instance()
-          .fetchOptions({})
-          .then((terms) => {
-            expect(terms[0]).toEqual(new Term(existing[0]));
-          });
+        .instance()
+        .fetchOptions({})
+        .then((terms) => {
+          expect(terms[0]).toEqual(new Term(existing[0]));
+        });
     });
   });
 });
