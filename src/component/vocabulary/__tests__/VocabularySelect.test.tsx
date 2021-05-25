@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   default as Vocabulary,
   EMPTY_VOCABULARY,
@@ -55,11 +54,14 @@ describe("VocabularySelect", () => {
 
   it("VocabularySelect Selection calls the callback", () => {
     jest.spyOn(redux, "useSelector").mockReturnValue(vocabularies);
-    const wrapper = mountWithIntl(
-      <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
-    );
-    wrapper.find(DropdownToggle).simulate("click");
-    wrapper.find(DropdownItem).simulate("click");
-    expect(onVocabularySet).toHaveBeenCalled();
+    withHooks(() => {
+      mockUseI18n();
+      const wrapper = mountWithIntl(
+          <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
+      );
+      wrapper.find(DropdownToggle).simulate("click");
+      wrapper.find(DropdownItem).simulate("click");
+      expect(onVocabularySet).toHaveBeenCalled();
+    });
   });
 });

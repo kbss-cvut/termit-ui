@@ -1,28 +1,20 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
-import { shallow } from "enzyme";
-import { TermMetadataCreateForm } from "../TermMetadataCreateForm";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import {shallow} from "enzyme";
+import {TermMetadataCreateForm} from "../TermMetadataCreateForm";
+import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import Ajax from "../../../util/Ajax";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
-import {
-  mountWithIntl,
-  promiseDelay,
-} from "../../../__tests__/environment/Environment";
+import {mountWithIntl, promiseDelay,} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
-import {
-  getLocalized,
-  langString,
-  pluralLangString,
-} from "../../../model/MultilingualString";
+import {getLocalized, langString, pluralLangString,} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/StringListEdit";
 
-jest.mock("../TermAssignments");
-jest.mock("../ParentTermSelector");
-jest.mock("../../misc/AssetLabel");
-jest.mock("../TermTypesEdit");
+jest.mock("../TermAssignments", () => () => <div>Term Assignments</div>);
+jest.mock("../ParentTermSelector", () => () => <div>Parent term selector</div>);
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
+jest.mock("../TermTypesEdit", () => () => <div>Term types edit</div>);
 jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
 jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
 

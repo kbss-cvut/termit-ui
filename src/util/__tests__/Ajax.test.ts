@@ -42,6 +42,10 @@ describe("Ajax", () => {
         headers[Constants.Headers.AUTHORIZATION] = jwt;
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    })
+
     it("loads JWT and sets it on request", () => {
         Authentication.loadToken = jest.fn().mockReturnValue(jwt);
         mock.onGet("/users/current").reply((config: AxiosRequestConfig) => {

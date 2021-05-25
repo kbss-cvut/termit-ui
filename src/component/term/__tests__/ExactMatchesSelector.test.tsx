@@ -1,4 +1,3 @@
-import * as React from "react";
 import { shallow } from "enzyme";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";

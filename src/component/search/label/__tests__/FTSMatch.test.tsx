@@ -1,4 +1,3 @@
-import * as React from "react";
 import FTSMatch from "../FTSMatch";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";

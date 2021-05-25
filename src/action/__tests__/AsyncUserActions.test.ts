@@ -245,7 +245,7 @@ describe("AsyncUserActions", () => {
 
         it("publishes message on success", () => {
             const user = Generator.generateUser(namespace + name);
-            Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+            Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({}));
             return Promise.resolve(
                 (store.dispatch as ThunkDispatch)(enableUser(user))
             ).then(() => {

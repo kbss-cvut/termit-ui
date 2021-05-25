@@ -1,4 +1,3 @@
-import * as React from "react";
 import ValidationResult from "../../../model/ValidationResult";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { ValidationUtils } from "../validation/ValidationUtils";

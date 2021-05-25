@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { Row, Col, Label } from "reactstrap";
 import ProfileView from "../ProfileView";

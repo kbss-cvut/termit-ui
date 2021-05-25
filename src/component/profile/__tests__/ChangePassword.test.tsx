@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import User from "../../../model/User";
 import { AsyncAction } from "../../../action/ActionType";

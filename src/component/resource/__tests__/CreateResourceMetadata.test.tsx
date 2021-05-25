@@ -1,4 +1,3 @@
-import * as React from "react";
 import Ajax, { params } from "../../../util/Ajax";
 import {
   flushPromises,

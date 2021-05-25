@@ -1,4 +1,3 @@
-import * as React from "react";
 import Resource from "../../../model/Resource";
 import Generator from "../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
