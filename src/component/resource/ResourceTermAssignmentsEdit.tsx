@@ -93,9 +93,9 @@ export class ResourceTermAssignmentsEdit extends BaseRelatedTermSelector<Resourc
     }
     this.setState({ lastSearchString: fetchOptions.searchString || "" });
     return fetchFunction(fetchOptionsCopy).then((terms) => {
-      return processTermsForTreeSelect(terms, undefined, {
+      return BaseRelatedTermSelector.enhanceWithCurrent(processTermsForTreeSelect(terms, undefined, {
         searchString: fetchOptionsCopy.searchString,
-      });
+      }), undefined, this.props.terms);
     });
   };
 

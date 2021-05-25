@@ -5,6 +5,7 @@ import Term, {TermData} from "../../model/Term";
 import Workspace from "../../model/Workspace";
 import {TreeSelectFetchOptionsParams} from "../../util/Types";
 import {processTermsForTreeSelect} from "./TermTreeSelectHelper";
+import Utils from "../../util/Utils";
 
 export interface BaseRelatedTermSelectorProps {
     vocabularyIri: string;
@@ -34,6 +35,33 @@ export const PAGE_SIZE = 50;
 export const SEARCH_DELAY = 300;
 
 export default abstract class BaseRelatedTermSelector<P extends BaseRelatedTermSelectorProps = BaseRelatedTermSelectorProps, S extends BaseRelatedTermSelectorState = BaseRelatedTermSelectorState> extends React.Component<P, S> {
+
+    protected static enhanceWithCurrent(
+        terms: Term[],
+        currentTermIri?: string,
+        existingValues?: Term[]
+    ): Term[] {
+        if (currentTermIri) {
+            const current = Utils.sanitizeArray(existingValues).slice();
+            const result = [];
+            for (const t of terms) {
+                if (t.iri === currentTermIri) {
+                    continue;
+                }
+                if (t.plainSubTerms) {
+                    t.plainSubTerms = t.plainSubTerms.filter((st) => st !== currentTermIri);
+                }
+                const parentIndex = current.findIndex((p) => p.iri === t.iri);
+                if (parentIndex === -1) {
+                    result.push(t);
+                }
+            }
+            // Add existing which are not in the loaded terms so that they show up in the list
+            return current.concat(result);
+        } else {
+            return terms;
+        }
+    }
 
     public fetchOptions (
         fetchOptions: TreeSelectFetchOptionsParams<TermData>

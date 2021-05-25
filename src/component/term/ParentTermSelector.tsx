@@ -39,33 +39,6 @@ export const PARENT_ATTRIBUTES = [
   ...TERM_BROADER_SUBPROPERTIES,
 ];
 
-function enhanceWithCurrentTerm(
-  terms: Term[],
-  currentTermIri?: string,
-  parentTerms?: Term[]
-): Term[] {
-  if (currentTermIri) {
-    const currentParents = Utils.sanitizeArray(parentTerms).slice();
-    const result = [];
-    for (const t of terms) {
-      if (t.iri === currentTermIri) {
-        continue;
-      }
-      if (t.plainSubTerms) {
-        t.plainSubTerms = t.plainSubTerms.filter((st) => st !== currentTermIri);
-      }
-      const parentIndex = currentParents.findIndex((p) => p.iri === t.iri);
-      if (parentIndex === -1) {
-        result.push(t);
-      }
-    }
-    // Add parents which are not in the loaded terms so that they show up in the list
-    return currentParents.concat(result);
-  } else {
-    return terms;
-  }
-}
-
 function createValueRenderer() {
   return (term: Term) => (
     <OutgoingLink
@@ -190,7 +163,7 @@ export class ParentTermSelector extends BaseRelatedTermSelector<
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    return super.fetchOptions(fetchOptions).then(terms => enhanceWithCurrentTerm(terms, this.props.term.iri, Term.consolidateBroaderTerms(this.props.term)));
+    return super.fetchOptions(fetchOptions).then(terms => BaseRelatedTermSelector.enhanceWithCurrent(terms, this.props.term.iri, Term.consolidateBroaderTerms(this.props.term)));
   };
 
   public render() {

@@ -3,12 +3,13 @@ import {shallow} from "enzyme";
 import Generator from "../../../__tests__/environment/Generator";
 import FetchOptionsFunction from "../../../model/Functions";
 import {IRI} from "../../../util/VocabularyUtils";
-import Term from "../../../model/Term";
+import Term, {TermInfo} from "../../../model/Term";
 import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import {IntelligentTreeSelect} from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
 import {ExactMatchesSelector} from "../ExactMatchesSelector";
+import {langString} from "../../../model/MultilingualString";
 
 describe("ExactMatchesSelector", () => {
   const vocabularyIri = Generator.generateUri();
@@ -178,6 +179,29 @@ describe("ExactMatchesSelector", () => {
         .then((terms) => {
           expect(terms.indexOf(currentTerm)).toEqual(-1);
         });
+    });
+
+    it("passes existing values to with options to ensure they are displayed even if there were not loaded due to paging", () => {
+      const options = [Generator.generateTerm(), Generator.generateTerm(), Generator.generateTerm()];
+      const existing: TermInfo[] = [{iri: Generator.generateUri(), label: langString("testExact"), vocabulary: {iri: Generator.generateUri()}}];
+      loadTermsFromCurrentWorkspace = jest.fn().mockImplementation(() => Promise.resolve(options));
+      const wrapper = shallow<ExactMatchesSelector>(
+          <ExactMatchesSelector
+              id="test"
+              termIri={Generator.generateUri()}
+              vocabularyIri={vocabularyIri}
+              onChange={onChange}
+              selected={existing}
+              {...loadFunctions}
+              {...intlFunctions()}
+          />
+      );
+      return wrapper
+          .instance()
+          .fetchOptions({})
+          .then((terms) => {
+            expect(terms[0]).toEqual(new Term(existing[0]));
+          });
     });
   });
 });

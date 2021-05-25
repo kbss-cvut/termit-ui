@@ -54,7 +54,7 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<RelatedTermsSe
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    return super.fetchOptions(fetchOptions);
+    return super.fetchOptions(fetchOptions).then(terms => BaseRelatedTermSelector.enhanceWithCurrent(terms, this.props.termIri, this.props.selected.map(ti => new Term(ti))));
   };
 
   public render() {
