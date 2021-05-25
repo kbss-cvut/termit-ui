@@ -11,7 +11,9 @@ import { Button, DropdownToggle } from "reactstrap";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
 
-jest.mock("../../changetracking/AssetHistory", () => () => <div>Asset history</div>);
+jest.mock("../../changetracking/AssetHistory", () => () => (
+  <div>Asset history</div>
+));
 jest.mock("../../term/Terms", () => () => <div>Terms</div>);
 jest.mock("../TermChangeFrequency", () => () => <div>Term frequency</div>);
 

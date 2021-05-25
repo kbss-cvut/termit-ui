@@ -24,12 +24,12 @@ describe("ParentTermSelector", () => {
   beforeEach(() => {
     onChange = jest.fn();
     loadTerms = jest.fn().mockResolvedValue([]);
-    loadImports = jest.fn().mockResolvedValue([])
+    loadImports = jest.fn().mockResolvedValue([]);
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
-  })
+  });
 
   it("passes selected parent as value to tree component", () => {
     const vocabulary = new Vocabulary({

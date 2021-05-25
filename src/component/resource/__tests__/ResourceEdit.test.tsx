@@ -7,9 +7,11 @@ import { shallow } from "enzyme";
 import Term from "../../../model/Term";
 import File from "../../../model/File";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import {langString} from "../../../model/MultilingualString";
+import { langString } from "../../../model/MultilingualString";
 
-jest.mock("../ResourceTermAssignmentsEdit", () => () => <div>AssignmentsEdit</div>);
+jest.mock("../ResourceTermAssignmentsEdit", () => () => (
+  <div>AssignmentsEdit</div>
+));
 
 describe("ResourceEdit", () => {
   let resource: Resource;
@@ -65,7 +67,9 @@ describe("ResourceEdit", () => {
     const newResource = new Resource({
       iri: Generator.generateUri(),
       label: "test term",
-      terms: [new Term({ label: langString("Test"), iri: "http://test.org/test" })],
+      terms: [
+        new Term({ label: langString("Test"), iri: "http://test.org/test" }),
+      ],
     });
 
     const instance = wrapper.instance();

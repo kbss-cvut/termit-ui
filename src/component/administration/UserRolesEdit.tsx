@@ -29,9 +29,7 @@ interface UserRolesEditProps {
 const UserRolesEdit = (props: UserRolesEditProps) => {
   const { user, open, availableRoles, onCancel, onSubmit } = props;
   const { i18n, formatMessage, locale } = useI18n();
-  const [role, setRole] = useState<string>(
-    VocabularyUtils.USER_RESTRICTED
-  );
+  const [role, setRole] = useState<string>(VocabularyUtils.USER_RESTRICTED);
 
   useEffect(() => {
     if (user != null) {

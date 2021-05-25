@@ -57,7 +57,7 @@ describe("VocabularySelect", () => {
     withHooks(() => {
       mockUseI18n();
       const wrapper = mountWithIntl(
-          <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
+        <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
       );
       wrapper.find(DropdownToggle).simulate("click");
       wrapper.find(DropdownItem).simulate("click");

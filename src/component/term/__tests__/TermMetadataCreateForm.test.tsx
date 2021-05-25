@@ -1,13 +1,20 @@
 import Generator from "../../../__tests__/environment/Generator";
-import {shallow} from "enzyme";
-import {TermMetadataCreateForm} from "../TermMetadataCreateForm";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import { shallow } from "enzyme";
+import { TermMetadataCreateForm } from "../TermMetadataCreateForm";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Ajax from "../../../util/Ajax";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
-import {mountWithIntl, promiseDelay,} from "../../../__tests__/environment/Environment";
+import {
+  mountWithIntl,
+  promiseDelay,
+} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
-import {getLocalized, langString, pluralLangString,} from "../../../model/MultilingualString";
+import {
+  getLocalized,
+  langString,
+  pluralLangString,
+} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/StringListEdit";
 

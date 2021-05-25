@@ -11,9 +11,9 @@ import { ThunkDispatch } from "../util/Types";
  */
 
 export function logout() {
-    Authentication.clearToken();
-    Routing.transitionTo(Routes.login);
-    return (dispatch: ThunkDispatch) => {
-        dispatch(userLogout());
-    };
+  Authentication.clearToken();
+  Routing.transitionTo(Routes.login);
+  return (dispatch: ThunkDispatch) => {
+    dispatch(userLogout());
+  };
 }

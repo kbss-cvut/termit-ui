@@ -14,12 +14,12 @@ configure({ adapter: new Adapter() });
 // https://github.com/mui-org/material-ui/issues/15726
 // This is fixed in jest 26, but react scripts v4 are needed for that
 (global as any).document.createRange = () => ({
-    setStart: () => {},
-    setEnd: () => {},
-    commonAncestorContainer: {
-        nodeName: "BODY",
-        ownerDocument: document,
-    },
+  setStart: () => {},
+  setEnd: () => {},
+  commonAncestorContainer: {
+    nodeName: "BODY",
+    ownerDocument: document,
+  },
 });
 
 enableHooks(jest, { dontMockByDefault: true });

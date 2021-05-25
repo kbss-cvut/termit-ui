@@ -28,7 +28,7 @@ describe("TermDefinitionEdit", () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-  })
+  });
 
   it("returns null when no element and term are provided", () => {
     mockUseI18n();

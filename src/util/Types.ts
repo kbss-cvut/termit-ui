@@ -14,9 +14,9 @@ import { Location } from "history";
  * Action can be specified.
  */
 export type ThunkDispatch<A extends Action = Action> = TDispatch<
-    TermItState,
-    null,
-    Action
+  TermItState,
+  null,
+  Action
 >;
 
 /**
@@ -33,11 +33,11 @@ export type ValueMapper<T> = (data: T) => JSX.Element | null;
  * Represents parameters passed to the fetchOptions handler of the tree select component.
  */
 export interface TreeSelectFetchOptionsParams<T> {
-    searchString?: string;
-    optionID?: string;
-    limit?: number;
-    offset?: number;
-    option?: T;
+  searchString?: string;
+  optionID?: string;
+  limit?: number;
+  offset?: number;
+  option?: T;
 }
 
 /**
@@ -46,6 +46,6 @@ export interface TreeSelectFetchOptionsParams<T> {
 export type Literal = number | string | boolean;
 
 export interface BasicRouteProps {
-    match: match<any>;
-    location: Location;
+  match: match<any>;
+  location: Location;
 }
