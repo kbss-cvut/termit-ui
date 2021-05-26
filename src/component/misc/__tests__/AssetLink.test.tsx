@@ -1,4 +1,3 @@
-import * as React from "react";
 import AssetLink from "../AssetLink";
 import { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import { MemoryRouter } from "react-router";

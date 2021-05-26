@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Register } from "../Register";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import ActionType, { AsyncFailureAction } from "../../../action/ActionType";

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { shallow } from "enzyme";
 import { ImportedVocabulariesList } from "../ImportedVocabulariesList";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";

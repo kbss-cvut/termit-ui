@@ -4,7 +4,6 @@ import Vocabulary from "../../../../util/VocabularyUtils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
-import * as React from "react";
 import {
   MAX_RENDERED_RESULTS,
   SearchResultsOverlay,
@@ -14,7 +13,7 @@ import { ReactWrapper } from "enzyme";
 import { MemoryRouter } from "react-router";
 
 jest.mock("popper.js");
-jest.mock("../../../misc/AssetLabel");
+jest.mock("../../../misc/AssetLabel", () => () => <span>Asset</span>);
 
 function generateResults(type: string, count: number = 5): SearchResult[] {
   const results: SearchResult[] = [];

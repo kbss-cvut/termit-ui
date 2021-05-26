@@ -1,7 +1,7 @@
 import * as React from "react";
+import classNames from "classnames";
 import { Button, ButtonProps } from "reactstrap";
 import "./BadgeButton.scss";
-import classNames from "classnames";
 
 export const BadgeButton: React.FC<ButtonProps> = (props) => {
   const { children, className, ...propsToPass } = props;

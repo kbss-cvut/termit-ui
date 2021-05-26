@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Login } from "../Login";
 import ErrorInfo from "../../../model/ErrorInfo";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";

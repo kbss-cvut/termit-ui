@@ -8,18 +8,18 @@ import TermItState from "../model/TermItState";
 const middlewares: Middleware[] = [thunk as ThunkMiddleware];
 
 if (process.env.NODE_ENV === "development") {
-    middlewares.push(
-        createLogger({
-            stateTransformer(state: TermItState): any {
-                return TermItState.toLoggable(state);
-            },
-        })
-    );
+  middlewares.push(
+    createLogger({
+      stateTransformer(state: TermItState): any {
+        return TermItState.toLoggable(state);
+      },
+    })
+  );
 }
 
 const TermItStore = createStore(
-    TermItReducers,
-    composeWithDevTools(applyMiddleware(...middlewares))
+  TermItReducers,
+  composeWithDevTools(applyMiddleware(...middlewares))
 );
 
 export default TermItStore;

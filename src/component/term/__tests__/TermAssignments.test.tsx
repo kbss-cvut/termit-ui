@@ -1,4 +1,3 @@
-import * as React from "react";
 import Term from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";

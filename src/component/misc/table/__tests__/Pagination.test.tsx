@@ -1,4 +1,3 @@
-import React from "react";
 import { Pagination as BootstrapPagination } from "reactstrap";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import { Pagination } from "../Pagination";

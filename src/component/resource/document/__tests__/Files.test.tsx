@@ -1,4 +1,3 @@
-import * as React from "react";
 import { shallow } from "enzyme";
 import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import TermItFile from "../../../../model/File";

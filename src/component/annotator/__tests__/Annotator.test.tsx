@@ -2,7 +2,6 @@ import {
   mockWindowSelection,
   mountWithIntl,
 } from "../../../__tests__/environment/Environment";
-import * as React from "react";
 import { Element } from "domhandler";
 import { AnnotationSpanProps, Annotator } from "../Annotator";
 import { shallow } from "enzyme";

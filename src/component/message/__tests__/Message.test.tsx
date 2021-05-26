@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Message } from "../Message";
 import MessageModel from "../../../model/Message";
 import {

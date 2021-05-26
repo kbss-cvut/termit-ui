@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import * as React from "react";
 import { UncontrolledAlert } from "reactstrap";
 import Constants from "../../../util/Constants";
 import { useI18n } from "../../hook/useI18n";

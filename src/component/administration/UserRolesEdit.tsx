@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   Button,
@@ -29,11 +29,9 @@ interface UserRolesEditProps {
 const UserRolesEdit = (props: UserRolesEditProps) => {
   const { user, open, availableRoles, onCancel, onSubmit } = props;
   const { i18n, formatMessage, locale } = useI18n();
-  const [role, setRole] = React.useState<string>(
-    VocabularyUtils.USER_RESTRICTED
-  );
+  const [role, setRole] = useState<string>(VocabularyUtils.USER_RESTRICTED);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user != null) {
       const actualRoles = filterActualRoles(user.types, availableRoles).map(
         (r) => r.iri

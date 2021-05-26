@@ -1,4 +1,3 @@
-import * as React from "react";
 import { FileContentDetail } from "../FileContentDetail";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
