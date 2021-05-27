@@ -1,3 +1,4 @@
+import React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import { RouteComponentProps } from "react-router";
