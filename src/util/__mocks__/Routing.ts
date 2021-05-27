@@ -1,13 +1,13 @@
 import { Route } from "../Routes";
 
 export class Routing {
-    public static getTransitionPath = jest
-        .fn()
-        .mockImplementation((route: Route) => route.path);
+  public static getTransitionPath = jest
+    .fn()
+    .mockImplementation((route: Route) => route.path);
 
-    public static buildFullUrl = jest.fn(
-        (route: Route) => "http://localhost:3000/#/" + route.path
-    );
+  public static buildFullUrl = jest.fn(
+    (route: Route) => "http://localhost:3000/#/" + route.path
+  );
 }
 
 class RoutingMock {

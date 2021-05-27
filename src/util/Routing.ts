@@ -7,16 +7,16 @@ import VocabularyUtils from "./VocabularyUtils";
 import Term from "../model/Term";
 
 export class Routing {
-    private readonly mHistory: History;
-    private originalTarget?: string;
+  private readonly mHistory: History;
+  private originalTarget?: string;
 
-    constructor() {
-        this.mHistory = createHashHistory();
-    }
+  constructor() {
+    this.mHistory = createHashHistory();
+  }
 
-    get history(): History {
-        return this.mHistory;
-    }
+  get history(): History {
+    return this.mHistory;
+  }
 
   private static setPathParams(path: string, params: Map<string, string>) {
     for (const pair of Array.from(params.entries())) {
@@ -51,21 +51,17 @@ export class Routing {
     return path;
   }
 
-    public static buildFullUrl(
-        route: Route | string,
-        options: {
-            params?: Map<string, string>;
-            query?: Map<string, string>;
-        } = {}
-    ) {
-        const innerPath =
-            typeof route === "string"
-                ? route
-                : Routing.buildUrl(route, options);
-        return (
-            window.location.origin + window.location.pathname + "#" + innerPath
-        );
-    }
+  public static buildFullUrl(
+    route: Route | string,
+    options: {
+      params?: Map<string, string>;
+      query?: Map<string, string>;
+    } = {}
+  ) {
+    const innerPath =
+      typeof route === "string" ? route : Routing.buildUrl(route, options);
+    return window.location.origin + window.location.pathname + "#" + innerPath;
+  }
 
   public saveOriginalTarget = () => {
     this.originalTarget =

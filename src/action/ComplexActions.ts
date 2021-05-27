@@ -12,11 +12,11 @@ import Routes from "../util/Routes";
  */
 
 export function logout() {
-    keycloak.logout({
-        redirectUri: Routing.buildFullUrl(Routes.publicDashboard),
-    });
-    Authentication.clearToken();
-    return (dispatch: ThunkDispatch) => {
-        dispatch(userLogout());
-    };
+  keycloak.logout({
+    redirectUri: Routing.buildFullUrl(Routes.publicDashboard),
+  });
+  Authentication.clearToken();
+  return (dispatch: ThunkDispatch) => {
+    dispatch(userLogout());
+  };
 }

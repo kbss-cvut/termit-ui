@@ -50,9 +50,9 @@ describe("ParentTermSelector", () => {
     };
   });
 
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   function generateTerms(count: number, vocabularyIri?: string) {
     const options: Term[] = [];

@@ -29,30 +29,27 @@ export class Route {
 }
 
 const Routes = {
-    dashboard: new Route("dashboard", "/"),
-    login: new Route("login", "/login"),
-    search: new Route("search", "/search"),
-    searchTerms: new Route("searchTerms", "/search/terms"),
-    searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),
-    facetedSearch: new Route("facetedSearch", "/facetedSearch"),
-    vocabularies: new Route("vocabulary", "/vocabularies"),
-    resources: new Route("resource", "/resources"),
-    vocabularyDetail: new Route(
-        "vocabularyDetail",
-        "/vocabularies/:name/terms"
-    ),
-    vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
-    annotateFile: new Route("annotateFile", "/resources/:name/files/:fileName"),
-    createResource: new Route("createResource", "/resources/create"),
-    resourceSummary: new Route("resourceSummary", "/resources/:name"),
-    createVocabularyTerm: new Route(
-        "createVocabularyTerm",
-        "/vocabularies/:name/terms/create"
-    ),
-    vocabularyTermDetail: new Route(
-        "vocabularyTermDetail",
-        "/vocabularies/:name/terms/:termName"
-    ),
+  dashboard: new Route("dashboard", "/"),
+  login: new Route("login", "/login"),
+  search: new Route("search", "/search"),
+  searchTerms: new Route("searchTerms", "/search/terms"),
+  searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),
+  facetedSearch: new Route("facetedSearch", "/facetedSearch"),
+  vocabularies: new Route("vocabulary", "/vocabularies"),
+  resources: new Route("resource", "/resources"),
+  vocabularyDetail: new Route("vocabularyDetail", "/vocabularies/:name/terms"),
+  vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
+  annotateFile: new Route("annotateFile", "/resources/:name/files/:fileName"),
+  createResource: new Route("createResource", "/resources/create"),
+  resourceSummary: new Route("resourceSummary", "/resources/:name"),
+  createVocabularyTerm: new Route(
+    "createVocabularyTerm",
+    "/vocabularies/:name/terms/create"
+  ),
+  vocabularyTermDetail: new Route(
+    "vocabularyTermDetail",
+    "/vocabularies/:name/terms/:termName"
+  ),
 
   // Public views
   publicDashboard: new Route("publicDashboard", "/public"),

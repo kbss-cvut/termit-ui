@@ -57,19 +57,15 @@ export default class Comment
     this.content = data.content;
   }
 
-    toJsonLd(): CommentData {
-        const result = Object.assign(
-            { types: [VocabularyUtils.COMMENT] },
-            this,
-            {
-                "@context": CONTEXT,
-            }
-        );
-        if (result.reactions) {
-            Utils.sanitizeArray(result.reactions).forEach(
-                (r) => (r.object = { iri: this.iri })
-            );
-        }
-        return result;
+  toJsonLd(): CommentData {
+    const result = Object.assign({ types: [VocabularyUtils.COMMENT] }, this, {
+      "@context": CONTEXT,
+    });
+    if (result.reactions) {
+      Utils.sanitizeArray(result.reactions).forEach(
+        (r) => (r.object = { iri: this.iri })
+      );
     }
+    return result;
+  }
 }
