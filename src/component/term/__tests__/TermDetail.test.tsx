@@ -1,17 +1,17 @@
-import {createMemoryHistory, Location} from "history";
-import {match as Match} from "react-router";
-import {shallow} from "enzyme";
-import {TermDetail} from "../TermDetail";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import { createMemoryHistory, Location } from "history";
+import { match as Match } from "react-router";
+import { shallow } from "enzyme";
+import { TermDetail } from "../TermDetail";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import TermMetadata from "../TermMetadata";
 import TermMetadataEdit from "../TermMetadataEdit";
 import Term from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import AppNotification from "../../../model/AppNotification";
 import NotificationType from "../../../model/NotificationType";
-import VocabularyUtils, {IRI} from "../../../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
-import {langString} from "../../../model/MultilingualString";
+import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 
 jest.mock("../TermAssignments");
@@ -410,25 +410,25 @@ describe("TermDetail", () => {
   // Bug #1591, situations when term label is the same but it is in a different vocabulary -> different namespace
   it("reloads term and vocabulary when namespace query parameter changes indicating different term", () => {
     const wrapper = shallow<TermDetail>(
-        <TermDetail
-            term={null}
-            configuredLanguage="cs"
-            loadTerm={onLoad}
-            updateTerm={onUpdate}
-            removeTerm={removeTerm}
-            loadVocabulary={loadVocabulary}
-            vocabulary={vocabulary}
-            history={history}
-            location={location}
-            match={match}
-            publishNotification={onPublishNotification}
-            {...intlFunctions()}
-        />
+      <TermDetail
+        term={null}
+        configuredLanguage="cs"
+        loadTerm={onLoad}
+        updateTerm={onUpdate}
+        removeTerm={removeTerm}
+        loadVocabulary={loadVocabulary}
+        vocabulary={vocabulary}
+        history={history}
+        location={location}
+        match={match}
+        publishNotification={onPublishNotification}
+        {...intlFunctions()}
+      />
     );
     jest.clearAllMocks();
     const newLocation = Object.assign({}, location);
     newLocation.search = `&namespace=${VocabularyUtils.NS_TERMIT}`;
-    wrapper.setProps({location: newLocation});
+    wrapper.setProps({ location: newLocation });
     wrapper.update();
     expect(onLoad).toHaveBeenCalled();
     expect(loadVocabulary).toHaveBeenCalled();

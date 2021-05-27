@@ -123,8 +123,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   }
 
   private shouldReloadTerms(prevProps: Readonly<GlossaryTermsProps>) {
-    return (Utils.didNavigationOccur(prevProps, this.props) && this.treeComponent.current && !this.props.isDetailView)
-    || prevProps.vocabulary?.iri !== this.props.vocabulary?.iri;
+    return (
+      (Utils.didNavigationOccur(prevProps, this.props) &&
+        this.treeComponent.current &&
+        !this.props.isDetailView) ||
+      prevProps.vocabulary?.iri !== this.props.vocabulary?.iri
+    );
   }
 
   public componentWillUnmount() {

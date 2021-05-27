@@ -82,7 +82,7 @@ export class TermDetail extends EditableComponent<
     this.load();
   }
 
-  private load():void {
+  private load(): void {
     this.loadTerm();
     this.loadVocabulary();
   }
