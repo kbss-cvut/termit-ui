@@ -106,11 +106,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     if (matchingNotification && this.treeComponent.current) {
       this.treeComponent.current.resetOptions();
       this.props.consumeNotification(matchingNotification);
-    } else if (
-      Utils.didNavigationOccur(prevProps, this.props) &&
-      this.treeComponent.current &&
-      !this.props.isDetailView
-    ) {
+    } else if (this.shouldReloadTerms(prevProps)) {
       this.treeComponent.current.resetOptions();
     }
     if (prevProps.locale !== this.props.locale) {
@@ -123,6 +119,15 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       (n.source.type === ActionType.CREATE_VOCABULARY_TERM &&
         n.source.status === AsyncActionStatus.SUCCESS) ||
       n.source.type === NotificationType.TERM_HIERARCHY_UPDATED
+    );
+  }
+
+  private shouldReloadTerms(prevProps: Readonly<GlossaryTermsProps>) {
+    return (
+      (Utils.didNavigationOccur(prevProps, this.props) &&
+        this.treeComponent.current &&
+        !this.props.isDetailView) ||
+      prevProps.vocabulary?.iri !== this.props.vocabulary?.iri
     );
   }
 
