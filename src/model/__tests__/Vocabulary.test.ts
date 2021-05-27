@@ -8,7 +8,8 @@ describe("Vocabulary", () => {
 
   beforeEach(() => {
     data = {
-      iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/vocabularies/metropolitan-plan",
+      iri:
+        "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/vocabularies/metropolitan-plan",
       label: "Metropolitan plan",
     };
   });

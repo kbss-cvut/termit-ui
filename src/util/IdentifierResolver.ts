@@ -7,7 +7,9 @@ export default class IdentifierResolver {
    * parameters are extracted from the URL and put into a query map.
    * @param location URI of resource, usually extracted from location header
    */
-  public static routingOptionsFromLocation(location: string): {
+  public static routingOptionsFromLocation(
+    location: string
+  ): {
     params?: Map<string, string>;
     query?: Map<string, string>;
   } {

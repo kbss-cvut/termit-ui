@@ -238,12 +238,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     if (annotationNode.typeof === AnnotationType.DEFINITION) {
       this.setState({
         selectedTerm: term,
-        existingTermDefinitionAnnotationElement:
-          AnnotationDomHelper.findAnnotation(
-            this.state.internalHtml,
-            annotationNode.about!,
-            this.state.prefixMap
-          ) as Element,
+        existingTermDefinitionAnnotationElement: AnnotationDomHelper.findAnnotation(
+          this.state.internalHtml,
+          annotationNode.about!,
+          this.state.prefixMap
+        ) as Element,
       });
       return false;
     }
@@ -398,8 +397,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         } else {
           this.setState({
             showSelectionPurposeDialog: true,
-            selectionPurposeDialogAnchorPosition:
-              Annotator.resolvePopupPosition(e),
+            selectionPurposeDialogAnchorPosition: Annotator.resolvePopupPosition(
+              e
+            ),
           });
         }
       } else {

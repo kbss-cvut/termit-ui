@@ -498,7 +498,7 @@ const en = {
       'Content of file "{fileName}" successfully uploaded.',
     "file.annotate.selectVocabulary":
       "Unable to determine vocabulary for annotating this file. Please, select one...",
-      "file.upload": "Upload",
+    "file.upload": "Upload",
 
     "dataset.license": "License",
     "dataset.format": "Format",

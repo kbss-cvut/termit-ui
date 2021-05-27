@@ -78,42 +78,43 @@ function createActionButtons(
   return actions;
 }
 
-export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> =
-  (props) => {
-    const { i18n } = useI18n();
-    const term = props.term !== undefined ? props.term : null;
-    const [editing, setEditing] = React.useState(term === null);
-    React.useEffect(() => {
-      if (term) {
-        setEditing(false);
-      }
-    }, [term]);
-    const bodyContent = editing ? (
-      <AnnotationTerms
-        onChange={props.onSelectTerm}
-        canCreateTerm={false}
-        selectedTerm={term}
-      />
-    ) : (
-      <TermDefinitionAnnotationView
-        term={term}
-        resource={props.resource}
-        textContent={props.text}
-      />
-    );
+export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> = (
+  props
+) => {
+  const { i18n } = useI18n();
+  const term = props.term !== undefined ? props.term : null;
+  const [editing, setEditing] = React.useState(term === null);
+  React.useEffect(() => {
+    if (term) {
+      setEditing(false);
+    }
+  }, [term]);
+  const bodyContent = editing ? (
+    <AnnotationTerms
+      onChange={props.onSelectTerm}
+      canCreateTerm={false}
+      selectedTerm={term}
+    />
+  ) : (
+    <TermDefinitionAnnotationView
+      term={term}
+      resource={props.resource}
+      textContent={props.text}
+    />
+  );
 
-    return (
-      <SimplePopupWithActions
-        isOpen={props.isOpen}
-        target={props.target}
-        toggle={props.onToggleDetailOpen}
-        component={bodyContent}
-        actions={createActionButtons(props, i18n, editing, () =>
-          setEditing(!editing)
-        )}
-        title={i18n("annotation.definition.title")}
-      />
-    );
-  };
+  return (
+    <SimplePopupWithActions
+      isOpen={props.isOpen}
+      target={props.target}
+      toggle={props.onToggleDetailOpen}
+      component={bodyContent}
+      actions={createActionButtons(props, i18n, editing, () =>
+        setEditing(!editing)
+      )}
+      title={i18n("annotation.definition.title")}
+    />
+  );
+};
 
 export default TermDefinitionAnnotation;

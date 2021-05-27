@@ -30,26 +30,23 @@ describe("Async commented asset actions", () => {
   const data = [
     {
       "@id": Generator.generateUri(),
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem":
-        {
-          "@id": Generator.generateUri(),
-        },
+      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem": {
+        "@id": Generator.generateUri(),
+      },
       "@type": [VocabularyUtils.TERM],
     },
     {
       "@id": Generator.generateUri(),
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem":
-        {
-          "@id": Generator.generateUri(),
-        },
+      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem": {
+        "@id": Generator.generateUri(),
+      },
       "@type": [VocabularyUtils.TERM],
     },
     {
       "@id": Generator.generateUri(),
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem":
-        {
-          "@id": Generator.generateUri(),
-        },
+      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/je-tématem": {
+        "@id": Generator.generateUri(),
+      },
       "@type": [VocabularyUtils.TERM],
     },
   ];

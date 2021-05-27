@@ -21,8 +21,13 @@ export function isMine(comment: Comment, user: User) {
 }
 
 const CommentLikes: React.FC<CommentLikesProps> = (props) => {
-  const { reactions, currentUser, addReaction, removeReaction, comment } =
-    props;
+  const {
+    reactions,
+    currentUser,
+    addReaction,
+    removeReaction,
+    comment,
+  } = props;
   const likes = reactions.filter(
     (r) => r.types.indexOf(ReactionType.LIKE) !== -1
   );

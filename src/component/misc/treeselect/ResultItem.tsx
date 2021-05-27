@@ -53,8 +53,13 @@ class ResultItem extends React.Component<ResultItemProps> {
 
   public render() {
     let button = null;
-    const { option, childrenKey, valueKey, labelKey, getOptionLabel } =
-      this.props;
+    const {
+      option,
+      childrenKey,
+      valueKey,
+      labelKey,
+      getOptionLabel,
+    } = this.props;
     if (option[childrenKey].length > 0) {
       button = this.getCollapseButton();
     }

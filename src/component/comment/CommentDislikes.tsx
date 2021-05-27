@@ -18,8 +18,13 @@ interface CommentDislikesProps extends HasI18n {
 }
 
 const CommentDislikes: React.FC<CommentDislikesProps> = (props) => {
-  const { reactions, currentUser, addReaction, removeReaction, comment } =
-    props;
+  const {
+    reactions,
+    currentUser,
+    addReaction,
+    removeReaction,
+    comment,
+  } = props;
   const dislikes = reactions.filter(
     (r) => r.types.indexOf(ReactionType.DISLIKE) !== -1
   );

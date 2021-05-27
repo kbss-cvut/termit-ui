@@ -20,8 +20,7 @@ export interface RecentlyCommentedAssetData extends HasTypes {
 }
 
 export default class RecentlyCommentedAsset
-  implements RecentlyCommentedAssetData
-{
+  implements RecentlyCommentedAssetData {
   public readonly iri: string;
   public readonly type: string;
   lastComment: Comment;

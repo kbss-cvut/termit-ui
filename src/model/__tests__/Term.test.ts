@@ -124,7 +124,8 @@ describe("Term tests", () => {
       const extraProperty =
         "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
       const data: TermData = {
-        iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
+        iri:
+          "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
         label: langString("pojem 5"),
         sources: [
           "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology",
@@ -143,7 +144,8 @@ describe("Term tests", () => {
       const extraProperty =
         "http://onto.fel.cvut.cz/ontologies/termit/extra-one";
       const data: TermData = {
-        iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
+        iri:
+          "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-5",
         label: langString("pojem 5"),
         sources: [
           "https://kbss.felk.cvut.cz/web/kbss/dataset-descriptor-ontology",

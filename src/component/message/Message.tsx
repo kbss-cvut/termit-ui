@@ -15,10 +15,10 @@ export const Message: React.FC<MessageProps> = (props: MessageProps) => {
   const { message } = props;
   const { formatMessage } = useI18n();
   const dispatch = useDispatch();
-  const dismiss = useCallback(
-    () => dispatch(dismissMessage(message)),
-    [message, dispatch]
-  );
+  const dismiss = useCallback(() => dispatch(dismissMessage(message)), [
+    message,
+    dispatch,
+  ]);
   useEffect(() => {
     const timer = setTimeout(() => {
       dismiss();

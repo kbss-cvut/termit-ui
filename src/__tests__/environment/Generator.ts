@@ -77,7 +77,9 @@ export default class Generator {
     );
   }
 
-  public static generateAssetData(label?: string): {
+  public static generateAssetData(
+    label?: string
+  ): {
     iri: string;
     label: string;
   } {

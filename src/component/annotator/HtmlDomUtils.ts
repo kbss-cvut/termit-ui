@@ -225,7 +225,7 @@ const HtmlDomUtils = {
    * @param y Y-coordinate of the virtual element
    */
   generateVirtualElement(x: number, y: number): HTMLElement {
-    return {
+    return ({
       getBoundingClientRect: () => {
         return {
           width: 0,
@@ -243,7 +243,7 @@ const HtmlDomUtils = {
         /* Intentionally empty */
       },
       contains: () => false,
-    } as unknown as HTMLElement;
+    } as unknown) as HTMLElement;
   },
 
   findAnnotationElementBySelector(

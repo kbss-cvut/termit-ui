@@ -97,9 +97,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     const property = Generator.generateUri();
     const value = "test";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
+    (wrapper
+      .find(UnmappedPropertiesEdit)
+      .instance() as UnmappedPropertiesEdit).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",
@@ -127,9 +127,9 @@ describe("UnmappedPropertiesEdit", () => {
       />
     );
     const value = "test2";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
+    (wrapper
+      .find(UnmappedPropertiesEdit)
+      .instance() as UnmappedPropertiesEdit).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",
@@ -158,9 +158,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     const property = Generator.generateUri();
     const value = "test";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
+    (wrapper
+      .find(UnmappedPropertiesEdit)
+      .instance() as UnmappedPropertiesEdit).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",
@@ -190,9 +190,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     let addButton = wrapper.find(GoPlus).parent();
     expect(addButton.prop("disabled")).toBeTruthy();
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
+    (wrapper
+      .find(UnmappedPropertiesEdit)
+      .instance() as UnmappedPropertiesEdit).onPropertySelect(
       new RdfsResource({
         iri: Generator.generateUri(),
         label: "Property",
@@ -221,9 +221,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     const property = Generator.generateUri();
     const value = "test";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
+    (wrapper
+      .find(UnmappedPropertiesEdit)
+      .instance() as UnmappedPropertiesEdit).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",

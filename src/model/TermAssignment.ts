@@ -32,8 +32,7 @@ export interface TermAssignmentData {
 }
 
 export default class TermAssignment
-  implements TermAssignmentData, SupportsJsonLd<TermAssignmentData>
-{
+  implements TermAssignmentData, SupportsJsonLd<TermAssignmentData> {
   public iri?: string;
   public term: TermData;
   public target: Target;

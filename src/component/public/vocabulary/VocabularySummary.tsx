@@ -24,8 +24,13 @@ interface VocabularySummaryProps extends RouteComponentProps<any> {
 }
 
 export const VocabularySummary: React.FC<VocabularySummaryProps> = (props) => {
-  const { resetSelectedTerm, vocabulary, location, match, loadVocabulary } =
-    props;
+  const {
+    resetSelectedTerm,
+    vocabulary,
+    location,
+    match,
+    loadVocabulary,
+  } = props;
   const { i18n } = useI18n();
 
   React.useEffect(() => {
