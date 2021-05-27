@@ -1,4 +1,3 @@
-import * as React from "react";
 import ErrorInfo, { ErrorLogItem } from "../../../model/ErrorInfo";
 import ActionType from "../../../action/ActionType";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";

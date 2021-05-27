@@ -1,4 +1,3 @@
-import * as React from "react";
 import { createMemoryHistory, Location } from "history";
 import { match as Match } from "react-router";
 import { shallow } from "enzyme";
@@ -18,10 +17,10 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router-dom";
 import en from "../../../i18n/en";
 
-jest.mock("../TermAssignments");
-jest.mock("../ParentTermSelector");
-jest.mock("../../misc/AssetLabel");
-jest.mock("../../changetracking/AssetHistory");
+jest.mock("../TermAssignments", () => () => <div>Term assignments</div>);
+jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
+jest.mock("../../changetracking/AssetHistory", () => () => <div>History</div>);
 jest.mock("../../misc/CopyIriIcon", () => () => <span />);
 jest.mock("../DraftToggle", () => () => <span />);
 

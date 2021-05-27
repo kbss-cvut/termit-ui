@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Link, MemoryRouter } from "react-router-dom";
 import Vocabulary from "../../../model/Vocabulary";
 import { VocabularyLink } from "../VocabularyLink";

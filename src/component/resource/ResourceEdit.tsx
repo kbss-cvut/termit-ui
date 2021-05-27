@@ -124,6 +124,7 @@ export class ResourceEdit<
             <ResourceTermAssignmentsEdit
               terms={this.state.terms}
               onChange={this.onTagsChange}
+              vocabularyIri=""
             />
           </Col>
         </Row>

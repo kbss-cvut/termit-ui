@@ -1,4 +1,3 @@
-import * as React from "react";
 import { TextQuoteSelector } from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -15,19 +14,27 @@ import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
 import { langString } from "../../../model/MultilingualString";
 import ActionType from "../../../action/ActionType";
+import * as Actions from "../../../action/AsyncResourceActions";
+import File from "../../../model/File";
+import * as redux from "react-redux";
+import { withHooks } from "jest-react-hooks-shallow";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
+import { shallow } from "enzyme";
 
 describe("TermDefinitionSourceLink", () => {
-  it("pushes definition source selector to transition payload store when transition to definition source is triggered", async () => {
+  const file: File = new File(
+    Object.assign(Generator.generateAssetData(), {
+      owner: { iri: Generator.generateUri(), label: "document", files: [] },
+    })
+  );
+  let term: Term;
+
+  beforeEach(() => {
     const vocabulary: VocabularyData = {
       iri: Generator.generateUri(),
       label: "Test vocabulary",
     };
-    const selector: TextQuoteSelector = {
-      iri: Generator.generateUri(),
-      exactMatch: "test",
-      types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
-    };
-    const term = new Term({
+    term = new Term({
       iri: Generator.generateUri(),
       label: langString("Test"),
       scopeNote: langString("test"),
@@ -36,13 +43,24 @@ describe("TermDefinitionSourceLink", () => {
         term: { iri: "test", label: langString("test") },
         target: {
           source: { iri: Generator.generateUri() },
-          selectors: [selector],
+          selectors: [],
           types: [VocabularyUtils.FILE_OCCURRENCE_TARGET],
         },
         types: [VocabularyUtils.TERM_DEFINITION_SOURCE],
       },
     });
     term.definitionSource!.term = term;
+  });
+
+  it("pushes definition source selector to transition payload store when transition to definition source is triggered", async () => {
+    const loadFileMetadata = jest.fn().mockResolvedValue(file);
+    jest.spyOn(Actions, "loadFileMetadata").mockReturnValue(loadFileMetadata);
+    const selector: TextQuoteSelector = {
+      iri: Generator.generateUri(),
+      exactMatch: "test",
+      types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
+    };
+    term.definitionSource!.target!.selectors = [selector];
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <TermDefinitionSourceLink term={term} />
@@ -60,5 +78,20 @@ describe("TermDefinitionSourceLink", () => {
     expect(action).toBeDefined();
     expect(action.routeName).toEqual(Routes.annotateFile.name);
     expect(action.payload).toEqual({ selector });
+  });
+
+  it("loads file metadata on mount", () => {
+    const fakeDispatch = jest.fn().mockResolvedValue(file);
+    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    jest.spyOn(Actions, "loadFileMetadata");
+    withHooks(async () => {
+      mockUseI18n();
+      shallow(<TermDefinitionSourceLink term={term} />);
+    });
+    return Promise.resolve().then(() => {
+      expect(Actions.loadFileMetadata).toHaveBeenCalledWith(
+        VocabularyUtils.create(term.definitionSource!.target!.source!.iri!)
+      );
+    });
   });
 });

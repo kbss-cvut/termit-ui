@@ -1,4 +1,3 @@
-import * as React from "react";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { StringListEdit } from "../StringListEdit";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";

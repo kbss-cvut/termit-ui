@@ -16,7 +16,7 @@
 
 */
 
-import React from "react";
+import { Component } from "react";
 import { NavLink as NavLinkRRD } from "react-router-dom";
 import {
   Collapse,
@@ -92,7 +92,7 @@ const createNewNavRoutes: NavLinkRoute[] = [
   },
 ];
 
-export class Sidebar extends React.Component<SidebarProps, SidebarState> {
+export class Sidebar extends Component<SidebarProps, SidebarState> {
   constructor(props: SidebarProps) {
     super(props);
     this.state = {

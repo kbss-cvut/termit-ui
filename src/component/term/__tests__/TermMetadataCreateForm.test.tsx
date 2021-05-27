@@ -1,4 +1,3 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
 import { TermMetadataCreateForm } from "../TermMetadataCreateForm";
@@ -19,10 +18,10 @@ import {
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/StringListEdit";
 
-jest.mock("../TermAssignments");
-jest.mock("../ParentTermSelector");
-jest.mock("../../misc/AssetLabel");
-jest.mock("../TermTypesEdit");
+jest.mock("../TermAssignments", () => () => <div>Term Assignments</div>);
+jest.mock("../ParentTermSelector", () => () => <div>Parent term selector</div>);
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
+jest.mock("../TermTypesEdit", () => () => <div>Term types edit</div>);
 jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
 jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
 

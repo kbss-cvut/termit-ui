@@ -5,10 +5,10 @@ import VocabularyUtils from "../util/VocabularyUtils";
 import Utils from "../util/Utils";
 
 const ctx = {
-    term: VocabularyUtils.NS_TERMIT + "je-přiřazením-termu",
-    description: VocabularyUtils.DC_DESCRIPTION,
-    target: VocabularyUtils.NS_TERMIT + "má-cíl",
-    source: VocabularyUtils.PREFIX + "má-zdroj",
+  term: VocabularyUtils.NS_TERMIT + "je-přiřazením-termu",
+  description: VocabularyUtils.DC_DESCRIPTION,
+  target: VocabularyUtils.NS_TERMIT + "má-cíl",
+  source: VocabularyUtils.PREFIX + "má-zdroj",
 };
 
 /**
@@ -19,39 +19,40 @@ export const BASE_CONTEXT = Object.assign({}, ctx);
 export const CONTEXT = Object.assign({}, ctx, RESOURCE_CONTEXT);
 
 export interface Target {
-    source: AssetData;
-    types: string[];
+  source: AssetData;
+  types: string[];
 }
 
 export interface TermAssignmentData {
-    iri?: string;
-    term: TermData;
-    target: Target;
-    description?: string;
-    types: string[];
+  iri?: string;
+  term: TermData;
+  target: Target;
+  description?: string;
+  types: string[];
 }
 
 export default class TermAssignment
-    implements TermAssignmentData, SupportsJsonLd<TermAssignmentData> {
-    public iri?: string;
-    public term: TermData;
-    public target: Target;
-    public description?: string;
-    public types: string[];
+  implements TermAssignmentData, SupportsJsonLd<TermAssignmentData>
+{
+  public iri?: string;
+  public term: TermData;
+  public target: Target;
+  public description?: string;
+  public types: string[];
 
-    constructor(data: TermAssignmentData) {
-        this.iri = data.iri;
-        this.term = data.term;
-        this.target = data.target;
-        this.description = data.description;
-        this.types = Utils.sanitizeArray(data.types);
-    }
+  constructor(data: TermAssignmentData) {
+    this.iri = data.iri;
+    this.term = data.term;
+    this.target = data.target;
+    this.description = data.description;
+    this.types = Utils.sanitizeArray(data.types);
+  }
 
-    public isSuggested() {
-        return false;
-    }
+  public isSuggested() {
+    return false;
+  }
 
-    public toJsonLd(): TermAssignmentData {
-        return Object.assign({}, this, { "@context": CONTEXT });
-    }
+  public toJsonLd(): TermAssignmentData {
+    return Object.assign({}, this, { "@context": CONTEXT });
+  }
 }

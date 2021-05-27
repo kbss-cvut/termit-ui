@@ -15,7 +15,7 @@ const NewsMd: React.FC = () => {
     dispatch(loadNews(getShortLocale(locale))).then((data) => setNewsMd(data));
   }, [locale, dispatch]);
 
-  return newsMd ? <ReactMarkdown source={newsMd} /> : <ContainerMask />;
+  return newsMd ? <ReactMarkdown children={newsMd} /> : <ContainerMask />;
 };
 
 export default NewsMd;

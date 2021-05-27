@@ -153,8 +153,8 @@ export class UnmappedPropertiesEdit extends React.Component<
           <BadgeButton
             color="danger"
             outline={true}
-            className="ml-3"
             title={this.props.i18n("properties.edit.remove")}
+            className="ml-3"
             onClick={this.onRemove.bind(null, k, v)}
           >
             <FaTrashAlt />

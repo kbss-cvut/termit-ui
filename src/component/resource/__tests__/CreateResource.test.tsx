@@ -1,4 +1,3 @@
-import * as React from "react";
 import Ajax from "../../../util/Ajax";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";

@@ -7,15 +7,15 @@ import Constants from "../util/Constants";
 const OIDC_URL = Constants.COMPONENTS["al-auth-server"].url;
 const match = /^(.+)\/realms\/(.+)$/.exec(OIDC_URL);
 if (!match) {
-    throw new Error("Invalid Keycloak configuration provided");
+  throw new Error("Invalid Keycloak configuration provided");
 }
 const [, url, realm] = match;
 
 // Setup Keycloak instance
 const keycloak = Keycloak({
-    url,
-    realm,
-    clientId: Constants.ID,
+  url,
+  realm,
+  clientId: Constants.ID,
 });
 
 /**
@@ -26,24 +26,24 @@ const keycloak = Keycloak({
 const KEYCLOAK_REFRESH_VALIDITY_TIME = 100;
 
 keycloak.onTokenExpired = () => {
-    keycloak
-        .updateToken(KEYCLOAK_REFRESH_VALIDITY_TIME)
-        .then((refreshed) => {
-            if (!refreshed) {
-                keycloak.login({
-                    redirectUri: RoutingCls.buildFullUrl(Routes.dashboard),
-                });
-            }
-        })
-        .catch(() => {
-            keycloak.login({
-                redirectUri: RoutingCls.buildFullUrl(Routes.dashboard),
-            });
+  keycloak
+    .updateToken(KEYCLOAK_REFRESH_VALIDITY_TIME)
+    .then((refreshed) => {
+      if (!refreshed) {
+        keycloak.login({
+          redirectUri: RoutingCls.buildFullUrl(Routes.dashboard),
         });
+      }
+    })
+    .catch(() => {
+      keycloak.login({
+        redirectUri: RoutingCls.buildFullUrl(Routes.dashboard),
+      });
+    });
 };
 
 keycloak.onAuthRefreshError = () => {
-    keycloak.login({ redirectUri: RoutingCls.buildFullUrl(Routes.dashboard) });
+  keycloak.login({ redirectUri: RoutingCls.buildFullUrl(Routes.dashboard) });
 };
 
 export default keycloak;

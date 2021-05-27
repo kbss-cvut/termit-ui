@@ -1,4 +1,3 @@
-import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import { createMemoryHistory, Location } from "history";
@@ -7,14 +6,15 @@ import { shallow } from "enzyme";
 import { VocabularySummary } from "../VocabularySummary";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { VocabularyEdit } from "../VocabularyEdit";
-import { Button, DropdownToggle } from "reactstrap";
+import { DropdownToggle } from "reactstrap";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
 
-jest.mock("../../changetracking/AssetHistory");
-jest.mock("../../term/Terms");
-jest.mock("../TermChangeFrequency");
+jest.mock("../../changetracking/AssetHistory", () => () => (
+  <div>Asset history</div>
+));
+jest.mock("../../term/Terms", () => () => <div>Terms</div>);
+jest.mock("../TermChangeFrequency", () => () => <div>Term frequency</div>);
 
 describe("VocabularySummary", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";

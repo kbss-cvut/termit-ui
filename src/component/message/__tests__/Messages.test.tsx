@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Messages } from "../Messages";
 import MessageModel from "../../../model/Message";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";

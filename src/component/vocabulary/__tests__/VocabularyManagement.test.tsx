@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   flushPromises,
   mountWithIntl,
@@ -11,7 +10,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import * as redux from "react-redux";
 
-jest.mock("../VocabularyList");
+jest.mock("../VocabularyList", () => () => <div>Vocabularies</div>);
 
 describe("VocabularyList", () => {
   let loadVocabularies: () => void;

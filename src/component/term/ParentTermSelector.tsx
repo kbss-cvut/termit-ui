@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TERM_BROADER_SUBPROPERTIES, TermData } from "../../model/Term";
@@ -10,10 +10,7 @@ import Utils from "../../util/Utils";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { createTermsWithVocabularyInfoRenderer } from "../misc/treeselect/Renderers";
-import {
-  commonTermTreeSelectProps,
-  processTermsForTreeSelect,
-} from "./TermTreeSelectHelper";
+import { commonTermTreeSelectProps } from "./TermTreeSelectHelper";
 import {
   loadTermsFromCanonical,
   loadTermsFromCurrentWorkspace,
@@ -26,10 +23,15 @@ import { loadTerms } from "../../action/AsyncActions";
 import HelpIcon from "../misc/HelpIcon";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import TermItState from "../../model/TermItState";
-import Workspace from "../../model/Workspace";
 import TermLink from "./TermLink";
 import BadgeButton from "../misc/BadgeButton";
 import BroaderTypeSelector from "./BroaderTypeSelector";
+import BaseRelatedTermSelector, {
+  BaseRelatedTermSelectorProps,
+  BaseRelatedTermSelectorState,
+  PAGE_SIZE,
+  SEARCH_DELAY,
+} from "./BaseRelatedTermSelector";
 
 export const PARENT_ATTRIBUTES = [
   {
@@ -41,33 +43,6 @@ export const PARENT_ATTRIBUTES = [
   },
   ...TERM_BROADER_SUBPROPERTIES,
 ];
-
-function enhanceWithCurrentTerm(
-  terms: Term[],
-  currentTermIri?: string,
-  parentTerms?: Term[]
-): Term[] {
-  if (currentTermIri) {
-    const currentParents = Utils.sanitizeArray(parentTerms).slice();
-    const result = [];
-    for (const t of terms) {
-      if (t.iri === currentTermIri) {
-        continue;
-      }
-      if (t.plainSubTerms) {
-        t.plainSubTerms = t.plainSubTerms.filter((st) => st !== currentTermIri);
-      }
-      const parentIndex = currentParents.findIndex((p) => p.iri === t.iri);
-      if (parentIndex === -1) {
-        result.push(t);
-      }
-    }
-    // Add parents which are not in the loaded terms so that they show up in the list
-    return currentParents.concat(result);
-  } else {
-    return terms;
-  }
-}
 
 function createValueRenderer() {
   return (term: Term) => (
@@ -86,43 +61,23 @@ function createValueRenderer() {
   );
 }
 
-interface ParentTermSelectorProps extends HasI18n {
+interface ParentTermSelectorProps
+  extends HasI18n,
+    BaseRelatedTermSelectorProps {
   id: string;
   term: Term | TermData;
-  vocabularyIri: string;
   invalid?: boolean;
   invalidMessage?: JSX.Element;
-  workspace: Workspace;
   onChange: (change: Partial<TermData>) => void;
-  loadTermsFromVocabulary: (
-    fetchOptions: FetchOptionsFunction,
-    vocabularyIri: IRI
-  ) => Promise<Term[]>;
-  loadTermsFromCurrentWorkspace: (
-    fetchOptions: FetchOptionsFunction,
-    excludeVocabulary: string
-  ) => Promise<Term[]>;
-  loadTermsFromCanonical: (
-    fetchOptions: FetchOptionsFunction
-  ) => Promise<Term[]>;
 }
 
-interface ParentTermSelectorState {
-  allVocabularyTerms: boolean;
-  allWorkspaceTerms: boolean;
-  vocabularyTermCount: number;
-  workspaceTermCount: number;
-  lastSearchString: string;
-
+interface ParentTermSelectorState extends BaseRelatedTermSelectorState {
   currentBroaderAttribute: string | null;
   currentBroaderTerm: Term | null;
   showBroaderTypeSelector: boolean;
 }
 
-export const PAGE_SIZE = 50;
-const SEARCH_DELAY = 300;
-
-export class ParentTermSelector extends React.Component<
+export class ParentTermSelector extends BaseRelatedTermSelector<
   ParentTermSelectorProps,
   ParentTermSelectorState
 > {
@@ -215,109 +170,15 @@ export class ParentTermSelector extends React.Component<
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    let {
-      allVocabularyTerms,
-      allWorkspaceTerms,
-      vocabularyTermCount,
-      workspaceTermCount,
-      lastSearchString,
-    } = this.state;
-    let fetchFunction: (
-      fetchOptions: TreeSelectFetchOptionsParams<TermData>
-    ) => Promise<Term[]>;
-    const offset = fetchOptions.offset || 0;
-    const fetchOptionsCopy = Object.assign({}, fetchOptions);
-    if (
-      fetchOptions.searchString?.indexOf(lastSearchString) === -1 ||
-      (lastSearchString.length === 0 &&
-        (fetchOptions.searchString || "").length > 0)
-    ) {
-      this.setState({
-        allVocabularyTerms: false,
-        allWorkspaceTerms: false,
-        vocabularyTermCount: 0,
-        workspaceTermCount: 0,
-      });
-      // Set these to false to ensure the effect right now
-      allVocabularyTerms = false;
-      allWorkspaceTerms = false;
-      fetchOptionsCopy.offset = 0;
-    }
-    if (allVocabularyTerms) {
-      if (allWorkspaceTerms) {
-        fetchOptionsCopy.offset =
-          offset - (vocabularyTermCount + workspaceTermCount);
-        fetchFunction = this.fetchCanonicalTerms;
-      } else {
-        fetchOptionsCopy.offset = offset - vocabularyTermCount;
-        fetchFunction = this.fetchWorkspaceTerms;
-      }
-    } else {
-      fetchFunction = this.fetchVocabularyTerms;
-    }
-    this.setState({ lastSearchString: fetchOptions.searchString || "" });
-    return fetchFunction(fetchOptionsCopy).then((terms) => {
-      return enhanceWithCurrentTerm(
-        processTermsForTreeSelect(terms, undefined, {
-          searchString: fetchOptionsCopy.searchString,
-        }),
-        this.props.term.iri,
-        Term.consolidateBroaderTerms(this.props.term)
+    return super
+      .fetchOptions(fetchOptions)
+      .then((terms) =>
+        BaseRelatedTermSelector.enhanceWithCurrent(
+          terms,
+          this.props.term.iri,
+          Term.consolidateBroaderTerms(this.props.term)
+        )
       );
-    });
-  };
-
-  private fetchVocabularyTerms = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
-    return this.props
-      .loadTermsFromVocabulary(
-        fetchOptions,
-        VocabularyUtils.create(this.props.vocabularyIri)
-      )
-      .then((terms) => {
-        this.setState({
-          allVocabularyTerms: terms.length < PAGE_SIZE,
-          vocabularyTermCount: this.state.vocabularyTermCount + terms.length,
-        });
-        if (terms.length < PAGE_SIZE) {
-          const fetchOptionsCopy = Object.assign({}, fetchOptions);
-          fetchOptionsCopy.offset = 0;
-          return this.fetchWorkspaceTerms(fetchOptionsCopy).then((wsTerms) =>
-            terms.concat(wsTerms)
-          );
-        } else {
-          return Promise.resolve(terms);
-        }
-      });
-  };
-
-  private fetchWorkspaceTerms = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
-    return this.props
-      .loadTermsFromCurrentWorkspace(fetchOptions, this.props.vocabularyIri)
-      .then((terms) => {
-        this.setState({
-          allWorkspaceTerms: terms.length < PAGE_SIZE,
-          workspaceTermCount: this.state.workspaceTermCount + terms.length,
-        });
-        if (terms.length < PAGE_SIZE) {
-          const fetchOptionsCopy = Object.assign({}, fetchOptions);
-          fetchOptionsCopy.offset = 0;
-          return this.fetchCanonicalTerms(fetchOptionsCopy).then((wsTerms) =>
-            terms.concat(wsTerms)
-          );
-        } else {
-          return Promise.resolve(terms);
-        }
-      });
-  };
-
-  private fetchCanonicalTerms = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
-    return this.props.loadTermsFromCanonical(fetchOptions);
   };
 
   public render() {

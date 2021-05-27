@@ -13,58 +13,56 @@ import { DEFAULT_CONFIGURATION } from "../../model/Configuration";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
-    const originalModule = jest.requireActual("../../util/Ajax");
-    return {
-        ...originalModule,
-        default: jest.fn(),
-    };
+  const originalModule = jest.requireActual("../../util/Ajax");
+  return {
+    ...originalModule,
+    default: jest.fn(),
+  };
 });
 jest.mock("../../util/Keycloak");
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("AsyncUserActions", () => {
-    let store: MockStoreEnhanced<TermItState>;
+  let store: MockStoreEnhanced<TermItState>;
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-        store = mockStore(new TermItState());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    store = mockStore(new TermItState());
+  });
+
+  describe("fetch user", () => {
+    it("does not publish error message when status is 401", () => {
+      const error: ErrorData = {
+        message: "Unauthorized",
+        status: Constants.STATUS_UNAUTHORIZED,
+      };
+      Ajax.get = jest.fn().mockRejectedValue(error);
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(loadUser())
+      ).then(() => {
+        const actions: Action[] = store.getActions();
+        const found = actions.find(
+          (a) => a.type === ActionType.PUBLISH_MESSAGE
+        );
+        return expect(found).not.toBeDefined();
+      });
     });
 
-    describe("fetch user", () => {
-        it("does not publish error message when status is 401", () => {
-            const error: ErrorData = {
-                message: "Unauthorized",
-                status: Constants.STATUS_UNAUTHORIZED,
-            };
-            Ajax.get = jest.fn().mockRejectedValue(error);
-            return Promise.resolve(
-                (store.dispatch as ThunkDispatch)(loadUser())
-            ).then(() => {
-                const actions: Action[] = store.getActions();
-                const found = actions.find(
-                    (a) => a.type === ActionType.PUBLISH_MESSAGE
-                );
-                return expect(found).not.toBeDefined();
-            });
-        });
-
-        it("loads configuration after successful user fetch", () => {
-            const user = Generator.generateUser();
-            Ajax.get = jest
-                .fn()
-                .mockResolvedValueOnce(user)
-                .mockResolvedValueOnce(DEFAULT_CONFIGURATION);
-            return Promise.resolve(
-                (store.dispatch as ThunkDispatch)(loadUser())
-            ).then(() => {
-                const actions: Action[] = store.getActions();
-                expect(
-                    actions.find(
-                        (a) => a.type === ActionType.LOAD_CONFIGURATION
-                    )
-                ).toBeDefined();
-            });
-        });
+    it("loads configuration after successful user fetch", () => {
+      const user = Generator.generateUser();
+      Ajax.get = jest
+        .fn()
+        .mockResolvedValueOnce(user)
+        .mockResolvedValueOnce(DEFAULT_CONFIGURATION);
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(loadUser())
+      ).then(() => {
+        const actions: Action[] = store.getActions();
+        expect(
+          actions.find((a) => a.type === ActionType.LOAD_CONFIGURATION)
+        ).toBeDefined();
+      });
     });
+  });
 });

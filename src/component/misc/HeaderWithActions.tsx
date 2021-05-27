@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import "./HeaderWithActions.scss";
 import classNames from "classnames";
 import { ButtonToolbar } from "reactstrap";

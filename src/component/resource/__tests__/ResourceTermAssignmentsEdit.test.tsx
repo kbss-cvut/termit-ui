@@ -1,4 +1,3 @@
-import * as React from "react";
 import { ResourceTermAssignmentsEdit } from "../ResourceTermAssignmentsEdit";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { AssetData } from "../../../model/Asset";
@@ -7,24 +6,53 @@ import Generator from "../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
+import FetchOptionsFunction from "../../../model/Functions";
+import { IRI } from "../../../util/VocabularyUtils";
 
 describe("ResourceTermAssignmentsEdit", () => {
   let onChange: (subTerms: AssetData[]) => void;
-  let fetchTerms: (searchString: string) => Promise<Term[]>;
+  let loadTermsFromVocabulary: (
+    fetchOptions: FetchOptionsFunction,
+    vocabularyIri: IRI
+  ) => Promise<Term[]>;
+  let loadTermsFromCurrentWorkspace: (
+    fetchOptions: FetchOptionsFunction,
+    excludeVocabulary: string
+  ) => Promise<Term[]>;
+  let loadTermsFromCanonical: (
+    fetchOptions: FetchOptionsFunction
+  ) => Promise<Term[]>;
+  let loadFunctions: any;
 
   beforeEach(() => {
     onChange = jest.fn();
+    loadTermsFromVocabulary = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([]));
+    loadTermsFromCurrentWorkspace = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([]));
+    loadTermsFromCanonical = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([]));
+    loadFunctions = {
+      loadTermsFromVocabulary,
+      loadTermsFromCurrentWorkspace,
+      loadTermsFromCanonical,
+    };
   });
 
   it("passes term label retrieval function to tree select", () => {
     const existingTerms = [Generator.generateTerm(), Generator.generateTerm()];
     const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
-    fetchTerms = jest.fn().mockResolvedValue(fetchedTerms);
+    loadFunctions.loadTermsFromCurrentWorkspace = jest
+      .fn()
+      .mockResolvedValue(fetchedTerms);
     const wrapper = shallow<ResourceTermAssignmentsEdit>(
       <ResourceTermAssignmentsEdit
         terms={existingTerms}
         onChange={onChange}
-        fetchTerms={fetchTerms}
+        {...loadFunctions}
         {...intlFunctions()}
       />
     );
@@ -42,12 +70,14 @@ describe("ResourceTermAssignmentsEdit", () => {
       ];
       const origLength = existingTerms.length;
       const fetchedTerms = [Generator.generateTerm(), Generator.generateTerm()];
-      fetchTerms = jest.fn().mockResolvedValue(fetchedTerms);
+      loadFunctions.loadTermsFromCurrentWorkspace = jest
+        .fn()
+        .mockResolvedValue([...existingTerms, ...fetchedTerms]);
       const wrapper = shallow<ResourceTermAssignmentsEdit>(
         <ResourceTermAssignmentsEdit
           terms={existingTerms}
           onChange={onChange}
-          fetchTerms={fetchTerms}
+          {...loadFunctions}
           {...intlFunctions()}
         />
       );

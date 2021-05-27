@@ -1,9 +1,8 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import UnmappedProperties from "../UnmappedProperties";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
-jest.mock("../../misc/AssetLabel");
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
 describe("UnmappedProperties", () => {
   it("renders literal value for a property", () => {

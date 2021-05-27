@@ -1,4 +1,3 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { UnmappedPropertiesEdit } from "../UnmappedPropertiesEdit";
@@ -8,7 +7,7 @@ import { shallow } from "enzyme";
 import RdfsResource from "../../../model/RdfsResource";
 import BadgeButton from "../../misc/BadgeButton";
 
-jest.mock("../../misc/AssetLabel");
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
 describe("UnmappedPropertiesEdit", () => {
   let onChange: (update: Map<string, string[]>) => void;
@@ -98,9 +97,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     const property = Generator.generateUri();
     const value = "test";
-    (wrapper
-      .find(UnmappedPropertiesEdit)
-      .instance() as UnmappedPropertiesEdit).onPropertySelect(
+    (
+      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
+    ).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",
@@ -128,9 +127,9 @@ describe("UnmappedPropertiesEdit", () => {
       />
     );
     const value = "test2";
-    (wrapper
-      .find(UnmappedPropertiesEdit)
-      .instance() as UnmappedPropertiesEdit).onPropertySelect(
+    (
+      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
+    ).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",
@@ -159,9 +158,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     const property = Generator.generateUri();
     const value = "test";
-    (wrapper
-      .find(UnmappedPropertiesEdit)
-      .instance() as UnmappedPropertiesEdit).onPropertySelect(
+    (
+      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
+    ).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",
@@ -191,9 +190,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     let addButton = wrapper.find(GoPlus).parent();
     expect(addButton.prop("disabled")).toBeTruthy();
-    (wrapper
-      .find(UnmappedPropertiesEdit)
-      .instance() as UnmappedPropertiesEdit).onPropertySelect(
+    (
+      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
+    ).onPropertySelect(
       new RdfsResource({
         iri: Generator.generateUri(),
         label: "Property",
@@ -222,9 +221,9 @@ describe("UnmappedPropertiesEdit", () => {
     );
     const property = Generator.generateUri();
     const value = "test";
-    (wrapper
-      .find(UnmappedPropertiesEdit)
-      .instance() as UnmappedPropertiesEdit).onPropertySelect(
+    (
+      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
+    ).onPropertySelect(
       new RdfsResource({
         iri: property,
         label: "Property",

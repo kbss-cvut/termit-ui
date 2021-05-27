@@ -1,4 +1,3 @@
-import * as React from "react";
 import Vocabulary from "../../model/Vocabulary";
 import AssetLink from "../misc/AssetLink";
 import VocabularyUtils from "../../util/VocabularyUtils";

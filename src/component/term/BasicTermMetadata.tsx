@@ -1,6 +1,6 @@
 import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import Term, { termInfoComparator } from "../../model/Term";
+import Term, { TermInfo, termInfoComparator } from "../../model/Term";
 import { injectIntl } from "react-intl";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
@@ -14,7 +14,6 @@ import { OWL, SKOS } from "../../util/Namespaces";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermDefinitionBlock from "./TermDefinitionBlock";
 import ParentTermsList from "./ParentTermsList";
-import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 
 interface BasicTermMetadataProps extends HasI18n {
   term: Term;
@@ -49,8 +48,10 @@ export class BasicTermMetadata extends React.Component<
             {this.renderTypes()}
           </Col>
         </Row>
+        {this.renderExactMatchTerms()}
         <ParentTermsList term={term} language={language} />
         {this.renderSubTerms()}
+        {this.renderRelatedTerms()}
         <Row>
           <Col xl={2} md={4}>
             <Label className="attribute-label mb-3">
@@ -129,27 +130,61 @@ export class BasicTermMetadata extends React.Component<
   private renderSubTerms() {
     const source = Utils.sanitizeArray(this.props.term.subTerms);
     source.sort(termInfoComparator);
+    return this.renderTermList(
+      source,
+      "term.metadata.subTerms",
+      "term-metadata-subterms"
+    );
+  }
+
+  private renderTermList(
+    list: (Term | TermInfo)[],
+    labelKey: string,
+    listId: string
+  ) {
     return (
       <Row>
         <Col xl={2} md={4}>
           <Label className="attribute-label mb-3">
-            {this.props.i18n("term.metadata.subTerms")}
+            {this.props.i18n(labelKey)}
           </Label>
         </Col>
         <Col xl={10} md={8}>
-          <List type="unstyled" id="term-metadata-subterms" className="mb-3">
-            {source.map((item) => (
+          <List type="unstyled" id={listId} className="mb-3">
+            {list.map((item) => (
               <li key={item.iri}>
-                <VocabularyNameBadge
-                  className="mr-1 align-text-bottom"
-                  vocabulary={item.vocabulary}
-                />
                 <TermLink term={item} language={this.props.language} />
               </li>
             ))}
           </List>
         </Col>
       </Row>
+    );
+  }
+
+  /**
+   * Renders related and relatedMatch together.
+   * @private
+   */
+  private renderRelatedTerms() {
+    const term = this.props.term;
+    const terms = Term.consolidateRelatedAndRelatedMatch(term);
+    return this.renderTermList(
+      terms,
+      "term.metadata.related.title",
+      "term-metadata-related"
+    );
+  }
+
+  private renderExactMatchTerms() {
+    const exactMatchTerms = Utils.sanitizeArray(
+      this.props.term.exactMatchTerms
+    );
+    exactMatchTerms.sort(termInfoComparator);
+    return this.renderTermList(
+      exactMatchTerms,
+      "term.metadata.exactMatches",
+      "term-metadata-exactmatches"
     );
   }
 }

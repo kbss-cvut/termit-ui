@@ -1,4 +1,3 @@
-import * as React from "react";
 import Term, { TermData } from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import { langString } from "../../../model/MultilingualString";
