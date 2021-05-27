@@ -291,7 +291,7 @@ const en = {
       "Occurrence suggested by the system",
     "resource.metadata.terms.edit.select.placeholder":
       "Start typing to search for relevant terms",
-    "resource.metadata.file.content": "Content",
+    "resource.metadata.file.content": "Show Content",
     "resource.metadata.file.content.view": "View",
     "resource.metadata.file.content.view.tooltip":
       "View file content and annotate it",
@@ -498,6 +498,7 @@ const en = {
       'Content of file "{fileName}" successfully uploaded.',
     "file.annotate.selectVocabulary":
       "Unable to determine vocabulary for annotating this file. Please, select one...",
+    "file.upload": "Upload",
 
     "dataset.license": "License",
     "dataset.format": "Format",
