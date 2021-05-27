@@ -49,9 +49,8 @@ describe("AsyncPublicViewActions", () => {
       ).then(() => {
         const url = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-        const loadSuccessAction: AsyncActionSuccess<
-          Vocabulary[]
-        > = store.getActions()[1];
+        const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> =
+          store.getActions()[1];
         const result = loadSuccessAction.payload;
         verifyExpectedAssets(vocabularies, result);
       });

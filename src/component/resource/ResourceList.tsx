@@ -44,12 +44,8 @@ function resourceTypeFilter(rows: any[], id: string, filterValue: string) {
 }
 
 export const ResourceList: React.FC<ResourceListProps> = (props) => {
-  const {
-    resources,
-    notifications,
-    loadResources,
-    consumeNotification,
-  } = props;
+  const { resources, notifications, loadResources, consumeNotification } =
+    props;
   const { i18n } = useI18n();
   React.useEffect(() => {
     loadResources();
@@ -108,12 +104,8 @@ export const ResourceList: React.FC<ResourceListProps> = (props) => {
     useSortBy,
     usePagination
   );
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-  } = tableInstance;
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow } =
+    tableInstance;
   const page: Row<Resource>[] = (tableInstance as any).page;
 
   return (

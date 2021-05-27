@@ -9,9 +9,8 @@ interface MyLastCommentedAssetsProps {
   loadAssets: () => Promise<RecentlyCommentedAsset[]>;
 }
 
-const LastCommentedAssetsInReactionToMine: React.FC<MyLastCommentedAssetsProps> = (
-  props
-) => <CommonLastCommentedAssets {...props} />;
+const LastCommentedAssetsInReactionToMine: React.FC<MyLastCommentedAssetsProps> =
+  (props) => <CommonLastCommentedAssets {...props} />;
 
 export default connect(undefined, (dispatch: ThunkDispatch) => ({
   loadAssets: () => dispatch(loadLastCommentedInReactionToMine()),

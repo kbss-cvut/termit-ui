@@ -103,8 +103,8 @@ export class ParentTermSelector extends React.Component<
     ) {
       // No need to load imported vocabularies when vocabulary in state matches the term's vocabulary
       this.setState({
-        importedVocabularies: this.props.currentVocabulary
-          .allImportedVocabularies,
+        importedVocabularies:
+          this.props.currentVocabulary.allImportedVocabularies,
       });
     } else {
       this.props

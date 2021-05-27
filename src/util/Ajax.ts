@@ -171,9 +171,8 @@ export class Ajax {
 
   constructor() {
     this.axiosInstance.interceptors.request.use((reqConfig) => {
-      reqConfig.headers[
-        Constants.Headers.AUTHORIZATION
-      ] = Authentication.loadToken();
+      reqConfig.headers[Constants.Headers.AUTHORIZATION] =
+        Authentication.loadToken();
       return reqConfig;
     });
     this.axiosInstance.interceptors.response.use(
