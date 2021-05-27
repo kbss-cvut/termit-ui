@@ -1,4 +1,3 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import Asset from "../../../model/Asset";
 import ChangeRecord from "../../../model/changetracking/ChangeRecord";

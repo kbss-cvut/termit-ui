@@ -3,7 +3,6 @@ import {
   intlFunctions,
   mockUseI18n,
 } from "../../../__tests__/environment/IntlUtil";
-import * as React from "react";
 import { TermOccurrenceAnnotation } from "../TermOccurrenceAnnotation";
 import { shallow } from "enzyme";
 import SimplePopupWithActions from "../SimplePopupWithActions";

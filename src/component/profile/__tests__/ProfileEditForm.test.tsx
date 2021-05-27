@@ -28,6 +28,10 @@ describe("ProfileEditForm", () => {
     isValid = true;
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it("correctly renders component with firstName and lastName set", () => {
     const wrapper = mountWithIntl(
       <ProfileEditForm

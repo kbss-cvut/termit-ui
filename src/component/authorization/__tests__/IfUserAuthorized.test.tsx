@@ -1,4 +1,3 @@
-import * as React from "react";
 import User from "../../../model/User";
 import Generator from "../../../__tests__/environment/Generator";
 import IfUserAuthorized from "../IfUserAuthorized";

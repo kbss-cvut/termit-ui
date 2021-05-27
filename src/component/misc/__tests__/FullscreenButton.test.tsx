@@ -1,4 +1,3 @@
-import * as React from "react";
 import { FullscreenButton } from "../FullscreenButton";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { GoScreenFull, GoScreenNormal } from "react-icons/go";

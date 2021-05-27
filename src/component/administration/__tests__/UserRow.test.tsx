@@ -1,4 +1,3 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
 import { UserActions, UserRow } from "../UserRow";

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import Document from "../../../model/Document";
 import TermItFile from "../../../model/File";
 import { ThunkDispatch } from "../../../util/Types";

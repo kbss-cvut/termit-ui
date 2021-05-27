@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppNotification from "../../../model/AppNotification";
 import { ResourceList } from "../ResourceList";
 import NotificationType from "../../../model/NotificationType";

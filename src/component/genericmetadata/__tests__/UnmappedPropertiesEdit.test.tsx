@@ -1,4 +1,3 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { UnmappedPropertiesEdit } from "../UnmappedPropertiesEdit";
@@ -8,7 +7,7 @@ import { shallow } from "enzyme";
 import RdfsResource from "../../../model/RdfsResource";
 import BadgeButton from "../../misc/BadgeButton";
 
-jest.mock("../../misc/AssetLabel");
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
 describe("UnmappedPropertiesEdit", () => {
   let onChange: (update: Map<string, string[]>) => void;

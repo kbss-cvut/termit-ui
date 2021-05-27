@@ -1,4 +1,3 @@
-import * as React from "react";
 import { UserDropdown } from "../UserDropdown";
 import User from "../../../model/User";
 import {

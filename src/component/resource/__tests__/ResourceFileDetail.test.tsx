@@ -1,4 +1,3 @@
-import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import { TextAnalysisRecord } from "../../../model/TextAnalysisRecord";
 import { createMemoryHistory, Location } from "history";

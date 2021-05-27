@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { Profile } from "../Profile";
 import ProfileActionButtons from "../ProfileActionButtons";

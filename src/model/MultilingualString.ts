@@ -3,18 +3,18 @@ import Utils from "../util/Utils";
 import { getShortLocale } from "../util/IntlUtil";
 
 export function context(propertyIri: string) {
-    return {
-        "@id": propertyIri,
-        "@container": "@language",
-    };
+  return {
+    "@id": propertyIri,
+    "@container": "@language",
+  };
 }
 
 export interface MultilingualString {
-    [key: string]: string;
+  [key: string]: string;
 }
 
 export interface PluralMultilingualString {
-    [key: string]: string[];
+  [key: string]: string[];
 }
 
 /**
@@ -28,12 +28,12 @@ export const NO_LANG = "@none";
  * @param lang Language (optional), defaults to Constants.DEFAULT_LANGUAGE
  */
 export function langString(
-    str: string,
-    lang: string = Constants.DEFAULT_LANGUAGE
+  str: string,
+  lang: string = Constants.DEFAULT_LANGUAGE
 ): MultilingualString {
-    const result = {};
-    result[lang] = str;
-    return result;
+  const result = {};
+  result[lang] = str;
+  return result;
 }
 
 /**
@@ -42,12 +42,12 @@ export function langString(
  * @param lang Language (optional), defaults to Constants.DEFAULT_LANGUAGE
  */
 export function pluralLangString(
-    str: string | string[],
-    lang: string = Constants.DEFAULT_LANGUAGE
+  str: string | string[],
+  lang: string = Constants.DEFAULT_LANGUAGE
 ): PluralMultilingualString {
-    const result = {};
-    result[lang] = Utils.sanitizeArray(str);
-    return result;
+  const result = {};
+  result[lang] = Utils.sanitizeArray(str);
+  return result;
 }
 
 /**
@@ -61,26 +61,26 @@ export function pluralLangString(
  * @param lang Target language
  */
 export function getLocalized(
-    str?: MultilingualString | string,
-    lang: string = Constants.DEFAULT_LANGUAGE
+  str?: MultilingualString | string,
+  lang: string = Constants.DEFAULT_LANGUAGE
 ) {
-    if (typeof str === "string") {
-        return str;
-    }
-    if (!str) {
-        return "";
-    }
-    lang = lang.toLowerCase();
-    if (str[lang] !== undefined) {
-        return str[lang];
-    } else if (str[getShortLocale(lang)] !== undefined) {
-        return str[getShortLocale(lang)];
-    } else if (str[Constants.DEFAULT_LANGUAGE]) {
-        return str[Constants.DEFAULT_LANGUAGE];
-    }
-    return str[NO_LANG] !== undefined
-        ? str[NO_LANG]
-        : str[Object.getOwnPropertyNames(str)[0]];
+  if (typeof str === "string") {
+    return str;
+  }
+  if (!str) {
+    return "";
+  }
+  lang = lang.toLowerCase();
+  if (str[lang] !== undefined) {
+    return str[lang];
+  } else if (str[getShortLocale(lang)] !== undefined) {
+    return str[getShortLocale(lang)];
+  } else if (str[Constants.DEFAULT_LANGUAGE]) {
+    return str[Constants.DEFAULT_LANGUAGE];
+  }
+  return str[NO_LANG] !== undefined
+    ? str[NO_LANG]
+    : str[Object.getOwnPropertyNames(str)[0]];
 }
 
 /**
@@ -93,17 +93,17 @@ export function getLocalized(
  * @param lang Target language
  */
 export function getLocalizedPlural(
-    str?: PluralMultilingualString,
-    lang: string = Constants.DEFAULT_LANGUAGE
+  str?: PluralMultilingualString,
+  lang: string = Constants.DEFAULT_LANGUAGE
 ) {
-    if (!str) {
-        return [];
-    }
-    lang = lang.toLowerCase();
-    if (str[lang] !== undefined) {
-        return Utils.sanitizeArray(str[lang]);
-    }
-    return str[NO_LANG] !== undefined ? Utils.sanitizeArray(str[NO_LANG]) : [];
+  if (!str) {
+    return [];
+  }
+  lang = lang.toLowerCase();
+  if (str[lang] !== undefined) {
+    return Utils.sanitizeArray(str[lang]);
+  }
+  return str[NO_LANG] !== undefined ? Utils.sanitizeArray(str[NO_LANG]) : [];
 }
 
 /**
@@ -117,22 +117,22 @@ export function getLocalizedPlural(
  * @param lang Target language
  */
 export function getLocalizedOrDefault(
-    str?: MultilingualString | string,
-    defaultValue: string = "",
-    lang: string = Constants.DEFAULT_LANGUAGE
+  str?: MultilingualString | string,
+  defaultValue: string = "",
+  lang: string = Constants.DEFAULT_LANGUAGE
 ) {
-    if (typeof str === "string") {
-        return str;
-    }
-    if (!str) {
-        return "";
-    }
-    lang = lang.toLowerCase();
-    return str[lang] !== undefined
-        ? str[lang]
-        : str[NO_LANG] !== undefined
-        ? str[NO_LANG]
-        : defaultValue;
+  if (typeof str === "string") {
+    return str;
+  }
+  if (!str) {
+    return "";
+  }
+  lang = lang.toLowerCase();
+  return str[lang] !== undefined
+    ? str[lang]
+    : str[NO_LANG] !== undefined
+    ? str[NO_LANG]
+    : defaultValue;
 }
 
 export default MultilingualString;

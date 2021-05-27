@@ -1,4 +1,3 @@
-import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import { shallow } from "enzyme";
 import { ResourceSummary } from "../ResourceSummary";
