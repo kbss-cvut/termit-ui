@@ -80,7 +80,7 @@ export class CreateFileMetadata extends React.Component<
                 size="sm"
                 disabled={this.cannotSubmit()}
               >
-                {i18n("create")}
+                {i18n("file.upload")}
               </Button>
               <Button
                 id="create-resource-cancel"

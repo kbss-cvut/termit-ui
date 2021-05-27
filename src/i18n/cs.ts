@@ -294,7 +294,7 @@ const cs = {
       "Výskyt navržen systémem",
     "resource.metadata.terms.edit.select.placeholder":
       "Začněte psát pro vyhledávání relevantních pojmů",
-    "resource.metadata.file.content": "Obsah",
+    "resource.metadata.file.content": "Zobraz obsah",
     "resource.metadata.file.content.view": "Zobrazit",
     "resource.metadata.file.content.view.tooltip":
       "Zobrazit obsah souboru a anotovat ho",
@@ -506,6 +506,7 @@ const cs = {
       'Soubor "{fileName}" úspěšně nahrán na server.',
     "file.annotate.selectVocabulary":
       "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
+    "file.upload": "Nahrát",
 
     "dataset.license": "Licence",
     "dataset.format": "Formát",
