@@ -1,4 +1,3 @@
-import * as React from "react";
 import { shallow } from "enzyme";
 import { MainView } from "../MainView";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";

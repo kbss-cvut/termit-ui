@@ -1,4 +1,3 @@
-import * as React from "react";
 import Document from "../../../../model/Document";
 import Generator from "../../../../__tests__/environment/Generator";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { shallow } from "enzyme";
 import { ParentTermSelector } from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
@@ -50,6 +49,10 @@ describe("ParentTermSelector", () => {
       loadTermsFromCanonical,
     };
   });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
 
   function generateTerms(count: number, vocabularyIri?: string) {
     const options: Term[] = [];

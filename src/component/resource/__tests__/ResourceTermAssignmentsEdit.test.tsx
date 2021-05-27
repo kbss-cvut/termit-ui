@@ -1,4 +1,3 @@
-import * as React from "react";
 import { ResourceTermAssignmentsEdit } from "../ResourceTermAssignmentsEdit";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { AssetData } from "../../../model/Asset";

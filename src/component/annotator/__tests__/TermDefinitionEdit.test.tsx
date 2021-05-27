@@ -1,4 +1,3 @@
-import * as React from "react";
 import * as redux from "react-redux";
 import Term from "../../../model/Term";
 import { shallow } from "enzyme";
@@ -25,6 +24,10 @@ describe("TermDefinitionEdit", () => {
   beforeEach(() => {
     onSave = jest.fn();
     onCancel = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("returns null when no element and term are provided", () => {

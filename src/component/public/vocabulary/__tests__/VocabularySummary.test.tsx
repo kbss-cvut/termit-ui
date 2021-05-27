@@ -1,4 +1,3 @@
-import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../../util/VocabularyUtils";
 import { flushPromises } from "../../../../__tests__/environment/Environment";
 import { VocabularySummary } from "../VocabularySummary";

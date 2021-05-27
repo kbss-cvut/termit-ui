@@ -13,9 +13,9 @@ import { GoPlus } from "react-icons/go";
 import { FaTrashAlt } from "react-icons/fa";
 import Utils from "../../util/Utils";
 import HelpIcon from "./HelpIcon";
-import "./StringListEdit.scss";
 import MultilingualIcon from "./MultilingualIcon";
 import BadgeButton from "./BadgeButton";
+import "./StringListEdit.scss";
 
 interface StringListEditProps extends HasI18n {
   list?: string[];

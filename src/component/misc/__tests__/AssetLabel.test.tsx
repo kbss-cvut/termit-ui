@@ -1,4 +1,3 @@
-import * as React from "react";
 import Generator from "../../../__tests__/environment/Generator";
 import { mount, shallow } from "enzyme";
 import { AssetLabel } from "../AssetLabel";

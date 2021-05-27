@@ -1,6 +1,3 @@
-import * as React from "react";
-
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { UserDropdown } from "../UserDropdown";
 import User from "../../../model/User";
 import {
@@ -14,6 +11,7 @@ import keycloak from "../../../util/Keycloak";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import * as actions from "../../../action/ComplexActions";
 import ActionType from "../../../action/ActionType";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 
 jest.mock("../../../util/Keycloak", () => ({
   init: jest.fn().mockResolvedValue({}),

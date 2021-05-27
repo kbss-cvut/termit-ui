@@ -10,17 +10,17 @@ import Generator from "../../__tests__/environment/Generator";
 import { langString } from "../../model/MultilingualString";
 
 jest.mock("history", () => ({
-    createHashHistory: jest.fn().mockReturnValue({
-        push: jest.fn(),
-    }),
+  createHashHistory: jest.fn().mockReturnValue({
+    push: jest.fn(),
+  }),
 }));
 
 describe("Routing", () => {
-    const historyMock = createHashHistory();
+  const historyMock = createHashHistory();
 
-    beforeEach(() => {
-        jest.resetAllMocks();
-    });
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
 
     describe("get transition path", () => {
         it("replaces path variables with values", () => {
@@ -50,76 +50,74 @@ describe("Routing", () => {
         });
     });
 
-    describe("transition to", () => {
-        it("transitions to route without any parameter", () => {
-            RoutingInstance.transitionTo(Routes.vocabularies);
-            expect(historyMock.push).toHaveBeenCalledWith(
-                Routes.vocabularies.path
-            );
-        });
+  describe("transition to", () => {
+    it("transitions to route without any parameter", () => {
+      RoutingInstance.transitionTo(Routes.vocabularies);
+      expect(historyMock.push).toHaveBeenCalledWith(Routes.vocabularies.path);
+    });
+  });
+
+  describe("transitionToAsset", () => {
+    const label = "test-asset";
+    const namespace = VocabularyUtils.NS_TERMIT;
+    const iri = namespace + label;
+
+    it("transitions to vocabulary summary for a vocabulary", () => {
+      const vocabulary = new Vocabulary({ iri, label });
+      RoutingInstance.transitionToAsset(vocabulary);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.vocabularySummary, {
+          params: new Map([["name", label]]),
+          query: new Map([["namespace", namespace]]),
+        })
+      );
     });
 
-    describe("transitionToAsset", () => {
-        const label = "test-asset";
-        const namespace = VocabularyUtils.NS_TERMIT;
-        const iri = namespace + label;
+    it("transitions to resource summary for a resource", () => {
+      const resource = new Resource({
+        iri,
+        label,
+        types: [VocabularyUtils.RESOURCE],
+      });
+      RoutingInstance.transitionToAsset(resource);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.resourceSummary, {
+          params: new Map([["name", label]]),
+          query: new Map([["namespace", namespace]]),
+        })
+      );
+    });
 
-        it("transitions to vocabulary summary for a vocabulary", () => {
-            const vocabulary = new Vocabulary({ iri, label });
-            RoutingInstance.transitionToAsset(vocabulary);
-            expect(historyMock.push).toHaveBeenCalledWith(
-                Routing.getTransitionPath(Routes.vocabularySummary, {
-                    params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]]),
-                })
-            );
-        });
+    it("transitions to resource summary for a document", () => {
+      const doc = new Document({
+        iri,
+        label,
+        types: [VocabularyUtils.DOCUMENT],
+        files: [],
+      });
+      RoutingInstance.transitionToAsset(doc);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.resourceSummary, {
+          params: new Map([["name", label]]),
+          query: new Map([["namespace", namespace]]),
+        })
+      );
+    });
 
-        it("transitions to resource summary for a resource", () => {
-            const resource = new Resource({
-                iri,
-                label,
-                types: [VocabularyUtils.RESOURCE],
-            });
-            RoutingInstance.transitionToAsset(resource);
-            expect(historyMock.push).toHaveBeenCalledWith(
-                Routing.getTransitionPath(Routes.resourceSummary, {
-                    params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]]),
-                })
-            );
-        });
-
-        it("transitions to resource summary for a document", () => {
-            const doc = new Document({
-                iri,
-                label,
-                types: [VocabularyUtils.DOCUMENT],
-                files: [],
-            });
-            RoutingInstance.transitionToAsset(doc);
-            expect(historyMock.push).toHaveBeenCalledWith(
-                Routing.getTransitionPath(Routes.resourceSummary, {
-                    params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]]),
-                })
-            );
-        });
-
-        it("transitions to resource summary for a file", () => {
-            const file = new File({
-                iri,
-                label,
-                types: [VocabularyUtils.FILE],
-            });
-            RoutingInstance.transitionToAsset(file);
-            expect(historyMock.push).toHaveBeenCalledWith(
-                Routing.getTransitionPath(Routes.resourceSummary, {
-                    params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]]),
-                })
-            );
-        });
+    it("transitions to resource summary for a file", () => {
+      const file = new File({
+        iri,
+        label,
+        types: [VocabularyUtils.FILE],
+      });
+      RoutingInstance.transitionToAsset(file);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.resourceSummary, {
+          params: new Map([["name", label]]),
+          query: new Map([["namespace", namespace]]),
+        })
+      );
+    });
 
         it("transitions to term detail for a term", () => {
             const term = Generator.generateTerm(iri);
@@ -138,21 +136,21 @@ describe("Routing", () => {
         });
     });
 
-    describe("transitionToPublicAsset", () => {
-        const label = "test-asset";
-        const namespace = VocabularyUtils.NS_TERMIT;
-        const iri = namespace + label;
+  describe("transitionToPublicAsset", () => {
+    const label = "test-asset";
+    const namespace = VocabularyUtils.NS_TERMIT;
+    const iri = namespace + label;
 
-        it("transitions to public vocabulary summary for a vocabulary", () => {
-            const vocabulary = new Vocabulary({ iri, label });
-            RoutingInstance.transitionToPublicAsset(vocabulary);
-            expect(historyMock.push).toHaveBeenCalledWith(
-                Routing.getTransitionPath(Routes.publicVocabularySummary, {
-                    params: new Map([["name", label]]),
-                    query: new Map([["namespace", namespace]]),
-                })
-            );
-        });
+    it("transitions to public vocabulary summary for a vocabulary", () => {
+      const vocabulary = new Vocabulary({ iri, label });
+      RoutingInstance.transitionToPublicAsset(vocabulary);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.publicVocabularySummary, {
+          params: new Map([["name", label]]),
+          query: new Map([["namespace", namespace]]),
+        })
+      );
+    });
 
         it("transitions to public term detail for a term", () => {
             const term = Generator.generateTerm(iri);
@@ -202,12 +200,12 @@ describe("Routing", () => {
             RoutingInstance.originalTarget = undefined;
         });
 
-        it("transitions to dashboard when no original target is available", () => {
-            RoutingInstance.transitionToOriginalTarget();
-            expect(historyMock.push).toHaveBeenCalledWith(
-                Routing.getTransitionPath(Routes.dashboard)
-            );
-        });
+    it("transitions to dashboard when no original target is available", () => {
+      RoutingInstance.transitionToOriginalTarget();
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.dashboard)
+      );
+    });
 
         it("transitions to original saved target when there is one", () => {
             const originalPath = Routes.vocabularies.path;

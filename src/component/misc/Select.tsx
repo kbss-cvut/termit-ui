@@ -1,4 +1,3 @@
-import * as React from "react";
 import { FormFeedback, FormGroup, Input } from "reactstrap";
 import AbstractInput, { AbstractInputProps } from "./AbstractInput";
 

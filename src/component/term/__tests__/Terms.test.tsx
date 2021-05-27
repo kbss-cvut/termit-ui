@@ -1,4 +1,3 @@
-import * as React from "react";
 import Term, { TermData } from "../../../model/Term";
 import FetchOptionsFunction from "../../../model/Functions";
 import { shallow } from "enzyme";

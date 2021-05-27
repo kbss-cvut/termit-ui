@@ -11,19 +11,19 @@ export class Routing {
 }
 
 class RoutingMock {
-    public reload = jest.fn();
+  public reload = jest.fn();
 
-    public saveOriginalTarget = jest.fn();
+  public saveOriginalTarget = jest.fn();
 
-    public transitionTo = jest.fn();
+  public transitionTo = jest.fn();
 
-    public transitionToHome = jest.fn();
+  public transitionToHome = jest.fn();
 
-    public transitionToOriginalTarget = jest.fn();
+  public transitionToOriginalTarget = jest.fn();
 
-    public transitionToAsset = jest.fn();
+  public transitionToAsset = jest.fn();
 
-    public transitionToPublicAsset = jest.fn();
+  public transitionToPublicAsset = jest.fn();
 }
 
 const INSTANCE = new RoutingMock();

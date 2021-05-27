@@ -1,4 +1,3 @@
-import * as React from "react";
 import Term, { TermData } from "../../../../model/Term";
 import VocabularyUtils, { IRI } from "../../../../util/VocabularyUtils";
 import Vocabulary from "../../../../model/Vocabulary";

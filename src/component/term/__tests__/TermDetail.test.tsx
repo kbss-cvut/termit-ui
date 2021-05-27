@@ -1,4 +1,3 @@
-import * as React from "react";
 import { createMemoryHistory, Location } from "history";
 import { match as Match } from "react-router";
 import { shallow } from "enzyme";
