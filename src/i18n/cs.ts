@@ -515,7 +515,7 @@ const cs = {
             'Soubor "{fileName}" úspěšně nahrán na server.',
         "file.annotate.selectVocabulary":
             "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
-        "file.upload": "Nahraj",
+        "file.upload": "Nahrát",
 
         "dataset.license": "Licence",
         "dataset.format": "Formát",
