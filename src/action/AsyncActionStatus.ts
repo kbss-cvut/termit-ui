@@ -1,7 +1,7 @@
 enum AsyncActionStatus {
-    REQUEST,
-    SUCCESS,
-    FAILURE,
+  REQUEST,
+  SUCCESS,
+  FAILURE,
 }
 
 export default AsyncActionStatus;

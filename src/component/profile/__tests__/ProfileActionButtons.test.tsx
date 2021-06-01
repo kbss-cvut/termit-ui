@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { ProfileActionButtons } from "../ProfileActionButtons";
 import { Button, ButtonToolbar } from "reactstrap";
 import { GoKey, GoPencil } from "react-icons/go";

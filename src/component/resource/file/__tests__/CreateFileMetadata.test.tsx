@@ -1,4 +1,3 @@
-import * as React from "react";
 import Resource from "../../../../model/Resource";
 import Ajax from "../../../../util/Ajax";
 import {

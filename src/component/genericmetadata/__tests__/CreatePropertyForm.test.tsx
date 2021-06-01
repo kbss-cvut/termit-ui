@@ -1,4 +1,3 @@
-import * as React from "react";
 import { RdfsResourceData } from "../../../model/RdfsResource";
 import { shallow } from "enzyme";
 import { CreatePropertyForm } from "../CreatePropertyForm";

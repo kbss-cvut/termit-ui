@@ -1,4 +1,3 @@
-import * as React from "react";
 import Vocabulary from "../../../model/Vocabulary";
 import Document from "../../../model/Document";
 import Generator from "../../../__tests__/environment/Generator";

@@ -1,4 +1,3 @@
-import * as React from "react";
 import classNames from "classnames";
 import { CardBody, Col, Label, Row } from "reactstrap";
 import ResourceTermAssignments from "./ResourceTermAssignments";

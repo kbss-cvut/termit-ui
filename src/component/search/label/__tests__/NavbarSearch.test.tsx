@@ -1,4 +1,3 @@
-import * as React from "react";
 import { NavbarSearch } from "../NavbarSearch";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import SearchResultsOverlay from "../SearchResultsOverlay";

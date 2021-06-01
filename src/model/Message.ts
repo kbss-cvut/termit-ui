@@ -3,9 +3,9 @@ import MType from "./MessageType";
 export type MessageType = "success" | "danger" | "warning" | "info";
 
 export interface MessageData {
-    message?: string;
-    messageId?: string;
-    values?: {};
+  message?: string;
+  messageId?: string;
+  values?: {};
 }
 
 /**
@@ -16,48 +16,48 @@ export interface MessageData {
  * An instance can contain either directly the text of the message, or a message id used by the i18n function.
  */
 export default class Message {
-    private readonly mMessage?: string;
-    private readonly mMessageId?: string;
-    private readonly mValues?: {}; // Values for message formatting, relevant only for messageId
-    private readonly mType: MessageType;
-    private readonly mTimestamp: number;
+  private readonly mMessage?: string;
+  private readonly mMessageId?: string;
+  private readonly mValues?: {}; // Values for message formatting, relevant only for messageId
+  private readonly mType: MessageType;
+  private readonly mTimestamp: number;
 
-    constructor(data: MessageData, type?: MessageType) {
-        this.mMessage = data.message;
-        this.mMessageId = data.messageId;
-        this.mValues = data.values;
-        this.mType = type ? type : MType.INFO;
-        this.mTimestamp = Date.now();
-    }
+  constructor(data: MessageData, type?: MessageType) {
+    this.mMessage = data.message;
+    this.mMessageId = data.messageId;
+    this.mValues = data.values;
+    this.mType = type ? type : MType.INFO;
+    this.mTimestamp = Date.now();
+  }
 
-    get message(): string | undefined {
-        return this.mMessage;
-    }
+  get message(): string | undefined {
+    return this.mMessage;
+  }
 
-    get messageId(): string | undefined {
-        return this.mMessageId;
-    }
+  get messageId(): string | undefined {
+    return this.mMessageId;
+  }
 
-    get values(): {} | undefined {
-        return this.mValues;
-    }
+  get values(): {} | undefined {
+    return this.mValues;
+  }
 
-    get type(): MessageType {
-        return this.mType;
-    }
+  get type(): MessageType {
+    return this.mType;
+  }
 
-    get timestamp(): number {
-        return this.mTimestamp;
-    }
+  get timestamp(): number {
+    return this.mTimestamp;
+  }
 }
 
 export function createStringMessage(text: string) {
-    return new Message({ message: text });
+  return new Message({ message: text });
 }
 
 export function createFormattedMessage(mId: string, values?: {}) {
-    return new Message({
-        messageId: mId,
-        values,
-    });
+  return new Message({
+    messageId: mId,
+    values,
+  });
 }

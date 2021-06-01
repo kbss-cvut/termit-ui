@@ -1,4 +1,3 @@
-import * as React from "react";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Generator from "../../../__tests__/environment/Generator";
 import { TermDefinitionBlockEdit } from "../TermDefinitionBlockEdit";

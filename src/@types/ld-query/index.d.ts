@@ -5,5 +5,5 @@
  */
 
 declare module "ld-query" {
-    export default function LD(context: any): any;
+  export default function LD(context: any): any;
 }

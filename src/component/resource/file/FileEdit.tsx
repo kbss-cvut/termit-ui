@@ -1,4 +1,3 @@
-import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n from "../../hoc/withI18n";
 import { Card, CardBody, Form } from "reactstrap";

@@ -160,7 +160,8 @@ export class TermMetadata extends React.Component<
                         ),
                       }}
                       tabBadges={{
-                        "properties.edit.title": term.unmappedProperties.size.toFixed(),
+                        "properties.edit.title":
+                          term.unmappedProperties.size.toFixed(),
                         "comments.title":
                           this.state.commentsCount !== null
                             ? this.state.commentsCount.toFixed()

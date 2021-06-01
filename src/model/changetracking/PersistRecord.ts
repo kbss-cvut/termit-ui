@@ -4,11 +4,11 @@ import ChangeRecord, { ChangeRecordData } from "./ChangeRecord";
  * Represents insertion of an entity into the repository.
  */
 export default class PersistRecord extends ChangeRecord {
-    public constructor(data: ChangeRecordData) {
-        super(data);
-    }
+  public constructor(data: ChangeRecordData) {
+    super(data);
+  }
 
-    get typeLabel(): string {
-        return "history.type.persist";
-    }
+  get typeLabel(): string {
+    return "history.type.persist";
+  }
 }

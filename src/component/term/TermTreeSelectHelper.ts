@@ -9,21 +9,21 @@ import Utils from "../../util/Utils";
  * @param intl I18n data
  */
 export function commonTermTreeSelectProps(intl: HasI18n) {
-    return {
-        valueKey: "iri",
-        getOptionLabel: (option: Term | TermData) =>
-            getLocalized(option.label, getShortLocale(intl.locale)),
-        childrenKey: "plainSubTerms",
-        renderAsTree: true,
-        simpleTreeData: true,
-        showSettings: false,
-        noResultsText: intl.i18n("main.search.no-results"),
-        placeholder: "",
-    };
+  return {
+    valueKey: "iri",
+    getOptionLabel: (option: Term | TermData) =>
+      getLocalized(option.label, getShortLocale(intl.locale)),
+    childrenKey: "plainSubTerms",
+    renderAsTree: true,
+    simpleTreeData: true,
+    showSettings: false,
+    noResultsText: intl.i18n("main.search.no-results"),
+    placeholder: "",
+  };
 }
 
 export type TermTreeSelectProcessingOptions = {
-    searchString?: string;
+  searchString?: string;
 };
 
 /**
@@ -34,42 +34,42 @@ export type TermTreeSelectProcessingOptions = {
  * @param options Processing options
  */
 export function processTermsForTreeSelect(
-    terms: Term[],
-    vocabularies: string[] | undefined,
-    options: TermTreeSelectProcessingOptions = {}
+  terms: Term[],
+  vocabularies: string[] | undefined,
+  options: TermTreeSelectProcessingOptions = {}
 ): Term[] {
-    let result: Term[] = [];
-    for (const t of terms) {
-        if (!vocabularyMatches(t, vocabularies)) {
-            continue;
-        }
-        result.push(t);
-        if (t.subTerms) {
-            if (vocabularies) {
-                t.subTerms = t.subTerms
-                    .filter((st) => vocabularyMatches(st, vocabularies))
-                    .map((st) => {
-                        return st;
-                    });
-            }
-            t.syncPlainSubTerms();
-        }
-        if (options.searchString && t.parentTerms) {
-            result = result.concat(
-                flattenAncestors(t.parentTerms).filter((pt) =>
-                    vocabularyMatches(pt, vocabularies)
-                )
-            );
-        }
+  let result: Term[] = [];
+  for (const t of terms) {
+    if (!vocabularyMatches(t, vocabularies)) {
+      continue;
     }
-    return result;
+    result.push(t);
+    if (t.subTerms) {
+      if (vocabularies) {
+        t.subTerms = t.subTerms
+          .filter((st) => vocabularyMatches(st, vocabularies))
+          .map((st) => {
+            return st;
+          });
+      }
+      t.syncPlainSubTerms();
+    }
+    if (options.searchString && t.parentTerms) {
+      result = result.concat(
+        flattenAncestors(t.parentTerms).filter((pt) =>
+          vocabularyMatches(pt, vocabularies)
+        )
+      );
+    }
+  }
+  return result;
 }
 
 function vocabularyMatches(
-    term: Term | TermInfo,
-    vocabularies: string[] | undefined
+  term: Term | TermInfo,
+  vocabularies: string[] | undefined
 ) {
-    return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1;
+  return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1;
 }
 
 /**
@@ -79,14 +79,14 @@ function vocabularyMatches(
  * @param terms Terms to flatten
  */
 function flattenAncestors(terms: Term[]) {
-    let result: Term[] = [];
-    for (const t of terms) {
-        result.push(t);
-        if (t.parentTerms) {
-            result = result.concat(flattenAncestors(t.parentTerms));
-        }
+  let result: Term[] = [];
+  for (const t of terms) {
+    result.push(t);
+    if (t.parentTerms) {
+      result = result.concat(flattenAncestors(t.parentTerms));
     }
-    return result;
+  }
+  return result;
 }
 
 /**
@@ -94,9 +94,9 @@ function flattenAncestors(terms: Term[]) {
  * @param selected Array of selected Term-based values (optional)
  */
 export function resolveSelectedIris(
-    selected?: TermInfo[] | TermData[]
+  selected?: TermInfo[] | TermData[]
 ): string[] {
-    return Utils.sanitizeArray(selected as TermInfo[])
-        .filter((t) => t.vocabulary !== undefined)
-        .map((t) => t.iri);
+  return Utils.sanitizeArray(selected as TermInfo[])
+    .filter((t) => t.vocabulary !== undefined)
+    .map((t) => t.iri);
 }

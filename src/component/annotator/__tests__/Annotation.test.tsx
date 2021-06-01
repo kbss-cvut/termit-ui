@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Annotation, isDefinitionAnnotation } from "../Annotation";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Term from "../../../model/Term";

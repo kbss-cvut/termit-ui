@@ -7,11 +7,11 @@
 import Asset from "./Asset";
 
 export default interface AppNotification {
-    source: any;
+  source: any;
 }
 
 export interface AssetUpdateNotification<T extends Asset>
-    extends AppNotification {
-    original: T;
-    updated: T;
+  extends AppNotification {
+  original: T;
+  updated: T;
 }

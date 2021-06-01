@@ -1,4 +1,3 @@
-import * as React from "react";
 import Routing from "../../../util/Routing";
 import { CreateVocabulary } from "../CreateVocabulary";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { MainView } from "../MainView";
 import User, { EMPTY_USER } from "../../model/User";
 import { intlFunctions } from "../../__tests__/environment/IntlUtil";

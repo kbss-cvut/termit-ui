@@ -1,4 +1,3 @@
-import * as React from "react";
 import Term from "../../../model/Term";
 import classNames from "classnames";
 import ResultItem from "./ResultItem";

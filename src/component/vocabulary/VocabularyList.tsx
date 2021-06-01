@@ -63,12 +63,8 @@ export const VocabularyList: React.FC<VocabularyListProps> = (props) => {
     useSortBy,
     usePagination
   );
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-  } = tableInstance;
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow } =
+    tableInstance;
   const page: Row<Vocabulary>[] = (tableInstance as any).page;
 
   return (

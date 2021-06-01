@@ -1,4 +1,3 @@
-import * as React from "react";
 import TermItFile from "../../../model/File";
 import File from "../../../model/File";
 import Utils from "../../../util/Utils";

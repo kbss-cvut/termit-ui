@@ -1,3 +1,8 @@
+#### Version 2.5.0
+
+- Implemented support for SKOS related, relatedMatch and exactMatch.
+- Minor bug fixes.
+
 #### Version 2.4.1
 
 - Redesigned forms (field help is now displayed on demand in popups).

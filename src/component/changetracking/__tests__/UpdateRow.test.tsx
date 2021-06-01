@@ -1,4 +1,3 @@
-import * as React from "react";
 import { UpdateRecord } from "../../../model/changetracking/UpdateRecord";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";

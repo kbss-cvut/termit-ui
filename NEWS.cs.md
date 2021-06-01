@@ -1,3 +1,8 @@
+#### Verze 2.5.0
+
+- Implementována podpora pro SKOS related, relatedMatch a exactMatch.
+- Opravy menších chyb.
+
 #### Verze 2.4.1
 
 - Přepracován vzhled formulářů (nápověda se nově zobrazuje v popup okně).

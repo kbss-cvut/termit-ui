@@ -1,4 +1,3 @@
-import * as React from "react";
 import Term, { TermData } from "../../../model/Term";
 import FetchOptionsFunction from "../../../model/Functions";
 import { shallow } from "enzyme";
@@ -170,9 +169,8 @@ describe("Terms", () => {
           wrapper.state().unusedTermsForVocabulary
         );
         expect(vocabularyIris.length).toBe(1);
-        const unusedTermsX = wrapper.state().unusedTermsForVocabulary[
-          vocabularyIris[0]
-        ];
+        const unusedTermsX =
+          wrapper.state().unusedTermsForVocabulary[vocabularyIris[0]];
         expect(unusedTermsX.length).toBe(1);
         expect(unusedTermsX[0]).toBe(t1.iri);
       });

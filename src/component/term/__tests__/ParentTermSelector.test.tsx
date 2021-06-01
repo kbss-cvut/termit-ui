@@ -1,4 +1,3 @@
-import * as React from "react";
 import { shallow } from "enzyme";
 import { ParentTermSelector } from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
@@ -24,8 +23,12 @@ describe("ParentTermSelector", () => {
 
   beforeEach(() => {
     onChange = jest.fn();
-    loadTerms = jest.fn().mockImplementation(() => Promise.resolve([]));
-    loadImports = jest.fn().mockImplementation(() => Promise.resolve([]));
+    loadTerms = jest.fn().mockResolvedValue([]);
+    loadImports = jest.fn().mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("passes selected parent as value to tree component", () => {
@@ -202,7 +205,7 @@ describe("ParentTermSelector", () => {
         options.push(t);
       }
       const currentTerm = options[Generator.randomInt(0, options.length)];
-      loadTerms = jest.fn().mockImplementation(() => Promise.resolve(options));
+      loadTerms = jest.fn().mockResolvedValue(options);
       const wrapper = shallow<ParentTermSelector>(
         <ParentTermSelector
           id="test"
@@ -236,7 +239,7 @@ describe("ParentTermSelector", () => {
         );
         options.push(t);
       }
-      loadTerms = jest.fn().mockImplementation(() => Promise.resolve(options));
+      loadTerms = jest.fn().mockResolvedValue(options);
       const wrapper = shallow<ParentTermSelector>(
         <ParentTermSelector
           id="test"
@@ -265,7 +268,7 @@ describe("ParentTermSelector", () => {
       ];
       const currentTerm = options[1];
       options[0].plainSubTerms = [currentTerm.iri];
-      loadTerms = jest.fn().mockImplementation(() => Promise.resolve(options));
+      loadTerms = jest.fn().mockResolvedValue(options);
       const wrapper = shallow<ParentTermSelector>(
         <ParentTermSelector
           id="test"

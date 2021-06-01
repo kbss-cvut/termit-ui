@@ -4,10 +4,6 @@ ul.term-items {
   padding-left: 1.2rem;
 }
 
-ul.term-items button {
-  padding: 0;
-}
-
 .term-edit .Select-placeholder {
   line-height: 1.5;
   font-size: 0.875rem;
@@ -22,4 +18,8 @@ ul.term-items button {
 
 #create-term-toggle-advanced {
   margin-left: -0.75rem;
+}
+
+.Select-menu-outer {
+  z-index: 3; // Increase z-index to prevent collisions with input group addon buttons in StringListEdits
 }

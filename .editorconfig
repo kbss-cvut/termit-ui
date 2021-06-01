@@ -1,8 +1,0 @@
-[*.ts]
-indent_style = space
-indent_size = 4
-
-[*.scss]
-indent_style = space
-indent_size = 2
-

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { FooterMenu } from "../FooterMenu";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { LanguageSelector } from "../../main/LanguageSelector";

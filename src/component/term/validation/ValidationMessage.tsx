@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Alert } from "reactstrap";
 import { ValidationUtils } from "./ValidationUtils";
 
