@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState } from "react";
 import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
