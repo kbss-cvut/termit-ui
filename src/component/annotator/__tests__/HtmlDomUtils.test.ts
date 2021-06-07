@@ -1,10 +1,12 @@
 // @ts-ignore
-import { fromRange, toRange, XPathRange } from "xpath-range";
+import {fromRange, toRange, XPathRange} from "xpath-range";
 import HtmlDomUtils from "../HtmlDomUtils";
-import { mockWindowSelection } from "../../../__tests__/environment/Environment";
+import {mockWindowSelection} from "../../../__tests__/environment/Environment";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import { TextQuoteSelector } from "../../../model/TermOccurrence";
+import {TextQuoteSelector} from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
+import {NodeWithChildren, Text as DomHandlerText} from "domhandler";
+import {ElementType} from "domelementtype";
 
 jest.mock("xpath-range", () => ({
   fromRange: jest.fn(),
@@ -47,6 +49,8 @@ describe("Html dom utils", () => {
       extractContents: jest.fn(),
       surroundContents: jest.fn(),
       insertNode: jest.fn(),
+      setEnd: jest.fn(),
+      setStart: jest.fn()
     };
 
     const parser = new DOMParser();
@@ -122,6 +126,9 @@ describe("Html dom utils", () => {
       (toRange as jest.Mock).mockImplementation(() => {
         return textPointerRange;
       });
+      textPointerRange.endContainer = {
+        nodeType: Node.TEXT_NODE
+      }
       ret = HtmlDomUtils.replaceRange(
         sampleDiv,
         textPointerRange,
@@ -135,10 +142,33 @@ describe("Html dom utils", () => {
         xpathTextPointerRange.endOffset,
         expect.any(Object)
       );
-      expect(ret === sampleDiv).toBe(false);
+      expect(ret).not.toBe(sampleDiv);
       expect(ret.children[0].childNodes[0].nodeValue).toEqual(
         sampleDiv.children[0].childNodes[0].nodeValue
       );
+    });
+
+    // Bug #1564
+    it("uses original range end offset to work around offsetting issues when range end container is not a text node", () => {
+      (fromRange as jest.Mock).mockImplementation(() => {
+        return xpathTextPointerRange;
+      });
+
+      (toRange as jest.Mock).mockImplementation(() => {
+        return textPointerRange;
+      });
+      const originalRange: any = {
+        endContainer: {
+          nodeType: Node.ELEMENT_NODE
+        },
+        endOffset: 10
+      };
+      HtmlDomUtils.replaceRange(
+          sampleDiv,
+          originalRange,
+          surroundingElementHtml
+      );
+      expect(textPointerRange.setEnd).toHaveBeenCalledWith(textPointerRange.endContainer, originalRange.endOffset);
     });
   });
 
@@ -211,10 +241,7 @@ describe("Html dom utils", () => {
   describe("getTextContent", () => {
     it("returns data from a single text node", () => {
       const text = "aaaa";
-      const node = {
-        type: "text",
-        data: text,
-      };
+      const node = new DomHandlerText(text);
       const result = HtmlDomUtils.getTextContent(node);
       expect(result).toEqual(text);
     });
@@ -222,14 +249,8 @@ describe("Html dom utils", () => {
     it("returns data from multiple text nodes", () => {
       const textOne = "aaaa";
       const textTwo = "bbbb";
-      const nodeOne = {
-        type: "text",
-        data: textOne,
-      };
-      const nodeTwo = {
-        type: "text",
-        data: textTwo,
-      };
+      const nodeOne = new DomHandlerText(textOne);
+      const nodeTwo = new DomHandlerText(textTwo);
       const result = HtmlDomUtils.getTextContent([nodeOne, nodeTwo]);
       expect(result).toEqual(textOne + textTwo);
     });
@@ -237,14 +258,8 @@ describe("Html dom utils", () => {
     it("recursively retrieves children text data from element nodes", () => {
       const textOne = "aaaa";
       const textTwo = "bbbb";
-      const nodeOne = {
-        type: "text",
-        data: textOne,
-      };
-      const nodeTwo = {
-        type: "tag",
-        children: [{ type: "text", data: textTwo }],
-      };
+      const nodeOne = new DomHandlerText(textOne);
+      const nodeTwo = new NodeWithChildren(ElementType.Tag, [new DomHandlerText(textTwo)]);
       const result = HtmlDomUtils.getTextContent([nodeOne, nodeTwo]);
       expect(result).toEqual(textOne + textTwo);
     });
@@ -257,7 +272,7 @@ describe("Html dom utils", () => {
       '<span about="_:123" property="' +
       VocabularyUtils.IS_OCCURRENCE_OF_TERM +
       '"\n' +
-      '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+      '                  resource="https://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
       '                  typeof="' +
       VocabularyUtils.TERM_OCCURRENCE +
       '">annotated-text</span>' +
@@ -266,7 +281,7 @@ describe("Html dom utils", () => {
       "            <div about='_:117' property=\"" +
       VocabularyUtils.IS_DEFINITION_OF_TERM +
       '"\n' +
-      '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
+      '                  resource="https://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
       '                  typeof="' +
       VocabularyUtils.DEFINITION +
       '">definition-text separated by spaces</div>text after' +
@@ -341,7 +356,7 @@ describe("Html dom utils", () => {
         HtmlDomUtils.findAnnotationElementBySelector(doc, selector)
       ).toThrowError(
         new Error(
-          `Element with exact match \'${selector.exactMatch}\' not found in document.`
+          `Element with exact match '${selector.exactMatch}' not found in document.`
         )
       );
     });
