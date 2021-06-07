@@ -1,14 +1,9 @@
-import { DomUtils } from "htmlparser2";
-import {
-  DataNode,
-  Element as DomHandlerElement,
-  Node as DomHandlerNode,
-  NodeWithChildren,
-} from "domhandler";
+import {DomUtils} from "htmlparser2";
+import {DataNode, Element as DomHandlerElement, Node as DomHandlerNode, NodeWithChildren} from "domhandler";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import HtmlParserUtils from "./HtmlParserUtils";
 import HtmlDomUtils from "./HtmlDomUtils";
-import { TextQuoteSelector } from "../../model/TermOccurrence";
+import {TextQuoteSelector} from "../../model/TermOccurrence";
 import Utils from "../../util/Utils";
 
 export const AnnotationType = {
@@ -81,6 +76,14 @@ const AnnotationDomHelper = {
       if (elemInd !== -1) {
         dom.splice(elemInd, 1, newNode);
       }
+    } else if (this.isOnlyChild(annotation)) {
+      const parent = annotation.parentNode! as DomHandlerElement;
+      // Create a copy to prevent issues with iteration when children are being moved around
+      const copy = elem.childNodes.slice();
+      for (let cn of copy) {
+          DomUtils.appendChild(parent, cn)
+      }
+      parent.children.splice(0, 1);
     } else {
       // If the node is not just text, it contains other elements as well. In that case, just delete the
       // RDFa-specific attributes
@@ -90,6 +93,10 @@ const AnnotationDomHelper = {
       delete elem.attribs.typeof;
       delete elem.attribs.class;
     }
+  },
+
+  isOnlyChild(annotation: DomHandlerNode) {
+    return annotation.parent && !annotation.previousSibling && !annotation.nextSibling;
   },
 
   createTextualNode(annotation: NodeWithChildren): any {
