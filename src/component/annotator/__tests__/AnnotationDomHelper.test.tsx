@@ -1,38 +1,35 @@
-import { DomHandler, DomUtils, Parser as HtmlParser } from "htmlparser2";
-import AnnotationDomHelper, { AnnotationType } from "../AnnotationDomHelper";
-import { Node, Element, DataNode } from "domhandler";
+import {DomHandler, DomUtils, Parser as HtmlParser} from "htmlparser2";
+import AnnotationDomHelper, {AnnotationType} from "../AnnotationDomHelper";
+import {DataNode, Element, Node} from "domhandler";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("AnnotationDomHelper", () => {
-  const html =
-    "<h1>My Heading</h1>\n" +
-    "\n" +
-    "            <p>First paragraph." +
-    '            <span about="_:123" property="' +
-    VocabularyUtils.IS_OCCURRENCE_OF_TERM +
-    '"\n' +
-    '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
-    '                  typeof="' +
-    VocabularyUtils.TERM_OCCURRENCE +
-    '">annotated-text</span>' +
-    "            </p>" +
-    "\n after annotation span" +
-    '            <span about="_:111" \n>not-annotation</span>' +
-    "            <div about='_:117' property=\"" +
-    VocabularyUtils.IS_OCCURRENCE_OF_TERM +
-    '"\n' +
-    '                  resource="http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29"\n' +
-    '                  typeof="' +
-    VocabularyUtils.TERM_OCCURRENCE +
-    '">annotated-text</div>' +
-    "            <div about='_:118' property=\"" +
-    VocabularyUtils.IS_OCCURRENCE_OF_TERM +
-    '"\n' +
-    '                  resource="http://example.org/118"\n' +
-    '                  typeof="' +
-    VocabularyUtils.TERM_OCCURRENCE +
-    "\">annotated-text<span id='embedded'>with embedded element</span>and text after</div>" +
-    "\n after text span";
+  const html = `
+    <h1>My Heading</h1>
+    <p>First paragraph.
+        <span about='_:123' property='${VocabularyUtils.IS_OCCURRENCE_OF_TERM}' resource='http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29'
+            typeof='${VocabularyUtils.TERM_OCCURRENCE}'>
+            annotated-text
+        </span>
+    </p>
+    after annotation span
+    <span about='_:111'>not-annotation</span>
+    <div about='_:117' property='${VocabularyUtils.IS_OCCURRENCE_OF_TERM}' resource='http://data.iprpraha.cz/zdroj/slovnik/mpp-3/pojem/modernisticka-struktura-%28zastavba%29'
+        typeof='${VocabularyUtils.TERM_OCCURRENCE}'>
+        annotated-text
+    </div>
+    <div about='_:118' property='${VocabularyUtils.IS_OCCURRENCE_OF_TERM}' resource='http://example.org/118' typeof='${VocabularyUtils.TERM_OCCURRENCE}'>
+        annotated-text
+        <span id='embedded'>with embedded element</span>
+        and text after
+    </div>
+    after text span
+    <p id='with-only-child'>
+        <span about='_:119' property='${VocabularyUtils.IS_OCCURRENCE_OF_TERM}' typeof='${VocabularyUtils.TERM_OCCURRENCE}'>
+            Test child <i>with another element</i>
+        </span>
+    </p>`;
+
   const options = { decodeEntities: true };
   let dom: Node[];
   let annotationSpan: Element;
@@ -44,7 +41,7 @@ describe("AnnotationDomHelper", () => {
     const handler = new DomHandler();
     const parser = new HtmlParser(handler, options);
     parser.parseComplete(html);
-    dom = handler.dom;
+    dom = handler.dom as Node[];
     annotationSpan = du.find(
       (n: Node) =>
         (n as Element).name === "span" &&
@@ -165,8 +162,35 @@ describe("AnnotationDomHelper", () => {
       sut.removeAnnotation(topLevelAnnotation, dom);
       expect(dom.indexOf(topLevelAnnotation)).toEqual(-1);
       expect(dom.length).toEqual(originalLength);
-      expect((dom[annotationIndex] as DataNode).data).toEqual("annotated-text");
+      expect((dom[annotationIndex] as DataNode).data.trim()).toEqual("annotated-text");
     });
+
+    it("replaces annotation node with its children when it is the only child of its parent", () => {
+      const toRemove = du.find(
+          (n: Node) =>
+              (n as Element).name === "span" &&
+              (n as Element).attribs.about === "_:119",
+          dom,
+          true,
+          1
+      )[0];
+      expect(toRemove).toBeDefined();
+      const about = (toRemove as Element).attribs!.about;
+      expect(html).toContain(about);
+      sut.removeAnnotation(toRemove, dom);
+      const newHtml = DomUtils.getOuterHTML(dom);
+      expect(newHtml).not.toContain(about);
+      const paragraph = du.find((n: Node) =>
+          (n as Element).name === "p" &&
+          (n as Element).attribs.id === "with-only-child",
+          dom,
+          true,
+          1)[0] as Element;
+      expect(paragraph).toBeDefined();
+      expect(paragraph.children.find(c => (c as any).attribs && (c as any).attribs.about === "_:119")).not.toBeDefined();
+      expect(paragraph.children.length).toEqual(3);
+    });
+
   });
 
   it("isAnnotationWithMinimumScore returns false if score is less-than threshold", () => {
@@ -193,7 +217,7 @@ describe("AnnotationDomHelper", () => {
 
     it("wraps text node in an annotation span", () => {
       const about = "_:1";
-      const textNodes = htmlDoc.body.children[3].childNodes;
+      const textNodes = htmlDoc.body.children[2].childNodes;
       const result = sut.createNewAnnotation(about, textNodes);
       expect(result).toBeDefined();
       expect(result.name).toEqual("span");
@@ -201,7 +225,7 @@ describe("AnnotationDomHelper", () => {
       expect(result.children).toBeDefined();
       expect(result.children!.length).toEqual(textNodes.length);
       expect((result.children![0] as DataNode).data).toEqual(
-        htmlDoc.body.children[3].textContent
+        htmlDoc.body.children[2].textContent
       );
     });
 
