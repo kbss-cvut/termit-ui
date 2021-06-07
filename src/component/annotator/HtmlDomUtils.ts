@@ -141,6 +141,26 @@ const HtmlDomUtils = {
   },
 
   /**
+   * Extends the specified range (if necessary) to prevent its replacement from crossing multiple elements.
+   *
+   * This extension should handle situations when the range starts in one element and ends in another, which would
+   * prevent its replacement/annotation due to invalid element boundary crossing. This method attempts to extend the range
+   * until this crossing occurs no more (typically before reaching the range's common ancestor container).
+   * @param range Range to fix
+   */
+  extendRangeToPreventNodeCrossing(range: Range) {
+    while(this.doesRangeSpanMultipleElements(range)) {
+      const startDepth = calculatePathLength(range.startContainer, range.commonAncestorContainer);
+      const endDepth = calculatePathLength(range.endContainer, range.commonAncestorContainer);
+      if (startDepth > endDepth) {
+        range.setStartBefore(range.startContainer);
+      } else {
+        range.setEndAfter(range.endContainer);
+      }
+    }
+  },
+
+  /**
    * Returns a clone of rootElement where range is replaced by provided surroundingElement.
    * @param rootElement Root element of a document that should be cloned.
    * @param range range within document referenced by rootElement that should be surrounded.

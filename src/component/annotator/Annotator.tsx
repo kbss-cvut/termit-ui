@@ -604,12 +604,12 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     about: string,
     annotationType: string
   ): { container: HTMLElement; annotation: Element } | null {
-    const originalRange = HtmlDomUtils.getSelectionRange();
-    if (
-      originalRange &&
-      !HtmlDomUtils.doesRangeSpanMultipleElements(originalRange)
-    ) {
-      const rangeContent = HtmlDomUtils.getRangeContent(originalRange);
+    const range = HtmlDomUtils.getSelectionRange();
+    if (!range) {
+      return null;
+    }
+    HtmlDomUtils.extendRangeToPreventNodeCrossing(range);
+      const rangeContent = HtmlDomUtils.getRangeContent(range);
       const newAnnotationNode = AnnotationDomHelper.createNewAnnotation(
         about,
         rangeContent,
@@ -618,13 +618,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       return {
         container: HtmlDomUtils.replaceRange(
           this.containerElement.current!,
-          originalRange,
+          range,
           HtmlParserUtils.dom2html([newAnnotationNode])
         ),
         annotation: newAnnotationNode,
       };
-    }
-    return null;
   }
 
   private static matchHtml(htmlContent: string): HtmlSplit {
