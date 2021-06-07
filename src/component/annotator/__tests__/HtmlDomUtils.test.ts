@@ -1,12 +1,12 @@
 // @ts-ignore
-import {fromRange, toRange, XPathRange} from "xpath-range";
+import { fromRange, toRange, XPathRange } from "xpath-range";
 import HtmlDomUtils from "../HtmlDomUtils";
-import {mockWindowSelection} from "../../../__tests__/environment/Environment";
+import { mockWindowSelection } from "../../../__tests__/environment/Environment";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import {TextQuoteSelector} from "../../../model/TermOccurrence";
+import { TextQuoteSelector } from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
-import {NodeWithChildren, Text as DomHandlerText} from "domhandler";
-import {ElementType} from "domelementtype";
+import { NodeWithChildren, Text as DomHandlerText } from "domhandler";
+import { ElementType } from "domelementtype";
 
 jest.mock("xpath-range", () => ({
   fromRange: jest.fn(),
@@ -50,7 +50,7 @@ describe("Html dom utils", () => {
       surroundContents: jest.fn(),
       insertNode: jest.fn(),
       setEnd: jest.fn(),
-      setStart: jest.fn()
+      setStart: jest.fn(),
     };
 
     const parser = new DOMParser();
@@ -127,8 +127,8 @@ describe("Html dom utils", () => {
         return textPointerRange;
       });
       textPointerRange.endContainer = {
-        nodeType: Node.TEXT_NODE
-      }
+        nodeType: Node.TEXT_NODE,
+      };
       ret = HtmlDomUtils.replaceRange(
         sampleDiv,
         textPointerRange,
@@ -159,16 +159,19 @@ describe("Html dom utils", () => {
       });
       const originalRange: any = {
         endContainer: {
-          nodeType: Node.ELEMENT_NODE
+          nodeType: Node.ELEMENT_NODE,
         },
-        endOffset: 10
+        endOffset: 10,
       };
       HtmlDomUtils.replaceRange(
-          sampleDiv,
-          originalRange,
-          surroundingElementHtml
+        sampleDiv,
+        originalRange,
+        surroundingElementHtml
       );
-      expect(textPointerRange.setEnd).toHaveBeenCalledWith(textPointerRange.endContainer, originalRange.endOffset);
+      expect(textPointerRange.setEnd).toHaveBeenCalledWith(
+        textPointerRange.endContainer,
+        originalRange.endOffset
+      );
     });
   });
 
@@ -259,7 +262,9 @@ describe("Html dom utils", () => {
       const textOne = "aaaa";
       const textTwo = "bbbb";
       const nodeOne = new DomHandlerText(textOne);
-      const nodeTwo = new NodeWithChildren(ElementType.Tag, [new DomHandlerText(textTwo)]);
+      const nodeTwo = new NodeWithChildren(ElementType.Tag, [
+        new DomHandlerText(textTwo),
+      ]);
       const result = HtmlDomUtils.getTextContent([nodeOne, nodeTwo]);
       expect(result).toEqual(textOne + textTwo);
     });

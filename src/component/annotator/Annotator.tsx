@@ -609,20 +609,20 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       return null;
     }
     HtmlDomUtils.extendRangeToPreventNodeCrossing(range);
-      const rangeContent = HtmlDomUtils.getRangeContent(range);
-      const newAnnotationNode = AnnotationDomHelper.createNewAnnotation(
-        about,
-        rangeContent,
-        annotationType
-      );
-      return {
-        container: HtmlDomUtils.replaceRange(
-          this.containerElement.current!,
-          range,
-          HtmlParserUtils.dom2html([newAnnotationNode])
-        ),
-        annotation: newAnnotationNode,
-      };
+    const rangeContent = HtmlDomUtils.getRangeContent(range);
+    const newAnnotationNode = AnnotationDomHelper.createNewAnnotation(
+      about,
+      rangeContent,
+      annotationType
+    );
+    return {
+      container: HtmlDomUtils.replaceRange(
+        this.containerElement.current!,
+        range,
+        HtmlParserUtils.dom2html([newAnnotationNode])
+      ),
+      annotation: newAnnotationNode,
+    };
   }
 
   private static matchHtml(htmlContent: string): HtmlSplit {

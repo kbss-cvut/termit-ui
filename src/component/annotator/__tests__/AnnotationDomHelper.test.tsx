@@ -1,6 +1,6 @@
-import {DomHandler, DomUtils, Parser as HtmlParser} from "htmlparser2";
-import AnnotationDomHelper, {AnnotationType} from "../AnnotationDomHelper";
-import {DataNode, Element, Node} from "domhandler";
+import { DomHandler, DomUtils, Parser as HtmlParser } from "htmlparser2";
+import AnnotationDomHelper, { AnnotationType } from "../AnnotationDomHelper";
+import { DataNode, Element, Node } from "domhandler";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("AnnotationDomHelper", () => {
@@ -162,17 +162,19 @@ describe("AnnotationDomHelper", () => {
       sut.removeAnnotation(topLevelAnnotation, dom);
       expect(dom.indexOf(topLevelAnnotation)).toEqual(-1);
       expect(dom.length).toEqual(originalLength);
-      expect((dom[annotationIndex] as DataNode).data.trim()).toEqual("annotated-text");
+      expect((dom[annotationIndex] as DataNode).data.trim()).toEqual(
+        "annotated-text"
+      );
     });
 
     it("replaces annotation node with its children when it is the only child of its parent", () => {
       const toRemove = du.find(
-          (n: Node) =>
-              (n as Element).name === "span" &&
-              (n as Element).attribs.about === "_:119",
-          dom,
-          true,
-          1
+        (n: Node) =>
+          (n as Element).name === "span" &&
+          (n as Element).attribs.about === "_:119",
+        dom,
+        true,
+        1
       )[0];
       expect(toRemove).toBeDefined();
       const about = (toRemove as Element).attribs!.about;
@@ -180,17 +182,22 @@ describe("AnnotationDomHelper", () => {
       sut.removeAnnotation(toRemove, dom);
       const newHtml = DomUtils.getOuterHTML(dom);
       expect(newHtml).not.toContain(about);
-      const paragraph = du.find((n: Node) =>
+      const paragraph = du.find(
+        (n: Node) =>
           (n as Element).name === "p" &&
           (n as Element).attribs.id === "with-only-child",
-          dom,
-          true,
-          1)[0] as Element;
+        dom,
+        true,
+        1
+      )[0] as Element;
       expect(paragraph).toBeDefined();
-      expect(paragraph.children.find(c => (c as any).attribs && (c as any).attribs.about === "_:119")).not.toBeDefined();
+      expect(
+        paragraph.children.find(
+          (c) => (c as any).attribs && (c as any).attribs.about === "_:119"
+        )
+      ).not.toBeDefined();
       expect(paragraph.children.length).toEqual(3);
     });
-
   });
 
   it("isAnnotationWithMinimumScore returns false if score is less-than threshold", () => {

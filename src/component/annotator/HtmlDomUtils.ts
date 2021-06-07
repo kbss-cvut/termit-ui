@@ -1,8 +1,8 @@
-import {Node as DomHandlerNode} from "domhandler";
+import { Node as DomHandlerNode } from "domhandler";
 import Utils from "../../util/Utils";
-import {TextQuoteSelector} from "../../model/TermOccurrence";
-import {AnnotationType} from "./AnnotationDomHelper";
-import {fromRange, toRange} from "xpath-range";
+import { TextQuoteSelector } from "../../model/TermOccurrence";
+import { AnnotationType } from "./AnnotationDomHelper";
+import { fromRange, toRange } from "xpath-range";
 
 const BLOCK_ELEMENTS = [
   "address",
