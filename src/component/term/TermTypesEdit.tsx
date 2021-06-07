@@ -20,7 +20,6 @@ import HelpIcon from "../misc/HelpIcon";
 interface TermTypesEditProps extends HasI18n {
   termTypes: string[];
   onChange: (types: string[]) => void;
-  invalid?: boolean;
   invalidMessage?: JSX.Element;
   availableTypes: { [key: string]: Term };
   intl: IntlData;
@@ -73,7 +72,6 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
     const types = getTypesForSelector(this.props.availableTypes);
     const selected = this.resolveSelectedTypes(types);
     const { i18n, intl } = this.props;
-    const style = this.props.invalid ? { borderColor: "red" } : {};
     return (
       <FormGroup>
         <Label className="attribute-label">
@@ -94,19 +92,12 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
           multi={false}
           displayInfoOnHover={true}
           expanded={true}
-          invalid={this.props.invalid}
-          invalidMessage={this.props.invalidMessage}
           renderAsTree={true}
-          style={style}
           placeholder=""
         />
-        {this.props.invalid ? (
-          <FormFeedback style={{ display: "block" }}>
+        {this.props.invalidMessage && <FormFeedback style={{ display: "block" }} title={i18n("term.metadata.validation.result.tooltip")}>
             {this.props.invalidMessage}
-          </FormFeedback>
-        ) : (
-          <></>
-        )}
+          </FormFeedback>}
       </FormGroup>
     );
   }

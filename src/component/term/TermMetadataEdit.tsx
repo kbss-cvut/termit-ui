@@ -344,7 +344,6 @@ export class TermMetadataEdit extends React.Component<
                     id="edit-term-parent"
                     termIri={this.props.term.iri}
                     parentTerms={this.state.parentTerms}
-                    invalid={validationBroader.length > 0}
                     invalidMessage={this.renderMessages(validationBroader)}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onParentChange}
@@ -355,7 +354,6 @@ export class TermMetadataEdit extends React.Component<
                 <Col xs={12}>
                   <TermTypesEdit
                     termTypes={Utils.sanitizeArray(this.state.types)}
-                    invalid={validationType.length > 0}
                     invalidMessage={this.renderMessages(validationType)}
                     onChange={this.onTypesChange}
                   />

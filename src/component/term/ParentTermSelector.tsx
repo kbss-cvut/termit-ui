@@ -48,7 +48,6 @@ interface ParentTermSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
   parentTerms?: TermData[];
-  invalid?: boolean;
   invalidMessage?: JSX.Element;
   vocabularyIri: string;
   currentVocabulary?: Vocabulary;
@@ -201,24 +200,18 @@ export class ParentTermSelector extends React.Component<
   }
 
   private renderSelector() {
+    const i18n = this.props.i18n;
     if (!this.state.importedVocabularies) {
       // render placeholder input until imported vocabularies are loaded
       return (
         <CustomInput
-          placeholder={this.props.i18n("glossary.select.placeholder")}
+          placeholder={i18n("glossary.select.placeholder")}
           disabled={true}
-          invalid={this.props.invalid}
           invalidMessage={this.props.invalidMessage}
-          help={this.props.i18n("term.parent.help")}
+          help={i18n("term.parent.help")}
         />
       );
     } else {
-      let style;
-      if (this.props.invalid) {
-        style = { borderColor: "red" };
-      } else {
-        style = {};
-      }
       return (
         <>
           <IntelligentTreeSelect
@@ -234,16 +227,11 @@ export class ParentTermSelector extends React.Component<
               this.props.vocabularyIri
             )}
             valueRenderer={createTermValueRenderer()}
-            style={style}
             {...commonTermTreeSelectProps(this.props)}
           />
-          {this.props.invalid ? (
-            <FormFeedback style={{ display: "block" }}>
+          {this.props.invalidMessage && <FormFeedback style={{ display: "block" }} title={i18n("term.metadata.validation.result.tooltip")}>
               {this.props.invalidMessage}
-            </FormFeedback>
-          ) : (
-            <></>
-          )}
+            </FormFeedback>}
         </>
       );
     }

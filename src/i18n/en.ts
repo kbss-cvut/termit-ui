@@ -447,6 +447,7 @@ const en = {
     "term.metadata.types.select.placeholder": "Select type",
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",
+    "term.metadata.validation.result.tooltip": "This is a term quality validation result. The term can be saved even if it has quality issues.",
     "term.removed.message": "Term successfully removed.",
     "term.badge.score.tooltip":
       "The score of this term is {score}%. Click to see the validation results",
