@@ -32,6 +32,7 @@ const MAPPED_PROPERTIES = [
   "model",
   "importedVocabularies",
   "allImportedVocabularies",
+  "termCount"
 ];
 
 export interface VocabularyData extends AssetData {
