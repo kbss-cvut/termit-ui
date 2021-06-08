@@ -52,6 +52,8 @@ export default class Vocabulary extends Asset implements VocabularyData {
   public importedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
 
+  public termCount?: number;
+
   constructor(data: VocabularyData) {
     super(data);
     Object.assign(this, data);
@@ -74,6 +76,7 @@ export default class Vocabulary extends Asset implements VocabularyData {
       "@context": CONTEXT,
     });
     delete (result as any).allImportedVocabularies;
+    delete (result as any).termCount;
     if (result.document) {
       result.document = this.document?.toJsonLd();
     }
