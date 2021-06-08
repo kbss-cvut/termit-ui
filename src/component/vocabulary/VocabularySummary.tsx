@@ -6,7 +6,6 @@ import TermItState from "../../model/TermItState";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../model/Vocabulary";
 import {
   exportGlossary,
-  importSkosThesaurus,
   loadResource,
   loadVocabulary,
   removeVocabulary,
@@ -37,7 +36,8 @@ import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
-import ImportVocabulary from "./ImportVocabulary";
+import ImportVocabularyDialog from "./ImportVocabulary";
+import {importSkosIntoExistingVocabulary} from "../../action/AsyncImportActions";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -46,7 +46,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   validateVocabulary: (iri: IRI) => Promise<any>;
-  importSkos: (iri: IRI, file: File) => Promise<any>;
+  importSkos: (iri: IRI, file: File, rename: Boolean) => Promise<any>;
   exportToCsv: (iri: IRI) => void;
   exportToExcel: (iri: IRI) => void;
   exportToTurtle: (iri: IRI) => void;
@@ -129,10 +129,11 @@ export class VocabularySummary extends EditableComponent<
       VocabularyUtils.create(this.props.vocabulary.iri)
     );
 
-  private onImport = (file: File) =>
+  private onImport = (file: File, rename: Boolean) =>
     this.props.importSkos(
       VocabularyUtils.create(this.props.vocabulary.iri),
-      file
+      file,
+      rename
     );
 
   public render() {
@@ -159,7 +160,7 @@ export class VocabularySummary extends EditableComponent<
       );
     }
     buttons.push(
-      <ImportVocabulary
+      <ImportVocabularyDialog
         key="vocabulary.summary.import"
         performAction={this.onImport}
       />
@@ -292,8 +293,8 @@ export default connect(
       removeVocabulary: (vocabulary: Vocabulary) =>
         dispatch(removeVocabulary(vocabulary)),
       validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
-      importSkos: (iri: IRI, file: File) =>
-        dispatch(importSkosThesaurus(iri, file)),
+      importSkos: (iri: IRI, file: File, rename : Boolean) =>
+        dispatch(importSkosIntoExistingVocabulary(iri, file, rename)),
       exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
       exportToExcel: (iri: IRI) =>
         dispatch(exportGlossary(iri, ExportType.Excel)),

@@ -86,6 +86,7 @@ const en = {
     "main.nav.searchVocabularies": "Search vocabularies",
     "main.nav.admin": "Administration",
     "main.nav.create-vocabulary": "New Vocabulary",
+    "main.nav.import-vocabulary": "Import Vocabulary",
     "main.nav.create-resource": "New Resource",
     "main.user-profile": "User profile",
     "main.logout": "Log out",
@@ -229,6 +230,12 @@ const en = {
     "vocabulary.summary.import.action": "Import",
     "vocabulary.summary.import.action.tooltip": "SKOS vocabulary import.",
     "vocabulary.summary.import.dialog.title": "Import SKOS vocabulary.",
+    "vocabulary.summary.import.dialog.message": "Imported file must be in the SKOS format. " +
+        "The file must contain exactly one instance of skos:ConceptScheme.",
+    "vocabulary.import.title" : "Import vocabulary",
+    "vocabulary.import.success" : "Vocabulary successfully imported.",
+    "vocabulary.import.allow-changing-identifiers": "Allow changing identifiers",
+    "vocabulary.import.allow-changing-identifiers.tooltip": "When ticked, identifiers colliding with existing ones will be replaced by new ones.",
     "vocabulary.summary.startTextAnalysis.title":
       "Start text analysis on definitions of all terms in this vocabulary",
     "vocabulary.updated.message": "Vocabulary successfully updated.",

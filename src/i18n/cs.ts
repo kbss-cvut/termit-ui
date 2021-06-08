@@ -85,6 +85,7 @@ const cs = {
     "main.nav.searchVocabularies": "Vyhledávání slovníků",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
+    "main.nav.import-vocabulary": "Importovat slovník",
     "main.nav.create-resource": "Nový zdroj",
     "main.user-profile": "Profil uživatele",
     "main.logout": "Odhlásit se",
@@ -233,6 +234,12 @@ const cs = {
     "vocabulary.summary.import.action": "Importovat",
     "vocabulary.summary.import.action.tooltip": "Import SKOS slovníku.",
     "vocabulary.summary.import.dialog.title": "Importovat SKOS slovník.",
+    "vocabulary.summary.import.dialog.message": "Importovaný soubor musí být formátu SKOS. " +
+        "Soubor musí obsahovat jediný skos:ConceptScheme.",
+    "vocabulary.import.title" : "Importovat slovník",
+    "vocabulary.import.success" : "Slovník úspěšně importován",
+    "vocabulary.import.allow-changing-identifiers": "Povolit změnu identifikátorů",
+    "vocabulary.import.allow-changing-identifiers.tooltip": "Při zaškrtnutí tohoto políčka budou při importu identifikátory nahrazeny novými, pokud by kolidovaly s existujícími identifikátory.",
     "vocabulary.summary.startTextAnalysis.title":
       "Spustit textovou analýzu definic všech termínů v tomto slovníku",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
