@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-  Button,
-  Modal,
-  ModalBody,
-} from "reactstrap";
+import { Button, Modal, ModalBody } from "reactstrap";
 import { GoCloudUpload } from "react-icons/go";
 import { useI18n } from "../hook/useI18n";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
@@ -17,13 +13,14 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
   const { i18n } = useI18n();
   const [dialogOpen, setDialogOpen] = useState(false);
   const toggle = () => setDialogOpen(!dialogOpen);
-  const createFile = (file: File, rename: Boolean) => props.performAction(file, rename).then(toggle);
+  const createFile = (file: File, rename: Boolean) =>
+    props.performAction(file, rename).then(toggle);
 
   return (
     <IfUserAuthorized renderUnauthorizedAlert={false}>
       <Modal isOpen={dialogOpen} toggle={toggle}>
         <ModalBody>
-          <ImportVocabularyPanel onSubmit={createFile} onCancel={toggle}/>
+          <ImportVocabularyPanel onSubmit={createFile} onCancel={toggle} />
         </ModalBody>
       </Modal>
       <Button

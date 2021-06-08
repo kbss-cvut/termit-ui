@@ -37,7 +37,7 @@ import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import ImportVocabularyDialog from "./ImportVocabulary";
-import {importSkosIntoExistingVocabulary} from "../../action/AsyncImportActions";
+import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -293,7 +293,7 @@ export default connect(
       removeVocabulary: (vocabulary: Vocabulary) =>
         dispatch(removeVocabulary(vocabulary)),
       validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
-      importSkos: (iri: IRI, file: File, rename : Boolean) =>
+      importSkos: (iri: IRI, file: File, rename: Boolean) =>
         dispatch(importSkosIntoExistingVocabulary(iri, file, rename)),
       exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
       exportToExcel: (iri: IRI) =>

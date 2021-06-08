@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {Button, ButtonToolbar, Col, Form, Row} from "reactstrap";
+import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import UploadFile from "../resource/file/UploadFile";
 import assert from "assert";
@@ -31,10 +31,11 @@ export const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
       <Row>
         <Col xs={12}>
           <CustomCheckBoxInput
-              className={classNames("checkbox")}
-              label={i18n("vocabulary.import.allow-changing-identifiers")}
-              onChange={setAllowChangingIdentifiers}
-              hint={i18n("vocabulary.import.allow-changing-identifiers.tooltip")}/>
+            className={classNames("checkbox")}
+            label={i18n("vocabulary.import.allow-changing-identifiers")}
+            onChange={setAllowChangingIdentifiers}
+            hint={i18n("vocabulary.import.allow-changing-identifiers.tooltip")}
+          />
           <ButtonToolbar className="d-flex justify-content-center mt-4">
             <Button
               id="upload-file-submit"
