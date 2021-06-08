@@ -76,6 +76,7 @@ import ValidationResult, {
 } from "../model/ValidationResult";
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import UserRole, { UserRoleData } from "../model/UserRole";
+import {loadTermCount} from "./AsyncVocabularyActions";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -228,6 +229,7 @@ export function loadVocabulary(
         if (withValidation) {
           dispatch(validateVocabulary(iri));
         }
+        dispatch(loadTermCount(iri));
         return dispatch(
           asyncActionSuccessWithPayload(action, new Vocabulary(data))
         );
