@@ -51,7 +51,7 @@ import Routing from "../../util/Routing";
 import Vocabulary, {
   CONTEXT as VOCABULARY_CONTEXT,
 } from "../../model/Vocabulary";
-import Vocabulary2, {IRI} from "../../util/VocabularyUtils";
+import Vocabulary2, { IRI } from "../../util/VocabularyUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
 import ActionType, {
@@ -235,9 +235,7 @@ describe("Async actions", () => {
         );
       const vocabularyIri: IRI = { fragment: "metropolitan-plan" };
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadVocabulary(vocabularyIri)
-        )
+        (store.dispatch as ThunkDispatch)(loadVocabulary(vocabularyIri))
       ).then(() => {
         const validationAction = store
           .getActions()
@@ -249,18 +247,18 @@ describe("Async actions", () => {
 
     it("dispatches vocabulary term count loading action on success", () => {
       Ajax.get = jest
-          .fn()
-          .mockImplementation(() =>
-              Promise.resolve(require("../../rest-mock/vocabulary"))
-          );
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve(require("../../rest-mock/vocabulary"))
+        );
       return Promise.resolve(
-          (store.dispatch as ThunkDispatch)(
-              loadVocabulary({ fragment: "metropolitan-plan" })
-          )
+        (store.dispatch as ThunkDispatch)(
+          loadVocabulary({ fragment: "metropolitan-plan" })
+        )
       ).then(() => {
         const validationAction = store
-            .getActions()
-            .find((a) => a.type === ActionType.FETCH_VALIDATION_RESULTS);
+          .getActions()
+          .find((a) => a.type === ActionType.FETCH_VALIDATION_RESULTS);
         expect(validationAction).toBeDefined();
       });
     });

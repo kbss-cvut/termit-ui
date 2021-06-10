@@ -3,7 +3,7 @@ import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import Ajax from "../../util/Ajax";
 import { ThunkDispatch } from "../../util/Types";
-import ActionType, {AsyncActionSuccess, MessageAction} from "../ActionType";
+import ActionType, { AsyncActionSuccess, MessageAction } from "../ActionType";
 import Vocabulary from "../../model/Vocabulary";
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import {
@@ -143,7 +143,10 @@ describe("AsyncPublicViewActions", () => {
       ).then((data: AsyncActionSuccess<Term> | MessageAction) => {
         const url = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-        verifyExpectedAssets([term], [(data as AsyncActionSuccess<Term>).payload]);
+        verifyExpectedAssets(
+          [term],
+          [(data as AsyncActionSuccess<Term>).payload]
+        );
       });
     });
   });

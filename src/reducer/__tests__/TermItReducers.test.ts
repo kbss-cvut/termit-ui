@@ -1,5 +1,8 @@
 import reducers from "../TermItReducers";
-import ActionType, {AsyncActionSuccess, FailureAction,} from "../../action/ActionType";
+import ActionType, {
+  AsyncActionSuccess,
+  FailureAction,
+} from "../../action/ActionType";
 import TermItState from "../../model/TermItState";
 import {
   asyncActionFailure,
@@ -23,24 +26,27 @@ import {
   updateLastModified,
   userLogout,
 } from "../../action/SyncActions";
-import ErrorInfo, {ErrorData} from "../../model/ErrorInfo";
-import User, {EMPTY_USER} from "../../model/User";
+import ErrorInfo, { ErrorData } from "../../model/ErrorInfo";
+import User, { EMPTY_USER } from "../../model/User";
 import Message from "../../model/Message";
 import Constants from "../../util/Constants";
-import Vocabulary, {EMPTY_VOCABULARY, VocabularyData,} from "../../model/Vocabulary";
+import Vocabulary, {
+  EMPTY_VOCABULARY,
+  VocabularyData,
+} from "../../model/Vocabulary";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
-import Term, {TermData} from "../../model/Term";
+import Term, { TermData } from "../../model/Term";
 import RdfsResource from "../../model/RdfsResource";
 import AppNotification from "../../model/AppNotification";
-import Resource, {EMPTY_RESOURCE} from "../../model/Resource";
+import Resource, { EMPTY_RESOURCE } from "../../model/Resource";
 import Generator from "../../__tests__/environment/Generator";
 import SearchQuery from "../../model/SearchQuery";
 import QueryResult from "../../model/QueryResult";
 import File from "../../model/File";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
-import {langString} from "../../model/MultilingualString";
-import {Configuration} from "../../model/Configuration";
+import { langString } from "../../model/MultilingualString";
+import { Configuration } from "../../model/Configuration";
 
 function stateToPlainObject(state: TermItState): TermItState {
   return {
@@ -381,11 +387,17 @@ describe("Reducers", () => {
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
-      const action: AsyncActionSuccess<number> = { type: ActionType.LOAD_TERM_COUNT, status: AsyncActionStatus.SUCCESS, payload: 97 };
-      (action as any).vocabularyIri = VocabularyUtils.create(initialState.vocabulary.iri);
+      const action: AsyncActionSuccess<number> = {
+        type: ActionType.LOAD_TERM_COUNT,
+        status: AsyncActionStatus.SUCCESS,
+        payload: 97,
+      };
+      (action as any).vocabularyIri = VocabularyUtils.create(
+        initialState.vocabulary.iri
+      );
       expect(
-          reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
-              .vocabulary.termCount
+        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
+          .vocabulary.termCount
       ).toEqual(action.payload);
     });
 
@@ -395,11 +407,17 @@ describe("Reducers", () => {
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
-      const action: AsyncActionSuccess<number> = { type: ActionType.LOAD_TERM_COUNT, status: AsyncActionStatus.SUCCESS, payload: 97 };
-      (action as any).vocabularyIri = VocabularyUtils.create(Generator.generateUri());
+      const action: AsyncActionSuccess<number> = {
+        type: ActionType.LOAD_TERM_COUNT,
+        status: AsyncActionStatus.SUCCESS,
+        payload: 97,
+      };
+      (action as any).vocabularyIri = VocabularyUtils.create(
+        Generator.generateUri()
+      );
       expect(
-          reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
-              .vocabulary.termCount
+        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
+          .vocabulary.termCount
       ).not.toBeDefined();
     });
   });
@@ -856,7 +874,11 @@ describe("Reducers", () => {
 
   describe("configuration", () => {
     it("sets loaded configuration to state on request success", () => {
-      const config: Configuration = { iri: Generator.generateUri(), language: "es", roles: [] };
+      const config: Configuration = {
+        iri: Generator.generateUri(),
+        language: "es",
+        roles: [],
+      };
       const result = reducers(
         stateToPlainObject(initialState),
         asyncActionSuccessWithPayload(
