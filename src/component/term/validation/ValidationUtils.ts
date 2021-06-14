@@ -6,7 +6,7 @@ export const ValidationUtils = {
     "https://slovník.gov.cz/jazyk/obecný/g14",
   ],
 
-  qualityAffectingRuleViolationColor: "#fb6340",
+  qualityAffectingRuleViolationColor: "#8965e0",
 
-  qualityNotAffectingRuleViolationColor: "#2bffc6",
+  qualityNotAffectingRuleViolationColor: "#11cdef",
 };
