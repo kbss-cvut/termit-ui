@@ -64,7 +64,7 @@ describe("AsyncPublicViewActions", () => {
         .mockImplementation(() =>
           Promise.resolve(require("../../rest-mock/vocabulary"))
         );
-      Ajax.head = jest.fn().mockResolvedValue({headers: {}});
+      Ajax.head = jest.fn().mockResolvedValue({ headers: {} });
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadPublicVocabulary({ fragment: "metropolitan-plan" })
