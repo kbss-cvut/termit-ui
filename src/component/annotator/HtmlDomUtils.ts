@@ -1,8 +1,8 @@
-import { fromRange, toRange } from "xpath-range";
 import { Node as DomHandlerNode } from "domhandler";
 import Utils from "../../util/Utils";
 import { TextQuoteSelector } from "../../model/TermOccurrence";
 import { AnnotationType } from "./AnnotationDomHelper";
+import { fromRange, toRange } from "xpath-range";
 
 const BLOCK_ELEMENTS = [
   "address",
@@ -141,6 +141,20 @@ const HtmlDomUtils = {
   },
 
   /**
+   * Extends the specified range (if necessary) to prevent its replacement from crossing multiple elements.
+   *
+   * This extension should handle situations when the range starts in one element and ends in another, which would
+   * prevent its replacement/annotation due to invalid element boundary crossing. This method attempts to fix this by
+   * extending the range to be the contents of the closest common ancestor of the range's start and end containers.
+   * @param range Range to fix
+   */
+  extendRangeToPreventNodeCrossing(range: Range) {
+    if (this.doesRangeSpanMultipleElements(range)) {
+      range.selectNodeContents(range.commonAncestorContainer);
+    }
+  },
+
+  /**
    * Returns a clone of rootElement where range is replaced by provided surroundingElement.
    * @param rootElement Root element of a document that should be cloned.
    * @param range range within document referenced by rootElement that should be surrounded.
@@ -157,9 +171,15 @@ const HtmlDomUtils = {
       xpathRange.start,
       xpathRange.startOffset,
       xpathRange.end,
-      xpathRange.endOffset,
+      range.endContainer.nodeType === Node.TEXT_NODE ? xpathRange.endOffset : 0,
       clonedElement
     );
+    // This works around the issue that the toRange considers the offsets as textual characters, but if the end container is
+    // not a text node, the offset represents the number of elements before it and thus the offset in the newRange would be incorrect
+    // See https://developer.mozilla.org/en-US/docs/Web/API/Range/endOffset and in contrast the docs to toRange
+    if (range.endContainer.nodeType !== Node.TEXT_NODE) {
+      newRange.setEnd(newRange.endContainer, range.endOffset);
+    }
 
     const doc = clonedElement.ownerDocument;
     const template = doc!.createElement("template");
