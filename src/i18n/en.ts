@@ -454,7 +454,7 @@ const en = {
 
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":
-      "Number of terms in the glossary (excluding imported glossaries)",
+      "Number of terms in the vocabulary (excluding imported vocabularies)",
     "glossary.new": "New Term",
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",

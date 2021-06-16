@@ -460,7 +460,7 @@ const cs = {
 
     "glossary.title": "Pojmy",
     "glossary.termCount.tooltip":
-      "Počet pojmů v glosáři (bez pojmů z importovaných slovníků)",
+      "Počet pojmů ve slovníku (bez pojmů z importovaných slovníků)",
     "glossary.new": "Nový pojem",
     "glossary.select.placeholder": "Začněte psát pro filtrování pojmů",
     "glossary.excludeImported": "Včetně importů",
