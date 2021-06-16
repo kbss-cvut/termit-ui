@@ -30,6 +30,7 @@ import { loadPublicTerms } from "../../../action/AsyncPublicViewActions";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import "../../term/Terms.scss";
+import { Badge } from "reactstrap";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -165,10 +166,11 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   }
 
   public render() {
-    if (!this.props.vocabulary) {
+    const { i18n, isDetailView, vocabulary } = this.props;
+
+    if (!vocabulary) {
       return null;
     }
-    const { i18n, isDetailView } = this.props;
 
     return (
       <div id="public-vocabulary-terms">
@@ -186,6 +188,14 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         >
           <h4 className={classNames({ "mb-0": isDetailView })}>
             {i18n("glossary.title")}
+            {!isDetailView && vocabulary.termCount && (
+              <Badge
+                className="ml-1 align-middle"
+                title={i18n("glossary.termCount.tooltip")}
+              >
+                {vocabulary.termCount}
+              </Badge>
+            )}
           </h4>
           {isDetailView && this.renderIncludeImported()}
         </div>
@@ -207,7 +217,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             multi={false}
             maxHeight={Utils.calculateAssetListHeight()}
             optionRenderer={createTermsWithImportsOptionRenderer(
-              this.props.vocabulary.iri
+              vocabulary.iri
             )}
             valueRenderer={(option: Term) =>
               getLocalized(option.label, getShortLocale(this.props.locale))

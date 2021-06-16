@@ -37,6 +37,7 @@ import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
 import Document from "../model/Document";
+import { IRIImpl } from "../util/VocabularyUtils";
 
 /**
  * Handles changes to the currently logged in user.
@@ -128,6 +129,8 @@ function vocabulary(
             })
           )
         : state;
+    case ActionType.LOAD_TERM_COUNT:
+      return onTermCountLoaded(state, action);
     case ActionType.LOGOUT:
       return EMPTY_VOCABULARY;
     case ActionType.REMOVE_RESOURCE:
@@ -139,6 +142,21 @@ function vocabulary(
     default:
       return state;
   }
+}
+
+function onTermCountLoaded(state: Vocabulary, action: AsyncActionSuccess<any>) {
+  if (action.status !== AsyncActionStatus.SUCCESS) {
+    return state;
+  }
+  const vocIri = (action as any).vocabularyIri
+    ? IRIImpl.toString((action as any).vocabularyIri)
+    : "";
+  if (state.iri !== vocIri) {
+    return state;
+  }
+  return new Vocabulary(
+    Object.assign({}, state, { termCount: action.payload })
+  );
 }
 
 function resource(
