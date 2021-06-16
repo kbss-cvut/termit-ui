@@ -171,6 +171,7 @@ describe("Async actions", () => {
         .mockImplementation(() =>
           Promise.resolve(require("../../rest-mock/vocabulary"))
         );
+      Ajax.head = jest.fn().mockResolvedValue({headers: {}});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadVocabulary({ fragment: "metropolitan-plan" })
