@@ -13,7 +13,7 @@ import MessageType from "../model/MessageType";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { Action } from "redux";
-import {loadVocabulary} from "./AsyncActions";
+import { loadVocabulary } from "./AsyncActions";
 import IdentifierResolver from "../util/IdentifierResolver";
 
 export function importSkosIntoExistingVocabulary(
@@ -32,7 +32,14 @@ export function importSkosIntoExistingVocabulary(
       `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/import`,
       contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
     )
-      .then((response) => processSuccess(dispatch, action, data, response.headers[Constants.Headers.LOCATION]))
+      .then((response) =>
+        processSuccess(
+          dispatch,
+          action,
+          data,
+          response.headers[Constants.Headers.LOCATION]
+        )
+      )
       .catch(processError(dispatch, action));
   };
 }
@@ -48,7 +55,14 @@ export function importSkosAsNewVocabulary(data: File, rename: Boolean) {
       `${Constants.API_PREFIX}/vocabularies/import`,
       contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
     )
-      .then((response) => processSuccess(dispatch, action, data, response.headers[Constants.Headers.LOCATION]))
+      .then((response) =>
+        processSuccess(
+          dispatch,
+          action,
+          data,
+          response.headers[Constants.Headers.LOCATION]
+        )
+      )
       .catch(processError(dispatch, action));
   };
 }
@@ -60,10 +74,16 @@ const processSuccess = (
   location: string
 ) => {
   dispatch(asyncActionSuccess(action));
-  dispatch(loadVocabulary(VocabularyUtils.create(decodeURIComponent(IdentifierResolver
-          .routingOptionsFromLocation(location)
-          .query!.get("namespace")+IdentifierResolver.extractNameFromLocation(location)))
+  dispatch(
+    loadVocabulary(
+      VocabularyUtils.create(
+        decodeURIComponent(
+          IdentifierResolver.routingOptionsFromLocation(location).query!.get(
+            "namespace"
+          ) + IdentifierResolver.extractNameFromLocation(location)
+        )
       )
+    )
   );
   return dispatch(
     SyncActions.publishMessage(
