@@ -459,7 +459,8 @@ const cs = {
     "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
 
     "glossary.title": "Pojmy",
-    "glossary.termCount.tooltip": "Počet pojmů v glosáři (bez pojmů z importovaných slovníků)",
+    "glossary.termCount.tooltip":
+      "Počet pojmů v glosáři (bez pojmů z importovaných slovníků)",
     "glossary.new": "Nový pojem",
     "glossary.select.placeholder": "Začněte psát pro filtrování pojmů",
     "glossary.excludeImported": "Včetně importů",
