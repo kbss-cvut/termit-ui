@@ -8,7 +8,7 @@ export function renderValidationMessages(
   validationResults: ValidationResult[]
 ) {
   return (
-    <>
+    <ul className="list-unstyled">
       {validationResults.map((r) => {
         const message = Utils.sanitizeArray(r.message).find(
           (ls) => ls.language === getShortLocale(locale)
@@ -23,6 +23,6 @@ export function renderValidationMessages(
           </li>
         );
       })}
-    </>
+    </ul>
   );
 }
