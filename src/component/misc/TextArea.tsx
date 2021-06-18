@@ -28,6 +28,7 @@ export default class TextArea extends AbstractInput<TextAreaProps> {
           {...this.inputProps()}
         />
         <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+        {this.renderValidationMessage()}
         {this.renderHint()}
       </FormGroup>
     );
