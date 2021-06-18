@@ -32,6 +32,7 @@ const MAPPED_PROPERTIES = [
   "model",
   "importedVocabularies",
   "allImportedVocabularies",
+  "termCount",
 ];
 
 export interface VocabularyData extends AssetData {
@@ -51,6 +52,8 @@ export default class Vocabulary extends Asset implements VocabularyData {
   public model?: AssetData;
   public importedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
+
+  public termCount?: number;
 
   constructor(data: VocabularyData) {
     super(data);
@@ -74,6 +77,7 @@ export default class Vocabulary extends Asset implements VocabularyData {
       "@context": CONTEXT,
     });
     delete (result as any).allImportedVocabularies;
+    delete (result as any).termCount;
     if (result.document) {
       result.document = this.document?.toJsonLd();
     }

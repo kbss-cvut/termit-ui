@@ -65,6 +65,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     searchInProgress: state.searchInProgress,
     searchQuery: state.searchQuery,
     searchResults: state.searchResults,
+    selectedFile: state.selectedFile,
     types: state.types,
     resource: state.resource,
     resources: state.resources,
@@ -378,6 +379,46 @@ describe("Reducers", () => {
         reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
           .vocabulary
       ).toEqual(EMPTY_VOCABULARY);
+    });
+
+    it("sets term count on vocabulary when it is loaded", () => {
+      initialState.vocabulary = new Vocabulary({
+        label: "Test vocabulary",
+        iri: Generator.generateUri(),
+        types: [VocabularyUtils.VOCABULARY],
+      });
+      const action: AsyncActionSuccess<number> = {
+        type: ActionType.LOAD_TERM_COUNT,
+        status: AsyncActionStatus.SUCCESS,
+        payload: 97,
+      };
+      (action as any).vocabularyIri = VocabularyUtils.create(
+        initialState.vocabulary.iri
+      );
+      expect(
+        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
+          .vocabulary.termCount
+      ).toEqual(action.payload);
+    });
+
+    it("does not set term count on vocabulary when its identifier does not match action", () => {
+      initialState.vocabulary = new Vocabulary({
+        label: "Test vocabulary",
+        iri: Generator.generateUri(),
+        types: [VocabularyUtils.VOCABULARY],
+      });
+      const action: AsyncActionSuccess<number> = {
+        type: ActionType.LOAD_TERM_COUNT,
+        status: AsyncActionStatus.SUCCESS,
+        payload: 97,
+      };
+      (action as any).vocabularyIri = VocabularyUtils.create(
+        Generator.generateUri()
+      );
+      expect(
+        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
+          .vocabulary.termCount
+      ).not.toBeDefined();
     });
   });
 
@@ -833,7 +874,11 @@ describe("Reducers", () => {
 
   describe("configuration", () => {
     it("sets loaded configuration to state on request success", () => {
-      const config: Configuration = { language: "es" };
+      const config: Configuration = {
+        iri: Generator.generateUri(),
+        language: "es",
+        roles: [],
+      };
       const result = reducers(
         stateToPlainObject(initialState),
         asyncActionSuccessWithPayload(

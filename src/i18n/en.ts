@@ -453,6 +453,8 @@ const en = {
     "term.badge.no-score.tooltip": "There is no available score for this term",
 
     "glossary.title": "Terms",
+    "glossary.termCount.tooltip":
+      "Number of terms in the vocabulary (excluding imported vocabularies)",
     "glossary.new": "New Term",
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",
