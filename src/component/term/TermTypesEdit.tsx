@@ -95,9 +95,14 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
           renderAsTree={true}
           placeholder=""
         />
-        {this.props.validationMessage && <FormFeedback className="validation-feedback" title={i18n("validation.message.tooltip")}>
+        {this.props.validationMessage && (
+          <FormFeedback
+            className="validation-feedback"
+            title={i18n("validation.message.tooltip")}
+          >
             {this.props.validationMessage}
-          </FormFeedback>}
+          </FormFeedback>
+        )}
       </FormGroup>
     );
   }

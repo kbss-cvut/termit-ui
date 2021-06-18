@@ -229,9 +229,14 @@ export class ParentTermSelector extends React.Component<
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
-          {this.props.validationMessage && <FormFeedback className="validation-feedback" title={i18n("validation.message.tooltip")}>
+          {this.props.validationMessage && (
+            <FormFeedback
+              className="validation-feedback"
+              title={i18n("validation.message.tooltip")}
+            >
               {this.props.validationMessage}
-            </FormFeedback>}
+            </FormFeedback>
+          )}
         </>
       );
     }

@@ -210,7 +210,9 @@ export class TermMetadataEdit extends React.Component<
   };
 
   private renderMessages(results: ValidationResult[]) {
-    return results.length > 0 ? renderValidationMessages(this.props.locale, results) : undefined;
+    return results.length > 0
+      ? renderValidationMessages(this.props.locale, results)
+      : undefined;
   }
 
   public render() {
@@ -261,12 +263,16 @@ export class TermMetadataEdit extends React.Component<
                       </>
                     }
                     invalid={labelInLanguageInvalid}
-                    invalidMessage={labelInLanguageInvalid ? this.props.formatMessage(
-                              "term.metadata.labelExists.message",
-                              {
-                                label: getLocalized(this.state.label, language),
-                              }
-                            ): undefined}
+                    invalidMessage={
+                      labelInLanguageInvalid
+                        ? this.props.formatMessage(
+                            "term.metadata.labelExists.message",
+                            {
+                              label: getLocalized(this.state.label, language),
+                            }
+                          )
+                        : undefined
+                    }
                     validationMessage={this.renderMessages(validationPrefLabel)}
                     help={i18n("term.label.help")}
                     hint={i18n("required")}

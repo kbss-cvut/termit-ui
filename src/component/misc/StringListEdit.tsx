@@ -1,9 +1,16 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {Button, FormFeedback, Input, InputGroup, InputGroupAddon, Label,} from "reactstrap";
-import {GoPlus} from "react-icons/go";
-import {FaTrashAlt} from "react-icons/fa";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import {
+  Button,
+  FormFeedback,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  Label,
+} from "reactstrap";
+import { GoPlus } from "react-icons/go";
+import { FaTrashAlt } from "react-icons/fa";
 import Utils from "../../util/Utils";
 import HelpIcon from "./HelpIcon";
 import MultilingualIcon from "./MultilingualIcon";
@@ -99,8 +106,17 @@ export class StringListEdit extends React.Component<
               &nbsp;{this.getText("addButton.text")}
             </Button>
           </InputGroupAddon>
-          {this.props.invalid && <FormFeedback>{this.props.invalidMessage}</FormFeedback>}
-          {this.props.validationMessage && <FormFeedback className="validation-feedback" title={this.props.i18n("validation.message.tooltip")}>{this.props.validationMessage}</FormFeedback>}
+          {this.props.invalid && (
+            <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+          )}
+          {this.props.validationMessage && (
+            <FormFeedback
+              className="validation-feedback"
+              title={this.props.i18n("validation.message.tooltip")}
+            >
+              {this.props.validationMessage}
+            </FormFeedback>
+          )}
         </InputGroup>
         {this.renderList()}
       </div>

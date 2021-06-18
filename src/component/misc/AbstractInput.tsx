@@ -1,9 +1,9 @@
 import * as React from "react";
-import {FormFeedback, FormText, Label} from "reactstrap";
+import { FormFeedback, FormText, Label } from "reactstrap";
 import { InputType } from "reactstrap/lib/Input";
 import classNames from "classnames";
 import HelpIcon from "./HelpIcon";
-import {useI18n} from "../hook/useI18n";
+import { useI18n } from "../hook/useI18n";
 
 export interface AbstractInputProps {
   name?: string;
@@ -65,7 +65,11 @@ export default class AbstractInput<
   }
 
   protected renderValidationMessage() {
-    return this.props.validationMessage && <ValidationMessage>{this.props.validationMessage}</ValidationMessage>;
+    return (
+      this.props.validationMessage && (
+        <ValidationMessage>{this.props.validationMessage}</ValidationMessage>
+      )
+    );
   }
 
   protected inputProps() {
@@ -78,7 +82,14 @@ export default class AbstractInput<
 /**
  * Separate component allows us to easily access i18n.
  */
-const ValidationMessage:React.FC = props => {
-  const {i18n} = useI18n();
-  return <FormFeedback className="validation-feedback" title={i18n("validation.message.tooltip")}>{props.children}</FormFeedback>;
-}
+const ValidationMessage: React.FC = (props) => {
+  const { i18n } = useI18n();
+  return (
+    <FormFeedback
+      className="validation-feedback"
+      title={i18n("validation.message.tooltip")}
+    >
+      {props.children}
+    </FormFeedback>
+  );
+};

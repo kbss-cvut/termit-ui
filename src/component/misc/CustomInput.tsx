@@ -23,7 +23,7 @@ export default class CustomInput extends AbstractInput<InputProps> {
           {...this.inputProps()}
         />
         <FormFeedback>{this.props.invalidMessage}</FormFeedback>
-          {this.renderValidationMessage()}
+        {this.renderValidationMessage()}
         {this.renderHint()}
       </FormGroup>
     );

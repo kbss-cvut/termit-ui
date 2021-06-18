@@ -99,7 +99,10 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
             label={i18n("term.metadata.source")}
             labelClass="definition"
             readOnly={readOnly}
-            validationMessage={renderValidationMessages(locale, validationSource)}
+            validationMessage={renderValidationMessages(
+              locale,
+              validationSource
+            )}
             help={i18n("term.source.help")}
           />
         </Col>
