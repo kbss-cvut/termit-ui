@@ -1,8 +1,9 @@
 import * as React from "react";
-import { FormText, Label } from "reactstrap";
+import {FormFeedback, FormText, Label} from "reactstrap";
 import { InputType } from "reactstrap/lib/Input";
 import classNames from "classnames";
 import HelpIcon from "./HelpIcon";
+import {useI18n} from "../hook/useI18n";
 
 export interface AbstractInputProps {
   name?: string;
@@ -26,7 +27,14 @@ export interface AbstractInputProps {
   help?: string;
   valid?: boolean;
   invalid?: boolean;
+  /**
+   * Indicates why the input value is invalid. Should prevent a form from being submitted.
+   */
   invalidMessage?: string | JSX.Element;
+  /**
+   * Message from the quality validation mechanism. Should not prevent a form from being submitted.
+   */
+  validationMessage?: string | JSX.Element;
   autoFocus?: boolean;
   autoComplete?: string;
   type?: InputType;
@@ -56,9 +64,21 @@ export default class AbstractInput<
     return this.props.hint ? <FormText>{this.props.hint}</FormText> : null;
   }
 
+  protected renderValidationMessage() {
+    return this.props.validationMessage && <ValidationMessage>{this.props.validationMessage}</ValidationMessage>;
+  }
+
   protected inputProps() {
-    const { invalidMessage, help, labelClass, ...p } = this
+    const { invalidMessage, help, labelClass, validationMessage, ...p } = this
       .props as AbstractInputProps;
     return p;
   }
+}
+
+/**
+ * Separate component allows us to easily access i18n.
+ */
+const ValidationMessage:React.FC = props => {
+  const {i18n} = useI18n();
+  return <FormFeedback className="validation-feedback" title={i18n("validation.message.tooltip")}>{props.children}</FormFeedback>;
 }

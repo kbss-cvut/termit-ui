@@ -210,7 +210,7 @@ export class TermMetadataEdit extends React.Component<
   };
 
   private renderMessages(results: ValidationResult[]) {
-    return renderValidationMessages(this.props.locale, results);
+    return results.length > 0 ? renderValidationMessages(this.props.locale, results) : undefined;
   }
 
   public render() {
@@ -260,22 +260,14 @@ export class TermMetadataEdit extends React.Component<
                         <MultilingualIcon id="edit-term-label-multilingual" />
                       </>
                     }
-                    invalid={
-                      validationPrefLabel.length > 0 || labelInLanguageInvalid
-                    }
-                    invalidMessage={
-                      <>
-                        {this.renderMessages(validationPrefLabel)}
-                        {labelInLanguageInvalid
-                          ? this.props.formatMessage(
+                    invalid={labelInLanguageInvalid}
+                    invalidMessage={labelInLanguageInvalid ? this.props.formatMessage(
                               "term.metadata.labelExists.message",
                               {
                                 label: getLocalized(this.state.label, language),
                               }
-                            )
-                          : ""}
-                      </>
-                    }
+                            ): undefined}
+                    validationMessage={this.renderMessages(validationPrefLabel)}
                     help={i18n("term.label.help")}
                     hint={i18n("required")}
                   />
@@ -286,10 +278,8 @@ export class TermMetadataEdit extends React.Component<
                   <StringListEdit
                     list={getLocalizedPlural(this.state.altLabels, language)}
                     onChange={this.onAltLabelsChange}
-                    invalid={
-                      validationAltLabel.length > 0 || labelInLanguageInvalid
-                    }
-                    invalidMessage={this.renderMessages(validationAltLabel)}
+                    invalid={labelInLanguageInvalid}
+                    validationMessage={this.renderMessages(validationAltLabel)}
                     i18nPrefix={"term.metadata.altLabels"}
                   />
                 </Col>
@@ -313,8 +303,7 @@ export class TermMetadataEdit extends React.Component<
                       "",
                       language
                     )}
-                    invalid={validationScopeNote.length > 0}
-                    invalidMessage={this.renderMessages(validationScopeNote)}
+                    validationMessage={this.renderMessages(validationScopeNote)}
                     onChange={this.onScopeNoteChange}
                     rows={4}
                     label={
@@ -344,7 +333,7 @@ export class TermMetadataEdit extends React.Component<
                     id="edit-term-parent"
                     termIri={this.props.term.iri}
                     parentTerms={this.state.parentTerms}
-                    invalidMessage={this.renderMessages(validationBroader)}
+                    validationMessage={this.renderMessages(validationBroader)}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onParentChange}
                   />
@@ -354,7 +343,7 @@ export class TermMetadataEdit extends React.Component<
                 <Col xs={12}>
                   <TermTypesEdit
                     termTypes={Utils.sanitizeArray(this.state.types)}
-                    invalidMessage={this.renderMessages(validationType)}
+                    validationMessage={this.renderMessages(validationType)}
                     onChange={this.onTypesChange}
                   />
                 </Col>

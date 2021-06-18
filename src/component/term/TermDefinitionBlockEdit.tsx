@@ -79,9 +79,8 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
           <TextArea
             name="edit-term-definition"
             value={getLocalizedOrDefault(term.definition, "", language)}
-            invalid={validationDefinition.length > 0}
             readOnly={readOnly}
-            invalidMessage={renderValidationMessages(
+            validationMessage={renderValidationMessages(
               locale,
               validationDefinition
             )}
@@ -99,9 +98,8 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
             onChange={onSourceChange}
             label={i18n("term.metadata.source")}
             labelClass="definition"
-            invalid={validationSource.length > 0}
             readOnly={readOnly}
-            invalidMessage={renderValidationMessages(locale, validationSource)}
+            validationMessage={renderValidationMessages(locale, validationSource)}
             help={i18n("term.source.help")}
           />
         </Col>

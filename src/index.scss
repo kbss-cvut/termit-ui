@@ -70,7 +70,7 @@ header .nav-tabs {
 .row {
   .card {
     margin-bottom: 0.75rem;
-    box-shadow: 6px 0px 20px 0 #ced4da;
+    box-shadow: 6px 0 20px 0 #ced4da;
     @media (min-width: 768px) {
       margin-bottom: 1.3rem;
     }
@@ -192,4 +192,9 @@ header .nav-tabs {
 .list-item-remove-icon {
   margin-left: 0.5rem;
   cursor: pointer;
+}
+
+.validation-feedback {
+  display: block !important;
+  visibility: visible !important;
 }

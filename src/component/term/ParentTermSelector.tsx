@@ -48,7 +48,7 @@ interface ParentTermSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
   parentTerms?: TermData[];
-  invalidMessage?: JSX.Element;
+  validationMessage?: string | JSX.Element;
   vocabularyIri: string;
   currentVocabulary?: Vocabulary;
   onChange: (newParents: Term[]) => void;
@@ -207,7 +207,7 @@ export class ParentTermSelector extends React.Component<
         <CustomInput
           placeholder={i18n("glossary.select.placeholder")}
           disabled={true}
-          invalidMessage={this.props.invalidMessage}
+          invalidMessage={this.props.validationMessage}
           help={i18n("term.parent.help")}
         />
       );
@@ -229,8 +229,8 @@ export class ParentTermSelector extends React.Component<
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
-          {this.props.invalidMessage && <FormFeedback style={{ display: "block" }} title={i18n("term.metadata.validation.result.tooltip")}>
-              {this.props.invalidMessage}
+          {this.props.validationMessage && <FormFeedback className="validation-feedback" title={i18n("validation.message.tooltip")}>
+              {this.props.validationMessage}
             </FormFeedback>}
         </>
       );
