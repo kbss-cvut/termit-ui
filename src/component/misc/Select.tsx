@@ -1,5 +1,5 @@
-import { FormFeedback, FormGroup, Input } from "reactstrap";
-import AbstractInput, { AbstractInputProps } from "./AbstractInput";
+import {FormGroup, Input} from "reactstrap";
+import AbstractInput, {AbstractInputProps} from "./AbstractInput";
 
 export default class Select extends AbstractInput<AbstractInputProps> {
   protected input: any;
@@ -16,8 +16,7 @@ export default class Select extends AbstractInput<AbstractInputProps> {
         >
           {this.props.children}
         </Input>
-        <FormFeedback>{this.props.invalidMessage}</FormFeedback>
-        {this.renderValidationMessage()}
+        {this.renderValidationMessages()}
         {this.renderHint()}
       </FormGroup>
     );

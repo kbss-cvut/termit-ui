@@ -1,25 +1,15 @@
 import { Alert } from "reactstrap";
 import { ValidationUtils } from "./ValidationUtils";
+import "./ValidationMessage.scss";
 
 interface ValidationMessageProps {
   sourceShapeIri: string;
   message: string;
 }
 
-const ValidationMessage = (props: ValidationMessageProps) =>
-  ValidationUtils.qualityAffectingRules.indexOf(props.sourceShapeIri) > -1 ? (
+const ValidationMessage = (props: ValidationMessageProps) => (
     <Alert
-      style={{
-        backgroundColor: ValidationUtils.qualityAffectingRuleViolationColor,
-      }}
-    >
-      {props.message}
-    </Alert>
-  ) : (
-    <Alert
-      style={{
-        backgroundColor: ValidationUtils.qualityNotAffectingRuleViolationColor,
-      }}
+      className={ValidationUtils.getMessageClass(ValidationUtils.toSeverity(props.sourceShapeIri))}
     >
       {props.message}
     </Alert>

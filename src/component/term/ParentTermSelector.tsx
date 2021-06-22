@@ -207,7 +207,6 @@ export class ParentTermSelector extends React.Component<
         <CustomInput
           placeholder={i18n("glossary.select.placeholder")}
           disabled={true}
-          invalidMessage={this.props.validationMessage}
           help={i18n("term.parent.help")}
         />
       );

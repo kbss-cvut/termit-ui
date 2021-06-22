@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Col, FormFeedback, FormGroup, Input, Label } from "reactstrap";
-import AbstractInput, { AbstractInputProps } from "./AbstractInput";
+import {Col, FormGroup, Input, Label} from "reactstrap";
+import AbstractInput, {AbstractInputProps} from "./AbstractInput";
 
 export enum LabelDirection {
   vertical,
@@ -22,7 +22,6 @@ export default class EnhancedInputPropsInput extends AbstractInput<EnhancedInput
       labelWidth,
       inputWidth,
       labelDirection,
-      invalidMessage,
       help,
       ...rest
     } = this.props;
@@ -34,9 +33,7 @@ export default class EnhancedInputPropsInput extends AbstractInput<EnhancedInput
           ref={(c: any) => (this.input = c)}
           {...rest}
         />
-        <FormFeedback>
-          <i className="fas fa-exclamation-triangle" /> {invalidMessage}
-        </FormFeedback>
+        {this.renderValidationMessages()}
         {this.renderHint()}
       </React.Fragment>
     );

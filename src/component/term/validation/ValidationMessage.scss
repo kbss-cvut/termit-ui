@@ -1,0 +1,18 @@
+$qualityAffectingRuleViolationColor: #8965e0;
+$qualityNotAffectingRuleViolationColor: #11cdef;
+
+li.qualityAffectingRuleViolation {
+  color: $qualityAffectingRuleViolationColor;
+}
+
+.alert.qualityAffectingRuleViolation {
+  background: $qualityAffectingRuleViolationColor !important;
+}
+
+li.qualityNotAffectingRuleViolation {
+  color: $qualityNotAffectingRuleViolationColor;
+}
+
+.alert.qualityNotAffectingRuleViolation {
+  background: $qualityNotAffectingRuleViolationColor !important;
+}

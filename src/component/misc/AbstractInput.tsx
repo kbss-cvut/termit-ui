@@ -1,9 +1,12 @@
 import * as React from "react";
-import { FormFeedback, FormText, Label } from "reactstrap";
-import { InputType } from "reactstrap/lib/Input";
+import {FormFeedback, FormText, Label} from "reactstrap";
+import {InputType} from "reactstrap/lib/Input";
 import classNames from "classnames";
 import HelpIcon from "./HelpIcon";
-import { useI18n } from "../hook/useI18n";
+import ValidationResult, {Severity, severityComparator} from "../../model/form/ValidationResult";
+import Utils from "../../util/Utils";
+import {ValidationUtils} from "../term/validation/ValidationUtils";
+import "../term/validation/ValidationMessage.scss";
 
 export interface AbstractInputProps {
   name?: string;
@@ -25,16 +28,7 @@ export interface AbstractInputProps {
    * Help text may be longer and contain detailed explanation of more complex concepts.
    */
   help?: string;
-  valid?: boolean;
-  invalid?: boolean;
-  /**
-   * Indicates why the input value is invalid. Should prevent a form from being submitted.
-   */
-  invalidMessage?: string | JSX.Element;
-  /**
-   * Message from the quality validation mechanism. Should not prevent a form from being submitted.
-   */
-  validationMessage?: string | JSX.Element;
+  validation?: ValidationResult | ValidationResult[];
   autoFocus?: boolean;
   autoComplete?: string;
   type?: InputType;
@@ -64,32 +58,30 @@ export default class AbstractInput<
     return this.props.hint ? <FormText>{this.props.hint}</FormText> : null;
   }
 
-  protected renderValidationMessage() {
-    return (
-      this.props.validationMessage && (
-        <ValidationMessage>{this.props.validationMessage}</ValidationMessage>
-      )
-    );
+  protected renderValidationMessages() {
+    const messages = Utils.sanitizeArray(this.props.validation);
+    if (messages.length === 0) {
+      return null;
+    }
+    messages.sort(severityComparator);
+    return <FormFeedback className="validation-feedback">
+        <ul className="list-unstyled">
+      {messages.filter(m => m.message !== undefined).map((m, i) => <li key={`${m.severity}-${i}`} className={ValidationUtils.getMessageClass(m.severity)}>{m.message}</li>)}
+    </ul>
+    </FormFeedback>;
+  }
+
+  protected isValid() {
+    return Utils.sanitizeArray(this.props.validation).find(vr => vr.severity === Severity.VALID) !== undefined;
+  }
+
+  protected isInvalid() {
+    return Utils.sanitizeArray(this.props.validation).find(vr => vr.severity === Severity.BLOCKER) !== undefined;
   }
 
   protected inputProps() {
-    const { invalidMessage, help, labelClass, validationMessage, ...p } = this
+    const { help, labelClass, validation, ...p } = this
       .props as AbstractInputProps;
     return p;
   }
 }
-
-/**
- * Separate component allows us to easily access i18n.
- */
-const ValidationMessage: React.FC = (props) => {
-  const { i18n } = useI18n();
-  return (
-    <FormFeedback
-      className="validation-feedback"
-      title={i18n("validation.message.tooltip")}
-    >
-      {props.children}
-    </FormFeedback>
-  );
-};

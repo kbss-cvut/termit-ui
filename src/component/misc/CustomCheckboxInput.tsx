@@ -1,6 +1,6 @@
 import * as React from "react";
-import { FormFeedback, Input } from "reactstrap";
-import AbstractInput, { AbstractInputProps } from "./AbstractInput";
+import {Input} from "reactstrap";
+import AbstractInput, {AbstractInputProps} from "./AbstractInput";
 
 export interface InputProps extends AbstractInputProps {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -26,8 +26,7 @@ export default class CustomCheckBoxInput extends AbstractInput<InputProps> {
         />
         &nbsp;
         {this.renderLabel()}
-        <FormFeedback>{this.props.invalidMessage}</FormFeedback>
-        {this.renderValidationMessage()}
+        {this.renderValidationMessages()}
         {this.renderHint()}
       </>
     );

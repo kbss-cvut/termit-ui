@@ -39,7 +39,7 @@ import {
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { ConsolidatedResults } from "../../model/ConsolidatedResults";
-import ValidationResult from "../../model/ValidationResult";
+import ValidationResult from "../../model/form/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
 import ExactMatchesSelector from "./ExactMatchesSelector";
 import MultilingualIcon from "../misc/MultilingualIcon";
@@ -209,21 +209,26 @@ export class TermMetadataEdit extends React.Component<
     });
   };
 
-  private renderMessages(results: ValidationResult[]) {
-    return results.length > 0
-      ? renderValidationMessages(this.props.locale, results)
-      : undefined;
+  private getPrefLabelValidation() {
+    const results: ValidationResult[] = [];
+    const language = this.props.language;
+    if (isLabelValid(this.state, language) || this.state.labelExist[language]) {
+      results.push(ValidationResult.blocker(this.props.formatMessage(
+          "term.metadata.labelExists.message",
+          {
+            label: getLocalized(this.state.label, language),
+          }
+      )));
+    }
+    this.getValidationResults(
+        VocabularyUtils.SKOS_PREF_LABEL
+    ).forEach(vr => results.push(ValidationResult.fromOntoValidationResult(vr, this.props.locale)));
+    return results;
   }
 
   public render() {
-    const { i18n, language } = this.props;
+    const { i18n, language, locale } = this.props;
     const t = this.onStatusChange.bind(this);
-    const labelInLanguageInvalid =
-      !isLabelValid(this.state, language) || this.state.labelExist[language];
-    const invalid = !isTermValid(this.state, this.state.labelExist);
-    const validationPrefLabel = this.getValidationResults(
-      VocabularyUtils.SKOS_PREF_LABEL
-    );
     const validationAltLabel = this.getValidationResults(
       VocabularyUtils.SKOS_ALT_LABEL
     );
@@ -262,18 +267,7 @@ export class TermMetadataEdit extends React.Component<
                         <MultilingualIcon id="edit-term-label-multilingual" />
                       </>
                     }
-                    invalid={labelInLanguageInvalid}
-                    invalidMessage={
-                      labelInLanguageInvalid
-                        ? this.props.formatMessage(
-                            "term.metadata.labelExists.message",
-                            {
-                              label: getLocalized(this.state.label, language),
-                            }
-                          )
-                        : undefined
-                    }
-                    validationMessage={this.renderMessages(validationPrefLabel)}
+                    validation={this.getPrefLabelValidation()}
                     help={i18n("term.label.help")}
                     hint={i18n("required")}
                   />
@@ -284,8 +278,7 @@ export class TermMetadataEdit extends React.Component<
                   <StringListEdit
                     list={getLocalizedPlural(this.state.altLabels, language)}
                     onChange={this.onAltLabelsChange}
-                    invalid={labelInLanguageInvalid}
-                    validationMessage={this.renderMessages(validationAltLabel)}
+                    validationMessage={renderValidationMessages(locale, validationAltLabel)}
                     i18nPrefix={"term.metadata.altLabels"}
                   />
                 </Col>
@@ -309,7 +302,7 @@ export class TermMetadataEdit extends React.Component<
                       "",
                       language
                     )}
-                    validationMessage={this.renderMessages(validationScopeNote)}
+                    validation={validationScopeNote.map(vr => ValidationResult.fromOntoValidationResult(vr, locale))}
                     onChange={this.onScopeNoteChange}
                     rows={4}
                     label={
@@ -339,7 +332,7 @@ export class TermMetadataEdit extends React.Component<
                     id="edit-term-parent"
                     termIri={this.props.term.iri}
                     parentTerms={this.state.parentTerms}
-                    validationMessage={this.renderMessages(validationBroader)}
+                    validationMessage={renderValidationMessages(this.props.locale, validationBroader)}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onParentChange}
                   />
@@ -349,7 +342,7 @@ export class TermMetadataEdit extends React.Component<
                 <Col xs={12}>
                   <TermTypesEdit
                     termTypes={Utils.sanitizeArray(this.state.types)}
-                    validationMessage={this.renderMessages(validationType)}
+                    validationMessage={renderValidationMessages(this.props.locale, validationType)}
                     onChange={this.onTypesChange}
                   />
                 </Col>
@@ -401,7 +394,7 @@ export class TermMetadataEdit extends React.Component<
                     <Button
                       id="edit-term-submit"
                       color="success"
-                      disabled={invalid}
+                      disabled={!isTermValid(this.state, this.state.labelExist)}
                       size="sm"
                       onClick={this.onSave}
                     >

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { FormFeedback, FormGroup, Input } from "reactstrap";
-import AbstractInput, { AbstractInputProps } from "./AbstractInput";
+import {FormGroup, Input} from "reactstrap";
+import AbstractInput, {AbstractInputProps} from "./AbstractInput";
 
 export interface TextAreaProps extends AbstractInputProps {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -27,8 +27,7 @@ export default class TextArea extends AbstractInput<TextAreaProps> {
           ref={this.input}
           {...this.inputProps()}
         />
-        <FormFeedback>{this.props.invalidMessage}</FormFeedback>
-        {this.renderValidationMessage()}
+        {this.renderValidationMessages()}
         {this.renderHint()}
       </FormGroup>
     );
