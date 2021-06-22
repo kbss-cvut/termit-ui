@@ -212,7 +212,9 @@ export class TermMetadataEdit extends React.Component<
   private getPrefLabelValidation() {
     const results: ValidationResult[] = [];
     const language = this.props.language;
-    if (isLabelValid(this.state, language) || this.state.labelExist[language]) {
+    if (!isLabelValid(this.state, language)) {
+      results.push(ValidationResult.BLOCKER);
+    } else if (this.state.labelExist[language]) {
       results.push(ValidationResult.blocker(this.props.formatMessage(
           "term.metadata.labelExists.message",
           {
@@ -228,7 +230,6 @@ export class TermMetadataEdit extends React.Component<
 
   public render() {
     const { i18n, language, locale } = this.props;
-    const t = this.onStatusChange.bind(this);
     const validationAltLabel = this.getValidationResults(
       VocabularyUtils.SKOS_ALT_LABEL
     );
@@ -375,7 +376,7 @@ export class TermMetadataEdit extends React.Component<
                     draft={
                       this.state.draft === undefined ? true : this.state.draft!
                     }
-                    onToggle={t}
+                    onToggle={this.onStatusChange}
                   />
                 </Col>
               </Row>

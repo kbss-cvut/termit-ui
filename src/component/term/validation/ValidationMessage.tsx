@@ -1,17 +1,15 @@
-import { Alert } from "reactstrap";
-import { ValidationUtils } from "./ValidationUtils";
+import React from "react";
+import {Alert} from "reactstrap";
+import ValidationResult, {mapToCssClass} from "../../../model/form/ValidationResult";
 import "./ValidationMessage.scss";
 
 interface ValidationMessageProps {
-  sourceShapeIri: string;
-  message: string;
+  result: ValidationResult
 }
 
-const ValidationMessage = (props: ValidationMessageProps) => (
-    <Alert
-      className={ValidationUtils.getMessageClass(ValidationUtils.toSeverity(props.sourceShapeIri))}
-    >
-      {props.message}
+const ValidationMessage:React.FC<ValidationMessageProps> = ({result}) => (
+    <Alert className={mapToCssClass(result.severity)}>
+      {result.message}
     </Alert>
   );
 

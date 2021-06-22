@@ -1,0 +1,10 @@
+$qualityAffectingRuleViolationColor: #8965e0;
+$qualityNotAffectingRuleViolationColor: #11cdef;
+
+li.qualityAffectingRuleViolation {
+  color: $qualityAffectingRuleViolationColor;
+}
+
+li.qualityNotAffectingRuleViolation {
+  color: $qualityNotAffectingRuleViolationColor;
+}

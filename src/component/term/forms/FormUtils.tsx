@@ -1,8 +1,6 @@
 import ValidationResult from "../../../model/ValidationResult";
-import { getShortLocale } from "../../../util/IntlUtil";
-import { ValidationUtils } from "../validation/ValidationUtils";
-import Utils from "../../../util/Utils";
-import "../validation/ValidationMessage.scss";
+import FormValidationResult from "../../../model/form/ValidationResult";
+import InputValidationMessage from "../../misc/validation/InputValidationMessage";
 
 export function renderValidationMessages(
   locale: string,
@@ -11,14 +9,8 @@ export function renderValidationMessages(
   return validationResults.length > 0 ? (
     <ul className="list-unstyled">
       {validationResults.map((r) => {
-        const message = Utils.sanitizeArray(r.message).find(
-          (ls) => ls.language === getShortLocale(locale)
-        )!.value;
-        return (
-          <li key={r.iri} className={ValidationUtils.getMessageClass(ValidationUtils.toSeverity(r.sourceShape?.iri))}>
-            {message}
-          </li>
-        );
+        const message = FormValidationResult.fromOntoValidationResult(r, locale);
+        return (<InputValidationMessage key={r.iri} message={message}/>);
       })}
     </ul>
   ) : undefined;

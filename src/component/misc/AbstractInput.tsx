@@ -5,8 +5,7 @@ import classNames from "classnames";
 import HelpIcon from "./HelpIcon";
 import ValidationResult, {Severity, severityComparator} from "../../model/form/ValidationResult";
 import Utils from "../../util/Utils";
-import {ValidationUtils} from "../term/validation/ValidationUtils";
-import "../term/validation/ValidationMessage.scss";
+import InputValidationMessage from "./validation/InputValidationMessage";
 
 export interface AbstractInputProps {
   name?: string;
@@ -59,14 +58,14 @@ export default class AbstractInput<
   }
 
   protected renderValidationMessages() {
-    const messages = Utils.sanitizeArray(this.props.validation);
+    const messages = Utils.sanitizeArray(this.props.validation).filter(m => m.message !== undefined);
     if (messages.length === 0) {
       return null;
     }
     messages.sort(severityComparator);
     return <FormFeedback className="validation-feedback">
         <ul className="list-unstyled">
-      {messages.filter(m => m.message !== undefined).map((m, i) => <li key={`${m.severity}-${i}`} className={ValidationUtils.getMessageClass(m.severity)}>{m.message}</li>)}
+      {messages.map((m, i) => <InputValidationMessage key={`${m.severity}-${i}`} message={m}/>)}
     </ul>
     </FormFeedback>;
   }

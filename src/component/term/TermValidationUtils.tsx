@@ -29,8 +29,8 @@ function labelInEachLanguageValid<T extends TermData>(
   data: T,
   labelExists: LabelExists
 ): boolean {
-  const langs = Object.keys(data.label);
-  for (const lang of langs) {
+  const languages = Object.keys(data.label);
+  for (const lang of languages) {
     if (!isLabelValid(data, lang) || labelExists[lang]) {
       return false;
     }
