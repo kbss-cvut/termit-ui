@@ -1,15 +1,15 @@
 import * as React from "react";
-import {TermData} from "../../model/Term";
+import { TermData } from "../../model/Term";
 import ValidationResult from "../../model/ValidationResult";
 import FormValidationResult from "../../model/form/ValidationResult";
-import {Button, Col, FormGroup, Label, Row} from "reactstrap";
+import { Button, Col, FormGroup, Label, Row } from "reactstrap";
 import TextArea from "../misc/TextArea";
-import {getLocalizedOrDefault} from "../../model/MultilingualString";
+import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import CustomInput from "../misc/CustomInput";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import "./TermDefinitionBlock.scss";
-import {useI18n} from "../hook/useI18n";
+import { useI18n } from "../hook/useI18n";
 import MultilingualIcon from "../misc/MultilingualIcon";
 
 interface TermDefinitionBlockEditProps {
@@ -80,7 +80,9 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
             name="edit-term-definition"
             value={getLocalizedOrDefault(term.definition, "", language)}
             readOnly={readOnly}
-            validation={validationDefinition.map(v => FormValidationResult.fromOntoValidationResult(v, locale))}
+            validation={validationDefinition.map((v) =>
+              FormValidationResult.fromOntoValidationResult(v, locale)
+            )}
             onChange={onDefinitionChange}
             rows={4}
             help={i18n("term.definition.help")}
@@ -96,7 +98,9 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
             label={i18n("term.metadata.source")}
             labelClass="definition"
             readOnly={readOnly}
-            validation={validationSource.map(v => FormValidationResult.fromOntoValidationResult(v, locale))}
+            validation={validationSource.map((v) =>
+              FormValidationResult.fromOntoValidationResult(v, locale)
+            )}
             help={i18n("term.source.help")}
           />
         </Col>

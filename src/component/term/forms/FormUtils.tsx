@@ -9,8 +9,11 @@ export function renderValidationMessages(
   return validationResults.length > 0 ? (
     <ul className="list-unstyled">
       {validationResults.map((r) => {
-        const message = FormValidationResult.fromOntoValidationResult(r, locale);
-        return (<InputValidationMessage key={r.iri} message={message}/>);
+        const message = FormValidationResult.fromOntoValidationResult(
+          r,
+          locale
+        );
+        return <InputValidationMessage key={r.iri} message={message} />;
       })}
     </ul>
   ) : undefined;

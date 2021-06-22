@@ -215,16 +215,19 @@ export class TermMetadataEdit extends React.Component<
     if (!isLabelValid(this.state, language)) {
       results.push(ValidationResult.BLOCKER);
     } else if (this.state.labelExist[language]) {
-      results.push(ValidationResult.blocker(this.props.formatMessage(
-          "term.metadata.labelExists.message",
-          {
+      results.push(
+        ValidationResult.blocker(
+          this.props.formatMessage("term.metadata.labelExists.message", {
             label: getLocalized(this.state.label, language),
-          }
-      )));
+          })
+        )
+      );
     }
-    this.getValidationResults(
-        VocabularyUtils.SKOS_PREF_LABEL
-    ).forEach(vr => results.push(ValidationResult.fromOntoValidationResult(vr, this.props.locale)));
+    this.getValidationResults(VocabularyUtils.SKOS_PREF_LABEL).forEach((vr) =>
+      results.push(
+        ValidationResult.fromOntoValidationResult(vr, this.props.locale)
+      )
+    );
     return results;
   }
 
@@ -279,7 +282,10 @@ export class TermMetadataEdit extends React.Component<
                   <StringListEdit
                     list={getLocalizedPlural(this.state.altLabels, language)}
                     onChange={this.onAltLabelsChange}
-                    validationMessage={renderValidationMessages(locale, validationAltLabel)}
+                    validationMessage={renderValidationMessages(
+                      locale,
+                      validationAltLabel
+                    )}
                     i18nPrefix={"term.metadata.altLabels"}
                   />
                 </Col>
@@ -303,7 +309,9 @@ export class TermMetadataEdit extends React.Component<
                       "",
                       language
                     )}
-                    validation={validationScopeNote.map(vr => ValidationResult.fromOntoValidationResult(vr, locale))}
+                    validation={validationScopeNote.map((vr) =>
+                      ValidationResult.fromOntoValidationResult(vr, locale)
+                    )}
                     onChange={this.onScopeNoteChange}
                     rows={4}
                     label={
@@ -333,7 +341,10 @@ export class TermMetadataEdit extends React.Component<
                     id="edit-term-parent"
                     termIri={this.props.term.iri}
                     parentTerms={this.state.parentTerms}
-                    validationMessage={renderValidationMessages(this.props.locale, validationBroader)}
+                    validationMessage={renderValidationMessages(
+                      this.props.locale,
+                      validationBroader
+                    )}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onParentChange}
                   />
@@ -343,7 +354,10 @@ export class TermMetadataEdit extends React.Component<
                 <Col xs={12}>
                   <TermTypesEdit
                     termTypes={Utils.sanitizeArray(this.state.types)}
-                    validationMessage={renderValidationMessages(this.props.locale, validationType)}
+                    validationMessage={renderValidationMessages(
+                      this.props.locale,
+                      validationType
+                    )}
                     onChange={this.onTypesChange}
                   />
                 </Col>

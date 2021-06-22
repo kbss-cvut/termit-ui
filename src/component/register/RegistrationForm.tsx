@@ -1,17 +1,17 @@
 import * as React from "react";
-import {UserAccountData} from "../../model/User";
-import {AsyncFailureAction, MessageAction} from "../../action/ActionType";
+import { UserAccountData } from "../../model/User";
+import { AsyncFailureAction, MessageAction } from "../../action/ActionType";
 import ErrorInfo from "../../model/ErrorInfo";
-import Ajax, {params} from "../../util/Ajax";
+import Ajax, { params } from "../../util/Ajax";
 import Constants from "../../util/Constants";
-import {Alert, Button, Col, Form, Row} from "reactstrap";
-import EnhancedInput, {LabelDirection} from "../misc/EnhancedInput";
+import { Alert, Button, Col, Form, Row } from "reactstrap";
+import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
 import Mask from "../misc/Mask";
-import withI18n, {HasI18n} from "../hoc/withI18n";
+import withI18n, { HasI18n } from "../hoc/withI18n";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
-import {injectIntl} from "react-intl";
+import { injectIntl } from "react-intl";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import ValidationResult, {Severity} from "../../model/form/ValidationResult";
+import ValidationResult, { Severity } from "../../model/form/ValidationResult";
 
 interface RegistrationFormProps extends HasI18n {
   loading: boolean;
@@ -70,26 +70,35 @@ export class RegistrationForm extends React.Component<
   };
 
   private validateFirstName() {
-    return this.state.firstName.trim().length === 0 ? ValidationResult.BLOCKER : ValidationResult.VALID;
+    return this.state.firstName.trim().length === 0
+      ? ValidationResult.BLOCKER
+      : ValidationResult.VALID;
   }
 
   private validateLastName() {
-    return this.state.lastName.trim().length === 0 ? ValidationResult.BLOCKER : ValidationResult.VALID;
+    return this.state.lastName.trim().length === 0
+      ? ValidationResult.BLOCKER
+      : ValidationResult.VALID;
   }
 
   private validateUsername() {
-    const {username, usernameExists} = this.state;
+    const { username, usernameExists } = this.state;
     if (username.trim().length === 0) {
       return ValidationResult.BLOCKER;
     }
     if (usernameExists) {
-      return new ValidationResult(Severity.BLOCKER, this.props.i18n("register.username-exists.tooltip"));
+      return new ValidationResult(
+        Severity.BLOCKER,
+        this.props.i18n("register.username-exists.tooltip")
+      );
     }
     return ValidationResult.VALID;
   }
 
   private validatePassword() {
-    return this.state.password.trim().length === 0 || !this.passwordsMatch() ? ValidationResult.BLOCKER : ValidationResult.VALID;
+    return this.state.password.trim().length === 0 || !this.passwordsMatch()
+      ? ValidationResult.BLOCKER
+      : ValidationResult.VALID;
   }
 
   private isValid(): boolean {
@@ -203,39 +212,44 @@ export class RegistrationForm extends React.Component<
   private renderUsername() {
     const i18n = this.props.i18n;
 
-      return (
-        <EnhancedInput
-          type="text"
-          name="username"
-          autoComplete="username"
-          label={i18n("register.username")}
-          labelDirection={LabelDirection.vertical}
-          value={this.state.username}
-          onChange={this.onUsernameChange}
-          placeholder={i18n("register.username.placeholder")}
-          validation={this.validateUsername()}
-        />
-      );
+    return (
+      <EnhancedInput
+        type="text"
+        name="username"
+        autoComplete="username"
+        label={i18n("register.username")}
+        labelDirection={LabelDirection.vertical}
+        value={this.state.username}
+        onChange={this.onUsernameChange}
+        placeholder={i18n("register.username.placeholder")}
+        validation={this.validateUsername()}
+      />
+    );
   }
 
   private renderPasswordConfirm() {
     const i18n = this.props.i18n;
-    const validation = this.passwordsMatch() ? ValidationResult.VALID : new ValidationResult(Severity.BLOCKER, i18n("register.passwords-not-matching.tooltip"));
+    const validation = this.passwordsMatch()
+      ? ValidationResult.VALID
+      : new ValidationResult(
+          Severity.BLOCKER,
+          i18n("register.passwords-not-matching.tooltip")
+        );
 
-      return (
-        <EnhancedInput
-          type="password"
-          name="passwordConfirm"
-          autoComplete="new-password"
-          labelDirection={LabelDirection.vertical}
-          label={this.props.i18n("register.password-confirm")}
-          onChange={this.onChange}
-          onKeyPress={this.onKeyPress}
-          value={this.state.passwordConfirm}
-          validation={validation}
-          placeholder={i18n("register.password-confirm.placeholder")}
-        />
-      );
+    return (
+      <EnhancedInput
+        type="password"
+        name="passwordConfirm"
+        autoComplete="new-password"
+        labelDirection={LabelDirection.vertical}
+        label={this.props.i18n("register.password-confirm")}
+        onChange={this.onChange}
+        onKeyPress={this.onKeyPress}
+        value={this.state.passwordConfirm}
+        validation={validation}
+        placeholder={i18n("register.password-confirm.placeholder")}
+      />
+    );
   }
 }
 

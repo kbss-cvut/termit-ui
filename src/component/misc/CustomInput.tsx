@@ -1,6 +1,6 @@
 import * as React from "react";
-import {FormGroup, Input} from "reactstrap";
-import AbstractInput, {AbstractInputProps} from "./AbstractInput";
+import { FormGroup, Input } from "reactstrap";
+import AbstractInput, { AbstractInputProps } from "./AbstractInput";
 
 export interface InputProps extends AbstractInputProps {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;

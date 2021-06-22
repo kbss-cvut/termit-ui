@@ -1,5 +1,5 @@
-import {FormGroup, Input} from "reactstrap";
-import AbstractInput, {AbstractInputProps} from "./AbstractInput";
+import { FormGroup, Input } from "reactstrap";
+import AbstractInput, { AbstractInputProps } from "./AbstractInput";
 
 export default class Select extends AbstractInput<AbstractInputProps> {
   protected input: any;

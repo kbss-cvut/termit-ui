@@ -1,6 +1,6 @@
 import * as React from "react";
-import {Col, FormGroup, Input, Label} from "reactstrap";
-import AbstractInput, {AbstractInputProps} from "./AbstractInput";
+import { Col, FormGroup, Input, Label } from "reactstrap";
+import AbstractInput, { AbstractInputProps } from "./AbstractInput";
 
 export enum LabelDirection {
   vertical,
@@ -18,13 +18,8 @@ export default class EnhancedInputPropsInput extends AbstractInput<EnhancedInput
   protected input: any;
 
   public render() {
-    const {
-      labelWidth,
-      inputWidth,
-      labelDirection,
-      help,
-      ...rest
-    } = this.props;
+    const { labelWidth, inputWidth, labelDirection, help, ...rest } =
+      this.props;
 
     const input = (
       <React.Fragment>

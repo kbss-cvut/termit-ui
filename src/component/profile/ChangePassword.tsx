@@ -1,19 +1,30 @@
 import * as React from "react";
-import {connect} from "react-redux";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
+import { connect } from "react-redux";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
 import TermItState from "../../model/TermItState";
-import {ThunkDispatch} from "../../util/Types";
-import {Button, ButtonToolbar, Card, CardBody, Col, Form, Row,} from "reactstrap";
+import { ThunkDispatch } from "../../util/Types";
+import {
+  Button,
+  ButtonToolbar,
+  Card,
+  CardBody,
+  Col,
+  Form,
+  Row,
+} from "reactstrap";
 import CustomInput from "../misc/CustomInput";
-import {AsyncAction} from "../../action/ActionType";
+import { AsyncAction } from "../../action/ActionType";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
-import User, {PasswordUpdateUser, UserDataWithPassword,} from "../../model/User";
+import User, {
+  PasswordUpdateUser,
+  UserDataWithPassword,
+} from "../../model/User";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
-import {changePassword} from "../../action/AsyncUserActions";
+import { changePassword } from "../../action/AsyncUserActions";
 import HeaderWithActions from "../misc/HeaderWithActions";
-import ValidationResult, {Severity} from "../../model/form/ValidationResult";
+import ValidationResult, { Severity } from "../../model/form/ValidationResult";
 
 interface ChangePasswordProps extends HasI18n {
   user: User;
@@ -80,15 +91,21 @@ export class ChangePassword extends React.Component<
   }
 
   private validateNewPassword() {
-    return this.state.newPassword.trim().length > 0 && !this.passwordsDiffer() ? new ValidationResult(Severity.BLOCKER, this.props.i18n(
-        "change-password.passwords.differ.tooltip"
-    )) : undefined;
+    return this.state.newPassword.trim().length > 0 && !this.passwordsDiffer()
+      ? new ValidationResult(
+          Severity.BLOCKER,
+          this.props.i18n("change-password.passwords.differ.tooltip")
+        )
+      : undefined;
   }
 
   private validatePasswordConfirmation() {
-    return this.state.newPassword.trim().length > 0 && !this.passwordsMatch() ? new ValidationResult(Severity.BLOCKER, this.props.i18n(
-        "register.passwords-not-matching.tooltip"
-    )) : undefined;
+    return this.state.newPassword.trim().length > 0 && !this.passwordsMatch()
+      ? new ValidationResult(
+          Severity.BLOCKER,
+          this.props.i18n("register.passwords-not-matching.tooltip")
+        )
+      : undefined;
   }
 
   private isValid(): boolean {
@@ -120,6 +137,7 @@ export class ChangePassword extends React.Component<
                     label={i18n("change-password.current.password")}
                     value={this.state.currentPassword}
                     onChange={this.onInputChange}
+                    autoComplete="current-password"
                   />
                 </Col>
               </Row>
@@ -132,6 +150,7 @@ export class ChangePassword extends React.Component<
                     value={this.state.newPassword}
                     validation={this.validateNewPassword()}
                     onChange={this.onInputChange}
+                    autoComplete="new-password"
                   />
                 </Col>
                 <Col xl={6} md={12}>
@@ -143,6 +162,7 @@ export class ChangePassword extends React.Component<
                     validation={this.validatePasswordConfirmation()}
                     onChange={this.onInputChange}
                     onKeyPress={this.onKeyPress}
+                    autoComplete="new-password"
                   />
                 </Col>
               </Row>

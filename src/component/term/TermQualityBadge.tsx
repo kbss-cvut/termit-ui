@@ -1,15 +1,15 @@
 import * as React from "react";
-import {injectIntl} from "react-intl";
-import withI18n, {HasI18n} from "../hoc/withI18n";
-import {RouteComponentProps, withRouter} from "react-router";
-import {connect} from "react-redux";
+import { injectIntl } from "react-intl";
+import withI18n, { HasI18n } from "../hoc/withI18n";
+import { RouteComponentProps, withRouter } from "react-router";
+import { connect } from "react-redux";
 import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
-import {Badge} from "reactstrap";
+import { Badge } from "reactstrap";
 import Utils from "../../util/Utils";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
-import {ConsolidatedResults} from "../../model/ConsolidatedResults";
+import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import Validation from "../../util/Validation";
 
 interface TermQualityBadgeProps extends HasI18n, RouteComponentProps<any> {
@@ -21,9 +21,7 @@ export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
   private computeScore(results: ValidationResult[]): number | undefined {
     return results.reduce((reduceScore, result) => {
       if (
-        Validation.QUALITY_AFFECTING_RULES.indexOf(
-          result.sourceShape?.iri
-        ) >= 0
+        Validation.QUALITY_AFFECTING_RULES.indexOf(result.sourceShape?.iri) >= 0
       ) {
         return (
           reduceScore -

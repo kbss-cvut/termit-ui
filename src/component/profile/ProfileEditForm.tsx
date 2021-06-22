@@ -33,7 +33,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             label={i18n("profile.first.name")}
             value={firstName}
             onChange={onChange}
-            validation={firstName.trim().length === 0 ? ValidationResult.blocker(i18n("profile.legend.invalid.name")) : ValidationResult.VALID}
+            validation={
+              firstName.trim().length === 0
+                ? ValidationResult.blocker(i18n("profile.legend.invalid.name"))
+                : ValidationResult.VALID
+            }
           />
         </Col>
         <Col xl={6} md={12}>
@@ -42,7 +46,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             label={i18n("profile.last.name")}
             value={lastName}
             onChange={onChange}
-            validation={lastName.trim().length === 0 ? ValidationResult.blocker(i18n("profile.legend.invalid.name")) : ValidationResult.VALID}
+            validation={
+              lastName.trim().length === 0
+                ? ValidationResult.blocker(i18n("profile.legend.invalid.name"))
+                : ValidationResult.VALID
+            }
             onKeyPress={onKeyPress}
           />
         </Col>

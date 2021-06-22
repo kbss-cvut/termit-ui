@@ -1,9 +1,12 @@
 import * as React from "react";
-import {FormFeedback, FormText, Label} from "reactstrap";
-import {InputType} from "reactstrap/lib/Input";
+import { FormFeedback, FormText, Label } from "reactstrap";
+import { InputType } from "reactstrap/lib/Input";
 import classNames from "classnames";
 import HelpIcon from "./HelpIcon";
-import ValidationResult, {Severity, severityComparator} from "../../model/form/ValidationResult";
+import ValidationResult, {
+  Severity,
+  severityComparator,
+} from "../../model/form/ValidationResult";
 import Utils from "../../util/Utils";
 import InputValidationMessage from "./validation/InputValidationMessage";
 
@@ -58,24 +61,38 @@ export default class AbstractInput<
   }
 
   protected renderValidationMessages() {
-    const messages = Utils.sanitizeArray(this.props.validation).filter(m => m.message !== undefined);
+    const messages = Utils.sanitizeArray(this.props.validation).filter(
+      (m) => m.message !== undefined
+    );
     if (messages.length === 0) {
       return null;
     }
     messages.sort(severityComparator);
-    return <FormFeedback className="validation-feedback">
+    return (
+      <FormFeedback className="validation-feedback">
         <ul className="list-unstyled">
-      {messages.map((m, i) => <InputValidationMessage key={`${m.severity}-${i}`} message={m}/>)}
-    </ul>
-    </FormFeedback>;
+          {messages.map((m, i) => (
+            <InputValidationMessage key={`${m.severity}-${i}`} message={m} />
+          ))}
+        </ul>
+      </FormFeedback>
+    );
   }
 
   protected isValid() {
-    return Utils.sanitizeArray(this.props.validation).find(vr => vr.severity === Severity.VALID) !== undefined;
+    return (
+      Utils.sanitizeArray(this.props.validation).find(
+        (vr) => vr.severity === Severity.VALID
+      ) !== undefined
+    );
   }
 
   protected isInvalid() {
-    return Utils.sanitizeArray(this.props.validation).find(vr => vr.severity === Severity.BLOCKER) !== undefined;
+    return (
+      Utils.sanitizeArray(this.props.validation).find(
+        (vr) => vr.severity === Severity.BLOCKER
+      ) !== undefined
+    );
   }
 
   protected inputProps() {

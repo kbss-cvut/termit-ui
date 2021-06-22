@@ -139,10 +139,13 @@ export class TermMetadataCreateForm extends React.Component<
   public render() {
     const { termData, i18n, language } = this.props;
     const label = getLocalizedOrDefault(termData.label, "", language);
-    const labelValidation = this.props.labelExist[language] ? ValidationResult.blocker(this.props.formatMessage(
-        "term.metadata.labelExists.message",
-        { label }
-    )) : undefined;
+    const labelValidation = this.props.labelExist[language]
+      ? ValidationResult.blocker(
+          this.props.formatMessage("term.metadata.labelExists.message", {
+            label,
+          })
+        )
+      : undefined;
 
     return (
       <Form>

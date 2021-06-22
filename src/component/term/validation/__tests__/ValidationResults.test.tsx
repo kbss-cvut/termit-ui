@@ -1,9 +1,9 @@
-import {intlFunctions} from "../../../../__tests__/environment/IntlUtil";
+import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import ValidationResults from "../ValidationResults";
 import Generator from "../../../../__tests__/environment/Generator";
 import ValidationMessage from "../ValidationMessage";
 import Term from "../../../../model/Term";
-import {mountWithIntl} from "../../../../__tests__/environment/Environment";
+import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import * as redux from "react-redux";
 
 describe("Validation Results", () => {
@@ -24,10 +24,7 @@ describe("Validation Results", () => {
     };
     jest.spyOn(redux, "useSelector").mockReturnValue(validationResults);
     const component = mountWithIntl(
-      <ValidationResults
-        term={term}
-        {...intlFunctions()}
-      />
+      <ValidationResults term={term} {...intlFunctions()} />
     );
 
     const rows = component.find("div").find(ValidationMessage);
