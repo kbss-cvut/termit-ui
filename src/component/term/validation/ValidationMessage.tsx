@@ -4,7 +4,7 @@ import ValidationResult, {mapToCssClass} from "../../../model/form/ValidationRes
 import "./ValidationMessage.scss";
 
 interface ValidationMessageProps {
-  result: ValidationResult
+  result: ValidationResult;
 }
 
 const ValidationMessage:React.FC<ValidationMessageProps> = ({result}) => (
