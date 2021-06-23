@@ -114,7 +114,7 @@ const deployment =
   constants.DEPLOYMENT_NAME.length > 0 ? constants.DEPLOYMENT_NAME + "-" : "";
 constants.STORAGE_JWT_KEY = `${constants.APP_NAME}-${deployment}${constants.Headers.AUTHORIZATION}`;
 constants.STORAGE_LANG_KEY = `${constants.APP_NAME}-${deployment}LANG`;
-constants.STORAGE_TABLE_PAGE_SIZE_KEY =`${constants.APP_NAME}-${deployment}TABLE_PAGE_SIZE`;
+constants.STORAGE_TABLE_PAGE_SIZE_KEY = `${constants.APP_NAME}-${deployment}TABLE_PAGE_SIZE`;
 constants.STORAGE_ANNOTATOR_LEGEND_OPEN_KEY = `${constants.APP_NAME}-${deployment}ANNOTATOR_LEGEND_OPEN`;
 
 export default constants;
