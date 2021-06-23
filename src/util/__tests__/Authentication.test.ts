@@ -15,7 +15,10 @@ describe("Authentication", () => {
 
   it("saves JWT into browser storage on saveJwt", () => {
     Authentication.saveToken(jwt);
-    expect(BrowserStorage.set).toHaveBeenCalledWith(Constants.STORAGE_JWT_KEY, jwt);
+    expect(BrowserStorage.set).toHaveBeenCalledWith(
+      Constants.STORAGE_JWT_KEY,
+      jwt
+    );
   });
 
   it("loads JWT from local storage", () => {
@@ -30,7 +33,9 @@ describe("Authentication", () => {
 
   it("clears local storage on clearJwt", () => {
     Authentication.clearToken();
-    expect(BrowserStorage.remove).toHaveBeenCalledWith(Constants.STORAGE_JWT_KEY);
+    expect(BrowserStorage.remove).toHaveBeenCalledWith(
+      Constants.STORAGE_JWT_KEY
+    );
   });
 
   describe("isLoggedIn", () => {

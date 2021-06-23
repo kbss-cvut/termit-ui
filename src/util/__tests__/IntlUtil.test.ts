@@ -36,6 +36,9 @@ describe("IntlUtil", () => {
 
   it("stores language preference in browser storage", () => {
     saveLanguagePreference(Constants.LANG.CS.locale);
-    expect(BrowserStorage.set).toHaveBeenCalledWith(Constants.STORAGE_LANG_KEY, Constants.LANG.CS.locale);
+    expect(BrowserStorage.set).toHaveBeenCalledWith(
+      Constants.STORAGE_LANG_KEY,
+      Constants.LANG.CS.locale
+    );
   });
 });
