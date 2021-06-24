@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Placement } from "popper.js";
 import classNames from "classnames";
 import { HiTranslate } from "react-icons/hi";

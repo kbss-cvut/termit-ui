@@ -4,8 +4,8 @@ import * as React from "react";
  * Contains just the editing state indicator.
  */
 export interface EditableComponentState {
-    edit: boolean;
-    showRemoveDialog: boolean;
+  edit: boolean;
+  showRemoveDialog: boolean;
 }
 
 /**
@@ -15,22 +15,22 @@ export interface EditableComponentState {
  * changes back to read only.
  */
 export default class EditableComponent<
-    P = {},
-    S extends EditableComponentState = EditableComponentState
+  P = {},
+  S extends EditableComponentState = EditableComponentState
 > extends React.Component<P, S> {
-    public onEdit = () => {
-        this.setState({ edit: true });
-    };
+  public onEdit = () => {
+    this.setState({ edit: true });
+  };
 
-    public onCloseEdit = () => {
-        this.setState({ edit: false });
-    };
+  public onCloseEdit = () => {
+    this.setState({ edit: false });
+  };
 
-    protected onRemoveClick = () => {
-        this.setState({ showRemoveDialog: true });
-    };
+  protected onRemoveClick = () => {
+    this.setState({ showRemoveDialog: true });
+  };
 
-    public onCloseRemove = () => {
-        this.setState({ showRemoveDialog: false });
-    };
+  public onCloseRemove = () => {
+    this.setState({ showRemoveDialog: false });
+  };
 }

@@ -1,4 +1,3 @@
-import * as React from "react";
 import Term from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";

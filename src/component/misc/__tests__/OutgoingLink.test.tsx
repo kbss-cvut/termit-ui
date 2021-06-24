@@ -1,4 +1,3 @@
-import * as React from "react";
 import { OutgoingLink } from "../OutgoingLink";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 

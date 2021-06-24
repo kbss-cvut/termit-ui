@@ -1,4 +1,3 @@
-import * as React from "react";
 import { IRI } from "../../../../util/VocabularyUtils";
 import Vocabulary from "../../../../model/Vocabulary";
 import Generator from "../../../../__tests__/environment/Generator";

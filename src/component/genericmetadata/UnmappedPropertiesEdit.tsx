@@ -1,7 +1,7 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import { Badge, Button, Col, FormGroup, Label, Row } from "reactstrap";
+import { Button, Col, FormGroup, Label, Row } from "reactstrap";
 import { GoPlus } from "react-icons/go";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
@@ -17,6 +17,7 @@ import CreatePropertyForm from "./CreatePropertyForm";
 import { clearProperties } from "../../action/SyncActions";
 import { FaTrashAlt } from "react-icons/fa";
 import "./UnmappedProperties.scss";
+import BadgeButton from "../misc/BadgeButton";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
   properties: Map<string, string[]>;
@@ -149,14 +150,16 @@ export class UnmappedPropertiesEdit extends React.Component<
       const items = values.map((v) => (
         <li key={v}>
           {v}
-          <Badge
+          <BadgeButton
+            color="danger"
+            outline={true}
             title={this.props.i18n("properties.edit.remove")}
-            className="list-item-remove-icon align-middle"
+            className="ml-3"
             onClick={this.onRemove.bind(null, k, v)}
           >
             <FaTrashAlt />
             {this.props.i18n("properties.edit.remove.text")}
-          </Badge>
+          </BadgeButton>
         </li>
       ));
 

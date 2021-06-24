@@ -1,4 +1,3 @@
-import * as React from "react";
 import { mount, shallow } from "enzyme";
 import { LanguageSelector } from "../LanguageSelector";
 import Constants from "../../../util/Constants";

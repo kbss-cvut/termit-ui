@@ -89,9 +89,11 @@ export class ResourceFileDetail extends React.Component<
   }
 
   private hasResourceIriChanged(prevProps: Readonly<ResourceFileDetailProps>) {
+    // Search needs to be decoded because it is automatically encoded by the browser (at least Chrome) on update
     return (
       this.props.match.params.fileName !== prevProps.match.params.fileName ||
-      this.props.location.search !== prevProps.location.search
+      decodeURIComponent(this.props.location.search) !==
+        decodeURIComponent(prevProps.location.search)
     );
   }
 

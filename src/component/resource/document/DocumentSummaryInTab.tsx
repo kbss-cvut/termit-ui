@@ -1,4 +1,3 @@
-import * as React from "react";
 import { ResourceSummary, ResourceSummaryProps } from "../ResourceSummary";
 import Document from "../../../model/Document";
 import { connect } from "react-redux";

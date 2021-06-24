@@ -22,6 +22,7 @@ import CustomInput from "../misc/CustomInput";
 import {
   commonTermTreeSelectProps,
   processTermsForTreeSelect,
+  resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
 
@@ -102,8 +103,8 @@ export class ParentTermSelector extends React.Component<
     ) {
       // No need to load imported vocabularies when vocabulary in state matches the term's vocabulary
       this.setState({
-        importedVocabularies: this.props.currentVocabulary
-          .allImportedVocabularies,
+        importedVocabularies:
+          this.props.currentVocabulary.allImportedVocabularies,
       });
     } else {
       this.props
@@ -179,11 +180,6 @@ export class ParentTermSelector extends React.Component<
     );
   };
 
-  private resolveSelectedParents() {
-    const parents = Utils.sanitizeArray(this.props.parentTerms);
-    return parents.filter((p) => p.vocabulary !== undefined).map((p) => p.iri);
-  }
-
   public render() {
     const i18n = this.props.i18n;
     return (
@@ -228,9 +224,10 @@ export class ParentTermSelector extends React.Component<
           <IntelligentTreeSelect
             onChange={this.onChange}
             ref={this.treeComponent}
-            value={this.resolveSelectedParents()}
+            value={resolveSelectedIris(this.props.parentTerms)}
             fetchOptions={this.fetchOptions}
             fetchLimit={300}
+            searchDelay={300}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(

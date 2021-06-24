@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Button, ButtonToolbar, Card, CardBody, Col, Row } from "reactstrap";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Routes from "../../util/Routes";

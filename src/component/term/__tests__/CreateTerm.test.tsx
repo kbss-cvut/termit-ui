@@ -1,4 +1,3 @@
-import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Term from "../../../model/Term";
 import { shallow } from "enzyme";

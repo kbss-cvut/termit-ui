@@ -1,4 +1,3 @@
-import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import { RouteComponentProps, withRouter } from "react-router";
@@ -80,6 +79,10 @@ export class TermDetail extends EditableComponent<
   }
 
   public componentDidMount(): void {
+    this.load();
+  }
+
+  private load(): void {
     this.loadTerm();
     this.loadVocabulary();
   }
@@ -104,11 +107,9 @@ export class TermDetail extends EditableComponent<
   }
 
   public componentDidUpdate(prevProps: TermDetailProps) {
-    const currTermName = this.props.match.params.termName;
-    const prevTermName = prevProps.match.params.termName;
-    if (currTermName !== prevTermName) {
+    if (Utils.didNavigationOccur(prevProps, this.props)) {
       this.onCloseEdit();
-      this.loadTerm();
+      this.load();
     }
     if (prevProps.term?.iri !== this.props.term?.iri) {
       this.setState({ language: resolveInitialLanguage(this.props) });

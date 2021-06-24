@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Sidebar } from "../Sidebar";
 import { shallow } from "enzyme";

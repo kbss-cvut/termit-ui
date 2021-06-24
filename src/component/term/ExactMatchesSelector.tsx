@@ -7,7 +7,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { loadAllTerms } from "../../action/AsyncActions";
-import { FormGroup, FormText, Label } from "reactstrap";
+import { FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
@@ -20,7 +20,9 @@ import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,
   processTermsForTreeSelect,
+  resolveSelectedIris,
 } from "./TermTreeSelectHelper";
+import HelpIcon from "../misc/HelpIcon";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -54,14 +56,6 @@ interface ExactMatchesSelectorProps extends HasI18n {
 }
 
 export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorProps> {
-  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
-
-  constructor(props: ExactMatchesSelectorProps) {
-    super(props);
-    this.treeComponent = React.createRef();
-    this.state = {};
-  }
-
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
       this.props.onChange([]);
@@ -77,14 +71,11 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
   ) => {
     // Use option vocabulary when present, it may differ from the current vocabulary (when option is from imported
     // vocabulary)
-    const exactMatches = Utils.sanitizeArray(this.props.selected).map(
-      (p) => p.iri!
-    );
     return this.props
       .loadTerms(
         {
           ...fetchOptions,
-          includeTerms: exactMatches,
+          includeTerms: resolveSelectedIris(this.props.selected),
         },
         VocabularyUtils.create(
           fetchOptions.option
@@ -105,25 +96,23 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
       });
   };
 
-  private resolveSelected() {
-    return Utils.sanitizeArray(this.props.selected)
-      .filter((p) => p.vocabulary !== undefined)
-      .map((p) => p.iri);
-  }
-
   public render() {
     return (
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
           {this.props.i18n("term.metadata.exactMatches")}
+          <HelpIcon
+            id="exact-match-select"
+            text={this.props.i18n("term.exactMatches.help")}
+          />
         </Label>
         <>
           <IntelligentTreeSelect
             onChange={this.onChange}
-            ref={this.treeComponent}
-            value={this.resolveSelected()}
+            value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
             fetchLimit={300}
+            searchDelay={300}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(
@@ -132,7 +121,6 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
             valueRenderer={createTermValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
-          <FormText>{this.props.i18n("term.exactMatches.help")}</FormText>
         </>
       </FormGroup>
     );

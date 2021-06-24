@@ -1,4 +1,3 @@
-import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import { TextAnalysisRecord } from "../../../model/TextAnalysisRecord";
 import { createMemoryHistory, Location } from "history";
@@ -389,7 +388,7 @@ describe("ResourceFileDetail", () => {
     );
   });
 
-  it("sets vocabulary in state to undefined to force its reload when namespace in URL changes", () => {
+  it("sets vocabulary IRI in state to undefined to force its reload when namespace in URL changes", () => {
     resource.owner = {
       vocabulary: { iri: Generator.generateUri() },
       iri: Generator.generateUri(),
@@ -416,5 +415,32 @@ describe("ResourceFileDetail", () => {
     wrapper.setProps({ match: newMatch });
     wrapper.update();
     expect(wrapper.state().vocabularyIri).not.toBeDefined();
+  });
+
+  // Bug #1587
+  it("does not reset vocabulary IRI when namespace is only encoded", () => {
+    resource.owner = {
+      vocabulary: { iri: Generator.generateUri() },
+      iri: Generator.generateUri(),
+      label: "Test document",
+      files: [resource],
+    };
+    const wrapper = shallow<ResourceFileDetail>(
+      <ResourceFileDetail
+        resource={resource}
+        routeTransitionPayload={{}}
+        loadResource={loadResource}
+        popRoutingPayload={popRoutingPayload}
+        loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        {...routeProps}
+        {...intlFunctions()}
+      />
+    );
+    expect(wrapper.state().vocabularyIri).toBeDefined();
+    const newSearch = "?fileNamespace=" + encodeURIComponent(resourceNamespace);
+    const newLocation = Object.assign({}, location, { search: newSearch });
+    wrapper.setProps({ location: newLocation });
+    wrapper.update();
+    expect(wrapper.state().vocabularyIri).toBeDefined();
   });
 });

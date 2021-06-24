@@ -1,4 +1,3 @@
-import * as React from "react";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { Link, MemoryRouter } from "react-router-dom";
 import Generator from "../../../__tests__/environment/Generator";
@@ -6,7 +5,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { EMPTY_USER } from "../../../model/User";
 import { VocabularyIriLink } from "../VocabularyIriLink";
 
-jest.mock("../../misc/AssetLabel");
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
 describe("Vocabulary IRI Link links to correct internal asset", () => {
   const fragment = "localVocabularyFragment";

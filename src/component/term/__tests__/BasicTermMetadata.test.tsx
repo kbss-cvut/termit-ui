@@ -1,4 +1,3 @@
-import * as React from "react";
 import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
 import Term, { TermInfo } from "../../../model/Term";
@@ -10,6 +9,10 @@ import OutgoingLink from "../../misc/OutgoingLink";
 import { BasicTermMetadata } from "../BasicTermMetadata";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import { mountWithIntl } from "../../../__tests__/environment/Environment";
+
+jest.mock("../TermLink", () => () => <span>Term link</span>);
+jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);
 
 describe("BasicTermMetadata", () => {
   const vocabulary: Vocabulary = new Vocabulary({
@@ -22,7 +25,7 @@ describe("BasicTermMetadata", () => {
     term = new Term({
       iri: Generator.generateUri(),
       label: langString("Test"),
-      comment: "test",
+      scopeNote: langString("test"),
       vocabulary: { iri: vocabulary.iri },
     });
   });
@@ -78,5 +81,34 @@ describe("BasicTermMetadata", () => {
     );
     const parentLinks = wrapper.find(TermLink);
     expect(parentLinks.length).toEqual(term.parentTerms.length);
+  });
+
+  it("consolidates related and relatedMatch terms and renders them in one list", () => {
+    term.relatedTerms = [
+      {
+        iri: Generator.generateUri(),
+        label: langString("related one"),
+        vocabulary: { iri: term.vocabulary!.iri },
+      },
+    ];
+    term.relatedMatchTerms = [
+      {
+        iri: Generator.generateUri(),
+        label: langString("related one"),
+        vocabulary: { iri: Generator.generateUri() },
+      },
+    ];
+
+    const wrapper = mountWithIntl(
+      <BasicTermMetadata
+        term={term}
+        language={Constants.DEFAULT_LANGUAGE}
+        {...intlFunctions()}
+      />
+    );
+    const relatedList = wrapper.find("#term-metadata-related");
+    expect(relatedList.find(TermLink).length).toEqual(
+      term.relatedTerms.length + term.relatedMatchTerms.length
+    );
   });
 });
