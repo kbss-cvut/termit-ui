@@ -3,6 +3,9 @@ import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import { Pagination } from "../Pagination";
 import { UsePaginationInstanceProps } from "react-table";
 import Constants from "../../../../util/Constants";
+import BrowserStorage from "../../../../util/BrowserStorage";
+
+jest.mock("../../../../util/BrowserStorage");
 
 describe("Pagination", () => {
   let pagingProps: UsePaginationInstanceProps<any>;
@@ -19,7 +22,6 @@ describe("Pagination", () => {
       previousPage: jest.fn(),
       setPageSize: jest.fn(),
     };
-    localStorage.clear();
   });
 
   it("stores selected page size in local storage", () => {
@@ -34,7 +36,7 @@ describe("Pagination", () => {
     const value = 20;
     sizeSelect.simulate("change", { target: { value } });
     expect(pagingProps.setPageSize).toHaveBeenCalledWith(value);
-    expect(localStorage.setItem).toHaveBeenCalledWith(
+    expect(BrowserStorage.set).toHaveBeenCalledWith(
       Constants.STORAGE_TABLE_PAGE_SIZE_KEY,
       value
     );
@@ -42,8 +44,7 @@ describe("Pagination", () => {
 
   it("loads stored page size on mount", () => {
     const size = 20;
-    localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] =
-      size.toString();
+    (BrowserStorage.get as jest.Mock).mockReturnValue(size.toString());
     mountWithIntl(
       <Pagination
         pagingState={{ pageSize: 10, pageIndex: 0 }}
@@ -58,8 +59,7 @@ describe("Pagination", () => {
     const size = 20;
     pagingProps.canPreviousPage = false;
     pagingProps.canNextPage = false;
-    localStorage.__STORE__[Constants.STORAGE_TABLE_PAGE_SIZE_KEY] =
-      size.toString();
+    (BrowserStorage.get as jest.Mock).mockReturnValue(size.toString());
     const wrapper = mountWithIntl(
       <Pagination
         pagingState={{ pageSize: 10, pageIndex: 0 }}

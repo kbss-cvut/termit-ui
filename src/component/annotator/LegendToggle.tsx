@@ -3,11 +3,22 @@ import Legend from "./Legend";
 import { Button, Card, CardBody, CardHeader, Collapse } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import classNames from "classnames";
+import BrowserStorage from "../../util/BrowserStorage";
+import Constants from "../../util/Constants";
 
 const LegendToggle = () => {
-  const [showLegend, setShowLegend] = React.useState(true);
+  const [showLegend, setShowLegend] = React.useState(
+    BrowserStorage.get(Constants.STORAGE_ANNOTATOR_LEGEND_OPEN_KEY, "true") ===
+      "true"
+  );
   const { i18n } = useI18n();
-  const toggle = () => setShowLegend(!showLegend);
+  const toggle = () => {
+    setShowLegend(!showLegend);
+    BrowserStorage.set(
+      Constants.STORAGE_ANNOTATOR_LEGEND_OPEN_KEY,
+      String(!showLegend)
+    );
+  };
   return (
     <>
       <Collapse isOpen={showLegend}>
