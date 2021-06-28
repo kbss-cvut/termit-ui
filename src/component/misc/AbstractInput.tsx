@@ -70,7 +70,7 @@ export default class AbstractInput<
     messages.sort(severityComparator);
     return (
       <FormFeedback className="validation-feedback">
-        <ul className="list-unstyled">
+        <ul className="list-unstyled mb-0">
           {messages.map((m, i) => (
             <InputValidationMessage key={`${m.severity}-${i}`} message={m} />
           ))}

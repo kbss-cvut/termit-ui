@@ -16,7 +16,7 @@ const InputValidationMessage: React.FC<InputValidationMessageProps> = (
   const { message } = props;
   const { i18n } = useI18n();
   const tooltip =
-    message.severity === Severity.ERROR || Severity.WARNING
+    message.severity === Severity.ERROR || message.severity === Severity.WARNING
       ? i18n("validation.message.tooltip")
       : undefined;
 
