@@ -127,6 +127,7 @@ const constants = {
     IF_MODIFIED_SINCE: "if-modified-since",
     LAST_MODIFIED: "last-modified",
     LOCATION: "location",
+    X_TOTAL_COUNT: "x-total-count",
   },
   STORAGE_JWT_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}${AUTHORIZATION}`,
   STORAGE_LANG_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}LANG`,

@@ -79,6 +79,10 @@ export class TermDetail extends EditableComponent<
   }
 
   public componentDidMount(): void {
+    this.load();
+  }
+
+  private load(): void {
     this.loadTerm();
     this.loadVocabulary();
   }
@@ -103,19 +107,9 @@ export class TermDetail extends EditableComponent<
   }
 
   public componentDidUpdate(prevProps: TermDetailProps) {
-    const currTermName = this.props.match.params.termName;
-    const currVocabularyName = this.props.match.params.name;
-    const prevTermName = prevProps.match.params.termName;
-    const prevVocabularyName = prevProps.match.params.name;
-    if (
-      currTermName !== prevTermName ||
-      currVocabularyName !== prevVocabularyName
-    ) {
+    if (Utils.didNavigationOccur(prevProps, this.props)) {
       this.onCloseEdit();
-      this.loadTerm();
-      if (currVocabularyName !== prevVocabularyName) {
-        this.loadVocabulary();
-      }
+      this.load();
     }
     if (prevProps.term?.iri !== this.props.term?.iri) {
       this.setState({ language: resolveInitialLanguage(this.props) });

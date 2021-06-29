@@ -208,7 +208,7 @@ const cs = {
       "Výskyt navržen systémem",
     "resource.metadata.terms.edit.select.placeholder":
       "Začněte psát pro vyhledávání relevantních pojmů",
-    "resource.metadata.file.content": "Obsah",
+    "resource.metadata.file.content": "Zobraz obsah",
     "resource.metadata.file.content.view": "Zobrazit",
     "resource.metadata.file.content.view.tooltip":
       "Zobrazit obsah souboru a anotovat ho",
@@ -383,6 +383,8 @@ const cs = {
     "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
 
     "glossary.title": "Pojmy",
+    "glossary.termCount.tooltip":
+      "Počet pojmů ve slovníku (bez pojmů z importovaných slovníků)",
     "glossary.new": "Nový pojem",
     "glossary.select.placeholder": "Začněte psát pro filtrování pojmů",
     "glossary.excludeImported": "Včetně importů",
@@ -430,6 +432,7 @@ const cs = {
       'Soubor "{fileName}" úspěšně nahrán na server.',
     "file.annotate.selectVocabulary":
       "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
+    "file.upload": "Nahrát",
 
     "statistics.vocabulary.count": "Počet slovníků",
     "statistics.term.count": "Počet pojmů",

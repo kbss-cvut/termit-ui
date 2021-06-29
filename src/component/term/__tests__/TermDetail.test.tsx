@@ -9,7 +9,7 @@ import Term from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import AppNotification from "../../../model/AppNotification";
 import NotificationType from "../../../model/NotificationType";
-import { IRI } from "../../../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
@@ -410,6 +410,33 @@ describe("TermDetail", () => {
     expect(wrapper.find(TermMetadata).prop("language")).toEqual(
       Constants.DEFAULT_LANGUAGE
     );
+  });
+
+  // Bug #1591, situations when term label is the same but it is in a different vocabulary -> different namespace
+  it("reloads term and vocabulary when namespace query parameter changes indicating different term", () => {
+    const wrapper = shallow<TermDetail>(
+      <TermDetail
+        term={null}
+        configuredLanguage="cs"
+        loadTerm={onLoad}
+        updateTerm={onUpdate}
+        removeTerm={removeTerm}
+        loadVocabulary={loadVocabulary}
+        vocabulary={vocabulary}
+        history={history}
+        location={location}
+        match={match}
+        publishNotification={onPublishNotification}
+        {...intlFunctions()}
+      />
+    );
+    jest.clearAllMocks();
+    const newLocation = Object.assign({}, location);
+    newLocation.search = `&namespace=${VocabularyUtils.NS_TERMIT}`;
+    wrapper.setProps({ location: newLocation });
+    wrapper.update();
+    expect(onLoad).toHaveBeenCalled();
+    expect(loadVocabulary).toHaveBeenCalled();
   });
 
   it("displays edit button as disabled when term is in confirmed state", () => {

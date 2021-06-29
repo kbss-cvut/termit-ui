@@ -212,7 +212,7 @@ const en = {
       "Occurrence suggested by the system",
     "resource.metadata.terms.edit.select.placeholder":
       "Start typing to search for relevant terms",
-    "resource.metadata.file.content": "Content",
+    "resource.metadata.file.content": "Show Content",
     "resource.metadata.file.content.view": "View",
     "resource.metadata.file.content.view.tooltip":
       "View file content and annotate it",
@@ -385,6 +385,8 @@ const en = {
     "term.badge.no-score.tooltip": "There is no available score for this term",
 
     "glossary.title": "Terms",
+    "glossary.termCount.tooltip":
+      "Number of terms in the vocabulary (excluding imported vocabularies)",
     "glossary.new": "New Term",
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",
@@ -430,6 +432,7 @@ const en = {
       'Content of file "{fileName}" successfully uploaded.',
     "file.annotate.selectVocabulary":
       "Unable to determine vocabulary for annotating this file. Please, select one...",
+    "file.upload": "Upload",
 
     "statistics.vocabulary.count": "Vocabulary Count",
     "statistics.term.count": "Term Count",

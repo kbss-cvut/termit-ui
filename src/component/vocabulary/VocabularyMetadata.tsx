@@ -122,6 +122,9 @@ export class VocabularyMetadata extends React.Component<
         changeTab={this.onTabSelect}
         tabs={tabs}
         tabBadges={{
+          "glossary.title": vocabulary.termCount
+            ? vocabulary.termCount.toString()
+            : null,
           "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
           "vocabulary.detail.document": vocabulary.document ? "1" : "0",
         }}

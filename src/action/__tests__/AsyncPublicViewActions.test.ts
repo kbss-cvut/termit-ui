@@ -3,7 +3,7 @@ import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import Ajax from "../../util/Ajax";
 import { ThunkDispatch } from "../../util/Types";
-import ActionType, { AsyncActionSuccess } from "../ActionType";
+import ActionType, { AsyncActionSuccess, MessageAction } from "../ActionType";
 import Vocabulary from "../../model/Vocabulary";
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import {
@@ -64,6 +64,7 @@ describe("AsyncPublicViewActions", () => {
         .mockImplementation(() =>
           Promise.resolve(require("../../rest-mock/vocabulary"))
         );
+      Ajax.head = jest.fn().mockResolvedValue({ headers: {} });
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadPublicVocabulary({ fragment: "metropolitan-plan" })
@@ -140,10 +141,13 @@ describe("AsyncPublicViewActions", () => {
         (store.dispatch as ThunkDispatch)(
           loadPublicTerm("test-term", { fragment: "test-vocabulary" })
         )
-      ).then((data: AsyncActionSuccess<Term>) => {
+      ).then((data: AsyncActionSuccess<Term> | MessageAction) => {
         const url = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-        verifyExpectedAssets([term], [data.payload]);
+        verifyExpectedAssets(
+          [term],
+          [(data as AsyncActionSuccess<Term>).payload]
+        );
       });
     });
   });
