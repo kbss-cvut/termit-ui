@@ -168,7 +168,7 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ relatedTerms: split.sameVocabulary.map(t => Term.toTermInfo(t)), relatedMatchTerms: split.differentVocabulary.map(t => Term.toTermInfo(t)) });
   };
 
-  private static splitTermsInSameAndDifferentVocabularies(terms: Term[], vocabularyIri: string) {
+  public static splitTermsInSameAndDifferentVocabularies(terms: Term[], vocabularyIri: string) {
     const sameVocabulary: Term[] = [];
     const differentVocabulary: Term[] = [];
     terms.forEach((v) => {

@@ -137,69 +137,6 @@ export function createVocabulary(vocabulary: Vocabulary) {
   };
 }
 
-export function createTerm(term: Term, vocabularyIri: IRI) {
-  const action = {
-    type: ActionType.CREATE_VOCABULARY_TERM,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    const parents = Utils.sanitizeArray(term.parentTerms);
-    const vocabularyIriToUse =
-      parents.length > 0
-        ? VocabularyUtils.create(parents[0].vocabulary!.iri!)
-        : vocabularyIri;
-    const url = resolveTermCreationUrl(term, vocabularyIriToUse);
-    const data = Object.assign(term.toJsonLd(), {
-      vocabulary: {
-        iri: vocabularyIri.namespace + vocabularyIri.fragment,
-      },
-    });
-    return Ajax.post(
-      url,
-      content(data)
-        .contentType(Constants.JSON_LD_MIME_TYPE)
-        .param("namespace", vocabularyIriToUse.namespace)
-    )
-      .then((resp: AxiosResponse) => {
-        const asyncSuccessAction = asyncActionSuccess(action);
-        dispatch(asyncSuccessAction);
-        dispatch(
-          SyncActions.publishMessage(
-            new Message(
-              { messageId: "vocabulary.term.created.message" },
-              MessageType.SUCCESS
-            )
-          )
-        );
-        dispatch(publishNotification({ source: asyncSuccessAction }));
-        return resp.headers[Constants.Headers.LOCATION];
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-        return undefined;
-      });
-  };
-}
-
-function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
-  let url = Constants.API_PREFIX + "/vocabularies/";
-  const parents = Utils.sanitizeArray(term.parentTerms);
-  if (parents.length > 0) {
-    // Assuming there is at most one parent for a newly created term
-    url +=
-      targetVocabularyIri.fragment +
-      "/terms/" +
-      VocabularyUtils.create(parents[0].iri!).fragment +
-      "/subterms";
-  } else {
-    url += targetVocabularyIri.fragment + "/terms";
-  }
-  return url;
-}
-
 export function loadVocabulary(
   iri: IRI,
   ignoreLoading: boolean = false,

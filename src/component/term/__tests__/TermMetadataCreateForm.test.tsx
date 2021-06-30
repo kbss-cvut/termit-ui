@@ -1,22 +1,16 @@
 import Generator from "../../../__tests__/environment/Generator";
-import { shallow } from "enzyme";
-import { TermMetadataCreateForm } from "../TermMetadataCreateForm";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import {shallow} from "enzyme";
+import {TermMetadataCreateForm} from "../TermMetadataCreateForm";
+import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
 import Ajax from "../../../util/Ajax";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetFactory from "../../../util/AssetFactory";
-import {
-  mountWithIntl,
-  promiseDelay,
-} from "../../../__tests__/environment/Environment";
+import {mountWithIntl, promiseDelay,} from "../../../__tests__/environment/Environment";
 import CustomInput from "../../misc/CustomInput";
-import {
-  getLocalized,
-  langString,
-  pluralLangString,
-} from "../../../model/MultilingualString";
+import {getLocalized, langString, pluralLangString,} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/StringListEdit";
+import ParentTermSelector from "../ParentTermSelector";
 
 jest.mock("../TermAssignments", () => () => <div>Term Assignments</div>);
 jest.mock("../ParentTermSelector", () => () => <div>Parent term selector</div>);
@@ -140,9 +134,9 @@ describe("TermMetadataCreateForm", () => {
         {...intlFunctions()}
       />
     );
-    const parents = [Generator.generateTerm()];
+    const parents = [Generator.generateTerm(vocabularyIri)];
     wrapper.instance().onParentSelect(parents);
-    expect(onChange).toHaveBeenCalledWith({ parentTerms: parents });
+    expect(onChange).toHaveBeenCalledWith({ parentTerms: parents, externalParentTerms: [] });
   });
 
   it("checks for label uniqueness in vocabulary on label change", () => {
@@ -314,6 +308,44 @@ describe("TermMetadataCreateForm", () => {
     expect(onChange).toHaveBeenCalledWith({
       label: { en: enLabel, cs: csLabel },
       labelExist: { cs: false },
+    });
+  });
+
+  it("consolidates parentTerms and externalParentTerms into one array for passing to parent term selector", () => {
+    const termData = AssetFactory.createEmptyTermData();
+    termData.parentTerms = [Generator.generateTerm(vocabularyIri), Generator.generateTerm(vocabularyIri)];
+    termData.externalParentTerms = [Generator.generateTerm(Generator.generateUri()), Generator.generateTerm(Generator.generateUri())];
+    const wrapper = shallow<TermMetadataCreateForm>(
+        <TermMetadataCreateForm
+            onChange={onChange}
+            language="cs"
+            termData={termData}
+            labelExist={{}}
+            vocabularyIri={vocabularyIri}
+            {...intlFunctions()}
+        />
+    );
+    const parentSelector = wrapper.find(ParentTermSelector);
+    expect(parentSelector.prop("parentTerms")).toEqual([...termData.parentTerms, ...termData.externalParentTerms]);
+  });
+
+  describe("onParentSelect", () => {
+    it("distributes provided value into parentTerms and externalParentTerms based on their membership in the current term's vocabulary", () => {
+      const termData = AssetFactory.createEmptyTermData();
+      const broader = [Generator.generateTerm(vocabularyIri)];
+      const broadMatch = [Generator.generateTerm(Generator.generateUri())];
+      const wrapper = shallow<TermMetadataCreateForm>(
+          <TermMetadataCreateForm
+              onChange={onChange}
+              language="cs"
+              termData={termData}
+              labelExist={{}}
+              vocabularyIri={vocabularyIri}
+              {...intlFunctions()}
+          />
+      );
+      wrapper.instance().onParentSelect([...broader, ...broadMatch]);
+      expect(onChange).toHaveBeenCalledWith({parentTerms: broader, externalParentTerms: broadMatch});
     });
   });
 });
