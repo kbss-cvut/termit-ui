@@ -164,7 +164,7 @@ export class BasicTermMetadata extends React.Component<
   }
 
   private renderParentTerms() {
-    const parents = Utils.sanitizeArray(this.props.term.parentTerms);
+    const parents = [...Utils.sanitizeArray(this.props.term.parentTerms), ...Utils.sanitizeArray(this.props.term.externalParentTerms)];
     parents.sort(Utils.labelComparator);
     return this.renderTermList(
       parents,
