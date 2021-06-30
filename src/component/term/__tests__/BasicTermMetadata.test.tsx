@@ -113,17 +113,27 @@ describe("BasicTermMetadata", () => {
   });
 
   it("renders parentTerms and externalParentTerms in one component", () => {
-    term.parentTerms = [Generator.generateTerm(vocabulary.iri), Generator.generateTerm(vocabulary.iri)];
-    term.externalParentTerms = [Generator.generateTerm(), Generator.generateTerm()];
+    term.parentTerms = [
+      Generator.generateTerm(vocabulary.iri),
+      Generator.generateTerm(vocabulary.iri),
+    ];
+    term.externalParentTerms = [
+      Generator.generateTerm(),
+      Generator.generateTerm(),
+    ];
     const wrapper = mountWithIntl(
-        <BasicTermMetadata
-            term={term}
-            language={Constants.DEFAULT_LANGUAGE}
-            {...intlFunctions()}
-        />
+      <BasicTermMetadata
+        term={term}
+        language={Constants.DEFAULT_LANGUAGE}
+        {...intlFunctions()}
+      />
     );
-    expect(wrapper.find(TermLink).length).toEqual(term.parentTerms.length + term.externalParentTerms.length);
+    expect(wrapper.find(TermLink).length).toEqual(
+      term.parentTerms.length + term.externalParentTerms.length
+    );
     const component = wrapper.find("#term-metadata-parentterms");
-    expect(component.find("li").length).toEqual(term.parentTerms.length + term.externalParentTerms.length);
+    expect(component.find("li").length).toEqual(
+      term.parentTerms.length + term.externalParentTerms.length
+    );
   });
 });

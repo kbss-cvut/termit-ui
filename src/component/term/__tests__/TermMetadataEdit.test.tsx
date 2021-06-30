@@ -1,16 +1,20 @@
-import Term, {CONTEXT} from "../../../model/Term";
+import Term, { CONTEXT } from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
-import {TermMetadataEdit} from "../TermMetadataEdit";
-import {intlFunctions} from "../../../__tests__/environment/IntlUtil";
+import { TermMetadataEdit } from "../TermMetadataEdit";
+import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Ajax from "../../../util/Ajax";
-import {shallow} from "enzyme";
+import { shallow } from "enzyme";
 import UnmappedPropertiesEdit from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import CustomInput from "../../misc/CustomInput";
-import {getLocalized, langString, pluralLangString,} from "../../../model/MultilingualString";
+import {
+  getLocalized,
+  langString,
+  pluralLangString,
+} from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/StringListEdit";
-import {ConsolidatedResults} from "../../../model/ConsolidatedResults";
+import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import ParentTermSelector from "../ParentTermSelector";
 
 jest.mock("../TermAssignments");
@@ -427,21 +431,30 @@ describe("Term edit", () => {
   });
 
   it("consolidates parentTerms and externalParentTerms into one array for passing to parent term selector", () => {
-    term.parentTerms = [Generator.generateTerm(term.vocabulary!.iri), Generator.generateTerm(term.vocabulary!.iri)];
-    term.externalParentTerms = [Generator.generateTerm(Generator.generateUri()), Generator.generateTerm(Generator.generateUri())];
+    term.parentTerms = [
+      Generator.generateTerm(term.vocabulary!.iri),
+      Generator.generateTerm(term.vocabulary!.iri),
+    ];
+    term.externalParentTerms = [
+      Generator.generateTerm(Generator.generateUri()),
+      Generator.generateTerm(Generator.generateUri()),
+    ];
     const wrapper = shallow<TermMetadataEdit>(
-        <TermMetadataEdit
-            save={onSave}
-            term={term}
-            cancel={onCancel}
-            language="en"
-            selectLanguage={selectLanguage}
-            validationResults={validationResults}
-            {...intlFunctions()}
-        />
+      <TermMetadataEdit
+        save={onSave}
+        term={term}
+        cancel={onCancel}
+        language="en"
+        selectLanguage={selectLanguage}
+        validationResults={validationResults}
+        {...intlFunctions()}
+      />
     );
     const parentSelector = wrapper.find(ParentTermSelector);
-    expect(parentSelector.prop("parentTerms")).toEqual([...term.parentTerms, ...term.externalParentTerms]);
+    expect(parentSelector.prop("parentTerms")).toEqual([
+      ...term.parentTerms,
+      ...term.externalParentTerms,
+    ]);
   });
 
   describe("onParentChange", () => {
@@ -449,15 +462,15 @@ describe("Term edit", () => {
       const broader = [Generator.generateTerm(term.vocabulary!.iri)];
       const broadMatch = [Generator.generateTerm(Generator.generateUri())];
       const wrapper = shallow<TermMetadataEdit>(
-          <TermMetadataEdit
-              save={onSave}
-              term={term}
-              cancel={onCancel}
-              language="en"
-              selectLanguage={selectLanguage}
-              validationResults={validationResults}
-              {...intlFunctions()}
-          />
+        <TermMetadataEdit
+          save={onSave}
+          term={term}
+          cancel={onCancel}
+          language="en"
+          selectLanguage={selectLanguage}
+          validationResults={validationResults}
+          {...intlFunctions()}
+        />
       );
       wrapper.instance().onParentChange([...broader, ...broadMatch]);
       expect(wrapper.state().parentTerms).toEqual(broader);

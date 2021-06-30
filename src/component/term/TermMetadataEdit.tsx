@@ -149,8 +149,14 @@ export class TermMetadataEdit extends React.Component<
   };
 
   public onParentChange = (parentTerms: Term[]) => {
-    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(parentTerms, this.props.term.vocabulary!.iri!);
-    this.setState({ parentTerms: split.sameVocabulary, externalParentTerms: split.differentVocabulary });
+    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(
+      parentTerms,
+      this.props.term.vocabulary!.iri!
+    );
+    this.setState({
+      parentTerms: split.sameVocabulary,
+      externalParentTerms: split.differentVocabulary,
+    });
   };
 
   public onExactMatchesChange = (exactMatchTerms: Term[]) => {
@@ -164,11 +170,22 @@ export class TermMetadataEdit extends React.Component<
    * @param value Selected terms
    */
   public onRelatedChange = (value: Term[]) => {
-    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(value, this.props.term.vocabulary!.iri!);
-    this.setState({ relatedTerms: split.sameVocabulary.map(t => Term.toTermInfo(t)), relatedMatchTerms: split.differentVocabulary.map(t => Term.toTermInfo(t)) });
+    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(
+      value,
+      this.props.term.vocabulary!.iri!
+    );
+    this.setState({
+      relatedTerms: split.sameVocabulary.map((t) => Term.toTermInfo(t)),
+      relatedMatchTerms: split.differentVocabulary.map((t) =>
+        Term.toTermInfo(t)
+      ),
+    });
   };
 
-  public static splitTermsInSameAndDifferentVocabularies(terms: Term[], vocabularyIri: string) {
+  public static splitTermsInSameAndDifferentVocabularies(
+    terms: Term[],
+    vocabularyIri: string
+  ) {
     const sameVocabulary: Term[] = [];
     const differentVocabulary: Term[] = [];
     terms.forEach((v) => {
@@ -178,7 +195,7 @@ export class TermMetadataEdit extends React.Component<
         differentVocabulary.push(v);
       }
     });
-    return {sameVocabulary, differentVocabulary};
+    return { sameVocabulary, differentVocabulary };
   }
 
   public onStatusChange = () => {
@@ -349,7 +366,10 @@ export class TermMetadataEdit extends React.Component<
                   <ParentTermSelector
                     id="edit-term-parent"
                     termIri={this.props.term.iri}
-                    parentTerms={[...Utils.sanitizeArray(this.state.parentTerms), ...Utils.sanitizeArray(this.state.externalParentTerms)]}
+                    parentTerms={[
+                      ...Utils.sanitizeArray(this.state.parentTerms),
+                      ...Utils.sanitizeArray(this.state.externalParentTerms),
+                    ]}
                     invalid={validationBroader.length > 0}
                     invalidMessage={this.renderMessages(validationBroader)}
                     vocabularyIri={this.props.term.vocabulary!.iri!}

@@ -1,4 +1,4 @@
-import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
+import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import {
   createFileInDocument,
   createProperty,
@@ -43,39 +43,53 @@ import {
   validateVocabulary,
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
-import Ajax, {param} from "../../util/Ajax";
+import Ajax, { param } from "../../util/Ajax";
 import thunk from "redux-thunk";
-import {Action} from "redux";
+import { Action } from "redux";
 import Routing from "../../util/Routing";
-import Vocabulary, {CONTEXT as VOCABULARY_CONTEXT,} from "../../model/Vocabulary";
+import Vocabulary, {
+  CONTEXT as VOCABULARY_CONTEXT,
+} from "../../model/Vocabulary";
 import Vocabulary2 from "../../util/VocabularyUtils";
-import VocabularyUtils, {IRI} from "../../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
-import ActionType, {AsyncAction, AsyncActionSuccess, MessageAction,} from "../ActionType";
+import ActionType, {
+  AsyncAction,
+  AsyncActionSuccess,
+  MessageAction,
+} from "../ActionType";
 import Term from "../../model/Term";
 import Generator from "../../__tests__/environment/Generator";
-import {ThunkDispatch} from "../../util/Types";
+import { ThunkDispatch } from "../../util/Types";
 import FetchOptionsFunction from "../../model/Functions";
-import RdfsResource, {CONTEXT as RDFS_RESOURCE_CONTEXT,} from "../../model/RdfsResource";
+import RdfsResource, {
+  CONTEXT as RDFS_RESOURCE_CONTEXT,
+} from "../../model/RdfsResource";
 import TermItState from "../../model/TermItState";
-import Resource, {CONTEXT as RESOURCE_CONTEXT} from "../../model/Resource";
+import Resource, { CONTEXT as RESOURCE_CONTEXT } from "../../model/Resource";
 import Utils from "../../util/Utils";
 import AsyncActionStatus from "../AsyncActionStatus";
 import ExportType from "../../util/ExportType";
 import fileContent from "../../rest-mock/file";
 import TermItFile from "../../model/File";
 import MessageType from "../../model/MessageType";
-import {CONTEXT as TA_RECORD_CONTEXT, TextAnalysisRecord,} from "../../model/TextAnalysisRecord";
+import {
+  CONTEXT as TA_RECORD_CONTEXT,
+  TextAnalysisRecord,
+} from "../../model/TextAnalysisRecord";
 import {
   CONTEXT as RESOURCE_TERM_ASSIGNMENT_CONTEXT,
   ResourceTermAssignments,
 } from "../../model/ResourceTermAssignments";
-import {CONTEXT as TERM_ASSIGNMENTS_CONTEXT, TermAssignments,} from "../../model/TermAssignments";
-import {verifyExpectedAssets} from "../../__tests__/environment/TestUtil";
+import {
+  CONTEXT as TERM_ASSIGNMENTS_CONTEXT,
+  TermAssignments,
+} from "../../model/TermAssignments";
+import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
 import NotificationType from "../../model/NotificationType";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
 import UserRole from "../../model/UserRole";
 

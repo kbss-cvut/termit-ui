@@ -83,7 +83,7 @@ export interface TermData extends AssetData {
   sources?: string[];
   // Represents proper parent Term, stripped of broader terms representing other model relationships
   parentTerms?: TermData[];
-  externalParentTerms?: TermData[],
+  externalParentTerms?: TermData[];
   parent?: string; // Introduced in order to support the Intelligent Tree Select component
   plainSubTerms?: string[]; // Introduced in order to support the Intelligent Tree Select component
   vocabulary?: AssetData;
@@ -136,7 +136,10 @@ export default class Term extends Asset implements TermData {
       this.parent = this.resolveParent(this.parentTerms);
     }
     if (this.externalParentTerms) {
-      this.externalParentTerms = this.handleParents(this.externalParentTerms, visitedTerms);
+      this.externalParentTerms = this.handleParents(
+        this.externalParentTerms,
+        visitedTerms
+      );
     }
     this.sanitizeTermInfoArrays();
     this.syncPlainSubTerms();
@@ -146,7 +149,7 @@ export default class Term extends Asset implements TermData {
   private handleParents(parents: TermData[], visitedTerms: TermMap): Term[] {
     visitedTerms[this.iri] = this;
     const result = Utils.sanitizeArray(parents).map((pt: TermData) =>
-        visitedTerms[pt.iri!] ? visitedTerms[pt.iri!] : new Term(pt, visitedTerms)
+      visitedTerms[pt.iri!] ? visitedTerms[pt.iri!] : new Term(pt, visitedTerms)
     );
     result.sort(Utils.labelComparator);
     return result;

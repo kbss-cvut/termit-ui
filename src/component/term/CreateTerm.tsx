@@ -3,7 +3,7 @@ import Term from "../../model/Term";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import {createTerm} from "../../action/AsyncTermActions";
+import { createTerm } from "../../action/AsyncTermActions";
 import { loadVocabulary } from "../../action/AsyncActions";
 import TermMetadataCreate from "./TermMetadataCreate";
 import Routing from "../../util/Routing";
