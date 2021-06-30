@@ -148,8 +148,9 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ types: newTypes });
   };
 
-  public onParentChange = (parentTerms?: Term[]) => {
-    this.setState({ parentTerms });
+  public onParentChange = (parentTerms: Term[]) => {
+    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(parentTerms, this.props.term.vocabulary!.iri!);
+    this.setState({ parentTerms: split.sameVocabulary, externalParentTerms: split.differentVocabulary });
   };
 
   public onExactMatchesChange = (exactMatchTerms: Term[]) => {
@@ -163,17 +164,22 @@ export class TermMetadataEdit extends React.Component<
    * @param value Selected terms
    */
   public onRelatedChange = (value: Term[]) => {
-    const relatedTerms: TermInfo[] = [];
-    const relatedMatchTerms: TermInfo[] = [];
-    value.forEach((v) => {
-      if (v.vocabulary!.iri === this.props.term.vocabulary!.iri) {
-        relatedTerms.push(Term.toTermInfo(v));
+    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(value, this.props.term.vocabulary!.iri!);
+    this.setState({ relatedTerms: split.sameVocabulary.map(t => Term.toTermInfo(t)), relatedMatchTerms: split.differentVocabulary.map(t => Term.toTermInfo(t)) });
+  };
+
+  private static splitTermsInSameAndDifferentVocabularies(terms: Term[], vocabularyIri: string) {
+    const sameVocabulary: Term[] = [];
+    const differentVocabulary: Term[] = [];
+    terms.forEach((v) => {
+      if (v.vocabulary!.iri === vocabularyIri) {
+        sameVocabulary.push(v);
       } else {
-        relatedMatchTerms.push(Term.toTermInfo(v));
+        differentVocabulary.push(v);
       }
     });
-    this.setState({ relatedTerms, relatedMatchTerms });
-  };
+    return {sameVocabulary, differentVocabulary};
+  }
 
   public onStatusChange = () => {
     this.setState({ draft: !this.state.draft });
@@ -343,7 +349,7 @@ export class TermMetadataEdit extends React.Component<
                   <ParentTermSelector
                     id="edit-term-parent"
                     termIri={this.props.term.iri}
-                    parentTerms={this.state.parentTerms}
+                    parentTerms={[...Utils.sanitizeArray(this.state.parentTerms), ...Utils.sanitizeArray(this.state.externalParentTerms)]}
                     invalid={validationBroader.length > 0}
                     invalidMessage={this.renderMessages(validationBroader)}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
