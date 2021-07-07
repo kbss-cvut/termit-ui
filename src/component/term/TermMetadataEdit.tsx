@@ -366,6 +366,7 @@ export class TermMetadataEdit extends React.Component<
                   <RelatedTermsSelector
                     id="edit-term-related"
                     termIri={this.props.term.iri}
+                    vocabularyIri={this.props.term.vocabulary?.iri!}
                     selected={Term.consolidateRelatedAndRelatedMatch(
                       this.state
                     )}
