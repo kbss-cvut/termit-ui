@@ -88,7 +88,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(
-                this.props.vocabularyIri
+              this.props.vocabularyIri
             )}
             valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
             {...commonTermTreeSelectProps(this.props)}
