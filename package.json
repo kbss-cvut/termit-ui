@@ -8,6 +8,7 @@
     "@formatjs/intl-pluralrules": "^4.0.22",
     "@formatjs/intl-relativetimeformat": "^9.1.2",
     "@fortawesome/fontawesome-free": "^5.15.3",
+    "@opendata-mvcr/assembly-line-shared": "^0.2.0",
     "apexcharts": "^3.26.3",
     "axios": "^0.21.1",
     "bootstrap": "4.6.0",

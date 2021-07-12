@@ -25,6 +25,7 @@ import HelpIcon from "../misc/HelpIcon";
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
+  vocabularyIri: string;
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
   loadTerms: (
@@ -86,8 +87,10 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             searchDelay={300}
             maxHeight={200}
             multi={true}
-            optionRenderer={createTermsWithImportsOptionRenderer()}
-            valueRenderer={createTermValueRenderer()}
+            optionRenderer={createTermsWithImportsOptionRenderer(
+              this.props.vocabularyIri
+            )}
+            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
             {...commonTermTreeSelectProps(this.props)}
           />
         </>
