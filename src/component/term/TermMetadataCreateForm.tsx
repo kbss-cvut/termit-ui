@@ -4,7 +4,6 @@ import Term, { TermData } from "../../model/Term";
 import Utils from "../../util/Utils";
 import { Col, Form, Row } from "reactstrap";
 import CustomInput from "../misc/CustomInput";
-import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -21,6 +20,7 @@ import { checkLabelUniqueness } from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/AbstractCreateAsset";
 import MultilingualIcon from "../misc/MultilingualIcon";
+import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import ValidationResult from "../../model/form/ValidationResult";
 
 interface TermMetadataCreateFormProps extends HasI18n {
@@ -98,10 +98,6 @@ export class TermMetadataCreateForm extends React.Component<
     this.props.onChange({
       hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change),
     });
-  };
-
-  private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.props.onChange({ scopeNote: e.currentTarget.value });
   };
 
   private onIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,25 +183,11 @@ export class TermMetadataCreateForm extends React.Component<
           />
         </TermDefinitionContainer>
 
-        <Row>
-          <Col xs={12}>
-            <TextArea
-              name="create-term-comment"
-              label={
-                <>
-                  {i18n("term.metadata.comment")}
-                  <MultilingualIcon id="create-term-comment-multilingual" />
-                </>
-              }
-              labelClass="attribute-label"
-              type="textarea"
-              rows={4}
-              value={getLocalizedOrDefault(termData.scopeNote, "", language)}
-              help={i18n("term.comment.help")}
-              onChange={this.onCommentChange}
-            />
-          </Col>
-        </Row>
+        <TermScopeNoteEdit
+          term={termData}
+          language={language}
+          onChange={this.props.onChange}
+        />
 
         <Row>
           <Col xs={12}>
