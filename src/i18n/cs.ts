@@ -709,6 +709,9 @@ const cs = {
     "comments.comment.dislike": "Nelíbí se mi",
     "comments.comment.dislike.on": "Zrušit reakci",
     "comments.comment.edited": "Upraveno",
+
+    "validation.message.tooltip":
+      "Tato zpráva reprezentuje výsledek kontroly kvality. Formulář lze uložit i v případě, že kvalita není stoprocentní.",
   },
 };
 

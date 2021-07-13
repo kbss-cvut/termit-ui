@@ -2,6 +2,7 @@ import * as React from "react";
 import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import { useI18n } from "../hook/useI18n";
+import ValidationResult from "../../model/form/ValidationResult";
 
 interface ProfileEditFormProps {
   firstName: string;
@@ -32,8 +33,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             label={i18n("profile.first.name")}
             value={firstName}
             onChange={onChange}
-            invalid={firstName.trim().length === 0}
-            invalidMessage={i18n("profile.legend.invalid.name")}
+            validation={
+              firstName.trim().length === 0
+                ? ValidationResult.blocker(i18n("profile.legend.invalid.name"))
+                : ValidationResult.VALID
+            }
           />
         </Col>
         <Col xl={6} md={12}>
@@ -42,8 +46,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             label={i18n("profile.last.name")}
             value={lastName}
             onChange={onChange}
-            invalid={firstName.trim().length === 0}
-            invalidMessage={i18n("profile.legend.invalid.name")}
+            validation={
+              lastName.trim().length === 0
+                ? ValidationResult.blocker(i18n("profile.legend.invalid.name"))
+                : ValidationResult.VALID
+            }
             onKeyPress={onKeyPress}
           />
         </Col>

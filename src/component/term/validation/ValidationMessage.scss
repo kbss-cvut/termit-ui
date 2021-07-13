@@ -1,0 +1,9 @@
+@import "../../misc/validation/InputValidationMessage.scss";
+
+.alert.qualityAffectingRuleViolation {
+  background: $qualityAffectingRuleViolationColor !important;
+}
+
+.alert.qualityNotAffectingRuleViolation {
+  background: $qualityNotAffectingRuleViolationColor !important;
+}

@@ -21,6 +21,7 @@ import { checkLabelUniqueness } from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/AbstractCreateAsset";
 import MultilingualIcon from "../misc/MultilingualIcon";
+import ValidationResult from "../../model/form/ValidationResult";
 
 interface TermMetadataCreateFormProps extends HasI18n {
   onChange: (change: object, callback?: () => void) => void;
@@ -138,7 +139,13 @@ export class TermMetadataCreateForm extends React.Component<
   public render() {
     const { termData, i18n, language } = this.props;
     const label = getLocalizedOrDefault(termData.label, "", language);
-    const labelInLanguageExists = this.props.labelExist[language];
+    const labelValidation = this.props.labelExist[language]
+      ? ValidationResult.blocker(
+          this.props.formatMessage("term.metadata.labelExists.message", {
+            label,
+          })
+        )
+      : undefined;
 
     return (
       <Form>
@@ -156,15 +163,7 @@ export class TermMetadataCreateForm extends React.Component<
               hint={i18n("required")}
               onChange={this.onLabelChange}
               autoFocus={true}
-              invalid={labelInLanguageExists}
-              invalidMessage={
-                labelInLanguageExists
-                  ? this.props.formatMessage(
-                      "term.metadata.labelExists.message",
-                      { label }
-                    )
-                  : undefined
-              }
+              validation={labelValidation}
               value={label}
             />
           </Col>
