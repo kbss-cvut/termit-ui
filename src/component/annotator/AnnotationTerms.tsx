@@ -138,7 +138,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabulary!.iri
             )}
-            valueRenderer={createTermValueRenderer()}
+            valueRenderer={createTermValueRenderer(this.props.vocabulary!.iri)}
             {...commonTermTreeSelectProps(this.props)}
           />
           <FormText>

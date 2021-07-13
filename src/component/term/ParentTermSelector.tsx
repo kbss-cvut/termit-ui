@@ -225,7 +225,8 @@ export class ParentTermSelector extends React.Component<
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabularyIri
             )}
-            valueRenderer={createTermValueRenderer()}
+            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
+            style={style}
             {...commonTermTreeSelectProps(this.props)}
           />
           {this.props.validationMessage && (
