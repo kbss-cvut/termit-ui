@@ -701,6 +701,9 @@ const en = {
     "comments.comment.dislike": "Dislike this comment",
     "comments.comment.dislike.on": "Cancel reaction",
     "comments.comment.edited": "Edited",
+
+    "validation.message.tooltip":
+      "This is a quality validation result. The form can be submitted even if it has quality issues.",
   },
 };
 

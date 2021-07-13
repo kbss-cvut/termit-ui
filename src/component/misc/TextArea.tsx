@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormFeedback, FormGroup, Input } from "reactstrap";
+import { FormGroup, Input } from "reactstrap";
 import AbstractInput, { AbstractInputProps } from "./AbstractInput";
 
 export interface TextAreaProps extends AbstractInputProps {
@@ -27,7 +27,7 @@ export default class TextArea extends AbstractInput<TextAreaProps> {
           ref={this.input}
           {...this.inputProps()}
         />
-        <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+        {this.renderValidationMessages()}
         {this.renderHint()}
       </FormGroup>
     );

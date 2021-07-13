@@ -1,28 +1,16 @@
+import React from "react";
 import { Alert } from "reactstrap";
-import { ValidationUtils } from "./ValidationUtils";
+import ValidationResult, {
+  mapToCssClass,
+} from "../../../model/form/ValidationResult";
+import "./ValidationMessage.scss";
 
 interface ValidationMessageProps {
-  sourceShapeIri: string;
-  message: string;
+  result: ValidationResult;
 }
 
-const ValidationMessage = (props: ValidationMessageProps) =>
-  ValidationUtils.qualityAffectingRules.indexOf(props.sourceShapeIri) > -1 ? (
-    <Alert
-      style={{
-        backgroundColor: ValidationUtils.qualityAffectingRuleViolationColor,
-      }}
-    >
-      {props.message}
-    </Alert>
-  ) : (
-    <Alert
-      style={{
-        backgroundColor: ValidationUtils.qualityNotAffectingRuleViolationColor,
-      }}
-    >
-      {props.message}
-    </Alert>
-  );
+const ValidationMessage: React.FC<ValidationMessageProps> = ({ result }) => (
+  <Alert className={mapToCssClass(result.severity)}>{result.message}</Alert>
+);
 
 export default ValidationMessage;

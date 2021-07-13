@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormFeedback, FormGroup, Input } from "reactstrap";
+import { FormGroup, Input } from "reactstrap";
 import AbstractInput, { AbstractInputProps } from "./AbstractInput";
 
 export interface InputProps extends AbstractInputProps {
@@ -20,9 +20,11 @@ export default class CustomInput extends AbstractInput<InputProps> {
           ref={(c: any) => (this.input = c)}
           required={required}
           bsSize="sm"
+          valid={this.isValid()}
+          invalid={this.isInvalid()}
           {...this.inputProps()}
         />
-        <FormFeedback>{this.props.invalidMessage}</FormFeedback>
+        {this.renderValidationMessages()}
         {this.renderHint()}
       </FormGroup>
     );
