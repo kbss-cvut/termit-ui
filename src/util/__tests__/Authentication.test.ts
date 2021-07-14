@@ -2,36 +2,40 @@ import Authentication from "../Authentication";
 import Constants from "../Constants";
 import { EMPTY_USER } from "../../model/User";
 import Generator from "../../__tests__/environment/Generator";
+import BrowserStorage from "../BrowserStorage";
+
+jest.mock("../BrowserStorage");
 
 describe("Authentication", () => {
   const jwt = "jwt12345";
 
   beforeEach(() => {
-    localStorage.clear();
+    jest.resetAllMocks();
   });
 
-  it("saves JWT into local storage on saveJwt", () => {
+  it("saves JWT into browser storage on saveJwt", () => {
     Authentication.saveToken(jwt);
-    expect(localStorage.setItem).toHaveBeenCalledWith(
+    expect(BrowserStorage.set).toHaveBeenCalledWith(
       Constants.STORAGE_JWT_KEY,
       jwt
     );
   });
 
   it("loads JWT from local storage", () => {
-    localStorage.__STORE__[Constants.STORAGE_JWT_KEY] = jwt;
+    (BrowserStorage.get as jest.Mock).mockReturnValue(jwt);
     expect(Authentication.loadToken()).toEqual(jwt);
   });
 
   it("returns empty string when JWT is not present in local storage", () => {
-    localStorage.clear();
+    (BrowserStorage.get as jest.Mock).mockReturnValue("");
     expect(Authentication.loadToken()).toEqual("");
   });
 
   it("clears local storage on clearJwt", () => {
-    localStorage.__STORE__[Constants.STORAGE_JWT_KEY] = jwt;
     Authentication.clearToken();
-    expect(localStorage.__STORE__[Constants.STORAGE_JWT_KEY]).not.toBeDefined();
+    expect(BrowserStorage.remove).toHaveBeenCalledWith(
+      Constants.STORAGE_JWT_KEY
+    );
   });
 
   describe("isLoggedIn", () => {

@@ -158,8 +158,15 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
   };
 }
 
-export function createTermValueRenderer() {
-  return (option: Term) => <TermLink term={option} />;
+export function createTermValueRenderer(vocabularyIri: string) {
+  return (option: Term) => (
+    <>
+      <TermLink term={option} />
+      {vocabularyIri !== option.vocabulary?.iri ? (
+        <VocabularyNameBadge vocabulary={option.vocabulary} />
+      ) : null}
+    </>
+  );
 }
 
 export function createVocabularyValueRenderer() {

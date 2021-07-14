@@ -4,7 +4,6 @@ import { TermData } from "../../model/Term";
 import Utils from "../../util/Utils";
 import { Col, Form, Row } from "reactstrap";
 import CustomInput from "../misc/CustomInput";
-import TextArea from "../misc/TextArea";
 import TermTypesEdit from "./TermTypesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -21,6 +20,8 @@ import { checkLabelUniqueness } from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/AbstractCreateAsset";
 import MultilingualIcon from "../misc/MultilingualIcon";
+import TermScopeNoteEdit from "./TermScopeNoteEdit";
+import ValidationResult from "../../model/form/ValidationResult";
 
 interface TermMetadataCreateFormProps extends HasI18n {
   onChange: (change: object, callback?: () => void) => void;
@@ -99,10 +100,6 @@ export class TermMetadataCreateForm extends React.Component<
     });
   };
 
-  private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.props.onChange({ scopeNote: e.currentTarget.value });
-  };
-
   private onIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setIdentifier(e.currentTarget.value, () =>
       this.setState({ generateUri: false })
@@ -134,7 +131,13 @@ export class TermMetadataCreateForm extends React.Component<
   public render() {
     const { termData, i18n, language } = this.props;
     const label = getLocalizedOrDefault(termData.label, "", language);
-    const labelInLanguageExists = this.props.labelExist[language];
+    const labelValidation = this.props.labelExist[language]
+      ? ValidationResult.blocker(
+          this.props.formatMessage("term.metadata.labelExists.message", {
+            label,
+          })
+        )
+      : undefined;
 
     return (
       <Form>
@@ -152,15 +155,7 @@ export class TermMetadataCreateForm extends React.Component<
               hint={i18n("required")}
               onChange={this.onLabelChange}
               autoFocus={true}
-              invalid={labelInLanguageExists}
-              invalidMessage={
-                labelInLanguageExists
-                  ? this.props.formatMessage(
-                      "term.metadata.labelExists.message",
-                      { label }
-                    )
-                  : undefined
-              }
+              validation={labelValidation}
               value={label}
             />
           </Col>
@@ -184,25 +179,11 @@ export class TermMetadataCreateForm extends React.Component<
           />
         </TermDefinitionContainer>
 
-        <Row>
-          <Col xs={12}>
-            <TextArea
-              name="create-term-comment"
-              label={
-                <>
-                  {i18n("term.metadata.comment")}
-                  <MultilingualIcon id="create-term-comment-multilingual" />
-                </>
-              }
-              labelClass="attribute-label"
-              type="textarea"
-              rows={4}
-              value={getLocalizedOrDefault(termData.scopeNote, "", language)}
-              help={i18n("term.comment.help")}
-              onChange={this.onCommentChange}
-            />
-          </Col>
-        </Row>
+        <TermScopeNoteEdit
+          term={termData}
+          language={language}
+          onChange={this.props.onChange}
+        />
 
         <Row>
           <Col xs={12}>

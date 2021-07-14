@@ -13,7 +13,6 @@ import {
   createTermsWithImportsOptionRenderer,
   createTermValueRenderer,
 } from "../misc/treeselect/Renderers";
-import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,
@@ -38,7 +37,7 @@ interface ExactMatchesSelectorProps
   id: string;
   termIri?: string;
   selected?: TermData[];
-  currentVocabulary?: Vocabulary;
+  vocabularyIri: string;
   onChange: (exactMatches: Term[]) => void;
 }
 
@@ -128,7 +127,7 @@ export class ExactMatchesSelector extends BaseRelatedTermSelector<ExactMatchesSe
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabularyIri
             )}
-            valueRenderer={createTermValueRenderer()}
+            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
             {...commonTermTreeSelectProps(this.props)}
           />
         </>

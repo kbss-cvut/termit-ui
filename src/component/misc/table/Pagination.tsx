@@ -10,6 +10,7 @@ import Select from "../Select";
 import "./Pagination.scss";
 import Constants from "../../../util/Constants";
 import { useI18n } from "../../hook/useI18n";
+import BrowserStorage from "../../../util/BrowserStorage";
 
 interface PaginationProps {
   pagingProps: UsePaginationInstanceProps<any>;
@@ -33,7 +34,7 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
   } = props.pagingProps;
   const { pageIndex, pageSize } = props.pagingState;
   React.useEffect(() => {
-    const savedPageSize = localStorage.getItem(
+    const savedPageSize = BrowserStorage.get(
       Constants.STORAGE_TABLE_PAGE_SIZE_KEY
     );
     if (savedPageSize) {
@@ -42,7 +43,7 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
   }, [setPageSize]);
   const onPageSizeSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    localStorage.setItem(Constants.STORAGE_TABLE_PAGE_SIZE_KEY, value);
+    BrowserStorage.set(Constants.STORAGE_TABLE_PAGE_SIZE_KEY, value);
     setPageSize(Number(value));
   };
 

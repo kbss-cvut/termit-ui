@@ -10,7 +10,7 @@ import Utils from "../../util/Utils";
 import ValidationResult from "../../model/ValidationResult";
 import Routing from "../../util/Routing";
 import { ConsolidatedResults } from "../../model/ConsolidatedResults";
-import { ValidationUtils } from "./validation/ValidationUtils";
+import Validation from "../../util/Validation";
 
 interface TermQualityBadgeProps extends HasI18n, RouteComponentProps<any> {
   term: Term | null;
@@ -21,13 +21,11 @@ export class TermQualityBadge extends React.Component<TermQualityBadgeProps> {
   private computeScore(results: ValidationResult[]): number | undefined {
     return results.reduce((reduceScore, result) => {
       if (
-        ValidationUtils.qualityAffectingRules.indexOf(
-          result.sourceShape?.iri
-        ) >= 0
+        Validation.QUALITY_AFFECTING_RULES.indexOf(result.sourceShape?.iri) >= 0
       ) {
         return (
           reduceScore -
-          Math.floor(100 / ValidationUtils.qualityAffectingRules.length)
+          Math.floor(100 / Validation.QUALITY_AFFECTING_RULES.length)
         );
       }
       return reduceScore;

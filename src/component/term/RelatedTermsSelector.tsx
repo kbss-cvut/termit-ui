@@ -36,6 +36,7 @@ interface RelatedTermsSelectorProps
     BaseRelatedTermSelectorProps {
   id: string;
   termIri?: string;
+  vocabularyIri: string;
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
 }
@@ -99,7 +100,7 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabularyIri
             )}
-            valueRenderer={createTermValueRenderer()}
+            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
             {...commonTermTreeSelectProps(this.props)}
           />
         </>

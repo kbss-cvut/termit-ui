@@ -23,6 +23,7 @@ interface StringListEditProps extends HasI18n {
   i18nPrefix: string;
   invalid?: boolean;
   invalidMessage?: JSX.Element;
+  validationMessage?: string | JSX.Element;
 }
 
 interface StringListEditState {
@@ -105,10 +106,16 @@ export class StringListEdit extends React.Component<
               &nbsp;{this.getText("addButton.text")}
             </Button>
           </InputGroupAddon>
-          {this.props.invalid ? (
+          {this.props.invalid && (
             <FormFeedback>{this.props.invalidMessage}</FormFeedback>
-          ) : (
-            <></>
+          )}
+          {this.props.validationMessage && (
+            <FormFeedback
+              className="validation-feedback"
+              title={this.props.i18n("validation.message.tooltip")}
+            >
+              {this.props.validationMessage}
+            </FormFeedback>
           )}
         </InputGroup>
         {this.renderList()}

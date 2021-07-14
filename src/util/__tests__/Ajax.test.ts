@@ -21,6 +21,7 @@ import Generator from "../../__tests__/environment/Generator";
 
 jest.mock("../Routing");
 jest.mock("../Authentication");
+jest.mock("../BrowserStorage");
 
 export class MockableAjax extends Ajax {
   get axios(): AxiosInstance {
@@ -37,7 +38,6 @@ describe("Ajax", () => {
 
   beforeEach(() => {
     mock.reset();
-    localStorage.clear();
     headers = {};
     headers[Constants.Headers.AUTHORIZATION] = jwt;
   });

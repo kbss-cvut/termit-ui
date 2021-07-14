@@ -29,8 +29,6 @@ import BroaderTypeSelector from "./BroaderTypeSelector";
 import BaseRelatedTermSelector, {
   BaseRelatedTermSelectorProps,
   BaseRelatedTermSelectorState,
-  PAGE_SIZE,
-  SEARCH_DELAY,
 } from "./BaseRelatedTermSelector";
 
 export const PARENT_ATTRIBUTES = [
@@ -66,9 +64,15 @@ interface ParentTermSelectorProps
     BaseRelatedTermSelectorProps {
   id: string;
   term: Term | TermData;
-  invalid?: boolean;
-  invalidMessage?: JSX.Element;
+  parentTerms?: TermData[];
+  validationMessage?: string | JSX.Element;
+  vocabularyIri: string;
   onChange: (change: Partial<TermData>) => void;
+  loadTerms: (
+    fetchOptions: FetchOptionsFunction,
+    vocabularyIri: IRI
+  ) => Promise<Term[]>;
+  loadImportedVocabularies: (vocabularyIri: IRI) => Promise<string[]>;
 }
 
 interface ParentTermSelectorState extends BaseRelatedTermSelectorState {
@@ -196,98 +200,93 @@ export class ParentTermSelector extends BaseRelatedTermSelector<
   }
 
   private renderSelector() {
-    let style;
-    if (this.props.invalid) {
-      style = { borderColor: "red" };
-    } else {
-      style = {};
-    }
-    return (
-      <>
-        <BroaderTypeSelector
-          onSelect={this.onBroaderTypeSelect}
-          onCancel={this.closeBroaderTypeSelect}
-          show={this.state.showBroaderTypeSelector}
-          currentValue={this.state.currentBroaderAttribute!}
-        />
-        <IntelligentTreeSelect
-          onChange={this.onChange}
-          ref={this.treeComponent}
-          value={[]}
-          fetchOptions={this.fetchOptions}
-          fetchLimit={PAGE_SIZE}
-          searchDelay={SEARCH_DELAY}
-          maxHeight={200}
-          multi={true}
-          optionRenderer={createTermsWithVocabularyInfoRenderer()}
-          valueRenderer={createValueRenderer()}
-          style={style}
-          {...commonTermTreeSelectProps(this.props)}
-        />
-        {this.props.invalid ? (
-          <FormFeedback style={{ display: "block" }}>
-            {this.props.invalidMessage}
-          </FormFeedback>
-        ) : (
-          <></>
-        )}
-      </>
-    );
+    const i18n = this.props.i18n;
+      return (
+          <>
+            <BroaderTypeSelector
+                onSelect={this.onBroaderTypeSelect}
+                onCancel={this.closeBroaderTypeSelect}
+                show={this.state.showBroaderTypeSelector}
+                currentValue={this.state.currentBroaderAttribute!}
+            />
+            <IntelligentTreeSelect
+                onChange={this.onChange}
+                ref={this.treeComponent}
+                value={[]}
+                fetchOptions={this.fetchOptions}
+                fetchLimit={300}
+                searchDelay={300}
+                maxHeight={200}
+                multi={true}
+                optionRenderer={createTermsWithVocabularyInfoRenderer()}
+                valueRenderer={createValueRenderer()}
+                {...commonTermTreeSelectProps(this.props)}
+            />
+            {this.props.validationMessage && (
+                <FormFeedback
+                    className="validation-feedback"
+                    title={i18n("validation.message.tooltip")}
+                >
+                  {this.props.validationMessage}
+                </FormFeedback>
+            )}
+          </>
+      );
   }
 
   private renderSelected() {
-    const { i18n, term, workspace } = this.props;
+    const {i18n, term, workspace} = this.props;
     return (
-      <table className="mt-1">
-        <tbody>
+        <table className="mt-1">
+          <tbody>
           {PARENT_ATTRIBUTES.map((pt) =>
-            Utils.sanitizeArray(term[pt.attribute]).map((value) => (
-              <tr key={value.iri}>
-                <td className="align-middle">
-                  <ul className="term-items mt-0 mb-0">
-                    <li>
-                      <VocabularyNameBadge
-                        className="mr-1 align-text-top"
-                        vocabulary={value.vocabulary}
-                      />
-                      {value.vocabulary &&
-                      workspace.containsVocabulary(value.vocabulary.iri) ? (
-                        <TermLink term={value} />
-                      ) : (
-                        getLocalized(value.label)
-                      )}
-                    </li>
-                  </ul>
-                </td>
-                <td className="align-middle pl-3">
-                  <ButtonToolbar>
-                    <BadgeButton
-                      color="primary"
-                      title={i18n(pt.selectorHintKey)}
-                      className="term-broader-selector"
-                      onClick={() =>
-                        this.onEditBroaderProperty(value, pt.attribute)
-                      }
-                    >
-                      <FaPencilAlt className="mr-1" />
-                      {i18n(pt.selectorLabelKey)}
-                    </BadgeButton>
-                    <BadgeButton
-                      color="danger"
-                      outline={true}
-                      className="m-broader-remove"
-                      onClick={() => this.onRemove(value, pt.attribute)}
-                    >
-                      <FaTrashAlt className="mr-1" />
-                      {i18n("properties.edit.remove.text")}
-                    </BadgeButton>
-                  </ButtonToolbar>
-                </td>
-              </tr>
-            ))
+              Utils.sanitizeArray(term[pt.attribute]).map((value) => (
+                  <tr key={value.iri}>
+                    <td className="align-middle">
+                      <ul className="term-items mt-0 mb-0">
+                        <li>
+                          <VocabularyNameBadge
+                              className="mr-1 align-text-top"
+                              vocabulary={value.vocabulary}
+                          />
+                          {value.vocabulary &&
+                          workspace.containsVocabulary(value.vocabulary.iri) ? (
+                              <TermLink term={value}/>
+                          ) : (
+                              getLocalized(value.label)
+                          )}
+                        </li>
+                      </ul>
+                    </td>
+                    <td className="align-middle pl-3">
+                      <ButtonToolbar>
+                        <BadgeButton
+                            color="primary"
+                            title={i18n(pt.selectorHintKey)}
+                            className="term-broader-selector"
+                            onClick={() =>
+                                this.onEditBroaderProperty(value, pt.attribute)
+                            }
+                        >
+                          <FaPencilAlt className="mr-1"/>
+                          {i18n(pt.selectorLabelKey)}
+                        </BadgeButton>
+                        <BadgeButton
+                            color="danger"
+                            outline={true}
+                            className="m-broader-remove"
+                            onClick={() => this.onRemove(value, pt.attribute)}
+                        >
+                          <FaTrashAlt className="mr-1"/>
+                          {i18n("properties.edit.remove.text")}
+                        </BadgeButton>
+                      </ButtonToolbar>
+                    </td>
+                  </tr>
+              ))
           )}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
     );
   }
 }

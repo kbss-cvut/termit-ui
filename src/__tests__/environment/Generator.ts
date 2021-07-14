@@ -5,6 +5,7 @@ import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
 import { langString } from "../../model/MultilingualString";
 import Comment from "../../model/Comment";
+import ValidationResult from "../../model/ValidationResult";
 
 export default class Generator {
   public static readonly URI_BASE =
@@ -94,5 +95,18 @@ export default class Generator {
       asset: Generator.generateTerm(),
       author: Generator.generateUser(),
     });
+  }
+
+  public static generateValidationResult(
+    termIri: string = Generator.generateUri()
+  ) {
+    return new ValidationResult(
+      Generator.generateUri(),
+      { iri: termIri, label: { cs: "Test term" } },
+      { iri: VocabularyUtils.SH_VIOLATION },
+      [{ language: "cs", value: "Chyba" }],
+      { iri: "https://example.org/sourceShape" },
+      { iri: VocabularyUtils.SKOS_PREF_LABEL }
+    );
   }
 }

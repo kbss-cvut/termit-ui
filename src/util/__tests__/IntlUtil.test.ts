@@ -4,10 +4,13 @@ import {
   saveLanguagePreference,
 } from "../IntlUtil";
 import Constants from "../Constants";
+import BrowserStorage from "../BrowserStorage";
+
+jest.mock("../BrowserStorage");
 
 describe("IntlUtil", () => {
   beforeEach(() => {
-    localStorage.clear();
+    jest.resetAllMocks();
   });
 
   it("loads Czech localization data for Czech language", () => {
@@ -25,16 +28,16 @@ describe("IntlUtil", () => {
     expect(result.locale).toEqual(Constants.LANG.EN.locale);
   });
 
-  it("loads localization data based on language preference stored in localStorage", () => {
-    localStorage.__STORE__[Constants.STORAGE_LANG_KEY] =
-      Constants.LANG.CS.locale;
+  it("loads localization data based on language preference stored in browser storage", () => {
+    (BrowserStorage.get as jest.Mock).mockReturnValue(Constants.LANG.CS.locale);
     const result = loadInitialLocalizationData();
     expect(result.locale).toEqual(Constants.LANG.CS.locale);
   });
 
-  it("stores language preference in local storage", () => {
+  it("stores language preference in browser storage", () => {
     saveLanguagePreference(Constants.LANG.CS.locale);
-    expect(localStorage.__STORE__[Constants.STORAGE_LANG_KEY]).toEqual(
+    expect(BrowserStorage.set).toHaveBeenCalledWith(
+      Constants.STORAGE_LANG_KEY,
       Constants.LANG.CS.locale
     );
   });

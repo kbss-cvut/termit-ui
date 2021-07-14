@@ -1,57 +1,38 @@
 import * as React from "react";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
-import ValidationResult from "../../../model/ValidationResult";
-import { injectIntl } from "react-intl";
-import { connect } from "react-redux";
+import FormValidationResult from "../../../model/form/ValidationResult";
+import { useSelector } from "react-redux";
 import ValidationMessage from "./ValidationMessage";
 import TermItState from "../../../model/TermItState";
 import Term from "../../../model/Term";
+import { useI18n } from "../../hook/useI18n";
 
-interface ValidationResultsProps extends HasI18n {
+interface ValidationResultsProps {
   term: Term;
-  validationResults: { [vocabularyIri: string]: ValidationResult[] };
 }
 
-export class ValidationResults extends React.Component<ValidationResultsProps> {
-  private renderResultMessage(result: ValidationResult) {
-    let message;
-    if (Array.isArray(result.message)) {
-      message = result.message.find(
-        (msg) => msg.language === this.props.locale
-      );
-      if (!message) message = result.message.find(() => true);
-    } else {
-      message = result.message;
-    }
-    return (
-      <ValidationMessage
-        key={result.iri}
-        sourceShapeIri={result.sourceShape?.iri}
-        message={message!.value}
-      />
-    );
-  }
+const ValidationResults: React.FC<ValidationResultsProps> = (props) => {
+  const { term } = props;
+  const validationResults = useSelector(
+    (state: TermItState) => state.validationResults[state.vocabulary.iri]
+  );
+  const { i18n, locale } = useI18n();
 
-  render() {
-    const termResults =
-      (this.props.validationResults || [])[this.props.term.iri] || [];
-    return termResults && termResults.length > 0 ? (
-      <div
-        id="validation-result-list"
-        className="additional-metadata-container"
-      >
-        {termResults.map((result) => this.renderResultMessage(result))}
-      </div>
-    ) : (
-      <div className="additional-metadata-container italics">
-        {this.props.i18n("term.metadata.validation.empty")}
-      </div>
-    );
-  }
-}
+  const termResults = (validationResults || [])[term.iri] || [];
+  return termResults && termResults.length > 0 ? (
+    <div id="validation-result-list" className="additional-metadata-container">
+      {termResults.map((result) => {
+        const message = FormValidationResult.fromOntoValidationResult(
+          result,
+          locale
+        );
+        return <ValidationMessage key={result.iri} result={message} />;
+      })}
+    </div>
+  ) : (
+    <div className="additional-metadata-container italics">
+      {i18n("term.metadata.validation.empty")}
+    </div>
+  );
+};
 
-export default connect((state: TermItState) => {
-  return {
-    validationResults: state.validationResults[state.vocabulary.iri],
-  };
-}, {})(injectIntl(withI18n(ValidationResults)));
+export default ValidationResults;

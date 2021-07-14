@@ -109,7 +109,7 @@ const constants = {
   CSV_MIME_TYPE: "text/csv",
   TTL_MIME_TYPE: "text/turtle",
   EXCEL_MIME_TYPE:
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   X_WWW_FORM_URLENCODED: "application/x-www-form-urlencoded;charset=UTF-8",
   MULTIPART_FORM_DATA: "multipart/form-data",
   // HTTP response status 401 Unauthorized
@@ -132,6 +132,7 @@ const constants = {
   STORAGE_JWT_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}${AUTHORIZATION}`,
   STORAGE_LANG_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}LANG`,
   STORAGE_TABLE_PAGE_SIZE_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}TABLE_PAGE_SIZE`,
+  STORAGE_ANNOTATOR_LEGEND_OPEN_KEY: `${APP_NAME}-${DEPLOYMENT_INFIX}TABLE_PAGE_SIZE`,
   // How many messages should be displayed at one moment
   MESSAGE_DISPLAY_COUNT: 5,
   // For how long should a message be displayed
@@ -148,7 +149,7 @@ const constants = {
   // LAYOUT_WALLPAPER: "/background/Magnetic_Termite_Mounds.small-blur.jpg",
   // LAYOUT_WALLPAPER_POSITION: "center center", // CSS background-position property
   LAYOUT_WALLPAPER:
-    "background/people-on-the-bridge-with-cityscape-in-prague-czech-republic.small-blur.jpg",
+      "background/people-on-the-bridge-with-cityscape-in-prague-czech-republic.small-blur.jpg",
 
   // Navbar background when LAYOUT_WALLPAPER is in use
   LAYOUT_WALLPAPER_NAVBAR_BACKGROUND_IS_LIGHT: false,
@@ -158,7 +159,7 @@ const constants = {
   LAST_COMMENTED_ASSET_LIMIT: 5,
 
   SUBMIT_BUTTON_VARIANT: "primary",
-  CANCEL_BUTTON_VARIANT: "outline-primary",
-} as const;
+  CANCEL_BUTTON_VARIANT: "outline-primary"
+}
 
 export default constants;

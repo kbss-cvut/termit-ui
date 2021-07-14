@@ -14,6 +14,7 @@ import { OWL, SKOS } from "../../util/Namespaces";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermDefinitionBlock from "./TermDefinitionBlock";
 import ParentTermsList from "./ParentTermsList";
+import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 
 interface BasicTermMetadataProps extends HasI18n {
   term: Term;
@@ -154,6 +155,9 @@ export class BasicTermMetadata extends React.Component<
             {list.map((item) => (
               <li key={item.iri}>
                 <TermLink term={item} language={this.props.language} />
+                {this.props.term.vocabulary !== item.vocabulary ? (
+                  <VocabularyNameBadge vocabulary={item.vocabulary} />
+                ) : null}
               </li>
             ))}
           </List>
