@@ -149,10 +149,6 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ types: newTypes });
   };
 
-  public onParentChange = (parentTerms?: Term[]) => {
-    this.setState({ parentTerms });
-  };
-
   public onExactMatchesChange = (exactMatchTerms: Term[]) => {
     this.setState({
       exactMatchTerms: exactMatchTerms.map((e) => e as TermInfo),
@@ -337,7 +333,7 @@ export class TermMetadataEdit extends React.Component<
                 <Col xs={12}>
                   <ParentTermSelector
                     id="edit-term-parent"
-                    term={this.props.term}
+                    term={this.state}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onChange}
                   />
