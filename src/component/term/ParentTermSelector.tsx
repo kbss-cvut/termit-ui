@@ -29,6 +29,8 @@ import BroaderTypeSelector from "./BroaderTypeSelector";
 import BaseRelatedTermSelector, {
   BaseRelatedTermSelectorProps,
   BaseRelatedTermSelectorState,
+  PAGE_SIZE,
+  SEARCH_DELAY,
 } from "./BaseRelatedTermSelector";
 
 export const PARENT_ATTRIBUTES = [
@@ -64,9 +66,7 @@ interface ParentTermSelectorProps
     BaseRelatedTermSelectorProps {
   id: string;
   term: Term | TermData;
-  parentTerms?: TermData[];
   validationMessage?: string | JSX.Element;
-  vocabularyIri: string;
   onChange: (change: Partial<TermData>) => void;
 }
 
@@ -209,8 +209,8 @@ export class ParentTermSelector extends BaseRelatedTermSelector<
           ref={this.treeComponent}
           value={[]}
           fetchOptions={this.fetchOptions}
-          fetchLimit={300}
-          searchDelay={300}
+          fetchLimit={PAGE_SIZE}
+          searchDelay={SEARCH_DELAY}
           maxHeight={200}
           multi={true}
           optionRenderer={createTermsWithVocabularyInfoRenderer()}

@@ -338,7 +338,6 @@ export class TermMetadataEdit extends React.Component<
                   <ParentTermSelector
                     id="edit-term-parent"
                     term={this.props.term}
-                    parentTerms={this.state.parentTerms}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onChange}
                   />
