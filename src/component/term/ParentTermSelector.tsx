@@ -68,11 +68,6 @@ interface ParentTermSelectorProps
   validationMessage?: string | JSX.Element;
   vocabularyIri: string;
   onChange: (change: Partial<TermData>) => void;
-  loadTerms: (
-    fetchOptions: FetchOptionsFunction,
-    vocabularyIri: IRI
-  ) => Promise<Term[]>;
-  loadImportedVocabularies: (vocabularyIri: IRI) => Promise<string[]>;
 }
 
 interface ParentTermSelectorState extends BaseRelatedTermSelectorState {

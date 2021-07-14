@@ -240,9 +240,6 @@ export class TermMetadataEdit extends React.Component<
     const validationScopeNote = this.getValidationResults(
       VocabularyUtils.SKOS_SCOPE_NOTE
     );
-    const validationBroader = this.getValidationResults(
-      VocabularyUtils.BROADER
-    );
     const validationType = this.getValidationResults(VocabularyUtils.RDF_TYPE);
     return (
       <>
@@ -340,12 +337,8 @@ export class TermMetadataEdit extends React.Component<
                 <Col xs={12}>
                   <ParentTermSelector
                     id="edit-term-parent"
-                    termIri={this.props.term.iri}
+                    term={this.props.term}
                     parentTerms={this.state.parentTerms}
-                    validationMessage={renderValidationMessages(
-                      this.props.locale,
-                      validationBroader
-                    )}
                     vocabularyIri={this.props.term.vocabulary!.iri!}
                     onChange={this.onChange}
                   />
