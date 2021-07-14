@@ -109,7 +109,7 @@ const constants = {
   CSV_MIME_TYPE: "text/csv",
   TTL_MIME_TYPE: "text/turtle",
   EXCEL_MIME_TYPE:
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   X_WWW_FORM_URLENCODED: "application/x-www-form-urlencoded;charset=UTF-8",
   MULTIPART_FORM_DATA: "multipart/form-data",
   // HTTP response status 401 Unauthorized
@@ -149,7 +149,7 @@ const constants = {
   // LAYOUT_WALLPAPER: "/background/Magnetic_Termite_Mounds.small-blur.jpg",
   // LAYOUT_WALLPAPER_POSITION: "center center", // CSS background-position property
   LAYOUT_WALLPAPER:
-      "background/people-on-the-bridge-with-cityscape-in-prague-czech-republic.small-blur.jpg",
+    "background/people-on-the-bridge-with-cityscape-in-prague-czech-republic.small-blur.jpg",
 
   // Navbar background when LAYOUT_WALLPAPER is in use
   LAYOUT_WALLPAPER_NAVBAR_BACKGROUND_IS_LIGHT: false,
@@ -159,7 +159,7 @@ const constants = {
   LAST_COMMENTED_ASSET_LIMIT: 5,
 
   SUBMIT_BUTTON_VARIANT: "primary",
-  CANCEL_BUTTON_VARIANT: "outline-primary"
-}
+  CANCEL_BUTTON_VARIANT: "outline-primary",
+};
 
 export default constants;
