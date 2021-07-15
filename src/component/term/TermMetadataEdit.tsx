@@ -149,14 +149,7 @@ export class TermMetadataEdit extends React.Component<
   };
 
   public onParentChange = (parentTerms: Term[]) => {
-    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(
-      parentTerms,
-      this.props.term.vocabulary!.iri!
-    );
-    this.setState({
-      parentTerms: split.sameVocabulary,
-      externalParentTerms: split.differentVocabulary,
-    });
+    this.setState({ parentTerms });
   };
 
   public onExactMatchesChange = (exactMatchTerms: Term[]) => {
@@ -182,7 +175,7 @@ export class TermMetadataEdit extends React.Component<
     });
   };
 
-  public static splitTermsInSameAndDifferentVocabularies(
+  private static splitTermsInSameAndDifferentVocabularies(
     terms: Term[],
     vocabularyIri: string
   ) {
@@ -366,10 +359,7 @@ export class TermMetadataEdit extends React.Component<
                   <ParentTermSelector
                     id="edit-term-parent"
                     termIri={this.props.term.iri}
-                    parentTerms={[
-                      ...Utils.sanitizeArray(this.state.parentTerms),
-                      ...Utils.sanitizeArray(this.state.externalParentTerms),
-                    ]}
+                    parentTerms={this.state.parentTerms}
                     invalid={validationBroader.length > 0}
                     invalidMessage={this.renderMessages(validationBroader)}
                     vocabularyIri={this.props.term.vocabulary!.iri!}

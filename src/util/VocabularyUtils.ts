@@ -66,7 +66,6 @@ const VocabularyUtils = {
   DEFINITION: _NS_SKOS + "definition",
   BROADER: _NS_SKOS + "broader",
   NARROWER: _NS_SKOS + "narrower",
-  BROAD_MATCH: _NS_SKOS + "broadMatch",
   SKOS_PREF_LABEL: _NS_SKOS + "prefLabel",
   SKOS_ALT_LABEL: _NS_SKOS + "altLabel",
   SKOS_HIDDEN_LABEL: _NS_SKOS + "hiddenLabel",

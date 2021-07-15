@@ -20,7 +20,6 @@ const ctx = {
   definition: context(VocabularyUtils.DEFINITION),
   scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
   parentTerms: VocabularyUtils.BROADER,
-  externalParentTerms: VocabularyUtils.BROAD_MATCH,
   exactMatchTerms: VocabularyUtils.SKOS_EXACT_MATCH,
   relatedTerms: VocabularyUtils.SKOS_RELATED,
   relatedMatchTerms: VocabularyUtils.SKOS_RELATED_MATCH,
@@ -51,7 +50,6 @@ const MAPPED_PROPERTIES = [
   "sources",
   "types",
   "parentTerms",
-  "externalParentTerms",
   "parent",
   "relatedTerms",
   "relatedMatchTerms",
@@ -83,7 +81,6 @@ export interface TermData extends AssetData {
   sources?: string[];
   // Represents proper parent Term, stripped of broader terms representing other model relationships
   parentTerms?: TermData[];
-  externalParentTerms?: TermData[];
   parent?: string; // Introduced in order to support the Intelligent Tree Select component
   plainSubTerms?: string[]; // Introduced in order to support the Intelligent Tree Select component
   vocabulary?: AssetData;
@@ -115,7 +112,6 @@ export default class Term extends Asset implements TermData {
   public relatedMatchTerms?: TermInfo[];
   public subTerms?: TermInfo[];
   public parentTerms?: Term[];
-  public externalParentTerms?: Term[];
   public readonly parent?: string;
   public sources?: string[];
   public plainSubTerms?: string[];
@@ -134,12 +130,6 @@ export default class Term extends Asset implements TermData {
     if (this.parentTerms) {
       this.parentTerms = this.handleParents(this.parentTerms, visitedTerms);
       this.parent = this.resolveParent(this.parentTerms);
-    }
-    if (this.externalParentTerms) {
-      this.externalParentTerms = this.handleParents(
-        this.externalParentTerms,
-        visitedTerms
-      );
     }
     this.sanitizeTermInfoArrays();
     this.syncPlainSubTerms();

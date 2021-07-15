@@ -21,7 +21,6 @@ import { checkLabelUniqueness } from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/AbstractCreateAsset";
 import MultilingualIcon from "../misc/MultilingualIcon";
-import { TermMetadataEdit } from "./TermMetadataEdit";
 
 interface TermMetadataCreateFormProps extends HasI18n {
   onChange: (change: object, callback?: () => void) => void;
@@ -132,15 +131,8 @@ export class TermMetadataCreateForm extends React.Component<
     this.props.onChange({ types });
   };
 
-  public onParentSelect = (value: Term[]) => {
-    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(
-      value,
-      this.props.vocabularyIri
-    );
-    this.props.onChange({
-      parentTerms: split.sameVocabulary,
-      externalParentTerms: split.differentVocabulary,
-    });
+  public onParentSelect = (parentTerms: Term[]) => {
+    this.props.onChange({ parentTerms });
   };
 
   public render() {
@@ -221,10 +213,7 @@ export class TermMetadataCreateForm extends React.Component<
             <ParentTermSelector
               id="create-term-parent"
               onChange={this.onParentSelect}
-              parentTerms={[
-                ...Utils.sanitizeArray(termData.parentTerms),
-                ...Utils.sanitizeArray(termData.externalParentTerms),
-              ]}
+              parentTerms={termData.parentTerms}
               vocabularyIri={this.props.vocabularyIri}
             />
           </Col>
