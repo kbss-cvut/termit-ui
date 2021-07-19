@@ -1,13 +1,13 @@
 import * as React from "react";
 import { TermData } from "../../model/Term";
 import ValidationResult from "../../model/ValidationResult";
+import FormValidationResult from "../../model/form/ValidationResult";
 import { Button, Col, FormGroup, Label, Row } from "reactstrap";
 import TextArea from "../misc/TextArea";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import CustomInput from "../misc/CustomInput";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import { renderValidationMessages } from "./forms/FormUtils";
 import "./TermDefinitionBlock.scss";
 import { useI18n } from "../hook/useI18n";
 import MultilingualIcon from "../misc/MultilingualIcon";
@@ -79,11 +79,9 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
           <TextArea
             name="edit-term-definition"
             value={getLocalizedOrDefault(term.definition, "", language)}
-            invalid={validationDefinition.length > 0}
             readOnly={readOnly}
-            invalidMessage={renderValidationMessages(
-              locale,
-              validationDefinition
+            validation={validationDefinition.map((v) =>
+              FormValidationResult.fromOntoValidationResult(v, locale)
             )}
             onChange={onDefinitionChange}
             rows={4}
@@ -99,9 +97,10 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
             onChange={onSourceChange}
             label={i18n("term.metadata.source")}
             labelClass="definition"
-            invalid={validationSource.length > 0}
             readOnly={readOnly}
-            invalidMessage={renderValidationMessages(locale, validationSource)}
+            validation={validationSource.map((v) =>
+              FormValidationResult.fromOntoValidationResult(v, locale)
+            )}
             help={i18n("term.source.help")}
           />
         </Col>

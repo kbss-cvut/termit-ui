@@ -7,6 +7,7 @@ import TermQualityBadge from "../../term/TermQualityBadge";
 import TermLink from "../../term/TermLink";
 import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
+import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
 
 interface TreeOption {
   disabled: boolean;
@@ -116,6 +117,15 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       </span>
     );
 
+    const addonAfter = (
+      <span>
+        {!currentVocabularyIri ||
+        currentVocabularyIri === option.vocabulary!.iri ? undefined : (
+          <VocabularyNameBadge vocabulary={option.vocabulary} />
+        )}
+      </span>
+    );
+
     return (
       <ResultItem
         key={params.key}
@@ -129,6 +139,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
         style={optionStyle}
         searchString={params.searchString}
         addonBefore={addonBefore}
+        addonAfter={addonAfter}
         displayInfoOnHover={false}
         {...eventHandlers}
       />
@@ -136,8 +147,15 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
   };
 }
 
-export function createTermValueRenderer() {
-  return (option: Term) => <TermLink term={option} />;
+export function createTermValueRenderer(vocabularyIri: string) {
+  return (option: Term) => (
+    <>
+      <TermLink term={option} />
+      {vocabularyIri !== option.vocabulary?.iri ? (
+        <VocabularyNameBadge vocabulary={option.vocabulary} />
+      ) : null}
+    </>
+  );
 }
 
 export function createVocabularyValueRenderer() {

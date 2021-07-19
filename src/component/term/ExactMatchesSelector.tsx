@@ -15,7 +15,6 @@ import {
   createTermsWithImportsOptionRenderer,
   createTermValueRenderer,
 } from "../misc/treeselect/Renderers";
-import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,
@@ -47,7 +46,6 @@ interface ExactMatchesSelectorProps extends HasI18n {
   termIri?: string;
   selected?: TermData[];
   vocabularyIri: string;
-  currentVocabulary?: Vocabulary;
   onChange: (exactMatches: Term[]) => void;
   loadTerms: (
     fetchOptions: FetchOptionsFunction,
@@ -118,7 +116,7 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabularyIri
             )}
-            valueRenderer={createTermValueRenderer()}
+            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
             {...commonTermTreeSelectProps(this.props)}
           />
         </>

@@ -48,8 +48,7 @@ interface ParentTermSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
   parentTerms?: TermData[];
-  invalid?: boolean;
-  invalidMessage?: JSX.Element;
+  validationMessage?: string | JSX.Element;
   vocabularyIri: string;
   currentVocabulary?: Vocabulary;
   onChange: (newParents: Term[]) => void;
@@ -201,24 +200,17 @@ export class ParentTermSelector extends React.Component<
   }
 
   private renderSelector() {
+    const i18n = this.props.i18n;
     if (!this.state.importedVocabularies) {
       // render placeholder input until imported vocabularies are loaded
       return (
         <CustomInput
-          placeholder={this.props.i18n("glossary.select.placeholder")}
+          placeholder={i18n("glossary.select.placeholder")}
           disabled={true}
-          invalid={this.props.invalid}
-          invalidMessage={this.props.invalidMessage}
-          help={this.props.i18n("term.parent.help")}
+          help={i18n("term.parent.help")}
         />
       );
     } else {
-      let style;
-      if (this.props.invalid) {
-        style = { borderColor: "red" };
-      } else {
-        style = {};
-      }
       return (
         <>
           <IntelligentTreeSelect
@@ -233,16 +225,16 @@ export class ParentTermSelector extends React.Component<
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabularyIri
             )}
-            valueRenderer={createTermValueRenderer()}
-            style={style}
+            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
             {...commonTermTreeSelectProps(this.props)}
           />
-          {this.props.invalid ? (
-            <FormFeedback style={{ display: "block" }}>
-              {this.props.invalidMessage}
+          {this.props.validationMessage && (
+            <FormFeedback
+              className="validation-feedback"
+              title={i18n("validation.message.tooltip")}
+            >
+              {this.props.validationMessage}
             </FormFeedback>
-          ) : (
-            <></>
           )}
         </>
       );

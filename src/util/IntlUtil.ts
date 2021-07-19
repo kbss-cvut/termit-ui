@@ -1,8 +1,9 @@
 import Constants from "./Constants";
 import IntlData from "../model/IntlData";
+import BrowserStorage from "./BrowserStorage";
 
 export function loadInitialLocalizationData(): IntlData {
-  const prefLang = localStorage.getItem(Constants.STORAGE_LANG_KEY);
+  const prefLang = BrowserStorage.get(Constants.STORAGE_LANG_KEY);
   const lang = prefLang ? prefLang : navigator.language;
   if (lang && (lang.startsWith("cs") || lang.startsWith("sk"))) {
     setHtmlLanguage(Constants.LANG.CS.locale);
@@ -22,7 +23,7 @@ export function loadLocalizationData(language: string): IntlData {
 }
 
 export function saveLanguagePreference(language: string): void {
-  localStorage.setItem(Constants.STORAGE_LANG_KEY, language);
+  BrowserStorage.set(Constants.STORAGE_LANG_KEY, language);
 }
 
 /**
