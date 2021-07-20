@@ -24,6 +24,7 @@ import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
 import { changePassword } from "../../action/AsyncUserActions";
 import HeaderWithActions from "../misc/HeaderWithActions";
+import ValidationResult, { Severity } from "../../model/form/ValidationResult";
 
 interface ChangePasswordProps extends HasI18n {
   user: User;
@@ -89,6 +90,24 @@ export class ChangePassword extends React.Component<
     return this.state.currentPassword !== this.state.newPassword;
   }
 
+  private validateNewPassword() {
+    return this.state.newPassword.trim().length > 0 && !this.passwordsDiffer()
+      ? new ValidationResult(
+          Severity.BLOCKER,
+          this.props.i18n("change-password.passwords.differ.tooltip")
+        )
+      : undefined;
+  }
+
+  private validatePasswordConfirmation() {
+    return this.state.newPassword.trim().length > 0 && !this.passwordsMatch()
+      ? new ValidationResult(
+          Severity.BLOCKER,
+          this.props.i18n("register.passwords-not-matching.tooltip")
+        )
+      : undefined;
+  }
+
   private isValid(): boolean {
     return (
       this.state.currentPassword.trim().length > 0 &&
@@ -118,6 +137,7 @@ export class ChangePassword extends React.Component<
                     label={i18n("change-password.current.password")}
                     value={this.state.currentPassword}
                     onChange={this.onInputChange}
+                    autoComplete="current-password"
                   />
                 </Col>
               </Row>
@@ -128,14 +148,9 @@ export class ChangePassword extends React.Component<
                     name="newPassword"
                     label={i18n("change-password.new.password")}
                     value={this.state.newPassword}
-                    invalid={
-                      this.state.newPassword.trim().length > 0 &&
-                      !this.passwordsDiffer()
-                    }
-                    invalidMessage={i18n(
-                      "change-password.passwords.differ.tooltip"
-                    )}
+                    validation={this.validateNewPassword()}
                     onChange={this.onInputChange}
+                    autoComplete="new-password"
                   />
                 </Col>
                 <Col xl={6} md={12}>
@@ -144,15 +159,10 @@ export class ChangePassword extends React.Component<
                     name="confirmPassword"
                     label={i18n("change-password.confirm.password")}
                     value={this.state.confirmPassword}
-                    invalid={
-                      this.state.newPassword.trim().length > 0 &&
-                      !this.passwordsMatch()
-                    }
-                    invalidMessage={i18n(
-                      "register.passwords-not-matching.tooltip"
-                    )}
+                    validation={this.validatePasswordConfirmation()}
                     onChange={this.onInputChange}
                     onKeyPress={this.onKeyPress}
+                    autoComplete="new-password"
                   />
                 </Col>
               </Row>

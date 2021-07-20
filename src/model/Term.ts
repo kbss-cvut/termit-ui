@@ -64,6 +64,7 @@ const MAPPED_PROPERTIES = [
 export const TERM_MULTILINGUAL_ATTRIBUTES = [
   "label",
   "definition",
+  "scopeNote",
   "altLabels",
   "hiddenLabels",
 ];

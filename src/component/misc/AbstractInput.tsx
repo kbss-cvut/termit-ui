@@ -1,8 +1,14 @@
 import * as React from "react";
-import { FormText, Label } from "reactstrap";
+import { FormFeedback, FormText, Label } from "reactstrap";
 import { InputType } from "reactstrap/lib/Input";
 import classNames from "classnames";
 import HelpIcon from "./HelpIcon";
+import ValidationResult, {
+  Severity,
+  severityComparator,
+} from "../../model/form/ValidationResult";
+import Utils from "../../util/Utils";
+import InputValidationMessage from "./validation/InputValidationMessage";
 
 export interface AbstractInputProps {
   name?: string;
@@ -24,9 +30,7 @@ export interface AbstractInputProps {
    * Help text may be longer and contain detailed explanation of more complex concepts.
    */
   help?: string;
-  valid?: boolean;
-  invalid?: boolean;
-  invalidMessage?: string | JSX.Element;
+  validation?: ValidationResult | ValidationResult[];
   autoFocus?: boolean;
   autoComplete?: string;
   type?: InputType;
@@ -56,8 +60,43 @@ export default class AbstractInput<
     return this.props.hint ? <FormText>{this.props.hint}</FormText> : null;
   }
 
+  protected renderValidationMessages() {
+    const messages = Utils.sanitizeArray(this.props.validation).filter(
+      (m) => m.message !== undefined
+    );
+    if (messages.length === 0) {
+      return null;
+    }
+    messages.sort(severityComparator);
+    return (
+      <FormFeedback className="validation-feedback">
+        <ul className="list-unstyled mb-0">
+          {messages.map((m, i) => (
+            <InputValidationMessage key={`${m.severity}-${i}`} message={m} />
+          ))}
+        </ul>
+      </FormFeedback>
+    );
+  }
+
+  protected isValid() {
+    return (
+      Utils.sanitizeArray(this.props.validation).find(
+        (vr) => vr.severity === Severity.VALID
+      ) !== undefined
+    );
+  }
+
+  protected isInvalid() {
+    return (
+      Utils.sanitizeArray(this.props.validation).find(
+        (vr) => vr.severity === Severity.BLOCKER
+      ) !== undefined
+    );
+  }
+
   protected inputProps() {
-    const { invalidMessage, help, labelClass, ...p } = this
+    const { help, labelClass, validation, ...p } = this
       .props as AbstractInputProps;
     return p;
   }
