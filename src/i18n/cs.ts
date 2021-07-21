@@ -362,6 +362,7 @@ const cs = {
     "term.metadata.definitionSource.goto": "Zobrazit v dokumentu",
     "term.metadata.definitionSource.goto.tooltip":
       "Zobrazit zdroj definice přímo v příslušném dokumentu",
+    "term.metadata.relationships": "Vztahy",
     "term.metadata.exactMatches": "Pojmy se stejným významem",
     "term.metadata.comment": "Doplňující poznámka",
     "term.metadata.parent": "Nadřazené pojmy",

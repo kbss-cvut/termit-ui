@@ -355,6 +355,7 @@ const en = {
     "term.metadata.definitionSource.goto": "See in the document",
     "term.metadata.definitionSource.goto.tooltip":
       "Go to definition source in the corresponding document",
+    "term.metadata.relationships": "Relationships",
     "term.metadata.exactMatches": "Exact matches",
     "term.metadata.comment": "Scope note",
     "term.metadata.parent": "Parent terms",

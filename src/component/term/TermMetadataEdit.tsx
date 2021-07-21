@@ -324,6 +324,8 @@ export class TermMetadataEdit extends React.Component<
                   />
                 </Col>
               </Row>
+
+              <AttributeSectionContainer label={i18n("term.metadata.relationships")}>
               <Row>
                 <Col xs={12}>
                   <ExactMatchesSelector
@@ -375,6 +377,7 @@ export class TermMetadataEdit extends React.Component<
                   />
                 </Col>
               </Row>
+              </AttributeSectionContainer>
               <Row>
                 <Col xs={12}>
                   <StringListEdit
