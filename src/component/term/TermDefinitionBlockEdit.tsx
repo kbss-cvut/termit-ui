@@ -8,7 +8,6 @@ import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import CustomInput from "../misc/CustomInput";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import "./TermDefinitionBlock.scss";
 import { useI18n } from "../hook/useI18n";
 import MultilingualIcon from "../misc/MultilingualIcon";
 
