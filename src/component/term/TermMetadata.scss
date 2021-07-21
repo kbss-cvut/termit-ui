@@ -23,3 +23,11 @@ ul.term-items {
 .Select-menu-outer {
   z-index: 3; // Increase z-index to prevent collisions with input group addon buttons in StringListEdits
 }
+
+#term-metadata-definition {
+  margin-top: 0;
+}
+
+.term-metadata-definition-source {
+  font-size: 1rem;
+}

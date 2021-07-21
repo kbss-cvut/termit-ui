@@ -9,7 +9,7 @@ import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { injectIntl } from "react-intl";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
-import TermDefinitionContainer from "./TermDefinitionContainer";
+import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
 import StringListEdit from "../misc/StringListEdit";
 import {
   getLocalized,
@@ -174,14 +174,14 @@ export class TermMetadataCreateForm extends React.Component<
           </Col>
         </Row>
 
-        <TermDefinitionContainer>
+        <AttributeSectionContainer label={i18n("term.metadata.definition")}>
           <TermDefinitionBlockEdit
             term={termData}
             onChange={this.props.onChange}
             language={language}
             definitionSelector={this.props.definitionSelector}
           />
-        </TermDefinitionContainer>
+        </AttributeSectionContainer>
 
         <TermScopeNoteEdit
           term={termData}

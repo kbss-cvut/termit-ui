@@ -21,7 +21,7 @@ import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
-import TermDefinitionContainer from "./TermDefinitionContainer";
+import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
 import StringListEdit from "../misc/StringListEdit";
 import {
   getLocalized,
@@ -291,14 +291,14 @@ export class TermMetadataEdit extends React.Component<
                 </Col>
               </Row>
 
-              <TermDefinitionContainer>
+              <AttributeSectionContainer label={i18n("term.metadata.definition")}>
                 <TermDefinitionBlockEdit
                   term={this.state}
                   language={language}
                   getValidationResults={this.getValidationResults}
                   onChange={this.onChange}
                 />
-              </TermDefinitionContainer>
+              </AttributeSectionContainer>
 
               <Row>
                 <Col xs={12}>
