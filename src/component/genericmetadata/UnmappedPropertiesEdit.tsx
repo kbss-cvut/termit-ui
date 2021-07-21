@@ -18,6 +18,7 @@ import { clearProperties } from "../../action/SyncActions";
 import { FaTrashAlt } from "react-icons/fa";
 import "./UnmappedProperties.scss";
 import BadgeButton from "../misc/BadgeButton";
+import AttributeSectionContainer from "../layout/AttributeSectionContainer";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
   properties: Map<string, string[]>;
@@ -113,7 +114,7 @@ export class UnmappedPropertiesEdit extends React.Component<
   public render() {
     const i18n = this.props.i18n;
     return (
-      <div className="additional-metadata">
+      <AttributeSectionContainer label={i18n("properties.edit.title")}>
         {this.renderExisting()}
         <Row>
           <Col xl={6} md={12}>
@@ -140,7 +141,7 @@ export class UnmappedPropertiesEdit extends React.Component<
             </Button>
           </Col>
         </Row>
-      </div>
+      </AttributeSectionContainer>
     );
   }
 
