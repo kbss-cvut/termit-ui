@@ -111,10 +111,10 @@ export class VocabularySummary extends React.Component<
     const { i18n, vocabulary } = this.props;
     const buttons = [];
     buttons.push(
-        <ImportVocabularyDialog
-            key="vocabulary.summary.import"
-            performAction={this.onImport}
-        />
+      <ImportVocabularyDialog
+        key="vocabulary.summary.import"
+        performAction={this.onImport}
+      />
     );
     buttons.push(this.renderExportDropdown());
 
