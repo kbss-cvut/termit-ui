@@ -1,0 +1,34 @@
+@import "../../styles/custom/colors";
+
+
+div.card-body-basic-info hr.definition-separator-text:before {
+  content: attr(data-content);
+  display: inline-block;
+  background: #fff;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+  border-radius: 30rem;
+  padding: 0.2rem 1.5rem 0.2rem 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(0%, -50%);
+}
+
+/* No top hr for first item in card */
+div.card-body-basic-info hr.definition-separator-text:first-child {
+  position: relative;
+  border: none;
+  height: 1px;
+  background: $gray-300;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+div.card-body-basic-info hr.definition-separator {
+  position: relative;
+  border: none;
+  height: 1px;
+  background: $gray-300;
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+}

@@ -11,14 +11,11 @@ interface AttributeSectionContainerProps {
 export const AttributeSectionContainer: React.FC<AttributeSectionContainerProps> = (props) => {
   const { label, children } = props;
   return (
-    <>
-      <hr
-        data-content={label}
-        className="form-section-text"
-      />
+    <div className="form-section">
+        <h3>{label}</h3>
+        <hr className="form-section-separator"/>
       {children}
-      <hr className="form-section" />
-    </>
+    </div>
   );
 };
 
