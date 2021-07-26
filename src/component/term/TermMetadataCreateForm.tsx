@@ -184,22 +184,22 @@ export class TermMetadataCreateForm extends React.Component<
         </AttributeSectionContainer>
 
         <AttributeSectionContainer label={""}>
-        <TermScopeNoteEdit
-          term={termData}
-          language={language}
-          onChange={this.props.onChange}
-        />
+          <TermScopeNoteEdit
+            term={termData}
+            language={language}
+            onChange={this.props.onChange}
+          />
 
-        <Row>
-          <Col xs={12}>
-            <ParentTermSelector
-              id="create-term-parent"
-              onChange={this.onParentSelect}
-              parentTerms={termData.parentTerms}
-              vocabularyIri={this.props.vocabularyIri}
-            />
-          </Col>
-        </Row>
+          <Row>
+            <Col xs={12}>
+              <ParentTermSelector
+                id="create-term-parent"
+                onChange={this.onParentSelect}
+                parentTerms={termData.parentTerms}
+                vocabularyIri={this.props.vocabularyIri}
+              />
+            </Col>
+          </Row>
         </AttributeSectionContainer>
 
         <ShowAdvancedAssetFields>
