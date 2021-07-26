@@ -307,7 +307,9 @@ export class TermMetadataEdit extends React.Component<
                 </Col>
               </Row>
 
-              <AttributeSectionContainer label={i18n("term.metadata.definition")}>
+              <AttributeSectionContainer
+                label={i18n("term.metadata.definition")}
+              >
                 <TermDefinitionBlockEdit
                   term={this.state}
                   language={language}
@@ -316,80 +318,85 @@ export class TermMetadataEdit extends React.Component<
                 />
               </AttributeSectionContainer>
 
-              <AttributeSectionContainer label={i18n("term.metadata.relationships")}>
-              <Row>
-                <Col xs={12}>
-                  <ExactMatchesSelector
-                    id="exact-matches"
-                    termIri={this.props.term.iri}
-                    selected={this.state.exactMatchTerms}
-                    vocabularyIri={this.props.term.vocabulary!.iri!}
-                    onChange={this.onExactMatchesChange}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <ParentTermSelector
-                    id="edit-term-parent"
-                    termIri={this.props.term.iri}
-                    parentTerms={this.state.parentTerms}
-                    validationMessage={renderValidationMessages(
-                      this.props.locale,
-                      validationBroader
-                    )}
-                    vocabularyIri={this.props.term.vocabulary!.iri!}
-                    onChange={this.onParentChange}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <TermTypesEdit
-                    termTypes={Utils.sanitizeArray(this.state.types)}
-                    validationMessage={renderValidationMessages(
-                      this.props.locale,
-                      validationType
-                    )}
-                    onChange={this.onTypesChange}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <RelatedTermsSelector
-                    id="edit-term-related"
-                    termIri={this.props.term.iri}
-                    vocabularyIri={this.props.term.vocabulary?.iri!}
-                    selected={Term.consolidateRelatedAndRelatedMatch(
-                      this.state
-                    )}
-                    onChange={this.onRelatedChange}
-                  />
-                </Col>
-              </Row>
+              <AttributeSectionContainer
+                label={i18n("term.metadata.relationships")}
+              >
+                <Row>
+                  <Col xs={12}>
+                    <ExactMatchesSelector
+                      id="exact-matches"
+                      termIri={this.props.term.iri}
+                      selected={this.state.exactMatchTerms}
+                      vocabularyIri={this.props.term.vocabulary!.iri!}
+                      onChange={this.onExactMatchesChange}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <ParentTermSelector
+                      id="edit-term-parent"
+                      termIri={this.props.term.iri}
+                      parentTerms={this.state.parentTerms}
+                      validationMessage={renderValidationMessages(
+                        this.props.locale,
+                        validationBroader
+                      )}
+                      vocabularyIri={this.props.term.vocabulary!.iri!}
+                      onChange={this.onParentChange}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <TermTypesEdit
+                      termTypes={Utils.sanitizeArray(this.state.types)}
+                      validationMessage={renderValidationMessages(
+                        this.props.locale,
+                        validationType
+                      )}
+                      onChange={this.onTypesChange}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <RelatedTermsSelector
+                      id="edit-term-related"
+                      termIri={this.props.term.iri}
+                      vocabularyIri={this.props.term.vocabulary?.iri!}
+                      selected={Term.consolidateRelatedAndRelatedMatch(
+                        this.state
+                      )}
+                      onChange={this.onRelatedChange}
+                    />
+                  </Col>
+                </Row>
               </AttributeSectionContainer>
               <AttributeSectionContainer label={""}>
-              <Row>
-                <Col xs={12}>
-                  <StringListEdit
-                    list={getLocalizedPlural(this.state.hiddenLabels, language)}
-                    onChange={this.onHiddenLabelsChange}
-                    i18nPrefix={"term.metadata.hiddenLabels"}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <TextArea
+                <Row>
+                  <Col xs={12}>
+                    <StringListEdit
+                      list={getLocalizedPlural(
+                        this.state.hiddenLabels,
+                        language
+                      )}
+                      onChange={this.onHiddenLabelsChange}
+                      i18nPrefix={"term.metadata.hiddenLabels"}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <TextArea
                       name="edit-term-comment"
                       value={getLocalizedOrDefault(
-                          this.state.scopeNote,
-                          "",
-                          language
+                        this.state.scopeNote,
+                        "",
+                        language
                       )}
                       validation={validationScopeNote.map((vr) =>
-                          ValidationResult.fromOntoValidationResult(vr, locale)
+                        ValidationResult.fromOntoValidationResult(vr, locale)
                       )}
                       onChange={this.onScopeNoteChange}
                       rows={4}
@@ -400,21 +407,23 @@ export class TermMetadataEdit extends React.Component<
                         </>
                       }
                       help={i18n("term.comment.help")}
-                  />
-                </Col>
-              </Row>
+                    />
+                  </Col>
+                </Row>
 
-              <Row>
-                <Col xs={12}>
-                  <DraftToggle
-                    id="edit-term-status"
-                    draft={
-                      this.state.draft === undefined ? true : this.state.draft!
-                    }
-                    onToggle={this.onStatusChange}
-                  />
-                </Col>
-              </Row>
+                <Row>
+                  <Col xs={12}>
+                    <DraftToggle
+                      id="edit-term-status"
+                      draft={
+                        this.state.draft === undefined
+                          ? true
+                          : this.state.draft!
+                      }
+                      onToggle={this.onStatusChange}
+                    />
+                  </Col>
+                </Row>
               </AttributeSectionContainer>
 
               <Row>
