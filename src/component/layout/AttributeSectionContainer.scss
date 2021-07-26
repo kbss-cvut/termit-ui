@@ -1,52 +1,18 @@
 @import "../../styles/custom/colors";
 
-form hr.form-section-text {
-  position: relative;
-  border: none;
-  height: 1px;
-  background: $gray-300;
+form div.form-section {
   margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
-hr.form-section-text::before {
-  content: attr(data-content);
-  display: inline-block;
-  background: #fff;
-  font-weight: 600;
-  color: #21252a;
-  font-size: 1.1rem;
-  border-radius: 30rem;
-  padding: 0.2rem 1.5rem 0.2rem 0;
-  position: absolute;
-  top: 50%;
-  transform: translate(0%, -50%);
-}
-
-form hr.form-section {
+form hr.form-section-separator {
   position: relative;
   border: none;
   height: 1px;
   background: $gray-300;
-  margin-bottom: 2rem;
   margin-top: 0;
+  margin-bottom: 1.0rem;
 }
 
-/* No top hr for first item in card */
-div.card-body-basic-info hr.form-section-text:first-child {
-  position: relative;
-  border: none;
-  height: 1px;
-  background: $gray-300;
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-div.card-body-basic-info hr.form-section {
-  position: relative;
-  border: none;
-  height: 1px;
-  background: $gray-300;
-  margin-bottom: 1.25rem;
-  margin-top: 1.5rem;
+form hr.form-section-separator:last-child {
+  margin-top: -0.5rem;
 }

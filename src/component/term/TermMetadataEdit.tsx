@@ -300,31 +300,6 @@ export class TermMetadataEdit extends React.Component<
                 />
               </AttributeSectionContainer>
 
-              <Row>
-                <Col xs={12}>
-                  <TextArea
-                    name="edit-term-comment"
-                    value={getLocalizedOrDefault(
-                      this.state.scopeNote,
-                      "",
-                      language
-                    )}
-                    validation={validationScopeNote.map((vr) =>
-                      ValidationResult.fromOntoValidationResult(vr, locale)
-                    )}
-                    onChange={this.onScopeNoteChange}
-                    rows={4}
-                    label={
-                      <>
-                        {i18n("term.metadata.comment")}
-                        <MultilingualIcon id="edit-term-comment-multilingual" />
-                      </>
-                    }
-                    help={i18n("term.comment.help")}
-                  />
-                </Col>
-              </Row>
-
               <AttributeSectionContainer label={i18n("term.metadata.relationships")}>
               <Row>
                 <Col xs={12}>
@@ -378,6 +353,7 @@ export class TermMetadataEdit extends React.Component<
                 </Col>
               </Row>
               </AttributeSectionContainer>
+              <AttributeSectionContainer label={""}>
               <Row>
                 <Col xs={12}>
                   <StringListEdit
@@ -389,6 +365,31 @@ export class TermMetadataEdit extends React.Component<
               </Row>
               <Row>
                 <Col xs={12}>
+                  <TextArea
+                      name="edit-term-comment"
+                      value={getLocalizedOrDefault(
+                          this.state.scopeNote,
+                          "",
+                          language
+                      )}
+                      validation={validationScopeNote.map((vr) =>
+                          ValidationResult.fromOntoValidationResult(vr, locale)
+                      )}
+                      onChange={this.onScopeNoteChange}
+                      rows={4}
+                      label={
+                        <>
+                          {i18n("term.metadata.comment")}
+                          <MultilingualIcon id="edit-term-comment-multilingual" />
+                        </>
+                      }
+                      help={i18n("term.comment.help")}
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col xs={12}>
                   <DraftToggle
                     id="edit-term-status"
                     draft={
@@ -398,6 +399,8 @@ export class TermMetadataEdit extends React.Component<
                   />
                 </Col>
               </Row>
+              </AttributeSectionContainer>
+
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit

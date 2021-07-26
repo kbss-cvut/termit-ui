@@ -183,6 +183,7 @@ export class TermMetadataCreateForm extends React.Component<
           />
         </AttributeSectionContainer>
 
+        <AttributeSectionContainer label={""}>
         <TermScopeNoteEdit
           term={termData}
           language={language}
@@ -199,6 +200,7 @@ export class TermMetadataCreateForm extends React.Component<
             />
           </Col>
         </Row>
+        </AttributeSectionContainer>
 
         <ShowAdvancedAssetFields>
           <Row>
