@@ -7,6 +7,7 @@ import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import VocabularyRoute from "./VocabularyRoute";
 import CreateVocabularyRoute from "./CreateVocabularyRoute";
 import { useI18n } from "../hook/useI18n";
+import ImportVocabularyRoute from "./ImportVocabularyRoute";
 
 const VocabularyManagementRoute: React.FC = () => {
   const { i18n } = useI18n();
@@ -16,6 +17,11 @@ const VocabularyManagementRoute: React.FC = () => {
         title={i18n("vocabulary.create.title")}
         path={Routes.createVocabulary.path}
         component={CreateVocabularyRoute}
+      />
+      <BreadcrumbRoute
+        title={i18n("vocabulary.import.title")}
+        path={Routes.importVocabulary.path}
+        component={ImportVocabularyRoute}
       />
       <DynamicBreadcrumbRoute
         asset="vocabulary"
