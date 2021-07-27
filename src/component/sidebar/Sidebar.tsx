@@ -102,6 +102,12 @@ const createNewNavRoutes: NavLinkRoute[] = [
     supIcon: "fas fa-plus",
   },
   {
+    path: Routes.importVocabulary.path,
+    name: "main.nav.import-vocabulary",
+    icon: "fas fa-file-import",
+    supIcon: "fas",
+  },
+  {
     path: Routes.createResource.path,
     name: "main.nav.create-resource",
     icon: "fas fa-clipboard",
