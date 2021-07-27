@@ -140,9 +140,11 @@ describe("TermMetadataCreateForm", () => {
         {...intlFunctions()}
       />
     );
-    const parents = [Generator.generateTerm()];
+    const parents = [Generator.generateTerm(vocabularyIri)];
     wrapper.instance().onParentSelect(parents);
-    expect(onChange).toHaveBeenCalledWith({ parentTerms: parents });
+    expect(onChange).toHaveBeenCalledWith({
+      parentTerms: parents,
+    });
   });
 
   it("checks for label uniqueness in vocabulary on label change", () => {
