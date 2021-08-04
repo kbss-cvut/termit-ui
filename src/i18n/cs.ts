@@ -332,8 +332,8 @@ const cs = {
       "identifikátoru.",
     "term.label.help":
       "(Povinné) označení, které daný pojem/význam jednoznačně v rámci slovníku identifikuje. " +
-      "Jako názvy pojmů se nepoužívají zkratky ('daň z přidané hodnoty' místo 'DPH'). První písmeno názvu pojmu " +
-      "je velké, ostatní písmena jsou malá. Název pojmů není vhodné měnit, jeho změna může ovlivnit význam dat, " +
+      "Jako názvy pojmů se nepoužívají zkratky ('daň z přidané hodnoty' místo 'DPH'). Celý název pojmu " +
+      "se skládá z malých písmen. Název pojmů není vhodné měnit, jeho změna může ovlivnit význam dat, " +
       "která jsou tímto pojmem popsána.",
     "term.definition.help":
       "(Nepovinný) text popisující význam konceptu. Definice jednoznačně popisuje význam pojmu. " +
