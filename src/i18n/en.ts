@@ -328,8 +328,8 @@ const en = {
       "hierarchical components of identifiers.",
     "term.label.help":
       "(Required) text uniquely describing the given concept/meaning within the current vocabulary." +
-      "Abbreviations are not allowed ('Value added tax' instead of 'VAT'). The label is written in sentence case " +
-      "- first letter in upper case, the others in lower case. Label should not be changed, as its change might impact " +
+      "Abbreviations are not allowed ('Value added tax' instead of 'VAT'). The whole label text " +
+      "is written in lower case. Label should not be changed, as its change might impact " +
       "meaning of data described by this concept.",
     "term.definition.help":
       "(Optional) text describing the concept meaning. The definition unambiguously describes " +
