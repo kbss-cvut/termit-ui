@@ -129,16 +129,21 @@ export default class Term extends Asset implements TermData {
       this.types.push(VocabularyUtils.TERM);
     }
     if (this.parentTerms) {
-      visitedTerms[this.iri] = this;
-      this.parentTerms = Utils.sanitizeArray(this.parentTerms).map((pt) =>
-        visitedTerms[pt.iri] ? visitedTerms[pt.iri] : new Term(pt, visitedTerms)
-      );
-      this.parentTerms.sort(Utils.labelComparator);
+      this.parentTerms = this.handleParents(this.parentTerms, visitedTerms);
       this.parent = this.resolveParent(this.parentTerms);
     }
     this.sanitizeTermInfoArrays();
     this.syncPlainSubTerms();
     this.draft = termData.draft !== undefined ? termData.draft : true;
+  }
+
+  private handleParents(parents: TermData[], visitedTerms: TermMap): Term[] {
+    visitedTerms[this.iri] = this;
+    const result = Utils.sanitizeArray(parents).map((pt: TermData) =>
+      visitedTerms[pt.iri!] ? visitedTerms[pt.iri!] : new Term(pt, visitedTerms)
+    );
+    result.sort(Utils.labelComparator);
+    return result;
   }
 
   /**

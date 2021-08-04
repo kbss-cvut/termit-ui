@@ -148,7 +148,7 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ types: newTypes });
   };
 
-  public onParentChange = (parentTerms?: Term[]) => {
+  public onParentChange = (parentTerms: Term[]) => {
     this.setState({ parentTerms });
   };
 
@@ -163,17 +163,33 @@ export class TermMetadataEdit extends React.Component<
    * @param value Selected terms
    */
   public onRelatedChange = (value: Term[]) => {
-    const relatedTerms: TermInfo[] = [];
-    const relatedMatchTerms: TermInfo[] = [];
-    value.forEach((v) => {
-      if (v.vocabulary!.iri === this.props.term.vocabulary!.iri) {
-        relatedTerms.push(Term.toTermInfo(v));
+    const split = TermMetadataEdit.splitTermsInSameAndDifferentVocabularies(
+      value,
+      this.props.term.vocabulary!.iri!
+    );
+    this.setState({
+      relatedTerms: split.sameVocabulary.map((t) => Term.toTermInfo(t)),
+      relatedMatchTerms: split.differentVocabulary.map((t) =>
+        Term.toTermInfo(t)
+      ),
+    });
+  };
+
+  private static splitTermsInSameAndDifferentVocabularies(
+    terms: Term[],
+    vocabularyIri: string
+  ) {
+    const sameVocabulary: Term[] = [];
+    const differentVocabulary: Term[] = [];
+    terms.forEach((v) => {
+      if (v.vocabulary!.iri === vocabularyIri) {
+        sameVocabulary.push(v);
       } else {
-        relatedMatchTerms.push(Term.toTermInfo(v));
+        differentVocabulary.push(v);
       }
     });
-    this.setState({ relatedTerms, relatedMatchTerms });
-  };
+    return { sameVocabulary, differentVocabulary };
+  }
 
   public onStatusChange = () => {
     this.setState({ draft: !this.state.draft });
