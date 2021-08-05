@@ -1,3 +1,8 @@
+#### Verze 2.5.1
+
+- Using skos:broadMatch instead of skos:broader for a link to another vocabulary
+- Opravy menších chyb.
+
 #### Version 2.5.0
 
 - Implemented support for SKOS related, relatedMatch and exactMatch.
