@@ -589,6 +589,8 @@ const en = {
       'Term "{term}" already has a definition source.',
     "annotator.setTermDefinition.title": 'Select definition of term "{term}"',
     "annotator.findAnnotation.error": "Unable to highlight annotation.",
+    "annotator.tutorial.title": "Tutorial",
+    "annotator.tutorial.tooltip": "View tutorial on how to use the annotator",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",

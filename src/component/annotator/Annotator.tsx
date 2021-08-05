@@ -36,6 +36,7 @@ import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
 import TextAnalysisInvocationButton from "./TextAnalysisInvocationButton";
 import classNames from "classnames";
+import Constants from "../../util/Constants";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -514,13 +515,14 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               renderUnauthorizedAlert={false}
             >
               <TextAnalysisInvocationButton
-                className="analyze-button"
+                className="annotator-action-button"
                 fileIri={this.props.fileIri}
                 defaultVocabularyIri={IRIImpl.toString(
                   this.props.vocabularyIri
                 )}
               />
             </IfUserAuthorized>,
+            this.renderTutorialLink(),
             <LegendToggle key="legend-toggle" />,
           ]}
         />
@@ -579,6 +581,23 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
           <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)} />
         </div>
       </>
+    );
+  }
+
+  private renderTutorialLink() {
+    const { i18n, locale } = this.props;
+    return (
+      <a
+        key="tutorial-link"
+        id="annotator-tutorial-link"
+        className="annotator-action-button btn-sm btn btn-primary"
+        title={i18n("annotator.tutorial.tooltip")}
+        href={Constants.ANNOTATOR_TUTORIAL[locale]}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {i18n("annotator.tutorial.title")}
+      </a>
     );
   }
 
