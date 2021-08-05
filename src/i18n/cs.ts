@@ -600,7 +600,8 @@ const cs = {
     "annotator.setTermDefinition.title": 'Výběr definice pojmu "{term}"',
     "annotator.findAnnotation.error": "Anotaci nelze zobrazit.",
     "annotator.tutorial.title": "Návod",
-    "annotator.tutorial.tooltip": "Zobrazit návod k používání anotátoru",
+    "annotator.tutorial.tooltip":
+      "Zobrazit stránku s návodem k používání anotátoru",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",
@@ -644,8 +645,6 @@ const cs = {
     "annotator.legend.definition": "Definice pojmu",
     "annotator.legend.definition.tooltip":
       "Uživatelem označená definice existujícího pojmu.",
-    "annotator.legend.toggle.show": "Zobrazit legendu",
-    "annotator.legend.toggle.hide": "Skrýt legendu",
     "annotator.unknown.unauthorized": "Pojem nevybrán.",
 
     "message.welcome": "Vítejte v aplikaci TermIt!",
