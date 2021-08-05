@@ -16,7 +16,10 @@ const IncludeImportedTermsToggle: React.FC<IncludeImportedTermsToggleProps> = (
   props
 ) => {
   const { i18n } = useI18n();
-  let toggleStyle = { height: "calc(1.5 * 0.875rem + 0.5rem + 2px)" };
+  let toggleStyle = {
+    height: "calc(1.5 * 0.875rem + 0.5rem + 2px)",
+    margin: "0 0 0.125rem 0",
+  };
   if (props.style) {
     toggleStyle = Object.assign(toggleStyle, props.style);
   }

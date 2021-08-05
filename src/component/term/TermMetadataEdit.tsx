@@ -21,7 +21,7 @@ import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
 import DraftToggle from "./DraftToggle";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
-import TermDefinitionContainer from "./TermDefinitionContainer";
+import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
 import StringListEdit from "../misc/StringListEdit";
 import {
   getLocalized,
@@ -307,110 +307,125 @@ export class TermMetadataEdit extends React.Component<
                 </Col>
               </Row>
 
-              <TermDefinitionContainer>
+              <AttributeSectionContainer
+                label={i18n("term.metadata.definition")}
+              >
                 <TermDefinitionBlockEdit
                   term={this.state}
                   language={language}
                   getValidationResults={this.getValidationResults}
                   onChange={this.onChange}
                 />
-              </TermDefinitionContainer>
+              </AttributeSectionContainer>
 
-              <Row>
-                <Col xs={12}>
-                  <TextArea
-                    name="edit-term-comment"
-                    value={getLocalizedOrDefault(
-                      this.state.scopeNote,
-                      "",
-                      language
-                    )}
-                    validation={validationScopeNote.map((vr) =>
-                      ValidationResult.fromOntoValidationResult(vr, locale)
-                    )}
-                    onChange={this.onScopeNoteChange}
-                    rows={4}
-                    label={
-                      <>
-                        {i18n("term.metadata.comment")}
-                        <MultilingualIcon id="edit-term-comment-multilingual" />
-                      </>
-                    }
-                    help={i18n("term.comment.help")}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <ExactMatchesSelector
-                    id="exact-matches"
-                    termIri={this.props.term.iri}
-                    selected={this.state.exactMatchTerms}
-                    vocabularyIri={this.props.term.vocabulary!.iri!}
-                    onChange={this.onExactMatchesChange}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <ParentTermSelector
-                    id="edit-term-parent"
-                    termIri={this.props.term.iri}
-                    parentTerms={this.state.parentTerms}
-                    validationMessage={renderValidationMessages(
-                      this.props.locale,
-                      validationBroader
-                    )}
-                    vocabularyIri={this.props.term.vocabulary!.iri!}
-                    onChange={this.onParentChange}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <TermTypesEdit
-                    termTypes={Utils.sanitizeArray(this.state.types)}
-                    validationMessage={renderValidationMessages(
-                      this.props.locale,
-                      validationType
-                    )}
-                    onChange={this.onTypesChange}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <RelatedTermsSelector
-                    id="edit-term-related"
-                    termIri={this.props.term.iri}
-                    vocabularyIri={this.props.term.vocabulary?.iri!}
-                    selected={Term.consolidateRelatedAndRelatedMatch(
-                      this.state
-                    )}
-                    onChange={this.onRelatedChange}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <StringListEdit
-                    list={getLocalizedPlural(this.state.hiddenLabels, language)}
-                    onChange={this.onHiddenLabelsChange}
-                    i18nPrefix={"term.metadata.hiddenLabels"}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <DraftToggle
-                    id="edit-term-status"
-                    draft={
-                      this.state.draft === undefined ? true : this.state.draft!
-                    }
-                    onToggle={this.onStatusChange}
-                  />
-                </Col>
-              </Row>
+              <AttributeSectionContainer
+                label={i18n("term.metadata.relationships")}
+              >
+                <Row>
+                  <Col xs={12}>
+                    <ExactMatchesSelector
+                      id="exact-matches"
+                      termIri={this.props.term.iri}
+                      selected={this.state.exactMatchTerms}
+                      vocabularyIri={this.props.term.vocabulary!.iri!}
+                      onChange={this.onExactMatchesChange}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <ParentTermSelector
+                      id="edit-term-parent"
+                      termIri={this.props.term.iri}
+                      parentTerms={this.state.parentTerms}
+                      validationMessage={renderValidationMessages(
+                        this.props.locale,
+                        validationBroader
+                      )}
+                      vocabularyIri={this.props.term.vocabulary!.iri!}
+                      onChange={this.onParentChange}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <TermTypesEdit
+                      termTypes={Utils.sanitizeArray(this.state.types)}
+                      validationMessage={renderValidationMessages(
+                        this.props.locale,
+                        validationType
+                      )}
+                      onChange={this.onTypesChange}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <RelatedTermsSelector
+                      id="edit-term-related"
+                      termIri={this.props.term.iri}
+                      vocabularyIri={this.props.term.vocabulary?.iri!}
+                      selected={Term.consolidateRelatedAndRelatedMatch(
+                        this.state
+                      )}
+                      onChange={this.onRelatedChange}
+                    />
+                  </Col>
+                </Row>
+              </AttributeSectionContainer>
+              <AttributeSectionContainer label={""}>
+                <Row>
+                  <Col xs={12}>
+                    <StringListEdit
+                      list={getLocalizedPlural(
+                        this.state.hiddenLabels,
+                        language
+                      )}
+                      onChange={this.onHiddenLabelsChange}
+                      i18nPrefix={"term.metadata.hiddenLabels"}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <TextArea
+                      name="edit-term-comment"
+                      value={getLocalizedOrDefault(
+                        this.state.scopeNote,
+                        "",
+                        language
+                      )}
+                      validation={validationScopeNote.map((vr) =>
+                        ValidationResult.fromOntoValidationResult(vr, locale)
+                      )}
+                      onChange={this.onScopeNoteChange}
+                      rows={4}
+                      label={
+                        <>
+                          {i18n("term.metadata.comment")}
+                          <MultilingualIcon id="edit-term-comment-multilingual" />
+                        </>
+                      }
+                      help={i18n("term.comment.help")}
+                    />
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col xs={12}>
+                    <DraftToggle
+                      id="edit-term-status"
+                      draft={
+                        this.state.draft === undefined
+                          ? true
+                          : this.state.draft!
+                      }
+                      onToggle={this.onStatusChange}
+                    />
+                  </Col>
+                </Row>
+              </AttributeSectionContainer>
+
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit

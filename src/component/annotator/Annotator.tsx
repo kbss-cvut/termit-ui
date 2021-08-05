@@ -514,7 +514,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               renderUnauthorizedAlert={false}
             >
               <TextAnalysisInvocationButton
-                className="analyze-button"
+                className="annotator-action-button"
                 fileIri={this.props.fileIri}
                 defaultVocabularyIri={IRIImpl.toString(
                   this.props.vocabularyIri

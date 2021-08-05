@@ -375,6 +375,7 @@ const cs = {
     "term.metadata.definitionSource.goto": "Zobrazit v dokumentu",
     "term.metadata.definitionSource.goto.tooltip":
       "Zobrazit zdroj definice přímo v příslušném dokumentu",
+    "term.metadata.relationships": "Vztahy",
     "term.metadata.exactMatches": "Pojmy se stejným významem",
     "term.metadata.comment": "Doplňující poznámka",
     "term.metadata.parent": "Nadřazené pojmy",
@@ -598,6 +599,9 @@ const cs = {
       'Pojem "{term}" již má přiřazen zdroj definice.',
     "annotator.setTermDefinition.title": 'Výběr definice pojmu "{term}"',
     "annotator.findAnnotation.error": "Anotaci nelze zobrazit.",
+    "annotator.tutorial.title": "Návod",
+    "annotator.tutorial.tooltip":
+      "Zobrazit stránku s návodem k používání anotátoru",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",
@@ -641,8 +645,6 @@ const cs = {
     "annotator.legend.definition": "Definice pojmu",
     "annotator.legend.definition.tooltip":
       "Uživatelem označená definice existujícího pojmu.",
-    "annotator.legend.toggle.show": "Zobrazit legendu",
-    "annotator.legend.toggle.hide": "Skrýt legendu",
     "annotator.unknown.unauthorized": "Pojem nevybrán.",
 
     "message.welcome": "Vítejte v aplikaci TermIt!",

@@ -368,6 +368,7 @@ const en = {
     "term.metadata.definitionSource.goto": "See in the document",
     "term.metadata.definitionSource.goto.tooltip":
       "Go to definition source in the corresponding document",
+    "term.metadata.relationships": "Relationships",
     "term.metadata.exactMatches": "Exact matches",
     "term.metadata.comment": "Scope note",
     "term.metadata.parent": "Parent terms",
@@ -589,6 +590,9 @@ const en = {
       'Term "{term}" already has a definition source.',
     "annotator.setTermDefinition.title": 'Select definition of term "{term}"',
     "annotator.findAnnotation.error": "Unable to highlight annotation.",
+    "annotator.tutorial.title": "Tutorial",
+    "annotator.tutorial.tooltip":
+      "View a page with tutorial on how to use the annotator",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",
@@ -634,8 +638,6 @@ const en = {
     "annotator.legend.definition": "Term definition",
     "annotator.legend.definition.tooltip":
       "Definition of a known term created by a user.",
-    "annotator.legend.toggle.show": "Show legend",
-    "annotator.legend.toggle.hide": "Hide legend",
     "annotator.unknown.unauthorized": "Term not selected.",
 
     "message.welcome": "Welcome to TermIt!",

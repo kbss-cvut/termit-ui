@@ -1,15 +1,6 @@
 @import "../../styles/custom/colors";
 
-form hr.hr-definition-text {
-  position: relative;
-  border: none;
-  height: 2px;
-  background: $gray-500;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-}
-
-hr.hr-definition-text::before {
+div.card-body-basic-info hr.definition-separator-text:before {
   content: attr(data-content);
   display: inline-block;
   background: #fff;
@@ -22,42 +13,21 @@ hr.hr-definition-text::before {
   transform: translate(0%, -50%);
 }
 
-form hr.hr-definition {
-  position: relative;
-  border: none;
-  height: 2px;
-  background: $gray-500;
-  margin-bottom: 1.5rem;
-  margin-top: 0;
-}
-
-label.definition {
-  font-size: 90% !important;
-}
-
 /* No top hr for first item in card */
-div.card-body-basic-info hr.hr-definition-text:first-child {
+div.card-body-basic-info hr.definition-separator-text:first-child {
   position: relative;
   border: none;
-  height: 2px;
-  background: $gray-500;
+  height: 1px;
+  background: $gray-300;
   margin-top: 0.5rem;
   margin-bottom: 1.5rem;
 }
 
-div.card-body-basic-info hr.hr-definition {
+div.card-body-basic-info hr.definition-separator {
   position: relative;
   border: none;
-  height: 2px;
-  background: $gray-500;
-  margin-bottom: 1.25rem;
+  height: 1px;
+  background: $gray-300;
+  margin-bottom: 2rem;
   margin-top: 1.5rem;
-}
-
-#term-metadata-definition {
-  margin-top: 0;
-}
-
-.term-metadata-definition-source {
-  font-size: 1rem;
 }
