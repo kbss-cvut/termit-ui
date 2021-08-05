@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Col, Row } from "reactstrap";
 import Term from "../../model/Term";
-import TermDefinitionContainer from "./TermDefinitionContainer";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermDefinitionSource from "./TermDefinitionSource";
+import { useI18n } from "../hook/useI18n";
 import "./TermDefinitionBlock.scss";
 
 export interface TermDefinitionBlockProps {
@@ -16,8 +16,13 @@ export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = (
   props
 ) => {
   const { term, language } = props;
+  const { i18n } = useI18n();
   return (
-    <TermDefinitionContainer>
+    <>
+      <hr
+        className="definition-separator-text"
+        data-content={i18n("term.metadata.definition")}
+      />
       <Row>
         <Col xs={12}>
           <p id="term-metadata-definition" className="lead mb-1">
@@ -32,7 +37,8 @@ export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = (
           withDefinitionSource={props.withDefinitionSource}
         />
       </Row>
-    </TermDefinitionContainer>
+      <hr className="definition-separator" />
+    </>
   );
 };
 
