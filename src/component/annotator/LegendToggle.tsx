@@ -39,7 +39,7 @@ const LegendToggle = () => {
         color="primary"
         size="sm"
         onClick={toggle}
-        className="legend-button"
+        className="annotator-action-button"
       >
         {i18n(`annotator.legend.toggle.${!showLegend ? "show" : "hide"}`)}
       </Button>

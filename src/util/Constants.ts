@@ -108,7 +108,13 @@ const constants = {
 
   EMPTY_ASSET_IRI: "http://empty",
   LAST_COMMENTED_ASSET_LIMIT: 5,
+  ANNOTATOR_TUTORIAL: {},
 };
+
+constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =
+  "https://kbss-cvut.github.io/termit-web/cs/tutorial#anotace-dokumentů";
+constants.ANNOTATOR_TUTORIAL[constants.LANG.EN.locale] =
+  "https://kbss-cvut.github.io/termit-web/tutorial#annotate-documents";
 
 const deployment =
   constants.DEPLOYMENT_NAME.length > 0 ? constants.DEPLOYMENT_NAME + "-" : "";

@@ -599,6 +599,8 @@ const cs = {
       'Pojem "{term}" již má přiřazen zdroj definice.',
     "annotator.setTermDefinition.title": 'Výběr definice pojmu "{term}"',
     "annotator.findAnnotation.error": "Anotaci nelze zobrazit.",
+    "annotator.tutorial.title": "Návod",
+    "annotator.tutorial.tooltip": "Zobrazit návod k používání anotátoru",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",
