@@ -115,10 +115,12 @@ const HtmlDomUtils = {
       } else {
         // @ts-ignore
         sel.modify("move", "backward", "word");
-        // @ts-ignore
-        sel.extend(endNode, endOffset);
-        // @ts-ignore
-        sel.modify("extend", "forward", "word");
+        const text = endNode!.textContent || "";
+        let index = endOffset;
+        while (text.charAt(index).trim().length !== 0 && index < text.length) {
+          index++;
+        }
+        sel.extend(endNode!, index);
       }
     }
   },
