@@ -1,3 +1,15 @@
+#### Verze 2.6.0
+
+- Rozlišení pojmů pocházejících z různých slovníků badgem se zkratkou slovníku
+- Slovník obsahuje informaci o počtu pojmů
+- přepracován a rozšířen SKOS import
+- Opravy chyb
+
+#### Verze 2.5.1
+
+- Použití skos:broadMatch místo skos:broader pro vazby do jiných slovníků
+- Opravy menších chyb.
+
 #### Verze 2.5.0
 
 - Implementována podpora pro SKOS related, relatedMatch a exactMatch.

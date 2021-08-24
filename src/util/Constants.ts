@@ -157,9 +157,15 @@ const constants = {
 
   EMPTY_ASSET_IRI: "http://empty",
   LAST_COMMENTED_ASSET_LIMIT: 5,
+  ANNOTATOR_TUTORIAL: {},
 
   SUBMIT_BUTTON_VARIANT: "primary",
   CANCEL_BUTTON_VARIANT: "outline-primary",
 };
+
+constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =
+    "https://kbss-cvut.github.io/termit-web/cs/tutorial#anotace-dokumentů";
+constants.ANNOTATOR_TUTORIAL[constants.LANG.EN.locale] =
+    "https://kbss-cvut.github.io/termit-web/tutorial#annotate-documents";
 
 export default constants;

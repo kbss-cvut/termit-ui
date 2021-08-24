@@ -3,7 +3,6 @@ import { TermData } from "../../model/Term";
 import { Col, Row } from "reactstrap";
 import TextArea from "../misc/TextArea";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
-import "./TermDefinitionBlock.scss";
 import { useI18n } from "../hook/useI18n";
 import MultilingualIcon from "../misc/MultilingualIcon";
 

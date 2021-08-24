@@ -18,6 +18,8 @@ import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
+jest.mock("../ExactMatchesSelector");
+jest.mock("../RelatedTermsSelector");
 jest.mock("../TermTypesEdit");
 jest.mock("../../misc/AssetLabel");
 

@@ -1,3 +1,15 @@
+#### Version 2.6.0
+
+- Distinguishing terms coming from different vocabularies by a badge.
+- A vocabulary contains a badge with the number of its terms.
+- SKOS import redesigned and extended. 
+- Bug fixes.
+
+#### Version 2.5.1
+
+- Using skos:broadMatch instead of skos:broader for a link to another vocabulary.
+- Minor bug fixes.
+
 #### Version 2.5.0
 
 - Implemented support for SKOS related, relatedMatch and exactMatch.

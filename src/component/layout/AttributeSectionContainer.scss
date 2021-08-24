@@ -1,0 +1,18 @@
+@import "../../styles/custom/colors";
+
+form div.form-section {
+  margin-top: 1.5rem;
+}
+
+form hr.form-section-separator {
+  position: relative;
+  border: none;
+  height: 1px;
+  background: $gray-300;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+form hr.form-section-separator:last-child {
+  margin-top: -0.5rem;
+}

@@ -14,7 +14,7 @@ import TermMetadataCreateForm from "../term/TermMetadataCreateForm";
 import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import { ThunkDispatch } from "../../util/Types";
-import { createTerm } from "../../action/AsyncActions";
+import { createTerm } from "../../action/AsyncTermActions";
 import { IRI } from "../../util/VocabularyUtils";
 import AssetFactory from "../../util/AssetFactory";
 import { langString } from "../../model/MultilingualString";
