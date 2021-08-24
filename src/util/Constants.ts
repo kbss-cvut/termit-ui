@@ -164,8 +164,8 @@ const constants = {
 };
 
 constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =
-    "https://kbss-cvut.github.io/termit-web/cs/tutorial#anotace-dokumentů";
+  "https://kbss-cvut.github.io/termit-web/cs/tutorial#anotace-dokumentů";
 constants.ANNOTATOR_TUTORIAL[constants.LANG.EN.locale] =
-    "https://kbss-cvut.github.io/termit-web/tutorial#annotate-documents";
+  "https://kbss-cvut.github.io/termit-web/tutorial#annotate-documents";
 
 export default constants;

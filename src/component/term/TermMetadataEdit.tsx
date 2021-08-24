@@ -313,7 +313,7 @@ export class TermMetadataEdit extends React.Component<
               </AttributeSectionContainer>
 
               <AttributeSectionContainer
-                  label={i18n("term.metadata.relationships")}
+                label={i18n("term.metadata.relationships")}
               >
                 <Row>
                   <Col xs={12}>
@@ -366,7 +366,10 @@ export class TermMetadataEdit extends React.Component<
                 <Row>
                   <Col xs={12}>
                     <StringListEdit
-                      list={getLocalizedPlural(this.state.hiddenLabels, language)}
+                      list={getLocalizedPlural(
+                        this.state.hiddenLabels,
+                        language
+                      )}
                       onChange={this.onHiddenLabelsChange}
                       i18nPrefix={"term.metadata.hiddenLabels"}
                     />
@@ -377,12 +380,12 @@ export class TermMetadataEdit extends React.Component<
                     <TextArea
                       name="edit-term-comment"
                       value={getLocalizedOrDefault(
-                          this.state.scopeNote,
-                          "",
-                          language
+                        this.state.scopeNote,
+                        "",
+                        language
                       )}
                       validation={validationScopeNote.map((vr) =>
-                          ValidationResult.fromOntoValidationResult(vr, locale)
+                        ValidationResult.fromOntoValidationResult(vr, locale)
                       )}
                       onChange={this.onScopeNoteChange}
                       rows={4}
@@ -401,7 +404,9 @@ export class TermMetadataEdit extends React.Component<
                     <DraftToggle
                       id="edit-term-status"
                       draft={
-                        this.state.draft === undefined ? true : this.state.draft!
+                        this.state.draft === undefined
+                          ? true
+                          : this.state.draft!
                       }
                       onToggle={this.onStatusChange}
                     />
