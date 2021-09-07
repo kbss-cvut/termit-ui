@@ -106,8 +106,8 @@ function flattenAncestors(terms: Term[]) {
  * @param options Options loaded from the server for display by the tree component
  */
 function addAncestorsOfSelected(selectedIris: string[], options: Term[]) {
-  selectedIris.forEach(iri => {
-    const matching = options.find(t => t.iri === iri);
+  selectedIris.forEach((iri) => {
+    const matching = options.find((t) => t.iri === iri);
     if (!matching) {
       return;
     }
@@ -125,18 +125,16 @@ function addAncestorsOfSelected(selectedIris: string[], options: Term[]) {
  */
 function traverseToAncestor(child: Term, options: Term[]) {
   if (Utils.sanitizeArray(child.parentTerms).length > 0) {
-    child.parentTerms!.forEach(pt => {
+    child.parentTerms!.forEach((pt) => {
       pt.plainSubTerms = [child.iri];
       traverseToAncestor(pt, options);
     });
   } else {
-    if (!options.find(t => t.iri === child.iri)) {
+    if (!options.find((t) => t.iri === child.iri)) {
       options.push(child);
     }
   }
 }
-
-
 
 /**
  * Resolves identifiers of the specified selected terms.

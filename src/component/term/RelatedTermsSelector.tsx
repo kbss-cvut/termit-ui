@@ -87,7 +87,8 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
     // If the offset is > 0, the selected terms should have been already included
-    const toInclude = fetchOptions.offset === 0 ? resolveSelectedIris(this.props.selected) : [];
+    const toInclude =
+      fetchOptions.offset === 0 ? resolveSelectedIris(this.props.selected) : [];
     return this.props
       .loadTerms(
         {
@@ -104,7 +105,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
         }
         return processTermsForTreeSelect(terms, undefined, {
           searchString: fetchOptions.searchString,
-          selectedIris: toInclude
+          selectedIris: toInclude,
         });
       });
   };

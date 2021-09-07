@@ -7,7 +7,7 @@ import Resource from "../../model/Resource";
 import Document from "../../model/Document";
 import File from "../../model/File";
 import Generator from "../../__tests__/environment/Generator";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 import Constants from "../Constants";
 
 jest.mock("history", () => ({
