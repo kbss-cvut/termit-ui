@@ -15,7 +15,7 @@ import {
   UpdateRecord,
   UpdateRecordData,
 } from "../../model/changetracking/UpdateRecord";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 
 describe("AssetFactory", () => {
   describe("createAsset", () => {

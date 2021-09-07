@@ -26,14 +26,19 @@ describe("TermTreeSelectHelper", () => {
 
     it("adds top level ancestor of a selected term into the results", () => {
       const vocUri = Generator.generateUri();
-      const terms = [Generator.generateTerm(vocUri), Generator.generateTerm(vocUri)];
+      const terms = [
+        Generator.generateTerm(vocUri),
+        Generator.generateTerm(vocUri),
+      ];
       const included = Generator.generateTerm(vocUri);
       const parent = Generator.generateTerm(vocUri);
       included.parentTerms = [parent];
       const grandParent = Generator.generateTerm();
       parent.parentTerms = [grandParent];
       terms.push(included);
-      const result = processTermsForTreeSelect(terms, [vocUri], {selectedIris: [included.iri]});
+      const result = processTermsForTreeSelect(terms, [vocUri], {
+        selectedIris: [included.iri],
+      });
       expect(result).toContain(grandParent);
     });
   });

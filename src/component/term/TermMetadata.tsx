@@ -178,9 +178,7 @@ export class TermMetadata extends React.Component<
     tabs["term.metadata.assignments.title"] = (
       <TermAssignments term={term} onLoad={this.setAssignmentsCount} />
     );
-    tabs["term.metadata.related.tab.title"] = (
-      <RelatedTerms term={term} />
-    );
+    tabs["term.metadata.related.tab.title"] = <RelatedTerms term={term} />;
     tabs["history.label"] = <AssetHistory asset={term} />;
     tabs["term.metadata.validation.title"] = <ValidationResults term={term} />;
     tabs["comments.title"] = (

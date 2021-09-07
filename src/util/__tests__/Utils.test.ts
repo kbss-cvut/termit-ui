@@ -6,7 +6,7 @@ import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
 import Document from "../../model/Document";
 import File from "../../model/File";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 
 describe("Utils", () => {
   describe("sanitizeArray", () => {
