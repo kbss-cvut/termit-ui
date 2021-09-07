@@ -14,9 +14,11 @@ jest.mock("../VocabularyList", () => () => <div>Vocabularies</div>);
 
 describe("VocabularyList", () => {
   let loadVocabularies: () => void;
+  let analyzeAllVocabularies: () => void;
 
   beforeEach(() => {
     loadVocabularies = jest.fn();
+    analyzeAllVocabularies = jest.fn();
   });
 
   it("loads vocabularies on mount", async () => {
@@ -25,6 +27,7 @@ describe("VocabularyList", () => {
       <MemoryRouter>
         <VocabularyManagement
           loadVocabularies={loadVocabularies}
+          analyzeAllVocabularies={analyzeAllVocabularies}
           {...intlFunctions()}
         />
       </MemoryRouter>
@@ -42,6 +45,7 @@ describe("VocabularyList", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <VocabularyManagement
+          analyzeAllVocabularies={analyzeAllVocabularies}
           loadVocabularies={loadVocabularies}
           {...intlFunctions()}
         />

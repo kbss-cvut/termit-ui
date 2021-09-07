@@ -6,6 +6,7 @@ import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
 import Document from "../../model/Document";
 import File from "../../model/File";
+import {langString} from "../../model/MultilingualString";
 
 describe("Utils", () => {
   describe("sanitizeArray", () => {
@@ -82,7 +83,7 @@ describe("Utils", () => {
     it("returns term type label message id for term", () => {
       const term: Term = new Term({
         iri: Generator.generateUri(),
-        label: "Test",
+        label: langString("Test"),
         types: [VocabularyUtils.TERM],
       });
       expect(Utils.getAssetTypeLabelId(term)).toEqual("type.term");

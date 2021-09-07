@@ -435,8 +435,11 @@ const en = {
       "It can be a term from the current vocabulary, or another vocabulary. For example, 'car' is related to 'driver'. " +
       "Do not pick a term which is already selected as a 'parent term', or an 'exact match'.",
     "term.metadata.vocabulary.tooltip": "Vocabulary this term belongs to",
+    "term.metadata.related.tab.title": "More related terms",
     "term.metadata.related.ontologically": "Ontologically",
     "term.metadata.related.definitionally": "Definitionally",
+    "term.metadata.related.definitionally.stale":
+      "TermIt is currently analyzing all terms in this vocabulary, so the results shown here may be stale. They will be reloaded automatically.",
     "term.metadata.related.definitionally.targeting":
       "Terms that occurred in the definition of this term",
     "term.metadata.related.definitionally.of":
@@ -445,6 +448,8 @@ const en = {
       "Terms which are related to this term via selected ontological relationships.",
     "term.metadata.related.definitionally.tooltip":
       "Terms which are related to this term via definition.",
+    "term.metadata.related.definitionally.suggested":
+      "Occurrence has been identified by an automatic analysis of the definition text and has not been approved",
     "term.metadata.assignments.occurrence.remove":
       "Occurrence successfully removed.",
     "term.metadata.assignments.occurrence.remove.tooltip":
@@ -453,7 +458,7 @@ const en = {
       "Occurrence successfully approved.",
     "term.metadata.assignments.occurrence.approve.tooltip":
       "Approve suggested occurrence",
-    "term.metadata.comments.title": "Comments",
+    "term.metadata.comments.public.title": "Public discussion",
     "term.metadata.status.draft": "Draft",
     "term.metadata.status.confirmed": "Confirmed",
     "term.metadata.status.help":

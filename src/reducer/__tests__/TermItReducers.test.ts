@@ -81,6 +81,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     annotatorTerms: state.annotatorTerms,
     configuration: state.configuration,
     validationResults: state.validationResults,
+    definitionallyRelatedTerms: state.definitionallyRelatedTerms,
   };
 }
 
@@ -887,6 +888,53 @@ describe("Reducers", () => {
         )
       );
       expect(result.configuration).toEqual(config);
+    });
+  });
+
+  describe("definitionallyRelatedTerms", () => {
+    it("sets loaded occurrences targeting term on state", () => {
+      const payload = [
+        Generator.generateOccurrenceOf(Generator.generateTerm()),
+        Generator.generateOccurrenceOf(Generator.generateTerm()),
+      ];
+      const result = reducers(
+        stateToPlainObject(initialState),
+        asyncActionSuccessWithPayload(
+          { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING },
+          payload
+        )
+      );
+      expect(result.definitionallyRelatedTerms.targeting).toEqual(payload);
+    });
+
+    it("sets loaded occurrences of term on state", () => {
+      const t = Generator.generateTerm();
+      const payload = [
+        Generator.generateOccurrenceOf(t),
+        Generator.generateOccurrenceOf(t),
+      ];
+      const result = reducers(
+        stateToPlainObject(initialState),
+        asyncActionSuccessWithPayload(
+          { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_OF },
+          payload
+        )
+      );
+      expect(result.definitionallyRelatedTerms.of).toEqual(payload);
+    });
+
+    it("resets definitionally related terms on term loading action", () => {
+      initialState.definitionallyRelatedTerms = {
+        targeting: [Generator.generateOccurrenceOf(Generator.generateTerm())],
+        of: [Generator.generateOccurrenceOf(Generator.generateTerm())],
+      };
+      const result = reducers(
+        stateToPlainObject(initialState),
+        asyncActionRequest({ type: ActionType.LOAD_TERM })
+      );
+      expect(result.definitionallyRelatedTerms).toEqual(
+        new TermItState().definitionallyRelatedTerms
+      );
     });
   });
 });

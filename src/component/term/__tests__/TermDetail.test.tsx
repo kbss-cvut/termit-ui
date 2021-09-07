@@ -13,10 +13,13 @@ import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import TermOccurrence from "../../../model/TermOccurrence";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
+jest.mock("../RelatedTermsSelector");
 jest.mock("../../misc/AssetLabel");
+jest.mock("../RelatedTerms");
 jest.mock("../../changetracking/AssetHistory");
 
 describe("TermDetail", () => {
@@ -31,7 +34,11 @@ describe("TermDetail", () => {
   let loadVocabulary: (iri: IRI) => void;
   let onUpdate: (term: Term) => Promise<any>;
   let removeTerm: (term: Term) => Promise<any>;
+  let approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
+  let removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   let onPublishNotification: (notification: AppNotification) => void;
+
+  let handlers: any;
 
   let vocabulary: Vocabulary;
   let term: Term;
@@ -53,11 +60,22 @@ describe("TermDetail", () => {
       isExact: true,
       url: "http://localhost:3000/" + location.pathname,
     };
-    onLoad = jest.fn().mockImplementation(() => Promise.resolve());
+    onLoad = jest.fn().mockResolvedValue({});
     loadVocabulary = jest.fn();
-    onUpdate = jest.fn().mockImplementation(() => Promise.resolve());
-    removeTerm = jest.fn().mockImplementation(() => Promise.resolve());
+    onUpdate = jest.fn().mockResolvedValue({});
+    removeTerm = jest.fn().mockResolvedValue({});
+    approveOccurrence = jest.fn().mockResolvedValue({});
+    removeOccurrence = jest.fn().mockResolvedValue({});
     onPublishNotification = jest.fn();
+    handlers = {
+      loadTerm: onLoad,
+      loadVocabulary,
+      updateTerm: onUpdate,
+      removeTerm,
+      publishNotification: onPublishNotification,
+      approveOccurrence,
+      removeOccurrence,
+    };
     vocabulary = Generator.generateVocabulary();
     term = new Term({
       iri: Generator.generateUri(),
@@ -71,12 +89,7 @@ describe("TermDetail", () => {
     shallow(
       <TermDetail
         term={null}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
-        loadVocabulary={loadVocabulary}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        publishNotification={onPublishNotification}
+        {...handlers}
         vocabulary={vocabulary}
         history={history}
         location={location}
@@ -95,16 +108,12 @@ describe("TermDetail", () => {
     shallow(
       <TermDetail
         term={null}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
-        loadVocabulary={loadVocabulary}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
         history={history}
         location={location}
         match={match}
         vocabulary={vocabulary}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
@@ -118,13 +127,9 @@ describe("TermDetail", () => {
     const wrapper = shallow(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        loadVocabulary={loadVocabulary}
-        updateTerm={onUpdate}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        removeTerm={removeTerm}
         vocabulary={vocabulary}
-        publishNotification={onPublishNotification}
         history={history}
         location={location}
         match={match}
@@ -135,57 +140,47 @@ describe("TermDetail", () => {
   });
 
   it("renders term editor after clicking edit button", () => {
-    const wrapper = shallow(
+    const wrapper = shallow<TermDetail>(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        loadVocabulary={loadVocabulary}
-        updateTerm={onUpdate}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        removeTerm={removeTerm}
         vocabulary={vocabulary}
-        publishNotification={onPublishNotification}
         history={history}
         location={location}
         match={match}
         {...intlFunctions()}
       />
     );
-    (wrapper.instance() as TermDetail).onEdit();
+    wrapper.instance().onEdit();
     expect(wrapper.find(TermMetadataEdit).exists()).toBeTruthy();
   });
 
   it("invokes termUpdate action on save", () => {
-    const wrapper = shallow(
+    const wrapper = shallow<TermDetail>(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        loadVocabulary={loadVocabulary}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
-    (wrapper.instance() as TermDetail).onSave(term);
+    wrapper
+      .instance()
+      .onSave(term, { pendingApproval: [], pendingRemoval: [] });
     expect(onUpdate).toHaveBeenCalledWith(term);
   });
 
   it("closes term metadata edit on save success", () => {
-    const wrapper = shallow(
+    const wrapper = shallow<TermDetail>(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        loadVocabulary={loadVocabulary}
-        updateTerm={onUpdate}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        removeTerm={removeTerm}
-        publishNotification={onPublishNotification}
         history={history}
         location={location}
         match={match}
@@ -193,59 +188,55 @@ describe("TermDetail", () => {
         {...intlFunctions()}
       />
     );
-    (wrapper.instance() as TermDetail).onEdit();
-    (wrapper.instance() as TermDetail).onSave(term);
-    return Promise.resolve().then(() => {
-      wrapper.update();
-      expect((wrapper.instance() as TermDetail).state.edit).toBeFalsy();
-    });
+    wrapper.instance().onEdit();
+    return wrapper
+      .instance()
+      .onSave(term, { pendingApproval: [], pendingRemoval: [] })
+      .then(() => {
+        wrapper.update();
+        expect(wrapper.state().edit).toBeFalsy();
+      });
   });
 
   it("reloads term on successful save", () => {
-    const wrapper = shallow(
+    const wrapper = shallow<TermDetail>(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        loadVocabulary={loadVocabulary}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
-    (wrapper.instance() as TermDetail).onSave(term);
-    return Promise.resolve().then(() => {
-      expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {
-        fragment: normalizedVocabName,
+    wrapper
+      .instance()
+      .onSave(term, { pendingApproval: [], pendingRemoval: [] })
+      .then(() => {
+        expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {
+          fragment: normalizedVocabName,
+        });
       });
-    });
   });
 
   it("closes edit when different term is selected", () => {
-    const wrapper = shallow(
+    const wrapper = shallow<TermDetail>(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        loadVocabulary={loadVocabulary}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
-    (wrapper.instance() as TermDetail).onEdit();
+    wrapper.instance().onEdit();
     wrapper.update();
-    expect((wrapper.instance() as TermDetail).state.edit).toBeTruthy();
+    expect(wrapper.state().edit).toBeTruthy();
     const newMatch = {
       params: {
         name: normalizedVocabName,
@@ -257,29 +248,25 @@ describe("TermDetail", () => {
     };
     wrapper.setProps({ match: newMatch });
     wrapper.update();
-    expect((wrapper.instance() as TermDetail).state.edit).toBeFalsy();
+    expect(wrapper.state().edit).toBeFalsy();
   });
 
   it("does not render edit button when editing", () => {
-    const wrapper = shallow(
+    const wrapper = shallow<TermDetail>(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        loadVocabulary={loadVocabulary}
-        updateTerm={onUpdate}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        removeTerm={removeTerm}
         vocabulary={vocabulary}
-        publishNotification={onPublishNotification}
         history={history}
         location={location}
         match={match}
         {...intlFunctions()}
       />
     );
-    const buttons = (wrapper.instance() as TermDetail).getActions();
+    const buttons = wrapper.instance().getActions();
     expect(buttons.some((b) => b.key === "term-detail-edit"));
-    (wrapper.instance() as TermDetail).onEdit();
+    wrapper.instance().onEdit();
     expect(buttons.every((b) => b.key !== "term-detail-edit"));
   });
 
@@ -287,16 +274,12 @@ describe("TermDetail", () => {
     const wrapper = shallow<TermDetail>(
       <TermDetail
         term={term}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
+        {...handlers}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        loadVocabulary={loadVocabulary}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
@@ -309,12 +292,14 @@ describe("TermDetail", () => {
         draft: true,
       }),
     ];
-    wrapper.instance().onSave(update);
-    return Promise.resolve().then(() => {
-      expect(onPublishNotification).toHaveBeenCalledWith({
-        source: { type: NotificationType.TERM_HIERARCHY_UPDATED },
+    return wrapper
+      .instance()
+      .onSave(update, { pendingApproval: [], pendingRemoval: [] })
+      .then(() => {
+        expect(onPublishNotification).toHaveBeenCalledWith({
+          source: { type: NotificationType.TERM_HIERARCHY_UPDATED },
+        });
       });
-    });
   });
 
   it("invokes remove action and closes remove confirmation dialog on remove", () => {
@@ -322,15 +307,11 @@ describe("TermDetail", () => {
       <TermDetail
         term={term}
         configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
-        loadVocabulary={loadVocabulary}
+        {...handlers}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
@@ -344,15 +325,11 @@ describe("TermDetail", () => {
       <TermDetail
         term={term}
         configuredLanguage="cs"
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
-        loadVocabulary={loadVocabulary}
+        {...handlers}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
@@ -368,15 +345,11 @@ describe("TermDetail", () => {
       <TermDetail
         term={term}
         configuredLanguage={lang}
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
-        loadVocabulary={loadVocabulary}
+        {...handlers}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
@@ -388,15 +361,11 @@ describe("TermDetail", () => {
       <TermDetail
         term={null}
         configuredLanguage="cs"
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
-        loadVocabulary={loadVocabulary}
+        {...handlers}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
@@ -413,15 +382,11 @@ describe("TermDetail", () => {
       <TermDetail
         term={null}
         configuredLanguage="cs"
-        loadTerm={onLoad}
-        updateTerm={onUpdate}
-        removeTerm={removeTerm}
-        loadVocabulary={loadVocabulary}
+        {...handlers}
         vocabulary={vocabulary}
         history={history}
         location={location}
         match={match}
-        publishNotification={onPublishNotification}
         {...intlFunctions()}
       />
     );
@@ -432,5 +397,61 @@ describe("TermDetail", () => {
     wrapper.update();
     expect(onLoad).toHaveBeenCalled();
     expect(loadVocabulary).toHaveBeenCalled();
+  });
+
+  it("approves pending definitional occurrences on save", () => {
+    const wrapper = shallow<TermDetail>(
+      <TermDetail
+        term={term}
+        configuredLanguage="cs"
+        {...handlers}
+        vocabulary={vocabulary}
+        history={history}
+        location={location}
+        match={match}
+        {...intlFunctions()}
+      />
+    );
+    const occurrences = [
+      Generator.generateOccurrenceOf(term),
+      Generator.generateOccurrenceOf(term),
+    ];
+    wrapper
+      .instance()
+      .onSave(term, { pendingApproval: occurrences, pendingRemoval: [] });
+    return Promise.resolve().then(() => {
+      occurrences.forEach((o) =>
+        expect(approveOccurrence).toHaveBeenCalledWith(o)
+      );
+      expect(onUpdate).toHaveBeenCalledWith(term);
+    });
+  });
+
+  it("removes pending definitional occurrences on save", () => {
+    const wrapper = shallow<TermDetail>(
+      <TermDetail
+        term={term}
+        configuredLanguage="cs"
+        {...handlers}
+        vocabulary={vocabulary}
+        history={history}
+        location={location}
+        match={match}
+        {...intlFunctions()}
+      />
+    );
+    const occurrences = [
+      Generator.generateOccurrenceOf(term),
+      Generator.generateOccurrenceOf(term),
+    ];
+    return wrapper
+      .instance()
+      .onSave(term, { pendingApproval: [], pendingRemoval: occurrences })
+      .then(() => {
+        occurrences.forEach((o) =>
+          expect(removeOccurrence).toHaveBeenCalledWith(o)
+        );
+        expect(onUpdate).toHaveBeenCalledWith(term);
+      });
   });
 });

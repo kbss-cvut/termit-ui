@@ -15,18 +15,19 @@ import {
   UpdateRecord,
   UpdateRecordData,
 } from "../../model/changetracking/UpdateRecord";
+import {langString} from "../../model/MultilingualString";
 
 describe("AssetFactory", () => {
   describe("createAsset", () => {
     const basicData: AssetData = {
       iri: Generator.generateUri(),
-      label: "Test",
     };
 
     it("creates correct asset instance based on data", () => {
       expect(
         AssetFactory.createAsset(
           Object.assign({}, basicData, {
+            label: langString("Test"),
             types: VocabularyUtils.TERM,
           })
         )
@@ -34,6 +35,7 @@ describe("AssetFactory", () => {
       expect(
         AssetFactory.createAsset(
           Object.assign({}, basicData, {
+            label: "Test",
             types: VocabularyUtils.VOCABULARY,
           })
         )
@@ -41,6 +43,7 @@ describe("AssetFactory", () => {
       expect(
         AssetFactory.createAsset(
           Object.assign({}, basicData, {
+            label: "Test",
             types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE],
           })
         )
@@ -151,21 +154,21 @@ describe("AssetFactory", () => {
     };
 
     it("creates term assignment when data are for assignment only", () => {
-      const result = AssetFactory.createTermAssignment(data);
+      const result = AssetFactory.createTermAssignment(data as any);
       expect(result).not.toBeNull();
       expect(result).toBeInstanceOf(TermAssignment);
     });
 
     it("creates term occurrence when data contain occurrence type", () => {
       data.types = [VocabularyUtils.TERM_OCCURRENCE, ...data.types];
-      const result = AssetFactory.createTermAssignment(data);
+      const result = AssetFactory.createTermAssignment(data as any);
       expect(result).not.toBeNull();
       expect(result).toBeInstanceOf(TermOccurrence);
     });
 
     it("throws unsupported type exception when data of unknown type are passed in", () => {
       data.types = [];
-      expect(() => AssetFactory.createTermAssignment(data)).toThrow(
+      expect(() => AssetFactory.createTermAssignment(data as any)).toThrow(
         new TypeError(
           "Unsupported type of assignment data " + JSON.stringify(data)
         )

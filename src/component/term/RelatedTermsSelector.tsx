@@ -21,10 +21,13 @@ import { loadAllTerms } from "../../action/AsyncActions";
 import { injectIntl } from "react-intl";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import HelpIcon from "../misc/HelpIcon";
+import DefinitionRelatedTermsEdit, {
+  DefinitionRelatedChanges,
+} from "./DefinitionRelatedTermsEdit";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
-  termIri?: string;
+  term: Term;
   vocabularyIri: string;
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
@@ -32,18 +35,53 @@ interface RelatedTermsSelectorProps extends HasI18n {
     fetchOptions: FetchOptionsFunction,
     namespace?: string
   ) => Promise<Term[]>;
+
+  definitionRelatedChanges: DefinitionRelatedChanges;
+  onDefinitionRelatedChange: (change: DefinitionRelatedChanges) => void;
 }
 
 export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorProps> {
+  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
+
+  constructor(props: RelatedTermsSelectorProps) {
+    super(props);
+    this.treeComponent = React.createRef();
+  }
+
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
       this.props.onChange([]);
     } else {
       this.props.onChange(
-        Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
+        Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.term.iri)
       );
     }
   };
+
+  public onAddDefinitional = (toAdd: Term[]) => {
+    toAdd = toAdd.filter(
+      (item) =>
+        this.props.selected.find((i) => i.iri === item.iri) === undefined
+    );
+    const options = this.treeComponent.current.getOptions();
+    const selected = options.filter(
+      (opt: Term) =>
+        this.props.selected.find((t) => t.iri === opt.iri) !== undefined
+    );
+    this.props.onChange(selected.concat(toAdd));
+    if (!RelatedTermsSelector.isSubset(toAdd, options)) {
+      this.treeComponent.current.resetOptions();
+    }
+  };
+
+  private static isSubset(subset: Term[], superset: Term[]) {
+    for (let t of subset) {
+      if (superset.find((st) => st.iri === t.iri) === undefined) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
@@ -59,7 +97,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
           : undefined
       )
       .then((terms) => {
-        if (!this.props.termIri) {
+        if (!this.props.term.iri) {
           return terms;
         }
         return processTermsForTreeSelect(terms, undefined, {
@@ -80,6 +118,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
         </Label>
         <>
           <IntelligentTreeSelect
+            ref={this.treeComponent}
             onChange={this.onChange}
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
@@ -94,6 +133,12 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             {...commonTermTreeSelectProps(this.props)}
           />
         </>
+        <DefinitionRelatedTermsEdit
+          term={this.props.term}
+          onAddRelated={this.onAddDefinitional}
+          pending={this.props.definitionRelatedChanges}
+          onChange={this.props.onDefinitionRelatedChange}
+        />
       </FormGroup>
     );
   }

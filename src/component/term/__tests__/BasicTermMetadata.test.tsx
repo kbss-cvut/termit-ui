@@ -39,7 +39,7 @@ describe("BasicTermMetadata", () => {
       },
     ];
     term.subTerms = subTerms;
-    const wrapper = shallow(
+    const wrapper = mountWithIntl(
       <BasicTermMetadata
         term={term}
         language={Constants.DEFAULT_LANGUAGE}
@@ -72,7 +72,7 @@ describe("BasicTermMetadata", () => {
         vocabulary: { iri: Generator.generateUri() },
       }),
     ];
-    const wrapper = shallow(
+    const wrapper = mountWithIntl(
       <BasicTermMetadata
         term={term}
         language={Constants.DEFAULT_LANGUAGE}
