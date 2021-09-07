@@ -1,12 +1,15 @@
 import * as React from "react";
-import { Card, CardBody, Col } from "reactstrap";
+import { Button, Card, CardBody, Col } from "reactstrap";
 import Routes from "../../util/Routes";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import { loadVocabularies as loadVocabulariesAction } from "../../action/AsyncActions";
+import {
+  executeTextAnalysisOnAllVocabularies,
+  loadVocabularies as loadVocabulariesAction,
+} from "../../action/AsyncActions";
 import VocabularyList from "./VocabularyList";
 import { Link } from "react-router-dom";
-import { GoPlus } from "react-icons/go";
+import { GoClippy, GoPlus } from "react-icons/go";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
@@ -14,19 +17,20 @@ import { useI18n } from "../hook/useI18n";
 
 interface VocabularyManagementProps {
   loadVocabularies: () => void;
+  analyzeAllVocabularies: () => void;
 }
 
 export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
   props
 ) => {
-  const { loadVocabularies } = props;
+  const { loadVocabularies, analyzeAllVocabularies } = props;
   const { i18n } = useI18n();
   React.useEffect(() => {
     loadVocabularies();
   }, [loadVocabularies]);
 
-  const buttons = (
-    <IfUserAuthorized renderUnauthorizedAlert={false}>
+  const buttons = [
+    <IfUserAuthorized renderUnauthorizedAlert={false} key="vocabularies-create">
       <Link
         id="vocabularies-create"
         className="btn btn-primary btn-sm"
@@ -36,8 +40,24 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         <GoPlus />
         &nbsp;{i18n("vocabulary.management.new")}
       </Link>
-    </IfUserAuthorized>
-  );
+    </IfUserAuthorized>,
+    <IfUserAuthorized
+      renderUnauthorizedAlert={false}
+      key="analyze-vocabularies"
+    >
+      <Button
+        id="analyze-vocabularies"
+        className="btn"
+        size="sm"
+        color="primary"
+        title={i18n("vocabulary.management.startTextAnalysis.title")}
+        onClick={analyzeAllVocabularies}
+      >
+        <GoClippy />
+        &nbsp;{i18n("file.metadata.startTextAnalysis.text")}
+      </Button>
+    </IfUserAuthorized>,
+  ];
 
   return (
     <>
@@ -62,5 +82,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
 export default connect(undefined, (dispatch: ThunkDispatch) => {
   return {
     loadVocabularies: () => dispatch(loadVocabulariesAction()),
+    analyzeAllVocabularies: () =>
+      dispatch(executeTextAnalysisOnAllVocabularies()),
   };
 })(VocabularyManagement);

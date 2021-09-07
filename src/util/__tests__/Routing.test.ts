@@ -7,6 +7,8 @@ import Resource from "../../model/Resource";
 import Document from "../../model/Document";
 import File from "../../model/File";
 import Generator from "../../__tests__/environment/Generator";
+import {langString} from "../../model/MultilingualString";
+import Constants from "../Constants";
 
 jest.mock("history", () => ({
   createHashHistory: jest.fn().mockReturnValue({
@@ -31,6 +33,7 @@ describe("Routing", () => {
       expect(path).toEqual(expectedPath);
     });
     it("adds query parameters when specified for transition", () => {
+      const name = "test-vocabulary";
       const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/";
       const path = Routing.getTransitionPath(Routes.vocabularies, {
         query: new Map([["namespace", namespace]]),
@@ -114,14 +117,14 @@ describe("Routing", () => {
 
     it("transitions to term detail for a term", () => {
       const term = Generator.generateTerm(iri);
-      term.label = "test-term";
-      term.iri = iri + "/pojem/" + term.label;
+      term.label = langString("test-term");
+      term.iri = iri + "/pojem/" + term.label[Constants.DEFAULT_LANGUAGE];
       RoutingInstance.transitionToAsset(term);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.vocabularyTermDetail, {
           params: new Map([
             ["name", label],
-            ["termName", term.label],
+            ["termName", term.label[Constants.DEFAULT_LANGUAGE]],
           ]),
           query: new Map([["namespace", namespace]]),
         })
@@ -147,14 +150,14 @@ describe("Routing", () => {
 
     it("transitions to public term detail for a term", () => {
       const term = Generator.generateTerm(iri);
-      term.label = "test-term";
-      term.iri = iri + "/pojem/" + term.label;
+      term.label = langString("test-term");
+      term.iri = iri + "/pojem/" + term.label[Constants.DEFAULT_LANGUAGE];
       RoutingInstance.transitionToPublicAsset(term);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.publicVocabularyTermDetail, {
           params: new Map([
             ["name", label],
-            ["termName", term.label],
+            ["termName", term.label[Constants.DEFAULT_LANGUAGE]],
           ]),
           query: new Map([["namespace", namespace]]),
         })
@@ -164,6 +167,7 @@ describe("Routing", () => {
 
   describe("saveOriginalTarget", () => {
     afterEach(() => {
+      // @ts-ignore
       delete RoutingInstance.history.location;
       // @ts-ignore
       RoutingInstance.originalTarget = undefined;
@@ -186,6 +190,7 @@ describe("Routing", () => {
 
   describe("transitionToOriginalTarget", () => {
     afterEach(() => {
+      // @ts-ignore
       delete RoutingInstance.history.location;
       // @ts-ignore
       RoutingInstance.originalTarget = undefined;

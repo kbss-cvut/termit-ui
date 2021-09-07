@@ -44,10 +44,14 @@ import { renderValidationMessages } from "./forms/FormUtils";
 import ExactMatchesSelector from "./ExactMatchesSelector";
 import MultilingualIcon from "../misc/MultilingualIcon";
 import RelatedTermsSelector from "./RelatedTermsSelector";
+import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
-  save: (term: Term) => void;
+  save: (
+    term: Term,
+    definitionRelatedChanges: DefinitionRelatedChanges
+  ) => void;
   cancel: () => void;
   language: string;
   selectLanguage: (lang: string) => void;
@@ -57,6 +61,7 @@ interface TermMetadataEditProps extends HasI18n {
 interface TermMetadataEditState extends TermData {
   labelExist: LabelExists;
   unmappedProperties: Map<string, string[]>;
+  definitionRelated: DefinitionRelatedChanges;
 }
 
 export class TermMetadataEdit extends React.Component<
@@ -69,6 +74,10 @@ export class TermMetadataEdit extends React.Component<
       {
         labelExist: {},
         unmappedProperties: props.term.unmappedProperties,
+        definitionRelated: {
+          pendingApproval: [],
+          pendingRemoval: [],
+        },
       },
       props.term
     );
@@ -175,6 +184,10 @@ export class TermMetadataEdit extends React.Component<
     });
   };
 
+  public onDefinitionRelatedChange = (value: DefinitionRelatedChanges) => {
+    this.setState({ definitionRelated: value });
+  };
+
   private static splitTermsInSameAndDifferentVocabularies(
     terms: Term[],
     vocabularyIri: string
@@ -200,10 +213,11 @@ export class TermMetadataEdit extends React.Component<
   };
 
   public onSave = () => {
-    const { labelExist, unmappedProperties, ...data } = this.state;
+    const { labelExist, unmappedProperties, definitionRelated, ...data } =
+      this.state;
     const t = new Term(data);
     t.unmappedProperties = this.state.unmappedProperties;
-    this.props.save(t);
+    this.props.save(t, definitionRelated);
   };
 
   public removeTranslation = (lang: string) => {
@@ -363,12 +377,14 @@ export class TermMetadataEdit extends React.Component<
                   <Col xs={12}>
                     <RelatedTermsSelector
                       id="edit-term-related"
-                      termIri={this.props.term.iri}
+                      term={this.props.term}
                       vocabularyIri={this.props.term.vocabulary?.iri!}
                       selected={Term.consolidateRelatedAndRelatedMatch(
                         this.state
                       )}
                       onChange={this.onRelatedChange}
+                      definitionRelatedChanges={this.state.definitionRelated}
+                      onDefinitionRelatedChange={this.onDefinitionRelatedChange}
                     />
                   </Col>
                 </Row>

@@ -15,6 +15,7 @@ import {
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/StringListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
+import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 
 jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
@@ -25,7 +26,10 @@ jest.mock("../../misc/AssetLabel");
 
 describe("Term edit", () => {
   let term: Term;
-  let onSave: (t: Term) => void;
+  let onSave: (
+    t: Term,
+    definitionRelatedChanges: DefinitionRelatedChanges
+  ) => void;
   let onCancel: () => void;
   let selectLanguage: (lang: string) => void;
   let validationResults: ConsolidatedResults;

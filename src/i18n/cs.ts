@@ -441,16 +441,21 @@ const cs = {
       "Může se jednat o pojem z aktuálního slovníku nebo z jiného slovníku. Např. pojem 'vozidlo' souvisí s pojmem 'řidič'. " +
       "Nevybírejte pojem, který už je označen jako 'nadřazený pojem', nebo 'pojem se stejným významem'.",
     "term.metadata.vocabulary.tooltip": "Slovník, do kterého tento pojem patří",
+    "term.metadata.related.tab.title": "Další související pojmy",
     "term.metadata.related.ontologically": "Ontologicky",
     "term.metadata.related.definitionally": "Definičně",
+    "term.metadata.related.definitionally.stale":
+      "TermIt momentálně analyzuje všechny pojmy v tomto slovníku, pojmy zobrazené níže proto nemusí být aktuální. Data budou za chvíli automaticky aktualizována.",
     "term.metadata.related.definitionally.targeting":
       "Pojmy, které se vyskytly v definici tohoto pojmu",
     "term.metadata.related.definitionally.of":
       "Pojmy, v jejichž definici se tento pojem objevil",
     "term.metadata.related.ontologically.tooltip":
-      "Pojmy související díky vybraným ontologickým vztahům.",
+      "Pojmy související díky vybraným ontologickým vztahům",
     "term.metadata.related.definitionally.tooltip":
-      "Pojmy související díky definici.",
+      "Pojmy související díky definici",
+    "term.metadata.related.definitionally.suggested":
+      "Výskyt byl nalezen automaticky analýzou textu definice a ještě nebyl schválen",
     "term.metadata.assignments.occurrence.remove":
       "Výskyt pojmu byl odstraněn.",
     "term.metadata.assignments.occurrence.remove.tooltip":
@@ -459,7 +464,7 @@ const cs = {
       "Výskyt pojmu úspěšně schválen.",
     "term.metadata.assignments.occurrence.approve.tooltip":
       "Schválit navržený výskyt",
-    "term.metadata.comments.title": "Komentáře",
+    "term.metadata.comments.public.title": "Veřejná diskuse",
     "term.metadata.status.draft": "Rozpracovaný",
     "term.metadata.status.confirmed": "Schválený",
     "term.metadata.status.help":

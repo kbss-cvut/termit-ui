@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../model/Vocabulary";
 import {
+  executeTextAnalysisOnAllTerms,
   exportGlossary,
   loadResource,
   loadVocabulary,
@@ -21,7 +22,7 @@ import {
   UncontrolledButtonDropdown,
 } from "reactstrap";
 import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
-import { GoCloudDownload, GoPencil } from "react-icons/go";
+import { GoClippy, GoCloudDownload, GoPencil } from "react-icons/go";
 import { ThunkDispatch } from "../../util/Types";
 import EditableComponent, {
   EditableComponentState,
@@ -50,6 +51,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   exportToCsv: (iri: IRI) => void;
   exportToExcel: (iri: IRI) => void;
   exportToTurtle: (iri: IRI) => void;
+  executeTextAnalysisOnAllTerms: (iri: IRI) => void;
 }
 
 export interface VocabularySummaryState extends EditableComponentState {
@@ -136,6 +138,16 @@ export class VocabularySummary extends EditableComponent<
       rename
     );
 
+  public onFileAdded = () => {
+    this.loadVocabulary();
+  };
+
+  private onExecuteTextAnalysisOnAllTerms = () => {
+    this.props.executeTextAnalysisOnAllTerms(
+      VocabularyUtils.create(this.props.vocabulary.iri)
+    );
+  };
+
   public render() {
     const { i18n, vocabulary } = this.props;
     const buttons = [];
@@ -184,6 +196,7 @@ export class VocabularySummary extends EditableComponent<
         </Button>
       </IfUserAuthorized>
     );
+    buttons.push(this.renderAnalyzeButton());
 
     return (
       <div id="vocabulary-detail">
@@ -275,6 +288,26 @@ export class VocabularySummary extends EditableComponent<
       </UncontrolledButtonDropdown>
     );
   }
+
+  private renderAnalyzeButton() {
+    return (
+      <IfUserAuthorized
+        renderUnauthorizedAlert={false}
+        key="analyze-definition"
+      >
+        <Button
+          id="analyze-definition"
+          size="sm"
+          color="primary"
+          title={this.props.i18n("vocabulary.summary.startTextAnalysis.title")}
+          onClick={this.onExecuteTextAnalysisOnAllTerms}
+        >
+          <GoClippy />
+          &nbsp;{this.props.i18n("file.metadata.startTextAnalysis.text")}
+        </Button>
+      </IfUserAuthorized>
+    );
+  }
 }
 
 export default connect(
@@ -300,6 +333,8 @@ export default connect(
         dispatch(exportGlossary(iri, ExportType.Excel)),
       exportToTurtle: (iri: IRI) =>
         dispatch(exportGlossary(iri, ExportType.Turtle)),
+      executeTextAnalysisOnAllTerms: (iri: IRI) =>
+        dispatch(executeTextAnalysisOnAllTerms(iri)),
     };
   }
 )(injectIntl(withI18n(VocabularySummary)));
