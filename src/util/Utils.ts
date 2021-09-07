@@ -115,7 +115,7 @@ const Utils = {
     }
     return {
       size: limit,
-      page: Math.ceil(offset! / limit!),
+      page: Math.ceil(offset / limit),
     };
   },
 
