@@ -679,6 +679,7 @@ const cs = {
 
     "error.vocabulary.update.imports.danglingTermReferences":
       "Nelze odstranit import slovníku, neboť stále existují vazby mezi pojmy z tohoto a importovaného slovníku (či ze slovníků, které importuje).",
+    "error.file.maxUploadSizeExceeded": "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
 
     "history.label": "Historie",
     "history.loading": "Načítám historii...",
