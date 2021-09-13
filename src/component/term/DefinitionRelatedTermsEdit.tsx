@@ -6,8 +6,7 @@ import TermItState, {
   DefinitionallyRelatedTerms,
 } from "../../model/TermItState";
 import { useI18n } from "../hook/useI18n";
-import { ButtonToolbar, Col, Label, Row, Table } from "reactstrap";
-import HelpIcon from "../misc/HelpIcon";
+import { ButtonToolbar, Col, Row, Table } from "reactstrap";
 import { FaCheck, FaTrashAlt } from "react-icons/fa";
 import "./DefinitionRelatedTermsEdit.scss";
 import BadgeButton from "../misc/BadgeButton";
@@ -54,8 +53,8 @@ function findWithCommonTerm(
  * @param getter Getter of the term identifier to reduce by
  */
 export function reduceToUnique(
-    occurrences: TermOccurrence[],
-    getter: (o: TermOccurrence) => string
+  occurrences: TermOccurrence[],
+  getter: (o: TermOccurrence) => string
 ) {
   const unique = {};
   return occurrences.filter((o) => {
@@ -68,10 +67,7 @@ export function reduceToUnique(
   });
 }
 
-function prioritizeApproved(
-    occurrences: TermOccurrence[],
-    currentTerm: Term
-) {
+function prioritizeApproved(occurrences: TermOccurrence[], currentTerm: Term) {
   const copy = occurrences.slice();
   copy.sort((a, b) => {
     const suggestedA = a.isSuggested();
@@ -80,9 +76,9 @@ function prioritizeApproved(
       return suggestedA ? 1 : -1;
     }
     const iriA =
-        a.term.iri === currentTerm.iri ? a.target.source.iri! : a.term.iri!;
+      a.term.iri === currentTerm.iri ? a.target.source.iri! : a.term.iri!;
     const iriB =
-        b.term.iri === currentTerm.iri ? b.target.source.iri! : b.term.iri!;
+      b.term.iri === currentTerm.iri ? b.target.source.iri! : b.term.iri!;
     return iriA.localeCompare(iriB);
   });
   return copy;
@@ -191,29 +187,16 @@ export class DefinitionRelatedTermsEdit extends React.Component<
     const { i18n, definitionRelatedTerms, pending, term } = this.props;
     const { termCache } = this.state;
     const targeting = reduceToUnique(
-      prioritizeApproved(
-        definitionRelatedTerms.targeting,
-        term
-      ),
+      prioritizeApproved(definitionRelatedTerms.targeting, term),
       (o) => o.term.iri!
     ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
     const of = reduceToUnique(
-      prioritizeApproved(
-        definitionRelatedTerms.of,
-        term
-      ),
+      prioritizeApproved(definitionRelatedTerms.of, term),
       (o) => o.target.source.iri!
     ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
     return (
       <Row className="mt-2">
         <Col className="mx-3">
-          <Label className="attribute-label">
-            {i18n("term.metadata.related.definitionally")}
-            <HelpIcon
-              id="def-related-terms-edit-help"
-              text={i18n("term.metadata.related.definitionally.tooltip")}
-            />
-          </Label>
           <Row>
             <Col xs={12} lg={6}>
               <>
@@ -237,7 +220,14 @@ export class DefinitionRelatedTermsEdit extends React.Component<
             </Col>
             <Col xs={12} lg={6}>
               <>
-                <h5>{i18n("term.metadata.related.definitionally.of")}</h5>
+                <h5>
+                  {i18n("term.metadata.related.definitionally.of")}
+                  <InfoIcon
+                    text={i18n("term.metadata.related.definitionally.editOf")}
+                    id={"term-metadata-related-definitionally-of"}
+                    className="ml-1"
+                  />
+                </h5>
                 <div>
                   {this.renderOccurrencesTable(of, (to) => (
                     <DefinitionalTermOccurrence
@@ -246,8 +236,8 @@ export class DefinitionRelatedTermsEdit extends React.Component<
                       occurrence={to}
                       onApprove={this.onApprove}
                       onRemove={this.onRemove}
-                      canApprove={this.canApprove(to)}
-                      canRemove={this.canRemove(to)}
+                      canApprove={false}
+                      canRemove={false}
                     />
                   ))}
                 </div>
