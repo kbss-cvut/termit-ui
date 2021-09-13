@@ -438,8 +438,6 @@ const en = {
     "term.metadata.related.tab.title": "More related terms",
     "term.metadata.related.ontologically": "Ontologically",
     "term.metadata.related.definitionally": "Definitionally",
-    "term.metadata.related.definitionally.stale":
-      "TermIt is currently analyzing all terms in this vocabulary, so the results shown here may be stale. They will be reloaded automatically.",
     "term.metadata.related.definitionally.targeting":
       "Terms that occurred in the definition of this term",
     "term.metadata.related.definitionally.of":
@@ -450,6 +448,8 @@ const en = {
       "Terms which are related to this term via definition.",
     "term.metadata.related.definitionally.suggested":
       "Occurrence has been identified by an automatic analysis of the definition text and has not been approved",
+    "term.metadata.related.definitionally.editOf":
+      "You can approve/remove the occurrences in the detail of the corresponding terms",
     "term.metadata.assignments.occurrence.remove":
       "Occurrence successfully removed.",
     "term.metadata.assignments.occurrence.remove.tooltip":

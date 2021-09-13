@@ -444,8 +444,6 @@ const cs = {
     "term.metadata.related.tab.title": "Další související pojmy",
     "term.metadata.related.ontologically": "Ontologicky",
     "term.metadata.related.definitionally": "Definičně",
-    "term.metadata.related.definitionally.stale":
-      "TermIt momentálně analyzuje všechny pojmy v tomto slovníku, pojmy zobrazené níže proto nemusí být aktuální. Data budou za chvíli automaticky aktualizována.",
     "term.metadata.related.definitionally.targeting":
       "Pojmy, které se vyskytly v definici tohoto pojmu",
     "term.metadata.related.definitionally.of":
@@ -456,6 +454,8 @@ const cs = {
       "Pojmy související díky definici",
     "term.metadata.related.definitionally.suggested":
       "Výskyt byl nalezen automaticky analýzou textu definice a ještě nebyl schválen",
+    "term.metadata.related.definitionally.editOf":
+      "Výskyty lze schválit a odebrat na straně příslušných pojmů",
     "term.metadata.assignments.occurrence.remove":
       "Výskyt pojmu byl odstraněn.",
     "term.metadata.assignments.occurrence.remove.tooltip":
