@@ -1,11 +1,11 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
-import { Col, Label, Row } from "reactstrap";
-import Resource from "../../../model/Resource";
+import { Col, FormGroup, FormText, Label, Row } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { GoCloudUpload } from "react-icons/go";
 import classNames from "classnames";
+import { useI18n } from "../../hook/useI18n";
+import { useSelector } from "react-redux";
+import TermItState from "../../../model/TermItState";
 
 function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) {
@@ -21,87 +21,72 @@ function formatBytes(bytes: number, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
 
-interface UploadFileProps extends HasI18n {
-  resource?: Resource | undefined;
+interface UploadFileProps {
   setFile: (file: File) => void;
 }
 
-interface UploadFileState {
-  file?: File;
-  dragActive: boolean;
-}
-
-export class UploadFile extends React.Component<
-  UploadFileProps,
-  UploadFileState
-> {
-  constructor(props: UploadFileProps) {
-    super(props);
-    this.state = {
-      file: undefined,
-      dragActive: false,
-    };
-  }
-
-  public onFileSelected = (files: File[]) => {
-    // There should be exactly one file
+export const UploadFile: React.FC<UploadFileProps> = (props) => {
+  const { setFile } = props;
+  const [currentFile, setCurrentFile] = React.useState<File | undefined>();
+  const [dragActive, setDragActive] = React.useState(false);
+  const { i18n, formatMessage } = useI18n();
+  const serverConfig = useSelector((state: TermItState) => state.configuration);
+  const onFileSelected = (files: File[]) => {
     const file = files[0];
-    this.setState({ file, dragActive: false });
-    if (this.state.file) {
-      this.props.setFile(this.state.file);
+    setDragActive(false);
+    setCurrentFile(file);
+    if (file) {
+      setFile(file);
     }
   };
 
-  private onDragEnter = () => {
-    this.setState({ dragActive: true });
-  };
+  const containerClasses = classNames("create-resource-dropzone", {
+    active: dragActive,
+  });
 
-  private onDragLeave = () => {
-    this.setState({ dragActive: false });
-  };
-
-  public render() {
-    const containerClasses = classNames(
-      "form-group",
-      "create-resource-dropzone",
-      { active: this.state.dragActive }
-    );
-    return (
-      <Row>
-        <Col xs={12}>
+  return (
+    <Row>
+      <Col xs={12}>
+        <FormGroup>
           <Dropzone
-            onDrop={this.onFileSelected}
-            onDragEnter={this.onDragEnter}
-            onDragLeave={this.onDragLeave}
+            onDrop={onFileSelected}
+            onDragEnter={() => setDragActive(true)}
+            onDragLeave={() => setDragActive(false)}
             multiple={false}
           >
             {({ getRootProps, getInputProps }) => (
-              <div {...getRootProps()} className={containerClasses}>
-                <input {...getInputProps()} />
-                <div>
-                  <Label className="placeholder-text w-100 text-center">
-                    {this.props.i18n("resource.create.file.select.label")}
-                  </Label>
-                </div>
-                <div className="w-100 icon-container text-center">
-                  <GoCloudUpload />
-                </div>
-                {this.state.file && (
-                  <div className="w-100 text-center">
-                    <Label>
-                      {this.state.file.name +
-                        " - " +
-                        formatBytes(this.state.file.size)}
+              <>
+                <div {...getRootProps()} className={containerClasses}>
+                  <input {...getInputProps()} />
+                  <div>
+                    <Label className="placeholder-text w-100 text-center">
+                      {i18n("resource.create.file.select.label")}
                     </Label>
                   </div>
-                )}
-              </div>
+                  <div className="w-100 icon-container text-center">
+                    <GoCloudUpload />
+                  </div>
+                  {currentFile && (
+                    <div className="w-100 text-center">
+                      <Label>
+                        {currentFile.name +
+                          " - " +
+                          formatBytes(currentFile.size)}
+                      </Label>
+                    </div>
+                  )}
+                </div>
+                <FormText>
+                  {formatMessage("file.upload.maxSize.hint", {
+                    maxUploadFileSize: serverConfig.maxFileUploadSize,
+                  })}
+                </FormText>
+              </>
             )}
           </Dropzone>
-        </Col>
-      </Row>
-    );
-  }
-}
-
-export default injectIntl(withI18n(UploadFile));
+        </FormGroup>
+      </Col>
+    </Row>
+  );
+};
+export default UploadFile;

@@ -7,6 +7,7 @@ const ctx = {
   iri: "@id",
   language: `${VocabularyUtils.DC_LANGUAGE}`,
   roles: `${VocabularyUtils.NS_TERMIT}má-uživatelskou-roli`,
+  maxFileUploadSize: `${VocabularyUtils.NS_TERMIT}má-maximální-velikost-souboru`,
 };
 
 export const CONTEXT = Object.assign({}, USERROLE_CONTEXT, ctx);
@@ -18,10 +19,12 @@ export interface Configuration {
   iri: string;
   language: string;
   roles: UserRole[];
+  maxFileUploadSize: string;
 }
 
 export const DEFAULT_CONFIGURATION: Configuration = {
   iri: "",
   language: Constants.DEFAULT_LANGUAGE,
   roles: [],
+  maxFileUploadSize: "",
 };
