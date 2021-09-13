@@ -1,12 +1,14 @@
 import Term, { TermInfo } from "../../model/Term";
 import React from "react";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import TermItState, {
   DefinitionallyRelatedTerms,
 } from "../../model/TermItState";
 import TermList from "./TermList";
 import { useI18n } from "../hook/useI18n";
 import { Badge } from "reactstrap";
+import {loadDefinitionRelatedTermsOf, loadDefinitionRelatedTermsTargeting} from "../../action/AsyncTermActions";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface RelatedTermsListProps {
   term: Term;
@@ -16,6 +18,11 @@ interface RelatedTermsListProps {
 const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
   const { term, language } = props;
   const { i18n } = useI18n();
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(loadDefinitionRelatedTermsTargeting(VocabularyUtils.create(term.iri).fragment,VocabularyUtils.create(term.vocabulary!.iri!)));
+    dispatch(loadDefinitionRelatedTermsOf(VocabularyUtils.create(term.iri).fragment,VocabularyUtils.create(term.vocabulary!.iri!)));
+  }, [dispatch, term]);
   const definitionallyRelatedTerms = useSelector(
     (state: TermItState) => state.definitionallyRelatedTerms
   );

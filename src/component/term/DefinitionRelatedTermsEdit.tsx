@@ -8,12 +8,8 @@ import TermItState, {
 import { useI18n } from "../hook/useI18n";
 import { ButtonToolbar, Col, Label, Row, Table } from "reactstrap";
 import HelpIcon from "../misc/HelpIcon";
-import {
-  DefinitionRelatedTerms,
-  reduceToUnique,
-} from "./DefinitionRelatedTerms";
 import { FaCheck, FaTrashAlt } from "react-icons/fa";
-import "./DefinitionRelatedTerms.scss";
+import "./DefinitionRelatedTermsEdit.scss";
 import BadgeButton from "../misc/BadgeButton";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import { injectIntl } from "react-intl";
@@ -50,6 +46,46 @@ function findWithCommonTerm(
   termIri: string
 ) {
   return occurrences.filter((o) => getter(o) === termIri);
+}
+
+/**
+ * Reduces the specified term occurrences to only those with a unique term identifier (provided by the specified getter).
+ * @param occurrences Occurrences to reduce
+ * @param getter Getter of the term identifier to reduce by
+ */
+export function reduceToUnique(
+    occurrences: TermOccurrence[],
+    getter: (o: TermOccurrence) => string
+) {
+  const unique = {};
+  return occurrences.filter((o) => {
+    const iri = getter(o);
+    if (unique[iri]) {
+      return false;
+    }
+    unique[iri] = true;
+    return true;
+  });
+}
+
+function prioritizeApproved(
+    occurrences: TermOccurrence[],
+    currentTerm: Term
+) {
+  const copy = occurrences.slice();
+  copy.sort((a, b) => {
+    const suggestedA = a.isSuggested();
+    const suggestedB = b.isSuggested();
+    if (suggestedA !== suggestedB) {
+      return suggestedA ? 1 : -1;
+    }
+    const iriA =
+        a.term.iri === currentTerm.iri ? a.target.source.iri! : a.term.iri!;
+    const iriB =
+        b.term.iri === currentTerm.iri ? b.target.source.iri! : b.term.iri!;
+    return iriA.localeCompare(iriB);
+  });
+  return copy;
 }
 
 export class DefinitionRelatedTermsEdit extends React.Component<
@@ -155,14 +191,14 @@ export class DefinitionRelatedTermsEdit extends React.Component<
     const { i18n, definitionRelatedTerms, pending, term } = this.props;
     const { termCache } = this.state;
     const targeting = reduceToUnique(
-      DefinitionRelatedTerms.prioritizeApproved(
+      prioritizeApproved(
         definitionRelatedTerms.targeting,
         term
       ),
       (o) => o.term.iri!
     ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
     const of = reduceToUnique(
-      DefinitionRelatedTerms.prioritizeApproved(
+      prioritizeApproved(
         definitionRelatedTerms.of,
         term
       ),
