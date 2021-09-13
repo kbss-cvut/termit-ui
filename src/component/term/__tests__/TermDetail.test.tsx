@@ -19,7 +19,6 @@ jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
 jest.mock("../RelatedTermsSelector");
 jest.mock("../../misc/AssetLabel");
-jest.mock("../RelatedTerms");
 jest.mock("../../changetracking/AssetHistory");
 
 describe("TermDetail", () => {
