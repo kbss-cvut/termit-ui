@@ -190,15 +190,11 @@ export class DefinitionRelatedTermsEdit extends React.Component<
       prioritizeApproved(definitionRelatedTerms.targeting, term),
       (o) => o.term.iri!
     ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
-    const of = reduceToUnique(
-      prioritizeApproved(definitionRelatedTerms.of, term),
-      (o) => o.target.source.iri!
-    ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
     return (
       <Row className="mt-2">
         <Col className="mx-3">
           <Row>
-            <Col xs={12} lg={6}>
+            <Col>
               <>
                 <h5>
                   {i18n("term.metadata.related.definitionally.targeting")}
@@ -213,31 +209,6 @@ export class DefinitionRelatedTermsEdit extends React.Component<
                       onRemove={this.onRemove}
                       canApprove={this.canApprove(to)}
                       canRemove={this.canRemove(to)}
-                    />
-                  ))}
-                </div>
-              </>
-            </Col>
-            <Col xs={12} lg={6}>
-              <>
-                <h5>
-                  {i18n("term.metadata.related.definitionally.of")}
-                  <InfoIcon
-                    text={i18n("term.metadata.related.definitionally.editOf")}
-                    id={"term-metadata-related-definitionally-of"}
-                    className="ml-1"
-                  />
-                </h5>
-                <div>
-                  {this.renderOccurrencesTable(of, (to) => (
-                    <DefinitionalTermOccurrence
-                      key={to.target.source.iri!}
-                      term={termCache[to.target.source.iri!]}
-                      occurrence={to}
-                      onApprove={this.onApprove}
-                      onRemove={this.onRemove}
-                      canApprove={false}
-                      canRemove={false}
                     />
                   ))}
                 </div>

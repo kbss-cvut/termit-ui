@@ -25,32 +25,6 @@ describe("DefinitionRelatedTermsEdit", () => {
     loadTermByIri = jest.fn();
   });
 
-  it("renders only unique terms in whose definition term occurred", () => {
-    const occurrences = [
-      Generator.generateOccurrenceOf(term),
-      Generator.generateOccurrenceOf(term),
-      Generator.generateOccurrenceOf(term),
-    ];
-    const t = Generator.generateTerm();
-    occurrences.forEach((o) => (o.target.source = { iri: t.iri }));
-    (loadTermByIri as jest.Mock).mockResolvedValue(t);
-    const wrapper = shallow(
-      <DefinitionRelatedTermsEdit
-        term={term}
-        onAddRelated={onAddRelated}
-        loadTermByIri={loadTermByIri}
-        pending={pending}
-        onChange={onChange}
-        definitionRelatedTerms={{
-          of: occurrences,
-          targeting: [],
-        }}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.find(DefinitionalTermOccurrence).length).toEqual(1);
-  });
-
   it("renders only unique terms which occurred in the term's definition", () => {
     const t = Generator.generateTerm();
     const occurrences = [
