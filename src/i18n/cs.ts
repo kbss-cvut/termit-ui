@@ -454,8 +454,6 @@ const cs = {
       "Pojmy související díky definici",
     "term.metadata.related.definitionally.suggested":
       "Výskyt byl nalezen automaticky analýzou textu definice a ještě nebyl schválen",
-    "term.metadata.related.definitionally.editOf":
-      "Výskyty lze schválit a odebrat na straně příslušných pojmů",
     "term.metadata.assignments.occurrence.remove":
       "Výskyt pojmu byl odstraněn.",
     "term.metadata.assignments.occurrence.remove.tooltip":

@@ -448,8 +448,6 @@ const en = {
       "Terms which are related to this term via definition.",
     "term.metadata.related.definitionally.suggested":
       "Occurrence has been identified by an automatic analysis of the definition text and has not been approved",
-    "term.metadata.related.definitionally.editOf":
-      "You can approve/remove the occurrences in the detail of the corresponding terms",
     "term.metadata.assignments.occurrence.remove":
       "Occurrence successfully removed.",
     "term.metadata.assignments.occurrence.remove.tooltip":
