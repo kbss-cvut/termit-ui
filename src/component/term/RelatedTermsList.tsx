@@ -1,16 +1,11 @@
-import Term, { TermInfo } from "../../model/Term";
+import Term, {TermInfo} from "../../model/Term";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import TermItState, {
-  DefinitionallyRelatedTerms,
-} from "../../model/TermItState";
+import {useDispatch, useSelector} from "react-redux";
+import TermItState, {DefinitionallyRelatedTerms,} from "../../model/TermItState";
 import TermList from "./TermList";
-import { useI18n } from "../hook/useI18n";
-import { Badge } from "reactstrap";
-import {
-  loadDefinitionRelatedTermsOf,
-  loadDefinitionRelatedTermsTargeting,
-} from "../../action/AsyncTermActions";
+import {useI18n} from "../hook/useI18n";
+import {Badge} from "reactstrap";
+import {loadDefinitionRelatedTermsOf, loadDefinitionRelatedTermsTargeting,} from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface RelatedTermsListProps {
@@ -39,9 +34,10 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
   const definitionallyRelatedTerms = useSelector(
     (state: TermItState) => state.definitionallyRelatedTerms
   );
-  const terms = Term.consolidateRelatedAndRelatedMatch(term);
+  const terms = duplicateRelatedViaDefinition(Term.consolidateRelatedAndRelatedMatch(term), definitionallyRelatedTerms);
+  const visited: {[key: string]: boolean} = {};
   const badgeRenderer = (t: Term | TermInfo) => {
-    if (isRelatedViaDefinition(t, definitionallyRelatedTerms)) {
+    if (isRelatedViaDefinition(t, definitionallyRelatedTerms) && visited[t.iri]) {
       return (
         <Badge
           className="mr-1"
@@ -52,6 +48,7 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
         </Badge>
       );
     }
+    visited[t.iri] = true;
     return null;
   };
   return (
@@ -85,6 +82,17 @@ function isRelatedViaDefinition(
     defRelatedTerms.of.find((o) => o.target.source.iri === relatedTerm.iri) !==
     undefined
   );
+}
+
+/**
+ * Adds terms that are related via definition twice into the result array.
+ * @param terms Source term array
+ * @param definitionRelated Object containing info about definitionally related terms
+ */
+function duplicateRelatedViaDefinition(terms: TermInfo[], definitionRelated: DefinitionallyRelatedTerms) {
+  const result = terms.slice();
+  terms.filter(t => isRelatedViaDefinition(t, definitionRelated)).forEach(t => result.push(t));
+  return result;
 }
 
 export default RelatedTermsList;
