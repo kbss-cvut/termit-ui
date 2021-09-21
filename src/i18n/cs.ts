@@ -447,6 +447,8 @@ const cs = {
     "file.annotate.selectVocabulary":
       "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
     "file.upload": "Nahrát",
+    "file.upload.maxSize.hint":
+      "Maximální velikost souboru: {maxUploadFileSize}",
 
     "statistics.vocabulary.count": "Počet slovníků",
     "statistics.term.count": "Počet pojmů",
@@ -600,6 +602,8 @@ const cs = {
 
     "error.vocabulary.update.imports.danglingTermReferences":
       "Nelze odstranit import slovníku, neboť stále existují vazby mezi pojmy z tohoto a importovaného slovníku (či ze slovníků, které importuje).",
+    "error.file.maxUploadSizeExceeded":
+      "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
 
     "history.label": "Historie",
     "history.loading": "Načítám historii...",

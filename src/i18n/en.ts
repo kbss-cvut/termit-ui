@@ -447,6 +447,7 @@ const en = {
     "file.annotate.selectVocabulary":
       "Unable to determine vocabulary for annotating this file. Please, select one...",
     "file.upload": "Upload",
+    "file.upload.maxSize.hint": "Maximum file size: {maxUploadFileSize}",
 
     "statistics.vocabulary.count": "Vocabulary Count",
     "statistics.term.count": "Term Count",
@@ -602,6 +603,8 @@ const en = {
 
     "error.vocabulary.update.imports.danglingTermReferences":
       "Cannot remove vocabulary import(s), there are still references between terms from this vocabulary and the imported one (or one of its imports).",
+    "error.file.maxUploadSizeExceeded":
+      "The file could not be uploaded because it exceeds the configured maximum file size limit.",
 
     "history.label": "History",
     "history.loading": "Loading history...",

@@ -63,7 +63,7 @@ export class FileEdit extends ResourceEdit<FileEditProps, FileEditState> {
       <Card>
         <CardBody>
           <Form>
-            <UploadFile resource={this.props.resource} setFile={setFile} />
+            <UploadFile setFile={setFile} />
             {this.renderBasicMetadataInputs()}
             {this.renderSubmitButtons()}
           </Form>
