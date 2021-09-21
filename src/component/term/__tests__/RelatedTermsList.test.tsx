@@ -34,7 +34,8 @@ describe("RelatedTermsList", () => {
         defRelatedTerms.targeting[0].target.source.iri = term.iri;
         jest.spyOn(redux, "useSelector").mockReturnValue(defRelatedTerms);
 
-        const wrapper = mountWithIntl(<MemoryRouter><RelatedTermsList term={term} language={Constants.DEFAULT_LANGUAGE}/></MemoryRouter>);
+        const wrapper = mountWithIntl(<MemoryRouter><RelatedTermsList term={term}
+                                                                      language={Constants.DEFAULT_LANGUAGE}/></MemoryRouter>);
         const links = wrapper.find(TermLink);
         expect(links.length).toEqual(2);
         const badges = wrapper.find(Badge);

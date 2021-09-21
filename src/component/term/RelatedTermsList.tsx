@@ -1,12 +1,14 @@
-import Term, {TermInfo} from "../../model/Term";
+import Term from "../../model/Term";
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import TermItState, {DefinitionallyRelatedTerms,} from "../../model/TermItState";
-import TermList from "./TermList";
+import {useDispatch} from "react-redux";
 import {useI18n} from "../hook/useI18n";
-import {Badge} from "reactstrap";
+// @ts-ignore
+import {Col, Label, List, Row} from "reactstrap";
 import {loadDefinitionRelatedTermsOf, loadDefinitionRelatedTermsTargeting,} from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import TermLink from "./TermLink";
+import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
+import DefinitionRelatedTerms from "./DefinitionRelatedTerms";
 
 interface RelatedTermsListProps {
   term: Term;
@@ -31,68 +33,27 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
       )
     );
   }, [dispatch, term]);
-  const definitionallyRelatedTerms = useSelector(
-    (state: TermItState) => state.definitionallyRelatedTerms
-  );
-  const terms = duplicateRelatedViaDefinition(Term.consolidateRelatedAndRelatedMatch(term), definitionallyRelatedTerms);
-  const visited: {[key: string]: boolean} = {};
-  const badgeRenderer = (t: Term | TermInfo) => {
-    if (isRelatedViaDefinition(t, definitionallyRelatedTerms) && visited[t.iri]) {
-      return (
-        <Badge
-          className="mr-1"
-          color="secondary"
-          title={i18n("term.metadata.related.definitionally.tooltip")}
-        >
-          {i18n("term.metadata.definition")}
-        </Badge>
-      );
-    }
-    visited[t.iri] = true;
-    return null;
-  };
+  const terms = React.useMemo(() =>Term.consolidateRelatedAndRelatedMatch(term), [term]);
   return (
-    <TermList
-      id={"term-metadata-related"}
-      terms={terms}
-      language={language}
-      label={i18n("term.metadata.related.title")}
-      vocabularyIri={term.vocabulary?.iri}
-      addonBeforeRenderer={badgeRenderer}
-    />
+      <Row>
+        <Col xl={2} md={4}>
+          <Label className="attribute-label mb-3">{i18n("term.metadata.related.title")}</Label>
+        </Col>
+        <Col xl={10} md={8}>
+          <List type="unstyled" id="term-metadata-related" className="mb-3">
+            {terms.map(item => (
+                <li key={`${item.iri}`}>
+                  <TermLink term={item} language={language} />
+                  {term.vocabulary?.iri !== item.vocabulary?.iri && (
+                      <VocabularyNameBadge vocabulary={item.vocabulary} />
+                  )}
+                </li>
+            ))}
+              <DefinitionRelatedTerms term={term} relatedTerms={terms} language={language}/>
+          </List>
+        </Col>
+      </Row>
   );
 };
-
-/**
- * Checks whether the specified related term is related (also) via definition.
- *
- * That is, it occurs in the definition of the current term or vice versa.
- */
-function isRelatedViaDefinition(
-  relatedTerm: Term | TermInfo,
-  defRelatedTerms: DefinitionallyRelatedTerms
-): boolean {
-  const found = defRelatedTerms.targeting.find(
-    (o) => o.term.iri === relatedTerm.iri
-  );
-  if (found) {
-    return true;
-  }
-  return (
-    defRelatedTerms.of.find((o) => o.target.source.iri === relatedTerm.iri) !==
-    undefined
-  );
-}
-
-/**
- * Adds terms that are related via definition twice into the result array.
- * @param terms Source term array
- * @param definitionRelated Object containing info about definitionally related terms
- */
-function duplicateRelatedViaDefinition(terms: TermInfo[], definitionRelated: DefinitionallyRelatedTerms) {
-  const result = terms.slice();
-  terms.filter(t => isRelatedViaDefinition(t, definitionRelated)).forEach(t => result.push(t));
-  return result;
-}
 
 export default RelatedTermsList;
