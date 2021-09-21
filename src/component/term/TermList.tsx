@@ -25,8 +25,8 @@ const TermList: React.FC<TermListProps> = (props) => {
       </Col>
       <Col xl={10} md={8}>
         <List type="unstyled" id={id} className="mb-3">
-          {terms.map((item) => (
-            <li key={item.iri}>
+          {terms.map((item, index) => (
+            <li key={`${item.iri}-${index}`}>
               {addonBeforeRenderer && addonBeforeRenderer(item)}
               <TermLink term={item} language={language} />
               {vocabularyIri !== item.vocabulary?.iri && (
