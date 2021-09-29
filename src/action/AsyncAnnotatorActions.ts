@@ -64,7 +64,7 @@ export function loadTermByIri(termIri: string) {
     if (getState().annotatorTerms[termIri]) {
       return Promise.resolve(getState().annotatorTerms[termIri]);
     }
-    if (pendingTermFetches[termIri]) {
+    if (pendingTermFetches[termIri] !== undefined) {
       return pendingTermFetches[termIri];
     }
     const promise = dispatch(
