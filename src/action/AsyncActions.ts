@@ -44,7 +44,10 @@ import TermItState from "../model/TermItState";
 import Utils from "../util/Utils";
 import ExportType from "../util/ExportType";
 import { CONTEXT as DOCUMENT_CONTEXT } from "../model/Document";
-import { CONTEXT as CONFIGURATION_CONTEXT } from "../model/Configuration";
+import {
+  Configuration,
+  CONTEXT as CONFIGURATION_CONTEXT,
+} from "../model/Configuration";
 import TermitFile from "../model/File";
 import Asset from "../model/Asset";
 import AssetFactory from "../util/AssetFactory";
@@ -67,10 +70,8 @@ import RecentlyModifiedAsset, {
   CONTEXT as RECENTLY_MODIFIED_ASSET_CONTEXT,
   RecentlyModifiedAssetData,
 } from "../model/RecentlyModifiedAsset";
-import TermOccurrence from "../model/TermOccurrence";
 import NotificationType from "../model/NotificationType";
 import { langString } from "../model/MultilingualString";
-import { Configuration } from "../model/Configuration";
 import ValidationResult, {
   CONTEXT as VALIDATION_RESULT_CONTEXT,
 } from "../model/ValidationResult";
@@ -589,72 +590,6 @@ export function removeAsset(
   };
 }
 
-export function removeOccurrence(occurrence: TermOccurrence) {
-  const action = {
-    type: ActionType.REMOVE_TERM_OCCURRENCE,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
-    return Ajax.delete(
-      Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
-      param("namespace", OccurrenceIri.namespace)
-    )
-      .then(() => {
-        dispatch(asyncActionSuccess(action));
-        return dispatch(
-          SyncActions.publishMessage(
-            new Message(
-              {
-                messageId: "term.metadata.assignments.occurrence.remove",
-              },
-              MessageType.SUCCESS
-            )
-          )
-        );
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-      });
-  };
-}
-
-export function approveOccurrence(occurrence: TermOccurrence) {
-  const action = {
-    type: ActionType.APPROVE_TERM_OCCURRENCE,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
-    return Ajax.put(
-      Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
-      param("namespace", OccurrenceIri.namespace)
-    )
-      .then(() => {
-        dispatch(asyncActionSuccess(action));
-        return dispatch(
-          SyncActions.publishMessage(
-            new Message(
-              {
-                messageId: "term.metadata.assignments.occurrence.approve",
-              },
-              MessageType.SUCCESS
-            )
-          )
-        );
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-      });
-  };
-}
-
 export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
   const action = {
     type: ActionType.LOAD_VOCABULARIES,
@@ -964,6 +899,72 @@ export function executeFileTextAnalysis(fileIri: IRI, vocabularyIri: string) {
             new Message(
               {
                 messageId: "file.text-analysis.finished.message",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+      });
+  };
+}
+
+export function executeTextAnalysisOnAllTerms(vocabularyIri: IRI) {
+  const action = {
+    type: ActionType.EXECUTE_TEXT_ANALYSIS_ON_ALL_DEFINITIONS,
+  };
+
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+
+    return Ajax.put(
+      Constants.API_PREFIX +
+        "/vocabularies/" +
+        vocabularyIri.fragment +
+        "/terms/text-analysis",
+      params({ namespace: vocabularyIri.namespace })
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        return dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "vocabulary.text-analysis.finished.message",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+      });
+  };
+}
+
+export function executeTextAnalysisOnAllVocabularies() {
+  const action = {
+    type: ActionType.EXECUTE_TEXT_ANALYSIS_ON_ALL_VOCABULARIES,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.get(Constants.API_PREFIX + "/vocabularies/text-analysis")
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        return dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "vocabulary.all.text-analysis.invoke.message",
               },
               MessageType.SUCCESS
             )

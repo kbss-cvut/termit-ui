@@ -17,6 +17,7 @@ import { Configuration, DEFAULT_CONFIGURATION } from "./Configuration";
 import Workspace, { EMPTY_WORKSPACE } from "./Workspace";
 import { ConsolidatedResults } from "./ConsolidatedResults";
 import File, { EMPTY_FILE } from "./File";
+import TermOccurrence from "./TermOccurrence";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -59,6 +60,7 @@ export default class TermItState {
   public workspace: Workspace | null;
   public configuration: Configuration;
   public validationResults: { [vocabularyIri: string]: ConsolidatedResults };
+  public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
 
   constructor() {
     this.loading = false;
@@ -93,6 +95,7 @@ export default class TermItState {
     this.workspace = EMPTY_WORKSPACE;
     this.configuration = DEFAULT_CONFIGURATION;
     this.validationResults = {};
+    this.definitionallyRelatedTerms = { targeting: [], of: [] };
   }
 
   /**
@@ -107,4 +110,9 @@ export default class TermItState {
     result.selectedTerm = state.resource.toJsonLd();
     return result;
   }
+}
+
+export interface DefinitionallyRelatedTerms {
+  targeting: TermOccurrence[];
+  of: TermOccurrence[];
 }

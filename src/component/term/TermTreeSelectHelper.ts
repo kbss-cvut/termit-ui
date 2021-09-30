@@ -24,6 +24,7 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
 
 export type TermTreeSelectProcessingOptions = {
   searchString?: string;
+  selectedIris?: string[];
 };
 
 /**
@@ -62,6 +63,7 @@ export function processTermsForTreeSelect(
       );
     }
   }
+  addAncestorsOfSelected(Utils.sanitizeArray(options.selectedIris), result);
   return result;
 }
 
@@ -98,6 +100,51 @@ function flattenAncestors(
     }
   }
   return result;
+}
+
+/**
+ * Adds the top-level ancestors of the specified selected items into the the result array if they are not the already.
+ *
+ * This method ensures that in case a selected term was included in the result using the {@code includeTerms} parameter
+ * and it is not a top level concept, its top level ancestor is added to the result array (if it is not there already) so that
+ * it is correctly processed and displayed by the tree component.
+ *
+ * This function deals with situations when the selected terms are not in the first page retrieved for the tree component and
+ * are included explicitly in the results. If such an included result is not a top-level concept, it may not be displayed by the
+ * tree component because it may have ancestors which are not in the first page retrieved for the tree component as well. This function
+ * ensures that such a top-level ancestor is added to the result array so that the tree component can see it.
+ * @param selectedIris Identifiers of selected terms
+ * @param options Options loaded from the server for display by the tree component
+ */
+function addAncestorsOfSelected(selectedIris: string[], options: Term[]) {
+  selectedIris.forEach((iri) => {
+    const matching = options.find((t) => t.iri === iri);
+    if (!matching) {
+      return;
+    }
+    traverseToAncestor(matching, options);
+  });
+}
+
+/**
+ * Recursively traverses to the top-level ancestor of the specified child.
+ *
+ * Along the way, parent-child relationships required by the tree component are reconstructed. When the top-level
+ * ancestor is reached, it is added to the result array (if it is not there already).
+ * @param child Child from which to traverse upwards
+ * @param options Options loaded from the server for display by the tree component
+ */
+function traverseToAncestor(child: Term, options: Term[]) {
+  if (Utils.sanitizeArray(child.parentTerms).length > 0) {
+    child.parentTerms!.forEach((pt) => {
+      pt.plainSubTerms = [child.iri];
+      traverseToAncestor(pt, options);
+    });
+  } else {
+    if (!options.find((t) => t.iri === child.iri)) {
+      options.push(child);
+    }
+  }
 }
 
 /**

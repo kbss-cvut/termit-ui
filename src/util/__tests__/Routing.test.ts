@@ -8,6 +8,7 @@ import Document from "../../model/Document";
 import File from "../../model/File";
 import Generator from "../../__tests__/environment/Generator";
 import { langString } from "../../model/MultilingualString";
+import Constants from "../Constants";
 
 jest.mock("history", () => ({
   createHashHistory: jest.fn().mockReturnValue({
@@ -118,13 +119,13 @@ describe("Routing", () => {
     it("transitions to term detail for a term", () => {
       const term = Generator.generateTerm(iri);
       term.label = langString("test-term");
-      term.iri = iri + "/pojem/" + term.label.en;
+      term.iri = iri + "/pojem/" + term.label[Constants.DEFAULT_LANGUAGE];
       RoutingInstance.transitionToAsset(term);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.vocabularyTermDetail, {
           params: new Map([
             ["name", label],
-            ["termName", term.label.en],
+            ["termName", term.label[Constants.DEFAULT_LANGUAGE]],
           ]),
           query: new Map([["namespace", namespace]]),
         })
@@ -151,13 +152,13 @@ describe("Routing", () => {
     it("transitions to public term detail for a term", () => {
       const term = Generator.generateTerm(iri);
       term.label = langString("test-term");
-      term.iri = iri + "/pojem/" + term.label.en;
+      term.iri = iri + "/pojem/" + term.label[Constants.DEFAULT_LANGUAGE];
       RoutingInstance.transitionToPublicAsset(term);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.publicVocabularyTermDetail, {
           params: new Map([
             ["name", label],
-            ["termName", term.label.en],
+            ["termName", term.label[Constants.DEFAULT_LANGUAGE]],
           ]),
           query: new Map([["namespace", namespace]]),
         })

@@ -1,11 +1,12 @@
 import User from "../../model/User";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import Term from "../../model/Term";
+import Term, { TermData } from "../../model/Term";
 import Vocabulary from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
 import { langString } from "../../model/MultilingualString";
 import Comment from "../../model/Comment";
 import ValidationResult from "../../model/ValidationResult";
+import TermOccurrence from "../../model/TermOccurrence";
 
 export default class Generator {
   public static readonly URI_BASE =
@@ -108,5 +109,20 @@ export default class Generator {
       { iri: "https://example.org/sourceShape" },
       { iri: VocabularyUtils.SKOS_PREF_LABEL }
     );
+  }
+
+  public static generateOccurrenceOf(term: TermData) {
+    return new TermOccurrence({
+      term,
+      iri: Generator.generateUri(),
+      types: [VocabularyUtils.TERM_OCCURRENCE],
+      target: {
+        selectors: [],
+        source: {
+          iri: Generator.generateUri(),
+        },
+        types: [],
+      },
+    });
   }
 }

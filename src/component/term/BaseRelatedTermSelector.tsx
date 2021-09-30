@@ -67,7 +67,7 @@ export default abstract class BaseRelatedTermSelector<
     }
   }
 
-  public fetchOptions(fetchOptions: TreeSelectFetchOptionsParams<TermData>) {
+  public fetchOptions(fetchOptions: TreeSelectFetchOptionsParams<TermData>, toInclude: string[]) {
     let {
       allVocabularyTerms,
       allWorkspaceTerms,
@@ -112,6 +112,7 @@ export default abstract class BaseRelatedTermSelector<
     return fetchFunction(fetchOptionsCopy).then((terms) => {
       return processTermsForTreeSelect(terms, undefined, {
         searchString: fetchOptionsCopy.searchString,
+        selectedIris: toInclude,
       });
     });
   }

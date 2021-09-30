@@ -37,6 +37,12 @@ import { getShortLocale } from "../../util/IntlUtil";
 import TermQualityBadge from "./TermQualityBadge";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
+import TermOccurrence from "../../model/TermOccurrence";
+import {
+  approveOccurrence,
+  removeOccurrence,
+} from "../../action/AsyncTermActions";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -51,6 +57,8 @@ interface TermDetailProps
     RouteComponentProps<any> {
   updateTerm: (term: Term) => Promise<any>;
   removeTerm: (term: Term) => Promise<any>;
+  approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
+  removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   publishNotification: (notification: AppNotification) => void;
 }
 
@@ -120,24 +128,48 @@ export class TermDetail extends EditableComponent<
     this.setState({ language });
   };
 
-  public onSave = (term: Term) => {
+  public onSave = (
+    term: Term,
+    definitionRelatedChanges: DefinitionRelatedChanges
+  ) => {
     const oldTerm = this.props.term!;
-    this.props.updateTerm(term).then(() => {
-      this.loadTerm();
-      this.onCloseEdit();
-      if (
-        _.xorBy(
-          oldTerm.parentTerms,
-          Utils.sanitizeArray(term.parentTerms),
-          (t) => t.iri
-        ).length > 0
-      ) {
-        this.props.publishNotification({
-          source: { type: NotificationType.TERM_HIERARCHY_UPDATED },
-        });
-      }
-    });
+    return this.props
+      .updateTerm(term)
+      .then(() =>
+        Promise.all(
+          definitionRelatedChanges.pendingApproval.map((o) =>
+            this.props.approveOccurrence(o)
+          )
+        )
+      )
+      .then(() =>
+        Promise.all(
+          definitionRelatedChanges.pendingRemoval.map((o) =>
+            this.props.removeOccurrence(o)
+          )
+        )
+      )
+      .then(() => {
+        this.loadTerm();
+        this.onCloseEdit();
+        this.publishNotificationIfRelevant(term, oldTerm);
+        return Promise.resolve();
+      });
   };
+
+  private publishNotificationIfRelevant(newTerm: Term, oldTerm: Term) {
+    if (
+      _.xorBy(
+        oldTerm.parentTerms,
+        Utils.sanitizeArray(newTerm.parentTerms),
+        (t) => t.iri
+      ).length > 0
+    ) {
+      this.props.publishNotification({
+        source: { type: NotificationType.TERM_HIERARCHY_UPDATED },
+      });
+    }
+  }
 
   public onRemove = () => {
     this.props.removeTerm(this.props.term!).then(() => {
@@ -261,6 +293,10 @@ export default connect(
         dispatch(loadTerm(termName, vocabularyIri)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
       removeTerm: (term: Term) => dispatch(removeTerm(term)),
+      approveOccurrence: (occurrence: TermOccurrence) =>
+        dispatch(approveOccurrence(occurrence)),
+      removeOccurrence: (occurrence: TermOccurrence) =>
+        dispatch(removeOccurrence(occurrence)),
       publishNotification: (notification: AppNotification) =>
         dispatch(publishNotification(notification)),
     };

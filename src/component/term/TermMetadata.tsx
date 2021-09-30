@@ -164,31 +164,7 @@ export class TermMetadata extends React.Component<
                     <Tabs
                       activeTabLabelKey={this.state.activeTab}
                       changeTab={this.onTabSelect}
-                      tabs={{
-                        "term.metadata.assignments.title": (
-                          <TermAssignments
-                            term={term}
-                            onLoad={this.setAssignmentsCount}
-                          />
-                        ),
-                        "history.label": <AssetHistory asset={term} />,
-                        "term.metadata.validation.title": (
-                          <ValidationResults term={term} />
-                        ),
-                        "comments.title": (
-                          <Comments
-                            term={term}
-                            onLoad={this.setCommentsCount}
-                            reverseOrder={true}
-                          />
-                        ),
-                        "properties.edit.title": (
-                          <UnmappedProperties
-                            properties={term.unmappedProperties}
-                            showInfoOnEmpty={true}
-                          />
-                        ),
-                      }}
+                      tabs={this.initTabs()}
                       tabBadges={{
                         "properties.edit.title":
                           term.unmappedProperties.size.toFixed(),
@@ -223,6 +199,30 @@ export class TermMetadata extends React.Component<
         </Row>
       </>
     );
+  }
+
+  private initTabs() {
+    const { term } = this.props;
+    const tabs = {};
+    tabs["term.metadata.assignments.title"] = (
+      <TermAssignments term={term} onLoad={this.setAssignmentsCount} />
+    );
+    tabs["history.label"] = <AssetHistory asset={term} />;
+    tabs["term.metadata.validation.title"] = <ValidationResults term={term} />;
+    tabs["comments.title"] = (
+      <Comments
+        term={term}
+        onLoad={this.setCommentsCount}
+        reverseOrder={true}
+      />
+    );
+    tabs["properties.edit.title"] = (
+      <UnmappedProperties
+        properties={term.unmappedProperties}
+        showInfoOnEmpty={true}
+      />
+    );
+    return tabs;
   }
 }
 

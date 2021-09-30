@@ -14,7 +14,7 @@ import ActionType, {
   SwitchLanguageAction,
   UpdateLastModifiedAction,
 } from "../action/ActionType";
-import TermItState from "../model/TermItState";
+import TermItState, { DefinitionallyRelatedTerms } from "../model/TermItState";
 import User, { EMPTY_USER } from "../model/User";
 import Message from "../model/Message";
 import IntlData from "../model/IntlData";
@@ -40,6 +40,7 @@ import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
 import Document from "../model/Document";
 import { IRIImpl } from "../util/VocabularyUtils";
+import TermOccurrence from "../model/TermOccurrence";
 
 /**
  * Handles changes to the currently logged in user.
@@ -631,6 +632,32 @@ function validationResults(
   }
 }
 
+function definitionallyRelatedTerms(
+  state: DefinitionallyRelatedTerms = { targeting: [], of: [] },
+  action: AsyncActionSuccess<TermOccurrence[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING:
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        return Object.assign({}, state, { targeting: action.payload });
+      } else {
+        return state;
+      }
+    case ActionType.LOAD_DEFINITION_RELATED_TERMS_OF:
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        return Object.assign({}, state, { of: action.payload });
+      } else {
+        return state;
+      }
+    case ActionType.LOAD_TERM:
+      return action.status === AsyncActionStatus.REQUEST
+        ? { targeting: [], of: [] }
+        : state;
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -664,6 +691,7 @@ const rootReducer = combineReducers<TermItState>({
   workspace,
   configuration,
   validationResults,
+  definitionallyRelatedTerms,
 });
 
 export default rootReducer;
