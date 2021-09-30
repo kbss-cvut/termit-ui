@@ -1,3 +1,4 @@
+import React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TermData, TermInfo } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
