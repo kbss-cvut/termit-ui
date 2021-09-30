@@ -170,7 +170,7 @@ export class ParentTermSelector extends BaseRelatedTermSelector<
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
     return super
-      .fetchOptions(fetchOptions,[])
+      .fetchOptions(fetchOptions, [])
       .then((terms) =>
         BaseRelatedTermSelector.enhanceWithCurrent(
           terms,
