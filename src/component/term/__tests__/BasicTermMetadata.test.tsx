@@ -10,7 +10,7 @@ import { BasicTermMetadata } from "../BasicTermMetadata";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import {TermIriLink} from "../TermIriLink";
+import { TermIriLink } from "../TermIriLink";
 
 jest.mock("../TermLink", () => () => <span>Term link</span>);
 jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);
