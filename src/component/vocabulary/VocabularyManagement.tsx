@@ -1,6 +1,5 @@
 import * as React from "react";
-import { Button, Card, CardBody, Col } from "reactstrap";
-import Routes from "../../util/Routes";
+import { Card, CardBody, Col } from "reactstrap";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
@@ -8,8 +7,6 @@ import {
   loadVocabularies as loadVocabulariesAction,
 } from "../../action/AsyncActions";
 import VocabularyList from "./VocabularyList";
-import { Link } from "react-router-dom";
-import { GoClippy, GoPlus } from "react-icons/go";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
 import { useI18n } from "../hook/useI18n";
@@ -22,7 +19,7 @@ interface VocabularyManagementProps {
 export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
   props
 ) => {
-  const { loadVocabularies, analyzeAllVocabularies } = props;
+  const { loadVocabularies } = props;
   const { i18n } = useI18n();
   React.useEffect(() => {
     loadVocabularies();

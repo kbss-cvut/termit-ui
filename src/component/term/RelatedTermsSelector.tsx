@@ -43,10 +43,6 @@ interface RelatedTermsSelectorProps
   vocabularyIri: string;
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
-  loadTerms: (
-    fetchOptions: FetchOptionsFunction,
-    namespace?: string
-  ) => Promise<Term[]>;
 
   definitionRelatedChanges: DefinitionRelatedChanges;
   onDefinitionRelatedChange: (change: DefinitionRelatedChanges) => void;

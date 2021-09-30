@@ -220,6 +220,7 @@ describe("ParentTermSelector", () => {
         expect(options).toEqual([parent, ...terms]);
         expect(spy).toHaveBeenCalledWith(terms, undefined, {
           searchString: "test",
+          selectedIris: []
         });
       });
   });
