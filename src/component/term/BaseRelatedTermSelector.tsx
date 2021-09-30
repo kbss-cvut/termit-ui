@@ -67,7 +67,10 @@ export default abstract class BaseRelatedTermSelector<
     }
   }
 
-  public fetchOptions(fetchOptions: TreeSelectFetchOptionsParams<TermData>, toInclude: string[]) {
+  public fetchOptions(
+    fetchOptions: TreeSelectFetchOptionsParams<TermData>,
+    toInclude: string[]
+  ) {
     let {
       allVocabularyTerms,
       allWorkspaceTerms,

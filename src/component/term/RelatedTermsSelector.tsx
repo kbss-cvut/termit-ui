@@ -108,7 +108,7 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
     const toInclude =
-        fetchOptions.offset === 0 ? resolveSelectedIris(this.props.selected) : [];
+      fetchOptions.offset === 0 ? resolveSelectedIris(this.props.selected) : [];
     return super.fetchOptions(fetchOptions, toInclude).then((terms) =>
       BaseRelatedTermSelector.enhanceWithCurrent(
         terms,
