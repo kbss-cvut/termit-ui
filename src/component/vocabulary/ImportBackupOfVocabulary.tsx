@@ -21,7 +21,7 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
       <Modal isOpen={dialogOpen} toggle={toggle}>
         <ModalBody>
           <ImportVocabularyPanel
-            propKeyPrefix="vocabulary.import"
+            propKeyPrefix="vocabulary.summary.import"
             onSubmit={createFile}
             onCancel={toggle}
           />
@@ -32,10 +32,10 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
         color="primary"
         size="sm"
         onClick={toggle}
-        title={i18n("vocabulary.import.action.tooltip")}
+        title={i18n("vocabulary.summary.import.action.tooltip")}
       >
         <GoCloudUpload className="mr-1" />
-        {i18n("vocabulary.import.action")}
+        {i18n("vocabulary.summary.import.action")}
       </Button>
     </IfUserAuthorized>
   );

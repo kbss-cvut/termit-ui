@@ -37,7 +37,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
-import ImportVocabularyDialog from "./ImportVocabulary";
+import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
 import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
@@ -172,7 +172,7 @@ export class VocabularySummary extends EditableComponent<
       );
     }
     buttons.push(
-      <ImportVocabularyDialog
+      <ImportBackupOfVocabulary
         key="vocabulary.summary.import"
         performAction={this.onImport}
       />

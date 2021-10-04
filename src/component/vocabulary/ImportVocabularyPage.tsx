@@ -18,7 +18,11 @@ export const ImportVocabularyPage = (props: ImportVocabularyPageProps) => {
 
   return (
     <IfUserAuthorized renderUnauthorizedAlert={false}>
-      <ImportVocabularyPanel onSubmit={createFile} onCancel={onCancel} />
+      <ImportVocabularyPanel
+        propKeyPrefix="vocabulary.import"
+        onSubmit={createFile}
+        onCancel={onCancel}
+      />
     </IfUserAuthorized>
   );
 };

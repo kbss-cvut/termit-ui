@@ -227,10 +227,18 @@ const en = {
       "Export SKOS-compatible glossary serialized as Turtle",
     "vocabulary.summary.export.error":
       "Unable to retrieve exported data from server response.",
-    "vocabulary.summary.import.action": "Import",
-    "vocabulary.summary.import.action.tooltip": "SKOS vocabulary import.",
-    "vocabulary.summary.import.dialog.title": "Import SKOS vocabulary.",
+    "vocabulary.summary.import.action": "Restore from backup",
+    "vocabulary.summary.import.action.tooltip":
+      "Restore the vocabulary from its previously exported version.",
+    "vocabulary.summary.import.dialog.title":
+      "Restore previous vocabulary version.",
     "vocabulary.summary.import.dialog.message":
+      "Upload a previously exported version of this vocabulary " +
+      "(in the SKOS formát and containing a single skos:ConceptScheme with IRI <IRI-OF-THIS-VOCABULARY>/glosář).",
+    "vocabulary.import.action": "Import",
+    "vocabulary.import.action.tooltip": "SKOS vocabulary import.",
+    "vocabulary.import.dialog.title": "Import SKOS vocabulary.",
+    "vocabulary.import.dialog.message":
       "Imported file must be in the SKOS format. " +
       "The file must contain exactly one instance of skos:ConceptScheme.",
     "vocabulary.import.title": "Import vocabulary",
