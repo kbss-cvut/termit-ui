@@ -28,7 +28,8 @@ function renderTermList(
     <>
       {parents.map((item) => (
         <li key={item.iri}>
-          { item.vocabulary && workspace.containsVocabulary( item.vocabulary.iri! ) ? (
+          {item.vocabulary &&
+          workspace.containsVocabulary(item.vocabulary.iri!) ? (
             <>
               <VocabularyNameBadge
                 className="mr-1 align-text-bottom"
