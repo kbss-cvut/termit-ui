@@ -27,7 +27,7 @@ import ExportType from "../../util/ExportType";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import WindowTitle from "../misc/WindowTitle";
-import ImportVocabularyDialog from "./ImportVocabulary";
+import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
 import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
@@ -111,7 +111,7 @@ export class VocabularySummary extends React.Component<
     const { i18n, vocabulary } = this.props;
     const buttons = [];
     buttons.push(
-      <ImportVocabularyDialog
+      <ImportBackupOfVocabulary
         key="vocabulary.summary.import"
         performAction={this.onImport}
       />
