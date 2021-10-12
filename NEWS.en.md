@@ -1,3 +1,11 @@
+#### Version 2.7.0
+
+- Improve SKOS import functionality.
+- Ensure correct export of related/relatedMatch terms.
+- Support exactMatch, related, and relatedMatch in the public REST API.
+- Indicate when maximum uploaded file size is exceeded.
+- Fix issues with using annotator in Firefox.
+
 #### Version 2.6.0
 
 - Distinguishing terms coming from different vocabularies by a badge.

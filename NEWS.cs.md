@@ -1,3 +1,11 @@
+#### Verze 2.7.0
+
+- Vylepšena podpora importu SKOS glosářů.
+- Opraven export related/relatedMatch pojmů.
+- Přidána podpora pro exactMatch, related, a relatedMatch pojmy ve veřejném REST API.
+- Uživatel je nyní informován o maximální velikosti nahraného souboru a upozorněn v případě jejího překročení.
+- Opraveny problémy s používáním anotátoru v Mozilla Firefox.
+
 #### Verze 2.6.0
 
 - Rozlišení pojmů pocházejících z různých slovníků badgem se zkratkou slovníku
