@@ -176,5 +176,15 @@ describe("RelatedTermsSelector", () => {
       wrapper.update();
       expect(wrapper.state().definitionRelated).toEqual([]);
     });
+
+    it("removes unselected values from definitional term occurrences pending approval", () => {
+      const defRelated = Generator.generateTerm(VOCABULARY_IRI);
+      definitionRelatedChanges.pendingApproval = [Generator.generateOccurrenceOf(defRelated)];
+
+      const wrapper = render();
+      wrapper.setState({definitionRelated: [defRelated.iri]});
+      wrapper.instance().onChange(null);
+      expect(onDefinitionRelatedChange).toHaveBeenCalledWith({pendingApproval: [], pendingRemoval: []});
+    });
   });
 });
