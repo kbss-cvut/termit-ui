@@ -67,23 +67,6 @@ export function reduceToUnique(
   });
 }
 
-function prioritizeApproved(occurrences: TermOccurrence[], currentTerm: Term) {
-  const copy = occurrences.slice();
-  copy.sort((a, b) => {
-    const suggestedA = a.isSuggested();
-    const suggestedB = b.isSuggested();
-    if (suggestedA !== suggestedB) {
-      return suggestedA ? 1 : -1;
-    }
-    const iriA =
-      a.term.iri === currentTerm.iri ? a.target.source.iri! : a.term.iri!;
-    const iriB =
-      b.term.iri === currentTerm.iri ? b.target.source.iri! : b.term.iri!;
-    return iriA.localeCompare(iriB);
-  });
-  return copy;
-}
-
 export class DefinitionRelatedTermsEdit extends React.Component<
   DefinitionRelatedTermsEditProps,
   DefinitionRelatedTermsEditState
@@ -183,13 +166,18 @@ export class DefinitionRelatedTermsEdit extends React.Component<
     return this.props.pending.pendingRemoval.indexOf(to) === -1;
   }
 
+  private shouldRender(to: TermOccurrence) {
+    const pending = this.props.pending;
+    return to.isSuggested() && pending.pendingRemoval.indexOf(to) === -1 && pending.pendingApproval.indexOf(to) === -1;
+  }
+
   public render() {
-    const { i18n, definitionRelatedTerms, pending, term } = this.props;
+    const { i18n, definitionRelatedTerms } = this.props;
     const { termCache } = this.state;
     const targeting = reduceToUnique(
-      prioritizeApproved(definitionRelatedTerms.targeting, term),
+      definitionRelatedTerms.targeting,
       (o) => o.term.iri!
-    ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
+    ).filter((to) => this.shouldRender(to));
     return (
       <Row className="mt-2">
         <Col className="mx-3">

@@ -24,6 +24,9 @@ import HelpIcon from "../misc/HelpIcon";
 import DefinitionRelatedTermsEdit, {
   DefinitionRelatedChanges,
 } from "./DefinitionRelatedTermsEdit";
+import TermItState, {
+  DefinitionallyRelatedTerms,
+} from "../../model/TermItState";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
@@ -36,16 +39,34 @@ interface RelatedTermsSelectorProps extends HasI18n {
     namespace?: string
   ) => Promise<Term[]>;
 
+  definitionRelated: DefinitionallyRelatedTerms;
   definitionRelatedChanges: DefinitionRelatedChanges;
   onDefinitionRelatedChange: (change: DefinitionRelatedChanges) => void;
 }
 
-export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorProps> {
+interface RelatedTermsSelectorState {
+  definitionRelated: string[];
+}
+
+export class RelatedTermsSelector extends React.Component<
+  RelatedTermsSelectorProps,
+  RelatedTermsSelectorState
+> {
   private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
 
   constructor(props: RelatedTermsSelectorProps) {
     super(props);
     this.treeComponent = React.createRef();
+    this.state = {
+      definitionRelated: [],
+    };
+  }
+
+  public componentDidMount() {
+    const source = Utils.sanitizeArray(this.props.definitionRelated.targeting);
+    const set = new Set<string>();
+    source.forEach((to) => set.add(to.term.iri!));
+    this.setState({ definitionRelated: Array.from(set) });
   }
 
   public onChange = (val: Term[] | Term | null) => {
@@ -63,15 +84,14 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
       (item) =>
         this.props.selected.find((i) => i.iri === item.iri) === undefined
     );
-    const options = this.treeComponent.current.getOptions();
-    const selected = options.filter(
-      (opt: Term) =>
-        this.props.selected.find((t) => t.iri === opt.iri) !== undefined
-    );
-    this.props.onChange(selected.concat(toAdd));
-    if (!RelatedTermsSelector.isSubset(toAdd, options)) {
-      this.treeComponent.current.resetOptions();
+    if (this.treeComponent.current) {
+      const options = this.treeComponent.current.getOptions();
+      if (!RelatedTermsSelector.isSubset(toAdd, options)) {
+        // If the newly added terms are not among options, we need to reload
+        this.treeComponent.current.resetOptions();
+      }
     }
+    this.setState({ definitionRelated: toAdd.map((to) => to.iri) });
   };
 
   private static isSubset(subset: Term[], superset: Term[]) {
@@ -89,6 +109,12 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
     // If the offset is > 0, the selected terms should have been already included
     const toInclude =
       fetchOptions.offset === 0 ? resolveSelectedIris(this.props.selected) : [];
+    // Include definition related that are not already among selected
+    toInclude.push(
+      ...this.state.definitionRelated.filter(
+        (iri) => toInclude.indexOf(iri) === -1
+      )
+    );
     return this.props
       .loadTerms(
         {
@@ -111,6 +137,10 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
   };
 
   public render() {
+    const value = [
+      ...resolveSelectedIris(this.props.selected),
+      ...this.state.definitionRelated,
+    ];
     return (
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
@@ -124,7 +154,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
           <IntelligentTreeSelect
             ref={this.treeComponent}
             onChange={this.onChange}
-            value={resolveSelectedIris(this.props.selected)}
+            value={value}
             fetchOptions={this.fetchOptions}
             fetchLimit={100}
             searchDelay={300}
@@ -148,7 +178,12 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
   }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => ({
-  loadTerms: (fetchOptions: FetchOptionsFunction, namespace?: string) =>
-    dispatch(loadAllTerms(fetchOptions, namespace)),
-}))(injectIntl(withI18n(RelatedTermsSelector)));
+export default connect(
+  (state: TermItState) => ({
+    definitionRelated: state.definitionallyRelatedTerms,
+  }),
+  (dispatch: ThunkDispatch) => ({
+    loadTerms: (fetchOptions: FetchOptionsFunction, namespace?: string) =>
+      dispatch(loadAllTerms(fetchOptions, namespace)),
+  })
+)(injectIntl(withI18n(RelatedTermsSelector)));

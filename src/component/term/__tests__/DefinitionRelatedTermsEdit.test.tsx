@@ -32,6 +32,7 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t),
       Generator.generateOccurrenceOf(t),
     ];
+    occurrences.forEach(o => o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE));
     (loadTermByIri as jest.Mock).mockResolvedValue(t);
     const wrapper = shallow(
       <DefinitionRelatedTermsEdit
@@ -50,7 +51,7 @@ describe("DefinitionRelatedTermsEdit", () => {
     expect(wrapper.find(DefinitionalTermOccurrence).length).toEqual(1);
   });
 
-  it("renders approved occurrences before suggested ones", () => {
+  it("renders only suggested occurrences", () => {
     const t1 = Generator.generateTerm();
     const t2 = Generator.generateTerm();
     const occurrences = [
@@ -77,8 +78,74 @@ describe("DefinitionRelatedTermsEdit", () => {
     );
     return Promise.resolve().then(() => {
       const rows = wrapper.find(DefinitionalTermOccurrence);
+      expect(rows.length).toEqual(1);
+      expect(rows.get(0).props.term).toEqual(t1);
+    });
+  });
+
+  it("does not render suggested occurrences with pending approval", () => {
+    const t1 = Generator.generateTerm();
+    const t2 = Generator.generateTerm();
+    const occurrences = [
+      Generator.generateOccurrenceOf(t1),
+      Generator.generateOccurrenceOf(t2),
+    ];
+    occurrences.forEach(o => o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE));
+    (loadTermByIri as jest.Mock)
+        .mockResolvedValueOnce(t1)
+        .mockResolvedValueOnce(t2);
+    pending.pendingApproval = [occurrences[0]];
+    const wrapper = shallow(
+        <DefinitionRelatedTermsEdit
+            term={term}
+            onAddRelated={onAddRelated}
+            loadTermByIri={loadTermByIri}
+            pending={pending}
+            onChange={onChange}
+            definitionRelatedTerms={{
+              of: [],
+              targeting: occurrences,
+            }}
+            {...intlFunctions()}
+        />
+    );
+    return Promise.resolve().then(() => {
+      const rows = wrapper.find(DefinitionalTermOccurrence);
+      expect(rows.length).toEqual(1);
       expect(rows.get(0).props.term).toEqual(t2);
-      expect(rows.get(1).props.term).toEqual(t1);
+    });
+  });
+
+  it("does not render suggested occurrences with pending removal", () => {
+    const t1 = Generator.generateTerm();
+    const t2 = Generator.generateTerm();
+    const occurrences = [
+      Generator.generateOccurrenceOf(t1),
+      Generator.generateOccurrenceOf(t2),
+    ];
+    occurrences.forEach(o => o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE));
+    (loadTermByIri as jest.Mock)
+        .mockResolvedValueOnce(t1)
+        .mockResolvedValueOnce(t2);
+    pending.pendingRemoval = [occurrences[0]];
+    const wrapper = shallow(
+        <DefinitionRelatedTermsEdit
+            term={term}
+            onAddRelated={onAddRelated}
+            loadTermByIri={loadTermByIri}
+            pending={pending}
+            onChange={onChange}
+            definitionRelatedTerms={{
+              of: [],
+              targeting: occurrences,
+            }}
+            {...intlFunctions()}
+        />
+    );
+    return Promise.resolve().then(() => {
+      const rows = wrapper.find(DefinitionalTermOccurrence);
+      expect(rows.length).toEqual(1);
+      expect(rows.get(0).props.term).toEqual(t2);
     });
   });
 

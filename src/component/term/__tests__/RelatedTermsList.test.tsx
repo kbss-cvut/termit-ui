@@ -37,6 +37,8 @@ describe("RelatedTermsList", () => {
     };
     defRelatedTerms.targeting[0].target.source.iri = term.iri;
     jest.spyOn(redux, "useSelector").mockReturnValue(defRelatedTerms);
+    const fakeDispatch = jest.fn().mockResolvedValue(relatedTerm);
+    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
 
     const wrapper = mountWithIntl(
       <MemoryRouter>
@@ -83,7 +85,7 @@ describe("RelatedTermsList", () => {
     ).toEqual(1);
   });
 
-  it("renders only confirmed definition related terms targetting current term", async () => {
+  it("renders only confirmed definition related terms targeting current term", async () => {
     const defRelatedTerm = Generator.generateTerm();
     const defRelatedTerms: DefinitionallyRelatedTerms = {
       targeting: [Generator.generateOccurrenceOf(defRelatedTerm)],
