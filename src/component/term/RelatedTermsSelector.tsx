@@ -71,18 +71,37 @@ export class RelatedTermsSelector extends React.Component<
 
   public onChange = (val: Term[] | Term | null) => {
     if (!val) {
+      this.updateDefinitionRelated([]);
       this.props.onChange([]);
     } else {
+      val = Utils.sanitizeArray(val);
+      this.updateDefinitionRelated(val);
       this.props.onChange(
-        Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.term.iri)
+        val.filter((v) => v.iri !== this.props.term.iri)
       );
     }
   };
 
-  public onAddDefinitional = (toAdd: Term[]) => {
+  private updateDefinitionRelated(newValue: Term[]) {
+    const selectedIris = newValue.map(t => t.iri);
+    const newDefinitionRelated = this.state.definitionRelated.filter(iri => selectedIris.indexOf(iri) !== -1);
+    this.setState({definitionRelated: newDefinitionRelated});
+    // TODO Also the definitionRelatedChanges need to be updated
+  }
+
+  public onDefinitionRelatedChange(change: DefinitionRelatedChanges) {
+    const approved = change.pendingApproval;
+    const approvedIris = new Set<string>();
+    approved.forEach((to) =>
+        approvedIris.add(to.term.iri!)
+    );
+    this.onAddDefinitional([...approvedIris]);
+  }
+
+  private onAddDefinitional = (toAdd: string[]) => {
     toAdd = toAdd.filter(
       (item) =>
-        this.props.selected.find((i) => i.iri === item.iri) === undefined
+        this.props.selected.find((i) => i.iri === item) === undefined
     );
     if (this.treeComponent.current) {
       const options = this.treeComponent.current.getOptions();
@@ -91,12 +110,12 @@ export class RelatedTermsSelector extends React.Component<
         this.treeComponent.current.resetOptions();
       }
     }
-    this.setState({ definitionRelated: toAdd.map((to) => to.iri) });
+    this.setState({ definitionRelated: toAdd });
   };
 
-  private static isSubset(subset: Term[], superset: Term[]) {
-    for (let t of subset) {
-      if (superset.find((st) => st.iri === t.iri) === undefined) {
+  private static isSubset(subset: string[], superset: Term[]) {
+    for (let tIri of subset) {
+      if (superset.find((st) => st.iri === tIri) === undefined) {
         return false;
       }
     }
@@ -169,7 +188,6 @@ export class RelatedTermsSelector extends React.Component<
         </>
         <DefinitionRelatedTermsEdit
           term={this.props.term}
-          onAddRelated={this.onAddDefinitional}
           pending={this.props.definitionRelatedChanges}
           onChange={this.props.onDefinitionRelatedChange}
         />

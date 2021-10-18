@@ -22,7 +22,6 @@ import InfoIcon from "../misc/InfoIcon";
 
 interface DefinitionRelatedTermsEditProps extends HasI18n {
   term: Term;
-  onAddRelated: (toAdd: Term[]) => void;
   pending: DefinitionRelatedChanges;
   onChange: (change: DefinitionRelatedChanges) => void;
 
@@ -104,17 +103,6 @@ export class DefinitionRelatedTermsEdit extends React.Component<
         pendingApproval: approved,
         pendingRemoval: this.props.pending.pendingRemoval,
       });
-      const toAddIris = new Set<string>();
-      approved.forEach((to) =>
-        toAddIris.add(
-          to.term.iri === this.props.term.iri
-            ? to.target.source.iri!
-            : to.term.iri!
-        )
-      );
-      this.props.onAddRelated(
-        [...toAddIris].map((iri) => this.state.termCache[iri])
-      );
     });
   };
 
@@ -168,7 +156,11 @@ export class DefinitionRelatedTermsEdit extends React.Component<
 
   private shouldRender(to: TermOccurrence) {
     const pending = this.props.pending;
-    return to.isSuggested() && pending.pendingRemoval.indexOf(to) === -1 && pending.pendingApproval.indexOf(to) === -1;
+    return (
+      to.isSuggested() &&
+      pending.pendingRemoval.indexOf(to) === -1 &&
+      pending.pendingApproval.indexOf(to) === -1
+    );
   }
 
   public render() {

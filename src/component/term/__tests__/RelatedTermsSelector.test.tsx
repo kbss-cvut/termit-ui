@@ -89,11 +89,15 @@ describe("RelatedTermsSelector", () => {
     expect(value).toContain(defRelated.iri);
   });
 
-  describe("onAddDefinitional", () => {
+  describe("onDefinitionRelatedChange", () => {
     it("adds specified term to state", () => {
       const wrapper = render();
       const defRelated = Generator.generateTerm(VOCABULARY_IRI);
-      wrapper.instance().onAddDefinitional([defRelated]);
+      const change: DefinitionRelatedChanges = {
+        pendingApproval: [Generator.generateOccurrenceOf(defRelated)],
+        pendingRemoval: []
+      }
+      wrapper.instance().onDefinitionRelatedChange(change);
 
       expect(wrapper.state().definitionRelated).toContain(defRelated.iri);
       expect(onChange).not.toHaveBeenCalled();
@@ -137,6 +141,40 @@ describe("RelatedTermsSelector", () => {
         },
         undefined
       );
+    });
+  });
+
+  describe("onChange", () => {
+    it("removes unselected values from definitionRelated values in state", () => {
+      const defRelated = Generator.generateTerm(VOCABULARY_IRI);
+      definitionRelated.targeting = [Generator.generateOccurrenceOf(defRelated)];
+      definitionRelated.targeting[0].target.source.iri = term.iri;
+      definitionRelated.of = [];
+      const related = Generator.generateTerm(VOCABULARY_IRI);
+      selected.push({
+        iri: related.iri,
+        label: related.label,
+        vocabulary: { iri: VOCABULARY_IRI },
+      });
+
+      const wrapper = render();
+      expect(wrapper.state().definitionRelated).toContain(defRelated.iri);
+      wrapper.instance().onChange([related]);
+      wrapper.update();
+      expect(wrapper.state().definitionRelated).not.toContain(defRelated.iri);
+    });
+
+    it("removes all definitionRelated values from state when onChange value is null", () => {
+      const defRelated = Generator.generateTerm(VOCABULARY_IRI);
+      definitionRelated.targeting = [Generator.generateOccurrenceOf(defRelated)];
+      definitionRelated.targeting[0].target.source.iri = term.iri;
+      definitionRelated.of = [];
+
+      const wrapper = render();
+      expect(wrapper.state().definitionRelated).toContain(defRelated.iri);
+      wrapper.instance().onChange(null);
+      wrapper.update();
+      expect(wrapper.state().definitionRelated).toEqual([]);
     });
   });
 });
