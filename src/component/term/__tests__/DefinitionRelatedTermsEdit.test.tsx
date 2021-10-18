@@ -11,7 +11,6 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 
 describe("DefinitionRelatedTermsEdit", () => {
   let term: Term;
-  let onAddRelated: (toAdd: Term[]) => void;
   let pending: DefinitionRelatedChanges;
   let onChange: (change: DefinitionRelatedChanges) => void;
 
@@ -19,7 +18,6 @@ describe("DefinitionRelatedTermsEdit", () => {
 
   beforeEach(() => {
     term = Generator.generateTerm();
-    onAddRelated = jest.fn();
     pending = { pendingApproval: [], pendingRemoval: [] };
     onChange = jest.fn();
     loadTermByIri = jest.fn();
@@ -32,12 +30,13 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t),
       Generator.generateOccurrenceOf(t),
     ];
-    occurrences.forEach(o => o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE));
+    occurrences.forEach((o) =>
+      o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
+    );
     (loadTermByIri as jest.Mock).mockResolvedValue(t);
     const wrapper = shallow(
       <DefinitionRelatedTermsEdit
         term={term}
-        onAddRelated={onAddRelated}
         loadTermByIri={loadTermByIri}
         pending={pending}
         onChange={onChange}
@@ -65,7 +64,6 @@ describe("DefinitionRelatedTermsEdit", () => {
     const wrapper = shallow(
       <DefinitionRelatedTermsEdit
         term={term}
-        onAddRelated={onAddRelated}
         loadTermByIri={loadTermByIri}
         pending={pending}
         onChange={onChange}
@@ -90,24 +88,25 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t1),
       Generator.generateOccurrenceOf(t2),
     ];
-    occurrences.forEach(o => o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE));
+    occurrences.forEach((o) =>
+      o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
+    );
     (loadTermByIri as jest.Mock)
-        .mockResolvedValueOnce(t1)
-        .mockResolvedValueOnce(t2);
+      .mockResolvedValueOnce(t1)
+      .mockResolvedValueOnce(t2);
     pending.pendingApproval = [occurrences[0]];
     const wrapper = shallow(
-        <DefinitionRelatedTermsEdit
-            term={term}
-            onAddRelated={onAddRelated}
-            loadTermByIri={loadTermByIri}
-            pending={pending}
-            onChange={onChange}
-            definitionRelatedTerms={{
-              of: [],
-              targeting: occurrences,
-            }}
-            {...intlFunctions()}
-        />
+      <DefinitionRelatedTermsEdit
+        term={term}
+        loadTermByIri={loadTermByIri}
+        pending={pending}
+        onChange={onChange}
+        definitionRelatedTerms={{
+          of: [],
+          targeting: occurrences,
+        }}
+        {...intlFunctions()}
+      />
     );
     return Promise.resolve().then(() => {
       const rows = wrapper.find(DefinitionalTermOccurrence);
@@ -123,24 +122,25 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t1),
       Generator.generateOccurrenceOf(t2),
     ];
-    occurrences.forEach(o => o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE));
+    occurrences.forEach((o) =>
+      o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
+    );
     (loadTermByIri as jest.Mock)
-        .mockResolvedValueOnce(t1)
-        .mockResolvedValueOnce(t2);
+      .mockResolvedValueOnce(t1)
+      .mockResolvedValueOnce(t2);
     pending.pendingRemoval = [occurrences[0]];
     const wrapper = shallow(
-        <DefinitionRelatedTermsEdit
-            term={term}
-            onAddRelated={onAddRelated}
-            loadTermByIri={loadTermByIri}
-            pending={pending}
-            onChange={onChange}
-            definitionRelatedTerms={{
-              of: [],
-              targeting: occurrences,
-            }}
-            {...intlFunctions()}
-        />
+      <DefinitionRelatedTermsEdit
+        term={term}
+        loadTermByIri={loadTermByIri}
+        pending={pending}
+        onChange={onChange}
+        definitionRelatedTerms={{
+          of: [],
+          targeting: occurrences,
+        }}
+        {...intlFunctions()}
+      />
     );
     return Promise.resolve().then(() => {
       const rows = wrapper.find(DefinitionalTermOccurrence);
@@ -162,7 +162,6 @@ describe("DefinitionRelatedTermsEdit", () => {
       const wrapper = shallow<DefinitionRelatedTermsEdit>(
         <DefinitionRelatedTermsEdit
           term={term}
-          onAddRelated={onAddRelated}
           pending={pending}
           onChange={onChange}
           loadTermByIri={loadTermByIri}
@@ -191,7 +190,6 @@ describe("DefinitionRelatedTermsEdit", () => {
       const wrapper = shallow<DefinitionRelatedTermsEdit>(
         <DefinitionRelatedTermsEdit
           term={term}
-          onAddRelated={onAddRelated}
           pending={pending}
           onChange={onChange}
           loadTermByIri={loadTermByIri}
@@ -208,35 +206,6 @@ describe("DefinitionRelatedTermsEdit", () => {
         occurrences
       );
     });
-
-    it("adds term related via occurrence on approval", () => {
-      const occurrences = [
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-      ];
-      const t = Generator.generateTerm();
-      occurrences.forEach((o) => (o.target.source = { iri: t.iri }));
-      (loadTermByIri as jest.Mock).mockResolvedValue(t);
-      const wrapper = shallow<DefinitionRelatedTermsEdit>(
-        <DefinitionRelatedTermsEdit
-          term={term}
-          onAddRelated={onAddRelated}
-          pending={pending}
-          onChange={onChange}
-          loadTermByIri={loadTermByIri}
-          definitionRelatedTerms={{
-            of: occurrences,
-            targeting: [],
-          }}
-          {...intlFunctions()}
-        />
-      );
-      return Promise.resolve().then(() => {
-        wrapper.instance().onApprove(occurrences[0]);
-        expect(onAddRelated).toHaveBeenCalledWith([t]);
-      });
-    });
   });
 
   describe("onRemove", () => {
@@ -252,7 +221,6 @@ describe("DefinitionRelatedTermsEdit", () => {
       const wrapper = shallow<DefinitionRelatedTermsEdit>(
         <DefinitionRelatedTermsEdit
           term={term}
-          onAddRelated={onAddRelated}
           pending={pending}
           onChange={onChange}
           loadTermByIri={loadTermByIri}
@@ -281,7 +249,6 @@ describe("DefinitionRelatedTermsEdit", () => {
       const wrapper = shallow<DefinitionRelatedTermsEdit>(
         <DefinitionRelatedTermsEdit
           term={term}
-          onAddRelated={onAddRelated}
           pending={pending}
           onChange={onChange}
           loadTermByIri={loadTermByIri}
@@ -312,7 +279,6 @@ describe("DefinitionRelatedTermsEdit", () => {
       const wrapper = shallow<DefinitionRelatedTermsEdit>(
         <DefinitionRelatedTermsEdit
           term={term}
-          onAddRelated={onAddRelated}
           pending={pending}
           onChange={onChange}
           loadTermByIri={loadTermByIri}
