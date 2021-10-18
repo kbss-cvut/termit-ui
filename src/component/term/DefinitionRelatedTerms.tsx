@@ -35,16 +35,12 @@ const DefinitionRelatedTerms: React.FC<DefinitionRelatedTermsProps> = (
   defRelateTerms.targeting
     .filter((to) => !to.isSuggested())
     .forEach((to) => distinctRelatedIris.add(to.term.iri!));
-  defRelateTerms.of
-    .filter((to) => !to.isSuggested())
-    .forEach((to) => distinctRelatedIris.add(to.target.source.iri!));
   const toDisplay = Array.from(distinctRelatedIris);
   toDisplay.sort();
   const dispatch = useDispatch<ThunkDispatch>();
   React.useEffect(() => {
     const irisToLoad = new Set<string>();
     defRelateTerms.targeting.forEach((to) => irisToLoad.add(to.term.iri!));
-    defRelateTerms.of.forEach((to) => irisToLoad.add(to.target.source.iri!));
     Promise.all(
       Array.from(irisToLoad)
         .filter((iri) => termCache[iri] === undefined)

@@ -53,7 +53,7 @@ export function mountWithIntl(
 /**
  * Utility function to flush all pending promises in an async test.
  */
-export function flushPromises() {
+export function flushPromises(): Promise<void> {
   return new Promise((resolve) => {
     scheduler(resolve, 0);
   });
