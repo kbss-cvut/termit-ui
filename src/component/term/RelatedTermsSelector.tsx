@@ -57,7 +57,9 @@ export class RelatedTermsSelector extends React.Component<
   constructor(props: RelatedTermsSelectorProps) {
     super(props);
     this.treeComponent = React.createRef();
-    const source = Utils.sanitizeArray(this.props.definitionRelated.targeting);
+    const source = Utils.sanitizeArray(
+      this.props.definitionRelated.targeting
+    ).filter((to) => !to.isSuggested());
     const set = new Set<string>();
     source.forEach((to) => set.add(to.term.iri!));
     this.state = {
@@ -70,39 +72,56 @@ export class RelatedTermsSelector extends React.Component<
       this.updateDefinitionRelated([]);
       this.props.onChange([]);
     } else {
+      const defRelated = this.state.definitionRelated;
       val = Utils.sanitizeArray(val);
       this.updateDefinitionRelated(val);
-      this.props.onChange(val.filter((v) => v.iri !== this.props.term.iri));
+      this.props.onChange(
+        val.filter(
+          (v) =>
+            v.iri !== this.props.term.iri && defRelated.indexOf(v.iri) === -1
+        )
+      );
     }
   };
 
   private updateDefinitionRelated(newValue: Term[]) {
-    const selectedIris = newValue.map((t) => t.iri);
+    const selectedIris = Utils.extractIris(newValue);
     const newDefinitionRelated = this.state.definitionRelated.filter(
       (iri) => selectedIris.indexOf(iri) !== -1
     );
-    this.setState({ definitionRelated: newDefinitionRelated });
     let newPendingApprovals = Utils.sanitizeArray(
       this.props.definitionRelatedChanges.pendingApproval
-    ).slice();
-    if (newPendingApprovals.length > 0) {
-      newPendingApprovals = newPendingApprovals.filter(
-        (to) => selectedIris.indexOf(to.term.iri!) !== -1
+    ).filter((to) => selectedIris.indexOf(to.term.iri!) !== -1);
+    let newPendingRemovals =
+      this.props.definitionRelatedChanges.pendingRemoval.concat(
+        this.resolveDefinitionRelatedToRemove(selectedIris)
       );
-      this.props.onDefinitionRelatedChange(
-        Object.assign({}, this.props.definitionRelatedChanges, {
-          pendingApproval: newPendingApprovals,
-        })
-      );
-    }
+    this.props.onDefinitionRelatedChange({
+      pendingApproval: newPendingApprovals,
+      pendingRemoval: newPendingRemovals,
+    });
+    this.setState({ definitionRelated: newDefinitionRelated });
   }
 
-  public onDefinitionRelatedChange(change: DefinitionRelatedChanges) {
+  private resolveDefinitionRelatedToRemove(selectedIris: string[]) {
+    const oldSelectedIris = Utils.extractIris(this.props.selected).concat(
+      this.state.definitionRelated
+    );
+    const removed = oldSelectedIris.filter(
+      (iri) => selectedIris.indexOf(iri) === -1
+    );
+    return this.props.definitionRelated.targeting.filter(
+      (to) => removed.indexOf(to.term.iri!) !== -1
+    );
+  }
+
+  public onDefinitionRelatedChange = (change: DefinitionRelatedChanges) => {
     const approved = change.pendingApproval;
     const approvedIris = new Set<string>();
     approved.forEach((to) => approvedIris.add(to.term.iri!));
     this.onAddDefinitional([...approvedIris]);
-  }
+    this.props.onDefinitionRelatedChange(change);
+  };
 
   private onAddDefinitional = (toAdd: string[]) => {
     toAdd = toAdd.filter(

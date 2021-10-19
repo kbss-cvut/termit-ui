@@ -9,6 +9,7 @@ import { DefinitionallyRelatedTerms } from "../../../model/TermItState";
 import { langString } from "../../../model/MultilingualString";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("RelatedTermsSelector", () => {
   const VOCABULARY_IRI = Generator.generateUri();
@@ -54,6 +55,18 @@ describe("RelatedTermsSelector", () => {
     expect(wrapper.state().definitionRelated).toEqual([defRelated.iri]);
   });
 
+  it("does not add suggested definitionally related terms targetting current term to state on mount", () => {
+    const defRelated = Generator.generateTerm(VOCABULARY_IRI);
+    definitionRelated.targeting = [Generator.generateOccurrenceOf(defRelated)];
+    definitionRelated.targeting[0].target.source.iri = term.iri;
+    definitionRelated.targeting[0].types.push(
+      VocabularyUtils.SUGGESTED_TERM_OCCURRENCE
+    );
+    const wrapper = render();
+
+    expect(wrapper.state().definitionRelated.length).toEqual(0);
+  });
+
   function render() {
     return shallow<RelatedTermsSelector>(
       <RelatedTermsSelector
@@ -84,7 +97,8 @@ describe("RelatedTermsSelector", () => {
     });
 
     const wrapper = render();
-    const value:string[] = (wrapper.find(IntelligentTreeSelect).props() as any).value;
+    const value: string[] = (wrapper.find(IntelligentTreeSelect).props() as any)
+      .value;
     expect(value).toContain(relatedIri);
     expect(value).toContain(defRelated.iri);
   });
@@ -95,8 +109,8 @@ describe("RelatedTermsSelector", () => {
       const defRelated = Generator.generateTerm(VOCABULARY_IRI);
       const change: DefinitionRelatedChanges = {
         pendingApproval: [Generator.generateOccurrenceOf(defRelated)],
-        pendingRemoval: []
-      }
+        pendingRemoval: [],
+      };
       wrapper.instance().onDefinitionRelatedChange(change);
 
       expect(wrapper.state().definitionRelated).toContain(defRelated.iri);
@@ -135,7 +149,7 @@ describe("RelatedTermsSelector", () => {
         {
           includeTerms: [
             relatedIri,
-          ...(defRelatedToInclude.filter((i: string) => i !== relatedIri)),
+            ...defRelatedToInclude.filter((i: string) => i !== relatedIri),
           ],
           offset: 0,
         },
@@ -145,9 +159,24 @@ describe("RelatedTermsSelector", () => {
   });
 
   describe("onChange", () => {
+    it("filters out definition related before calling props.onChange to prevent them from getting into related", () => {
+      const defRelated = Generator.generateTerm(VOCABULARY_IRI);
+      definitionRelated.targeting = [
+        Generator.generateOccurrenceOf(defRelated),
+      ];
+      definitionRelated.targeting[0].target.source.iri = term.iri;
+      const newRelated = Generator.generateTerm(VOCABULARY_IRI);
+
+      const wrapper = render();
+      wrapper.instance().onChange([defRelated, newRelated]);
+      expect(onChange).toHaveBeenCalledWith([newRelated]);
+    });
+
     it("removes unselected values from definitionRelated values in state", () => {
       const defRelated = Generator.generateTerm(VOCABULARY_IRI);
-      definitionRelated.targeting = [Generator.generateOccurrenceOf(defRelated)];
+      definitionRelated.targeting = [
+        Generator.generateOccurrenceOf(defRelated),
+      ];
       definitionRelated.targeting[0].target.source.iri = term.iri;
       definitionRelated.of = [];
       const related = Generator.generateTerm(VOCABULARY_IRI);
@@ -166,7 +195,9 @@ describe("RelatedTermsSelector", () => {
 
     it("removes all definitionRelated values from state when onChange value is null", () => {
       const defRelated = Generator.generateTerm(VOCABULARY_IRI);
-      definitionRelated.targeting = [Generator.generateOccurrenceOf(defRelated)];
+      definitionRelated.targeting = [
+        Generator.generateOccurrenceOf(defRelated),
+      ];
       definitionRelated.targeting[0].target.source.iri = term.iri;
       definitionRelated.of = [];
 
@@ -179,12 +210,31 @@ describe("RelatedTermsSelector", () => {
 
     it("removes unselected values from definitional term occurrences pending approval", () => {
       const defRelated = Generator.generateTerm(VOCABULARY_IRI);
-      definitionRelatedChanges.pendingApproval = [Generator.generateOccurrenceOf(defRelated)];
+      definitionRelatedChanges.pendingApproval = [
+        Generator.generateOccurrenceOf(defRelated),
+      ];
 
       const wrapper = render();
-      wrapper.setState({definitionRelated: [defRelated.iri]});
+      wrapper.setState({ definitionRelated: [defRelated.iri] });
       wrapper.instance().onChange(null);
-      expect(onDefinitionRelatedChange).toHaveBeenCalledWith({pendingApproval: [], pendingRemoval: []});
+      expect(onDefinitionRelatedChange).toHaveBeenCalledWith({
+        pendingApproval: [],
+        pendingRemoval: [],
+      });
+    });
+
+    it("moves unselected values from confirmed definitionally related terms to pending removals", () => {
+      const defRelated = Generator.generateTerm(VOCABULARY_IRI);
+      definitionRelated.targeting = [
+        Generator.generateOccurrenceOf(defRelated),
+      ];
+
+      const wrapper = render();
+      wrapper.instance().onChange(null);
+      expect(onDefinitionRelatedChange).toHaveBeenCalledWith({
+        pendingApproval: [],
+        pendingRemoval: definitionRelated.targeting,
+      });
     });
   });
 });
