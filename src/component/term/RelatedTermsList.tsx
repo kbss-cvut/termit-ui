@@ -1,10 +1,10 @@
 import Term from "../../model/Term";
 import React from "react";
-import {useDispatch} from "react-redux";
-import {useI18n} from "../hook/useI18n";
+import { useDispatch } from "react-redux";
+import { useI18n } from "../hook/useI18n";
 // @ts-ignore
-import {Col, Label, List, Row} from "reactstrap";
-import {loadDefinitionRelatedTermsTargeting,} from "../../action/AsyncTermActions";
+import { Col, Label, List, Row } from "reactstrap";
+import { loadDefinitionRelatedTermsTargeting } from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermLink from "./TermLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
