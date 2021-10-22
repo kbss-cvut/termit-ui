@@ -8,6 +8,7 @@ import {
 } from "../DefinitionRelatedTermsEdit";
 import { shallow } from "enzyme";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import TermOccurrence from "../../../model/TermOccurrence";
 
 describe("DefinitionRelatedTermsEdit", () => {
   let term: Term;
@@ -34,7 +35,13 @@ describe("DefinitionRelatedTermsEdit", () => {
       o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
     );
     (loadTermByIri as jest.Mock).mockResolvedValue(t);
-    const wrapper = shallow(
+    const wrapper = render(occurrences);
+
+    expect(wrapper.find(DefinitionalTermOccurrence).length).toEqual(1);
+  });
+
+  function render(occurrences: TermOccurrence[]) {
+    return shallow<DefinitionRelatedTermsEdit>(
       <DefinitionRelatedTermsEdit
         term={term}
         loadTermByIri={loadTermByIri}
@@ -47,10 +54,9 @@ describe("DefinitionRelatedTermsEdit", () => {
         {...intlFunctions()}
       />
     );
-    expect(wrapper.find(DefinitionalTermOccurrence).length).toEqual(1);
-  });
+  }
 
-  it("renders only suggested occurrences", () => {
+  it("renders both suggested and approved occurrences", () => {
     const t1 = Generator.generateTerm();
     const t2 = Generator.generateTerm();
     const occurrences = [
@@ -61,124 +67,49 @@ describe("DefinitionRelatedTermsEdit", () => {
     (loadTermByIri as jest.Mock)
       .mockResolvedValueOnce(t1)
       .mockResolvedValueOnce(t2);
-    const wrapper = shallow(
-      <DefinitionRelatedTermsEdit
-        term={term}
-        loadTermByIri={loadTermByIri}
-        pending={pending}
-        onChange={onChange}
-        definitionRelatedTerms={{
-          of: [],
-          targeting: occurrences,
-        }}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(occurrences);
+
     return Promise.resolve().then(() => {
       const rows = wrapper.find(DefinitionalTermOccurrence);
-      expect(rows.length).toEqual(1);
-      expect(rows.get(0).props.term).toEqual(t1);
+      expect(rows.length).toEqual(occurrences.length);
     });
   });
 
-  it("does not render suggested occurrences with pending approval", () => {
+  it("renders approved terms before suggested ones", () => {
     const t1 = Generator.generateTerm();
     const t2 = Generator.generateTerm();
     const occurrences = [
       Generator.generateOccurrenceOf(t1),
       Generator.generateOccurrenceOf(t2),
     ];
-    occurrences.forEach((o) =>
-      o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
-    );
+    occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
     (loadTermByIri as jest.Mock)
       .mockResolvedValueOnce(t1)
       .mockResolvedValueOnce(t2);
-    pending.pendingApproval = [occurrences[0]];
-    const wrapper = shallow(
-      <DefinitionRelatedTermsEdit
-        term={term}
-        loadTermByIri={loadTermByIri}
-        pending={pending}
-        onChange={onChange}
-        definitionRelatedTerms={{
-          of: [],
-          targeting: occurrences,
-        }}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(occurrences);
+
     return Promise.resolve().then(() => {
       const rows = wrapper.find(DefinitionalTermOccurrence);
-      expect(rows.length).toEqual(1);
-      expect(rows.get(0).props.term).toEqual(t2);
+      expect(rows.length).toEqual(occurrences.length);
+      expect(rows.get(0).props.occurrence.iri).toEqual(occurrences[1].iri);
+      expect(rows.get(1).props.occurrence.iri).toEqual(occurrences[0].iri);
     });
   });
 
-  it("does not render suggested occurrences with pending removal", () => {
+  it("does not render terms pending removal", () => {
     const t1 = Generator.generateTerm();
-    const t2 = Generator.generateTerm();
-    const occurrences = [
-      Generator.generateOccurrenceOf(t1),
-      Generator.generateOccurrenceOf(t2),
-    ];
-    occurrences.forEach((o) =>
-      o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
-    );
-    (loadTermByIri as jest.Mock)
-      .mockResolvedValueOnce(t1)
-      .mockResolvedValueOnce(t2);
+    const occurrences = [Generator.generateOccurrenceOf(t1)];
+    occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
     pending.pendingRemoval = [occurrences[0]];
-    const wrapper = shallow(
-      <DefinitionRelatedTermsEdit
-        term={term}
-        loadTermByIri={loadTermByIri}
-        pending={pending}
-        onChange={onChange}
-        definitionRelatedTerms={{
-          of: [],
-          targeting: occurrences,
-        }}
-        {...intlFunctions()}
-      />
-    );
+    (loadTermByIri as jest.Mock).mockResolvedValueOnce(t1);
+    const wrapper = render(occurrences);
+
     return Promise.resolve().then(() => {
-      const rows = wrapper.find(DefinitionalTermOccurrence);
-      expect(rows.length).toEqual(1);
-      expect(rows.get(0).props.term).toEqual(t2);
+      expect(wrapper.exists(DefinitionalTermOccurrence)).toBeFalsy();
     });
   });
 
   describe("onApprove", () => {
-    it("adds all occurrences targeting the same term to pending approvals", () => {
-      const occurrences = [
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-      ];
-      const t = Generator.generateTerm();
-      occurrences.forEach((o) => (o.target.source = { iri: t.iri }));
-      (loadTermByIri as jest.Mock).mockResolvedValue(t);
-      const wrapper = shallow<DefinitionRelatedTermsEdit>(
-        <DefinitionRelatedTermsEdit
-          term={term}
-          pending={pending}
-          onChange={onChange}
-          loadTermByIri={loadTermByIri}
-          definitionRelatedTerms={{
-            of: occurrences,
-            targeting: [],
-          }}
-          {...intlFunctions()}
-        />
-      );
-      wrapper.instance().onApprove(occurrences[0]);
-      expect(onChange).toHaveBeenCalled();
-      expect((onChange as jest.Mock).mock.calls[0][0].pendingApproval).toEqual(
-        occurrences
-      );
-    });
-
     it("adds all occurrences of the same term to pending approvals", () => {
       const t = Generator.generateTerm();
       const occurrences = [
@@ -187,19 +118,8 @@ describe("DefinitionRelatedTermsEdit", () => {
         Generator.generateOccurrenceOf(t),
       ];
       (loadTermByIri as jest.Mock).mockResolvedValue(t);
-      const wrapper = shallow<DefinitionRelatedTermsEdit>(
-        <DefinitionRelatedTermsEdit
-          term={term}
-          pending={pending}
-          onChange={onChange}
-          loadTermByIri={loadTermByIri}
-          definitionRelatedTerms={{
-            of: [],
-            targeting: occurrences,
-          }}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render(occurrences);
+
       wrapper.instance().onApprove(occurrences[0]);
       expect(onChange).toHaveBeenCalled();
       expect((onChange as jest.Mock).mock.calls[0][0].pendingApproval).toEqual(
@@ -209,35 +129,6 @@ describe("DefinitionRelatedTermsEdit", () => {
   });
 
   describe("onRemove", () => {
-    it("adds all occurrences targeting the same term to pending removals", () => {
-      const occurrences = [
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-      ];
-      const t = Generator.generateTerm();
-      occurrences.forEach((o) => (o.target.source = { iri: t.iri }));
-      (loadTermByIri as jest.Mock).mockResolvedValue(t);
-      const wrapper = shallow<DefinitionRelatedTermsEdit>(
-        <DefinitionRelatedTermsEdit
-          term={term}
-          pending={pending}
-          onChange={onChange}
-          loadTermByIri={loadTermByIri}
-          definitionRelatedTerms={{
-            of: occurrences,
-            targeting: [],
-          }}
-          {...intlFunctions()}
-        />
-      );
-      wrapper.instance().onRemove(occurrences[0]);
-      expect(onChange).toHaveBeenCalled();
-      expect((onChange as jest.Mock).mock.calls[0][0].pendingRemoval).toEqual(
-        occurrences
-      );
-    });
-
     it("adds all occurrences of the same term to pending removals", () => {
       const t = Generator.generateTerm();
       const occurrences = [
@@ -246,56 +137,12 @@ describe("DefinitionRelatedTermsEdit", () => {
         Generator.generateOccurrenceOf(t),
       ];
       (loadTermByIri as jest.Mock).mockResolvedValue(t);
-      const wrapper = shallow<DefinitionRelatedTermsEdit>(
-        <DefinitionRelatedTermsEdit
-          term={term}
-          pending={pending}
-          onChange={onChange}
-          loadTermByIri={loadTermByIri}
-          definitionRelatedTerms={{
-            of: [],
-            targeting: occurrences,
-          }}
-          {...intlFunctions()}
-        />
-      );
-      wrapper.instance().onRemove(occurrences[0]);
-      expect(onChange).toHaveBeenCalled();
-      expect((onChange as jest.Mock).mock.calls[0][0].pendingRemoval).toEqual(
-        occurrences
-      );
-    });
+      const wrapper = render(occurrences);
 
-    it("removes occurrences of the term from pending approvals", () => {
-      const occurrences = [
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-        Generator.generateOccurrenceOf(term),
-      ];
-      const t = Generator.generateTerm();
-      occurrences.forEach((o) => (o.target.source = { iri: t.iri }));
-      (loadTermByIri as jest.Mock).mockResolvedValue(t);
-      pending.pendingApproval = [...occurrences];
-      const wrapper = shallow<DefinitionRelatedTermsEdit>(
-        <DefinitionRelatedTermsEdit
-          term={term}
-          pending={pending}
-          onChange={onChange}
-          loadTermByIri={loadTermByIri}
-          definitionRelatedTerms={{
-            of: occurrences,
-            targeting: [],
-          }}
-          {...intlFunctions()}
-        />
-      );
       wrapper.instance().onRemove(occurrences[0]);
       expect(onChange).toHaveBeenCalled();
       expect((onChange as jest.Mock).mock.calls[0][0].pendingRemoval).toEqual(
         occurrences
-      );
-      expect((onChange as jest.Mock).mock.calls[0][0].pendingApproval).toEqual(
-        []
       );
     });
   });
