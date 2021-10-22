@@ -20,7 +20,6 @@ const DefinitionRelatedTerms: React.FC<DefinitionRelatedTermsProps> = (
   props
 ) => {
   const { relatedTerms, term, language } = props;
-  const { i18n } = useI18n();
   const [termCache, setTermCache] = React.useState<{
     [iri: string]: Term | TermInfo;
   }>(() => {
@@ -65,13 +64,7 @@ const DefinitionRelatedTerms: React.FC<DefinitionRelatedTermsProps> = (
         .filter((iri) => termCache[iri] !== undefined)
         .map((iri) => (
           <li key={`${iri}-definitional`}>
-            <Badge
-              className="mr-1"
-              color="secondary"
-              title={i18n("term.metadata.related.definitionally.tooltip")}
-            >
-              {i18n("term.metadata.definition")}
-            </Badge>
+            <DefinitionBadge />
             <TermLink term={termCache[iri]} language={language} />
             {term.vocabulary?.iri !== termCache[iri].vocabulary?.iri && (
               <VocabularyNameBadge vocabulary={termCache[iri].vocabulary} />
@@ -79,6 +72,19 @@ const DefinitionRelatedTerms: React.FC<DefinitionRelatedTermsProps> = (
           </li>
         ))}
     </>
+  );
+};
+
+export const DefinitionBadge: React.FC = () => {
+  const { i18n } = useI18n();
+  return (
+    <Badge
+      className="mr-1 align-text-bottom"
+      color="secondary"
+      title={i18n("term.metadata.related.definitionally.tooltip")}
+    >
+      {i18n("term.metadata.definition")}
+    </Badge>
   );
 };
 
