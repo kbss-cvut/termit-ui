@@ -17,7 +17,7 @@ export const LastEditedAssets = () => {
     if (activeTab !== tab) setActiveTab(tab);
   };
   return (
-    <Card>
+    <Card className="h-100">
       <CardHeader tag="h4" color="primary">
         {i18n("dashboard.widget.lastEditedAssets.title")}
       </CardHeader>
