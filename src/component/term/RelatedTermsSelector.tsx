@@ -27,7 +27,6 @@ import DefinitionRelatedTermsEdit, {
 import TermItState, {
   DefinitionallyRelatedTerms,
 } from "../../model/TermItState";
-import { DefinitionBadge } from "./DefinitionRelatedTerms";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
@@ -45,107 +44,12 @@ interface RelatedTermsSelectorProps extends HasI18n {
   onDefinitionRelatedChange: (change: DefinitionRelatedChanges) => void;
 }
 
-interface RelatedTermsSelectorState {
-  definitionRelated: string[];
-}
-
-export class RelatedTermsSelector extends React.Component<
-  RelatedTermsSelectorProps,
-  RelatedTermsSelectorState
-> {
-  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
-
-  constructor(props: RelatedTermsSelectorProps) {
-    super(props);
-    this.treeComponent = React.createRef();
-    const source = Utils.sanitizeArray(
-      this.props.definitionRelated.targeting
-    ).filter((to) => !to.isSuggested());
-    const set = new Set<string>();
-    source.forEach((to) => set.add(to.term.iri!));
-    this.state = {
-      definitionRelated: [...set],
-    };
-  }
-
+export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorProps> {
   public onChange = (val: Term[] | Term | null) => {
-    if (!val) {
-      this.updateDefinitionRelated([]);
-      this.props.onChange([]);
-    } else {
-      const defRelated = this.state.definitionRelated;
-      val = Utils.sanitizeArray(val);
-      this.updateDefinitionRelated(val);
-      this.props.onChange(
-        val.filter(
-          (v) =>
-            v.iri !== this.props.term.iri && defRelated.indexOf(v.iri) === -1
-        )
-      );
-    }
+    this.props.onChange(
+      Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.term.iri)
+    );
   };
-
-  private updateDefinitionRelated(newValue: Term[]) {
-    const selectedIris = Utils.extractIris(newValue);
-    const newDefinitionRelated = this.state.definitionRelated.filter(
-      (iri) => selectedIris.indexOf(iri) !== -1
-    );
-    let newPendingApprovals = Utils.sanitizeArray(
-      this.props.definitionRelatedChanges.pendingApproval
-    ).filter((to) => selectedIris.indexOf(to.term.iri!) !== -1);
-    let newPendingRemovals =
-      this.props.definitionRelatedChanges.pendingRemoval.concat(
-        this.resolveDefinitionRelatedToRemove(selectedIris)
-      );
-    this.props.onDefinitionRelatedChange({
-      pendingApproval: newPendingApprovals,
-      pendingRemoval: newPendingRemovals,
-    });
-    this.setState({ definitionRelated: newDefinitionRelated });
-  }
-
-  private resolveDefinitionRelatedToRemove(selectedIris: string[]) {
-    const oldSelectedIris = Utils.extractIris(this.props.selected).concat(
-      this.state.definitionRelated
-    );
-    const removed = oldSelectedIris.filter(
-      (iri) => selectedIris.indexOf(iri) === -1
-    );
-    return this.props.definitionRelated.targeting.filter(
-      (to) => removed.indexOf(to.term.iri!) !== -1
-    );
-  }
-
-  public onDefinitionRelatedChange = (change: DefinitionRelatedChanges) => {
-    const approved = change.pendingApproval;
-    const approvedIris = new Set<string>();
-    approved.forEach((to) => approvedIris.add(to.term.iri!));
-    this.onAddDefinitional([...approvedIris]);
-    this.props.onDefinitionRelatedChange(change);
-  };
-
-  private onAddDefinitional = (toAdd: string[]) => {
-    toAdd = toAdd.filter(
-      (item) => this.props.selected.find((i) => i.iri === item) === undefined
-    );
-    if (this.treeComponent.current) {
-      const options = this.treeComponent.current.getOptions();
-      if (!RelatedTermsSelector.isSubset(toAdd, options)) {
-        // If the newly added terms are not among options, we need to reload
-        this.treeComponent.current.resetOptions();
-      }
-    }
-    this.setState({ definitionRelated: toAdd });
-  };
-
-  private static isSubset(subset: string[], superset: Term[]) {
-    for (let tIri of subset) {
-      if (superset.find((st) => st.iri === tIri) === undefined) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
@@ -153,12 +57,6 @@ export class RelatedTermsSelector extends React.Component<
     // If the offset is > 0, the selected terms should have been already included
     const toInclude =
       fetchOptions.offset === 0 ? resolveSelectedIris(this.props.selected) : [];
-    // Include definition related that are not already among selected
-    toInclude.push(
-      ...this.state.definitionRelated.filter(
-        (iri) => toInclude.indexOf(iri) === -1
-      )
-    );
     return this.props
       .loadTerms(
         {
@@ -181,10 +79,7 @@ export class RelatedTermsSelector extends React.Component<
   };
 
   public render() {
-    const value = [
-      ...resolveSelectedIris(this.props.selected),
-      ...this.state.definitionRelated,
-    ];
+    const value = resolveSelectedIris(this.props.selected);
     return (
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
@@ -196,7 +91,6 @@ export class RelatedTermsSelector extends React.Component<
         </Label>
         <>
           <IntelligentTreeSelect
-            ref={this.treeComponent}
             onChange={this.onChange}
             value={value}
             fetchOptions={this.fetchOptions}
@@ -207,30 +101,17 @@ export class RelatedTermsSelector extends React.Component<
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabularyIri
             )}
-            valueRenderer={this.createValueRenderer()}
+            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
             {...commonTermTreeSelectProps(this.props)}
           />
         </>
         <DefinitionRelatedTermsEdit
           term={this.props.term}
           pending={this.props.definitionRelatedChanges}
-          onChange={this.onDefinitionRelatedChange}
+          onChange={this.props.onDefinitionRelatedChange}
         />
       </FormGroup>
     );
-  }
-
-  private createValueRenderer() {
-    const definitionRelated = this.state.definitionRelated;
-    const innerRenderer = createTermValueRenderer(this.props.vocabularyIri);
-    return (option: Term) => {
-      return (
-        <>
-          {definitionRelated.indexOf(option.iri) !== -1 && <DefinitionBadge />}
-          {innerRenderer(option)}
-        </>
-      );
-    };
   }
 }
 

@@ -8,8 +8,6 @@ import TermItState, {
 import { useI18n } from "../hook/useI18n";
 import { ButtonToolbar, Col, Row, Table } from "reactstrap";
 import { FaCheck, FaTrashAlt } from "react-icons/fa";
-import "./DefinitionRelatedTermsEdit.scss";
-import BadgeButton from "../misc/BadgeButton";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import { injectIntl } from "react-intl";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
@@ -19,6 +17,7 @@ import TermLink from "./TermLink";
 import classNames from "classnames";
 import Utils from "../../util/Utils";
 import InfoIcon from "../misc/InfoIcon";
+import BadgeButton from "../misc/BadgeButton";
 
 interface DefinitionRelatedTermsEditProps extends HasI18n {
   term: Term;
@@ -154,22 +153,28 @@ export class DefinitionRelatedTermsEdit extends React.Component<
     return this.props.pending.pendingRemoval.indexOf(to) === -1;
   }
 
-  private shouldRender(to: TermOccurrence) {
-    const pending = this.props.pending;
+  private isSuggested(to: TermOccurrence) {
     return (
-      to.isSuggested() &&
-      pending.pendingRemoval.indexOf(to) === -1 &&
-      pending.pendingApproval.indexOf(to) === -1
+      to.isSuggested() && this.props.pending.pendingApproval.indexOf(to) === -1
     );
   }
 
+  private prioritizeApproved(occurrences: TermOccurrence[]) {
+    occurrences.sort((a, b) => {
+      const aS = this.isSuggested(a);
+      const bS = this.isSuggested(b);
+      return aS && bS ? a.iri!.localeCompare(b.iri!) : aS ? 1 : -1;
+    });
+  }
+
   public render() {
-    const { i18n, definitionRelatedTerms } = this.props;
+    const { i18n, definitionRelatedTerms, pending } = this.props;
     const { termCache } = this.state;
     const targeting = reduceToUnique(
       definitionRelatedTerms.targeting,
       (o) => o.term.iri!
-    ).filter((to) => this.shouldRender(to));
+    ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
+    this.prioritizeApproved(targeting);
     return (
       <Row className="mt-2">
         <Col className="mx-3">
@@ -179,39 +184,27 @@ export class DefinitionRelatedTermsEdit extends React.Component<
                 <h5>
                   {i18n("term.metadata.related.definitionally.targeting")}
                 </h5>
-                <div>
-                  {this.renderOccurrencesTable(targeting, (to) => (
-                    <DefinitionalTermOccurrence
-                      key={to.term.iri}
-                      term={termCache[to.term.iri!]}
-                      occurrence={to}
-                      onApprove={this.onApprove}
-                      onRemove={this.onRemove}
-                      canApprove={this.canApprove(to)}
-                      canRemove={this.canRemove(to)}
-                    />
+                <Table responsive={true} borderless={true}>
+                  {targeting.map((to) => (
+                    <tr key={to.iri}>
+                      <DefinitionalTermOccurrence
+                        key={to.term.iri}
+                        term={termCache[to.term.iri!]}
+                        occurrence={to}
+                        onApprove={this.onApprove}
+                        onRemove={this.onRemove}
+                        canApprove={this.canApprove(to)}
+                        canRemove={this.canRemove(to)}
+                        isSuggested={this.isSuggested(to)}
+                      />
+                    </tr>
                   ))}
-                </div>
+                </Table>
               </>
             </Col>
           </Row>
         </Col>
       </Row>
-    );
-  }
-
-  private renderOccurrencesTable(
-    items: TermOccurrence[],
-    itemRenderer: (to: TermOccurrence) => JSX.Element
-  ) {
-    return (
-      <Table responsive={true} striped={true}>
-        <tbody>
-          {items.map((to) => (
-            <tr key={to.iri}>{itemRenderer(to)}</tr>
-          ))}
-        </tbody>
-      </Table>
     );
   }
 }
@@ -223,21 +216,29 @@ interface DefinitionalTermOccurrenceProps {
   onRemove: (to: TermOccurrence) => void;
   canApprove: boolean;
   canRemove: boolean;
+  isSuggested: boolean;
 }
 
 export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProps> =
   (props) => {
-    const { occurrence, term, onApprove, onRemove, canApprove, canRemove } =
-      props;
+    const {
+      occurrence,
+      term,
+      onApprove,
+      onRemove,
+      canApprove,
+      canRemove,
+      isSuggested,
+    } = props;
     const { i18n } = useI18n();
     return (
       <>
         <td
-          className={classNames("align-middle", {
-            italics: occurrence.isSuggested,
+          className={classNames("align-middle pl-0", {
+            italics: isSuggested,
           })}
         >
-          {occurrence.isSuggested() && (
+          {isSuggested && (
             <InfoIcon
               className="mr-1"
               text={i18n("term.metadata.related.definitionally.suggested")}
@@ -248,11 +249,12 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
           )}
           {term && <TermLink term={term} />}
         </td>
-        <td>
+        <td className="pr-0">
           <ButtonToolbar className="d-inline ml-1 pull-right">
             {canApprove && (
               <BadgeButton
                 color="primary"
+                size="sm"
                 title={i18n("annotation.confirm")}
                 onClick={() => onApprove(occurrence)}
               >
@@ -263,6 +265,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
             {canRemove && (
               <BadgeButton
                 color="danger"
+                size="sm"
                 outline={true}
                 title={i18n("annotation.remove")}
                 onClick={() => onRemove(occurrence)}
