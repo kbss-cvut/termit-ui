@@ -27,6 +27,7 @@ import DefinitionRelatedTermsEdit, {
 import TermItState, {
   DefinitionallyRelatedTerms,
 } from "../../model/TermItState";
+import { DefinitionBadge } from "./DefinitionRelatedTerms";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
@@ -206,7 +207,7 @@ export class RelatedTermsSelector extends React.Component<
             optionRenderer={createTermsWithImportsOptionRenderer(
               this.props.vocabularyIri
             )}
-            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
+            valueRenderer={this.createValueRenderer()}
             {...commonTermTreeSelectProps(this.props)}
           />
         </>
@@ -217,6 +218,19 @@ export class RelatedTermsSelector extends React.Component<
         />
       </FormGroup>
     );
+  }
+
+  private createValueRenderer() {
+    const definitionRelated = this.state.definitionRelated;
+    const innerRenderer = createTermValueRenderer(this.props.vocabularyIri);
+    return (option: Term) => {
+      return (
+        <>
+          {definitionRelated.indexOf(option.iri) !== -1 && <DefinitionBadge />}
+          {innerRenderer(option)}
+        </>
+      );
+    };
   }
 }
 
