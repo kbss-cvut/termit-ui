@@ -56,6 +56,11 @@ describe("DefinitionRelatedTermsEdit", () => {
     );
   }
 
+  it("renders nothing when there are no definitional occurrences targeting current term", () => {
+    const wrapper = render([]);
+    expect(wrapper.type()).toEqual(null);
+  });
+
   it("renders both suggested and approved occurrences", () => {
     const t1 = Generator.generateTerm();
     const t2 = Generator.generateTerm();
