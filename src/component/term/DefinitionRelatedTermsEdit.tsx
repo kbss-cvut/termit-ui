@@ -175,6 +175,9 @@ export class DefinitionRelatedTermsEdit extends React.Component<
       (o) => o.term.iri!
     ).filter((to) => pending.pendingRemoval.indexOf(to) === -1);
     this.prioritizeApproved(targeting);
+    if (targeting.length === 0) {
+      return null;
+    }
     return (
       <Row className="mt-2">
         <Col className="mx-3">
