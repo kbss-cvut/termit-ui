@@ -55,7 +55,6 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
   RelatedTermsSelectorProps,
   BaseRelatedTermSelectorState
 > {
-
   constructor(props: RelatedTermsSelectorProps) {
     super(props);
     this.state = {

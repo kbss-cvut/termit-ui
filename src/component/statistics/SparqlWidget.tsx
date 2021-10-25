@@ -21,10 +21,10 @@ interface InternalActions {
 }
 
 export default function SparqlWidget<P extends PublicProps>(
-    Component: React.ComponentType<OutputProps & P>
+  Component: React.ComponentType<OutputProps & P>
 ): React.ComponentClass<
-    Pick<P, Exclude<keyof P, keyof (OutputProps & InternalActions)>>
-    > {
+  Pick<P, Exclude<keyof P, keyof (OutputProps & InternalActions)>>
+> {
   class Wrapper extends React.Component<PublicProps & InternalActions & P> {
     public componentDidMount() {
       this.change();
@@ -32,10 +32,10 @@ export default function SparqlWidget<P extends PublicProps>(
 
     public componentDidUpdate(prevProps: PublicProps & InternalActions & P) {
       if (
-          !_.isEqual(
-              this.props.queryResults[this.props.sparqlQuery],
-              prevProps.queryResults[this.props.sparqlQuery]
-          )
+        !_.isEqual(
+          this.props.queryResults[this.props.sparqlQuery],
+          prevProps.queryResults[this.props.sparqlQuery]
+        )
       ) {
         this.change();
       }
@@ -44,33 +44,33 @@ export default function SparqlWidget<P extends PublicProps>(
     private change() {
       this.props.loadingOn();
       this.props
-          .executeQuery(this.props.sparqlQuery)
-          .then(() => this.props.loadingOff());
+        .executeQuery(this.props.sparqlQuery)
+        .then(() => this.props.loadingOff());
     }
 
     public render() {
       return (
-          <Component
-              {...this.props}
-              queryResults={this.props.queryResults[this.props.sparqlQuery]}
-          />
+        <Component
+          {...this.props}
+          queryResults={this.props.queryResults[this.props.sparqlQuery]}
+        />
       );
     }
   }
 
   // @ts-ignore
   return connect(
-      (state: TermItState) => {
-        return {
-          queryResults: state.queryResults,
-        };
-      },
-      (dispatch: ThunkDispatch): InternalActions => {
-        return {
-          executeQuery: (queryString: string) =>
-              dispatch(executeQuery(queryString)),
-        };
-      }
-      // @ts-ignore
+    (state: TermItState) => {
+      return {
+        queryResults: state.queryResults,
+      };
+    },
+    (dispatch: ThunkDispatch): InternalActions => {
+      return {
+        executeQuery: (queryString: string) =>
+          dispatch(executeQuery(queryString)),
+      };
+    }
+    // @ts-ignore
   )(Wrapper);
 }

@@ -26,7 +26,7 @@ const TermFrequency: React.FC<Props> = (props) => {
   });
 
   const vocList: { id: string; label: string; value: number }[] = Object.keys(
-      vocabularies
+    vocabularies
   ).map((key) => ({
     id: key,
     label: vocabularies[key].label,
@@ -102,19 +102,19 @@ const TermFrequency: React.FC<Props> = (props) => {
   };
 
   return (
-      <>
-        {props.renderMask()}
-        <Chart
-            options={options}
-            type="donut"
-            series={sortOutedList.map((t) => t.value)}
-            width="100%"
-            height="auto"
-        />
-      </>
+    <>
+      {props.renderMask()}
+      <Chart
+        options={options}
+        type="donut"
+        series={sortOutedList.map((t) => t.value)}
+        width="100%"
+        height="auto"
+      />
+    </>
   );
 };
 
 export default withInjectableLoading(
-    SparqlWidget(injectIntl(withI18n(TermFrequency)))
+  SparqlWidget(injectIntl(withI18n(TermFrequency)))
 );
