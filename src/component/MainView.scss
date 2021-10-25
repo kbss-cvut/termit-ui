@@ -129,6 +129,7 @@
 
 .asset-badge {
   width: 4.4rem;
+  vertical-align: text-bottom !important;
 }
 
 /* Reactstrap overrides this by assigning form-control class to all form-controls, including small ones*/

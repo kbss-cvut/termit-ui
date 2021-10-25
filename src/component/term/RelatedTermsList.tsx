@@ -4,10 +4,7 @@ import { useDispatch } from "react-redux";
 import { useI18n } from "../hook/useI18n";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
-import {
-  loadDefinitionRelatedTermsOf,
-  loadDefinitionRelatedTermsTargeting,
-} from "../../action/AsyncTermActions";
+import { loadDefinitionRelatedTermsTargeting } from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermLink from "./TermLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
@@ -25,12 +22,6 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
   React.useEffect(() => {
     dispatch(
       loadDefinitionRelatedTermsTargeting(
-        VocabularyUtils.create(term.iri).fragment,
-        VocabularyUtils.create(term.vocabulary!.iri!)
-      )
-    );
-    dispatch(
-      loadDefinitionRelatedTermsOf(
         VocabularyUtils.create(term.iri).fragment,
         VocabularyUtils.create(term.vocabulary!.iri!)
       )

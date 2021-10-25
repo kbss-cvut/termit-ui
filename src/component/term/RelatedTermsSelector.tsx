@@ -29,7 +29,9 @@ import BaseRelatedTermSelector, {
   PAGE_SIZE,
   SEARCH_DELAY,
 } from "./BaseRelatedTermSelector";
-import TermItState from "../../model/TermItState";
+import TermItState, {
+  DefinitionallyRelatedTerms,
+} from "../../model/TermItState";
 import {
   loadTermsFromCanonical,
   loadTermsFromCurrentWorkspace,
@@ -43,7 +45,9 @@ interface RelatedTermsSelectorProps
   vocabularyIri: string;
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
+  language: string;
 
+  definitionRelated: DefinitionallyRelatedTerms;
   definitionRelatedChanges: DefinitionRelatedChanges;
   onDefinitionRelatedChange: (change: DefinitionRelatedChanges) => void;
 }
@@ -67,39 +71,10 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
   }
 
   public onChange = (val: Term[] | Term | null) => {
-    if (!val) {
-      this.props.onChange([]);
-    } else {
-      this.props.onChange(
-        Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.term.iri)
-      );
-    }
-  };
-
-  public onAddDefinitional = (toAdd: Term[]) => {
-    toAdd = toAdd.filter(
-      (item) =>
-        this.props.selected.find((i) => i.iri === item.iri) === undefined
+    this.props.onChange(
+      Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.term.iri)
     );
-    const options = this.treeComponent.current.getOptions();
-    const selected = options.filter(
-      (opt: Term) =>
-        this.props.selected.find((t) => t.iri === opt.iri) !== undefined
-    );
-    this.props.onChange(selected.concat(toAdd));
-    if (!RelatedTermsSelector.isSubset(toAdd, options)) {
-      this.treeComponent.current.resetOptions();
-    }
   };
-
-  private static isSubset(subset: Term[], superset: Term[]) {
-    for (let t of subset) {
-      if (superset.find((st) => st.iri === t.iri) === undefined) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
@@ -116,6 +91,7 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
   };
 
   public render() {
+    const value = resolveSelectedIris(this.props.selected);
     return (
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
@@ -127,9 +103,8 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
         </Label>
         <>
           <IntelligentTreeSelect
-            ref={this.treeComponent}
             onChange={this.onChange}
-            value={resolveSelectedIris(this.props.selected)}
+            value={value}
             fetchOptions={this.fetchOptions}
             fetchLimit={PAGE_SIZE}
             searchDelay={SEARCH_DELAY}
@@ -144,7 +119,7 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
         </>
         <DefinitionRelatedTermsEdit
           term={this.props.term}
-          onAddRelated={this.onAddDefinitional}
+          language={this.props.language}
           pending={this.props.definitionRelatedChanges}
           onChange={this.props.onDefinitionRelatedChange}
         />
@@ -154,9 +129,11 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
 }
 
 export default connect(
-  (state: TermItState) => ({ workspace: state.workspace! }),
-  (dispatch: ThunkDispatch) => {
-    return {
+  (state: TermItState) => ({
+    workspace: state.workspace!,
+    definitionRelated: state.definitionallyRelatedTerms
+  }),
+  (dispatch: ThunkDispatch) => ({
       loadTermsFromVocabulary: (
         fetchOptions: FetchOptionsFunction,
         vocabularyIri: IRI
@@ -170,6 +147,5 @@ export default connect(
         ),
       loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
         dispatch(loadTermsFromCanonical(fetchOptions)),
-    };
-  }
+  })
 )(injectIntl(withI18n(RelatedTermsSelector)));

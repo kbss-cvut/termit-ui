@@ -1,7 +1,7 @@
 /**
  * General utility functions.
  */
-import Asset, { HasLabel, HasTypes } from "../model/Asset";
+import Asset, { AssetData, HasLabel, HasTypes } from "../model/Asset";
 import VocabularyUtils from "./VocabularyUtils";
 import { match } from "react-router";
 import { Location } from "history";
@@ -269,6 +269,14 @@ const Utils = {
    */
   withTrailingSlash(url?: string): string | undefined {
     return url && url.charAt(url.length - 1) !== "/" ? url + "/" : url;
+  },
+
+  /**
+   * Maps the input data to an array of their identifiers.
+   * @param arr Data to map (an array presumably, but can be also just one instance or null)
+   */
+  extractIris<T extends AssetData>(arr: T[] | T | null): string[] {
+    return Utils.sanitizeArray(arr).map((item) => item.iri!);
   },
 };
 
