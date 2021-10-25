@@ -34,6 +34,7 @@ interface RelatedTermsSelectorProps extends HasI18n {
   vocabularyIri: string;
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
+  language: string;
   loadTerms: (
     fetchOptions: FetchOptionsFunction,
     namespace?: string
@@ -107,6 +108,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
         </>
         <DefinitionRelatedTermsEdit
           term={this.props.term}
+          language={this.props.language}
           pending={this.props.definitionRelatedChanges}
           onChange={this.props.onDefinitionRelatedChange}
         />
