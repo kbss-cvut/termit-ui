@@ -131,21 +131,19 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
 export default connect(
   (state: TermItState) => ({
     workspace: state.workspace!,
-    definitionRelated: state.definitionallyRelatedTerms
+    definitionRelated: state.definitionallyRelatedTerms,
   }),
   (dispatch: ThunkDispatch) => ({
-      loadTermsFromVocabulary: (
-        fetchOptions: FetchOptionsFunction,
-        vocabularyIri: IRI
-      ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
-      loadTermsFromCurrentWorkspace: (
-        fetchOptions: FetchOptionsFunction,
-        excludeVocabulary: string
-      ) =>
-        dispatch(
-          loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)
-        ),
-      loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
-        dispatch(loadTermsFromCanonical(fetchOptions)),
+    loadTermsFromVocabulary: (
+      fetchOptions: FetchOptionsFunction,
+      vocabularyIri: IRI
+    ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
+    loadTermsFromCurrentWorkspace: (
+      fetchOptions: FetchOptionsFunction,
+      excludeVocabulary: string
+    ) =>
+      dispatch(loadTermsFromCurrentWorkspace(fetchOptions, excludeVocabulary)),
+    loadTermsFromCanonical: (fetchOptions: FetchOptionsFunction) =>
+      dispatch(loadTermsFromCanonical(fetchOptions)),
   })
 )(injectIntl(withI18n(RelatedTermsSelector)));

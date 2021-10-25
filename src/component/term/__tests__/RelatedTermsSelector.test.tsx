@@ -8,7 +8,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { DefinitionallyRelatedTerms } from "../../../model/TermItState";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import {IRI} from "../../../util/VocabularyUtils";
+import { IRI } from "../../../util/VocabularyUtils";
 import Workspace from "../../../model/Workspace";
 
 describe("RelatedTermsSelector", () => {
@@ -18,15 +18,15 @@ describe("RelatedTermsSelector", () => {
   let workspace: Workspace;
   let onChange: (value: Term[]) => void;
   let loadTermsFromVocabulary: (
-      fetchOptions: FetchOptionsFunction,
-      vocabularyIri: IRI
+    fetchOptions: FetchOptionsFunction,
+    vocabularyIri: IRI
   ) => Promise<Term[]>;
   let loadTermsFromCurrentWorkspace: (
-      fetchOptions: FetchOptionsFunction,
-      excludeVocabulary: string
+    fetchOptions: FetchOptionsFunction,
+    excludeVocabulary: string
   ) => Promise<Term[]>;
   let loadTermsFromCanonical: (
-      fetchOptions: FetchOptionsFunction
+    fetchOptions: FetchOptionsFunction
   ) => Promise<Term[]>;
 
   let selected: TermInfo[];
@@ -37,7 +37,7 @@ describe("RelatedTermsSelector", () => {
 
   beforeEach(() => {
     term = Generator.generateTerm(VOCABULARY_IRI);
-    workspace = new Workspace({ label : "Test", vocabularies : []  });
+    workspace = new Workspace({ label: "Test", vocabularies: [] });
     onChange = jest.fn();
     loadTermsFromVocabulary = jest.fn().mockResolvedValue([]);
     loadTermsFromCurrentWorkspace = jest.fn().mockResolvedValue([]);
