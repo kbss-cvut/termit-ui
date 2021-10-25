@@ -1,4 +1,3 @@
-import React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TermData, TermInfo } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
@@ -56,7 +55,6 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
   RelatedTermsSelectorProps,
   BaseRelatedTermSelectorState
 > {
-  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
 
   constructor(props: RelatedTermsSelectorProps) {
     super(props);
@@ -67,7 +65,6 @@ export class RelatedTermsSelector extends BaseRelatedTermSelector<
       workspaceTermCount: 0,
       lastSearchString: "",
     };
-    this.treeComponent = React.createRef();
   }
 
   public onChange = (val: Term[] | Term | null) => {
