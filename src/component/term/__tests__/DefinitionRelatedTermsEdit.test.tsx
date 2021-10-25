@@ -9,6 +9,7 @@ import {
 import { shallow } from "enzyme";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import TermOccurrence from "../../../model/TermOccurrence";
+import Constants from "../../../util/Constants";
 
 describe("DefinitionRelatedTermsEdit", () => {
   let term: Term;
@@ -44,6 +45,7 @@ describe("DefinitionRelatedTermsEdit", () => {
     return shallow<DefinitionRelatedTermsEdit>(
       <DefinitionRelatedTermsEdit
         term={term}
+        language={Constants.DEFAULT_LANGUAGE}
         loadTermByIri={loadTermByIri}
         pending={pending}
         onChange={onChange}

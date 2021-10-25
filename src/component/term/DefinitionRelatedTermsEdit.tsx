@@ -21,6 +21,7 @@ import BadgeButton from "../misc/BadgeButton";
 
 interface DefinitionRelatedTermsEditProps extends HasI18n {
   term: Term;
+  language: string;
   pending: DefinitionRelatedChanges;
   onChange: (change: DefinitionRelatedChanges) => void;
 
@@ -168,7 +169,7 @@ export class DefinitionRelatedTermsEdit extends React.Component<
   }
 
   public render() {
-    const { i18n, definitionRelatedTerms, pending } = this.props;
+    const { language, i18n, definitionRelatedTerms, pending } = this.props;
     const { termCache } = this.state;
     const targeting = reduceToUnique(
       definitionRelatedTerms.targeting,
@@ -194,6 +195,7 @@ export class DefinitionRelatedTermsEdit extends React.Component<
                         key={to.term.iri}
                         term={termCache[to.term.iri!]}
                         occurrence={to}
+                        language={language}
                         onApprove={this.onApprove}
                         onRemove={this.onRemove}
                         canApprove={this.canApprove(to)}
@@ -215,6 +217,7 @@ export class DefinitionRelatedTermsEdit extends React.Component<
 interface DefinitionalTermOccurrenceProps {
   occurrence: TermOccurrence;
   term: Term;
+  language: string;
   onApprove: (to: TermOccurrence) => void;
   onRemove: (to: TermOccurrence) => void;
   canApprove: boolean;
@@ -227,6 +230,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
     const {
       occurrence,
       term,
+        language,
       onApprove,
       onRemove,
       canApprove,
@@ -250,7 +254,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
               )}`}
             />
           )}
-          {term && <TermLink term={term} />}
+          {term && <TermLink term={term} language={language}/>}
         </td>
         <td className="pr-0">
           <ButtonToolbar className="d-inline ml-1 pull-right">

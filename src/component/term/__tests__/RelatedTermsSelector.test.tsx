@@ -7,6 +7,7 @@ import { RelatedTermsSelector } from "../RelatedTermsSelector";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { DefinitionallyRelatedTerms } from "../../../model/TermItState";
 import { langString } from "../../../model/MultilingualString";
+import Constants from "../../../util/Constants";
 
 describe("RelatedTermsSelector", () => {
   const VOCABULARY_IRI = Generator.generateUri();
@@ -47,6 +48,7 @@ describe("RelatedTermsSelector", () => {
         vocabularyIri={VOCABULARY_IRI}
         selected={selected}
         onChange={onChange}
+        language={Constants.DEFAULT_LANGUAGE}
         loadTerms={loadTerms}
         definitionRelated={definitionRelated}
         definitionRelatedChanges={definitionRelatedChanges}

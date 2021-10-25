@@ -383,6 +383,7 @@ export class TermMetadataEdit extends React.Component<
                         this.state
                       )}
                       onChange={this.onRelatedChange}
+                      language={language}
                       definitionRelatedChanges={this.state.definitionRelated}
                       onDefinitionRelatedChange={this.onDefinitionRelatedChange}
                     />
