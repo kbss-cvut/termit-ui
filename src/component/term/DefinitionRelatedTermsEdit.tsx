@@ -230,7 +230,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
     const {
       occurrence,
       term,
-        language,
+      language,
       onApprove,
       onRemove,
       canApprove,
@@ -254,7 +254,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
               )}`}
             />
           )}
-          {term && <TermLink term={term} language={language}/>}
+          {term && <TermLink term={term} language={language} />}
         </td>
         <td className="pr-0">
           <ButtonToolbar className="d-inline ml-1 pull-right">
