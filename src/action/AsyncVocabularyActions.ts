@@ -92,8 +92,8 @@ export function exportGlossary(
 }
 
 export function exportGlossaryWithExactMatchReferences(vocabularyIri: IRI) {
-    return exportGlossary(vocabularyIri, ExportType.Turtle, {
-        withReferences: true,
-        property: [VocabularyUtils.SKOS_EXACT_MATCH]
-    });
+  return exportGlossary(vocabularyIri, ExportType.Turtle, {
+    withReferences: true,
+    property: [VocabularyUtils.SKOS_EXACT_MATCH],
+  });
 }

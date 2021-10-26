@@ -229,8 +229,10 @@ const cs = {
     "vocabulary.summary.export.ttl": "SKOS (Turtle)",
     "vocabulary.summary.export.ttl.title":
       "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle",
-    "vocabulary.summary.export.ttl.withRefs": "SKOS + pojmy se stejným významem (Turtle)",
-    "vocabulary.summary.export.ttl.withRefs.title": "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku. Výstup je ve formátu Turtle.",
+    "vocabulary.summary.export.ttl.withRefs":
+      "SKOS + pojmy se stejným významem (Turtle)",
+    "vocabulary.summary.export.ttl.withRefs.title":
+      "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku. Výstup je ve formátu Turtle.",
     "vocabulary.summary.export.error":
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",

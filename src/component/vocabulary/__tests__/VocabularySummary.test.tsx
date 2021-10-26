@@ -47,7 +47,12 @@ describe("VocabularySummary", () => {
     exportToTurtle = jest.fn();
     exportWithReferences = jest.fn();
     validateVocabulary = jest.fn();
-    exportFunctions = { exportToCsv, exportToExcel, exportToTurtle, exportWithReferences };
+    exportFunctions = {
+      exportToCsv,
+      exportToExcel,
+      exportToTurtle,
+      exportWithReferences,
+    };
     location = {
       pathname: "/vocabulary/" + normalizedName,
       search: `namespace=${namespace}`,
