@@ -7,8 +7,14 @@ import Constants from "../../util/Constants";
 import Generator from "../../__tests__/environment/Generator";
 import { ThunkDispatch } from "../../util/Types";
 import ActionType from "../ActionType";
-import { loadTermCount } from "../AsyncVocabularyActions";
+import {
+  exportGlossary,
+  exportGlossaryWithExactMatchReferences,
+  loadTermCount,
+} from "../AsyncVocabularyActions";
 import AsyncActionStatus from "../AsyncActionStatus";
+import ExportType from "../../util/ExportType";
+import Utils from "../../util/Utils";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -81,6 +87,217 @@ describe("AsyncTermActions", () => {
         expect(error.message).toEqual(
           `'${Constants.Headers.X_TOTAL_COUNT}' header missing in server response.`
         );
+      });
+    });
+  });
+
+  describe("exportGlossary", () => {
+    it("provides vocabulary normalized name and namespace in request", () => {
+      const namespace =
+        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
+      const name = "test-vocabulary";
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: "test",
+          headers: { "Content-type": ExportType.CSV.mimeType },
+        })
+      );
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          exportGlossary(
+            {
+              namespace,
+              fragment: name,
+            },
+            ExportType.CSV
+          )
+        )
+      ).then(() => {
+        expect(Ajax.getRaw).toHaveBeenCalled();
+        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
+        expect(url).toEqual(
+          Constants.API_PREFIX + "/vocabularies/" + name + "/terms"
+        );
+        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        expect(config.getParams().namespace).toEqual(namespace);
+      });
+    });
+
+    it("passes additional parameters as query parameters when specified", () => {
+      const name = "test-vocabulary";
+      const qParams = {
+        withReferences: true,
+        property: [Generator.generateUri(), Generator.generateUri()],
+      };
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: "test",
+          headers: { "Content-type": ExportType.Turtle.mimeType },
+        })
+      );
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          exportGlossary(
+            {
+              namespace,
+              fragment: name,
+            },
+            ExportType.Turtle,
+            qParams
+          )
+        )
+      ).then(() => {
+        expect(Ajax.getRaw).toHaveBeenCalled();
+        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
+        expect(url).toEqual(
+          Constants.API_PREFIX + "/vocabularies/" + name + "/terms"
+        );
+        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        expect(config.getParams().namespace).toEqual(namespace);
+        Object.getOwnPropertyNames((p: string) =>
+          expect(config.getParams()[p]).toEqual(qParams[p])
+        );
+      });
+    });
+
+    it("sets accept type to CSV when CSV export type is provided", () => {
+      const iri = VocabularyUtils.create(Generator.generateUri());
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: "test",
+          headers: { "Content-type": ExportType.CSV.mimeType },
+        })
+      );
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
+      ).then(() => {
+        expect(Ajax.getRaw).toHaveBeenCalled();
+        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        expect(config.getHeaders()[Constants.Headers.ACCEPT]).toEqual(
+          Constants.CSV_MIME_TYPE
+        );
+      });
+    });
+
+    it("sets accept type to Excel when Excel export type is provided", () => {
+      const iri = VocabularyUtils.create(Generator.generateUri());
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: "test",
+          headers: { "Content-type": Constants.EXCEL_MIME_TYPE },
+        })
+      );
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.Excel))
+      ).then(() => {
+        expect(Ajax.getRaw).toHaveBeenCalled();
+        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        expect(config.getHeaders()[Constants.Headers.ACCEPT]).toEqual(
+          Constants.EXCEL_MIME_TYPE
+        );
+      });
+    });
+
+    it("invokes file save on request success", () => {
+      const iri = VocabularyUtils.create(Generator.generateUri());
+      const data = "test";
+      const fileName = "test.csv";
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data,
+          headers: {
+            "content-type": Constants.CSV_MIME_TYPE,
+            "content-disposition": 'attachment; filename="' + fileName + '"',
+          },
+        })
+      );
+      Utils.fileDownload = jest.fn();
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
+      ).then(() => {
+        expect(Utils.fileDownload).toHaveBeenCalledWith(
+          data,
+          fileName,
+          Constants.CSV_MIME_TYPE
+        );
+      });
+    });
+
+    it("dispatches async success on request success and correct data", () => {
+      const iri = VocabularyUtils.create(Generator.generateUri());
+      const data = "test";
+      const fileName = "test.csv";
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data,
+          headers: {
+            "content-type": Constants.CSV_MIME_TYPE,
+            "content-disposition": 'attachment; filename="' + fileName + '"',
+          },
+        })
+      );
+      Utils.fileDownload = jest.fn();
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
+      ).then(() => {
+        expect(store.getActions().length).toEqual(2);
+        const successAction = store.getActions()[1];
+        expect(successAction.type).toEqual(ActionType.EXPORT_GLOSSARY);
+        expect(successAction.status).toEqual(AsyncActionStatus.SUCCESS);
+      });
+    });
+
+    it("dispatches failure when response does not contain correct data", () => {
+      const iri = VocabularyUtils.create(Generator.generateUri());
+      const data = "test";
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data,
+          headers: {
+            "content-type": Constants.CSV_MIME_TYPE,
+          },
+        })
+      );
+      Utils.fileDownload = jest.fn();
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
+      ).then(() => {
+        expect(store.getActions().length).toEqual(3);
+        const successAction = store.getActions()[1];
+        expect(successAction.type).toEqual(ActionType.EXPORT_GLOSSARY);
+        expect(successAction.status).toEqual(AsyncActionStatus.FAILURE);
+      });
+    });
+  });
+
+  describe("exportGlossaryWithExactMatchReferences", () => {
+    it("exports terms using skos:exactMatch as reference property", () => {
+      const name = "test-vocabulary";
+      Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: "test",
+          headers: { "Content-type": ExportType.Turtle.mimeType },
+        })
+      );
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          exportGlossaryWithExactMatchReferences({
+            namespace,
+            fragment: name,
+          })
+        )
+      ).then(() => {
+        expect(Ajax.getRaw).toHaveBeenCalled();
+        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
+        expect(url).toEqual(
+          Constants.API_PREFIX + "/vocabularies/" + name + "/terms"
+        );
+        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        expect(config.getParams().namespace).toEqual(namespace);
+        expect(config.getParams().withReferences).toBeTruthy();
+        expect(config.getParams().property).toEqual([
+          VocabularyUtils.SKOS_EXACT_MATCH,
+        ]);
       });
     });
   });

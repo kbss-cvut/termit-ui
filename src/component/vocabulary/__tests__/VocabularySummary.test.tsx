@@ -32,6 +32,7 @@ describe("VocabularySummary", () => {
   let exportToCsv: (iri: IRI) => void;
   let exportToExcel: (iri: IRI) => void;
   let exportToTurtle: (iri: IRI) => void;
+  let exportWithReferences: (iri: IRI) => void;
   let validateVocabulary: (iri: IRI) => void;
   let exportFunctions: any;
 
@@ -44,8 +45,9 @@ describe("VocabularySummary", () => {
     exportToCsv = jest.fn();
     exportToExcel = jest.fn();
     exportToTurtle = jest.fn();
+    exportWithReferences = jest.fn();
     validateVocabulary = jest.fn();
-    exportFunctions = { exportToCsv, exportToExcel, exportToTurtle };
+    exportFunctions = { exportToCsv, exportToExcel, exportToTurtle, exportWithReferences };
     location = {
       pathname: "/vocabulary/" + normalizedName,
       search: `namespace=${namespace}`,
