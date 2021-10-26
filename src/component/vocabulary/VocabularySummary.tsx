@@ -6,7 +6,6 @@ import TermItState from "../../model/TermItState";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../model/Vocabulary";
 import {
   executeTextAnalysisOnAllTerms,
-  exportGlossary,
   loadResource,
   loadVocabulary,
   removeVocabulary,
@@ -39,6 +38,10 @@ import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
 import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
+import {
+  exportGlossary,
+  exportGlossaryWithExactMatchReferences,
+} from "../../action/AsyncVocabularyActions";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -51,6 +54,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   exportToCsv: (iri: IRI) => void;
   exportToExcel: (iri: IRI) => void;
   exportToTurtle: (iri: IRI) => void;
+  exportWithReferences: (iri: IRI) => void;
   executeTextAnalysisOnAllTerms: (iri: IRI) => void;
 }
 
@@ -128,6 +132,11 @@ export class VocabularySummary extends EditableComponent<
 
   private onExportToTurtle = () =>
     this.props.exportToTurtle(
+      VocabularyUtils.create(this.props.vocabulary.iri)
+    );
+
+  private onExportWithReferences = () =>
+    this.props.exportWithReferences(
       VocabularyUtils.create(this.props.vocabulary.iri)
     );
 
@@ -284,6 +293,14 @@ export class VocabularySummary extends EditableComponent<
           >
             {i18n("vocabulary.summary.export.ttl")}
           </DropdownItem>
+          <DropdownItem
+            name="vocabulary-export-ttl-with-references"
+            className="btn-sm"
+            onClick={this.onExportWithReferences}
+            title={i18n("vocabulary.summary.export.ttl.withRefs.title")}
+          >
+            {i18n("vocabulary.summary.export.ttl.withRefs")}
+          </DropdownItem>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
     );
@@ -333,6 +350,8 @@ export default connect(
         dispatch(exportGlossary(iri, ExportType.Excel)),
       exportToTurtle: (iri: IRI) =>
         dispatch(exportGlossary(iri, ExportType.Turtle)),
+      exportWithReferences: (iri: IRI) =>
+        dispatch(exportGlossaryWithExactMatchReferences(iri)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
     };
