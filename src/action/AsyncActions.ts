@@ -42,7 +42,6 @@ import {
 } from "../model/TermAssignments";
 import TermItState from "../model/TermItState";
 import Utils from "../util/Utils";
-import ExportType from "../util/ExportType";
 import { CONTEXT as DOCUMENT_CONTEXT } from "../model/Document";
 import {
   Configuration,
@@ -1352,47 +1351,6 @@ export function loadTermAssignmentsInfo(termIri: IRI, vocabularyIri: IRI) {
         dispatch(asyncActionFailure(action, error));
         return [];
       });
-  };
-}
-
-export function exportGlossary(vocabularyIri: IRI, type: ExportType) {
-  const action = {
-    type: ActionType.EXPORT_GLOSSARY,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    const url =
-      Constants.API_PREFIX +
-      "/vocabularies/" +
-      vocabularyIri.fragment +
-      "/terms";
-    return Ajax.getRaw(
-      url,
-      param("namespace", vocabularyIri.namespace)
-        .accept(type.mimeType)
-        .responseType("arraybuffer")
-    )
-      .then((resp: AxiosResponse) => {
-        const disposition = resp.headers[Constants.Headers.CONTENT_DISPOSITION];
-        const filenameMatch = disposition
-          ? disposition.match(/filename="(.+\..+)"/)
-          : null;
-        if (filenameMatch) {
-          const fileName = filenameMatch[1];
-          Utils.fileDownload(resp.data, fileName, type.mimeType);
-          return dispatch(asyncActionSuccess(action));
-        } else {
-          const error: ErrorData = {
-            requestUrl: url,
-            messageId: "vocabulary.summary.export.error",
-          };
-          dispatch(asyncActionFailure(action, error));
-          return dispatch(
-            SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-          );
-        }
-      })
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }
 

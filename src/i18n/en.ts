@@ -143,7 +143,10 @@ const en = {
     "vocabulary.summary.export.excel.title": "Export to MS Excel",
     "vocabulary.summary.export.ttl": "SKOS (Turtle)",
     "vocabulary.summary.export.ttl.title":
-      "Export SKOS-compatible glossary serialized as Turtle",
+      "Export a SKOS-compatible glossary serialized as Turtle",
+    "vocabulary.summary.export.ttl.withRefs": "SKOS + exact matches (Turtle)",
+    "vocabulary.summary.export.ttl.withRefs.title":
+      "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship, serialized as Turtle.",
     "vocabulary.summary.export.error":
       "Unable to retrieve exported data from server response.",
     "vocabulary.summary.import.action": "Restore from backup",
