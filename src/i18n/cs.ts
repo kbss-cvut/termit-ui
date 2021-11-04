@@ -537,8 +537,8 @@ const cs = {
     "file.annotate.selectVocabulary":
       "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
     "file.upload": "Nahrát",
-    "file.upload.maxSize.hint":
-      "Maximální velikost souboru: {maxUploadFileSize}",
+    "file.upload.hint":
+      "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8.",
 
     "dataset.license": "Licence",
     "dataset.format": "Formát",
