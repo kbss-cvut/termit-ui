@@ -77,7 +77,7 @@ export const UploadFile: React.FC<UploadFileProps> = (props) => {
                   )}
                 </div>
                 <FormText>
-                  {formatMessage("file.upload.maxSize.hint", {
+                  {formatMessage("file.upload.hint", {
                     maxUploadFileSize: serverConfig.maxFileUploadSize,
                   })}
                 </FormText>
