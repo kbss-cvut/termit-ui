@@ -461,7 +461,8 @@ const en = {
     "file.annotate.selectVocabulary":
       "Unable to determine vocabulary for annotating this file. Please, select one...",
     "file.upload": "Upload",
-    "file.upload.maxSize.hint": "Maximum file size: {maxUploadFileSize}",
+    "file.upload.hint":
+      "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8.",
 
     "statistics.vocabulary.count": "Vocabulary Count",
     "statistics.term.count": "Term Count",
