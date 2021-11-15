@@ -1,3 +1,10 @@
+#### Version 2.8.0
+
+- Simplified related terms UI.
+- Implemented extension of SKOS export which allows exporting a glossary including terms from other vocabularies that are referenced in the glossary.
+- Optimized removal of files containing term occurrences.
+- Fixed issues with processing various kinds of accents and apostrophes in Annotace.
+
 #### Version 2.7.0
 
 - Improve SKOS import functionality.
