@@ -1,3 +1,10 @@
+#### Verze 2.8.0
+
+- Zjednodušena práce se souvisejícími pojmy.
+- Přidána možnost exportovat glosář včetně pojmů z jiných slovníků, které jsou z něj referencovány.
+- Optimalizace mazání souborů obsahujících anotace.
+- Opraveny problémy se zpracováním různých typů uvozovek v textu souborů.
+
 #### Verze 2.7.0
 
 - Vylepšena podpora importu SKOS glosářů.
