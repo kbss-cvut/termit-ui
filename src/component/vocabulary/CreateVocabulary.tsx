@@ -38,7 +38,7 @@ import WindowTitle from "../misc/WindowTitle";
 
 interface CreateVocabularyProps extends HasI18n {
   createFile: (file: TermItFile, documentIri: string) => Promise<any>;
-  createVocabulary: (vocabulary: Vocabulary) => Promise<string>;
+  createVocabulary: (vocabulary: Vocabulary) => Promise<string | undefined>;
   uploadFileContent: (fileIri: string, file: File) => Promise<any>;
   publishNotification: (notification: AppNotification) => void;
 }
@@ -92,6 +92,9 @@ export class CreateVocabulary extends AbstractCreateAsset<
     document.addType(VocabularyUtils.DOCUMENT);
     vocabulary.document = document;
     this.props.createVocabulary(vocabulary).then((location) => {
+      if (!location) {
+        return;
+      }
       return Promise.all(
         Utils.sanitizeArray(files).map((f, fIndex) =>
           this.props
