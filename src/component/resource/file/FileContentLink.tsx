@@ -16,7 +16,7 @@ interface FileContentLinkProps extends HasI18n {
   id?: string;
   file: FileData;
   // dispatchProps
-  getContentType: (iri: string) => Promise<string>;
+  getContentType: (iri: string) => Promise<string | null>;
 }
 
 interface FileContentLinkState {

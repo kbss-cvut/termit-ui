@@ -21,7 +21,7 @@ interface DocumentFilesProps {
   document: Document;
   removeFile: (file: TermItFile, documentIri: string) => Promise<void>;
   onFileRemoved: () => void;
-  addFile: (file: TermItFile, documentIri: string) => Promise<void>;
+  addFile: (file: TermItFile, documentIri: string) => Promise<any>;
   onFileAdded: () => void;
   uploadFile: (fileIri: string, file: File) => Promise<any>;
   notify: (notification: AppNotification) => void;
