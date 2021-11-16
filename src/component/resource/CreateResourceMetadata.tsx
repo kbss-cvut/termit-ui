@@ -15,7 +15,7 @@ import ShowAdvanceAssetFields from "../asset/ShowAdvancedAssetFields";
 import Constants from "../../util/Constants";
 
 export interface CreateResourceMetadataProps extends HasI18n {
-  onCreate: (resource: Resource, data?: any) => Promise<string>;
+  onCreate: (resource: Resource, data?: any) => Promise<string | undefined>;
   onCancel: () => void;
 }
 

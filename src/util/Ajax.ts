@@ -171,6 +171,9 @@ export class Ajax {
 
   constructor() {
     this.axiosInstance.interceptors.request.use((reqConfig) => {
+      if (!reqConfig.headers) {
+        reqConfig.headers = {};
+      }
       const token = Authentication.loadToken();
       if (token) {
         reqConfig.headers[Constants.Headers.AUTHORIZATION] = `Bearer ${token}`;
@@ -480,7 +483,7 @@ function mockRestApi(axiosInst: AxiosInstance): void {
   mock
     .onGet(/\/rest\/vocabularies\/.+\/terms/)
     .reply((config: AxiosRequestConfig) => {
-      if (config.headers.Accept === Constants.CSV_MIME_TYPE) {
+      if (config.headers!.Accept === Constants.CSV_MIME_TYPE) {
         const exportData =
           "IRI,Label,Comment,Types,Sources,SubTerms\nhttp://test.org,Test,Test comment,,,";
         const attachmentHeader = {};

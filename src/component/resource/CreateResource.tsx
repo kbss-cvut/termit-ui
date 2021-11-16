@@ -10,7 +10,7 @@ import { useI18n } from "../hook/useI18n";
 
 export const CreateResource: React.FC = () => {
   const { i18n } = useI18n();
-  const onSuccess = (iri: string, iriLocation: string) => {
+  const onSuccess = (iri: string) => {
     Routing.transitionTo(
       Routes.resourceSummary,
       IdentifierResolver.routingOptionsFromLocation(iri)

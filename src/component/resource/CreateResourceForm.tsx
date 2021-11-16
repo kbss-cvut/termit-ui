@@ -30,12 +30,12 @@ import AddFile from "./document/AddFile";
 import RemoveFile from "./document/RemoveFile";
 
 interface CreateResourceFormProps extends HasI18n {
-  createResource: (resource: Resource) => Promise<string>;
+  createResource: (resource: Resource) => Promise<string | undefined>;
   createFile: (file: TermItFile, documentIri: string) => Promise<any>;
   uploadFileContent: (fileIri: string, file: File) => Promise<any>;
   publishNotification: (notification: AppNotification) => void;
   onCancel: () => void;
-  onSuccess: (iri: string, locationIri: string) => void;
+  onSuccess: (iri: string) => void;
   justDocument: boolean;
 }
 
@@ -64,7 +64,7 @@ export class CreateResourceForm extends React.Component<
     this.setState({ type });
   };
 
-  public onCreate = (resource: Resource): Promise<string> => {
+  public onCreate = (resource: Resource): Promise<string | undefined> => {
     resource.addType(this.state.type);
     const files = this.state.files;
     const fileContents = this.state.fileContents;
@@ -81,7 +81,7 @@ export class CreateResourceForm extends React.Component<
           )
         )
       )
-        .then(() => onSuccess(resource.iri, iri))
+        .then(() => onSuccess(resource.iri))
         .then(() => iri);
     });
   };

@@ -19,7 +19,7 @@ import WindowTitle from "../misc/WindowTitle";
 
 interface CreateTermProps extends RouteComponentProps<any>, HasI18n {
   vocabulary: Vocabulary;
-  createTerm: (term: Term, vocabularyIri: IRI) => Promise<string>;
+  createTerm: (term: Term, vocabularyIri: IRI) => Promise<string | undefined>;
 
   loadVocabulary(iri: IRI): void;
 }
@@ -46,7 +46,7 @@ export class CreateTerm extends React.Component<CreateTermProps> {
 
   public onCreate = (term: Term, newTerm: boolean) => {
     const vocabularyIri = VocabularyUtils.create(this.props.vocabulary.iri);
-    this.props.createTerm(term, vocabularyIri).then((location: string) => {
+    this.props.createTerm(term, vocabularyIri).then((location?: string) => {
       if (!location) {
         return;
       }
