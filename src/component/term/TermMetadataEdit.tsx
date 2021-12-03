@@ -471,6 +471,13 @@ export class TermMetadataEdit extends React.Component<
 
   private static mappedPropertiesToIgnore() {
     const toIgnore = Object.getOwnPropertyNames(CONTEXT).map((n) => CONTEXT[n]);
+
+    // HOTFIX to allow creating external mappings -
+    const index = toIgnore.indexOf(VocabularyUtils.RDFS_SUB_CLASS_OF);
+    if (index > -1) {
+      toIgnore.splice(index, 1);
+    }
+
     toIgnore.push(VocabularyUtils.RDF_TYPE);
     return toIgnore;
   }
