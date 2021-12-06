@@ -6,7 +6,6 @@ import Term from "../../../model/Term";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import { ExactMatchesSelector } from "../ExactMatchesSelector";
 
@@ -16,7 +15,7 @@ describe("ExactMatchesSelector", () => {
   let onChange: (exactMatches: Term[]) => void;
   let loadTerms: (
     fetchOptions: FetchOptionsFunction,
-    namespace: string
+    namespace?: string
   ) => Promise<Term[]>;
 
   beforeEach(() => {
@@ -25,10 +24,6 @@ describe("ExactMatchesSelector", () => {
   });
 
   it("passes selected exact match as value to tree component", () => {
-    const vocabulary = new Vocabulary({
-      iri: vocabularyIri,
-      label: "Test vocabulary",
-    });
     const exactMatch = [Generator.generateTerm(vocabularyIri)];
     const wrapper = shallow(
       <ExactMatchesSelector
@@ -37,7 +32,6 @@ describe("ExactMatchesSelector", () => {
         selected={exactMatch}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
-        currentVocabulary={vocabulary}
         loadTerms={loadTerms}
         {...intlFunctions()}
       />
@@ -48,10 +42,6 @@ describe("ExactMatchesSelector", () => {
   });
 
   it("passes selected exact matches as value to tree component when there are multiple", () => {
-    const vocabulary = new Vocabulary({
-      iri: vocabularyIri,
-      label: "Test vocabulary",
-    });
     const exactMatches = [
       Generator.generateTerm(vocabularyIri),
       Generator.generateTerm(vocabularyIri),
@@ -63,7 +53,6 @@ describe("ExactMatchesSelector", () => {
         selected={exactMatches}
         vocabularyIri={vocabularyIri}
         onChange={onChange}
-        currentVocabulary={vocabulary}
         loadTerms={loadTerms}
         {...intlFunctions()}
       />

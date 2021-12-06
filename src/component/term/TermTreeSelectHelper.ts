@@ -131,7 +131,7 @@ function traverseToAncestor(child: Term, options: Term[]) {
     });
   } else {
     if (!options.find((t) => t.iri === child.iri)) {
-      options.push(child);
+      options.unshift(child);
     }
   }
 }
