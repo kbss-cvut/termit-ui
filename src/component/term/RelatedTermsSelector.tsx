@@ -45,6 +45,68 @@ interface RelatedTermsSelectorProps extends HasI18n {
   onDefinitionRelatedChange: (change: DefinitionRelatedChanges) => void;
 }
 
+export function loadAndPrepareTerms(
+  fetchOptions: TreeSelectFetchOptionsParams<TermData>,
+  loadTerms: (
+    fetchOptions: FetchOptionsFunction,
+    namespace?: string
+  ) => Promise<Term[]>,
+  selected?: TermInfo[] | TermData[]
+) {
+  const selectedIris = resolveSelectedIris(selected);
+  // If the offset is > 0, the selected terms should have been already included
+  const toInclude =
+    !fetchOptions.offset && !fetchOptions.optionID ? selectedIris : [];
+  return loadTerms(
+    {
+      ...fetchOptions,
+      includeTerms: toInclude,
+    },
+    fetchOptions.optionID
+      ? VocabularyUtils.create(fetchOptions.optionID).namespace
+      : undefined
+  )
+    .then((terms) => {
+      if (toInclude.length === 0) {
+        return terms;
+      }
+      let parentsToExpand = terms
+        .filter((t) => toInclude.indexOf(t.iri) !== -1)
+        .flatMap((t) => resolveAncestors(t));
+      parentsToExpand = [...new Set(parentsToExpand)];
+      return Promise.all(
+        parentsToExpand.map((p) =>
+          loadTerms({ optionID: p }, VocabularyUtils.create(p).namespace)
+        )
+      )
+        .then((result) =>
+          result.flat(1).map((t) => {
+            if (toInclude.indexOf(t.iri) === -1) {
+              // @ts-ignore
+              t.expanded = true;
+            }
+            return t;
+          })
+        )
+        .then((loaded) => loaded.concat(terms));
+    })
+    .then((terms) =>
+      processTermsForTreeSelect(terms, undefined, {
+        searchString: fetchOptions.searchString,
+        selectedIris,
+      })
+    );
+}
+
+function resolveAncestors(term: Term): string[] {
+  const parentsArr = Utils.sanitizeArray(term.parentTerms);
+  if (parentsArr.length === 0) {
+    return [];
+  }
+  const ancestors = parentsArr.map((pt) => pt.iri);
+  return ancestors.concat(parentsArr.flatMap((t) => resolveAncestors(t)));
+}
+
 export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorProps> {
   public onChange = (val: Term[] | Term | null) => {
     this.props.onChange(
@@ -55,28 +117,11 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    // If the offset is > 0, the selected terms should have been already included
-    const toInclude =
-      fetchOptions.offset === 0 ? resolveSelectedIris(this.props.selected) : [];
-    return this.props
-      .loadTerms(
-        {
-          ...fetchOptions,
-          includeTerms: toInclude,
-        },
-        fetchOptions.optionID
-          ? VocabularyUtils.create(fetchOptions.optionID).namespace
-          : undefined
-      )
-      .then((terms) => {
-        if (!this.props.term.iri) {
-          return terms;
-        }
-        return processTermsForTreeSelect(terms, undefined, {
-          searchString: fetchOptions.searchString,
-          selectedIris: toInclude,
-        });
-      });
+    return loadAndPrepareTerms(
+      fetchOptions,
+      this.props.loadTerms,
+      this.props.selected
+    );
   };
 
   public render() {

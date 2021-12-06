@@ -3,7 +3,6 @@ import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TermData } from "../../model/Term";
 import FetchOptionsFunction from "../../model/Functions";
-import VocabularyUtils from "../../util/VocabularyUtils";
 import { connect } from "react-redux";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { loadAllTerms } from "../../action/AsyncActions";
@@ -18,10 +17,10 @@ import {
 import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,
-  processTermsForTreeSelect,
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
+import { loadAndPrepareTerms } from "./RelatedTermsSelector";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -49,7 +48,7 @@ interface ExactMatchesSelectorProps extends HasI18n {
   onChange: (exactMatches: Term[]) => void;
   loadTerms: (
     fetchOptions: FetchOptionsFunction,
-    namespace: string
+    namespace?: string
   ) => Promise<Term[]>;
 }
 
@@ -69,29 +68,13 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
   ) => {
     // Use option vocabulary when present, it may differ from the current vocabulary (when option is from imported
     // vocabulary)
-    return this.props
-      .loadTerms(
-        {
-          ...fetchOptions,
-          includeTerms: resolveSelectedIris(this.props.selected),
-        },
-        VocabularyUtils.create(
-          fetchOptions.option
-            ? fetchOptions.option.iri!
-            : this.props.vocabularyIri
-        ).namespace!
-      )
-      .then((terms) => {
-        if (!this.props.termIri) {
-          return terms;
-        }
-        return filterOutTermsFromCurrentVocabulary(
-          processTermsForTreeSelect(terms, undefined, {
-            searchString: fetchOptions.searchString,
-          }),
-          this.props.vocabularyIri
-        );
-      });
+    return loadAndPrepareTerms(
+      fetchOptions,
+      this.props.loadTerms,
+      this.props.selected
+    ).then((terms) =>
+      filterOutTermsFromCurrentVocabulary(terms, this.props.vocabularyIri)
+    );
   };
 
   public render() {
@@ -130,7 +113,7 @@ export default connect(
     currentVocabulary: state.vocabulary,
   }),
   (dispatch: ThunkDispatch) => ({
-    loadTerms: (fetchOptions: FetchOptionsFunction, namespace: string) =>
+    loadTerms: (fetchOptions: FetchOptionsFunction, namespace?: string) =>
       dispatch(loadAllTerms(fetchOptions, namespace)),
   })
 )(injectIntl(withI18n(ExactMatchesSelector)));
