@@ -17,10 +17,10 @@ import {
 import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,
+  loadAndPrepareTerms,
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
-import { loadAndPrepareTerms } from "./RelatedTermsSelector";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -54,13 +54,9 @@ interface ExactMatchesSelectorProps extends HasI18n {
 
 export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorProps> {
   public onChange = (val: Term[] | Term | null) => {
-    if (!val) {
-      this.props.onChange([]);
-    } else {
-      this.props.onChange(
-        Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
-      );
-    }
+    this.props.onChange(
+      Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
+    );
   };
 
   public fetchOptions = (
@@ -70,6 +66,7 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
     // vocabulary)
     return loadAndPrepareTerms(
       fetchOptions,
+      {},
       this.props.loadTerms,
       this.props.selected
     ).then((terms) =>
