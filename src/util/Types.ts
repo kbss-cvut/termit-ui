@@ -41,6 +41,16 @@ export interface TreeSelectFetchOptionsParams<T> {
 }
 
 /**
+ * Term fetching options.
+ *
+ * Extends options passed from the tree select component with additional configuration.
+ */
+export interface TermFetchParams<T> extends TreeSelectFetchOptionsParams<T> {
+  includeImported?: boolean;
+  includeTerms?: string[];
+}
+
+/**
  * Type representing literal values.
  */
 export type Literal = number | string | boolean;

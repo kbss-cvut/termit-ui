@@ -1,7 +1,6 @@
 import Term, { TermData } from "../../../../model/Term";
 import VocabularyUtils, { IRI } from "../../../../util/VocabularyUtils";
 import Vocabulary from "../../../../model/Vocabulary";
-import FetchOptionsFunction from "../../../../model/Functions";
 import { Location } from "history";
 import { match as Match } from "react-router";
 import Utils from "../../../../util/Utils";
@@ -12,6 +11,7 @@ import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import Generator from "../../../../__tests__/environment/Generator";
 import * as TermTreeSelectHelper from "../../../term/TermTreeSelectHelper";
 import { langString } from "../../../../model/MultilingualString";
+import { TermFetchParams } from "../../../../util/Types";
 
 jest.mock("../../../../util/Routing");
 
@@ -36,7 +36,7 @@ describe("Terms", () => {
   const selectedTerms: Term | null = null;
   let selectVocabularyTerm: (term: Term | null) => void;
   let fetchTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<any>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
 

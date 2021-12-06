@@ -59,8 +59,7 @@ import ActionType, {
 } from "../ActionType";
 import Term from "../../model/Term";
 import Generator from "../../__tests__/environment/Generator";
-import { ThunkDispatch } from "../../util/Types";
-import FetchOptionsFunction from "../../model/Functions";
+import { TermFetchParams, ThunkDispatch } from "../../util/Types";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
 } from "../../model/RdfsResource";
@@ -489,7 +488,7 @@ describe("Async actions", () => {
     it("provides search parameter with request when specified", () => {
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      const params: FetchOptionsFunction = {
+      const params: TermFetchParams<Term> = {
         searchString: "test",
       };
       return Promise.resolve(
@@ -525,7 +524,7 @@ describe("Async actions", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const parentUri =
         "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3";
-      const params: FetchOptionsFunction = {
+      const params: TermFetchParams<Term> = {
         optionID: parentUri,
       };
       const vocabName = "test-vocabulary";
@@ -549,7 +548,7 @@ describe("Async actions", () => {
     it("specifies correct paging params for offset and limit", () => {
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      const params: FetchOptionsFunction = {
+      const params: TermFetchParams<Term> = {
         offset: 88,
         limit: 100,
       };
@@ -566,7 +565,7 @@ describe("Async actions", () => {
     it("provides includeImported with request when specified", () => {
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      const params: FetchOptionsFunction = {
+      const params: TermFetchParams<Term> = {
         includeImported: true,
       };
       return Promise.resolve(
@@ -617,7 +616,7 @@ describe("Async actions", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const parentUri =
         "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3";
-      const params: FetchOptionsFunction = {
+      const params: TermFetchParams<Term> = {
         optionID: parentUri,
       };
       return Promise.resolve(
@@ -635,7 +634,7 @@ describe("Async actions", () => {
     it("specifies correct paging params for offset and limit", () => {
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      const params: FetchOptionsFunction = {
+      const params: TermFetchParams<Term> = {
         offset: 88,
         limit: 100,
       };
@@ -1639,7 +1638,7 @@ describe("Async actions", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createResource(resource))
-      ).then((res: string) => {
+      ).then((res?: string) => {
         expect(res).toEqual(resource.iri);
       });
     });
@@ -2035,7 +2034,7 @@ describe("Async actions", () => {
       );
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(getContentType(resourceIri))
-      ).then((result: string) => {
+      ).then((result: string | null) => {
         expect(result).toEqual("text/csv");
         expect(Ajax.head).toHaveBeenCalled();
       });
@@ -2052,7 +2051,7 @@ describe("Async actions", () => {
       );
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(getContentType(resourceIri))
-      ).then((result: string) => {
+      ).then((result: string | null) => {
         expect(result).toEqual(null);
         expect(Ajax.head).toHaveBeenCalled();
       });

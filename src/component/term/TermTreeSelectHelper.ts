@@ -1,10 +1,9 @@
-import Term, { TermData, TermInfo } from "../../model/Term";
-import { getLocalized } from "../../model/MultilingualString";
-import { HasI18n } from "../hoc/withI18n";
-import { getShortLocale } from "../../util/IntlUtil";
+import Term, {TermData, TermInfo} from "../../model/Term";
+import {getLocalized} from "../../model/MultilingualString";
+import {HasI18n} from "../hoc/withI18n";
+import {getShortLocale} from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
-import { TreeSelectFetchOptionsParams } from "../../util/Types";
-import FetchOptionsFunction from "../../model/Functions";
+import {TermFetchParams, TreeSelectFetchOptionsParams} from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 /**
@@ -179,7 +178,7 @@ export function loadAndPrepareTerms(
   fetchOptions: TreeSelectFetchOptionsParams<TermData>,
   vocabularyOptions: TermFetchingVocabularyOptions,
   loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<Term | TermData>,
     namespace?: string
   ) => Promise<Term[]>,
   selected?: TermInfo[] | TermData[]

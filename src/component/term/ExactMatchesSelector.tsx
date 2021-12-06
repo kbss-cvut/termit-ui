@@ -2,9 +2,12 @@ import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TermData } from "../../model/Term";
-import FetchOptionsFunction from "../../model/Functions";
 import { connect } from "react-redux";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import {
+  TermFetchParams,
+  ThunkDispatch,
+  TreeSelectFetchOptionsParams,
+} from "../../util/Types";
 import { loadAllTerms } from "../../action/AsyncActions";
 import { FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
@@ -47,7 +50,7 @@ interface ExactMatchesSelectorProps extends HasI18n {
   vocabularyIri: string;
   onChange: (exactMatches: Term[]) => void;
   loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     namespace?: string
   ) => Promise<Term[]>;
 }
@@ -110,7 +113,7 @@ export default connect(
     currentVocabulary: state.vocabulary,
   }),
   (dispatch: ThunkDispatch) => ({
-    loadTerms: (fetchOptions: FetchOptionsFunction, namespace?: string) =>
+    loadTerms: (fetchOptions: TermFetchParams<TermData>, namespace?: string) =>
       dispatch(loadAllTerms(fetchOptions, namespace)),
   })
 )(injectIntl(withI18n(ExactMatchesSelector)));

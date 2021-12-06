@@ -3,7 +3,6 @@ import { injectIntl } from "react-intl";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
-import FetchOptionsFunction from "../../../model/Functions";
 import Term, { TermData } from "../../../model/Term";
 import Vocabulary from "../../../model/Vocabulary";
 import withI18n, { HasI18n } from "../../hoc/withI18n";
@@ -12,6 +11,7 @@ import Utils from "../../../util/Utils";
 import { Location } from "history";
 import { match as Match } from "react-router";
 import {
+  TermFetchParams,
   ThunkDispatch,
   TreeSelectFetchOptionsParams,
 } from "../../../util/Types";
@@ -37,7 +37,7 @@ interface GlossaryTermsProps extends HasI18n {
   selectedTerms: Term | null;
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   isDetailView?: boolean;
@@ -240,7 +240,7 @@ export default connect(
     return {
       selectVocabularyTerm: (selectedTerm: Term | null) =>
         dispatch(selectVocabularyTerm(selectedTerm)),
-      fetchTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) =>
+      fetchTerms: (fetchOptions: TermFetchParams<TermData>, vocabularyIri: IRI) =>
         dispatch(loadPublicTerms(fetchOptions, vocabularyIri)),
     };
   }

@@ -7,8 +7,11 @@ import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import Term, { TermData } from "../../model/Term";
 import { connect } from "react-redux";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
-import FetchOptionsFunction from "../../model/Functions";
+import {
+  TermFetchParams,
+  ThunkDispatch,
+  TreeSelectFetchOptionsParams,
+} from "../../util/Types";
 import { loadAllTerms } from "../../action/AsyncActions";
 import {
   commonTermTreeSelectProps,
@@ -33,7 +36,7 @@ interface PropsConnected {}
 
 interface DispatchConnected {
   loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     namespace: string
   ) => Promise<Term[]>;
 }
@@ -129,7 +132,7 @@ export default connect<PropsConnected, DispatchConnected>(
   undefined,
   (dispatch: ThunkDispatch) => {
     return {
-      loadTerms: (fetchOptions: FetchOptionsFunction, namespace: string) =>
+      loadTerms: (fetchOptions: TermFetchParams<TermData>, namespace: string) =>
         dispatch(loadAllTerms(fetchOptions, namespace)),
     };
   }

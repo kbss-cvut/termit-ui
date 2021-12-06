@@ -1,5 +1,4 @@
 import Term, { TermData } from "../../../model/Term";
-import FetchOptionsFunction from "../../../model/Functions";
 import { shallow } from "enzyme";
 import { Terms } from "../Terms";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
@@ -12,6 +11,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
+import { TermFetchParams } from "../../../util/Types";
 
 jest.mock("../../../util/Routing");
 
@@ -38,7 +38,7 @@ describe("Terms", () => {
   const selectedTerms: Term | null = null;
   let selectVocabularyTerm: (term: Term | null) => void;
   let fetchTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   let fetchUnusedTerms: (vocabularyIri: IRI) => Promise<string[]>;

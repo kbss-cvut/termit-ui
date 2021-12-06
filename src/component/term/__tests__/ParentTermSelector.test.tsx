@@ -1,22 +1,22 @@
 import { shallow } from "enzyme";
 import { ParentTermSelector } from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
-import FetchOptionsFunction from "../../../model/Functions";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
-import Term from "../../../model/Term";
+import Term, { TermData } from "../../../model/Term";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
+import { TermFetchParams } from "../../../util/Types";
 
 describe("ParentTermSelector", () => {
   const vocabularyIri = Generator.generateUri();
 
   let onChange: (parents: Term[]) => void;
   let loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   let loadImports: (vocabularyIri: IRI) => Promise<string[]>;

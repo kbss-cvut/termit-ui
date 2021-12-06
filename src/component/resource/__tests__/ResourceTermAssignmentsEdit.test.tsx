@@ -6,12 +6,12 @@ import Generator from "../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import FetchOptionsFunction from "../../../model/Functions";
+import { TermFetchParams } from "../../../util/Types";
 
 describe("ResourceTermAssignmentsEdit", () => {
   let onChange: (subTerms: AssetData[]) => void;
   let loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<any>,
     namespace: string
   ) => Promise<Term[]>;
 

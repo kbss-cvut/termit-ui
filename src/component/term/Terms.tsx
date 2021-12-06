@@ -15,13 +15,16 @@ import {
 } from "../../action/SyncActions";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
-import FetchOptionsFunction from "../../model/Functions";
 import Term, { TermData } from "../../model/Term";
 import {
   loadTerms,
   loadUnusedTermsForVocabulary,
 } from "../../action/AsyncActions";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import {
+  TermFetchParams,
+  ThunkDispatch,
+  TreeSelectFetchOptionsParams,
+} from "../../util/Types";
 import { GoPlus } from "react-icons/go";
 import Utils from "../../util/Utils";
 import AppNotification from "../../model/AppNotification";
@@ -50,7 +53,7 @@ interface GlossaryTermsProps extends HasI18n {
   notifications: AppNotification[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   consumeNotification: (notification: AppNotification) => void;
@@ -399,7 +402,7 @@ export default connect(
     return {
       selectVocabularyTerm: (selectedTerm: Term | null) =>
         dispatch(selectVocabularyTerm(selectedTerm)),
-      fetchTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) =>
+      fetchTerms: (fetchOptions: TermFetchParams<TermData>, vocabularyIri: IRI) =>
         dispatch(loadTerms(fetchOptions, vocabularyIri)),
       consumeNotification: (notification: AppNotification) =>
         dispatch(consumeNotification(notification)),

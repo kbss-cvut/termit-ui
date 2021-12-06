@@ -2,10 +2,13 @@ import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TermData } from "../../model/Term";
-import FetchOptionsFunction from "../../model/Functions";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { connect } from "react-redux";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import {
+  TermFetchParams,
+  ThunkDispatch,
+  TreeSelectFetchOptionsParams,
+} from "../../util/Types";
 import { loadImportedVocabularies, loadTerms } from "../../action/AsyncActions";
 import { FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
@@ -53,7 +56,7 @@ interface ParentTermSelectorProps extends HasI18n {
   currentVocabulary?: Vocabulary;
   onChange: (newParents: Term[]) => void;
   loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   loadImportedVocabularies: (vocabularyIri: IRI) => Promise<string[]>;
@@ -250,7 +253,7 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadTerms: (fetchOptions: FetchOptionsFunction, vocabularyIri: IRI) =>
+      loadTerms: (fetchOptions: TermFetchParams<TermData>, vocabularyIri: IRI) =>
         dispatch(loadTerms(fetchOptions, vocabularyIri)),
       loadImportedVocabularies: (vocabularyIri: IRI) =>
         dispatch(loadImportedVocabularies(vocabularyIri)),

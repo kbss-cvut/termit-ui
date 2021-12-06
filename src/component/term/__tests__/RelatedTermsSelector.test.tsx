@@ -1,5 +1,4 @@
-import Term, { TermInfo } from "../../../model/Term";
-import FetchOptionsFunction from "../../../model/Functions";
+import Term, { TermData, TermInfo } from "../../../model/Term";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 import Generator from "../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
@@ -8,6 +7,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { DefinitionallyRelatedTerms } from "../../../model/TermItState";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import { TermFetchParams } from "../../../util/Types";
 
 describe("RelatedTermsSelector", () => {
   const VOCABULARY_IRI = Generator.generateUri();
@@ -15,7 +15,7 @@ describe("RelatedTermsSelector", () => {
   let term: Term;
   let onChange: (value: Term[]) => void;
   let loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     namespace?: string
   ) => Promise<Term[]>;
   let selected: TermInfo[];
