@@ -6,9 +6,9 @@ import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import {
-  commonTermTreeSelectProps,
-  processTermsForTreeSelect,
-  resolveSelectedIris,
+    commonTermTreeSelectProps,
+    processTermsForTreeSelect, resolveAncestors,
+    resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import Utils from "../../util/Utils";
 import { FormGroup, Label } from "reactstrap";
@@ -54,7 +54,7 @@ export function loadAndPrepareTerms(
   selected?: TermInfo[] | TermData[]
 ) {
   const selectedIris = resolveSelectedIris(selected);
-  // If the offset is > 0, the selected terms should have been already included
+  // If the offset is > 0 or we are fetching subterms, the selected terms should have been already included
   const toInclude =
     !fetchOptions.offset && !fetchOptions.optionID ? selectedIris : [];
   return loadTerms(
@@ -96,15 +96,6 @@ export function loadAndPrepareTerms(
         selectedIris,
       })
     );
-}
-
-function resolveAncestors(term: Term): string[] {
-  const parentsArr = Utils.sanitizeArray(term.parentTerms);
-  if (parentsArr.length === 0) {
-    return [];
-  }
-  const ancestors = parentsArr.map((pt) => pt.iri);
-  return ancestors.concat(parentsArr.flatMap((t) => resolveAncestors(t)));
 }
 
 export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorProps> {

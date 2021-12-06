@@ -28,8 +28,11 @@ export type TermTreeSelectProcessingOptions = {
 };
 
 /**
- * Prepares the specified terms for the tree select component. This consists of removing terms and subterms which are
- * not in the specified vocabularies and flattening term ancestors if necessary.
+ * Prepares the specified terms for the tree select component.
+ *
+ * This consists of removing terms and subterms which are not in the specified vocabularies and flattening term ancestors if necessary.
+ * Also, if selected terms are passed in options, it is ensured that their top-level ancestors are added to the result array to ensure the tree component is
+ * able to display them properly.
  * @param terms Terms to process
  * @param vocabularies Vocabularies in which all the terms should be, or undefined to switch this filtering off
  * @param options Processing options
@@ -75,12 +78,12 @@ function vocabularyMatches(
 }
 
 /**
- * Flattens ancestors of the specified terms by adding the into the result array together with the terms.
+ * Flattens ancestors of the specified terms by adding them into the result array together with the terms.
  *
  * This is necessary for proper functionality of the tree select.
  * @param terms Terms to flatten
  */
-function flattenAncestors(terms: Term[]) {
+function flattenAncestors(terms: Term[]): Term[] {
   let result: Term[] = [];
   for (const t of terms) {
     result.push(t);
@@ -92,7 +95,7 @@ function flattenAncestors(terms: Term[]) {
 }
 
 /**
- * Adds the top-level ancestors of the specified selected items into the the result array if they are not the already.
+ * Adds the top-level ancestors of the specified selected items into the result array if they are not there already.
  *
  * This method ensures that in case a selected term was included in the result using the {@code includeTerms} parameter
  * and it is not a top level concept, its top level ancestor is added to the result array (if it is not there already) so that
@@ -105,7 +108,7 @@ function flattenAncestors(terms: Term[]) {
  * @param selectedIris Identifiers of selected terms
  * @param options Options loaded from the server for display by the tree component
  */
-function addAncestorsOfSelected(selectedIris: string[], options: Term[]) {
+function addAncestorsOfSelected(selectedIris: string[], options: Term[]): void {
   selectedIris.forEach((iri) => {
     const matching = options.find((t) => t.iri === iri);
     if (!matching) {
@@ -123,7 +126,7 @@ function addAncestorsOfSelected(selectedIris: string[], options: Term[]) {
  * @param child Child from which to traverse upwards
  * @param options Options loaded from the server for display by the tree component
  */
-function traverseToAncestor(child: Term, options: Term[]) {
+function traverseToAncestor(child: Term, options: Term[]): void {
   if (Utils.sanitizeArray(child.parentTerms).length > 0) {
     child.parentTerms!.forEach((pt) => {
       pt.plainSubTerms = [child.iri];
@@ -146,4 +149,17 @@ export function resolveSelectedIris(
   return Utils.sanitizeArray(selected as TermInfo[])
     .filter((t) => t.vocabulary !== undefined)
     .map((t) => t.iri);
+}
+
+/**
+ * Resolves identifiers of ancestors of the specified term.
+ * @param term Term to get ancestor identifiers of
+ */
+export function resolveAncestors(term: Term): string[] {
+  const parentsArr = Utils.sanitizeArray(term.parentTerms);
+  if (parentsArr.length === 0) {
+    return [];
+  }
+  const ancestors = parentsArr.map((pt) => pt.iri);
+  return parentsArr.flatMap((t) => resolveAncestors(t)).concat(ancestors);
 }
