@@ -3,6 +3,9 @@ import { getLocalized } from "../../model/MultilingualString";
 import { HasI18n } from "../hoc/withI18n";
 import { getShortLocale } from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
+import { TreeSelectFetchOptionsParams } from "../../util/Types";
+import FetchOptionsFunction from "../../model/Functions";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 /**
  * Common properties for a tree selector containing terms
@@ -134,6 +137,9 @@ function traverseToAncestor(child: Term, options: Term[]): void {
     });
   } else {
     if (!options.find((t) => t.iri === child.iri)) {
+      // Expand the ancestor of a selected item by default
+      // @ts-ignore
+      child.expanded = true;
       options.unshift(child);
     }
   }
@@ -162,4 +168,67 @@ export function resolveAncestors(term: Term): string[] {
   }
   const ancestors = parentsArr.map((pt) => pt.iri);
   return parentsArr.flatMap((t) => resolveAncestors(t)).concat(ancestors);
+}
+
+export type TermFetchingVocabularyOptions = {
+  vocabularyIri?: string;
+  matchingVocabularies?: string[];
+};
+
+export function loadAndPrepareTerms(
+  fetchOptions: TreeSelectFetchOptionsParams<TermData>,
+  vocabularyOptions: TermFetchingVocabularyOptions,
+  loadTerms: (
+    fetchOptions: FetchOptionsFunction,
+    namespace?: string
+  ) => Promise<Term[]>,
+  selected?: TermInfo[] | TermData[]
+) {
+  const selectedIris = resolveSelectedIris(selected);
+  // If the offset is > 0 or we are fetching subterms, the selected terms should have been already included
+  const toInclude =
+    !fetchOptions.offset && !fetchOptions.optionID ? selectedIris : [];
+  const namespace =
+    fetchOptions.optionID || vocabularyOptions.vocabularyIri
+      ? VocabularyUtils.create(
+          (fetchOptions.optionID || vocabularyOptions.vocabularyIri)!
+        ).namespace
+      : undefined;
+  return loadTerms(
+    {
+      ...fetchOptions,
+      includeTerms: toInclude,
+    },
+    namespace
+  )
+    .then((terms) => {
+      if (toInclude.length === 0) {
+        return terms;
+      }
+      let parentsToExpand = terms
+        .filter((t) => toInclude.indexOf(t.iri) !== -1)
+        .flatMap((t) => resolveAncestors(t));
+      parentsToExpand = [...new Set(parentsToExpand)];
+      return Promise.all(
+        parentsToExpand.map((p) =>
+          loadTerms({ optionID: p }, VocabularyUtils.create(p).namespace)
+        )
+      )
+        .then((result) =>
+          result.flat(1).map((t) => {
+            if (toInclude.indexOf(t.iri) === -1) {
+              // @ts-ignore
+              t.expanded = true;
+            }
+            return t;
+          })
+        )
+        .then((loaded) => loaded.concat(terms));
+    })
+    .then((terms) =>
+      processTermsForTreeSelect(terms, vocabularyOptions.matchingVocabularies, {
+        searchString: fetchOptions.searchString,
+        selectedIris,
+      })
+    );
 }
