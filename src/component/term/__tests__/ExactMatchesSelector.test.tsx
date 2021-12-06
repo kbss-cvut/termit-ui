@@ -1,20 +1,20 @@
 import { shallow } from "enzyme";
 import Generator from "../../../__tests__/environment/Generator";
-import FetchOptionsFunction from "../../../model/Functions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import Term from "../../../model/Term";
+import Term, { TermData } from "../../../model/Term";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { langString } from "../../../model/MultilingualString";
 import { ExactMatchesSelector } from "../ExactMatchesSelector";
+import { TermFetchParams } from "../../../util/Types";
 
 describe("ExactMatchesSelector", () => {
   const vocabularyIri = Generator.generateUri();
 
   let onChange: (exactMatches: Term[]) => void;
   let loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     namespace?: string
   ) => Promise<Term[]>;
 

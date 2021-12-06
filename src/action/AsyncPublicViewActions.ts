@@ -1,5 +1,5 @@
 import { IRI } from "../util/VocabularyUtils";
-import { ThunkDispatch } from "../util/Types";
+import { TermFetchParams, ThunkDispatch } from "../util/Types";
 import {
   loadTerm,
   loadTermByIri,
@@ -8,7 +8,6 @@ import {
   loadVocabulary,
 } from "./AsyncActions";
 import Constants from "../util/Constants";
-import FetchOptionsFunction from "../model/Functions";
 
 export function loadPublicVocabularies() {
   return (dispatch: ThunkDispatch) =>
@@ -21,7 +20,7 @@ export function loadPublicVocabulary(iri: IRI) {
 }
 
 export function loadPublicTerms(
-  fetchOptions: FetchOptionsFunction,
+  fetchOptions: TermFetchParams<any>,
   vocabularyIri: IRI
 ) {
   return (dispatch: ThunkDispatch) =>

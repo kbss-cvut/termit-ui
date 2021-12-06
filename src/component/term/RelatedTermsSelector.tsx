@@ -1,8 +1,11 @@
 import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TermData, TermInfo } from "../../model/Term";
-import FetchOptionsFunction from "../../model/Functions";
-import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
+import {
+  TermFetchParams,
+  ThunkDispatch,
+  TreeSelectFetchOptionsParams,
+} from "../../util/Types";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import {
@@ -35,7 +38,7 @@ interface RelatedTermsSelectorProps extends HasI18n {
   onChange: (value: Term[]) => void;
   language: string;
   loadTerms: (
-    fetchOptions: FetchOptionsFunction,
+    fetchOptions: TermFetchParams<TermData>,
     namespace?: string
   ) => Promise<Term[]>;
 
@@ -105,7 +108,7 @@ export default connect(
     definitionRelated: state.definitionallyRelatedTerms,
   }),
   (dispatch: ThunkDispatch) => ({
-    loadTerms: (fetchOptions: FetchOptionsFunction, namespace?: string) =>
+    loadTerms: (fetchOptions: TermFetchParams<TermData>, namespace?: string) =>
       dispatch(loadAllTerms(fetchOptions, namespace)),
   })
 )(injectIntl(withI18n(RelatedTermsSelector)));
