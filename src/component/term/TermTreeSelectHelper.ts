@@ -3,7 +3,7 @@ import {getLocalized} from "../../model/MultilingualString";
 import {HasI18n} from "../hoc/withI18n";
 import {getShortLocale} from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
-import {TermFetchParams, TreeSelectFetchOptionsParams} from "../../util/Types";
+import {TermFetchParams} from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 /**
@@ -169,36 +169,27 @@ export function resolveAncestors(term: Term): string[] {
   return parentsArr.flatMap((t) => resolveAncestors(t)).concat(ancestors);
 }
 
-export type TermFetchingVocabularyOptions = {
-  vocabularyIri?: string;
+export type TermFetchingPostProcessingOptions = {
   matchingVocabularies?: string[];
+  selectedTerms?: TermInfo[] | TermData[]
 };
 
 export function loadAndPrepareTerms(
-  fetchOptions: TreeSelectFetchOptionsParams<TermData>,
-  vocabularyOptions: TermFetchingVocabularyOptions,
+  fetchOptions: TermFetchParams<Term | TermData>,
   loadTerms: (
-    fetchOptions: TermFetchParams<Term | TermData>,
-    namespace?: string
+    fetchOptions: TermFetchParams<Term | TermData>
   ) => Promise<Term[]>,
-  selected?: TermInfo[] | TermData[]
+  postOptions: TermFetchingPostProcessingOptions
 ) {
-  const selectedIris = resolveSelectedIris(selected);
+  const selectedIris = resolveSelectedIris(postOptions.selectedTerms);
   // If the offset is > 0 or we are fetching subterms, the selected terms should have been already included
   const toInclude =
     !fetchOptions.offset && !fetchOptions.optionID ? selectedIris : [];
-  const namespace =
-    fetchOptions.optionID || vocabularyOptions.vocabularyIri
-      ? VocabularyUtils.create(
-          (fetchOptions.optionID || vocabularyOptions.vocabularyIri)!
-        ).namespace
-      : undefined;
   return loadTerms(
     {
       ...fetchOptions,
       includeTerms: toInclude,
-    },
-    namespace
+    }
   )
     .then((terms) => {
       if (toInclude.length === 0) {
@@ -210,7 +201,7 @@ export function loadAndPrepareTerms(
       parentsToExpand = [...new Set(parentsToExpand)];
       return Promise.all(
         parentsToExpand.map((p) =>
-          loadTerms({ optionID: p }, VocabularyUtils.create(p).namespace)
+          loadTerms({ optionID: p })
         )
       )
         .then((result) =>
@@ -225,9 +216,13 @@ export function loadAndPrepareTerms(
         .then((loaded) => loaded.concat(terms));
     })
     .then((terms) =>
-      processTermsForTreeSelect(terms, vocabularyOptions.matchingVocabularies, {
+      processTermsForTreeSelect(terms, postOptions.matchingVocabularies, {
         searchString: fetchOptions.searchString,
         selectedIris,
       })
     );
+}
+
+export function resolveNamespaceForLoadAll(options: TermFetchParams<any>) {
+  return options.optionID ? VocabularyUtils.create(options.optionID).namespace : undefined;
 }
