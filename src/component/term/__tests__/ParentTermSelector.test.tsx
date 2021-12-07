@@ -7,7 +7,6 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
-import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 
@@ -290,11 +289,14 @@ describe("ParentTermSelector", () => {
     });
 
     it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", () => {
-      const terms = [Generator.generateTerm(vocabularyIri)];
+      const terms = [
+        Generator.generateTerm(vocabularyIri),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
       const parent = Generator.generateTerm(Generator.generateUri());
       terms[0].parentTerms = [parent];
       loadTerms = jest.fn().mockResolvedValue(terms);
-      const spy = jest.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
       const vocabulary = new Vocabulary({
         iri: vocabularyIri,
         label: "test",
@@ -317,10 +319,7 @@ describe("ParentTermSelector", () => {
         .fetchOptions({ searchString: "test" })
         .then((options) => {
           expect(options.length).toEqual(1);
-          expect(options).toEqual(terms);
-          expect(spy).toHaveBeenCalledWith(terms, [vocabularyIri], {
-            searchString: "test",
-          });
+          expect(options).toEqual([terms[0]]);
         });
     });
 

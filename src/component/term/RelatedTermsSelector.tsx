@@ -11,6 +11,7 @@ import { IntelligentTreeSelect } from "intelligent-tree-select";
 import {
   commonTermTreeSelectProps,
   loadAndPrepareTerms,
+  resolveNamespaceForLoadAll,
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import Utils from "../../util/Utils";
@@ -59,9 +60,11 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
   ) => {
     return loadAndPrepareTerms(
       fetchOptions,
-      {},
-      this.props.loadTerms,
-      this.props.selected
+      (options) =>
+        this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
+      {
+        selectedTerms: this.props.selected,
+      }
     );
   };
 

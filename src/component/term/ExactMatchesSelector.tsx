@@ -21,6 +21,7 @@ import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,
   loadAndPrepareTerms,
+  resolveNamespaceForLoadAll,
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
@@ -69,9 +70,11 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
     // vocabulary)
     return loadAndPrepareTerms(
       fetchOptions,
-      {},
-      this.props.loadTerms,
-      this.props.selected
+      (options) =>
+        this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
+      {
+        selectedTerms: this.props.selected,
+      }
     ).then((terms) =>
       filterOutTermsFromCurrentVocabulary(terms, this.props.vocabularyIri)
     );

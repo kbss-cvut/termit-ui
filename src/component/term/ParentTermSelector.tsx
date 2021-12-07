@@ -24,7 +24,7 @@ import TermItState from "../../model/TermItState";
 import CustomInput from "../misc/CustomInput";
 import {
   commonTermTreeSelectProps,
-  processTermsForTreeSelect,
+  loadAndPrepareTerms,
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
@@ -129,52 +129,46 @@ export class ParentTermSelector extends React.Component<
   }
 
   public onChange = (val: Term[] | Term | null) => {
-    if (!val) {
-      this.props.onChange([]);
-    } else {
-      this.props.onChange(
-        Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
-      );
-    }
+    this.props.onChange(
+      Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
+    );
   };
 
   public fetchOptions = (
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
-    this.setState({ disableIncludeImportedToggle: true });
-    // Use option vocabulary when present, it may differ from the current vocabulary (when option is from imported
-    // vocabulary)
-    const parents = Utils.sanitizeArray(this.props.parentTerms).map(
-      (p) => p.iri!
-    );
-    return this.props
-      .loadTerms(
-        {
-          ...fetchOptions,
-          includeImported: this.state.includeImported,
-          includeTerms: parents,
-        },
-        VocabularyUtils.create(
-          fetchOptions.option
-            ? fetchOptions.option.vocabulary!.iri!
-            : this.props.vocabularyIri
+    this.toggleIncludeImportedDisabled();
+    const matchingVocabularies = this.state.includeImported
+      ? Utils.sanitizeArray(this.state.importedVocabularies).concat(
+          this.props.vocabularyIri
         )
-      )
-      .then((terms) => {
-        this.setState({ disableIncludeImportedToggle: false });
-        const matchingVocabularies = this.state.includeImported
-          ? Utils.sanitizeArray(this.state.importedVocabularies).concat(
-              this.props.vocabularyIri
-            )
-          : [this.props.vocabularyIri];
-        return filterOutCurrentTerm(
-          processTermsForTreeSelect(terms, matchingVocabularies, {
-            searchString: fetchOptions.searchString,
-          }),
-          this.props.termIri
-        );
-      });
+      : [this.props.vocabularyIri];
+    return loadAndPrepareTerms(
+      { ...fetchOptions, includeImported: this.state.includeImported },
+      (options) =>
+        this.props.loadTerms(
+          options,
+          VocabularyUtils.create(
+            options.option
+              ? options.option.vocabulary!.iri!
+              : this.props.vocabularyIri
+          )
+        ),
+      {
+        selectedTerms: this.props.parentTerms,
+        matchingVocabularies,
+      }
+    ).then((terms) => {
+      this.toggleIncludeImportedDisabled();
+      return filterOutCurrentTerm(terms, this.props.termIri);
+    });
   };
+
+  private toggleIncludeImportedDisabled() {
+    this.setState({
+      disableIncludeImportedToggle: !this.state.disableIncludeImportedToggle,
+    });
+  }
 
   private onIncludeImportedToggle = () => {
     this.setState({ includeImported: !this.state.includeImported }, () =>
@@ -253,8 +247,10 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadTerms: (fetchOptions: TermFetchParams<TermData>, vocabularyIri: IRI) =>
-        dispatch(loadTerms(fetchOptions, vocabularyIri)),
+      loadTerms: (
+        fetchOptions: TermFetchParams<TermData>,
+        vocabularyIri: IRI
+      ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
       loadImportedVocabularies: (vocabularyIri: IRI) =>
         dispatch(loadImportedVocabularies(vocabularyIri)),
     };
