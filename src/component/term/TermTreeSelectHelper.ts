@@ -1,9 +1,9 @@
-import Term, {TermData, TermInfo} from "../../model/Term";
-import {getLocalized} from "../../model/MultilingualString";
-import {HasI18n} from "../hoc/withI18n";
-import {getShortLocale} from "../../util/IntlUtil";
+import Term, { TermData, TermInfo } from "../../model/Term";
+import { getLocalized } from "../../model/MultilingualString";
+import { HasI18n } from "../hoc/withI18n";
+import { getShortLocale } from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
-import {TermFetchParams} from "../../util/Types";
+import { TermFetchParams } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 /**
@@ -171,7 +171,7 @@ export function resolveAncestors(term: Term): string[] {
 
 export type TermFetchingPostProcessingOptions = {
   matchingVocabularies?: string[];
-  selectedTerms?: TermInfo[] | TermData[]
+  selectedTerms?: TermInfo[] | TermData[];
 };
 
 export function loadAndPrepareTerms(
@@ -185,12 +185,10 @@ export function loadAndPrepareTerms(
   // If the offset is > 0 or we are fetching subterms, the selected terms should have been already included
   const toInclude =
     !fetchOptions.offset && !fetchOptions.optionID ? selectedIris : [];
-  return loadTerms(
-    {
-      ...fetchOptions,
-      includeTerms: toInclude,
-    }
-  )
+  return loadTerms({
+    ...fetchOptions,
+    includeTerms: toInclude,
+  })
     .then((terms) => {
       if (toInclude.length === 0) {
         return terms;
@@ -199,11 +197,7 @@ export function loadAndPrepareTerms(
         .filter((t) => toInclude.indexOf(t.iri) !== -1)
         .flatMap((t) => resolveAncestors(t));
       parentsToExpand = [...new Set(parentsToExpand)];
-      return Promise.all(
-        parentsToExpand.map((p) =>
-          loadTerms({ optionID: p })
-        )
-      )
+      return Promise.all(parentsToExpand.map((p) => loadTerms({ optionID: p })))
         .then((result) =>
           result.flat(1).map((t) => {
             if (toInclude.indexOf(t.iri) === -1) {
@@ -223,6 +217,15 @@ export function loadAndPrepareTerms(
     );
 }
 
+/**
+ * Resolves namespace for the loadAllTerms action.
+ *
+ * This means that if the specified options contain an option id, its identifier namespace is returned, because it is a parent
+ * whose subterms will be loaded. Otherwise, undefined is returned, so that all terms can be loaded.
+ * @param options Term fetching options
+ */
 export function resolveNamespaceForLoadAll(options: TermFetchParams<any>) {
-  return options.optionID ? VocabularyUtils.create(options.optionID).namespace : undefined;
+  return options.optionID
+    ? VocabularyUtils.create(options.optionID).namespace
+    : undefined;
 }
