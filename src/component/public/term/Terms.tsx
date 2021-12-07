@@ -240,8 +240,10 @@ export default connect(
     return {
       selectVocabularyTerm: (selectedTerm: Term | null) =>
         dispatch(selectVocabularyTerm(selectedTerm)),
-      fetchTerms: (fetchOptions: TermFetchParams<TermData>, vocabularyIri: IRI) =>
-        dispatch(loadPublicTerms(fetchOptions, vocabularyIri)),
+      fetchTerms: (
+        fetchOptions: TermFetchParams<TermData>,
+        vocabularyIri: IRI
+      ) => dispatch(loadPublicTerms(fetchOptions, vocabularyIri)),
     };
   }
 )(injectIntl(withI18n(Terms)));

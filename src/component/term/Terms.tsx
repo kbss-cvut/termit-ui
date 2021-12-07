@@ -402,8 +402,10 @@ export default connect(
     return {
       selectVocabularyTerm: (selectedTerm: Term | null) =>
         dispatch(selectVocabularyTerm(selectedTerm)),
-      fetchTerms: (fetchOptions: TermFetchParams<TermData>, vocabularyIri: IRI) =>
-        dispatch(loadTerms(fetchOptions, vocabularyIri)),
+      fetchTerms: (
+        fetchOptions: TermFetchParams<TermData>,
+        vocabularyIri: IRI
+      ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
       consumeNotification: (notification: AppNotification) =>
         dispatch(consumeNotification(notification)),
       fetchUnusedTerms: (vocabularyIri: IRI) =>
