@@ -3,7 +3,7 @@ import { getLocalized } from "../../model/MultilingualString";
 import { HasI18n } from "../hoc/withI18n";
 import { getShortLocale } from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
-import { TermFetchParams } from "../../util/Types";
+import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 /**
@@ -128,7 +128,10 @@ function addAncestorsOfSelected(selectedIris: string[], options: Term[]): void {
  * @param child Child from which to traverse upwards
  * @param options Options loaded from the server for display by the tree component
  */
-function traverseToAncestor(child: Term, options: Term[]): void {
+function traverseToAncestor(
+  child: Term & TreeSelectOption,
+  options: Term[]
+): void {
   if (Utils.sanitizeArray(child.parentTerms).length > 0) {
     child.parentTerms!.forEach((pt) => {
       pt.plainSubTerms = [child.iri];
@@ -137,7 +140,6 @@ function traverseToAncestor(child: Term, options: Term[]): void {
   } else {
     if (!options.find((t) => t.iri === child.iri)) {
       // Expand the ancestor of a selected item by default
-      // @ts-ignore
       child.expanded = true;
       options.unshift(child);
     }
@@ -199,9 +201,8 @@ export function loadAndPrepareTerms(
       parentsToExpand = [...new Set(parentsToExpand)];
       return Promise.all(parentsToExpand.map((p) => loadTerms({ optionID: p })))
         .then((result) =>
-          result.flat(1).map((t) => {
+          result.flat(1).map((t: Term & TreeSelectOption) => {
             if (toInclude.indexOf(t.iri) === -1) {
-              // @ts-ignore
               t.expanded = true;
             }
             return t;
