@@ -59,3 +59,10 @@ export interface BasicRouteProps {
   match: match<any>;
   location: Location;
 }
+
+/**
+ * Represents a type used by the intelligent-tree-select component options.
+ */
+export interface TreeSelectOption {
+  expanded?: boolean;
+}
