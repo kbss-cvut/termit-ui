@@ -134,7 +134,6 @@ function traverseToAncestor(
 ): void {
   if (Utils.sanitizeArray(child.parentTerms).length > 0) {
     child.parentTerms!.forEach((pt) => {
-      pt.plainSubTerms = [child.iri];
       traverseToAncestor(pt, options);
     });
   } else {
