@@ -133,9 +133,7 @@ function traverseToAncestor(
   options: Term[]
 ): void {
   if (Utils.sanitizeArray(child.parentTerms).length > 0) {
-    child.parentTerms!.forEach((pt) => {
-      traverseToAncestor(pt, options);
-    });
+    child.parentTerms!.forEach((pt) => traverseToAncestor(pt, options));
   } else {
     if (!options.find((t) => t.iri === child.iri)) {
       // Expand the ancestor of a selected item by default
