@@ -1,14 +1,14 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
 import { Label, Table } from "reactstrap";
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
-import withI18n, { HasI18n } from "../hoc/withI18n";
 import "./UnmappedProperties.scss";
+import Utils from "../../util/Utils";
+import { useI18n } from "../hook/useI18n";
 
 declare type PropertyValueType = { iri: string } | string;
 
-interface UnmappedPropertiesProps extends HasI18n {
+interface UnmappedPropertiesProps {
   properties: Map<string, PropertyValueType[]>;
   showInfoOnEmpty?: boolean;
 }
@@ -16,23 +16,25 @@ interface UnmappedPropertiesProps extends HasI18n {
 const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
   props: UnmappedPropertiesProps
 ) => {
+  const { i18n } = useI18n();
   if (props.properties.size === 0) {
     return props.showInfoOnEmpty ? (
       <div className="additional-metadata-container italics">
-        {props.i18n("properties.empty")}
+        {i18n("properties.empty")}
       </div>
     ) : null;
   }
   const result: JSX.Element[] = [];
   props.properties.forEach((values, k) => {
+    const sortedItems = values.map((v) =>
+      (v as { iri: string }).iri ? (v as { iri: string }).iri : (v as string)
+    );
+    sortedItems.sort((a, b) => a.localeCompare(b));
     const items = (
       <ul className="term-items">
-        {values.map((v: PropertyValueType) => {
-          const val: string = (v as { iri: string }).iri
-            ? (v as { iri: string }).iri
-            : (v as string);
-          return <li key={val}>{val}</li>;
-        })}
+        {sortedItems.map((v: string) => (
+          <li key={Utils.hashCode(v)}>{v}</li>
+        ))}
       </ul>
     );
     result.push(
@@ -55,8 +57,8 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
     <Table striped={true} className="mt-3">
       <thead>
         <tr>
-          <th>{props.i18n("properties.edit.property")}</th>
-          <th>{props.i18n("properties.edit.value")}</th>
+          <th>{i18n("properties.edit.property")}</th>
+          <th>{i18n("properties.edit.value")}</th>
         </tr>
       </thead>
       <tbody>{result}</tbody>
@@ -68,4 +70,4 @@ UnmappedProperties.defaultProps = {
   showInfoOnEmpty: false,
 };
 
-export default injectIntl(withI18n(UnmappedProperties));
+export default UnmappedProperties;
