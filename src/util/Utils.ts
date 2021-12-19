@@ -190,6 +190,10 @@ const Utils = {
     return a.getLabel().localeCompare(b.getLabel());
   },
 
+  localeComparator(a: string, b: string) {
+    return a.localeCompare(b);
+  },
+
   /**
    * Value renderer for the intelligent tree select component.
    *

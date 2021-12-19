@@ -6,6 +6,7 @@ import { GoPlus } from "react-icons/go";
 import { shallow } from "enzyme";
 import RdfsResource from "../../../model/RdfsResource";
 import BadgeButton from "../../misc/BadgeButton";
+import Utils from "../../../util/Utils";
 
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
@@ -25,29 +26,20 @@ describe("UnmappedPropertiesEdit", () => {
   it("renders existing properties", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test"]]]);
-    const wrapper = mountWithIntl(
-      <UnmappedPropertiesEdit
-        properties={existing}
-        knownProperties={[]}
-        onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(existing);
     const value = wrapper.find("li");
     expect(value.length).toEqual(1);
     expect(value.text()).toContain(existing.get(property)![0]);
   });
 
-  it("removes prop value when delete button is clicked", () => {
-    const property = Generator.generateUri();
-    const existing = new Map([[property, ["test1", "test2"]]]);
-    const wrapper = mountWithIntl(
+  function render(
+    existing: Map<string, string[]>,
+    knownProperties: RdfsResource[] = []
+  ) {
+    return mountWithIntl(
       <UnmappedPropertiesEdit
         properties={existing}
-        knownProperties={[]}
+        knownProperties={knownProperties}
         onChange={onChange}
         loadKnownProperties={loadKnownProperties}
         createProperty={createProperty}
@@ -55,6 +47,12 @@ describe("UnmappedPropertiesEdit", () => {
         {...intlFunctions()}
       />
     );
+  }
+
+  it("removes prop value when delete button is clicked", () => {
+    const property = Generator.generateUri();
+    const existing = new Map([[property, ["test1", "test2"]]]);
+    const wrapper = render(existing);
 
     const removeButtons = wrapper.find(BadgeButton);
     expect(removeButtons.length).toEqual(2);
@@ -65,17 +63,7 @@ describe("UnmappedPropertiesEdit", () => {
   it("removes property completely when only value is deleted", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test1"]]]);
-    const wrapper = mountWithIntl(
-      <UnmappedPropertiesEdit
-        properties={existing}
-        knownProperties={[]}
-        onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(existing);
 
     const removeButton = wrapper.find(BadgeButton);
     expect(removeButton.length).toEqual(1);
@@ -84,17 +72,7 @@ describe("UnmappedPropertiesEdit", () => {
   });
 
   it("adds new property with value when inputs are filled in and add button is clicked", () => {
-    const wrapper = mountWithIntl(
-      <UnmappedPropertiesEdit
-        properties={new Map()}
-        knownProperties={[]}
-        onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(new Map());
     const property = Generator.generateUri();
     const value = "test";
     (
@@ -115,17 +93,7 @@ describe("UnmappedPropertiesEdit", () => {
   it("adds existing property value when inputs are filled in and add button is clicked", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test"]]]);
-    const wrapper = mountWithIntl(
-      <UnmappedPropertiesEdit
-        properties={existing}
-        knownProperties={[]}
-        onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(existing);
     const value = "test2";
     (
       wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
@@ -145,17 +113,7 @@ describe("UnmappedPropertiesEdit", () => {
   });
 
   it("clears state on add", () => {
-    const wrapper = mountWithIntl(
-      <UnmappedPropertiesEdit
-        properties={new Map()}
-        knownProperties={[]}
-        onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(new Map());
     const property = Generator.generateUri();
     const value = "test";
     (
@@ -177,17 +135,7 @@ describe("UnmappedPropertiesEdit", () => {
   });
 
   it("keeps add button disabled when either input is empty", () => {
-    const wrapper = mountWithIntl(
-      <UnmappedPropertiesEdit
-        properties={new Map()}
-        knownProperties={[]}
-        onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(new Map());
     let addButton = wrapper.find(GoPlus).parent();
     expect(addButton.prop("disabled")).toBeTruthy();
     (
@@ -208,17 +156,7 @@ describe("UnmappedPropertiesEdit", () => {
   });
 
   it("adds property value on Enter in the value field", () => {
-    const wrapper = mountWithIntl(
-      <UnmappedPropertiesEdit
-        properties={new Map()}
-        knownProperties={[]}
-        onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render(new Map());
     const property = Generator.generateUri();
     const value = "test";
     (
@@ -294,5 +232,20 @@ describe("UnmappedPropertiesEdit", () => {
     );
     wrapper.unmount();
     expect(clearProperties).toHaveBeenCalled();
+  });
+
+  it("renders existing property values sorted lexicographically", () => {
+    const property = Generator.generateUri();
+    const values = ["m", "a", "s", "t", "E", "r"];
+    const sortedValues = [...values];
+    sortedValues.sort(Utils.localeComparator);
+    const existing = new Map([[property, values]]);
+    const wrapper = render(existing);
+
+    const valuesRendered = wrapper.find("li");
+    expect(valuesRendered.length).toEqual(sortedValues.length);
+    for (let i = 0; i < sortedValues.length; i++) {
+      expect(valuesRendered.get(i).props.children).toContain(sortedValues[i]);
+    }
   });
 });

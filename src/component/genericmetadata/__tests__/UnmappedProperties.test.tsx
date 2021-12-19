@@ -2,6 +2,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import UnmappedProperties from "../UnmappedProperties";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
+import Utils from "../../../util/Utils";
 
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
@@ -45,7 +46,7 @@ describe("UnmappedProperties", () => {
   it("renders multiple property values sorted lexicographically", () => {
     const values = ["z", "a", "j", "i", "c"];
     const sortedValues = [...values];
-    sortedValues.sort((a, b) => a.localeCompare(b));
+    sortedValues.sort(Utils.localeComparator);
     const properties = new Map([[Generator.generateUri(), values]]);
     const wrapper = mountWithIntl(
       <UnmappedProperties properties={properties} />
