@@ -19,6 +19,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import "./UnmappedProperties.scss";
 import BadgeButton from "../misc/BadgeButton";
 import AttributeSectionContainer from "../layout/AttributeSectionContainer";
+import Utils from "../../util/Utils";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
   properties: Map<string, string[]>;
@@ -148,8 +149,10 @@ export class UnmappedPropertiesEdit extends React.Component<
   private renderExisting() {
     const result: JSX.Element[] = [];
     this.props.properties.forEach((values, k) => {
-      const items = values.map((v) => (
-        <li key={v}>
+      const sortedItems = [...values];
+      sortedItems.sort(Utils.localeComparator);
+      const items = sortedItems.map((v) => (
+        <li key={Utils.hashCode(v)}>
           {v}
           <BadgeButton
             color="danger"

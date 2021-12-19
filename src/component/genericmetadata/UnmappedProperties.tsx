@@ -29,7 +29,7 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
     const sortedItems = values.map((v) =>
       (v as { iri: string }).iri ? (v as { iri: string }).iri : (v as string)
     );
-    sortedItems.sort((a, b) => a.localeCompare(b));
+    sortedItems.sort(Utils.localeComparator);
     const items = (
       <ul className="term-items">
         {sortedItems.map((v: string) => (
