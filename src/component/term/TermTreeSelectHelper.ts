@@ -27,6 +27,7 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
 export type TermTreeSelectProcessingOptions = {
   searchString?: string;
   selectedIris?: string[];
+  loadingSubTerms?: boolean;
 };
 
 /**
@@ -68,7 +69,9 @@ export function processTermsForTreeSelect(
       );
     }
   }
-  addAncestorsOfSelected(Utils.sanitizeArray(options.selectedIris), result);
+  if (!options.loadingSubTerms) {
+    addAncestorsOfSelected(Utils.sanitizeArray(options.selectedIris), result);
+  }
   return result;
 }
 
@@ -216,6 +219,7 @@ export function loadAndPrepareTerms(
       processTermsForTreeSelect(terms, postOptions.matchingVocabularies, {
         searchString: fetchOptions.searchString,
         selectedIris,
+        loadingSubTerms: !!fetchOptions.optionID,
       })
     );
 }

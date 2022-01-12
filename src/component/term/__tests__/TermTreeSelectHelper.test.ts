@@ -78,6 +78,21 @@ describe("TermTreeSelectHelper", () => {
       expect(parent!.subTerms).toBeDefined();
       expect(parent!.subTerms!.length).toBeGreaterThan(0);
     });
+
+    it("does not add top level ancestor of a selected term into the results when subterms of a term are being loaded", () => {
+      const terms = [Generator.generateTerm(vocUri)];
+      const included = Generator.generateTerm(vocUri);
+      const parent = Generator.generateTerm(vocUri);
+      included.parentTerms = [parent];
+      const grandParent = Generator.generateTerm();
+      parent.parentTerms = [grandParent];
+      terms.push(included);
+      const result = processTermsForTreeSelect(terms, [vocUri], {
+        selectedIris: [included.iri],
+        loadingSubTerms: true,
+      });
+      expect(result).not.toContain(grandParent);
+    });
   });
 
   describe("loadAndPrepareTerms", () => {
