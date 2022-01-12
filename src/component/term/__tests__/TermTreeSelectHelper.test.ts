@@ -8,8 +8,9 @@ import Term, { TermData } from "../../../model/Term";
 
 describe("TermTreeSelectHelper", () => {
   describe("processTermsForTreeSelect", () => {
+    const vocUri = Generator.generateUri();
+
     it("returns all terms when no vocabularies are provided", () => {
-      const vocUri = Generator.generateUri();
       const terms = [
         Generator.generateTerm(vocUri),
         Generator.generateTerm(vocUri),
@@ -19,7 +20,6 @@ describe("TermTreeSelectHelper", () => {
     });
 
     it("removes parent terms from non-matching vocabularies for search string", () => {
-      const vocUri = Generator.generateUri();
       const terms = [Generator.generateTerm(vocUri)];
       const parent = Generator.generateTerm(Generator.generateUri());
       terms[0].parentTerms = [parent];
@@ -30,7 +30,6 @@ describe("TermTreeSelectHelper", () => {
     });
 
     it("adds top level ancestor of a selected term into the results", () => {
-      const vocUri = Generator.generateUri();
       const terms = [
         Generator.generateTerm(vocUri),
         Generator.generateTerm(vocUri),
@@ -45,6 +44,39 @@ describe("TermTreeSelectHelper", () => {
         selectedIris: [included.iri],
       });
       expect(result).toContain(grandParent);
+    });
+
+    it("prioritizes included term over term loaded normally when adding top level ancestors", () => {
+      const terms = [
+        Generator.generateTerm(vocUri),
+        Generator.generateTerm(vocUri),
+      ];
+      // Hollow parent does not reference its children
+      const hollowParent = Generator.generateTerm(vocUri);
+      // Full parent references its children, because it was loaded with a complete skos hierarchy in both ways
+      const fullParent = Generator.generateTerm(vocUri);
+      fullParent.iri = hollowParent.iri;
+      fullParent.label = hollowParent.label;
+      terms[0].parentTerms = [hollowParent];
+      const included = Generator.generateTerm(vocUri);
+      included.iri = terms[0].iri;
+      included.label = terms[0].label;
+      included.parentTerms = [fullParent];
+      fullParent.subTerms = [
+        {
+          iri: included.iri,
+          label: included.label,
+          vocabulary: { iri: vocUri },
+        },
+      ];
+      terms.push(included);
+      const result = processTermsForTreeSelect(terms, [vocUri], {
+        selectedIris: [included.iri],
+      });
+      const parent = result.find((t) => t.iri === fullParent.iri);
+      expect(parent).toBeDefined();
+      expect(parent!.subTerms).toBeDefined();
+      expect(parent!.subTerms!.length).toBeGreaterThan(0);
     });
   });
 

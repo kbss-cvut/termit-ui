@@ -107,16 +107,21 @@ function flattenAncestors(terms: Term[]): Term[] {
  * are included explicitly in the results. If such an included result is not a top-level concept, it may not be displayed by the
  * tree component because it may have ancestors which are not in the first page retrieved for the tree component as well. This function
  * ensures that such a top-level ancestor is added to the result array so that the tree component can see it.
+ *
+ * Note that the  traversal is done in reverse, because it may happen that the root ancestor we are looking for occurs in the
+ * options twice - once loaded by default by the query and the second time loaded as part of the includedTerms' ancestors. In this case,
+ * the first occurrence does not contain and subterms, which causes the selected term not to be displayed in the selector.
  * @param selectedIris Identifiers of selected terms
  * @param options Options loaded from the server for display by the tree component
  */
 function addAncestorsOfSelected(selectedIris: string[], options: Term[]): void {
   selectedIris.forEach((iri) => {
-    const matching = options.find((t) => t.iri === iri);
-    if (!matching) {
-      return;
+    for (let i = options.length - 1; i >= 0; i--) {
+      if (options[i].iri === iri) {
+        traverseToAncestor(options[i], options);
+        return;
+      }
     }
-    traverseToAncestor(matching, options);
   });
 }
 

@@ -80,7 +80,7 @@ export class CreateTermFromAnnotation extends React.Component<
   };
 
   public onCancel = () => {
-    this.setState(AssetFactory.createEmptyTermData());
+    this.setState(AssetFactory.createEmptyTermData(this.props.language));
     this.props.onClose();
   };
 
