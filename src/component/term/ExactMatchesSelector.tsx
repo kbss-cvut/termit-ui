@@ -96,7 +96,6 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
             fetchLimit={300}
-            searchDelay={300}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(
