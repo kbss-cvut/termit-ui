@@ -85,7 +85,6 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             value={value}
             fetchOptions={this.fetchOptions}
             fetchLimit={100}
-            searchDelay={300}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(

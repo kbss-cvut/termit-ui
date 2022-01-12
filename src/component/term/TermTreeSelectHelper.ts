@@ -21,6 +21,7 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     showSettings: false,
     noResultsText: intl.i18n("main.search.no-results"),
     placeholder: "",
+    searchDelay: 300,
   };
 }
 

@@ -216,7 +216,6 @@ export class ParentTermSelector extends React.Component<
             value={resolveSelectedIris(this.props.parentTerms)}
             fetchOptions={this.fetchOptions}
             fetchLimit={300}
-            searchDelay={300}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(
