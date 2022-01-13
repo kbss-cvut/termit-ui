@@ -1,3 +1,9 @@
+#### Verze 2.9.0
+
+- Abecední řazení hodnot nemapovaných vlastností na detailu pojmu
+- Opraveny problémy se zobrazením exactMatch, relatedMatch, broader na detailu pojmu
+- Opraven import aby nepřijímal definice/poznámky/prefLabely/altLabely/hiddenLabely bez language tagu.
+
 #### Verze 2.8.0
 
 - Zjednodušena práce se souvisejícími pojmy.
