@@ -1,3 +1,9 @@
+#### Version 2.9.0
+
+- Whitelist of unmapped properties that are included in the term detail response in the public API.
+- Plural unmapped property values are sorted alphabetically on term detail screen.
+- Fix of exact matches, related matches & parents not showing up occasionally.
+
 #### Version 2.8.0
 
 - Simplified related terms UI.
