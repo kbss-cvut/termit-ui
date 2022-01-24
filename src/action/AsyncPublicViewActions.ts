@@ -8,10 +8,6 @@ import {
   loadVocabulary,
 } from "./AsyncActions";
 import Constants from "../util/Constants";
-import {
-  loadDefinitionRelatedTermsOf,
-  loadDefinitionRelatedTermsTargeting,
-} from "./AsyncTermActions";
 
 export function loadPublicVocabularies() {
   return (dispatch: ThunkDispatch) =>
@@ -43,32 +39,4 @@ export function loadPublicTerm(termFragment: string, vocabularyIri: IRI) {
 export function loadPublicTermByIri(termIri: IRI) {
   return (dispatch: ThunkDispatch) =>
     dispatch(loadTermByIri(termIri, Constants.PUBLIC_API_PREFIX));
-}
-
-export function loadPublicDefinitionRelatedTermsOf(
-  termNormalizedName: string,
-  vocabularyIri: IRI
-) {
-  return (dispatch: ThunkDispatch) =>
-    dispatch(
-      loadDefinitionRelatedTermsOf(
-        termNormalizedName,
-        vocabularyIri,
-        Constants.PUBLIC_API_PREFIX
-      )
-    );
-}
-
-export function loadPublicDefinitionRelatedTermsTargeting(
-  termNormalizedName: string,
-  vocabularyIri: IRI
-) {
-  return (dispatch: ThunkDispatch) =>
-    dispatch(
-      loadDefinitionRelatedTermsTargeting(
-        termNormalizedName,
-        vocabularyIri,
-        Constants.PUBLIC_API_PREFIX
-      )
-    );
 }
