@@ -1,7 +1,11 @@
 /**
  * Vocabulary used by the application ontological model.
  */
-import VocabularyUtils, { IRI, IRIImpl } from "../VocabularyUtils";
+import VocabularyUtils, {
+  getShortVocabularyLabel,
+  IRI,
+  IRIImpl,
+} from "../VocabularyUtils";
 
 describe("VocabularyUtils", () => {
   const namespace = VocabularyUtils.PREFIX;
@@ -61,6 +65,39 @@ describe("VocabularyUtils", () => {
         expect(iri.equals()).toBeFalsy();
         expect(iri.equals(null)).toBeFalsy();
       });
+    });
+  });
+
+  describe("getShortVocabularyLabel", () => {
+    it("returns SGoV-based label when the IRI pattern matches", () => {
+      const input = "https://slovník.gov.cz/datový/dtm";
+      expect(getShortVocabularyLabel(input)).toEqual("D-SGoV-dtm");
+    });
+
+    it("returns part of IRI after last slash", () => {
+      const input = "http://data.europa.eu/cmisa/actor-types";
+      expect(getShortVocabularyLabel(input)).toEqual("actor-types");
+    });
+
+    it("returns part of IRI after last slash with removed duplicate non-alphanumeric characters", () => {
+      const input = "https://slovník.gov.cz/test---ukázka";
+      expect(getShortVocabularyLabel(input)).toEqual("test-ukázka");
+    });
+
+    it("returns part of IRI after last slash with 'slovník' and everything before it removed", () => {
+      const input = "https://slovník.gov.cz/testovací-slovník---ukázka";
+      expect(getShortVocabularyLabel(input)).toEqual("ukázka");
+    });
+
+    it("uses only first two letters of each word if the part of IRI after last slash is too long", () => {
+      const input =
+        "https://slovník.gov.cz/testovací-slovník---ukázka-zpracování-pojmu-normy";
+      expect(getShortVocabularyLabel(input)).toEqual("uk-zp-po-no");
+    });
+
+    it("returns part of IRI after last slash if processing would reduce its length to 0", () => {
+      const input = "https://slovník.gov.cz/testovací-slovník";
+      expect(getShortVocabularyLabel(input)).toEqual("testovací-slovník");
     });
   });
 });
