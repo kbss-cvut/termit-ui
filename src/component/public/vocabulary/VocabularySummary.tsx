@@ -6,7 +6,6 @@ import ImportedVocabulariesList from "../../vocabulary/ImportedVocabulariesList"
 import { connect } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { ThunkDispatch } from "../../../util/Types";
-import { loadPublicVocabulary } from "../../../action/AsyncPublicViewActions";
 import Utils from "../../../util/Utils";
 import { RouteComponentProps, withRouter } from "react-router";
 import HeaderWithActions from "../../misc/HeaderWithActions";
@@ -15,6 +14,7 @@ import Terms from "../term/Terms";
 import { selectVocabularyTerm } from "../../../action/SyncActions";
 import WindowTitle from "../../misc/WindowTitle";
 import { useI18n } from "../../hook/useI18n";
+import { loadVocabulary } from "../../../action/AsyncActions";
 
 interface VocabularySummaryProps extends RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -99,7 +99,7 @@ export default connect(
   (state: TermItState) => ({ vocabulary: state.vocabulary }),
   (dispatch: ThunkDispatch) => {
     return {
-      loadVocabulary: (iri: IRI) => dispatch(loadPublicVocabulary(iri)),
+      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
       resetSelectedTerm: () => dispatch(selectVocabularyTerm(null)),
     };
   }

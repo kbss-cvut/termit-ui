@@ -1,17 +1,7 @@
 import { IRI } from "../util/VocabularyUtils";
 import { TermFetchParams, ThunkDispatch } from "../util/Types";
-import {
-  loadTerm,
-  loadTermByIri,
-  loadTerms,
-  loadVocabulary,
-} from "./AsyncActions";
+import { loadTerm, loadTermByIri, loadTerms } from "./AsyncActions";
 import Constants from "../util/Constants";
-
-export function loadPublicVocabulary(iri: IRI) {
-  return (dispatch: ThunkDispatch) =>
-    dispatch(loadVocabulary(iri, false, Constants.PUBLIC_API_PREFIX));
-}
 
 export function loadPublicTerms(
   fetchOptions: TermFetchParams<any>,

@@ -3,17 +3,10 @@ import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import Ajax from "../../util/Ajax";
 import { ThunkDispatch } from "../../util/Types";
-import ActionType, { AsyncActionSuccess, MessageAction } from "../ActionType";
-import Vocabulary from "../../model/Vocabulary";
+import { AsyncActionSuccess, MessageAction } from "../ActionType";
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
-import {
-  loadPublicTerm,
-  loadPublicTerms,
-  loadPublicVocabulary,
-} from "../AsyncPublicViewActions";
+import { loadPublicTerm, loadPublicTerms } from "../AsyncPublicViewActions";
 import Constants from "../../util/Constants";
-import AsyncActionStatus from "../AsyncActionStatus";
-import VocabularyUtils from "../../util/VocabularyUtils";
 import Term from "../../model/Term";
 
 jest.mock("../../util/Routing");
@@ -35,58 +28,6 @@ describe("AsyncPublicViewActions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     store = mockStore(new TermItState());
-  });
-
-  describe("loadPublicVocabulary", () => {
-    it("uses public API endpoint to load a single vocabulary", () => {
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve(require("../../rest-mock/vocabulary"))
-        );
-      Ajax.head = jest.fn().mockResolvedValue({ headers: {} });
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadPublicVocabulary({ fragment: "metropolitan-plan" })
-        )
-      ).then(() => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-        const loadSuccessAction: AsyncActionSuccess<Vocabulary> = store
-          .getActions()
-          .find(
-            (a) =>
-              a.type === ActionType.LOAD_VOCABULARY &&
-              a.status === AsyncActionStatus.SUCCESS
-          );
-        expect(loadSuccessAction).toBeDefined();
-        expect(
-          VocabularyUtils.create(loadSuccessAction.payload.iri).fragment ===
-            "metropolitan-plan"
-        ).toBeTruthy();
-      });
-    });
-
-    it("uses public API endpoint to load vocabulary's imports as well", () => {
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve(require("../../rest-mock/vocabulary"))
-        );
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadPublicVocabulary({ fragment: "metropolitan-plan" })
-        )
-      ).then(() => {
-        const loadImportsAction = store
-          .getActions()
-          .find((a) => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
-        expect(loadImportsAction).toBeDefined();
-        expect((Ajax.get as jest.Mock).mock.calls.length).toBeGreaterThan(2);
-        const url = (Ajax.get as jest.Mock).mock.calls[1][0];
-        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-      });
-    });
   });
 
   describe("loadPublicTerms", () => {
