@@ -31,6 +31,7 @@ import { getLocalized } from "../model/MultilingualString";
 import { getShortLocale } from "../util/IntlUtil";
 import Utils from "../util/Utils";
 import { AxiosResponse } from "axios";
+import {getApiPrefix} from "./ActionUtils";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -89,13 +90,12 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
 export function loadDefinitionRelatedTermsTargeting(
   termNormalizedName: string,
   vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
 ) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-target`,
+      `${getApiPrefix(getState())}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-target`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object[]) =>
@@ -123,14 +123,13 @@ export function loadDefinitionRelatedTermsTargeting(
 
 export function loadDefinitionRelatedTermsOf(
   termNormalizedName: string,
-  vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
+  vocabularyIri: IRI
 ) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_OF };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-of`,
+      `${getApiPrefix(getState())}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-of`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object[]) =>
