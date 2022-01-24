@@ -701,16 +701,15 @@ export function loadTerm(
 }
 
 export function loadTermByIri(
-  termIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
+  termIri: IRI
 ) {
   const action = {
     type: ActionType.LOAD_TERM_BY_IRI,
   };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${apiPrefix}/terms/${termIri.fragment}`,
+      `${getApiPrefix(getState())}/terms/${termIri.fragment}`,
       param("namespace", termIri.namespace)
     )
       .then((data: object) =>
