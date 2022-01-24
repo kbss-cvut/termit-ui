@@ -88,13 +88,14 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
 
 export function loadDefinitionRelatedTermsTargeting(
   termNormalizedName: string,
-  vocabularyIri: IRI
+  vocabularyIri: IRI,
+  apiPrefix: string = Constants.API_PREFIX
 ) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${ENDPOINT}${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-target`,
+      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-target`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object[]) =>
@@ -122,13 +123,14 @@ export function loadDefinitionRelatedTermsTargeting(
 
 export function loadDefinitionRelatedTermsOf(
   termNormalizedName: string,
-  vocabularyIri: IRI
+  vocabularyIri: IRI,
+  apiPrefix: string = Constants.API_PREFIX
 ) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_OF };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${ENDPOINT}${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-of`,
+      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-of`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object[]) =>
