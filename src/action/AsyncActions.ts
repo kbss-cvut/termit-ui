@@ -76,6 +76,7 @@ import ValidationResult, {
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
+import {getApiPrefix} from "./ActionUtils";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -585,7 +586,7 @@ export function removeAsset(
   };
 }
 
-export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
+export function loadVocabularies() {
   const action = {
     type: ActionType.LOAD_VOCABULARIES,
   };
@@ -594,7 +595,7 @@ export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
       return Promise.resolve({});
     }
     dispatch(asyncActionRequest(action));
-    return Ajax.get(`${apiPrefix}/vocabularies`)
+    return Ajax.get(`${getApiPrefix(getState())}/vocabularies`)
       .then((data: object[]) =>
         data.length !== 0
           ? JsonLdUtils.compactAndResolveReferencesAsArray<VocabularyData>(

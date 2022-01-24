@@ -4,15 +4,9 @@ import {
   loadTerm,
   loadTermByIri,
   loadTerms,
-  loadVocabularies,
   loadVocabulary,
 } from "./AsyncActions";
 import Constants from "../util/Constants";
-
-export function loadPublicVocabularies() {
-  return (dispatch: ThunkDispatch) =>
-    dispatch(loadVocabularies(Constants.PUBLIC_API_PREFIX));
-}
 
 export function loadPublicVocabulary(iri: IRI) {
   return (dispatch: ThunkDispatch) =>

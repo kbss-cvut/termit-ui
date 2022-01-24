@@ -9,7 +9,6 @@ import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import {
   loadPublicTerm,
   loadPublicTerms,
-  loadPublicVocabularies,
   loadPublicVocabulary,
 } from "../AsyncPublicViewActions";
 import Constants from "../../util/Constants";
@@ -36,25 +35,6 @@ describe("AsyncPublicViewActions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     store = mockStore(new TermItState());
-  });
-
-  describe("loadPublicVocabularies", () => {
-    it("uses public API endpoint to load vocabularies into state", () => {
-      const vocabularies = require("../../rest-mock/vocabularies");
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(vocabularies));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadPublicVocabularies())
-      ).then(() => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-        const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> =
-          store.getActions()[1];
-        const result = loadSuccessAction.payload;
-        verifyExpectedAssets(vocabularies, result);
-      });
-    });
   });
 
   describe("loadPublicVocabulary", () => {
