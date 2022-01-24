@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary from "../../model/Vocabulary";
 import {
@@ -21,12 +21,8 @@ import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
 import Pagination from "../misc/table/Pagination";
 import { useI18n } from "../hook/useI18n";
 
-interface VocabularyListProps {
-  vocabularies: { [id: string]: Vocabulary };
-}
-
-export const VocabularyList: React.FC<VocabularyListProps> = (props) => {
-  const { vocabularies } = props;
+export const VocabularyList: React.FC = () => {
+  const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const { i18n } = useI18n();
   const data = React.useMemo(
     () => Object.keys(vocabularies).map((v) => vocabularies[v]),
@@ -131,8 +127,4 @@ export const VocabularyList: React.FC<VocabularyListProps> = (props) => {
   );
 };
 
-export default connect((state: TermItState) => {
-  return {
-    vocabularies: state.vocabularies,
-  };
-})(VocabularyList);
+export default VocabularyList;
