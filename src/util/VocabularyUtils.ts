@@ -1,6 +1,9 @@
 /**
  * Vocabulary used by the application ontological model.
  */
+import { getVocabularyShortLabel } from "@opendata-mvcr/assembly-line-shared";
+import en from "../i18n/en";
+import cs from "../i18n/cs";
 
 export interface IRI {
   namespace?: string;
@@ -148,5 +151,49 @@ const VocabularyUtils = {
     return new IRIImpl(iri.substr(fragment + 1), iri.substr(0, fragment + 1));
   },
 };
+
+/**
+ * Resolves a shortened version of the specified vocabulary IRI useful for display as vocabulary badge.
+ * @param iri Vocabulary IRI
+ */
+export function getShortVocabularyLabel(iri: string): string {
+  // Try matching pattern for SGoV-based vocabularies
+  let result = getVocabularyShortLabel(iri);
+  if (result) {
+    return result;
+  }
+  // Just the part after the last /
+  const lastIriPart = iri.substring(iri.lastIndexOf("/") + 1);
+  // Trim duplicate non-alphanumeric characters
+  const removedDuplicates = lastIriPart.replace(/([^a-zA-Z0-9])\1{2,}/g, "$1");
+  // Remove slovnik/vocabulary and everything before it (typically test-vocabulary-...)
+  const vocTypeEn = en.messages["type.vocabulary"].toLowerCase();
+  const vocTypeCs = cs.messages["type.vocabulary"].toLowerCase();
+  let removedTypeLabel = "";
+  if (removedDuplicates.indexOf(vocTypeEn) != -1) {
+    removedTypeLabel = removedDuplicates.substring(
+      removedDuplicates.indexOf(vocTypeEn) + vocTypeEn.length + 1
+    );
+  } else if (removedDuplicates.indexOf(vocTypeCs) != -1) {
+    removedTypeLabel = removedDuplicates.substring(
+      removedDuplicates.indexOf(vocTypeCs) + vocTypeCs.length + 1
+    );
+  }
+  if (removedTypeLabel.length === 0) {
+    return removedDuplicates;
+  }
+  if (removedTypeLabel.length <= VOCABULARY_SHORT_LABEL_MAX_LENGTH) {
+    return removedTypeLabel;
+  }
+  let split: string[] = removedTypeLabel.split(
+    VOCABULARY_SHORT_LABEL_SEPARATOR
+  );
+  split = split.map((s: string) => (s.length > 2 ? s.substring(0, 2) : s));
+  result = split.join(VOCABULARY_SHORT_LABEL_SEPARATOR);
+  return result;
+}
+
+const VOCABULARY_SHORT_LABEL_MAX_LENGTH = 15;
+const VOCABULARY_SHORT_LABEL_SEPARATOR = "-";
 
 export default VocabularyUtils;

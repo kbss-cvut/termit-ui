@@ -1,9 +1,9 @@
 import * as React from "react";
 import { AssetData } from "../../model/Asset";
-import { getVocabularyShortLabel } from "@opendata-mvcr/assembly-line-shared";
 import { Badge } from "reactstrap";
 import classNames from "classnames";
 import "./VocabularyNameBadge.scss";
+import {getShortVocabularyLabel} from "../../util/VocabularyUtils";
 
 interface VocabularyNameBadgeProps {
   vocabulary?: AssetData;
@@ -21,7 +21,7 @@ const VocabularyNameBadge: React.FC<VocabularyNameBadgeProps> = (props) => {
       pill={true}
       className={classNames("vocabulary-name-badge", className)}
     >
-      {getVocabularyShortLabel(vocabulary.iri!)}
+      {getShortVocabularyLabel(vocabulary.iri!)}
     </Badge>
   );
 };
