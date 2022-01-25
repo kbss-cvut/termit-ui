@@ -569,6 +569,7 @@ describe("Async actions", () => {
     });
 
     it("gets all root terms when parent option is not specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const vocabName = "test-vocabulary";
@@ -587,6 +588,7 @@ describe("Async actions", () => {
     });
 
     it("gets subterms when parent option is specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const parentUri =
@@ -644,6 +646,28 @@ describe("Async actions", () => {
         expect(callConfig.getParams()).toEqual(params);
       });
     });
+
+    it("uses public API endpoint to fetch vocabulary terms", () => {
+      const terms = require("../../rest-mock/terms");
+      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+      return Promise.resolve(
+          (store.dispatch as ThunkDispatch)(
+              loadTerms(
+                  {
+                    searchString: "",
+                    limit: 5,
+                    offset: 0,
+                    optionID: "",
+                  },
+                  { fragment: "test-vocabulary" }
+              )
+          )
+      ).then((data: Term[]) => {
+        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
+        verifyExpectedAssets(terms, data);
+      });
+    });
   });
 
   describe("load all terms", () => {
@@ -666,6 +690,7 @@ describe("Async actions", () => {
     });
 
     it("gets all root terms when parent option is not specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       return Promise.resolve(
@@ -679,6 +704,7 @@ describe("Async actions", () => {
     });
 
     it("gets subterms when parent option is specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const parentUri =

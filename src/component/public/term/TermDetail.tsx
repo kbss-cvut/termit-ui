@@ -94,7 +94,7 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
+      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri, false, false)),
       loadTerm: (termName: string, vocabularyIri: IRI) =>
         dispatch(loadPublicTerm(termName, vocabularyIri)),
     };

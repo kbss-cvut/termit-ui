@@ -5,7 +5,7 @@ import Ajax from "../../util/Ajax";
 import { ThunkDispatch } from "../../util/Types";
 import { AsyncActionSuccess, MessageAction } from "../ActionType";
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
-import { loadPublicTerm, loadPublicTerms } from "../AsyncPublicViewActions";
+import { loadPublicTerm } from "../AsyncPublicViewActions";
 import Constants from "../../util/Constants";
 import Term from "../../model/Term";
 
@@ -28,30 +28,6 @@ describe("AsyncPublicViewActions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     store = mockStore(new TermItState());
-  });
-
-  describe("loadPublicTerms", () => {
-    it("uses public API endpoint to fetch vocabulary terms", () => {
-      const terms = require("../../rest-mock/terms");
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadPublicTerms(
-            {
-              searchString: "",
-              limit: 5,
-              offset: 0,
-              optionID: "",
-            },
-            { fragment: "test-vocabulary" }
-          )
-        )
-      ).then((data: Term[]) => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-        verifyExpectedAssets(terms, data);
-      });
-    });
   });
 
   describe("loadPublicTerm", () => {
