@@ -595,12 +595,11 @@ export function loadVocabularies() {
 
 export function loadAllTerms(
   fetchOptions: TermFetchParams<any>,
-  namespace?: string,
-  apiPrefix: string = Constants.API_PREFIX
+  namespace?: string
 ) {
   return genericLoadTerms(
     ActionType.FETCH_ALL_TERMS,
-    `${apiPrefix}`,
+    "",
     {
       searchString: fetchOptions.searchString,
       includeTerms: fetchOptions.includeTerms,
@@ -612,12 +611,11 @@ export function loadAllTerms(
 
 export function loadTerms(
   fetchOptions: TermFetchParams<any>,
-  vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
+  vocabularyIri: IRI
 ) {
   return genericLoadTerms(
     ActionType.FETCH_VOCABULARY_TERMS,
-    `${apiPrefix}/vocabularies/${vocabularyIri.fragment}`,
+    `/vocabularies/${vocabularyIri.fragment}`,
     {
       searchString: fetchOptions.searchString,
       includeImported: fetchOptions.includeImported,
@@ -635,9 +633,9 @@ export function genericLoadTerms(
   fetchOptions: TermFetchParams<any>
 ) {
   const action = { type };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
-    let url = `${prefix}/terms/`;
+    let url = `${getApiPrefix(getState())}${prefix}/terms/`;
     if (fetchOptions.optionID) {
       url += `${VocabularyUtils.getFragment(fetchOptions.optionID)}/subterms`;
     } else if (!fetchOptions.searchString) {

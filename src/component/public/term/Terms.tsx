@@ -26,11 +26,11 @@ import {
 import { connect } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { selectVocabularyTerm } from "../../../action/SyncActions";
-import { loadPublicTerms } from "../../../action/AsyncPublicViewActions";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import "../../term/Terms.scss";
 import { Badge } from "reactstrap";
+import { loadTerms } from "../../../action/AsyncActions";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -243,7 +243,7 @@ export default connect(
       fetchTerms: (
         fetchOptions: TermFetchParams<TermData>,
         vocabularyIri: IRI
-      ) => dispatch(loadPublicTerms(fetchOptions, vocabularyIri)),
+      ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
     };
   }
 )(injectIntl(withI18n(Terms)));
