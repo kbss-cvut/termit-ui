@@ -141,7 +141,7 @@ export default connect<
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadTerm: (termIri: IRI) => dispatch(loadTermByIri(termIri))
+      loadTerm: (termIri: IRI) => dispatch(loadTermByIri(termIri)),
     };
   }
 )(injectIntl(withI18n(TermResultItem)));
