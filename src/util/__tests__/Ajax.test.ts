@@ -49,7 +49,7 @@ describe("Ajax", () => {
   it("loads JWT and sets it on request", () => {
     Authentication.loadToken = jest.fn().mockReturnValue(jwt);
     mock.onGet("/users/current").reply((config: AxiosRequestConfig) => {
-      expect(config.headers[Constants.Headers.AUTHORIZATION]).toContain(jwt);
+      expect(config.headers![Constants.Headers.AUTHORIZATION]).toContain(jwt);
       return [200, require("../../rest-mock/current"), headers];
     });
     return sut.get("/users/current");
@@ -91,6 +91,15 @@ describe("Ajax", () => {
       mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
       return sut.get("/users/current").catch(() => {
         return expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.login);
+      });
+    });
+
+    it("directly transitions to login route when 401 Unauthorized is received", () => {
+      Authentication.clearToken = jest.fn();
+      jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
+      mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
+      return sut.get("/users/current").catch(() => {
+        return expect(Authentication.clearToken).toHaveBeenCalled();
       });
     });
 
@@ -190,7 +199,7 @@ describe("Ajax", () => {
       spy.mockClear();
       return sut.get("/terms/count").then(() => {
         const reqConfig = spy.mock.calls[0][1];
-        return expect(reqConfig!.headers[Constants.Headers.ACCEPT]).toEqual(
+        return expect(reqConfig!.headers![Constants.Headers.ACCEPT]).toEqual(
           Constants.JSON_LD_MIME_TYPE
         );
       });
@@ -203,7 +212,7 @@ describe("Ajax", () => {
       spy.mockClear();
       return sut.get("/terms/count", accept(acceptType)).then(() => {
         const reqConfig = spy.mock.calls[0][1];
-        return expect(reqConfig!.headers[Constants.Headers.ACCEPT]).toEqual(
+        return expect(reqConfig!.headers![Constants.Headers.ACCEPT]).toEqual(
           acceptType
         );
       });
@@ -222,7 +231,7 @@ describe("Ajax", () => {
           const reqConfig = spy.mock.calls[0][2];
           expect(reqData).toEqual(data);
           return expect(
-            reqConfig!.headers[Constants.Headers.CONTENT_TYPE]
+            reqConfig!.headers![Constants.Headers.CONTENT_TYPE]
           ).toEqual(mimeType);
         });
     });
@@ -242,7 +251,7 @@ describe("Ajax", () => {
         )
         .then(() => {
           const reqConfig = spy.mock.calls[0][2];
-          expect(reqConfig!.headers[Constants.Headers.CONTENT_TYPE]).toEqual(
+          expect(reqConfig!.headers![Constants.Headers.CONTENT_TYPE]).toEqual(
             Constants.X_WWW_FORM_URLENCODED
           );
           const expParams = new URLSearchParams();
@@ -265,7 +274,7 @@ describe("Ajax", () => {
           const reqConfig = spy.mock.calls[0][2];
           expect(reqData).toEqual(data);
           return expect(
-            reqConfig!.headers[Constants.Headers.CONTENT_TYPE]
+            reqConfig!.headers![Constants.Headers.CONTENT_TYPE]
           ).toEqual(mimeType);
         });
     });
@@ -277,7 +286,7 @@ describe("Ajax", () => {
       spy.mockClear();
       return sut.put("/users/status", accept(mimeType)).then(() => {
         const reqConfig = spy.mock.calls[0][2];
-        return expect(reqConfig!.headers[Constants.Headers.ACCEPT]).toEqual(
+        return expect(reqConfig!.headers![Constants.Headers.ACCEPT]).toEqual(
           mimeType
         );
       });
@@ -297,7 +306,7 @@ describe("Ajax", () => {
           const reqData = spy.mock.calls[0][1];
           const reqConfig = spy.mock.calls[0][2];
           expect(reqData).toEqual(data);
-          expect(reqConfig!.headers[Constants.Headers.CONTENT_TYPE]).toEqual(
+          expect(reqConfig!.headers![Constants.Headers.CONTENT_TYPE]).toEqual(
             Constants.JSON_LD_MIME_TYPE
           );
           return expect(reqConfig!.params).toEqual(qParams);
@@ -356,7 +365,7 @@ describe("Ajax", () => {
           const reqConfig = spy.mock.calls[0][1];
           expect(reqConfig).toBeDefined();
           return expect(
-            reqConfig!.headers[Constants.Headers.IF_MODIFIED_SINCE]
+            reqConfig!.headers![Constants.Headers.IF_MODIFIED_SINCE]
           ).toEqual(ifModSince);
         });
     });
