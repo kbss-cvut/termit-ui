@@ -647,7 +647,7 @@ describe("Async actions", () => {
       });
     });
 
-    it("uses public API endpoint to fetch vocabulary terms", () => {
+    it("uses public API endpoint to fetch vocabulary terms when user is not logged in", () => {
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       return Promise.resolve(
@@ -1038,6 +1038,7 @@ describe("Async actions", () => {
 
   describe("load vocabulary term", () => {
     it("loads vocabulary term using term and vocabulary normalized names on call", () => {
+      store.getState().user = Generator.generateUser();
       const vocabName = "test-vocabulary";
       const termName = "test-term";
       Ajax.get = jest
@@ -1062,6 +1063,7 @@ describe("Async actions", () => {
     });
 
     it("passes namespace parameter when it is specified on action call", () => {
+      store.getState().user = Generator.generateUser();
       const vocabName = "test-vocabulary";
       const termName = "test-term";
       const namespace =
@@ -1090,6 +1092,23 @@ describe("Async actions", () => {
         const config = (Ajax.get as jest.Mock).mock.calls[0][1];
         expect(config).toBeDefined();
         expect(config.getParams().namespace).toEqual(namespace);
+      });
+    });
+
+    it("uses public API endpoint to fetch single vocabulary term when user is not authenticated", () => {
+      const term = require("../../rest-mock/terms")[0];
+      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(term));
+      return Promise.resolve(
+          (store.dispatch as ThunkDispatch)(
+              loadTerm("test-term", { fragment: "test-vocabulary" })
+          )
+      ).then((data: AsyncActionSuccess<Term> | MessageAction) => {
+        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
+        verifyExpectedAssets(
+            [term],
+            [(data as AsyncActionSuccess<Term>).payload]
+        );
       });
     });
   });

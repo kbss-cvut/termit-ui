@@ -10,7 +10,6 @@ import TermItState from "../../../model/TermItState";
 import { ThunkDispatch } from "../../../util/Types";
 import { injectIntl } from "react-intl";
 import TermMetadata from "./TermMetadata";
-import { loadPublicTerm } from "../../../action/AsyncPublicViewActions";
 import {
   getLocalized,
   getLocalizedPlural,
@@ -20,7 +19,7 @@ import {
   resolveInitialLanguage,
 } from "../../term/TermDetail";
 import WindowTitle from "../../misc/WindowTitle";
-import { loadVocabulary } from "../../../action/AsyncActions";
+import { loadTerm, loadVocabulary } from "../../../action/AsyncActions";
 
 interface TermDetailProps
   extends CommonTermDetailProps,
@@ -96,7 +95,7 @@ export default connect(
     return {
       loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri, false, false)),
       loadTerm: (termName: string, vocabularyIri: IRI) =>
-        dispatch(loadPublicTerm(termName, vocabularyIri)),
+        dispatch(loadTerm(termName, vocabularyIri)),
     };
   }
 )(injectIntl(withI18n(withRouter(TermDetail))));

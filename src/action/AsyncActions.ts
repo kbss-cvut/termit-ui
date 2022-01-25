@@ -671,16 +671,15 @@ export function genericLoadTerms(
 
 export function loadTerm(
   termNormalizedName: string,
-  vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
+  vocabularyIri: IRI
 ) {
   const action = {
     type: ActionType.LOAD_TERM,
   };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action));
     return Ajax.get(
-      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}`,
+      `${getApiPrefix(getState())}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object) =>
