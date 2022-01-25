@@ -288,28 +288,28 @@ describe("Async actions", () => {
 
     it("uses public API endpoint to load a single vocabulary when user is not logged in", () => {
       Ajax.get = jest
-          .fn()
-          .mockImplementation(() =>
-              Promise.resolve(require("../../rest-mock/vocabulary"))
-          );
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve(require("../../rest-mock/vocabulary"))
+        );
       Ajax.head = jest.fn().mockResolvedValue({ headers: {} });
       return Promise.resolve(
-          (store.dispatch as ThunkDispatch)(
-              loadVocabulary({ fragment: "metropolitan-plan" })
-          )
+        (store.dispatch as ThunkDispatch)(
+          loadVocabulary({ fragment: "metropolitan-plan" })
+        )
       ).then(() => {
         const url = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
         const loadSuccessAction: AsyncActionSuccess<Vocabulary> = store
-            .getActions()
-            .find(
-                (a) =>
-                    a.type === ActionType.LOAD_VOCABULARY &&
-                    a.status === AsyncActionStatus.SUCCESS
-            );
+          .getActions()
+          .find(
+            (a) =>
+              a.type === ActionType.LOAD_VOCABULARY &&
+              a.status === AsyncActionStatus.SUCCESS
+          );
         expect(loadSuccessAction).toBeDefined();
         expect(
-            VocabularyUtils.create(loadSuccessAction.payload.iri).fragment ===
+          VocabularyUtils.create(loadSuccessAction.payload.iri).fragment ===
             "metropolitan-plan"
         ).toBeTruthy();
       });
@@ -317,18 +317,18 @@ describe("Async actions", () => {
 
     it("uses public API endpoint to load vocabulary's imports as well when user is not logged in", () => {
       Ajax.get = jest
-          .fn()
-          .mockImplementation(() =>
-              Promise.resolve(require("../../rest-mock/vocabulary"))
-          );
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve(require("../../rest-mock/vocabulary"))
+        );
       return Promise.resolve(
-          (store.dispatch as ThunkDispatch)(
-              loadVocabulary({ fragment: "metropolitan-plan" })
-          )
+        (store.dispatch as ThunkDispatch)(
+          loadVocabulary({ fragment: "metropolitan-plan" })
+        )
       ).then(() => {
         const loadImportsAction = store
-            .getActions()
-            .find((a) => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
+          .getActions()
+          .find((a) => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
         expect(loadImportsAction).toBeDefined();
         expect((Ajax.get as jest.Mock).mock.calls.length).toBeGreaterThan(2);
         const url = (Ajax.get as jest.Mock).mock.calls[1][0];
@@ -442,15 +442,15 @@ describe("Async actions", () => {
     it("uses public API endpoint to load vocabularies into state", () => {
       const vocabularies = require("../../rest-mock/vocabularies");
       Ajax.get = jest
-          .fn()
-          .mockImplementation(() => Promise.resolve(vocabularies));
+        .fn()
+        .mockImplementation(() => Promise.resolve(vocabularies));
       return Promise.resolve(
-          (store.dispatch as ThunkDispatch)(loadVocabularies())
+        (store.dispatch as ThunkDispatch)(loadVocabularies())
       ).then(() => {
         const url = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
         const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> =
-            store.getActions()[1];
+          store.getActions()[1];
         const result = loadSuccessAction.payload;
         verifyExpectedAssets(vocabularies, result);
       });
@@ -651,17 +651,17 @@ describe("Async actions", () => {
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       return Promise.resolve(
-          (store.dispatch as ThunkDispatch)(
-              loadTerms(
-                  {
-                    searchString: "",
-                    limit: 5,
-                    offset: 0,
-                    optionID: "",
-                  },
-                  { fragment: "test-vocabulary" }
-              )
+        (store.dispatch as ThunkDispatch)(
+          loadTerms(
+            {
+              searchString: "",
+              limit: 5,
+              offset: 0,
+              optionID: "",
+            },
+            { fragment: "test-vocabulary" }
           )
+        )
       ).then((data: Term[]) => {
         const url = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
@@ -1099,15 +1099,15 @@ describe("Async actions", () => {
       const term = require("../../rest-mock/terms")[0];
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(term));
       return Promise.resolve(
-          (store.dispatch as ThunkDispatch)(
-              loadTerm("test-term", { fragment: "test-vocabulary" })
-          )
+        (store.dispatch as ThunkDispatch)(
+          loadTerm("test-term", { fragment: "test-vocabulary" })
+        )
       ).then((data: AsyncActionSuccess<Term> | MessageAction) => {
         const url = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
         verifyExpectedAssets(
-            [term],
-            [(data as AsyncActionSuccess<Term>).payload]
+          [term],
+          [(data as AsyncActionSuccess<Term>).payload]
         );
       });
     });

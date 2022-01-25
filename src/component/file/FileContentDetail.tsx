@@ -154,9 +154,7 @@ export default connect(
         dispatch(saveFileContent(fileIri, fileContent)),
       clearFileContent: () => dispatch(clearFileContent()),
       loadVocabulary: (vocabularyIri: IRI) =>
-        dispatch(
-          loadVocabulary(vocabularyIri, true, false)
-        ),
+        dispatch(loadVocabulary(vocabularyIri, true, false)),
       fetchTerms: (vocabularyIri: IRI) =>
         dispatch(loadAllTerms(vocabularyIri, true)),
       consumeNotification: (notification: AppNotification) =>
