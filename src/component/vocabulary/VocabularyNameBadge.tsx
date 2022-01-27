@@ -3,7 +3,7 @@ import { AssetData } from "../../model/Asset";
 import { Badge } from "reactstrap";
 import classNames from "classnames";
 import "./VocabularyNameBadge.scss";
-import {getShortVocabularyLabel} from "../../util/VocabularyUtils";
+import { getShortVocabularyLabel } from "../../util/VocabularyUtils";
 
 interface VocabularyNameBadgeProps {
   vocabulary?: AssetData;
