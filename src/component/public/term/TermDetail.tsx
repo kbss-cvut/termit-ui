@@ -11,10 +11,6 @@ import { ThunkDispatch } from "../../../util/Types";
 import { injectIntl } from "react-intl";
 import TermMetadata from "./TermMetadata";
 import {
-  loadPublicTerm,
-  loadPublicVocabulary,
-} from "../../../action/AsyncPublicViewActions";
-import {
   getLocalized,
   getLocalizedPlural,
 } from "../../../model/MultilingualString";
@@ -23,6 +19,7 @@ import {
   resolveInitialLanguage,
 } from "../../term/TermDetail";
 import WindowTitle from "../../misc/WindowTitle";
+import { loadTerm, loadVocabulary } from "../../../action/AsyncActions";
 
 interface TermDetailProps
   extends CommonTermDetailProps,
@@ -96,9 +93,9 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadVocabulary: (iri: IRI) => dispatch(loadPublicVocabulary(iri)),
+      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri, false, false)),
       loadTerm: (termName: string, vocabularyIri: IRI) =>
-        dispatch(loadPublicTerm(termName, vocabularyIri)),
+        dispatch(loadTerm(termName, vocabularyIri)),
     };
   }
 )(injectIntl(withI18n(withRouter(TermDetail))));

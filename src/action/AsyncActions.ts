@@ -76,6 +76,7 @@ import ValidationResult, {
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
+import { getApiPrefix } from "./ActionUtils";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -139,7 +140,6 @@ export function createVocabulary(vocabulary: Vocabulary) {
 export function loadVocabulary(
   iri: IRI,
   ignoreLoading: boolean = false,
-  apiPrefix: string = Constants.API_PREFIX,
   withValidation = true
 ) {
   const action = {
@@ -151,7 +151,7 @@ export function loadVocabulary(
     }
     dispatch(asyncActionRequest(action, ignoreLoading));
     return Ajax.get(
-      `${apiPrefix}/vocabularies/${iri.fragment}`,
+      `${getApiPrefix(getState())}/vocabularies/${iri.fragment}`,
       param("namespace", iri.namespace)
     )
       .then((data: object) =>
@@ -161,7 +161,7 @@ export function loadVocabulary(
         )
       )
       .then((data: VocabularyData) => {
-        dispatch(loadImportedVocabulariesIntoState(iri, apiPrefix));
+        dispatch(loadImportedVocabulariesIntoState(iri));
         if (withValidation) {
           dispatch(validateVocabulary(iri));
         }
@@ -179,17 +179,16 @@ export function loadVocabulary(
   };
 }
 
-function loadImportedVocabulariesIntoState(
-  vocabularyIri: IRI,
-  apiPrefix: string
-) {
+function loadImportedVocabulariesIntoState(vocabularyIri: IRI) {
   const action = {
     type: ActionType.LOAD_VOCABULARY_IMPORTS,
   };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/imports`,
+      `${getApiPrefix(getState())}/vocabularies/${
+        vocabularyIri.fragment
+      }/imports`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data) => dispatch(asyncActionSuccessWithPayload(action, data)))
@@ -239,7 +238,7 @@ export function loadResource(iri: IRI) {
   const action = {
     type: ActionType.LOAD_RESOURCE,
   };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+  return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.get(
       Constants.API_PREFIX + "/resources/" + iri.fragment,
@@ -585,7 +584,7 @@ export function removeAsset(
   };
 }
 
-export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
+export function loadVocabularies() {
   const action = {
     type: ActionType.LOAD_VOCABULARIES,
   };
@@ -594,7 +593,7 @@ export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
       return Promise.resolve({});
     }
     dispatch(asyncActionRequest(action));
-    return Ajax.get(`${apiPrefix}/vocabularies`)
+    return Ajax.get(`${getApiPrefix(getState())}/vocabularies`)
       .then((data: object[]) =>
         data.length !== 0
           ? JsonLdUtils.compactAndResolveReferencesAsArray<VocabularyData>(
@@ -622,12 +621,11 @@ export function loadVocabularies(apiPrefix: string = Constants.API_PREFIX) {
 
 export function loadAllTerms(
   fetchOptions: TermFetchParams<any>,
-  namespace?: string,
-  apiPrefix: string = Constants.API_PREFIX
+  namespace?: string
 ) {
   return genericLoadTerms(
     ActionType.FETCH_ALL_TERMS,
-    `${apiPrefix}`,
+    "",
     {
       searchString: fetchOptions.searchString,
       includeTerms: fetchOptions.includeTerms,
@@ -639,12 +637,11 @@ export function loadAllTerms(
 
 export function loadTerms(
   fetchOptions: TermFetchParams<any>,
-  vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
+  vocabularyIri: IRI
 ) {
   return genericLoadTerms(
     ActionType.FETCH_VOCABULARY_TERMS,
-    `${apiPrefix}/vocabularies/${vocabularyIri.fragment}`,
+    `/vocabularies/${vocabularyIri.fragment}`,
     {
       searchString: fetchOptions.searchString,
       includeImported: fetchOptions.includeImported,
@@ -662,9 +659,9 @@ export function genericLoadTerms(
   fetchOptions: TermFetchParams<any>
 ) {
   const action = { type };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
-    let url = `${prefix}/terms/`;
+    let url = `${getApiPrefix(getState())}${prefix}/terms/`;
     if (fetchOptions.optionID) {
       url += `${VocabularyUtils.getFragment(fetchOptions.optionID)}/subterms`;
     } else if (!fetchOptions.searchString) {
@@ -698,18 +695,16 @@ export function genericLoadTerms(
   };
 }
 
-export function loadTerm(
-  termNormalizedName: string,
-  vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
-) {
+export function loadTerm(termNormalizedName: string, vocabularyIri: IRI) {
   const action = {
     type: ActionType.LOAD_TERM,
   };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action));
     return Ajax.get(
-      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termNormalizedName}`,
+      `${getApiPrefix(getState())}/vocabularies/${
+        vocabularyIri.fragment
+      }/terms/${termNormalizedName}`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object) =>
@@ -727,17 +722,14 @@ export function loadTerm(
   };
 }
 
-export function loadTermByIri(
-  termIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
-) {
+export function loadTermByIri(termIri: IRI) {
   const action = {
     type: ActionType.LOAD_TERM_BY_IRI,
   };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${apiPrefix}/terms/${termIri.fragment}`,
+      `${getApiPrefix(getState())}/terms/${termIri.fragment}`,
       param("namespace", termIri.namespace)
     )
       .then((data: object) =>

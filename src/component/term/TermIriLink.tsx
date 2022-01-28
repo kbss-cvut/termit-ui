@@ -1,70 +1,37 @@
 import * as React from "react";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
+import { useEffect, useState } from "react";
+import VocabularyUtils from "../../util/VocabularyUtils";
 import Term from "../../model/Term";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { loadTermByIri } from "../../action/AsyncActions";
 import TermLink from "./TermLink";
 import OutgoingLink from "../misc/OutgoingLink";
-import TermItState from "../../model/TermItState";
-import { loadPublicTermByIri } from "../../action/AsyncPublicViewActions";
-import User from "../../model/User";
-import Authentication from "../../util/Authentication";
 
-interface TermIriLinkProps extends HasI18n {
+interface TermIriLinkProps {
   iri: string;
   id?: string;
   activeTab?: string;
-  loadTermByIri: (iri: IRI) => Promise<Term | null>;
-  loadPublicTermByIri: (iri: IRI) => Promise<Term | null>;
-  user: User;
 }
 
-interface TermIriLinkState {
-  term: Term | null;
-}
+const TermIriLink: React.FC<TermIriLinkProps> = (props) => {
+  const { iri, id, activeTab } = props;
+  const [term, setTerm] = useState<Term | null>(null);
+  const dispatch: ThunkDispatch = useDispatch();
+  useEffect(() => {
+    const tIri = VocabularyUtils.create(iri);
+    dispatch(loadTermByIri(tIri)).then((term) => setTerm(term));
+  }, [iri, dispatch, setTerm]);
 
-export class TermIriLink extends React.Component<
-  TermIriLinkProps,
-  TermIriLinkState
-> {
-  constructor(props: TermIriLinkProps) {
-    super(props);
-    this.state = { term: null };
-  }
+  return (
+    <>
+      {term !== null ? (
+        <TermLink id={id} term={term} activeTab={activeTab} />
+      ) : (
+        <OutgoingLink label={iri} iri={iri} />
+      )}
+    </>
+  );
+};
 
-  public componentDidMount(): void {
-    const iri = VocabularyUtils.create(this.props.iri);
-    let loader;
-    if (Authentication.isLoggedIn(this.props.user)) {
-      loader = this.props.loadTermByIri;
-    } else {
-      loader = this.props.loadPublicTermByIri;
-    }
-    loader(iri).then((term) => this.setState({ term }));
-  }
-
-  public render() {
-    return (
-      <>
-        {this.state.term !== null ? (
-          <TermLink term={this.state.term} activeTab={this.props.activeTab} />
-        ) : (
-          <OutgoingLink label={this.props.iri} iri={this.props.iri} />
-        )}
-      </>
-    );
-  }
-}
-
-export default connect(
-  (state: TermItState) => ({ user: state.user }),
-  (dispatch: ThunkDispatch) => {
-    return {
-      loadTermByIri: (iri: IRI) => dispatch(loadTermByIri(iri)),
-      loadPublicTermByIri: (iri: IRI) => dispatch(loadPublicTermByIri(iri)),
-    };
-  }
-)(injectIntl(withI18n(TermIriLink)));
+export default TermIriLink;

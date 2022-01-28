@@ -20,7 +20,6 @@ import Mask from "../misc/Mask";
 import AppNotification from "../../model/AppNotification";
 import NotificationType from "../../model/NotificationType";
 import { loadAllTerms } from "../../action/AsyncAnnotatorActions";
-import Constants from "../../util/Constants";
 
 interface FileDetailProvidedProps {
   iri: IRI;
@@ -155,9 +154,7 @@ export default connect(
         dispatch(saveFileContent(fileIri, fileContent)),
       clearFileContent: () => dispatch(clearFileContent()),
       loadVocabulary: (vocabularyIri: IRI) =>
-        dispatch(
-          loadVocabulary(vocabularyIri, true, Constants.API_PREFIX, false)
-        ),
+        dispatch(loadVocabulary(vocabularyIri, true, false)),
       fetchTerms: (vocabularyIri: IRI) =>
         dispatch(loadAllTerms(vocabularyIri, true)),
       consumeNotification: (notification: AppNotification) =>

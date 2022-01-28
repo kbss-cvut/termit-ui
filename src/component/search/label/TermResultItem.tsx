@@ -14,9 +14,7 @@ import TermItState from "../../../model/TermItState";
 import FTSMatch from "./FTSMatch";
 import TermBadge from "../../badge/TermBadge";
 import { getTermPath } from "../../term/TermLink";
-import { loadPublicTermByIri } from "../../../action/AsyncPublicViewActions";
 import User from "../../../model/User";
-import Authentication from "../../../util/Authentication";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 
@@ -26,7 +24,6 @@ interface TermResultItemOwnProps {
 
 interface TermResultItemDispatchProps {
   loadTerm: (termIri: IRI) => Promise<Term | null>;
-  loadPublicTerm: (termIri: IRI) => Promise<Term | null>;
 }
 
 interface TermResultItemStateProps {
@@ -58,10 +55,7 @@ export class TermResultItem extends React.Component<
     const indexOfDefinition = this.getIndexOf("definition");
     if (indexOfDefinition < 0) {
       const iri = VocabularyUtils.create(this.props.result.iri);
-      const loader = Authentication.isLoggedIn(this.props.user)
-        ? this.props.loadTerm
-        : this.props.loadPublicTerm;
-      loader(iri).then((term) => {
+      this.props.loadTerm(iri).then((term) => {
         if (term) {
           this.setState({
             text: term!.definition
@@ -148,7 +142,6 @@ export default connect<
   (dispatch: ThunkDispatch) => {
     return {
       loadTerm: (termIri: IRI) => dispatch(loadTermByIri(termIri)),
-      loadPublicTerm: (termIri: IRI) => dispatch(loadPublicTermByIri(termIri)),
     };
   }
 )(injectIntl(withI18n(TermResultItem)));

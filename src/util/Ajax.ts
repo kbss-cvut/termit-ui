@@ -197,6 +197,7 @@ export class Ajax {
         const response = error.response;
         if (response.status === Constants.STATUS_UNAUTHORIZED) {
           Routing.saveOriginalTarget();
+          Authentication.clearToken();
           if (
             getEnv(ConfigParam.SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED, "") ===
             true.toString()

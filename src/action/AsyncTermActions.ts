@@ -31,6 +31,7 @@ import { getLocalized } from "../model/MultilingualString";
 import { getShortLocale } from "../util/IntlUtil";
 import Utils from "../util/Utils";
 import { AxiosResponse } from "axios";
+import { getApiPrefix } from "./ActionUtils";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -91,10 +92,12 @@ export function loadDefinitionRelatedTermsTargeting(
   vocabularyIri: IRI
 ) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${ENDPOINT}${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-target`,
+      `${getApiPrefix(getState())}/vocabularies/${
+        vocabularyIri.fragment
+      }/terms/${termNormalizedName}/def-related-target`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object[]) =>
@@ -125,10 +128,12 @@ export function loadDefinitionRelatedTermsOf(
   vocabularyIri: IRI
 ) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_OF };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${ENDPOINT}${vocabularyIri.fragment}/terms/${termNormalizedName}/def-related-of`,
+      `${getApiPrefix(getState())}/vocabularies/${
+        vocabularyIri.fragment
+      }/terms/${termNormalizedName}/def-related-of`,
       param("namespace", vocabularyIri.namespace)
     )
       .then((data: object[]) =>

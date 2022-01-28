@@ -4,7 +4,11 @@ import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
 import { ThunkDispatch } from "../../util/Types";
-import { createTerm, setTermDefinitionSource } from "../AsyncTermActions";
+import {
+  createTerm,
+  loadDefinitionRelatedTermsTargeting,
+  setTermDefinitionSource,
+} from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
 import Term, { CONTEXT as TERM_CONTEXT } from "../../model/Term";
@@ -262,6 +266,47 @@ describe("AsyncTermActions", () => {
         expect(messageAction).toBeDefined();
         expect(messageAction.message.values.term).toEqual(
           term.label[Constants.DEFAULT_LANGUAGE]
+        );
+      });
+    });
+  });
+
+  describe("loadDefinitionRelatedTermsTargeting", () => {
+    it("uses regular API prefix to load related terms occurrences when a user is logged in", () => {
+      const occurrences = [
+        Generator.generateOccurrenceOf(Generator.generateTerm()),
+      ];
+      Ajax.get = jest.fn().mockResolvedValue(occurrences);
+      store.getState().user = Generator.generateUser();
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadDefinitionRelatedTermsTargeting(
+            termName,
+            VocabularyUtils.create(namespace + vocabularyName)
+          )
+        )
+      ).then(() => {
+        expect((Ajax.get as jest.Mock).mock.calls[0][0]).toMatch(
+          new RegExp(`^${Constants.API_PREFIX}`)
+        );
+      });
+    });
+
+    it("uses public API prefix to load related terms occurrences when a user is not logged in", () => {
+      const occurrences = [
+        Generator.generateOccurrenceOf(Generator.generateTerm()),
+      ];
+      Ajax.get = jest.fn().mockResolvedValue(occurrences);
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadDefinitionRelatedTermsTargeting(
+            termName,
+            VocabularyUtils.create(namespace + vocabularyName)
+          )
+        )
+      ).then(() => {
+        expect((Ajax.get as jest.Mock).mock.calls[0][0]).toMatch(
+          new RegExp(`^${Constants.PUBLIC_API_PREFIX}`)
         );
       });
     });

@@ -285,6 +285,56 @@ describe("Async actions", () => {
         expect(loadImportsSuccessAction.payload).toEqual(imports);
       });
     });
+
+    it("uses public API endpoint to load a single vocabulary when user is not logged in", () => {
+      Ajax.get = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve(require("../../rest-mock/vocabulary"))
+        );
+      Ajax.head = jest.fn().mockResolvedValue({ headers: {} });
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadVocabulary({ fragment: "metropolitan-plan" })
+        )
+      ).then(() => {
+        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
+        const loadSuccessAction: AsyncActionSuccess<Vocabulary> = store
+          .getActions()
+          .find(
+            (a) =>
+              a.type === ActionType.LOAD_VOCABULARY &&
+              a.status === AsyncActionStatus.SUCCESS
+          );
+        expect(loadSuccessAction).toBeDefined();
+        expect(
+          VocabularyUtils.create(loadSuccessAction.payload.iri).fragment ===
+            "metropolitan-plan"
+        ).toBeTruthy();
+      });
+    });
+
+    it("uses public API endpoint to load vocabulary's imports as well when user is not logged in", () => {
+      Ajax.get = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve(require("../../rest-mock/vocabulary"))
+        );
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadVocabulary({ fragment: "metropolitan-plan" })
+        )
+      ).then(() => {
+        const loadImportsAction = store
+          .getActions()
+          .find((a) => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
+        expect(loadImportsAction).toBeDefined();
+        expect((Ajax.get as jest.Mock).mock.calls.length).toBeGreaterThan(2);
+        const url = (Ajax.get as jest.Mock).mock.calls[1][0];
+        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
+      });
+    });
   });
 
   describe("removeVocabulary", () => {
@@ -386,6 +436,23 @@ describe("Async actions", () => {
         (store.dispatch as ThunkDispatch)(loadVocabularies())
       ).then(() => {
         expect(Ajax.get).not.toHaveBeenCalled();
+      });
+    });
+
+    it("uses public API endpoint to load vocabularies into state", () => {
+      const vocabularies = require("../../rest-mock/vocabularies");
+      Ajax.get = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(vocabularies));
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(loadVocabularies())
+      ).then(() => {
+        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
+        const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> =
+          store.getActions()[1];
+        const result = loadSuccessAction.payload;
+        verifyExpectedAssets(vocabularies, result);
       });
     });
   });
@@ -502,6 +569,7 @@ describe("Async actions", () => {
     });
 
     it("gets all root terms when parent option is not specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const vocabName = "test-vocabulary";
@@ -520,6 +588,7 @@ describe("Async actions", () => {
     });
 
     it("gets subterms when parent option is specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const parentUri =
@@ -577,6 +646,28 @@ describe("Async actions", () => {
         expect(callConfig.getParams()).toEqual(params);
       });
     });
+
+    it("uses public API endpoint to fetch vocabulary terms when user is not logged in", () => {
+      const terms = require("../../rest-mock/terms");
+      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadTerms(
+            {
+              searchString: "",
+              limit: 5,
+              offset: 0,
+              optionID: "",
+            },
+            { fragment: "test-vocabulary" }
+          )
+        )
+      ).then((data: Term[]) => {
+        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
+        verifyExpectedAssets(terms, data);
+      });
+    });
   });
 
   describe("load all terms", () => {
@@ -599,6 +690,7 @@ describe("Async actions", () => {
     });
 
     it("gets all root terms when parent option is not specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       return Promise.resolve(
@@ -612,6 +704,7 @@ describe("Async actions", () => {
     });
 
     it("gets subterms when parent option is specified", () => {
+      store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
       const parentUri =
@@ -945,6 +1038,7 @@ describe("Async actions", () => {
 
   describe("load vocabulary term", () => {
     it("loads vocabulary term using term and vocabulary normalized names on call", () => {
+      store.getState().user = Generator.generateUser();
       const vocabName = "test-vocabulary";
       const termName = "test-term";
       Ajax.get = jest
@@ -969,6 +1063,7 @@ describe("Async actions", () => {
     });
 
     it("passes namespace parameter when it is specified on action call", () => {
+      store.getState().user = Generator.generateUser();
       const vocabName = "test-vocabulary";
       const termName = "test-term";
       const namespace =
@@ -997,6 +1092,23 @@ describe("Async actions", () => {
         const config = (Ajax.get as jest.Mock).mock.calls[0][1];
         expect(config).toBeDefined();
         expect(config.getParams().namespace).toEqual(namespace);
+      });
+    });
+
+    it("uses public API endpoint to fetch single vocabulary term when user is not authenticated", () => {
+      const term = require("../../rest-mock/terms")[0];
+      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(term));
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadTerm("test-term", { fragment: "test-vocabulary" })
+        )
+      ).then((data: AsyncActionSuccess<Term> | MessageAction) => {
+        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
+        verifyExpectedAssets(
+          [term],
+          [(data as AsyncActionSuccess<Term>).payload]
+        );
       });
     });
   });
