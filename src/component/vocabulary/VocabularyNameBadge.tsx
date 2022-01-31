@@ -19,7 +19,11 @@ const VocabularyNameBadge: React.FC<VocabularyNameBadgeProps> = (props) => {
     <Badge
       color="info"
       pill={true}
-      className={classNames("vocabulary-name-badge", className)}
+      className={classNames(
+        "vocabulary-name-badge",
+        "align-text-bottom",
+        className
+      )}
     >
       {getShortVocabularyLabel(vocabulary.iri!)}
     </Badge>

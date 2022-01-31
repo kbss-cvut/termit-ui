@@ -170,11 +170,11 @@ export function getShortVocabularyLabel(iri: string): string {
   const vocTypeEn = en.messages["type.vocabulary"].toLowerCase();
   const vocTypeCs = cs.messages["type.vocabulary"].toLowerCase();
   let removedTypeLabel = "";
-  if (removedDuplicates.indexOf(vocTypeEn) != -1) {
+  if (removedDuplicates.indexOf(vocTypeEn) !== -1) {
     removedTypeLabel = removedDuplicates.substring(
       removedDuplicates.indexOf(vocTypeEn) + vocTypeEn.length + 1
     );
-  } else if (removedDuplicates.indexOf(vocTypeCs) != -1) {
+  } else if (removedDuplicates.indexOf(vocTypeCs) !== -1) {
     removedTypeLabel = removedDuplicates.substring(
       removedDuplicates.indexOf(vocTypeCs) + vocTypeCs.length + 1
     );
