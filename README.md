@@ -5,8 +5,8 @@ This project was bootstrapped with [Create React App](https://github.com/wmonk/c
 
 The backend is developed separately and their communication is enabled via CORS support on the backend.
 
-To run the TermIt UI, it is necessary to provide a value for `REACT_APP_SERVER_URL` representing the URL of the backend to connect to. 
-Typically, this is done at build time. See the documentation for more details and other configuration options.
+Upon Running the code, you will need to edit config/server.json and supply:
+* `url` - URL to the TermIt server (see https://github.com/kbss-cvut/termit for details)
 
 ## Tests
 
