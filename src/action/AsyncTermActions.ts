@@ -32,6 +32,7 @@ import { getShortLocale } from "../util/IntlUtil";
 import Utils from "../util/Utils";
 import { AxiosResponse } from "axios";
 import { getApiPrefix } from "./ActionUtils";
+import { AssetData } from "../model/Asset";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -212,7 +213,7 @@ export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
   };
 }
 
-export function removeOccurrence(occurrence: TermOccurrence) {
+export function removeOccurrence(occurrence: TermOccurrence | AssetData) {
   const action = {
     type: ActionType.REMOVE_TERM_OCCURRENCE,
   };
@@ -233,7 +234,7 @@ export function removeOccurrence(occurrence: TermOccurrence) {
   };
 }
 
-export function approveOccurrence(occurrence: TermOccurrence) {
+export function approveOccurrence(occurrence: TermOccurrence | AssetData) {
   const action = {
     type: ActionType.APPROVE_TERM_OCCURRENCE,
   };

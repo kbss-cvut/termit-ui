@@ -45,6 +45,7 @@ describe("Annotator", () => {
     publishMessage(msg: Message): void;
     setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
     updateTerm(term: Term): Promise<any>;
+    removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   };
   let user: User;
   let file: File;
@@ -59,6 +60,7 @@ describe("Annotator", () => {
       publishMessage: jest.fn(),
       setTermDefinitionSource: jest.fn().mockResolvedValue(null),
       updateTerm: jest.fn().mockResolvedValue({}),
+      removeOccurrence: jest.fn().mockResolvedValue({}),
     };
     user = Generator.generateUser();
     file = new File({
@@ -909,6 +911,42 @@ describe("Annotator", () => {
       return Promise.resolve().then(() => {
         const newContent = wrapper.find(AnnotatorContent).prop("content");
         expect(newContent).not.toBe(originalContent);
+      });
+    });
+
+    it("removes occurrence when occurrence IRI is provided", () => {
+      const wrapper = shallow<Annotator>(
+        <Annotator
+          fileIri={fileIri}
+          vocabularyIri={vocabularyIri}
+          {...mockedCallbackProps}
+          {...stateProps}
+          initialHtml={generalHtmlContent}
+          {...intlFunctions()}
+        />
+      );
+      const annotation = {
+        about: "_:14",
+        property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+        typeof: VocabularyUtils.TERM_OCCURRENCE,
+      };
+      const annotationNode = {
+        attribs: {
+          about: annotation.about,
+          resource: Generator.generateUri(),
+          typeof: annotation.typeof,
+        },
+      };
+      AnnotationDomHelper.findAnnotation = jest
+        .fn()
+        .mockReturnValue(annotationNode);
+      const occurrenceIri = Generator.generateUri();
+      wrapper.instance().onRemove(annotation.about, occurrenceIri);
+
+      return Promise.resolve().then(() => {
+        expect(mockedCallbackProps.removeOccurrence).toHaveBeenCalledWith({
+          iri: occurrenceIri,
+        });
       });
     });
   });

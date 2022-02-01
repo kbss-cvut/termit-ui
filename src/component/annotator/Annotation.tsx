@@ -21,7 +21,7 @@ interface AnnotationProps extends AnnotationSpanProps {
   text: string;
   sticky?: boolean;
   tag: "span" | "div"; // Tag in which the annotation will be rendered
-  onRemove: (annId: string) => void;
+  onRemove: (annId: string, occurrenceIri?: string) => void;
   onUpdate: (annotation: AnnotationSpanProps, term: Term | null) => void;
   onCreateTerm: (label: string, annotation: AnnotationSpanProps) => void;
   term?: Term;
@@ -163,9 +163,9 @@ export class Annotation extends React.Component<
     }
   };
 
-  private onRemoveAnnotation = () => {
+  public onRemoveAnnotation = (occurrenceIri?: string) => {
     if (this.props.onRemove) {
-      this.props.onRemove(this.props.about);
+      this.props.onRemove(this.props.about, occurrenceIri);
     }
   };
 
