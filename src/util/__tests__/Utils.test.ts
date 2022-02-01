@@ -7,6 +7,8 @@ import Resource from "../../model/Resource";
 import Document from "../../model/Document";
 import File from "../../model/File";
 import { langString } from "../../model/MultilingualString";
+import { AssetUpdateNotification } from "../../model/AppNotification";
+import NotificationType from "../../model/NotificationType";
 
 describe("Utils", () => {
   describe("sanitizeArray", () => {
@@ -170,6 +172,47 @@ describe("Utils", () => {
 
     it("returns 0 for zero-length argument", () => {
       expect(Utils.hashCode("")).toEqual(0);
+    });
+  });
+
+  describe("generateIsAssetLabelUpdate", () => {
+    it("returns function returning true if asset label has changed", () => {
+      const original = Generator.generateTerm();
+      const updated = new Term(original);
+      updated.label = {
+        en: "Updated label",
+      };
+
+      const result = Utils.generateIsAssetLabelUpdate(VocabularyUtils.TERM);
+      const nOne: AssetUpdateNotification<Term> = {
+        original,
+        updated,
+        source: {
+          type: NotificationType.ASSET_UPDATED,
+        },
+      };
+      expect(result(nOne)).toBeTruthy();
+      const nTwo: AssetUpdateNotification<Term> = {
+        original,
+        updated: original,
+        source: {
+          type: NotificationType.ASSET_UPDATED,
+        },
+      };
+      expect(result(nTwo)).toBeFalsy();
+    });
+
+    it("returns function returning false if original asset is false", () => {
+      const updated = Generator.generateTerm();
+      const result = Utils.generateIsAssetLabelUpdate(VocabularyUtils.TERM);
+      const nOne: any = {
+        original: null,
+        updated,
+        source: {
+          type: NotificationType.ASSET_UPDATED,
+        },
+      };
+      expect(result(nOne)).toBeFalsy();
     });
   });
 });

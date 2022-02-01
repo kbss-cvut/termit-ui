@@ -234,6 +234,7 @@ const Utils = {
         n as AssetUpdateNotification<Asset>;
       return (
         aun.updated.hasType(assetType) &&
+        aun.original != null &&
         aun.updated.getLabel() !== aun.original.getLabel()
       );
     };
