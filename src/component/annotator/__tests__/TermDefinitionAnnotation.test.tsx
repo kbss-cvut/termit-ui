@@ -10,7 +10,9 @@ import SimplePopupWithActions from "../SimplePopupWithActions";
 import AnnotationTerms from "../AnnotationTerms";
 import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
 import { withHooks } from "jest-react-hooks-shallow";
-import VocabularyUtils from "../../../util/VocabularyUtils";
+import * as Actions from "../../../action/AsyncTermActions";
+import * as redux from "react-redux";
+import { ThunkDispatch } from "../../../util/Types";
 
 describe("TermDefinitionAnnotation", () => {
   const annotationProps = {
@@ -26,6 +28,8 @@ describe("TermDefinitionAnnotation", () => {
     onClose: () => void;
   };
 
+  let fakeDispatch: ThunkDispatch;
+
   beforeEach(() => {
     actions = {
       onRemove: jest.fn(),
@@ -34,6 +38,8 @@ describe("TermDefinitionAnnotation", () => {
       onClose: jest.fn(),
     };
     mockUseI18n();
+    fakeDispatch = jest.fn();
+    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
   });
 
   it("renders term definition view by default", () => {
@@ -89,32 +95,24 @@ describe("TermDefinitionAnnotation", () => {
     });
   });
 
-  it("passes term definition source IRI to onRemove when remove button is clicked", () => {
-    let term = Generator.generateTerm();
-    term = new Term(
-      Object.assign({}, term, {
-        definitionSource: {
-          iri: Generator.generateUri(),
-          term,
-          target: {
-            source: { iri: Generator.generateUri() },
-            types: [VocabularyUtils.FILE_OCCURRENCE_TARGET],
-          },
-          types: [VocabularyUtils.TERM_DEFINITION_SOURCE],
-        },
-      })
-    );
-    const wrapper = shallow(
-      <TermDefinitionAnnotation
-        isOpen={true}
-        term={term}
-        {...annotationProps}
-        {...actions}
-        {...intlFunctions()}
-      />
-    );
-    const popup = wrapper.find(SimplePopupWithActions);
-    popup.props().actions[1].props.children.props.onClick();
-    expect(actions.onRemove).toHaveBeenCalledWith(term.definitionSource!.iri);
+  describe("onRemove", () => {
+    it("removes term definition source via action as well as invoking annotation removal", () => {
+      const term = Generator.generateTerm();
+      jest.spyOn(Actions, "removeTermDefinitionSource");
+      const wrapper = shallow(
+        <TermDefinitionAnnotation
+          isOpen={true}
+          term={term}
+          {...annotationProps}
+          {...actions}
+          {...intlFunctions()}
+        />
+      );
+      const popup = wrapper.find(SimplePopupWithActions);
+      popup.props().actions[1].props.children.props.onClick();
+
+      expect(actions.onRemove).toHaveBeenCalled();
+      expect(Actions.removeTermDefinitionSource).toHaveBeenCalledWith(term);
+    });
   });
 });
