@@ -17,10 +17,7 @@ import Message from "../../model/Message";
 import { publishMessage } from "../../action/SyncActions";
 import MessageType from "../../model/MessageType";
 import TermOccurrence, { TextQuoteSelector } from "../../model/TermOccurrence";
-import {
-  removeOccurrence,
-  setTermDefinitionSource,
-} from "../../action/AsyncTermActions";
+import { setTermDefinitionSource } from "../../action/AsyncTermActions";
 import JsonLdUtils from "../../util/JsonLdUtils";
 import Utils from "../../util/Utils";
 import AnnotatorContent from "./AnnotatorContent";
@@ -39,7 +36,6 @@ import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
 import TextAnalysisInvocationButton from "./TextAnalysisInvocationButton";
 import classNames from "classnames";
-import { AssetData } from "../../model/Asset";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -56,8 +52,6 @@ interface AnnotatorProps extends HasI18n {
   setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
 
   updateTerm(term: Term): Promise<any>;
-
-  removeOccurrence(occurrence: TermOccurrence | AssetData): Promise<any>;
 }
 
 interface AnnotatorState {
@@ -182,10 +176,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     this.setState({ stickyAnnotationId: "" });
   };
 
-  public onRemove = (
-    annotationElemId: string | string[],
-    occurrenceIri?: string | string[]
-  ) => {
+  public onRemove = (annotationElemId: string | string[]) => {
     const dom = [...this.state.internalHtml];
     let removed = false;
     for (const id of Utils.sanitizeArray(annotationElemId)) {
@@ -203,16 +194,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       this.setState({ stickyAnnotationId: "" });
       this.updateInternalHtml(dom);
     }
-    if (occurrenceIri) {
-      this.removeOccurrence(occurrenceIri);
-    }
   };
-
-  private removeOccurrence(occurrenceIri: string | string[]) {
-    Utils.sanitizeArray(occurrenceIri).forEach((iri) =>
-      this.props.removeOccurrence({ iri })
-    );
-  }
 
   public onAnnotationTermSelected = (
     annotationSpan: AnnotationSpanProps,
@@ -672,8 +654,6 @@ export default connect(
       setTermDefinitionSource: (src: TermOccurrence, term: Term) =>
         dispatch(setTermDefinitionSource(src, term)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
-      removeOccurrence: (occurrence: TermOccurrence | AssetData) =>
-        dispatch(removeOccurrence(occurrence)),
     };
   }
 )(injectIntl(withI18n(Annotator)));

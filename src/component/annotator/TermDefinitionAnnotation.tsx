@@ -8,6 +8,9 @@ import TermDefinitionAnnotationView from "./TermDefinitionAnnotationView";
 import { GoPencil } from "react-icons/go";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import { useI18n } from "../hook/useI18n";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../util/Types";
+import { removeTermDefinitionSource } from "../../action/AsyncTermActions";
 
 interface TermDefinitionAnnotationProps {
   target: string;
@@ -16,7 +19,7 @@ interface TermDefinitionAnnotationProps {
   text: string;
   isOpen: boolean;
 
-  onRemove: (occurrenceIri?: string) => void;
+  onRemove: () => void;
   onSelectTerm: (term: Term | null) => void;
   onToggleDetailOpen: () => void;
   onClose: () => void;
@@ -93,6 +96,13 @@ export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> =
         setEditing(false);
       }
     }, [term]);
+    const dispatch: ThunkDispatch = useDispatch();
+    const onRemove = () => {
+      props.onRemove();
+      if (term) {
+        dispatch(removeTermDefinitionSource(term));
+      }
+    };
     const bodyContent = editing ? (
       <AnnotationTerms
         onChange={props.onSelectTerm}
@@ -116,7 +126,7 @@ export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> =
         actions={createActionButtons(i18n, editing, {
           onClose: props.onClose,
           onEdit: () => setEditing(!editing),
-          onRemove: () => props.onRemove(term?.definitionSource?.iri),
+          onRemove,
         })}
         title={i18n("annotation.definition.title")}
       />

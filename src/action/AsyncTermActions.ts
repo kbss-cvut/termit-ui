@@ -213,6 +213,20 @@ export function setTermDefinitionSource(source: TermOccurrence, term: Term) {
   };
 }
 
+export function removeTermDefinitionSource(term: Term) {
+  const termIri = VocabularyUtils.create(term.iri);
+  const action = { type: ActionType.REMOVE_TERM_DEFINITION_SOURCE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.delete(
+      `${Constants.API_PREFIX}/terms/${termIri.fragment}/definition-source`,
+      param("namespace", termIri.namespace)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
 export function removeOccurrence(occurrence: TermOccurrence | AssetData) {
   const action = {
     type: ActionType.REMOVE_TERM_OCCURRENCE,
