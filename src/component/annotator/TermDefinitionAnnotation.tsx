@@ -16,17 +16,22 @@ interface TermDefinitionAnnotationProps {
   text: string;
   isOpen: boolean;
 
-  onRemove: () => void;
+  onRemove: (occurrenceIri?: string) => void;
   onSelectTerm: (term: Term | null) => void;
   onToggleDetailOpen: () => void;
   onClose: () => void;
 }
 
+interface ButtonHandlers {
+  onEdit: () => void;
+  onRemove: () => void;
+  onClose: () => void;
+}
+
 function createActionButtons(
-  props: TermDefinitionAnnotationProps,
   i18n: (msgId: string) => string,
   editing: boolean,
-  onEdit: () => void
+  handlers: ButtonHandlers
 ) {
   const actions = [];
   if (!editing) {
@@ -40,7 +45,7 @@ function createActionButtons(
           color="primary"
           title={i18n("edit")}
           size="sm"
-          onClick={onEdit}
+          onClick={handlers.onEdit}
         >
           <GoPencil />
         </Button>
@@ -57,7 +62,7 @@ function createActionButtons(
         color="primary"
         title={i18n("remove")}
         size="sm"
-        onClick={props.onRemove}
+        onClick={handlers.onRemove}
       >
         <TiTrash />
       </Button>
@@ -70,7 +75,7 @@ function createActionButtons(
       color="primary"
       title={i18n("annotation.close")}
       size="sm"
-      onClick={props.onClose}
+      onClick={handlers.onClose}
     >
       <TiTimes />
     </Button>
@@ -108,9 +113,11 @@ export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> =
         target={props.target}
         toggle={props.onToggleDetailOpen}
         component={bodyContent}
-        actions={createActionButtons(props, i18n, editing, () =>
-          setEditing(!editing)
-        )}
+        actions={createActionButtons(i18n, editing, {
+          onClose: props.onClose,
+          onEdit: () => setEditing(!editing),
+          onRemove: () => props.onRemove(term?.definitionSource?.iri),
+        })}
         title={i18n("annotation.definition.title")}
       />
     );

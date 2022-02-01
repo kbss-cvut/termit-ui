@@ -10,6 +10,7 @@ import SimplePopupWithActions from "../SimplePopupWithActions";
 import AnnotationTerms from "../AnnotationTerms";
 import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
 import { withHooks } from "jest-react-hooks-shallow";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("TermDefinitionAnnotation", () => {
   const annotationProps = {
@@ -86,5 +87,34 @@ describe("TermDefinitionAnnotation", () => {
         wrapper.find(SimplePopupWithActions).prop("component").type
       ).toEqual(TermDefinitionAnnotationView);
     });
+  });
+
+  it("passes term definition source IRI to onRemove when remove button is clicked", () => {
+    let term = Generator.generateTerm();
+    term = new Term(
+      Object.assign({}, term, {
+        definitionSource: {
+          iri: Generator.generateUri(),
+          term,
+          target: {
+            source: { iri: Generator.generateUri() },
+            types: [VocabularyUtils.FILE_OCCURRENCE_TARGET],
+          },
+          types: [VocabularyUtils.TERM_DEFINITION_SOURCE],
+        },
+      })
+    );
+    const wrapper = shallow(
+      <TermDefinitionAnnotation
+        isOpen={true}
+        term={term}
+        {...annotationProps}
+        {...actions}
+        {...intlFunctions()}
+      />
+    );
+    const popup = wrapper.find(SimplePopupWithActions);
+    popup.props().actions[1].props.children.props.onClick();
+    expect(actions.onRemove).toHaveBeenCalledWith(term.definitionSource!.iri);
   });
 });
