@@ -1,28 +1,29 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
-import { RouteComponentProps, withRouter } from "react-router";
-import { connect } from "react-redux";
+import { HasI18n } from "../../hoc/withI18n";
+import { RouteComponentProps } from "react-router";
 import SearchResult from "../../../model/SearchResult";
 import "./Search.scss";
-import * as SearchActions from "../../../action/SearchActions";
-import { ThunkDispatch } from "../../../util/Types";
-import TermItState from "../../../model/TermItState";
 import SearchQuery from "../../../model/SearchQuery";
 import SearchResults from "./SearchResults";
 import ContainerMask from "../../misc/ContainerMask";
 import WindowTitle from "../../misc/WindowTitle";
 
-interface SearchProps extends HasI18n, RouteComponentProps<any> {
+interface DispatchProps {
   addSearchListener: () => void;
   removeSearchListener: () => void;
   updateSearchFilter: (searchString: string) => any;
+}
+
+interface StateProps {
   searchQuery: SearchQuery;
   searchResults: SearchResult[] | null;
   searchInProgress: boolean;
 }
 
-export class Search extends React.Component<SearchProps> {
+export interface SearchProps extends DispatchProps, StateProps, HasI18n, RouteComponentProps<any> {
+}
+
+export class Search<P extends SearchProps = SearchProps, S extends {} = {}> extends React.Component<P, S> {
   public componentDidMount() {
     this.props.addSearchListener();
   }
@@ -49,21 +50,4 @@ export class Search extends React.Component<SearchProps> {
   }
 }
 
-export default connect(
-  (state: TermItState) => {
-    return {
-      searchQuery: state.searchQuery,
-      searchResults: state.searchResults,
-      searchInProgress: state.searchInProgress,
-    };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      updateSearchFilter: (searchString: string) =>
-        dispatch(SearchActions.updateSearchFilter(searchString)),
-      addSearchListener: () => dispatch(SearchActions.addSearchListener()),
-      removeSearchListener: () =>
-        dispatch(SearchActions.removeSearchListener()),
-    };
-  }
-)(withRouter(injectIntl(withI18n(Search))));
+export default Search;
