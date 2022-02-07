@@ -369,7 +369,8 @@ function searchListenerCount(state: number = 0, action: Action): number {
     case ActionType.ADD_SEARCH_LISTENER:
       return state + 1;
     case ActionType.REMOVE_SEARCH_LISTENER:
-      return state - 1;
+      // Don't let it go below 0 (could happen on logout), we would not recover
+      return Math.max(state - 1, 0);
     case ActionType.LOGOUT:
       return 0;
     default:

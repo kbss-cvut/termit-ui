@@ -47,6 +47,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
 import { langString } from "../../model/MultilingualString";
 import { Configuration } from "../../model/Configuration";
+import { removeSearchListener } from "../../action/SearchActions";
 
 function stateToPlainObject(state: TermItState): TermItState {
   return {
@@ -878,6 +879,7 @@ describe("Reducers", () => {
       const config: Configuration = {
         iri: Generator.generateUri(),
         language: "es",
+        maxFileUploadSize: "25MB",
         roles: [],
       };
       const result = reducers(
@@ -935,6 +937,17 @@ describe("Reducers", () => {
       expect(result.definitionallyRelatedTerms).toEqual(
         new TermItState().definitionallyRelatedTerms
       );
+    });
+  });
+
+  describe("searchListenerCount", () => {
+    it("does not allow to go listener count to negative if removeListener is called after logout", () => {
+      initialState.searchListenerCount = 0;
+      const result = reducers(
+        stateToPlainObject(initialState),
+        removeSearchListener()
+      );
+      expect(result.searchListenerCount).toEqual(0);
     });
   });
 });
