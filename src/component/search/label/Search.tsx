@@ -1,6 +1,5 @@
 import * as React from "react";
 import { HasI18n } from "../../hoc/withI18n";
-import { RouteComponentProps } from "react-router";
 import SearchResult from "../../../model/SearchResult";
 import "./Search.scss";
 import SearchQuery from "../../../model/SearchQuery";
@@ -20,10 +19,12 @@ interface StateProps {
   searchInProgress: boolean;
 }
 
-export interface SearchProps extends DispatchProps, StateProps, HasI18n, RouteComponentProps<any> {
-}
+export interface SearchProps extends DispatchProps, StateProps, HasI18n {}
 
-export class Search<P extends SearchProps = SearchProps, S extends {} = {}> extends React.Component<P, S> {
+export class Search<
+  P extends SearchProps = SearchProps,
+  S extends {} = {}
+> extends React.Component<P, S> {
   public componentDidMount() {
     this.props.addSearchListener();
   }
