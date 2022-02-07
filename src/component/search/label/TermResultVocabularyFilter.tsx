@@ -21,7 +21,13 @@ interface Option {
 }
 
 function resolveUniqueVocabularies(searchResults: SearchResult[]) {
-  return [...new Set(searchResults.filter(sr => sr.vocabulary !== undefined).map((sr) => sr.vocabulary!.iri))];
+  return [
+    ...new Set(
+      searchResults
+        .filter((sr) => sr.vocabulary !== undefined)
+        .map((sr) => sr.vocabulary!.iri)
+    ),
+  ];
 }
 
 const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
