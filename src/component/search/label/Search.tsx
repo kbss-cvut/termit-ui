@@ -1,11 +1,16 @@
 import * as React from "react";
-import { HasI18n } from "../../hoc/withI18n";
+import withI18n, { HasI18n } from "../../hoc/withI18n";
 import SearchResult from "../../../model/SearchResult";
 import "./Search.scss";
 import SearchQuery from "../../../model/SearchQuery";
 import SearchResults from "./SearchResults";
 import ContainerMask from "../../misc/ContainerMask";
 import WindowTitle from "../../misc/WindowTitle";
+import { connect } from "react-redux";
+import TermItState from "../../../model/TermItState";
+import { ThunkDispatch } from "../../../util/Types";
+import * as SearchActions from "../../../action/SearchActions";
+import { injectIntl } from "react-intl";
 
 interface DispatchProps {
   addSearchListener: () => void;
@@ -51,4 +56,21 @@ export class Search<
   }
 }
 
-export default Search;
+export default connect<StateProps, DispatchProps, {}, TermItState>(
+  (state: TermItState) => {
+    return {
+      searchQuery: state.searchQuery,
+      searchResults: state.searchResults,
+      searchInProgress: state.searchInProgress,
+    };
+  },
+  (dispatch: ThunkDispatch) => {
+    return {
+      updateSearchFilter: (searchString: string) =>
+        dispatch(SearchActions.updateSearchFilter(searchString)),
+      addSearchListener: () => dispatch(SearchActions.addSearchListener()),
+      removeSearchListener: () =>
+        dispatch(SearchActions.removeSearchListener()),
+    };
+  }
+)(injectIntl(withI18n(Search as any)));
