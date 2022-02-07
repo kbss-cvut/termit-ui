@@ -174,7 +174,7 @@ const cs = {
     "administration.users.types.admin": "Tento uživatel je administrátor",
     "administration.users.types.oauth2":
       "Tento účet je externí a jeho uživatel se přihlašuje přes OAuth2 autentizační službu",
-    "administration.maintenance.title": "Údržba",
+    "administration.maintenance.title": "Správa",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":
       "Vyprázdnit interní cache systému",
@@ -558,6 +558,7 @@ const cs = {
     "search.tab.dashboard": "Nástěnka",
     "search.tab.everything": "Hledat ve všech záznamech",
     "search.tab.terms": "Pojmy",
+    "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
     "search.tab.vocabularies": "Slovníky",
     "search.tab.facets": "Facetové vyhledávání",
     "search.reset": "Vymazat vyhledávání",
