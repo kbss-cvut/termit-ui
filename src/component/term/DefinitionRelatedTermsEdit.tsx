@@ -241,7 +241,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
     return (
       <>
         <td
-          className={classNames("align-middle pl-0", {
+          className={classNames("pl-0 align-middle", {
             italics: isSuggested,
           })}
         >
@@ -257,7 +257,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
           {term && <TermLink term={term} language={language} />}
         </td>
         <td className="pr-0">
-          <ButtonToolbar className="d-inline ml-1 pull-right">
+          <ButtonToolbar className="d-inline pull-right ml-1">
             {canApprove && (
               <BadgeButton
                 color="primary"

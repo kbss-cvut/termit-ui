@@ -40,7 +40,7 @@ export function renderLanguages(
         {ISO6391.getNativeName(lang)}
         {count > 1 && onRemove && (
           <FaTimesCircle
-            className="m-remove-lang align-baseline ml-1"
+            className="m-remove-lang ml-1 align-baseline"
             onClick={(e) => {
               e.stopPropagation();
               onSelect(languages[i > 0 ? i - 1 : 1]);

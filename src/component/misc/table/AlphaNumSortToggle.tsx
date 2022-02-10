@@ -15,7 +15,7 @@ const AlphaNumSortToggle: React.FC<SortToggleProps> = (props) => {
   return (
     <span
       {...sortProps}
-      className="ml-1 sort-icon"
+      className="sort-icon ml-1"
       title={i18n("table.sort.tooltip")}
     >
       {isSorted ? (

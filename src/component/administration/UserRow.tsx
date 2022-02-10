@@ -129,7 +129,7 @@ function renderUserTypeBadges(user: User, i18n: (id: string) => string) {
         <Badge
           key={t}
           color="primary"
-          className={`align-middle ml-2 mb-1 ${badgeInfo.className}`}
+          className={`ml-2 mb-1 align-middle ${badgeInfo.className}`}
           pill={true}
           title={i18n(badgeInfo.title)}
         >
@@ -167,7 +167,7 @@ export const UserRow: React.FC<UserRowProps> = (props: UserRowProps) => {
       </td>
       <td className="align-middle">{user.fullName}</td>
       <td className="align-middle">{user.username}</td>
-      <td className="align-middle m-user-status">
+      <td className="m-user-status align-middle">
         {i18n(status.statusLabel)}
         <InfoIcon
           id={`user-${Utils.hashCode(user.iri)}-status-info`}
@@ -178,7 +178,7 @@ export const UserRow: React.FC<UserRowProps> = (props: UserRowProps) => {
       <td className="align-middle">
         <UserRoles user={user} />
       </td>
-      <td className="align-middle users-row-actions">
+      <td className="users-row-actions align-middle">
         {isCurrentUser ? null : renderActionButtons(user, props.actions, i18n)}
       </td>
     </tr>

@@ -76,7 +76,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
         removeReaction={onRemoveReaction}
         updateComment={onUpdate}
       />
-      {comments.length > 0 && <hr className="mt-3 mb-1 border-top" />}
+      {comments.length > 0 && <hr className="border-top mt-3 mb-1" />}
       <CreateCommentForm onSubmit={onSubmit} />
     </>
   );
@@ -84,7 +84,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
   const renderReverse = () => (
     <>
       <CreateCommentForm onSubmit={onSubmit} />
-      {comments.length > 0 && <hr className="mt-3 mb-1 border-top" />}
+      {comments.length > 0 && <hr className="border-top mt-3 mb-1" />}
       <CommentList
         comments={comments.reverse()}
         addReaction={onAddReaction}

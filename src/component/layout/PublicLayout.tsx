@@ -20,7 +20,7 @@ const PublicLayout: React.FC<PublicLayoutProps> = (props) => {
     >
       <Container
         fluid={true}
-        className="pt-3 flex-grow-1 main-container align-items-center justify-content-center"
+        className="flex-grow-1 main-container align-items-center justify-content-center pt-3"
       >
         {props.children}
       </Container>

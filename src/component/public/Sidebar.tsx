@@ -108,7 +108,7 @@ export class Sidebar extends DefaultSidebar {
             {/* Brand */}
             {(sidebarExpanded || !desktopView) && (
               <NavbarBrand
-                className="p-0 ml-2 ml-sm-3 ml-md-0 brand"
+                className="ml-sm-3 ml-md-0 brand ml-2 p-0"
                 href={`#${Routes.publicDashboard.path}`}
               >
                 {Constants.APP_NAME}

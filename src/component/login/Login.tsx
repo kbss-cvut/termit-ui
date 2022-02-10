@@ -76,7 +76,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
       <PublicLayout title={i18n("login.title")}>
         <WindowTitle title={i18n("login.title")} />
         <Card className="modal-panel">
-          <CardHeader className="text-center pb-0 border-bottom-0">
+          <CardHeader className="border-bottom-0 pb-0 text-center">
             <h1>{Constants.APP_NAME}</h1>
             <div>{i18n("login.subtitle")}</div>
           </CardHeader>
@@ -148,7 +148,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
       return null;
     }
     return (
-      <div className="text-center mt-2">
+      <div className="mt-2 text-center">
         <FormattedMessage
           id="login.register.label"
           values={{
@@ -169,7 +169,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
 
   private renderPublicViewLink() {
     return (
-      <div className="text-center mt-2">
+      <div className="mt-2 text-center">
         <FormattedMessage
           id="login.public-view-link"
           values={{

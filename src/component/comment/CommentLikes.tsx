@@ -41,7 +41,7 @@ const CommentLikes: React.FC<CommentLikesProps> = (props) => {
     iconClass = "actionable-reaction";
   }
   return (
-    <div className="ml-2 d-inline-block">
+    <div className="d-inline-block ml-2">
       <IconElem
         className={iconClass}
         title={props.i18n(title)}

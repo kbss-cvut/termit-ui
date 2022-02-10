@@ -53,7 +53,7 @@ const TermDefinitionSource: React.FC<TermDefinitionBlockProps> = (props) => {
     return (
       <Col xs={12}>
         {sources.length > 0 ? (
-          <footer className="blockquote-footer mb-1 term-metadata-definition-source">
+          <footer className="blockquote-footer term-metadata-definition-source mb-1">
             {sources.map((s) => {
               return (
                 <React.Fragment key={s}>

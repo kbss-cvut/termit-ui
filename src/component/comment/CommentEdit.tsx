@@ -34,7 +34,7 @@ const CommentEdit: React.FC<CommentEditProps> = (props) => {
 
   return (
     <div className="comment mt-2 pt-2">
-      <div className="float-left avatar">
+      <div className="avatar float-left">
         <FaUserCircle />
       </div>
       <div className="content">
