@@ -550,6 +550,7 @@ const en = {
     "search.tab.dashboard": "Dashboard",
     "search.tab.everything": "Search in all assets",
     "search.tab.terms": "Terms",
+    "search.tab.terms.filter.allVocabularies": "All vocabularies",
     "search.tab.vocabularies": "Vocabularies",
     "search.tab.facets": "Faceted search",
     "search.reset": "Reset search",

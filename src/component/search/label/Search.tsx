@@ -1,28 +1,35 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../../hoc/withI18n";
-import { RouteComponentProps, withRouter } from "react-router";
-import { connect } from "react-redux";
 import SearchResult from "../../../model/SearchResult";
 import "./Search.scss";
-import * as SearchActions from "../../../action/SearchActions";
-import { ThunkDispatch } from "../../../util/Types";
-import TermItState from "../../../model/TermItState";
 import SearchQuery from "../../../model/SearchQuery";
 import SearchResults from "./SearchResults";
 import ContainerMask from "../../misc/ContainerMask";
 import WindowTitle from "../../misc/WindowTitle";
+import { connect } from "react-redux";
+import TermItState from "../../../model/TermItState";
+import { ThunkDispatch } from "../../../util/Types";
+import * as SearchActions from "../../../action/SearchActions";
+import { injectIntl } from "react-intl";
 
-interface SearchProps extends HasI18n, RouteComponentProps<any> {
+interface DispatchProps {
   addSearchListener: () => void;
   removeSearchListener: () => void;
   updateSearchFilter: (searchString: string) => any;
+}
+
+interface StateProps {
   searchQuery: SearchQuery;
   searchResults: SearchResult[] | null;
   searchInProgress: boolean;
 }
 
-export class Search extends React.Component<SearchProps> {
+export interface SearchProps extends DispatchProps, StateProps, HasI18n {}
+
+export class Search<
+  P extends SearchProps = SearchProps,
+  S extends {} = {}
+> extends React.Component<P, S> {
   public componentDidMount() {
     this.props.addSearchListener();
   }
@@ -49,7 +56,7 @@ export class Search extends React.Component<SearchProps> {
   }
 }
 
-export default connect(
+export default connect<StateProps, DispatchProps, {}, TermItState>(
   (state: TermItState) => {
     return {
       searchQuery: state.searchQuery,
@@ -66,4 +73,4 @@ export default connect(
         dispatch(SearchActions.removeSearchListener()),
     };
   }
-)(withRouter(injectIntl(withI18n(Search))));
+)(injectIntl(withI18n(Search as any)));
