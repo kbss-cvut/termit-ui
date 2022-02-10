@@ -82,7 +82,10 @@ describe("SearchTerms", () => {
     let hasTermResult = false;
     let hasVocabularyResult = false;
     for (let i = 0; i < count; i++) {
-      if (hasVocabularyResult && (!hasTermResult || Generator.randomBoolean())) {
+      if (
+        hasVocabularyResult &&
+        (!hasTermResult || Generator.randomBoolean())
+      ) {
         results.push(
           new SearchResult({
             iri: Generator.generateUri(),
