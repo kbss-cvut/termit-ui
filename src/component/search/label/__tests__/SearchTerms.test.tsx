@@ -79,8 +79,10 @@ describe("SearchTerms", () => {
   function generateSearchResults(vocabularies: string[]) {
     const results: SearchResult[] = [];
     const count = Generator.randomInt(5, 10);
+    let hasTermResult = false;
+    let hasVocabularyResult = false;
     for (let i = 0; i < count; i++) {
-      if (Generator.randomBoolean()) {
+      if (hasVocabularyResult && (!hasTermResult || Generator.randomBoolean())) {
         results.push(
           new SearchResult({
             iri: Generator.generateUri(),
@@ -96,6 +98,7 @@ describe("SearchTerms", () => {
             types: [VocabularyUtils.TERM],
           })
         );
+        hasTermResult = true;
       } else {
         results.push(
           new SearchResult({
@@ -106,6 +109,7 @@ describe("SearchTerms", () => {
             types: [VocabularyUtils.VOCABULARY],
           })
         );
+        hasVocabularyResult = true;
       }
     }
     return results;
