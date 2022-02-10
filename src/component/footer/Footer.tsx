@@ -56,7 +56,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
         >
           <FooterMenu fixed={authenticated} />
         </div>
-        <Col className="px-2 px-sm-3">
+        <Col className="px-sm-3 px-2">
           <a
             href="https://kbss.felk.cvut.cz"
             target="_blank"
@@ -69,7 +69,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
         <div>
           <span
             onClick={this.toggleLogViewer}
-            className="log-viewer-toggle pl-xs-1 px-2 px-sm-3"
+            className="log-viewer-toggle pl-xs-1 px-sm-3 px-2"
             title={i18n("log-viewer.title")}
             id="log-viewer-toggler"
           >
@@ -83,7 +83,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
             <ErrorLogViewer />
           </FooterModalViewer>
         </div>
-        <div className="news-viewer-toggle px-1 px-sm-2 px-sm-3 text-right">
+        <div className="news-viewer-toggle px-sm-2 px-sm-3 px-1 text-right">
           <span onClick={this.toggleNewsViewer} id="news-toggler">
             <span className="footer-version">
               {i18n("footer.version")}&nbsp;

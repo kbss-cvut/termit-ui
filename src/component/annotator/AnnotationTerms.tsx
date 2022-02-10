@@ -129,7 +129,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
           </div>
           <IntelligentTreeSelect
             ref={this.treeComponent}
-            className="p-0 mt-1"
+            className="mt-1 p-0"
             onChange={this.handleChange}
             value={this.props.selectedTerm}
             options={terms}

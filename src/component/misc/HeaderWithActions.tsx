@@ -21,7 +21,7 @@ const HeaderWithActions: React.FC<HeaderWithActionsProps> = (props) => (
   >
     <h2 className="page-header">{props.title}</h2>
     {props.actions && (
-      <ButtonToolbar className="mb-3 align-items-start">
+      <ButtonToolbar className="align-items-start mb-3">
         {props.actions}
       </ButtonToolbar>
     )}

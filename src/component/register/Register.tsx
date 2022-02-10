@@ -35,7 +35,7 @@ export const Register: React.FC<RegisterProps> = (props) => {
     <PublicLayout title={props.i18n("register.title")}>
       <WindowTitle title={props.i18n("register.title")} />
       <Card className="modal-panel">
-        <CardHeader className="text-center pb-0 border-bottom-0">
+        <CardHeader className="border-bottom-0 pb-0 text-center">
           <h1>{Constants.APP_NAME}</h1>
           <div>{props.i18n("register.subtitle")}</div>
         </CardHeader>

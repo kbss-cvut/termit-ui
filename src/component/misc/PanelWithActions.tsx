@@ -20,7 +20,7 @@ export default class PanelWithActions extends React.Component<PanelWithActionsPr
           className="d-flex align-items-center"
         >
           <div className="flex-grow-1">{props.title}</div>
-          <div className="ml-2 flex-grow-0 float-right">
+          <div className="float-right ml-2 flex-grow-0">
             {props.actions ? props.actions : ""}
           </div>
         </CardHeader>

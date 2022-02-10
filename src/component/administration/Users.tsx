@@ -144,7 +144,7 @@ export class Users extends React.Component<UsersProps, UsersState> {
                   <th>{i18n("administration.users.username")}</th>
                   <th>{i18n("administration.users.status")}</th>
                   <th>{i18n("administration.users.role")}</th>
-                  <th className="text-center users-row-actions">
+                  <th className="users-row-actions text-center">
                     {i18n("actions")}
                   </th>
                 </tr>

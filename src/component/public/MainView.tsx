@@ -102,7 +102,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                   <NavItem>
                     <Link
                       to={Routes.login.path}
-                      className="mx-3 text-dark"
+                      className="text-dark mx-3"
                       title={i18n("public.nav.user")}
                     >
                       <FaUserSlash className="user-icon" />

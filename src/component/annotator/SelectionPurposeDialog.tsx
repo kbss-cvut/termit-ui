@@ -43,7 +43,7 @@ export const SelectionPurposeDialog: React.FC<SelectionPurposeDialogProps> = (
           <div className="flex-grow-1">
             {i18n("annotator.selectionPurpose.dialog.title")}
           </div>
-          <div className="ml-2 flex-grow-0 float-right">
+          <div className="float-right ml-2 flex-grow-0">
             <Button
               id="annotator-selection-dialog-cancel"
               onClick={props.onCancel}

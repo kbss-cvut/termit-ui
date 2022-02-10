@@ -34,14 +34,14 @@ const CommentView: React.FC<CommentViewProps> = (props) => {
   const canEdit = comment.author!.iri === currentUser.iri;
   return (
     <div className="comment mt-2 pt-2">
-      <div className="float-left avatar">
+      <div className="avatar float-left">
         <FaUserCircle />
       </div>
       <div className="content">
         <span className="author">{comment.author!.fullName}</span>
         <div className="metadata text-muted">
           <div
-            className="mr-2 d-inline-block"
+            className="d-inline-block mr-2"
             title={`${formatDate(comment.created!)} ${formatTime(
               comment.created!
             )}`}
@@ -61,12 +61,12 @@ const CommentView: React.FC<CommentViewProps> = (props) => {
             removeReaction={removeReaction}
           />
           {comment.modified && (
-            <div className="ml-3 d-inline-block italics">
+            <div className="d-inline-block italics ml-3">
               {props.i18n("comments.comment.edited")}
             </div>
           )}
         </div>
-        <div className="mt-1 mb-2 comment-text">{comment.content}</div>
+        <div className="comment-text mt-1 mb-2">{comment.content}</div>
         <div className="actions">
           {canEdit && (
             <span

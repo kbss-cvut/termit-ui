@@ -32,7 +32,7 @@ describe("UserDropdown", () => {
         .find(DropdownToggle)
         .contains(
           <>
-            <i className="fas fa-user-circle align-middle user-icon" />
+            <i className="fas fa-user-circle user-icon align-middle" />
             &nbsp;
             <span className="user-dropdown">{user.abbreviatedName}</span>
           </>
