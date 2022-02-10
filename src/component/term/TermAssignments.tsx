@@ -8,13 +8,13 @@ import { loadTermAssignmentsInfo } from "../../action/AsyncActions";
 import { Table } from "reactstrap";
 import TermItState from "../../model/TermItState";
 import IntlData from "../../model/IntlData";
-import "./TermAssignments.scss";
 import Resource, { ResourceData } from "../../model/Resource";
 import ResourceLink from "../resource/ResourceLink";
 import { TermAssignments as AssignmentInfo } from "../../model/TermAssignments";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Utils from "../../util/Utils";
 import ContainerMask from "../misc/ContainerMask";
+import "./TermAssignments.scss";
 
 interface TermAssignmentsOwnProps {
   term: Term;

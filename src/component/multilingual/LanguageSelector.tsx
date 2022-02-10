@@ -2,9 +2,9 @@ import * as React from "react";
 import ISO6391 from "iso-639-1";
 import Term from "../../model/Term";
 import { Nav, NavItem, NavLink } from "reactstrap";
-import "./LanguageSelector.scss";
 import { FaTimesCircle } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
+import "./LanguageSelector.scss";
 
 interface LanguageSelectorProps {
   term: Term | null;

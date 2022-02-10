@@ -1,9 +1,9 @@
+import * as React from "react";
 import Term, { TermInfo } from "../../model/Term";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import TermLink from "./TermLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
-import * as React from "react";
 
 interface TermListProps {
   terms: (Term | TermInfo)[];

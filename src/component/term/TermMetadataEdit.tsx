@@ -11,7 +11,6 @@ import {
   Row,
 } from "reactstrap";
 import Term, { CONTEXT, TermData, TermInfo } from "../../model/Term";
-import "./TermMetadata.scss";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -19,10 +18,7 @@ import TermTypesEdit from "./TermTypesEdit";
 import Utils from "../../util/Utils";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import ParentTermSelector from "./ParentTermSelector";
-import DraftToggle from "./DraftToggle";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
-import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
-import StringListEdit from "../misc/StringListEdit";
 import {
   getLocalized,
   getLocalizedOrDefault,
@@ -42,9 +38,13 @@ import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/form/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
 import ExactMatchesSelector from "./ExactMatchesSelector";
+import DraftToggle from "./DraftToggle";
 import MultilingualIcon from "../misc/MultilingualIcon";
 import RelatedTermsSelector from "./RelatedTermsSelector";
 import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
+import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
+import StringListEdit from "../misc/StringListEdit";
+import "./TermMetadata.scss";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;

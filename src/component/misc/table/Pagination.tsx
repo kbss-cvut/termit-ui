@@ -7,10 +7,10 @@ import {
   PaginationLink,
 } from "reactstrap";
 import Select from "../Select";
-import "./Pagination.scss";
 import Constants from "../../../util/Constants";
 import { useI18n } from "../../hook/useI18n";
 import BrowserStorage from "../../../util/BrowserStorage";
+import "./Pagination.scss";
 
 interface PaginationProps {
   pagingProps: UsePaginationInstanceProps<any>;

@@ -9,19 +9,19 @@ import ParentTermSelector from "./ParentTermSelector";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { injectIntl } from "react-intl";
 import TermDefinitionBlockEdit from "./TermDefinitionBlockEdit";
-import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
-import StringListEdit from "../misc/StringListEdit";
 import {
   getLocalized,
   getLocalizedOrDefault,
   getLocalizedPlural,
 } from "../../model/MultilingualString";
+import ValidationResult from "../../model/form/ValidationResult";
 import { checkLabelUniqueness } from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/AbstractCreateAsset";
 import MultilingualIcon from "../misc/MultilingualIcon";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
-import ValidationResult from "../../model/form/ValidationResult";
+import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
+import StringListEdit from "../misc/StringListEdit";
 
 interface TermMetadataCreateFormProps extends HasI18n {
   onChange: (change: object, callback?: () => void) => void;

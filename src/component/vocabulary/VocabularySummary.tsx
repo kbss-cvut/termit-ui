@@ -12,7 +12,6 @@ import {
   updateVocabulary,
   validateVocabulary,
 } from "../../action/AsyncActions";
-import VocabularyMetadata from "./VocabularyMetadata";
 import {
   Button,
   DropdownItem,
@@ -20,15 +19,15 @@ import {
   DropdownToggle,
   UncontrolledButtonDropdown,
 } from "reactstrap";
-import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
 import { GoClippy, GoCloudDownload, GoPencil } from "react-icons/go";
+import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
 import EditableComponent, {
   EditableComponentState,
 } from "../misc/EditableComponent";
 import VocabularyEdit from "./VocabularyEdit";
+import VocabularyMetadata from "./VocabularyMetadata";
 import Utils from "../../util/Utils";
-import "./VocabularySummary.scss";
 import ExportType from "../../util/ExportType";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
@@ -42,6 +41,7 @@ import {
   exportGlossary,
   exportGlossaryWithExactMatchReferences,
 } from "../../action/AsyncVocabularyActions";
+import "./VocabularySummary.scss";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;

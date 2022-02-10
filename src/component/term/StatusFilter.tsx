@@ -1,9 +1,8 @@
 import * as React from "react";
 import { FormGroup } from "reactstrap";
-import "./StatusFilter.scss";
 import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
-import classNames from "classnames";
 import { useI18n } from "../hook/useI18n";
+import "./StatusFilter.scss";
 
 interface StatusFilterProps {
   id: string; // Toggle id, required by the tooltip component
@@ -15,7 +14,6 @@ interface StatusFilterProps {
 
 const StatusFilter: React.FC<StatusFilterProps> = (props) => {
   const { i18n } = useI18n();
-  const cls = classNames("checkbox");
   return (
     <FormGroup id={props.id} className={"mb-0"}>
       <CustomCheckBoxInput
@@ -23,7 +21,7 @@ const StatusFilter: React.FC<StatusFilterProps> = (props) => {
         checked={props.confirmed}
         disabled={!props.draft}
         onChange={props.onConfirmedOnlyToggle}
-        className={cls}
+        className="status-filter-checkbox"
         label={i18n("glossary.filter-confirmed")}
       />
       &nbsp;&nbsp;
@@ -32,7 +30,7 @@ const StatusFilter: React.FC<StatusFilterProps> = (props) => {
         checked={props.draft}
         disabled={!props.confirmed}
         onChange={props.onDraftOnlyToggle}
-        className={cls}
+        className="status-filter-checkbox"
         label={i18n("glossary.filter-draft")}
       />
     </FormGroup>

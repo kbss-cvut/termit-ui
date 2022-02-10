@@ -1,11 +1,11 @@
 import * as React from "react";
 import Term from "../../../model/Term";
-import Terms from "./Terms";
-import BasicTermMetadata from "../../term/BasicTermMetadata";
 import { Card, CardBody, Col, Row } from "reactstrap";
 import Vocabulary from "../../../model/Vocabulary";
 import { RouteComponentProps, withRouter } from "react-router";
+import BasicTermMetadata from "../../term/BasicTermMetadata";
 import LanguageSelector from "../../multilingual/LanguageSelector";
+import Terms from "./Terms";
 
 interface TermMetadataProps extends RouteComponentProps<any> {
   term: Term;

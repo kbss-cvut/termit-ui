@@ -15,15 +15,15 @@ import EditableComponent, {
   EditableComponentState,
 } from "../misc/EditableComponent";
 import Resource from "../../model/Resource";
+import HeaderWithActions from "../misc/HeaderWithActions";
+import { FaTrashAlt } from "react-icons/fa";
+import CopyIriIcon from "../misc/CopyIriIcon";
 import ResourceMetadata from "./ResourceMetadata";
 import ResourceEdit from "./ResourceEdit";
 import "./Resources.scss";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import Utils from "../../util/Utils";
 import FileEdit from "./file/FileEdit";
-import HeaderWithActions from "../misc/HeaderWithActions";
-import { FaTrashAlt } from "react-icons/fa";
-import CopyIriIcon from "../misc/CopyIriIcon";
 import classNames from "classnames";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
 

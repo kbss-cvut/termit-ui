@@ -7,9 +7,16 @@ import {
 import Constants from "../../../util/Constants";
 import ActionType from "../../../action/ActionType";
 
-jest.useFakeTimers();
-
 describe("Message", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.spyOn(global, "setTimeout");
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it("displays alert with specified message text", () => {
     const message: MessageModel = new MessageModel({
       message: "Error message",

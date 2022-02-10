@@ -9,6 +9,8 @@ import {
   removeTerm,
   updateTerm,
 } from "../../action/AsyncActions";
+import HeaderWithActions from "../misc/HeaderWithActions";
+import CopyIriIcon from "../misc/CopyIriIcon";
 import TermMetadata from "./TermMetadata";
 import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
@@ -24,8 +26,6 @@ import { publishNotification } from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
 import { IRI } from "../../util/VocabularyUtils";
 import * as _ from "lodash";
-import HeaderWithActions from "../misc/HeaderWithActions";
-import CopyIriIcon from "../misc/CopyIriIcon";
 import Vocabulary from "../../model/Vocabulary";
 import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
