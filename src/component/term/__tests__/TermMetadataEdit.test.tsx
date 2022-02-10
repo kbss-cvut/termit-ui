@@ -17,7 +17,6 @@ import StringListEdit from "../../misc/StringListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 
-jest.mock("../TermAssignments");
 jest.mock("../ParentTermSelector");
 jest.mock("../ExactMatchesSelector");
 jest.mock("../RelatedTermsSelector");

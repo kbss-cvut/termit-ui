@@ -22,7 +22,7 @@ function isSupported(contentType?: string | null) {
     return false;
   }
   const mt = mimetype.parse(contentType);
-  return mt.isHTML() || mt.isXML();
+  return mt && (mt.isHTML() || mt.isXML());
 }
 
 const FileContentLink: React.FC<FileContentLinkProps> = (props) => {

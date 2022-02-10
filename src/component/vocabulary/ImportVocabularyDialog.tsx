@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import UploadFile from "../resource/file/UploadFile";
-import assert from "assert";
 import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import classNames from "classnames";
 
@@ -17,7 +16,9 @@ export const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
   const [rename, setRename] = useState<Boolean>(false);
 
   const onCreate = () => {
-    assert(file);
+    if (!file) {
+      return;
+    }
     props.onCreate(file, rename);
   };
 

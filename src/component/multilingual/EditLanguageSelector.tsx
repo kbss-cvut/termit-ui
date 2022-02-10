@@ -7,10 +7,10 @@ import Constants from "../../util/Constants";
 import { getShortLocale } from "../../util/IntlUtil";
 import Term, { TermData } from "../../model/Term";
 import { renderLanguages } from "./LanguageSelector";
-import "./LanguageSelector.scss";
 import { Nav, NavItem, NavLink } from "reactstrap";
 import { FaPlusCircle } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
+import "./LanguageSelector.scss";
 
 interface EditLanguageSelectorProps {
   language: string;

@@ -8,6 +8,10 @@ The backend is developed separately and their communication is enabled via CORS 
 To run the TermIt UI, it is necessary to provide a value for `REACT_APP_SERVER_URL` representing the URL of the backend to connect to. 
 Typically, this is done at build time. See the documentation for more details and other configuration options.
 
+## Development Requirements
+
+Unless you are using Docker to build the project, **Node.js 14** or later and **npm 7** or later (due to using lockfile v2) are required.
+
 ## Tests
 
 [Jest](https://jestjs.io/en/) is used for testing the TermIt UI code.

@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Switch } from "react-router";
-import VocabularySummary from "./VocabularySummary";
 import Routes from "../../../util/Routes";
 import Route from "../../misc/Route";
 import DynamicBreadcrumbRoute from "../../breadcrumb/DynamicBreadcrumbRoute";
 import TermDetail from "../term/TermDetail";
+import VocabularySummary from "./VocabularySummary";
 
 const VocabularyRoute: React.FC = () => {
   return (

@@ -31,8 +31,8 @@ import AppNotification from "../../model/AppNotification";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
-import { createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge } from "../misc/treeselect/Renderers";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
+import { createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge } from "../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
   processTermsForTreeSelect,
@@ -40,11 +40,11 @@ import {
 import { Location } from "history";
 import { match as Match } from "react-router";
 import classNames from "classnames";
-import StatusFilter from "./StatusFilter";
-import "./Terms.scss";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import "./Terms.scss";
+import StatusFilter from "./StatusFilter";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;

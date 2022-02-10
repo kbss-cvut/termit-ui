@@ -14,11 +14,11 @@ import { FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
+import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import {
   createTermsWithImportsOptionRenderer,
   createTermValueRenderer,
 } from "../misc/treeselect/Renderers";
-import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import CustomInput from "../misc/CustomInput";

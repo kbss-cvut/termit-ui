@@ -13,13 +13,13 @@ import Resource from "../../../model/Resource";
 import { injectIntl } from "react-intl";
 import withI18n from "../../hoc/withI18n";
 import { Card, CardBody, Col, Label, Row } from "reactstrap";
+import HeaderWithActions from "../../misc/HeaderWithActions";
+import CopyIriIcon from "../../misc/CopyIriIcon";
 import RemoveAssetDialog from "../../asset/RemoveAssetDialog";
 import ResourceMetadata from "../ResourceMetadata";
 import Utils from "../../../util/Utils";
 import DocumentFiles from "./DocumentFiles";
 import VocabularyIriLink from "../../vocabulary/VocabularyIriLink";
-import HeaderWithActions from "../../misc/HeaderWithActions";
-import CopyIriIcon from "../../misc/CopyIriIcon";
 
 interface DocumentSummaryProps extends ResourceSummaryProps {
   resource: Document;

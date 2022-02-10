@@ -60,6 +60,11 @@ describe("SearchActions", () => {
   describe("updateSearchFilter", () => {
     beforeEach(() => {
       jest.useFakeTimers();
+      jest.spyOn(global, "setTimeout");
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
     });
 
     it("clears search results", () => {

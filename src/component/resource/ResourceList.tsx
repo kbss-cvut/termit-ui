@@ -21,7 +21,6 @@ import TextBasedFilter, {
 import ResourceLink from "./ResourceLink";
 import { Table } from "reactstrap";
 import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
-import Pagination from "../misc/table/Pagination";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import AppNotification from "../../model/AppNotification";
@@ -29,6 +28,7 @@ import ResourceBadge from "../badge/ResourceBadge";
 import { createSelectFilter } from "../misc/table/SelectFilter";
 import { HasTypes } from "../../model/Asset";
 import { useI18n } from "../hook/useI18n";
+import Pagination from "../misc/table/Pagination";
 
 interface ResourceListProps {
   resources: { [key: string]: Resource };

@@ -16,10 +16,10 @@ import RdfsResource, { RdfsResourceData } from "../../model/RdfsResource";
 import CreatePropertyForm from "./CreatePropertyForm";
 import { clearProperties } from "../../action/SyncActions";
 import { FaTrashAlt } from "react-icons/fa";
-import "./UnmappedProperties.scss";
-import BadgeButton from "../misc/BadgeButton";
-import AttributeSectionContainer from "../layout/AttributeSectionContainer";
 import Utils from "../../util/Utils";
+import AttributeSectionContainer from "../layout/AttributeSectionContainer";
+import BadgeButton from "../misc/BadgeButton";
+import "./UnmappedProperties.scss";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
   properties: Map<string, string[]>;

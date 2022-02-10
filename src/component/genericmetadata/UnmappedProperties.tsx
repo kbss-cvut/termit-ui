@@ -2,9 +2,9 @@ import * as React from "react";
 import { Label, Table } from "reactstrap";
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
-import "./UnmappedProperties.scss";
 import Utils from "../../util/Utils";
 import { useI18n } from "../hook/useI18n";
+import "./UnmappedProperties.scss";
 
 declare type PropertyValueType = { iri: string } | string;
 

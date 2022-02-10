@@ -62,10 +62,9 @@ describe("SearchTerms", () => {
         {...intlFunctions()}
       />
     );
-    wrapper
-      .find(TermResultVocabularyFilter)
-      .prop("onChange")
-      .call(null, selectedVocabularies);
+    (wrapper.find(TermResultVocabularyFilter).prop("onChange") as any)(
+      selectedVocabularies
+    );
     wrapper.update();
 
     const renderedResults = wrapper.find(SearchResults).props().results;
@@ -78,7 +77,7 @@ describe("SearchTerms", () => {
 
   function generateSearchResults(vocabularies: string[]) {
     const results: SearchResult[] = [];
-    const count = Generator.randomInt(5, 10);
+    const count = Generator.randomInt(10, 20);
     let hasTermResult = false;
     let hasVocabularyResult = false;
     for (let i = 0; i < count; i++) {

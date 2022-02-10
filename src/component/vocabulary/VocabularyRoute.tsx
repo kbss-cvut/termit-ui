@@ -3,9 +3,9 @@ import { Switch } from "react-router";
 import Routes from "../../util/Routes";
 import DynamicBreadcrumbRoute from "../breadcrumb/DynamicBreadcrumbRoute";
 import TermDetail from "../term/TermDetail";
-import VocabularySummary from "./VocabularySummary";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import CreateTerm from "../term/CreateTerm";
+import VocabularySummary from "./VocabularySummary";
 import { useI18n } from "../hook/useI18n";
 import Route from "../misc/Route";
 

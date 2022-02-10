@@ -1,7 +1,7 @@
 import * as React from "react";
 import { UncontrolledTooltip } from "reactstrap";
-import "./CopyIriIcon.scss";
 import { useI18n } from "../hook/useI18n";
+import "./CopyIriIcon.scss";
 
 interface CopyIriIconProps {
   url: string;

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
+import { Badge } from "reactstrap";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
@@ -17,8 +18,8 @@ import {
 } from "../../../util/Types";
 import Routing from "../../../util/Routing";
 import classNames from "classnames";
-import { createTermsWithImportsOptionRenderer } from "../../misc/treeselect/Renderers";
 import IncludeImportedTermsToggle from "../../term/IncludeImportedTermsToggle";
+import { createTermsWithImportsOptionRenderer } from "../../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
   processTermsForTreeSelect,
@@ -29,7 +30,6 @@ import { selectVocabularyTerm } from "../../../action/SyncActions";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import "../../term/Terms.scss";
-import { Badge } from "reactstrap";
 import { loadTerms } from "../../../action/AsyncActions";
 
 interface GlossaryTermsProps extends HasI18n {

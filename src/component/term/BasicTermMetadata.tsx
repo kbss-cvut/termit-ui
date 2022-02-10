@@ -11,9 +11,9 @@ import AssetLabel from "../misc/AssetLabel";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { OWL, SKOS } from "../../util/Namespaces";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
-import TermDefinitionBlock from "./TermDefinitionBlock";
 import TermList from "./TermList";
 import RelatedTermsList from "./RelatedTermsList";
+import TermDefinitionBlock from "./TermDefinitionBlock";
 
 interface BasicTermMetadataProps extends HasI18n {
   term: Term;

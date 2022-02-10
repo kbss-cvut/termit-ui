@@ -35,10 +35,10 @@ describe("ErrorLogViewer", () => {
     expect(wrapper.find("tr").length).toEqual(errors.length + 1); // + header
     const timestamps = wrapper.find(".error-log-timestamp");
     expect(timestamps.at(0).text()).toContain(
-      new Date(errors[0].timestamp).getFullYear()
+      new Date(errors[0].timestamp).getFullYear().toString()
     );
     expect(timestamps.at(1).text()).toContain(
-      new Date(errors[1].timestamp).getFullYear()
+      new Date(errors[1].timestamp).getFullYear().toString()
     );
     const values = wrapper.find(".error-log-value");
     expect(values.at(0).text()).toEqual(

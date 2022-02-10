@@ -18,7 +18,6 @@ import {
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/StringListEdit";
 
-jest.mock("../TermAssignments", () => () => <div>Term Assignments</div>);
 jest.mock("../ParentTermSelector", () => () => <div>Parent term selector</div>);
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
 jest.mock("../TermTypesEdit", () => () => <div>Term types edit</div>);
