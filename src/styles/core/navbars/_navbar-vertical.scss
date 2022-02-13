@@ -1,6 +1,7 @@
 //
 // Vertical navbar
 //
+@use "sass:math";
 
 // Vertical
 //
@@ -89,7 +90,7 @@
         border: none;
 
         .dropdown-menu {
-          margin-left: $dropdown-item-padding-x / 2;
+          margin-left: math.div($dropdown-item-padding-x, 2);
         }
       }
     }

@@ -1,6 +1,7 @@
 // Embedded icons from Open Iconic.
 // Released under MIT and copyright 2014 Waybury.
 // https://useiconic.com/open
+@use "sass:math";
 
 // Checkboxes and radios
 //
@@ -62,8 +63,9 @@
   // Background-color and (when enabled) gradient
   &::before {
     position: absolute;
-    top: (
-      ($font-size-base * $line-height-base - $custom-control-indicator-size) / 2
+    top: math.div(
+      ($font-size-base * $line-height-base - $custom-control-indicator-size),
+      2
     );
     left: -$custom-control-gutter;
     display: block;
@@ -79,8 +81,9 @@
   // Foreground (icon)
   &::after {
     position: absolute;
-    top: (
-      ($font-size-base * $line-height-base - $custom-control-indicator-size) / 2
+    top: math.div(
+      ($font-size-base * $line-height-base - $custom-control-indicator-size),
+      2
     );
     left: -$custom-control-gutter;
     display: block;
@@ -346,8 +349,9 @@
   &::-webkit-slider-thumb {
     width: $custom-range-thumb-width;
     height: $custom-range-thumb-height;
-    margin-top: (
-      ($custom-range-track-height - $custom-range-thumb-height) / 2
+    margin-top: math.div(
+      ($custom-range-track-height - $custom-range-thumb-height),
+      2
     ); // Webkit specific
     @include gradient-bg($custom-range-thumb-bg);
     border: $custom-range-thumb-border;
