@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "../../styles/variables";
 
 .message-container {
@@ -6,7 +7,7 @@
   height: 25%;
   position: fixed;
   top: 60px;
-  right: $grid-gutter-width / 2;
+  right: math.div($grid-gutter-width, 2);
   margin: auto;
   z-index: 1030;
   @media (min-width: $md) {
