@@ -1,3 +1,9 @@
+#### Verze 2.10.0
+
+- Podpora filtrování výsledků vyhledávání pojmů podle slovníků.
+- Přístup k souvisejícím pojmům ve veřejném API.
+- Opraven problém s mazáním pojmu po odstranění jeho zdroje definice.
+
 #### Verze 2.9.0
 
 - Abecední řazení hodnot nemapovaných vlastností na detailu pojmu
