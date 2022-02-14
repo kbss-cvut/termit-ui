@@ -1,3 +1,9 @@
+#### Version 2.10.0
+
+- Support filtering full text term search by vocabularies.
+- Support accessing related terms in the public term API.
+- Fix removal of a term after its definition source has been removed from document.
+
 #### Version 2.9.0
 
 - Whitelist of unmapped properties that are included in the term detail response in the public API.
