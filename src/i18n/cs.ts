@@ -46,11 +46,6 @@ const cs = {
     "login.locked": "Účet je zablokován.",
     "login.disabled": "Účet byl deaktivován.",
     "login.public-view-link": "Nebo si <a>prohlédněte</a> slovníky a pojmy",
-    "login.oauth2.divider": "nebo",
-    "login.oauth2.google": "Přihlásit se přes Google",
-    "login.oauth2.google.tooltip": "Použít k přihlášení do TermIt účet Google.",
-    "login.oauth2.github": "Přihlásit se přes GitHub",
-    "login.oauth2.github.tooltip": "Použít k přihlášení do TermIt účet GitHub.",
 
     "register.title": "Nový uživatel",
     "register.subtitle": "Pro pokračování se prosím zaregistrujte",
@@ -172,8 +167,6 @@ const cs = {
       'Uživatel "{name}" úspěšně vytvořen.',
     "administration.users.you": "Toto je Váš účet",
     "administration.users.types.admin": "Tento uživatel je administrátor",
-    "administration.users.types.oauth2":
-      "Tento účet je externí a jeho uživatel se přihlašuje přes OAuth2 autentizační službu",
     "administration.maintenance.title": "Správa",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":
