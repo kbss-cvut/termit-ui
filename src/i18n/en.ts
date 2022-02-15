@@ -47,13 +47,6 @@ const en = {
     "login.locked": "Account locked.",
     "login.disabled": "Account disabled.",
     "login.public-view-link": "Or <a>explore</a> vocabularies and terms",
-    "login.oauth2.divider": "or",
-    "login.oauth2.google": "Login with Google",
-    "login.oauth2.google.tooltip":
-      "Use your Google account to log into TermIt.",
-    "login.oauth2.github": "Login with GitHub",
-    "login.oauth2.github.tooltip":
-      "Use your GitHub account to log into TermIt.",
 
     "register.title": "Registration",
     "register.subtitle": "Please register to continue",
@@ -166,8 +159,6 @@ const en = {
       'User "{name}" successfully created.',
     "administration.users.you": "This is you",
     "administration.users.types.admin": "This user is an administrator",
-    "administration.users.types.oauth2":
-      "This user account is external and the user logs in via an OAuth2 authentication service",
     "administration.maintenance.title": "Maintenance",
     "administration.maintenance.invalidateCaches": "Invalidate caches",
     "administration.maintenance.invalidateCaches.tooltip":
