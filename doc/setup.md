@@ -6,7 +6,7 @@ This guide provides information on how to build and deploy TermIt UI.
 
 ### System Requirements
 
-* NodeJS 10.x or later
+* NodeJS 12.x or later
 * npm 6.x or later
 
 ### Setup
