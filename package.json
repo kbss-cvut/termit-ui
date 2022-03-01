@@ -62,7 +62,7 @@
     "xpath-range": "^1.1.1"
   },
   "scripts": {
-    "start": "cross-env HTTPS=true react-scripts start",
+    "start": "react-scripts start",
     "start-mock-rest": "cross-env REACT_APP_MOCK_REST_API=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
