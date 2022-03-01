@@ -292,20 +292,6 @@ const en = {
     "resource.create.file.select.label":
       "Drag & drop a file here, or click to select file",
     "resource.metadata.description": "Description",
-    "resource.metadata.terms.assigned": "Assigned terms",
-    "resource.metadata.terms.assigned.tooltip":
-      "Terms assigned to the resource as a whole",
-    "resource.metadata.terms.occurrences": "Occurring terms",
-    "resource.metadata.terms.occurrences.tooltip":
-      "Terms occurring in the resource content",
-    "resource.metadata.terms.occurrences.confirmed": "{count} - confirmed",
-    "resource.metadata.terms.occurrences.confirmed.tooltip":
-      "Occurrence confirmed/created by a user",
-    "resource.metadata.terms.occurrences.suggested": "{count} - suggested",
-    "resource.metadata.terms.occurrences.suggested.tooltip":
-      "Occurrence suggested by the system",
-    "resource.metadata.terms.edit.select.placeholder":
-      "Start typing to search for relevant terms",
     "resource.metadata.file.content": "Show Content",
     "resource.metadata.file.content.view": "View",
     "resource.metadata.file.content.view.tooltip":
@@ -578,7 +564,7 @@ const en = {
     "change-password.passwords.differ.tooltip":
       "Old password and new password should not be same.",
 
-    annotator: "Annotator",
+    "annotator": "Annotator",
     "annotator.content.loading": "Loading file content...",
     "annotator.vocabulary": "Uses terms from vocabulary",
     "annotator.selectionPurpose.dialog.title":
@@ -609,6 +595,7 @@ const en = {
     "annotation.form.assigned-occurrence.termInfoLabel": "Term info : ",
     "annotation.term.assigned-occurrence.termLabel": "Assigned term : ",
     "annotation.term.occurrence.scoreLabel": "Score:",
+    "annotation.term.select.placeholder": "Start typing to search for relevant terms",
     "annotation.confirm": "Confirm suggestion of term occurrence",
     "annotation.save": "Save term occurrence",
     "annotation.edit": "Edit term occurrence",

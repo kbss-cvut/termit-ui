@@ -297,20 +297,6 @@ const cs = {
     "resource.create.file.select.label":
       "Přetáhněte sem soubor myší, nebo klikněte pro výběr pomocí dialogu",
     "resource.metadata.description": "Popis",
-    "resource.metadata.terms.assigned": "Přiřazené pojmy",
-    "resource.metadata.terms.assigned.tooltip":
-      "Pojmy přiřazené ke zdroji jako takovému",
-    "resource.metadata.terms.occurrences": "Výskyty pojmů",
-    "resource.metadata.terms.occurrences.tooltip":
-      "Pojmy vyskytující se v obsahu zdroje",
-    "resource.metadata.terms.occurrences.confirmed": "{count} - potvrzen",
-    "resource.metadata.terms.occurrences.confirmed.tooltip":
-      "Výskyt potvrzen či označen uživatelem",
-    "resource.metadata.terms.occurrences.suggested": "{count} - návrh",
-    "resource.metadata.terms.occurrences.suggested.tooltip":
-      "Výskyt navržen systémem",
-    "resource.metadata.terms.edit.select.placeholder":
-      "Začněte psát pro vyhledávání relevantních pojmů",
     "resource.metadata.file.content": "Zobraz obsah",
     "resource.metadata.file.content.view": "Zobrazit",
     "resource.metadata.file.content.view.tooltip":
@@ -589,7 +575,7 @@ const cs = {
     "change-password.passwords.differ.tooltip":
       "Staré a nové heslo se musí lišit.",
 
-    annotator: "Anotátor",
+    "annotator": "Anotátor",
     "annotator.content.loading": "Načítám obsah souboru...",
     "annotator.vocabulary": "Používá pojmy ze slovníku",
     "annotator.selectionPurpose.dialog.title":
@@ -620,6 +606,7 @@ const cs = {
     "annotation.form.assigned-occurrence.termInfoLabel": "Informace o pojmu:",
     "annotation.term.assigned-occurrence.termLabel": "Přiřazený pojem:",
     "annotation.term.occurrence.scoreLabel": "Skóre:",
+    "annotation.term.select.placeholder": "Začněte psát pro vyhledávání relevantních pojmů",
     "annotation.confirm": "Potvrdit navrhovaný výskyt pojmu",
     "annotation.save": "Uložit výskyt pojmu",
     "annotation.edit": "Editovat výskyt pojmu",
