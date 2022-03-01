@@ -23,7 +23,6 @@ import VocabularyUtils, {IRI, IRIImpl} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import Resource, {ResourceData} from "../model/Resource";
 import RdfsResource, {CONTEXT as RDFS_RESOURCE_CONTEXT, RdfsResourceData,} from "../model/RdfsResource";
-import {CONTEXT as TERM_ASSIGNMENTS_CONTEXT, TermAssignments,} from "../model/TermAssignments";
 import TermItState from "../model/TermItState";
 import Utils from "../util/Utils";
 import {CONTEXT as DOCUMENT_CONTEXT} from "../model/Document";
@@ -1221,39 +1220,6 @@ export function createProperty(property: RdfsResource) {
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
-export function loadTermAssignmentsInfo(termIri: IRI, vocabularyIri: IRI) {
-  const action = {
-    type: ActionType.LOAD_TERM_ASSIGNMENTS,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    const url =
-      "/vocabularies/" +
-      vocabularyIri.fragment +
-      "/terms/" +
-      termIri.fragment +
-      "/assignments";
-    return Ajax.get(
-      Constants.API_PREFIX + url,
-      param("namespace", vocabularyIri.namespace)
-    )
-      .then((data: object) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<TermAssignments>(
-          data,
-          TERM_ASSIGNMENTS_CONTEXT
-        )
-      )
-      .then((data: TermAssignments[]) => {
-        dispatch(asyncActionSuccess(action));
-        return data;
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return [];
-      });
   };
 }
 

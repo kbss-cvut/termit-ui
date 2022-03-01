@@ -406,25 +406,6 @@ const cs = {
     "term.metadata.source.remove.title": "Odebrat zdroj",
     "term.metadata.source.remove.text": "Odebrat",
     "term.metadata.subterm.link": "Zobrazit detail tohoto pojmu",
-    "term.metadata.assignments.title": "Anotované zdroje",
-    "term.metadata.assignments.empty":
-      "Žádný zdroj není anotován tímto pojmem.",
-    "term.metadata.assignments.assignment": "Anotován tímto pojmem?",
-    "term.metadata.assignments.assignment.assigned": "Zdroj je anotován pojmem",
-    "term.metadata.assignments.assignment.not.assigned":
-      "Zdroj pojmem anotován není",
-    "term.metadata.assignments.assignment.help":
-      "Anotace zdroje pojmem reprezentuje situaci kdy je pojem přiřazen zdroji jako takovému.",
-    "term.metadata.assignments.occurrence": "Výskyt",
-    "term.metadata.assignments.occurrence.help":
-      "Výskyt pojmu popisuje situaci, kdy je výskyt pojmu lokalizován v obsahu datového zdroje (obvykle v textu).",
-    "term.metadata.assignments.suggestedOccurrence": "Navržený výskyt",
-    "term.metadata.assignments.suggestedOccurrence.help":
-      "Navržený výskyt reprezentuje výskyt pojmu navržený systémem, např. na základě automatizované analýzy obsahu.",
-    "term.metadata.assignments.count.tooltip":
-      "Pojem se v tomto zdroji vyskytuje {count, plural, one {jednou} other {# -krát}}",
-    "term.metadata.assignments.count.zero.tooltip":
-      "Pojem se v tomto zdroji nevyskytuje",
     "term.metadata.related.title": "Související pojmy",
     "term.metadata.related.help":
       "(Nepovinný) související pojem (bez bližšího určení o jakou souvislost se jedná). " +
@@ -444,14 +425,6 @@ const cs = {
       "Pojmy související díky definici",
     "term.metadata.related.definitionally.suggested":
       "Výskyt byl nalezen automaticky analýzou textu definice a ještě nebyl schválen",
-    "term.metadata.assignments.occurrence.remove":
-      "Výskyt pojmu byl odstraněn.",
-    "term.metadata.assignments.occurrence.remove.tooltip":
-      "Odstranit navržený výskyt",
-    "term.metadata.assignments.occurrence.approve":
-      "Výskyt pojmu úspěšně schválen.",
-    "term.metadata.assignments.occurrence.approve.tooltip":
-      "Schválit navržený výskyt",
     "term.metadata.comments.public.title": "Veřejná diskuse",
     "term.metadata.status.draft": "Rozpracovaný",
     "term.metadata.status.confirmed": "Schválený",

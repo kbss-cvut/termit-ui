@@ -13,7 +13,6 @@ import LanguageSelector from "../multilingual/LanguageSelector";
 import Terms from "./Terms";
 import ValidationResults from "./validation/ValidationResults";
 import Comments from "../comment/Comments";
-import TermAssignments from "./TermAssignments";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import "./TermMetadata.scss";
 
@@ -26,7 +25,6 @@ interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
 
 interface TermMetadataState {
   activeTab: string;
-  assignmentsCount: number | null;
   commentsCount: number | null;
   displayTerms: boolean;
 }
@@ -40,8 +38,7 @@ export class TermMetadata extends React.Component<
   constructor(props: TermMetadataProps) {
     super(props);
     this.state = {
-      activeTab: "term.metadata.assignments.title",
-      assignmentsCount: null,
+      activeTab: "comments.title",
       commentsCount: null,
       displayTerms: window.innerWidth >= DISPLAY_TERMS_WIDTH_BREAKPOINT,
     };
@@ -94,10 +91,6 @@ export class TermMetadata extends React.Component<
     this.setState({ activeTab: tabId });
   };
 
-  private setAssignmentsCount = (assignmentsCount: number) => {
-    this.setState({ assignmentsCount });
-  };
-
   private setCommentsCount = (commentsCount: number) => {
     this.setState({ commentsCount });
   };
@@ -142,10 +135,6 @@ export class TermMetadata extends React.Component<
                           this.state.commentsCount !== null
                             ? this.state.commentsCount.toFixed()
                             : null,
-                        "term.metadata.assignments.title":
-                          this.state.assignmentsCount !== null
-                            ? this.state.assignmentsCount.toFixed()
-                            : null,
                       }}
                     />
                   </CardBody>
@@ -174,24 +163,21 @@ export class TermMetadata extends React.Component<
   private initTabs() {
     const { term } = this.props;
     const tabs = {};
-    tabs["term.metadata.assignments.title"] = (
-      <TermAssignments term={term} onLoad={this.setAssignmentsCount} />
-    );
-    tabs["history.label"] = <AssetHistory asset={term} />;
-    tabs["term.metadata.validation.title"] = <ValidationResults term={term} />;
     tabs["comments.title"] = (
-      <Comments
-        term={term}
-        onLoad={this.setCommentsCount}
-        reverseOrder={true}
-      />
+        <Comments
+            term={term}
+            onLoad={this.setCommentsCount}
+            reverseOrder={true}
+        />
     );
     tabs["properties.edit.title"] = (
-      <UnmappedProperties
-        properties={term.unmappedProperties}
-        showInfoOnEmpty={true}
-      />
+        <UnmappedProperties
+            properties={term.unmappedProperties}
+            showInfoOnEmpty={true}
+        />
     );
+    tabs["term.metadata.validation.title"] = <ValidationResults term={term} />;
+    tabs["history.label"] = <AssetHistory asset={term} />;
     return tabs;
   }
 }

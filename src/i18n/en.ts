@@ -397,26 +397,6 @@ const en = {
     "term.metadata.source.remove.title": "Remove source",
     "term.metadata.source.remove.text": "Remove",
     "term.metadata.subterm.link": "View detail of this term",
-    "term.metadata.assignments.title": "Anotated resources",
-    "term.metadata.assignments.empty":
-      "This term is not assigned to any resources.",
-    "term.metadata.assignments.assignment": "Assigned to the resource?",
-    "term.metadata.assignments.assignment.assigned":
-      "Term is assigned to this resource",
-    "term.metadata.assignments.assignment.not.assigned":
-      "Term is not assigned to this resource",
-    "term.metadata.assignments.assignment.help":
-      "Term assignment represents situations when term is assigned to the resource as a whole.",
-    "term.metadata.assignments.occurrence": "Occurrence",
-    "term.metadata.assignments.occurrence.help":
-      "Term occurrence denotes situations when an occurrence of the term is localized in the resource (usually a file) content.",
-    "term.metadata.assignments.suggestedOccurrence": "Suggested occurrence",
-    "term.metadata.assignments.suggestedOccurrence.help":
-      "Suggested term occurrence represents a term occurrence suggested by the system, e.g., based on the analysis of the content.",
-    "term.metadata.assignments.count.tooltip":
-      "The term occurs {count, plural, one {# time} other {# times}} in this resource",
-    "term.metadata.assignments.count.zero.tooltip":
-      "The term does not occur in this resource",
     "term.metadata.related.title": "Related terms",
     "term.metadata.related.help":
       "(Optional) related term (without being specific about the type of relationship). " +
@@ -436,14 +416,6 @@ const en = {
       "Terms which are related to this term via definition.",
     "term.metadata.related.definitionally.suggested":
       "Occurrence has been identified by an automatic analysis of the definition text and has not been approved",
-    "term.metadata.assignments.occurrence.remove":
-      "Occurrence successfully removed.",
-    "term.metadata.assignments.occurrence.remove.tooltip":
-      "Remove suggested occurrence",
-    "term.metadata.assignments.occurrence.approve":
-      "Occurrence successfully approved.",
-    "term.metadata.assignments.occurrence.approve.tooltip":
-      "Approve suggested occurrence",
     "term.metadata.comments.public.title": "Public discussion",
     "term.metadata.status.draft": "Draft",
     "term.metadata.status.confirmed": "Confirmed",
