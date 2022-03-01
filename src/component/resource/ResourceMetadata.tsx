@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import { CardBody, Col, Label, Row } from "reactstrap";
-import ResourceTermAssignments from "./ResourceTermAssignments";
 import Resource from "../../model/Resource";
 import ResourceLink from "./ResourceLink";
 import { useI18n } from "../hook/useI18n";
@@ -46,7 +45,6 @@ const ResourceMetadata = (props: ResourceMetadataProps) => {
           </Col>
         </Row>
         {props.additionalColumns}
-        <ResourceTermAssignments resource={props.resource} />
       </CardBody>
     </div>
   );

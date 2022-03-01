@@ -21,7 +21,6 @@ import {
   loadNews,
   loadResource,
   loadResources,
-  loadResourceTermAssignmentsInfo,
   loadTerm,
   loadTermAssignmentsInfo,
   loadTerms,
@@ -74,10 +73,6 @@ import {
   CONTEXT as TA_RECORD_CONTEXT,
   TextAnalysisRecord,
 } from "../../model/TextAnalysisRecord";
-import {
-  CONTEXT as RESOURCE_TERM_ASSIGNMENT_CONTEXT,
-  ResourceTermAssignments,
-} from "../../model/ResourceTermAssignments";
 import {
   CONTEXT as TERM_ASSIGNMENTS_CONTEXT,
   TermAssignments,
@@ -1809,143 +1804,6 @@ describe("Async actions", () => {
           Routes.resources,
           undefined
         );
-      });
-    });
-  });
-
-  describe("loadResourceTermAssignmentsInfo", () => {
-    const resource = new Resource({
-      iri: Generator.generateUri(),
-      label: "Test resource",
-    });
-
-    it("sends request to correct endpoint", () => {
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadResourceTermAssignmentsInfo(VocabularyUtils.create(resource.iri))
-        )
-      ).then(() => {
-        const endpoint = (Ajax.get as jest.Mock).mock.calls[0][0];
-        expect(endpoint).toEqual(
-          Constants.API_PREFIX +
-            "/resources/" +
-            VocabularyUtils.create(resource.iri).fragment +
-            "/assignments/aggregated"
-        );
-      });
-    });
-
-    it("returns loaded assignments", () => {
-      const data = [
-        {
-          "@context": RESOURCE_TERM_ASSIGNMENT_CONTEXT,
-          iri: Generator.generateUri(),
-          term: {
-            iri: Generator.generateUri(),
-          },
-          resource,
-          vocabulary: {
-            iri: Generator.generateUri(),
-          },
-          types: [VocabularyUtils.TERM_ASSIGNMENT],
-        },
-      ];
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadResourceTermAssignmentsInfo(VocabularyUtils.create(resource.iri))
-        )
-      ).then((result: ResourceTermAssignments[]) => {
-        expect(result.length).toEqual(1);
-        expect(result[0].term.iri).toEqual(data[0].term.iri);
-      });
-    });
-
-    it("passes loaded terms assigned to resource to store", () => {
-      const data = [
-        {
-          "@context": RESOURCE_TERM_ASSIGNMENT_CONTEXT,
-          iri: Generator.generateUri(),
-          term: {
-            iri: Generator.generateUri(),
-          },
-          label: "Test term",
-          resource,
-          vocabulary: {
-            iri: Generator.generateUri(),
-          },
-          types: [VocabularyUtils.TERM_ASSIGNMENT],
-        },
-        {
-          "@context": RESOURCE_TERM_ASSIGNMENT_CONTEXT,
-          iri: Generator.generateUri(),
-          term: {
-            iri: Generator.generateUri(),
-          },
-          label: "Test term",
-          resource,
-          vocabulary: {
-            iri: Generator.generateUri(),
-          },
-          count: 117,
-          types: [
-            VocabularyUtils.TERM_ASSIGNMENT,
-            VocabularyUtils.TERM_OCCURRENCE,
-          ],
-        },
-      ];
-      store.getState().resource = resource;
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadResourceTermAssignmentsInfo(VocabularyUtils.create(resource.iri))
-        )
-      ).then(() => {
-        const actions = store.getActions();
-        const termsAction = actions.find(
-          (a) => a.type === ActionType.LOAD_RESOURCE_TERMS
-        );
-        expect(termsAction).toBeDefined();
-        expect(termsAction.payload).toEqual([
-          new Term({
-            iri: data[0].term.iri,
-            label: langString(data[0].label),
-            vocabulary: data[0].vocabulary,
-          }),
-        ]);
-      });
-    });
-
-    it("does not pass loaded terms assigned to resource to store if stored resource IRI does not match the specified one", () => {
-      const data = [
-        {
-          "@context": RESOURCE_TERM_ASSIGNMENT_CONTEXT,
-          iri: Generator.generateUri(),
-          term: {
-            iri: Generator.generateUri(),
-          },
-          label: "Test term",
-          resource,
-          vocabulary: {
-            iri: Generator.generateUri(),
-          },
-          types: [VocabularyUtils.TERM_ASSIGNMENT],
-        },
-      ];
-      store.getState().resource = Generator.generateResource();
-      expect(store.getState().resource.iri).not.toEqual(resource.iri);
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadResourceTermAssignmentsInfo(VocabularyUtils.create(resource.iri))
-        )
-      ).then(() => {
-        const actions = store.getActions();
-        const termsAction = actions.find(
-          (a) => a.type === ActionType.LOAD_RESOURCE_TERMS
-        );
-        expect(termsAction).not.toBeDefined();
       });
     });
   });

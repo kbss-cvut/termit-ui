@@ -5,78 +5,50 @@ import {
   asyncActionSuccess,
   asyncActionSuccessWithPayload,
   publishMessage,
-  publishNotification,
+  publishNotification
 } from "./SyncActions";
-import Ajax, {
-  accept,
-  content,
-  contentType,
-  param,
-  params,
-} from "../util/Ajax";
-import { GetStoreState, TermFetchParams, ThunkDispatch } from "../util/Types";
+import Ajax, {accept, content, contentType, param, params,} from "../util/Ajax";
+import {GetStoreState, TermFetchParams, ThunkDispatch} from "../util/Types";
 import Routing from "../util/Routing";
 import Constants from "../util/Constants";
-import Vocabulary, {
-  CONTEXT as VOCABULARY_CONTEXT,
-  VocabularyData,
-} from "../model/Vocabulary";
-import Routes, { Route } from "../util/Routes";
-import { ErrorData } from "../model/ErrorInfo";
-import { AxiosResponse } from "axios";
+import Vocabulary, {CONTEXT as VOCABULARY_CONTEXT, VocabularyData,} from "../model/Vocabulary";
+import Routes, {Route} from "../util/Routes";
+import {ErrorData} from "../model/ErrorInfo";
+import {AxiosResponse} from "axios";
 import * as jsonld from "jsonld";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
-import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
-import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
+import Term, {CONTEXT as TERM_CONTEXT, TermData} from "../model/Term";
+import VocabularyUtils, {IRI, IRIImpl} from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import Resource, { ResourceData } from "../model/Resource";
-import RdfsResource, {
-  CONTEXT as RDFS_RESOURCE_CONTEXT,
-  RdfsResourceData,
-} from "../model/RdfsResource";
-import {
-  CONTEXT as TERM_ASSIGNMENTS_CONTEXT,
-  TermAssignments,
-} from "../model/TermAssignments";
+import Resource, {ResourceData} from "../model/Resource";
+import RdfsResource, {CONTEXT as RDFS_RESOURCE_CONTEXT, RdfsResourceData,} from "../model/RdfsResource";
+import {CONTEXT as TERM_ASSIGNMENTS_CONTEXT, TermAssignments,} from "../model/TermAssignments";
 import TermItState from "../model/TermItState";
 import Utils from "../util/Utils";
-import { CONTEXT as DOCUMENT_CONTEXT } from "../model/Document";
-import {
-  Configuration,
-  CONTEXT as CONFIGURATION_CONTEXT,
-} from "../model/Configuration";
-import TermitFile from "../model/File";
+import {CONTEXT as DOCUMENT_CONTEXT} from "../model/Document";
+import {Configuration, CONTEXT as CONFIGURATION_CONTEXT,} from "../model/Configuration";
+import TermItFile from "../model/File";
 import Asset from "../model/Asset";
 import AssetFactory from "../util/AssetFactory";
 import JsonLdUtils from "../util/JsonLdUtils";
-import { Action } from "redux";
+import {Action} from "redux";
 import {
   CONTEXT as TEXT_ANALYSIS_RECORD_CONTEXT,
   TextAnalysisRecord,
   TextAnalysisRecordData,
 } from "../model/TextAnalysisRecord";
-import {
-  CONTEXT as RESOURCE_TERM_ASSIGNMENTS_CONTEXT,
-  ResourceTermAssignments,
-} from "../model/ResourceTermAssignments";
-import {
-  ChangeRecordData,
-  CONTEXT as CHANGE_RECORD_CONTEXT,
-} from "../model/changetracking/ChangeRecord";
+import {ChangeRecordData, CONTEXT as CHANGE_RECORD_CONTEXT,} from "../model/changetracking/ChangeRecord";
 import RecentlyModifiedAsset, {
   CONTEXT as RECENTLY_MODIFIED_ASSET_CONTEXT,
   RecentlyModifiedAssetData,
 } from "../model/RecentlyModifiedAsset";
 import NotificationType from "../model/NotificationType";
-import { langString } from "../model/MultilingualString";
-import ValidationResult, {
-  CONTEXT as VALIDATION_RESULT_CONTEXT,
-} from "../model/ValidationResult";
-import { ConsolidatedResults } from "../model/ConsolidatedResults";
-import UserRole, { UserRoleData } from "../model/UserRole";
-import { loadTermCount } from "./AsyncVocabularyActions";
-import { getApiPrefix } from "./ActionUtils";
+import ValidationResult, {CONTEXT as VALIDATION_RESULT_CONTEXT,} from "../model/ValidationResult";
+import {ConsolidatedResults} from "../model/ConsolidatedResults";
+import UserRole, {UserRoleData} from "../model/UserRole";
+import {loadTermCount} from "./AsyncVocabularyActions";
+import {getApiPrefix} from "./ActionUtils";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -300,63 +272,6 @@ export function loadResources() {
   };
 }
 
-export function loadResourceTermAssignmentsInfo(resourceIri: IRI) {
-  const action = {
-    type: ActionType.LOAD_RESOURCE_TERM_ASSIGNMENTS,
-  };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(
-      Constants.API_PREFIX +
-        "/resources/" +
-        resourceIri.fragment +
-        "/assignments/aggregated",
-      param("namespace", resourceIri.namespace)
-    )
-      .then((data: object[]) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<ResourceTermAssignments>(
-          data,
-          RESOURCE_TERM_ASSIGNMENTS_CONTEXT
-        )
-      )
-      .then((data: ResourceTermAssignments[]) => {
-        dispatch(asyncActionSuccess(action));
-        const assignedTerms = data
-          .filter(
-            (a) => a.types.indexOf(VocabularyUtils.TERM_OCCURRENCE) === -1
-          )
-          .map(
-            (a) =>
-              new Term({
-                iri: a.term.iri,
-                label: langString(a.label),
-                vocabulary: a.vocabulary,
-                draft: a.term.draft,
-              })
-          );
-        if (
-          getState().resource.iri ===
-          resourceIri.namespace + resourceIri.fragment
-        ) {
-          dispatch(
-            asyncActionSuccessWithPayload(
-              { type: ActionType.LOAD_RESOURCE_TERMS },
-              assignedTerms
-            )
-          );
-        }
-        return data;
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-        return [];
-      });
-  };
-}
-
 export function createResource(resource: Resource) {
   const action = {
     type: ActionType.CREATE_RESOURCE,
@@ -389,7 +304,7 @@ export function createResource(resource: Resource) {
   };
 }
 
-export function createFileInDocument(file: TermitFile, documentIri: IRI) {
+export function createFileInDocument(file: TermItFile, documentIri: IRI) {
   const action = {
     type: ActionType.CREATE_RESOURCE,
   };
@@ -430,7 +345,7 @@ export function createFileInDocument(file: TermitFile, documentIri: IRI) {
     });
 }
 
-export function removeFileFromDocument(file: TermitFile, documentIri: IRI) {
+export function removeFileFromDocument(file: TermItFile, documentIri: IRI) {
   const action = {
     type: ActionType.REMOVE_RESOURCE,
   };
