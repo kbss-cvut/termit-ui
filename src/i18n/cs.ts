@@ -548,7 +548,7 @@ const cs = {
     "change-password.passwords.differ.tooltip":
       "Staré a nové heslo se musí lišit.",
 
-    "annotator": "Anotátor",
+    annotator: "Anotátor",
     "annotator.content.loading": "Načítám obsah souboru...",
     "annotator.vocabulary": "Používá pojmy ze slovníku",
     "annotator.selectionPurpose.dialog.title":
@@ -579,7 +579,8 @@ const cs = {
     "annotation.form.assigned-occurrence.termInfoLabel": "Informace o pojmu:",
     "annotation.term.assigned-occurrence.termLabel": "Přiřazený pojem:",
     "annotation.term.occurrence.scoreLabel": "Skóre:",
-    "annotation.term.select.placeholder": "Začněte psát pro vyhledávání relevantních pojmů",
+    "annotation.term.select.placeholder":
+      "Začněte psát pro vyhledávání relevantních pojmů",
     "annotation.confirm": "Potvrdit navrhovaný výskyt pojmu",
     "annotation.save": "Uložit výskyt pojmu",
     "annotation.edit": "Editovat výskyt pojmu",

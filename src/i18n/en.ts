@@ -536,7 +536,7 @@ const en = {
     "change-password.passwords.differ.tooltip":
       "Old password and new password should not be same.",
 
-    "annotator": "Annotator",
+    annotator: "Annotator",
     "annotator.content.loading": "Loading file content...",
     "annotator.vocabulary": "Uses terms from vocabulary",
     "annotator.selectionPurpose.dialog.title":
@@ -567,7 +567,8 @@ const en = {
     "annotation.form.assigned-occurrence.termInfoLabel": "Term info : ",
     "annotation.term.assigned-occurrence.termLabel": "Assigned term : ",
     "annotation.term.occurrence.scoreLabel": "Score:",
-    "annotation.term.select.placeholder": "Start typing to search for relevant terms",
+    "annotation.term.select.placeholder":
+      "Start typing to search for relevant terms",
     "annotation.confirm": "Confirm suggestion of term occurrence",
     "annotation.save": "Save term occurrence",
     "annotation.edit": "Edit term occurrence",

@@ -164,17 +164,17 @@ export class TermMetadata extends React.Component<
     const { term } = this.props;
     const tabs = {};
     tabs["comments.title"] = (
-        <Comments
-            term={term}
-            onLoad={this.setCommentsCount}
-            reverseOrder={true}
-        />
+      <Comments
+        term={term}
+        onLoad={this.setCommentsCount}
+        reverseOrder={true}
+      />
     );
     tabs["properties.edit.title"] = (
-        <UnmappedProperties
-            properties={term.unmappedProperties}
-            showInfoOnEmpty={true}
-        />
+      <UnmappedProperties
+        properties={term.unmappedProperties}
+        showInfoOnEmpty={true}
+      />
     );
     tabs["term.metadata.validation.title"] = <ValidationResults term={term} />;
     tabs["history.label"] = <AssetHistory asset={term} />;
