@@ -33,7 +33,6 @@ import {
   removeVocabulary,
   saveFileContent,
   updateResource,
-  updateResourceTerms,
   updateTerm,
   updateVocabulary,
   uploadFileContent,
@@ -1419,44 +1418,6 @@ describe("Async actions", () => {
           store.getActions()[1];
         const result = loadSuccessAction.payload;
         expect(result instanceof TermItFile).toBeTruthy();
-      });
-    });
-  });
-
-  describe("update resource terms", () => {
-    it("sends put request to correct endpoint using resource IRI and term IRIs", () => {
-      const namespace =
-        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
-      const normalizedResourceName = "test-resource";
-      const normalizedTermName = "test-term";
-      const term: Term = new Term({
-        iri: namespace + "pojem/" + normalizedTermName,
-        label: langString("Test"),
-        scopeNote: langString("Test term"),
-      });
-      const resource = new Resource({
-        iri: namespace + normalizedResourceName,
-        label: "Test resource",
-        terms: [term],
-      });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
-      Ajax.put = mock;
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(updateResourceTerms(resource))
-      ).then(() => {
-        expect(Ajax.put).toHaveBeenCalled();
-        const requestUri = mock.mock.calls[0][0];
-        expect(requestUri).toEqual(
-          Constants.API_PREFIX +
-            "/resources/" +
-            normalizedResourceName +
-            "/terms"
-        );
-        const params = mock.mock.calls[0][1].getParams();
-        expect(params.namespace).toBeDefined();
-        expect(params.namespace).toEqual(namespace);
-        const content = mock.mock.calls[0][1].getContent();
-        expect(content).toBeDefined();
       });
     });
   });

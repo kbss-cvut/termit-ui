@@ -171,16 +171,7 @@ function resource(
           ? new Document(action.payload.owner)
           : action.payload
         : state;
-    case ActionType.CLEAR_RESOURCE:
-      return EMPTY_RESOURCE;
-    case ActionType.LOAD_RESOURCE_TERMS:
-      if (action.status === AsyncActionStatus.SUCCESS) {
-        const r = state.clone();
-        r.terms = action.payload;
-        return r;
-      } else {
-        return state;
-      }
+    case ActionType.CLEAR_RESOURCE: // Intentional fall-through
     case ActionType.LOGOUT:
       return EMPTY_RESOURCE;
     default:

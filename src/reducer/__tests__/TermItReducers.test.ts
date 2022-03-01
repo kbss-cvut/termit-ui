@@ -42,7 +42,6 @@ import Resource, { EMPTY_RESOURCE } from "../../model/Resource";
 import Generator from "../../__tests__/environment/Generator";
 import SearchQuery from "../../model/SearchQuery";
 import QueryResult from "../../model/QueryResult";
-import File from "../../model/File";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
 import { langString } from "../../model/MultilingualString";
@@ -715,24 +714,6 @@ describe("Reducers", () => {
       expect(
         reducers(stateToPlainObject(initialState), clearErrors()).errors
       ).toEqual([]);
-    });
-  });
-
-  describe("loadResourceTerms", () => {
-    it("does not change the type of resource stored in state", () => {
-      initialState.resource = new File(
-        Object.assign(Generator.generateAssetData(), {
-          types: [VocabularyUtils.RESOURCE, VocabularyUtils.FILE],
-        })
-      );
-      const result = reducers(
-        stateToPlainObject(initialState),
-        asyncActionSuccessWithPayload(
-          { type: ActionType.LOAD_RESOURCE_TERMS },
-          [Generator.generateTerm()]
-        )
-      ).resource;
-      expect(result instanceof File).toBeTruthy();
     });
   });
 
