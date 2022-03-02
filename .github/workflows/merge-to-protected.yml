@@ -33,6 +33,7 @@ jobs:
       run: npm run-script build
       env:
         CI: ""
-        NODE_OPTIONS: "--max-old-space-size=4096"
     - name: Test
+      env:
+        NODE_OPTIONS: "--max-old-space-size=4096"
       run: npm run-script test-ci
