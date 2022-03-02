@@ -18,8 +18,12 @@ import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 
 jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
-jest.mock("../ExactMatchesSelector", () => () => <div>Exact match selector</div>);
-jest.mock("../RelatedTermsSelector", () => () => <div>Related terms selector</div>);
+jest.mock("../ExactMatchesSelector", () => () => (
+  <div>Exact match selector</div>
+));
+jest.mock("../RelatedTermsSelector", () => () => (
+  <div>Related terms selector</div>
+));
 jest.mock("../TermTypesEdit");
 jest.mock("../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
 
