@@ -1,6 +1,6 @@
 # BASE STAGE
 # Prepare node, copy package.json
-FROM node:14 AS base
+FROM node:16-alpine AS base
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
@@ -11,17 +11,12 @@ FROM base AS dependencies
 #RUN npm set progress=false && npm config set depth 0
 RUN npm install
 
-# TEST STAGE
-# run linters, setup and tests
-FROM dependencies AS test
-COPY . .
-RUN  npm run prettier:check
-
 # BUILD STAGE
 # run NPM build
-FROM test as build
+FROM dependencies as build
 # If an app is supposed to be deployed in a subdir, this is the place to specify that
 # Make sure that React app is built using the right path context
+COPY . .
 RUN set -ex; \
   npm run build
 
