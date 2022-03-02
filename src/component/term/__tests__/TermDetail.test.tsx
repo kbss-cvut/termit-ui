@@ -17,9 +17,13 @@ import TermOccurrence from "../../../model/TermOccurrence";
 
 jest.mock("../TermAssignments", () => () => <div>Term assignments</div>);
 jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
-jest.mock("../RelatedTermsSelector", () => () => <div>Related term selector</div>);
+jest.mock("../RelatedTermsSelector", () => () => (
+  <div>Related terms selector</div>
+));
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
-jest.mock("../../changetracking/AssetHistory", () => () => <div>Asset history</div>);
+jest.mock("../../changetracking/AssetHistory", () => () => (
+  <div>Asset history</div>
+));
 
 describe("TermDetail", () => {
   const normalizedTermName = "test-term";
