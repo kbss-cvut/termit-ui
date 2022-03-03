@@ -80,11 +80,19 @@ describe("SearchTerms", () => {
     const count = Generator.randomInt(10, 20);
     let hasTermResult = false;
     let hasVocabularyResult = false;
+    let vocabularyUsed = vocabularies.length === 0;
     for (let i = 0; i < count; i++) {
       if (
         hasVocabularyResult &&
         (!hasTermResult || Generator.randomBoolean())
       ) {
+        // This ensures that at least one of the vocabularies (if specified) is used in the results
+        const vocabularyIri =
+          !vocabularyUsed || Generator.randomBoolean()
+            ? vocabularies[i % vocabularies.length]
+            : Generator.generateUri();
+        vocabularyUsed =
+          vocabularyUsed || vocabularies.indexOf(vocabularyIri) !== -1;
         results.push(
           new SearchResult({
             iri: Generator.generateUri(),
@@ -92,10 +100,7 @@ describe("SearchTerms", () => {
             snippetText: "Matching result",
             snippetField: "label",
             vocabulary: {
-              iri:
-                vocabularies.length > 0 && Generator.randomBoolean()
-                  ? vocabularies[i % vocabularies.length]
-                  : Generator.generateUri(),
+              iri: vocabularyIri,
             },
             types: [VocabularyUtils.TERM],
           })

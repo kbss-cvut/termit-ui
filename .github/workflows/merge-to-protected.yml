@@ -6,9 +6,9 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches: [ master, development ]
+    branches: [master, development]
   pull_request:
-    branches: [ master, development ]
+    branches: [master, development]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,19 +19,21 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Install
-      run: npm install
-    - name: Prettier Check
-      run: npm run prettier:check
-    - name: Build
-      run: npm run-script build
-      env:
-        CI: ""
-    - name: Test
-      run: npm run-script test
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - name: Install
+        run: npm install
+      - name: Prettier Check
+        run: npm run prettier:check
+      - name: Build
+        run: npm run-script build
+        env:
+          CI: ""
+      - name: Test
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+        run: npm run-script test-ci

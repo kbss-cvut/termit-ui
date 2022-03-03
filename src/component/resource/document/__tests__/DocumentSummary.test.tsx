@@ -7,7 +7,9 @@ import Resource from "../../../../model/Resource";
 import { DocumentSummary } from "../DocumentSummary";
 import { shallow } from "enzyme";
 
-jest.mock("../../../misc/AssetIriLink");
+jest.mock("../../../misc/AssetIriLink", () => () => (
+  <span>Asset IRI link</span>
+));
 
 describe("DocumentSummary", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/resources/";

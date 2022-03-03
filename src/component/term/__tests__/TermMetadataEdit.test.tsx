@@ -17,11 +17,15 @@ import StringListEdit from "../../misc/StringListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 
-jest.mock("../ParentTermSelector");
-jest.mock("../ExactMatchesSelector");
-jest.mock("../RelatedTermsSelector");
+jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
+jest.mock("../ExactMatchesSelector", () => () => (
+  <div>Exact match selector</div>
+));
+jest.mock("../RelatedTermsSelector", () => () => (
+  <div>Related terms selector</div>
+));
 jest.mock("../TermTypesEdit");
-jest.mock("../../misc/AssetLabel");
+jest.mock("../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
 
 describe("Term edit", () => {
   let term: Term;

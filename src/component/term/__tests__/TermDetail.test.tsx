@@ -15,10 +15,14 @@ import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
 
-jest.mock("../ParentTermSelector");
-jest.mock("../RelatedTermsSelector");
-jest.mock("../../misc/AssetLabel");
-jest.mock("../../changetracking/AssetHistory");
+jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
+jest.mock("../RelatedTermsSelector", () => () => (
+  <div>Related terms selector</div>
+));
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
+jest.mock("../../changetracking/AssetHistory", () => () => (
+  <div>Asset history</div>
+));
 
 describe("TermDetail", () => {
   const normalizedTermName = "test-term";

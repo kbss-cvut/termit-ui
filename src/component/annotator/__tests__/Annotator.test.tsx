@@ -28,7 +28,7 @@ import User from "../../../model/User";
 import File from "../../../model/File";
 
 jest.mock("../HtmlDomUtils");
-jest.mock("../../misc/AssetIriLink");
+jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
 
 describe("Annotator", () => {
   const fileIri = VocabularyUtils.create(Generator.generateUri());
