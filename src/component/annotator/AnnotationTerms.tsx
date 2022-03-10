@@ -141,9 +141,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             valueRenderer={createTermValueRenderer(this.props.vocabulary!.iri)}
             {...commonTermTreeSelectProps(this.props)}
           />
-          <FormText>
-            {i18n("resource.metadata.terms.edit.select.placeholder")}
-          </FormText>
+          <FormText>{i18n("annotation.term.select.placeholder")}</FormText>
         </FormGroup>
       </IfUserAuthorized>
     );

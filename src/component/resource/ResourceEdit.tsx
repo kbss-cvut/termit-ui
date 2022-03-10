@@ -11,8 +11,6 @@ import {
   Row,
 } from "reactstrap";
 import Resource from "../../model/Resource";
-import ResourceTermAssignmentsEdit from "./ResourceTermAssignmentsEdit";
-import Term from "../../model/Term";
 import CustomInput from "../misc/CustomInput";
 import TextArea from "../misc/TextArea";
 
@@ -25,7 +23,6 @@ export interface ResourceEditProps extends HasI18n {
 export interface ResourceEditState {
   label: string;
   description?: string;
-  terms: Term[];
 }
 
 export class ResourceEdit<
@@ -37,14 +34,7 @@ export class ResourceEdit<
     this.state = {
       label: props.resource.label,
       description: props.resource.description,
-      terms: props.resource.terms,
     } as S;
-  }
-
-  public componentDidUpdate(prevProps: ResourceEditProps) {
-    if (prevProps.resource.terms !== this.props.resource.terms) {
-      this.setState({ terms: this.props.resource.terms });
-    }
   }
 
   private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,15 +44,11 @@ export class ResourceEdit<
     this.setState(change);
   };
 
-  private onTagsChange = (newChildren: Term[]) => {
-    this.setState({ terms: newChildren });
-  };
-
   protected getCurrentResource() {
     const newResource = this.props.resource.clone();
     newResource.label = this.state.label;
     newResource.description = this.state.description;
-    newResource.terms = this.state.terms;
+    newResource.terms = this.props.resource.terms;
     return newResource;
   }
 
@@ -115,14 +101,6 @@ export class ResourceEdit<
               rows={4}
               value={this.state.description}
               onChange={this.onChange}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <ResourceTermAssignmentsEdit
-              terms={this.state.terms}
-              onChange={this.onTagsChange}
             />
           </Col>
         </Row>

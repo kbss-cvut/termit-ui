@@ -15,7 +15,6 @@ import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
 
-jest.mock("../TermAssignments", () => () => <div>Term assignments</div>);
 jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
 jest.mock("../RelatedTermsSelector", () => () => (
   <div>Related terms selector</div>

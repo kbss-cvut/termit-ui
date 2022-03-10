@@ -35,10 +35,6 @@ import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
   RdfsResourceData,
 } from "../model/RdfsResource";
-import {
-  CONTEXT as TERM_ASSIGNMENTS_CONTEXT,
-  TermAssignments,
-} from "../model/TermAssignments";
 import TermItState from "../model/TermItState";
 import Utils from "../util/Utils";
 import { CONTEXT as DOCUMENT_CONTEXT } from "../model/Document";
@@ -46,7 +42,7 @@ import {
   Configuration,
   CONTEXT as CONFIGURATION_CONTEXT,
 } from "../model/Configuration";
-import TermitFile from "../model/File";
+import TermItFile from "../model/File";
 import Asset from "../model/Asset";
 import AssetFactory from "../util/AssetFactory";
 import JsonLdUtils from "../util/JsonLdUtils";
@@ -57,10 +53,6 @@ import {
   TextAnalysisRecordData,
 } from "../model/TextAnalysisRecord";
 import {
-  CONTEXT as RESOURCE_TERM_ASSIGNMENTS_CONTEXT,
-  ResourceTermAssignments,
-} from "../model/ResourceTermAssignments";
-import {
   ChangeRecordData,
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
@@ -69,7 +61,6 @@ import RecentlyModifiedAsset, {
   RecentlyModifiedAssetData,
 } from "../model/RecentlyModifiedAsset";
 import NotificationType from "../model/NotificationType";
-import { langString } from "../model/MultilingualString";
 import ValidationResult, {
   CONTEXT as VALIDATION_RESULT_CONTEXT,
 } from "../model/ValidationResult";
@@ -300,63 +291,6 @@ export function loadResources() {
   };
 }
 
-export function loadResourceTermAssignmentsInfo(resourceIri: IRI) {
-  const action = {
-    type: ActionType.LOAD_RESOURCE_TERM_ASSIGNMENTS,
-  };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(
-      Constants.API_PREFIX +
-        "/resources/" +
-        resourceIri.fragment +
-        "/assignments/aggregated",
-      param("namespace", resourceIri.namespace)
-    )
-      .then((data: object[]) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<ResourceTermAssignments>(
-          data,
-          RESOURCE_TERM_ASSIGNMENTS_CONTEXT
-        )
-      )
-      .then((data: ResourceTermAssignments[]) => {
-        dispatch(asyncActionSuccess(action));
-        const assignedTerms = data
-          .filter(
-            (a) => a.types.indexOf(VocabularyUtils.TERM_OCCURRENCE) === -1
-          )
-          .map(
-            (a) =>
-              new Term({
-                iri: a.term.iri,
-                label: langString(a.label),
-                vocabulary: a.vocabulary,
-                draft: a.term.draft,
-              })
-          );
-        if (
-          getState().resource.iri ===
-          resourceIri.namespace + resourceIri.fragment
-        ) {
-          dispatch(
-            asyncActionSuccessWithPayload(
-              { type: ActionType.LOAD_RESOURCE_TERMS },
-              assignedTerms
-            )
-          );
-        }
-        return data;
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-        return [];
-      });
-  };
-}
-
 export function createResource(resource: Resource) {
   const action = {
     type: ActionType.CREATE_RESOURCE,
@@ -389,7 +323,7 @@ export function createResource(resource: Resource) {
   };
 }
 
-export function createFileInDocument(file: TermitFile, documentIri: IRI) {
+export function createFileInDocument(file: TermItFile, documentIri: IRI) {
   const action = {
     type: ActionType.CREATE_RESOURCE,
   };
@@ -430,7 +364,7 @@ export function createFileInDocument(file: TermitFile, documentIri: IRI) {
     });
 }
 
-export function removeFileFromDocument(file: TermitFile, documentIri: IRI) {
+export function removeFileFromDocument(file: TermItFile, documentIri: IRI) {
   const action = {
     type: ActionType.REMOVE_RESOURCE,
   };
@@ -1091,28 +1025,6 @@ export function updateTerm(term: Term) {
   };
 }
 
-export function updateResourceTerms(res: Resource) {
-  const action = {
-    type: ActionType.UPDATE_RESOURCE_TERMS,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, false));
-    const resourceIri = VocabularyUtils.create(res.iri);
-    return Ajax.put(
-      Constants.API_PREFIX + "/resources/" + resourceIri.fragment + "/terms",
-      content(res.terms!.map((t) => t.iri))
-        .params({ namespace: resourceIri.namespace })
-        .contentType("application/json")
-    )
-      .then(() => {
-        return dispatch(asyncActionSuccess(action));
-      })
-      .catch((error: ErrorData) => {
-        return dispatch(asyncActionFailure(action, error));
-      });
-  };
-}
-
 export function updateResource(res: Resource) {
   const action = {
     type: ActionType.UPDATE_RESOURCE,
@@ -1126,14 +1038,13 @@ export function updateResource(res: Resource) {
     )
       .then(() => {
         dispatch(asyncActionSuccess(action));
-        dispatch(
+        return dispatch(
           publishNotification({
             source: { type: NotificationType.ASSET_UPDATED },
             original: getState().resource,
             updated: res,
           })
         );
-        return dispatch(updateResourceTerms(res));
       })
       .then(() => {
         dispatch(loadResource(resourceIri));
@@ -1306,39 +1217,6 @@ export function createProperty(property: RdfsResource) {
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
-export function loadTermAssignmentsInfo(termIri: IRI, vocabularyIri: IRI) {
-  const action = {
-    type: ActionType.LOAD_TERM_ASSIGNMENTS,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    const url =
-      "/vocabularies/" +
-      vocabularyIri.fragment +
-      "/terms/" +
-      termIri.fragment +
-      "/assignments";
-    return Ajax.get(
-      Constants.API_PREFIX + url,
-      param("namespace", vocabularyIri.namespace)
-    )
-      .then((data: object) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<TermAssignments>(
-          data,
-          TERM_ASSIGNMENTS_CONTEXT
-        )
-      )
-      .then((data: TermAssignments[]) => {
-        dispatch(asyncActionSuccess(action));
-        return data;
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return [];
-      });
   };
 }
 

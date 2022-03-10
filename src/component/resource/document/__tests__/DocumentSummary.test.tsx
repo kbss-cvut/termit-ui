@@ -7,9 +7,6 @@ import Resource from "../../../../model/Resource";
 import { DocumentSummary } from "../DocumentSummary";
 import { shallow } from "enzyme";
 
-jest.mock("../../ResourceTermAssignments", () => () => (
-  <div>Term assignments</div>
-));
 jest.mock("../../../misc/AssetIriLink", () => () => (
   <span>Asset IRI link</span>
 ));
