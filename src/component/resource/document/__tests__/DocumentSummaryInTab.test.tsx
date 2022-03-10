@@ -1,7 +1,7 @@
 import Generator from "../../../../__tests__/environment/Generator";
 import Document from "../../../../model/Document";
 import { shallow } from "enzyme";
-import DocumentSummaryInTab from "../DocumentSummaryInTab";
+import DocumentSummary from "../DocumentSummary";
 import * as redux from "react-redux";
 import { ThunkDispatch } from "../../../../util/Types";
 import * as Actions from "../../../../action/AsyncActions";
@@ -26,7 +26,7 @@ describe("DocumentSummaryInTab", () => {
   it("reloads document when file was added to it", () => {
     jest.spyOn(Actions, "loadResource");
     const wrapper = shallow(
-      <DocumentSummaryInTab onChange={onChange} document={document} />
+      <DocumentSummary onChange={onChange} document={document} />
     );
     const files = wrapper.find(DocumentFiles);
     (files.props() as any).onFileAdded();
@@ -38,7 +38,7 @@ describe("DocumentSummaryInTab", () => {
   it("reloads document when file was removed from it", () => {
     jest.spyOn(Actions, "loadResource");
     const wrapper = shallow(
-      <DocumentSummaryInTab onChange={onChange} document={document} />
+      <DocumentSummary onChange={onChange} document={document} />
     );
     const files = wrapper.find(DocumentFiles);
     (files.props() as any).onFileRemoved();

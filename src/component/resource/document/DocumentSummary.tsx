@@ -1,19 +1,18 @@
-import Document from "../../../model/Document";
+import React from "react";
 import { useDispatch } from "react-redux";
+import Document from "../../../model/Document";
 import { ThunkDispatch } from "../../../util/Types";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { loadResource } from "../../../action/AsyncActions";
 import ResourceMetadata from "../ResourceMetadata";
 import DocumentFiles from "./DocumentFiles";
-import React from "react";
 
-interface DocumentSummaryInTabProps {
+interface DocumentSummaryProps {
   document?: Document;
   onChange: () => void;
 }
 
-// TODO Rename to DocumentSummary after original DocumentSummary component is removed
-const DocumentSummaryInTab: React.FC<DocumentSummaryInTabProps> = ({
+const DocumentSummary: React.FC<DocumentSummaryProps> = ({
   document,
   onChange,
 }) => {
@@ -35,4 +34,4 @@ const DocumentSummaryInTab: React.FC<DocumentSummaryInTabProps> = ({
   ) : null;
 };
 
-export default DocumentSummaryInTab;
+export default DocumentSummary;
