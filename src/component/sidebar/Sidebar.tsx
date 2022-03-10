@@ -77,11 +77,6 @@ const mainNavRoutes: NavLinkRoute[] = [
     icon: "fas fa-book",
   },
   {
-    path: Routes.resources.path,
-    name: "main.nav.resources",
-    icon: "fas fa-clipboard",
-  },
-  {
     path: Routes.statistics.path,
     name: "main.nav.statistics",
     icon: "fas fa-chart-pie",
@@ -106,12 +101,6 @@ const createNewNavRoutes: NavLinkRoute[] = [
     name: "main.nav.import-vocabulary",
     icon: "fas fa-file-import",
     supIcon: "fas",
-  },
-  {
-    path: Routes.createResource.path,
-    name: "main.nav.create-resource",
-    icon: "fas fa-clipboard",
-    supIcon: "fas fa-plus",
   },
 ];
 
