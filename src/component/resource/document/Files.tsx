@@ -2,8 +2,6 @@ import TermItFile from "../../../model/File";
 import File from "../../../model/File";
 import Utils from "../../../util/Utils";
 import { ButtonToolbar, Label, Table } from "reactstrap";
-import { connect } from "react-redux";
-import TermItState from "../../../model/TermItState";
 import { useI18n } from "../../hook/useI18n";
 
 interface FilesProps {
@@ -12,7 +10,7 @@ interface FilesProps {
   itemActions: (file: TermItFile) => JSX.Element[];
 }
 
-export const Files = (props: FilesProps) => {
+const Files = (props: FilesProps) => {
   const { i18n } = useI18n();
   const files = Utils.sanitizeArray(props.files)
     .slice()
@@ -58,9 +56,4 @@ export const Files = (props: FilesProps) => {
   );
 };
 
-export default connect((state: TermItState) => {
-  return {
-    intl: state.intl,
-    vocabulary: state.vocabulary,
-  };
-})(Files);
+export default Files;
