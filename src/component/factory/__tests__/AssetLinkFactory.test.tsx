@@ -5,14 +5,13 @@ import { TermLink } from "../../term/TermLink";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router";
 import Vocabulary from "../../../model/Vocabulary";
-import Document from "../../../model/Document";
 import File from "../../../model/File";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
-import ResourceLink from "../../resource/ResourceLink";
 import Resource from "../../../model/Resource";
 import Generator from "../../../__tests__/environment/Generator";
 import { Link } from "react-router-dom";
 import { Label } from "reactstrap";
+import { langString } from "../../../model/MultilingualString";
 
 describe("AssetLinkFactory", () => {
   describe("createAssetLink", () => {
@@ -22,10 +21,9 @@ describe("AssetLinkFactory", () => {
       const vocabularyNamespace = VocabularyUtils.PREFIX;
       const term: Term = new Term({
         iri: vocabularyNamespace + vocabularyName + "/terms/" + termName,
-        label: "Test one",
+        label: langString("Test one"),
         vocabulary: {
           iri: vocabularyNamespace + vocabularyName,
-          label: "Vocabulary",
         },
         types: [VocabularyUtils.TERM],
       });
@@ -51,24 +49,7 @@ describe("AssetLinkFactory", () => {
       expect(result.find(VocabularyLink).exists()).toBeTruthy();
     });
 
-    it("creates ResourceLink for Document", () => {
-      const name = "mpp-3.3";
-      const namespace = VocabularyUtils.PREFIX;
-      const document = new Document({
-        iri: namespace + name,
-        label: "Document",
-        files: [],
-        types: [VocabularyUtils.DOCUMENT, VocabularyUtils.RESOURCE],
-      });
-      const result = mountWithIntl(
-        <MemoryRouter>
-          {AssetLinkFactory.createAssetLink(document)}
-        </MemoryRouter>
-      );
-      expect(result.find(ResourceLink).exists()).toBeTruthy();
-    });
-
-    it("creates ResourceLink for File", () => {
+    it("creates a plain label for File", () => {
       const name = "mpp-3.3.html";
       const namespace = VocabularyUtils.PREFIX;
       const file = new File({
@@ -79,23 +60,8 @@ describe("AssetLinkFactory", () => {
       const result = mountWithIntl(
         <MemoryRouter>{AssetLinkFactory.createAssetLink(file)}</MemoryRouter>
       );
-      expect(result.find(ResourceLink).exists()).toBeTruthy();
-    });
-
-    it("creates ResourceLink for Resource", () => {
-      const name = "mpp-3.3.html";
-      const namespace = VocabularyUtils.PREFIX;
-      const resource = new Resource({
-        iri: namespace + name,
-        label: "Resource",
-        types: [VocabularyUtils.RESOURCE],
-      });
-      const result = mountWithIntl(
-        <MemoryRouter>
-          {AssetLinkFactory.createAssetLink(resource)}
-        </MemoryRouter>
-      );
-      expect(result.find(ResourceLink).exists()).toBeTruthy();
+      expect(result.find(Link).exists()).toBeFalsy();
+      expect(result.find(Label).exists()).toBeTruthy();
     });
 
     it("creates a plain label when link cannot be created", () => {
