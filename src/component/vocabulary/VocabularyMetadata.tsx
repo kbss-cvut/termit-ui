@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { selectVocabularyTerm } from "../../action/SyncActions";
 import Utils from "../../util/Utils";
-import OptionalDocumentSummaryInTab from "../resource/document/OptionalDocumentSummaryInTab";
+import DocumentSummaryInTab from "../resource/document/DocumentSummaryInTab";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -101,8 +101,8 @@ export class VocabularyMetadata extends React.Component<
     );
 
     tabs["vocabulary.detail.document"] = (
-      <OptionalDocumentSummaryInTab
-        vocabulary={vocabulary}
+      <DocumentSummaryInTab
+        document={vocabulary.document}
         onChange={this.props.onChange}
       />
     );
@@ -129,7 +129,6 @@ export class VocabularyMetadata extends React.Component<
             ? vocabulary.termCount.toString()
             : null,
           "properties.edit.title": vocabulary.unmappedProperties.size.toFixed(),
-          "vocabulary.detail.document": vocabulary.document ? "1" : "0",
         }}
       />
     );

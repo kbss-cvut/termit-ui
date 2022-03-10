@@ -26,6 +26,7 @@ import Utils from "../../util/Utils";
 import FileEdit from "./file/FileEdit";
 import classNames from "classnames";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import { ReactElement } from "react";
 
 function isFile(resource: Resource) {
   return Utils.getPrimaryAssetType(resource) === VocabularyUtils.FILE;
@@ -72,7 +73,7 @@ export class ResourceSummary<
     return true;
   }
 
-  public render() {
+  public render(): ReactElement | null {
     return (
       <div id="resource-detail">
         <HeaderWithActions
