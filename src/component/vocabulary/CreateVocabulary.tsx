@@ -185,6 +185,19 @@ export class CreateVocabulary extends AbstractCreateAsset<
                     />
                   </Col>
                 </Row>
+                <ShowAdvanceAssetFields>
+                  <Row>
+                    <Col xs={12}>
+                      <CustomInput
+                        name="create-vocabulary-iri"
+                        label={i18n("asset.iri")}
+                        value={this.state.iri}
+                        onChange={this.onIriChange}
+                        help={i18n("asset.create.iri.help")}
+                      />
+                    </Col>
+                  </Row>
+                </ShowAdvanceAssetFields>
                 <Files
                   files={this.state.files}
                   actions={[
@@ -202,19 +215,6 @@ export class CreateVocabulary extends AbstractCreateAsset<
                     />,
                   ]}
                 />
-                <ShowAdvanceAssetFields>
-                  <Row>
-                    <Col xs={12}>
-                      <CustomInput
-                        name="create-vocabulary-iri"
-                        label={i18n("asset.iri")}
-                        value={this.state.iri}
-                        onChange={this.onIriChange}
-                        help={i18n("asset.create.iri.help")}
-                      />
-                    </Col>
-                  </Row>
-                </ShowAdvanceAssetFields>
                 <Row>
                   <Col xs={12}>
                     <ButtonToolbar className="d-flex justify-content-center mt-4">
