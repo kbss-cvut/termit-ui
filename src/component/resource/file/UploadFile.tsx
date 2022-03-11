@@ -6,6 +6,7 @@ import classNames from "classnames";
 import { useI18n } from "../../hook/useI18n";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
+import "./UploadFile.scss";
 
 function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) {
