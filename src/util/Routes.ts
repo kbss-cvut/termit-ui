@@ -42,7 +42,6 @@ const Routes = {
   facetedSearch: new Route("facetedSearch", "/facetedSearch"),
   statistics: new Route("statistics", "/statistics"),
   vocabularies: new Route("vocabulary", "/vocabularies"),
-  resources: new Route("resource", "/resources"),
   createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
   importVocabulary: new Route("createVocabulary", "/vocabularies/import"),
   vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
@@ -50,7 +49,6 @@ const Routes = {
     "annotateFile",
     "/vocabularies/:name/document/:fileName"
   ),
-  resourceSummary: new Route("resourceSummary", "/resources/:name"),
   createVocabularyTerm: new Route(
     "createVocabularyTerm",
     "/vocabularies/:name/terms/create"

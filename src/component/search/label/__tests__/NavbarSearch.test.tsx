@@ -147,9 +147,9 @@ describe("NavbarSearch", () => {
     wrapper.update();
     expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeTruthy();
     const newLoc = Object.assign(location(), {
-      pathname: Routes.resources.path,
+      pathname: Routes.vocabularies.path,
     });
-    const newMatch = Object.assign(match(), { path: Routes.resources.path });
+    const newMatch = Object.assign(match(), { path: Routes.vocabularies.path });
     wrapper.setProps({ location: newLoc, match: newMatch });
     wrapper.update();
     expect(wrapper.find(SearchResultsOverlay).length).toEqual(0);

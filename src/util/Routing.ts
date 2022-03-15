@@ -151,10 +151,8 @@ export class Routing {
       case VocabularyUtils.RESOURCE:
       case VocabularyUtils.DOCUMENT:
       case VocabularyUtils.FILE:
-        this.transitionTo(Routes.resourceSummary, {
-          params: new Map([["name", iri.fragment], ...params]),
-          query: new Map([["namespace", iri.namespace!], ...query]),
-        });
+        // Fallback, since there is no resource management screen
+        this.transitionToHome();
         break;
       case VocabularyUtils.TERM:
         const vocIri = VocabularyUtils.create((asset as Term).vocabulary!.iri!);

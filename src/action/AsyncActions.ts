@@ -241,7 +241,7 @@ export function loadResource(iri: IRI) {
       )
       .then((data: ResourceData) => {
         const resource = AssetFactory.createResource(data);
-        dispatch(asyncActionSuccess(action));
+        dispatch(asyncActionSuccessWithPayload(action, resource));
         return resource;
       })
       .catch((error: ErrorData) => {
@@ -310,7 +310,7 @@ export function removeFileFromDocument(file: TermItFile, documentIri: IRI) {
         fileIri.fragment,
       param("namespace", fileIri.namespace)
     )
-      .then((resp: AxiosResponse) => {
+      .then(() => {
         dispatch(asyncActionSuccess(action));
         dispatch(loadResource(documentIri));
         dispatch(
@@ -335,16 +335,9 @@ export function uploadFileContent(fileIri: IRI, data: File) {
   const action = {
     type: ActionType.SAVE_FILE_CONTENT,
   };
-  const formData = new FormData();
-  formData.append("file", data, fileIri.fragment);
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.put(
-      Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
-      contentType(Constants.MULTIPART_FORM_DATA)
-        .formData(formData)
-        .param("namespace", fileIri.namespace)
-    )
+    return uploadFile(fileIri, data)
       .then(() => {
         dispatch(asyncActionSuccess(action));
         return dispatch(
@@ -366,6 +359,17 @@ export function uploadFileContent(fileIri: IRI, data: File) {
         );
       });
   };
+}
+
+function uploadFile(fileIri: IRI, data: Blob) {
+  const formData = new FormData();
+  formData.append("file", data, fileIri.fragment);
+  return Ajax.put(
+    Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
+    contentType(Constants.MULTIPART_FORM_DATA)
+      .formData(formData)
+      .param("namespace", fileIri.namespace)
+  );
 }
 
 export function removeVocabulary(vocabulary: Vocabulary) {
@@ -865,26 +869,18 @@ export function hasFileContent(fileIri: IRI) {
   };
 }
 
-// TODO This has been is superseded by uploadFileContent and should internally make use of it
 export function saveFileContent(fileIri: IRI, fileContent: string) {
   const action = {
     type: ActionType.SAVE_FILE_CONTENT,
   };
-  const formData = new FormData();
-  const fileBlob = new Blob([fileContent], { type: "text/html" });
-  formData.append("file", fileBlob, fileIri.fragment);
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.put(
-      Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
-      contentType(Constants.MULTIPART_FORM_DATA)
-        .formData(formData)
-        .param("namespace", fileIri.namespace)
-    )
-      .then((data: object) => fileContent) // TODO load from the service instead
-      .then((data: string) =>
-        dispatch(asyncActionSuccessWithPayload(action, data))
-      )
+    const fileBlob = new Blob([fileContent], { type: "text/html" });
+    return uploadFile(fileIri, fileBlob)
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        return dispatch(loadFileContent(fileIri));
+      })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return dispatch(
@@ -947,7 +943,7 @@ export function updateResource(res: Resource) {
   const action = {
     type: ActionType.UPDATE_RESOURCE,
   };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+  return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     const resourceIri = VocabularyUtils.create(res.iri);
     return Ajax.put(
