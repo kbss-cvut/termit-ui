@@ -5,7 +5,6 @@ import IntlData from "./IntlData";
 import Vocabulary, { EMPTY_VOCABULARY } from "./Vocabulary";
 import { QueryResultIF } from "./QueryResult";
 import Term from "./Term";
-import Resource, { EMPTY_RESOURCE } from "./Resource";
 import RdfsResource from "./RdfsResource";
 import AppNotification from "./AppNotification";
 import SearchResult from "./SearchResult";
@@ -25,8 +24,6 @@ export default class TermItState {
   public loading: boolean;
   public user: User;
   public vocabulary: Vocabulary;
-  public resources: { [key: string]: Resource };
-  public resource: Resource;
   public selectedFile: File;
   public vocabularies: { [key: string]: Vocabulary };
   public fileContent: string | null;
@@ -64,9 +61,7 @@ export default class TermItState {
     this.loading = false;
     this.user = EMPTY_USER;
     this.vocabulary = EMPTY_VOCABULARY;
-    this.resource = EMPTY_RESOURCE;
     this.selectedFile = EMPTY_FILE;
-    this.resources = {};
     this.vocabularies = {};
     this.fileContent = null;
     this.messages = [];
@@ -102,9 +97,8 @@ export default class TermItState {
   public static toLoggable(state: TermItState): any {
     const result: any = Object.assign({}, state);
     result.vocabulary = state.vocabulary.toJsonLd();
-    result.resource = state.resource.toJsonLd();
     result.selectedFile = state.selectedFile.toJsonLd();
-    result.selectedTerm = state.resource.toJsonLd();
+    result.selectedTerm = state.selectedTerm?.toJsonLd();
     return result;
   }
 }

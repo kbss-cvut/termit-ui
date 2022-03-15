@@ -93,8 +93,6 @@ export function isActionRequestPending(state: TermItState, action: Action) {
   return state.pendingActions[action.type] !== undefined;
 }
 
-const JOINED_RESOURCE_CONTEXT = Object.assign({}, DOCUMENT_CONTEXT);
-
 export function createVocabulary(vocabulary: Vocabulary) {
   const action = {
     type: ActionType.CREATE_VOCABULARY,
@@ -238,12 +236,12 @@ export function loadResource(iri: IRI) {
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferences<ResourceData>(
           data,
-          JOINED_RESOURCE_CONTEXT
+          DOCUMENT_CONTEXT
         )
       )
       .then((data: ResourceData) => {
         const resource = AssetFactory.createResource(data);
-        dispatch(asyncActionSuccessWithPayload(action, resource));
+        dispatch(asyncActionSuccess(action));
         return resource;
       })
       .catch((error: ErrorData) => {
@@ -252,73 +250,6 @@ export function loadResource(iri: IRI) {
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
         return null;
-      });
-  };
-}
-
-export function loadResources() {
-  const action = {
-    type: ActionType.LOAD_RESOURCES,
-  };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    if (isActionRequestPending(getState(), action)) {
-      return Promise.resolve({});
-    }
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(Constants.API_PREFIX + "/resources")
-      .then((data: object[]) =>
-        data.length !== 0
-          ? JsonLdUtils.compactAndResolveReferencesAsArray<ResourceData>(
-              data,
-              JOINED_RESOURCE_CONTEXT
-            )
-          : []
-      )
-      .then((data: ResourceData[]) =>
-        dispatch(
-          asyncActionSuccessWithPayload(
-            action,
-            data.map((v) => AssetFactory.createResource(v))
-          )
-        )
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-      });
-  };
-}
-
-export function createResource(resource: Resource) {
-  const action = {
-    type: ActionType.CREATE_RESOURCE,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    return Ajax.post(
-      Constants.API_PREFIX + "/resources",
-      content(resource.toJsonLd())
-    )
-      .then((resp: AxiosResponse) => {
-        dispatch(asyncActionSuccess(action));
-        dispatch(
-          SyncActions.publishMessage(
-            new Message(
-              { messageId: "resource.created.message" },
-              MessageType.SUCCESS
-            )
-          )
-        );
-        return resp.headers[Constants.Headers.LOCATION];
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-        return undefined;
       });
   };
 }
@@ -435,19 +366,6 @@ export function uploadFileContent(fileIri: IRI, data: File) {
         );
       });
   };
-}
-
-export function removeResource(resource: Resource) {
-  const iri = VocabularyUtils.create(resource.iri);
-  return removeAsset(
-    iri,
-    iri.namespace,
-    ActionType.REMOVE_RESOURCE,
-    "resources",
-    loadResources,
-    "resource.removed.message",
-    Routes.resources
-  );
 }
 
 export function removeVocabulary(vocabulary: Vocabulary) {
@@ -1036,19 +954,9 @@ export function updateResource(res: Resource) {
       Constants.API_PREFIX + "/resources/" + resourceIri.fragment,
       content(res.toJsonLd()).params({ namespace: resourceIri.namespace })
     )
+      .then(() => dispatch(asyncActionSuccess(action)))
       .then(() => {
-        dispatch(asyncActionSuccess(action));
-        return dispatch(
-          publishNotification({
-            source: { type: NotificationType.ASSET_UPDATED },
-            original: getState().resource,
-            updated: res,
-          })
-        );
-      })
-      .then(() => {
-        dispatch(loadResource(resourceIri));
-        return dispatch(
+        dispatch(
           publishMessage(
             new Message(
               { messageId: "resource.updated.message" },
@@ -1056,12 +964,14 @@ export function updateResource(res: Resource) {
             )
           )
         );
+        return dispatch(loadResource(resourceIri));
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
-        return dispatch(
+        dispatch(
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
+        return null;
       });
   };
 }

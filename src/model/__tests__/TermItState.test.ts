@@ -31,7 +31,6 @@ describe("TermItState", () => {
           })
         );
       }
-      sut.resource = document;
 
       const result = TermItState.toLoggable(sut);
       const json = JSON.stringify(result);

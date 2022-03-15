@@ -24,7 +24,6 @@ import {
 } from "../util/IntlUtil";
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import Vocabulary, { EMPTY_VOCABULARY } from "../model/Vocabulary";
-import Resource, { EMPTY_RESOURCE } from "../model/Resource";
 import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
 import Term from "../model/Term";
 import RdfsResource from "../model/RdfsResource";
@@ -36,7 +35,6 @@ import Utils from "../util/Utils";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
-import Document from "../model/Document";
 import { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 
@@ -160,25 +158,6 @@ function onTermCountLoaded(state: Vocabulary, action: AsyncActionSuccess<any>) {
   );
 }
 
-function resource(
-  state: Resource = EMPTY_RESOURCE,
-  action: AsyncActionSuccess<any>
-): Resource {
-  switch (action.type) {
-    case ActionType.LOAD_RESOURCE:
-      return action.status === AsyncActionStatus.SUCCESS
-        ? action.payload.owner
-          ? new Document(action.payload.owner)
-          : action.payload
-        : state;
-    case ActionType.CLEAR_RESOURCE: // Intentional fall-through
-    case ActionType.LOGOUT:
-      return EMPTY_RESOURCE;
-    default:
-      return state;
-  }
-}
-
 function selectedFile(
   state: File = EMPTY_FILE,
   action: AsyncActionSuccess<any>
@@ -193,26 +172,6 @@ function selectedFile(
     case ActionType.CLEAR_RESOURCE:
     case ActionType.LOGOUT:
       return EMPTY_FILE;
-    default:
-      return state;
-  }
-}
-
-function resources(
-  state: { [key: string]: Resource } | any = {},
-  action: AsyncActionSuccess<Resource[]>
-): { [key: string]: Resource } {
-  switch (action.type) {
-    case ActionType.LOAD_RESOURCES:
-      if (action.status === AsyncActionStatus.SUCCESS) {
-        const map = {};
-        action.payload.forEach((v) => (map[v.iri] = v));
-        return map;
-      } else {
-        return state;
-      }
-    case ActionType.LOGOUT:
-      return {};
     default:
       return state;
   }
@@ -624,9 +583,7 @@ const rootReducer = combineReducers<TermItState>({
   loading,
   vocabulary,
   vocabularies,
-  resource,
   selectedFile,
-  resources,
   messages,
   intl,
   selectedTerm,
