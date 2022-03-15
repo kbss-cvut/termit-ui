@@ -472,7 +472,7 @@ export function removeTerm(term: Term) {
     "vocabularies/" + vocabularyIri.fragment + "/terms",
     () => loadVocabulary(vocabularyIri),
     "term.removed.message",
-    Routes.vocabularyDetail,
+    Routes.vocabularySummary,
     {
       params: new Map([["name", vocabularyIri.fragment]]),
       query: vocabularyIri.namespace

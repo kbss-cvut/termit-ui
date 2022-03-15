@@ -37,10 +37,10 @@ const FileContentLink: React.FC<FileContentLinkProps> = (props) => {
   }, [dispatch, file.iri]);
 
   const fileIri = VocabularyUtils.create(file.iri);
-  const documentIri = VocabularyUtils.create(file.owner!.iri);
-  const params = { name: documentIri.fragment, fileName: fileIri.fragment };
+  const vocabularyIri = VocabularyUtils.create(file.owner!.vocabulary!.iri!);
+  const params = { name: vocabularyIri.fragment, fileName: fileIri.fragment };
   const query = {
-    namespace: documentIri.namespace,
+    namespace: vocabularyIri.namespace,
     fileNamespace: fileIri.namespace,
   };
   return isSupported(contentType) ? (

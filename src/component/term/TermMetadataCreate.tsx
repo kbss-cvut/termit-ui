@@ -52,7 +52,7 @@ export class TermMetadataCreate extends React.Component<
       this.props.location.search,
       "namespace"
     );
-    Routing.transitionTo(Routes.vocabularyDetail, {
+    Routing.transitionTo(Routes.vocabularySummary, {
       params: new Map([["name", normalizedName]]),
       query: namespace ? new Map([["namespace", namespace]]) : undefined,
     });

@@ -131,7 +131,7 @@ const Utils = {
    * @return asset primary  type, undefined if the type is not known or it the asset does not contain type info
    */
   getPrimaryAssetType(asset: HasTypes): string | undefined {
-    const types = this.sanitizeArray(asset.types);
+    const types = this.sanitizeArray((asset || {}).types);
     if (types.indexOf(VocabularyUtils.TERM) !== -1) {
       return VocabularyUtils.TERM;
     } else if (types.indexOf(VocabularyUtils.VOCABULARY) !== -1) {

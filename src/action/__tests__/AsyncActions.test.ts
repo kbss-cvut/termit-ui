@@ -915,7 +915,7 @@ describe("Async actions", () => {
       ).then(() => {
         const vocabularyIri = VocabularyUtils.create(vocabulary.iri);
         expect(Routing.transitionTo).toHaveBeenCalledWith(
-          Routes.vocabularyDetail,
+          Routes.vocabularySummary,
           {
             params: new Map([["name", vocabularyIri.fragment]]),
             query: vocabularyIri.namespace

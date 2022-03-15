@@ -45,9 +45,11 @@ const Routes = {
   resources: new Route("resource", "/resources"),
   createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
   importVocabulary: new Route("createVocabulary", "/vocabularies/import"),
-  vocabularyDetail: new Route("vocabularyDetail", "/vocabularies/:name/terms"),
   vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
-  annotateFile: new Route("annotateFile", "/resources/:name/files/:fileName"),
+  annotateFile: new Route(
+    "annotateFile",
+    "/vocabularies/:name/document/:fileName"
+  ),
   resourceSummary: new Route("resourceSummary", "/resources/:name"),
   createVocabularyTerm: new Route(
     "createVocabularyTerm",

@@ -26,10 +26,10 @@ describe("Routing", () => {
   describe("get transition path", () => {
     it("replaces path variables with values", () => {
       const name = "test-vocabulary";
-      const path = Routing.getTransitionPath(Routes.vocabularyDetail, {
+      const path = Routing.getTransitionPath(Routes.vocabularySummary, {
         params: new Map([["name", name]]),
       });
-      const expectedPath = Routes.vocabularyDetail.path.replace(":name", name);
+      const expectedPath = Routes.vocabularySummary.path.replace(":name", name);
       expect(path).toEqual(expectedPath);
     });
     it("adds query parameters when specified for transition", () => {

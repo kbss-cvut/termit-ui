@@ -29,18 +29,25 @@ interface VocabularyMetadataState {
   activeTab: string;
 }
 
+const TABS = [
+  "glossary.title",
+  "type.document",
+  "history.label",
+  "changefrequency.label",
+  "properties.edit.title",
+];
+
 export class VocabularyMetadata extends React.Component<
   VocabularyMetadataProps,
   VocabularyMetadataState
 > {
   constructor(props: VocabularyMetadataProps) {
     super(props);
+    const tabParam: string =
+      Utils.extractQueryParam(this.props.location.search, "activeTab") || "";
     this.state = {
       activeTab:
-        Utils.extractQueryParam(this.props.location.search, "activeTab") ===
-        "vocabulary.validation.tab"
-          ? "vocabulary.validation.tab"
-          : "glossary.title",
+        TABS.indexOf(tabParam) !== -1 ? TABS[TABS.indexOf(tabParam)] : TABS[0],
     };
   }
 
@@ -100,7 +107,7 @@ export class VocabularyMetadata extends React.Component<
       />
     );
 
-    tabs["vocabulary.detail.document"] = (
+    tabs["type.document"] = (
       <DocumentSummary
         document={vocabulary.document}
         onChange={this.props.onChange}
