@@ -8,7 +8,7 @@ import { Col, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 
 interface TermChangeFrequencyUIProps {
-  records: ChangeRecord[];
+  records: ChangeRecord[] | null;
 }
 
 const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = (props) => {
