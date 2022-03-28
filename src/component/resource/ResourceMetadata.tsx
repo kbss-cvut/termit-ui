@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { CardBody, Col, Label, Row } from "reactstrap";
 import Resource from "../../model/Resource";
-import ResourceLink from "./ResourceLink";
 import { useI18n } from "../hook/useI18n";
+import OutgoingLink from "../misc/OutgoingLink";
 
 interface ResourceMetadataProps {
   resource: Resource;
@@ -25,9 +25,9 @@ const ResourceMetadata = (props: ResourceMetadataProps) => {
               </Label>
             </Col>
             <Col xl={10} md={8}>
-              <ResourceLink
-                id="resource-metadata-label"
-                resource={props.resource || {}}
+              <OutgoingLink
+                iri={props.resource.iri}
+                label={props.resource.label}
               />
             </Col>
           </Row>

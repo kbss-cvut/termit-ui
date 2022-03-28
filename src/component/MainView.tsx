@@ -30,9 +30,6 @@ import "./MainView.scss";
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
 );
-const ResourceManagementRoute = React.lazy(
-  () => import("./resource/ResourceManagementRoute")
-);
 const VocabularyManagementRoute = React.lazy(
   () => import("./vocabulary/VocabularyManagementRoute")
 );
@@ -152,11 +149,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                   title={i18n("main.nav.admin")}
                   path={Routes.administration.path}
                   component={AdministrationRoute}
-                />
-                <BreadcrumbRoute
-                  title={i18n("main.nav.resources")}
-                  path={Routes.resources.path}
-                  component={ResourceManagementRoute}
                 />
                 <BreadcrumbRoute
                   title={i18n("main.nav.vocabularies")}

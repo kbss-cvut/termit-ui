@@ -3,9 +3,6 @@ import Routes from "../Routes";
 import { createHashHistory } from "history";
 import VocabularyUtils from "../VocabularyUtils";
 import Vocabulary from "../../model/Vocabulary";
-import Resource from "../../model/Resource";
-import Document from "../../model/Document";
-import File from "../../model/File";
 import Generator from "../../__tests__/environment/Generator";
 import { langString } from "../../model/MultilingualString";
 import Constants from "../Constants";
@@ -26,10 +23,10 @@ describe("Routing", () => {
   describe("get transition path", () => {
     it("replaces path variables with values", () => {
       const name = "test-vocabulary";
-      const path = Routing.getTransitionPath(Routes.vocabularyDetail, {
+      const path = Routing.getTransitionPath(Routes.vocabularySummary, {
         params: new Map([["name", name]]),
       });
-      const expectedPath = Routes.vocabularyDetail.path.replace(":name", name);
+      const expectedPath = Routes.vocabularySummary.path.replace(":name", name);
       expect(path).toEqual(expectedPath);
     });
     it("adds query parameters when specified for transition", () => {
@@ -63,52 +60,6 @@ describe("Routing", () => {
       RoutingInstance.transitionToAsset(vocabulary);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.vocabularySummary, {
-          params: new Map([["name", label]]),
-          query: new Map([["namespace", namespace]]),
-        })
-      );
-    });
-
-    it("transitions to resource summary for a resource", () => {
-      const resource = new Resource({
-        iri,
-        label,
-        types: [VocabularyUtils.RESOURCE],
-      });
-      RoutingInstance.transitionToAsset(resource);
-      expect(historyMock.push).toHaveBeenCalledWith(
-        Routing.getTransitionPath(Routes.resourceSummary, {
-          params: new Map([["name", label]]),
-          query: new Map([["namespace", namespace]]),
-        })
-      );
-    });
-
-    it("transitions to resource summary for a document", () => {
-      const doc = new Document({
-        iri,
-        label,
-        types: [VocabularyUtils.DOCUMENT],
-        files: [],
-      });
-      RoutingInstance.transitionToAsset(doc);
-      expect(historyMock.push).toHaveBeenCalledWith(
-        Routing.getTransitionPath(Routes.resourceSummary, {
-          params: new Map([["name", label]]),
-          query: new Map([["namespace", namespace]]),
-        })
-      );
-    });
-
-    it("transitions to resource summary for a file", () => {
-      const file = new File({
-        iri,
-        label,
-        types: [VocabularyUtils.FILE],
-      });
-      RoutingInstance.transitionToAsset(file);
-      expect(historyMock.push).toHaveBeenCalledWith(
-        Routing.getTransitionPath(Routes.resourceSummary, {
           params: new Map([["name", label]]),
           query: new Map([["namespace", namespace]]),
         })

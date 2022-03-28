@@ -71,16 +71,13 @@ const en = {
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",
-    "main.nav.resources": "Resources",
     "main.nav.statistics": "Statistics",
     "main.nav.search": "Search",
-    "main.nav.facetedSearch": "Faceted search",
     "main.nav.searchTerms": "Search terms",
     "main.nav.searchVocabularies": "Search vocabularies",
     "main.nav.admin": "Administration",
     "main.nav.create-vocabulary": "New Vocabulary",
     "main.nav.import-vocabulary": "Import Vocabulary",
-    "main.nav.create-resource": "New Resource",
     "main.user-profile": "User profile",
     "main.logout": "Log out",
     "main.search.placeholder": "Search",
@@ -275,20 +272,10 @@ const en = {
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
 
-    "resource.management": "Resources management",
-    "resource.management.resources": "Resources",
-    "resource.management.empty":
-      "No resources found. Start by registering some.",
-    "resource.management.select.placeholder":
-      "Start typing to filter resources by name",
-    "resource.management.create.tooltip": "Create or upload a new resource",
-    "resource.management.new": "New Resource",
     "resource.created.message": "Resource successfully created.",
     "resource.updated.message": "Resource successfully updated.",
     "resource.removed.message": "Resource successfully removed.",
 
-    "resource.create.title": "Create resource",
-    "resource.create.type": "Type",
     "resource.create.file.select.label":
       "Drag & drop a file here, or click to select file",
     "resource.metadata.description": "Description",
@@ -297,7 +284,6 @@ const en = {
     "resource.metadata.file.content.view.tooltip":
       "View file content and annotate it",
     "resource.metadata.file.content.download": "Download",
-    "resource.metadata.document.vocabulary": "Document vocabulary",
     "resource.metadata.document.files.actions.add": "Add",
     "resource.metadata.document.files.actions.add.tooltip":
       "Add new file to this document",

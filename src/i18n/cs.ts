@@ -72,16 +72,13 @@ const cs = {
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
-    "main.nav.resources": "Datové zdroje",
     "main.nav.statistics": "Statistiky",
     "main.nav.search": "Vyhledávání",
-    "main.nav.facetedSearch": "Facetové vyhledávání",
     "main.nav.searchTerms": "Vyhledávání pojmů",
     "main.nav.searchVocabularies": "Vyhledávání slovníků",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
     "main.nav.import-vocabulary": "Importovat slovník",
-    "main.nav.create-resource": "Nový zdroj",
     "main.user-profile": "Profil uživatele",
     "main.logout": "Odhlásit se",
     "main.search.placeholder": "Hledat",
@@ -281,19 +278,10 @@ const cs = {
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",
 
-    "resource.management": "Správa zdrojů",
-    "resource.management.resources": "Zdroje",
-    "resource.management.empty": "Žádné zdroje nenalezeny. Vytvořte nějaký...",
-    "resource.management.select.placeholder":
-      "Začněte psát pro filtrování zdrojů dle názvu",
-    "resource.management.create.tooltip": "Vytvořit či zaregistrovat zdroj",
-    "resource.management.new": "Nový zdroj",
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",
     "resource.removed.message": "Zdroj by odstraněn.",
 
-    "resource.create.title": "Vytvořit zdroj",
-    "resource.create.type": "Typ zdroje",
     "resource.create.file.select.label":
       "Přetáhněte sem soubor myší, nebo klikněte pro výběr pomocí dialogu",
     "resource.metadata.description": "Popis",
@@ -302,7 +290,6 @@ const cs = {
     "resource.metadata.file.content.view.tooltip":
       "Zobrazit obsah souboru a anotovat ho",
     "resource.metadata.file.content.download": "Stáhnout",
-    "resource.metadata.document.vocabulary": "Dokumentový slovník",
     "resource.metadata.document.files.actions.add": "Přidat",
     "resource.metadata.document.files.actions.add.tooltip":
       "Přidat nový soubor do tohoto dokumentu",

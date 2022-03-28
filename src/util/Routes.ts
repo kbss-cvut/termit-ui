@@ -42,14 +42,13 @@ const Routes = {
   facetedSearch: new Route("facetedSearch", "/facetedSearch"),
   statistics: new Route("statistics", "/statistics"),
   vocabularies: new Route("vocabulary", "/vocabularies"),
-  resources: new Route("resource", "/resources"),
   createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
   importVocabulary: new Route("createVocabulary", "/vocabularies/import"),
-  vocabularyDetail: new Route("vocabularyDetail", "/vocabularies/:name/terms"),
   vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
-  annotateFile: new Route("annotateFile", "/resources/:name/files/:fileName"),
-  createResource: new Route("createResource", "/resources/create"),
-  resourceSummary: new Route("resourceSummary", "/resources/:name"),
+  annotateFile: new Route(
+    "annotateFile",
+    "/vocabularies/:name/document/:fileName"
+  ),
   createVocabularyTerm: new Route(
     "createVocabularyTerm",
     "/vocabularies/:name/terms/create"

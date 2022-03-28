@@ -47,7 +47,9 @@ export class Tabs extends React.Component<TabsProps> {
         this.props.tabBadges[id] ? (
           <>
             {" "}
-            <Badge>{this.props.tabBadges[id]}</Badge>
+            <Badge className="align-text-bottom">
+              {this.props.tabBadges[id]}
+            </Badge>
           </>
         ) : null;
 

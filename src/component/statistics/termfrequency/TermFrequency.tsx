@@ -92,7 +92,7 @@ const TermFrequency: React.FC<Props> = (props) => {
 
           const iri = VocabularyUtils.create(voc.id);
 
-          RoutingI.transitionTo(Routes.vocabularyDetail, {
+          RoutingI.transitionTo(Routes.vocabularySummary, {
             params: new Map([["name", iri.fragment || ""]]),
             query: new Map([["namespace", iri.namespace || ""]]),
           });

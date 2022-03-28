@@ -13,7 +13,6 @@ import {
   clearErrors,
   clearFileContent,
   clearProperties,
-  clearResource,
   consumeNotification,
   dismissMessage,
   popRoutingPayload,
@@ -38,7 +37,6 @@ import AsyncActionStatus from "../../action/AsyncActionStatus";
 import Term, { TermData } from "../../model/Term";
 import RdfsResource from "../../model/RdfsResource";
 import AppNotification from "../../model/AppNotification";
-import Resource, { EMPTY_RESOURCE } from "../../model/Resource";
 import Generator from "../../__tests__/environment/Generator";
 import SearchQuery from "../../model/SearchQuery";
 import QueryResult from "../../model/QueryResult";
@@ -67,8 +65,6 @@ function stateToPlainObject(state: TermItState): TermItState {
     searchResults: state.searchResults,
     selectedFile: state.selectedFile,
     types: state.types,
-    resource: state.resource,
-    resources: state.resources,
     properties: state.properties,
     notifications: state.notifications,
     pendingActions: state.pendingActions,
@@ -269,14 +265,10 @@ describe("Reducers", () => {
       );
     });
 
-    it("resets resources, current resource and file content", () => {
-      initialState.resources = require("../../rest-mock/resources.json");
-      initialState.resource = require("../../rest-mock/resource.json");
+    it("resets file content", () => {
       initialState.fileContent = "test";
       expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
         Object.assign({}, initialState, {
-          resource: EMPTY_RESOURCE,
-          resources: {},
           fileContent: null,
         })
       );
@@ -579,18 +571,6 @@ describe("Reducers", () => {
       expect(
         reducers(stateToPlainObject(initialState), consumeNotification(another))
       ).toEqual(initialState);
-    });
-  });
-
-  describe("resource", () => {
-    it("resets resource to empty on clear resource action", () => {
-      initialState.resource = new Resource({
-        iri: Generator.generateUri(),
-        label: "Resource",
-      });
-      expect(
-        reducers(stateToPlainObject(initialState), clearResource())
-      ).toEqual(Object.assign(initialState, { resource: EMPTY_RESOURCE }));
     });
   });
 

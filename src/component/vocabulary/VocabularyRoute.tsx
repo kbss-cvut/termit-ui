@@ -8,6 +8,7 @@ import CreateTerm from "../term/CreateTerm";
 import VocabularySummary from "./VocabularySummary";
 import { useI18n } from "../hook/useI18n";
 import Route from "../misc/Route";
+import ResourceFileDetail from "../resource/ResourceFileDetail";
 
 const VocabularyRoute: React.FC = () => {
   const { i18n } = useI18n();
@@ -23,6 +24,12 @@ const VocabularyRoute: React.FC = () => {
         asset="selectedTerm"
         path={Routes.vocabularyTermDetail.path}
         component={TermDetail}
+        includeSearch={true}
+      />
+      <DynamicBreadcrumbRoute
+        asset="selectedFile"
+        path={Routes.annotateFile.path}
+        component={ResourceFileDetail}
         includeSearch={true}
       />
       <Route

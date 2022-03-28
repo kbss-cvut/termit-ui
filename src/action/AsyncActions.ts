@@ -93,8 +93,6 @@ export function isActionRequestPending(state: TermItState, action: Action) {
   return state.pendingActions[action.type] !== undefined;
 }
 
-const JOINED_RESOURCE_CONTEXT = Object.assign({}, DOCUMENT_CONTEXT);
-
 export function createVocabulary(vocabulary: Vocabulary) {
   const action = {
     type: ActionType.CREATE_VOCABULARY,
@@ -238,7 +236,7 @@ export function loadResource(iri: IRI) {
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferences<ResourceData>(
           data,
-          JOINED_RESOURCE_CONTEXT
+          DOCUMENT_CONTEXT
         )
       )
       .then((data: ResourceData) => {
@@ -252,73 +250,6 @@ export function loadResource(iri: IRI) {
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
         return null;
-      });
-  };
-}
-
-export function loadResources() {
-  const action = {
-    type: ActionType.LOAD_RESOURCES,
-  };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    if (isActionRequestPending(getState(), action)) {
-      return Promise.resolve({});
-    }
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(Constants.API_PREFIX + "/resources")
-      .then((data: object[]) =>
-        data.length !== 0
-          ? JsonLdUtils.compactAndResolveReferencesAsArray<ResourceData>(
-              data,
-              JOINED_RESOURCE_CONTEXT
-            )
-          : []
-      )
-      .then((data: ResourceData[]) =>
-        dispatch(
-          asyncActionSuccessWithPayload(
-            action,
-            data.map((v) => AssetFactory.createResource(v))
-          )
-        )
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-      });
-  };
-}
-
-export function createResource(resource: Resource) {
-  const action = {
-    type: ActionType.CREATE_RESOURCE,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    return Ajax.post(
-      Constants.API_PREFIX + "/resources",
-      content(resource.toJsonLd())
-    )
-      .then((resp: AxiosResponse) => {
-        dispatch(asyncActionSuccess(action));
-        dispatch(
-          SyncActions.publishMessage(
-            new Message(
-              { messageId: "resource.created.message" },
-              MessageType.SUCCESS
-            )
-          )
-        );
-        return resp.headers[Constants.Headers.LOCATION];
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-        return undefined;
       });
   };
 }
@@ -379,7 +310,7 @@ export function removeFileFromDocument(file: TermItFile, documentIri: IRI) {
         fileIri.fragment,
       param("namespace", fileIri.namespace)
     )
-      .then((resp: AxiosResponse) => {
+      .then(() => {
         dispatch(asyncActionSuccess(action));
         dispatch(loadResource(documentIri));
         dispatch(
@@ -404,16 +335,9 @@ export function uploadFileContent(fileIri: IRI, data: File) {
   const action = {
     type: ActionType.SAVE_FILE_CONTENT,
   };
-  const formData = new FormData();
-  formData.append("file", data, fileIri.fragment);
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.put(
-      Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
-      contentType(Constants.MULTIPART_FORM_DATA)
-        .formData(formData)
-        .param("namespace", fileIri.namespace)
-    )
+    return uploadFile(fileIri, data)
       .then(() => {
         dispatch(asyncActionSuccess(action));
         return dispatch(
@@ -437,16 +361,14 @@ export function uploadFileContent(fileIri: IRI, data: File) {
   };
 }
 
-export function removeResource(resource: Resource) {
-  const iri = VocabularyUtils.create(resource.iri);
-  return removeAsset(
-    iri,
-    iri.namespace,
-    ActionType.REMOVE_RESOURCE,
-    "resources",
-    loadResources,
-    "resource.removed.message",
-    Routes.resources
+function uploadFile(fileIri: IRI, data: Blob) {
+  const formData = new FormData();
+  formData.append("file", data, fileIri.fragment);
+  return Ajax.put(
+    Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
+    contentType(Constants.MULTIPART_FORM_DATA)
+      .formData(formData)
+      .param("namespace", fileIri.namespace)
   );
 }
 
@@ -472,7 +394,7 @@ export function removeTerm(term: Term) {
     "vocabularies/" + vocabularyIri.fragment + "/terms",
     () => loadVocabulary(vocabularyIri),
     "term.removed.message",
-    Routes.vocabularyDetail,
+    Routes.vocabularySummary,
     {
       params: new Map([["name", vocabularyIri.fragment]]),
       query: vocabularyIri.namespace
@@ -947,26 +869,18 @@ export function hasFileContent(fileIri: IRI) {
   };
 }
 
-// TODO This has been is superseded by uploadFileContent and should internally make use of it
 export function saveFileContent(fileIri: IRI, fileContent: string) {
   const action = {
     type: ActionType.SAVE_FILE_CONTENT,
   };
-  const formData = new FormData();
-  const fileBlob = new Blob([fileContent], { type: "text/html" });
-  formData.append("file", fileBlob, fileIri.fragment);
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.put(
-      Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
-      contentType(Constants.MULTIPART_FORM_DATA)
-        .formData(formData)
-        .param("namespace", fileIri.namespace)
-    )
-      .then((data: object) => fileContent) // TODO load from the service instead
-      .then((data: string) =>
-        dispatch(asyncActionSuccessWithPayload(action, data))
-      )
+    const fileBlob = new Blob([fileContent], { type: "text/html" });
+    return uploadFile(fileIri, fileBlob)
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        return dispatch(loadFileContent(fileIri));
+      })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return dispatch(
@@ -1029,26 +943,16 @@ export function updateResource(res: Resource) {
   const action = {
     type: ActionType.UPDATE_RESOURCE,
   };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+  return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     const resourceIri = VocabularyUtils.create(res.iri);
     return Ajax.put(
       Constants.API_PREFIX + "/resources/" + resourceIri.fragment,
       content(res.toJsonLd()).params({ namespace: resourceIri.namespace })
     )
+      .then(() => dispatch(asyncActionSuccess(action)))
       .then(() => {
-        dispatch(asyncActionSuccess(action));
-        return dispatch(
-          publishNotification({
-            source: { type: NotificationType.ASSET_UPDATED },
-            original: getState().resource,
-            updated: res,
-          })
-        );
-      })
-      .then(() => {
-        dispatch(loadResource(resourceIri));
-        return dispatch(
+        dispatch(
           publishMessage(
             new Message(
               { messageId: "resource.updated.message" },
@@ -1056,12 +960,14 @@ export function updateResource(res: Resource) {
             )
           )
         );
+        return dispatch(loadResource(resourceIri));
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
-        return dispatch(
+        dispatch(
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
+        return null;
       });
   };
 }

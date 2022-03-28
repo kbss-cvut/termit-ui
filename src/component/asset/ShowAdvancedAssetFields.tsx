@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Button, Collapse } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
+import classNames from "classnames";
 
 /**
  * "Show Advanced" component.
@@ -15,7 +16,12 @@ export const ShowAdvancedAssetFields: React.FC = (props) => {
   const { i18n } = useI18n();
   return (
     <>
-      <Button color="link" id="toggle-advanced" onClick={toggle}>
+      <Button
+        color="link"
+        id="toggle-advanced"
+        onClick={toggle}
+        className={classNames({ "mb-3": !isOpen })}
+      >
         {i18n(
           isOpen
             ? "asset.create.hideAdvancedSection"

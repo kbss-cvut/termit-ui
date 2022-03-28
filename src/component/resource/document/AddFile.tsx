@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Modal,
-  ModalBody,
-} from "reactstrap";
+import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
 import TermItFile from "../../../model/File";
 import { GoPlus } from "react-icons/go";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -30,20 +23,16 @@ export const AddFile = (props: AddFileProps) => {
 
   return (
     <IfUserAuthorized renderUnauthorizedAlert={false}>
-      <Modal isOpen={createFileDialogOpen} toggle={toggle}>
+      <Modal
+        id="document-create-file"
+        isOpen={createFileDialogOpen}
+        toggle={toggle}
+      >
+        <ModalHeader toggle={toggle}>
+          {i18n("resource.metadata.document.files.actions.add.dialog.title")}
+        </ModalHeader>
         <ModalBody>
-          <Card id="document-create-file">
-            <CardHeader color="info">
-              <h5>
-                {i18n(
-                  "resource.metadata.document.files.actions.add.dialog.title"
-                )}
-              </h5>
-            </CardHeader>
-            <CardBody>
-              <CreateFileMetadata onCreate={createFile} onCancel={toggle} />
-            </CardBody>
-          </Card>
+          <CreateFileMetadata onCreate={createFile} onCancel={toggle} />
         </ModalBody>
       </Modal>
       <Button

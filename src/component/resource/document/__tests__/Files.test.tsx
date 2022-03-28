@@ -4,7 +4,7 @@ import TermItFile from "../../../../model/File";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import Document from "../../../../model/Document";
 import Generator from "../../../../__tests__/environment/Generator";
-import { Files } from "../Files";
+import Files from "../Files";
 
 describe("DocumentFiles", () => {
   let document: Document;

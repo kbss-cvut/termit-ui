@@ -514,10 +514,6 @@ function mockRestApi(axiosInst: AxiosInstance): void {
       "content-type": Constants.JSON_LD_MIME_TYPE,
     })
   );
-  // Mock resources
-  mock
-    .onGet(Constants.API_PREFIX + "/resources")
-    .reply(200, require("../rest-mock/resources"), respHeaders);
 
   // Mock resource IRI generator
   mock
@@ -551,14 +547,6 @@ function mockRestApi(axiosInst: AxiosInstance): void {
     })
   );
 
-  // Mock resource terms retrieval endpoint
-  mock.onGet(/\/rest\/resources\/.+\/terms/).reply(
-    200,
-    require("../rest-mock/resourceTerms"),
-    Object.assign({}, respHeaders, {
-      "content-type": Constants.JSON_LD_MIME_TYPE,
-    })
-  );
   // Mock resource retrieval endpoint
   mock.onGet(/\/rest\/resources\/.+/).reply((config) => {
     if (

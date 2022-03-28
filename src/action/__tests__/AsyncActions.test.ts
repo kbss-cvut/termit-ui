@@ -2,7 +2,6 @@ import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import {
   createFileInDocument,
   createProperty,
-  createResource,
   createVocabulary,
   executeFileTextAnalysis,
   exportFileContent,
@@ -20,7 +19,6 @@ import {
   loadMyAssets,
   loadNews,
   loadResource,
-  loadResources,
   loadTerm,
   loadTerms,
   loadTypes,
@@ -28,7 +26,6 @@ import {
   loadVocabularies,
   loadVocabulary,
   loadVocabularyContentChanges,
-  removeResource,
   removeTerm,
   removeVocabulary,
   saveFileContent,
@@ -61,7 +58,7 @@ import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
 } from "../../model/RdfsResource";
 import TermItState from "../../model/TermItState";
-import Resource, { CONTEXT as RESOURCE_CONTEXT } from "../../model/Resource";
+import Resource from "../../model/Resource";
 import Utils from "../../util/Utils";
 import AsyncActionStatus from "../AsyncActionStatus";
 import fileContent from "../../rest-mock/file";
@@ -915,7 +912,7 @@ describe("Async actions", () => {
       ).then(() => {
         const vocabularyIri = VocabularyUtils.create(vocabulary.iri);
         expect(Routing.transitionTo).toHaveBeenCalledWith(
-          Routes.vocabularyDetail,
+          Routes.vocabularySummary,
           {
             params: new Map([["name", vocabularyIri.fragment]]),
             query: vocabularyIri.namespace
@@ -1264,57 +1261,6 @@ describe("Async actions", () => {
     });
   });
 
-  describe("load resources", () => {
-    it("extracts resources from incoming JSON-LD", () => {
-      const resources = require("../../rest-mock/resources");
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(resources));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadResources())
-      ).then(() => {
-        const loadSuccessAction: AsyncActionSuccess<Resource[]> =
-          store.getActions()[1];
-        const result = loadSuccessAction.payload;
-        expect(result.length).toEqual(resources.length);
-        result.sort((a, b) => a.iri.localeCompare(b.iri));
-        resources.sort((a: object, b: object) =>
-          a["@id"].localeCompare(b["@id"])
-        );
-        for (let i = 0; i < resources.length; i++) {
-          expect(result[i].iri).toEqual(resources[i]["@id"]);
-        }
-      });
-    });
-
-    it("extracts single resource as an array of resources from incoming JSON-LD", () => {
-      const resources = require("../../rest-mock/resources");
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve([resources[0]]));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadResources())
-      ).then(() => {
-        const loadSuccessAction: AsyncActionSuccess<Resource[]> =
-          store.getActions()[1];
-        const result = loadSuccessAction.payload;
-        expect(Array.isArray(result)).toBeTruthy();
-        expect(result.length).toEqual(1);
-        expect(result[0].iri).toEqual(resources[0]["@id"]);
-      });
-    });
-
-    it("does nothing when resources loading action is already pending", () => {
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-
-      store.getState().pendingActions[ActionType.LOAD_RESOURCES] =
-        AsyncActionStatus.REQUEST;
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadResources())
-      ).then(() => {
-        expect(Ajax.get).not.toHaveBeenCalled();
-      });
-    });
-  });
-
   describe("validate results", () => {
     const v = VocabularyUtils.create("");
     it("extracts validation results from incoming JSON", () => {
@@ -1413,11 +1359,18 @@ describe("Async actions", () => {
         (store.dispatch as ThunkDispatch)(
           loadResource(VocabularyUtils.create(iri))
         )
-      ).then(() => {
-        const loadSuccessAction: AsyncActionSuccess<Resource> =
-          store.getActions()[1];
-        const result = loadSuccessAction.payload;
-        expect(result instanceof TermItFile).toBeTruthy();
+      ).then((res: Resource | null) => {
+        expect(
+          store
+            .getActions()
+            .find(
+              (a) =>
+                a.type === ActionType.LOAD_RESOURCE &&
+                a.status === AsyncActionStatus.SUCCESS
+            )
+        ).toBeDefined();
+        expect(res).not.toBeNull();
+        expect(res).toBeInstanceOf(TermItFile);
       });
     });
   });
@@ -1591,102 +1544,6 @@ describe("Async actions", () => {
         expect(result.length).toEqual(data.length);
         expect(result[0].label).toEqual(vocLabel);
         expect(result[1].label).toEqual(termLabel);
-      });
-    });
-  });
-
-  describe("create resource", () => {
-    it("adds context definition to resource data and sends it over network", () => {
-      const resource = new Resource({
-        iri: Generator.generateUri(),
-        label: "Test resource",
-      });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
-      Ajax.post = mock;
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(createResource(resource))
-      ).then(() => {
-        expect(Ajax.post).toHaveBeenCalled();
-        const config = mock.mock.calls[0][1];
-        expect(config.getContentType()).toEqual(Constants.JSON_LD_MIME_TYPE);
-        const data = config.getContent();
-        expect(data["@context"]).toBeDefined();
-        expect(data["@context"]).toEqual(RESOURCE_CONTEXT);
-      });
-    });
-
-    it("returns new resource IRI on success", () => {
-      const resource = new Resource({
-        iri: "http://onto.fel.cvut.cz/ontologies/termit/resources/test-resource",
-        label: "Test resource",
-      });
-      Ajax.post = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ headers: { location: resource.iri } })
-        );
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(createResource(resource))
-      ).then((res?: string) => {
-        expect(res).toEqual(resource.iri);
-      });
-    });
-  });
-
-  describe("removeResource", () => {
-    it("sends delete resource request to the server", () => {
-      const normalizedName = "test-resource";
-      const namespace = "http://onto.fel.cvut.cz/ontologies/termit/resources/";
-      const resource = new Resource({
-        iri: namespace + normalizedName,
-        label: "Test resource",
-      });
-      Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(removeResource(resource))
-      ).then(() => {
-        expect(Ajax.delete).toHaveBeenCalled();
-        const call = (Ajax.delete as jest.Mock).mock.calls[0];
-        expect(call[0]).toEqual(
-          Constants.API_PREFIX + "/resources/" + normalizedName
-        );
-        expect(call[1].getParams().namespace).toEqual(namespace);
-      });
-    });
-
-    it("refreshes resource list on success", () => {
-      const resource = new Resource({
-        iri: Generator.generateUri(),
-        label: "Test resource",
-      });
-      Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(removeResource(resource))
-      ).then(() => {
-        const actions = store.getActions();
-        expect(
-          actions.find((a) => a.type === ActionType.LOAD_RESOURCES)
-        ).toBeDefined();
-      });
-    });
-
-    it("transitions to resource management on success", () => {
-      const resource = new Resource({
-        iri: Generator.generateUri(),
-        label: "Test resource",
-      });
-      Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(removeResource(resource))
-      ).then(() => {
-        expect(Routing.transitionTo).toHaveBeenCalledWith(
-          Routes.resources,
-          undefined
-        );
       });
     });
   });
@@ -2144,25 +2001,20 @@ describe("Async actions", () => {
   });
 
   describe("updateResource", () => {
-    it("publishes notification with original value from store", () => {
+    it("loads updated resource", () => {
       const original = Generator.generateResource();
       const updated = new Resource(
         Object.assign({}, original, { label: "Updated label" })
       );
-      store.getState().resource = original;
-      Ajax.put = jest.fn().mockResolvedValue(undefined);
+      Ajax.put = jest.fn().mockResolvedValue({});
+      Ajax.get = jest
+        .fn()
+        .mockResolvedValue(require("../../rest-mock/resource.json"));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(updateResource(updated))
-      ).then(() => {
-        const notifyAction = store
-          .getActions()
-          .find((a) => a.type === ActionType.PUBLISH_NOTIFICATION);
-        expect(notifyAction).toBeDefined();
-        expect(notifyAction.notification.source.type).toEqual(
-          NotificationType.ASSET_UPDATED
-        );
-        expect(notifyAction.notification.original).toEqual(original);
-        expect(notifyAction.notification.updated).toEqual(updated);
+      ).then((res: Resource | null) => {
+        expect(res).not.toBeNull();
+        expect(Ajax.get).toHaveBeenCalled();
       });
     });
   });
