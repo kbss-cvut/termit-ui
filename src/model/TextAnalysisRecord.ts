@@ -14,14 +14,14 @@ export interface TextAnalysisRecordData {
   iri: string;
   analyzedResource: ResourceData;
   vocabularies: AssetData[];
-  created: number;
+  created: string;
 }
 
 export class TextAnalysisRecord implements TextAnalysisRecordData {
   public readonly iri: string;
   public readonly analyzedResource: ResourceData;
   public readonly vocabularies: AssetData[];
-  public readonly created: number;
+  public readonly created: string;
 
   constructor(data: TextAnalysisRecordData) {
     this.iri = data.iri;

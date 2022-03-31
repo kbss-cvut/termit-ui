@@ -16,7 +16,7 @@ export interface RecentlyModifiedAssetData extends HasTypes {
   iri: string;
   label: string;
   types: string[];
-  modified: number;
+  modified: string;
   editor: UserData;
   vocabulary?: AssetData;
 }
@@ -27,7 +27,7 @@ export default class RecentlyModifiedAssets
   public readonly iri: string;
   public readonly label: string;
   public readonly types: string[];
-  public readonly modified: number;
+  public readonly modified: string;
   public readonly editor: User;
   public readonly vocabulary?: AssetData;
 

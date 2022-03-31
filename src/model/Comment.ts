@@ -33,8 +33,8 @@ export interface CommentData {
   content: string;
   author?: UserData;
   asset?: AssetData; // Asset IRI
-  created?: number;
-  modified?: number;
+  created?: string;
+  modified?: string;
   reactions?: CommentReaction[];
 }
 
@@ -45,8 +45,8 @@ export default class Comment
   public content: string;
   public author?: User;
   public asset?: AssetData;
-  public created?: number;
-  public modified?: number;
+  public created?: string;
+  public modified?: string;
   public reactions?: CommentReaction[];
 
   public constructor(data: CommentData) {
