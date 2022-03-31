@@ -1,22 +1,19 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import { ErrorLogItem } from "../../model/ErrorInfo";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { Button, Table } from "reactstrap";
 import { ThunkDispatch } from "../../util/Types";
 import { clearErrors } from "../../action/SyncActions";
 import { GoTrashcan } from "react-icons/go";
+import { useI18n } from "../hook/useI18n";
 
-interface ErrorLogViewerProps extends HasI18n {
-  errors: ErrorLogItem[];
-  clearErrors: () => void;
-}
-
-export const ErrorLogViewer: React.SFC<ErrorLogViewerProps> = (props) => {
-  const i18n = props.i18n;
-  const errors = props.errors;
+const ErrorLogViewer: React.FC = () => {
+  const { i18n, locale } = useI18n();
+  const errors = useSelector((state: TermItState) => state.errors);
+  const dispatch: ThunkDispatch = useDispatch();
+  const clear = () => {
+    dispatch(clearErrors());
+  };
   return (
     <div>
       <Table striped={true}>
@@ -33,7 +30,7 @@ export const ErrorLogViewer: React.SFC<ErrorLogViewerProps> = (props) => {
                   size="sm"
                   color="danger"
                   outline={true}
-                  onClick={props.clearErrors}
+                  onClick={clear}
                 >
                   <GoTrashcan />
                   {i18n("log-viewer.clear")}
@@ -53,7 +50,7 @@ export const ErrorLogViewer: React.SFC<ErrorLogViewerProps> = (props) => {
             return (
               <tr key={item.timestamp}>
                 <td className="error-log-timestamp">
-                  {new Date(item.timestamp).toLocaleString(props.locale)}
+                  {new Date(item.timestamp).toLocaleString(locale)}
                 </td>
                 <td className="error-log-value">
                   {JSON.stringify(error, null, 2)}
@@ -67,15 +64,4 @@ export const ErrorLogViewer: React.SFC<ErrorLogViewerProps> = (props) => {
   );
 };
 
-export default connect(
-  (state: TermItState) => {
-    return {
-      errors: state.errors,
-    };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      clearErrors: () => dispatch(clearErrors()),
-    };
-  }
-)(injectIntl(withI18n(ErrorLogViewer)));
+export default ErrorLogViewer;
