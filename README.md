@@ -29,6 +29,9 @@ Then, TermIt UI can be run and exposed at the port 3000 as
 `docker run -e SERVER_URL=<TERMIT_BACKEND_URL> -p 3000:80 termit-ui`
 where `<TERMIT_BACKEND_URL>` denotes the URL where [TermIt backend](https://github.com/kbss-cvut/termit) is running.
 
+Other Docker runtime configuration parameters are: `DEPLOYMENT_NAME`, `ADMIN_REGISTRATION_ONLY`, and `SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED`.
+See [doc/setup.md](doc/setup.md) for their explanation.
+
 ## License
 
 Licensed under GPL v3.0.
