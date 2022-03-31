@@ -47,13 +47,17 @@ export const AssetList: React.FC<AssetListProps> = (props) => {
                   <Col xs={12}>
                     <Label
                       className="italics asset-list-title-message"
-                      title={new Date(asset.modified!).toLocaleString(locale)}
+                      title={new Date(
+                        Date.parse(asset.modified!)
+                      ).toLocaleString(locale)}
                     >
                       {user.iri === asset.editor!.iri
                         ? formatMessage(
                             "dashboard.widget.assetList.lastEditMessageByYou",
                             {
-                              when: formatter.format(asset.modified!),
+                              when: formatter.format(
+                                Date.parse(asset.modified!)
+                              ),
                               operation: asset.editor ? "edit" : "create",
                             }
                           )
@@ -61,7 +65,9 @@ export const AssetList: React.FC<AssetListProps> = (props) => {
                             "dashboard.widget.assetList.lastEditMessage",
                             {
                               user: asset.editor!.fullName,
-                              when: formatter.format(asset.modified!),
+                              when: formatter.format(
+                                Date.parse(asset.modified)!
+                              ),
                               operation: asset.editor ? "edit" : "create",
                             }
                           )}

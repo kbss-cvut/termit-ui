@@ -61,7 +61,9 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
 
   const renderComment = useCallback(
     (comment: Comment) => {
-      const lastEdited = comment.modified ? comment.modified : comment.created;
+      const lastEdited = Date.parse(
+        comment.modified ? comment.modified : comment.created!
+      );
       return (
         <>
           <div
@@ -72,9 +74,9 @@ export const CommentedAssetList: React.FC<CommentedAssetListProps> = (
           </div>
           <div
             className="italics asset-list-title-message"
-            title={new Date(lastEdited!).toLocaleString(locale)}
+            title={new Date(lastEdited).toLocaleString(locale)}
           >
-            {renderMessage(lastEdited!, new User(comment.author!))}
+            {renderMessage(lastEdited, new User(comment.author!))}
           </div>
         </>
       );

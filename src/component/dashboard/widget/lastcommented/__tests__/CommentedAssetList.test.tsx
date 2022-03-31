@@ -84,7 +84,7 @@ describe("CommentedAssetList", () => {
     function createComment(content: string) {
       return new Comment({
         iri: Generator.generateUri(),
-        created: Date.now(),
+        created: new Date().toISOString(),
         author: Generator.generateUser(),
         content,
       });

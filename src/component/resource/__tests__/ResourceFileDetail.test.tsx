@@ -135,7 +135,7 @@ describe("ResourceFileDetail", () => {
     const record = new TextAnalysisRecord({
       iri: Generator.generateUri(),
       analyzedResource: resource,
-      created: Date.now(),
+      created: new Date().toISOString(),
       vocabularies: [{ iri: vocabularyIri }],
     });
     (loadLatestTextAnalysisRecord as jest.Mock).mockImplementation(() =>
@@ -169,7 +169,7 @@ describe("ResourceFileDetail", () => {
     const record = new TextAnalysisRecord({
       iri: Generator.generateUri(),
       analyzedResource: resource,
-      created: Date.now(),
+      created: new Date().toISOString(),
       vocabularies: [{ iri: vocabularyIri }],
     });
     (loadLatestTextAnalysisRecord as jest.Mock).mockImplementation(() =>

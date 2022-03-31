@@ -57,14 +57,14 @@ describe("AssetList", () => {
         types: [VocabularyUtils.TERM],
         vocabulary: { iri: Generator.generateUri() },
         editor: Generator.generateUser(),
-        modified: Date.now(),
+        modified: new Date().toISOString(),
       }),
       new RecentlyModifiedAsset({
         iri: Generator.generateUri(),
         label: "Vocabulary",
         types: [VocabularyUtils.VOCABULARY],
         editor: Generator.generateUser(),
-        modified: Date.now(),
+        modified: new Date().toISOString(),
       }),
     ];
     const wrapper = mountWithIntl(
@@ -94,7 +94,7 @@ describe("AssetList", () => {
         types: [VocabularyUtils.TERM],
         vocabulary: { iri: Generator.generateUri() },
         editor: author,
-        modified: Date.now(),
+        modified: new Date().toISOString(),
       }),
     ];
     const wrapper = mountWithIntl(
