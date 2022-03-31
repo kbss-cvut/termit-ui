@@ -16,7 +16,7 @@ interface UpdateRowProps {
 export const UpdateRow: React.FC<UpdateRowProps> = (props) => {
   const { i18n } = useI18n();
   const record = props.record;
-  const created = new Date(record.timestamp);
+  const created = new Date(Date.parse(record.timestamp));
   return (
     <tr>
       <td>

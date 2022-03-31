@@ -11,7 +11,7 @@ interface PersistRowProps {
 export const PersistRow: React.FC<PersistRowProps> = (props) => {
   const { i18n } = useI18n();
   const record = props.record;
-  const created = new Date(record.timestamp);
+  const created = new Date(Date.parse(record.timestamp));
   return (
     <tr>
       <td>
