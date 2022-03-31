@@ -1,3 +1,8 @@
+#### Version 2.11.0
+
+- Removed general resource management support from the open-source version.
+- Fix version info display in Docker deployments.
+
 #### Version 2.10.0
 
 - Support filtering full text term search by vocabularies.
@@ -29,7 +34,7 @@
 
 - Distinguishing terms coming from different vocabularies by a badge.
 - A vocabulary contains a badge with the number of its terms.
-- SKOS import redesigned and extended. 
+- SKOS import redesigned and extended.
 - Bug fixes.
 
 #### Version 2.5.1
@@ -68,34 +73,40 @@
 - Default admin account is no longer generated on startup if another admin exists.
 
 ##### Version 2.2.0
+
 - Reworked the relationship between vocabularies and documents.
 - Improved handling of term definition sources in documents.
 - Use a new filterable table with paging for resource and vocabulary list display.
 - Support multilingual term description (skos:scopeNote).
 
 ##### Version 2.1.3
+
 - Page title now changes based on navigation (easier history search).
 - Fixed an issue in the invocation of text analysis on a new term's definition.
 - Fixed inconsistent behavior of the file upload form.
 - Fixed incorrect visualization of the validation score of a new term.
 
 ##### Version 2.1.2
+
 - Redesign vocabularies and resources lists - use pageable and filterable table.
 - Fix identifier generation issues.
 - Improve validation results retrieval.
 - Additional bug fixes.
 
 ##### Version 2.1.1
+
 - Improved search results UI
 - Fix minor frontend issues
 
 ##### Version 2.1.0
+
 - Added support for SKOS altLabel and hiddenLabel.
 - Added support for multilingual term attributes.
 - Implemented validation of term quality in a vocabulary + results visualization.
 - Implemented Docker support.
 
 ##### Version 2.0.0
+
 - UI redesign.
 - Added support for assigning multiple parents to a term.
 - Optimized annotator.
@@ -103,6 +114,7 @@
 - Added read-only no-login view for browsing vocabularies and terms.
 
 ##### Version 1.3.0
+
 - Implemented support for connecting a term to the source of its definition in a file.
 - Added the possibility to discover terms related via definition or ontological relationships.
 - Visualize terms not used to annotate any resource.
