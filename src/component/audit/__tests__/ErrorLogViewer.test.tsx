@@ -1,15 +1,15 @@
+import * as Redux from "react-redux";
 import ErrorInfo, { ErrorLogItem } from "../../../model/ErrorInfo";
 import ActionType from "../../../action/ActionType";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { ErrorLogViewer } from "../ErrorLogViewer";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import ErrorLogViewer from "../ErrorLogViewer";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import en from "../../../i18n/en";
+import * as SyncActions from "../../../action/SyncActions";
 
 describe("ErrorLogViewer", () => {
-  let clearErrors: () => void;
-
   beforeEach(() => {
-    clearErrors = jest.fn();
+    mockUseI18n();
   });
 
   it("displays error items with timestamps", () => {
@@ -25,13 +25,8 @@ describe("ErrorLogViewer", () => {
         error: new ErrorInfo(ActionType.LOGIN, { message: "Login error" }),
       },
     ];
-    const wrapper = mountWithIntl(
-      <ErrorLogViewer
-        errors={errors}
-        clearErrors={clearErrors}
-        {...intlFunctions()}
-      />
-    );
+    jest.spyOn(Redux, "useSelector").mockReturnValue(errors);
+    const wrapper = mountWithIntl(<ErrorLogViewer />);
     expect(wrapper.find("tr").length).toEqual(errors.length + 1); // + header
     const timestamps = wrapper.find(".error-log-timestamp");
     expect(timestamps.at(0).text()).toContain(
@@ -58,13 +53,8 @@ describe("ErrorLogViewer", () => {
         }),
       },
     ];
-    const wrapper = mountWithIntl(
-      <ErrorLogViewer
-        errors={errors}
-        clearErrors={clearErrors}
-        {...intlFunctions()}
-      />
-    );
+    jest.spyOn(Redux, "useSelector").mockReturnValue(errors);
+    const wrapper = mountWithIntl(<ErrorLogViewer />);
     const valueText = wrapper.find(".error-log-value").text();
     expect(valueText).toContain(en.messages["connection.error"]);
   });
@@ -78,14 +68,12 @@ describe("ErrorLogViewer", () => {
         }),
       },
     ];
-    const wrapper = mountWithIntl(
-      <ErrorLogViewer
-        errors={errors}
-        clearErrors={clearErrors}
-        {...intlFunctions()}
-      />
-    );
+    jest.spyOn(Redux, "useSelector").mockReturnValue(errors);
+    const fakeDispatch = jest.fn().mockResolvedValue({});
+    jest.spyOn(Redux, "useDispatch").mockReturnValue(fakeDispatch);
+    jest.spyOn(SyncActions, "clearErrors");
+    const wrapper = mountWithIntl(<ErrorLogViewer />);
     wrapper.find("button#log-viewer-clear").simulate("click");
-    expect(clearErrors).toHaveBeenCalled();
+    expect(SyncActions.clearErrors).toHaveBeenCalled();
   });
 });
