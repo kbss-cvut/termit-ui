@@ -15,7 +15,7 @@ export const CONTEXT = Object.assign({}, ctx, USER_CONTEXT);
 
 export interface ChangeRecordData {
   iri: string;
-  timestamp: number;
+  timestamp: string;
   author: UserData;
   changedEntity: { iri: string };
   types: string[];
@@ -26,7 +26,7 @@ export interface ChangeRecordData {
  */
 export default abstract class ChangeRecord implements ChangeRecordData {
   public readonly iri: string;
-  public readonly timestamp: number;
+  public readonly timestamp: string;
   public readonly author: User;
   public readonly changedEntity: { iri: string };
   public readonly types: string[];

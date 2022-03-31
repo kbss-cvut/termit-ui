@@ -41,7 +41,7 @@ describe("AssetHistory", () => {
     loadHistory = jest.fn().mockResolvedValue([
       new PersistRecord({
         iri: Generator.generateUri(),
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         author: Generator.generateUser(),
         changedEntity: { iri: asset.iri },
         types: [VocabularyUtils.PERSIST_EVENT],

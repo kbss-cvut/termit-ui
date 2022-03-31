@@ -1,4 +1,7 @@
-import { UpdateRecord } from "../../../model/changetracking/UpdateRecord";
+import {
+  UpdateRecord,
+  UpdateValueType,
+} from "../../../model/changetracking/UpdateRecord";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { shallow } from "enzyme";
@@ -18,15 +21,7 @@ describe("UpdateRow", () => {
 
   it("renders id value as an outgoing link", () => {
     const newValue = Generator.generateUri();
-    const record = new UpdateRecord({
-      iri: Generator.generateUri(),
-      timestamp: Date.now(),
-      author: Generator.generateUser(),
-      changedEntity: { iri: Generator.generateUri() },
-      changedAttribute: { iri: "http://purl.org/dc/terms/source" },
-      newValue: { iri: newValue },
-      types: [VocabularyUtils.UPDATE_EVENT],
-    });
+    const record = generateUpdateRecord({ iri: newValue });
     const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
     const link = wrapper.find(OutgoingLink);
     expect(link.exists()).toBeTruthy();
@@ -38,7 +33,7 @@ describe("UpdateRow", () => {
     const literalValue = "117";
     const record = new UpdateRecord({
       iri: Generator.generateUri(),
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       author: Generator.generateUser(),
       changedEntity: { iri: Generator.generateUri() },
       changedAttribute: { iri: "http://purl.org/dc/terms/source" },
@@ -59,15 +54,7 @@ describe("UpdateRow", () => {
       "@language": Constants.DEFAULT_LANGUAGE,
       "@value": "Test value",
     };
-    const record = new UpdateRecord({
-      iri: Generator.generateUri(),
-      timestamp: Date.now(),
-      author: Generator.generateUser(),
-      changedEntity: { iri: Generator.generateUri() },
-      changedAttribute: { iri: VocabularyUtils.SKOS_PREF_LABEL },
-      newValue,
-      types: [VocabularyUtils.UPDATE_EVENT],
-    });
+    const record = generateUpdateRecord(newValue);
     const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
@@ -76,6 +63,18 @@ describe("UpdateRow", () => {
     );
     expect(label.childAt(0).text()).toContain(newValue["@value"]);
   });
+
+  function generateUpdateRecord(newValue: UpdateValueType) {
+    return new UpdateRecord({
+      iri: Generator.generateUri(),
+      timestamp: new Date().toISOString(),
+      author: Generator.generateUser(),
+      changedEntity: { iri: Generator.generateUri() },
+      changedAttribute: { iri: VocabularyUtils.SKOS_PREF_LABEL },
+      newValue,
+      types: [VocabularyUtils.UPDATE_EVENT],
+    });
+  }
 
   it("renders multilingual string value change", () => {
     const newValue = [
@@ -88,15 +87,7 @@ describe("UpdateRow", () => {
         "@value": "Testovaci hodnota",
       },
     ];
-    const record = new UpdateRecord({
-      iri: Generator.generateUri(),
-      timestamp: Date.now(),
-      author: Generator.generateUser(),
-      changedEntity: { iri: Generator.generateUri() },
-      changedAttribute: { iri: VocabularyUtils.SKOS_PREF_LABEL },
-      newValue,
-      types: [VocabularyUtils.UPDATE_EVENT],
-    });
+    const record = generateUpdateRecord(newValue);
     const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
