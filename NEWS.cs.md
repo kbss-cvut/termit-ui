@@ -1,3 +1,8 @@
+#### Verze 2.11.0
+
+- Odstraněna podpora pro správu obecných zdrojů z open-source verze.
+- Opraveno zobrazení verze v Docker nasazení.
+
 #### Verze 2.10.0
 
 - Podpora filtrování výsledků vyhledávání pojmů podle slovníků.
