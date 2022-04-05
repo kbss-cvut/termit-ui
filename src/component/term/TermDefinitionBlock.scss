@@ -1,5 +1,10 @@
 @import "../../styles/custom/colors";
 
+.definition-text * {
+  font-size: 1.15rem;
+  font-weight: 300;
+}
+
 div.card-body-basic-info hr.definition-separator-text:before {
   content: attr(data-content);
   display: inline-block;

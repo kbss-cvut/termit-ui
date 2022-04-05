@@ -2,6 +2,7 @@ import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { termInfoComparator } from "../../model/Term";
 import { injectIntl } from "react-intl";
+import ReactMarkdown from "react-markdown";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
@@ -61,7 +62,9 @@ export class BasicTermMetadata extends React.Component<
           </Col>
           <Col xl={10} md={8}>
             <p id="term-metadata-comment">
-              {getLocalizedOrDefault(term.scopeNote, "", language)}
+              <ReactMarkdown>
+                {getLocalizedOrDefault(term.scopeNote, "", language)}
+              </ReactMarkdown>
             </p>
           </Col>
         </Row>
