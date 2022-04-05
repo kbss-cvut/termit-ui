@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Col, Row } from "reactstrap";
+import ReactMarkdown from "react-markdown";
 import Term from "../../model/Term";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermDefinitionSource from "./TermDefinitionSource";
@@ -25,8 +26,10 @@ export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = (
       />
       <Row>
         <Col xs={12}>
-          <p id="term-metadata-definition" className="lead mb-1">
-            {getLocalizedOrDefault(term.definition, "", language)}
+          <p id="term-metadata-definition" className="definition-text mb-1">
+            <ReactMarkdown>
+              {getLocalizedOrDefault(term.definition, "", language)}
+            </ReactMarkdown>
           </p>
         </Col>
       </Row>
