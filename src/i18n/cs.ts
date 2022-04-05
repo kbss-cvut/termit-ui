@@ -21,6 +21,7 @@ const cs = {
     "select.placeholder": "Vyberte...",
     "help.title": "Nápověda",
     "multilingual.title": "Hodnotu atributu lze vyplnit ve více jazycích",
+    "input.markdown": "Můžete použít formátování Markdown.",
 
     "connection.error": "Nepodařilo se navázat spojení se serverem.",
     "ajax.unparseable-error":

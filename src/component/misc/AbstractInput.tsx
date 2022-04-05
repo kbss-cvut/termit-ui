@@ -38,6 +38,30 @@ export interface AbstractInputProps {
   readOnly?: boolean;
 }
 
+export function renderHelp(id: string, help?: string) {
+  return help && <HelpIcon id={id} text={help} />;
+}
+
+export function renderHint(hint?: string | JSX.Element) {
+  return hint && <FormText>{hint}</FormText>;
+}
+
+export function renderValidationMessages(messages: ValidationResult[]) {
+  if (messages.length === 0) {
+    return null;
+  }
+  messages.sort(severityComparator);
+  return (
+    <FormFeedback className="validation-feedback">
+      <ul className="list-unstyled mb-0">
+        {messages.map((m, i) => (
+          <InputValidationMessage key={`${m.severity}-${i}`} message={m} />
+        ))}
+      </ul>
+    </FormFeedback>
+  );
+}
+
 export default class AbstractInput<
   T extends AbstractInputProps
 > extends React.Component<T> {
@@ -51,32 +75,21 @@ export default class AbstractInput<
   }
 
   private renderHelp() {
-    return this.props.help ? (
-      <HelpIcon id={this.props.name!} text={this.props.help!} />
-    ) : null;
+    return renderHelp(
+      this.props.name || Date.now().toString(),
+      this.props.help
+    );
   }
 
   protected renderHint() {
-    return this.props.hint ? <FormText>{this.props.hint}</FormText> : null;
+    return renderHint(this.props.hint);
   }
 
   protected renderValidationMessages() {
     const messages = Utils.sanitizeArray(this.props.validation).filter(
       (m) => m.message !== undefined
     );
-    if (messages.length === 0) {
-      return null;
-    }
-    messages.sort(severityComparator);
-    return (
-      <FormFeedback className="validation-feedback">
-        <ul className="list-unstyled mb-0">
-          {messages.map((m, i) => (
-            <InputValidationMessage key={`${m.severity}-${i}`} message={m} />
-          ))}
-        </ul>
-      </FormFeedback>
-    );
+    return renderValidationMessages(messages);
   }
 
   protected isValid() {
