@@ -11,8 +11,10 @@ import { mountWithIntlAttached } from "./AnnotationUtil";
 import { ElementType } from "htmlparser2";
 import { TermDefinitionBlockEdit } from "../../term/TermDefinitionBlockEdit";
 import Constants from "../../../util/Constants";
-import TextArea from "../../misc/TextArea";
 import CustomInput from "../../misc/CustomInput";
+import MarkdownEditor from "../../misc/MarkdownEditor";
+
+jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
 
 const spy = jest.spyOn(redux, "useSelector");
 spy.mockReturnValue(Constants.DEFAULT_LANGUAGE);
@@ -90,7 +92,7 @@ describe("TermDefinitionEdit", () => {
     const definitionEdit = wrapper.find(TermDefinitionBlockEdit);
     expect(definitionEdit.exists()).toBeTruthy();
     expect(definitionEdit.length).toEqual(2);
-    const definitionAreas = wrapper.find(TextArea);
+    const definitionAreas = wrapper.find(MarkdownEditor);
     expect(definitionAreas.get(0).props.value).toEqual(term.definition.en);
     expect(definitionAreas.get(1).props.value).toEqual(annotatedElement.data);
     const sources = wrapper.find(CustomInput);

@@ -79,14 +79,14 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         </Label>
       )}
       <SimpleMdeReact value={value} onChange={onChange} options={options} />
-      {renderValidationMessages(Utils.sanitizeArray(validation))}
-      {renderHint(hint)}
       {renderMarkdownHint && (
         <FormText>
           <FaMarkdown className="mr-1" />
           {i18n("input.markdown")}
         </FormText>
       )}
+      {renderHint(hint)}
+      {renderValidationMessages(Utils.sanitizeArray(validation))}
     </FormGroup>
   );
 };

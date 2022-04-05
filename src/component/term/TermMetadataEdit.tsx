@@ -12,7 +12,6 @@ import {
 } from "reactstrap";
 import Term, { CONTEXT, TermData, TermInfo } from "../../model/Term";
 import CustomInput from "../misc/CustomInput";
-import TextArea from "../misc/TextArea";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermTypesEdit from "./TermTypesEdit";
 import Utils from "../../util/Utils";
@@ -45,6 +44,7 @@ import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
 import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
 import StringListEdit from "../misc/StringListEdit";
 import "./TermMetadata.scss";
+import TermScopeNoteEdit from "./TermScopeNoteEdit";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -118,15 +118,6 @@ export class TermMetadataEdit extends React.Component<
       this.setState({
         labelExist: Object.assign({}, this.state.labelExist, labelExist),
       });
-    });
-  };
-
-  public onScopeNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    const change = {};
-    change[this.props.language] = value;
-    this.setState({
-      scopeNote: Object.assign({}, this.state.scopeNote, change),
     });
   };
 
@@ -403,30 +394,12 @@ export class TermMetadataEdit extends React.Component<
                     />
                   </Col>
                 </Row>
-                <Row>
-                  <Col xs={12}>
-                    <TextArea
-                      name="edit-term-comment"
-                      value={getLocalizedOrDefault(
-                        this.state.scopeNote,
-                        "",
-                        language
-                      )}
-                      validation={validationScopeNote.map((vr) =>
-                        ValidationResult.fromOntoValidationResult(vr, locale)
-                      )}
-                      onChange={this.onScopeNoteChange}
-                      rows={4}
-                      label={
-                        <>
-                          {i18n("term.metadata.comment")}
-                          <MultilingualIcon id="edit-term-comment-multilingual" />
-                        </>
-                      }
-                      help={i18n("term.comment.help")}
-                    />
-                  </Col>
-                </Row>
+                <TermScopeNoteEdit
+                  term={this.state}
+                  language={language}
+                  onChange={this.onChange}
+                  validationResult={validationScopeNote}
+                />
 
                 <Row>
                   <Col xs={12}>
