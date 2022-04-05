@@ -22,6 +22,7 @@ const en = {
     "help.title": "Help",
     "multilingual.title":
       "Attribute value can be provided in multiple languages",
+    "input.markdown": "Styling with Markdown is supported.",
 
     "connection.error": "Unable to connect to the server.",
     "ajax.unparseable-error":

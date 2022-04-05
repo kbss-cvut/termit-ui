@@ -88,6 +88,7 @@ const constants = {
   MESSAGE_DISPLAY_COUNT: 5,
   // For how long should a message be displayed
   MESSAGE_DISPLAY_TIMEOUT: 5000,
+  MARKDOWN_EDITOR_HEIGHT: "200px",
 
   // News
   NEWS_MD_URL: {
