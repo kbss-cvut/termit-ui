@@ -4,9 +4,11 @@ import { TermData } from "../../../model/Term";
 import Constants from "../../../util/Constants";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import TermScopeNoteEdit from "../TermScopeNoteEdit";
+import MarkdownEditor from "../../misc/MarkdownEditor";
 
 jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
 jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
+jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
 
 describe("TermScopeNoteEdit", () => {
   let onChange: (change: Partial<TermData>) => void;
@@ -28,9 +30,8 @@ describe("TermScopeNoteEdit", () => {
         {...intlFunctions()}
       />
     );
-    const textarea = wrapper.find("textarea");
-    (textarea.getDOMNode() as HTMLTextAreaElement).value = englishValue;
-    textarea.simulate("change", { currentTarget: { value: englishValue } });
+    const editor = wrapper.find(MarkdownEditor);
+    editor.prop("onChange")!(englishValue);
     expect(onChange).toHaveBeenCalled();
     expect((onChange as jest.Mock).mock.calls[0][0]).toEqual({
       scopeNote: { cs: czechValue, en: englishValue },
@@ -51,8 +52,8 @@ describe("TermScopeNoteEdit", () => {
         {...intlFunctions()}
       />
     );
-    const textarea = wrapper.find("textarea");
-    expect(textarea.prop("value")).toEqual(
+    const editor = wrapper.find(MarkdownEditor);
+    expect(editor.prop("value")).toEqual(
       term.scopeNote[Constants.DEFAULT_LANGUAGE]
     );
   });
