@@ -4,9 +4,11 @@ import { TermDefinitionBlockEdit } from "../TermDefinitionBlockEdit";
 import { TermData } from "../../../model/Term";
 import Constants from "../../../util/Constants";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import MarkdownEditor from "../../misc/MarkdownEditor";
 
 jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
 jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
+jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
 
 describe("TermDefinitionBlockEdit", () => {
   let onChange: (change: Partial<TermData>) => void;
@@ -29,16 +31,15 @@ describe("TermDefinitionBlockEdit", () => {
         {...intlFunctions()}
       />
     );
-    const textarea = wrapper.find("textarea");
-    (textarea.getDOMNode() as HTMLTextAreaElement).value = englishValue;
-    textarea.simulate("change", { currentTarget: { value: englishValue } });
+    const editor = wrapper.find(MarkdownEditor);
+    editor.prop("onChange")!(englishValue);
     expect(onChange).toHaveBeenCalled();
     expect((onChange as jest.Mock).mock.calls[0][0]).toEqual({
       definition: { cs: czechValue, en: englishValue },
     });
   });
 
-  it("passes definition value in selected language to definition text textarea", () => {
+  it("passes definition value in selected language to definition text editor", () => {
     const term = Generator.generateTerm();
     term.definition = {
       en: "Building is a kind of construction",
@@ -53,7 +54,7 @@ describe("TermDefinitionBlockEdit", () => {
         {...intlFunctions()}
       />
     );
-    const textarea = wrapper.find("textarea");
+    const textarea = wrapper.find(MarkdownEditor);
     expect(textarea.prop("value")).toEqual(
       term.definition[Constants.DEFAULT_LANGUAGE]
     );
