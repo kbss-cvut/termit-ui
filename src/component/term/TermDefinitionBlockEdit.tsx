@@ -3,13 +3,14 @@ import { TermData } from "../../model/Term";
 import ValidationResult from "../../model/ValidationResult";
 import FormValidationResult from "../../model/form/ValidationResult";
 import { Button, Col, FormGroup, Label, Row } from "reactstrap";
-import TextArea from "../misc/TextArea";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import CustomInput from "../misc/CustomInput";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { useI18n } from "../hook/useI18n";
 import MultilingualIcon from "../misc/MultilingualIcon";
+import MarkdownEditor from "../misc/MarkdownEditor";
+import Constants from "../../util/Constants";
 
 interface TermDefinitionBlockEditProps {
   term: TermData;
@@ -23,10 +24,10 @@ interface TermDefinitionBlockEditProps {
 export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
   props
 ) => {
+  // TODO Readonly markdown => use ReactMarkdown to display content
   const { term, language, getValidationResults, onChange, readOnly } = props;
   const { i18n, locale } = useI18n();
-  const onDefinitionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
+  const onDefinitionChange = (value: string) => {
     const change = {};
     change[language] = value;
     onChange({ definition: Object.assign({}, term.definition, change) });
@@ -75,16 +76,16 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
               </Label>
             </FormGroup>
           )}
-          <TextArea
+          <MarkdownEditor
             name="edit-term-definition"
             value={getLocalizedOrDefault(term.definition, "", language)}
-            readOnly={readOnly}
             validation={validationDefinition.map((v) =>
               FormValidationResult.fromOntoValidationResult(v, locale)
             )}
             onChange={onDefinitionChange}
-            rows={4}
+            maxHeight={Constants.MARKDOWN_EDITOR_HEIGHT}
             help={i18n("term.definition.help")}
+            renderMarkdownHint={true}
           />
         </Col>
       </Row>
