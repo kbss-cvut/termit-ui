@@ -1,9 +1,10 @@
 import * as React from "react";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormGroup, FormText, Label } from "reactstrap";
 import classNames from "classnames";
 import ValidationResult from "../../model/form/ValidationResult";
 import SimpleMdeReact from "react-simplemde-editor";
+import { Editor } from "codemirror";
 import {
   renderHelp,
   renderHint,
@@ -14,6 +15,7 @@ import SimpleMDE from "easymde";
 import "easymde/dist/easymde.min.css";
 import { FaMarkdown } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
+import "./MarkdownEditor.scss";
 
 interface MarkdownEditorProps {
   name: string;
@@ -39,7 +41,10 @@ interface MarkdownEditorProps {
   autoFocus?: boolean;
   renderMarkdownHint?: boolean;
   maxHeight?: string;
+  readOnly?: boolean;
 }
+
+const READONLY_TOOLBAR = ["preview", "side-by-side"];
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const { i18n } = useI18n();
@@ -53,6 +58,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     name,
     onChange,
     placeholder,
+    readOnly,
     renderMarkdownHint,
     validation,
     value,
@@ -64,12 +70,34 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         hideIcons: ["fullscreen"],
         maxHeight,
         placeholder,
+        previewClass: readOnly
+          ? ["editor-preview", "markdown-editor-readonly"]
+          : "editor-preview",
         sideBySideFullscreen: false,
         spellChecker: false,
         status: false,
+        toolbar: readOnly ? READONLY_TOOLBAR : undefined,
       } as SimpleMDE.Options),
-    [autoFocus, maxHeight, placeholder]
+    [autoFocus, maxHeight, placeholder, readOnly]
   );
+  const [simpleMdeInstance, setMdeInstance] = useState<SimpleMDE | null>(null);
+  const getMdeInstanceCallback = useCallback((simpleMde: SimpleMDE) => {
+    setMdeInstance(simpleMde);
+  }, []);
+
+  const [codemirrorInstance, setCodemirrorInstance] =
+    useState<Editor | null>(null);
+  const getCmInstanceCallback = useCallback((editor: Editor) => {
+    setCodemirrorInstance(editor);
+  }, []);
+  useEffect(() => {
+    if (readOnly) {
+      codemirrorInstance?.setOption("readOnly", readOnly);
+      // @ts-ignore
+      simpleMdeInstance?.togglePreview();
+    }
+  }, [codemirrorInstance, readOnly, simpleMdeInstance]);
+
   return (
     <FormGroup>
       {label && (
@@ -78,7 +106,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
           {renderHelp(name, help)}
         </Label>
       )}
-      <SimpleMdeReact value={value} onChange={onChange} options={options} />
+      <SimpleMdeReact
+        value={value}
+        onChange={onChange}
+        options={options}
+        getMdeInstance={getMdeInstanceCallback}
+        getCodemirrorInstance={getCmInstanceCallback}
+      />
       {renderMarkdownHint && (
         <FormText>
           <FaMarkdown className="mr-1" />
