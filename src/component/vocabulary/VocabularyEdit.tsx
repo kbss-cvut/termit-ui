@@ -13,10 +13,11 @@ import {
 } from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
-import TextArea from "../misc/TextArea";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import ImportedVocabulariesListEdit from "./ImportedVocabulariesListEdit";
 import { AssetData } from "../../model/Asset";
+import MarkdownEditor from "../misc/MarkdownEditor";
+import Constants from "../../util/Constants";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -46,13 +47,6 @@ export class VocabularyEdit extends React.Component<
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
   }
-
-  private onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const change = {};
-    change[e.currentTarget.name.endsWith("label") ? "label" : "comment"] =
-      e.currentTarget.value;
-    this.onChange(change);
-  };
 
   public onChange = (change: object) => {
     this.setState(change);
@@ -96,19 +90,22 @@ export class VocabularyEdit extends React.Component<
                   name="edit-vocabulary-label"
                   label={i18n("asset.label")}
                   value={this.state.label}
-                  onChange={this.onInputChange}
+                  onChange={(e) =>
+                    this.onChange({ label: e.currentTarget.value })
+                  }
                   hint={i18n("required")}
                 />
               </Col>
             </Row>
             <Row>
               <Col xs={12}>
-                <TextArea
+                <MarkdownEditor
                   name="edit-vocabulary-comment"
                   label={i18n("vocabulary.comment")}
-                  rows={4}
                   value={this.state.comment}
-                  onChange={this.onInputChange}
+                  onChange={(val) => this.onChange({ comment: val })}
+                  renderMarkdownHint={true}
+                  maxHeight={Constants.MARKDOWN_EDITOR_HEIGHT}
                 />
               </Col>
             </Row>

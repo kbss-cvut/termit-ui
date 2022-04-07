@@ -7,6 +7,8 @@ import { shallow } from "enzyme";
 import { UnmappedPropertiesEdit } from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
+jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
+
 describe("VocabularyEdit", () => {
   let onSave: (vocabulary: Vocabulary) => void;
   let onCancel: () => void;
@@ -22,7 +24,7 @@ describe("VocabularyEdit", () => {
   });
 
   it("passes updated vocabulary to onSave", () => {
-    const wrapper = mountWithIntl(
+    const wrapper = shallow<VocabularyEdit>(
       <VocabularyEdit
         vocabulary={vocabulary}
         save={onSave}
@@ -30,37 +32,16 @@ describe("VocabularyEdit", () => {
         {...intlFunctions()}
       />
     );
-    const nameInput = wrapper.find("input[name='edit-vocabulary-label']");
     const newName = "Metropolitan plan";
-    (nameInput.getDOMNode() as HTMLInputElement).value = newName;
-    nameInput.simulate("change", nameInput);
-    wrapper.find("button#edit-vocabulary-submit").simulate("click");
+    const newDescription = "Vocabulary description text";
+    wrapper.instance().onChange({ label: newName });
+    wrapper.instance().onChange({ comment: newDescription });
+    wrapper.instance().onSave();
     expect(onSave).toHaveBeenCalled();
     const arg = (onSave as jest.Mock).mock.calls[0][0];
     expect(arg).not.toEqual(vocabulary);
     expect(arg.iri).toEqual(vocabulary.iri);
     expect(arg.label).toEqual(newName);
-  });
-
-  it("supports updating comment on vocabulary", () => {
-    const wrapper = mountWithIntl(
-      <VocabularyEdit
-        vocabulary={vocabulary}
-        save={onSave}
-        cancel={onCancel}
-        {...intlFunctions()}
-      />
-    );
-    const commentInput = wrapper.find(
-      "textarea[name='edit-vocabulary-comment']"
-    );
-    const newComment = "Updated comment";
-    (commentInput.getDOMNode() as HTMLInputElement).value = newComment;
-    commentInput.simulate("change", commentInput);
-    wrapper.find("button#edit-vocabulary-submit").simulate("click");
-    expect(onSave).toHaveBeenCalled();
-    const arg = (onSave as jest.Mock).mock.calls[0][0];
-    expect(arg.comment).toEqual(newComment);
   });
 
   it("closes editing view on when clicking on cancel", () => {

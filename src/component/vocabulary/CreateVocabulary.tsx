@@ -1,10 +1,8 @@
-import * as React from "react";
 import { Button, ButtonToolbar, Card, CardBody, Col, Row } from "reactstrap";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Routes from "../../util/Routes";
 import Routing from "../../util/Routing";
 import CustomInput from "../misc/CustomInput";
-import TextArea from "../misc/TextArea";
 import Document from "../../model/Document";
 import Vocabulary from "../../model/Vocabulary";
 import {
@@ -35,6 +33,8 @@ import IdentifierResolver from "../../util/IdentifierResolver";
 import AddFile from "../resource/document/AddFile";
 import RemoveFile from "../resource/document/RemoveFile";
 import WindowTitle from "../misc/WindowTitle";
+import MarkdownEditor from "../misc/MarkdownEditor";
+import Constants from "../../util/Constants";
 
 interface CreateVocabularyProps extends HasI18n {
   createFile: (file: TermItFile, documentIri: string) => Promise<any>;
@@ -121,8 +121,8 @@ export class CreateVocabulary extends AbstractCreateAsset<
     Routing.transitionTo(Routes.vocabularies);
   }
 
-  private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ comment: e.currentTarget.value });
+  private onCommentChange = (value: string): void => {
+    this.setState({ comment: value });
   };
 
   private isFormValid() {
@@ -175,13 +175,13 @@ export class CreateVocabulary extends AbstractCreateAsset<
                 </Row>
                 <Row>
                   <Col xs={12}>
-                    <TextArea
+                    <MarkdownEditor
                       name="create-vocabulary-comment"
                       label={i18n("vocabulary.comment")}
-                      type="textarea"
-                      rows={4}
                       value={this.state.comment}
                       onChange={this.onCommentChange}
+                      maxHeight={Constants.MARKDOWN_EDITOR_HEIGHT}
+                      renderMarkdownHint={true}
                     />
                   </Col>
                 </Row>
