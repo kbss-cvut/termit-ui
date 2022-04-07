@@ -279,4 +279,8 @@ export default class Term extends Asset implements TermData {
     result.sort(termInfoComparator);
     return result;
   }
+
+  public static isDraft(term: TermData): boolean {
+    return term.draft === undefined || term.draft;
+  }
 }

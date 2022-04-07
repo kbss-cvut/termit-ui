@@ -13,6 +13,7 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
 jest.mock("../TermLink", () => () => <span>Term link</span>);
 jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);
+jest.mock("../DraftToggle", () => () => <span>Draft toggle</span>);
 
 describe("BasicTermMetadata", () => {
   const vocabulary: Vocabulary = new Vocabulary({

@@ -14,6 +14,7 @@ import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermList from "./TermList";
 import RelatedTermsList from "./RelatedTermsList";
 import TermDefinitionBlock from "./TermDefinitionBlock";
+import DraftToggle from "./DraftToggle";
 
 interface BasicTermMetadataProps extends HasI18n {
   term: Term;
@@ -67,7 +68,7 @@ export class BasicTermMetadata extends React.Component<
         <Row>
           <Col xl={2} md={4}>
             <Label
-              className="attribute-label"
+              className="attribute-label mb-3"
               title={i18n("term.metadata.vocabulary.tooltip")}
             >
               {i18n("type.vocabulary")}
@@ -77,6 +78,20 @@ export class BasicTermMetadata extends React.Component<
             <VocabularyIriLink
               id="term-metadata-vocabulary"
               iri={term.vocabulary!.iri!}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xl={2} md={4}>
+            <Label className="attribute-label align-middle">
+              {i18n("term.metadata.status")}
+            </Label>
+          </Col>
+          <Col xl={10} md={8}>
+            <DraftToggle
+              id="term-metadata-status"
+              draft={Term.isDraft(term)}
+              onToggle={() => {}}
             />
           </Col>
         </Row>
