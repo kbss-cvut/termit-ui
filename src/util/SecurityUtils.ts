@@ -1,8 +1,10 @@
 import Constants from "./Constants";
 import User, { EMPTY_USER } from "../model/User";
 import BrowserStorage from "./BrowserStorage";
+import VocabularyUtils from "./VocabularyUtils";
+import Utils from "./Utils";
 
-export default class Authentication {
+export default class SecurityUtils {
   public static saveToken(jwt: string): void {
     BrowserStorage.set(Constants.STORAGE_JWT_KEY, jwt);
   }
@@ -15,7 +17,15 @@ export default class Authentication {
     BrowserStorage.remove(Constants.STORAGE_JWT_KEY);
   }
 
-  public static isLoggedIn(currentUser?: User | null) {
-    return currentUser && currentUser !== EMPTY_USER;
+  public static isLoggedIn(currentUser?: User | null): boolean {
+    return !!currentUser && currentUser !== EMPTY_USER;
+  }
+
+  public static isEditor(currentUser: User): boolean {
+    return (
+      Utils.sanitizeArray(currentUser.types).indexOf(
+        VocabularyUtils.USER_RESTRICTED
+      ) === -1
+    );
   }
 }

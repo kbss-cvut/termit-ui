@@ -3,7 +3,7 @@ import Routing from "./Routing";
 import Constants, { getEnv } from "./Constants";
 import Routes from "./Routes";
 import MockAdapter from "axios-mock-adapter";
-import Authentication from "./Authentication";
+import SecurityUtils from "./SecurityUtils";
 import fileContent from "../rest-mock/file";
 import ConfigParam from "./ConfigParam";
 
@@ -175,13 +175,13 @@ export class Ajax {
         reqConfig.headers = {};
       }
       reqConfig.headers[Constants.Headers.AUTHORIZATION] =
-        Authentication.loadToken();
+        SecurityUtils.loadToken();
       return reqConfig;
     });
     this.axiosInstance.interceptors.response.use(
       (resp) => {
         if (resp.headers && resp.headers[Constants.Headers.AUTHORIZATION]) {
-          Authentication.saveToken(
+          SecurityUtils.saveToken(
             resp.headers[Constants.Headers.AUTHORIZATION]
           );
         }
@@ -197,7 +197,7 @@ export class Ajax {
         const response = error.response;
         if (response.status === Constants.STATUS_UNAUTHORIZED) {
           Routing.saveOriginalTarget();
-          Authentication.clearToken();
+          SecurityUtils.clearToken();
           if (
             getEnv(ConfigParam.SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED, "") ===
             true.toString()

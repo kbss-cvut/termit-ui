@@ -1,7 +1,7 @@
 import { Register } from "../Register";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import ActionType, { AsyncFailureAction } from "../../../action/ActionType";
-import Authentication from "../../../util/Authentication";
+import SecurityUtils from "../../../util/SecurityUtils";
 import {
   flushPromises,
   mountWithIntl,
@@ -11,7 +11,7 @@ import { MemoryRouter } from "react-router";
 
 jest.mock("../../../util/Routing");
 jest.mock("../../../util/Ajax");
-jest.mock("../../../util/Authentication");
+jest.mock("../../../util/SecurityUtils");
 
 describe("Registration", () => {
   let register: ({}) => Promise<AsyncFailureAction>;
@@ -31,6 +31,6 @@ describe("Registration", () => {
     await act(async () => {
       await flushPromises();
     });
-    expect(Authentication.clearToken).toHaveBeenCalled();
+    expect(SecurityUtils.clearToken).toHaveBeenCalled();
   });
 });

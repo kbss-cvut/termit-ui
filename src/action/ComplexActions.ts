@@ -1,4 +1,4 @@
-import Authentication from "../util/Authentication";
+import SecurityUtils from "../util/SecurityUtils";
 import { userLogout } from "./SyncActions";
 import Routes from "../util/Routes";
 import Routing from "../util/Routing";
@@ -11,7 +11,7 @@ import { ThunkDispatch } from "../util/Types";
  */
 
 export function logout() {
-  Authentication.clearToken();
+  SecurityUtils.clearToken();
   Routing.transitionTo(Routes.login);
   return (dispatch: ThunkDispatch) => {
     dispatch(userLogout());

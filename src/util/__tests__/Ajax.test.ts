@@ -15,12 +15,12 @@ import * as Const from "../Constants";
 import Routes from "../Routes";
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { ErrorData } from "../../model/ErrorInfo";
-import Authentication from "../Authentication";
+import SecurityUtils from "../SecurityUtils";
 import VocabularyUtils from "../VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 
 jest.mock("../Routing");
-jest.mock("../Authentication");
+jest.mock("../SecurityUtils");
 jest.mock("../BrowserStorage");
 
 export class MockableAjax extends Ajax {
@@ -47,7 +47,7 @@ describe("Ajax", () => {
   });
 
   it("loads JWT and sets it on request", () => {
-    Authentication.loadToken = jest.fn().mockReturnValue(jwt);
+    SecurityUtils.loadToken = jest.fn().mockReturnValue(jwt);
     mock.onGet("/users/current").reply((config: AxiosRequestConfig) => {
       expect(config.headers![Constants.Headers.AUTHORIZATION]).toContain(jwt);
       return [200, require("../../rest-mock/current"), headers];
@@ -57,20 +57,20 @@ describe("Ajax", () => {
 
   it("extracts current JWT from response and saves it using Authentication", () => {
     headers[Constants.Headers.AUTHORIZATION] = jwt;
-    Authentication.saveToken = jest.fn();
+    SecurityUtils.saveToken = jest.fn();
     mock
       .onGet("/users/current")
       .reply(200, require("../../rest-mock/current"), headers);
     return sut.get("/users/current").then(() => {
-      expect(Authentication.saveToken).toHaveBeenCalledWith(jwt);
+      expect(SecurityUtils.saveToken).toHaveBeenCalledWith(jwt);
     });
   });
 
   it("does not extract JWT when there is none in response", () => {
-    Authentication.saveToken = jest.fn();
+    SecurityUtils.saveToken = jest.fn();
     mock.onGet("/users/username").reply(200, false);
     return sut.get("/users/username").then(() => {
-      expect(Authentication.saveToken).not.toHaveBeenCalled();
+      expect(SecurityUtils.saveToken).not.toHaveBeenCalled();
     });
   });
 
@@ -95,11 +95,11 @@ describe("Ajax", () => {
     });
 
     it("directly transitions to login route when 401 Unauthorized is received", () => {
-      Authentication.clearToken = jest.fn();
+      SecurityUtils.clearToken = jest.fn();
       jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
       mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
       return sut.get("/users/current").catch(() => {
-        return expect(Authentication.clearToken).toHaveBeenCalled();
+        return expect(SecurityUtils.clearToken).toHaveBeenCalled();
       });
     });
 
