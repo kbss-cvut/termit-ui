@@ -16,6 +16,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { selectVocabularyTerm } from "../../action/SyncActions";
 import Utils from "../../util/Utils";
 import DocumentSummary from "../resource/document/DocumentSummary";
+import ReactMarkdown from "react-markdown";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -74,7 +75,9 @@ export class VocabularyMetadata extends React.Component<
                 </Label>
               </Col>
               <Col xl={10} md={8}>
-                <p id="vocabulary-metadata-comment">{vocabulary.comment}</p>
+                <p id="vocabulary-metadata-comment">
+                  <ReactMarkdown>{vocabulary.comment || ""}</ReactMarkdown>
+                </p>
               </Col>
             </Row>
             <ImportedVocabulariesList

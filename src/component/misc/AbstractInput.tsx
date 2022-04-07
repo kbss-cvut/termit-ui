@@ -39,7 +39,7 @@ export interface AbstractInputProps {
 }
 
 export function renderHelp(id: string, help?: string) {
-  return help && <HelpIcon id={id} text={help} />;
+  return help && <HelpIcon id={`${id}-help`} text={help} />;
 }
 
 export function renderHint(hint?: string | JSX.Element) {

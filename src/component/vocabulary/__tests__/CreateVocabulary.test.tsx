@@ -24,6 +24,7 @@ jest.mock("../../../util/Ajax", () => {
   };
 });
 jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
+jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
 
 describe("Create vocabulary view", () => {
   const iri = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test";
@@ -224,8 +225,7 @@ describe("Create vocabulary view", () => {
         />
       );
       const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
-      const name = "Metropolitan Plan";
-      (nameInput.getDOMNode() as HTMLInputElement).value = name;
+      (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
       nameInput.simulate("change", nameInput);
       await flushPromises();
       const iriInput = wrapper.find('input[name="create-vocabulary-iri"]');
