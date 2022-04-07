@@ -24,7 +24,6 @@ interface TermDefinitionBlockEditProps {
 export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
   props
 ) => {
-  // TODO Readonly markdown => use ReactMarkdown to display content
   const { term, language, getValidationResults, onChange, readOnly } = props;
   const { i18n, locale } = useI18n();
   const onDefinitionChange = (value: string) => {
@@ -86,6 +85,7 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
             maxHeight={Constants.MARKDOWN_EDITOR_HEIGHT}
             help={i18n("term.definition.help")}
             renderMarkdownHint={true}
+            readOnly={readOnly}
           />
         </Col>
       </Row>
