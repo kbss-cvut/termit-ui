@@ -3,6 +3,7 @@ import { CardBody, Col, Label, Row } from "reactstrap";
 import Resource from "../../model/Resource";
 import { useI18n } from "../hook/useI18n";
 import OutgoingLink from "../misc/OutgoingLink";
+import ReactMarkdown from "react-markdown";
 
 interface ResourceMetadataProps {
   resource: Resource;
@@ -40,7 +41,7 @@ const ResourceMetadata = (props: ResourceMetadataProps) => {
           </Col>
           <Col xl={10} md={8}>
             <p id="resource-metadata-description">
-              {(props.resource || {}).description}
+              <ReactMarkdown>{props.resource.description || ""}</ReactMarkdown>
             </p>
           </Col>
         </Row>
