@@ -75,9 +75,9 @@ export class VocabularyMetadata extends React.Component<
                 </Label>
               </Col>
               <Col xl={10} md={8}>
-                <p id="vocabulary-metadata-comment">
-                  <MarkdownView>{vocabulary.comment}</MarkdownView>
-                </p>
+                <MarkdownView id="vocabulary-metadata-comment">
+                  {vocabulary.comment}
+                </MarkdownView>
               </Col>
             </Row>
             <ImportedVocabulariesList

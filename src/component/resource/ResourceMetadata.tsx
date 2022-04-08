@@ -40,9 +40,9 @@ const ResourceMetadata = (props: ResourceMetadataProps) => {
             </Label>
           </Col>
           <Col xl={10} md={8}>
-            <p id="resource-metadata-description">
-              <MarkdownView>{props.resource.description}</MarkdownView>
-            </p>
+            <MarkdownView id="resource-metadata-description">
+              {props.resource.description}
+            </MarkdownView>
           </Col>
         </Row>
         {props.additionalColumns}
