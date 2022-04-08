@@ -60,11 +60,9 @@ export class BasicTermMetadata extends React.Component<
             </Label>
           </Col>
           <Col xl={10} md={8}>
-            <p id="term-metadata-comment">
-              <MarkdownView>
-                {getLocalizedOrDefault(term.scopeNote, "", language)}
-              </MarkdownView>
-            </p>
+            <MarkdownView id="term-metadata-comment">
+              {getLocalizedOrDefault(term.scopeNote, "", language)}
+            </MarkdownView>
           </Col>
         </Row>
         <Row>
