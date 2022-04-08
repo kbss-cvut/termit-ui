@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Col, Row } from "reactstrap";
-import ReactMarkdown from "react-markdown";
 import Term from "../../model/Term";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermDefinitionSource from "./TermDefinitionSource";
 import { useI18n } from "../hook/useI18n";
 import "./TermDefinitionBlock.scss";
+import MarkdownView from "../misc/MarkdownView";
 
 export interface TermDefinitionBlockProps {
   term: Term;
@@ -27,9 +27,9 @@ export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = (
       <Row>
         <Col xs={12}>
           <p id="term-metadata-definition" className="definition-text mb-1">
-            <ReactMarkdown>
+            <MarkdownView>
               {getLocalizedOrDefault(term.definition, "", language)}
-            </ReactMarkdown>
+            </MarkdownView>
           </p>
         </Col>
       </Row>

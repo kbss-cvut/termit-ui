@@ -2,7 +2,6 @@ import * as React from "react";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { termInfoComparator } from "../../model/Term";
 import { injectIntl } from "react-intl";
-import ReactMarkdown from "react-markdown";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
@@ -15,6 +14,7 @@ import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermList from "./TermList";
 import RelatedTermsList from "./RelatedTermsList";
 import TermDefinitionBlock from "./TermDefinitionBlock";
+import MarkdownView from "../misc/MarkdownView";
 
 interface BasicTermMetadataProps extends HasI18n {
   term: Term;
@@ -61,9 +61,9 @@ export class BasicTermMetadata extends React.Component<
           </Col>
           <Col xl={10} md={8}>
             <p id="term-metadata-comment">
-              <ReactMarkdown>
+              <MarkdownView>
                 {getLocalizedOrDefault(term.scopeNote, "", language)}
-              </ReactMarkdown>
+              </MarkdownView>
             </p>
           </Col>
         </Row>
