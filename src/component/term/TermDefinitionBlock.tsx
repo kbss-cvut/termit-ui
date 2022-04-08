@@ -26,11 +26,12 @@ export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = (
       />
       <Row>
         <Col xs={12}>
-          <p id="term-metadata-definition" className="definition-text mb-1">
-            <MarkdownView>
-              {getLocalizedOrDefault(term.definition, "", language)}
-            </MarkdownView>
-          </p>
+          <MarkdownView
+            id="term-metadata-definition"
+            className="definition-text mb-1"
+          >
+            {getLocalizedOrDefault(term.definition, "", language)}
+          </MarkdownView>
         </Col>
       </Row>
       <Row>
