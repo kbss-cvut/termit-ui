@@ -418,6 +418,8 @@ const cs = {
     "term.metadata.status.confirmed": "Schválený",
     "term.metadata.status.help":
       "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
+    "term.metadata.status.confirmed.edit.title":
+      "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",

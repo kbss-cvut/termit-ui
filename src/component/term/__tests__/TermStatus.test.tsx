@@ -3,10 +3,11 @@ import Status from "../../../model/TermStatus";
 import Generator from "../../../__tests__/environment/Generator";
 import * as redux from "react-redux";
 import * as AsyncTermActions from "../../../action/AsyncTermActions";
+import { setTermStatus } from "../../../action/AsyncTermActions";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import DraftToggle from "../DraftToggle";
-import { setTermStatus } from "../../../action/AsyncTermActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import { Badge } from "reactstrap";
 
 jest.mock("../DraftToggle", () => () => <span>Toggle</span>);
 
@@ -18,6 +19,8 @@ describe("TermStatus", () => {
   ])(
     "passes correct status to setTermStatus on toggle",
     (expected: Status, draftValue?: boolean) => {
+      const user = Generator.generateUser();
+      jest.spyOn(redux, "useSelector").mockReturnValue(user);
       const fakeDispatch = jest.fn().mockResolvedValue({});
       jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
       jest.spyOn(AsyncTermActions, "setTermStatus");
@@ -32,4 +35,17 @@ describe("TermStatus", () => {
       );
     }
   );
+
+  it("renders non-editable badge when user has no editing authority", () => {
+    const user = Generator.generateUser();
+    user.types.push(VocabularyUtils.USER_RESTRICTED);
+    jest.spyOn(redux, "useSelector").mockReturnValue(user);
+    const fakeDispatch = jest.fn().mockResolvedValue({});
+    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    const term = Generator.generateTerm();
+    term.draft = false;
+    const wrapper = mountWithIntl(<TermStatus term={term} />);
+    expect(wrapper.exists(DraftToggle)).toBeFalsy();
+    expect(wrapper.exists(Badge)).toBeTruthy();
+  });
 });

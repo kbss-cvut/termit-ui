@@ -280,7 +280,7 @@ export default class Term extends Asset implements TermData {
     return result;
   }
 
-  public static isDraft(term: TermData): boolean {
-    return term.draft === undefined || term.draft;
+  public static isDraft(term?: TermData | null): boolean {
+    return !!term && (term.draft === undefined || term.draft);
   }
 }
