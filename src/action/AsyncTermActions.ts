@@ -33,6 +33,7 @@ import Utils from "../util/Utils";
 import { AxiosResponse } from "axios";
 import { getApiPrefix } from "./ActionUtils";
 import { AssetData } from "../model/Asset";
+import TermStatus from "../model/TermStatus";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -258,6 +259,28 @@ export function approveOccurrence(occurrence: TermOccurrence | AssetData) {
     return Ajax.put(
       Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
       param("namespace", OccurrenceIri.namespace)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+      });
+  };
+}
+
+export function setTermStatus(termIri: IRI, status: TermStatus) {
+  const action = {
+    type: ActionType.SET_TERM_STATUS,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(action);
+    return Ajax.put(
+      `${Constants.API_PREFIX}/terms/${termIri.fragment}/status`,
+      param("namespace", termIri.namespace)
+        .content(status)
+        .contentType(Constants.TEXT_MIME_TYPE)
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => {
