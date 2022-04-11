@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { AsyncFailureAction, MessageAction } from "../../action/ActionType";
 import { ThunkDispatch } from "../../util/Types";
-import Authentication from "../../util/Authentication";
+import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
 import { UserAccountData } from "../../model/User";
 import { register } from "../../action/AsyncUserActions";
@@ -26,7 +26,7 @@ interface RegisterProps extends HasI18n {
 
 export const Register: React.FC<RegisterProps> = (props) => {
   React.useEffect(() => {
-    Authentication.clearToken();
+    SecurityUtils.clearToken();
   }, []);
 
   const onRegister = (userData: UserAccountData) => props.register(userData);

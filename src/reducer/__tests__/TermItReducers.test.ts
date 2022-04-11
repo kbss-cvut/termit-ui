@@ -45,6 +45,7 @@ import Routes from "../../util/Routes";
 import { langString } from "../../model/MultilingualString";
 import { Configuration } from "../../model/Configuration";
 import { removeSearchListener } from "../../action/SearchActions";
+import TermStatus from "../../model/TermStatus";
 
 function stateToPlainObject(state: TermItState): TermItState {
   return {
@@ -314,7 +315,7 @@ describe("Reducers", () => {
       const action = { type: ActionType.LOAD_VOCABULARY };
       const vocabularyData: VocabularyData = {
         label: "Test vocabulary",
-        iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary",
+        iri: Generator.generateUri(),
       };
       expect(
         reducers(
@@ -332,7 +333,7 @@ describe("Reducers", () => {
       const imports = [Generator.generateUri(), Generator.generateUri()];
       initialState.vocabulary = new Vocabulary({
         label: "Test vocabulary",
-        iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary",
+        iri: Generator.generateUri(),
       });
       const vocabulary = reducers(
         stateToPlainObject(initialState),
@@ -419,7 +420,7 @@ describe("Reducers", () => {
     it("sets selectedTerm when it was successfully selected", () => {
       const term: TermData = {
         label: langString("Test term"),
-        iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term",
+        iri: Generator.generateUri(),
       };
       expect(
         reducers(stateToPlainObject(initialState), selectVocabularyTerm(term))
@@ -433,7 +434,7 @@ describe("Reducers", () => {
     it("sets selectedTerm when it was successfully selected then deselect it", () => {
       const term: TermData = {
         label: langString("Test term"),
-        iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-term",
+        iri: Generator.generateUri(),
       };
       expect(
         reducers(stateToPlainObject(initialState), selectVocabularyTerm(term))
@@ -446,6 +447,24 @@ describe("Reducers", () => {
         reducers(stateToPlainObject(initialState), selectVocabularyTerm(null))
       ).toEqual(Object.assign({}, initialState, { selectedTerm: null }));
     });
+
+    it("sets term draft status after successful term status update action", () => {
+      const term = Generator.generateTerm();
+      term.draft = true;
+      initialState.selectedTerm = term;
+
+      const resultState = reducers(
+        stateToPlainObject(initialState),
+        asyncActionSuccessWithPayload(
+          {
+            type: ActionType.SET_TERM_STATUS,
+            status: AsyncActionStatus.SUCCESS,
+          } as AsyncActionSuccess<TermStatus>,
+          TermStatus.CONFIRMED
+        )
+      );
+      expect(resultState.selectedTerm!.draft).toBeFalsy();
+    });
   });
 
   describe("load types", () => {
@@ -453,11 +472,11 @@ describe("Reducers", () => {
       const terms: TermData[] = [
         {
           label: langString("Test type 1"),
-          iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-1",
+          iri: Generator.generateUri(),
         },
         {
           label: langString("Test type 2"),
-          iri: "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test-vocabulary/term/test-type-2",
+          iri: Generator.generateUri(),
         },
       ];
 

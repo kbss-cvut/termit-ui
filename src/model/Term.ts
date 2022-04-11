@@ -96,7 +96,7 @@ export interface TermInfo {
   types?: string[];
 }
 
-export function termInfoComparator(a: TermInfo, b: TermInfo) {
+export function termComparator(a: TermInfo | TermData, b: TermInfo | TermData) {
   return getLocalized(a.label).localeCompare(getLocalized(b.label));
 }
 
@@ -276,7 +276,11 @@ export default class Term extends Asset implements TermData {
         result.push(rt);
       }
     }
-    result.sort(termInfoComparator);
+    result.sort(termComparator);
     return result;
+  }
+
+  public static isDraft(term?: TermData | null): boolean {
+    return !!term && (term.draft === undefined || term.draft);
   }
 }

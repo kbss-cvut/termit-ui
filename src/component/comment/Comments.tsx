@@ -44,7 +44,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
       setComments(data);
       onLoad(data.length);
     });
-  }, [loadComments, setComments, onLoad, term]);
+  }, [loadComments, setComments, onLoad, term.iri]);
   const onSubmit = (comment: Comment) =>
     createComment(comment, term.iri).then(() => {
       loadComments(term.iri).then((data) => {

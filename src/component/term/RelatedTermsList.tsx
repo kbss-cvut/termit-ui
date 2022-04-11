@@ -26,7 +26,7 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
         VocabularyUtils.create(term.vocabulary!.iri!)
       )
     );
-  }, [dispatch, term]);
+  }, [dispatch, term.iri, term.vocabulary]);
   const terms = React.useMemo(
     () => Term.consolidateRelatedAndRelatedMatch(term),
     [term]

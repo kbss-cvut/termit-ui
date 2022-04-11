@@ -178,6 +178,7 @@ export class TermDetail extends EditableComponent<
   };
 
   public getActions = () => {
+    const isConfirmed = !Term.isDraft(this.props.term);
     const actions = [];
     if (!this.state.edit) {
       actions.push(
@@ -191,7 +192,10 @@ export class TermDetail extends EditableComponent<
             color="primary"
             onClick={this.onEdit}
             key="term-detail-edit"
-            title={this.props.i18n("edit")}
+            disabled={isConfirmed}
+            title={this.props.i18n(
+              isConfirmed ? "term.metadata.status.confirmed.edit.title" : "edit"
+            )}
           >
             <GoPencil />
             &nbsp;{this.props.i18n("edit")}

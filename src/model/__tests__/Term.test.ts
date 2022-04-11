@@ -371,4 +371,21 @@ describe("Term tests", () => {
       ]);
     });
   });
+
+  describe("isDraft", () => {
+    it("returns true when term.draft is true", () => {
+      termData.draft = true;
+      expect(Term.isDraft(termData)).toBeTruthy();
+    });
+
+    it("returns true when term.draft is undefined", () => {
+      termData.draft = undefined;
+      expect(Term.isDraft(termData)).toBeTruthy();
+    });
+
+    it("returns false when term.draft is false", () => {
+      termData.draft = false;
+      expect(Term.isDraft(termData)).toBeFalsy();
+    });
+  });
 });

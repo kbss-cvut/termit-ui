@@ -15,6 +15,7 @@ import { selectVocabularyTerm } from "../../../action/SyncActions";
 import WindowTitle from "../../misc/WindowTitle";
 import { useI18n } from "../../hook/useI18n";
 import { loadVocabulary } from "../../../action/AsyncActions";
+import MarkdownView from "../../misc/MarkdownView";
 
 interface VocabularySummaryProps extends RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -68,9 +69,9 @@ export const VocabularySummary: React.FC<VocabularySummaryProps> = (props) => {
               </Label>
             </Col>
             <Col xl={10} md={8}>
-              <Label id="vocabulary-metadata-comment">
+              <MarkdownView id="vocabulary-metadata-comment">
                 {vocabulary.comment}
-              </Label>
+              </MarkdownView>
             </Col>
           </Row>
           <ImportedVocabulariesList

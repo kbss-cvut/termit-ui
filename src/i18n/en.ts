@@ -408,6 +408,8 @@ const en = {
     "term.metadata.status.confirmed": "Confirmed",
     "term.metadata.status.help":
       "Draft term is not ready to be used yet, while Confirmed term is.",
+    "term.metadata.status.confirmed.edit.title":
+      "Confirmed term cannot be edited. Switch it back to Draft to edit.",
     "term.metadata.types.select.placeholder": "Select type",
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",

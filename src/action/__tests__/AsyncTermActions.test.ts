@@ -8,6 +8,7 @@ import {
   createTerm,
   loadDefinitionRelatedTermsTargeting,
   setTermDefinitionSource,
+  setTermStatus,
 } from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
@@ -17,6 +18,7 @@ import MessageType from "../../model/MessageType";
 import { langString } from "../../model/MultilingualString";
 import Constants from "../../util/Constants";
 import AsyncActionStatus from "../AsyncActionStatus";
+import TermStatus from "../../model/TermStatus";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -308,6 +310,49 @@ describe("AsyncTermActions", () => {
         expect((Ajax.get as jest.Mock).mock.calls[0][0]).toMatch(
           new RegExp(`^${Constants.PUBLIC_API_PREFIX}`)
         );
+      });
+    });
+  });
+
+  describe("setTermStatus", () => {
+    it("sends provided status as plain text to server", () => {
+      const termIri = VocabularyUtils.create(
+        `${namespace}${vocabularyName}/pojem/${termName}`
+      );
+      Ajax.put = jest.fn().mockResolvedValue({});
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          setTermStatus(termIri, TermStatus.CONFIRMED)
+        )
+      ).then(() => {
+        const reqConfig = (Ajax.put as jest.Mock).mock.calls[0][1];
+        expect(Ajax.put).toHaveBeenCalled();
+        expect(reqConfig.getContent()).toEqual(TermStatus.CONFIRMED.toString());
+        expect(reqConfig.getHeaders()[Constants.Headers.CONTENT_TYPE]).toEqual(
+          Constants.TEXT_MIME_TYPE
+        );
+      });
+    });
+
+    it("returns set status as action success payload", () => {
+      const termIri = VocabularyUtils.create(
+        `${namespace}${vocabularyName}/pojem/${termName}`
+      );
+      Ajax.put = jest.fn().mockResolvedValue({});
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          setTermStatus(termIri, TermStatus.CONFIRMED)
+        )
+      ).then(() => {
+        const action = store
+          .getActions()
+          .find(
+            (a) =>
+              a.type === ActionType.SET_TERM_STATUS &&
+              a.status === AsyncActionStatus.SUCCESS
+          );
+        expect(action).toBeDefined();
+        expect(action.payload).toEqual(TermStatus.CONFIRMED);
       });
     });
   });

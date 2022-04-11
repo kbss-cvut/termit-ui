@@ -8,6 +8,8 @@ import {
   CardBody,
   Col,
   Form,
+  FormGroup,
+  Label,
   Row,
 } from "reactstrap";
 import Term, { CONTEXT, TermData, TermInfo } from "../../model/Term";
@@ -45,6 +47,7 @@ import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
 import StringListEdit from "../misc/StringListEdit";
 import "./TermMetadata.scss";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
+import HelpIcon from "../misc/HelpIcon";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -403,15 +406,24 @@ export class TermMetadataEdit extends React.Component<
 
                 <Row>
                   <Col xs={12}>
-                    <DraftToggle
-                      id="edit-term-status"
-                      draft={
-                        this.state.draft === undefined
-                          ? true
-                          : this.state.draft!
-                      }
-                      onToggle={this.onStatusChange}
-                    />
+                    <FormGroup>
+                      <Label
+                        id="term-metadata-edit-status"
+                        className="attribute-label"
+                      >
+                        {i18n("term.metadata.status")}
+                        <HelpIcon
+                          id="term-metadata-status"
+                          text={i18n("term.metadata.status.help")}
+                        />
+                      </Label>
+                      <br />
+                      <DraftToggle
+                        id="edit-term-status"
+                        draft={Term.isDraft(this.state)}
+                        onToggle={this.onStatusChange}
+                      />
+                    </FormGroup>
                   </Col>
                 </Row>
               </AttributeSectionContainer>
