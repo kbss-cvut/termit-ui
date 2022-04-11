@@ -64,5 +64,10 @@ describe("SecurityUtils", () => {
       user.types.push(VocabularyUtils.USER_ADMIN);
       expect(SecurityUtils.isEditor(user)).toBeTruthy();
     });
+
+    it("returns false when user is not logged in at all", () => {
+      expect(SecurityUtils.isEditor(null)).toBeFalsy();
+      expect(SecurityUtils.isEditor(undefined)).toBeFalsy();
+    });
   });
 });

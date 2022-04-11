@@ -333,5 +333,27 @@ describe("AsyncTermActions", () => {
         );
       });
     });
+
+    it("returns set status as action success payload", () => {
+      const termIri = VocabularyUtils.create(
+        `${namespace}${vocabularyName}/pojem/${termName}`
+      );
+      Ajax.put = jest.fn().mockResolvedValue({});
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          setTermStatus(termIri, TermStatus.CONFIRMED)
+        )
+      ).then(() => {
+        const action = store
+          .getActions()
+          .find(
+            (a) =>
+              a.type === ActionType.SET_TERM_STATUS &&
+              a.status === AsyncActionStatus.SUCCESS
+          );
+        expect(action).toBeDefined();
+        expect(action.payload).toEqual(TermStatus.CONFIRMED);
+      });
+    });
   });
 });

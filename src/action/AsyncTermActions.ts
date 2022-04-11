@@ -282,7 +282,7 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
         .content(status)
         .contentType(Constants.TEXT_MIME_TYPE)
     )
-      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() => dispatch(asyncActionSuccessWithPayload(action, status)))
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return dispatch(

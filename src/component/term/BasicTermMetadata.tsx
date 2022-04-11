@@ -13,8 +13,8 @@ import TermList from "./TermList";
 import RelatedTermsList from "./RelatedTermsList";
 import TermDefinitionBlock from "./TermDefinitionBlock";
 import MarkdownView from "../misc/MarkdownView";
-import DraftToggle from "./DraftToggle";
 import { useI18n } from "../hook/useI18n";
+import TermStatus from "./TermStatus";
 
 interface BasicTermMetadataProps {
   term: Term;
@@ -149,18 +149,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
         </Col>
       </Row>
       <Row>
-        <Col xl={2} md={4}>
-          <Label className="attribute-label align-middle">
-            {i18n("term.metadata.status")}
-          </Label>
-        </Col>
-        <Col xl={10} md={8}>
-          <DraftToggle
-            id="term-metadata-status"
-            draft={Term.isDraft(term)}
-            onToggle={() => {}}
-          />
-        </Col>
+        <TermStatus term={term} />
       </Row>
     </>
   );

@@ -37,6 +37,7 @@ import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
 import { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
+import TermStatus from "../model/TermStatus";
 
 /**
  * Handles changes to the currently logged in user.
@@ -199,7 +200,7 @@ function vocabularies(
 
 function selectedTerm(
   state: Term | null = null,
-  action: SelectingTermsAction | AsyncActionSuccess<Term>
+  action: SelectingTermsAction | AsyncActionSuccess<Term | TermStatus>
 ) {
   switch (action.type) {
     case ActionType.SELECT_VOCABULARY_TERM:
@@ -207,6 +208,15 @@ function selectedTerm(
     case ActionType.LOAD_TERM:
       const aa = action as AsyncActionSuccess<Term>;
       return aa.status === AsyncActionStatus.SUCCESS ? aa.payload : state;
+    case ActionType.SET_TERM_STATUS:
+      const sts = action as AsyncActionSuccess<TermStatus>;
+      return sts.status === AsyncActionStatus.SUCCESS
+        ? new Term(
+            Object.assign({}, state, {
+              draft: sts.payload === TermStatus.DRAFT,
+            })
+          )
+        : state;
     case ActionType.LOGOUT:
       return null;
     default:

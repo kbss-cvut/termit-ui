@@ -418,7 +418,6 @@ export class TermMetadataEdit extends React.Component<
                         />
                       </Label>
                       <br />
-
                       <DraftToggle
                         id="edit-term-status"
                         draft={Term.isDraft(this.state)}
