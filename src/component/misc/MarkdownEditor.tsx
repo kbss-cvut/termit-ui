@@ -2,19 +2,19 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormGroup, FormText, Label } from "reactstrap";
 import classNames from "classnames";
-import ValidationResult from "../../model/form/ValidationResult";
+import SimpleMDE from "easymde";
+import { FaMarkdown } from "react-icons/fa";
 import SimpleMdeReact from "react-simplemde-editor";
 import { Editor } from "codemirror";
+import ValidationResult from "../../model/form/ValidationResult";
 import {
   renderHelp,
   renderHint,
   renderValidationMessages,
 } from "./AbstractInput";
 import Utils from "../../util/Utils";
-import SimpleMDE from "easymde";
-import "easymde/dist/easymde.min.css";
-import { FaMarkdown } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
+import "easymde/dist/easymde.min.css";
 import "./MarkdownEditor.scss";
 
 interface MarkdownEditorProps {
@@ -45,6 +45,22 @@ interface MarkdownEditorProps {
 }
 
 const READONLY_TOOLBAR = ["preview", "side-by-side"];
+// Add editing icons (after separator) in reverse order, since we are using float: right to make them appear
+// on the right side of the toolbar
+const EDITOR_TOOLBAR = [
+  "preview",
+  "side-by-side",
+  "|",
+  "guide",
+  "image",
+  "table",
+  "ordered-list",
+  "unordered-list",
+  "link",
+  "italic",
+  "bold",
+  "heading",
+];
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const { i18n } = useI18n();
@@ -67,7 +83,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     () =>
       ({
         autofocus: autoFocus,
-        hideIcons: ["fullscreen"],
         maxHeight,
         placeholder,
         previewClass: readOnly
@@ -76,7 +91,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         sideBySideFullscreen: false,
         spellChecker: false,
         status: false,
-        toolbar: readOnly ? READONLY_TOOLBAR : undefined,
+        toolbar: readOnly ? READONLY_TOOLBAR : EDITOR_TOOLBAR,
       } as SimpleMDE.Options),
     [autoFocus, maxHeight, placeholder, readOnly]
   );
