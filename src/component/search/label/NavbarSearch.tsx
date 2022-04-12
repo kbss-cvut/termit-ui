@@ -19,7 +19,7 @@ import Routing from "../../../util/Routing";
 import { RouteComponentProps, withRouter } from "react-router";
 import classNames from "classnames";
 import User from "../../../model/User";
-import Authentication from "../../../util/Authentication";
+import SecurityUtils from "../../../util/SecurityUtils";
 import { FaTimes } from "react-icons/fa";
 import "./NavbarSearch.scss";
 
@@ -108,7 +108,7 @@ export class NavbarSearch extends React.Component<
     }
     this.closeResults();
     Routing.transitionTo(
-      Authentication.isLoggedIn(this.props.user)
+      SecurityUtils.isLoggedIn(this.props.user)
         ? Routes.search
         : Routes.publicSearch,
       { query }

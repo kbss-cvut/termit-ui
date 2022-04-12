@@ -4,3 +4,32 @@
   background-color: $input-disabled-bg !important;
   opacity: 1;
 }
+
+.editor-toolbar i.separator {
+  height: auto;
+  position: relative;
+  overflow: initial;
+}
+
+.editor-toolbar button {
+  &.bold,
+  &.italic,
+  &.heading,
+  &.unordered-list,
+  &.ordered-list,
+  &.link,
+  &.image {
+    float: right;
+  }
+}
+
+.editor-preview blockquote {
+  margin-block-start: 0.5rem;
+  margin-block-end: 0.5rem;
+  margin-inline-start: 1rem;
+  margin-inline-end: 1rem;
+}
+
+.editor-preview blockquote p {
+  margin-bottom: 0;
+}

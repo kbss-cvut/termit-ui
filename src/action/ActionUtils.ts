@@ -1,5 +1,5 @@
 import TermItState from "../model/TermItState";
-import Authentication from "../util/Authentication";
+import SecurityUtils from "../util/SecurityUtils";
 import Constants from "../util/Constants";
 
 /**
@@ -7,7 +7,7 @@ import Constants from "../util/Constants";
  * @param state Current application state
  */
 export function getApiPrefix(state: TermItState): string {
-  return Authentication.isLoggedIn(state.user)
+  return SecurityUtils.isLoggedIn(state.user)
     ? Constants.API_PREFIX
     : Constants.PUBLIC_API_PREFIX;
 }

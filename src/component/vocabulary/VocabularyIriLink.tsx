@@ -6,7 +6,7 @@ import AssetIriLink from "../misc/AssetIriLink";
 import User from "../../model/User";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
-import Authentication from "../../util/Authentication";
+import SecurityUtils from "../../util/SecurityUtils";
 import { useI18n } from "../hook/useI18n";
 
 interface VocabularyIriLinkProps {
@@ -27,7 +27,7 @@ export const VocabularyIriLink: React.FC<VocabularyIriLinkProps> = (
   const { i18n } = useI18n();
   const iri = VocabularyUtils.create(props.iri);
   const path = Routing.getTransitionPath(
-    Authentication.isLoggedIn(props.user)
+    SecurityUtils.isLoggedIn(props.user)
       ? Routes.vocabularySummary
       : Routes.publicVocabularySummary,
     {

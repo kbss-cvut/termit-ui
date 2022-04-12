@@ -1,3 +1,9 @@
+#### Verze 2.11.1
+
+- Přidána podpora pro Markdown formátování textu definice a poznámky pojmu a popisu slovníku.
+- Zobrazení stavu pojmu (rozpracovaný/schválený) na detailu pojmu, s možností stav okamžitě přepnout.
+- Optimalizace načítání seznamu všech pojmů ve slovníku.
+
 #### Verze 2.11.0
 
 - Odstraněna podpora pro správu obecných zdrojů z open-source verze.
