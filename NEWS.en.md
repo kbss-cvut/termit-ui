@@ -1,3 +1,9 @@
+#### Version 2.11.1
+
+- Add support for Markdown formatting of term definition and scope note and vocabulary description.
+- Show term status (draft/confirmed) on term detail. Allow directly toggling it.
+- Optimize loading the list of all terms in a vocabulary.
+
 #### Version 2.11.0
 
 - Removed general resource management support from the open-source version.
