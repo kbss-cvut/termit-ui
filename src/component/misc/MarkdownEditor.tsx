@@ -53,7 +53,6 @@ const EDITOR_TOOLBAR = [
   "|",
   "guide",
   "image",
-  "table",
   "ordered-list",
   "unordered-list",
   "link",
