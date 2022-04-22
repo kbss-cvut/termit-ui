@@ -1,5 +1,5 @@
 .markdown-view strong {
-  font-weight: bolder;
+  font-weight: bolder !important;
 }
 
 .markdown-view blockquote {
@@ -11,4 +11,9 @@
 
 .markdown-view blockquote p {
   margin-bottom: 0;
+}
+
+.markdown-view p {
+  font-weight: normal;
+  line-height: normal;
 }
