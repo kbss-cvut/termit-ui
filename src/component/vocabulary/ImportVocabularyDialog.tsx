@@ -3,9 +3,10 @@ import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import UploadFile from "../resource/file/UploadFile";
 import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
-import classNames from "classnames";
+import "./ImportVocabularyDialog.scss";
 
 interface ImportVocabularyDialogProps {
+  propKeyPrefix: string;
   onCreate: (file: File, rename: Boolean) => any;
   onCancel: () => void;
 }
@@ -27,12 +28,12 @@ export const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
   const cannotSubmit = () => !file;
 
   return (
-    <Form>
+    <Form className="m-import-vocabulary">
       <UploadFile setFile={setFileAndStopDragging} />
       <Row>
         <Col xs={12}>
           <CustomCheckBoxInput
-            className={classNames("checkbox")}
+            className="override-identifiers"
             label={i18n("vocabulary.import.allow-changing-identifiers")}
             onChange={setAllowChangingIdentifiers}
             hint={i18n("vocabulary.import.allow-changing-identifiers.tooltip")}
@@ -45,7 +46,7 @@ export const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
               size="sm"
               disabled={cannotSubmit()}
             >
-              {i18n("vocabulary.summary.import.action")}
+              {i18n(props.propKeyPrefix + ".action")}
             </Button>
             <Button
               id="upload-file-cancel"

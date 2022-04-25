@@ -223,13 +223,13 @@ const en = {
     "vocabulary.summary.import.action.tooltip":
       "Restore the vocabulary from its previously exported version.",
     "vocabulary.summary.import.dialog.title":
-      "Restore previous vocabulary version.",
+      "Restore previous vocabulary version",
     "vocabulary.summary.import.dialog.message":
       "Upload a previously exported version of this vocabulary " +
       "(in the SKOS formát and containing a single skos:ConceptScheme with IRI <IRI-OF-THIS-VOCABULARY>/glosář).",
     "vocabulary.import.action": "Import",
     "vocabulary.import.action.tooltip": "SKOS vocabulary import.",
-    "vocabulary.import.dialog.title": "Import SKOS vocabulary.",
+    "vocabulary.import.dialog.title": "Import SKOS vocabulary",
     "vocabulary.import.dialog.message":
       "Imported file must be in the SKOS format. " +
       "The file must contain exactly one instance of skos:ConceptScheme.",

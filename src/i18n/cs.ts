@@ -229,13 +229,13 @@ const cs = {
     "vocabulary.summary.import.action": "Obnovit ze zálohy",
     "vocabulary.summary.import.action.tooltip":
       "Obnovit slovník ze zálohy ve formátu SKOS.",
-    "vocabulary.summary.import.dialog.title": "Obnova dřívější verze slovníku.",
+    "vocabulary.summary.import.dialog.title": "Obnova dřívější verze slovníku",
     "vocabulary.summary.import.dialog.message":
       "Nahrajte dříve vyexportovanou verzi tohoto slovníku " +
       "(ve formátu SKOS a obsahující jedinou skos:ConceptScheme ve tvaru <IRI-TOHOTO-SLOVNÍKU>/glosář).",
     "vocabulary.import.action": "Importovat",
     "vocabulary.import.action.tooltip": "Import SKOS slovníku.",
-    "vocabulary.import.dialog.title": "Importovat SKOS slovník.",
+    "vocabulary.import.dialog.title": "Importovat SKOS slovník",
     "vocabulary.import.dialog.message":
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
