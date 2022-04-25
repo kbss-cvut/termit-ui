@@ -43,7 +43,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = (props) => {
   }
   return (
     <div className="additional-metadata-container">
-      <Table striped={true}>
+      <Table striped={true} responsive={true}>
         <thead>
           <tr>
             <th className="col-xs-2">{i18n("history.whenwho")}</th>
