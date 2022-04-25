@@ -1,6 +1,6 @@
-import { Card, CardBody, CardHeader } from "reactstrap";
 import { ImportVocabularyDialog } from "./ImportVocabularyDialog";
 import { useI18n } from "../hook/useI18n";
+import { FormGroup, Label } from "reactstrap";
 
 interface ImportVocabularyPanelProps {
   propKeyPrefix: string;
@@ -12,18 +12,18 @@ export const ImportVocabularyPanel = (props: ImportVocabularyPanelProps) => {
   const { i18n } = useI18n();
 
   return (
-    <Card id={props.propKeyPrefix}>
-      <CardHeader color="info">
-        <h5>{i18n(props.propKeyPrefix + ".dialog.title")}</h5>
-      </CardHeader>
-      <CardBody>
-        <h5>{i18n(props.propKeyPrefix + ".dialog.message")}</h5>
-        <ImportVocabularyDialog
-          onCreate={props.onSubmit}
-          onCancel={props.onCancel}
-        />
-      </CardBody>
-    </Card>
+    <form id="vocabulary-import">
+      <FormGroup className="mb-0">
+        <Label className="attribute-label mb-2">
+          {i18n(props.propKeyPrefix + ".dialog.message")}
+        </Label>
+      </FormGroup>
+      <ImportVocabularyDialog
+        propKeyPrefix={props.propKeyPrefix}
+        onCreate={props.onSubmit}
+        onCancel={props.onCancel}
+      />
+    </form>
   );
 };
 

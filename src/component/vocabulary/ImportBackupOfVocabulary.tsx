@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal, ModalBody } from "reactstrap";
+import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { GoCloudUpload } from "react-icons/go";
 import { useI18n } from "../hook/useI18n";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
@@ -19,6 +19,9 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
   return (
     <IfUserAuthorized renderUnauthorizedAlert={false}>
       <Modal isOpen={dialogOpen} toggle={toggle}>
+        <ModalHeader>
+          {i18n("vocabulary.summary.import.dialog.title")}
+        </ModalHeader>
         <ModalBody>
           <ImportVocabularyPanel
             propKeyPrefix="vocabulary.summary.import"
