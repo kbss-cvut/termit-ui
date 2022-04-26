@@ -118,9 +118,13 @@ function vocabulary(
 ): Vocabulary {
   switch (action.type) {
     case ActionType.LOAD_VOCABULARY:
-      return action.status === AsyncActionStatus.SUCCESS
-        ? (action.payload as Vocabulary)
-        : state;
+      if (action.status === AsyncActionStatus.REQUEST) {
+        return EMPTY_VOCABULARY;
+      } else if (action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload as Vocabulary;
+      } else {
+        return state;
+      }
     case ActionType.LOAD_VOCABULARY_IMPORTS:
       return action.status === AsyncActionStatus.SUCCESS
         ? new Vocabulary(

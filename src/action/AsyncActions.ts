@@ -1268,7 +1268,10 @@ export function loadHistory(asset: Asset) {
  * @param vocabularyIri Vocabulary identifier
  */
 export function loadVocabularyContentChanges(vocabularyIri: IRI) {
-  const action = { type: ActionType.LOAD_VOCABULARY_CONTENT_HISTORY };
+  const action = {
+    type: ActionType.LOAD_VOCABULARY_CONTENT_HISTORY,
+    ignoreLoading: true,
+  };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(

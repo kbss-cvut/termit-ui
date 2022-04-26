@@ -1,7 +1,6 @@
 import * as React from "react";
 import Chart from "react-apexcharts";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
-import ContainerMask from "../misc/ContainerMask";
 import PersistRecord from "../../model/changetracking/PersistRecord";
 import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import { Col, Row } from "reactstrap";
@@ -14,7 +13,7 @@ interface TermChangeFrequencyUIProps {
 const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = (props) => {
   const { i18n } = useI18n();
   if (!props.records) {
-    return <ContainerMask text={i18n("vocabulary.termchanges.loading")} />;
+    return <div className="additional-metadata-container">&nbsp;</div>;
   }
 
   if (props.records.length === 0) {
