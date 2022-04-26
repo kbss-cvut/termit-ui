@@ -414,6 +414,19 @@ describe("Reducers", () => {
           .vocabulary.termCount
       ).not.toBeDefined();
     });
+
+    it("resets vocabulary to empty when vocabulary loading request is sent", () => {
+      const action = { type: ActionType.LOAD_VOCABULARY };
+      initialState.vocabulary = new Vocabulary({
+        label: "Test vocabulary",
+        iri: Generator.generateUri(),
+        types: [VocabularyUtils.VOCABULARY],
+      });
+      expect(
+        reducers(stateToPlainObject(initialState), asyncActionRequest(action))
+          .vocabulary
+      ).toEqual(EMPTY_VOCABULARY);
+    });
   });
 
   describe("select term", () => {
