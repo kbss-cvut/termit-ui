@@ -109,6 +109,16 @@ example setup.
 - Element IDs should be used as much as possible to make testing easier.
 - Use [React Hooks](https://reactjs.org/docs/hooks-intro.htm) freely.
 
+## Loading Masks
+
+Currently, TermIt uses a globally set loading state managed be the Redux store. This state is toggled based on async action request states (request -> loading = true, success/failure -> loading = false).
+This is no longer optimal, as multiple async actions tend to interfere with each other's loading status.
+
+Therefore, promise tracking-based loading should be used. This means that a loading state is toggled to on when the async action promise is created and toggled back to off
+when the promise resolves. A corresponding loading mask can then be used. In addition, this allows having multiple, container-based loading masks at the same time.
+[react-promise-tracker](https://github.com/Lemoncode/react-promise-tracker) is used for this, with its `area` parameter providing connection between the promise
+tracking and the corresponding loading mask. See `TermChangeFrequency` for usage example. _This should be the preferred way of using loading masks henceforth._
+
 ## Debugging
 
 - Tests can be debugged directly in IDEA just like JUnit tests - IDEA is able to run singular tests.
