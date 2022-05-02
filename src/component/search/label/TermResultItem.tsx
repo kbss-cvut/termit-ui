@@ -17,6 +17,7 @@ import { getTermPath } from "../../term/TermLink";
 import User from "../../../model/User";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
+import DraftBadge from "../../term/DraftBadge";
 
 interface TermResultItemOwnProps {
   result: SearchResultItem;
@@ -79,16 +80,17 @@ export class TermResultItem extends React.Component<
 
   public render() {
     const i18n = this.props.i18n;
+    const result = this.props.result;
     const t = {
-      iri: this.props.result.iri,
+      iri: result.iri,
       label: (
         <>
-          <span className="search-result-title">{this.props.result.label}</span>
+          <span className="search-result-title">{result.label}</span>
           &nbsp;
           {this.props.result.vocabulary ? (
             <>
               {i18n("search.results.vocabulary.from")}&nbsp;
-              <AssetLabel iri={this.props.result.vocabulary!.iri} />
+              <AssetLabel iri={result.vocabulary!.iri} />
             </>
           ) : (
             <></>
@@ -99,19 +101,20 @@ export class TermResultItem extends React.Component<
 
     let text;
     if (this.getIndexOf("definition") > -1) {
-      text = this.props.result.snippets[this.getIndexOf("definition")];
+      text = result.snippets[this.getIndexOf("definition")];
     } else {
       text = this.state.text;
     }
 
     if (text && text!.length > 200) {
-      text = text!.substr(0, 200) + " ...";
+      text = text!.substring(0, 200) + " ...";
     }
 
-    const asset = AssetFactory.createAsset(this.props.result);
+    const asset = AssetFactory.createAsset(result);
     return (
       <>
         <TermBadge className="search-result-badge" />
+        <DraftBadge isDraft={result.draft} />
         <AssetLink
           asset={t}
           path={getTermPath(asset as Term, this.props.user)}
