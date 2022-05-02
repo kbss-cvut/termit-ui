@@ -46,13 +46,18 @@ export class SearchResults extends React.Component<SearchResultsProps> {
     const rows = this.renderResults();
     return (
       <div>
-        <div className="italics small text-gray">
+        <div className="italics small text-gray mb-3">
           {this.props.formatMessage("search.results.countInfo", {
             matches: this.props.results.length,
             assets: rows.length,
           })}
         </div>
-        <Table responsive={true} bordered={true} className="search-results">
+        <Table
+          responsive={true}
+          bordered={false}
+          borderless={true}
+          className="search-results"
+        >
           <tbody>{rows}</tbody>
         </Table>
       </div>
