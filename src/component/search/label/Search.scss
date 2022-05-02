@@ -10,6 +10,11 @@ table.search-results {
   table-layout: fixed;
   word-break: break-word;
   border-bottom-color: #6a7e95;
+  margin-bottom: 0 !important;
+}
+
+table.search-results td {
+  padding-left: 0 !important;
 }
 
 .search-result-snippet-match {
