@@ -7,6 +7,7 @@ export const CONTEXT = {
   iri: "@id",
   label: VocabularyUtils.RDFS_LABEL,
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+  draft: VocabularyUtils.IS_DRAFT,
   snippetText:
     "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text",
   snippetField:
@@ -23,6 +24,7 @@ export interface SearchResultData extends AssetData {
   score?: number;
   types: string[];
   vocabulary?: { iri: string };
+  draft?: boolean;
 }
 
 export default class SearchResult implements AssetData {
@@ -33,6 +35,7 @@ export default class SearchResult implements AssetData {
   public readonly score?: number;
   public readonly types: string[];
   public readonly vocabulary?: { iri: string };
+  public readonly draft?: boolean;
 
   constructor(data: SearchResultData) {
     this.iri = data.iri;
@@ -41,6 +44,7 @@ export default class SearchResult implements AssetData {
     this.snippetText = data.snippetText;
     this.score = data.score;
     this.vocabulary = data.vocabulary;
+    this.draft = data.draft;
     this.types = Utils.sanitizeArray(data.types);
   }
 
