@@ -11,6 +11,7 @@ import TermItState from "../../../model/TermItState";
 import { ThunkDispatch } from "../../../util/Types";
 import * as SearchActions from "../../../action/SearchActions";
 import { injectIntl } from "react-intl";
+import { Card, CardBody } from "reactstrap";
 
 interface DispatchProps {
   addSearchListener: () => void;
@@ -49,7 +50,13 @@ export class Search<
     return (
       <div className="relative">
         <WindowTitle title={this.props.i18n("search.title")} />
-        {results ? <SearchResults results={results} /> : null}
+        {results && (
+          <Card className="mb-3">
+            <CardBody>
+              <SearchResults results={results} />
+            </CardBody>
+          </Card>
+        )}
         {loading}
       </div>
     );

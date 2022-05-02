@@ -11,6 +11,7 @@ import ContainerMask from "../misc/ContainerMask";
 import WindowTitle from "../misc/WindowTitle";
 import SearchResults from "./label/SearchResults";
 import TermResultVocabularyFilter from "./label/TermResultVocabularyFilter";
+import { Card, CardBody } from "reactstrap";
 
 interface SearchTermsState {
   vocabularies: string[];
@@ -51,16 +52,18 @@ export class SearchTerms extends Search<SearchProps, SearchTermsState> {
     return (
       <div className="relative">
         <WindowTitle title={this.props.i18n("search.title")} />
-        {results ? (
-          <>
-            <TermResultVocabularyFilter
-              searchResults={this.props.searchResults!}
-              selectedVocabularies={this.state.vocabularies}
-              onChange={this.onFilteringVocabulariesSelect}
-            />
-            <SearchResults results={results} />
-          </>
-        ) : null}
+        {results && (
+          <Card className="mb-3">
+            <CardBody>
+              <TermResultVocabularyFilter
+                searchResults={this.props.searchResults!}
+                selectedVocabularies={this.state.vocabularies}
+                onChange={this.onFilteringVocabulariesSelect}
+              />
+              <SearchResults results={results} />
+            </CardBody>
+          </Card>
+        )}
         {loading}
       </div>
     );
