@@ -1,7 +1,7 @@
 import Term from "../../model/Term";
 import React from "react";
 import { useI18n } from "../hook/useI18n";
-import { Badge, Col, Label } from "reactstrap";
+import { Col, Label } from "reactstrap";
 import DraftToggle from "./DraftToggle";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Status from "../../model/TermStatus";
 import TermItState from "../../model/TermItState";
 import SecurityUtils from "../../util/SecurityUtils";
+import DraftBadge from "./DraftBadge";
 
 interface TermStatusProps {
   term: Term;
@@ -19,11 +20,12 @@ const TermStatus: React.FC<TermStatusProps> = ({ term }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const user = useSelector((state: TermItState) => state.user);
+  const isDraft = Term.isDraft(term);
   const onToggle = () => {
     dispatch(
       setTermStatus(
         VocabularyUtils.create(term.iri),
-        Term.isDraft(term) ? Status.CONFIRMED : Status.DRAFT
+        isDraft ? Status.CONFIRMED : Status.DRAFT
       )
     );
   };
@@ -39,17 +41,11 @@ const TermStatus: React.FC<TermStatusProps> = ({ term }) => {
         {SecurityUtils.isEditor(user) ? (
           <DraftToggle
             id="term-metadata-status"
-            draft={Term.isDraft(term)}
+            draft={isDraft}
             onToggle={onToggle}
           />
         ) : (
-          <Badge color="light" className="align-text-bottom">
-            {i18n(
-              Term.isDraft(term)
-                ? "term.metadata.status.draft"
-                : "term.metadata.status.confirmed"
-            )}
-          </Badge>
+          <DraftBadge isDraft={isDraft} />
         )}
       </Col>
     </>
