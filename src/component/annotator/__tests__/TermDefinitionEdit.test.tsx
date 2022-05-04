@@ -1,6 +1,4 @@
-import * as redux from "react-redux";
 import Term from "../../../model/Term";
-import { shallow } from "enzyme";
 import { TermDefinitionEdit } from "../TermDefinitionEdit";
 import {
   intlFunctions,
@@ -13,11 +11,12 @@ import { TermDefinitionBlockEdit } from "../../term/TermDefinitionBlockEdit";
 import Constants from "../../../util/Constants";
 import CustomInput from "../../misc/CustomInput";
 import MarkdownEditor from "../../misc/MarkdownEditor";
+import {
+  mockStore,
+  mountWithIntl,
+} from "../../../__tests__/environment/Environment";
 
 jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
-
-const spy = jest.spyOn(redux, "useSelector");
-spy.mockReturnValue(Constants.DEFAULT_LANGUAGE);
 
 describe("TermDefinitionEdit", () => {
   let onSave: (update: Term) => void;
@@ -26,6 +25,7 @@ describe("TermDefinitionEdit", () => {
   beforeEach(() => {
     onSave = jest.fn();
     onCancel = jest.fn();
+    mockStore.getState().configuration.language = Constants.DEFAULT_LANGUAGE;
   });
 
   afterEach(() => {
@@ -34,14 +34,14 @@ describe("TermDefinitionEdit", () => {
 
   it("returns null when no element and term are provided", () => {
     mockUseI18n();
-    const wrapper = shallow(
+    const wrapper = mountWithIntl(
       <TermDefinitionEdit
         onSave={onSave}
         onCancel={onCancel}
         {...intlFunctions()}
       />
     );
-    expect(wrapper.isEmptyRender()).toBeTruthy();
+    expect(wrapper.find(TermDefinitionEdit).isEmptyRender()).toBeTruthy();
   });
 
   it("renders simple definition editing block when definition does not exist on selected term", () => {
