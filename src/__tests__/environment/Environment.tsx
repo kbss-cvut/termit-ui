@@ -11,7 +11,9 @@ import TermItState from "../../model/TermItState";
 import TimeAgo from "javascript-time-ago";
 import IntlData from "../../model/IntlData";
 
-export const mockStore = configureMockStore([thunk])(new TermItState());
+export const mockStore = configureMockStore<TermItState>([thunk])(
+  new TermItState()
+);
 
 const scheduler =
   typeof setImmediate === "function" ? setImmediate : setTimeout;
