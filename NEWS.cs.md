@@ -1,3 +1,11 @@
+#### Verze 2.11.2
+
+- Oprava konfliktů stylování při zobrazení Markdown formátování.
+- Sjednocení stylu komponent pro import slovníku.
+- Oprava zobrazení tabulky s historií změn pojmů a slovníků.
+- Zobrazení stavu pojmu (rozpracován/schválen) ve výsledcích fulltextového vyhledávání.
+- Opravy výkonu a stability backendu.
+
 #### Verze 2.11.1
 
 - Přidána podpora pro Markdown formátování textu definice a poznámky pojmu a popisu slovníku.

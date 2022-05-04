@@ -1,3 +1,11 @@
+#### Version 2.11.2
+
+- Fixed styling conflicts of Markdown rendering.
+- Unification of vocabulary import component styles.
+- Fix layout of asset history table.
+- Show term draft status in FTS results table.
+- Backend performance and stability fixes.
+
 #### Version 2.11.1
 
 - Add support for Markdown formatting of term definition and scope note and vocabulary description.
