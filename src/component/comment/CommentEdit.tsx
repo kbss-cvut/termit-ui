@@ -1,19 +1,19 @@
 import * as React from "react";
 import Comment from "../../model/Comment";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import { injectIntl } from "react-intl";
 import TextArea from "../misc/TextArea";
 import { Button, ButtonToolbar } from "reactstrap";
 import { FaUserCircle } from "react-icons/fa";
+import { useI18n } from "../hook/useI18n";
 
-interface CommentEditProps extends HasI18n {
+interface CommentEditProps {
   comment: Comment;
   onSubmit: (comment: Comment) => void;
   onCancel: () => void;
 }
 
 const CommentEdit: React.FC<CommentEditProps> = (props) => {
-  const { comment, onCancel, onSubmit, i18n } = props;
+  const { comment, onCancel, onSubmit } = props;
+  const { i18n } = useI18n();
   const [content, setContent] = React.useState(comment.content);
   const submit = () => {
     onSubmit(new Comment(Object.assign({}, comment, { content })));
@@ -50,7 +50,7 @@ const CommentEdit: React.FC<CommentEditProps> = (props) => {
             id="comment-edit-submit"
             size="sm"
             disabled={content.trim().length === 0}
-            onClick={() => props.onSubmit(comment)}
+            onClick={submit}
           >
             {i18n("save")}
           </Button>
@@ -68,4 +68,4 @@ const CommentEdit: React.FC<CommentEditProps> = (props) => {
   );
 };
 
-export default injectIntl(withI18n(CommentEdit));
+export default CommentEdit;
