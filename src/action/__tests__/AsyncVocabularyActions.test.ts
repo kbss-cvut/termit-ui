@@ -11,6 +11,7 @@ import {
   exportGlossary,
   exportGlossaryWithExactMatchReferences,
   loadTermCount,
+  loadVocabularyContentChanges,
 } from "../AsyncVocabularyActions";
 import AsyncActionStatus from "../AsyncActionStatus";
 import ExportType from "../../util/ExportType";
@@ -298,6 +299,26 @@ describe("AsyncTermActions", () => {
         expect(config.getParams().property).toEqual([
           VocabularyUtils.SKOS_EXACT_MATCH,
         ]);
+      });
+    });
+  });
+
+  describe("loadVocabularyContentChanges", () => {
+    it("loads term changes for vocabulary", () => {
+      Ajax.get = jest.fn().mockResolvedValue({});
+      const vocabulary = Generator.generateVocabulary();
+      vocabulary.iri = namespace + vocabularyName;
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri))
+        )
+      ).then(() => {
+        expect(Ajax.get).toHaveBeenCalled();
+        const args = (Ajax.get as jest.Mock).mock.calls[0];
+        expect(args[0]).toEqual(
+          `${Constants.API_PREFIX}/vocabularies/${vocabularyName}/history-of-content`
+        );
+        expect(args[1].getParams().namespace).toEqual(namespace);
       });
     });
   });

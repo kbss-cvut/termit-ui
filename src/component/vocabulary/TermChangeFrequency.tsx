@@ -1,22 +1,23 @@
 import * as React from "react";
 import Vocabulary from "../../model/Vocabulary";
-import { loadVocabularyContentChanges } from "../../action/AsyncActions";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
-import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import TermChangeFrequencyUI from "./TermChangeFrequencyUI";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Constants from "../../util/Constants";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 import { useI18n } from "../hook/useI18n";
+import AggregatedChangeInfo from "../../model/changetracking/AggregatedChangeInfo";
+import { loadVocabularyContentChanges } from "../../action/AsyncVocabularyActions";
 
 interface TermChangeFrequencyProps {
   vocabulary: Vocabulary;
 }
 
 const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
-  const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
+  const [records, setRecords] =
+    React.useState<null | AggregatedChangeInfo[]>(null);
   const { vocabulary } = props;
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();

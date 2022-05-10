@@ -1261,40 +1261,6 @@ export function loadHistory(asset: Asset) {
   };
 }
 
-/**
- * Loads all changes related to the vocabulary itself together with all changes related to the terms belonging to the
- * vocabulary.
- *
- * @param vocabularyIri Vocabulary identifier
- */
-export function loadVocabularyContentChanges(vocabularyIri: IRI) {
-  const action = {
-    type: ActionType.LOAD_VOCABULARY_CONTENT_HISTORY,
-    ignoreLoading: true,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.get(
-      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content`,
-      param("namespace", vocabularyIri.namespace)
-    )
-      .then((data) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecordData>(
-          data,
-          CHANGE_RECORD_CONTEXT
-        )
-      )
-      .then((data: ChangeRecordData[]) => {
-        dispatch(asyncActionSuccess(action));
-        return data.map((d) => AssetFactory.createChangeRecord(d));
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return [];
-      });
-  };
-}
-
 function resolveHistoryLoadingParams(asset: Asset, assetIri: IRI) {
   const types = Utils.sanitizeArray(asset.types);
   if (types.indexOf(VocabularyUtils.TERM) !== -1) {
