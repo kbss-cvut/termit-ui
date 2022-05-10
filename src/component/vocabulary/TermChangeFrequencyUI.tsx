@@ -1,22 +1,23 @@
 import * as React from "react";
 import Chart from "react-apexcharts";
-import ChangeRecord from "../../model/changetracking/ChangeRecord";
-import PersistRecord from "../../model/changetracking/PersistRecord";
-import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import { Col, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
+import AggregatedChangeInfo from "../../model/changetracking/AggregatedChangeInfo";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface TermChangeFrequencyUIProps {
-  records: ChangeRecord[] | null;
+  records: AggregatedChangeInfo[] | null;
 }
 
-const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = (props) => {
+const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
+  records,
+}) => {
   const { i18n } = useI18n();
-  if (!props.records) {
+  if (!records) {
     return <div className="additional-metadata-container">&nbsp;</div>;
   }
 
-  if (props.records.length === 0) {
+  if (records.length === 0) {
     return (
       <div
         id="history-empty-notice"
@@ -27,55 +28,13 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = (props) => {
     );
   }
 
-  const getGroup = (r: ChangeRecord) => {
-    const date = new Date(r.timestamp);
-    return new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate()
-    ).getTime();
-  };
-
-  const dates = props.records.map((r) => getGroup(r));
-
-  const groupBy = (recs: ChangeRecord[]): any => {
-    const grouped = {};
-    recs.forEach((r) => {
-      const group = getGroup(r);
-      if (!(group in grouped)) {
-        grouped[group] = [];
-      }
-      if (!grouped[group].includes(r.changedEntity.iri)) {
-        grouped[group].push(r.changedEntity.iri);
-      }
-    });
-    return grouped;
-  };
-
-  const minDate = new Date(dates.reduce((a, b) => (a < b ? a : b)));
-  const maxDate = new Date(dates.reduce((a, b) => (a > b ? a : b)));
-  const minDateMinusDay = new Date(
-    minDate.getFullYear(),
-    minDate.getMonth(),
-    minDate.getDate() - 1
+  const dates = new Array(new Set(records.map((r) => r.getDate())));
+  const termCreations = records.filter(
+    (r) => r.types.indexOf(VocabularyUtils.PERSIST_EVENT) !== -1
   );
-  const maxDateMinusDay = new Date(
-    maxDate.getFullYear(),
-    maxDate.getMonth(),
-    maxDate.getDate() + 1
+  const termUpdates = records.filter(
+    (r) => r.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1
   );
-
-  const termCreations = groupBy(
-    props.records.filter((r) => r instanceof PersistRecord)
-  );
-  termCreations[minDate.getTime()] = termCreations[minDate.getTime()] || 0;
-  termCreations[maxDate.getTime()] = termCreations[maxDate.getTime()] || 0;
-
-  const termUpdates = groupBy(
-    props.records.filter((r) => r instanceof UpdateRecord)
-  );
-  termUpdates[minDate.getTime()] = termUpdates[minDate.getTime()] || 0;
-  termUpdates[maxDate.getTime()] = termUpdates[maxDate.getTime()] || 0;
 
   const options = {
     chart: {
@@ -104,8 +63,8 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = (props) => {
     },
     xaxis: {
       categories: dates,
-      min: minDateMinusDay.getTime(),
-      max: maxDateMinusDay.getTime(),
+      min: dates[0],
+      max: dates[dates.length - 1],
       type: "datetime",
     },
     yaxis: {
@@ -122,18 +81,12 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = (props) => {
     {
       name: i18n("vocabulary.termchanges.updates"),
       type: "column",
-      data: Object.keys(termUpdates).map((a) => [
-        parseInt(a, 10),
-        -1 * termUpdates[a].length,
-      ]),
+      data: termUpdates.map((a) => [a.getDate(), -1 * a.count]),
     },
     {
       name: i18n("vocabulary.termchanges.creations"),
       type: "column",
-      data: Object.keys(termCreations).map((a) => [
-        parseInt(a, 10),
-        termCreations[a].length,
-      ]),
+      data: termCreations.map((a) => [a.getDate(), a.count]),
     },
   ];
   return (

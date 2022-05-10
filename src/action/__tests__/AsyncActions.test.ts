@@ -25,7 +25,6 @@ import {
   loadUnusedTermsForVocabulary,
   loadVocabularies,
   loadVocabulary,
-  loadVocabularyContentChanges,
   removeTerm,
   removeVocabulary,
   saveFileContent,
@@ -1948,24 +1947,6 @@ describe("Async actions", () => {
         const args = (Ajax.get as jest.Mock).mock.calls[0];
         expect(args[0]).toEqual(
           `${Constants.API_PREFIX}/terms/${assetName}/history`
-        );
-        expect(args[1].getParams().namespace).toEqual(namespace);
-      });
-    });
-
-    it("loads term changes for vocabulary", () => {
-      Ajax.get = jest.fn().mockResolvedValue({});
-      const vocabulary = Generator.generateVocabulary();
-      vocabulary.iri = namespace + assetName;
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri))
-        )
-      ).then(() => {
-        expect(Ajax.get).toHaveBeenCalled();
-        const args = (Ajax.get as jest.Mock).mock.calls[0];
-        expect(args[0]).toEqual(
-          `${Constants.API_PREFIX}/vocabularies/${assetName}/history-of-content`
         );
         expect(args[1].getParams().namespace).toEqual(namespace);
       });
