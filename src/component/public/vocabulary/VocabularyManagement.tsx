@@ -5,6 +5,7 @@ import HeaderWithActions from "../../misc/HeaderWithActions";
 import WindowTitle from "../../misc/WindowTitle";
 import { useI18n } from "../../hook/useI18n";
 import { loadVocabularies } from "../../../action/AsyncActions";
+import { ThunkDispatch } from "../../../util/Types";
 
 interface VocabulariesProps {
   loadVocabularies: () => void;
@@ -12,7 +13,7 @@ interface VocabulariesProps {
 
 const VocabularyManagement: React.FC<VocabulariesProps> = () => {
   const { i18n } = useI18n();
-  const dispatch = useDispatch();
+  const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     dispatch(loadVocabularies());
   }, [dispatch]);

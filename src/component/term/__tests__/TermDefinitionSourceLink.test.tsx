@@ -16,10 +16,6 @@ import { langString } from "../../../model/MultilingualString";
 import ActionType from "../../../action/ActionType";
 import * as Actions from "../../../action/AsyncResourceActions";
 import File from "../../../model/File";
-import * as redux from "react-redux";
-import { withHooks } from "jest-react-hooks-shallow";
-import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
-import { shallow } from "enzyme";
 
 describe("TermDefinitionSourceLink", () => {
   const file: File = new File(
@@ -80,13 +76,15 @@ describe("TermDefinitionSourceLink", () => {
     expect(action.payload).toEqual({ selector });
   });
 
-  it("loads file metadata on mount", () => {
-    const fakeDispatch = jest.fn().mockResolvedValue(file);
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+  it("loads file metadata on mount", async () => {
     jest.spyOn(Actions, "loadFileMetadata");
-    withHooks(async () => {
-      mockUseI18n();
-      shallow(<TermDefinitionSourceLink term={term} />);
+    mountWithIntl(
+      <MemoryRouter>
+        <TermDefinitionSourceLink term={term} />
+      </MemoryRouter>
+    );
+    await act(async () => {
+      await flushPromises();
     });
     return Promise.resolve().then(() => {
       expect(Actions.loadFileMetadata).toHaveBeenCalledWith(

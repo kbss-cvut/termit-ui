@@ -16,6 +16,11 @@ import TermItState from "../../../model/TermItState";
 import cs from "../../../i18n/cs";
 import * as redux from "react-redux";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
+
 describe("TermLink", () => {
   const vocFragment = "localVocabularyFragment";
   const vocNamespace = "http://test.org/";
@@ -26,7 +31,7 @@ describe("TermLink", () => {
       label: "Test vocabulary",
       iri: vocNamespace + vocFragment,
     });
-    jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
+    (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
   });
 
   it("links to correct internal asset", () => {

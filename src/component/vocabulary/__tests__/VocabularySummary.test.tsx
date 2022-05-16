@@ -11,6 +11,10 @@ import { Button, DropdownToggle } from "reactstrap";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
 jest.mock("../../changetracking/AssetHistory", () => () => (
   <div>Asset history</div>
 ));
@@ -71,7 +75,7 @@ describe("VocabularySummary", () => {
       iri: namespace + normalizedName,
       label: "Test vocabulary",
     });
-    jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
+    (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
   });
 
   it("loads vocabulary on mount", () => {

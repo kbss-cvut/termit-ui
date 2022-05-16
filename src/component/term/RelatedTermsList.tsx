@@ -9,6 +9,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import TermLink from "./TermLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 import DefinitionRelatedTerms from "./DefinitionRelatedTerms";
+import { ThunkDispatch } from "../../util/Types";
 
 interface RelatedTermsListProps {
   term: Term;
@@ -18,7 +19,7 @@ interface RelatedTermsListProps {
 const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
   const { term, language } = props;
   const { i18n } = useI18n();
-  const dispatch = useDispatch();
+  const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     dispatch(
       loadDefinitionRelatedTermsTargeting(

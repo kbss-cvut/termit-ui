@@ -6,9 +6,14 @@ import {
   DropdownToggle,
   UncontrolledDropdown,
 } from "reactstrap";
-import * as redux from "react-redux";
+import * as Redux from "react-redux";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import * as actions from "../../../action/ComplexActions";
+
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
 
 describe("UserDropdown", () => {
   const user = new User({
@@ -19,7 +24,7 @@ describe("UserDropdown", () => {
   });
 
   beforeEach(() => {
-    jest.spyOn(redux, "useSelector").mockReturnValue(user);
+    (Redux.useSelector as jest.Mock).mockReturnValue(user);
     jest.spyOn(actions, "logout");
   });
 

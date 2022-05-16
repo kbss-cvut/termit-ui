@@ -11,6 +11,12 @@ import { withHooks } from "jest-react-hooks-shallow";
 import { shallow } from "enzyme";
 import * as Actions from "../../../action/AsyncActions";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
+}));
+
 describe("VocabularySelect", () => {
   let voc: Vocabulary;
   let onVocabularySet: (voc: Vocabulary) => void;
@@ -24,9 +30,9 @@ describe("VocabularySelect", () => {
   });
 
   it("loads vocabularies on mount", () => {
-    jest.spyOn(redux, "useSelector").mockReturnValue({});
+    (redux.useSelector as jest.Mock).mockReturnValue({});
     const fakeDispatch = jest.fn();
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
     jest.spyOn(Actions, "loadVocabularies").mockReturnValue(jest.fn());
     withHooks(() => {
       mockUseI18n();
@@ -39,9 +45,9 @@ describe("VocabularySelect", () => {
   });
 
   it("does not load vocabularies when they are already loaded", () => {
-    jest.spyOn(redux, "useSelector").mockReturnValue(vocabularies);
+    (redux.useSelector as jest.Mock).mockReturnValue(vocabularies);
     const fakeDispatch = jest.fn();
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
     jest.spyOn(Actions, "loadVocabularies").mockReturnValue(jest.fn());
     withHooks(() => {
       mockUseI18n();
@@ -53,7 +59,7 @@ describe("VocabularySelect", () => {
   });
 
   it("VocabularySelect Selection calls the callback", () => {
-    jest.spyOn(redux, "useSelector").mockReturnValue(vocabularies);
+    (redux.useSelector as jest.Mock).mockReturnValue(vocabularies);
     withHooks(() => {
       mockUseI18n();
       const wrapper = mountWithIntl(
