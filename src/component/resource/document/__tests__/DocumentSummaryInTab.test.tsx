@@ -8,6 +8,11 @@ import * as Actions from "../../../../action/AsyncActions";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import DocumentFiles from "../DocumentFiles";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+}));
+
 describe("DocumentSummaryInTab", () => {
   let document: Document;
   let onChange: () => void;
@@ -20,7 +25,7 @@ describe("DocumentSummaryInTab", () => {
     );
     onChange = jest.fn();
     fakeDispatch = jest.fn().mockResolvedValue({});
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
   });
 
   it("reloads document when file was added to it", () => {

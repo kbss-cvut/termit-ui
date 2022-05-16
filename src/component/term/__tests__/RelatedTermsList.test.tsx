@@ -17,6 +17,12 @@ import { i18n } from "../../../__tests__/environment/IntlUtil";
 import { act } from "react-dom/test-utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
+}));
+
 describe("RelatedTermsList", () => {
   let term: Term;
 
@@ -36,9 +42,9 @@ describe("RelatedTermsList", () => {
       of: [],
     };
     defRelatedTerms.targeting[0].target.source.iri = term.iri;
-    jest.spyOn(redux, "useSelector").mockReturnValue(defRelatedTerms);
+    (redux.useSelector as jest.Mock).mockReturnValue(defRelatedTerms);
     const fakeDispatch = jest.fn().mockResolvedValue(relatedTerm);
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
 
     const wrapper = mountWithIntl(
       <MemoryRouter>
@@ -63,9 +69,9 @@ describe("RelatedTermsList", () => {
       of: [],
     };
     defRelatedTerms.targeting[0].target.source.iri = term.iri;
-    jest.spyOn(redux, "useSelector").mockReturnValue(defRelatedTerms);
+    (redux.useSelector as jest.Mock).mockReturnValue(defRelatedTerms);
     const fakeDispatch = jest.fn().mockResolvedValue(defRelatedTerm);
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
 
     const wrapper = mountWithIntl(
       <MemoryRouter>
@@ -95,9 +101,9 @@ describe("RelatedTermsList", () => {
     defRelatedTerms.targeting[0].types = [
       VocabularyUtils.SUGGESTED_TERM_OCCURRENCE,
     ];
-    jest.spyOn(redux, "useSelector").mockReturnValue(defRelatedTerms);
+    (redux.useSelector as jest.Mock).mockReturnValue(defRelatedTerms);
     const fakeDispatch = jest.fn().mockResolvedValue(defRelatedTerm);
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
 
     const wrapper = mountWithIntl(
       <MemoryRouter>

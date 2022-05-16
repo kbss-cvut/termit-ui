@@ -6,12 +6,17 @@ import Unauthorized from "../Unauthorized";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
+
 describe("IfUserAuthorized", () => {
   let currentUser: User;
 
   beforeEach(() => {
     currentUser = Generator.generateUser();
-    jest.spyOn(redux, "useSelector").mockReturnValue(currentUser);
+    (redux.useSelector as jest.Mock).mockReturnValue(currentUser);
   });
 
   it("renders children components when current user is not restricted", () => {
