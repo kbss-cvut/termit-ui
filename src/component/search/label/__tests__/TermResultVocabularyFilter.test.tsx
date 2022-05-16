@@ -11,6 +11,11 @@ import { act } from "react-dom/test-utils";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import * as AsyncActions from "../../../../action/AsyncActions";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+}));
+
 describe("TermResultVocabularyFilter", () => {
   let onChange: (selectedVocabularies: string[]) => void;
 
@@ -19,7 +24,7 @@ describe("TermResultVocabularyFilter", () => {
   beforeEach(() => {
     onChange = jest.fn();
     fakeDispatch = jest.fn().mockResolvedValue("Test");
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
   });
 
   it("renders selector containing unique vocabularies discovered in search results", async () => {

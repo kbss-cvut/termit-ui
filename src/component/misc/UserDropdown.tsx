@@ -12,6 +12,7 @@ import TermItState from "../../model/TermItState";
 import { logout } from "../../action/ComplexActions";
 import "./UserDropdown.scss";
 import { useI18n } from "../hook/useI18n";
+import { ThunkDispatch } from "../../util/Types";
 
 interface UserDropdownProps {
   dark: boolean;
@@ -27,7 +28,7 @@ function hashPath(path: string): string {
 export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
   const { i18n } = useI18n();
   const user = useSelector((state: TermItState) => state.user);
-  const dispatch = useDispatch();
+  const dispatch: ThunkDispatch = useDispatch();
   const onLogout = () => dispatch(logout());
   return (
     <UncontrolledDropdown nav={true}>

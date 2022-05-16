@@ -14,6 +14,11 @@ import * as Actions from "../../../action/AsyncTermActions";
 import * as redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+}));
+
 describe("TermDefinitionAnnotation", () => {
   const annotationProps = {
     target: "id_:123",
@@ -39,7 +44,7 @@ describe("TermDefinitionAnnotation", () => {
     };
     mockUseI18n();
     fakeDispatch = jest.fn();
-    jest.spyOn(redux, "useDispatch").mockReturnValue(fakeDispatch);
+    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
   });
 
   it("renders term definition view by default", () => {

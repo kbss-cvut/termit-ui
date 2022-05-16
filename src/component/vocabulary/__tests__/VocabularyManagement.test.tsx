@@ -10,6 +10,10 @@ import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import * as redux from "react-redux";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
 jest.mock("../VocabularyList", () => () => <div>Vocabularies</div>);
 
 describe("VocabularyList", () => {
@@ -22,7 +26,7 @@ describe("VocabularyList", () => {
   });
 
   it("loads vocabularies on mount", async () => {
-    jest.spyOn(redux, "useSelector").mockReturnValue(Generator.generateUser());
+    (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
     mountWithIntl(
       <MemoryRouter>
         <VocabularyManagement
@@ -41,7 +45,7 @@ describe("VocabularyList", () => {
   it("does not display create vocabulary button when current user has restricted access", async () => {
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_RESTRICTED);
-    jest.spyOn(redux, "useSelector").mockReturnValue(user);
+    (redux.useSelector as jest.Mock).mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <VocabularyManagement
