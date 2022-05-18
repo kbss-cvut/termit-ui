@@ -29,7 +29,7 @@ const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
   const cannotSubmit = () => !file;
 
   return (
-    <Form className="m-import-vocabulary">
+    <Form id="vocabulary-import" className="m-import-vocabulary">
       <UploadFile setFile={setFileAndStopDragging} />
       <Row>
         <Col xs={12}>

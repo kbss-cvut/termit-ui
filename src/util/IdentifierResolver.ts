@@ -11,15 +11,16 @@ export default class IdentifierResolver {
     params?: Map<string, string>;
     query?: Map<string, string>;
   } {
-    const slashIndex = location.lastIndexOf("/");
-    const hashIndex = location.lastIndexOf("#");
-    const name = location.substring(
+    const split = location.split("?");
+    const withoutQuery = split[0];
+    const slashIndex = withoutQuery.lastIndexOf("/");
+    const hashIndex = withoutQuery.lastIndexOf("#");
+    const name = withoutQuery.substring(
       (slashIndex > hashIndex ? slashIndex : hashIndex) + 1
     );
     const queryMap = new Map();
-    const queryIndex = location.indexOf("?");
-    if (queryIndex !== -1) {
-      const queryString = location.substring(queryIndex + 1);
+    if (split.length > 1) {
+      const queryString = split[1];
       const queryParams = queryString.split("&");
       queryParams.forEach((q) => {
         const ind = q.indexOf("=");

@@ -13,7 +13,7 @@ export const ImportVocabularyPanel = (props: ImportVocabularyPanelProps) => {
   const { i18n } = useI18n();
 
   return (
-    <form id="vocabulary-import">
+    <>
       <FormGroup className="mb-0">
         <Label className="attribute-label mb-2">
           {i18n(props.propKeyPrefix + ".dialog.message")}
@@ -25,7 +25,7 @@ export const ImportVocabularyPanel = (props: ImportVocabularyPanelProps) => {
         onCancel={props.onCancel}
         allowRename={props.allowRename}
       />
-    </form>
+    </>
   );
 };
 
