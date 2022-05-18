@@ -18,13 +18,11 @@ import IdentifierResolver from "../util/IdentifierResolver";
 
 export function importSkosIntoExistingVocabulary(
   vocabularyIri: IRI,
-  data: File,
-  rename: Boolean
+  data: File
 ) {
   const action = { type: ActionType.IMPORT_SKOS };
   const formData = new FormData();
   formData.append("file", data, "thesaurus");
-  formData.append("rename", rename.toString());
   formData.append("namespace", vocabularyIri.namespace!);
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));

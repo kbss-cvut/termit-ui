@@ -27,6 +27,7 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
             propKeyPrefix="vocabulary.summary.import"
             onSubmit={createFile}
             onCancel={toggle}
+            allowRename={false}
           />
         </ModalBody>
       </Modal>
