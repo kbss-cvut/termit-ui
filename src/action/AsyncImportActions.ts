@@ -10,11 +10,9 @@ import Constants from "../util/Constants";
 import { ErrorData } from "../model/ErrorInfo";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
-import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
+import { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { Action } from "redux";
-import { loadVocabulary } from "./AsyncActions";
-import IdentifierResolver from "../util/IdentifierResolver";
 
 export function importSkosIntoExistingVocabulary(
   vocabularyIri: IRI,
@@ -30,14 +28,7 @@ export function importSkosIntoExistingVocabulary(
       `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/import`,
       contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
     )
-      .then((response) =>
-        processSuccess(
-          dispatch,
-          action,
-          data,
-          response.headers[Constants.Headers.LOCATION]
-        )
-      )
+      .then(() => processSuccess(dispatch, action, data))
       .catch(processError(dispatch, action));
   };
 }
@@ -53,36 +44,23 @@ export function importSkosAsNewVocabulary(data: File, rename: Boolean) {
       `${Constants.API_PREFIX}/vocabularies/import`,
       contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
     )
-      .then((response) =>
-        processSuccess(
-          dispatch,
-          action,
-          data,
-          response.headers[Constants.Headers.LOCATION]
-        )
-      )
-      .catch(processError(dispatch, action));
+      .then((response) => {
+        processSuccess(dispatch, action, data);
+        return response.headers[Constants.Headers.LOCATION];
+      })
+      .catch((error) => {
+        processError(dispatch, action)(error);
+        return undefined;
+      });
   };
 }
 
 const processSuccess = (
   dispatch: ThunkDispatch,
   action: Action,
-  data: File,
-  location: string
+  data: File
 ) => {
   dispatch(asyncActionSuccess(action));
-  dispatch(
-    loadVocabulary(
-      VocabularyUtils.create(
-        decodeURIComponent(
-          IdentifierResolver.routingOptionsFromLocation(location).query!.get(
-            "namespace"
-          ) + IdentifierResolver.extractNameFromLocation(location)
-        )
-      )
-    )
-  );
   return dispatch(
     SyncActions.publishMessage(
       new Message(
