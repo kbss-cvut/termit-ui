@@ -1,4 +1,4 @@
-import { ImportVocabularyDialog } from "./ImportVocabularyDialog";
+import ImportVocabularyDialog from "./ImportVocabularyDialog";
 import { useI18n } from "../hook/useI18n";
 import { FormGroup, Label } from "reactstrap";
 
@@ -6,6 +6,7 @@ interface ImportVocabularyPanelProps {
   propKeyPrefix: string;
   onSubmit: (file: File, rename: Boolean) => Promise<any>;
   onCancel: () => any;
+  allowRename?: boolean;
 }
 
 export const ImportVocabularyPanel = (props: ImportVocabularyPanelProps) => {
@@ -22,6 +23,7 @@ export const ImportVocabularyPanel = (props: ImportVocabularyPanelProps) => {
         propKeyPrefix={props.propKeyPrefix}
         onCreate={props.onSubmit}
         onCancel={props.onCancel}
+        allowRename={props.allowRename}
       />
     </form>
   );

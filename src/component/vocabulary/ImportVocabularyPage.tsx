@@ -29,6 +29,7 @@ export const ImportVocabularyPage = (props: ImportVocabularyPageProps) => {
             propKeyPrefix="vocabulary.import"
             onSubmit={createFile}
             onCancel={onCancel}
+            allowRename={true}
           />
         </CardBody>
       </Card>
