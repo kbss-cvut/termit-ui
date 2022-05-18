@@ -13,6 +13,7 @@ import MessageType from "../model/MessageType";
 import { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { Action } from "redux";
+import { loadVocabulary } from "./AsyncActions";
 
 export function importSkosIntoExistingVocabulary(
   vocabularyIri: IRI,
@@ -29,6 +30,7 @@ export function importSkosIntoExistingVocabulary(
       contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
     )
       .then(() => processSuccess(dispatch, action, data))
+      .then(() => dispatch(loadVocabulary(vocabularyIri)))
       .catch(processError(dispatch, action));
   };
 }
