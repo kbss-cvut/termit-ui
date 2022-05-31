@@ -1,3 +1,9 @@
+#### Version 2.11.3
+
+- Fixed an issue with importing SKOS glossaries.
+- Improve performance of vocabulary detail view.
+- Fixed an issue with updating inferred term relationships.
+
 #### Version 2.11.2
 
 - Fixed styling conflicts of Markdown rendering.

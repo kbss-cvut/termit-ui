@@ -1,3 +1,9 @@
+#### Verze 2.11.3
+
+- Opraveny problémy v importu SKOS slovníků.
+- Optimalizována stránka s detailem slovníku.
+- Opraveny problémy s editací inferovaných vztahů pojmu.
+
 #### Verze 2.11.2
 
 - Oprava konfliktů stylování při zobrazení Markdown formátování.

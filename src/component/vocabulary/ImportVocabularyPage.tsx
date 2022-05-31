@@ -9,15 +9,26 @@ import { importSkosAsNewVocabulary } from "../../action/AsyncImportActions";
 import { useI18n } from "../hook/useI18n";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import { Card, CardBody } from "reactstrap";
+import IdentifierResolver from "../../util/IdentifierResolver";
 
 interface ImportVocabularyPageProps {
-  importVocabulary: (file: File, rename: Boolean) => any;
+  importVocabulary: (
+    file: File,
+    rename: Boolean
+  ) => Promise<string | undefined>;
 }
 
 export const ImportVocabularyPage = (props: ImportVocabularyPageProps) => {
   const { i18n } = useI18n();
   const createFile = (file: File, rename: Boolean) =>
-    props.importVocabulary(file, rename).then(onCancel);
+    props.importVocabulary(file, rename).then((location?: string) => {
+      if (location) {
+        Routing.transitionTo(
+          Routes.vocabularySummary,
+          IdentifierResolver.routingOptionsFromLocation(location)
+        );
+      }
+    });
   const onCancel = () => Routing.transitionTo(Routes.vocabularies);
 
   return (
@@ -29,6 +40,7 @@ export const ImportVocabularyPage = (props: ImportVocabularyPageProps) => {
             propKeyPrefix="vocabulary.import"
             onSubmit={createFile}
             onCancel={onCancel}
+            allowRename={true}
           />
         </CardBody>
       </Card>

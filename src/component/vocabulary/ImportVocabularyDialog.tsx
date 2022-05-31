@@ -9,9 +9,10 @@ interface ImportVocabularyDialogProps {
   propKeyPrefix: string;
   onCreate: (file: File, rename: Boolean) => any;
   onCancel: () => void;
+  allowRename?: boolean;
 }
 
-export const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
+const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
   const { i18n } = useI18n();
   const [file, setFile] = useState<File>();
   const [rename, setRename] = useState<Boolean>(false);
@@ -28,16 +29,21 @@ export const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
   const cannotSubmit = () => !file;
 
   return (
-    <Form className="m-import-vocabulary">
+    <Form id="vocabulary-import" className="m-import-vocabulary">
       <UploadFile setFile={setFileAndStopDragging} />
       <Row>
         <Col xs={12}>
-          <CustomCheckBoxInput
-            className="override-identifiers"
-            label={i18n("vocabulary.import.allow-changing-identifiers")}
-            onChange={setAllowChangingIdentifiers}
-            hint={i18n("vocabulary.import.allow-changing-identifiers.tooltip")}
-          />
+          {props.allowRename && (
+            <CustomCheckBoxInput
+              name="vocabulary-import-rename"
+              className="override-identifiers"
+              label={i18n("vocabulary.import.allow-changing-identifiers")}
+              onChange={setAllowChangingIdentifiers}
+              hint={i18n(
+                "vocabulary.import.allow-changing-identifiers.tooltip"
+              )}
+            />
+          )}
           <ButtonToolbar className="d-flex justify-content-center mt-4">
             <Button
               id="upload-file-submit"
@@ -62,3 +68,5 @@ export const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
     </Form>
   );
 };
+
+export default ImportVocabularyDialog;

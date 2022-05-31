@@ -50,7 +50,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   validateVocabulary: (iri: IRI) => Promise<any>;
-  importSkos: (iri: IRI, file: File, rename: Boolean) => Promise<any>;
+  importSkos: (iri: IRI, file: File) => Promise<any>;
   exportToCsv: (iri: IRI) => void;
   exportToExcel: (iri: IRI) => void;
   exportToTurtle: (iri: IRI) => void;
@@ -140,11 +140,10 @@ export class VocabularySummary extends EditableComponent<
       VocabularyUtils.create(this.props.vocabulary.iri)
     );
 
-  private onImport = (file: File, rename: Boolean) =>
+  private onImport = (file: File) =>
     this.props.importSkos(
       VocabularyUtils.create(this.props.vocabulary.iri),
-      file,
-      rename
+      file
     );
 
   public onFileAdded = () => {
@@ -343,8 +342,8 @@ export default connect(
       removeVocabulary: (vocabulary: Vocabulary) =>
         dispatch(removeVocabulary(vocabulary)),
       validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
-      importSkos: (iri: IRI, file: File, rename: Boolean) =>
-        dispatch(importSkosIntoExistingVocabulary(iri, file, rename)),
+      importSkos: (iri: IRI, file: File) =>
+        dispatch(importSkosIntoExistingVocabulary(iri, file)),
       exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
       exportToExcel: (iri: IRI) =>
         dispatch(exportGlossary(iri, ExportType.Excel)),

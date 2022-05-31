@@ -148,7 +148,10 @@ const VocabularyUtils = {
     const hashFragment = iri.indexOf("#");
     const slashFragment = iri.lastIndexOf("/");
     const fragment = hashFragment < 0 ? slashFragment : hashFragment;
-    return new IRIImpl(iri.substr(fragment + 1), iri.substr(0, fragment + 1));
+    return new IRIImpl(
+      iri.substring(fragment + 1),
+      iri.substring(0, fragment + 1)
+    );
   },
 };
 
