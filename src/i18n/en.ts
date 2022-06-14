@@ -222,7 +222,7 @@ const en = {
       "Unable to retrieve exported data from server response.",
     "vocabulary.summary.import.action": "Restore from backup",
     "vocabulary.summary.import.action.tooltip":
-      "Restore the vocabulary from its previously exported version.",
+      "Restore the vocabulary from its previously exported version",
     "vocabulary.summary.import.dialog.title":
       "Restore previous vocabulary version",
     "vocabulary.summary.import.dialog.message":
@@ -270,6 +270,9 @@ const en = {
     "vocabulary.document.select.title": "Select a document",
     "vocabulary.document.set": "Set document",
     "vocabulary.document.remove": "Detach document",
+    "vocabulary.snapshot.create.label": "Create snapshot",
+    "vocabulary.snapshot.create.title":
+      "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
