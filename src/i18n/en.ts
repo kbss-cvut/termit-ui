@@ -10,6 +10,7 @@ const en = {
     "not-implemented": "Not implemented, yet!",
     edit: "Edit",
     remove: "Remove",
+    moreActions: "More actions",
     required: "Required",
     optional: "Optional",
     actions: "Actions",
@@ -208,12 +209,12 @@ const en = {
       "Export glossary terms from this vocabulary",
     "vocabulary.summary.export.text": "Export",
     "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export to CSV",
+    "vocabulary.summary.export.csv.title": "Export to CSV.",
     "vocabulary.summary.export.excel": "Excel",
-    "vocabulary.summary.export.excel.title": "Export to MS Excel",
+    "vocabulary.summary.export.excel.title": "Export to MS Excel.",
     "vocabulary.summary.export.ttl": "SKOS (Turtle)",
     "vocabulary.summary.export.ttl.title":
-      "Export a SKOS-compatible glossary serialized as Turtle",
+      "Export a SKOS-compatible glossary serialized as Turtle.",
     "vocabulary.summary.export.ttl.withRefs": "SKOS + exact matches (Turtle)",
     "vocabulary.summary.export.ttl.withRefs.title":
       "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship, serialized as Turtle.",
