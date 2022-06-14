@@ -7,7 +7,7 @@ import { VocabularySummary } from "../VocabularySummary";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { VocabularyEdit } from "../VocabularyEdit";
-import { Button, DropdownToggle } from "reactstrap";
+import { Button } from "reactstrap";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
 
@@ -276,81 +276,6 @@ describe("VocabularySummary", () => {
         VocabularyUtils.create(vocabulary.iri)
       );
     });
-  });
-
-  it("invokes export to CSV when exportToCsv is triggered", () => {
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-
-    const wrapper = mountWithIntl(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        validateVocabulary={validateVocabulary}
-        match={match}
-        {...intlFunctions()}
-      />,
-      { attachTo: div }
-    );
-    wrapper.find(DropdownToggle).simulate("click");
-    wrapper.find('button[name="vocabulary-export-csv"]').simulate("click");
-    expect(exportToCsv).toHaveBeenCalledWith(
-      VocabularyUtils.create(vocabulary.iri)
-    );
-  });
-
-  it("invokes export to Excel when exportToExcel is triggered", () => {
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-
-    const wrapper = mountWithIntl(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        validateVocabulary={validateVocabulary}
-        match={match}
-        {...intlFunctions()}
-      />,
-      { attachTo: div }
-    );
-    wrapper.find(DropdownToggle).simulate("click");
-    wrapper.find('button[name="vocabulary-export-excel"]').simulate("click");
-    expect(exportToExcel).toHaveBeenCalledWith(
-      VocabularyUtils.create(vocabulary.iri)
-    );
-  });
-
-  it("invokes export to Turtle when exportToTurtle is triggered", () => {
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-
-    const wrapper = mountWithIntl(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        validateVocabulary={validateVocabulary}
-        match={match}
-        {...intlFunctions()}
-      />,
-      { attachTo: div }
-    );
-    wrapper.find(DropdownToggle).simulate("click");
-    wrapper.find('button[name="vocabulary-export-ttl"]').simulate("click");
-    expect(exportToTurtle).toHaveBeenCalledWith(
-      VocabularyUtils.create(vocabulary.iri)
-    );
   });
 
   it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
