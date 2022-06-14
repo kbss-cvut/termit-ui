@@ -10,6 +10,7 @@ const cs = {
     "not-implemented": "Zatím není naimplementováno!",
     edit: "Upravit",
     remove: "Odstranit",
+    moreActions: "Další akce",
     required: "Povinné",
     optional: "Nepovinné",
     actions: "Akce",
@@ -214,12 +215,12 @@ const cs = {
     "vocabulary.summary.export.title": "Exportovat pojmy ze slovníku",
     "vocabulary.summary.export.text": "Exportovat",
     "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export do CSV",
+    "vocabulary.summary.export.csv.title": "Export do CSV.",
     "vocabulary.summary.export.excel": "Excel",
-    "vocabulary.summary.export.excel.title": "Export do formát MS Excel",
+    "vocabulary.summary.export.excel.title": "Export do formát MS Excel.",
     "vocabulary.summary.export.ttl": "SKOS (Turtle)",
     "vocabulary.summary.export.ttl.title":
-      "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle",
+      "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle.",
     "vocabulary.summary.export.ttl.withRefs":
       "SKOS + pojmy se stejným významem (Turtle)",
     "vocabulary.summary.export.ttl.withRefs.title":
@@ -246,7 +247,7 @@ const cs = {
     "vocabulary.import.allow-changing-identifiers.tooltip":
       "Při zaškrtnutí tohoto políčka budou při importu identifikátory nahrazeny novými, pokud by kolidovaly s existujícími identifikátory.",
     "vocabulary.summary.startTextAnalysis.title":
-      "Spustit textovou analýzu definic všech termínů v tomto slovníku",
+      "Spustit textovou analýzu definic všech pojmů v tomto slovníku",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
     "vocabulary.created.message": "Slovník úspěšně vytvořen.",
     "vocabulary.detail.subtitle": "Vytvořen autorem {author} ",
