@@ -9,6 +9,7 @@ import {
 import { GoClippy, GoCloudDownload } from "react-icons/go";
 import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import { FaRegCopy } from "react-icons/fa";
 
 interface VocabularyActionsProps {
   onAnalyze: () => void;
@@ -62,6 +63,19 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
           >
             <GoClippy className="mr-1" />
             {i18n("file.metadata.startTextAnalysis.text")}
+          </DropdownItem>
+        </IfUserAuthorized>
+        <IfUserAuthorized
+          key="vocabulary-snapshot"
+          renderUnauthorizedAlert={false}
+        >
+          <DropdownItem
+            name="vocabulary-snapshot"
+            className="btn-sm"
+            title={i18n("vocabulary.snapshot.create.title")}
+          >
+            <FaRegCopy className="mr-1" />
+            {i18n("vocabulary.snapshot.create.label")}
           </DropdownItem>
         </IfUserAuthorized>
       </DropdownMenu>

@@ -229,7 +229,7 @@ const cs = {
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",
     "vocabulary.summary.import.action.tooltip":
-      "Obnovit slovník ze zálohy ve formátu SKOS.",
+      "Obnovit slovník ze zálohy ve formátu SKOS",
     "vocabulary.summary.import.dialog.title": "Obnova dřívější verze slovníku",
     "vocabulary.summary.import.dialog.message":
       "Nahrajte dříve vyexportovanou verzi tohoto slovníku " +
@@ -276,6 +276,9 @@ const cs = {
     "vocabulary.document.select.title": "Vyberte dokument",
     "vocabulary.document.set": "Změnit dokument",
     "vocabulary.document.remove": "Odpojit dokument",
+    "vocabulary.snapshot.create.label": "Vytvořit zálohu",
+    "vocabulary.snapshot.create.title":
+      "Vytvořit zálohu tohoto slovníku a všech dalších slovníků, které jsou s ním (nepřímo) propojeny vztahy mezi pojmy",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",
