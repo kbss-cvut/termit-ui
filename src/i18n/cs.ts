@@ -276,9 +276,10 @@ const cs = {
     "vocabulary.document.select.title": "Vyberte dokument",
     "vocabulary.document.set": "Změnit dokument",
     "vocabulary.document.remove": "Odpojit dokument",
-    "vocabulary.snapshot.create.label": "Vytvořit zálohu",
+    "vocabulary.snapshot.create.label": "Vytvořit revizi",
     "vocabulary.snapshot.create.title":
-      "Vytvořit zálohu tohoto slovníku a všech dalších slovníků, které jsou s ním (nepřímo) propojeny vztahy mezi pojmy",
+      "Vytvořit revizi tohoto slovníku a všech dalších slovníků, které jsou s ním (nepřímo) propojeny vztahy mezi pojmy. Revize je kopií veškerého obsahu slovníku a umožňuje tak označit důležité milníky v historii vývoje slovníku.",
+    "vocabulary.snapshot.create.success": "Revize slovníku úspěšně vytvořena.",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",

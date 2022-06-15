@@ -32,6 +32,9 @@ import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportAction
 import "./VocabularySummary.scss";
 import VocabularyActions from "./VocabularyActions";
 import ExportVocabularyDialog from "./ExportVocabularyDialog";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { createVocabularySnapshot } from "../../action/AsyncVocabularyActions";
+import { trackPromise } from "react-promise-tracker";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -42,6 +45,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   validateVocabulary: (iri: IRI) => Promise<any>;
   importSkos: (iri: IRI, file: File) => Promise<any>;
   executeTextAnalysisOnAllTerms: (iri: IRI) => void;
+  createSnapshot: (iri: IRI) => Promise<any>;
 }
 
 export interface VocabularySummaryState extends EditableComponentState {
@@ -116,6 +120,15 @@ export class VocabularySummary extends EditableComponent<
     this.setState({ showExportDialog: !this.state.showExportDialog });
   };
 
+  public onCreateSnapshot = () => {
+    trackPromise(
+      this.props.createSnapshot(
+        VocabularyUtils.create(this.props.vocabulary.iri)
+      ),
+      "vocabulary-summary"
+    );
+  };
+
   private onImport = (file: File) =>
     this.props.importSkos(
       VocabularyUtils.create(this.props.vocabulary.iri),
@@ -179,6 +192,7 @@ export class VocabularySummary extends EditableComponent<
         onAnalyze={this.onExecuteTextAnalysisOnAllTerms}
         onExport={this.onExportToggle}
         onImport={this.onImport}
+        onCreateSnapshot={this.onCreateSnapshot}
       />
     );
 
@@ -209,7 +223,7 @@ export class VocabularySummary extends EditableComponent<
           onClose={this.onExportToggle}
           vocabulary={vocabulary}
         />
-
+        <PromiseTrackingMask area="vocabulary-summary" />
         {this.state.edit ? (
           <VocabularyEdit
             save={this.onSave}
@@ -249,6 +263,7 @@ export default connect(
         dispatch(importSkosIntoExistingVocabulary(iri, file)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
+      createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),
     };
   }
 )(injectIntl(withI18n(VocabularySummary)));

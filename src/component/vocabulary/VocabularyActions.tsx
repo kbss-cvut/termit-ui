@@ -15,12 +15,14 @@ interface VocabularyActionsProps {
   onAnalyze: () => void;
   onExport: () => void;
   onImport: (file: File, rename: Boolean) => Promise<any>;
+  onCreateSnapshot: () => void;
 }
 
 const VocabularyActions: React.FC<VocabularyActionsProps> = ({
   onAnalyze,
   onExport,
   onImport,
+  onCreateSnapshot,
 }) => {
   const { i18n } = useI18n();
 
@@ -72,6 +74,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
           <DropdownItem
             name="vocabulary-snapshot"
             className="btn-sm"
+            onClick={onCreateSnapshot}
             title={i18n("vocabulary.snapshot.create.title")}
           >
             <FaRegCopy className="mr-1" />
