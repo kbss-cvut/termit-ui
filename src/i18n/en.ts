@@ -272,7 +272,9 @@ const en = {
     "vocabulary.document.remove": "Detach document",
     "vocabulary.snapshot.create.label": "Create snapshot",
     "vocabulary.snapshot.create.title":
-      "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships",
+      "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships. The snapshot is a read-only copy of the whole vocabulary content and can be used to demarcate important milestones in the vocabulary lifecycle.",
+    "vocabulary.snapshot.create.success":
+      "Vocabulary revision successfully created.",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
