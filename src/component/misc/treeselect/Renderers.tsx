@@ -75,7 +75,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
 ) {
   return (params: OptionRendererParams<Term>) => {
     const {
-      option,
+      // option,
       focusedOption,
       optionStyle,
       selectValue,
@@ -83,23 +83,27 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       toggleOption,
       valueArray,
     } = { ...params };
+
+    //Conversion between old and new API
+    let option = params.data;
+
     const className = classNames(
       "VirtualizedSelectOption",
       {
-        VirtualizedSelectFocusedOption: option === focusedOption,
-        VirtualizedSelectDisabledOption: option.disabled,
+        VirtualizedSelectFocusedOption: params.isFocused,
+        VirtualizedSelectDisabledOption: params.isDisabled,
         VirtualizedSelectSelectedOption:
           valueArray && valueArray.indexOf(option) >= 0,
       },
       option.className
     );
 
-    const eventHandlers = option.disabled
+    const eventHandlers = params.isDisabled
       ? {}
       : {
-          onClick: () => selectValue(option),
-          onMouseEnter: () => focusOption(option),
-          onToggleClick: () => toggleOption(option),
+          onClick: () => params.selectProps.onOptionSelect(option),
+          // onMouseEnter: () => focusOption(option),
+          onToggleClick: () => params.selectProps.onOptionToggle(option),
         };
 
     const addonBefore = (
@@ -128,14 +132,14 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
 
     return (
       <ResultItem
-        key={params.key}
+        key={params.data.iri}
         renderAsTree={params.renderAsTree}
         className={className}
         option={option}
         childrenKey="plainSubTerms"
-        labelKey={params.labelKey}
-        valueKey={params.valueKey}
-        getOptionLabel={params.getOptionLabel}
+        labelKey={params.selectProps.labelKey}
+        valueKey={params.selectProps.valueKey}
+        getOptionLabel={params.selectProps.getOptionLabel}
         style={optionStyle}
         searchString={params.searchString}
         addonBefore={addonBefore}
