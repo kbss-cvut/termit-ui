@@ -101,7 +101,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
     const eventHandlers = params.isDisabled
       ? {}
       : {
-          onClick: () => params.selectProps.onOptionSelect(option),
+          onClick: () => params.selectProps.onOptionSelect(params),
           // onMouseEnter: () => focusOption(option),
           onToggleClick: () => params.selectProps.onOptionToggle(option),
         };

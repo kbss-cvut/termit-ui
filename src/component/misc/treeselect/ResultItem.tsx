@@ -35,7 +35,7 @@ interface ResultItemProps {
 class ResultItem extends React.Component<ResultItemProps> {
   public onClick = () => {
     if (!this.props.option.disabled && this.props.onClick) {
-      this.props.onClick(this.props.option);
+      this.props.onClick();
     }
   };
 
