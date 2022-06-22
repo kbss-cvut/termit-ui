@@ -14,7 +14,12 @@ interface TreeOption {
   className: string;
 }
 
+interface TreeTerm {
+  depth: number;
+}
+
 interface OptionRendererParams<T> {
+  data: TreeTerm;
   focusedOption?: T & TreeOption;
   focusOption: (option: T & TreeOption) => void;
   key?: string;
@@ -28,6 +33,7 @@ interface OptionRendererParams<T> {
   valueArray: T & TreeOption[];
   toggleOption: (option: T & TreeOption) => void;
   searchString: string;
+  depth: number;
 }
 
 /**
@@ -74,18 +80,14 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
   qualityBadge?: boolean
 ) {
   return (params: OptionRendererParams<Term>) => {
-    const {
-      // option,
-      focusedOption,
-      optionStyle,
-      selectValue,
-      focusOption,
-      toggleOption,
-      valueArray,
-    } = { ...params };
+    const { valueArray } = { ...params };
 
     //Conversion between old and new API
     let option = params.data;
+    let optionStyle = {
+      ...params.optionStyle,
+      marginLeft: `${option.depth * 16}px`,
+    };
 
     const className = classNames(
       "VirtualizedSelectOption",
@@ -102,6 +104,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       ? {}
       : {
           onClick: () => params.selectProps.onOptionSelect(params),
+          //TODO: IMPLEMENT MOUSE ENTER
           // onMouseEnter: () => focusOption(option),
           onToggleClick: () => params.selectProps.onOptionToggle(option),
         };
@@ -132,8 +135,8 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
 
     return (
       <ResultItem
-        key={params.data.iri}
-        renderAsTree={params.renderAsTree}
+        key={params.data[params.selectProps.valueKey]}
+        renderAsTree={params.selectProps.renderAsTree}
         className={className}
         option={option}
         childrenKey="plainSubTerms"
