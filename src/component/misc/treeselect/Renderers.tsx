@@ -144,7 +144,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
         valueKey={params.selectProps.valueKey}
         getOptionLabel={params.selectProps.getOptionLabel}
         style={optionStyle}
-        searchString={params.searchString}
+        searchString={params.selectProps.inputValue}
         addonBefore={addonBefore}
         addonAfter={addonAfter}
         displayInfoOnHover={false}
