@@ -86,7 +86,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
     let option = params.data;
     let optionStyle = {
       ...params.optionStyle,
-      marginLeft: `${option.depth * 16}px`,
+      marginLeft: `${option.depth * 16}px`
     };
 
     const className = classNames(
@@ -95,7 +95,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
         VirtualizedSelectFocusedOption: params.isFocused,
         VirtualizedSelectDisabledOption: params.isDisabled,
         VirtualizedSelectSelectedOption:
-          valueArray && valueArray.indexOf(option) >= 0,
+          valueArray && valueArray.indexOf(option) >= 0
       },
       option.className
     );
@@ -103,11 +103,9 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
     const eventHandlers = params.isDisabled
       ? {}
       : {
-          onClick: () => params.selectProps.onOptionSelect(params),
-          //TODO: IMPLEMENT MOUSE ENTER
-          // onMouseEnter: () => focusOption(option),
-          onToggleClick: () => params.selectProps.onOptionToggle(option),
-        };
+        onClick: () => params.selectProps.onOptionSelect(params),
+        onToggleClick: () => params.selectProps.onOptionToggle(option)
+      };
 
     const addonBefore = (
       <span>
