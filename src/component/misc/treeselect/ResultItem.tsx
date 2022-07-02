@@ -23,7 +23,7 @@ interface ResultItemProps {
   addonAfter?: JSX.Element; // Add-on to be rendered after the highlighted option label
 
   onMouseEnter?: (option: any) => void;
-  onClick?: (option: any) => void;
+  onClick?: () => void;
   onToggleClick?: (option: any) => void;
 }
 

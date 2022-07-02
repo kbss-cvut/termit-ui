@@ -9,31 +9,18 @@ import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
 import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
 
-interface TreeOption {
-  disabled: boolean;
-  className: string;
-}
-
 interface TreeTerm {
   depth: number;
 }
 
 interface OptionRendererParams<T> {
-  data: TreeTerm;
-  focusedOption?: T & TreeOption;
-  focusOption: (option: T & TreeOption) => void;
+  data: Term & TreeTerm;
   key?: string;
-  labelKey: string;
-  getOptionLabel: (option: T & TreeOption) => string;
-  valueKey: string;
-  option: T & TreeOption;
-  selectValue: (option: T & TreeOption) => void;
   optionStyle: any;
-  renderAsTree: boolean;
-  valueArray: T & TreeOption[];
-  toggleOption: (option: T & TreeOption) => void;
-  searchString: string;
-  depth: number;
+  selectProps: any;
+  isFocused: boolean;
+  isDisabled: boolean;
+  isSelected: boolean;
 }
 
 /**
@@ -90,15 +77,11 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
     const { valueKey, renderAsTree, labelKey, getOptionLabel, inputValue } =
       params.selectProps;
 
-    const className = classNames(
-      "VirtualizedSelectOption",
-      {
-        VirtualizedSelectFocusedOption: params.isFocused,
-        VirtualizedSelectDisabledOption: params.isDisabled,
-        VirtualizedSelectSelectedOption: params.isSelected,
-      },
-      option.className
-    );
+    const className = classNames("VirtualizedSelectOption", {
+      VirtualizedSelectFocusedOption: params.isFocused,
+      VirtualizedSelectDisabledOption: params.isDisabled,
+      VirtualizedSelectSelectedOption: params.isSelected,
+    });
 
     const eventHandlers = params.isDisabled
       ? {}
