@@ -1,3 +1,7 @@
+#### Verze 2.12.0
+
+- Přidána podpora pro snapshoty slovníků (a jejich pojmů). Tyto snapshoty reprezentují zakonzerovaný stav slovníku k datu vytvoření snapshotu. Funkcionalita má v tuto chvíli především backendovou podporu, v uživatelském rozhraní TermItu lze snapshot pouze vytvořit.
+
 #### Verze 2.11.3
 
 - Opraveny problémy v importu SKOS slovníků.
