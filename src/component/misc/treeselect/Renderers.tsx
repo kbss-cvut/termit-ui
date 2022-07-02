@@ -80,8 +80,6 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
   qualityBadge?: boolean
 ) {
   return (params: OptionRendererParams<Term>) => {
-    const { valueArray } = { ...params };
-
     //Conversion between old and new API
     let option = params.data;
     let optionStyle = {
@@ -89,13 +87,15 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       marginLeft: `${option.depth * 16}px`,
     };
 
+    const { valueKey, renderAsTree, labelKey, getOptionLabel, inputValue } =
+      params.selectProps;
+
     const className = classNames(
       "VirtualizedSelectOption",
       {
         VirtualizedSelectFocusedOption: params.isFocused,
         VirtualizedSelectDisabledOption: params.isDisabled,
-        VirtualizedSelectSelectedOption:
-          valueArray && valueArray.indexOf(option) >= 0,
+        VirtualizedSelectSelectedOption: params.isSelected,
       },
       option.className
     );
@@ -133,16 +133,16 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
 
     return (
       <ResultItem
-        key={params.data[params.selectProps.valueKey]}
-        renderAsTree={params.selectProps.renderAsTree}
+        key={params.data[valueKey]}
+        renderAsTree={renderAsTree}
         className={className}
         option={option}
         childrenKey="plainSubTerms"
-        labelKey={params.selectProps.labelKey}
-        valueKey={params.selectProps.valueKey}
-        getOptionLabel={params.selectProps.getOptionLabel}
+        labelKey={labelKey}
+        valueKey={valueKey}
+        getOptionLabel={getOptionLabel}
         style={optionStyle}
-        searchString={params.selectProps.inputValue}
+        searchString={inputValue}
         addonBefore={addonBefore}
         addonAfter={addonAfter}
         displayInfoOnHover={false}
