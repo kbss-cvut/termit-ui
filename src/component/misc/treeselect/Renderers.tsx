@@ -78,7 +78,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       params.selectProps;
 
     const className = classNames("VirtualizedSelectOption", {
-      VirtualizedSelectFocusedOption: params.isFocused,
+      // VirtualizedSelectFocusedOption: params.isFocused,
       VirtualizedSelectDisabledOption: params.isDisabled,
       VirtualizedSelectSelectedOption: params.isSelected,
     });
