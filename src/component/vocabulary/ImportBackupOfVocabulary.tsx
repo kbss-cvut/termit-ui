@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { DropdownItem, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { GoCloudUpload } from "react-icons/go";
 import { useI18n } from "../hook/useI18n";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import ImportVocabularyPanel from "./ImportVocabularyPanel";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
@@ -21,7 +20,7 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
     );
 
   return (
-    <IfUserAuthorized renderUnauthorizedAlert={false}>
+    <>
       <Modal isOpen={dialogOpen} toggle={toggle}>
         <ModalHeader>
           {i18n("vocabulary.summary.import.dialog.title")}
@@ -36,17 +35,15 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
           />
         </ModalBody>
       </Modal>
-      <Button
-        className="mb-2"
-        color="primary"
-        size="sm"
+      <DropdownItem
+        className="btn-sm"
         onClick={toggle}
         title={i18n("vocabulary.summary.import.action.tooltip")}
       >
         <GoCloudUpload className="mr-1" />
         {i18n("vocabulary.summary.import.action")}
-      </Button>
-    </IfUserAuthorized>
+      </DropdownItem>
+    </>
   );
 };
 

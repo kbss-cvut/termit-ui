@@ -10,6 +10,7 @@ const en = {
     "not-implemented": "Not implemented, yet!",
     edit: "Edit",
     remove: "Remove",
+    moreActions: "More actions",
     required: "Required",
     optional: "Optional",
     actions: "Actions",
@@ -209,12 +210,12 @@ const en = {
       "Export glossary terms from this vocabulary",
     "vocabulary.summary.export.text": "Export",
     "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export to CSV",
+    "vocabulary.summary.export.csv.title": "Export to CSV.",
     "vocabulary.summary.export.excel": "Excel",
-    "vocabulary.summary.export.excel.title": "Export to MS Excel",
+    "vocabulary.summary.export.excel.title": "Export to MS Excel.",
     "vocabulary.summary.export.ttl": "SKOS (Turtle)",
     "vocabulary.summary.export.ttl.title":
-      "Export a SKOS-compatible glossary serialized as Turtle",
+      "Export a SKOS-compatible glossary serialized as Turtle.",
     "vocabulary.summary.export.ttl.withRefs": "SKOS + exact matches (Turtle)",
     "vocabulary.summary.export.ttl.withRefs.title":
       "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship, serialized as Turtle.",
@@ -222,7 +223,7 @@ const en = {
       "Unable to retrieve exported data from server response.",
     "vocabulary.summary.import.action": "Restore from backup",
     "vocabulary.summary.import.action.tooltip":
-      "Restore the vocabulary from its previously exported version.",
+      "Restore the vocabulary from its previously exported version",
     "vocabulary.summary.import.dialog.title":
       "Restore previous vocabulary version",
     "vocabulary.summary.import.dialog.message":
@@ -270,6 +271,11 @@ const en = {
     "vocabulary.document.select.title": "Select a document",
     "vocabulary.document.set": "Set document",
     "vocabulary.document.remove": "Detach document",
+    "vocabulary.snapshot.create.label": "Create snapshot",
+    "vocabulary.snapshot.create.title":
+      "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships. The snapshot is a read-only copy of the whole vocabulary content and can be used to demarcate important milestones in the vocabulary lifecycle.",
+    "vocabulary.snapshot.create.success":
+      "Vocabulary revision successfully created.",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",

@@ -135,3 +135,35 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
       });
   };
 }
+
+export function createVocabularySnapshot(vocabularyIri: IRI) {
+  const action = {
+    type: ActionType.CREATE_VOCABULARY_SNAPSHOT,
+    vocabularyIri,
+    ignoreLoading: true,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/versions`,
+      param("namespace", vocabularyIri.namespace)
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        return dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "vocabulary.snapshot.create.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}

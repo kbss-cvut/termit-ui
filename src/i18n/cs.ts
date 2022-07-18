@@ -10,6 +10,7 @@ const cs = {
     "not-implemented": "Zatím není naimplementováno!",
     edit: "Upravit",
     remove: "Odstranit",
+    moreActions: "Další akce",
     required: "Povinné",
     optional: "Nepovinné",
     actions: "Akce",
@@ -215,12 +216,12 @@ const cs = {
     "vocabulary.summary.export.title": "Exportovat pojmy ze slovníku",
     "vocabulary.summary.export.text": "Exportovat",
     "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export do CSV",
+    "vocabulary.summary.export.csv.title": "Export do CSV.",
     "vocabulary.summary.export.excel": "Excel",
-    "vocabulary.summary.export.excel.title": "Export do formát MS Excel",
+    "vocabulary.summary.export.excel.title": "Export do formát MS Excel.",
     "vocabulary.summary.export.ttl": "SKOS (Turtle)",
     "vocabulary.summary.export.ttl.title":
-      "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle",
+      "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle.",
     "vocabulary.summary.export.ttl.withRefs":
       "SKOS + pojmy se stejným významem (Turtle)",
     "vocabulary.summary.export.ttl.withRefs.title":
@@ -229,7 +230,7 @@ const cs = {
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",
     "vocabulary.summary.import.action.tooltip":
-      "Obnovit slovník ze zálohy ve formátu SKOS.",
+      "Obnovit slovník ze zálohy ve formátu SKOS",
     "vocabulary.summary.import.dialog.title": "Obnova dřívější verze slovníku",
     "vocabulary.summary.import.dialog.message":
       "Nahrajte dříve vyexportovanou verzi tohoto slovníku " +
@@ -247,7 +248,7 @@ const cs = {
     "vocabulary.import.allow-changing-identifiers.tooltip":
       "Při zaškrtnutí tohoto políčka budou při importu identifikátory nahrazeny novými, pokud by kolidovaly s existujícími identifikátory.",
     "vocabulary.summary.startTextAnalysis.title":
-      "Spustit textovou analýzu definic všech termínů v tomto slovníku",
+      "Spustit textovou analýzu definic všech pojmů v tomto slovníku",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
     "vocabulary.created.message": "Slovník úspěšně vytvořen.",
     "vocabulary.detail.subtitle": "Vytvořen autorem {author} ",
@@ -276,6 +277,10 @@ const cs = {
     "vocabulary.document.select.title": "Vyberte dokument",
     "vocabulary.document.set": "Změnit dokument",
     "vocabulary.document.remove": "Odpojit dokument",
+    "vocabulary.snapshot.create.label": "Vytvořit revizi",
+    "vocabulary.snapshot.create.title":
+      "Vytvořit revizi tohoto slovníku a všech dalších slovníků, které jsou s ním (nepřímo) propojeny vztahy mezi pojmy. Revize je kopií veškerého obsahu slovníku a umožňuje tak označit důležité milníky v historii vývoje slovníku.",
+    "vocabulary.snapshot.create.success": "Revize slovníku úspěšně vytvořena.",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",

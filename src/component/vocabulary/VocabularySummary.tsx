@@ -12,14 +12,8 @@ import {
   updateVocabulary,
   validateVocabulary,
 } from "../../action/AsyncActions";
-import {
-  Button,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
-} from "reactstrap";
-import { GoClippy, GoCloudDownload, GoPencil } from "react-icons/go";
+import { Button } from "reactstrap";
+import { GoPencil } from "react-icons/go";
 import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
 import EditableComponent, {
@@ -28,20 +22,19 @@ import EditableComponent, {
 import VocabularyEdit from "./VocabularyEdit";
 import VocabularyMetadata from "./VocabularyMetadata";
 import Utils from "../../util/Utils";
-import ExportType from "../../util/ExportType";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserAuthorized from "../authorization/IfUserAuthorized";
-import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
 import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
-import {
-  exportGlossary,
-  exportGlossaryWithExactMatchReferences,
-} from "../../action/AsyncVocabularyActions";
 import "./VocabularySummary.scss";
+import VocabularyActions from "./VocabularyActions";
+import ExportVocabularyDialog from "./ExportVocabularyDialog";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { createVocabularySnapshot } from "../../action/AsyncVocabularyActions";
+import { trackPromise } from "react-promise-tracker";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -51,15 +44,13 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   validateVocabulary: (iri: IRI) => Promise<any>;
   importSkos: (iri: IRI, file: File) => Promise<any>;
-  exportToCsv: (iri: IRI) => void;
-  exportToExcel: (iri: IRI) => void;
-  exportToTurtle: (iri: IRI) => void;
-  exportWithReferences: (iri: IRI) => void;
   executeTextAnalysisOnAllTerms: (iri: IRI) => void;
+  createSnapshot: (iri: IRI) => Promise<any>;
 }
 
 export interface VocabularySummaryState extends EditableComponentState {
   selectDocumentDialogOpen: boolean;
+  showExportDialog: boolean;
 }
 
 export class VocabularySummary extends EditableComponent<
@@ -71,6 +62,7 @@ export class VocabularySummary extends EditableComponent<
     this.state = {
       edit: false,
       showRemoveDialog: false,
+      showExportDialog: false,
       selectDocumentDialogOpen: false,
     };
   }
@@ -124,21 +116,18 @@ export class VocabularySummary extends EditableComponent<
     );
   };
 
-  private onExportToCsv = () =>
-    this.props.exportToCsv(VocabularyUtils.create(this.props.vocabulary.iri));
+  public onExportToggle = () => {
+    this.setState({ showExportDialog: !this.state.showExportDialog });
+  };
 
-  private onExportToExcel = () =>
-    this.props.exportToExcel(VocabularyUtils.create(this.props.vocabulary.iri));
-
-  private onExportToTurtle = () =>
-    this.props.exportToTurtle(
-      VocabularyUtils.create(this.props.vocabulary.iri)
+  public onCreateSnapshot = () => {
+    trackPromise(
+      this.props.createSnapshot(
+        VocabularyUtils.create(this.props.vocabulary.iri)
+      ),
+      "vocabulary-summary"
     );
-
-  private onExportWithReferences = () =>
-    this.props.exportWithReferences(
-      VocabularyUtils.create(this.props.vocabulary.iri)
-    );
+  };
 
   private onImport = (file: File) =>
     this.props.importSkos(
@@ -180,13 +169,6 @@ export class VocabularySummary extends EditableComponent<
       );
     }
     buttons.push(
-      <ImportBackupOfVocabulary
-        key="vocabulary.summary.import"
-        performAction={this.onImport}
-      />
-    );
-    buttons.push(this.renderExportDropdown());
-    buttons.push(
       <IfUserAuthorized
         key="vocabulary-summary-remove"
         renderUnauthorizedAlert={false}
@@ -204,7 +186,15 @@ export class VocabularySummary extends EditableComponent<
         </Button>
       </IfUserAuthorized>
     );
-    buttons.push(this.renderAnalyzeButton());
+    buttons.push(
+      <VocabularyActions
+        key="vocabulary-summary-actions"
+        onAnalyze={this.onExecuteTextAnalysisOnAllTerms}
+        onExport={this.onExportToggle}
+        onImport={this.onImport}
+        onCreateSnapshot={this.onCreateSnapshot}
+      />
+    );
 
     return (
       <div id="vocabulary-detail">
@@ -228,7 +218,12 @@ export class VocabularySummary extends EditableComponent<
           onCancel={this.onCloseRemove}
           onSubmit={this.onRemove}
         />
-
+        <ExportVocabularyDialog
+          show={this.state.showExportDialog}
+          onClose={this.onExportToggle}
+          vocabulary={vocabulary}
+        />
+        <PromiseTrackingMask area="vocabulary-summary" />
         {this.state.edit ? (
           <VocabularyEdit
             save={this.onSave}
@@ -244,84 +239,6 @@ export class VocabularySummary extends EditableComponent<
           />
         )}
       </div>
-    );
-  }
-
-  private renderExportDropdown() {
-    const i18n = this.props.i18n;
-    return (
-      <UncontrolledButtonDropdown
-        id="vocabulary-summary-export"
-        className="ml-0"
-        key="vocabulary.summary.export"
-        size="sm"
-        title={i18n("vocabulary.summary.export.title")}
-      >
-        <DropdownToggle
-          caret={false}
-          color="primary"
-          style={{ borderRadius: "0.2rem" }}
-        >
-          <GoCloudDownload />{" "}
-          <span className="dropdown-toggle">
-            {i18n("vocabulary.summary.export.text")}
-          </span>
-        </DropdownToggle>
-        <DropdownMenu className="glossary-export-menu">
-          <DropdownItem
-            name="vocabulary-export-csv"
-            className="btn-sm"
-            onClick={this.onExportToCsv}
-            title={i18n("vocabulary.summary.export.csv.title")}
-          >
-            {i18n("vocabulary.summary.export.csv")}
-          </DropdownItem>
-          <DropdownItem
-            name="vocabulary-export-excel"
-            className="btn-sm"
-            onClick={this.onExportToExcel}
-            title={i18n("vocabulary.summary.export.excel.title")}
-          >
-            {i18n("vocabulary.summary.export.excel")}
-          </DropdownItem>
-          <DropdownItem
-            name="vocabulary-export-ttl"
-            className="btn-sm"
-            onClick={this.onExportToTurtle}
-            title={i18n("vocabulary.summary.export.ttl.title")}
-          >
-            {i18n("vocabulary.summary.export.ttl")}
-          </DropdownItem>
-          <DropdownItem
-            name="vocabulary-export-ttl-with-references"
-            className="btn-sm"
-            onClick={this.onExportWithReferences}
-            title={i18n("vocabulary.summary.export.ttl.withRefs.title")}
-          >
-            {i18n("vocabulary.summary.export.ttl.withRefs")}
-          </DropdownItem>
-        </DropdownMenu>
-      </UncontrolledButtonDropdown>
-    );
-  }
-
-  private renderAnalyzeButton() {
-    return (
-      <IfUserAuthorized
-        renderUnauthorizedAlert={false}
-        key="analyze-definition"
-      >
-        <Button
-          id="analyze-definition"
-          size="sm"
-          color="primary"
-          title={this.props.i18n("vocabulary.summary.startTextAnalysis.title")}
-          onClick={this.onExecuteTextAnalysisOnAllTerms}
-        >
-          <GoClippy />
-          &nbsp;{this.props.i18n("file.metadata.startTextAnalysis.text")}
-        </Button>
-      </IfUserAuthorized>
     );
   }
 }
@@ -344,15 +261,9 @@ export default connect(
       validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
       importSkos: (iri: IRI, file: File) =>
         dispatch(importSkosIntoExistingVocabulary(iri, file)),
-      exportToCsv: (iri: IRI) => dispatch(exportGlossary(iri, ExportType.CSV)),
-      exportToExcel: (iri: IRI) =>
-        dispatch(exportGlossary(iri, ExportType.Excel)),
-      exportToTurtle: (iri: IRI) =>
-        dispatch(exportGlossary(iri, ExportType.Turtle)),
-      exportWithReferences: (iri: IRI) =>
-        dispatch(exportGlossaryWithExactMatchReferences(iri)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
+      createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),
     };
   }
 )(injectIntl(withI18n(VocabularySummary)));
