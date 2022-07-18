@@ -2,9 +2,9 @@ import * as React from "react";
 // @ts-ignore
 import { ToggleMinusIcon, TogglePlusIcon } from "intelligent-tree-select";
 import Utils from "../../../util/Utils";
-import TooltipItem from "./TooltipItem";
 import { ValueMapper } from "../../../util/Types";
 import "./ResultItem.scss";
+import Highlighter from "react-highlight-words";
 
 interface ResultItemProps {
   option: any;
@@ -74,23 +74,27 @@ class ResultItem extends React.Component<ResultItemProps> {
           <div className="tree-result-item-toggle-button">{button}</div>
         )}
 
-        <TooltipItem
-          targetId={"tooltip-" + Utils.hashCode(value)}
-          option={option}
-          label={label}
+        <div
+          id={`result-item-${Utils.hashCode(value)}`}
+          className="result-item"
           onClick={this.onClick}
-          searchString={this.props.searchString}
-          displayOnHover={this.props.displayInfoOnHover}
-          tooltipKey={this.props.tooltipKey}
-          addonBefore={this.props.addonBefore}
-          addonAfter={this.props.addonAfter}
-        />
+        >
+          {this.props.addonBefore}
+          <Highlighter
+            highlightClassName="highlighted"
+            searchWords={[this.props.searchString]}
+            autoEscape={false}
+            textToHighlight={label}
+            highlightTag="span"
+          />
+          {this.props.addonAfter}
 
-        {option.fetchingChild && (
-          <span className="Select-loading-zone" aria-hidden="true">
-            <span className="Select-loading" />
-          </span>
-        )}
+          {option.fetchingChild && (
+            <span className="Select-loading-zone" aria-hidden="true">
+              <span className="Select-loading" />
+            </span>
+          )}
+        </div>
       </div>
     );
   }
