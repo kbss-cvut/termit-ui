@@ -136,7 +136,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
 }
 
 export function createTermValueRenderer(vocabularyIri: string) {
-  return (option: Term) => (
+  return (label: string, option: Term) => (
     <>
       <TermLink term={option} />
       {vocabularyIri !== option.vocabulary?.iri ? (
@@ -147,5 +147,7 @@ export function createTermValueRenderer(vocabularyIri: string) {
 }
 
 export function createVocabularyValueRenderer() {
-  return (option: Vocabulary) => <VocabularyLink vocabulary={option} />;
+  return (label: string, option: Vocabulary) => (
+    <VocabularyLink vocabulary={option} />
+  );
 }
