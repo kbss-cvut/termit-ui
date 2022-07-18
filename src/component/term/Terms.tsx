@@ -363,7 +363,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           {!isDetailView && this.renderDraftOnly()}
           <IntelligentTreeSelect
             ref={this.treeComponent}
-            clearable={!isDetailView}
+            isClearable={!isDetailView}
             onChange={this.onTermSelect}
             value={
               this.props.selectedTerms ? this.props.selectedTerms.iri : null
@@ -373,7 +373,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             scrollMenuIntoView={false}
             multi={false}
             autoFocus={!isDetailView}
-            maxHeight={Utils.calculateAssetListHeight()}
+            menuIsFloating={false}
             optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(
               unusedTerms,
               this.props.vocabulary.iri,

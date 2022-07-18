@@ -95,7 +95,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
               simpleTreeData={true}
               renderAsTree={false}
               showSettings={false}
-              clearable={false}
+              isClearable={false}
               placeholder={i18n("term.language.add.placeholder")}
               noResultsText={i18n("main.search.no-results")}
             />

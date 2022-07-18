@@ -23,7 +23,7 @@ interface ResultItemProps {
   addonAfter?: JSX.Element; // Add-on to be rendered after the highlighted option label
 
   onMouseEnter?: (option: any) => void;
-  onClick?: (option: any) => void;
+  onClick?: () => void;
   onToggleClick?: (option: any) => void;
 }
 
@@ -35,7 +35,7 @@ interface ResultItemProps {
 class ResultItem extends React.Component<ResultItemProps> {
   public onClick = () => {
     if (!this.props.option.disabled && this.props.onClick) {
-      this.props.onClick(this.props.option);
+      this.props.onClick();
     }
   };
 
