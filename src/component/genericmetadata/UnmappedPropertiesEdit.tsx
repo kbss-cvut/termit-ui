@@ -27,14 +27,14 @@ interface UnmappedPropertiesEditProps extends HasI18n {
   onChange: (properties: Map<string, string[]>) => void;
   loadKnownProperties: () => void;
   knownProperties: RdfsResource[];
-  createProperty: (property: RdfsResource) => void;
+  createProperty: (property: RdfsResource) => Promise<any>;
   clearProperties: () => void;
 }
 
 interface UnmappedPropertiesEditState {
   property: RdfsResource | null;
   value: string;
-  schedulePropertiesReset: boolean;
+  showCreatePropertyForm: boolean;
 }
 
 export class UnmappedPropertiesEdit extends React.Component<
@@ -46,18 +46,12 @@ export class UnmappedPropertiesEdit extends React.Component<
     this.state = {
       property: null,
       value: "",
-      schedulePropertiesReset: false,
+      showCreatePropertyForm: false,
     };
   }
 
   public componentDidMount() {
     this.props.loadKnownProperties();
-  }
-
-  public componentWillUnmount() {
-    if (this.state.schedulePropertiesReset) {
-      this.props.clearProperties();
-    }
   }
 
   private onRemove = (property: string, value: string) => {
@@ -102,14 +96,13 @@ export class UnmappedPropertiesEdit extends React.Component<
     return this.state.property && this.state.value.length > 0;
   }
 
-  private static valueRenderer(option: RdfsResource) {
-    return option.label ? option.label : option.iri;
-  }
-
   public onCreateProperty = (propertyData: RdfsResourceData) => {
     const property = new RdfsResource(propertyData);
-    this.setState({ schedulePropertiesReset: true, property });
-    this.props.createProperty(property);
+    this.setState({ property });
+    this.props.createProperty(property).then(() => {
+      this.props.clearProperties();
+      this.props.loadKnownProperties();
+    });
   };
 
   public render() {
@@ -191,37 +184,51 @@ export class UnmappedPropertiesEdit extends React.Component<
   private renderPropertyInput() {
     const i18n = this.props.i18n;
     return (
-      <FormGroup>
-        <Label className="attribute-label">
-          {i18n("properties.edit.property")}
-        </Label>
-        {this.props.knownProperties.length > 0 ? (
-          <IntelligentTreeSelect
-            className="term-edit"
-            value={this.state.property}
-            onChange={this.onPropertySelect}
-            childrenKey="children"
-            valueKey="iri"
-            labelKey="label"
-            showSettings={true}
-            maxHeight={150}
-            multi={false}
-            renderAsTree={false}
-            simpleTreeData={true}
-            options={this.prepareKnownPropertiesForRendering()}
+      <>
+        {this.state.showCreatePropertyForm && (
+          <CreatePropertyForm
             onOptionCreate={this.onCreateProperty}
-            openButtonLabel={i18n("properties.edit.new")}
-            openButtonTooltipLabel={i18n("properties.edit.new")}
-            placeholder=""
-            classNamePrefix="react-select"
-            noResultsText={i18n("main.search.no-results")}
-            formComponent={CreatePropertyForm}
-            valueRenderer={UnmappedPropertiesEdit.valueRenderer}
+            toggleModal={() => this.setState({ showCreatePropertyForm: false })}
           />
-        ) : (
-          <CustomInput disabled={true} />
         )}
-      </FormGroup>
+        <FormGroup>
+          <div className="d-flex justify-content-between">
+            <Label className="attribute-label">
+              {i18n("properties.edit.property")}
+            </Label>
+            <Button
+              color="primary"
+              size="sm"
+              className="align-self-end create-property-button"
+              title={i18n("properties.edit.new")}
+              onClick={() => this.setState({ showCreatePropertyForm: true })}
+            >
+              {i18n("properties.edit.new")}
+            </Button>
+          </div>
+          {this.props.knownProperties.length > 0 ? (
+            <IntelligentTreeSelect
+              className="term-edit"
+              value={this.state.property}
+              onChange={this.onPropertySelect}
+              childrenKey="children"
+              valueKey="iri"
+              labelKey="label"
+              showSettings={true}
+              maxHeight={150}
+              multi={false}
+              renderAsTree={false}
+              simpleTreeData={true}
+              options={this.prepareKnownPropertiesForRendering()}
+              placeholder=""
+              classNamePrefix="react-select"
+              noResultsText={i18n("main.search.no-results")}
+            />
+          ) : (
+            <CustomInput disabled={true} />
+          )}
+        </FormGroup>
+      </>
     );
   }
 

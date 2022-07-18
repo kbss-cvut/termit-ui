@@ -180,7 +180,7 @@ export class ParentTermSelector extends React.Component<
     const i18n = this.props.i18n;
     return (
       <FormGroup id={this.props.id}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div className="d-flex justify-content-between">
           <Label className="attribute-label">
             {i18n("term.metadata.parent")}
             <HelpIcon
