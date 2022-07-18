@@ -92,6 +92,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
               multi={false}
               labelKey="nativeName"
               valueKey="code"
+              classNamePrefix="react-select"
               simpleTreeData={true}
               renderAsTree={false}
               showSettings={false}

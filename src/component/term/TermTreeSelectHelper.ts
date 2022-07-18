@@ -23,6 +23,7 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     loadingText: intl.i18n("select.loading"),
     placeholder: "",
     searchDelay: 300,
+    classNamePrefix: "react-select",
   };
 }
 

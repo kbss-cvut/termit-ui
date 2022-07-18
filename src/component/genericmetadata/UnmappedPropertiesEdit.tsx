@@ -213,6 +213,7 @@ export class UnmappedPropertiesEdit extends React.Component<
             openButtonLabel={i18n("properties.edit.new")}
             openButtonTooltipLabel={i18n("properties.edit.new")}
             placeholder=""
+            classNamePrefix="react-select"
             noResultsText={i18n("main.search.no-results")}
             formComponent={CreatePropertyForm}
             valueRenderer={UnmappedPropertiesEdit.valueRenderer}

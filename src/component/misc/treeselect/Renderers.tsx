@@ -9,12 +9,12 @@ import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
 import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
 
-interface TreeTerm {
+interface TreeItem {
   depth: number;
 }
 
 interface OptionRendererParams<T> {
-  data: Term & TreeTerm;
+  data: T & TreeItem;
   key?: string;
   optionStyle: any;
   selectProps: any;
