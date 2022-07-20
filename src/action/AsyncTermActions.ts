@@ -34,6 +34,7 @@ import { AxiosResponse } from "axios";
 import { getApiPrefix } from "./ActionUtils";
 import { AssetData } from "../model/Asset";
 import TermStatus from "../model/TermStatus";
+import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -288,6 +289,31 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
         return dispatch(
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
+      });
+  };
+}
+
+export function loadTermSnapshots(termIri: IRI) {
+  const action = { type: ActionType.LOAD_SNAPSHOTS, termIri };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${getApiPrefix(getState())}/terms/${termIri.fragment}/versions`,
+      param("namespace", termIri.namespace)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<SnapshotData>(
+          data,
+          SNAPSHOT_CONTEXT
+        )
+      )
+      .then((snapshots: SnapshotData[]) => {
+        dispatch(asyncActionSuccess(action));
+        return snapshots;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
       });
   };
 }

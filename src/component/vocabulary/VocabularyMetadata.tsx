@@ -17,6 +17,7 @@ import { selectVocabularyTerm } from "../../action/SyncActions";
 import Utils from "../../util/Utils";
 import DocumentSummary from "../resource/document/DocumentSummary";
 import MarkdownView from "../misc/MarkdownView";
+import Snapshots from "../snapshot/Snapshots";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -117,6 +118,7 @@ export class VocabularyMetadata extends React.Component<
       />
     );
     tabs["history.label"] = <AssetHistory asset={vocabulary} />;
+    tabs["snapshots.title"] = <Snapshots asset={vocabulary} />;
 
     tabs["changefrequency.label"] = (
       <TermChangeFrequency vocabulary={vocabulary} />
