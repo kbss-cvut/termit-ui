@@ -189,21 +189,23 @@ export class DefinitionRelatedTermsEdit extends React.Component<
                   {i18n("term.metadata.related.definitionally.targeting")}
                 </h5>
                 <Table responsive={true} borderless={true}>
-                  {targeting.map((to) => (
-                    <tr key={to.iri}>
-                      <DefinitionalTermOccurrence
-                        key={to.term.iri}
-                        term={termCache[to.term.iri!]}
-                        occurrence={to}
-                        language={language}
-                        onApprove={this.onApprove}
-                        onRemove={this.onRemove}
-                        canApprove={this.canApprove(to)}
-                        canRemove={this.canRemove(to)}
-                        isSuggested={this.isSuggested(to)}
-                      />
-                    </tr>
-                  ))}
+                  <tbody>
+                    {targeting.map((to) => (
+                      <tr key={to.iri}>
+                        <DefinitionalTermOccurrence
+                          key={to.term.iri}
+                          term={termCache[to.term.iri!]}
+                          occurrence={to}
+                          language={language}
+                          onApprove={this.onApprove}
+                          onRemove={this.onRemove}
+                          canApprove={this.canApprove(to)}
+                          canRemove={this.canRemove(to)}
+                          isSuggested={this.isSuggested(to)}
+                        />
+                      </tr>
+                    ))}
+                  </tbody>
                 </Table>
               </>
             </Col>

@@ -57,6 +57,7 @@ export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabu
               labelKey="label"
               childrenKey="children"
               placeholder={i18n("select.placeholder")}
+              classNamePrefix="react-select"
               isMenuOpen={false}
               multi={true}
               showSettings={false}

@@ -206,7 +206,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           {!isDetailView && this.renderIncludeImported()}
           <IntelligentTreeSelect
             ref={this.treeComponent}
-            clearable={!isDetailView}
+            isClearable={!isDetailView}
             onChange={this.onTermSelect}
             value={
               this.props.selectedTerms ? this.props.selectedTerms.iri : null

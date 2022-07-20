@@ -94,6 +94,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
           expanded={true}
           renderAsTree={true}
           placeholder=""
+          classNamePrefix="react-select"
         />
         {this.props.validationMessage && (
           <FormFeedback
