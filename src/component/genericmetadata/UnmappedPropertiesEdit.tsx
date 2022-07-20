@@ -109,7 +109,9 @@ export class UnmappedPropertiesEdit extends React.Component<
     const i18n = this.props.i18n;
     return (
       <AttributeSectionContainer label={i18n("properties.edit.title")}>
-        {this.renderExisting()}
+        <table className="mb-3">
+          <tbody>{this.renderExisting()}</tbody>
+        </table>
         <Row>
           <Col xl={6} md={12}>
             {this.renderPropertyInput()}
@@ -142,40 +144,44 @@ export class UnmappedPropertiesEdit extends React.Component<
   private renderExisting() {
     const result: JSX.Element[] = [];
     this.props.properties.forEach((values, k) => {
-      const sortedItems = [...values];
-      sortedItems.sort(Utils.localeComparator);
-      const items = sortedItems.map((v) => (
-        <li key={Utils.hashCode(v)}>
-          {v}
-          <BadgeButton
-            color="danger"
-            outline={true}
-            title={this.props.i18n("properties.edit.remove")}
-            className="ml-3"
-            onClick={this.onRemove.bind(null, k, v)}
-          >
-            <FaTrashAlt />
-            {this.props.i18n("properties.edit.remove.text")}
-          </BadgeButton>
-        </li>
-      ));
-
       result.push(
-        <div key={k}>
-          <div>
+        <tr key={k}>
+          <td className="align-bottom">
             <OutgoingLink
               label={
-                <Label className="property-label">
+                <Label className="property-label mb-0 mt-2">
                   <AssetLabel iri={k} />
                 </Label>
               }
               iri={k}
             />
-          </div>
-          <div>
-            <ul className="term-items">{items}</ul>
-          </div>
-        </div>
+          </td>
+        </tr>
+      );
+      const sortedItems = [...values];
+      sortedItems.sort(Utils.localeComparator);
+      sortedItems.forEach((v) =>
+        result.push(
+          <tr key={`${k}-${Utils.hashCode(v)}`}>
+            <td className="align-middle">
+              <ul className="mt-0 mb-0">
+                <li>{v}</li>
+              </ul>
+            </td>
+            <td className="align-middle">
+              <BadgeButton
+                color="danger"
+                outline={true}
+                title={this.props.i18n("properties.edit.remove")}
+                className="ml-3"
+                onClick={this.onRemove.bind(null, k, v)}
+              >
+                <FaTrashAlt />
+                {this.props.i18n("properties.edit.remove.text")}
+              </BadgeButton>
+            </td>
+          </tr>
+        )
       );
     });
     return result;
