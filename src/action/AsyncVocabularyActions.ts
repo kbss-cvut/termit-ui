@@ -1,4 +1,4 @@
-import { ThunkDispatch } from "../util/Types";
+import { GetStoreState, ThunkDispatch } from "../util/Types";
 import * as SyncActions from "./SyncActions";
 import {
   asyncActionFailure,
@@ -22,6 +22,8 @@ import AggregatedChangeInfo, {
   AggregatedChangeInfoData,
   CONTEXT as CHANGE_INFO_CONTEXT,
 } from "../model/changetracking/AggregatedChangeInfo";
+import { getApiPrefix } from "./ActionUtils";
+import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -160,6 +162,33 @@ export function createVocabularySnapshot(vocabularyIri: IRI) {
             )
           )
         );
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
+export function loadVocabularySnapshots(vocabularyIri: IRI) {
+  const action = { type: ActionType.LOAD_SNAPSHOTS, vocabularyIri };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${getApiPrefix(getState())}/vocabularies/${
+        vocabularyIri.fragment
+      }/versions`,
+      param("namespace", vocabularyIri.namespace)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<SnapshotData>(
+          data,
+          SNAPSHOT_CONTEXT
+        )
+      )
+      .then((snapshots: SnapshotData[]) => {
+        dispatch(asyncActionSuccess(action));
+        return snapshots;
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));

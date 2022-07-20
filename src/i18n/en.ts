@@ -639,7 +639,7 @@ const en = {
     "error.file.maxUploadSizeExceeded":
       "The file could not be uploaded because it exceeds the configured maximum file size limit.",
 
-    "history.label": "History",
+    "history.label": "Change history",
     "history.loading": "Loading history...",
     "history.empty": "The recorded history of this asset is empty.",
     "history.whenwho": "Origin",
@@ -685,6 +685,11 @@ const en = {
 
     "validation.message.tooltip":
       "This is a quality validation result. The form can be submitted even if it has quality issues.",
+
+    "snapshots.title": "Version history",
+    "snapshots.created": "Date and time",
+    "snapshots.show": "Show version",
+    "snapshots.empty": "No previous versions found.",
   },
 };
 

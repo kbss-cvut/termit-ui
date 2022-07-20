@@ -140,6 +140,9 @@ const VocabularyUtils = {
   PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
   UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,
 
+  TERM_SNAPSHOT: _NS_POPIS_DAT + "verze-pojmu",
+  VOCABULARY_SNAPSHOT: _NS_POPIS_DAT + "verze-slovníku",
+
   getFragment(iri: string): string {
     return this.create(iri).fragment;
   },

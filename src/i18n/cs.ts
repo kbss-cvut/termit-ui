@@ -649,7 +649,7 @@ const cs = {
     "error.file.maxUploadSizeExceeded":
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
 
-    "history.label": "Historie",
+    "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
     "history.empty": "Zaznamenaná historie je prázdná.",
     "history.whenwho": "Původ",
@@ -696,6 +696,11 @@ const cs = {
 
     "validation.message.tooltip":
       "Tato zpráva reprezentuje výsledek kontroly kvality. Formulář lze uložit i v případě, že kvalita není stoprocentní.",
+
+    "snapshots.title": "Historie verzí",
+    "snapshots.created": "Datum a čas vytvoření",
+    "snapshots.show": "Zobrazit verzi",
+    "snapshots.empty": "Žádné předchozí verze nenalezeny.",
   },
 };
 
