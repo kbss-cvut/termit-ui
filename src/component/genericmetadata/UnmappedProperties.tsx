@@ -31,7 +31,7 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
     );
     sortedItems.sort(Utils.localeComparator);
     const items = (
-      <ul className="term-items">
+      <ul>
         {sortedItems.map((v: string) => (
           <li key={Utils.hashCode(v)}>{v}</li>
         ))}

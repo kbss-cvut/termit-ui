@@ -11,8 +11,7 @@
       "config/**/*.js",
       "node_modules/**/*.ts",
       "src/i18n/en.ts",
-      "src/i18n/cs.ts",
-      "src/component/search/SparqlFaceter.tsx"
+      "src/i18n/cs.ts"
     ]
   },
   "rules": {
@@ -21,9 +20,7 @@
     "member-ordering": false,
     "object-literal-sort-keys": false,
     "quotemark": {
-      "options": [
-        "double"
-      ],
+      "options": ["double"],
       "severity": "warning"
     },
     "no-empty-interface": false,

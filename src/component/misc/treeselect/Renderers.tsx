@@ -9,25 +9,18 @@ import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
 import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
 
-interface TreeOption {
-  disabled: boolean;
-  className: string;
+interface TreeItem {
+  depth: number;
 }
 
 interface OptionRendererParams<T> {
-  focusedOption?: T & TreeOption;
-  focusOption: (option: T & TreeOption) => void;
+  data: T & TreeItem;
   key?: string;
-  labelKey: string;
-  getOptionLabel: (option: T & TreeOption) => string;
-  valueKey: string;
-  option: T & TreeOption;
-  selectValue: (option: T & TreeOption) => void;
   optionStyle: any;
-  renderAsTree: boolean;
-  valueArray: T & TreeOption[];
-  toggleOption: (option: T & TreeOption) => void;
-  searchString: string;
+  selectProps: any;
+  isFocused: boolean;
+  isDisabled: boolean;
+  isSelected: boolean;
 }
 
 /**
@@ -74,32 +67,27 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
   qualityBadge?: boolean
 ) {
   return (params: OptionRendererParams<Term>) => {
-    const {
-      option,
-      focusedOption,
-      optionStyle,
-      selectValue,
-      focusOption,
-      toggleOption,
-      valueArray,
-    } = { ...params };
-    const className = classNames(
-      "VirtualizedSelectOption",
-      {
-        VirtualizedSelectFocusedOption: option === focusedOption,
-        VirtualizedSelectDisabledOption: option.disabled,
-        VirtualizedSelectSelectedOption:
-          valueArray && valueArray.indexOf(option) >= 0,
-      },
-      option.className
-    );
+    //Conversion between old and new API
+    let option = params.data;
+    let optionStyle = {
+      ...params.optionStyle,
+      marginLeft: `${option.depth * 16}px`,
+    };
 
-    const eventHandlers = option.disabled
+    const { valueKey, renderAsTree, labelKey, getOptionLabel, inputValue } =
+      params.selectProps;
+
+    const className = classNames("VirtualizedSelectOption", {
+      // VirtualizedSelectFocusedOption: params.isFocused,
+      VirtualizedSelectDisabledOption: params.isDisabled,
+      VirtualizedSelectSelectedOption: params.isSelected,
+    });
+
+    const eventHandlers = params.isDisabled
       ? {}
       : {
-          onClick: () => selectValue(option),
-          onMouseEnter: () => focusOption(option),
-          onToggleClick: () => toggleOption(option),
+          onClick: () => params.selectProps.onOptionSelect(params),
+          onToggleClick: () => params.selectProps.onOptionToggle(option),
         };
 
     const addonBefore = (
@@ -128,16 +116,16 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
 
     return (
       <ResultItem
-        key={params.key}
-        renderAsTree={params.renderAsTree}
+        key={params.data[valueKey]}
+        renderAsTree={renderAsTree}
         className={className}
         option={option}
         childrenKey="plainSubTerms"
-        labelKey={params.labelKey}
-        valueKey={params.valueKey}
-        getOptionLabel={params.getOptionLabel}
+        labelKey={labelKey}
+        valueKey={valueKey}
+        getOptionLabel={getOptionLabel}
         style={optionStyle}
-        searchString={params.searchString}
+        searchString={inputValue}
         addonBefore={addonBefore}
         addonAfter={addonAfter}
         displayInfoOnHover={false}
@@ -148,7 +136,7 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
 }
 
 export function createTermValueRenderer(vocabularyIri: string) {
-  return (option: Term) => (
+  return (label: string, option: Term) => (
     <>
       <TermLink term={option} />
       {vocabularyIri !== option.vocabulary?.iri ? (
@@ -159,5 +147,7 @@ export function createTermValueRenderer(vocabularyIri: string) {
 }
 
 export function createVocabularyValueRenderer() {
-  return (option: Vocabulary) => <VocabularyLink vocabulary={option} />;
+  return (label: string, option: Vocabulary) => (
+    <VocabularyLink vocabulary={option} />
+  );
 }

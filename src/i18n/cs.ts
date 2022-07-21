@@ -20,6 +20,7 @@ const cs = {
     "basic-information": "Základní informace",
     "created-info": "Vytvořeno uživatelem {author} dne {date}",
     "select.placeholder": "Vyberte...",
+    "select.loading": "Načítání...",
     "help.title": "Nápověda",
     "multilingual.title": "Hodnotu atributu lze vyplnit ve více jazycích",
     "input.markdown": "Můžete použít formátování Markdown.",

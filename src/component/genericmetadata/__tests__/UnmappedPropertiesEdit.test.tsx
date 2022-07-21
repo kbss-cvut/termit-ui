@@ -13,7 +13,7 @@ jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 describe("UnmappedPropertiesEdit", () => {
   let onChange: (update: Map<string, string[]>) => void;
   let loadKnownProperties: () => void;
-  let createProperty: (property: RdfsResource) => void;
+  let createProperty: (property: RdfsResource) => Promise<any>;
   let clearProperties: () => void;
 
   beforeEach(() => {
@@ -190,6 +190,7 @@ describe("UnmappedPropertiesEdit", () => {
   });
 
   it("invokes property creation action on created property", () => {
+    createProperty = jest.fn().mockResolvedValue({});
     const wrapper = shallow(
       <UnmappedPropertiesEdit
         properties={new Map()}
@@ -209,29 +210,6 @@ describe("UnmappedPropertiesEdit", () => {
       propertyData
     );
     expect(createProperty).toHaveBeenCalledWith(new RdfsResource(propertyData));
-  });
-
-  it("schedules property clear on unmount when new property was created", () => {
-    const wrapper = shallow(
-      <UnmappedPropertiesEdit
-        properties={new Map()}
-        onChange={onChange}
-        knownProperties={[]}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
-    const propertyData = {
-      iri: Generator.generateUri(),
-      label: "Test",
-    };
-    (wrapper.instance() as UnmappedPropertiesEdit).onCreateProperty(
-      propertyData
-    );
-    wrapper.unmount();
-    expect(clearProperties).toHaveBeenCalled();
   });
 
   it("renders existing property values sorted lexicographically", () => {

@@ -82,7 +82,7 @@ export class StringListEdit extends React.Component<
             text={this.getText("help")}
           />
         </Label>
-        <InputGroup className="form-group no-bottom-margin">
+        <InputGroup className="form-group mb-0">
           <Input
             name="add-string-input"
             value={this.state.inputValue}
@@ -98,7 +98,7 @@ export class StringListEdit extends React.Component<
               color="primary"
               size="sm"
               onClick={this.onAdd}
-              className="term-edit-source-add-button"
+              className="string-list-add-button"
               disabled={this.state.inputValue.trim().length === 0}
               title={this.getText("addButton.title")}
             >
@@ -134,7 +134,7 @@ export class StringListEdit extends React.Component<
           {list.map((s) => (
             <tr key={s}>
               <td className="align-middle">
-                <ul className="term-items mt-0 mb-0">
+                <ul className="mt-0 mb-0">
                   <li>{s}</li>
                 </ul>
               </td>

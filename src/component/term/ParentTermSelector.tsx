@@ -180,17 +180,22 @@ export class ParentTermSelector extends React.Component<
     const i18n = this.props.i18n;
     return (
       <FormGroup id={this.props.id}>
-        <Label className="attribute-label">
-          {i18n("term.metadata.parent")}
-          <HelpIcon id={"parent-term-select"} text={i18n("term.parent.help")} />
-        </Label>
-        <IncludeImportedTermsToggle
-          id={this.props.id + "-include-imported"}
-          onToggle={this.onIncludeImportedToggle}
-          includeImported={this.state.includeImported}
-          style={{ float: "right" }}
-          disabled={this.state.disableIncludeImportedToggle}
-        />
+        <div className="d-flex justify-content-between">
+          <Label className="attribute-label">
+            {i18n("term.metadata.parent")}
+            <HelpIcon
+              id={"parent-term-select"}
+              text={i18n("term.parent.help")}
+            />
+          </Label>
+          <IncludeImportedTermsToggle
+            id={this.props.id + "-include-imported"}
+            onToggle={this.onIncludeImportedToggle}
+            includeImported={this.state.includeImported}
+            style={{ alignSelf: "flex-end" }}
+            disabled={this.state.disableIncludeImportedToggle}
+          />
+        </div>
         {this.renderSelector()}
       </FormGroup>
     );

@@ -181,10 +181,6 @@ header .nav-tabs {
   padding-right: 2.3rem !important;
 }
 
-.Select-placeholder {
-  font-style: italic;
-}
-
 .VirtualizedTreeSelectTooltip {
   word-break: normal !important;
 }
@@ -201,4 +197,23 @@ header .nav-tabs {
 .validation-feedback {
   display: block !important;
   visibility: visible !important;
+}
+
+.react-select__control {
+  height: 36px;
+  max-height: 36px;
+  min-height: 36px !important;
+}
+
+.react-select__multi-value {
+  font-size: 0.875rem !important;
+  padding: 0.125rem 0.25rem !important;
+}
+
+.react-select__multi-value .badge {
+  margin-right: 0.25rem;
+}
+
+td ul {
+  padding-left: 1.2rem;
 }
