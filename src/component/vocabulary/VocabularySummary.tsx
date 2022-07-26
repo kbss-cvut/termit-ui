@@ -14,7 +14,7 @@ import {
 } from "../../action/AsyncActions";
 import { Button } from "reactstrap";
 import { GoPencil } from "react-icons/go";
-import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
 import EditableComponent, {
   EditableComponentState,
@@ -35,9 +35,11 @@ import ExportVocabularyDialog from "./ExportVocabularyDialog";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { createVocabularySnapshot } from "../../action/AsyncVocabularyActions";
 import { trackPromise } from "react-promise-tracker";
+import { Configuration } from "../../model/Configuration";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
+  configuration: Configuration;
   loadResource: (iri: IRI) => void;
   loadVocabulary: (iri: IRI) => Promise<any>;
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
@@ -81,19 +83,17 @@ export class VocabularySummary extends EditableComponent<
   }
 
   public loadVocabulary = () => {
-    const normalizedName = this.props.match.params.name;
-    const namespace = Utils.extractQueryParam(
-      this.props.location.search,
-      "namespace"
+    const iriFromUrl = Utils.resolveVocabularyIriFromRoute(
+      this.props.match,
+      this.props.location,
+      this.props.configuration
     );
     const iri = VocabularyUtils.create(this.props.vocabulary.iri);
     if (
-      iri.fragment !== normalizedName ||
-      (namespace && iri.namespace !== namespace)
+      iri.fragment !== iriFromUrl.fragment ||
+      (iriFromUrl.namespace && iri.namespace !== iriFromUrl.namespace)
     ) {
-      this.props.loadVocabulary(
-        IRIImpl.create({ fragment: normalizedName, namespace })
-      );
+      this.props.loadVocabulary(iriFromUrl);
     }
   };
 
@@ -247,7 +247,7 @@ export default connect(
   (state: TermItState) => {
     return {
       vocabulary: state.vocabulary,
-      validationResults: state.validationResults[state.vocabulary.iri],
+      configuration: state.configuration,
     };
   },
   (dispatch: ThunkDispatch) => {

@@ -34,6 +34,12 @@ const VocabularyRoute: React.FC = () => {
       />
       <Route
         asset="vocabulary"
+        path={Routes.vocabularySnapshotSummary.path}
+        includeSearch={true}
+        component={VocabularySummary}
+      />
+      <Route
+        asset="vocabulary"
         path={Routes.vocabularySummary.path}
         includeSearch={true}
         component={VocabularySummary}

@@ -697,10 +697,10 @@ const cs = {
     "validation.message.tooltip":
       "Tato zpráva reprezentuje výsledek kontroly kvality. Formulář lze uložit i v případě, že kvalita není stoprocentní.",
 
-    "snapshots.title": "Historie verzí",
+    "snapshots.title": "Historie revizí",
     "snapshots.created": "Datum a čas vytvoření",
-    "snapshots.show": "Zobrazit verzi",
-    "snapshots.empty": "Žádné předchozí verze nenalezeny.",
+    "snapshots.show": "Zobrazit revizi",
+    "snapshots.empty": "Žádné předchozí revize nenalezeny.",
   },
 };
 

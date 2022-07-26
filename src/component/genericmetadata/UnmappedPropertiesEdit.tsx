@@ -164,7 +164,7 @@ export class UnmappedPropertiesEdit extends React.Component<
         result.push(
           <tr key={`${k}-${Utils.hashCode(v)}`}>
             <td className="align-middle">
-              <ul className="mt-0 mb-0">
+              <ul>
                 <li>{v}</li>
               </ul>
             </td>
