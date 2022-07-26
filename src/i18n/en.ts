@@ -686,10 +686,10 @@ const en = {
     "validation.message.tooltip":
       "This is a quality validation result. The form can be submitted even if it has quality issues.",
 
-    "snapshots.title": "Version history",
+    "snapshots.title": "Snapshot history",
     "snapshots.created": "Date and time",
-    "snapshots.show": "Show version",
-    "snapshots.empty": "No previous versions found.",
+    "snapshots.show": "Show snapshot",
+    "snapshots.empty": "No previous snapshots found.",
 
     "auth.notEditable.message.unauthorized":
       "You have insufficient rights to edit this { type }.",

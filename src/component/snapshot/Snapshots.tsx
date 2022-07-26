@@ -29,6 +29,7 @@ function resolveDataLoader(asset: Asset) {
 
 function resolvePath(snapshot: SnapshotData, asset: Asset) {
   const iri = VocabularyUtils.create(snapshot.iri);
+  const assetIri = VocabularyUtils.create(asset.iri);
   if (snapshot.types.indexOf(VocabularyUtils.TERM_SNAPSHOT) !== -1) {
     const term = asset as Term;
     const vocabularyIri = VocabularyUtils.create(term.vocabulary!.iri!);
@@ -40,9 +41,9 @@ function resolvePath(snapshot: SnapshotData, asset: Asset) {
       { namespace: vocabularyIri.namespace }
     );
   }
-  return Routes.vocabularySummary.link(
-    { name: iri.fragment },
-    { namespace: iri.namespace }
+  return Routes.vocabularySnapshotSummary.link(
+    { name: assetIri.fragment, timestamp: iri.fragment },
+    { namespace: assetIri.namespace }
   );
 }
 
