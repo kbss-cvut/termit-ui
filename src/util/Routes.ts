@@ -69,6 +69,10 @@ const Routes = {
     "publicVocabularySummary",
     "/public/vocabularies/:name"
   ),
+  publicVocabularySnapshotSummary: new Route(
+    "publicVocabularySnapshotSummary",
+    "/public/vocabularies/:name/snapshots/:timestamp"
+  ),
   publicVocabularyTermDetail: new Route(
     "publicVocabularyTermDetail",
     "/public/vocabularies/:name/terms/:termName"
