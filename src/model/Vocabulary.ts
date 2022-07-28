@@ -84,6 +84,10 @@ export default class Vocabulary extends Asset implements VocabularyData {
     return result;
   }
 
+  public isSnapshot(): boolean {
+    return this.hasType(VocabularyUtils.VOCABULARY_SNAPSHOT);
+  }
+
   public get unmappedProperties(): Map<string, string[]> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,

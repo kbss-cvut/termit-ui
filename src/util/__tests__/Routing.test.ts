@@ -6,6 +6,7 @@ import Vocabulary from "../../model/Vocabulary";
 import Generator from "../../__tests__/environment/Generator";
 import { langString } from "../../model/MultilingualString";
 import Constants from "../Constants";
+import TermItStore from "../../store/TermItStore";
 
 jest.mock("history", () => ({
   createHashHistory: jest.fn().mockReturnValue({
@@ -57,6 +58,7 @@ describe("Routing", () => {
 
     it("transitions to vocabulary summary for a vocabulary", () => {
       const vocabulary = new Vocabulary({ iri, label });
+
       RoutingInstance.transitionToAsset(vocabulary);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.vocabularySummary, {
@@ -66,16 +68,61 @@ describe("Routing", () => {
       );
     });
 
+    it("transitions to vocabulary snapshot summary for vocabulary snapshot", () => {
+      const versionSeparator = "/verze";
+      TermItStore.getState().configuration.versionSeparator = versionSeparator;
+      const timestamp = "20220727T120000Z";
+      const vocIri = iri + versionSeparator + "/" + timestamp;
+      const vocabulary = Generator.generateVocabulary();
+      vocabulary.iri = vocIri;
+      vocabulary.types!.push(VocabularyUtils.VOCABULARY_SNAPSHOT);
+
+      RoutingInstance.transitionToAsset(vocabulary);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.vocabularySnapshotSummary, {
+          params: new Map([
+            ["name", label],
+            ["timestamp", timestamp],
+          ]),
+          query: new Map([["namespace", namespace]]),
+        })
+      );
+    });
+
     it("transitions to term detail for a term", () => {
+      const termName = "test-term";
       const term = Generator.generateTerm(iri);
-      term.label = langString("test-term");
-      term.iri = iri + "/pojem/" + term.label[Constants.DEFAULT_LANGUAGE];
+      term.iri = iri + "/pojem/" + termName;
+
       RoutingInstance.transitionToAsset(term);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.vocabularyTermDetail, {
           params: new Map([
             ["name", label],
-            ["termName", term.label[Constants.DEFAULT_LANGUAGE]],
+            ["termName", termName],
+          ]),
+          query: new Map([["namespace", namespace]]),
+        })
+      );
+    });
+
+    it("transitions to term snapshot detail for term snapshot", () => {
+      const versionSeparator = "/verze";
+      TermItStore.getState().configuration.versionSeparator = versionSeparator;
+      const timestamp = "20220727T120000Z";
+      const vocIri = iri + versionSeparator + "/" + timestamp;
+      const termName = "test-term";
+      const term = Generator.generateTerm(vocIri);
+      term.iri = `${iri}/pojem/${termName}${versionSeparator}/${timestamp}`;
+      term.types!.push(VocabularyUtils.TERM_SNAPSHOT);
+
+      RoutingInstance.transitionToAsset(term);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routing.getTransitionPath(Routes.vocabularyTermSnapshotDetail, {
+          params: new Map([
+            ["name", label],
+            ["termName", termName],
+            ["timestamp", timestamp],
           ]),
           query: new Map([["namespace", namespace]]),
         })
