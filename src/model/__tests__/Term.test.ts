@@ -388,4 +388,14 @@ describe("Term tests", () => {
       expect(Term.isDraft(termData)).toBeFalsy();
     });
   });
+
+  describe("isSnapshot", () => {
+    it("returns true when term has snapshot type", () => {
+      const regular = Generator.generateTerm();
+      const snapshot = Generator.generateTerm();
+      snapshot.types = [VocabularyUtils.TERM_SNAPSHOT];
+      expect(regular.isSnapshot()).toBeFalsy();
+      expect(snapshot.isSnapshot()).toBeTruthy();
+    });
+  });
 });

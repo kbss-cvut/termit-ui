@@ -240,6 +240,10 @@ export default class Term extends Asset implements TermData {
     return termData;
   }
 
+  public isSnapshot(): boolean {
+    return this.hasType(VocabularyUtils.TERM_SNAPSHOT);
+  }
+
   /**
    * Removes translation in the specified language from the specified term data.
    *

@@ -61,6 +61,10 @@ const Routes = {
     "vocabularyTermDetail",
     "/vocabularies/:name/terms/:termName"
   ),
+  vocabularyTermSnapshotDetail: new Route(
+    "vocabularyTermSnapshotDetail",
+    "/vocabularies/:name/terms/:termName/snapshots/:timestamp"
+  ),
 
   // Public views
   publicDashboard: new Route("publicDashboard", "/public"),
@@ -76,6 +80,10 @@ const Routes = {
   publicVocabularyTermDetail: new Route(
     "publicVocabularyTermDetail",
     "/public/vocabularies/:name/terms/:termName"
+  ),
+  publicVocabularyTermSnapshotDetail: new Route(
+    "publicVocabularyTermSnapshotDetail",
+    "/public/vocabularies/:name/terms/:termName/snapshots/:timestamp"
   ),
   publicSearch: new Route("publicSearch", "/public/search"),
   publicSearchTerms: new Route("publicSearchTerms", "/public/search/terms"),
