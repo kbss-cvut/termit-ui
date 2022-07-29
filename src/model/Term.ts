@@ -241,7 +241,14 @@ export default class Term extends Asset implements TermData {
   }
 
   public isSnapshot(): boolean {
-    return this.hasType(VocabularyUtils.TERM_SNAPSHOT);
+    return Term.isSnapshot(this);
+  }
+
+  public static isSnapshot(term: Term | TermData | TermInfo) {
+    return (
+      term.types != undefined &&
+      term.types.indexOf(VocabularyUtils.TERM_SNAPSHOT) !== -1
+    );
   }
 
   /**

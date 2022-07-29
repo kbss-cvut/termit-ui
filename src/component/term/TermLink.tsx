@@ -5,10 +5,8 @@ import OutgoingLink from "../misc/OutgoingLink";
 import User from "../../model/User";
 import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
-import { Routing } from "../../util/Routing";
+import { Routing, Terms } from "../../util/Routing";
 import Routes from "../../util/Routes";
-import VocabularyUtils from "../../util/VocabularyUtils";
-import SecurityUtils from "../../util/SecurityUtils";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import { useI18n } from "../hook/useI18n";
@@ -32,26 +30,11 @@ function getTermPathWithTab(
   if (!term.vocabulary) {
     return Routing.getTransitionPath(Routes.dashboard);
   }
-  const vocIri = VocabularyUtils.create(term.vocabulary!.iri!);
-  const iri = VocabularyUtils.create(term.iri);
-  const queryParams = [];
-  queryParams.push(["namespace", vocIri.namespace!]);
+  const { route, params, query } = Terms.getTermRoutingOptions(term);
   if (activeTab) {
-    queryParams.push(["activeTab", activeTab]);
+    query.set("activeTab", activeTab);
   }
-  return Routing.getTransitionPath(
-    SecurityUtils.isLoggedIn(user)
-      ? Routes.vocabularyTermDetail
-      : Routes.publicVocabularyTermDetail,
-    {
-      params: new Map([
-        ["name", vocIri.fragment],
-        ["termName", iri.fragment],
-      ]),
-      // @ts-ignore
-      query: new Map(queryParams),
-    }
-  );
+  return Routing.getTransitionPath(route, { params, query });
 }
 
 export const TermLink: React.FC<TermLinkProps> = (props) => {
