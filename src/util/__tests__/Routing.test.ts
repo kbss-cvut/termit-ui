@@ -7,6 +7,7 @@ import Generator from "../../__tests__/environment/Generator";
 import { langString } from "../../model/MultilingualString";
 import Constants from "../Constants";
 import TermItStore from "../../store/TermItStore";
+import { EMPTY_USER } from "../../model/User";
 
 jest.mock("history", () => ({
   createHashHistory: jest.fn().mockReturnValue({
@@ -58,6 +59,7 @@ describe("Routing", () => {
 
     it("transitions to vocabulary summary for a vocabulary", () => {
       const vocabulary = new Vocabulary({ iri, label });
+      TermItStore.getState().user = Generator.generateUser();
 
       RoutingInstance.transitionToAsset(vocabulary);
       expect(historyMock.push).toHaveBeenCalledWith(
@@ -71,6 +73,7 @@ describe("Routing", () => {
     it("transitions to vocabulary snapshot summary for vocabulary snapshot", () => {
       const versionSeparator = "/verze";
       TermItStore.getState().configuration.versionSeparator = versionSeparator;
+      TermItStore.getState().user = Generator.generateUser();
       const timestamp = "20220727T120000Z";
       const vocIri = iri + versionSeparator + "/" + timestamp;
       const vocabulary = Generator.generateVocabulary();
@@ -93,6 +96,7 @@ describe("Routing", () => {
       const termName = "test-term";
       const term = Generator.generateTerm(iri);
       term.iri = iri + "/pojem/" + termName;
+      TermItStore.getState().user = Generator.generateUser();
 
       RoutingInstance.transitionToAsset(term);
       expect(historyMock.push).toHaveBeenCalledWith(
@@ -109,6 +113,7 @@ describe("Routing", () => {
     it("transitions to term snapshot detail for term snapshot", () => {
       const versionSeparator = "/verze";
       TermItStore.getState().configuration.versionSeparator = versionSeparator;
+      TermItStore.getState().user = Generator.generateUser();
       const timestamp = "20220727T120000Z";
       const vocIri = iri + versionSeparator + "/" + timestamp;
       const termName = "test-term";
@@ -136,6 +141,7 @@ describe("Routing", () => {
     const iri = namespace + label;
 
     it("transitions to public vocabulary summary for a vocabulary", () => {
+      TermItStore.getState().user = EMPTY_USER;
       const vocabulary = new Vocabulary({ iri, label });
       RoutingInstance.transitionToPublicAsset(vocabulary);
       expect(historyMock.push).toHaveBeenCalledWith(
@@ -147,6 +153,7 @@ describe("Routing", () => {
     });
 
     it("transitions to public term detail for a term", () => {
+      TermItStore.getState().user = EMPTY_USER;
       const term = Generator.generateTerm(iri);
       term.label = langString("test-term");
       term.iri = iri + "/pojem/" + term.label[Constants.DEFAULT_LANGUAGE];

@@ -15,6 +15,7 @@ import Constants from "../../../util/Constants";
 import TermItState from "../../../model/TermItState";
 import cs from "../../../i18n/cs";
 import * as redux from "react-redux";
+import TermItStore from "../../../store/TermItStore";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -34,7 +35,12 @@ describe("TermLink", () => {
     (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
   });
 
+  afterEach(() => {
+    TermItStore.getState().user = new TermItState().user;
+  });
+
   it("links to correct internal asset", () => {
+    TermItStore.getState().user = Generator.generateUser();
     const termFragment = "localTermFragment";
     const term = new Term({
       label: langString("Test term"),

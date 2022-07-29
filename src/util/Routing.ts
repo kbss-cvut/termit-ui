@@ -4,9 +4,10 @@ import Routes, { Route } from "./Routes";
 import Asset from "../model/Asset";
 import Utils from "./Utils";
 import VocabularyUtils from "./VocabularyUtils";
-import Term from "../model/Term";
+import Term, { TermData, TermInfo } from "../model/Term";
 import TermItStore from "../store/TermItStore";
 import Vocabulary from "../model/Vocabulary";
+import SecurityUtils from "./SecurityUtils";
 
 export class Routing {
   get history(): History {
@@ -123,11 +124,10 @@ export class Routing {
       query?: Map<string, string>;
     } = {}
   ) => {
-    this.makeAssetTransition(false, asset, options);
+    this.makeAssetTransition(asset, options);
   };
 
   private makeAssetTransition(
-    isPublic: boolean,
     asset: Asset,
     options: {
       params?: Map<string, string>;
@@ -136,17 +136,9 @@ export class Routing {
   ) {
     const primaryType = Utils.getPrimaryAssetType(asset);
 
-    const params = options.params || new Map();
-    const query = options.query || new Map();
-
     switch (primaryType) {
       case VocabularyUtils.VOCABULARY:
-        this.transitionToVocabulary(
-          isPublic,
-          asset as Vocabulary,
-          params,
-          query
-        );
+        this.transitionToVocabulary(asset as Vocabulary, options);
         break;
       case VocabularyUtils.RESOURCE:
       case VocabularyUtils.DOCUMENT:
@@ -155,113 +147,108 @@ export class Routing {
         this.transitionToHome();
         break;
       case VocabularyUtils.TERM:
-        this.transitionToTerm(isPublic, asset as Term, params, query);
+        this.transitionToTerm(asset as Term);
         break;
     }
   }
 
   private transitionToVocabulary(
-    isPublic: boolean,
-    vocabulary: Vocabulary,
-    params: Map<string, string>,
-    query: Map<string, string>
+    asset: Vocabulary,
+    options: {
+      params?: Map<string, string>;
+      query?: Map<string, string>;
+    } = {}
   ) {
-    if (!vocabulary.isSnapshot()) {
-      const iri = VocabularyUtils.create(vocabulary.iri);
-      this.transitionTo(
-        isPublic ? Routes.publicVocabularySummary : Routes.vocabularySummary,
-        {
-          params: new Map([["name", iri.fragment], ...params]),
-          query: new Map([["namespace", iri.namespace!], ...query]),
-        }
-      );
-    } else {
-      const { name, namespace, timestamp } =
-        Routing.resolveVocabularySnapshotTransitionOptions(vocabulary);
-      this.transitionTo(
-        isPublic
-          ? Routes.publicVocabularySnapshotSummary
-          : Routes.vocabularySnapshotSummary,
-        {
-          params: new Map([
-            ["name", name],
-            ["timestamp", timestamp],
-            ...params,
-          ]),
-          query: new Map([["namespace", namespace], ...query]),
-        }
-      );
-    }
-  }
-
-  public static resolveVocabularySnapshotTransitionOptions(
-    vocabulary: Vocabulary
-  ) {
-    const timestamp = vocabulary.iri.substring(
-      vocabulary.iri.lastIndexOf("/") + 1
+    const { route, params, query } = Vocabularies.getVocabularyRoutingOptions(
+      asset as Vocabulary
     );
-    const originalIri = vocabulary.iri.substring(
-      0,
-      vocabulary.iri.indexOf(
-        TermItStore.getState().configuration.versionSeparator
-      )
-    );
-    const iri = VocabularyUtils.create(originalIri);
-    return {
-      name: iri.fragment,
-      namespace: iri.namespace!,
-      timestamp,
-    };
+    this.transitionTo(route, {
+      params: new Map([...params, ...(options.params || new Map())]),
+      query: new Map([...query, ...(options.query || new Map())]),
+    });
   }
 
   private transitionToTerm(
-    isPublic: boolean,
-    term: Term,
-    params: Map<string, string>,
-    query: Map<string, string>
+    asset: Term | TermData | TermInfo,
+    options: {
+      params?: Map<string, string>;
+      query?: Map<string, string>;
+    } = {}
   ) {
-    if (!term.isSnapshot()) {
-      const iri = VocabularyUtils.create(term.iri);
-      const vocIri = VocabularyUtils.create(term.vocabulary!.iri!);
-      this.transitionTo(
-        isPublic
-          ? Routes.publicVocabularyTermDetail
-          : Routes.vocabularyTermDetail,
-        {
-          params: new Map([
-            ["name", vocIri.fragment],
-            ["termName", iri.fragment],
-            ...params,
-          ]),
-          query: new Map([["namespace", vocIri.namespace!], ...query]),
-        }
-      );
-    } else {
+    const { route, params, query } = Terms.getTermRoutingOptions(asset as Term);
+    this.transitionTo(route, {
+      params: new Map([...params, ...(options.params || new Map())]),
+      query: new Map([...query, ...(options.query || new Map())]),
+    });
+  }
+
+  /**
+   * Transitions to the public summary view of the specified asset.
+   * @param asset Asset to transition to
+   * @param options Transition options, can specify path parameters and query parameters
+   * @see #transitionToAsset
+   */
+  public transitionToPublicAsset = (
+    asset: Asset,
+    options: {
+      params?: Map<string, string>;
+      query?: Map<string, string>;
+    } = {}
+  ) => {
+    this.makeAssetTransition(asset, options);
+  };
+}
+
+const INSTANCE = new Routing();
+
+export default INSTANCE;
+
+export class Terms {
+  public static getTermRoutingOptions(term: Term | TermData | TermInfo) {
+    const loggedIn = SecurityUtils.isLoggedIn(TermItStore.getState().user);
+    const snapshot = Term.isSnapshot(term);
+    const route = loggedIn
+      ? snapshot
+        ? Routes.vocabularyTermSnapshotDetail
+        : Routes.vocabularyTermDetail
+      : snapshot
+      ? Routes.publicVocabularyTermSnapshotDetail
+      : Routes.publicVocabularyTermDetail;
+    if (snapshot) {
       const { name, namespace, termName, timestamp } =
-        Routing.resolveTermSnapshotTransitionOptions(term);
-      this.transitionTo(
-        isPublic
-          ? Routes.publicVocabularyTermSnapshotDetail
-          : Routes.vocabularyTermSnapshotDetail,
-        {
-          params: new Map([
-            ["name", name],
-            ["termName", termName],
-            ["timestamp", timestamp],
-            ...params,
-          ]),
-          query: new Map([["namespace", namespace], ...query]),
-        }
-      );
+        Terms.resolveTermSnapshotTransitionOptions(term);
+      return {
+        route,
+        params: new Map<string, string>([
+          ["name", name],
+          ["termName", termName],
+          ["timestamp", timestamp],
+        ]),
+        query: new Map<string, string>([["namespace", namespace]]),
+      };
+    } else {
+      const iri = VocabularyUtils.create(term.iri!);
+      const vocIri = VocabularyUtils.create(term.vocabulary!.iri!);
+      return {
+        route,
+        params: new Map<string, string>([
+          ["name", vocIri.fragment],
+          ["termName", iri.fragment],
+        ]),
+        query: new Map<string, string>([["namespace", vocIri.namespace!]]),
+      };
     }
   }
 
-  public static resolveTermSnapshotTransitionOptions(term: Term) {
-    const timestamp = term.iri.substring(term.iri.lastIndexOf("/") + 1);
+  public static resolveTermSnapshotTransitionOptions(
+    term: Term | TermData | TermInfo
+  ) {
+    const iri = term.iri!;
+    const timestamp = iri.substring(iri.lastIndexOf("/") + 1);
     const originalTermIri = VocabularyUtils.create(
-      term.iri.substring(
+      iri.substring(
         0,
-        term.iri.indexOf(TermItStore.getState().configuration.versionSeparator)
+        iri.indexOf(TermItStore.getState().configuration.versionSeparator)
       )
     );
     const originalVocabularyIri = VocabularyUtils.create(
@@ -279,24 +266,54 @@ export class Routing {
       namespace: originalVocabularyIri.namespace!,
     };
   }
-
-  /**
-   * Transitions to the public summary view of the specified asset.
-   * @param asset Asset to transition to
-   * @param options Transition options, can specify path parameters and query parameters
-   * @see #transitionToAsset
-   */
-  public transitionToPublicAsset = (
-    asset: Asset,
-    options: {
-      params?: Map<string, string>;
-      query?: Map<string, string>;
-    } = {}
-  ) => {
-    this.makeAssetTransition(true, asset, options);
-  };
 }
 
-const INSTANCE = new Routing();
+export class Vocabularies {
+  public static getVocabularyRoutingOptions(vocabulary: Vocabulary) {
+    const loggedIn = SecurityUtils.isLoggedIn(TermItStore.getState().user);
+    const snapshot = vocabulary.isSnapshot();
+    const route = loggedIn
+      ? snapshot
+        ? Routes.vocabularySnapshotSummary
+        : Routes.vocabularySummary
+      : snapshot
+      ? Routes.publicVocabularySnapshotSummary
+      : Routes.publicVocabularySummary;
+    if (snapshot) {
+      const { name, namespace, timestamp } =
+        Vocabularies.resolveVocabularySnapshotTransitionOptions(vocabulary);
+      return {
+        route,
+        params: new Map<string, string>([
+          ["name", name],
+          ["timestamp", timestamp],
+        ]),
+        query: new Map<string, string>([["namespace", namespace]]),
+      };
+    } else {
+      const iri = VocabularyUtils.create(vocabulary.iri);
+      return {
+        route,
+        params: new Map<string, string>([["name", iri.fragment]]),
+        query: new Map<string, string>([["namespace", iri.namespace!]]),
+      };
+    }
+  }
 
-export default INSTANCE;
+  public static resolveVocabularySnapshotTransitionOptions(
+    vocabulary: Vocabulary
+  ) {
+    const iri = vocabulary.iri;
+    const timestamp = iri.substring(iri.lastIndexOf("/") + 1);
+    const originalIri = iri.substring(
+      0,
+      iri.indexOf(TermItStore.getState().configuration.versionSeparator)
+    );
+    const vocabularyIri = VocabularyUtils.create(originalIri);
+    return {
+      name: vocabularyIri.fragment,
+      namespace: vocabularyIri.namespace!,
+      timestamp,
+    };
+  }
+}
