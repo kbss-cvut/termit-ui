@@ -47,7 +47,7 @@ const Routes = {
   vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
   vocabularySnapshotSummary: new Route(
     "vocabularySnapshotSummary",
-    "/vocabularies/:name/snapshots/:timestamp"
+    "/vocabularies/:name/versions/:timestamp"
   ),
   annotateFile: new Route(
     "annotateFile",
@@ -63,7 +63,7 @@ const Routes = {
   ),
   vocabularyTermSnapshotDetail: new Route(
     "vocabularyTermSnapshotDetail",
-    "/vocabularies/:name/terms/:termName/snapshots/:timestamp"
+    "/vocabularies/:name/terms/:termName/versions/:timestamp"
   ),
 
   // Public views
@@ -75,7 +75,7 @@ const Routes = {
   ),
   publicVocabularySnapshotSummary: new Route(
     "publicVocabularySnapshotSummary",
-    "/public/vocabularies/:name/snapshots/:timestamp"
+    "/public/vocabularies/:name/versions/:timestamp"
   ),
   publicVocabularyTermDetail: new Route(
     "publicVocabularyTermDetail",
@@ -83,7 +83,7 @@ const Routes = {
   ),
   publicVocabularyTermSnapshotDetail: new Route(
     "publicVocabularyTermSnapshotDetail",
-    "/public/vocabularies/:name/terms/:termName/snapshots/:timestamp"
+    "/public/vocabularies/:name/terms/:termName/versions/:timestamp"
   ),
   publicSearch: new Route("publicSearch", "/public/search"),
   publicSearchTerms: new Route("publicSearchTerms", "/public/search/terms"),

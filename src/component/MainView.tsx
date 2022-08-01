@@ -26,6 +26,7 @@ import { changeView } from "../action/SyncActions";
 import Utils from "../util/Utils";
 import Mask from "./misc/Mask";
 import "./MainView.scss";
+import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -42,6 +43,7 @@ const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
+  configuration: Configuration;
   loadUser: () => void;
   logout: () => void;
   sidebarExpanded: boolean;
@@ -94,7 +96,10 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
   public render() {
     const { i18n, user, sidebarExpanded, desktopView } = this.props;
 
-    if (user === EMPTY_USER) {
+    if (
+      user === EMPTY_USER ||
+      this.props.configuration === DEFAULT_CONFIGURATION
+    ) {
       return this.renderPlaceholder();
     }
 
@@ -206,6 +211,7 @@ export default connect(
     return {
       loading: state.loading,
       user: state.user,
+      configuraton: state.configuration,
       intl: state.intl, // Pass intl in props to force UI re-render on language switch
       sidebarExpanded: state.sidebarExpanded,
       desktopView: state.desktopView,

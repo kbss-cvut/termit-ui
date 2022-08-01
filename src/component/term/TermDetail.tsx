@@ -46,6 +46,7 @@ import {
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
+  versionSeparator: string;
   term: Term | null;
   vocabulary: Vocabulary;
   loadVocabulary: (iri: IRI) => void;
@@ -96,27 +97,30 @@ export class TermDetail extends EditableComponent<
   }
 
   private loadVocabulary(): void {
-    const vocabularyName: string = this.props.match.params.name;
+    const { name, timestamp } = this.props.match.params;
     const namespace = Utils.extractQueryParam(
       this.props.location.search,
       "namespace"
     );
-    this.props.loadVocabulary({ fragment: vocabularyName, namespace });
+    let vocabularyIri;
+    if (timestamp) {
+      vocabularyIri = {
+        fragment: timestamp,
+        namespace: `${namespace}${name}${this.props.versionSeparator}/`,
+      };
+    } else {
+      vocabularyIri = { fragment: name, namespace };
+    }
+    this.props.loadVocabulary(vocabularyIri);
   }
 
   private loadTerm(): void {
-    const vocabularyName: string = this.props.match.params.name;
-    const termName: string = this.props.match.params.termName;
-    const timestamp: string | undefined = this.props.match.params.timestamp;
+    const { name, termName, timestamp } = this.props.match.params;
     const namespace = Utils.extractQueryParam(
       this.props.location.search,
       "namespace"
     );
-    this.props.loadTerm(
-      termName,
-      { fragment: vocabularyName, namespace },
-      timestamp
-    );
+    this.props.loadTerm(termName, { fragment: name, namespace }, timestamp);
   }
 
   public componentDidUpdate(prevProps: TermDetailProps) {
@@ -295,6 +299,7 @@ export default connect(
       term: state.selectedTerm,
       vocabulary: state.vocabulary,
       configuredLanguage: state.configuration.language,
+      versionSeparator: state.configuration.versionSeparator,
     };
   },
   (dispatch: ThunkDispatch) => {
