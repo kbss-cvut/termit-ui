@@ -149,8 +149,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     const vocabularyIri = fetchOptions.option
       ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!)
       : Utils.resolveVocabularyIriFromRoute(
-          this.props.match,
-          this.props.location,
+          this.props.match.params,
+          this.props.location.search,
           this.props.configuration
         );
     this.props.fetchUnusedTerms(vocabularyIri).then((data) => {

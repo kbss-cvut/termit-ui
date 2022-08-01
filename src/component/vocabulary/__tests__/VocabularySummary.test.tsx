@@ -21,6 +21,7 @@ jest.mock("../../changetracking/AssetHistory", () => () => (
 ));
 jest.mock("../../term/Terms", () => () => <div>Terms</div>);
 jest.mock("../TermChangeFrequency", () => () => <div>Term frequency</div>);
+jest.mock("../../misc/PromiseTrackingMask", () => () => <div>Mask</div>);
 
 describe("VocabularySummary", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
@@ -44,7 +45,7 @@ describe("VocabularySummary", () => {
   let vocabulary: Vocabulary;
 
   beforeEach(() => {
-    onLoad = jest.fn();
+    onLoad = jest.fn().mockResolvedValue({});
     onUpdate = jest.fn().mockResolvedValue(undefined);
     removeVocabulary = jest.fn().mockImplementation(() => Promise.resolve());
     exportToCsv = jest.fn();

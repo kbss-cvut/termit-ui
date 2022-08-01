@@ -15,6 +15,8 @@ import { useI18n } from "../../hook/useI18n";
 import { loadVocabulary } from "../../../action/AsyncActions";
 import MarkdownView from "../../misc/MarkdownView";
 import { useLocation, useRouteMatch } from "react-router-dom";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
 export const VocabularySummary: React.FC = () => {
   const { i18n } = useI18n();
@@ -31,8 +33,8 @@ export const VocabularySummary: React.FC = () => {
   }, [dispatch]);
   React.useEffect(() => {
     const iriFromRoute = Utils.resolveVocabularyIriFromRoute(
-      match,
-      location,
+      match.params,
+      location.search,
       configuration
     );
     const iri = VocabularyUtils.create(vocabulary.iri);
@@ -40,7 +42,10 @@ export const VocabularySummary: React.FC = () => {
       iri.fragment !== iriFromRoute.fragment ||
       (iriFromRoute.namespace && iri.namespace !== iriFromRoute.namespace)
     ) {
-      dispatch(loadVocabulary(iriFromRoute));
+      trackPromise(
+        dispatch(loadVocabulary(iriFromRoute)),
+        "vocabulary-summary"
+      );
     }
   }, [vocabulary, configuration, location, match, dispatch]);
 
@@ -51,6 +56,7 @@ export const VocabularySummary: React.FC = () => {
           "vocabulary.management.vocabularies"
         )}`}
       />
+      <PromiseTrackingMask area="vocabulary-summary" />
       <HeaderWithActions
         id="public-vocabulary-summary"
         title={

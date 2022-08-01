@@ -85,8 +85,8 @@ export class VocabularySummary extends EditableComponent<
 
   public loadVocabulary = () => {
     const iriFromUrl = Utils.resolveVocabularyIriFromRoute(
-      this.props.match,
-      this.props.location,
+      this.props.match.params,
+      this.props.location.search,
       this.props.configuration
     );
     const iri = VocabularyUtils.create(this.props.vocabulary.iri);
@@ -94,12 +94,15 @@ export class VocabularySummary extends EditableComponent<
       iri.fragment !== iriFromUrl.fragment ||
       (iriFromUrl.namespace && iri.namespace !== iriFromUrl.namespace)
     ) {
-      this.props.loadVocabulary(iriFromUrl);
+      trackPromise(this.props.loadVocabulary(iriFromUrl), "vocabulary-summary");
     }
   };
 
   public onSave = (vocabulary: Vocabulary) => {
-    this.props.updateVocabulary(vocabulary).then(() => {
+    trackPromise(
+      this.props.updateVocabulary(vocabulary),
+      "vocabulary-summary"
+    ).then(() => {
       this.onCloseEdit();
       this.props.loadVocabulary(VocabularyUtils.create(vocabulary.iri));
     });

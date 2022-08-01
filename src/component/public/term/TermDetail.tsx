@@ -29,19 +29,12 @@ interface TermDetailProps
 export const TermDetail: React.FC<TermDetailProps> = (props) => {
   const { term, location, match, loadTerm, loadVocabulary } = props;
   React.useEffect(() => {
-    const vocabularyName: string = match.params.name;
-    const termName: string = match.params.termName;
+    const { name, termName, timestamp } = match.params;
     const namespace = Utils.extractQueryParam(location.search, "namespace");
-    const vocUri = { fragment: vocabularyName, namespace };
-    loadTerm(termName, vocUri);
-    loadVocabulary(vocUri);
-  }, [
-    location.search,
-    match.params.termName,
-    match.params.name,
-    loadTerm,
-    loadVocabulary,
-  ]);
+    const vocUri = { fragment: name, namespace };
+    loadTerm(termName, vocUri, timestamp);
+    loadVocabulary(vocUri, timestamp);
+  }, [location.search, match.params, loadTerm, loadVocabulary]);
   const [language, setLanguage] = React.useState<string>(
     resolveInitialLanguage(props)
   );
@@ -94,9 +87,10 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri, false, false)),
-      loadTerm: (termName: string, vocabularyIri: IRI) =>
-        dispatch(loadTerm(termName, vocabularyIri)),
+      loadVocabulary: (iri: IRI, timestamp?: string) =>
+        dispatch(loadVocabulary(iri, false, timestamp)),
+      loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
+        dispatch(loadTerm(termName, vocabularyIri, timestamp)),
     };
   }
 )(injectIntl(withI18n(withRouter(TermDetail))));

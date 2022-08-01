@@ -285,13 +285,13 @@ const Utils = {
   },
 
   resolveVocabularyIriFromRoute(
-    match: match<any>,
-    location: Location<any>,
+    params: { name: string; timestamp?: string },
+    location: string,
     configuration: Configuration
   ): IRI {
-    let normalizedName = match.params.name;
-    const timestamp = match.params.timestamp;
-    let namespace = this.extractQueryParam(location.search, "namespace");
+    let normalizedName = params.name;
+    const timestamp = params.timestamp;
+    let namespace = this.extractQueryParam(location, "namespace");
     if (timestamp) {
       namespace += normalizedName + configuration.versionSeparator + "/";
       normalizedName = timestamp;

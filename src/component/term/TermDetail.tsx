@@ -50,7 +50,7 @@ export interface CommonTermDetailProps extends HasI18n {
   versionSeparator: string;
   term: Term | null;
   vocabulary: Vocabulary;
-  loadVocabulary: (iri: IRI) => void;
+  loadVocabulary: (iri: IRI, timestamp?: string) => void;
   loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) => void;
 }
 
@@ -103,16 +103,7 @@ export class TermDetail extends EditableComponent<
       this.props.location.search,
       "namespace"
     );
-    let vocabularyIri;
-    if (timestamp) {
-      vocabularyIri = {
-        fragment: timestamp,
-        namespace: `${namespace}${name}${this.props.versionSeparator}/`,
-      };
-    } else {
-      vocabularyIri = { fragment: name, namespace };
-    }
-    this.props.loadVocabulary(vocabularyIri);
+    this.props.loadVocabulary({ fragment: name, namespace }, timestamp);
   }
 
   private loadTerm(): void {
@@ -306,7 +297,8 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
+      loadVocabulary: (iri: IRI, timestamp?: string) =>
+        dispatch(loadVocabulary(iri, true, timestamp)),
       loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
         dispatch(loadTerm(termName, vocabularyIri, timestamp)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
