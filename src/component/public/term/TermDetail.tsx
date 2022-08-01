@@ -19,7 +19,8 @@ import {
   resolveInitialLanguage,
 } from "../../term/TermDetail";
 import WindowTitle from "../../misc/WindowTitle";
-import { loadTerm, loadVocabulary } from "../../../action/AsyncActions";
+import { loadVocabulary } from "../../../action/AsyncActions";
+import { loadTerm } from "../../../action/AsyncTermActions";
 
 interface TermDetailProps
   extends CommonTermDetailProps,

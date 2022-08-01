@@ -18,7 +18,7 @@ import {
 } from "./SyncActions";
 import Ajax, { content, param } from "../util/Ajax";
 import JsonLdUtils from "../util/JsonLdUtils";
-import Term from "../model/Term";
+import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
 import { ErrorData } from "../model/ErrorInfo";
 import Constants from "../util/Constants";
 import TermOccurrence, {
@@ -35,6 +35,7 @@ import { getApiPrefix } from "./ActionUtils";
 import { AssetData } from "../model/Asset";
 import TermStatus from "../model/TermStatus";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
+import TermItState from "../model/TermItState";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -316,4 +317,53 @@ export function loadTermSnapshots(termIri: IRI) {
         return [];
       });
   };
+}
+
+export function loadTerm(
+  termNormalizedName: string,
+  vocabularyIri: IRI,
+  timestamp?: string
+) {
+  const action = {
+    type: ActionType.LOAD_TERM,
+  };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    dispatch(asyncActionRequest(action));
+    return fetchTerm(getState(), termNormalizedName, vocabularyIri, timestamp)
+      .then((data: object) =>
+        JsonLdUtils.compactAndResolveReferences<TermData>(data, TERM_CONTEXT)
+      )
+      .then((data: TermData) =>
+        dispatch(asyncActionSuccessWithPayload(action, new Term(data)))
+      )
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+      });
+  };
+}
+
+function fetchTerm(
+  state: TermItState,
+  termNormalizedName: string,
+  vocabularyIri: IRI,
+  timestamp?: string
+) {
+  if (!timestamp) {
+    return Ajax.get(
+      `${getApiPrefix(state)}/vocabularies/${
+        vocabularyIri.fragment
+      }/terms/${termNormalizedName}`,
+      param("namespace", vocabularyIri.namespace)
+    );
+  } else {
+    return Ajax.get(
+      `${getApiPrefix(state)}/vocabularies/${
+        vocabularyIri.fragment
+      }/terms/${termNormalizedName}/versions`,
+      param("namespace", vocabularyIri.namespace).param("at", timestamp)
+    );
+  }
 }

@@ -246,7 +246,7 @@ export default class Term extends Asset implements TermData {
 
   public static isSnapshot(term: Term | TermData | TermInfo) {
     return (
-      term.types != undefined &&
+      term.types !== undefined &&
       term.types.indexOf(VocabularyUtils.TERM_SNAPSHOT) !== -1
     );
   }

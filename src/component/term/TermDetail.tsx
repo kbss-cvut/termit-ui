@@ -4,7 +4,6 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
-  loadTerm,
   loadVocabulary,
   removeTerm,
   updateTerm,
@@ -41,6 +40,7 @@ import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
 import TermOccurrence from "../../model/TermOccurrence";
 import {
   approveOccurrence,
+  loadTerm,
   removeOccurrence,
 } from "../../action/AsyncTermActions";
 
@@ -49,7 +49,7 @@ export interface CommonTermDetailProps extends HasI18n {
   term: Term | null;
   vocabulary: Vocabulary;
   loadVocabulary: (iri: IRI) => void;
-  loadTerm: (termName: string, vocabularyIri: IRI) => void;
+  loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) => void;
 }
 
 interface TermDetailProps
@@ -107,11 +107,16 @@ export class TermDetail extends EditableComponent<
   private loadTerm(): void {
     const vocabularyName: string = this.props.match.params.name;
     const termName: string = this.props.match.params.termName;
+    const timestamp: string | undefined = this.props.match.params.timestamp;
     const namespace = Utils.extractQueryParam(
       this.props.location.search,
       "namespace"
     );
-    this.props.loadTerm(termName, { fragment: vocabularyName, namespace });
+    this.props.loadTerm(
+      termName,
+      { fragment: vocabularyName, namespace },
+      timestamp
+    );
   }
 
   public componentDidUpdate(prevProps: TermDetailProps) {
@@ -295,8 +300,8 @@ export default connect(
   (dispatch: ThunkDispatch) => {
     return {
       loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
-      loadTerm: (termName: string, vocabularyIri: IRI) =>
-        dispatch(loadTerm(termName, vocabularyIri)),
+      loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
+        dispatch(loadTerm(termName, vocabularyIri, timestamp)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
       removeTerm: (term: Term) => dispatch(removeTerm(term)),
       approveOccurrence: (occurrence: TermOccurrence) =>

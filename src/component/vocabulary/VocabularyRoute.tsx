@@ -22,6 +22,12 @@ const VocabularyRoute: React.FC = () => {
       />
       <DynamicBreadcrumbRoute
         asset="selectedTerm"
+        path={Routes.vocabularyTermSnapshotDetail.path}
+        component={TermDetail}
+        includeSearch={true}
+      />
+      <DynamicBreadcrumbRoute
+        asset="selectedTerm"
         path={Routes.vocabularyTermDetail.path}
         component={TermDetail}
         includeSearch={true}

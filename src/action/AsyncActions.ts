@@ -551,33 +551,6 @@ export function genericLoadTerms(
   };
 }
 
-export function loadTerm(termNormalizedName: string, vocabularyIri: IRI) {
-  const action = {
-    type: ActionType.LOAD_TERM,
-  };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(
-      `${getApiPrefix(getState())}/vocabularies/${
-        vocabularyIri.fragment
-      }/terms/${termNormalizedName}`,
-      param("namespace", vocabularyIri.namespace)
-    )
-      .then((data: object) =>
-        JsonLdUtils.compactAndResolveReferences<TermData>(data, TERM_CONTEXT)
-      )
-      .then((data: TermData) =>
-        dispatch(asyncActionSuccessWithPayload(action, new Term(data)))
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-      });
-  };
-}
-
 export function loadTermByIri(termIri: IRI) {
   const action = {
     type: ActionType.LOAD_TERM_BY_IRI,
