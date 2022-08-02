@@ -69,7 +69,6 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
   };
 
   public render() {
-    const value = resolveSelectedIris(this.props.selected);
     return (
       <FormGroup id={this.props.id}>
         <Label className="attribute-label">
@@ -82,7 +81,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
         <>
           <IntelligentTreeSelect
             onChange={this.onChange}
-            value={value}
+            value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
             fetchLimit={100}
             maxHeight={200}

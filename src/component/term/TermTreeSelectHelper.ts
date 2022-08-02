@@ -20,8 +20,10 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     simpleTreeData: true,
     showSettings: false,
     noResultsText: intl.i18n("main.search.no-results"),
+    loadingText: intl.i18n("select.loading"),
     placeholder: "",
     searchDelay: 300,
+    classNamePrefix: "react-select",
   };
 }
 

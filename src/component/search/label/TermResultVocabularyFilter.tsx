@@ -66,6 +66,7 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
           onChange={onSelect}
           valueKey="value"
           labelKey="label"
+          classNamePrefix="react-select"
           maxHeight={150}
           multi={true}
           renderAsTree={false}

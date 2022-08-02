@@ -20,6 +20,7 @@ const en = {
     "basic-information": "Basic Information",
     "created-info": "Created by {author} on {date}",
     "select.placeholder": "Select...",
+    "select.loading": "Loading...",
     "help.title": "Help",
     "multilingual.title":
       "Attribute value can be provided in multiple languages",
