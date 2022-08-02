@@ -3,9 +3,7 @@ import App from "./App";
 import "./index.scss";
 import * as serviceWorker from "./serviceWorker";
 import TimeAgo from "javascript-time-ago";
-// @ts-ignore
 import timeagoEn from "javascript-time-ago/locale/en";
-// @ts-ignore
 import tiemagoCs from "javascript-time-ago/locale/cs";
 
 // @ts-ignore
