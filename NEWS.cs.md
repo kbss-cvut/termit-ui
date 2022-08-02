@@ -1,3 +1,8 @@
+#### Verze 2.12.1
+
+- Rozšířeny atributy dostupné u snapshotů pojmů ve veřejném rozhraní TermIt.
+- Vylepšeno zobrazení editace ne-SKOS atributů.
+
 #### Verze 2.12.0
 
 - Přidána podpora pro snapshoty slovníků (a jejich pojmů). Tyto snapshoty reprezentují zakonzerovaný stav slovníku k datu vytvoření snapshotu. Funkcionalita má v tuto chvíli především backendovou podporu, v uživatelském rozhraní TermItu lze snapshot pouze vytvořit.
