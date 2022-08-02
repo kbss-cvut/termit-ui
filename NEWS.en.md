@@ -1,3 +1,8 @@
+#### Version 2.12.1
+
+- Extend attributes of term snapshots in the public TermIt API.
+- Improve the layout of non-SKOS attribute editor.
+
 #### Version 2.12.0
 
 - Added support for snapshots of vocabularies (and their content). Snapshots represent the state of a vocabulary at the moment of creation of the snapshot. This feature is currently mainly on the backend, UI supports only snapshot creation.
