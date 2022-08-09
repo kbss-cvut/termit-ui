@@ -106,6 +106,7 @@ const VocabularyUtils = {
   USER_LOCKED: _NS_TERMIT + "uzam\u010den\u00fd-u\u017eivatel-termitu",
   USER_DISABLED: _NS_TERMIT + "zablokovan\u00fd-u\u017eivatel-termitu",
   USER_RESTRICTED: _NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
+  USER_EDITOR: _NS_TERMIT + "pln\u00fd-u\u017eivatel-termitu",
   HAS_COUNT: _NS_TERMIT + "has-count",
   PREFIX_RDFS: _NS_RDFS,
   RDF_TYPE: _NS_RDF + "type",

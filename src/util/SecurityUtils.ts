@@ -24,9 +24,10 @@ export default class SecurityUtils {
   public static isEditor(currentUser?: User | null): boolean {
     return (
       SecurityUtils.isLoggedIn(currentUser) &&
-      Utils.sanitizeArray(currentUser!.types).indexOf(
-        VocabularyUtils.USER_RESTRICTED
-      ) === -1
+      (currentUser?.isAdmin() ||
+        Utils.sanitizeArray(currentUser!.types).indexOf(
+          VocabularyUtils.USER_EDITOR
+        ) !== -1)
     );
   }
 }

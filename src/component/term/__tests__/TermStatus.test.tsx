@@ -25,6 +25,7 @@ describe("TermStatus", () => {
     "passes correct status to setTermStatus on toggle",
     (expected: Status, draftValue?: boolean) => {
       const user = Generator.generateUser();
+      user.types.push(VocabularyUtils.USER_EDITOR);
       (redux.useSelector as jest.Mock).mockReturnValue(user);
       const fakeDispatch = jest.fn().mockResolvedValue({});
       (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);

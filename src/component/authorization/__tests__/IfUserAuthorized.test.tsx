@@ -20,6 +20,7 @@ describe("IfUserAuthorized", () => {
   });
 
   it("renders children components when current user is not restricted", () => {
+    currentUser.types.push(VocabularyUtils.USER_EDITOR);
     const wrapper = mountWithIntl(
       <IfUserAuthorized>
         <div id="test">Test</div>

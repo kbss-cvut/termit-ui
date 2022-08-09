@@ -59,8 +59,10 @@ describe("SecurityUtils", () => {
     });
 
     it("returns true for regular user and admin", () => {
-      const user = Generator.generateUser();
+      let user = Generator.generateUser();
+      user.types.push(VocabularyUtils.USER_EDITOR);
       expect(SecurityUtils.isEditor(user)).toBeTruthy();
+      user = Generator.generateUser();
       user.types.push(VocabularyUtils.USER_ADMIN);
       expect(SecurityUtils.isEditor(user)).toBeTruthy();
     });

@@ -75,7 +75,9 @@ describe("VocabularySummary", () => {
       iri: namespace + normalizedName,
       label: "Test vocabulary",
     });
-    (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
+    const user = Generator.generateUser();
+    user.types.push(VocabularyUtils.USER_EDITOR);
+    (redux.useSelector as jest.Mock).mockReturnValue(user);
   });
 
   it("loads vocabulary on mount", () => {
