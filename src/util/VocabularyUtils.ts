@@ -141,6 +141,8 @@ const VocabularyUtils = {
   PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
   UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,
 
+  IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
+
   getFragment(iri: string): string {
     return this.create(iri).fragment;
   },
