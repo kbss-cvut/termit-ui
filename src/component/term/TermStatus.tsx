@@ -9,8 +9,8 @@ import { setTermStatus } from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Status from "../../model/TermStatus";
 import TermItState from "../../model/TermItState";
-import SecurityUtils from "../../util/SecurityUtils";
 import DraftBadge from "./DraftBadge";
+import { isEditor } from "../../util/Authorization";
 
 interface TermStatusProps {
   term: Term;
@@ -38,7 +38,7 @@ const TermStatus: React.FC<TermStatusProps> = ({ term }) => {
         </Label>
       </Col>
       <Col xl={10} md={8}>
-        {SecurityUtils.isEditor(user) ? (
+        {isEditor(user) ? (
           <DraftToggle
             id="term-metadata-status"
             draft={isDraft}

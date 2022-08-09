@@ -19,9 +19,9 @@ import Routing from "../../../util/Routing";
 import { RouteComponentProps, withRouter } from "react-router";
 import classNames from "classnames";
 import User from "../../../model/User";
-import SecurityUtils from "../../../util/SecurityUtils";
 import { FaTimes } from "react-icons/fa";
 import "./NavbarSearch.scss";
+import { isLoggedIn } from "../../../util/Authorization";
 
 interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
   updateSearchFilter: (searchString: string) => any;
@@ -108,9 +108,7 @@ export class NavbarSearch extends React.Component<
     }
     this.closeResults();
     Routing.transitionTo(
-      SecurityUtils.isLoggedIn(this.props.user)
-        ? Routes.search
-        : Routes.publicSearch,
+      isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch,
       { query }
     );
   };
