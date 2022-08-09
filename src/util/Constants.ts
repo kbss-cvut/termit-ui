@@ -110,6 +110,7 @@ const constants = {
   EMPTY_ASSET_IRI: "http://empty",
   LAST_COMMENTED_ASSET_LIMIT: 5,
   ANNOTATOR_TUTORIAL: {},
+  WORKSPACE_EDITABLE_CONTEXT_PARAM: "edit-context",
 };
 
 constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =

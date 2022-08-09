@@ -48,13 +48,8 @@ const Utils = {
     queryString: string,
     paramName: string
   ): string | undefined {
-    queryString = decodeURI(queryString); // TODO This is a nasty hack, the problem with encoding seems to be
-    // // somewhere in thunk
-    const params = new Proxy(new URLSearchParams(queryString), {
-      get: (searchParams, prop) => searchParams.get(prop.toString()),
-    });
-    const result = params[paramName];
-    return result || undefined;
+    const result = Utils.extractQueryParams(queryString, paramName);
+    return result.length > 0 ? result[0] : undefined;
   },
 
   /**

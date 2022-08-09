@@ -27,6 +27,7 @@ import Utils from "../util/Utils";
 import Mask from "./misc/Mask";
 import "./MainView.scss";
 import { openForEditing } from "../action/AsyncWorkspaceActions";
+import Constants from "../util/Constants";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -51,11 +52,14 @@ interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   changeView: () => void;
 }
 
-export class MainView extends React.Component<MainViewProps> {
-  public static defaultProps: Partial<MainViewProps> = {};
+interface MainViewState {
+  loadingWorkspace: boolean;
+}
 
+export class MainView extends React.Component<MainViewProps, MainViewState> {
   constructor(props: MainViewProps) {
     super(props);
+    this.state = { loadingWorkspace: false };
   }
 
   public componentDidMount(): void {
@@ -73,10 +77,13 @@ export class MainView extends React.Component<MainViewProps> {
   private loadWorkspace() {
     let contexts = Utils.extractQueryParams(
       this.props.location.search,
-      "edit-context"
+      Constants.WORKSPACE_EDITABLE_CONTEXT_PARAM
     );
     if (contexts.length > 0) {
-      this.props.openContextsForEditing(contexts);
+      this.setState({ loadingWorkspace: true });
+      this.props
+        .openContextsForEditing(contexts)
+        .then(() => this.setState({ loadingWorkspace: false }));
     }
   }
 
@@ -97,7 +104,7 @@ export class MainView extends React.Component<MainViewProps> {
   public render() {
     const { i18n, user, sidebarExpanded, desktopView } = this.props;
 
-    if (user === EMPTY_USER) {
+    if (user === EMPTY_USER || this.state.loadingWorkspace) {
       return this.renderPlaceholder();
     }
 
@@ -131,8 +138,6 @@ export class MainView extends React.Component<MainViewProps> {
               </Navbar>
             )}
 
-            {/*
-                        // @ts-ignore */}
             {!this.isDashboardRoute() && (
               <Breadcrumbs className="breadcrumb-bar" separator="/" />
             )}

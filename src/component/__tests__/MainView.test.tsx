@@ -10,6 +10,7 @@ import Generator from "../../__tests__/environment/Generator";
 describe("MainView", () => {
   let loadUser: () => Promise<any>;
   let logout: () => void;
+  let changeView: () => void;
   let openContextsForEditing: () => Promise<any>;
 
   const nonEmptyUser = new User({
@@ -19,10 +20,24 @@ describe("MainView", () => {
     iri: Generator.generateUri(),
   });
 
+  let actions: {
+    loadUser: () => Promise<any>;
+    logout: () => void;
+    openContextsForEditing: (contexts: string[]) => Promise<any>;
+    changeView: () => void;
+  };
+
   beforeEach(() => {
     loadUser = jest.fn().mockResolvedValue({});
     logout = jest.fn();
+    changeView = jest.fn();
     openContextsForEditing = jest.fn().mockResolvedValue({});
+    actions = {
+      loadUser,
+      logout,
+      openContextsForEditing,
+      changeView,
+    };
   });
 
   describe("component mount", () => {
@@ -30,9 +45,9 @@ describe("MainView", () => {
       shallow(
         <MainView
           user={EMPTY_USER}
-          loadUser={loadUser}
-          logout={logout}
-          openContextsForEditing={openContextsForEditing}
+          sidebarExpanded={true}
+          desktopView={true}
+          {...actions}
           {...intlFunctions()}
           {...routingProps()}
         />
@@ -49,9 +64,9 @@ describe("MainView", () => {
       await shallow(
         <MainView
           user={EMPTY_USER}
-          loadUser={loadUser}
-          logout={logout}
-          openContextsForEditing={openContextsForEditing}
+          sidebarExpanded={true}
+          desktopView={true}
+          {...actions}
           {...intlFunctions()}
           {...routing}
         />
@@ -68,9 +83,9 @@ describe("MainView", () => {
       shallow(
         <MainView
           user={nonEmptyUser}
-          loadUser={loadUser}
-          logout={logout}
-          openContextsForEditing={openContextsForEditing}
+          sidebarExpanded={true}
+          desktopView={true}
+          {...actions}
           {...intlFunctions()}
           {...routing}
         />
@@ -82,9 +97,9 @@ describe("MainView", () => {
       shallow(
         <MainView
           user={nonEmptyUser}
-          loadUser={loadUser}
-          logout={logout}
-          openContextsForEditing={openContextsForEditing}
+          sidebarExpanded={true}
+          desktopView={true}
+          {...actions}
           {...intlFunctions()}
           {...routingProps()}
         />
@@ -96,9 +111,9 @@ describe("MainView", () => {
       shallow(
         <MainView
           user={nonEmptyUser}
-          loadUser={loadUser}
-          logout={logout}
-          openContextsForEditing={openContextsForEditing}
+          sidebarExpanded={true}
+          desktopView={true}
+          {...actions}
           {...intlFunctions()}
           {...routingProps()}
         />
@@ -110,9 +125,9 @@ describe("MainView", () => {
       const wrapper = shallow(
         <MainView
           user={EMPTY_USER}
-          loadUser={loadUser}
-          logout={logout}
-          openContextsForEditing={openContextsForEditing}
+          sidebarExpanded={true}
+          desktopView={true}
+          {...actions}
           {...intlFunctions()}
           {...routingProps()}
         />
@@ -125,9 +140,9 @@ describe("MainView", () => {
     const wrapper = shallow(
       <MainView
         user={nonEmptyUser}
-        loadUser={loadUser}
-        logout={logout}
-        openContextsForEditing={openContextsForEditing}
+        sidebarExpanded={true}
+        desktopView={true}
+        {...actions}
         {...intlFunctions()}
         {...routingProps()}
       />
@@ -146,9 +161,9 @@ describe("MainView", () => {
     const wrapper = shallow(
       <MainView
         user={nonEmptyUser}
-        loadUser={loadUser}
-        logout={logout}
-        openContextsForEditing={openContextsForEditing}
+        sidebarExpanded={true}
+        desktopView={true}
+        {...actions}
         history={createMemoryHistory()}
         location={locationVocabularies}
         match={match()}
@@ -162,10 +177,9 @@ describe("MainView", () => {
     const wrapper = shallow(
       <MainView
         user={nonEmptyUser}
-        loadUser={loadUser}
-        logout={logout}
-        openContextsForEditing={openContextsForEditing}
+        sidebarExpanded={true}
         desktopView={true}
+        {...actions}
         {...intlFunctions()}
         {...routingProps()}
       />
@@ -177,10 +191,9 @@ describe("MainView", () => {
     const wrapper = shallow(
       <MainView
         user={nonEmptyUser}
-        loadUser={loadUser}
-        logout={logout}
-        openContextsForEditing={openContextsForEditing}
+        sidebarExpanded={true}
         desktopView={false}
+        {...actions}
         {...intlFunctions()}
         {...routingProps()}
       />
