@@ -1,7 +1,7 @@
 import User, { EMPTY_USER } from "../model/User";
 import Utils from "./Utils";
 import VocabularyUtils from "./VocabularyUtils";
-import Vocabulary from "../model/Vocabulary";
+import { AssetData } from "../model/Asset";
 
 export function isLoggedIn(currentUser?: User | null): boolean {
   return !!currentUser && currentUser !== EMPTY_USER;
@@ -17,14 +17,10 @@ export function isEditor(currentUser?: User | null): boolean {
   );
 }
 
-export function isVocabularyEditable(
-  vocabulary: Vocabulary,
-  currentUser?: User
-): boolean {
+export function isAssetEditable(asset: AssetData, currentUser?: User): boolean {
   return (
     isEditor(currentUser) &&
-    Utils.sanitizeArray(vocabulary.types).indexOf(
-      VocabularyUtils.IS_READ_ONLY
-    ) === -1
+    Utils.sanitizeArray(asset.types).indexOf(VocabularyUtils.IS_READ_ONLY) ===
+      -1
   );
 }

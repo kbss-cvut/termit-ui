@@ -1,6 +1,6 @@
 import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../VocabularyUtils";
-import { isEditor, isLoggedIn, isVocabularyEditable } from "../Authorization";
+import { isEditor, isLoggedIn, isAssetEditable } from "../Authorization";
 import { EMPTY_USER } from "../../model/User";
 
 describe("Authorization", () => {
@@ -38,12 +38,12 @@ describe("Authorization", () => {
     });
   });
 
-  describe("isVocabularyEditable", () => {
+  describe("isAssetEditable", () => {
     it("returns true when current user is editor and vocabulary is not read only", () => {
       const user = Generator.generateUser();
       user.types.push(VocabularyUtils.USER_EDITOR);
       expect(
-        isVocabularyEditable(Generator.generateVocabulary(), user)
+        isAssetEditable(Generator.generateVocabulary(), user)
       ).toBeTruthy();
     });
 
@@ -52,14 +52,12 @@ describe("Authorization", () => {
       user.types.push(VocabularyUtils.USER_EDITOR);
       const vocabulary = Generator.generateVocabulary();
       vocabulary.types = [VocabularyUtils.IS_READ_ONLY];
-      expect(isVocabularyEditable(vocabulary, user)).toBeFalsy();
+      expect(isAssetEditable(vocabulary, user)).toBeFalsy();
     });
 
     it("returns false when current user is not editor and vocabulary is not read only", () => {
       const user = Generator.generateUser();
-      expect(
-        isVocabularyEditable(Generator.generateVocabulary(), user)
-      ).toBeFalsy();
+      expect(isAssetEditable(Generator.generateVocabulary(), user)).toBeFalsy();
     });
   });
 });
