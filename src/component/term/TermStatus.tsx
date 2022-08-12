@@ -10,13 +10,15 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Status from "../../model/TermStatus";
 import TermItState from "../../model/TermItState";
 import DraftBadge from "./DraftBadge";
-import { isEditor } from "../../util/Authorization";
+import { isAssetEditable } from "../../util/Authorization";
+import Vocabulary from "../../model/Vocabulary";
 
 interface TermStatusProps {
   term: Term;
+  vocabulary: Vocabulary;
 }
 
-const TermStatus: React.FC<TermStatusProps> = ({ term }) => {
+const TermStatus: React.FC<TermStatusProps> = ({ term, vocabulary }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const user = useSelector((state: TermItState) => state.user);
@@ -38,7 +40,7 @@ const TermStatus: React.FC<TermStatusProps> = ({ term }) => {
         </Label>
       </Col>
       <Col xl={10} md={8}>
-        {isEditor(user) ? (
+        {isAssetEditable(vocabulary, user) ? (
           <DraftToggle
             id="term-metadata-status"
             draft={isDraft}
