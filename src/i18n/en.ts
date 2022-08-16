@@ -36,6 +36,10 @@ const en = {
 
     "news-viewer.title": "News",
 
+    "auth.redirect-message": "Redirecting you to the authorization service.",
+    "auth.unavailable-message":
+      "Authorization service is not available. Please contact system administrators.",
+
     "login.title": "Log in",
     "login.subtitle": "Please login to continue",
     "login.username": "Username",
