@@ -14,7 +14,6 @@ import keycloak from "../util/Keycloak";
 export function logout() {
   if (process.env.REACT_APP_AUTHENTICATION === "keycloak") {
     keycloak.logout({
-      //TODO: Test fails when this method is called - "is not a function"
       redirectUri: Routing.buildFullUrl(Routes.publicDashboard),
     });
   }
