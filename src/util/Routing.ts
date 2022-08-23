@@ -7,7 +7,7 @@ import VocabularyUtils from "./VocabularyUtils";
 import Term, { TermData, TermInfo } from "../model/Term";
 import TermItStore from "../store/TermItStore";
 import Vocabulary from "../model/Vocabulary";
-import SecurityUtils from "./SecurityUtils";
+import { isLoggedIn } from "./Authorization";
 
 export class Routing {
   get history(): History {
@@ -205,7 +205,7 @@ export default INSTANCE;
 
 export class Terms {
   public static getTermRoutingOptions(term: Term | TermData | TermInfo) {
-    const loggedIn = SecurityUtils.isLoggedIn(TermItStore.getState().user);
+    const loggedIn = isLoggedIn(TermItStore.getState().user);
     const snapshot = Term.isSnapshot(term);
     const route = loggedIn
       ? snapshot
@@ -270,7 +270,7 @@ export class Terms {
 
 export class Vocabularies {
   public static getVocabularyRoutingOptions(vocabulary: Vocabulary) {
-    const loggedIn = SecurityUtils.isLoggedIn(TermItStore.getState().user);
+    const loggedIn = isLoggedIn(TermItStore.getState().user);
     const snapshot = vocabulary.isSnapshot();
     const route = loggedIn
       ? snapshot
