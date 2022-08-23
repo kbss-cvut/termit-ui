@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { IfAuthorized } from "react-authorization";
 import Unauthorized from "./Unauthorized";
-import SecurityUtils from "../../util/SecurityUtils";
+import { isEditor } from "../../util/Authorization";
 
 interface IfUserAuthorizedProps {
   renderUnauthorizedAlert?: boolean; // Whether an alert should be rendered if user is not authorized. Defaults to true
@@ -18,7 +18,7 @@ const IfUserAuthorized: React.FC<IfUserAuthorizedProps> = (props) => {
   const user = useSelector((state: TermItState) => state.user);
   return (
     <IfAuthorized
-      isAuthorized={() => SecurityUtils.isEditor(user)}
+      isAuthorized={() => isEditor(user)}
       unauthorized={
         renderUnauthorizedAlert &&
         (unauthorized ? unauthorized : <Unauthorized />)

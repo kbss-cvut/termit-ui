@@ -6,8 +6,8 @@ import Routes from "../../util/Routes";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
-import SecurityUtils from "../../util/SecurityUtils";
 import { useI18n } from "../hook/useI18n";
+import { isLoggedIn } from "../../util/Authorization";
 
 interface VocabularyLinkProps {
   vocabulary: Vocabulary;
@@ -20,7 +20,7 @@ export const VocabularyLink = (props: VocabularyLinkProps) => {
   const { i18n } = useI18n();
   const iri = VocabularyUtils.create(props.vocabulary.iri);
   const path = Routing.getTransitionPath(
-    SecurityUtils.isLoggedIn(props.user)
+    isLoggedIn(props.user)
       ? Routes.vocabularySummary
       : Routes.publicVocabularySummary,
     {

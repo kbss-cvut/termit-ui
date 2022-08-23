@@ -33,6 +33,7 @@ const TermMetadata: React.FC<TermMetadataProps> = (props) => {
                 <CardBody className="card-body-basic-info">
                   <BasicTermMetadata
                     term={term}
+                    vocabulary={vocabulary}
                     withDefinitionSource={false}
                     language={language}
                   />

@@ -8,10 +8,10 @@ import TermItState from "../../model/TermItState";
 import { Routing } from "../../util/Routing";
 import Routes from "../../util/Routes";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import SecurityUtils from "../../util/SecurityUtils";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import { useI18n } from "../hook/useI18n";
+import { isLoggedIn } from "../../util/Authorization";
 
 interface TermLinkProps {
   term: Term | TermInfo;
@@ -40,7 +40,7 @@ function getTermPathWithTab(
     queryParams.push(["activeTab", activeTab]);
   }
   return Routing.getTransitionPath(
-    SecurityUtils.isLoggedIn(user)
+    isLoggedIn(user)
       ? Routes.vocabularyTermDetail
       : Routes.publicVocabularyTermDetail,
     {

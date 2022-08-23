@@ -685,6 +685,10 @@ const en = {
 
     "validation.message.tooltip":
       "This is a quality validation result. The form can be submitted even if it has quality issues.",
+
+    "auth.notEditable.message.unauthorized":
+      "You have insufficient rights to edit this { type }.",
+    "auth.notEditable.message.readOnly": "This { type } is read only.",
   },
 };
 

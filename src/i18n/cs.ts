@@ -696,6 +696,10 @@ const cs = {
 
     "validation.message.tooltip":
       "Tato zpráva reprezentuje výsledek kontroly kvality. Formulář lze uložit i v případě, že kvalita není stoprocentní.",
+
+    "auth.notEditable.message.unauthorized":
+      "K editaci tohoto objektu nemáte dostatečná práva.",
+    "auth.notEditable.message.readOnly": "Tento { type } je pouze pro čtení.",
   },
 };
 
