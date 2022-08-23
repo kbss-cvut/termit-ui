@@ -141,7 +141,7 @@ export function loadVocabulary(
     dispatch(asyncActionRequest(action, true));
     const actualIri = Utils.resolveVocabularyIriFromRoute(
       { name: iri.fragment, timestamp },
-      iri.namespace || "",
+      iri.namespace ? `namespace=${iri.namespace}` : "",
       getState().configuration
     );
     return Ajax.get(
