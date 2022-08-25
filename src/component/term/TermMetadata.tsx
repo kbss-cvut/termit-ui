@@ -113,6 +113,7 @@ export class TermMetadata extends React.Component<
                   <CardBody className="card-body-basic-info">
                     <BasicTermMetadata
                       term={term}
+                      vocabulary={this.props.vocabulary}
                       withDefinitionSource={true}
                       language={language}
                     />

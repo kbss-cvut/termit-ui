@@ -1,9 +1,9 @@
 import Constants from "./Constants";
-import User, { EMPTY_USER } from "../model/User";
 import BrowserStorage from "./BrowserStorage";
 import VocabularyUtils from "./VocabularyUtils";
 import Utils from "./Utils";
 import { AuthClientTokens } from "@react-keycloak/core";
+import User, { EMPTY_USER } from "../model/User";
 
 export default class SecurityUtils {
   public static saveToken(jwt: string): void {

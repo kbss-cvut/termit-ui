@@ -44,11 +44,27 @@ describe("Utils", () => {
       expect(Utils.extractQueryParam(queryString, "namespace")).toEqual(value);
     });
 
-    it("returns undefined when parameter is not set in query string", () => {
+    it("returns null when parameter is not set in query string", () => {
       const queryString = "&searchString=test";
       expect(
         Utils.extractQueryParam(queryString, "namespace")
       ).not.toBeDefined();
+    });
+  });
+
+  describe("extractQueryParams", () => {
+    it("returns array of strings when multiple parameter values are found in query string", () => {
+      const values = [Generator.generateUri(), Generator.generateUri()];
+      const param = "p";
+      const queryString =
+        "?" + values.map((v) => `${param}=${encodeURIComponent(v)}`).join("&");
+      const result = Utils.extractQueryParams(queryString, param);
+      expect(result).toEqual(values);
+    });
+
+    it("returns empty array when query string does not contain parameter", () => {
+      const queryString = "&searchString=test";
+      expect(Utils.extractQueryParams(queryString, "namespace")).toEqual([]);
     });
   });
 

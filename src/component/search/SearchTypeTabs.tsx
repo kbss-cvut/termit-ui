@@ -11,7 +11,7 @@ import { Nav, NavItem, NavLink } from "reactstrap";
 import SearchQuery from "../../model/SearchQuery";
 import Routes, { Route } from "../../util/Routes";
 import User from "../../model/User";
-import SecurityUtils from "../../util/SecurityUtils";
+import { isLoggedIn } from "../../util/Authorization";
 
 interface SearchTypeTabsProps extends HasI18n, RouteComponentProps<any> {
   addSearchListener: () => void;
@@ -32,7 +32,7 @@ export class SearchTypeTabs extends React.Component<SearchTypeTabsProps> {
   public render() {
     const i18n = this.props.i18n;
     const path = this.props.location.pathname;
-    const loggedIn = SecurityUtils.isLoggedIn(this.props.user);
+    const loggedIn = isLoggedIn(this.props.user);
 
     const tabs: {
       route: Route;

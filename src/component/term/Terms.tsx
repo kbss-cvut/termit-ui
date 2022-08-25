@@ -42,9 +42,9 @@ import { match as Match } from "react-router";
 import classNames from "classnames";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import "./Terms.scss";
 import StatusFilter from "./StatusFilter";
+import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -331,7 +331,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             )}
           </h4>
           {!isDetailView && (
-            <IfUserAuthorized renderUnauthorizedAlert={false}>
+            <IfVocabularyEditAuthorized vocabulary={this.props.vocabulary}>
               <Button
                 id="terms-create"
                 color="primary"
@@ -342,7 +342,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 <GoPlus />
                 &nbsp;{i18n("glossary.new")}
               </Button>
-            </IfUserAuthorized>
+            </IfVocabularyEditAuthorized>
           )}
           {isDetailView && renderIncludeImported ? (
             this.renderIncludeImported()

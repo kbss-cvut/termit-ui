@@ -27,7 +27,6 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
 import "./VocabularySummary.scss";
 import VocabularyActions from "./VocabularyActions";
@@ -35,6 +34,8 @@ import ExportVocabularyDialog from "./ExportVocabularyDialog";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { createVocabularySnapshot } from "../../action/AsyncVocabularyActions";
 import { trackPromise } from "react-promise-tracker";
+import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
+import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -150,9 +151,9 @@ export class VocabularySummary extends EditableComponent<
     const buttons = [];
     if (!this.state.edit) {
       buttons.push(
-        <IfUserAuthorized
+        <IfVocabularyEditAuthorized
           key="vocabulary-summary-edit"
-          renderUnauthorizedAlert={false}
+          vocabulary={vocabulary}
         >
           <Button
             id="vocabulary-summary-edit"
@@ -165,13 +166,13 @@ export class VocabularySummary extends EditableComponent<
             <GoPencil />
             &nbsp;{i18n("edit")}
           </Button>
-        </IfUserAuthorized>
+        </IfVocabularyEditAuthorized>
       );
     }
     buttons.push(
-      <IfUserAuthorized
+      <IfVocabularyEditAuthorized
         key="vocabulary-summary-remove"
-        renderUnauthorizedAlert={false}
+        vocabulary={vocabulary}
       >
         <Button
           id="vocabulary-summary-remove"
@@ -184,11 +185,12 @@ export class VocabularySummary extends EditableComponent<
           <FaTrashAlt />
           &nbsp;{i18n("remove")}
         </Button>
-      </IfUserAuthorized>
+      </IfVocabularyEditAuthorized>
     );
     buttons.push(
       <VocabularyActions
         key="vocabulary-summary-actions"
+        vocabulary={vocabulary}
         onAnalyze={this.onExecuteTextAnalysisOnAllTerms}
         onExport={this.onExportToggle}
         onImport={this.onImport}
@@ -208,6 +210,7 @@ export class VocabularySummary extends EditableComponent<
             <>
               {vocabulary.label}
               <CopyIriIcon url={vocabulary.iri as string} />
+              <VocabularyReadOnlyIcon vocabulary={vocabulary} />
             </>
           }
           actions={buttons}

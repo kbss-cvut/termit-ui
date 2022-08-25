@@ -10,6 +10,7 @@ import { VocabularyEdit } from "../VocabularyEdit";
 import { Button } from "reactstrap";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
+import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -75,7 +76,9 @@ describe("VocabularySummary", () => {
       iri: namespace + normalizedName,
       label: "Test vocabulary",
     });
-    (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
+    const user = Generator.generateUser();
+    user.types.push(VocabularyUtils.USER_EDITOR);
+    (redux.useSelector as jest.Mock).mockReturnValue(user);
   });
 
   it("loads vocabulary on mount", () => {
@@ -300,7 +303,7 @@ describe("VocabularySummary", () => {
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_RESTRICTED);
     jest.spyOn(redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    const wrapper = mountWithIntlAttached(
       <VocabularySummary
         vocabulary={vocabulary}
         updateVocabulary={onUpdate}

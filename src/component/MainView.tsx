@@ -26,6 +26,8 @@ import { changeView } from "../action/SyncActions";
 import Utils from "../util/Utils";
 import Mask from "./misc/Mask";
 import "./MainView.scss";
+import { openForEditing } from "../action/AsyncWorkspaceActions";
+import Constants from "../util/Constants";
 import Routing from "src/util/Routing";
 
 const AdministrationRoute = React.lazy(
@@ -43,34 +45,48 @@ const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
-  loadUser: () => void;
+  loadUser: () => Promise<any>;
   logout: () => void;
+  openContextsForEditing: (contexts: string[]) => Promise<any>;
   sidebarExpanded: boolean;
   desktopView: boolean;
   changeView: () => void;
 }
 
 interface MainViewState {
-  isMainMenuOpen: boolean;
+  loadingWorkspace: boolean;
 }
 
 export class MainView extends React.Component<MainViewProps, MainViewState> {
-  public static defaultProps: Partial<MainViewProps> = {};
-
   constructor(props: MainViewProps) {
     super(props);
-    this.state = {
-      isMainMenuOpen: false,
-    };
+    this.state = { loadingWorkspace: false };
   }
 
   public componentDidMount(): void {
     if (this.props.user === EMPTY_USER) {
       Routing.saveOriginalTarget();
-      this.props.loadUser();
+      this.props.loadUser().then(() => {
+        this.loadWorkspace();
+      });
+    } else {
+      this.loadWorkspace();
     }
 
     window.addEventListener("resize", this.handleResize, false);
+  }
+
+  private loadWorkspace() {
+    let contexts = Utils.extractQueryParams(
+      this.props.location.search,
+      Constants.WORKSPACE_EDITABLE_CONTEXT_PARAM
+    );
+    if (contexts.length > 0) {
+      this.setState({ loadingWorkspace: true });
+      this.props
+        .openContextsForEditing(contexts)
+        .then(() => this.setState({ loadingWorkspace: false }));
+    }
   }
 
   public componentWillUnmount(): void {
@@ -83,12 +99,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     }
   };
 
-  public toggle = () => {
-    this.setState({
-      isMainMenuOpen: !this.state.isMainMenuOpen,
-    });
-  };
-
   private isDashboardRoute() {
     return this.props.location.pathname === Routes.dashboard.path;
   }
@@ -96,7 +106,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
   public render() {
     const { i18n, user, sidebarExpanded, desktopView } = this.props;
 
-    if (user === EMPTY_USER) {
+    if (user === EMPTY_USER || this.state.loadingWorkspace) {
       return this.renderPlaceholder();
     }
 
@@ -130,8 +140,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
               </Navbar>
             )}
 
-            {/*
-                        // @ts-ignore */}
             {!this.isDashboardRoute() && (
               <Breadcrumbs className="breadcrumb-bar" separator="/" />
             )}
@@ -218,6 +226,8 @@ export default connect(
       loadUser: () => dispatch(loadUser()),
       logout: () => dispatch(logout()),
       changeView: () => dispatch(changeView()),
+      openContextsForEditing: (contexts: string[]) =>
+        dispatch(openForEditing(contexts)),
     };
   }
 )(

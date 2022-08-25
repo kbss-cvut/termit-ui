@@ -176,6 +176,7 @@ export class Ajax {
       }
       reqConfig.headers[Constants.Headers.AUTHORIZATION] =
         SecurityUtils.loadToken();
+      reqConfig.withCredentials = true;
       return reqConfig;
     });
     this.axiosInstance.interceptors.response.use(

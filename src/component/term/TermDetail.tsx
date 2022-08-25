@@ -36,13 +36,14 @@ import {
 import { getShortLocale } from "../../util/IntlUtil";
 import TermQualityBadge from "./TermQualityBadge";
 import WindowTitle from "../misc/WindowTitle";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
 import TermOccurrence from "../../model/TermOccurrence";
 import {
   approveOccurrence,
   removeOccurrence,
 } from "../../action/AsyncTermActions";
+import TermReadOnlyIcon from "./authorization/TermReadOnlyIcon";
+import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -182,9 +183,9 @@ export class TermDetail extends EditableComponent<
     const actions = [];
     if (!this.state.edit) {
       actions.push(
-        <IfUserAuthorized
+        <IfVocabularyEditAuthorized
           key="term-detail-edit"
-          renderUnauthorizedAlert={false}
+          vocabulary={this.props.vocabulary}
         >
           <Button
             id="term-detail-edit"
@@ -200,13 +201,13 @@ export class TermDetail extends EditableComponent<
             <GoPencil />
             &nbsp;{this.props.i18n("edit")}
           </Button>
-        </IfUserAuthorized>
+        </IfVocabularyEditAuthorized>
       );
     }
     actions.push(
-      <IfUserAuthorized
+      <IfVocabularyEditAuthorized
         key="term-detail-remove"
-        renderUnauthorizedAlert={false}
+        vocabulary={this.props.vocabulary}
       >
         <Button
           id="term-detail-remove"
@@ -219,7 +220,7 @@ export class TermDetail extends EditableComponent<
           <FaTrashAlt />
           &nbsp;{this.props.i18n("remove")}
         </Button>
-      </IfUserAuthorized>
+      </IfVocabularyEditAuthorized>
     );
     return actions;
   };
@@ -275,6 +276,7 @@ export class TermDetail extends EditableComponent<
         <TermQualityBadge term={term} />
         {getLocalized(term.label, this.state.language)}
         <CopyIriIcon url={term.iri as string} />
+        <TermReadOnlyIcon vocabulary={this.props.vocabulary} />
         <br />
         <div className="small italics">
           {altLabels.length > 0 ? altLabels : "\u00a0"}
