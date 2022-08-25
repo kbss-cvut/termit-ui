@@ -26,6 +26,7 @@ import { changeView } from "../action/SyncActions";
 import Utils from "../util/Utils";
 import Mask from "./misc/Mask";
 import "./MainView.scss";
+import Routing from "src/util/Routing";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -65,6 +66,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
   public componentDidMount(): void {
     if (this.props.user === EMPTY_USER) {
+      Routing.saveOriginalTarget();
       this.props.loadUser();
     }
 
