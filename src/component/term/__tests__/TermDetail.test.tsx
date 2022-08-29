@@ -99,9 +99,36 @@ describe("TermDetail", () => {
         {...intlFunctions()}
       />
     );
-    expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {
-      fragment: normalizedVocabName,
-    });
+    expect(onLoad).toHaveBeenCalledWith(
+      normalizedTermName,
+      {
+        fragment: normalizedVocabName,
+      },
+      undefined
+    );
+  });
+
+  it("loads term snapshot on mount with correct IRI", () => {
+    const timestamp = "20220731T100000Z";
+    match.params.timestamp = timestamp;
+    shallow(
+      <TermDetail
+        term={null}
+        {...handlers}
+        vocabulary={vocabulary}
+        history={history}
+        location={location}
+        match={match}
+        {...intlFunctions()}
+      />
+    );
+    expect(onLoad).toHaveBeenCalledWith(
+      normalizedTermName,
+      {
+        fragment: normalizedVocabName,
+      },
+      timestamp
+    );
   });
 
   it("provides namespace to term loading when specified in url", () => {
@@ -119,10 +146,14 @@ describe("TermDetail", () => {
         {...intlFunctions()}
       />
     );
-    expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {
-      fragment: normalizedVocabName,
-      namespace,
-    });
+    expect(onLoad).toHaveBeenCalledWith(
+      normalizedTermName,
+      {
+        fragment: normalizedVocabName,
+        namespace,
+      },
+      undefined
+    );
   });
 
   it("renders term metadata by default", () => {
@@ -217,9 +248,13 @@ describe("TermDetail", () => {
       .instance()
       .onSave(term, { pendingApproval: [], pendingRemoval: [] })
       .then(() => {
-        expect(onLoad).toHaveBeenCalledWith(normalizedTermName, {
-          fragment: normalizedVocabName,
-        });
+        expect(onLoad).toHaveBeenCalledWith(
+          normalizedTermName,
+          {
+            fragment: normalizedVocabName,
+          },
+          undefined
+        );
       });
   });
 

@@ -128,8 +128,8 @@ export function createVocabulary(vocabulary: Vocabulary) {
 
 export function loadVocabulary(
   iri: IRI,
-  ignoreLoading: boolean = false,
-  withValidation = true
+  withValidation = true,
+  timestamp?: string
 ) {
   const action = {
     type: ActionType.LOAD_VOCABULARY,
@@ -138,10 +138,15 @@ export function loadVocabulary(
     if (isActionRequestPending(getState(), action)) {
       return Promise.resolve({});
     }
-    dispatch(asyncActionRequest(action, ignoreLoading));
+    dispatch(asyncActionRequest(action, true));
+    const actualIri = Utils.resolveVocabularyIriFromRoute(
+      { name: iri.fragment, timestamp },
+      iri.namespace ? `namespace=${iri.namespace}` : "",
+      getState().configuration
+    );
     return Ajax.get(
-      `${getApiPrefix(getState())}/vocabularies/${iri.fragment}`,
-      param("namespace", iri.namespace)
+      `${getApiPrefix(getState())}/vocabularies/${actualIri.fragment}`,
+      param("namespace", actualIri.namespace)
     )
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferences<VocabularyData>(
@@ -150,11 +155,11 @@ export function loadVocabulary(
         )
       )
       .then((data: VocabularyData) => {
-        dispatch(loadImportedVocabulariesIntoState(iri));
+        dispatch(loadImportedVocabulariesIntoState(actualIri));
         if (withValidation) {
-          dispatch(validateVocabulary(iri));
+          dispatch(validateVocabulary(actualIri));
         }
-        dispatch(loadTermCount(iri));
+        dispatch(loadTermCount(actualIri));
         return dispatch(
           asyncActionSuccessWithPayload(action, new Vocabulary(data))
         );
@@ -547,33 +552,6 @@ export function genericLoadTerms(
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return [];
-      });
-  };
-}
-
-export function loadTerm(termNormalizedName: string, vocabularyIri: IRI) {
-  const action = {
-    type: ActionType.LOAD_TERM,
-  };
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(
-      `${getApiPrefix(getState())}/vocabularies/${
-        vocabularyIri.fragment
-      }/terms/${termNormalizedName}`,
-      param("namespace", vocabularyIri.namespace)
-    )
-      .then((data: object) =>
-        JsonLdUtils.compactAndResolveReferences<TermData>(data, TERM_CONTEXT)
-      )
-      .then((data: TermData) =>
-        dispatch(asyncActionSuccessWithPayload(action, new Term(data)))
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
       });
   };
 }
@@ -977,7 +955,7 @@ export function updateVocabulary(vocabulary: Vocabulary) {
     type: ActionType.UPDATE_VOCABULARY,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     const vocabularyIri = VocabularyUtils.create(vocabulary.iri);
     const reqUrl =
       Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment;

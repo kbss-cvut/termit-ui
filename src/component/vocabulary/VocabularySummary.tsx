@@ -14,7 +14,7 @@ import {
 } from "../../action/AsyncActions";
 import { Button } from "reactstrap";
 import { GoPencil } from "react-icons/go";
-import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
 import EditableComponent, {
   EditableComponentState,
@@ -36,9 +36,12 @@ import { createVocabularySnapshot } from "../../action/AsyncVocabularyActions";
 import { trackPromise } from "react-promise-tracker";
 import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
 import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
+import { Configuration } from "../../model/Configuration";
+import SnapshotIcon from "../misc/SnapshotIcon";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
+  configuration: Configuration;
   loadResource: (iri: IRI) => void;
   loadVocabulary: (iri: IRI) => Promise<any>;
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
@@ -82,24 +85,25 @@ export class VocabularySummary extends EditableComponent<
   }
 
   public loadVocabulary = () => {
-    const normalizedName = this.props.match.params.name;
-    const namespace = Utils.extractQueryParam(
+    const iriFromUrl = Utils.resolveVocabularyIriFromRoute(
+      this.props.match.params,
       this.props.location.search,
-      "namespace"
+      this.props.configuration
     );
     const iri = VocabularyUtils.create(this.props.vocabulary.iri);
     if (
-      iri.fragment !== normalizedName ||
-      (namespace && iri.namespace !== namespace)
+      iri.fragment !== iriFromUrl.fragment ||
+      (iriFromUrl.namespace && iri.namespace !== iriFromUrl.namespace)
     ) {
-      this.props.loadVocabulary(
-        IRIImpl.create({ fragment: normalizedName, namespace })
-      );
+      trackPromise(this.props.loadVocabulary(iriFromUrl), "vocabulary-summary");
     }
   };
 
   public onSave = (vocabulary: Vocabulary) => {
-    this.props.updateVocabulary(vocabulary).then(() => {
+    trackPromise(
+      this.props.updateVocabulary(vocabulary),
+      "vocabulary-summary"
+    ).then(() => {
       this.onCloseEdit();
       this.props.loadVocabulary(VocabularyUtils.create(vocabulary.iri));
     });
@@ -208,8 +212,9 @@ export class VocabularySummary extends EditableComponent<
         <HeaderWithActions
           title={
             <>
+              <SnapshotIcon asset={vocabulary} />
               {vocabulary.label}
-              <CopyIriIcon url={vocabulary.iri as string} />
+              <CopyIriIcon url={vocabulary.iri} />
               <VocabularyReadOnlyIcon vocabulary={vocabulary} />
             </>
           }
@@ -250,7 +255,7 @@ export default connect(
   (state: TermItState) => {
     return {
       vocabulary: state.vocabulary,
-      validationResults: state.validationResults[state.vocabulary.iri],
+      configuration: state.configuration,
     };
   },
   (dispatch: ThunkDispatch) => {

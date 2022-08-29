@@ -22,6 +22,12 @@ const VocabularyRoute: React.FC = () => {
       />
       <DynamicBreadcrumbRoute
         asset="selectedTerm"
+        path={Routes.vocabularyTermSnapshotDetail.path}
+        component={TermDetail}
+        includeSearch={true}
+      />
+      <DynamicBreadcrumbRoute
+        asset="selectedTerm"
         path={Routes.vocabularyTermDetail.path}
         component={TermDetail}
         includeSearch={true}
@@ -31,6 +37,12 @@ const VocabularyRoute: React.FC = () => {
         path={Routes.annotateFile.path}
         component={ResourceFileDetail}
         includeSearch={true}
+      />
+      <Route
+        asset="vocabulary"
+        path={Routes.vocabularySnapshotSummary.path}
+        includeSearch={true}
+        component={VocabularySummary}
       />
       <Route
         asset="vocabulary"

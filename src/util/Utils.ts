@@ -2,7 +2,7 @@
  * General utility functions.
  */
 import Asset, { HasLabel, HasTypes } from "../model/Asset";
-import VocabularyUtils from "./VocabularyUtils";
+import VocabularyUtils, { IRI, IRIImpl } from "./VocabularyUtils";
 import { match } from "react-router";
 import { Location } from "history";
 import AppNotification, {
@@ -11,6 +11,7 @@ import AppNotification, {
 import NotificationType from "../model/NotificationType";
 import { BasicRouteProps } from "./Types";
 import _ from "lodash";
+import { Configuration } from "../model/Configuration";
 
 const Utils = {
   /**
@@ -281,6 +282,21 @@ const Utils = {
       }
     }
     return false;
+  },
+
+  resolveVocabularyIriFromRoute(
+    params: { name: string; timestamp?: string },
+    location: string,
+    configuration: Configuration
+  ): IRI {
+    let normalizedName = params.name;
+    const timestamp = params.timestamp;
+    let namespace = this.extractQueryParam(location, "namespace");
+    if (timestamp) {
+      namespace += normalizedName + configuration.versionSeparator + "/";
+      normalizedName = timestamp;
+    }
+    return IRIImpl.create({ fragment: normalizedName, namespace });
   },
 };
 

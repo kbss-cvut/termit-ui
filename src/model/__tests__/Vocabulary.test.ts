@@ -140,4 +140,14 @@ describe("Vocabulary", () => {
       expect(result.document!.vocabulary).not.toEqual(sut);
     });
   });
+
+  describe("isSnapshot", () => {
+    it("returns true when vocabulary has snapshot type", () => {
+      const regular = Generator.generateVocabulary();
+      const snapshot = Generator.generateVocabulary();
+      snapshot.types = [VocabularyUtils.VOCABULARY_SNAPSHOT];
+      expect(regular.isSnapshot()).toBeFalsy();
+      expect(snapshot.isSnapshot()).toBeTruthy();
+    });
+  });
 });
