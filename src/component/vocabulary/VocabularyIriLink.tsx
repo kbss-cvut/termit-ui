@@ -17,11 +17,6 @@ interface VocabularyIriLinkProps {
  * Link to a Vocabulary detail for situation when Vocabulary label is not available and only IRI is known.
  *
  * The link will fetch the corresponding label and display it.
- *
- * TODO Would much like prefer to use Vocabularies.getVocabularyRouteOptions, but we do not have vocabulary instance
- * and do not know whether the iri represents a vocabulary snapshot or not
- * We can either try to use a prop to pass info about it being a snapshot (based on rendering context, e.g. from term snapshot)
- * or we may attempt to decide based on IRI (heuristics) or we would have to download to vocabulary
  */
 export const VocabularyIriLink: React.FC<VocabularyIriLinkProps> = (
   props: VocabularyIriLinkProps
