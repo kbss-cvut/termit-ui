@@ -1,7 +1,7 @@
 import React from "react";
 import Asset from "../../model/Asset";
 import { SupportsSnapshots } from "../../model/Snapshot";
-import { GoDeviceCamera } from "react-icons/go";
+import { FaCamera } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
 import Utils from "../../util/Utils";
 import { UncontrolledTooltip } from "reactstrap";
@@ -17,7 +17,7 @@ const SnapshotIcon: React.FC<SnapshotIconProps> = ({ asset }) => {
   }
   return (
     <>
-      <GoDeviceCamera id="snapshot-icon" className="mr-1 mb-1" />
+      <FaCamera id="snapshot-icon" className="mr-1 mb-1" />
       <UncontrolledTooltip
         id="snapshot-icon-tooltip"
         placement="right"
