@@ -92,6 +92,16 @@ export default class Vocabulary
     return this.hasType(VocabularyUtils.VOCABULARY_SNAPSHOT);
   }
 
+  public snapshotOf(): string | undefined {
+    return this.unmappedProperties.has(
+      VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
+    )
+      ? this.unmappedProperties.get(
+          VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
+        )![0]
+      : undefined;
+  }
+
   public get unmappedProperties(): Map<string, string[]> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,

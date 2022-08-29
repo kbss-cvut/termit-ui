@@ -143,6 +143,8 @@ const VocabularyUtils = {
 
   TERM_SNAPSHOT: _NS_POPIS_DAT + "verze-pojmu",
   VOCABULARY_SNAPSHOT: _NS_POPIS_DAT + "verze-slovníku",
+  IS_SNAPSHOT_OF_TERM: _NS_POPIS_DAT + "je-verz\u00ed-pojmu",
+  IS_SNAPSHOT_OF_VOCABULARY: _NS_POPIS_DAT + "je-verz\u00ed-slovn\u00edku",
 
   IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
 

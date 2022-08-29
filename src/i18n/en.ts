@@ -274,6 +274,9 @@ const en = {
     "vocabulary.snapshot.create.label": "Create snapshot",
     "vocabulary.snapshot.create.title":
       "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships. The snapshot is a read-only copy of the whole vocabulary content and can be used to demarcate important milestones in the vocabulary lifecycle.",
+    "vocabulary.snapshot.create.dialog.text":
+      "Are you sure you want to create a snapshot of this vocabulary? This action will also create snapshot of all vocabularies that are (even indirectly) connected to this one via term relationships.",
+    "vocabulary.snapshot.create.dialog.confirm": "Create",
     "vocabulary.snapshot.create.success":
       "Vocabulary revision successfully created.",
 
@@ -690,7 +693,8 @@ const en = {
     "snapshots.created": "Date and time",
     "snapshots.show": "Show snapshot",
     "snapshots.empty": "No previous snapshots found.",
-    "snapshot.message": "This { type } is a snapshot and is read only.",
+    "snapshot.message":
+      "This { type } is a snapshot and is read only. Click to view the current version.",
 
     "auth.notEditable.message.unauthorized":
       "You have insufficient rights to edit this { type }.",
