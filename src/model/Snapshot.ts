@@ -17,4 +17,6 @@ export default interface SnapshotData extends HasTypes {
 
 export interface SupportsSnapshots {
   isSnapshot: () => boolean;
+
+  snapshotOf: () => string | undefined;
 }

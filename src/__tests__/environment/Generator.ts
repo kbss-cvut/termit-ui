@@ -1,7 +1,7 @@
 import User from "../../model/User";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Term, { TermData } from "../../model/Term";
-import Vocabulary from "../../model/Vocabulary";
+import Vocabulary, { VocabularyData } from "../../model/Vocabulary";
 import Resource from "../../model/Resource";
 import { langString } from "../../model/MultilingualString";
 import Comment from "../../model/Comment";
@@ -67,9 +67,12 @@ export default class Generator {
     });
   }
 
-  public static generateVocabulary() {
+  public static generateVocabulary(seed: Partial<VocabularyData> = {}) {
     return new Vocabulary(
-      this.generateAssetData("Vocabulary " + this.randomInt(0, 10000))
+      Object.assign(
+        this.generateAssetData("Vocabulary " + this.randomInt(0, 10000)),
+        seed
+      )
     );
   }
 

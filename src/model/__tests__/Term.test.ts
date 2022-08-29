@@ -398,4 +398,21 @@ describe("Term tests", () => {
       expect(snapshot.isSnapshot()).toBeTruthy();
     });
   });
+
+  describe("snapshotOf", () => {
+    it("returns undefined when instance is not a snapshot", () => {
+      const sut = Generator.generateTerm();
+      expect(sut.isSnapshot()).toBeFalsy();
+      expect(sut.snapshotOf()).not.toBeDefined();
+    });
+
+    it("returns IRI of term whose snapshot this instance is", () => {
+      const currentIri = Generator.generateUri();
+      const sut = Generator.generateTerm();
+      sut[VocabularyUtils.IS_SNAPSHOT_OF_TERM] = currentIri;
+      sut.types = [VocabularyUtils.TERM_SNAPSHOT];
+
+      expect(sut.snapshotOf()).toEqual(currentIri);
+    });
+  });
 });

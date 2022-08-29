@@ -150,4 +150,22 @@ describe("Vocabulary", () => {
       expect(snapshot.isSnapshot()).toBeTruthy();
     });
   });
+
+  describe("snapshotOf", () => {
+    it("returns undefined when instance is not a snapshot", () => {
+      const sut = Generator.generateVocabulary();
+      expect(sut.isSnapshot()).toBeFalsy();
+      expect(sut.snapshotOf()).not.toBeDefined();
+    });
+
+    it("returns IRI of vocabulary whose snapshot this instance is", () => {
+      const currentIri = Generator.generateUri();
+      const snapshotOf = {};
+      snapshotOf[VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY] = currentIri;
+      const sut = Generator.generateVocabulary(snapshotOf);
+      sut.types = [VocabularyUtils.VOCABULARY_SNAPSHOT];
+
+      expect(sut.snapshotOf()).toEqual(currentIri);
+    });
+  });
 });

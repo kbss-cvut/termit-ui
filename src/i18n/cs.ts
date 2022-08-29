@@ -701,7 +701,8 @@ const cs = {
     "snapshots.created": "Datum a čas vytvoření",
     "snapshots.show": "Zobrazit revizi",
     "snapshots.empty": "Žádné předchozí revize nenalezeny.",
-    "snapshot.message": "Tento { type } je revize a je pouze pro čtení.",
+    "snapshot.message":
+      "Tento { type } je revize a je pouze pro čtení. Kliknutím přejdete na aktuální verzi.",
 
     "auth.notEditable.message.unauthorized":
       "K editaci tohoto objektu nemáte dostatečná práva.",
