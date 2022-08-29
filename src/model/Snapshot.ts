@@ -14,3 +14,7 @@ export default interface SnapshotData extends HasTypes {
   versionOf: { iri: string };
   types: string[];
 }
+
+export interface SupportsSnapshots {
+  isSnapshot: () => boolean;
+}

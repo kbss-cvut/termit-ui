@@ -44,6 +44,7 @@ import {
 } from "../../action/AsyncTermActions";
 import TermReadOnlyIcon from "./authorization/TermReadOnlyIcon";
 import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
+import SnapshotIcon from "../misc/SnapshotIcon";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -274,6 +275,7 @@ export class TermDetail extends EditableComponent<
     return (
       <>
         <TermQualityBadge term={term} />
+        <SnapshotIcon asset={term} />
         {getLocalized(term.label, this.state.language)}
         <CopyIriIcon url={term.iri as string} />
         <TermReadOnlyIcon vocabulary={this.props.vocabulary} />

@@ -690,6 +690,7 @@ const en = {
     "snapshots.created": "Date and time",
     "snapshots.show": "Show snapshot",
     "snapshots.empty": "No previous snapshots found.",
+    "snapshot.message": "This { type } is a snapshot and is read only.",
 
     "auth.notEditable.message.unauthorized":
       "You have insufficient rights to edit this { type }.",

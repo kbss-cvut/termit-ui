@@ -8,6 +8,7 @@ import Document, {
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
+import { SupportsSnapshots } from "./Snapshot";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
@@ -44,7 +45,10 @@ export interface VocabularyData extends AssetData {
   importedVocabularies?: AssetData[];
 }
 
-export default class Vocabulary extends Asset implements VocabularyData {
+export default class Vocabulary
+  extends Asset
+  implements VocabularyData, SupportsSnapshots
+{
   public label: string;
   public comment?: string;
   public document?: Document;

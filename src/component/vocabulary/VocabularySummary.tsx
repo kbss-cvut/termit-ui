@@ -37,6 +37,7 @@ import { trackPromise } from "react-promise-tracker";
 import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
 import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 import { Configuration } from "../../model/Configuration";
+import SnapshotIcon from "../misc/SnapshotIcon";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -211,8 +212,9 @@ export class VocabularySummary extends EditableComponent<
         <HeaderWithActions
           title={
             <>
+              <SnapshotIcon asset={vocabulary} />
               {vocabulary.label}
-              <CopyIriIcon url={vocabulary.iri as string} />
+              <CopyIriIcon url={vocabulary.iri} />
               <VocabularyReadOnlyIcon vocabulary={vocabulary} />
             </>
           }
