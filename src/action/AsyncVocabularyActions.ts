@@ -180,6 +180,12 @@ export function createVocabularySnapshot(vocabularyIri: IRI) {
 export function loadVocabularySnapshots(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_SNAPSHOTS, vocabularyIri };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    if (
+      vocabularyIri.namespace + vocabularyIri.fragment ===
+      Constants.EMPTY_ASSET_IRI
+    ) {
+      return Promise.resolve([]);
+    }
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
       `${getApiPrefix(getState())}/vocabularies/${
