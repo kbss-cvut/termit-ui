@@ -38,6 +38,7 @@ import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
 import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 import { Configuration } from "../../model/Configuration";
 import VocabularySnapshotIcon from "../snapshot/VocabularySnapshotIcon";
+import CreateSnapshotDialog from "./CreateSnapshotDialog";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -55,6 +56,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 export interface VocabularySummaryState extends EditableComponentState {
   selectDocumentDialogOpen: boolean;
   showExportDialog: boolean;
+  showSnapshotDialog: boolean;
 }
 
 export class VocabularySummary extends EditableComponent<
@@ -67,6 +69,7 @@ export class VocabularySummary extends EditableComponent<
       edit: false,
       showRemoveDialog: false,
       showExportDialog: false,
+      showSnapshotDialog: false,
       selectDocumentDialogOpen: false,
     };
   }
@@ -126,12 +129,17 @@ export class VocabularySummary extends EditableComponent<
   };
 
   public onCreateSnapshot = () => {
+    this.setState({ showSnapshotDialog: false });
     trackPromise(
       this.props.createSnapshot(
         VocabularyUtils.create(this.props.vocabulary.iri)
       ),
       "vocabulary-summary"
     );
+  };
+
+  public onCreateSnapshotToggle = () => {
+    this.setState({ showSnapshotDialog: !this.state.showSnapshotDialog });
   };
 
   private onImport = (file: File) =>
@@ -198,7 +206,7 @@ export class VocabularySummary extends EditableComponent<
         onAnalyze={this.onExecuteTextAnalysisOnAllTerms}
         onExport={this.onExportToggle}
         onImport={this.onImport}
-        onCreateSnapshot={this.onCreateSnapshot}
+        onCreateSnapshot={this.onCreateSnapshotToggle}
       />
     );
 
@@ -230,6 +238,11 @@ export class VocabularySummary extends EditableComponent<
           show={this.state.showExportDialog}
           onClose={this.onExportToggle}
           vocabulary={vocabulary}
+        />
+        <CreateSnapshotDialog
+          show={this.state.showSnapshotDialog}
+          onClose={this.onCreateSnapshotToggle}
+          onConfirm={this.onCreateSnapshot}
         />
         <PromiseTrackingMask area="vocabulary-summary" />
         {this.state.edit ? (
