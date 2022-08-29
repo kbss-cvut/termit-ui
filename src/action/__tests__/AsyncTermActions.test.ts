@@ -37,6 +37,9 @@ describe("AsyncTermActions", () => {
   const namespace = VocabularyUtils.NS_TERMIT + "/vocabularies/";
   const vocabularyName = "test-vocabulary";
   const termName = "test-term";
+  const termIri = VocabularyUtils.create(
+    `${namespace}${vocabularyName}/pojem/${termName}`
+  );
 
   let store: MockStoreEnhanced<TermItState>;
 
@@ -284,10 +287,7 @@ describe("AsyncTermActions", () => {
       store.getState().user = Generator.generateUser();
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          loadDefinitionRelatedTermsTargeting(
-            termName,
-            VocabularyUtils.create(namespace + vocabularyName)
-          )
+          loadDefinitionRelatedTermsTargeting(termIri)
         )
       ).then(() => {
         expect((Ajax.get as jest.Mock).mock.calls[0][0]).toMatch(
@@ -303,10 +303,7 @@ describe("AsyncTermActions", () => {
       Ajax.get = jest.fn().mockResolvedValue(occurrences);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          loadDefinitionRelatedTermsTargeting(
-            termName,
-            VocabularyUtils.create(namespace + vocabularyName)
-          )
+          loadDefinitionRelatedTermsTargeting(termIri)
         )
       ).then(() => {
         expect((Ajax.get as jest.Mock).mock.calls[0][0]).toMatch(
@@ -318,9 +315,6 @@ describe("AsyncTermActions", () => {
 
   describe("setTermStatus", () => {
     it("sends provided status as plain text to server", () => {
-      const termIri = VocabularyUtils.create(
-        `${namespace}${vocabularyName}/pojem/${termName}`
-      );
       Ajax.put = jest.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
@@ -337,9 +331,6 @@ describe("AsyncTermActions", () => {
     });
 
     it("returns set status as action success payload", () => {
-      const termIri = VocabularyUtils.create(
-        `${namespace}${vocabularyName}/pojem/${termName}`
-      );
       Ajax.put = jest.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(

@@ -91,18 +91,15 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
   return url;
 }
 
-export function loadDefinitionRelatedTermsTargeting(
-  termNormalizedName: string,
-  vocabularyIri: IRI
-) {
+export function loadDefinitionRelatedTermsTargeting(termIri: IRI) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${getApiPrefix(getState())}/vocabularies/${
-        vocabularyIri.fragment
-      }/terms/${termNormalizedName}/def-related-target`,
-      param("namespace", vocabularyIri.namespace)
+      `${getApiPrefix(getState())}/terms/${
+        termIri.fragment
+      }/def-related-target`,
+      param("namespace", termIri.namespace)
     )
       .then((data: object[]) =>
         data.length !== 0
