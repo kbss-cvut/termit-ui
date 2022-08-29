@@ -6,6 +6,7 @@ import {
   asyncActionSuccess,
   asyncActionSuccessWithPayload,
   publishMessage,
+  publishNotification,
 } from "./SyncActions";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
@@ -24,6 +25,7 @@ import AggregatedChangeInfo, {
 } from "../model/changetracking/AggregatedChangeInfo";
 import { getApiPrefix } from "./ActionUtils";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
+import NotificationType from "../model/NotificationType";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -152,6 +154,11 @@ export function createVocabularySnapshot(vocabularyIri: IRI) {
     )
       .then(() => {
         dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishNotification({
+            source: { type: NotificationType.SNAPSHOT_CREATED },
+          })
+        );
         return dispatch(
           publishMessage(
             new Message(

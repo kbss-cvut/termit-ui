@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useI18n } from "../hook/useI18n";
 import { ThunkDispatch } from "../../util/Types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SnapshotData from "../../model/Snapshot";
 import Asset from "../../model/Asset";
 import Utils from "../../util/Utils";
@@ -15,6 +15,9 @@ import { Table } from "reactstrap";
 import Pagination from "../misc/table/Pagination";
 import { FormattedDate, FormattedTime } from "react-intl";
 import Term from "../../model/Term";
+import TermItState from "../../model/TermItState";
+import NotificationType from "../../model/NotificationType";
+import { consumeNotification } from "../../action/SyncActions";
 
 interface SnapshotsProps<T extends Asset> {
   asset: T;
@@ -51,11 +54,25 @@ const Snapshots: React.FC<SnapshotsProps<any>> = ({ asset }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [snapshots, setSnapshots] = useState<SnapshotData[]>([]);
+  const notifications = useSelector(
+    (state: TermItState) => state.notifications
+  );
   useEffect(() => {
     dispatch(resolveDataLoader(asset)(VocabularyUtils.create(asset.iri))).then(
       (data) => setSnapshots(data)
     );
   }, [asset, dispatch, setSnapshots]);
+  useEffect(() => {
+    const event = notifications.find(
+      (n) => n.source.type === NotificationType.SNAPSHOT_CREATED
+    );
+    if (event) {
+      dispatch(consumeNotification(event));
+      dispatch(
+        resolveDataLoader(asset)(VocabularyUtils.create(asset.iri))
+      ).then((data) => setSnapshots(data));
+    }
+  }, [asset, dispatch, notifications, setSnapshots]);
 
   const columns: Column<SnapshotData>[] = React.useMemo(
     () => [
