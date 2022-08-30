@@ -4,14 +4,13 @@ import { useI18n } from "../hook/useI18n";
 import { Col, Label } from "reactstrap";
 import DraftToggle from "./DraftToggle";
 import { ThunkDispatch } from "../../util/Types";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setTermStatus } from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Status from "../../model/TermStatus";
-import TermItState from "../../model/TermItState";
 import DraftBadge from "./DraftBadge";
-import { isAssetEditable } from "../../util/Authorization";
 import Vocabulary from "../../model/Vocabulary";
+import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
 
 interface TermStatusProps {
   term: Term;
@@ -21,7 +20,6 @@ interface TermStatusProps {
 const TermStatus: React.FC<TermStatusProps> = ({ term, vocabulary }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  const user = useSelector((state: TermItState) => state.user);
   const isDraft = Term.isDraft(term);
   const onToggle = () => {
     dispatch(
@@ -40,15 +38,16 @@ const TermStatus: React.FC<TermStatusProps> = ({ term, vocabulary }) => {
         </Label>
       </Col>
       <Col xl={10} md={8}>
-        {isAssetEditable(vocabulary, user) ? (
+        <IfVocabularyEditAuthorized
+          vocabulary={vocabulary}
+          unauthorized={<DraftBadge isDraft={isDraft} />}
+        >
           <DraftToggle
             id="term-metadata-status"
             draft={isDraft}
             onToggle={onToggle}
           />
-        ) : (
-          <DraftBadge isDraft={isDraft} />
-        )}
+        </IfVocabularyEditAuthorized>
       </Col>
     </>
   );
