@@ -39,6 +39,7 @@ import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthoriz
 import { Configuration } from "../../model/Configuration";
 import VocabularySnapshotIcon from "../snapshot/VocabularySnapshotIcon";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
+import classNames from "classnames";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -217,17 +218,7 @@ export class VocabularySummary extends EditableComponent<
             "vocabulary.management.vocabularies"
           )}`}
         />
-        <HeaderWithActions
-          title={
-            <>
-              <VocabularySnapshotIcon vocabulary={vocabulary} />
-              {vocabulary.label}
-              <CopyIriIcon url={vocabulary.iri} />
-              <VocabularyReadOnlyIcon vocabulary={vocabulary} />
-            </>
-          }
-          actions={buttons}
-        />
+        <HeaderWithActions title={this.renderTitle()} actions={buttons} />
         <RemoveAssetDialog
           show={this.state.showRemoveDialog}
           asset={vocabulary}
@@ -260,6 +251,19 @@ export class VocabularySummary extends EditableComponent<
           />
         )}
       </div>
+    );
+  }
+
+  private renderTitle() {
+    const vocabulary = this.props.vocabulary;
+    const labelClass = classNames({ "text-muted": vocabulary.isSnapshot() });
+    return (
+      <>
+        <VocabularySnapshotIcon vocabulary={vocabulary} />
+        <span className={labelClass}>{vocabulary.label}</span>
+        <CopyIriIcon url={vocabulary.iri} />
+        <VocabularyReadOnlyIcon vocabulary={vocabulary} />
+      </>
     );
   }
 }
