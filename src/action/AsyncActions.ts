@@ -516,7 +516,7 @@ export function loadTerms(
 export function genericLoadTerms(
   type: string,
   prefix: string,
-  target: object,
+  target: any,
   fetchOptions: TermFetchParams<any>
 ) {
   const action = { type };
@@ -524,7 +524,9 @@ export function genericLoadTerms(
     dispatch(asyncActionRequest(action, true));
     let url = `${getApiPrefix(getState())}${prefix}/terms/`;
     if (fetchOptions.optionID) {
-      url += `${VocabularyUtils.getFragment(fetchOptions.optionID)}/subterms`;
+      const parentIri = VocabularyUtils.create(fetchOptions.optionID);
+      url = `${getApiPrefix(getState())}/terms/${parentIri.fragment}/subterms`;
+      target.namespace = parentIri.namespace;
     } else if (!fetchOptions.searchString) {
       url += "roots";
     }
