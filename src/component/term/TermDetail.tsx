@@ -45,6 +45,7 @@ import {
 import TermReadOnlyIcon from "./authorization/TermReadOnlyIcon";
 import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
 import TermSnapshotIcon from "../snapshot/TermSnapshotIcon";
+import classNames from "classnames";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -269,6 +270,7 @@ export class TermDetail extends EditableComponent<
 
   private renderTitle() {
     const term = this.props.term!;
+    const labelClass = classNames({ "text-muted": term.isSnapshot() });
     const altLabels = getLocalizedPlural(term.altLabels, this.state.language)
       .sort()
       .join(", ");
@@ -276,7 +278,9 @@ export class TermDetail extends EditableComponent<
       <>
         <TermQualityBadge term={term} />
         <TermSnapshotIcon term={term} vocabulary={this.props.vocabulary} />
-        {getLocalized(term.label, this.state.language)}
+        <span className={labelClass}>
+          {getLocalized(term.label, this.state.language)}
+        </span>
         <CopyIriIcon url={term.iri as string} />
         <TermReadOnlyIcon vocabulary={this.props.vocabulary} />
         <br />

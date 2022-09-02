@@ -575,10 +575,11 @@ describe("Async actions", () => {
       store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      const parentUri =
-        "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3";
+      const parentUri = VocabularyUtils.create(
+        "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3"
+      );
       const params: TermFetchParams<Term> = {
-        optionID: parentUri,
+        optionID: parentUri.toString(),
       };
       const vocabName = "test-vocabulary";
       return Promise.resolve(
@@ -588,13 +589,12 @@ describe("Async actions", () => {
       ).then(() => {
         const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(targetUri).toEqual(
-          Constants.API_PREFIX +
-            "/vocabularies/" +
-            vocabName +
-            "/terms/pojem-3/subterms"
+          `${Constants.API_PREFIX}/terms/${parentUri.fragment}/subterms`
         );
         const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-        expect(callConfig.getParams()).toEqual({});
+        expect(callConfig.getParams()).toEqual({
+          namespace: parentUri.namespace,
+        });
       });
     });
 
