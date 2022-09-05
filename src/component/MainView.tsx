@@ -28,6 +28,7 @@ import Mask from "./misc/Mask";
 import "./MainView.scss";
 import { openForEditing } from "../action/AsyncWorkspaceActions";
 import Constants from "../util/Constants";
+import Routing from "src/util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 
 const AdministrationRoute = React.lazy(
@@ -66,6 +67,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
   public componentDidMount(): void {
     if (this.props.user === EMPTY_USER) {
+      Routing.saveOriginalTarget();
       this.props.loadUser().then(() => {
         this.loadWorkspace();
       });

@@ -59,6 +59,18 @@ export class Routing {
       this.mHistory.location.pathname + this.mHistory.location.search;
   };
 
+  public buildFullUrl(
+    route: Route | string,
+    options: {
+      params?: Map<string, string>;
+      query?: Map<string, string>;
+    } = {}
+  ) {
+    const innerPath =
+      typeof route === "string" ? route : Routing.buildUrl(route, options);
+    return window.location.origin + window.location.pathname + "#" + innerPath;
+  }
+
   /**
    * Creates the transition path to the specified route
    * @param route Route object

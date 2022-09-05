@@ -67,6 +67,7 @@ export interface PushRoutingPayloadAction extends Action {
 const ActionType = {
   FETCH_USER: "FETCH_USER",
   LOGIN: "LOGIN",
+  LOGIN_KEYCLOAK: "LOGIN_KEYCLOAK",
   REGISTER: "REGISTER",
   UPDATE_PROFILE: "UPDATE_PROFILE",
   CHANGE_PASSWORD: "CHANGE_PASSWORD",
