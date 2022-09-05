@@ -8,7 +8,7 @@ import {
 } from "reactstrap";
 import { GoClippy, GoCloudDownload } from "react-icons/go";
 import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
-import { FaRegCopy } from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 
@@ -66,7 +66,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
             onClick={onAnalyze}
             title={i18n("vocabulary.summary.startTextAnalysis.title")}
           >
-            <GoClippy className="mr-1" />
+            <GoClippy className="mr-1 align-text-top" />
             {i18n("file.metadata.startTextAnalysis.text")}
           </DropdownItem>
         </IfVocabularyEditAuthorized>
@@ -80,7 +80,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
             onClick={onCreateSnapshot}
             title={i18n("vocabulary.snapshot.create.title")}
           >
-            <FaRegCopy className="mr-1" />
+            <FaCamera className="mr-1 align-text-top" />
             {i18n("vocabulary.snapshot.create.label")}
           </DropdownItem>
         </IfVocabularyEditAuthorized>

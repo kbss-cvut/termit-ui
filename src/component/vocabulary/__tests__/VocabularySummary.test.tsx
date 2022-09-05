@@ -11,6 +11,7 @@ import { Button } from "reactstrap";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil";
+import TermItState from "../../../model/TermItState";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -21,6 +22,7 @@ jest.mock("../../changetracking/AssetHistory", () => () => (
 ));
 jest.mock("../../term/Terms", () => () => <div>Terms</div>);
 jest.mock("../TermChangeFrequency", () => () => <div>Term frequency</div>);
+jest.mock("../../misc/PromiseTrackingMask", () => () => <div>Mask</div>);
 
 describe("VocabularySummary", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
@@ -42,9 +44,10 @@ describe("VocabularySummary", () => {
   let exportFunctions: any;
 
   let vocabulary: Vocabulary;
+  let state: TermItState;
 
   beforeEach(() => {
-    onLoad = jest.fn();
+    onLoad = jest.fn().mockResolvedValue({});
     onUpdate = jest.fn().mockResolvedValue(undefined);
     removeVocabulary = jest.fn().mockImplementation(() => Promise.resolve());
     exportToCsv = jest.fn();
@@ -72,13 +75,17 @@ describe("VocabularySummary", () => {
       isExact: true,
       url: "http://localhost:3000/" + location.pathname,
     };
+    state = new TermItState();
     vocabulary = new Vocabulary({
       iri: namespace + normalizedName,
       label: "Test vocabulary",
     });
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_EDITOR);
-    (redux.useSelector as jest.Mock).mockReturnValue(user);
+    state.user = user;
+    (redux.useSelector as jest.Mock).mockImplementation((selector) =>
+      selector(state)
+    );
   });
 
   it("loads vocabulary on mount", () => {
@@ -302,7 +309,7 @@ describe("VocabularySummary", () => {
   it("does not render modification buttons for restricted user", () => {
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_RESTRICTED);
-    jest.spyOn(redux, "useSelector").mockReturnValue(user);
+    state.user = user;
     const wrapper = mountWithIntlAttached(
       <VocabularySummary
         vocabulary={vocabulary}

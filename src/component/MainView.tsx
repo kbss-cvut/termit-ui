@@ -29,6 +29,7 @@ import "./MainView.scss";
 import { openForEditing } from "../action/AsyncWorkspaceActions";
 import Constants from "../util/Constants";
 import Routing from "src/util/Routing";
+import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -45,6 +46,7 @@ const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
+  configuration: Configuration;
   loadUser: () => Promise<any>;
   logout: () => void;
   openContextsForEditing: (contexts: string[]) => Promise<any>;
@@ -106,7 +108,11 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
   public render() {
     const { i18n, user, sidebarExpanded, desktopView } = this.props;
 
-    if (user === EMPTY_USER || this.state.loadingWorkspace) {
+    if (
+      user === EMPTY_USER ||
+      this.props.configuration === DEFAULT_CONFIGURATION ||
+      this.state.loadingWorkspace
+    ) {
       return this.renderPlaceholder();
     }
 
@@ -216,6 +222,7 @@ export default connect(
     return {
       loading: state.loading,
       user: state.user,
+      configuraton: state.configuration,
       intl: state.intl, // Pass intl in props to force UI re-render on language switch
       sidebarExpanded: state.sidebarExpanded,
       desktopView: state.desktopView,

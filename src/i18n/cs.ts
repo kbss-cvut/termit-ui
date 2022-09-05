@@ -285,6 +285,9 @@ const cs = {
     "vocabulary.snapshot.create.label": "Vytvořit revizi",
     "vocabulary.snapshot.create.title":
       "Vytvořit revizi tohoto slovníku a všech dalších slovníků, které jsou s ním (nepřímo) propojeny vztahy mezi pojmy. Revize je kopií veškerého obsahu slovníku a umožňuje tak označit důležité milníky v historii vývoje slovníku.",
+    "vocabulary.snapshot.create.dialog.text":
+      "Chcete vytvořit revizi tohoto slovníku? Tato akce současně vytvořít revize všech dalších slovníků, které jsou s ním (i nepřímo) propojeny vztahy mezi pojmy.",
+    "vocabulary.snapshot.create.dialog.confirm": "Vytvořit",
     "vocabulary.snapshot.create.success": "Revize slovníku úspěšně vytvořena.",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
@@ -654,7 +657,7 @@ const cs = {
     "error.file.maxUploadSizeExceeded":
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
 
-    "history.label": "Historie",
+    "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
     "history.empty": "Zaznamenaná historie je prázdná.",
     "history.whenwho": "Původ",
@@ -701,6 +704,13 @@ const cs = {
 
     "validation.message.tooltip":
       "Tato zpráva reprezentuje výsledek kontroly kvality. Formulář lze uložit i v případě, že kvalita není stoprocentní.",
+
+    "snapshots.title": "Historie revizí",
+    "snapshots.created": "Datum a čas vytvoření",
+    "snapshots.show": "Zobrazit revizi",
+    "snapshots.empty": "Žádné předchozí revize nenalezeny.",
+    "snapshot.message":
+      "Tento { type } je revize a je pouze pro čtení. Kliknutím přejdete na aktuální verzi.",
 
     "auth.notEditable.message.unauthorized":
       "K editaci tohoto objektu nemáte dostatečná práva.",

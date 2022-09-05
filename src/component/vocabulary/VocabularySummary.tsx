@@ -14,7 +14,7 @@ import {
 } from "../../action/AsyncActions";
 import { Button } from "reactstrap";
 import { GoPencil } from "react-icons/go";
-import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
 import EditableComponent, {
   EditableComponentState,
@@ -36,9 +36,14 @@ import { createVocabularySnapshot } from "../../action/AsyncVocabularyActions";
 import { trackPromise } from "react-promise-tracker";
 import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
 import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
+import { Configuration } from "../../model/Configuration";
+import VocabularySnapshotIcon from "../snapshot/VocabularySnapshotIcon";
+import CreateSnapshotDialog from "./CreateSnapshotDialog";
+import classNames from "classnames";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
+  configuration: Configuration;
   loadResource: (iri: IRI) => void;
   loadVocabulary: (iri: IRI) => Promise<any>;
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
@@ -52,6 +57,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
 export interface VocabularySummaryState extends EditableComponentState {
   selectDocumentDialogOpen: boolean;
   showExportDialog: boolean;
+  showSnapshotDialog: boolean;
 }
 
 export class VocabularySummary extends EditableComponent<
@@ -64,6 +70,7 @@ export class VocabularySummary extends EditableComponent<
       edit: false,
       showRemoveDialog: false,
       showExportDialog: false,
+      showSnapshotDialog: false,
       selectDocumentDialogOpen: false,
     };
   }
@@ -82,24 +89,25 @@ export class VocabularySummary extends EditableComponent<
   }
 
   public loadVocabulary = () => {
-    const normalizedName = this.props.match.params.name;
-    const namespace = Utils.extractQueryParam(
+    const iriFromUrl = Utils.resolveVocabularyIriFromRoute(
+      this.props.match.params,
       this.props.location.search,
-      "namespace"
+      this.props.configuration
     );
     const iri = VocabularyUtils.create(this.props.vocabulary.iri);
     if (
-      iri.fragment !== normalizedName ||
-      (namespace && iri.namespace !== namespace)
+      iri.fragment !== iriFromUrl.fragment ||
+      (iriFromUrl.namespace && iri.namespace !== iriFromUrl.namespace)
     ) {
-      this.props.loadVocabulary(
-        IRIImpl.create({ fragment: normalizedName, namespace })
-      );
+      trackPromise(this.props.loadVocabulary(iriFromUrl), "vocabulary-summary");
     }
   };
 
   public onSave = (vocabulary: Vocabulary) => {
-    this.props.updateVocabulary(vocabulary).then(() => {
+    trackPromise(
+      this.props.updateVocabulary(vocabulary),
+      "vocabulary-summary"
+    ).then(() => {
       this.onCloseEdit();
       this.props.loadVocabulary(VocabularyUtils.create(vocabulary.iri));
     });
@@ -122,12 +130,17 @@ export class VocabularySummary extends EditableComponent<
   };
 
   public onCreateSnapshot = () => {
+    this.setState({ showSnapshotDialog: false });
     trackPromise(
       this.props.createSnapshot(
         VocabularyUtils.create(this.props.vocabulary.iri)
       ),
       "vocabulary-summary"
     );
+  };
+
+  public onCreateSnapshotToggle = () => {
+    this.setState({ showSnapshotDialog: !this.state.showSnapshotDialog });
   };
 
   private onImport = (file: File) =>
@@ -194,7 +207,7 @@ export class VocabularySummary extends EditableComponent<
         onAnalyze={this.onExecuteTextAnalysisOnAllTerms}
         onExport={this.onExportToggle}
         onImport={this.onImport}
-        onCreateSnapshot={this.onCreateSnapshot}
+        onCreateSnapshot={this.onCreateSnapshotToggle}
       />
     );
 
@@ -205,16 +218,7 @@ export class VocabularySummary extends EditableComponent<
             "vocabulary.management.vocabularies"
           )}`}
         />
-        <HeaderWithActions
-          title={
-            <>
-              {vocabulary.label}
-              <CopyIriIcon url={vocabulary.iri as string} />
-              <VocabularyReadOnlyIcon vocabulary={vocabulary} />
-            </>
-          }
-          actions={buttons}
-        />
+        <HeaderWithActions title={this.renderTitle()} actions={buttons} />
         <RemoveAssetDialog
           show={this.state.showRemoveDialog}
           asset={vocabulary}
@@ -225,6 +229,11 @@ export class VocabularySummary extends EditableComponent<
           show={this.state.showExportDialog}
           onClose={this.onExportToggle}
           vocabulary={vocabulary}
+        />
+        <CreateSnapshotDialog
+          show={this.state.showSnapshotDialog}
+          onClose={this.onCreateSnapshotToggle}
+          onConfirm={this.onCreateSnapshot}
         />
         <PromiseTrackingMask area="vocabulary-summary" />
         {this.state.edit ? (
@@ -244,13 +253,26 @@ export class VocabularySummary extends EditableComponent<
       </div>
     );
   }
+
+  private renderTitle() {
+    const vocabulary = this.props.vocabulary;
+    const labelClass = classNames({ "text-muted": vocabulary.isSnapshot() });
+    return (
+      <>
+        <VocabularySnapshotIcon vocabulary={vocabulary} />
+        <span className={labelClass}>{vocabulary.label}</span>
+        <CopyIriIcon url={vocabulary.iri} />
+        <VocabularyReadOnlyIcon vocabulary={vocabulary} />
+      </>
+    );
+  }
 }
 
 export default connect(
   (state: TermItState) => {
     return {
       vocabulary: state.vocabulary,
-      validationResults: state.validationResults[state.vocabulary.iri],
+      configuration: state.configuration,
     };
   },
   (dispatch: ThunkDispatch) => {

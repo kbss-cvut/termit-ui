@@ -215,6 +215,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             isMenuOpen={true}
             scrollMenuIntoView={false}
             multi={false}
+            menuIsFloating={false}
             maxHeight={Utils.calculateAssetListHeight()}
             optionRenderer={createTermsWithImportsOptionRenderer(
               vocabulary.iri

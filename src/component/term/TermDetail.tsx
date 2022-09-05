@@ -4,7 +4,6 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
-  loadTerm,
   loadVocabulary,
   removeTerm,
   updateTerm,
@@ -40,17 +39,21 @@ import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
 import TermOccurrence from "../../model/TermOccurrence";
 import {
   approveOccurrence,
+  loadTerm,
   removeOccurrence,
 } from "../../action/AsyncTermActions";
 import TermReadOnlyIcon from "./authorization/TermReadOnlyIcon";
 import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
+import TermSnapshotIcon from "../snapshot/TermSnapshotIcon";
+import classNames from "classnames";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
+  versionSeparator: string;
   term: Term | null;
   vocabulary: Vocabulary;
-  loadVocabulary: (iri: IRI) => void;
-  loadTerm: (termName: string, vocabularyIri: IRI) => void;
+  loadVocabulary: (iri: IRI, timestamp?: string) => void;
+  loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) => void;
 }
 
 interface TermDetailProps
@@ -97,22 +100,21 @@ export class TermDetail extends EditableComponent<
   }
 
   private loadVocabulary(): void {
-    const vocabularyName: string = this.props.match.params.name;
+    const { name, timestamp } = this.props.match.params;
     const namespace = Utils.extractQueryParam(
       this.props.location.search,
       "namespace"
     );
-    this.props.loadVocabulary({ fragment: vocabularyName, namespace });
+    this.props.loadVocabulary({ fragment: name, namespace }, timestamp);
   }
 
   private loadTerm(): void {
-    const vocabularyName: string = this.props.match.params.name;
-    const termName: string = this.props.match.params.termName;
+    const { name, termName, timestamp } = this.props.match.params;
     const namespace = Utils.extractQueryParam(
       this.props.location.search,
       "namespace"
     );
-    this.props.loadTerm(termName, { fragment: vocabularyName, namespace });
+    this.props.loadTerm(termName, { fragment: name, namespace }, timestamp);
   }
 
   public componentDidUpdate(prevProps: TermDetailProps) {
@@ -268,13 +270,17 @@ export class TermDetail extends EditableComponent<
 
   private renderTitle() {
     const term = this.props.term!;
+    const labelClass = classNames({ "text-muted": term.isSnapshot() });
     const altLabels = getLocalizedPlural(term.altLabels, this.state.language)
       .sort()
       .join(", ");
     return (
       <>
         <TermQualityBadge term={term} />
-        {getLocalized(term.label, this.state.language)}
+        <TermSnapshotIcon term={term} vocabulary={this.props.vocabulary} />
+        <span className={labelClass}>
+          {getLocalized(term.label, this.state.language)}
+        </span>
         <CopyIriIcon url={term.iri as string} />
         <TermReadOnlyIcon vocabulary={this.props.vocabulary} />
         <br />
@@ -292,13 +298,15 @@ export default connect(
       term: state.selectedTerm,
       vocabulary: state.vocabulary,
       configuredLanguage: state.configuration.language,
+      versionSeparator: state.configuration.versionSeparator,
     };
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
-      loadTerm: (termName: string, vocabularyIri: IRI) =>
-        dispatch(loadTerm(termName, vocabularyIri)),
+      loadVocabulary: (iri: IRI, timestamp?: string) =>
+        dispatch(loadVocabulary(iri, true, timestamp)),
+      loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
+        dispatch(loadTerm(termName, vocabularyIri, timestamp)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
       removeTerm: (term: Term) => dispatch(removeTerm(term)),
       approveOccurrence: (occurrence: TermOccurrence) =>

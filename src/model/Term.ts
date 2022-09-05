@@ -12,6 +12,7 @@ import MultilingualString, {
   getLocalized,
   PluralMultilingualString,
 } from "./MultilingualString";
+import { SupportsSnapshots } from "./Snapshot";
 
 const ctx = {
   label: context(VocabularyUtils.SKOS_PREF_LABEL),
@@ -102,7 +103,7 @@ export function termComparator(a: TermInfo | TermData, b: TermInfo | TermData) {
 
 declare type TermMap = { [key: string]: Term };
 
-export default class Term extends Asset implements TermData {
+export default class Term extends Asset implements TermData, SupportsSnapshots {
   public label: MultilingualString;
   public altLabels?: PluralMultilingualString;
   public hiddenLabels?: PluralMultilingualString;
@@ -238,6 +239,23 @@ export default class Term extends Asset implements TermData {
     const termData = this.toTermData();
     Object.assign(termData, { "@context": CONTEXT });
     return termData;
+  }
+
+  public isSnapshot(): boolean {
+    return Term.isSnapshot(this);
+  }
+
+  snapshotOf(): string | undefined {
+    return this.unmappedProperties.has(VocabularyUtils.IS_SNAPSHOT_OF_TERM)
+      ? this.unmappedProperties.get(VocabularyUtils.IS_SNAPSHOT_OF_TERM)![0]
+      : undefined;
+  }
+
+  public static isSnapshot(term: Term | TermData | TermInfo) {
+    return (
+      term.types !== undefined &&
+      term.types.indexOf(VocabularyUtils.TERM_SNAPSHOT) !== -1
+    );
   }
 
   /**

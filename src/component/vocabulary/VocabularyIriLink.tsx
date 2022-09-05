@@ -3,8 +3,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import { Routing } from "../../util/Routing";
 import Routes from "../../util/Routes";
 import AssetIriLink from "../misc/AssetIriLink";
-import User from "../../model/User";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { useI18n } from "../hook/useI18n";
 import { isLoggedIn } from "../../util/Authorization";
@@ -12,8 +11,6 @@ import { isLoggedIn } from "../../util/Authorization";
 interface VocabularyIriLinkProps {
   iri: string;
   id?: string;
-
-  user: User;
 }
 
 /**
@@ -25,9 +22,10 @@ export const VocabularyIriLink: React.FC<VocabularyIriLinkProps> = (
   props: VocabularyIriLinkProps
 ) => {
   const { i18n } = useI18n();
+  const user = useSelector((state: TermItState) => state.user);
   const iri = VocabularyUtils.create(props.iri);
   const path = Routing.getTransitionPath(
-    isLoggedIn(props.user)
+    isLoggedIn(user)
       ? Routes.vocabularySummary
       : Routes.publicVocabularySummary,
     {
@@ -44,6 +42,4 @@ export const VocabularyIriLink: React.FC<VocabularyIriLinkProps> = (
   );
 };
 
-export default connect((state: TermItState) => ({ user: state.user }))(
-  VocabularyIriLink
-);
+export default VocabularyIriLink;
