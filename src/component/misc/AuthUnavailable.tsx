@@ -1,10 +1,10 @@
 import * as React from "react";
-import withI18n, { HasI18n } from "../hoc/withI18n";
 import { Card, CardBody, CardHeader } from "reactstrap";
 import Constants from "../../util/Constants";
-import { injectIntl } from "react-intl";
+import { useI18n } from "../hook/useI18n";
 
-const AuthUnavailable: React.FC<HasI18n> = ({ i18n }) => {
+const AuthUnavailable: React.FC = () => {
+  const { i18n } = useI18n();
   return (
     <Card>
       <CardHeader tag="h2">{Constants.APP_NAME}</CardHeader>
@@ -13,4 +13,4 @@ const AuthUnavailable: React.FC<HasI18n> = ({ i18n }) => {
   );
 };
 
-export default injectIntl(withI18n(AuthUnavailable));
+export default AuthUnavailable;

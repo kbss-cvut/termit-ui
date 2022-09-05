@@ -94,8 +94,7 @@ function messages(state: Message[] = [], action: MessageAction): Message[] {
       return newArr;
     case ActionType.LOGOUT:
     case ActionType.LOGIN: // Intentional fall-through
-      return [];
-    case ActionType.LOGIN_KEYCLOAK:
+    case ActionType.LOGIN_KEYCLOAK: // Intentional fall-through
       return [];
     default:
       return state;

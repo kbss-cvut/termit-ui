@@ -44,12 +44,9 @@ export function loadUser() {
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.get(`${Constants.API_PREFIX}${USERS_ENDPOINT}/current`)
-      .then((data: object) => {
-        return JsonLdUtils.compactAndResolveReferences<UserData>(
-          data,
-          USER_CONTEXT
-        );
-      })
+      .then((data: object) =>
+        JsonLdUtils.compactAndResolveReferences<UserData>(data, USER_CONTEXT)
+      )
       .then((data: UserData) => {
         dispatch(loadConfiguration());
         return dispatch(asyncActionSuccessWithPayload(action, new User(data)));
