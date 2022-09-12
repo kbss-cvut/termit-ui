@@ -140,6 +140,25 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
   };
 }
 
+export function loadRelatedVocabularies(vocabularyIri: IRI) {
+  const action = { type: ActionType.LOAD_RELATED_VOCABULARIES, vocabularyIri };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/related`,
+      param("namespace", vocabularyIri.namespace)
+    )
+      .then((data: string[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
 export function createVocabularySnapshot(vocabularyIri: IRI) {
   const action = {
     type: ActionType.CREATE_VOCABULARY_SNAPSHOT,
@@ -207,5 +226,18 @@ export function loadVocabularySnapshots(vocabularyIri: IRI) {
         dispatch(asyncActionFailure(action, error));
         return [];
       });
+  };
+}
+
+export function removeVocabularySnapshot(snapshotIri: IRI) {
+  const action = { type: ActionType.REMOVE_SNAPSHOT, snapshotIri };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.delete(
+      `${Constants.API_PREFIX}/snapshots/${snapshotIri.fragment}`,
+      param("namespace", snapshotIri.namespace)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

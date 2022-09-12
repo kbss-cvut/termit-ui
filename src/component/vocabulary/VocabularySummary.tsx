@@ -231,6 +231,7 @@ export class VocabularySummary extends EditableComponent<
           vocabulary={vocabulary}
         />
         <CreateSnapshotDialog
+          vocabulary={vocabulary}
           show={this.state.showSnapshotDialog}
           onClose={this.onCreateSnapshotToggle}
           onConfirm={this.onCreateSnapshot}
