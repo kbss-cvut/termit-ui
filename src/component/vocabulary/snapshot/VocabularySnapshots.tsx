@@ -1,56 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { useI18n } from "../hook/useI18n";
-import { ThunkDispatch } from "../../util/Types";
+import Vocabulary from "../../../model/Vocabulary";
+import { useI18n } from "../../hook/useI18n";
+import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
-import SnapshotData from "../../model/Snapshot";
-import Asset from "../../model/Asset";
-import Utils from "../../util/Utils";
-import VocabularyUtils from "../../util/VocabularyUtils";
-import { loadVocabularySnapshots } from "../../action/AsyncVocabularyActions";
-import { loadTermSnapshots } from "../../action/AsyncTermActions";
+import SnapshotData from "../../../model/Snapshot";
+import TermItState from "../../../model/TermItState";
+import { loadVocabularySnapshots } from "../../../action/AsyncVocabularyActions";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import NotificationType from "../../../model/NotificationType";
+import { consumeNotification } from "../../../action/SyncActions";
+import { removeSnapshot } from "../../../action/AsyncActions";
 import { CellProps, Column, Row, usePagination, useTable } from "react-table";
-import Routes from "../../util/Routes";
-import { Link } from "react-router-dom";
-import { Table } from "reactstrap";
-import Pagination from "../misc/table/Pagination";
 import { FormattedDate, FormattedTime } from "react-intl";
-import Term from "../../model/Term";
-import TermItState from "../../model/TermItState";
-import NotificationType from "../../model/NotificationType";
-import { consumeNotification } from "../../action/SyncActions";
+import { Link } from "react-router-dom";
+import { Button, Table } from "reactstrap";
+import Pagination from "../../misc/table/Pagination";
+import Routes from "../../../util/Routes";
 
-interface SnapshotsProps<T extends Asset> {
-  asset: T;
+interface VocabularySnapshotsProps {
+  asset: Vocabulary;
 }
 
-function resolveDataLoader(asset: Asset) {
-  if (Utils.getPrimaryAssetType(asset) === VocabularyUtils.TERM) {
-    return loadTermSnapshots;
-  }
-  return loadVocabularySnapshots;
-}
-
-function resolvePath(snapshot: SnapshotData, asset: Asset) {
+function resolvePath(snapshot: SnapshotData, asset: Vocabulary) {
   const iri = VocabularyUtils.create(snapshot.iri);
   const assetIri = VocabularyUtils.create(asset.iri);
-  if (snapshot.types.indexOf(VocabularyUtils.TERM_SNAPSHOT) !== -1) {
-    const term = asset as Term;
-    const vocabularyIri = VocabularyUtils.create(term.vocabulary!.iri!);
-    return Routes.vocabularyTermDetail.link(
-      {
-        name: vocabularyIri.fragment,
-        termName: iri.fragment,
-      },
-      { namespace: vocabularyIri.namespace }
-    );
-  }
   return Routes.vocabularySnapshotSummary.link(
     { name: assetIri.fragment, timestamp: iri.fragment },
     { namespace: assetIri.namespace }
   );
 }
 
-const Snapshots: React.FC<SnapshotsProps<any>> = ({ asset }) => {
+const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [snapshots, setSnapshots] = useState<SnapshotData[]>([]);
@@ -58,21 +38,27 @@ const Snapshots: React.FC<SnapshotsProps<any>> = ({ asset }) => {
     (state: TermItState) => state.notifications
   );
   useEffect(() => {
-    dispatch(resolveDataLoader(asset)(VocabularyUtils.create(asset.iri))).then(
+    dispatch(loadVocabularySnapshots(VocabularyUtils.create(asset.iri))).then(
       (data) => setSnapshots(data)
     );
-  }, [asset, dispatch, setSnapshots]);
+  }, [asset.iri, dispatch, setSnapshots]);
   useEffect(() => {
     const event = notifications.find(
-      (n) => n.source.type === NotificationType.SNAPSHOT_CREATED
+      (n) => n.source.type === NotificationType.SNAPSHOT_COUNT_CHANGED
     );
     if (event) {
       dispatch(consumeNotification(event));
-      dispatch(
-        resolveDataLoader(asset)(VocabularyUtils.create(asset.iri))
-      ).then((data) => setSnapshots(data));
+      dispatch(loadVocabularySnapshots(VocabularyUtils.create(asset.iri))).then(
+        (data) => setSnapshots(data)
+      );
     }
-  }, [asset, dispatch, notifications, setSnapshots]);
+  }, [asset.iri, dispatch, notifications, setSnapshots]);
+  const onRemove = React.useCallback(
+    (snapshot: SnapshotData) => {
+      dispatch(removeSnapshot(VocabularyUtils.create(snapshot.iri)));
+    },
+    [dispatch]
+  );
 
   const columns: Column<SnapshotData>[] = React.useMemo(
     () => [
@@ -95,17 +81,28 @@ const Snapshots: React.FC<SnapshotsProps<any>> = ({ asset }) => {
         Header: i18n("actions"),
         Cell: (props: CellProps<SnapshotData>) => {
           return (
-            <Link
-              className="btn btn-primary btn-sm"
-              to={resolvePath(props.row.original, asset)}
-            >
-              {i18n("snapshots.show")}
-            </Link>
+            <>
+              <Link
+                className="btn btn-primary btn-sm"
+                to={resolvePath(props.row.original, asset)}
+              >
+                {i18n("snapshots.show")}
+              </Link>
+              {
+                <Button
+                  size="sm"
+                  color="outline-danger"
+                  onClick={() => onRemove(props.row.original)}
+                >
+                  {i18n("remove")}
+                </Button>
+              }
+            </>
           );
         },
       },
     ],
-    [asset, i18n]
+    [asset, i18n, onRemove]
   );
   const tableInstance = useTable<SnapshotData>(
     {
@@ -177,4 +174,4 @@ const Snapshots: React.FC<SnapshotsProps<any>> = ({ asset }) => {
   );
 };
 
-export default Snapshots;
+export default VocabularySnapshots;

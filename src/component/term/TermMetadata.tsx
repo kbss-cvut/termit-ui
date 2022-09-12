@@ -15,6 +15,7 @@ import ValidationResults from "./validation/ValidationResults";
 import Comments from "../comment/Comments";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import "./TermMetadata.scss";
+import TermSnapshots from "./snapshot/TermSnapshots";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
   term: Term;
@@ -179,6 +180,7 @@ export class TermMetadata extends React.Component<
     );
     tabs["term.metadata.validation.title"] = <ValidationResults term={term} />;
     tabs["history.label"] = <AssetHistory asset={term} />;
+    tabs["snapshots.title"] = <TermSnapshots asset={term} />;
     return tabs;
   }
 }

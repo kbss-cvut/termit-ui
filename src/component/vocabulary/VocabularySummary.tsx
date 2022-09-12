@@ -37,7 +37,7 @@ import { trackPromise } from "react-promise-tracker";
 import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
 import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 import { Configuration } from "../../model/Configuration";
-import VocabularySnapshotIcon from "../snapshot/VocabularySnapshotIcon";
+import VocabularySnapshotIcon from "./snapshot/VocabularySnapshotIcon";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
 import classNames from "classnames";
 

@@ -175,7 +175,7 @@ export function createVocabularySnapshot(vocabularyIri: IRI) {
         dispatch(asyncActionSuccess(action));
         dispatch(
           publishNotification({
-            source: { type: NotificationType.SNAPSHOT_CREATED },
+            source: { type: NotificationType.SNAPSHOT_COUNT_CHANGED },
           })
         );
         return dispatch(
@@ -226,18 +226,5 @@ export function loadVocabularySnapshots(vocabularyIri: IRI) {
         dispatch(asyncActionFailure(action, error));
         return [];
       });
-  };
-}
-
-export function removeVocabularySnapshot(snapshotIri: IRI) {
-  const action = { type: ActionType.REMOVE_SNAPSHOT, snapshotIri };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.delete(
-      `${Constants.API_PREFIX}/snapshots/${snapshotIri.fragment}`,
-      param("namespace", snapshotIri.namespace)
-    )
-      .then(() => dispatch(asyncActionSuccess(action)))
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

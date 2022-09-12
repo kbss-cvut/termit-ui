@@ -44,7 +44,7 @@ import {
 } from "../../action/AsyncTermActions";
 import TermReadOnlyIcon from "./authorization/TermReadOnlyIcon";
 import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
-import TermSnapshotIcon from "../snapshot/TermSnapshotIcon";
+import TermSnapshotIcon from "./snapshot/TermSnapshotIcon";
 import classNames from "classnames";
 
 export interface CommonTermDetailProps extends HasI18n {
