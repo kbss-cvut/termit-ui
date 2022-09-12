@@ -288,7 +288,7 @@ const cs = {
     "vocabulary.snapshot.create.dialog.text.no-related":
       "Chcete vytvořit revizi tohoto slovníku?",
     "vocabulary.snapshot.create.dialog.text":
-      "Chcete vytvořit revizi tohoto slovníku? Tato akce současně vytvoří {count, plural, one {revizi # slovníku, který je s ním propojen vztahy mezi pojmy}" +
+      "Chcete vytvořit revizi tohoto slovníku? Tato akce současně vytvoří {count, plural, one {revizi jednoho slovníku, který je s ním propojen vztahy mezi pojmy}" +
       "other {revize dalších # slovníků, které jsou s ním (i nepřímo) propojeny vztahy mezi pojmy}}.",
     "vocabulary.snapshot.create.dialog.confirm": "Vytvořit",
     "vocabulary.snapshot.create.success": "Revize slovníku úspěšně vytvořena.",
@@ -440,7 +440,7 @@ const cs = {
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",
-    "term.removed.message": "Pojem by odstraněn.",
+    "term.removed.message": "Pojem byl odstraněn.",
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
     "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
@@ -714,6 +714,14 @@ const cs = {
     "snapshots.empty": "Žádné předchozí revize nenalezeny.",
     "snapshot.message":
       "Tento { type } je revize a je pouze pro čtení. Kliknutím přejdete na aktuální verzi.",
+    "snapshot.remove.confirm.title": "Odstranit revizi?",
+    "snapshot.remove.confirm.text.no-related":
+      "Určitě chcete odstranit tuto revizi?",
+    "snapshot.remove.confirm.text":
+      "Určitě chcete odstranit tuto revizi? Tato akce odstraní {count, plural, one {# související revizi} " +
+      "few {další # související revize} " +
+      "other {dalších # souvisejících revizí}}.",
+    "snapshot.removed.message": "Revize odstraněna.",
 
     "auth.notEditable.message.unauthorized":
       "K editaci tohoto objektu nemáte dostatečná práva.",

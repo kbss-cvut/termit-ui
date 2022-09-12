@@ -16,6 +16,9 @@ import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
 import Routes from "../../../util/Routes";
 import SnapshotsTable from "../../snapshot/SnapshotsTable";
+import RemoveSnapshotDialog from "./RemoveSnapshotDialog";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
 interface VocabularySnapshotsProps {
   asset: Vocabulary;
@@ -34,6 +37,7 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [snapshots, setSnapshots] = useState<SnapshotData[]>([]);
+  const [toRemove, setToRemove] = useState<SnapshotData | null>(null);
   const notifications = useSelector(
     (state: TermItState) => state.notifications
   );
@@ -53,12 +57,18 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
       );
     }
   }, [asset.iri, dispatch, notifications, setSnapshots]);
-  const onRemove = React.useCallback(
-    (snapshot: SnapshotData) => {
-      dispatch(removeSnapshot(VocabularyUtils.create(snapshot.iri)));
+  const onRemoveClick = React.useCallback(
+    (snapshot) => {
+      setToRemove(snapshot);
     },
-    [dispatch]
+    [setToRemove]
   );
+  const onRemove = () => {
+    trackPromise(
+      dispatch(removeSnapshot(VocabularyUtils.create(toRemove!.iri))),
+      "vocabulary-snapshots"
+    ).then(() => setToRemove(null));
+  };
 
   const columns: Column<SnapshotData>[] = React.useMemo(
     () => [
@@ -92,7 +102,7 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
                 <Button
                   size="sm"
                   color="outline-danger"
-                  onClick={() => onRemove(props.row.original)}
+                  onClick={() => onRemoveClick(props.row.original)}
                 >
                   {i18n("remove")}
                 </Button>
@@ -102,10 +112,20 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
         },
       },
     ],
-    [asset, i18n, onRemove]
+    [asset, i18n, onRemoveClick]
   );
 
-  return <SnapshotsTable columns={columns} data={snapshots} />;
+  return (
+    <>
+      <PromiseTrackingMask area="vocabulary-snapshots" />
+      <RemoveSnapshotDialog
+        snapshot={toRemove}
+        onConfirm={onRemove}
+        onCancel={() => setToRemove(null)}
+      />
+      <SnapshotsTable columns={columns} data={snapshots} />
+    </>
+  );
 };
 
 export default VocabularySnapshots;
