@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CellProps, Column, Row, usePagination, useTable } from "react-table";
+import { CellProps, Column } from "react-table";
 import { Link } from "react-router-dom";
-import { Table } from "reactstrap";
 import { FormattedDate, FormattedTime } from "react-intl";
 import { useI18n } from "../../hook/useI18n";
 import { ThunkDispatch } from "../../../util/Types";
@@ -14,7 +13,7 @@ import TermItState from "../../../model/TermItState";
 import { loadTermSnapshots } from "../../../action/AsyncTermActions";
 import NotificationType from "../../../model/NotificationType";
 import { consumeNotification } from "../../../action/SyncActions";
-import Pagination from "../../misc/table/Pagination";
+import SnapshotsTable from "../../snapshot/SnapshotsTable";
 
 interface TermSnapshotsProps {
   asset: Term;
@@ -92,74 +91,8 @@ const TermSnapshots: React.FC<TermSnapshotsProps> = ({ asset }) => {
     ],
     [asset, i18n]
   );
-  const tableInstance = useTable<SnapshotData>(
-    {
-      columns,
-      data: snapshots,
-    } as any,
-    usePagination
-  );
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow } =
-    tableInstance;
-  const page: Row<SnapshotData>[] = (tableInstance as any).page;
 
-  if (snapshots.length === 0) {
-    return (
-      <div
-        id="snapshots-empty-notice"
-        className="additional-metadata-container italics"
-      >
-        {i18n("snapshots.empty")}
-      </div>
-    );
-  }
-
-  return (
-    <div className="additional-metadata-container">
-      <Table {...getTableProps()} striped={true} responsive={true}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => {
-                return (
-                  <th
-                    {...column.getHeaderProps([
-                      { className: (column as any).className },
-                    ])}
-                  >
-                    {column.render("Header")}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td
-                    {...cell.getCellProps([
-                      { className: (cell.column as any).className },
-                    ])}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
-      <Pagination
-        pagingProps={tableInstance as any}
-        pagingState={tableInstance.state as any}
-        allowSizeChange={true}
-      />
-    </div>
-  );
+  return <SnapshotsTable columns={columns} data={snapshots} />;
 };
 
 export default TermSnapshots;

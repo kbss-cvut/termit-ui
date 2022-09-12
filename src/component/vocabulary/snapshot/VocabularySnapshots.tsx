@@ -10,12 +10,12 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import NotificationType from "../../../model/NotificationType";
 import { consumeNotification } from "../../../action/SyncActions";
 import { removeSnapshot } from "../../../action/AsyncActions";
-import { CellProps, Column, Row, usePagination, useTable } from "react-table";
+import { CellProps, Column } from "react-table";
 import { FormattedDate, FormattedTime } from "react-intl";
 import { Link } from "react-router-dom";
-import { Button, Table } from "reactstrap";
-import Pagination from "../../misc/table/Pagination";
+import { Button } from "reactstrap";
 import Routes from "../../../util/Routes";
+import SnapshotsTable from "../../snapshot/SnapshotsTable";
 
 interface VocabularySnapshotsProps {
   asset: Vocabulary;
@@ -104,74 +104,8 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
     ],
     [asset, i18n, onRemove]
   );
-  const tableInstance = useTable<SnapshotData>(
-    {
-      columns,
-      data: snapshots,
-    } as any,
-    usePagination
-  );
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow } =
-    tableInstance;
-  const page: Row<SnapshotData>[] = (tableInstance as any).page;
 
-  if (snapshots.length === 0) {
-    return (
-      <div
-        id="snapshots-empty-notice"
-        className="additional-metadata-container italics"
-      >
-        {i18n("snapshots.empty")}
-      </div>
-    );
-  }
-
-  return (
-    <div className="additional-metadata-container">
-      <Table {...getTableProps()} striped={true} responsive={true}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => {
-                return (
-                  <th
-                    {...column.getHeaderProps([
-                      { className: (column as any).className },
-                    ])}
-                  >
-                    {column.render("Header")}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td
-                    {...cell.getCellProps([
-                      { className: (cell.column as any).className },
-                    ])}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
-      <Pagination
-        pagingProps={tableInstance as any}
-        pagingState={tableInstance.state as any}
-        allowSizeChange={true}
-      />
-    </div>
-  );
+  return <SnapshotsTable columns={columns} data={snapshots} />;
 };
 
 export default VocabularySnapshots;
