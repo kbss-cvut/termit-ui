@@ -70,7 +70,6 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
       "vocabulary-snapshots"
     ).then(() => setToRemove(null));
   };
-  // TODO improve table layout
 
   const columns: Column<SnapshotData>[] = React.useMemo(
     () => [
@@ -91,6 +90,7 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
       },
       {
         Header: i18n("actions"),
+        className: "text-center align-middle snapshot-actions",
         Cell: (props: CellProps<SnapshotData>) => {
           return (
             <>

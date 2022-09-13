@@ -4,6 +4,7 @@ import SnapshotData from "../../model/Snapshot";
 import { Table } from "reactstrap";
 import Pagination from "../misc/table/Pagination";
 import { useI18n } from "../hook/useI18n";
+import "./SnapshotsTable.scss";
 
 interface SnapshotsTableProps {
   columns: Column<SnapshotData>[];

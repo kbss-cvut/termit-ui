@@ -75,6 +75,7 @@ const TermSnapshots: React.FC<TermSnapshotsProps> = ({ asset }) => {
       },
       {
         Header: i18n("actions"),
+        className: "text-center align-middle snapshot-actions",
         Cell: (props: CellProps<SnapshotData>) => {
           return (
             <>
