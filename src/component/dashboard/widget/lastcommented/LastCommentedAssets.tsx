@@ -7,7 +7,7 @@ import AllLastCommentedAssets from "./AllLastCommentedAssets";
 import withI18n from "../../../hoc/withI18n";
 import { injectIntl } from "react-intl";
 import { useI18n } from "../../../hook/useI18n";
-import IfUserAuthorized from "../../../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../../../authorization/IfUserIsEditor";
 
 const LastCommentedAssets = () => {
   const { i18n } = useI18n();
@@ -24,7 +24,7 @@ const LastCommentedAssets = () => {
         {i18n("dashboard.widget.lastCommentedAssets.title")}
       </CardHeader>
       <CardBody className="py-0">
-        <IfUserAuthorized
+        <IfUserIsEditor
           unauthorized={
             <Tabs
               navLinkStyle="small"
@@ -57,7 +57,7 @@ const LastCommentedAssets = () => {
               ),
             }}
           />
-        </IfUserAuthorized>
+        </IfUserIsEditor>
       </CardBody>
     </Card>
   );

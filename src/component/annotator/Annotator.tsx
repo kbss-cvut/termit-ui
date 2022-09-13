@@ -26,7 +26,7 @@ import { injectIntl } from "react-intl";
 import WindowTitle from "../misc/WindowTitle";
 import TermDefinitionEdit from "./TermDefinitionEdit";
 import { updateTerm } from "../../action/AsyncActions";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import "./Annotator.scss";
@@ -509,7 +509,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             "annotator-header-scrolled": window.pageYOffset > 0,
           })}
           actions={[
-            <IfUserAuthorized
+            <IfUserIsEditor
               key="text-analysis-button"
               renderUnauthorizedAlert={false}
             >
@@ -520,7 +520,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                   this.props.vocabularyIri
                 )}
               />
-            </IfUserAuthorized>,
+            </IfUserIsEditor>,
             <LegendToggle key="legend-toggle" />,
           ]}
         />

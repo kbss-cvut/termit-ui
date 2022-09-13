@@ -6,7 +6,7 @@ import SimplePopupWithActions from "./SimplePopupWithActions";
 import AnnotationTerms from "./AnnotationTerms";
 import TermDefinitionAnnotationView from "./TermDefinitionAnnotationView";
 import { GoPencil } from "react-icons/go";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
@@ -39,7 +39,7 @@ function createActionButtons(
   const actions = [];
   if (!editing) {
     actions.push(
-      <IfUserAuthorized
+      <IfUserIsEditor
         renderUnauthorizedAlert={false}
         key="annotation.definition.edit"
       >
@@ -52,11 +52,11 @@ function createActionButtons(
         >
           <GoPencil />
         </Button>
-      </IfUserAuthorized>
+      </IfUserIsEditor>
     );
   }
   actions.push(
-    <IfUserAuthorized
+    <IfUserIsEditor
       renderUnauthorizedAlert={false}
       key="annotation.definition.remove"
     >
@@ -69,7 +69,7 @@ function createActionButtons(
       >
         <TiTrash />
       </Button>
-    </IfUserAuthorized>
+    </IfUserIsEditor>
   );
   actions.push(
     <Button
