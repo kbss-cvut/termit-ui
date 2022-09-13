@@ -33,7 +33,7 @@ describe("IfUserIsEditor", () => {
   it("renders unauthorized component when current user is restricted", () => {
     currentUser.types.push(VocabularyUtils.USER_RESTRICTED);
     const wrapper = mountWithIntl(
-      <IfUserIsEditor>
+      <IfUserIsEditor renderUnauthorizedAlert={true}>
         <div id="test">Test</div>
       </IfUserIsEditor>
     );

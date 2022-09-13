@@ -22,7 +22,7 @@ export const RemoveFile = (props: RemoveFileProps) => {
   };
 
   return (
-    <IfUserIsEditor renderUnauthorizedAlert={false}>
+    <IfUserIsEditor>
       <RemoveAssetDialog
         onCancel={toggle}
         onSubmit={performAction}

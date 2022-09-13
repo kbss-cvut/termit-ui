@@ -104,6 +104,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
 
     return (
       <IfUserIsEditor
+        renderUnauthorizedAlert={true}
         unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}
       >
         <FormGroup>

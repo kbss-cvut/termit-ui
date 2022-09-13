@@ -3,7 +3,7 @@ import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import ImportVocabularyPage from "./ImportVocabularyPage";
 
 const ImportVocabularyRoute: React.FC = () => (
-  <IfUserIsEditor>
+  <IfUserIsEditor renderUnauthorizedAlert={true}>
     <ImportVocabularyPage />
   </IfUserIsEditor>
 );

@@ -39,10 +39,7 @@ function createActionButtons(
   const actions = [];
   if (!editing) {
     actions.push(
-      <IfUserIsEditor
-        renderUnauthorizedAlert={false}
-        key="annotation.definition.edit"
-      >
+      <IfUserIsEditor key="annotation.definition.edit">
         <Button
           className="m-annotation-definition-edit"
           color="primary"
@@ -56,10 +53,7 @@ function createActionButtons(
     );
   }
   actions.push(
-    <IfUserIsEditor
-      renderUnauthorizedAlert={false}
-      key="annotation.definition.remove"
-    >
+    <IfUserIsEditor key="annotation.definition.remove">
       <Button
         className="m-annotation-definition-remove"
         color="primary"

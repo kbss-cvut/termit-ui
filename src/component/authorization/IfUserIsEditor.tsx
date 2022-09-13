@@ -6,7 +6,7 @@ import Unauthorized from "./Unauthorized";
 import { isEditor } from "../../util/Authorization";
 
 interface IfUserIsEditorProps {
-  renderUnauthorizedAlert?: boolean; // Whether an alert should be rendered if user is not authorized. Defaults to true
+  renderUnauthorizedAlert?: boolean; // Whether an alert should be rendered if user is not authorized. Defaults to false
   unauthorized?: React.ReactNode;
 }
 
@@ -14,7 +14,7 @@ interface IfUserIsEditorProps {
  * Renders children if current user (taken from Redux store) is not restricted.
  */
 const IfUserIsEditor: React.FC<IfUserIsEditorProps> = ({
-  renderUnauthorizedAlert = true,
+  renderUnauthorizedAlert = false,
   unauthorized,
   children,
 }) => {

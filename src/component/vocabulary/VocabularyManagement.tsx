@@ -30,7 +30,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
   }, [loadVocabularies]);
 
   const buttons = [
-    <IfUserIsEditor renderUnauthorizedAlert={false} key="vocabularies-create">
+    <IfUserIsEditor key="vocabularies-create">
       <Link
         id="vocabularies-create"
         className="btn btn-primary btn-sm"
@@ -41,7 +41,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         &nbsp;{i18n("vocabulary.management.new")}
       </Link>
     </IfUserIsEditor>,
-    <IfUserIsEditor renderUnauthorizedAlert={false} key="analyze-vocabularies">
+    <IfUserIsEditor key="analyze-vocabularies">
       <Button
         id="analyze-vocabularies"
         className="btn"

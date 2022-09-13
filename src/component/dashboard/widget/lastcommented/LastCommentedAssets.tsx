@@ -4,8 +4,6 @@ import MyLastCommentedAssets from "./MyLastCommentedAssets";
 import LastCommentedAssetsInReactionToMine from "./LastCommentedAssetsInReactionToMine";
 import Tabs from "../../../misc/Tabs";
 import AllLastCommentedAssets from "./AllLastCommentedAssets";
-import withI18n from "../../../hoc/withI18n";
-import { injectIntl } from "react-intl";
 import { useI18n } from "../../../hook/useI18n";
 import IfUserIsEditor from "../../../authorization/IfUserIsEditor";
 
@@ -25,6 +23,7 @@ const LastCommentedAssets = () => {
       </CardHeader>
       <CardBody className="py-0">
         <IfUserIsEditor
+          renderUnauthorizedAlert={true}
           unauthorized={
             <Tabs
               navLinkStyle="small"
@@ -63,4 +62,4 @@ const LastCommentedAssets = () => {
   );
 };
 
-export default injectIntl(withI18n(LastCommentedAssets));
+export default LastCommentedAssets;

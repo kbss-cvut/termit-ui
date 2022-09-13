@@ -509,10 +509,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             "annotator-header-scrolled": window.pageYOffset > 0,
           })}
           actions={[
-            <IfUserIsEditor
-              key="text-analysis-button"
-              renderUnauthorizedAlert={false}
-            >
+            <IfUserIsEditor key="text-analysis-button">
               <TextAnalysisInvocationButton
                 className="annotator-action-button"
                 fileIri={this.props.fileIri}

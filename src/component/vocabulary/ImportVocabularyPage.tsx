@@ -32,7 +32,7 @@ export const ImportVocabularyPage = (props: ImportVocabularyPageProps) => {
   const onCancel = () => Routing.transitionTo(Routes.vocabularies);
 
   return (
-    <IfUserIsEditor renderUnauthorizedAlert={false}>
+    <IfUserIsEditor>
       <HeaderWithActions title={i18n("vocabulary.import.dialog.title")} />
       <Card id="vocabulary-import" className="mb-3">
         <CardBody>

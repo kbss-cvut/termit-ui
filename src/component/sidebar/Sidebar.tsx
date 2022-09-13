@@ -297,7 +297,7 @@ export class Sidebar extends Component<SidebarProps, SidebarState> {
             <Nav navbar={true}>{this.createLinks(mainNavRoutes)}</Nav>
 
             {desktopView && (
-              <IfUserIsEditor renderUnauthorizedAlert={false}>
+              <IfUserIsEditor>
                 <div className="d-block">
                   <hr className="mb-2 mt-2" />
                   <Nav navbar={true}>

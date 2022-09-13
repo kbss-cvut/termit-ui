@@ -38,7 +38,7 @@ function createActionButtons(
   const t = props.term ? props.term : null;
   if (props.annotationOrigin === AnnotationOrigin.PROPOSED && t !== null) {
     actions.push(
-      <IfUserIsEditor renderUnauthorizedAlert={false} key="annotation.confirm">
+      <IfUserIsEditor key="annotation.confirm">
         <Button
           color="primary"
           title={i18n("annotation.confirm")}
@@ -52,7 +52,7 @@ function createActionButtons(
   }
   if (!editing) {
     actions.push(
-      <IfUserIsEditor renderUnauthorizedAlert={false} key="annotation.edit">
+      <IfUserIsEditor key="annotation.edit">
         <Button
           color="primary"
           title={i18n("annotation.edit")}
@@ -65,7 +65,7 @@ function createActionButtons(
     );
   }
   actions.push(
-    <IfUserIsEditor renderUnauthorizedAlert={false} key="annotation.remove">
+    <IfUserIsEditor key="annotation.remove">
       <Button
         color="primary"
         title={i18n("annotation.remove")}

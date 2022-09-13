@@ -4,7 +4,7 @@ import IfUserIsEditor from "../authorization/IfUserIsEditor";
 
 const CreateVocabularyRoute: React.FC = () => {
   return (
-    <IfUserIsEditor>
+    <IfUserIsEditor renderUnauthorizedAlert={true}>
       <CreateVocabulary />
     </IfUserIsEditor>
   );

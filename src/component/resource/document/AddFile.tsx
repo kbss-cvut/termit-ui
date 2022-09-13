@@ -22,7 +22,7 @@ export const AddFile = (props: AddFileProps) => {
   };
 
   return (
-    <IfUserIsEditor renderUnauthorizedAlert={false}>
+    <IfUserIsEditor>
       <Modal
         id="document-create-file"
         isOpen={createFileDialogOpen}
