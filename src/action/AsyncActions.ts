@@ -1345,3 +1345,31 @@ export function loadNews(language: string) {
       });
   };
 }
+
+export function removeSnapshot(snapshotIri: IRI) {
+  const action = { type: ActionType.REMOVE_SNAPSHOT, snapshotIri };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.delete(
+      `${Constants.API_PREFIX}/snapshots/${snapshotIri.fragment}`,
+      param("namespace", snapshotIri.namespace)
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "snapshot.removed.message" },
+              MessageType.SUCCESS
+            )
+          )
+        );
+        return dispatch(
+          publishNotification({
+            source: { type: NotificationType.SNAPSHOT_COUNT_CHANGED },
+          })
+        );
+      })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}

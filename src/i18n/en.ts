@@ -278,8 +278,11 @@ const en = {
     "vocabulary.snapshot.create.label": "Create snapshot",
     "vocabulary.snapshot.create.title":
       "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships. The snapshot is a read-only copy of the whole vocabulary content and can be used to demarcate important milestones in the vocabulary lifecycle.",
+    "vocabulary.snapshot.create.dialog.text.no-related":
+      "Are you sure you want to create a snapshot of this vocabulary?",
     "vocabulary.snapshot.create.dialog.text":
-      "Are you sure you want to create a snapshot of this vocabulary? This action will also create snapshot of all vocabularies that are (even indirectly) connected to this one via term relationships.",
+      "Are you sure you want to create a snapshot of this vocabulary? This action will also create {count, plural, one {a snapshot of one vocabulary that is connected to this via via term relationships.}" +
+      "other {snapshots of # vocabularies that are (even indirectly) connected to this one via term relationships} }.",
     "vocabulary.snapshot.create.dialog.confirm": "Create",
     "vocabulary.snapshot.create.success":
       "Vocabulary revision successfully created.",
@@ -699,6 +702,12 @@ const en = {
     "snapshots.empty": "No previous snapshots found.",
     "snapshot.message":
       "This { type } is a snapshot and is read only. Click to view the current version.",
+    "snapshot.remove.confirm.title": "Remove snapshot?",
+    "snapshot.remove.confirm.text.no-related":
+      "Are you sure you want to remove this snapshot?",
+    "snapshot.remove.confirm.text":
+      "Are you sure you want to remove this snapshot? This action will remove {count, plural, one {# related snapshot} " +
+      "other {# related snapshots}}.",
 
     "auth.notEditable.message.unauthorized":
       "You have insufficient rights to edit this { type }.",

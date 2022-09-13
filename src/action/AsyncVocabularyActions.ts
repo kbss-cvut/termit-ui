@@ -140,6 +140,25 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
   };
 }
 
+export function loadRelatedVocabularies(vocabularyIri: IRI) {
+  const action = { type: ActionType.LOAD_RELATED_VOCABULARIES, vocabularyIri };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/related`,
+      param("namespace", vocabularyIri.namespace)
+    )
+      .then((data: string[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
 export function createVocabularySnapshot(vocabularyIri: IRI) {
   const action = {
     type: ActionType.CREATE_VOCABULARY_SNAPSHOT,
@@ -156,7 +175,7 @@ export function createVocabularySnapshot(vocabularyIri: IRI) {
         dispatch(asyncActionSuccess(action));
         dispatch(
           publishNotification({
-            source: { type: NotificationType.SNAPSHOT_CREATED },
+            source: { type: NotificationType.SNAPSHOT_COUNT_CHANGED },
           })
         );
         return dispatch(

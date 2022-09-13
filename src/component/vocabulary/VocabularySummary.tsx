@@ -37,7 +37,7 @@ import { trackPromise } from "react-promise-tracker";
 import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
 import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 import { Configuration } from "../../model/Configuration";
-import VocabularySnapshotIcon from "../snapshot/VocabularySnapshotIcon";
+import VocabularySnapshotIcon from "./snapshot/VocabularySnapshotIcon";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
 import classNames from "classnames";
 
@@ -231,6 +231,7 @@ export class VocabularySummary extends EditableComponent<
           vocabulary={vocabulary}
         />
         <CreateSnapshotDialog
+          vocabulary={vocabulary}
           show={this.state.showSnapshotDialog}
           onClose={this.onCreateSnapshotToggle}
           onConfirm={this.onCreateSnapshot}

@@ -1,8 +1,8 @@
 import React from "react";
-import Vocabulary from "../../model/Vocabulary";
-import { Routing, Vocabularies } from "../../util/Routing";
+import Vocabulary from "../../../model/Vocabulary";
+import { Routing, Vocabularies } from "../../../util/Routing";
 import { Link } from "react-router-dom";
-import SnapshotIcon from "./SnapshotIcon";
+import SnapshotIcon from "../../snapshot/SnapshotIcon";
 
 const VocabularySnapshotIcon: React.FC<{ vocabulary?: Vocabulary }> = ({
   vocabulary,

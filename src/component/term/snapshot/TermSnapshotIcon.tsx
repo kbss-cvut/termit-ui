@@ -1,9 +1,9 @@
 import React from "react";
-import Term, { TermInfo } from "../../model/Term";
-import { Routing, Terms } from "../../util/Routing";
+import Term, { TermInfo } from "../../../model/Term";
+import { Routing, Terms } from "../../../util/Routing";
 import { Link } from "react-router-dom";
-import SnapshotIcon from "./SnapshotIcon";
-import Vocabulary from "../../model/Vocabulary";
+import SnapshotIcon from "../../snapshot/SnapshotIcon";
+import Vocabulary from "../../../model/Vocabulary";
 
 const TermSnapshotIcon: React.FC<{ term: Term; vocabulary: Vocabulary }> = ({
   term,
