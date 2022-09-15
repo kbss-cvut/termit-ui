@@ -43,34 +43,3 @@
 .comment .metadata .actionable-reaction:hover {
   transform: scale(1.2);
 }
-
-.comment .actions {
-  font-size: 0.875rem;
-  display: inline-block;
-}
-
-.comments .actions .comment-action {
-  cursor: pointer;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-}
-
-.comments .actions .comment-action:hover {
-  cursor: pointer;
-  color: inherit;
-}
-
-.comment .actions {
-  font-size: 0.875rem;
-  display: inline-block;
-}
-
-.comments .actions .comment-action {
-  cursor: pointer;
-  color: $gray-600;
-}
-
-.comments .actions .comment-action:hover {
-  cursor: pointer;
-  color: inherit;
-}
