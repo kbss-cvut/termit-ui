@@ -64,7 +64,11 @@ const CommentView: React.FC<CommentViewProps> = (props) => {
           <IfAuthorized
             isAuthorized={() => comment.author!.iri === currentUser.iri}
           >
-            <BadgeButton color="primary" onClick={() => onEdit(comment)}>
+            <BadgeButton
+              className="m-comment-edit"
+              color="primary"
+              onClick={() => onEdit(comment)}
+            >
               {i18n("edit")}
             </BadgeButton>
           </IfAuthorized>
@@ -74,6 +78,7 @@ const CommentView: React.FC<CommentViewProps> = (props) => {
             }
           >
             <BadgeButton
+              className="m-comment-remove"
               color="outline-danger"
               onClick={() => onRemove(comment)}
             >
