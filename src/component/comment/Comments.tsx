@@ -34,7 +34,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
         onLoad(data.length);
       }
     );
-  }, [setComments, onLoad, term.iri]);
+  }, [dispatch, setComments, onLoad, term.iri]);
   const termIri = VocabularyUtils.create(term.iri);
   const onSubmit = (comment: Comment) =>
     dispatch(createTermComment(comment, termIri)).then(() => {
