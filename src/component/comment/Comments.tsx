@@ -15,6 +15,8 @@ import {
 import CreateCommentForm from "./CreateCommentForm";
 import CommentList from "./CommentList";
 import "./Comments.scss";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
 interface CommentsProps {
   term: Term;
@@ -37,35 +39,51 @@ const Comments: React.FC<CommentsProps> = (props) => {
   }, [dispatch, setComments, onLoad, term.iri]);
   const termIri = VocabularyUtils.create(term.iri);
   const onSubmit = (comment: Comment) =>
-    dispatch(createTermComment(comment, termIri)).then(() => {
-      dispatch(loadTermComments(termIri)).then((data) => {
-        setComments(data);
-        onLoad(data.length);
-      });
-    });
+    trackPromise(
+      dispatch(createTermComment(comment, termIri)).then(() => {
+        dispatch(loadTermComments(termIri)).then((data) => {
+          setComments(data);
+          onLoad(data.length);
+        });
+      }),
+      "comments"
+    );
   const onAddReaction = (comment: Comment, type: string) => {
-    dispatch(reactToComment(VocabularyUtils.create(comment.iri!), type)).then(
-      () =>
-        dispatch(loadTermComments(termIri)).then((data) => setComments(data))
+    trackPromise(
+      dispatch(reactToComment(VocabularyUtils.create(comment.iri!), type)).then(
+        () =>
+          dispatch(loadTermComments(termIri)).then((data) => setComments(data))
+      ),
+      "comments"
     );
   };
   const onRemoveReaction = (comment: Comment) => {
-    dispatch(removeCommentReaction(VocabularyUtils.create(comment.iri!))).then(
-      () =>
+    trackPromise(
+      dispatch(
+        removeCommentReaction(VocabularyUtils.create(comment.iri!))
+      ).then(() =>
         dispatch(loadTermComments(termIri)).then((data) => setComments(data))
+      ),
+      "comments"
     );
   };
   const onUpdate = (comment: Comment) => {
-    return dispatch(updateComment(comment)).then(() =>
-      dispatch(loadTermComments(termIri)).then((data) => setComments(data))
+    return trackPromise(
+      dispatch(updateComment(comment)).then(() =>
+        dispatch(loadTermComments(termIri)).then((data) => setComments(data))
+      ),
+      "comments"
     );
   };
   const onRemove = (comment: Comment) => {
-    return dispatch(removeComment(comment)).then(() =>
-      dispatch(loadTermComments(termIri)).then((data) => {
-        setComments(data);
-        onLoad(data.length);
-      })
+    return trackPromise(
+      dispatch(removeComment(comment)).then(() =>
+        dispatch(loadTermComments(termIri)).then((data) => {
+          setComments(data);
+          onLoad(data.length);
+        })
+      ),
+      "comments"
     );
   };
 
@@ -99,6 +117,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
   return (
     <div id="term-comments" className="comments m-1 mt-3">
+      <PromiseTrackingMask area="comments" />
       {props.reverseOrder ? renderReverse() : renderForward()}
     </div>
   );

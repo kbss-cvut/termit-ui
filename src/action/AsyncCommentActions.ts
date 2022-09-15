@@ -43,7 +43,7 @@ export function loadTermComments(termIri: IRI) {
 export function createTermComment(comment: Comment, termIri: IRI) {
   const action = { type: ActionType.CREATE_COMMENT };
   return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     return Ajax.post(
       `${Constants.API_PREFIX}/terms/${termIri.fragment}/comments`,
       param("namespace", termIri.namespace).content(comment.toJsonLd())
