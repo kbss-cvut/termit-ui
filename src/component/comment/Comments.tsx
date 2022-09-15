@@ -106,7 +106,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
       <CreateCommentForm onSubmit={onSubmit} />
       {comments.length > 0 && <hr className="border-top mt-3 mb-1" />}
       <CommentList
-        comments={comments.reverse()}
+        comments={[...comments].reverse()}
         addReaction={onAddReaction}
         removeReaction={onRemoveReaction}
         updateComment={onUpdate}
