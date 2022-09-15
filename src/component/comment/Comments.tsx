@@ -2,14 +2,15 @@ import * as React from "react";
 import Term from "../../model/Term";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Comment from "../../model/Comment";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
   createTermComment,
   loadTermComments,
   reactToComment,
+  removeComment,
   removeCommentReaction,
-  updateComment as updateCommentAction,
+  updateComment,
 } from "../../action/AsyncCommentActions";
 import CreateCommentForm from "./CreateCommentForm";
 import CommentList from "./CommentList";
@@ -18,53 +19,53 @@ import "./Comments.scss";
 interface CommentsProps {
   term: Term;
   onLoad: (commentsCount: number) => void;
-
-  loadComments: (termIri: string) => Promise<Comment[]>;
-  createComment: (comment: Comment, termIRI: string) => Promise<any>;
-  updateComment: (comment: Comment) => Promise<any>;
-  addReaction: (comment: Comment, reactionType: string) => Promise<any>;
-  removeReaction: (comment: Comment) => Promise<any>;
   reverseOrder: boolean;
 }
 
 const Comments: React.FC<CommentsProps> = (props) => {
-  const {
-    loadComments,
-    createComment,
-    addReaction,
-    removeReaction,
-    updateComment,
-    term,
-    onLoad,
-  } = props;
+  const { term, onLoad } = props;
   const [comments, setComments] = React.useState<Comment[]>([]);
+  const dispatch: ThunkDispatch = useDispatch();
 
   React.useEffect(() => {
-    loadComments(term.iri).then((data) => {
-      setComments(data);
-      onLoad(data.length);
-    });
-  }, [loadComments, setComments, onLoad, term.iri]);
+    dispatch(loadTermComments(VocabularyUtils.create(term.iri))).then(
+      (data) => {
+        setComments(data);
+        onLoad(data.length);
+      }
+    );
+  }, [setComments, onLoad, term.iri]);
+  const termIri = VocabularyUtils.create(term.iri);
   const onSubmit = (comment: Comment) =>
-    createComment(comment, term.iri).then(() => {
-      loadComments(term.iri).then((data) => {
+    dispatch(createTermComment(comment, termIri)).then(() => {
+      dispatch(loadTermComments(termIri)).then((data) => {
         setComments(data);
         onLoad(data.length);
       });
     });
   const onAddReaction = (comment: Comment, type: string) => {
-    addReaction(comment, type).then(() =>
-      loadComments(term.iri).then((data) => setComments(data))
+    dispatch(reactToComment(VocabularyUtils.create(comment.iri!), type)).then(
+      () =>
+        dispatch(loadTermComments(termIri)).then((data) => setComments(data))
     );
   };
   const onRemoveReaction = (comment: Comment) => {
-    removeReaction(comment).then(() =>
-      loadComments(term.iri).then((data) => setComments(data))
+    dispatch(removeCommentReaction(VocabularyUtils.create(comment.iri!))).then(
+      () =>
+        dispatch(loadTermComments(termIri)).then((data) => setComments(data))
     );
   };
   const onUpdate = (comment: Comment) => {
-    return updateComment(comment).then(() =>
-      loadComments(term.iri).then((data) => setComments(data))
+    return dispatch(updateComment(comment)).then(() =>
+      dispatch(loadTermComments(termIri)).then((data) => setComments(data))
+    );
+  };
+  const onRemove = (comment: Comment) => {
+    return dispatch(removeComment(comment)).then(() =>
+      dispatch(loadTermComments(termIri)).then((data) => {
+        setComments(data);
+        onLoad(data.length);
+      })
     );
   };
 
@@ -75,6 +76,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
         addReaction={onAddReaction}
         removeReaction={onRemoveReaction}
         updateComment={onUpdate}
+        removeComment={onRemove}
       />
       {comments.length > 0 && <hr className="border-top mt-3 mb-1" />}
       <CreateCommentForm onSubmit={onSubmit} />
@@ -90,6 +92,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
         addReaction={onAddReaction}
         removeReaction={onRemoveReaction}
         updateComment={onUpdate}
+        removeComment={onRemove}
       />
     </>
   );
@@ -101,18 +104,4 @@ const Comments: React.FC<CommentsProps> = (props) => {
   );
 };
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    loadComments: (termIri: string) =>
-      dispatch(loadTermComments(VocabularyUtils.create(termIri))),
-    createComment: (comment: Comment, termIri: string) =>
-      dispatch(createTermComment(comment, VocabularyUtils.create(termIri))),
-    addReaction: (comment: Comment, reactionType: string) =>
-      dispatch(
-        reactToComment(VocabularyUtils.create(comment.iri!), reactionType)
-      ),
-    removeReaction: (comment: Comment) =>
-      dispatch(removeCommentReaction(VocabularyUtils.create(comment.iri!))),
-    updateComment: (comment: Comment) => dispatch(updateCommentAction(comment)),
-  };
-})(Comments);
+export default Comments;

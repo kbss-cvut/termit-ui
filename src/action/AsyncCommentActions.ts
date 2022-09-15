@@ -95,3 +95,17 @@ export function updateComment(comment: Comment) {
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }
+
+export function removeComment(comment: Comment) {
+  const action = { type: ActionType.REMOVE_COMMENT, commentUri: comment.iri };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    const commentIri = VocabularyUtils.create(comment.iri!);
+    return Ajax.delete(
+      `${Constants.API_PREFIX}/comments/${commentIri.fragment}`,
+      param("namespace", commentIri.namespace)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
