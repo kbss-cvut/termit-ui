@@ -19,4 +19,6 @@ export interface SupportsSnapshots {
   isSnapshot: () => boolean;
 
   snapshotOf: () => string | undefined;
+
+  snapshotCreated: () => string | undefined;
 }

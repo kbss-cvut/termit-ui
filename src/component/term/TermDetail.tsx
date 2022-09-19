@@ -46,6 +46,7 @@ import TermReadOnlyIcon from "./authorization/TermReadOnlyIcon";
 import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
 import TermSnapshotIcon from "./snapshot/TermSnapshotIcon";
 import classNames from "classnames";
+import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -281,6 +282,7 @@ export class TermDetail extends EditableComponent<
         <span className={labelClass}>
           {getLocalized(term.label, this.state.language)}
         </span>
+        <SnapshotCreationInfo asset={term} />
         <CopyIriIcon url={term.iri as string} />
         <TermReadOnlyIcon vocabulary={this.props.vocabulary} />
         <br />

@@ -1,6 +1,5 @@
 import * as React from "react";
 import withI18n from "../../hoc/withI18n";
-import { RouteComponentProps, withRouter } from "react-router";
 import { IRI } from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
 import HeaderWithActions from "../../misc/HeaderWithActions";
@@ -21,20 +20,20 @@ import {
 import WindowTitle from "../../misc/WindowTitle";
 import { loadVocabulary } from "../../../action/AsyncActions";
 import { loadTerm } from "../../../action/AsyncTermActions";
+import { useLocation, useParams } from "react-router-dom";
 
-interface TermDetailProps
-  extends CommonTermDetailProps,
-    RouteComponentProps<any> {}
+interface TermDetailProps extends CommonTermDetailProps {}
 
 export const TermDetail: React.FC<TermDetailProps> = (props) => {
-  const { term, location, match, loadTerm, loadVocabulary } = props;
+  const { term, loadTerm, loadVocabulary } = props;
+  const { name, termName, timestamp } = useParams<any>();
+  const location = useLocation();
   React.useEffect(() => {
-    const { name, termName, timestamp } = match.params;
     const namespace = Utils.extractQueryParam(location.search, "namespace");
     const vocUri = { fragment: name, namespace };
     loadTerm(termName, vocUri, timestamp);
     loadVocabulary(vocUri, timestamp);
-  }, [location.search, match.params, loadTerm, loadVocabulary]);
+  }, [location.search, name, termName, timestamp, loadTerm, loadVocabulary]);
   const [language, setLanguage] = React.useState<string>(
     resolveInitialLanguage(props)
   );
@@ -93,4 +92,4 @@ export default connect(
         dispatch(loadTerm(termName, vocabularyIri, timestamp)),
     };
   }
-)(injectIntl(withI18n(withRouter(TermDetail))));
+)(injectIntl(withI18n(TermDetail)));

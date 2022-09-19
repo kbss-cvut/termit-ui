@@ -102,6 +102,12 @@ export default class Vocabulary
       : undefined;
   }
 
+  public snapshotCreated(): string | undefined {
+    return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
+      ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+      : undefined;
+  }
+
   public get unmappedProperties(): Map<string, string[]> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,

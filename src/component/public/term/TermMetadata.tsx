@@ -2,12 +2,12 @@ import * as React from "react";
 import Term from "../../../model/Term";
 import { Card, CardBody, Col, Row } from "reactstrap";
 import Vocabulary from "../../../model/Vocabulary";
-import { RouteComponentProps, withRouter } from "react-router";
 import BasicTermMetadata from "../../term/BasicTermMetadata";
 import LanguageSelector from "../../multilingual/LanguageSelector";
 import Terms from "./Terms";
+import { useLocation, useRouteMatch } from "react-router-dom";
 
-interface TermMetadataProps extends RouteComponentProps<any> {
+interface TermMetadataProps {
   term: Term;
   vocabulary: Vocabulary;
   language: string;
@@ -16,6 +16,8 @@ interface TermMetadataProps extends RouteComponentProps<any> {
 
 const TermMetadata: React.FC<TermMetadataProps> = (props) => {
   const { term, vocabulary, language, setLanguage } = props;
+  const match = useRouteMatch();
+  const location = useLocation();
 
   return (
     <>
@@ -46,8 +48,8 @@ const TermMetadata: React.FC<TermMetadataProps> = (props) => {
           <Card>
             <Terms
               vocabulary={vocabulary}
-              match={props.match}
-              location={props.location}
+              match={match}
+              location={location}
               isDetailView={true}
             />
           </Card>
@@ -57,4 +59,4 @@ const TermMetadata: React.FC<TermMetadataProps> = (props) => {
   );
 };
 
-export default withRouter(TermMetadata);
+export default TermMetadata;
