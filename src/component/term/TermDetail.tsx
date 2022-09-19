@@ -1,4 +1,4 @@
-import { FormattedDate, FormattedTime, injectIntl } from "react-intl";
+import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import { RouteComponentProps, withRouter } from "react-router";
 import { connect } from "react-redux";
@@ -23,7 +23,7 @@ import Utils from "../../util/Utils";
 import AppNotification from "../../model/AppNotification";
 import { publishNotification } from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
+import { IRI } from "../../util/VocabularyUtils";
 import * as _ from "lodash";
 import Vocabulary from "../../model/Vocabulary";
 import { FaTrashAlt } from "react-icons/fa";
@@ -46,6 +46,7 @@ import TermReadOnlyIcon from "./authorization/TermReadOnlyIcon";
 import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
 import TermSnapshotIcon from "./snapshot/TermSnapshotIcon";
 import classNames from "classnames";
+import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -281,41 +282,13 @@ export class TermDetail extends EditableComponent<
         <span className={labelClass}>
           {getLocalized(term.label, this.state.language)}
         </span>
-        {this.renderSnapshotInfo()}
+        <SnapshotCreationInfo asset={term} />
         <CopyIriIcon url={term.iri as string} />
         <TermReadOnlyIcon vocabulary={this.props.vocabulary} />
         <br />
         <div className="small italics">
           {altLabels.length > 0 ? altLabels : "\u00a0"}
         </div>
-      </>
-    );
-  }
-
-  private renderSnapshotInfo() {
-    const term = this.props.term!;
-    if (
-      !term.isSnapshot() ||
-      !term.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
-    ) {
-      return null;
-    }
-    const created = term.unmappedProperties.get(
-      VocabularyUtils.SNAPSHOT_CREATED
-    );
-    const createdDate = new Date(Date.parse(created![0]));
-    return (
-      <>
-        <span
-          id="term-snapshot-created"
-          className="text-muted italics ml-1"
-          title={this.props.i18n("snapshots.created")}
-        >
-          ({this.props.i18n("snapshot.label.short")}
-          &nbsp;
-          <FormattedDate value={createdDate} />{" "}
-          <FormattedTime value={createdDate} />)
-        </span>
       </>
     );
   }

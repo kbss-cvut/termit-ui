@@ -245,9 +245,15 @@ export default class Term extends Asset implements TermData, SupportsSnapshots {
     return Term.isSnapshot(this);
   }
 
-  snapshotOf(): string | undefined {
+  public snapshotOf(): string | undefined {
     return this.unmappedProperties.has(VocabularyUtils.IS_SNAPSHOT_OF_TERM)
       ? this.unmappedProperties.get(VocabularyUtils.IS_SNAPSHOT_OF_TERM)![0]
+      : undefined;
+  }
+
+  public snapshotCreated(): string | undefined {
+    return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
+      ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
       : undefined;
   }
 

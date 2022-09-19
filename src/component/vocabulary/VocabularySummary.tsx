@@ -40,6 +40,7 @@ import { Configuration } from "../../model/Configuration";
 import VocabularySnapshotIcon from "./snapshot/VocabularySnapshotIcon";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
 import classNames from "classnames";
+import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -262,6 +263,7 @@ export class VocabularySummary extends EditableComponent<
       <>
         <VocabularySnapshotIcon vocabulary={vocabulary} />
         <span className={labelClass}>{vocabulary.label}</span>
+        <SnapshotCreationInfo asset={vocabulary} />
         <CopyIriIcon url={vocabulary.iri} />
         <VocabularyReadOnlyIcon vocabulary={vocabulary} />
       </>
