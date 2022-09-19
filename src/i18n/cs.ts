@@ -709,7 +709,7 @@ const cs = {
       "Tato zpráva reprezentuje výsledek kontroly kvality. Formulář lze uložit i v případě, že kvalita není stoprocentní.",
 
     "snapshots.title": "Historie revizí",
-    "snapshots.created": "Datum a čas vytvoření",
+    "snapshots.created": "Datum a čas vytvoření revize",
     "snapshots.show": "Zobrazit revizi",
     "snapshots.empty": "Žádné předchozí revize nenalezeny.",
     "snapshot.message":
@@ -722,6 +722,7 @@ const cs = {
       "few {další # související revize} " +
       "other {dalších # souvisejících revizí}}.",
     "snapshot.removed.message": "Revize odstraněna.",
+    "snapshot.label.short": "rev.",
 
     "auth.notEditable.message.unauthorized":
       "K editaci tohoto objektu nemáte dostatečná práva.",

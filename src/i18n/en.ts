@@ -697,7 +697,7 @@ const en = {
       "This is a quality validation result. The form can be submitted even if it has quality issues.",
 
     "snapshots.title": "Snapshot history",
-    "snapshots.created": "Date and time",
+    "snapshots.created": "Snapshot created",
     "snapshots.show": "Show snapshot",
     "snapshots.empty": "No previous snapshots found.",
     "snapshot.message":
@@ -708,6 +708,7 @@ const en = {
     "snapshot.remove.confirm.text":
       "Are you sure you want to remove this snapshot? This action will remove {count, plural, one {# related snapshot} " +
       "other {# related snapshots}}.",
+    "snapshot.label.short": "rev.",
 
     "auth.notEditable.message.unauthorized":
       "You have insufficient rights to edit this { type }.",
