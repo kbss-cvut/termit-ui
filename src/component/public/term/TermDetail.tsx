@@ -20,28 +20,20 @@ import {
 import WindowTitle from "../../misc/WindowTitle";
 import { loadVocabulary } from "../../../action/AsyncActions";
 import { loadTerm } from "../../../action/AsyncTermActions";
-import { useLocation, useRouteMatch } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 interface TermDetailProps extends CommonTermDetailProps {}
 
 export const TermDetail: React.FC<TermDetailProps> = (props) => {
   const { term, loadTerm, loadVocabulary } = props;
-  const params = useRouteMatch<any>().params;
+  const { name, termName, timestamp } = useParams<any>();
   const location = useLocation();
   React.useEffect(() => {
-    const { name, termName, timestamp } = params;
     const namespace = Utils.extractQueryParam(location.search, "namespace");
     const vocUri = { fragment: name, namespace };
     loadTerm(termName, vocUri, timestamp);
     loadVocabulary(vocUri, timestamp);
-  }, [
-    location.search,
-    params.name,
-    params.termName,
-    params.timestamp,
-    loadTerm,
-    loadVocabulary,
-  ]);
+  }, [location.search, name, termName, timestamp, loadTerm, loadVocabulary]);
   const [language, setLanguage] = React.useState<string>(
     resolveInitialLanguage(props)
   );

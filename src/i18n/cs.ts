@@ -722,7 +722,7 @@ const cs = {
       "few {další # související revize} " +
       "other {dalších # souvisejících revizí}}.",
     "snapshot.removed.message": "Revize odstraněna.",
-    "snapshot.label.short": "rev.",
+    "snapshot.label.short": "revize z",
 
     "auth.notEditable.message.unauthorized":
       "K editaci tohoto objektu nemáte dostatečná práva.",

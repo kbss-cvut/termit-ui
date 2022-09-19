@@ -708,7 +708,7 @@ const en = {
     "snapshot.remove.confirm.text":
       "Are you sure you want to remove this snapshot? This action will remove {count, plural, one {# related snapshot} " +
       "other {# related snapshots}}.",
-    "snapshot.label.short": "rev.",
+    "snapshot.label.short": "snapshot from",
 
     "auth.notEditable.message.unauthorized":
       "You have insufficient rights to edit this { type }.",

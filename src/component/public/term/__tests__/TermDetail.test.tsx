@@ -5,7 +5,6 @@ import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import { TermDetail } from "../TermDetail";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import { Location } from "history";
-import { match as Match } from "react-router";
 import TermMetadata from "../TermMetadata";
 import Constants from "../../../../util/Constants";
 import * as router from "react-router-dom";
@@ -14,7 +13,7 @@ jest.mock("../TermMetadata", () => () => <div>Term metadata</div>);
 jest.mock("../../../misc/HeaderWithActions", () => () => <div>Header</div>);
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
-  useRouteMatch: jest.fn(),
+  useParams: jest.fn(),
   useLocation: jest.fn(),
 }));
 
@@ -26,7 +25,7 @@ describe("TermDetail", () => {
   let loadTerm: (termName: string, vocabularyIri: IRI) => void;
 
   let location: Location;
-  let match: Match<any>;
+  let params: any;
 
   let vocabulary: Vocabulary;
 
@@ -41,20 +40,15 @@ describe("TermDetail", () => {
       hash: "",
       state: {},
     };
-    match = {
-      params: {
-        name: normalizedVocabName,
-        termName: normalizedTermName,
-      },
-      path: location.pathname,
-      isExact: true,
-      url: "http://localhost:3000/" + location.pathname,
+    params = {
+      name: normalizedVocabName,
+      termName: normalizedTermName,
     };
   });
 
   it("resolves language when provided term changes", () => {
     const lang = "cs";
-    jest.spyOn(router, "useRouteMatch").mockReturnValue(match);
+    jest.spyOn(router, "useParams").mockReturnValue(params);
     jest.spyOn(router, "useLocation").mockReturnValue(location);
     const wrapper = mountWithIntl(
       <TermDetail
