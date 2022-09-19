@@ -21,11 +21,16 @@ import { trackPromise } from "react-promise-tracker";
 interface CommentsProps {
   term: Term;
   onLoad: (commentsCount: number) => void;
-  reverseOrder: boolean;
+  reverseOrder?: boolean;
+  allowCreate?: boolean;
 }
 
-const Comments: React.FC<CommentsProps> = (props) => {
-  const { term, onLoad } = props;
+const Comments: React.FC<CommentsProps> = ({
+  term,
+  onLoad,
+  reverseOrder = false,
+  allowCreate = true,
+}) => {
   const [comments, setComments] = React.useState<Comment[]>([]);
   const dispatch: ThunkDispatch = useDispatch();
 
@@ -97,13 +102,13 @@ const Comments: React.FC<CommentsProps> = (props) => {
         removeComment={onRemove}
       />
       {comments.length > 0 && <hr className="border-top mt-3 mb-1" />}
-      <CreateCommentForm onSubmit={onSubmit} />
+      {allowCreate && <CreateCommentForm onSubmit={onSubmit} />}
     </>
   );
 
   const renderReverse = () => (
     <>
-      <CreateCommentForm onSubmit={onSubmit} />
+      {allowCreate && <CreateCommentForm onSubmit={onSubmit} />}
       {comments.length > 0 && <hr className="border-top mt-3 mb-1" />}
       <CommentList
         comments={[...comments].reverse()}
@@ -118,7 +123,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
   return (
     <div id="term-comments" className="comments m-1 mt-3">
       <PromiseTrackingMask area="comments" />
-      {props.reverseOrder ? renderReverse() : renderForward()}
+      {reverseOrder ? renderReverse() : renderForward()}
     </div>
   );
 };

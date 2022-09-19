@@ -170,6 +170,7 @@ export class TermMetadata extends React.Component<
         term={term}
         onLoad={this.setCommentsCount}
         reverseOrder={true}
+        allowCreate={!term.isSnapshot()}
       />
     );
     tabs["properties.edit.title"] = (
