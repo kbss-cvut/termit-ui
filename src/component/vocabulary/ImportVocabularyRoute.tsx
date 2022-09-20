@@ -1,11 +1,11 @@
 import * as React from "react";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import ImportVocabularyPage from "./ImportVocabularyPage";
 
 const ImportVocabularyRoute: React.FC = () => (
-  <IfUserAuthorized>
+  <IfUserIsEditor renderUnauthorizedAlert={true}>
     <ImportVocabularyPage />
-  </IfUserAuthorized>
+  </IfUserIsEditor>
 );
 
 export default ImportVocabularyRoute;

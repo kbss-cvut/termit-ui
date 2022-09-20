@@ -28,6 +28,7 @@ import {
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
+import Constants from "../../util/Constants";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   if (currentTermIri) {
@@ -220,7 +221,7 @@ export class ParentTermSelector extends React.Component<
             ref={this.treeComponent}
             value={resolveSelectedIris(this.props.parentTerms)}
             fetchOptions={this.fetchOptions}
-            fetchLimit={300}
+            fetchLimit={Constants.DEFAULT_TERM_SELECTOR_FETCH_SIZE}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(

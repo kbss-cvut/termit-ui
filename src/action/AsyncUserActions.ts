@@ -6,6 +6,7 @@
  */
 
 import ActionType from "./ActionType";
+import keycloak from "../util/Keycloak";
 import { ThunkDispatch } from "../util/Types";
 import Ajax, { content, param, params } from "../util/Ajax";
 import Constants from "../util/Constants";
@@ -32,6 +33,7 @@ import { Action } from "redux";
 import { AxiosResponse } from "axios";
 import Routing from "../util/Routing";
 import { UserRoleData } from "../model/UserRole";
+import Routes from "../util/Routes";
 
 const USERS_ENDPOINT = "/users";
 
@@ -50,6 +52,7 @@ export function loadUser() {
         return dispatch(asyncActionSuccessWithPayload(action, new User(data)));
       })
       .catch((error: ErrorData) => {
+        Routing.transitionTo(Routes.login);
         if (error.status === Constants.STATUS_UNAUTHORIZED) {
           return dispatch(
             asyncActionFailure(action, {
@@ -93,6 +96,21 @@ export function login(username: string, password: string) {
         dispatch(publishMessage(createFormattedMessage("message.welcome")))
       )
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function loginKeycloak() {
+  const action = {
+    type: ActionType.LOGIN_KEYCLOAK,
+  };
+  const redirectUri = Routing.buildFullUrl(
+    Routing.originalRoutingTarget
+      ? Routing.originalRoutingTarget
+      : Routes.dashboard
+  );
+  keycloak.login({ redirectUri });
+  return (dispatch: ThunkDispatch) => {
+    dispatch(action);
   };
 }
 

@@ -1,12 +1,25 @@
-import VocabularyUtils, { IRI } from "../../../../util/VocabularyUtils";
+import VocabularyUtils from "../../../../util/VocabularyUtils";
 import { flushPromises } from "../../../../__tests__/environment/Environment";
 import { VocabularySummary } from "../VocabularySummary";
 import { EMPTY_VOCABULARY } from "../../../../model/Vocabulary";
 import { act } from "react-dom/test-utils";
-import { match as Match, RouteComponentProps } from "react-router";
-import { createMemoryHistory, Location } from "history";
+import { match as Match } from "react-router";
+import { Location } from "history";
 import { mountWithIntlAttached } from "../../../annotator/__tests__/AnnotationUtil";
+import { DEFAULT_CONFIGURATION } from "../../../../model/Configuration";
+import * as redux from "react-redux";
+import * as router from "react-router-dom";
+import * as Actions from "../../../../action/SyncActions";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useLocation: jest.fn(),
+  useRouteMatch: jest.fn(),
+}));
 jest.mock("../../../vocabulary/ImportedVocabulariesList", () => () => (
   <div>Imported vocabularies</div>
 ));
@@ -16,18 +29,10 @@ describe("Public VocabularySummary", () => {
   const normalizedName = "test-vocabulary";
   const namespace = VocabularyUtils.NS_TERMIT;
 
-  let loadVocabulary: (iri: IRI) => void;
-  let resetSelectedTerm: () => void;
-
   let location: Location;
-  const history = createMemoryHistory();
   let match: Match<any>;
-  let routerProps: RouteComponentProps<any>;
 
   beforeEach(() => {
-    loadVocabulary = jest.fn();
-    resetSelectedTerm = jest.fn();
-
     location = {
       pathname: "/vocabulary/" + normalizedName,
       search: `namespace=${namespace}`,
@@ -42,21 +47,20 @@ describe("Public VocabularySummary", () => {
       isExact: true,
       url: "http://localhost:3000/" + location.pathname,
     };
-    routerProps = { history, match, location };
   });
 
   it("resets selected term on mount", async () => {
-    mountWithIntlAttached(
-      <VocabularySummary
-        vocabulary={EMPTY_VOCABULARY}
-        loadVocabulary={loadVocabulary}
-        resetSelectedTerm={resetSelectedTerm}
-        {...routerProps}
-      />
-    );
+    jest
+      .spyOn(redux, "useSelector")
+      .mockReturnValueOnce(EMPTY_VOCABULARY)
+      .mockReturnValueOnce(DEFAULT_CONFIGURATION);
+    jest.spyOn(router, "useLocation").mockReturnValue(location);
+    jest.spyOn(router, "useRouteMatch").mockReturnValue(match);
+    jest.spyOn(Actions, "selectVocabularyTerm");
+    mountWithIntlAttached(<VocabularySummary />);
     await act(async () => {
       await flushPromises();
     });
-    expect(resetSelectedTerm).toHaveBeenCalled();
+    expect(Actions.selectVocabularyTerm).toHaveBeenCalledWith(null);
   });
 });

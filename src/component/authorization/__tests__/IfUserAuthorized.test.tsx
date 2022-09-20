@@ -1,6 +1,6 @@
 import User from "../../../model/User";
 import Generator from "../../../__tests__/environment/Generator";
-import IfUserAuthorized from "../IfUserAuthorized";
+import IfUserIsEditor from "../IfUserIsEditor";
 import * as redux from "react-redux";
 import Unauthorized from "../Unauthorized";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -11,7 +11,7 @@ jest.mock("react-redux", () => ({
   useSelector: jest.fn(),
 }));
 
-describe("IfUserAuthorized", () => {
+describe("IfUserIsEditor", () => {
   let currentUser: User;
 
   beforeEach(() => {
@@ -20,10 +20,11 @@ describe("IfUserAuthorized", () => {
   });
 
   it("renders children components when current user is not restricted", () => {
+    currentUser.types.push(VocabularyUtils.USER_EDITOR);
     const wrapper = mountWithIntl(
-      <IfUserAuthorized>
+      <IfUserIsEditor>
         <div id="test">Test</div>
-      </IfUserAuthorized>
+      </IfUserIsEditor>
     );
     expect(wrapper.exists("#test")).toBeTruthy();
     expect(wrapper.exists(Unauthorized)).toBeFalsy();
@@ -32,9 +33,9 @@ describe("IfUserAuthorized", () => {
   it("renders unauthorized component when current user is restricted", () => {
     currentUser.types.push(VocabularyUtils.USER_RESTRICTED);
     const wrapper = mountWithIntl(
-      <IfUserAuthorized>
+      <IfUserIsEditor renderUnauthorizedAlert={true}>
         <div id="test">Test</div>
-      </IfUserAuthorized>
+      </IfUserIsEditor>
     );
     expect(wrapper.exists("#test")).toBeFalsy();
     expect(wrapper.exists(Unauthorized)).toBeTruthy();
@@ -43,9 +44,9 @@ describe("IfUserAuthorized", () => {
   it("renders nothing when user is restricted and renderUnauthorizedAlert is false", () => {
     currentUser.types.push(VocabularyUtils.USER_RESTRICTED);
     const wrapper = mountWithIntl(
-      <IfUserAuthorized renderUnauthorizedAlert={false}>
+      <IfUserIsEditor renderUnauthorizedAlert={false}>
         <div id="test">Test</div>
-      </IfUserAuthorized>
+      </IfUserIsEditor>
     );
     expect(wrapper.isEmptyRender()).toBeTruthy();
   });

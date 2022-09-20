@@ -19,7 +19,6 @@ import {
   loadMyAssets,
   loadNews,
   loadResource,
-  loadTerm,
   loadTerms,
   loadTypes,
   loadUnusedTermsForVocabulary,
@@ -576,10 +575,11 @@ describe("Async actions", () => {
       store.getState().user = Generator.generateUser();
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      const parentUri =
-        "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3";
+      const parentUri = VocabularyUtils.create(
+        "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/term/pojem-3"
+      );
       const params: TermFetchParams<Term> = {
-        optionID: parentUri,
+        optionID: parentUri.toString(),
       };
       const vocabName = "test-vocabulary";
       return Promise.resolve(
@@ -589,13 +589,12 @@ describe("Async actions", () => {
       ).then(() => {
         const targetUri = (Ajax.get as jest.Mock).mock.calls[0][0];
         expect(targetUri).toEqual(
-          Constants.API_PREFIX +
-            "/vocabularies/" +
-            vocabName +
-            "/terms/pojem-3/subterms"
+          `${Constants.API_PREFIX}/terms/${parentUri.fragment}/subterms`
         );
         const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
-        expect(callConfig.getParams()).toEqual({});
+        expect(callConfig.getParams()).toEqual({
+          namespace: parentUri.namespace,
+        });
       });
     });
 
@@ -1017,83 +1016,6 @@ describe("Async actions", () => {
         );
         expect(notifyAction.notification.original).toEqual(original);
         expect(notifyAction.notification.updated).toEqual(updated);
-      });
-    });
-  });
-
-  describe("load vocabulary term", () => {
-    it("loads vocabulary term using term and vocabulary normalized names on call", () => {
-      store.getState().user = Generator.generateUser();
-      const vocabName = "test-vocabulary";
-      const termName = "test-term";
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve(require("../../rest-mock/terms")[0])
-        );
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadTerm(termName, { fragment: vocabName })
-        )
-      ).then(() => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-        expect(url).toEqual(
-          Constants.API_PREFIX +
-            "/vocabularies/" +
-            vocabName +
-            "/terms/" +
-            termName
-        );
-      });
-    });
-
-    it("passes namespace parameter when it is specified on action call", () => {
-      store.getState().user = Generator.generateUser();
-      const vocabName = "test-vocabulary";
-      const termName = "test-term";
-      const namespace =
-        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve(require("../../rest-mock/terms")[0])
-        );
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadTerm(termName, {
-            fragment: vocabName,
-            namespace,
-          })
-        )
-      ).then(() => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-        expect(url).toEqual(
-          Constants.API_PREFIX +
-            "/vocabularies/" +
-            vocabName +
-            "/terms/" +
-            termName
-        );
-        const config = (Ajax.get as jest.Mock).mock.calls[0][1];
-        expect(config).toBeDefined();
-        expect(config.getParams().namespace).toEqual(namespace);
-      });
-    });
-
-    it("uses public API endpoint to fetch single vocabulary term when user is not authenticated", () => {
-      const term = require("../../rest-mock/terms")[0];
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(term));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadTerm("test-term", { fragment: "test-vocabulary" })
-        )
-      ).then((data: AsyncActionSuccess<Term> | MessageAction) => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
-        expect(url).toContain(Constants.PUBLIC_API_PREFIX);
-        verifyExpectedAssets(
-          [term],
-          [(data as AsyncActionSuccess<Term>).payload]
-        );
       });
     });
   });

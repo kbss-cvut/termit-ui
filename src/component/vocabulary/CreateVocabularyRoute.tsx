@@ -1,12 +1,12 @@
 import * as React from "react";
 import CreateVocabulary from "./CreateVocabulary";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 
 const CreateVocabularyRoute: React.FC = () => {
   return (
-    <IfUserAuthorized>
+    <IfUserIsEditor renderUnauthorizedAlert={true}>
       <CreateVocabulary />
-    </IfUserAuthorized>
+    </IfUserIsEditor>
   );
 };
 

@@ -1,4 +1,4 @@
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import ImportVocabularyPanel from "./ImportVocabularyPanel";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
@@ -32,7 +32,7 @@ export const ImportVocabularyPage = (props: ImportVocabularyPageProps) => {
   const onCancel = () => Routing.transitionTo(Routes.vocabularies);
 
   return (
-    <IfUserAuthorized renderUnauthorizedAlert={false}>
+    <IfUserIsEditor>
       <HeaderWithActions title={i18n("vocabulary.import.dialog.title")} />
       <Card id="vocabulary-import" className="mb-3">
         <CardBody>
@@ -44,7 +44,7 @@ export const ImportVocabularyPage = (props: ImportVocabularyPageProps) => {
           />
         </CardBody>
       </Card>
-    </IfUserAuthorized>
+    </IfUserIsEditor>
   );
 };
 

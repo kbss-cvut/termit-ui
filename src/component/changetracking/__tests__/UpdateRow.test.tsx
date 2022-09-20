@@ -101,4 +101,19 @@ describe("UpdateRow", () => {
       expect(matching.childAt(0).text()).toContain(nv["@value"]);
     });
   });
+
+  it("handles combination of tagged and language-less values in change", () => {
+    const newValue = [
+      {
+        "@language": Constants.DEFAULT_LANGUAGE,
+        "@value": "Test value",
+      },
+      "test",
+    ];
+    const record = generateUpdateRecord(newValue);
+    const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
+    const label = wrapper.find(Label);
+    expect(label.exists()).toBeTruthy();
+    expect(label.length).toEqual(newValue.length);
+  });
 });

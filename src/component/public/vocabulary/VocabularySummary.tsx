@@ -1,48 +1,53 @@
 import * as React from "react";
-import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
-import Vocabulary from "../../../model/Vocabulary";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 import { Card, CardBody, Col, Label, Row } from "reactstrap";
 import HeaderWithActions from "../../misc/HeaderWithActions";
 import CopyIriIcon from "../../misc/CopyIriIcon";
 import ImportedVocabulariesList from "../../vocabulary/ImportedVocabulariesList";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { ThunkDispatch } from "../../../util/Types";
 import Utils from "../../../util/Utils";
-import { RouteComponentProps, withRouter } from "react-router";
 import Terms from "../term/Terms";
 import { selectVocabularyTerm } from "../../../action/SyncActions";
 import WindowTitle from "../../misc/WindowTitle";
 import { useI18n } from "../../hook/useI18n";
 import { loadVocabulary } from "../../../action/AsyncActions";
 import MarkdownView from "../../misc/MarkdownView";
+import { useLocation, useRouteMatch } from "react-router-dom";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
-interface VocabularySummaryProps extends RouteComponentProps<any> {
-  vocabulary: Vocabulary;
-
-  loadVocabulary: (iri: IRI) => void;
-  resetSelectedTerm: () => void;
-}
-
-export const VocabularySummary: React.FC<VocabularySummaryProps> = (props) => {
-  const { resetSelectedTerm, vocabulary, location, match, loadVocabulary } =
-    props;
+export const VocabularySummary: React.FC = () => {
   const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  const location = useLocation();
+  const match = useRouteMatch<{ name: string }>();
+  const vocabulary = useSelector((state: TermItState) => state.vocabulary);
+  const configuration = useSelector(
+    (state: TermItState) => state.configuration
+  );
 
   React.useEffect(() => {
-    resetSelectedTerm();
-  }, [resetSelectedTerm]);
+    dispatch(selectVocabularyTerm(null));
+  }, [dispatch]);
   React.useEffect(() => {
-    const normalizedName = match.params.name;
-    const namespace = Utils.extractQueryParam(location.search, "namespace");
+    const iriFromRoute = Utils.resolveVocabularyIriFromRoute(
+      match.params,
+      location.search,
+      configuration
+    );
     const iri = VocabularyUtils.create(vocabulary.iri);
     if (
-      iri.fragment !== normalizedName ||
-      (namespace && iri.namespace !== namespace)
+      iri.fragment !== iriFromRoute.fragment ||
+      (iriFromRoute.namespace && iri.namespace !== iriFromRoute.namespace)
     ) {
-      loadVocabulary({ fragment: normalizedName, namespace });
+      trackPromise(
+        dispatch(loadVocabulary(iriFromRoute)),
+        "vocabulary-summary"
+      );
     }
-  }, [vocabulary, location, match, loadVocabulary]);
+  }, [vocabulary, configuration, location, match, dispatch]);
 
   return (
     <div id="public-vocabulary-detail">
@@ -51,6 +56,7 @@ export const VocabularySummary: React.FC<VocabularySummaryProps> = (props) => {
           "vocabulary.management.vocabularies"
         )}`}
       />
+      <PromiseTrackingMask area="vocabulary-summary" />
       <HeaderWithActions
         id="public-vocabulary-summary"
         title={
@@ -96,12 +102,4 @@ export const VocabularySummary: React.FC<VocabularySummaryProps> = (props) => {
   );
 };
 
-export default connect(
-  (state: TermItState) => ({ vocabulary: state.vocabulary }),
-  (dispatch: ThunkDispatch) => {
-    return {
-      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
-      resetSelectedTerm: () => dispatch(selectVocabularyTerm(null)),
-    };
-  }
-)(withRouter(VocabularySummary));
+export default VocabularySummary;

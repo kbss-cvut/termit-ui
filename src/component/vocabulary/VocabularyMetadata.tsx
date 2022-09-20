@@ -17,6 +17,7 @@ import { selectVocabularyTerm } from "../../action/SyncActions";
 import Utils from "../../util/Utils";
 import DocumentSummary from "../resource/document/DocumentSummary";
 import MarkdownView from "../misc/MarkdownView";
+import VocabularySnapshots from "./snapshot/VocabularySnapshots";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -34,6 +35,7 @@ const TABS = [
   "glossary.title",
   "type.document",
   "history.label",
+  "snapshots.title",
   "changefrequency.label",
   "properties.edit.title",
 ];
@@ -54,6 +56,12 @@ export class VocabularyMetadata extends React.Component<
 
   public componentDidMount() {
     this.props.resetSelectedTerm();
+  }
+
+  public componentDidUpdate(prevProps: Readonly<VocabularyMetadataProps>) {
+    if (this.props.vocabulary.iri !== prevProps.vocabulary.iri) {
+      this.setState({ activeTab: TABS[0] });
+    }
   }
 
   private onTabSelect = (tabId: string) => {
@@ -101,7 +109,7 @@ export class VocabularyMetadata extends React.Component<
     const tabs = {};
     // Ensure order of tabs Terms | (Files) | Unmapped properties | History
 
-    tabs["glossary.title"] = (
+    tabs[TABS[0]] = (
       <Terms
         vocabulary={this.props.vocabulary}
         match={this.props.match}
@@ -110,19 +118,18 @@ export class VocabularyMetadata extends React.Component<
       />
     );
 
-    tabs["type.document"] = (
+    tabs[TABS[1]] = (
       <DocumentSummary
         document={vocabulary.document}
         onChange={this.props.onChange}
       />
     );
-    tabs["history.label"] = <AssetHistory asset={vocabulary} />;
+    tabs[TABS[2]] = <AssetHistory asset={vocabulary} />;
+    tabs[TABS[3]] = <VocabularySnapshots asset={vocabulary} />;
 
-    tabs["changefrequency.label"] = (
-      <TermChangeFrequency vocabulary={vocabulary} />
-    );
+    tabs[TABS[4]] = <TermChangeFrequency vocabulary={vocabulary} />;
 
-    tabs["properties.edit.title"] = (
+    tabs[TABS[5]] = (
       <UnmappedProperties
         properties={vocabulary.unmappedProperties}
         showInfoOnEmpty={true}

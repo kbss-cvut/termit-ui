@@ -2,7 +2,7 @@
  * General utility functions.
  */
 import Asset, { HasLabel, HasTypes } from "../model/Asset";
-import VocabularyUtils from "./VocabularyUtils";
+import VocabularyUtils, { IRI, IRIImpl } from "./VocabularyUtils";
 import { match } from "react-router";
 import { Location } from "history";
 import AppNotification, {
@@ -11,6 +11,7 @@ import AppNotification, {
 import NotificationType from "../model/NotificationType";
 import { BasicRouteProps } from "./Types";
 import _ from "lodash";
+import { Configuration } from "../model/Configuration";
 
 const Utils = {
   /**
@@ -37,7 +38,9 @@ const Utils = {
   },
 
   /**
-   * Extracts query parameter value from the specified query string
+   * Extracts query parameter value from the specified query string.
+   *
+   * Note that if multiple values of the parameter are present, this method returns only the first one.
    * @param queryString String to extracts params from
    * @param paramName Name of the parameter to extract
    * @return extracted parameter value or undefined if the parameter is not present in the query
@@ -46,10 +49,23 @@ const Utils = {
     queryString: string,
     paramName: string
   ): string | undefined {
+    const result = Utils.extractQueryParams(queryString, paramName);
+    return result.length > 0 ? result[0] : undefined;
+  },
+
+  /**
+   * Extract query parameter values from the specified query string
+   * @param queryString String to extracts params from
+   * @param paramName Name of the parameter to extract
+   * @return an array containing extracted parameter values, empty array if the parameter is not found the query string
+   */
+  extractQueryParams(queryString: string, paramName: string): string[] {
     queryString = decodeURI(queryString); // TODO This is a nasty hack, the problem with encoding seems to be
-    // somewhere in thunk
-    const reqexpMatch = queryString.match(new RegExp(paramName + "=([^&]*)"));
-    return reqexpMatch ? reqexpMatch[1] : undefined;
+    // // somewhere in thunk
+    const params = new Proxy(new URLSearchParams(queryString), {
+      get: (searchParams, prop) => searchParams.getAll(prop.toString()),
+    });
+    return params[paramName];
   },
 
   /**
@@ -266,6 +282,21 @@ const Utils = {
       }
     }
     return false;
+  },
+
+  resolveVocabularyIriFromRoute(
+    params: { name: string; timestamp?: string },
+    location: string,
+    configuration: Configuration
+  ): IRI {
+    let normalizedName = params.name;
+    const timestamp = params.timestamp;
+    let namespace = this.extractQueryParam(location, "namespace");
+    if (timestamp) {
+      namespace += normalizedName + configuration.versionSeparator + "/";
+      normalizedName = timestamp;
+    }
+    return IRIImpl.create({ fragment: normalizedName, namespace });
   },
 };
 
