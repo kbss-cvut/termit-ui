@@ -1,3 +1,9 @@
+#### Verze 2.13.0
+
+- Implementováno uživatelské rozhraní pro prohlížení a správu snapshotů slovníků a pojmů.
+- Přidána podpora pro editaci pouze vybrané podmnožiny slovníků.
+- Přidána podpora pro mapování slovníků do kontextů úložiště identifikovaných jiným IRI než IRI slovníků.
+
 #### Verze 2.12.1
 
 - Rozšířeny atributy dostupné u snapshotů pojmů ve veřejném rozhraní TermIt.
