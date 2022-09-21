@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 FROM base AS dependencies
 # install node packages
 #RUN npm set progress=false && npm config set depth 0
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # BUILD STAGE
 # run NPM build
