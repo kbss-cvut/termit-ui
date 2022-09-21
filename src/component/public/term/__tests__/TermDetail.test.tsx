@@ -4,13 +4,18 @@ import Generator from "../../../../__tests__/environment/Generator";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import { TermDetail } from "../TermDetail";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
-import { createMemoryHistory, Location } from "history";
-import { match as Match, RouteComponentProps } from "react-router";
+import { Location } from "history";
 import TermMetadata from "../TermMetadata";
 import Constants from "../../../../util/Constants";
+import * as router from "react-router-dom";
 
 jest.mock("../TermMetadata", () => () => <div>Term metadata</div>);
 jest.mock("../../../misc/HeaderWithActions", () => () => <div>Header</div>);
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: jest.fn(),
+  useLocation: jest.fn(),
+}));
 
 describe("TermDetail", () => {
   const normalizedTermName = "test-term";
@@ -20,10 +25,7 @@ describe("TermDetail", () => {
   let loadTerm: (termName: string, vocabularyIri: IRI) => void;
 
   let location: Location;
-  const history = createMemoryHistory();
-  let match: Match<any>;
-
-  let routingProps: RouteComponentProps;
+  let params: any;
 
   let vocabulary: Vocabulary;
 
@@ -38,28 +40,24 @@ describe("TermDetail", () => {
       hash: "",
       state: {},
     };
-    match = {
-      params: {
-        name: normalizedVocabName,
-        termName: normalizedTermName,
-      },
-      path: location.pathname,
-      isExact: true,
-      url: "http://localhost:3000/" + location.pathname,
+    params = {
+      name: normalizedVocabName,
+      termName: normalizedTermName,
     };
-    routingProps = { location, history, match };
   });
 
   it("resolves language when provided term changes", () => {
     const lang = "cs";
+    jest.spyOn(router, "useParams").mockReturnValue(params);
+    jest.spyOn(router, "useLocation").mockReturnValue(location);
     const wrapper = mountWithIntl(
       <TermDetail
         configuredLanguage={lang}
+        versionSeparator="/version"
         term={null}
         vocabulary={vocabulary}
         loadVocabulary={loadVocabulary}
         loadTerm={loadTerm}
-        {...routingProps}
         {...intlFunctions()}
       />
     );

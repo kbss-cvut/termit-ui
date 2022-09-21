@@ -8,7 +8,7 @@ import { AnnotationOrigin } from "./Annotation";
 import SimplePopupWithActions from "./SimplePopupWithActions";
 import TermOccurrenceAnnotationView from "./TermOccurrenceAnnotationView";
 import { GoPencil } from "react-icons/go";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
 
 interface TermOccurrenceAnnotationProps {
@@ -38,10 +38,7 @@ function createActionButtons(
   const t = props.term ? props.term : null;
   if (props.annotationOrigin === AnnotationOrigin.PROPOSED && t !== null) {
     actions.push(
-      <IfUserAuthorized
-        renderUnauthorizedAlert={false}
-        key="annotation.confirm"
-      >
+      <IfUserIsEditor key="annotation.confirm">
         <Button
           color="primary"
           title={i18n("annotation.confirm")}
@@ -50,12 +47,12 @@ function createActionButtons(
         >
           <FaCheck />
         </Button>
-      </IfUserAuthorized>
+      </IfUserIsEditor>
     );
   }
   if (!editing) {
     actions.push(
-      <IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.edit">
+      <IfUserIsEditor key="annotation.edit">
         <Button
           color="primary"
           title={i18n("annotation.edit")}
@@ -64,11 +61,11 @@ function createActionButtons(
         >
           <GoPencil />
         </Button>
-      </IfUserAuthorized>
+      </IfUserIsEditor>
     );
   }
   actions.push(
-    <IfUserAuthorized renderUnauthorizedAlert={false} key="annotation.remove">
+    <IfUserIsEditor key="annotation.remove">
       <Button
         color="primary"
         title={i18n("annotation.remove")}
@@ -77,7 +74,7 @@ function createActionButtons(
       >
         <TiTrash />
       </Button>
-    </IfUserAuthorized>
+    </IfUserIsEditor>
   );
   actions.push(
     <Button

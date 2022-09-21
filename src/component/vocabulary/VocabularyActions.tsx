@@ -8,10 +8,12 @@ import {
 } from "reactstrap";
 import { GoClippy, GoCloudDownload } from "react-icons/go";
 import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
-import { FaRegCopy } from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
+import Vocabulary from "../../model/Vocabulary";
+import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 
 interface VocabularyActionsProps {
+  vocabulary: Vocabulary;
   onAnalyze: () => void;
   onExport: () => void;
   onImport: (file: File, rename: Boolean) => Promise<any>;
@@ -19,6 +21,7 @@ interface VocabularyActionsProps {
 }
 
 const VocabularyActions: React.FC<VocabularyActionsProps> = ({
+  vocabulary,
   onAnalyze,
   onExport,
   onImport,
@@ -47,15 +50,15 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
           <GoCloudDownload className="mr-1" />
           {i18n("vocabulary.summary.export.text")}
         </DropdownItem>
-        <IfUserAuthorized
+        <IfVocabularyEditAuthorized
           key="vocabulary-import"
-          renderUnauthorizedAlert={false}
+          vocabulary={vocabulary}
         >
           <ImportBackupOfVocabulary performAction={onImport} />
-        </IfUserAuthorized>
-        <IfUserAuthorized
+        </IfVocabularyEditAuthorized>
+        <IfVocabularyEditAuthorized
           key="vocabulary-analyze"
-          renderUnauthorizedAlert={false}
+          vocabulary={vocabulary}
         >
           <DropdownItem
             name="vocabulary-analyze"
@@ -63,13 +66,13 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
             onClick={onAnalyze}
             title={i18n("vocabulary.summary.startTextAnalysis.title")}
           >
-            <GoClippy className="mr-1" />
+            <GoClippy className="mr-1 align-text-top" />
             {i18n("file.metadata.startTextAnalysis.text")}
           </DropdownItem>
-        </IfUserAuthorized>
-        <IfUserAuthorized
+        </IfVocabularyEditAuthorized>
+        <IfVocabularyEditAuthorized
           key="vocabulary-snapshot"
-          renderUnauthorizedAlert={false}
+          vocabulary={vocabulary}
         >
           <DropdownItem
             name="vocabulary-snapshot"
@@ -77,10 +80,10 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
             onClick={onCreateSnapshot}
             title={i18n("vocabulary.snapshot.create.title")}
           >
-            <FaRegCopy className="mr-1" />
+            <FaCamera className="mr-1 align-text-top" />
             {i18n("vocabulary.snapshot.create.label")}
           </DropdownItem>
-        </IfUserAuthorized>
+        </IfVocabularyEditAuthorized>
       </DropdownMenu>
     </UncontrolledButtonDropdown>
   );

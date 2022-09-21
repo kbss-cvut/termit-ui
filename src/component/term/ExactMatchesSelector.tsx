@@ -25,6 +25,7 @@ import {
   resolveSelectedIris,
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
+import Constants from "../../util/Constants";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -95,7 +96,7 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
             onChange={this.onChange}
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
-            fetchLimit={300}
+            fetchLimit={Constants.DEFAULT_TERM_SELECTOR_FETCH_SIZE}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(

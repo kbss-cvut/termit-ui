@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { GoClippy, GoPlus } from "react-icons/go";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
 
 interface VocabularyManagementProps {
@@ -30,7 +30,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
   }, [loadVocabularies]);
 
   const buttons = [
-    <IfUserAuthorized renderUnauthorizedAlert={false} key="vocabularies-create">
+    <IfUserIsEditor key="vocabularies-create">
       <Link
         id="vocabularies-create"
         className="btn btn-primary btn-sm"
@@ -40,11 +40,8 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         <GoPlus />
         &nbsp;{i18n("vocabulary.management.new")}
       </Link>
-    </IfUserAuthorized>,
-    <IfUserAuthorized
-      renderUnauthorizedAlert={false}
-      key="analyze-vocabularies"
-    >
+    </IfUserIsEditor>,
+    <IfUserIsEditor key="analyze-vocabularies">
       <Button
         id="analyze-vocabularies"
         className="btn"
@@ -56,7 +53,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         <GoClippy />
         &nbsp;{i18n("file.metadata.startTextAnalysis.text")}
       </Button>
-    </IfUserAuthorized>,
+    </IfUserIsEditor>,
   ];
 
   return (

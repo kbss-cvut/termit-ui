@@ -97,6 +97,7 @@ const VocabularyUtils = {
   HAS_FILE: _NS_POPIS_DAT + "má-soubor",
   HAS_AUTHOR: _NS_POPIS_DAT + "má-autora",
   CREATED: _NS_POPIS_DAT + "má-datum-a-čas-vytvoření",
+  SNAPSHOT_CREATED: _NS_POPIS_DAT + "má-datum-a-čas-vytvoření-verze",
   HAS_LAST_EDITOR: _NS_POPIS_DAT + "má-posledního-editora",
   LAST_MODIFIED: _NS_POPIS_DAT + "má-datum-a-čas-poslední-modifikace",
   IMPORTS_VOCABULARY: _NS_POPIS_DAT + "importuje-slovník",
@@ -106,6 +107,7 @@ const VocabularyUtils = {
   USER_LOCKED: _NS_TERMIT + "uzam\u010den\u00fd-u\u017eivatel-termitu",
   USER_DISABLED: _NS_TERMIT + "zablokovan\u00fd-u\u017eivatel-termitu",
   USER_RESTRICTED: _NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
+  USER_EDITOR: _NS_TERMIT + "pln\u00fd-u\u017eivatel-termitu",
   HAS_COUNT: _NS_TERMIT + "has-count",
   PREFIX_RDFS: _NS_RDFS,
   RDF_TYPE: _NS_RDF + "type",
@@ -139,6 +141,13 @@ const VocabularyUtils = {
 
   PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
   UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,
+
+  TERM_SNAPSHOT: _NS_POPIS_DAT + "verze-pojmu",
+  VOCABULARY_SNAPSHOT: _NS_POPIS_DAT + "verze-slovníku",
+  IS_SNAPSHOT_OF_TERM: _NS_POPIS_DAT + "je-verz\u00ed-pojmu",
+  IS_SNAPSHOT_OF_VOCABULARY: _NS_POPIS_DAT + "je-verz\u00ed-slovn\u00edku",
+
+  IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
 
   getFragment(iri: string): string {
     return this.create(iri).fragment;

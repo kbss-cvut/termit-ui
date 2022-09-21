@@ -22,7 +22,7 @@ import {
   createTermsWithImportsOptionRenderer,
   createTermValueRenderer,
 } from "../misc/treeselect/Renderers";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
   vocabulary?: Vocabulary;
@@ -103,7 +103,8 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
     );
 
     return (
-      <IfUserAuthorized
+      <IfUserIsEditor
+        renderUnauthorizedAlert={true}
         unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}
       >
         <FormGroup>
@@ -143,7 +144,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
           />
           <FormText>{i18n("annotation.term.select.placeholder")}</FormText>
         </FormGroup>
-      </IfUserAuthorized>
+      </IfUserIsEditor>
     );
   }
 }

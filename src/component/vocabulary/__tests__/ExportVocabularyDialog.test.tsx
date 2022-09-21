@@ -33,7 +33,7 @@ describe("ExportVocabularyDialog", () => {
       />
     );
     wrapper.find("input").find({ name: "csv" }).simulate("change");
-    wrapper.find("button#export-vocabulary-submit").simulate("click");
+    wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabulary.iri),
       ExportType.CSV
@@ -53,7 +53,7 @@ describe("ExportVocabularyDialog", () => {
       />
     );
     wrapper.find("input").find({ name: "excel" }).simulate("change");
-    wrapper.find("button#export-vocabulary-submit").simulate("click");
+    wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabulary.iri),
       ExportType.Excel
@@ -73,7 +73,7 @@ describe("ExportVocabularyDialog", () => {
       />
     );
     wrapper.find("input").find({ name: "skos" }).simulate("change");
-    wrapper.find("button#export-vocabulary-submit").simulate("click");
+    wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabulary.iri),
       ExportType.Turtle
@@ -96,7 +96,7 @@ describe("ExportVocabularyDialog", () => {
       />
     );
     wrapper.find("input").find({ name: "skosWithRefs" }).simulate("change");
-    wrapper.find("button#export-vocabulary-submit").simulate("click");
+    wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(
       AsyncVocabularyActions.exportGlossaryWithExactMatchReferences
     ).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
@@ -114,7 +114,7 @@ describe("ExportVocabularyDialog", () => {
         vocabulary={vocabulary}
       />
     );
-    wrapper.find("button#export-vocabulary-submit").simulate("click");
+    wrapper.find("button#vocabulary-export-submit").simulate("click");
     return Promise.resolve().then(() => {
       expect(onClose).toHaveBeenCalled();
     });

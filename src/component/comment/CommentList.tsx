@@ -10,10 +10,17 @@ interface CommentListProps extends HasI18n {
   addReaction: (comment: Comment, reactionType: string) => void;
   removeReaction: (comment: Comment) => void;
   updateComment: (comment: Comment) => Promise<void>;
+  removeComment: (comment: Comment) => Promise<void>;
 }
 
 const CommentList: React.FC<CommentListProps> = (props) => {
-  const { comments, addReaction, removeReaction, updateComment } = props;
+  const {
+    comments,
+    addReaction,
+    removeReaction,
+    updateComment,
+    removeComment,
+  } = props;
 
   const [editedComment, setEditedComment] =
     React.useState<Comment | null>(null);
@@ -40,6 +47,7 @@ const CommentList: React.FC<CommentListProps> = (props) => {
             addReaction={addReaction}
             removeReaction={removeReaction}
             onEdit={setEditedComment}
+            onRemove={removeComment}
           />
         )
       )}

@@ -30,6 +30,7 @@ import DefinitionRelatedTermsEdit, {
 import TermItState, {
   DefinitionallyRelatedTerms,
 } from "../../model/TermItState";
+import Constants from "../../util/Constants";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
@@ -83,7 +84,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             onChange={this.onChange}
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
-            fetchLimit={100}
+            fetchLimit={Constants.DEFAULT_TERM_SELECTOR_FETCH_SIZE}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(

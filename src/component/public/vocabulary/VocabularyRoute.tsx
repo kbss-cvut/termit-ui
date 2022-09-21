@@ -11,6 +11,12 @@ const VocabularyRoute: React.FC = () => {
     <Switch>
       <DynamicBreadcrumbRoute
         asset="selectedTerm"
+        path={Routes.publicVocabularyTermSnapshotDetail.path}
+        component={TermDetail}
+        includeSearch={true}
+      />
+      <DynamicBreadcrumbRoute
+        asset="selectedTerm"
         path={Routes.publicVocabularyTermDetail.path}
         component={TermDetail}
         includeSearch={true}

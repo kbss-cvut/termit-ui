@@ -21,6 +21,10 @@ The following parameters can be configured for the build:
 | `REACT_APP_DEPLOYMENT_NAME`                  | `string`  | `''`    | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances                                                              |
 | `REACT_APP_ADMIN_REGISTRATION_ONLY`          | `boolean` | `false` | Configures whether the login page should contain a link to registration or not. If the parameter is true, only administrators can add new users and there is no registration link |
 | `REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED` | `boolean` | `false` | Configures whether the application should show the public view dashboard if the user is not logged in. By default, the login screen is shown.                                     |
+| `REACT_APP_AUTHENTICATION`                   | `string`  | `''`    | Authentication means. Use `keycloak` to set up [Keycloak](https://www.keycloak.org/)-based authentication (must be configured on backend as well.                                 |
+| `REACT_APP_KEYCLOAK_URL`                     | `string`  | `''`    | URL of the Keycloak authentication service. Relevant only if Keycloak-based authentication is enabled.                                                                            |
+| `REACT_APP_KEYCLOAK_REALM`                   | `string`  | `''`    | Name of the Keycloak realm under which this application authenticates its users. Relevant only if Keycloak-based authentication is enabled.                                       |
+| `REACT_APP_KEYCLOAK_CLIENTID`                | `string`  | `''`    | Keycloak client identifier of this appliation. Relevant only if Keycloak-based authentication is enabled.                                                                         |
 
 ### Example
 
@@ -35,3 +39,9 @@ and copy it to a location accessible via HTTP(S), e.g., into an Apache HTTP serv
 ### Example
 
 `cp -R build /var/www/termit/`
+
+## Authentication
+
+TermIt can operate in one of two authentication modes - using its internal user database and authentication means (default)
+or via [Keycloak](https://www.keycloak.org/). Corresponding parameters (service URL, realm, clientId) need to be set up when using Keycloak authentication
+(see the table above for the relevant parameters and explanation).
