@@ -42,15 +42,17 @@ import { match as Match } from "react-router";
 import classNames from "classnames";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
 import "./Terms.scss";
 import StatusFilter from "./StatusFilter";
+import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
+import { Configuration } from "../../model/Configuration";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
   counter: number;
   selectedTerms: Term | null;
   notifications: AppNotification[];
+  configuration: Configuration;
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -144,16 +146,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
     this.setState({ disableIncludeImportedToggle: true });
-    const namespace = Utils.extractQueryParam(
-      this.props.location.search,
-      "namespace"
-    );
     const vocabularyIri = fetchOptions.option
       ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!)
-      : {
-          fragment: this.props.match.params.name,
-          namespace,
-        };
+      : Utils.resolveVocabularyIriFromRoute(
+          this.props.match.params,
+          this.props.location.search,
+          this.props.configuration
+        );
     this.props.fetchUnusedTerms(vocabularyIri).then((data) => {
       const unusedTermsForVocabulary = this.state.unusedTermsForVocabulary;
       unusedTermsForVocabulary[vocabularyIri.toString()] = data;
@@ -189,14 +188,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   };
 
   public onCreateClick = () => {
-    const normalizedName = this.props.match.params.name;
-    const namespace = Utils.extractQueryParam(
-      this.props.location.search,
-      "namespace"
-    );
+    const vocabularyIri = VocabularyUtils.create(this.props.vocabulary!.iri!);
     Routing.transitionTo(Routes.createVocabularyTerm, {
-      params: new Map([["name", normalizedName]]),
-      query: namespace ? new Map([["namespace", namespace]]) : undefined,
+      params: new Map([["name", vocabularyIri.fragment]]),
+      query: vocabularyIri.namespace
+        ? new Map([["namespace", vocabularyIri.namespace]])
+        : undefined,
     });
   };
 
@@ -331,7 +328,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             )}
           </h4>
           {!isDetailView && (
-            <IfUserAuthorized renderUnauthorizedAlert={false}>
+            <IfVocabularyEditAuthorized vocabulary={this.props.vocabulary}>
               <Button
                 id="terms-create"
                 color="primary"
@@ -342,7 +339,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 <GoPlus />
                 &nbsp;{i18n("glossary.new")}
               </Button>
-            </IfUserAuthorized>
+            </IfVocabularyEditAuthorized>
           )}
           {isDetailView && renderIncludeImported ? (
             this.renderIncludeImported()
@@ -396,6 +393,7 @@ export default connect(
       selectedTerms: state.selectedTerm,
       counter: state.createdTermsCounter,
       notifications: state.notifications,
+      configuration: state.configuration,
     };
   },
   (dispatch: ThunkDispatch) => {

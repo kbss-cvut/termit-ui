@@ -1,4 +1,4 @@
-import { ThunkDispatch } from "../util/Types";
+import { GetStoreState, ThunkDispatch } from "../util/Types";
 import * as SyncActions from "./SyncActions";
 import {
   asyncActionFailure,
@@ -6,6 +6,7 @@ import {
   asyncActionSuccess,
   asyncActionSuccessWithPayload,
   publishMessage,
+  publishNotification,
 } from "./SyncActions";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
@@ -22,6 +23,9 @@ import AggregatedChangeInfo, {
   AggregatedChangeInfoData,
   CONTEXT as CHANGE_INFO_CONTEXT,
 } from "../model/changetracking/AggregatedChangeInfo";
+import { getApiPrefix } from "./ActionUtils";
+import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
+import NotificationType from "../model/NotificationType";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -136,6 +140,25 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
   };
 }
 
+export function loadRelatedVocabularies(vocabularyIri: IRI) {
+  const action = { type: ActionType.LOAD_RELATED_VOCABULARIES, vocabularyIri };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/related`,
+      param("namespace", vocabularyIri.namespace)
+    )
+      .then((data: string[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
 export function createVocabularySnapshot(vocabularyIri: IRI) {
   const action = {
     type: ActionType.CREATE_VOCABULARY_SNAPSHOT,
@@ -150,6 +173,11 @@ export function createVocabularySnapshot(vocabularyIri: IRI) {
     )
       .then(() => {
         dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishNotification({
+            source: { type: NotificationType.SNAPSHOT_COUNT_CHANGED },
+          })
+        );
         return dispatch(
           publishMessage(
             new Message(
@@ -160,6 +188,39 @@ export function createVocabularySnapshot(vocabularyIri: IRI) {
             )
           )
         );
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
+export function loadVocabularySnapshots(vocabularyIri: IRI) {
+  const action = { type: ActionType.LOAD_SNAPSHOTS, vocabularyIri };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    if (
+      vocabularyIri.namespace + vocabularyIri.fragment ===
+      Constants.EMPTY_ASSET_IRI
+    ) {
+      return Promise.resolve([]);
+    }
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${getApiPrefix(getState())}/vocabularies/${
+        vocabularyIri.fragment
+      }/versions`,
+      param("namespace", vocabularyIri.namespace)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<SnapshotData>(
+          data,
+          SNAPSHOT_CONTEXT
+        )
+      )
+      .then((snapshots: SnapshotData[]) => {
+        dispatch(asyncActionSuccess(action));
+        return snapshots;
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));

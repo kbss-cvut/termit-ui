@@ -1,0 +1,37 @@
+al-sgov-server:
+  name: SGoV Service
+  url: ${AL_URL}/sluzby/sgov-server
+  meta: {}
+al-db-server:
+  name: A graph database
+  url: ${AL_URL}/sluzby/db-server/repositories/assembly-line
+  meta: {}
+al-auth-server:
+  name: OIDC Authentication Service
+  url: ${AL_URL}/sluzby/auth-server/realms/assembly-line
+  meta: {}
+al-ontographer:
+  name: ontoGrapher
+  url: ${AL_URL}/v-nástroji/ontographer
+  meta:
+    workspace-path: "/?workspace=%WORKSPACE_IRI%"
+al-termit-server:
+  name: TermIt backend
+  url: ${AL_URL}/sluzby/termit-server
+  meta: {}
+al-termit:
+  name: TermIt
+  url: ${AL_URL}/v-nástroji/termit
+  meta:
+    workspace-path: "/#vocabularies?workspace=%WORKSPACE_IRI%"
+al-mission-control:
+  name: Mission Control
+  url: ${AL_URL}
+  meta:
+    feature-demo: false
+al-issue-tracker:
+  name: Issue Tracker
+  url: https://github.com/opendata-mvcr/sgov-assembly-line/issues
+  meta:
+    new-bug: https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=bug&template=po-adavek-na-opravu.md&title=
+    new-feature: https://github.com/opendata-mvcr/sgov-assembly-line/issues/new?labels=enhancement&template=po-adavek-na-novou-funkcionalitu.md&title=

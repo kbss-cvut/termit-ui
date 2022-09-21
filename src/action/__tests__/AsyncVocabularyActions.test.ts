@@ -12,6 +12,7 @@ import {
   exportGlossaryWithExactMatchReferences,
   loadTermCount,
   loadVocabularyContentChanges,
+  loadVocabularySnapshots,
 } from "../AsyncVocabularyActions";
 import AsyncActionStatus from "../AsyncActionStatus";
 import ExportType from "../../util/ExportType";
@@ -319,6 +320,22 @@ describe("AsyncTermActions", () => {
           `${Constants.API_PREFIX}/vocabularies/${vocabularyName}/history-of-content`
         );
         expect(args[1].getParams().namespace).toEqual(namespace);
+      });
+    });
+  });
+
+  describe("loadVocabularySnapshots", () => {
+    it("immediately returns empty array when vocabulary IRI is empty", () => {
+      Ajax.get = jest.fn().mockResolvedValue([]);
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          loadVocabularySnapshots(
+            VocabularyUtils.create(Constants.EMPTY_ASSET_IRI)
+          )
+        )
+      ).then((res) => {
+        expect(res.length).toEqual(0);
+        expect(Ajax.get).not.toHaveBeenCalled();
       });
     });
   });

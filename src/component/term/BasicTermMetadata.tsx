@@ -15,9 +15,11 @@ import TermDefinitionBlock from "./TermDefinitionBlock";
 import MarkdownView from "../misc/MarkdownView";
 import { useI18n } from "../hook/useI18n";
 import TermStatus from "./TermStatus";
+import Vocabulary from "../../model/Vocabulary";
 
 interface BasicTermMetadataProps {
   term: Term;
+  vocabulary: Vocabulary;
   withDefinitionSource?: boolean;
   language: string;
 }
@@ -76,6 +78,7 @@ function renderTermList(
 
 const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
   term,
+  vocabulary,
   language,
   withDefinitionSource,
 }) => {
@@ -149,7 +152,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
         </Col>
       </Row>
       <Row>
-        <TermStatus term={term} />
+        <TermStatus term={term} vocabulary={vocabulary} />
       </Row>
     </>
   );

@@ -1,6 +1,5 @@
 import * as React from "react";
 import withI18n from "../../hoc/withI18n";
-import { RouteComponentProps, withRouter } from "react-router";
 import { IRI } from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
 import HeaderWithActions from "../../misc/HeaderWithActions";
@@ -19,28 +18,22 @@ import {
   resolveInitialLanguage,
 } from "../../term/TermDetail";
 import WindowTitle from "../../misc/WindowTitle";
-import { loadTerm, loadVocabulary } from "../../../action/AsyncActions";
+import { loadVocabulary } from "../../../action/AsyncActions";
+import { loadTerm } from "../../../action/AsyncTermActions";
+import { useLocation, useParams } from "react-router-dom";
 
-interface TermDetailProps
-  extends CommonTermDetailProps,
-    RouteComponentProps<any> {}
+interface TermDetailProps extends CommonTermDetailProps {}
 
 export const TermDetail: React.FC<TermDetailProps> = (props) => {
-  const { term, location, match, loadTerm, loadVocabulary } = props;
+  const { term, loadTerm, loadVocabulary } = props;
+  const { name, termName, timestamp } = useParams<any>();
+  const location = useLocation();
   React.useEffect(() => {
-    const vocabularyName: string = match.params.name;
-    const termName: string = match.params.termName;
     const namespace = Utils.extractQueryParam(location.search, "namespace");
-    const vocUri = { fragment: vocabularyName, namespace };
-    loadTerm(termName, vocUri);
-    loadVocabulary(vocUri);
-  }, [
-    location.search,
-    match.params.termName,
-    match.params.name,
-    loadTerm,
-    loadVocabulary,
-  ]);
+    const vocUri = { fragment: name, namespace };
+    loadTerm(termName, vocUri, timestamp);
+    loadVocabulary(vocUri, timestamp);
+  }, [location.search, name, termName, timestamp, loadTerm, loadVocabulary]);
   const [language, setLanguage] = React.useState<string>(
     resolveInitialLanguage(props)
   );
@@ -93,9 +86,10 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri, false, false)),
-      loadTerm: (termName: string, vocabularyIri: IRI) =>
-        dispatch(loadTerm(termName, vocabularyIri)),
+      loadVocabulary: (iri: IRI, timestamp?: string) =>
+        dispatch(loadVocabulary(iri, false, timestamp)),
+      loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
+        dispatch(loadTerm(termName, vocabularyIri, timestamp)),
     };
   }
-)(injectIntl(withI18n(withRouter(TermDetail))));
+)(injectIntl(withI18n(TermDetail)));

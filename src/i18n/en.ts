@@ -36,6 +36,10 @@ const en = {
 
     "news-viewer.title": "News",
 
+    "auth.redirect-message": "Redirecting you to the authorization service.",
+    "auth.unavailable-message":
+      "Authorization service is not available. Please contact system administrators.",
+
     "login.title": "Log in",
     "login.subtitle": "Please login to continue",
     "login.username": "Username",
@@ -274,6 +278,12 @@ const en = {
     "vocabulary.snapshot.create.label": "Create snapshot",
     "vocabulary.snapshot.create.title":
       "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships. The snapshot is a read-only copy of the whole vocabulary content and can be used to demarcate important milestones in the vocabulary lifecycle.",
+    "vocabulary.snapshot.create.dialog.text.no-related":
+      "Are you sure you want to create a snapshot of this vocabulary?",
+    "vocabulary.snapshot.create.dialog.text":
+      "Are you sure you want to create a snapshot of this vocabulary? This action will also create {count, plural, one {a snapshot of one vocabulary that is connected to this via via term relationships.}" +
+      "other {snapshots of # vocabularies that are (even indirectly) connected to this one via term relationships} }.",
+    "vocabulary.snapshot.create.dialog.confirm": "Create",
     "vocabulary.snapshot.create.success":
       "Vocabulary revision successfully created.",
 
@@ -639,7 +649,7 @@ const en = {
     "error.file.maxUploadSizeExceeded":
       "The file could not be uploaded because it exceeds the configured maximum file size limit.",
 
-    "history.label": "History",
+    "history.label": "Change history",
     "history.loading": "Loading history...",
     "history.empty": "The recorded history of this asset is empty.",
     "history.whenwho": "Origin",
@@ -685,6 +695,24 @@ const en = {
 
     "validation.message.tooltip":
       "This is a quality validation result. The form can be submitted even if it has quality issues.",
+
+    "snapshots.title": "Snapshot history",
+    "snapshots.created": "Snapshot created",
+    "snapshots.show": "Show snapshot",
+    "snapshots.empty": "No previous snapshots found.",
+    "snapshot.message":
+      "This { type } is a snapshot and is read only. Click to view the current version.",
+    "snapshot.remove.confirm.title": "Remove snapshot?",
+    "snapshot.remove.confirm.text.no-related":
+      "Are you sure you want to remove this snapshot?",
+    "snapshot.remove.confirm.text":
+      "Are you sure you want to remove this snapshot? This action will remove {count, plural, one {# related snapshot} " +
+      "other {# related snapshots}}.",
+    "snapshot.label.short": "snapshot from",
+
+    "auth.notEditable.message.unauthorized":
+      "You have insufficient rights to edit this { type }.",
+    "auth.notEditable.message.readOnly": "This { type } is read only.",
   },
 };
 

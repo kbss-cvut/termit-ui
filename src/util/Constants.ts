@@ -1,44 +1,31 @@
 import Routes from "./Routes";
+import {
+  setProcessEnv,
+  getEnvInstance,
+} from "@opendata-mvcr/assembly-line-shared";
 
-/**
- * Aggregated object of process.env and window.__config__ to allow dynamic configuration
- */
-const ENV = {
-  ...Object.keys(process.env).reduce<Record<string, string>>((acc, key) => {
-    const strippedKey = key.replace("REACT_APP_", "");
-    acc[strippedKey] = process.env[key]!;
-    return acc;
-  }, {}),
-  ...(window as any).__config__,
+setProcessEnv(process.env);
+const env = getEnvInstance();
+const COMPONENTS = env.getComponents();
+
+export const getEnv = (key: string, defaultValue?: string): string => {
+  return env.get(key, defaultValue);
 };
-
-/**
- * Helper to make sure that all envs are defined properly
- * @param name env variable name (without the REACT_APP prefix)
- * @param defaultValue Default variable name
- */
-export function getEnv(name: string, defaultValue?: string): string {
-  const value = ENV[name] || defaultValue;
-  if (value !== undefined) {
-    return value;
-  }
-  throw new Error(`Missing environment variable: ${name}`);
-}
 
 const API_PREFIX = "/rest";
 const DEFAULT_LANGUAGE = "en";
 
 const constants = {
   // Will be replaced with actual server url during build
-  SERVER_URL: getEnv("SERVER_URL"),
+  SERVER_URL: COMPONENTS["al-termit-server"].url,
   // Prefix of the server REST API
   API_PREFIX,
   PUBLIC_API_PREFIX: `${API_PREFIX}/public`,
   APP_NAME: "TermIt",
   // Will be replaced with actual version during build
-  VERSION: getEnv("VERSION"),
+  VERSION: env.get("VERSION", "unknown"),
   // Will be replaced with actual deployment name during build
-  DEPLOYMENT_NAME: getEnv("DEPLOYMENT_NAME", ""),
+  DEPLOYMENT_NAME: getEnv("CONTEXT"),
   HOME_ROUTE: Routes.dashboard,
   LANG: {
     CS: {
@@ -110,6 +97,9 @@ const constants = {
   EMPTY_ASSET_IRI: "http://empty",
   LAST_COMMENTED_ASSET_LIMIT: 5,
   ANNOTATOR_TUTORIAL: {},
+  WORKSPACE_EDITABLE_CONTEXT_PARAM: "edit-context",
+
+  DEFAULT_TERM_SELECTOR_FETCH_SIZE: 100,
 };
 
 constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =

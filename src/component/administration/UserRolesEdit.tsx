@@ -87,7 +87,7 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
             </Select>
             <ButtonToolbar className="float-right">
               <Button
-                variant="success"
+                color="success"
                 className="users-action-button"
                 size="sm"
                 disabled={!role}
@@ -96,7 +96,7 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
                 {i18n("save")}
               </Button>
               <Button
-                variant="outline-primary"
+                color="outline-dark"
                 className="users-action-button"
                 size="sm"
                 onClick={onCancel}

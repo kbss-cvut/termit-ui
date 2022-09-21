@@ -22,10 +22,7 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     dispatch(
-      loadDefinitionRelatedTermsTargeting(
-        VocabularyUtils.create(term.iri).fragment,
-        VocabularyUtils.create(term.vocabulary!.iri!)
-      )
+      loadDefinitionRelatedTermsTargeting(VocabularyUtils.create(term.iri))
     );
   }, [dispatch, term.iri, term.vocabulary]);
   const terms = React.useMemo(

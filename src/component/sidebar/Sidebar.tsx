@@ -44,7 +44,7 @@ import NavbarSearch from "../search/label/NavbarSearch";
 import { toggleSidebar } from "../../action/SyncActions";
 import UserDropdown from "../misc/UserDropdown";
 import "./Sidebar.scss";
-import IfUserAuthorized from "../authorization/IfUserAuthorized";
+import IfUserIsEditor from "../authorization/IfUserIsEditor";
 
 export interface SidebarProps extends HasI18n, RouteComponentProps<any> {
   user: User;
@@ -297,14 +297,14 @@ export class Sidebar extends Component<SidebarProps, SidebarState> {
             <Nav navbar={true}>{this.createLinks(mainNavRoutes)}</Nav>
 
             {desktopView && (
-              <IfUserAuthorized renderUnauthorizedAlert={false}>
+              <IfUserIsEditor>
                 <div className="d-block">
                   <hr className="mb-2 mt-2" />
                   <Nav navbar={true}>
                     {this.createActionLinks(createNewNavRoutes)}
                   </Nav>
                 </div>
-              </IfUserAuthorized>
+              </IfUserIsEditor>
             )}
           </Collapse>
         </Container>

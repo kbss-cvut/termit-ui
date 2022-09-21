@@ -97,6 +97,10 @@ header .nav-tabs {
   float: right;
 }
 
+button.btn {
+  min-width: 6.7rem;
+}
+
 .btn-toolbar {
   & > button {
     margin-left: 0.5rem;
@@ -216,4 +220,6 @@ header .nav-tabs {
 
 td ul {
   padding-left: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 0;
 }

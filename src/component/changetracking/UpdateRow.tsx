@@ -59,7 +59,9 @@ function renderValue(value?: UpdateValueType) {
 
 function sortIfMultilingual(value: any[]) {
   if (value.find((v) => v["@language"])) {
-    value.sort((a, b) => a["@language"].localeCompare(b["@language"]));
+    value.sort((a, b) =>
+      (a["@language"] || a).localeCompare(b["@language"] || b)
+    );
   }
 }
 

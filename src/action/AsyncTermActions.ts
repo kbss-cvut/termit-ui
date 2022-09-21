@@ -18,7 +18,7 @@ import {
 } from "./SyncActions";
 import Ajax, { content, param } from "../util/Ajax";
 import JsonLdUtils from "../util/JsonLdUtils";
-import Term from "../model/Term";
+import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
 import { ErrorData } from "../model/ErrorInfo";
 import Constants from "../util/Constants";
 import TermOccurrence, {
@@ -34,6 +34,8 @@ import { AxiosResponse } from "axios";
 import { getApiPrefix } from "./ActionUtils";
 import { AssetData } from "../model/Asset";
 import TermStatus from "../model/TermStatus";
+import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
+import TermItState from "../model/TermItState";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -89,18 +91,15 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
   return url;
 }
 
-export function loadDefinitionRelatedTermsTargeting(
-  termNormalizedName: string,
-  vocabularyIri: IRI
-) {
+export function loadDefinitionRelatedTermsTargeting(termIri: IRI) {
   const action = { type: ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
-      `${getApiPrefix(getState())}/vocabularies/${
-        vocabularyIri.fragment
-      }/terms/${termNormalizedName}/def-related-target`,
-      param("namespace", vocabularyIri.namespace)
+      `${getApiPrefix(getState())}/terms/${
+        termIri.fragment
+      }/def-related-target`,
+      param("namespace", termIri.namespace)
     )
       .then((data: object[]) =>
         data.length !== 0
@@ -290,4 +289,78 @@ export function setTermStatus(termIri: IRI, status: TermStatus) {
         );
       });
   };
+}
+
+export function loadTermSnapshots(termIri: IRI) {
+  const action = { type: ActionType.LOAD_SNAPSHOTS, termIri };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${getApiPrefix(getState())}/terms/${termIri.fragment}/versions`,
+      param("namespace", termIri.namespace)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<SnapshotData>(
+          data,
+          SNAPSHOT_CONTEXT
+        )
+      )
+      .then((snapshots: SnapshotData[]) => {
+        dispatch(asyncActionSuccess(action));
+        return snapshots;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
+export function loadTerm(
+  termNormalizedName: string,
+  vocabularyIri: IRI,
+  timestamp?: string
+) {
+  const action = {
+    type: ActionType.LOAD_TERM,
+  };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    dispatch(asyncActionRequest(action));
+    return fetchTerm(getState(), termNormalizedName, vocabularyIri, timestamp)
+      .then((data: object) =>
+        JsonLdUtils.compactAndResolveReferences<TermData>(data, TERM_CONTEXT)
+      )
+      .then((data: TermData) =>
+        dispatch(asyncActionSuccessWithPayload(action, new Term(data)))
+      )
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+      });
+  };
+}
+
+function fetchTerm(
+  state: TermItState,
+  termNormalizedName: string,
+  vocabularyIri: IRI,
+  timestamp?: string
+) {
+  if (!timestamp) {
+    return Ajax.get(
+      `${getApiPrefix(state)}/vocabularies/${
+        vocabularyIri.fragment
+      }/terms/${termNormalizedName}`,
+      param("namespace", vocabularyIri.namespace)
+    );
+  } else {
+    return Ajax.get(
+      `${getApiPrefix(state)}/vocabularies/${
+        vocabularyIri.fragment
+      }/terms/${termNormalizedName}/versions`,
+      param("namespace", vocabularyIri.namespace).param("at", timestamp)
+    );
+  }
 }

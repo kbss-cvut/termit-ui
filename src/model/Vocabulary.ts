@@ -8,6 +8,7 @@ import Document, {
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
+import { SupportsSnapshots } from "./Snapshot";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
@@ -44,7 +45,10 @@ export interface VocabularyData extends AssetData {
   importedVocabularies?: AssetData[];
 }
 
-export default class Vocabulary extends Asset implements VocabularyData {
+export default class Vocabulary
+  extends Asset
+  implements VocabularyData, SupportsSnapshots
+{
   public label: string;
   public comment?: string;
   public document?: Document;
@@ -82,6 +86,26 @@ export default class Vocabulary extends Asset implements VocabularyData {
       result.document = this.document?.toJsonLd();
     }
     return result;
+  }
+
+  public isSnapshot(): boolean {
+    return this.hasType(VocabularyUtils.VOCABULARY_SNAPSHOT);
+  }
+
+  public snapshotOf(): string | undefined {
+    return this.unmappedProperties.has(
+      VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
+    )
+      ? this.unmappedProperties.get(
+          VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
+        )![0]
+      : undefined;
+  }
+
+  public snapshotCreated(): string | undefined {
+    return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
+      ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+      : undefined;
   }
 
   public get unmappedProperties(): Map<string, string[]> {

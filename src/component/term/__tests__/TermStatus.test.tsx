@@ -24,15 +24,19 @@ describe("TermStatus", () => {
   ])(
     "passes correct status to setTermStatus on toggle",
     (expected: Status, draftValue?: boolean) => {
+      const vocabulary = Generator.generateVocabulary();
       const user = Generator.generateUser();
+      user.types.push(VocabularyUtils.USER_EDITOR);
       (redux.useSelector as jest.Mock).mockReturnValue(user);
       const fakeDispatch = jest.fn().mockResolvedValue({});
       (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
       jest.spyOn(AsyncTermActions, "setTermStatus");
-      const term = Generator.generateTerm();
+      const term = Generator.generateTerm(vocabulary.iri);
       // @ts-ignore
       term.draft = draftValue;
-      const wrapper = mountWithIntl(<TermStatus term={term} />);
+      const wrapper = mountWithIntl(
+        <TermStatus term={term} vocabulary={vocabulary} />
+      );
       wrapper.find(DraftToggle).prop("onToggle")();
       expect(setTermStatus).toHaveBeenCalledWith(
         VocabularyUtils.create(term.iri),
@@ -42,14 +46,17 @@ describe("TermStatus", () => {
   );
 
   it("renders non-editable badge when user has no editing authority", () => {
+    const vocabulary = Generator.generateVocabulary();
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_RESTRICTED);
     (redux.useSelector as jest.Mock).mockReturnValue(user);
     const fakeDispatch = jest.fn().mockResolvedValue({});
     (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
-    const term = Generator.generateTerm();
+    const term = Generator.generateTerm(vocabulary.iri);
     term.draft = false;
-    const wrapper = mountWithIntl(<TermStatus term={term} />);
+    const wrapper = mountWithIntl(
+      <TermStatus term={term} vocabulary={vocabulary} />
+    );
     expect(wrapper.exists(DraftToggle)).toBeFalsy();
     expect(wrapper.exists(Badge)).toBeTruthy();
   });

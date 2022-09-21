@@ -1,3 +1,9 @@
+#### Version 2.13.0
+
+- Implemented user interface for viewing and management of vocabulary and term snapshots.
+- Added support for open only a subset of vocabularies for editing.
+- Added support for storing vocabularies in repository contexts identified by an IRI different from vocabulary IRI.
+
 #### Version 2.12.1
 
 - Extend attributes of term snapshots in the public TermIt API.

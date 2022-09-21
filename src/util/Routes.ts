@@ -45,6 +45,10 @@ const Routes = {
   createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
   importVocabulary: new Route("createVocabulary", "/vocabularies/import"),
   vocabularySummary: new Route("vocabularySummary", "/vocabularies/:name"),
+  vocabularySnapshotSummary: new Route(
+    "vocabularySnapshotSummary",
+    "/vocabularies/:name/versions/:timestamp"
+  ),
   annotateFile: new Route(
     "annotateFile",
     "/vocabularies/:name/document/:fileName"
@@ -57,6 +61,10 @@ const Routes = {
     "vocabularyTermDetail",
     "/vocabularies/:name/terms/:termName"
   ),
+  vocabularyTermSnapshotDetail: new Route(
+    "vocabularyTermSnapshotDetail",
+    "/vocabularies/:name/terms/:termName/versions/:timestamp"
+  ),
 
   // Public views
   publicDashboard: new Route("publicDashboard", "/public"),
@@ -65,9 +73,17 @@ const Routes = {
     "publicVocabularySummary",
     "/public/vocabularies/:name"
   ),
+  publicVocabularySnapshotSummary: new Route(
+    "publicVocabularySnapshotSummary",
+    "/public/vocabularies/:name/versions/:timestamp"
+  ),
   publicVocabularyTermDetail: new Route(
     "publicVocabularyTermDetail",
     "/public/vocabularies/:name/terms/:termName"
+  ),
+  publicVocabularyTermSnapshotDetail: new Route(
+    "publicVocabularyTermSnapshotDetail",
+    "/public/vocabularies/:name/terms/:termName/versions/:timestamp"
   ),
   publicSearch: new Route("publicSearch", "/public/search"),
   publicSearchTerms: new Route("publicSearchTerms", "/public/search/terms"),

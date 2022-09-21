@@ -32,6 +32,7 @@ import { Action } from "redux";
 import { AxiosResponse } from "axios";
 import Routing from "../util/Routing";
 import { UserRoleData } from "../model/UserRole";
+import Routes from "../util/Routes";
 
 const USERS_ENDPOINT = "/users";
 
@@ -50,6 +51,7 @@ export function loadUser() {
         return dispatch(asyncActionSuccessWithPayload(action, new User(data)));
       })
       .catch((error: ErrorData) => {
+        Routing.transitionTo(Routes.login);
         if (error.status === Constants.STATUS_UNAUTHORIZED) {
           return dispatch(
             asyncActionFailure(action, {

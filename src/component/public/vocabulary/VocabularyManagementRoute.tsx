@@ -10,6 +10,12 @@ const VocabularyManagementRoute: React.FC = () => {
     <Switch>
       <DynamicBreadcrumbRoute
         asset="vocabulary"
+        path={Routes.publicVocabularySnapshotSummary.path}
+        includeSearch={true}
+        component={VocabularyRoute}
+      />
+      <DynamicBreadcrumbRoute
+        asset="vocabulary"
         path={Routes.publicVocabularySummary.path}
         includeSearch={true}
         component={VocabularyRoute}

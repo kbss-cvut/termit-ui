@@ -5,7 +5,7 @@ import { Badge } from "reactstrap";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import Term, { TermData } from "../../../model/Term";
-import Vocabulary from "../../../model/Vocabulary";
+import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import withI18n, { HasI18n } from "../../hoc/withI18n";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Utils from "../../../util/Utils";
@@ -168,7 +168,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   public render() {
     const { i18n, isDetailView, vocabulary } = this.props;
 
-    if (!vocabulary) {
+    if (!vocabulary || vocabulary === EMPTY_VOCABULARY) {
       return null;
     }
 
@@ -215,6 +215,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             isMenuOpen={true}
             scrollMenuIntoView={false}
             multi={false}
+            menuIsFloating={false}
             maxHeight={Utils.calculateAssetListHeight()}
             optionRenderer={createTermsWithImportsOptionRenderer(
               vocabulary.iri

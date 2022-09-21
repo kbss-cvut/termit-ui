@@ -1,6 +1,6 @@
 {
   "name": "termit-ui",
-  "version": "2.12.1",
+  "version": "2.13.0",
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
@@ -8,7 +8,7 @@
     "@formatjs/intl-pluralrules": "^5.0.3",
     "@formatjs/intl-relativetimeformat": "^11.0.3",
     "@fortawesome/fontawesome-free": "^6.1.2",
-    "@opendata-mvcr/assembly-line-shared": "^0.2.5",
+    "@opendata-mvcr/assembly-line-shared": "^0.3.2",
     "apexcharts": "^3.35.4",
     "axios": "^0.27.2",
     "bootstrap": "4.6.1",
