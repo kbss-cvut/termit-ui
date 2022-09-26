@@ -61,13 +61,15 @@ describe("Async commented asset actions", () => {
 
   describe("load last commented assets", () => {
     it("returns correct instances of received last commented asset data", () => {
+      const page = Generator.randomInt(0, 5);
+      const size = 5;
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadLastCommentedAssets())
+        (store.dispatch as ThunkDispatch)(loadLastCommentedAssets(page, size))
       ).then((result: RecentlyCommentedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-commented",
-          param("size", "5")
+          param("size", size.toString()).param("page", page.toString())
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
@@ -77,13 +79,15 @@ describe("Async commented asset actions", () => {
 
   describe("load my last commented assets", () => {
     it("returns correct instances of received my last commented asset data", () => {
+      const page = Generator.randomInt(0, 5);
+      const size = 5;
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadMyLastCommented())
+        (store.dispatch as ThunkDispatch)(loadMyLastCommented(page, size))
       ).then((result: RecentlyCommentedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/my-last-commented",
-          param("size", "5")
+          param("size", size.toString()).param("page", page.toString())
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
@@ -93,13 +97,17 @@ describe("Async commented asset actions", () => {
 
   describe("load last commented assets in reaction to mine", () => {
     it("returns correct instances of received last commented assets in reaction to mine", () => {
+      const page = Generator.randomInt(0, 5);
+      const size = 5;
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadLastCommentedInReactionToMine())
+        (store.dispatch as ThunkDispatch)(
+          loadLastCommentedInReactionToMine(page, size)
+        )
       ).then((result: RecentlyCommentedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-commented-in-reaction-to-mine",
-          param("size", "5")
+          param("size", size.toString()).param("page", page.toString())
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
