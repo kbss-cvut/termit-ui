@@ -1,34 +1,36 @@
 import * as React from "react";
-import withInjectableLoading, {
-  InjectsLoading,
-} from "../../../hoc/withInjectableLoading";
 import CommentedAssetList from "./CommentedAssetList";
 import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
+import PromiseTrackingMask from "../../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
+import { ThunkDispatch } from "../../../../util/Types";
+import { useDispatch } from "react-redux";
 
-export interface CommonLastCommentedAssetsProps extends InjectsLoading {
-  loadAssets: () => Promise<RecentlyCommentedAsset[]>;
+export interface CommonLastCommentedAssetsProps {
+  loadAssets: () => (
+    dispatch: ThunkDispatch
+  ) => Promise<RecentlyCommentedAsset[] | never[]>;
 }
 
 const CommonLastCommentedAssets: React.FC<CommonLastCommentedAssetsProps> = (
   props
 ) => {
-  const { loadAssets, loading, loadingOn, loadingOff, renderMask } = props;
-  const [lastCommentedAssets, setLastCommentedAssets] = React.useState<
-    RecentlyCommentedAsset[]
-  >([]);
+  const { loadAssets } = props;
+  const [lastCommentedAssets, setLastCommentedAssets] =
+    React.useState<RecentlyCommentedAsset[] | null>(null);
+  const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
-    loadingOn();
-    loadAssets()
-      .then((data) => setLastCommentedAssets(data))
-      .then(() => loadingOff());
-  }, [loadAssets, setLastCommentedAssets, loadingOn, loadingOff]);
+    trackPromise(dispatch(loadAssets()), "last-commented-assets").then((data) =>
+      setLastCommentedAssets(data)
+    );
+  }, [loadAssets, setLastCommentedAssets]);
 
   return (
     <>
-      {renderMask()}
-      <CommentedAssetList assets={lastCommentedAssets} loading={loading} />
+      <PromiseTrackingMask area="last-commented-assets" />
+      <CommentedAssetList assets={lastCommentedAssets} />
     </>
   );
 };
 
-export default withInjectableLoading(CommonLastCommentedAssets);
+export default CommonLastCommentedAssets;

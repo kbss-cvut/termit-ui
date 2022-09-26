@@ -67,7 +67,7 @@ describe("Async commented asset actions", () => {
       ).then((result: RecentlyCommentedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-commented",
-          param("limit", "5")
+          param("size", "5")
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
@@ -83,7 +83,7 @@ describe("Async commented asset actions", () => {
       ).then((result: RecentlyCommentedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/my-last-commented",
-          param("limit", "5")
+          param("size", "5")
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyCommentedAsset));
@@ -99,7 +99,7 @@ describe("Async commented asset actions", () => {
       ).then((result: RecentlyCommentedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-commented-in-reaction-to-mine",
-          param("limit", "5")
+          param("size", "5")
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyCommentedAsset));

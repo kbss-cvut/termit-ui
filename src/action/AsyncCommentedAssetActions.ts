@@ -43,7 +43,7 @@ function loadLastCommentedAssetList(at: string, endpoint: string) {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
       Constants.API_PREFIX + endpoint,
-      param("limit", Constants.LAST_COMMENTED_ASSET_LIMIT + "")
+      param("size", Constants.LAST_COMMENTED_ASSET_LIMIT.toString())
     )
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyCommentedAssetData>(
