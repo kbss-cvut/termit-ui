@@ -35,12 +35,14 @@ const CommonLastCommentedAssets: React.FC<CommonLastCommentedAssetsProps> = (
     <>
       <PromiseTrackingMask area="last-commented-assets" />
       <CommentedAssetList assets={lastCommentedAssets} />
-      <SimplePagination
-        page={page}
-        setPage={setPage}
-        pageSize={Constants.LAST_COMMENTED_ASSET_LIMIT}
-        itemCount={lastCommentedAssets?.length}
-      />
+      {lastCommentedAssets !== null && (
+        <SimplePagination
+          page={page}
+          setPage={setPage}
+          pageSize={Constants.LAST_COMMENTED_ASSET_LIMIT}
+          itemCount={lastCommentedAssets?.length}
+        />
+      )}
     </>
   );
 };
