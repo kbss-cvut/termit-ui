@@ -64,13 +64,15 @@ describe("AsyncDashboardActions", () => {
           "@type": [VocabularyUtils.TERM],
         },
       ];
+      const page = Generator.randomInt(0, 5);
+      const pageSize = 10;
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadLastEditedAssets())
+        (store.dispatch as ThunkDispatch)(loadLastEditedAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-edited",
-          param("limit", "5")
+          param("size", pageSize.toString()).param("page", page.toString())
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyModifiedAsset));
@@ -115,13 +117,15 @@ describe("AsyncDashboardActions", () => {
           "@type": [VocabularyUtils.TERM],
         },
       ];
+      const page = Generator.randomInt(0, 5);
+      const pageSize = 10;
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadLastEditedAssets())
+        (store.dispatch as ThunkDispatch)(loadLastEditedAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-edited",
-          param("limit", "5")
+          param("size", pageSize.toString()).param("page", page.toString())
         );
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyModifiedAsset));
       });
@@ -157,13 +161,17 @@ describe("AsyncDashboardActions", () => {
           "@type": [VocabularyUtils.TERM],
         },
       ];
+      const page = Generator.randomInt(0, 5);
+      const pageSize = 10;
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadMyAssets())
+        (store.dispatch as ThunkDispatch)(loadMyAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-edited",
-          param("forCurrentUserOnly", "true").param("limit", "5")
+          param("forCurrentUserOnly", "true")
+            .param("size", pageSize.toString())
+            .param("page", page.toString())
         );
         expect(result.length).toEqual(data.length);
         result.forEach((r) => expect(r).toBeInstanceOf(RecentlyModifiedAsset));
@@ -193,13 +201,17 @@ describe("AsyncDashboardActions", () => {
           "@type": [VocabularyUtils.TERM],
         },
       ];
+      const page = Generator.randomInt(0, 5);
+      const pageSize = 10;
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadMyAssets())
+        (store.dispatch as ThunkDispatch)(loadMyAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
         expect(Ajax.get).toHaveBeenCalledWith(
           Constants.API_PREFIX + "/assets/last-edited",
-          param("forCurrentUserOnly", "true").param("limit", "5")
+          param("forCurrentUserOnly", "true")
+            .param("size", pageSize.toString())
+            .param("page", page.toString())
         );
         expect(result.length).toEqual(data.length);
         expect(result[0].label).toEqual(vocLabel);

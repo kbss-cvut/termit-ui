@@ -1,10 +1,9 @@
 import * as React from "react";
 import { Badge, Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
-import withI18n, { HasI18n } from "../hoc/withI18n";
-import { injectIntl } from "react-intl";
 import classNames from "classnames";
+import { useI18n } from "../hook/useI18n";
 
-interface TabsProps extends HasI18n {
+interface TabsProps {
   /**
    * ID of the active tab. The ID should be also a localization key of its title.
    */
@@ -27,60 +26,56 @@ interface TabsProps extends HasI18n {
   navLinkStyle?: string;
 }
 
-export class Tabs extends React.Component<TabsProps> {
-  public render() {
-    const navLinks: any[] = [];
-    const tabs: any[] = [];
-    const activeKey = this.props.activeTabLabelKey;
-    const propsChangeTab = this.props.changeTab;
+const Tabs: React.FC<TabsProps> = (props) => {
+  const { formatMessage } = useI18n();
 
-    Object.keys(this.props.tabs).forEach((id) => {
-      const changeTab = () => {
-        if (id !== activeKey) {
-          propsChangeTab(id);
-        }
-      };
+  const navLinks: any[] = [];
+  const tabs: any[] = [];
+  const activeKey = props.activeTabLabelKey;
+  const propsChangeTab = props.changeTab;
 
-      const badge =
-        this.props.tabBadges &&
-        id in this.props.tabBadges &&
-        this.props.tabBadges[id] ? (
-          <>
-            {" "}
-            <Badge className="align-text-bottom">
-              {this.props.tabBadges[id]}
-            </Badge>
-          </>
-        ) : null;
+  Object.keys(props.tabs).forEach((id) => {
+    const changeTab = () => {
+      if (id !== activeKey) {
+        propsChangeTab(id);
+      }
+    };
 
-      const className = classNames(
-        this.props.navLinkStyle ? this.props.navLinkStyle : "",
-        id === this.props.activeTabLabelKey ? "active" : ""
-      );
+    const badge =
+      props.tabBadges && id in props.tabBadges && props.tabBadges[id] ? (
+        <>
+          {" "}
+          <Badge className="align-text-bottom">{props.tabBadges[id]}</Badge>
+        </>
+      ) : null;
 
-      navLinks.push(
-        <NavItem key={id}>
-          <NavLink className={className} onClick={changeTab}>
-            {this.props.formatMessage(id, {})}
-            {badge}
-          </NavLink>
-        </NavItem>
-      );
-      const tabComponent = this.props.tabs[id];
-      tabs.push(
-        <TabPane tabId={id} key={id}>
-          {tabComponent}
-        </TabPane>
-      );
-    });
-
-    return (
-      <div>
-        <Nav tabs={true}>{navLinks}</Nav>
-        <TabContent activeTab={this.props.activeTabLabelKey}>{tabs}</TabContent>
-      </div>
+    const className = classNames(
+      props.navLinkStyle ? props.navLinkStyle : "",
+      id === props.activeTabLabelKey ? "active" : ""
     );
-  }
-}
 
-export default injectIntl(withI18n(Tabs));
+    navLinks.push(
+      <NavItem key={id}>
+        <NavLink className={className} onClick={changeTab}>
+          {formatMessage(id, {})}
+          {badge}
+        </NavLink>
+      </NavItem>
+    );
+    const tabComponent = props.tabs[id];
+    tabs.push(
+      <TabPane tabId={id} key={id}>
+        {tabComponent}
+      </TabPane>
+    );
+  });
+
+  return (
+    <div>
+      <Nav tabs={true}>{navLinks}</Nav>
+      <TabContent activeTab={props.activeTabLabelKey}>{tabs}</TabContent>
+    </div>
+  );
+};
+
+export default Tabs;
