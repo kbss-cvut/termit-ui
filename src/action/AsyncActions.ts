@@ -56,10 +56,6 @@ import {
   ChangeRecordData,
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
-import RecentlyModifiedAsset, {
-  CONTEXT as RECENTLY_MODIFIED_ASSET_CONTEXT,
-  RecentlyModifiedAssetData,
-} from "../model/RecentlyModifiedAsset";
 import NotificationType from "../model/NotificationType";
 import ValidationResult, {
   CONTEXT as VALIDATION_RESULT_CONTEXT,
@@ -1103,42 +1099,6 @@ export function createProperty(property: RdfsResource) {
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
-export function loadLastEditedAssets() {
-  return loadPredefinedAssetList(ActionType.LOAD_LAST_EDITED, false);
-}
-
-export function loadMyAssets() {
-  return loadPredefinedAssetList(ActionType.LOAD_MY, true);
-}
-
-function loadPredefinedAssetList(at: string, forCurrentUserOnly: boolean) {
-  const action = {
-    type: at,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    let config = param("limit", "5");
-    if (forCurrentUserOnly) {
-      config = config.param("forCurrentUserOnly", "true");
-    }
-    return Ajax.get(Constants.API_PREFIX + "/assets/last-edited", config)
-      .then((data: object) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyModifiedAssetData>(
-          data,
-          RECENTLY_MODIFIED_ASSET_CONTEXT
-        )
-      )
-      .then((data: RecentlyModifiedAssetData[]) => {
-        dispatch(asyncActionSuccess(action));
-        return data.map((item) => new RecentlyModifiedAsset(item));
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return [];
-      });
   };
 }
 

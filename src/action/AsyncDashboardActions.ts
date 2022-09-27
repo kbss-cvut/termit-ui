@@ -13,6 +13,59 @@ import RecentlyCommentedAsset, {
   CONTEXT as RECENTLY_COMMENTED_ASSET_CONTEXT,
   RecentlyCommentedAssetData,
 } from "../model/RecentlyCommentedAsset";
+import RecentlyModifiedAsset, {
+  CONTEXT as RECENTLY_MODIFIED_ASSET_CONTEXT,
+  RecentlyModifiedAssetData,
+} from "../model/RecentlyModifiedAsset";
+
+export function loadLastEditedAssets(pageNo: number, pageSize: number) {
+  return loadPredefinedAssetList(
+    ActionType.LOAD_LAST_EDITED,
+    false,
+    pageNo,
+    pageSize
+  );
+}
+
+export function loadMyAssets(pageNo: number, pageSize: number) {
+  return loadPredefinedAssetList(ActionType.LOAD_MY, true, pageNo, pageSize);
+}
+
+function loadPredefinedAssetList(
+  at: string,
+  forCurrentUserOnly: boolean,
+  pageNo: number,
+  pageSize: number
+) {
+  const action = {
+    type: at,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    let config = param("size", pageSize.toString()).param(
+      "page",
+      pageNo.toString()
+    );
+    if (forCurrentUserOnly) {
+      config = config.param("forCurrentUserOnly", "true");
+    }
+    return Ajax.get(Constants.API_PREFIX + "/assets/last-edited", config)
+      .then((data: object) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RecentlyModifiedAssetData>(
+          data,
+          RECENTLY_MODIFIED_ASSET_CONTEXT
+        )
+      )
+      .then((data: RecentlyModifiedAssetData[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data.map((item) => new RecentlyModifiedAsset(item));
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
 
 export function loadLastCommentedAssets(pageNo: number, pageSize: number) {
   return loadLastCommentedAssetList(

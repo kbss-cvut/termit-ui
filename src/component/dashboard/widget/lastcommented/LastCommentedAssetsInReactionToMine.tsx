@@ -1,5 +1,5 @@
 import React from "react";
-import { loadLastCommentedInReactionToMine } from "../../../../action/AsyncCommentedAssetActions";
+import { loadLastCommentedInReactionToMine } from "../../../../action/AsyncDashboardActions";
 import CommonLastCommentedAssets from "./CommonLastCommentedAssets";
 
 const LastCommentedAssetsInReactionToMine: React.FC = () => (
