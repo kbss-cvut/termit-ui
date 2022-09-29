@@ -98,6 +98,7 @@ const cs = {
 
     "dashboard.widget.assetList.empty":
       "Pro tuto část nebyly nalezeny žádné záznamy.",
+    "dashboard.widget.assetList.new.tooltip": "Nové od Vaší poslední návštěvy.",
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Upraven} other {Vytvořen}} uživatelem {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":

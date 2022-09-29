@@ -8,6 +8,12 @@ import User from "../../../../../model/User";
 import { intlFunctions } from "../../../../../__tests__/environment/IntlUtil";
 import { Label } from "reactstrap";
 import RecentlyModifiedAsset from "../../../../../model/RecentlyModifiedAsset";
+import * as Redux from "react-redux";
+
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
 
 describe("AssetList", () => {
   let user: User;
@@ -17,14 +23,10 @@ describe("AssetList", () => {
   });
 
   it("does not render info message during loading", () => {
+    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <AssetList
-          user={user}
-          assets={[]}
-          loading={true}
-          {...intlFunctions()}
-        />
+        <AssetList assets={null} {...intlFunctions()} />
       </MemoryRouter>
     );
     const info = wrapper.find(".italics");
@@ -32,14 +34,10 @@ describe("AssetList", () => {
   });
 
   it("renders info message when no assets were found", () => {
+    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <AssetList
-          user={user}
-          assets={[]}
-          loading={false}
-          {...intlFunctions()}
-        />
+        <AssetList assets={[]} {...intlFunctions()} />
       </MemoryRouter>
     );
     const info = wrapper.find(".italics");
@@ -67,14 +65,10 @@ describe("AssetList", () => {
         modified: new Date().toISOString(),
       }),
     ];
+    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <AssetList
-          user={user}
-          assets={assets}
-          loading={false}
-          {...intlFunctions()}
-        />
+        <AssetList assets={assets} {...intlFunctions()} />
       </MemoryRouter>
     );
     return Promise.resolve().then(() => {
@@ -97,14 +91,10 @@ describe("AssetList", () => {
         modified: new Date().toISOString(),
       }),
     ];
+    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <AssetList
-          user={user}
-          assets={assets}
-          loading={false}
-          {...intlFunctions()}
-        />
+        <AssetList assets={assets} {...intlFunctions()} />
       </MemoryRouter>
     );
     return Promise.resolve().then(() => {
