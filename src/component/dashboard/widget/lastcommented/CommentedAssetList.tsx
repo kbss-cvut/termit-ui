@@ -10,6 +10,7 @@ import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
 import { useI18n } from "../../../hook/useI18n";
 import "./CommentedAssetList.scss";
 import Comment from "../../../../model/Comment";
+import { FaRegBell } from "react-icons/fa";
 
 export const DISPLAY_LENGTH_THRESHOLD = 65;
 export const ELLIPSIS = "...";
@@ -29,6 +30,7 @@ export const CommentedAssetList: React.FC<{
   assets: RecentlyCommentedAsset[] | null;
 }> = ({ assets }) => {
   const user = useSelector((state: TermItState) => state.user);
+  const lastSeen = user.lastSeen ? Date.parse(user.lastSeen) : Date.now();
   const { i18n, formatMessage, locale } = useI18n();
 
   const renderMessage = useCallback(
@@ -73,9 +75,20 @@ export const CommentedAssetList: React.FC<{
 
   const renderCommentedAsset = useCallback(
     (commentedAsset: RecentlyCommentedAsset) => {
+      const modified = Date.parse(
+        commentedAsset.lastComment.modified
+          ? commentedAsset.lastComment.modified
+          : commentedAsset.lastComment.created!
+      );
       return (
         <td className="col-xs-12 px-0">
           <div>
+            {lastSeen < modified && (
+              <FaRegBell
+                className="mr-1"
+                title={i18n("dashboard.widget.assetList.new.tooltip")}
+              />
+            )}
             <TermIriLink iri={commentedAsset.iri!} activeTab="comments.title" />
             <br />
             {commentedAsset.myLastComment ? (
@@ -95,7 +108,7 @@ export const CommentedAssetList: React.FC<{
         </td>
       );
     },
-    [renderComment, i18n]
+    [renderComment, i18n, lastSeen]
   );
 
   const renderNonEmptyContent = () => {

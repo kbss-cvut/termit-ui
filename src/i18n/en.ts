@@ -95,6 +95,7 @@ const en = {
     "main.lang-selector.tooltip": "Select user interface language",
 
     "dashboard.widget.assetList.empty": "Found no assets to show here.",
+    "dashboard.widget.assetList.new.tooltip": "New since your last visit.",
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Edited} other {Created}} by {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":

@@ -9,6 +9,7 @@ export const CONTEXT = {
   password: VocabularyUtils.PREFIX + "má-heslo",
   originalPassword:
     "http://onto.fel.cvut.cz/ontologies/application/termit/original-password",
+  lastSeen: "http://rdfs.org/sioc/ns#last_activity_date",
   types: "@type",
 };
 
@@ -25,6 +26,7 @@ export interface UserData {
   lastName: string;
   username: string;
   types?: string[];
+  lastSeen?: string;
 }
 
 export interface UserDataWithPassword extends UserData {
@@ -43,6 +45,7 @@ export default class User implements UserData {
   public readonly types: string[];
   protected readonly password?: string;
   protected readonly originalPassword?: string;
+  public readonly lastSeen?: string;
 
   constructor(data: UserData | UserDataWithPassword) {
     this.iri = data.iri;
