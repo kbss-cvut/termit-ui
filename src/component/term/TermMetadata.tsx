@@ -182,8 +182,8 @@ export class TermMetadata extends React.Component<
       />
     );
     tabs["term.metadata.validation.title"] = <ValidationResults term={term} />;
+    tabs["history.label"] = <AssetHistory asset={term} />;
     if (!term.isSnapshot()) {
-      tabs["history.label"] = <AssetHistory asset={term} />;
       tabs["snapshots.title"] = <TermSnapshots asset={term} />;
     }
     return tabs;
