@@ -165,16 +165,14 @@ export class TermMetadata extends React.Component<
   private initTabs() {
     const { term } = this.props;
     const tabs = {};
-    if (!term.isSnapshot()) {
-      tabs["comments.title"] = (
-        <Comments
-          term={term}
-          onLoad={this.setCommentsCount}
-          reverseOrder={true}
-          allowCreate={!term.isSnapshot()}
-        />
-      );
-    }
+    tabs["comments.title"] = (
+      <Comments
+        term={term}
+        onLoad={this.setCommentsCount}
+        reverseOrder={true}
+        allowCreate={!term.isSnapshot()}
+      />
+    );
     tabs["properties.edit.title"] = (
       <UnmappedProperties
         properties={term.unmappedProperties}
