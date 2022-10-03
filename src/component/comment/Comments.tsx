@@ -35,13 +35,28 @@ const Comments: React.FC<CommentsProps> = ({
   const dispatch: ThunkDispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(loadTermComments(VocabularyUtils.create(term.iri))).then(
-      (data) => {
-        setComments(data);
-        onLoad(data.length);
-      }
-    );
-  }, [dispatch, setComments, onLoad, term.iri]);
+    //Check if term is a snapshot
+    if (term.snapshotOf()) {
+      const snapshotTimeCreated = Date.parse(term.snapshotCreated()!);
+      dispatch(
+        loadTermComments(VocabularyUtils.create(term.snapshotOf()!))
+      ).then((data) => {
+        //Show comments which are relevant to the snapshot
+        const filteredComments = data.filter(
+          (r) => Date.parse(r.created!) < snapshotTimeCreated
+        );
+        setComments(filteredComments);
+        onLoad(filteredComments.length);
+      });
+    } else {
+      dispatch(loadTermComments(VocabularyUtils.create(term.iri))).then(
+        (data) => {
+          setComments(data);
+          onLoad(data.length);
+        }
+      );
+    }
+  }, [dispatch, setComments, onLoad, term]);
   const termIri = VocabularyUtils.create(term.iri);
   const onSubmit = (comment: Comment) =>
     trackPromise(
