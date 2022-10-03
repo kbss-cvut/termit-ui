@@ -1,34 +1,50 @@
 import * as React from "react";
-import withInjectableLoading, {
-  InjectsLoading,
-} from "../../../hoc/withInjectableLoading";
+import { useState } from "react";
 import CommentedAssetList from "./CommentedAssetList";
 import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
+import PromiseTrackingMask from "../../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
+import { ThunkDispatch } from "../../../../util/Types";
+import { useDispatch } from "react-redux";
+import Constants from "../../../../util/Constants";
+import SimplePagination from "./SimplePagination";
 
-export interface CommonLastCommentedAssetsProps extends InjectsLoading {
-  loadAssets: () => Promise<RecentlyCommentedAsset[]>;
+export interface CommonLastCommentedAssetsProps {
+  loadAssets: (
+    pageNo: number,
+    pageSize: number
+  ) => (dispatch: ThunkDispatch) => Promise<RecentlyCommentedAsset[] | never[]>;
 }
 
 const CommonLastCommentedAssets: React.FC<CommonLastCommentedAssetsProps> = (
   props
 ) => {
-  const { loadAssets, loading, loadingOn, loadingOff, renderMask } = props;
-  const [lastCommentedAssets, setLastCommentedAssets] = React.useState<
-    RecentlyCommentedAsset[]
-  >([]);
+  const { loadAssets } = props;
+  const [page, setPage] = useState(0);
+  const [lastCommentedAssets, setLastCommentedAssets] =
+    React.useState<RecentlyCommentedAsset[] | null>(null);
+  const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
-    loadingOn();
-    loadAssets()
-      .then((data) => setLastCommentedAssets(data))
-      .then(() => loadingOff());
-  }, [loadAssets, setLastCommentedAssets, loadingOn, loadingOff]);
+    trackPromise(
+      dispatch(loadAssets(page, Constants.LAST_COMMENTED_ASSET_LIMIT)),
+      "last-commented-assets"
+    ).then((data) => setLastCommentedAssets(data));
+  }, [loadAssets, setLastCommentedAssets, dispatch, page]);
 
   return (
     <>
-      {renderMask()}
-      <CommentedAssetList assets={lastCommentedAssets} loading={loading} />
+      <PromiseTrackingMask area="last-commented-assets" />
+      <CommentedAssetList assets={lastCommentedAssets} />
+      {lastCommentedAssets !== null && (
+        <SimplePagination
+          page={page}
+          setPage={setPage}
+          pageSize={Constants.LAST_COMMENTED_ASSET_LIMIT}
+          itemCount={lastCommentedAssets?.length}
+        />
+      )}
     </>
   );
 };
 
-export default withInjectableLoading(CommonLastCommentedAssets);
+export default CommonLastCommentedAssets;
