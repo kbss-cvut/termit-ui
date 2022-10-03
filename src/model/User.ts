@@ -52,6 +52,7 @@ export default class User implements UserData {
     this.firstName = data.firstName;
     this.lastName = data.lastName;
     this.username = data.username;
+    this.lastSeen = data.lastSeen;
     this.types = Utils.sanitizeArray(data.types);
   }
 
