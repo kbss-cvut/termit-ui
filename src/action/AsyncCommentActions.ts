@@ -25,8 +25,8 @@ export function loadTermComments(
     dispatch(asyncActionRequest(action, true));
     const reqParams: any = {};
     reqParams.namespace = termIri.namespace;
-    if (dateTo) reqParams.to = dateTo;
-    if (dateFrom) reqParams.from = dateFrom;
+    reqParams.to = dateTo;
+    reqParams.from = dateFrom;
     return Ajax.get(
       `${Constants.API_PREFIX}/terms/${termIri.fragment}/comments`,
       params(reqParams)
