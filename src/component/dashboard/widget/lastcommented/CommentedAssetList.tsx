@@ -26,6 +26,19 @@ function renderCommentText(text: string) {
   );
 }
 
+function shouldHighlight(
+  lastSeen: number,
+  userUri: string,
+  item: RecentlyCommentedAsset
+) {
+  const modified = Date.parse(
+    item.lastComment.modified
+      ? item.lastComment.modified
+      : item.lastComment.created!
+  );
+  return lastSeen < modified && userUri !== item.lastComment.author?.iri;
+}
+
 export const CommentedAssetList: React.FC<{
   assets: RecentlyCommentedAsset[] | null;
 }> = ({ assets }) => {
@@ -75,17 +88,12 @@ export const CommentedAssetList: React.FC<{
 
   const renderCommentedAsset = useCallback(
     (commentedAsset: RecentlyCommentedAsset) => {
-      const modified = Date.parse(
-        commentedAsset.lastComment.modified
-          ? commentedAsset.lastComment.modified
-          : commentedAsset.lastComment.created!
-      );
       return (
         <td className="col-xs-12 px-0">
           <div>
-            {lastSeen < modified && (
+            {shouldHighlight(lastSeen, user.iri, commentedAsset) && (
               <FaRegBell
-                className="mr-1"
+                className="asset-list-highlight-icon mr-1"
                 title={i18n("dashboard.widget.assetList.new.tooltip")}
               />
             )}
@@ -108,7 +116,7 @@ export const CommentedAssetList: React.FC<{
         </td>
       );
     },
-    [renderComment, i18n, lastSeen]
+    [renderComment, i18n, lastSeen, user.iri]
   );
 
   const renderNonEmptyContent = () => {

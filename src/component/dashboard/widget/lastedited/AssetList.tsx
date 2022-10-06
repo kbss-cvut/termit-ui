@@ -10,6 +10,15 @@ import AssetFactory from "../../../../util/AssetFactory";
 import { useI18n } from "../../../hook/useI18n";
 import { FaRegBell } from "react-icons/fa";
 
+function shouldHighlight(
+  lastSeen: number,
+  userUri: string,
+  item: RecentlyModifiedAsset
+) {
+  const modifiedTimestamp = Date.parse(item.modified!);
+  return lastSeen < modifiedTimestamp && userUri !== item.editor.iri;
+}
+
 export const AssetList: React.FC<{ assets: RecentlyModifiedAsset[] | null }> =
   ({ assets }) => {
     const user = useSelector((state: TermItState) => state.user);
@@ -31,9 +40,9 @@ export const AssetList: React.FC<{ assets: RecentlyModifiedAsset[] | null }> =
                 <tr key={asset.iri}>
                   <td className="col-xs-12 px-0">
                     <div>
-                      {lastSeen < modifiedTimestamp && (
+                      {shouldHighlight(lastSeen, user.iri, asset) && (
                         <FaRegBell
-                          className="mr-1"
+                          className="asset-list-highlight-icon mr-1"
                           title={i18n("dashboard.widget.assetList.new.tooltip")}
                         />
                       )}
