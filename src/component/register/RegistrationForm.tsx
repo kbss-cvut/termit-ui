@@ -12,6 +12,7 @@ import AsyncActionStatus from "../../action/AsyncActionStatus";
 import { injectIntl } from "react-intl";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import ValidationResult, { Severity } from "../../model/form/ValidationResult";
+import Utils from "../../util/Utils";
 
 interface RegistrationFormProps extends HasI18n {
   loading: boolean;
@@ -85,6 +86,12 @@ export class RegistrationForm extends React.Component<
     const { username, usernameExists } = this.state;
     if (username.trim().length === 0) {
       return ValidationResult.BLOCKER;
+    }
+    if (!Utils.isValidEmail(username)) {
+      return new ValidationResult(
+        Severity.BLOCKER,
+        this.props.i18n("register.username.notValidEmail")
+      );
     }
     if (usernameExists) {
       return new ValidationResult(

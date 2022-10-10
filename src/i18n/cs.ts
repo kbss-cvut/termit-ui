@@ -62,7 +62,7 @@ const cs = {
     "register.last-name": "Příjmení",
     "register.last-name.placeholder": "Zadejte vaše příjmení",
     "register.username": "Uživatelské jméno",
-    "register.username.placeholder": "Zadejte uživatelské jméno",
+    "register.username.placeholder": "Zadejte emailovou adresu",
     "register.password": "Heslo",
     "register.password.placeholder": "Zadejte vaše heslo",
     "register.password-confirm": "Potvrzení hesla",
@@ -77,6 +77,8 @@ const cs = {
       "Nepodařilo se přihlásit k nově vytvořenému uživateli.",
     "register.login.label": "Již máte účet? <a>Přihlaste se</a>",
     "register.username-exists.tooltip": "Uživatelské jméno již existuje",
+    "register.username.notValidEmail":
+      "Uživatelské jméno musí být emailovou adresou",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
