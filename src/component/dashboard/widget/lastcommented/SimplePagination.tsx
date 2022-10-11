@@ -34,6 +34,9 @@ const SimplePagination: React.FC<SimplePaginationProps> = ({
             title={i18n("table.paging.previous.tooltip")}
           />
         </PaginationItem>
+        <PaginationItem active={true}>
+          <PaginationLink disabled={true}>{page + 1}</PaginationLink>
+        </PaginationItem>
         <PaginationItem disabled={itemCount < pageSize}>
           <PaginationLink
             next={true}
