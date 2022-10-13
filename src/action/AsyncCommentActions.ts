@@ -15,13 +15,21 @@ import Comment, {
 } from "../model/Comment";
 import { ErrorData } from "../model/ErrorInfo";
 
-export function loadTermComments(termIri: IRI) {
+export function loadTermComments(
+  termIri: IRI,
+  dateTo?: string,
+  dateFrom?: string
+) {
   const action = { type: ActionType.LOAD_COMMENTS };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
+    const reqParams: any = {};
+    reqParams.namespace = termIri.namespace;
+    reqParams.to = dateTo;
+    reqParams.from = dateFrom;
     return Ajax.get(
       `${Constants.API_PREFIX}/terms/${termIri.fragment}/comments`,
-      param("namespace", termIri.namespace)
+      params(reqParams)
     )
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<CommentData>(

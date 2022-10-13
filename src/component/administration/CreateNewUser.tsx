@@ -1,7 +1,7 @@
 import * as React from "react";
 import { UserAccountData } from "../../model/User";
-import { AsyncFailureAction, MessageAction } from "../../action/ActionType";
-import { connect } from "react-redux";
+import { AsyncFailureAction } from "../../action/ActionType";
+import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { createNewUser } from "../../action/AsyncUserActions";
 import Routing from "../../util/Routing";
@@ -12,16 +12,11 @@ import { Card, CardBody } from "reactstrap";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import { useI18n } from "../hook/useI18n";
 
-interface CreateNewUserProps {
-  register: (
-    userData: UserAccountData
-  ) => Promise<AsyncFailureAction | MessageAction>;
-}
-
-export const CreateNewUser: React.FC<CreateNewUserProps> = (props) => {
+export const CreateNewUser: React.FC = () => {
   const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
   const onRegister = (userData: UserAccountData) => {
-    return props.register(userData).then((result) => {
+    return dispatch(createNewUser(userData)).then((result) => {
       if ((result as AsyncFailureAction).status !== AsyncActionStatus.FAILURE) {
         Routing.transitionTo(Routes.administration);
       }
@@ -46,8 +41,4 @@ export const CreateNewUser: React.FC<CreateNewUserProps> = (props) => {
   );
 };
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    register: (userData: UserAccountData) => dispatch(createNewUser(userData)),
-  };
-})(CreateNewUser);
+export default CreateNewUser;

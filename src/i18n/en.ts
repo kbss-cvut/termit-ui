@@ -58,15 +58,11 @@ const en = {
     "register.title": "Registration",
     "register.subtitle": "Please register to continue",
     "register.first-name": "First name",
-    "register.first-name.placeholder": "Enter Your First Name",
     "register.last-name": "Last name",
-    "register.last-name.placeholder": "Enter Your Last Name",
     "register.username": "Username",
-    "register.username.placeholder": "Enter Your Username",
+    "register.username.help": "Enter your email address",
     "register.password": "Password",
-    "register.password.placeholder": "Enter Your Password",
     "register.password-confirm": "Confirm password",
-    "register.password-confirm.placeholder": "Enter Your Password Again",
     "register.passwords-not-matching.tooltip": 'Passwords don"t match.',
     "register.submit": "Register",
     "register.mask": "Registering...",
@@ -75,6 +71,7 @@ const en = {
     "register.login.error": "Unable to login into the newly created account.",
     "register.login.label": "Already a member? <a>Log in</a>",
     "register.username-exists.tooltip": "Username already exists",
+    "register.username.notValidEmail": "Username has to be an email address",
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",
@@ -95,6 +92,7 @@ const en = {
     "main.lang-selector.tooltip": "Select user interface language",
 
     "dashboard.widget.assetList.empty": "Found no assets to show here.",
+    "dashboard.widget.assetList.new.tooltip": "New since your last visit.",
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Edited} other {Created}} by {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":

@@ -1,8 +1,6 @@
-import * as React from "react";
+import React from "react";
 import { Card, CardBody, CardHeader } from "reactstrap";
 import Tabs from "../../../misc/Tabs";
-import withI18n from "../../../hoc/withI18n";
-import { injectIntl } from "react-intl";
 import { useI18n } from "../../../hook/useI18n";
 import AllLastEditedAssets from "./AllLastEditedAssets";
 import MyLastEditedAssets from "./MyLastEditedAssets";
@@ -40,4 +38,4 @@ export const LastEditedAssets = () => {
   );
 };
 
-export default injectIntl(withI18n(LastEditedAssets));
+export default LastEditedAssets;

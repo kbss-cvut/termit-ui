@@ -1,34 +1,49 @@
-import * as React from "react";
-import withInjectableLoading, {
-  InjectsLoading,
-} from "../../../hoc/withInjectableLoading";
+import React, { useState } from "react";
 import RecentlyModifiedAsset from "../../../../model/RecentlyModifiedAsset";
 import AssetList from "./AssetList";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../../../util/Types";
+import PromiseTrackingMask from "../../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
+import Constants from "../../../../util/Constants";
+import SimplePagination from "../lastcommented/SimplePagination";
 
-export interface CommonLastEditedAssetsProps extends InjectsLoading {
-  loadAssets: () => Promise<RecentlyModifiedAsset[]>;
+export interface CommonLastEditedAssetsProps {
+  loadAssets: (
+    pageNo: number,
+    pageSize: number
+  ) => (dispatch: ThunkDispatch) => Promise<RecentlyModifiedAsset[] | never[]>;
 }
 
 const CommonLastEditedAssets: React.FC<CommonLastEditedAssetsProps> = (
   props
 ) => {
-  const { loadAssets, loading, loadingOn, loadingOff, renderMask } = props;
-  const [lastEditedAssets, setLastEditedAssets] = React.useState<
-    RecentlyModifiedAsset[]
-  >([]);
+  const { loadAssets } = props;
+  const [page, setPage] = useState(0);
+  const [lastEditedAssets, setLastEditedAssets] =
+    React.useState<RecentlyModifiedAsset[] | null>(null);
+  const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
-    loadingOn();
-    loadAssets()
-      .then((data) => setLastEditedAssets(data))
-      .then(() => loadingOff());
-  }, [loadAssets, setLastEditedAssets, loadingOn, loadingOff]);
+    trackPromise(
+      dispatch(loadAssets(page, Constants.LAST_COMMENTED_ASSET_LIMIT)),
+      "last-edited-assets"
+    ).then((data) => setLastEditedAssets(data));
+  }, [loadAssets, setLastEditedAssets, dispatch, page]);
 
   return (
     <>
-      {renderMask()}
-      <AssetList assets={lastEditedAssets} loading={loading} />
+      <PromiseTrackingMask area="last-edited-assets" />
+      <AssetList assets={lastEditedAssets} />
+      {lastEditedAssets !== null && (
+        <SimplePagination
+          page={page}
+          setPage={setPage}
+          pageSize={Constants.LAST_COMMENTED_ASSET_LIMIT}
+          itemCount={lastEditedAssets?.length}
+        />
+      )}
     </>
   );
 };
 
-export default withInjectableLoading(CommonLastEditedAssets);
+export default CommonLastEditedAssets;

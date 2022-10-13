@@ -13,6 +13,9 @@ import { BasicRouteProps } from "./Types";
 import _ from "lodash";
 import { Configuration } from "../model/Configuration";
 
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,15}$/;
+
 const Utils = {
   /**
    * Ensures that the specified argument is returned as an array at all conditions.
@@ -297,6 +300,10 @@ const Utils = {
       normalizedName = timestamp;
     }
     return IRIImpl.create({ fragment: normalizedName, namespace });
+  },
+
+  isValidEmail(str: string): boolean {
+    return EMAIL_REGEX.test(str);
   },
 };
 

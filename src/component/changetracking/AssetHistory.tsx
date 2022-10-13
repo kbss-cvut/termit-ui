@@ -1,5 +1,5 @@
 import * as React from "react";
-import Asset from "../../model/Asset";
+import Asset, { AssetData } from "../../model/Asset";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import { Table } from "reactstrap";
 import { connect } from "react-redux";
@@ -12,6 +12,8 @@ import PersistRecord from "../../model/changetracking/PersistRecord";
 import ContainerMask from "../misc/ContainerMask";
 import Constants from "../../util/Constants";
 import { useI18n } from "../hook/useI18n";
+import Vocabulary from "../../model/Vocabulary";
+import Term from "../../model/Term";
 
 interface AssetHistoryProps {
   asset: Asset;
@@ -25,7 +27,28 @@ export const AssetHistory: React.FC<AssetHistoryProps> = (props) => {
   const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
   React.useEffect(() => {
     if (asset.iri !== Constants.EMPTY_ASSET_IRI) {
-      loadHistory(asset).then((recs) => setRecords(recs));
+      //Check if vocabulary/term is a snapshot
+      if (
+        (asset instanceof Term || asset instanceof Vocabulary) &&
+        asset.snapshotOf()
+      ) {
+        const modifiedAsset: AssetData = {
+          iri: asset.snapshotOf(),
+          types: asset.types,
+        };
+        const snapshotTimeCreated = Date.parse(asset.snapshotCreated()!);
+        loadHistory(modifiedAsset as Asset).then((recs) => {
+          //Show history which is relevant to the snapshot
+          const filteredRecs = recs.filter(
+            (r) => Date.parse(r.timestamp) < snapshotTimeCreated
+          );
+          setRecords(filteredRecs);
+        });
+      } else {
+        loadHistory(asset).then((recs) => {
+          setRecords(recs);
+        });
+      }
     }
   }, [asset, loadHistory]);
   if (!records) {

@@ -58,15 +58,11 @@ const cs = {
     "register.title": "Nový uživatel",
     "register.subtitle": "Pro pokračování se prosím zaregistrujte",
     "register.first-name": "Jméno",
-    "register.first-name.placeholder": "Zadejte vaše jméno",
     "register.last-name": "Příjmení",
-    "register.last-name.placeholder": "Zadejte vaše příjmení",
     "register.username": "Uživatelské jméno",
-    "register.username.placeholder": "Zadejte uživatelské jméno",
+    "register.username.help": "Zadejte emailovou adresu",
     "register.password": "Heslo",
-    "register.password.placeholder": "Zadejte vaše heslo",
     "register.password-confirm": "Potvrzení hesla",
-    "register.password-confirm.placeholder": "Zadejte vaše heslo znovu",
     "register.passwords-not-matching.tooltip":
       "Heslo a jeho potvrzení se neshodují.",
     "register.submit": "Zaregistrovat se",
@@ -77,6 +73,8 @@ const cs = {
       "Nepodařilo se přihlásit k nově vytvořenému uživateli.",
     "register.login.label": "Již máte účet? <a>Přihlaste se</a>",
     "register.username-exists.tooltip": "Uživatelské jméno již existuje",
+    "register.username.notValidEmail":
+      "Uživatelské jméno musí být emailovou adresou",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
@@ -98,6 +96,7 @@ const cs = {
 
     "dashboard.widget.assetList.empty":
       "Pro tuto část nebyly nalezeny žádné záznamy.",
+    "dashboard.widget.assetList.new.tooltip": "Nové od Vaší poslední návštěvy.",
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Upraven} other {Vytvořen}} uživatelem {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":

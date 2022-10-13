@@ -125,8 +125,9 @@ export class VocabularyMetadata extends React.Component<
       />
     );
     tabs[TABS[2]] = <AssetHistory asset={vocabulary} />;
-    tabs[TABS[3]] = <VocabularySnapshots asset={vocabulary} />;
-
+    if (!vocabulary.isSnapshot()) {
+      tabs[TABS[3]] = <VocabularySnapshots asset={vocabulary} />;
+    }
     tabs[TABS[4]] = <TermChangeFrequency vocabulary={vocabulary} />;
 
     tabs[TABS[5]] = (
