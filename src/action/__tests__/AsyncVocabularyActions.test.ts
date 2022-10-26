@@ -162,43 +162,32 @@ describe("AsyncTermActions", () => {
       });
     });
 
-    it("sets accept type to CSV when CSV export type is provided", () => {
-      const iri = VocabularyUtils.create(Generator.generateUri());
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: "test",
-          headers: { "Content-type": ExportType.CSV.mimeType },
-        })
-      );
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
-      ).then(() => {
-        expect(Ajax.getRaw).toHaveBeenCalled();
-        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
-        expect(config.getHeaders()[Constants.Headers.ACCEPT]).toEqual(
-          Constants.CSV_MIME_TYPE
+    it.each([
+      ExportType.CSV,
+      ExportType.Excel,
+      ExportType.Turtle,
+      ExportType.RdfXml,
+    ])(
+      "sets accept type based on specified export type",
+      (type: ExportType) => {
+        const iri = VocabularyUtils.create(Generator.generateUri());
+        Ajax.getRaw = jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            data: "test",
+            headers: { "Content-type": type.mimeType },
+          })
         );
-      });
-    });
-
-    it("sets accept type to Excel when Excel export type is provided", () => {
-      const iri = VocabularyUtils.create(Generator.generateUri());
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: "test",
-          headers: { "Content-type": Constants.EXCEL_MIME_TYPE },
-        })
-      );
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.Excel))
-      ).then(() => {
-        expect(Ajax.getRaw).toHaveBeenCalled();
-        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
-        expect(config.getHeaders()[Constants.Headers.ACCEPT]).toEqual(
-          Constants.EXCEL_MIME_TYPE
-        );
-      });
-    });
+        return Promise.resolve(
+          (store.dispatch as ThunkDispatch)(exportGlossary(iri, type))
+        ).then(() => {
+          expect(Ajax.getRaw).toHaveBeenCalled();
+          const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+          expect(config.getHeaders()[Constants.Headers.ACCEPT]).toEqual(
+            type.mimeType
+          );
+        });
+      }
+    );
 
     it("invokes file save on request success", () => {
       const iri = VocabularyUtils.create(Generator.generateUri());
@@ -283,10 +272,13 @@ describe("AsyncTermActions", () => {
       );
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          exportGlossaryWithExactMatchReferences({
-            namespace,
-            fragment: name,
-          })
+          exportGlossaryWithExactMatchReferences(
+            {
+              namespace,
+              fragment: name,
+            },
+            ExportType.Turtle
+          )
         )
       ).then(() => {
         expect(Ajax.getRaw).toHaveBeenCalled();

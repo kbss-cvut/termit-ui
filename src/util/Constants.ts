@@ -61,6 +61,7 @@ const constants = {
   HTML_MIME_TYPE: "text/html",
   CSV_MIME_TYPE: "text/csv",
   TTL_MIME_TYPE: "text/turtle",
+  RDF_XML_MIME_TYPE: "application/rdf+xml",
   EXCEL_MIME_TYPE:
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   X_WWW_FORM_URLENCODED: "application/x-www-form-urlencoded;charset=UTF-8",

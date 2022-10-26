@@ -32,7 +32,10 @@ describe("ExportVocabularyDialog", () => {
         vocabulary={vocabulary}
       />
     );
-    wrapper.find("input").find({ name: "csv" }).simulate("change");
+    wrapper
+      .find("input")
+      .find({ name: ExportType.CSV.mimeType })
+      .simulate("change");
     wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabulary.iri),
@@ -52,7 +55,10 @@ describe("ExportVocabularyDialog", () => {
         vocabulary={vocabulary}
       />
     );
-    wrapper.find("input").find({ name: "excel" }).simulate("change");
+    wrapper
+      .find("input")
+      .find({ name: ExportType.Excel.mimeType })
+      .simulate("change");
     wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabulary.iri),
@@ -60,7 +66,7 @@ describe("ExportVocabularyDialog", () => {
     );
   });
 
-  it("exports SKOS Turtle when SKOS option is selected", () => {
+  it("exports Turtle when Turtle option is selected", () => {
     const fakeDispatch = jest.fn().mockResolvedValue({});
     (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
     jest.spyOn(AsyncVocabularyActions, "exportGlossary");
@@ -72,7 +78,10 @@ describe("ExportVocabularyDialog", () => {
         vocabulary={vocabulary}
       />
     );
-    wrapper.find("input").find({ name: "skos" }).simulate("change");
+    wrapper
+      .find("input")
+      .find({ name: ExportType.Turtle.mimeType })
+      .simulate("change");
     wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabulary.iri),
@@ -96,10 +105,17 @@ describe("ExportVocabularyDialog", () => {
       />
     );
     wrapper.find("input").find({ name: "skosWithRefs" }).simulate("change");
+    wrapper
+      .find("input")
+      .find({ name: ExportType.Turtle.mimeType + "-withRefs" })
+      .simulate("change");
     wrapper.find("button#vocabulary-export-submit").simulate("click");
     expect(
       AsyncVocabularyActions.exportGlossaryWithExactMatchReferences
-    ).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
+    ).toHaveBeenCalledWith(
+      VocabularyUtils.create(vocabulary.iri),
+      ExportType.Turtle
+    );
   });
 
   it("closes dialog after export", () => {
@@ -114,6 +130,10 @@ describe("ExportVocabularyDialog", () => {
         vocabulary={vocabulary}
       />
     );
+    wrapper
+      .find("input")
+      .find({ name: ExportType.RdfXml.mimeType + "-withRefs" })
+      .simulate("change");
     wrapper.find("button#vocabulary-export-submit").simulate("click");
     return Promise.resolve().then(() => {
       expect(onClose).toHaveBeenCalled();
