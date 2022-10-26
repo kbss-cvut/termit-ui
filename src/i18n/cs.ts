@@ -233,10 +233,6 @@ const cs = {
     "vocabulary.summary.export.ttl.title": "Export ve formátu Turtle (RDF).",
     "vocabulary.summary.export.rdfxml": "RDF/XML",
     "vocabulary.summary.export.rdfxml.title": "Export ve formátu RDF/XML.",
-    "vocabulary.summary.export.ttl.withRefs":
-      "SKOS + pojmy se stejným významem (Turtle)",
-    "vocabulary.summary.export.ttl.withRefs.title":
-      "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku. Výstup je ve formátu Turtle.",
     "vocabulary.summary.export.error":
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",

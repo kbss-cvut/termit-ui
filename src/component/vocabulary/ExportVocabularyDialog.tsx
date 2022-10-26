@@ -18,7 +18,7 @@ interface ExportVocabularyDialogProps {
   vocabulary: Vocabulary;
 }
 
-const Type = {
+export const Type = {
   SKOS: "skos",
   SKOS_WITH_REFS: "skosWithRefs",
 };
@@ -30,36 +30,26 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
 }) => {
   const { i18n } = useI18n();
   const [type, setType] = useState(Type.SKOS);
-  // @ts-ignore
-  const [format, setFormat] = useState<ExportType | null>(null);
+  const [format, setFormat] = useState<ExportType>(ExportType.Turtle);
+  const selectSkos = (format: ExportType) => {
+    setType(Type.SKOS);
+    setFormat(format);
+  };
+  const selectSkosWithRefs = (format: ExportType) => {
+    setType(Type.SKOS_WITH_REFS);
+    setFormat(format);
+  };
   const dispatch: ThunkDispatch = useDispatch();
   const onExport = () => {
     const iri = VocabularyUtils.create(vocabulary.iri);
-    switch (format) {
-      case ExportType.CSV:
-        dispatch(exportGlossary(iri, ExportType.CSV)).then(onClose);
+    switch (type) {
+      case Type.SKOS:
+        dispatch(exportGlossary(iri, format)).then(onClose);
         break;
-      case ExportType.Excel:
-        dispatch(exportGlossary(iri, ExportType.Excel)).then(onClose);
-        break;
-      case ExportType.Turtle:
-        if (type === Type.SKOS) {
-          dispatch(exportGlossary(iri, ExportType.Turtle)).then(onClose);
-        } else {
-          dispatch(
-            exportGlossaryWithExactMatchReferences(iri, ExportType.Turtle)
-          ).then(onClose);
-        }
-        break;
-      case ExportType.RdfXml:
-        if (type === Type.SKOS) {
-          dispatch(exportGlossary(iri, ExportType.RdfXml)).then(onClose);
-        } else {
-          dispatch(
-            exportGlossaryWithExactMatchReferences(iri, ExportType.RdfXml)
-          ).then(onClose);
-        }
-        break;
+      case Type.SKOS_WITH_REFS:
+        dispatch(exportGlossaryWithExactMatchReferences(iri, format)).then(
+          onClose
+        );
     }
   };
 
@@ -94,7 +84,7 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                   type="radio"
                   name={ExportType.CSV.mimeType}
                   value={ExportType.CSV.mimeType}
-                  onChange={() => setFormat(ExportType.CSV)}
+                  onChange={() => selectSkos(ExportType.CSV)}
                   checked={type === Type.SKOS && format === ExportType.CSV}
                 />
                 {i18n("vocabulary.summary.export.csv")}
@@ -107,7 +97,7 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                   type="radio"
                   name={ExportType.Excel.mimeType}
                   value={ExportType.Excel.mimeType}
-                  onChange={() => setFormat(ExportType.Excel)}
+                  onChange={() => selectSkos(ExportType.Excel)}
                   checked={type === Type.SKOS && format === ExportType.Excel}
                 />
                 {i18n("vocabulary.summary.export.excel")}
@@ -122,7 +112,7 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                   type="radio"
                   name={ExportType.Turtle.mimeType}
                   value={ExportType.Turtle.mimeType}
-                  onChange={() => setFormat(ExportType.Turtle)}
+                  onChange={() => selectSkos(ExportType.Turtle)}
                   checked={type === Type.SKOS && format === ExportType.Turtle}
                 />
                 {i18n("vocabulary.summary.export.ttl")}
@@ -135,7 +125,7 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                   type="radio"
                   name={ExportType.RdfXml.mimeType}
                   value={ExportType.RdfXml.mimeType}
-                  onChange={() => setFormat(ExportType.RdfXml)}
+                  onChange={() => selectSkos(ExportType.RdfXml)}
                   checked={type === Type.SKOS && format === ExportType.RdfXml}
                 />
                 {i18n("vocabulary.summary.export.rdfxml")}
@@ -151,7 +141,10 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                 type="radio"
                 name={Type.SKOS_WITH_REFS}
                 value={Type.SKOS_WITH_REFS}
-                onChange={() => setType(Type.SKOS_WITH_REFS)}
+                onChange={() => {
+                  setType(Type.SKOS_WITH_REFS);
+                  setFormat(ExportType.Turtle);
+                }}
                 checked={type === Type.SKOS_WITH_REFS}
               />
               {i18n("vocabulary.summary.export.skosWithRefs")}
@@ -165,7 +158,7 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                   type="radio"
                   name={`${ExportType.Turtle.mimeType}-withRefs`}
                   value={ExportType.Turtle.mimeType}
-                  onChange={() => setFormat(ExportType.Turtle)}
+                  onChange={() => selectSkosWithRefs(ExportType.Turtle)}
                   checked={
                     type === Type.SKOS_WITH_REFS && format === ExportType.Turtle
                   }
@@ -180,7 +173,7 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                   type="radio"
                   name={`${ExportType.RdfXml.mimeType}-withRefs`}
                   value={ExportType.RdfXml.mimeType}
-                  onChange={() => setFormat(ExportType.RdfXml)}
+                  onChange={() => selectSkosWithRefs(ExportType.RdfXml)}
                   checked={
                     type === Type.SKOS_WITH_REFS && format === ExportType.RdfXml
                   }

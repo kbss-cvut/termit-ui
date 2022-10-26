@@ -225,9 +225,6 @@ const en = {
     "vocabulary.summary.export.ttl.title": "Export to Turtle (RDF).",
     "vocabulary.summary.export.rdfxml": "RDF/XML",
     "vocabulary.summary.export.rdfxml.title": "Export to RDF/XML (RDF).",
-    "vocabulary.summary.export.ttl.withRefs": "SKOS + exact matches (Turtle)",
-    "vocabulary.summary.export.ttl.withRefs.title":
-      "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship, serialized as Turtle.",
     "vocabulary.summary.export.error":
       "Unable to retrieve exported data from server response.",
     "vocabulary.summary.import.action": "Restore from backup",
