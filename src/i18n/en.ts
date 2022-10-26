@@ -211,16 +211,20 @@ const en = {
     "vocabulary.summary.export.title":
       "Export glossary terms from this vocabulary",
     "vocabulary.summary.export.text": "Export",
+    "vocabulary.summary.export.skos": "SKOS",
+    "vocabulary.summary.export.skos.title":
+      "Export a SKOS-compatible glossary.",
+    "vocabulary.summary.export.skosWithRefs": "SKOS + exact matches",
+    "vocabulary.summary.export.skosWithRefs.title":
+      "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship.",
     "vocabulary.summary.export.csv": "CSV",
     "vocabulary.summary.export.csv.title": "Export to CSV.",
     "vocabulary.summary.export.excel": "Excel",
     "vocabulary.summary.export.excel.title": "Export to MS Excel.",
-    "vocabulary.summary.export.ttl": "SKOS (Turtle)",
-    "vocabulary.summary.export.ttl.title":
-      "Export a SKOS-compatible glossary serialized as Turtle.",
-    "vocabulary.summary.export.ttl.withRefs": "SKOS + exact matches (Turtle)",
-    "vocabulary.summary.export.ttl.withRefs.title":
-      "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship, serialized as Turtle.",
+    "vocabulary.summary.export.ttl": "Turtle",
+    "vocabulary.summary.export.ttl.title": "Export to Turtle (RDF).",
+    "vocabulary.summary.export.rdfxml": "RDF/XML",
+    "vocabulary.summary.export.rdfxml.title": "Export to RDF/XML (RDF).",
     "vocabulary.summary.export.error":
       "Unable to retrieve exported data from server response.",
     "vocabulary.summary.import.action": "Restore from backup",

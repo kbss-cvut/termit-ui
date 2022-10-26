@@ -219,17 +219,20 @@ const cs = {
     "vocabulary.summary.gotodetail.text": "Zobrazit",
     "vocabulary.summary.export.title": "Exportovat pojmy ze slovníku",
     "vocabulary.summary.export.text": "Exportovat",
+    "vocabulary.summary.export.skos": "SKOS",
+    "vocabulary.summary.export.skos.title":
+      "Export glosáře ve struktuře kompatibilní se SKOS.",
+    "vocabulary.summary.export.skosWithRefs": "SKOS + exact matches",
+    "vocabulary.summary.export.skosWithRefs.title":
+      "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku.",
     "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export do CSV.",
+    "vocabulary.summary.export.csv.title": "Export ve formátu CSV.",
     "vocabulary.summary.export.excel": "Excel",
-    "vocabulary.summary.export.excel.title": "Export do formát MS Excel.",
-    "vocabulary.summary.export.ttl": "SKOS (Turtle)",
-    "vocabulary.summary.export.ttl.title":
-      "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle.",
-    "vocabulary.summary.export.ttl.withRefs":
-      "SKOS + pojmy se stejným významem (Turtle)",
-    "vocabulary.summary.export.ttl.withRefs.title":
-      "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku. Výstup je ve formátu Turtle.",
+    "vocabulary.summary.export.excel.title": "Export ve formátu MS Excel.",
+    "vocabulary.summary.export.ttl": "Turtle",
+    "vocabulary.summary.export.ttl.title": "Export ve formátu Turtle (RDF).",
+    "vocabulary.summary.export.rdfxml": "RDF/XML",
+    "vocabulary.summary.export.rdfxml.title": "Export ve formátu RDF/XML.",
     "vocabulary.summary.export.error":
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",
