@@ -439,6 +439,12 @@ const cs = {
       "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
     "term.metadata.status.confirmed.edit.title":
       "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
+    "term.metadata.notation": "Notace",
+    "term.metadata.notation.tooltip":
+      "(Nepovinný) Notace je řetězec znaků, jako např. 'UBA' or 'L2-3', užívaný k identifikaci pojmu v rámci daného glosáře. " +
+      "Notace se liší od názvu pojmu tím, že se obvykle nejedná o slovo či slova vybraného jazyka.",
+    "term.metadata.example": "Příklady",
+    "term.metadata.example.tooltip": "(Nepovinný) Příklad použití pojmu.",
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",

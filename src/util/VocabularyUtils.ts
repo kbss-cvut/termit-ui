@@ -77,6 +77,8 @@ const VocabularyUtils = {
   SKOS_EXACT_MATCH: _NS_SKOS + "exactMatch",
   SKOS_RELATED: _NS_SKOS + "related",
   SKOS_RELATED_MATCH: _NS_SKOS + "relatedMatch",
+  SKOS_NOTATION: _NS_SKOS + "notation",
+  SKOS_EXAMPLE: _NS_SKOS + "example",
   IS_TERM_FROM_VOCABULARY: _NS_POPIS_DAT + "je-pojmem-ze-slovníku",
   IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "je-výskytem-termu",
   IS_DEFINITION_OF_TERM: _NS_TERMIT + "je-výskytem-definice-termu",

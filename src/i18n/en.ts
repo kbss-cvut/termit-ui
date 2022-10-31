@@ -429,6 +429,13 @@ const en = {
       "Draft term is not ready to be used yet, while Confirmed term is.",
     "term.metadata.status.confirmed.edit.title":
       "Confirmed term cannot be edited. Switch it back to Draft to edit.",
+    "term.metadata.notation": "Notation",
+    "term.metadata.notation.tooltip":
+      "(Optional) A notation is a string of characters such as 'UBA' or 'L2-3' used to uniquely identify a term within the scope of a given glossary. " +
+      "A notation is different from a lexical label in that a notation is not normally recognizable as a word or sequence of words in any natural language.",
+    "term.metadata.example": "Example",
+    "term.metadata.example.tooltip":
+      "(Optional) Supplies an example of the use of a concept.",
     "term.metadata.types.select.placeholder": "Select type",
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",

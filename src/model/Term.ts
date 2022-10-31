@@ -30,6 +30,8 @@ const ctx = {
   definitionSource: VocabularyUtils.HAS_DEFINITION_SOURCE,
   draft: VocabularyUtils.IS_DRAFT,
   glossary: VocabularyUtils.SKOS_IN_SCHEME,
+  notations: VocabularyUtils.SKOS_NOTATION,
+  examples: VocabularyUtils.SKOS_EXAMPLE,
   types: "@type",
 };
 
@@ -60,6 +62,8 @@ const MAPPED_PROPERTIES = [
   "definitionSource",
   "draft",
   "exactMatchTerms",
+  "notations",
+  "examples",
 ];
 
 export const TERM_MULTILINGUAL_ATTRIBUTES = [
@@ -88,6 +92,8 @@ export interface TermData extends AssetData {
   vocabulary?: AssetData;
   definitionSource?: TermOccurrenceData;
   draft?: boolean;
+  notations?: string[];
+  examples?: PluralMultilingualString;
 }
 
 export interface TermInfo {
@@ -120,6 +126,8 @@ export default class Term extends Asset implements TermData, SupportsSnapshots {
   public readonly vocabulary?: AssetData;
   public readonly definitionSource?: TermOccurrenceData;
   public draft: boolean;
+  public notations?: string[];
+  public examples?: PluralMultilingualString;
 
   constructor(termData: TermData, visitedTerms: TermMap = {}) {
     super(termData);
