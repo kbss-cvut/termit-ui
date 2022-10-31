@@ -32,28 +32,31 @@ function renderTermTypes(types?: string[]) {
       !t.startsWith(OWL.namespace)
   );
 
-  if (source.length === 0) {
-    return null;
-  }
-
   const renderItem = (item: string) =>
     Utils.isLink(item) ? (
       <OutgoingLink iri={item} label={<AssetLabel iri={item} />} />
     ) : (
       <p>{item}</p>
     );
+  return renderItemList("term-metadata-types", renderItem, source);
+}
 
-  if (source.length === 1) {
-    return renderItem(source[0]);
-  } else {
-    return (
-      <List type="unstyled" id="term-metadata-types" className="mb-3">
-        {source.map((item: string) => (
-          <li key={item}>{renderItem(item)}</li>
-        ))}
-      </List>
-    );
+function renderItemList<T extends Object>(
+  listId: string,
+  renderItem: (item: T) => JSX.Element,
+  items?: T[]
+) {
+  items = Utils.sanitizeArray(items);
+  if (items.length === 0) {
+    return null;
   }
+  return (
+    <List type="unstyled" id={listId} className="mb-3">
+      {items.map((item: T) => (
+        <li key={item.toString()}>{renderItem(item)}</li>
+      ))}
+    </List>
+  );
 }
 
 function renderTermList(
@@ -133,6 +136,38 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           <MarkdownView id="term-metadata-comment">
             {getLocalizedOrDefault(term.scopeNote, "", language)}
           </MarkdownView>
+        </Col>
+      </Row>
+      <Row>
+        <Col xl={2} md={4}>
+          <Label className="attribute-label mb-3">
+            {i18n("term.metadata.notation")}
+          </Label>
+        </Col>
+        <Col xl={10} md={8}>
+          {renderItemList(
+            "term-metadata-notation",
+            (notation: string) => (
+              <>{notation}</>
+            ),
+            term.notations
+          )}
+        </Col>
+      </Row>
+      <Row>
+        <Col xl={2} md={4}>
+          <Label className="attribute-label mb-3">
+            {i18n("term.metadata.example")}
+          </Label>
+        </Col>
+        <Col xl={10} md={8}>
+          {renderItemList(
+            "term-metadata-example",
+            (ex: string) => (
+              <>{ex}</>
+            ),
+            (term.examples || {})[language]
+          )}
         </Col>
       </Row>
       <Row>

@@ -31,7 +31,7 @@ const ctx = {
   draft: VocabularyUtils.IS_DRAFT,
   glossary: VocabularyUtils.SKOS_IN_SCHEME,
   notations: VocabularyUtils.SKOS_NOTATION,
-  examples: VocabularyUtils.SKOS_EXAMPLE,
+  examples: context(VocabularyUtils.SKOS_EXAMPLE),
   types: "@type",
 };
 
@@ -72,6 +72,7 @@ export const TERM_MULTILINGUAL_ATTRIBUTES = [
   "scopeNote",
   "altLabels",
   "hiddenLabels",
+  "examples",
 ];
 
 export interface TermData extends AssetData {
