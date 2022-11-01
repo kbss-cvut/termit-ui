@@ -147,6 +147,15 @@ export class TermMetadataEdit extends React.Component<
     });
   };
 
+  public onExamplesChange = (examples: string[]) => {
+    const language = this.props.language;
+    const change = {};
+    change[language] = examples;
+    this.setState({
+      examples: Object.assign({}, this.state.examples, change),
+    });
+  };
+
   private onTypesChange = (newTypes: string[]) => {
     this.setState({ types: newTypes });
   };
@@ -304,6 +313,7 @@ export class TermMetadataEdit extends React.Component<
               <Row>
                 <Col xs={12}>
                   <StringListEdit
+                    multilingual={true}
                     list={getLocalizedPlural(this.state.altLabels, language)}
                     onChange={this.onAltLabelsChange}
                     validationMessage={renderValidationMessages(
@@ -388,6 +398,7 @@ export class TermMetadataEdit extends React.Component<
                 <Row>
                   <Col xs={12}>
                     <StringListEdit
+                      multilingual={true}
                       list={getLocalizedPlural(
                         this.state.hiddenLabels,
                         language
@@ -403,7 +414,25 @@ export class TermMetadataEdit extends React.Component<
                   onChange={this.onChange}
                   validationResult={validationScopeNote}
                 />
-
+                <Row>
+                  <Col xs={12}>
+                    <StringListEdit
+                      list={this.state.notations}
+                      onChange={(value) => this.setState({ notations: value })}
+                      i18nPrefix={"term.metadata.notation"}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <StringListEdit
+                      multilingual={true}
+                      list={getLocalizedPlural(this.state.examples, language)}
+                      onChange={this.onExamplesChange}
+                      i18nPrefix={"term.metadata.example"}
+                    />
+                  </Col>
+                </Row>
                 <Row>
                   <Col xs={12}>
                     <FormGroup>

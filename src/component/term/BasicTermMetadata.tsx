@@ -141,7 +141,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
       <Row>
         <Col xl={2} md={4}>
           <Label className="attribute-label mb-3">
-            {i18n("term.metadata.notation")}
+            {i18n("term.metadata.notation.label")}
           </Label>
         </Col>
         <Col xl={10} md={8}>
@@ -157,7 +157,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
       <Row>
         <Col xl={2} md={4}>
           <Label className="attribute-label mb-3">
-            {i18n("term.metadata.example")}
+            {i18n("term.metadata.example.label")}
           </Label>
         </Col>
         <Col xl={10} md={8}>

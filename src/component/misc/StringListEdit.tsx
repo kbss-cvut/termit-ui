@@ -19,6 +19,7 @@ import "./StringListEdit.scss";
 
 interface StringListEditProps extends HasI18n {
   list?: string[];
+  multilingual?: boolean;
   onChange: (list: string[]) => void;
   i18nPrefix: string;
   invalid?: boolean;
@@ -76,7 +77,11 @@ export class StringListEdit extends React.Component<
       <div className="form-group">
         <Label className="attribute-label">
           {this.getText("label")}
-          <MultilingualIcon id={"string-list-edit-multilingual" + Date.now()} />
+          {this.props.multilingual && (
+            <MultilingualIcon
+              id={"string-list-edit-multilingual" + Date.now()}
+            />
+          )}
           <HelpIcon
             id={"string-list-edit" + Date.now()}
             text={this.getText("help")}
@@ -90,7 +95,6 @@ export class StringListEdit extends React.Component<
             bsSize="sm"
             onKeyPress={this.onKeyPress}
             invalid={this.props.invalid}
-            placeholder={this.getText("placeholder")}
           />
           <InputGroupAddon addonType="append">
             <Button
@@ -100,10 +104,10 @@ export class StringListEdit extends React.Component<
               onClick={this.onAdd}
               className="string-list-add-button"
               disabled={this.state.inputValue.trim().length === 0}
-              title={this.getText("addButton.title")}
+              title={this.props.i18n("stringlistedit.button.add.tooltip")}
             >
               <GoPlus />
-              &nbsp;{this.getText("addButton.text")}
+              &nbsp;{this.props.i18n("stringlistedit.button.add")}
             </Button>
           </InputGroupAddon>
           {this.props.invalid && (
@@ -142,11 +146,14 @@ export class StringListEdit extends React.Component<
                 <BadgeButton
                   color="danger"
                   outline={true}
-                  title={this.getText("remove.title")}
+                  title={this.props.i18n(
+                    "stringlistedit.button.remove.tooltip"
+                  )}
                   className="ml-3"
                   onClick={this.onRemove.bind(null, s)}
                 >
-                  <FaTrashAlt /> {this.getText("remove.text")}
+                  <FaTrashAlt />{" "}
+                  {this.props.i18n("stringlistedit.button.remove")}
                 </BadgeButton>
               </td>
             </tr>
