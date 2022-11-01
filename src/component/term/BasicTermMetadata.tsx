@@ -1,5 +1,5 @@
 import * as React from "react";
-import Term, { termComparator, TermInfo } from "../../model/Term";
+import Term from "../../model/Term";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
@@ -41,41 +41,22 @@ function renderTermTypes(types?: string[]) {
   return renderItemList("term-metadata-types", renderItem, source);
 }
 
-function renderItemList<T extends Object>(
+function renderItemList(
   listId: string,
-  renderItem: (item: T) => JSX.Element,
-  items?: T[]
+  renderItem: (item: string) => JSX.Element,
+  items?: string[]
 ) {
   items = Utils.sanitizeArray(items);
   if (items.length === 0) {
     return null;
   }
+  items.sort();
   return (
     <List type="unstyled" id={listId} className="mb-3">
-      {items.map((item: T) => (
-        <li key={item.toString()}>{renderItem(item)}</li>
+      {items.map((item: string) => (
+        <li key={item}>{renderItem(item)}</li>
       ))}
     </List>
-  );
-}
-
-function renderTermList(
-  id: string,
-  language: string,
-  label: string,
-  items?: (Term | TermInfo)[],
-  vocabularyIri?: string
-) {
-  items = Utils.sanitizeArray(items);
-  items.sort(termComparator);
-  return (
-    <TermList
-      id={id}
-      terms={items}
-      language={language}
-      label={label}
-      vocabularyIri={vocabularyIri}
-    />
   );
 }
 
@@ -104,27 +85,27 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           {renderTermTypes(term.types)}
         </Col>
       </Row>
-      {renderTermList(
-        "term-metadata-exactmatches",
-        language,
-        i18n("term.metadata.exactMatches"),
-        term.exactMatchTerms,
-        term.vocabulary?.iri
-      )}
-      {renderTermList(
-        "term-metadata-parentterms",
-        language,
-        i18n("term.metadata.parent"),
-        term.parentTerms,
-        term.vocabulary?.iri
-      )}
-      {renderTermList(
-        "term-metadata-subterms",
-        language,
-        i18n("term.metadata.subTerms"),
-        term.subTerms,
-        term.vocabulary?.iri
-      )}
+      <TermList
+        id="term-metadata-exactmatches"
+        label={i18n("term.metadata.exactMatches")}
+        language={language}
+        vocabularyIri={term.vocabulary?.iri}
+        terms={term.exactMatchTerms}
+      />
+      <TermList
+        id="term-metadata-parentterms"
+        label={i18n("term.metadata.parent")}
+        language={language}
+        vocabularyIri={term.vocabulary?.iri}
+        terms={term.parentTerms}
+      />
+      <TermList
+        id="term-metadata-subterms"
+        label={i18n("term.metadata.subTerms")}
+        language={language}
+        vocabularyIri={term.vocabulary?.iri}
+        terms={term.subTerms}
+      />
       <RelatedTermsList term={term} language={language} />
       <Row>
         <Col xl={2} md={4}>
