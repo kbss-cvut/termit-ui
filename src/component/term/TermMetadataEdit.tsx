@@ -130,34 +130,41 @@ export class TermMetadataEdit extends React.Component<
   };
 
   public onHiddenLabelsChange = (hiddenLabels: string[]) => {
-    const language = this.props.language;
-    const change = {};
-    change[language] = hiddenLabels;
     this.setState({
-      hiddenLabels: Object.assign({}, this.state.hiddenLabels, change),
+      hiddenLabels: {
+        ...this.state.hiddenLabels,
+        ...this.pluralMultilingualChange(hiddenLabels),
+      },
     });
   };
 
   public onAltLabelsChange = (altLabels: string[]) => {
-    const language = this.props.language;
-    const change = {};
-    change[language] = altLabels;
     this.setState({
-      altLabels: Object.assign({}, this.state.altLabels, change),
+      altLabels: {
+        ...this.state.altLabels,
+        ...this.pluralMultilingualChange(altLabels),
+      },
     });
   };
 
   public onExamplesChange = (examples: string[]) => {
-    const language = this.props.language;
-    const change = {};
-    change[language] = examples;
     this.setState({
-      examples: Object.assign({}, this.state.examples, change),
+      examples: {
+        ...this.state.examples,
+        ...this.pluralMultilingualChange(examples),
+      },
     });
   };
 
-  private onTypesChange = (newTypes: string[]) => {
-    this.setState({ types: newTypes });
+  private pluralMultilingualChange(newValue: string[]) {
+    const language = this.props.language;
+    const attChange = {};
+    attChange[language] = newValue;
+    return attChange;
+  }
+
+  private onTypesChange = (types: string[]) => {
+    this.setState({ types });
   };
 
   public onParentChange = (parentTerms: Term[]) => {
