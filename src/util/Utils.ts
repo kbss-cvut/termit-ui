@@ -305,6 +305,17 @@ const Utils = {
   isValidEmail(str: string): boolean {
     return EMAIL_REGEX.test(str);
   },
+
+  /**
+   * Creates an object with a single attribute with the specified name and the specified value.
+   * @param attName Attribute name
+   * @param value Attribute value
+   */
+  createDynamicAttributeChange<T>(attName: string, value: T) {
+    const change = {};
+    change[attName] = value;
+    return change;
+  },
 };
 
 export default Utils;

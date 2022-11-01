@@ -130,25 +130,38 @@ export class TermMetadataEdit extends React.Component<
   };
 
   public onHiddenLabelsChange = (hiddenLabels: string[]) => {
-    const language = this.props.language;
-    const change = {};
-    change[language] = hiddenLabels;
     this.setState({
-      hiddenLabels: Object.assign({}, this.state.hiddenLabels, change),
+      hiddenLabels: {
+        ...this.state.hiddenLabels,
+        ...this.pluralMultilingualChange(hiddenLabels),
+      },
     });
   };
 
   public onAltLabelsChange = (altLabels: string[]) => {
-    const language = this.props.language;
-    const change = {};
-    change[language] = altLabels;
     this.setState({
-      altLabels: Object.assign({}, this.state.altLabels, change),
+      altLabels: {
+        ...this.state.altLabels,
+        ...this.pluralMultilingualChange(altLabels),
+      },
     });
   };
 
-  private onTypesChange = (newTypes: string[]) => {
-    this.setState({ types: newTypes });
+  public onExamplesChange = (examples: string[]) => {
+    this.setState({
+      examples: {
+        ...this.state.examples,
+        ...this.pluralMultilingualChange(examples),
+      },
+    });
+  };
+
+  private pluralMultilingualChange(newValue: string[]) {
+    return Utils.createDynamicAttributeChange(this.props.language, newValue);
+  }
+
+  private onTypesChange = (types: string[]) => {
+    this.setState({ types });
   };
 
   public onParentChange = (parentTerms: Term[]) => {
@@ -304,6 +317,7 @@ export class TermMetadataEdit extends React.Component<
               <Row>
                 <Col xs={12}>
                   <StringListEdit
+                    multilingual={true}
                     list={getLocalizedPlural(this.state.altLabels, language)}
                     onChange={this.onAltLabelsChange}
                     validationMessage={renderValidationMessages(
@@ -388,6 +402,7 @@ export class TermMetadataEdit extends React.Component<
                 <Row>
                   <Col xs={12}>
                     <StringListEdit
+                      multilingual={true}
                       list={getLocalizedPlural(
                         this.state.hiddenLabels,
                         language
@@ -403,7 +418,25 @@ export class TermMetadataEdit extends React.Component<
                   onChange={this.onChange}
                   validationResult={validationScopeNote}
                 />
-
+                <Row>
+                  <Col xs={12}>
+                    <StringListEdit
+                      list={this.state.notations}
+                      onChange={(value) => this.setState({ notations: value })}
+                      i18nPrefix={"term.metadata.notation"}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <StringListEdit
+                      multilingual={true}
+                      list={getLocalizedPlural(this.state.examples, language)}
+                      onChange={this.onExamplesChange}
+                      i18nPrefix={"term.metadata.example"}
+                    />
+                  </Col>
+                </Row>
                 <Row>
                   <Col xs={12}>
                     <FormGroup>

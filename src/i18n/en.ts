@@ -370,24 +370,11 @@ const en = {
     "term.metadata.types": "Type",
     "term.metadata.source": "Source",
     "term.metadata.altLabels.label": "Synonyms",
-    "term.metadata.altLabels.placeholder":
-      "Enter a new synonym and press 'Add'",
-    "term.metadata.altLabels.addButton.text": "Add",
-    "term.metadata.altLabels.addButton.title": "Click to add the synonym",
-    "term.metadata.altLabels.remove.title": "Remove synonym",
-    "term.metadata.altLabels.remove.text": "Remove",
     "term.metadata.altLabels.help":
       "(Optional) synonyms of the label. Synonyms can be contextual - e.g. term " +
       "named 'Organization address' can have a synonym 'Address', which is used in a specific context only " +
       "(e.g. in a form gathering information about an organization). ",
     "term.metadata.hiddenLabels.label": "Search strings",
-    "term.metadata.hiddenLabels.placeholder":
-      "Enter a new search string and press 'Add'",
-    "term.metadata.hiddenLabels.addButton.text": "Add",
-    "term.metadata.hiddenLabels.addButton.title":
-      "Click to add the search string",
-    "term.metadata.hiddenLabels.remove.title": "Remove search string",
-    "term.metadata.hiddenLabels.remove.text": "Remove",
     "term.metadata.hiddenLabels.help":
       "(Optional) search strings, which are not meant for visual presentation of terms and" +
       " serve mainly for search engines. Search strings do not need to be (contextual) synonyms to the label. E.g. " +
@@ -399,9 +386,6 @@ const en = {
     "term.metadata.multipleSources.message":
       "Term has multiple sources. Upon save, only the current value will be saved and the remaining will be deleted.",
     "term.metadata.source.add.placeholder": "Add source",
-    "term.metadata.source.add.placeholder.text": "Add",
-    "term.metadata.source.remove.title": "Remove source",
-    "term.metadata.source.remove.text": "Remove",
     "term.metadata.subterm.link": "View detail of this term",
     "term.metadata.related.title": "Related terms",
     "term.metadata.related.help":
@@ -429,6 +413,13 @@ const en = {
       "Draft term is not ready to be used yet, while Confirmed term is.",
     "term.metadata.status.confirmed.edit.title":
       "Confirmed term cannot be edited. Switch it back to Draft to edit.",
+    "term.metadata.notation.label": "Notation",
+    "term.metadata.notation.help":
+      "(Optional) A notation is a string of characters such as 'UBA' or 'L2-3' used to uniquely identify a term within the scope of a given glossary. " +
+      "A notation is different from a lexical label in that a notation is not normally recognizable as a word or sequence of words in any natural language.",
+    "term.metadata.example.label": "Example",
+    "term.metadata.example.help":
+      "(Optional) Supplies an example of the use of a concept.",
     "term.metadata.types.select.placeholder": "Select type",
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",
@@ -676,6 +667,12 @@ const en = {
     "table.paging.last.tooltip": "Go to the last page",
     "table.paging.pageSize.select": "Show {pageSize} items per page",
     "table.paging.pageSize.select.all": "Show all items",
+
+    "stringlistedit.button.add": "Add",
+    "stringlistedit.button.add.tooltip":
+      "Click to add the entered value to the list",
+    "stringlistedit.button.remove": "Remove",
+    "stringlistedit.button.remove.tooltip": "Remove value",
 
     "public.nav.user": "User not logged in. Click to log in.",
     "public.dashboard.title": "Welcome to TermIt!",

@@ -381,24 +381,11 @@ const cs = {
     "term.metadata.status": "Stav pojmu",
     "term.metadata.source": "Zdroj",
     "term.metadata.altLabels.label": "Synonyma",
-    "term.metadata.altLabels.placeholder":
-      'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
-    "term.metadata.altLabels.addButton.text": "Přidat",
-    "term.metadata.altLabels.addButton.title": "Kliknutím přidáte synonymum",
-    "term.metadata.altLabels.remove.title": "Odebrat synonymum",
-    "term.metadata.altLabels.remove.text": "Odebrat",
     "term.metadata.altLabels.help":
       "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
       "s názvem 'Adresa organizace' může mít synonymum 'Adresa', které se však použije jen v určitém kontextu " +
       "(např. ve formuláři, ve kterém se vyplňují informace o organizaci). ",
     "term.metadata.hiddenLabels.label": "Vyhledávací texty",
-    "term.metadata.hiddenLabels.placeholder":
-      'Zadejte nový vyhledávací text a stiskněte tlačítko "Přidat"',
-    "term.metadata.hiddenLabels.addButton.text": "Přidat",
-    "term.metadata.hiddenLabels.addButton.title":
-      "Kliknutím přidáte hodnotu vyhledávacího textu",
-    "term.metadata.hiddenLabels.remove.title": "Odebrat vyhledávací text",
-    "term.metadata.hiddenLabels.remove.text": "Odebrat",
     "term.metadata.hiddenLabels.help":
       "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
       " slouží zejména pro vyhledávání. Nemusí se jednat (ani kontextuální) synonyma k názvu pojmu. Např. " +
@@ -408,10 +395,6 @@ const cs = {
       'Pojem s názvem "{label}" již v tomto slovníku existuje',
     "term.metadata.multipleSources.message":
       "Pojem má více zdrojů, po uložení pojmu bude pouze aktuálně vyplněný zdroj a ostatní budou smazány",
-    "term.metadata.source.add.placeholder": "Nový zdroj pojmu",
-    "term.metadata.source.add.placeholder.text": "Přidat",
-    "term.metadata.source.remove.title": "Odebrat zdroj",
-    "term.metadata.source.remove.text": "Odebrat",
     "term.metadata.subterm.link": "Zobrazit detail tohoto pojmu",
     "term.metadata.related.title": "Související pojmy",
     "term.metadata.related.help":
@@ -439,6 +422,12 @@ const cs = {
       "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
     "term.metadata.status.confirmed.edit.title":
       "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
+    "term.metadata.notation.label": "Notace",
+    "term.metadata.notation.help":
+      "(Nepovinný) Notace je řetězec znaků, jako např. 'UBA' or 'L2-3', užívaný k identifikaci pojmu v rámci daného glosáře. " +
+      "Notace se liší od názvu pojmu tím, že se obvykle nejedná o slovo či slova vybraného jazyka.",
+    "term.metadata.example.label": "Příklady",
+    "term.metadata.example.help": "(Nepovinný) Příklad použití pojmu.",
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",
@@ -688,6 +677,12 @@ const cs = {
     "table.paging.last.tooltip": "Poslední strana",
     "table.paging.pageSize.select": "Zobrazit {pageSize} záznamů na stránku",
     "table.paging.pageSize.select.all": "Zobrazit všechny záznamy",
+
+    "stringlistedit.button.add": "Přidat",
+    "stringlistedit.button.add.tooltip":
+      "Kliknutím přidáte zadanou hodnotu do seznamu",
+    "stringlistedit.button.remove": "Odebrat",
+    "stringlistedit.button.remove.tooltip": "Odebrat hodnotu",
 
     "public.nav.user": "Uživatel nepřihlášen. Klikněte pro přihlášení.",
     "public.dashboard.title": "Vítejte v TermIt!",
