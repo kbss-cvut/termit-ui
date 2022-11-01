@@ -83,22 +83,38 @@ export class TermMetadataCreateForm extends React.Component<
   };
 
   public onAltLabelsChange = (altLabels: string[]) => {
-    const language = this.props.language;
-    const change = {};
-    change[language] = altLabels;
     this.props.onChange({
-      altLabels: Object.assign({}, this.props.termData.altLabels, change),
+      altLabels: {
+        ...this.props.termData.examples,
+        ...this.pluralMultilingualChange(altLabels),
+      },
     });
   };
 
   public onHiddenLabelsChange = (hiddenLabels: string[]) => {
-    const language = this.props.language;
-    const change = {};
-    change[language] = hiddenLabels;
     this.props.onChange({
-      hiddenLabels: Object.assign({}, this.props.termData.hiddenLabels, change),
+      hiddenLabels: {
+        ...this.props.termData.examples,
+        ...this.pluralMultilingualChange(hiddenLabels),
+      },
     });
   };
+
+  public onExamplesChange = (examples: string[]) => {
+    this.props.onChange({
+      examples: {
+        ...this.props.termData.examples,
+        ...this.pluralMultilingualChange(examples),
+      },
+    });
+  };
+
+  private pluralMultilingualChange(newValue: string[]) {
+    const language = this.props.language;
+    const attChange = {};
+    attChange[language] = newValue;
+    return attChange;
+  }
 
   private onIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setIdentifier(e.currentTarget.value, () =>
@@ -130,6 +146,10 @@ export class TermMetadataCreateForm extends React.Component<
 
   public onParentSelect = (parentTerms: Term[]) => {
     this.props.onChange({ parentTerms });
+  };
+
+  public onNotationsChange = (notations: string[]) => {
+    this.props.onChange({ notations });
   };
 
   public render() {
@@ -167,6 +187,7 @@ export class TermMetadataCreateForm extends React.Component<
         <Row>
           <Col xs={12}>
             <StringListEdit
+              multilingual={true}
               list={getLocalizedPlural(termData.altLabels, language)}
               onChange={this.onAltLabelsChange}
               i18nPrefix={"term.metadata.altLabels"}
@@ -215,9 +236,30 @@ export class TermMetadataCreateForm extends React.Component<
           <Row>
             <Col xs={12}>
               <StringListEdit
+                multilingual={true}
                 list={getLocalizedPlural(termData.hiddenLabels, language)}
                 onChange={this.onHiddenLabelsChange}
                 i18nPrefix={"term.metadata.hiddenLabels"}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <StringListEdit
+                multilingual={false}
+                list={termData.notations}
+                onChange={this.onNotationsChange}
+                i18nPrefix={"term.metadata.notation"}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <StringListEdit
+                multilingual={true}
+                list={getLocalizedPlural(termData.examples, language)}
+                onChange={this.onExamplesChange}
+                i18nPrefix={"term.metadata.example"}
               />
             </Col>
           </Row>
