@@ -238,4 +238,12 @@ describe("Utils", () => {
       expect(Utils.isValidEmail("test-user")).toBeFalsy();
     });
   });
+
+  describe("createDynamicAttributeChange", () => {
+    it("returns object with specified attribute name and value", () => {
+      const value = Generator.generateUri();
+      const result = Utils.createDynamicAttributeChange("testAtt", value);
+      expect(result).toEqual({ testAtt: value });
+    });
+  });
 });

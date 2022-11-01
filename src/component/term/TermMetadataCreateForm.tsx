@@ -110,10 +110,7 @@ export class TermMetadataCreateForm extends React.Component<
   };
 
   private pluralMultilingualChange(newValue: string[]) {
-    const language = this.props.language;
-    const attChange = {};
-    attChange[language] = newValue;
-    return attChange;
+    return Utils.createDynamicAttributeChange(this.props.language, newValue);
   }
 
   private onIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
