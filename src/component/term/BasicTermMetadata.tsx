@@ -110,18 +110,6 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
       <Row>
         <Col xl={2} md={4}>
           <Label className="attribute-label mb-3">
-            {i18n("term.metadata.comment")}
-          </Label>
-        </Col>
-        <Col xl={10} md={8}>
-          <MarkdownView id="term-metadata-comment">
-            {getLocalizedOrDefault(term.scopeNote, "", language)}
-          </MarkdownView>
-        </Col>
-      </Row>
-      <Row>
-        <Col xl={2} md={4}>
-          <Label className="attribute-label mb-3">
             {i18n("term.metadata.notation.label")}
           </Label>
         </Col>
@@ -133,6 +121,18 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
             ),
             term.notations
           )}
+        </Col>
+      </Row>
+      <Row>
+        <Col xl={2} md={4}>
+          <Label className="attribute-label mb-3">
+            {i18n("term.metadata.comment")}
+          </Label>
+        </Col>
+        <Col xl={10} md={8}>
+          <MarkdownView id="term-metadata-comment">
+            {getLocalizedOrDefault(term.scopeNote, "", language)}
+          </MarkdownView>
         </Col>
       </Row>
       <Row>

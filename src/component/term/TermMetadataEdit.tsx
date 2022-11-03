@@ -412,12 +412,6 @@ export class TermMetadataEdit extends React.Component<
                     />
                   </Col>
                 </Row>
-                <TermScopeNoteEdit
-                  term={this.state}
-                  language={language}
-                  onChange={this.onChange}
-                  validationResult={validationScopeNote}
-                />
                 <Row>
                   <Col xs={12}>
                     <StringListEdit
@@ -427,6 +421,12 @@ export class TermMetadataEdit extends React.Component<
                     />
                   </Col>
                 </Row>
+                <TermScopeNoteEdit
+                  term={this.state}
+                  language={language}
+                  onChange={this.onChange}
+                  validationResult={validationScopeNote}
+                />
                 <Row>
                   <Col xs={12}>
                     <StringListEdit
