@@ -9,10 +9,48 @@ interface TermChangeFrequencyUIProps {
   records: AggregatedChangeInfo[] | null;
 }
 
+/**
+ * Partial specification of ApexCharts locale (https://apexcharts.com/docs/localization/).
+ * Should be enough for our case.
+ */
+const CZ_LOCALE = {
+  name: "cs-CZ",
+  options: {
+    months: [
+      "Leden",
+      "Únor",
+      "Březen",
+      "Duben",
+      "Květen",
+      "Červen",
+      "Červenec",
+      "Srpen",
+      "Září",
+      "Říjen",
+      "Listopad",
+      "Prosinec",
+    ],
+    shortMonths: [
+      "Led",
+      "Úno",
+      "Bře",
+      "Dub",
+      "Kvě",
+      "Čvn",
+      "Čvc",
+      "Srp",
+      "Zář",
+      "Říj",
+      "Lis",
+      "Pro",
+    ],
+  },
+};
+
 const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   records,
 }) => {
-  const { i18n } = useI18n();
+  const { i18n, locale } = useI18n();
   if (!records) {
     return <div className="additional-metadata-container">&nbsp;</div>;
   }
@@ -28,7 +66,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
     );
   }
 
-  const dates = new Array(new Set(records.map((r) => r.getDate())));
+  const dates = Array.from(new Set(records.map((r) => r.getDate())));
   const termCreations = records.filter(
     (r) => r.types.indexOf(VocabularyUtils.PERSIST_EVENT) !== -1
   );
@@ -38,6 +76,8 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
 
   const options = {
     chart: {
+      defaultLocale: locale,
+      locales: [CZ_LOCALE, { name: "en" }],
       id: "vocabularyFrequency",
       stacked: true,
       zoom: {

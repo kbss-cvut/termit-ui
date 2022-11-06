@@ -1,12 +1,13 @@
 import * as React from "react";
-import Term, { TermInfo } from "../../model/Term";
+import Term, { termComparator, TermInfo } from "../../model/Term";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import TermLink from "./TermLink";
 import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
+import Utils from "../../util/Utils";
 
 interface TermListProps {
-  terms: (Term | TermInfo)[];
+  terms?: (Term | TermInfo)[];
   label: string;
   id: string;
   vocabularyIri?: string;
@@ -18,6 +19,8 @@ interface TermListProps {
 const TermList: React.FC<TermListProps> = (props) => {
   const { terms, label, id, language, vocabularyIri, addonBeforeRenderer } =
     props;
+  const toRender = Utils.sanitizeArray(terms);
+  toRender.sort(termComparator);
   return (
     <Row>
       <Col xl={2} md={4}>
@@ -25,7 +28,7 @@ const TermList: React.FC<TermListProps> = (props) => {
       </Col>
       <Col xl={10} md={8}>
         <List type="unstyled" id={id} className="mb-3">
-          {terms.map((item, index) => (
+          {toRender.map((item, index) => (
             <li key={`${item.iri}-${index}`}>
               {addonBeforeRenderer && addonBeforeRenderer(item)}
               <TermLink term={item} language={language} />

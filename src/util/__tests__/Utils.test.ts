@@ -231,4 +231,19 @@ describe("Utils", () => {
       expect(result(nOne)).toBeFalsy();
     });
   });
+
+  describe("isValidEmail", () => {
+    it("returns true when specified string has email address form", () => {
+      expect(Utils.isValidEmail("test@example.org")).toBeTruthy();
+      expect(Utils.isValidEmail("test-user")).toBeFalsy();
+    });
+  });
+
+  describe("createDynamicAttributeChange", () => {
+    it("returns object with specified attribute name and value", () => {
+      const value = Generator.generateUri();
+      const result = Utils.createDynamicAttributeChange("testAtt", value);
+      expect(result).toEqual({ testAtt: value });
+    });
+  });
 });

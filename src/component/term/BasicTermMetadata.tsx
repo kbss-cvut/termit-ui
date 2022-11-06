@@ -1,5 +1,5 @@
 import * as React from "react";
-import Term, { termComparator, TermInfo } from "../../model/Term";
+import Term from "../../model/Term";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
@@ -32,47 +32,31 @@ function renderTermTypes(types?: string[]) {
       !t.startsWith(OWL.namespace)
   );
 
-  if (source.length === 0) {
-    return null;
-  }
-
   const renderItem = (item: string) =>
     Utils.isLink(item) ? (
       <OutgoingLink iri={item} label={<AssetLabel iri={item} />} />
     ) : (
       <p>{item}</p>
     );
-
-  if (source.length === 1) {
-    return renderItem(source[0]);
-  } else {
-    return (
-      <List type="unstyled" id="term-metadata-types" className="mb-3">
-        {source.map((item: string) => (
-          <li key={item}>{renderItem(item)}</li>
-        ))}
-      </List>
-    );
-  }
+  return renderItemList("term-metadata-types", renderItem, source);
 }
 
-function renderTermList(
-  id: string,
-  language: string,
-  label: string,
-  items?: (Term | TermInfo)[],
-  vocabularyIri?: string
+function renderItemList(
+  listId: string,
+  renderItem: (item: string) => JSX.Element,
+  items?: string[]
 ) {
   items = Utils.sanitizeArray(items);
-  items.sort(termComparator);
+  if (items.length === 0) {
+    return null;
+  }
+  items.sort();
   return (
-    <TermList
-      id={id}
-      terms={items}
-      language={language}
-      label={label}
-      vocabularyIri={vocabularyIri}
-    />
+    <List type="unstyled" id={listId} className="mb-3">
+      {items.map((item: string) => (
+        <li key={item}>{renderItem(item)}</li>
+      ))}
+    </List>
   );
 }
 
@@ -101,28 +85,44 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           {renderTermTypes(term.types)}
         </Col>
       </Row>
-      {renderTermList(
-        "term-metadata-exactmatches",
-        language,
-        i18n("term.metadata.exactMatches"),
-        term.exactMatchTerms,
-        term.vocabulary?.iri
-      )}
-      {renderTermList(
-        "term-metadata-parentterms",
-        language,
-        i18n("term.metadata.parent"),
-        term.parentTerms,
-        term.vocabulary?.iri
-      )}
-      {renderTermList(
-        "term-metadata-subterms",
-        language,
-        i18n("term.metadata.subTerms"),
-        term.subTerms,
-        term.vocabulary?.iri
-      )}
+      <TermList
+        id="term-metadata-exactmatches"
+        label={i18n("term.metadata.exactMatches")}
+        language={language}
+        vocabularyIri={term.vocabulary?.iri}
+        terms={term.exactMatchTerms}
+      />
+      <TermList
+        id="term-metadata-parentterms"
+        label={i18n("term.metadata.parent")}
+        language={language}
+        vocabularyIri={term.vocabulary?.iri}
+        terms={term.parentTerms}
+      />
+      <TermList
+        id="term-metadata-subterms"
+        label={i18n("term.metadata.subTerms")}
+        language={language}
+        vocabularyIri={term.vocabulary?.iri}
+        terms={term.subTerms}
+      />
       <RelatedTermsList term={term} language={language} />
+      <Row>
+        <Col xl={2} md={4}>
+          <Label className="attribute-label mb-3">
+            {i18n("term.metadata.notation.label")}
+          </Label>
+        </Col>
+        <Col xl={10} md={8}>
+          {renderItemList(
+            "term-metadata-notation",
+            (notation: string) => (
+              <>{notation}</>
+            ),
+            term.notations
+          )}
+        </Col>
+      </Row>
       <Row>
         <Col xl={2} md={4}>
           <Label className="attribute-label mb-3">
@@ -133,6 +133,22 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           <MarkdownView id="term-metadata-comment">
             {getLocalizedOrDefault(term.scopeNote, "", language)}
           </MarkdownView>
+        </Col>
+      </Row>
+      <Row>
+        <Col xl={2} md={4}>
+          <Label className="attribute-label mb-3">
+            {i18n("term.metadata.example.label")}
+          </Label>
+        </Col>
+        <Col xl={10} md={8}>
+          {renderItemList(
+            "term-metadata-example",
+            (ex: string) => (
+              <>{ex}</>
+            ),
+            (term.examples || {})[language]
+          )}
         </Col>
       </Row>
       <Row>

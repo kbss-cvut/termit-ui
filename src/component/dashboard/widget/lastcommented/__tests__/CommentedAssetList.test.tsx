@@ -11,6 +11,12 @@ import {
 } from "../CommentedAssetList";
 import Comment from "../../../../../model/Comment";
 import VocabularyUtils from "../../../../../util/VocabularyUtils";
+import * as Redux from "react-redux";
+
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
 
 describe("CommentedAssetList", () => {
   let user: User;
@@ -20,14 +26,10 @@ describe("CommentedAssetList", () => {
   });
 
   it("does not render info message during loading", () => {
+    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <CommentedAssetList
-          user={user}
-          assets={[]}
-          loading={true}
-          {...intlFunctions()}
-        />
+        <CommentedAssetList assets={null} {...intlFunctions()} />
       </MemoryRouter>
     );
     const info = wrapper.find(".italics");
@@ -35,14 +37,10 @@ describe("CommentedAssetList", () => {
   });
 
   it("renders info message when no assets were found", () => {
+    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <CommentedAssetList
-          user={user}
-          assets={[]}
-          loading={false}
-          {...intlFunctions()}
-        />
+        <CommentedAssetList assets={[]} {...intlFunctions()} />
       </MemoryRouter>
     );
     const info = wrapper.find(".italics");
@@ -54,6 +52,7 @@ describe("CommentedAssetList", () => {
 
   describe("comment content cutting", () => {
     it("renders substring of the comment text if its length exceeds defined threshold", () => {
+      jest.spyOn(Redux, "useSelector").mockReturnValue(user);
       let content = "a";
       while (content.length < DISPLAY_LENGTH_THRESHOLD + 10) {
         content += "a";
@@ -62,7 +61,6 @@ describe("CommentedAssetList", () => {
       const wrapper = mountWithIntl(
         <MemoryRouter>
           <CommentedAssetList
-            user={user}
             assets={[
               {
                 lastComment: comment,
@@ -70,7 +68,6 @@ describe("CommentedAssetList", () => {
                 type: VocabularyUtils.COMMENT,
               },
             ]}
-            loading={false}
             {...intlFunctions()}
           />
         </MemoryRouter>
@@ -91,6 +88,7 @@ describe("CommentedAssetList", () => {
     }
 
     it("renders substring of the comment text until last possible space if its length exceeds defined threshold", () => {
+      jest.spyOn(Redux, "useSelector").mockReturnValue(user);
       let content = "auto";
       while (content.length < DISPLAY_LENGTH_THRESHOLD + 10) {
         content += " auto";
@@ -99,7 +97,6 @@ describe("CommentedAssetList", () => {
       const wrapper = mountWithIntl(
         <MemoryRouter>
           <CommentedAssetList
-            user={user}
             assets={[
               {
                 lastComment: comment,
@@ -107,7 +104,6 @@ describe("CommentedAssetList", () => {
                 type: VocabularyUtils.COMMENT,
               },
             ]}
-            loading={false}
             {...intlFunctions()}
           />
         </MemoryRouter>
@@ -117,11 +113,11 @@ describe("CommentedAssetList", () => {
     });
 
     it("does not substring comment content when it fits display length threshold", () => {
+      jest.spyOn(Redux, "useSelector").mockReturnValue(user);
       const comment = createComment("test comment 12345");
       const wrapper = mountWithIntl(
         <MemoryRouter>
           <CommentedAssetList
-            user={user}
             assets={[
               {
                 lastComment: comment,
@@ -129,7 +125,6 @@ describe("CommentedAssetList", () => {
                 type: VocabularyUtils.COMMENT,
               },
             ]}
-            loading={false}
             {...intlFunctions()}
           />
         </MemoryRouter>

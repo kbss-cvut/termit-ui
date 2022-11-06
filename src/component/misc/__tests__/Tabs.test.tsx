@@ -2,13 +2,13 @@ import * as React from "react";
 import { ReactElement } from "react";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { Tabs } from "../Tabs";
+import Tabs from "../Tabs";
 
-const Component: React.SFC = () => <div>Test</div>;
+const Component: React.FC = () => <div>Test</div>;
 
 describe("Tabs Test", () => {
   let change: () => void;
-  let tabs: ReactElement<any>;
+  let tabs: ReactElement;
 
   beforeEach(() => {
     change = jest.fn();

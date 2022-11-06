@@ -1,3 +1,12 @@
+#### Version 2.14.0
+
+- Allow paging recent comments and changes on dashboard, highlight those new since last visit.
+- Show change history of a snapshot.
+- Send weekly notifications of new and updated comments to admins and vocabulary creators.
+- Add support for exporting glossary in RDF/XML.
+- Extend basic term attributes with skos:notation and skos:example.
+- Harmonize CSV/Excel export with basic SKOS export - exported attributes.
+
 #### Version 2.13.0
 
 - Implemented user interface for viewing and management of vocabulary and term snapshots.

@@ -14,9 +14,7 @@ import {
   loadFileContent,
   loadHistory,
   loadImportedVocabularies,
-  loadLastEditedAssets,
   loadLatestTextAnalysisRecord,
-  loadMyAssets,
   loadNews,
   loadResource,
   loadTerms,
@@ -68,7 +66,6 @@ import {
 } from "../../model/TextAnalysisRecord";
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
-import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
 import NotificationType from "../../model/NotificationType";
 import { langString } from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
@@ -1292,179 +1289,6 @@ describe("Async actions", () => {
         ).toBeDefined();
         expect(res).not.toBeNull();
         expect(res).toBeInstanceOf(TermItFile);
-      });
-    });
-  });
-
-  describe("loadLastEditedAssets", () => {
-    it("returns correct instances of received asset data", () => {
-      const data = [
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2000/01/rdf-schema#label": "Test file",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "@type": [VocabularyUtils.FILE, VocabularyUtils.RESOURCE],
-        },
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2000/01/rdf-schema#label": "Test vocabulary",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "@type": [VocabularyUtils.VOCABULARY],
-        },
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2004/02/skos/core#prefLabel": "Test term",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "@type": [VocabularyUtils.TERM],
-        },
-      ];
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadLastEditedAssets())
-      ).then((result: RecentlyModifiedAsset[]) => {
-        expect(Ajax.get).toHaveBeenCalledWith(
-          Constants.API_PREFIX + "/assets/last-edited",
-          param("limit", "5")
-        );
-        expect(result.length).toEqual(data.length);
-        result.forEach((r) => expect(r).toBeInstanceOf(RecentlyModifiedAsset));
-      });
-    });
-
-    it("handles correctly label of terms being skos:prefLabel instead of rdsf:label", () => {
-      const data = [
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2004/02/skos/core#prefLabel": "Test term",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
-          "http://www.w3.org/2004/02/skos/core#broader": [
-            {
-              "@id": Generator.generateUri(),
-              "http://www.w3.org/2004/02/skos/core#prefLabel":
-                "Test parent one",
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-                {
-                  "@id": Generator.generateUri(),
-                },
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-              "http://purl.org/dc/terms/modified": Date.now(),
-              "@type": [VocabularyUtils.TERM],
-            },
-            {
-              "@id": Generator.generateUri(),
-              "http://www.w3.org/2004/02/skos/core#prefLabel":
-                "Test parent two",
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-                {
-                  "@id": Generator.generateUri(),
-                },
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-              "http://purl.org/dc/terms/modified": Date.now(),
-              "@type": [VocabularyUtils.TERM],
-            },
-          ],
-          "@type": [VocabularyUtils.TERM],
-        },
-      ];
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadLastEditedAssets())
-      ).then((result: RecentlyModifiedAsset[]) => {
-        expect(Ajax.get).toHaveBeenCalledWith(
-          Constants.API_PREFIX + "/assets/last-edited",
-          param("limit", "5")
-        );
-        result.forEach((r) => expect(r).toBeInstanceOf(RecentlyModifiedAsset));
-      });
-    });
-  });
-
-  describe("loadMyAssets", () => {
-    it("returns correct instances of received asset data", () => {
-      const data = [
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2000/01/rdf-schema#label": "Test file",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "@type": [VocabularyUtils.FILE, VocabularyUtils.RESOURCE],
-        },
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2000/01/rdf-schema#label": "Test vocabulary",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "@type": [VocabularyUtils.VOCABULARY],
-        },
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2000/01/rdf-schema#label": "Test term",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
-          "@type": [VocabularyUtils.TERM],
-        },
-      ];
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadMyAssets())
-      ).then((result: RecentlyModifiedAsset[]) => {
-        expect(Ajax.get).toHaveBeenCalledWith(
-          Constants.API_PREFIX + "/assets/last-edited",
-          param("forCurrentUserOnly", "true").param("limit", "5")
-        );
-        expect(result.length).toEqual(data.length);
-        result.forEach((r) => expect(r).toBeInstanceOf(RecentlyModifiedAsset));
-      });
-    });
-
-    it("correctly handles labels of vocabularies and resources and pref label of terms", () => {
-      const vocLabel = "Test vocabulary";
-      const termLabel = "Test term";
-      const data = [
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2000/01/rdf-schema#label": vocLabel,
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "@type": [VocabularyUtils.VOCABULARY],
-        },
-        {
-          "@id": Generator.generateUri(),
-          "http://www.w3.org/2000/01/rdf-schema#label": termLabel,
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
-          "http://purl.org/dc/terms/modified": Date.now(),
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
-          "@type": [VocabularyUtils.TERM],
-        },
-      ];
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadMyAssets())
-      ).then((result: RecentlyModifiedAsset[]) => {
-        expect(Ajax.get).toHaveBeenCalledWith(
-          Constants.API_PREFIX + "/assets/last-edited",
-          param("forCurrentUserOnly", "true").param("limit", "5")
-        );
-        expect(result.length).toEqual(data.length);
-        expect(result[0].label).toEqual(vocLabel);
-        expect(result[1].label).toEqual(termLabel);
       });
     });
   });

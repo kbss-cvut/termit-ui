@@ -12,6 +12,7 @@ import AsyncActionStatus from "../../action/AsyncActionStatus";
 import { injectIntl } from "react-intl";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import ValidationResult, { Severity } from "../../model/form/ValidationResult";
+import Utils from "../../util/Utils";
 
 interface RegistrationFormProps extends HasI18n {
   loading: boolean;
@@ -86,6 +87,12 @@ export class RegistrationForm extends React.Component<
     if (username.trim().length === 0) {
       return ValidationResult.BLOCKER;
     }
+    if (!Utils.isValidEmail(username)) {
+      return new ValidationResult(
+        Severity.BLOCKER,
+        this.props.i18n("register.username.notValidEmail")
+      );
+    }
     if (usernameExists) {
       return new ValidationResult(
         Severity.BLOCKER,
@@ -145,7 +152,6 @@ export class RegistrationForm extends React.Component<
                 onChange={this.onChange}
                 validation={this.validateFirstName()}
                 autoFocus={true}
-                placeholder={i18n("register.first-name.placeholder")}
               />
             </Col>
             <Col md={6}>
@@ -158,7 +164,6 @@ export class RegistrationForm extends React.Component<
                 value={this.state.lastName}
                 onChange={this.onChange}
                 validation={this.validateLastName()}
-                placeholder={i18n("register.last-name.placeholder")}
               />
             </Col>
           </Row>
@@ -171,7 +176,6 @@ export class RegistrationForm extends React.Component<
             labelDirection={LabelDirection.vertical}
             onChange={this.onChange}
             value={this.state.password}
-            placeholder={i18n("register.password.placeholder")}
             validation={this.validatePassword()}
           />
 
@@ -221,7 +225,7 @@ export class RegistrationForm extends React.Component<
         labelDirection={LabelDirection.vertical}
         value={this.state.username}
         onChange={this.onUsernameChange}
-        placeholder={i18n("register.username.placeholder")}
+        hint={i18n("register.username.help")}
         validation={this.validateUsername()}
       />
     );
@@ -247,7 +251,6 @@ export class RegistrationForm extends React.Component<
         onKeyPress={this.onKeyPress}
         value={this.state.passwordConfirm}
         validation={validation}
-        placeholder={i18n("register.password-confirm.placeholder")}
       />
     );
   }

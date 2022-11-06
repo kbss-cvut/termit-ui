@@ -100,8 +100,11 @@ export function exportGlossary(
   };
 }
 
-export function exportGlossaryWithExactMatchReferences(vocabularyIri: IRI) {
-  return exportGlossary(vocabularyIri, ExportType.Turtle, {
+export function exportGlossaryWithExactMatchReferences(
+  vocabularyIri: IRI,
+  type: ExportType
+) {
+  return exportGlossary(vocabularyIri, type, {
     withReferences: true,
     property: [VocabularyUtils.SKOS_EXACT_MATCH],
   });

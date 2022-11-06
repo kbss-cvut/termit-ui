@@ -58,15 +58,11 @@ const en = {
     "register.title": "Registration",
     "register.subtitle": "Please register to continue",
     "register.first-name": "First name",
-    "register.first-name.placeholder": "Enter Your First Name",
     "register.last-name": "Last name",
-    "register.last-name.placeholder": "Enter Your Last Name",
     "register.username": "Username",
-    "register.username.placeholder": "Enter Your Username",
+    "register.username.help": "Enter your email address",
     "register.password": "Password",
-    "register.password.placeholder": "Enter Your Password",
     "register.password-confirm": "Confirm password",
-    "register.password-confirm.placeholder": "Enter Your Password Again",
     "register.passwords-not-matching.tooltip": 'Passwords don"t match.',
     "register.submit": "Register",
     "register.mask": "Registering...",
@@ -75,6 +71,7 @@ const en = {
     "register.login.error": "Unable to login into the newly created account.",
     "register.login.label": "Already a member? <a>Log in</a>",
     "register.username-exists.tooltip": "Username already exists",
+    "register.username.notValidEmail": "Username has to be an email address",
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",
@@ -95,6 +92,7 @@ const en = {
     "main.lang-selector.tooltip": "Select user interface language",
 
     "dashboard.widget.assetList.empty": "Found no assets to show here.",
+    "dashboard.widget.assetList.new.tooltip": "New since your last visit.",
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Edited} other {Created}} by {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":
@@ -213,16 +211,20 @@ const en = {
     "vocabulary.summary.export.title":
       "Export glossary terms from this vocabulary",
     "vocabulary.summary.export.text": "Export",
+    "vocabulary.summary.export.skos": "SKOS",
+    "vocabulary.summary.export.skos.title":
+      "Export a SKOS-compatible glossary.",
+    "vocabulary.summary.export.skosWithRefs": "SKOS + exact matches",
+    "vocabulary.summary.export.skosWithRefs.title":
+      "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship.",
     "vocabulary.summary.export.csv": "CSV",
     "vocabulary.summary.export.csv.title": "Export to CSV.",
     "vocabulary.summary.export.excel": "Excel",
     "vocabulary.summary.export.excel.title": "Export to MS Excel.",
-    "vocabulary.summary.export.ttl": "SKOS (Turtle)",
-    "vocabulary.summary.export.ttl.title":
-      "Export a SKOS-compatible glossary serialized as Turtle.",
-    "vocabulary.summary.export.ttl.withRefs": "SKOS + exact matches (Turtle)",
-    "vocabulary.summary.export.ttl.withRefs.title":
-      "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship, serialized as Turtle.",
+    "vocabulary.summary.export.ttl": "Turtle",
+    "vocabulary.summary.export.ttl.title": "Export to Turtle (RDF).",
+    "vocabulary.summary.export.rdfxml": "RDF/XML",
+    "vocabulary.summary.export.rdfxml.title": "Export to RDF/XML (RDF).",
     "vocabulary.summary.export.error":
       "Unable to retrieve exported data from server response.",
     "vocabulary.summary.import.action": "Restore from backup",
@@ -368,24 +370,11 @@ const en = {
     "term.metadata.types": "Type",
     "term.metadata.source": "Source",
     "term.metadata.altLabels.label": "Synonyms",
-    "term.metadata.altLabels.placeholder":
-      "Enter a new synonym and press 'Add'",
-    "term.metadata.altLabels.addButton.text": "Add",
-    "term.metadata.altLabels.addButton.title": "Click to add the synonym",
-    "term.metadata.altLabels.remove.title": "Remove synonym",
-    "term.metadata.altLabels.remove.text": "Remove",
     "term.metadata.altLabels.help":
       "(Optional) synonyms of the label. Synonyms can be contextual - e.g. term " +
       "named 'Organization address' can have a synonym 'Address', which is used in a specific context only " +
       "(e.g. in a form gathering information about an organization). ",
     "term.metadata.hiddenLabels.label": "Search strings",
-    "term.metadata.hiddenLabels.placeholder":
-      "Enter a new search string and press 'Add'",
-    "term.metadata.hiddenLabels.addButton.text": "Add",
-    "term.metadata.hiddenLabels.addButton.title":
-      "Click to add the search string",
-    "term.metadata.hiddenLabels.remove.title": "Remove search string",
-    "term.metadata.hiddenLabels.remove.text": "Remove",
     "term.metadata.hiddenLabels.help":
       "(Optional) search strings, which are not meant for visual presentation of terms and" +
       " serve mainly for search engines. Search strings do not need to be (contextual) synonyms to the label. E.g. " +
@@ -397,9 +386,6 @@ const en = {
     "term.metadata.multipleSources.message":
       "Term has multiple sources. Upon save, only the current value will be saved and the remaining will be deleted.",
     "term.metadata.source.add.placeholder": "Add source",
-    "term.metadata.source.add.placeholder.text": "Add",
-    "term.metadata.source.remove.title": "Remove source",
-    "term.metadata.source.remove.text": "Remove",
     "term.metadata.subterm.link": "View detail of this term",
     "term.metadata.related.title": "Related terms",
     "term.metadata.related.help":
@@ -427,6 +413,13 @@ const en = {
       "Draft term is not ready to be used yet, while Confirmed term is.",
     "term.metadata.status.confirmed.edit.title":
       "Confirmed term cannot be edited. Switch it back to Draft to edit.",
+    "term.metadata.notation.label": "Notation",
+    "term.metadata.notation.help":
+      "(Optional) A notation is a string of characters such as 'UBA' or 'L2-3' used to uniquely identify a term within the scope of a given glossary. " +
+      "A notation is different from a lexical label in that a notation is not normally recognizable as a word or sequence of words in any natural language.",
+    "term.metadata.example.label": "Example",
+    "term.metadata.example.help":
+      "(Optional) Supplies an example of the use of a concept.",
     "term.metadata.types.select.placeholder": "Select type",
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",
@@ -674,6 +667,12 @@ const en = {
     "table.paging.last.tooltip": "Go to the last page",
     "table.paging.pageSize.select": "Show {pageSize} items per page",
     "table.paging.pageSize.select.all": "Show all items",
+
+    "stringlistedit.button.add": "Add",
+    "stringlistedit.button.add.tooltip":
+      "Click to add the entered value to the list",
+    "stringlistedit.button.remove": "Remove",
+    "stringlistedit.button.remove.tooltip": "Remove value",
 
     "public.nav.user": "User not logged in. Click to log in.",
     "public.dashboard.title": "Welcome to TermIt!",

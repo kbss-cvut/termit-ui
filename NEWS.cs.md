@@ -1,3 +1,12 @@
+#### Verze 2.14.0
+
+- Přidána podpora stránkování komentářů a změn na hlavní stránce. Zvýraznění nových od poslední návštěvy.
+- Zobrazení historie změn snapshotu.
+- Možnost odesílát týdenní přehled nových a upravených komentářů administrátorovi a tvůrcům slovníků.
+- Přidána podpora exportu slovníku v RDF/XML.
+- Základní atributy pojmu rozšířeny o skos:notation a skos:example.
+- Harmonizován výstup CSV/Excel a SKOS RDF exportu.
+
 #### Verze 2.13.0
 
 - Implementováno uživatelské rozhraní pro prohlížení a správu snapshotů slovníků a pojmů.

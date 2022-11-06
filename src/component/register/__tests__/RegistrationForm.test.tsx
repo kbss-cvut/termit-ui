@@ -13,11 +13,16 @@ import Constants from "../../../util/Constants";
 import { MemoryRouter } from "react-router";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+}));
+
 describe("RegistrationForm", () => {
   const userInfo = {
     firstName: "a",
     lastName: "b",
-    username: "c",
+    username: "c@example.org",
     password: "d",
   };
 

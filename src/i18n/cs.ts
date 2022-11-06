@@ -58,15 +58,11 @@ const cs = {
     "register.title": "Nový uživatel",
     "register.subtitle": "Pro pokračování se prosím zaregistrujte",
     "register.first-name": "Jméno",
-    "register.first-name.placeholder": "Zadejte vaše jméno",
     "register.last-name": "Příjmení",
-    "register.last-name.placeholder": "Zadejte vaše příjmení",
     "register.username": "Uživatelské jméno",
-    "register.username.placeholder": "Zadejte uživatelské jméno",
+    "register.username.help": "Zadejte emailovou adresu",
     "register.password": "Heslo",
-    "register.password.placeholder": "Zadejte vaše heslo",
     "register.password-confirm": "Potvrzení hesla",
-    "register.password-confirm.placeholder": "Zadejte vaše heslo znovu",
     "register.passwords-not-matching.tooltip":
       "Heslo a jeho potvrzení se neshodují.",
     "register.submit": "Zaregistrovat se",
@@ -77,6 +73,8 @@ const cs = {
       "Nepodařilo se přihlásit k nově vytvořenému uživateli.",
     "register.login.label": "Již máte účet? <a>Přihlaste se</a>",
     "register.username-exists.tooltip": "Uživatelské jméno již existuje",
+    "register.username.notValidEmail":
+      "Uživatelské jméno musí být emailovou adresou",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
@@ -98,6 +96,7 @@ const cs = {
 
     "dashboard.widget.assetList.empty":
       "Pro tuto část nebyly nalezeny žádné záznamy.",
+    "dashboard.widget.assetList.new.tooltip": "Nové od Vaší poslední návštěvy.",
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Upraven} other {Vytvořen}} uživatelem {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":
@@ -220,17 +219,20 @@ const cs = {
     "vocabulary.summary.gotodetail.text": "Zobrazit",
     "vocabulary.summary.export.title": "Exportovat pojmy ze slovníku",
     "vocabulary.summary.export.text": "Exportovat",
+    "vocabulary.summary.export.skos": "SKOS",
+    "vocabulary.summary.export.skos.title":
+      "Export glosáře ve struktuře kompatibilní se SKOS.",
+    "vocabulary.summary.export.skosWithRefs": "SKOS + exact matches",
+    "vocabulary.summary.export.skosWithRefs.title":
+      "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku.",
     "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export do CSV.",
+    "vocabulary.summary.export.csv.title": "Export ve formátu CSV.",
     "vocabulary.summary.export.excel": "Excel",
-    "vocabulary.summary.export.excel.title": "Export do formát MS Excel.",
-    "vocabulary.summary.export.ttl": "SKOS (Turtle)",
-    "vocabulary.summary.export.ttl.title":
-      "Export glosáře ve struktuře kompatibilní se SKOS ve formátu Turtle.",
-    "vocabulary.summary.export.ttl.withRefs":
-      "SKOS + pojmy se stejným významem (Turtle)",
-    "vocabulary.summary.export.ttl.withRefs.title":
-      "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku. Výstup je ve formátu Turtle.",
+    "vocabulary.summary.export.excel.title": "Export ve formátu MS Excel.",
+    "vocabulary.summary.export.ttl": "Turtle",
+    "vocabulary.summary.export.ttl.title": "Export ve formátu Turtle (RDF).",
+    "vocabulary.summary.export.rdfxml": "RDF/XML",
+    "vocabulary.summary.export.rdfxml.title": "Export ve formátu RDF/XML.",
     "vocabulary.summary.export.error":
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",
@@ -379,24 +381,11 @@ const cs = {
     "term.metadata.status": "Stav pojmu",
     "term.metadata.source": "Zdroj",
     "term.metadata.altLabels.label": "Synonyma",
-    "term.metadata.altLabels.placeholder":
-      'Zadejte nové synonymum a stiskněte tlačítko "Přidat"',
-    "term.metadata.altLabels.addButton.text": "Přidat",
-    "term.metadata.altLabels.addButton.title": "Kliknutím přidáte synonymum",
-    "term.metadata.altLabels.remove.title": "Odebrat synonymum",
-    "term.metadata.altLabels.remove.text": "Odebrat",
     "term.metadata.altLabels.help":
       "(Nepovinná) synonyma k názvu. Synonyma mohou být kontextuální - např. pojem " +
       "s názvem 'Adresa organizace' může mít synonymum 'Adresa', které se však použije jen v určitém kontextu " +
       "(např. ve formuláři, ve kterém se vyplňují informace o organizaci). ",
     "term.metadata.hiddenLabels.label": "Vyhledávací texty",
-    "term.metadata.hiddenLabels.placeholder":
-      'Zadejte nový vyhledávací text a stiskněte tlačítko "Přidat"',
-    "term.metadata.hiddenLabels.addButton.text": "Přidat",
-    "term.metadata.hiddenLabels.addButton.title":
-      "Kliknutím přidáte hodnotu vyhledávacího textu",
-    "term.metadata.hiddenLabels.remove.title": "Odebrat vyhledávací text",
-    "term.metadata.hiddenLabels.remove.text": "Odebrat",
     "term.metadata.hiddenLabels.help":
       "(Nepovinné) vyhledávací texty, nejsou určeny pro vizuální prezentaci pojmu a" +
       " slouží zejména pro vyhledávání. Nemusí se jednat (ani kontextuální) synonyma k názvu pojmu. Např. " +
@@ -406,10 +395,6 @@ const cs = {
       'Pojem s názvem "{label}" již v tomto slovníku existuje',
     "term.metadata.multipleSources.message":
       "Pojem má více zdrojů, po uložení pojmu bude pouze aktuálně vyplněný zdroj a ostatní budou smazány",
-    "term.metadata.source.add.placeholder": "Nový zdroj pojmu",
-    "term.metadata.source.add.placeholder.text": "Přidat",
-    "term.metadata.source.remove.title": "Odebrat zdroj",
-    "term.metadata.source.remove.text": "Odebrat",
     "term.metadata.subterm.link": "Zobrazit detail tohoto pojmu",
     "term.metadata.related.title": "Související pojmy",
     "term.metadata.related.help":
@@ -437,6 +422,12 @@ const cs = {
       "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
     "term.metadata.status.confirmed.edit.title":
       "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
+    "term.metadata.notation.label": "Notace",
+    "term.metadata.notation.help":
+      "(Nepovinný) Notace je řetězec znaků, jako např. 'UBA' or 'L2-3', užívaný k identifikaci pojmu v rámci daného glosáře. " +
+      "Notace se liší od názvu pojmu tím, že se obvykle nejedná o slovo či slova vybraného jazyka.",
+    "term.metadata.example.label": "Příklady",
+    "term.metadata.example.help": "(Nepovinný) Příklad použití pojmu.",
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",
@@ -686,6 +677,12 @@ const cs = {
     "table.paging.last.tooltip": "Poslední strana",
     "table.paging.pageSize.select": "Zobrazit {pageSize} záznamů na stránku",
     "table.paging.pageSize.select.all": "Zobrazit všechny záznamy",
+
+    "stringlistedit.button.add": "Přidat",
+    "stringlistedit.button.add.tooltip":
+      "Kliknutím přidáte zadanou hodnotu do seznamu",
+    "stringlistedit.button.remove": "Odebrat",
+    "stringlistedit.button.remove.tooltip": "Odebrat hodnotu",
 
     "public.nav.user": "Uživatel nepřihlášen. Klikněte pro přihlášení.",
     "public.dashboard.title": "Vítejte v TermIt!",
