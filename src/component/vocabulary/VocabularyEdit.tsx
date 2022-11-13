@@ -30,6 +30,7 @@ interface VocabularyEditState {
   comment: string;
   importedVocabularies?: AssetData[];
   unmappedProperties: Map<string, string[]>;
+  documentLabel: string;
 }
 
 export class VocabularyEdit extends React.Component<
@@ -43,6 +44,7 @@ export class VocabularyEdit extends React.Component<
       comment: this.props.vocabulary.comment
         ? this.props.vocabulary.comment
         : "",
+      documentLabel: this.props.vocabulary.document?.label!,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
@@ -57,11 +59,16 @@ export class VocabularyEdit extends React.Component<
   };
 
   public onSave = () => {
+    const modifiedDocument = Object.assign({}, this.props.vocabulary.document, {
+      label: this.state.documentLabel,
+    });
+
     const newVocabulary = new Vocabulary(
       Object.assign({}, this.props.vocabulary, {
         label: this.state.label,
         comment: this.state.comment,
         importedVocabularies: this.state.importedVocabularies,
+        document: modifiedDocument,
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
@@ -123,7 +130,19 @@ export class VocabularyEdit extends React.Component<
                 />
               </Col>
             </Row>
-
+            <Row>
+              <Col xs={12}>
+                <CustomInput
+                  name="edit-document-label"
+                  label={i18n("vocabulary.document.set.label")}
+                  value={this.state.documentLabel}
+                  onChange={(e) =>
+                    this.onChange({ documentLabel: e.currentTarget.value })
+                  }
+                  hint={i18n("required")}
+                />
+              </Col>
+            </Row>
             <Row>
               <Col xs={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">
@@ -132,7 +151,10 @@ export class VocabularyEdit extends React.Component<
                     onClick={this.onSave}
                     color="success"
                     size="sm"
-                    disabled={this.state.label.trim().length === 0}
+                    disabled={
+                      this.state.label.trim().length === 0 ||
+                      this.state.documentLabel?.trim().length === 0
+                    }
                   >
                     {i18n("save")}
                   </Button>
