@@ -59,7 +59,7 @@ describe("MainView", () => {
       const contextsToEdit = [Generator.generateUri(), Generator.generateUri()];
       const routing = routingProps();
       routing.location.search = contextsToEdit
-        .map((c) => `edit-context=${encodeURIComponent(c)}`)
+        .map((c) => `vocabulary=${encodeURIComponent(c)}`)
         .join("&");
       await shallow(
         <MainView
@@ -78,7 +78,7 @@ describe("MainView", () => {
       const contextsToEdit = [Generator.generateUri(), Generator.generateUri()];
       const routing = routingProps();
       routing.location.search = contextsToEdit
-        .map((c) => `edit-context=${encodeURIComponent(c)}`)
+        .map((c) => `vocabulary=${encodeURIComponent(c)}`)
         .join("&");
       shallow(
         <MainView
