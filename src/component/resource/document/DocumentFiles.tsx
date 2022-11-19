@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import {
   createFileInDocument,
   removeFileFromDocument,
+  updateFileInDocument,
   uploadFileContent,
 } from "../../../action/AsyncActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -16,11 +17,14 @@ import { publishNotification } from "../../../action/SyncActions";
 import AddFile from "./AddFile";
 import FileContentLink from "../file/FileContentLink";
 import RemoveFile from "./RemoveFile";
+import RenameFile from "./RenameFile";
 
 interface DocumentFilesProps {
   document: Document;
   removeFile: (file: TermItFile, documentIri: string) => Promise<void>;
   onFileRemoved: () => void;
+  renameFile: (file: TermItFile, documentIri: string) => Promise<void>;
+  onFileRenamed: () => void;
   addFile: (file: TermItFile, documentIri: string) => Promise<any>;
   onFileAdded: () => void;
   uploadFile: (fileIri: string, file: File) => Promise<any>;
@@ -33,12 +37,12 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     addFile,
     removeFile,
     uploadFile,
+    renameFile,
     notify,
     onFileAdded,
     onFileRemoved,
+    onFileRenamed,
   } = props;
-
-  document.files.forEach((f) => (f.owner = document));
 
   const createFile = useCallback(
     (termitFile: TermItFile, file: File): Promise<void> =>
@@ -58,9 +62,16 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     [document, onFileRemoved, removeFile]
   );
 
+  const modifyFile = useCallback(
+    (termitFile: TermItFile): Promise<void> =>
+      renameFile(termitFile, document.iri).then(onFileRenamed),
+    [document, onFileRenamed, renameFile]
+  );
+
   if (!document) {
     return null;
   }
+
   return (
     <Files
       files={document.files}
@@ -71,6 +82,12 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           key="remove-file"
           file={file}
           performAction={deleteFile.bind(this, file)}
+          withConfirmation={true}
+        />,
+        <RenameFile
+          key="rename-file"
+          file={file.clone()}
+          performAction={modifyFile}
           withConfirmation={true}
         />,
       ]}
@@ -90,5 +107,7 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
       dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
     notify: (notification: AppNotification) =>
       dispatch(publishNotification(notification)),
+    renameFile: (file: TermItFile, documentIri: string) =>
+      dispatch(updateFileInDocument(file, VocabularyUtils.create(documentIri))),
   };
 })(DocumentFiles);

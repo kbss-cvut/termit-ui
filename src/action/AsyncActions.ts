@@ -332,6 +332,45 @@ export function removeFileFromDocument(file: TermItFile, documentIri: IRI) {
   };
 }
 
+export function updateFileInDocument(file: TermItFile, documentIri: IRI) {
+  const action = {
+    type: ActionType.UPDATE_RESOURCE,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    const fileIri = VocabularyUtils.create(file.iri);
+    const fileCopy = new TermItFile(file);
+    //owner was causing an err in JsonLd serialisation
+    delete fileCopy.owner;
+    return Ajax.put(
+      Constants.API_PREFIX +
+        "/resources/" +
+        documentIri.fragment +
+        "/files/" +
+        fileIri.fragment,
+      content(fileCopy.toJsonLd()).param("namespace", fileIri.namespace)
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(loadResource(documentIri));
+        dispatch(
+          SyncActions.publishMessage(
+            new Message(
+              { messageId: "resource.updated.message" },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+      });
+  };
+}
+
 export function uploadFileContent(fileIri: IRI, data: File) {
   const action = {
     type: ActionType.SAVE_FILE_CONTENT,

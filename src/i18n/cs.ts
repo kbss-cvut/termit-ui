@@ -192,6 +192,7 @@ const cs = {
     "asset.create.hideAdvancedSection": "Skrýt pokročilé možnosti",
     "asset.remove.tooltip": "Odstranit tento záznam",
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
+    "asset.rename.dialog.title": 'Přejmenovat {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
 
     "document.remove.tooltip.disabled":
