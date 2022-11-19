@@ -8,7 +8,6 @@ import RenameFileDialog from "../../asset/RenameFileDialog";
 
 interface RenameFileProps {
   performAction: (file: TermItFile) => Promise<void>;
-  withConfirmation: boolean;
   file: TermItFile;
 }
 
@@ -17,8 +16,9 @@ export const RenameFile = (props: RenameFileProps) => {
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const toggle = () => setConfirmationDialogOpen(!confirmationDialogOpen);
 
-  const performAction = () => {
-    props.performAction(props.file).then(toggle);
+  const performAction = (label: string) => {
+    const modifiedFile = Object.assign({}, props.file, { label: label.trim() });
+    props.performAction(modifiedFile).then(toggle);
   };
   return (
     <IfUserIsEditor>
@@ -28,12 +28,7 @@ export const RenameFile = (props: RenameFileProps) => {
         show={confirmationDialogOpen}
         asset={props.file}
       />
-      <Button
-        color="success"
-        size="sm"
-        onClick={props.withConfirmation ? toggle : performAction}
-        title={i18n("edit")}
-      >
+      <Button color="success" size="sm" onClick={toggle} title={i18n("edit")}>
         <GoPencil className="mr-1" />
         {i18n("edit")}
       </Button>

@@ -84,12 +84,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           performAction={deleteFile.bind(this, file)}
           withConfirmation={true}
         />,
-        <RenameFile
-          key="rename-file"
-          file={file.clone()}
-          performAction={modifyFile}
-          withConfirmation={true}
-        />,
+        <RenameFile key="rename-file" file={file} performAction={modifyFile} />,
       ]}
     />
   );

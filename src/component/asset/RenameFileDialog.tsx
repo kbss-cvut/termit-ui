@@ -8,7 +8,7 @@ import Utils from "../../util/Utils";
 
 interface RenameFileDialogProps {
   show: boolean;
-  onSubmit: () => void;
+  onSubmit: (label: string) => void;
   onCancel: () => void;
   asset: TermItFile;
 }
@@ -20,12 +20,15 @@ const RenameFileDialog: React.FC<RenameFileDialogProps> = (props) => {
   const typeLabel = i18n(
     typeLabelId ? typeLabelId : "type.asset"
   ).toLowerCase();
-  const [labelOriginal] = useState(props.asset.getLabel());
+
   const [label, setLabel] = useState(props.asset.getLabel());
 
   const setFileLabel = (label: string) => {
-    props.asset.label = label;
     setLabel(label);
+  };
+
+  const onConfirmHandler = () => {
+    props.onSubmit(label);
   };
 
   return (
@@ -33,19 +36,18 @@ const RenameFileDialog: React.FC<RenameFileDialogProps> = (props) => {
       show={props.show}
       id="rename-asset"
       onClose={props.onCancel}
-      onConfirm={props.onSubmit}
+      onConfirm={onConfirmHandler}
       title={formatMessage("asset.rename.dialog.title", {
         type: typeLabel,
-        label: labelOriginal,
+        label: props.asset.getLabel(),
       })}
-      confirmKey="edit"
+      confirmKey="save"
     >
       <CustomInput
         name="edit-file-label"
         label={i18n("asset.label")}
         value={label}
         onChange={(e) => setFileLabel(e.currentTarget.value)}
-        hint={i18n("required")}
       />
     </ConfirmCancelDialog>
   );
