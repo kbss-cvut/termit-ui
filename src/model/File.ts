@@ -52,6 +52,9 @@ export default class File extends Resource implements FileData {
       jsonLd.owner.files = Document.replaceCircularReferencesToOwnerWithOwnerId(
         jsonLd.owner.files
       );
+      if (jsonLd.owner.vocabulary) {
+        jsonLd.owner.vocabulary = { iri: jsonLd.owner.vocabulary.iri };
+      }
     }
     return jsonLd;
   }
