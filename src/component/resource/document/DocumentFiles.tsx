@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import {
   createFileInDocument,
   removeFileFromDocument,
-  updateFileInDocument,
+  updateResource,
   uploadFileContent,
 } from "../../../action/AsyncActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -18,12 +18,13 @@ import AddFile from "./AddFile";
 import FileContentLink from "../file/FileContentLink";
 import RemoveFile from "./RemoveFile";
 import RenameFile from "./RenameFile";
+import Resource from "../../../model/Resource";
 
 interface DocumentFilesProps {
   document: Document;
   removeFile: (file: TermItFile, documentIri: string) => Promise<void>;
   onFileRemoved: () => void;
-  renameFile: (file: TermItFile, documentIri: string) => Promise<void>;
+  renameFile: (file: TermItFile) => Promise<Resource | null>;
   onFileRenamed: () => void;
   addFile: (file: TermItFile, documentIri: string) => Promise<any>;
   onFileAdded: () => void;
@@ -64,8 +65,8 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
 
   const modifyFile = useCallback(
     (termitFile: TermItFile): Promise<void> =>
-      renameFile(termitFile, document.iri).then(onFileRenamed),
-    [document, onFileRenamed, renameFile]
+      renameFile(new TermItFile(termitFile)).then(onFileRenamed),
+    [onFileRenamed, renameFile]
   );
 
   if (!document) {
@@ -102,7 +103,6 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
       dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
     notify: (notification: AppNotification) =>
       dispatch(publishNotification(notification)),
-    renameFile: (file: TermItFile, documentIri: string) =>
-      dispatch(updateFileInDocument(file, VocabularyUtils.create(documentIri))),
+    renameFile: (file: TermItFile) => dispatch(updateResource(file)),
   };
 })(DocumentFiles);
