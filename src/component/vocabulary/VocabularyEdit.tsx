@@ -62,7 +62,7 @@ export class VocabularyEdit extends React.Component<
 
   public onSave = () => {
     const modifiedDocument = Object.assign({}, this.props.vocabulary.document, {
-      label: this.state.documentLabel,
+      label: this.state.documentLabel.trim(),
     });
 
     const newVocabulary = new Vocabulary(
@@ -73,7 +73,8 @@ export class VocabularyEdit extends React.Component<
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
-    this.props.saveDocument(modifiedDocument);
+    if (modifiedDocument.label !== this.props.vocabulary.document?.label)
+      this.props.saveDocument(modifiedDocument);
     this.props.save(newVocabulary);
   };
 

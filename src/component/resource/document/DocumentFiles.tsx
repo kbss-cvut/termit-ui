@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import Document from "../../../model/Document";
-import TermItFile from "../../../model/File";
+import TermItFile, { FileData } from "../../../model/File";
 import { ThunkDispatch } from "../../../util/Types";
 import { connect } from "react-redux";
 import {
@@ -64,7 +64,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
   );
 
   const modifyFile = useCallback(
-    (termitFile: TermItFile): Promise<void> =>
+    (termitFile: FileData): Promise<void> =>
       renameFile(new TermItFile(termitFile)).then(onFileRenamed),
     [onFileRenamed, renameFile]
   );

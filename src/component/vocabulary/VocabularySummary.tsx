@@ -43,7 +43,7 @@ import CreateSnapshotDialog from "./CreateSnapshotDialog";
 import classNames from "classnames";
 import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
 import Resource from "../../model/Resource";
-import Document from "../../model/Document";
+import Document, { DocumentData } from "../../model/Document";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -118,7 +118,7 @@ export class VocabularySummary extends EditableComponent<
     });
   };
 
-  public onDocumentSave = (document: Document) => {
+  public onDocumentSave = (document: DocumentData) => {
     this.props.updateDocument(new Document(document));
   };
 
