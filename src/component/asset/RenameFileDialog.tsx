@@ -23,10 +23,6 @@ const RenameFileDialog: React.FC<RenameFileDialogProps> = (props) => {
 
   const [label, setLabel] = useState(props.asset.getLabel());
 
-  const setFileLabel = (label: string) => {
-    setLabel(label);
-  };
-
   const onConfirmHandler = () => {
     props.onSubmit(label);
   };
@@ -47,7 +43,7 @@ const RenameFileDialog: React.FC<RenameFileDialogProps> = (props) => {
         name="edit-file-label"
         label={i18n("asset.label")}
         value={label}
-        onChange={(e) => setFileLabel(e.currentTarget.value)}
+        onChange={(e) => setLabel(e.currentTarget.value)}
       />
     </ConfirmCancelDialog>
   );

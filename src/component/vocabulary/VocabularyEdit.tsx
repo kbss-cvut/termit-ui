@@ -18,11 +18,13 @@ import ImportedVocabulariesListEdit from "./ImportedVocabulariesListEdit";
 import { AssetData } from "../../model/Asset";
 import MarkdownEditor from "../misc/MarkdownEditor";
 import Constants from "../../util/Constants";
+import Document from "../../model/Document";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
   save: (vocabulary: Vocabulary) => void;
   cancel: () => void;
+  saveDocument: (document: Document) => void;
 }
 
 interface VocabularyEditState {
@@ -68,10 +70,10 @@ export class VocabularyEdit extends React.Component<
         label: this.state.label,
         comment: this.state.comment,
         importedVocabularies: this.state.importedVocabularies,
-        document: modifiedDocument,
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
+    this.props.saveDocument(modifiedDocument);
     this.props.save(newVocabulary);
   };
 

@@ -9,6 +9,7 @@ import {
   loadResource,
   loadVocabulary,
   removeVocabulary,
+  updateResource,
   updateVocabulary,
   validateVocabulary,
 } from "../../action/AsyncActions";
@@ -41,6 +42,8 @@ import VocabularySnapshotIcon from "./snapshot/VocabularySnapshotIcon";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
 import classNames from "classnames";
 import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
+import Resource from "../../model/Resource";
+import Document from "../../model/Document";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -53,6 +56,7 @@ interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   importSkos: (iri: IRI, file: File) => Promise<any>;
   executeTextAnalysisOnAllTerms: (iri: IRI) => void;
   createSnapshot: (iri: IRI) => Promise<any>;
+  updateDocument: (document: Document) => Promise<Resource | null>;
 }
 
 export interface VocabularySummaryState extends EditableComponentState {
@@ -112,6 +116,10 @@ export class VocabularySummary extends EditableComponent<
       this.onCloseEdit();
       this.props.loadVocabulary(VocabularyUtils.create(vocabulary.iri));
     });
+  };
+
+  public onDocumentSave = (document: Document) => {
+    this.props.updateDocument(new Document(document));
   };
 
   public onRemove = () => {
@@ -241,6 +249,7 @@ export class VocabularySummary extends EditableComponent<
         {this.state.edit ? (
           <VocabularyEdit
             save={this.onSave}
+            saveDocument={this.onDocumentSave}
             cancel={this.onCloseEdit}
             vocabulary={vocabulary}
           />
@@ -292,6 +301,8 @@ export default connect(
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
       createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),
+      updateDocument: (document: Document) =>
+        dispatch(updateResource(document)),
     };
   }
 )(injectIntl(withI18n(VocabularySummary)));
