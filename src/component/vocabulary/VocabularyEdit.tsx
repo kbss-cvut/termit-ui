@@ -62,7 +62,7 @@ export class VocabularyEdit extends React.Component<
 
   public onSave = () => {
     const modifiedDocument = Object.assign({}, this.props.vocabulary.document, {
-      label: this.state.documentLabel.trim(),
+      label: this.state.documentLabel?.trim(),
     });
 
     const newVocabulary = new Vocabulary(
