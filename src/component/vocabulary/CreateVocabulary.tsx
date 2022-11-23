@@ -35,6 +35,7 @@ import RemoveFile from "../resource/document/RemoveFile";
 import WindowTitle from "../misc/WindowTitle";
 import MarkdownEditor from "../misc/MarkdownEditor";
 import Constants from "../../util/Constants";
+import * as React from "react";
 
 interface CreateVocabularyProps extends HasI18n {
   createFile: (file: TermItFile, documentIri: string) => Promise<any>;
@@ -49,6 +50,7 @@ interface CreateAllVocabulariesState extends AbstractCreateAssetState {
   files: TermItFile[];
   fileContents: File[];
   showCreateFile: boolean;
+  documentLabel: string;
 }
 
 export class CreateVocabulary extends AbstractCreateAsset<
@@ -65,6 +67,7 @@ export class CreateVocabulary extends AbstractCreateAsset<
       files: [],
       fileContents: [],
       showCreateFile: false,
+      documentLabel: "",
     };
   }
 
@@ -83,9 +86,12 @@ export class CreateVocabulary extends AbstractCreateAsset<
     const files = this.state.files;
     const fileContents = this.state.fileContents;
     const document = new Document({
-      label: this.props.formatMessage("vocabulary.document.label", {
-        vocabulary: vocabulary.getLabel(),
-      }),
+      label:
+        this.state.documentLabel.trim() === ""
+          ? this.props.formatMessage("vocabulary.document.label", {
+              vocabulary: vocabulary.getLabel(),
+            })
+          : this.state.documentLabel.trim(),
       iri: this.state.iri + "/document",
       files: [],
     });
@@ -123,6 +129,13 @@ export class CreateVocabulary extends AbstractCreateAsset<
 
   private onCommentChange = (value: string): void => {
     this.setState({ comment: value });
+  };
+
+  private onDocumentLabelChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const label = e.currentTarget.value;
+    this.setState({ documentLabel: label });
   };
 
   private isFormValid() {
@@ -198,6 +211,16 @@ export class CreateVocabulary extends AbstractCreateAsset<
                     </Col>
                   </Row>
                 </ShowAdvanceAssetFields>
+                <Row>
+                  <Col xs={12}>
+                    <CustomInput
+                      name="edit-document-label"
+                      label={i18n("vocabulary.document.set.label")}
+                      value={this.state.documentLabel}
+                      onChange={this.onDocumentLabelChange}
+                    />
+                  </Col>
+                </Row>
                 <Files
                   files={this.state.files}
                   actions={[

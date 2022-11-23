@@ -1,11 +1,12 @@
 import { useCallback } from "react";
 import Document from "../../../model/Document";
-import TermItFile from "../../../model/File";
+import TermItFile, { FileData } from "../../../model/File";
 import { ThunkDispatch } from "../../../util/Types";
 import { connect } from "react-redux";
 import {
   createFileInDocument,
   removeFileFromDocument,
+  updateResource,
   uploadFileContent,
 } from "../../../action/AsyncActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -16,11 +17,15 @@ import { publishNotification } from "../../../action/SyncActions";
 import AddFile from "./AddFile";
 import FileContentLink from "../file/FileContentLink";
 import RemoveFile from "./RemoveFile";
+import RenameFile from "./RenameFile";
+import Resource from "../../../model/Resource";
 
 interface DocumentFilesProps {
   document: Document;
   removeFile: (file: TermItFile, documentIri: string) => Promise<void>;
   onFileRemoved: () => void;
+  renameFile: (file: TermItFile) => Promise<Resource | null>;
+  onFileRenamed: () => void;
   addFile: (file: TermItFile, documentIri: string) => Promise<any>;
   onFileAdded: () => void;
   uploadFile: (fileIri: string, file: File) => Promise<any>;
@@ -33,12 +38,12 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     addFile,
     removeFile,
     uploadFile,
+    renameFile,
     notify,
     onFileAdded,
     onFileRemoved,
+    onFileRenamed,
   } = props;
-
-  document.files.forEach((f) => (f.owner = document));
 
   const createFile = useCallback(
     (termitFile: TermItFile, file: File): Promise<void> =>
@@ -58,9 +63,16 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     [document, onFileRemoved, removeFile]
   );
 
+  const modifyFile = useCallback(
+    (termitFile: FileData): Promise<void> =>
+      renameFile(new TermItFile(termitFile)).then(onFileRenamed),
+    [onFileRenamed, renameFile]
+  );
+
   if (!document) {
     return null;
   }
+
   return (
     <Files
       files={document.files}
@@ -73,6 +85,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           performAction={deleteFile.bind(this, file)}
           withConfirmation={true}
         />,
+        <RenameFile key="rename-file" file={file} performAction={modifyFile} />,
       ]}
     />
   );
@@ -90,5 +103,6 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
       dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
     notify: (notification: AppNotification) =>
       dispatch(publishNotification(notification)),
+    renameFile: (file: TermItFile) => dispatch(updateResource(file)),
   };
 })(DocumentFiles);

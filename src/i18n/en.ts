@@ -182,6 +182,7 @@ const en = {
     "asset.create.hideAdvancedSection": "Hide advanced options",
     "asset.remove.tooltip": "Remove this asset",
     "asset.remove.dialog.title": 'Remove {type} "{label}"?',
+    "asset.rename.dialog.title": 'Rename {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
 
@@ -277,6 +278,7 @@ const en = {
     "vocabulary.document.select.title": "Select a document",
     "vocabulary.document.set": "Set document",
     "vocabulary.document.remove": "Detach document",
+    "vocabulary.document.set.label": "Document label",
     "vocabulary.snapshot.create.label": "Create snapshot",
     "vocabulary.snapshot.create.title":
       "Create a snapshot of this vocabulary and all other vocabularies that are (indirectly) connected to it via term relationships. The snapshot is a read-only copy of the whole vocabulary content and can be used to demarcate important milestones in the vocabulary lifecycle.",

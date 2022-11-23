@@ -21,7 +21,6 @@ const DocumentSummary: React.FC<DocumentSummaryProps> = ({
     dispatch(loadResource(VocabularyUtils.create(document!.iri))).then(
       onChange
     );
-
   return document ? (
     <div className="metadata-panel">
       <ResourceMetadata resource={document} inTab={true} />
@@ -29,6 +28,7 @@ const DocumentSummary: React.FC<DocumentSummaryProps> = ({
         document={document}
         onFileAdded={reload}
         onFileRemoved={reload}
+        onFileRenamed={reload}
       />
     </div>
   ) : null;
