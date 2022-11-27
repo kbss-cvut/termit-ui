@@ -18,11 +18,13 @@ import ImportedVocabulariesListEdit from "./ImportedVocabulariesListEdit";
 import { AssetData } from "../../model/Asset";
 import MarkdownEditor from "../misc/MarkdownEditor";
 import Constants from "../../util/Constants";
+import Document from "../../model/Document";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
   save: (vocabulary: Vocabulary) => void;
   cancel: () => void;
+  saveDocument: (document: Document) => void;
 }
 
 interface VocabularyEditState {
@@ -30,6 +32,7 @@ interface VocabularyEditState {
   comment: string;
   importedVocabularies?: AssetData[];
   unmappedProperties: Map<string, string[]>;
+  documentLabel: string;
 }
 
 export class VocabularyEdit extends React.Component<
@@ -43,6 +46,7 @@ export class VocabularyEdit extends React.Component<
       comment: this.props.vocabulary.comment
         ? this.props.vocabulary.comment
         : "",
+      documentLabel: this.props.vocabulary.document?.label!,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
@@ -57,6 +61,10 @@ export class VocabularyEdit extends React.Component<
   };
 
   public onSave = () => {
+    const modifiedDocument = Object.assign({}, this.props.vocabulary.document, {
+      label: this.state.documentLabel?.trim(),
+    });
+
     const newVocabulary = new Vocabulary(
       Object.assign({}, this.props.vocabulary, {
         label: this.state.label,
@@ -65,6 +73,8 @@ export class VocabularyEdit extends React.Component<
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
+    if (modifiedDocument.label !== this.props.vocabulary.document?.label)
+      this.props.saveDocument(modifiedDocument);
     this.props.save(newVocabulary);
   };
 
@@ -123,7 +133,19 @@ export class VocabularyEdit extends React.Component<
                 />
               </Col>
             </Row>
-
+            <Row>
+              <Col xs={12}>
+                <CustomInput
+                  name="edit-document-label"
+                  label={i18n("vocabulary.document.set.label")}
+                  value={this.state.documentLabel}
+                  onChange={(e) =>
+                    this.onChange({ documentLabel: e.currentTarget.value })
+                  }
+                  hint={i18n("required")}
+                />
+              </Col>
+            </Row>
             <Row>
               <Col xs={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">
@@ -132,7 +154,10 @@ export class VocabularyEdit extends React.Component<
                     onClick={this.onSave}
                     color="success"
                     size="sm"
-                    disabled={this.state.label.trim().length === 0}
+                    disabled={
+                      this.state.label.trim().length === 0 ||
+                      this.state.documentLabel?.trim().length === 0
+                    }
                   >
                     {i18n("save")}
                   </Button>

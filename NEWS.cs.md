@@ -1,3 +1,8 @@
+#### Verze 2.14.1
+
+- Systém nyní neodesílá týdenní přehled nových a upravených komentářů, když žádné změny v komentářích nejsou.
+- Přidána podpora pro editaci názvů dokumentů a souborů.
+
 #### Verze 2.14.0
 
 - Přidána podpora stránkování komentářů a změn na hlavní stránce. Zvýraznění nových od poslední návštěvy.

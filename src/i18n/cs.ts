@@ -192,6 +192,7 @@ const cs = {
     "asset.create.hideAdvancedSection": "Skrýt pokročilé možnosti",
     "asset.remove.tooltip": "Odstranit tento záznam",
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
+    "asset.rename.dialog.title": 'Přejmenovat {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
 
     "document.remove.tooltip.disabled":
@@ -284,6 +285,7 @@ const cs = {
     "vocabulary.document.select.title": "Vyberte dokument",
     "vocabulary.document.set": "Změnit dokument",
     "vocabulary.document.remove": "Odpojit dokument",
+    "vocabulary.document.set.label": "Název dokumentu",
     "vocabulary.snapshot.create.label": "Vytvořit revizi",
     "vocabulary.snapshot.create.title":
       "Vytvořit revizi tohoto slovníku a všech dalších slovníků, které jsou s ním (nepřímo) propojeny vztahy mezi pojmy. Revize je kopií veškerého obsahu slovníku a umožňuje tak označit důležité milníky v historii vývoje slovníku.",

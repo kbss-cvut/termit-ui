@@ -1,3 +1,8 @@
+#### Version 2.14.1
+
+- Do not send comment changes notification email when there are no changes.
+- Allow editing document and file labels.
+
 #### Version 2.14.0
 
 - Allow paging recent comments and changes on dashboard, highlight those new since last visit.

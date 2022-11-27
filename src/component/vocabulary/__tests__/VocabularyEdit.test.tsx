@@ -6,16 +6,19 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { shallow } from "enzyme";
 import { UnmappedPropertiesEdit } from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import Document from "../../../model/Document";
 
 jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
 
 describe("VocabularyEdit", () => {
   let onSave: (vocabulary: Vocabulary) => void;
+  let onDocumentSave: (document: Document) => void;
   let onCancel: () => void;
   let vocabulary: Vocabulary;
 
   beforeEach(() => {
     onSave = jest.fn();
+    onDocumentSave = jest.fn();
     onCancel = jest.fn();
     vocabulary = new Vocabulary({
       iri: Generator.generateUri(),
@@ -28,6 +31,7 @@ describe("VocabularyEdit", () => {
       <VocabularyEdit
         vocabulary={vocabulary}
         save={onSave}
+        saveDocument={onDocumentSave}
         cancel={onCancel}
         {...intlFunctions()}
       />
@@ -49,6 +53,7 @@ describe("VocabularyEdit", () => {
       <VocabularyEdit
         vocabulary={vocabulary}
         save={onSave}
+        saveDocument={onDocumentSave}
         cancel={onCancel}
         {...intlFunctions()}
       />
@@ -64,6 +69,7 @@ describe("VocabularyEdit", () => {
       <VocabularyEdit
         vocabulary={vocabulary}
         save={onSave}
+        saveDocument={onDocumentSave}
         cancel={onCancel}
         {...intlFunctions()}
       />
@@ -82,6 +88,7 @@ describe("VocabularyEdit", () => {
       <VocabularyEdit
         vocabulary={vocabulary}
         save={onSave}
+        saveDocument={onDocumentSave}
         cancel={onCancel}
         {...intlFunctions()}
       />
@@ -101,6 +108,7 @@ describe("VocabularyEdit", () => {
       <VocabularyEdit
         vocabulary={vocabulary}
         save={onSave}
+        saveDocument={onDocumentSave}
         cancel={onCancel}
         {...intlFunctions()}
       />

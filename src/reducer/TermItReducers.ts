@@ -139,6 +139,7 @@ function vocabulary(
     case ActionType.LOGOUT:
       return EMPTY_VOCABULARY;
     case ActionType.REMOVE_RESOURCE:
+    case ActionType.UPDATE_RESOURCE:
     case ActionType.CREATE_RESOURCE: // intentional fall-through
       // the resource might have been/be related to the vocabulary
       return action.status === AsyncActionStatus.SUCCESS
