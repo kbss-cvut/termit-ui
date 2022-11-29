@@ -26,6 +26,9 @@ export class ExportFormat {
   }
 }
 
+/**
+ * Represents configuration of vocabulary export.
+ */
 export default class ExportConfig {
   public readonly type: ExportType;
   public readonly format: ExportFormat;

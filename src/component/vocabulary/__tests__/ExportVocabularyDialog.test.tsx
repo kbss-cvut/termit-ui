@@ -29,6 +29,8 @@ describe("ExportVocabularyDialog", () => {
     [ExportType.SKOS, ExportFormat.Excel],
     [ExportType.SKOS, ExportFormat.Turtle],
     [ExportType.SKOS, ExportFormat.RdfXml],
+    [ExportType.SKOS_FULL, ExportFormat.Turtle],
+    [ExportType.SKOS_FULL, ExportFormat.RdfXml],
   ])(
     "exports %p in format %p when selected",
     (type: ExportType, format: ExportFormat) => {
@@ -60,15 +62,14 @@ describe("ExportVocabularyDialog", () => {
   it.each([
     [ExportType.SKOS_WITH_REFERENCES, ExportFormat.Turtle],
     [ExportType.SKOS_WITH_REFERENCES, ExportFormat.RdfXml],
+    [ExportType.SKOS_FULL_WITH_REFERENCES, ExportFormat.Turtle],
+    [ExportType.SKOS_FULL_WITH_REFERENCES, ExportFormat.RdfXml],
   ])(
     "exports %p in format %p when selected",
     (type: ExportType, format: ExportFormat) => {
       const wrapper = mockActionAndRender();
       wrapper.find("input").find({ name: type }).simulate("change");
-      wrapper
-        .find("input")
-        .find({ name: `${format.mimeType}-withRefs` })
-        .simulate("change");
+      wrapper.find("input").find({ name: format.mimeType }).simulate("change");
       wrapper.find("button#vocabulary-export-submit").simulate("click");
       const expectedConfig = new ExportConfig(type, format);
       expectedConfig.referenceProperties = [VocabularyUtils.SKOS_EXACT_MATCH];
@@ -80,19 +81,24 @@ describe("ExportVocabularyDialog", () => {
   );
 
   it.each([
+    [ExportType.SKOS_FULL, ExportFormat.CSV],
+    [ExportType.SKOS_FULL, ExportFormat.Excel],
     [ExportType.SKOS_WITH_REFERENCES, ExportFormat.CSV],
     [ExportType.SKOS_WITH_REFERENCES, ExportFormat.Excel],
+    [ExportType.SKOS_FULL_WITH_REFERENCES, ExportFormat.CSV],
+    [ExportType.SKOS_FULL_WITH_REFERENCES, ExportFormat.Excel],
   ])(
     "switches to from invalid export type %p to correct export type when format %p is selected",
     (type: ExportType, format: ExportFormat) => {
       const wrapper = mockActionAndRender();
-      wrapper.find("input").find({ name: type }).simulate("change");
       wrapper.find("input").find({ name: format.mimeType }).simulate("change");
+      wrapper.find("input").find({ name: type }).simulate("change");
       wrapper.find("button#vocabulary-export-submit").simulate("click");
-      expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
-        VocabularyUtils.create(vocabulary.iri),
-        new ExportConfig(ExportType.SKOS, format)
-      );
+      expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalled();
+      const exportConf = (AsyncVocabularyActions.exportGlossary as jest.Mock)
+        .mock.calls[0][1];
+      expect((exportConf as ExportConfig).format).toEqual(ExportFormat.Turtle);
+      expect((exportConf as ExportConfig).type).toEqual(type);
     }
   );
 
@@ -100,7 +106,7 @@ describe("ExportVocabularyDialog", () => {
     const wrapper = mockActionAndRender();
     wrapper
       .find("input")
-      .find({ name: ExportFormat.RdfXml.mimeType + "-withRefs" })
+      .find({ name: ExportFormat.RdfXml.mimeType })
       .simulate("change");
     wrapper.find("button#vocabulary-export-submit").simulate("click");
     return Promise.resolve().then(() => {
