@@ -5,12 +5,12 @@ import { Form, FormGroup, FormText, Input, Label } from "reactstrap";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {
-  exportGlossary,
-  exportGlossaryWithExactMatchReferences,
-} from "../../action/AsyncVocabularyActions";
-import ExportType from "../../util/ExportType";
+import { exportGlossary } from "../../action/AsyncVocabularyActions";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
+import ExportConfig, {
+  ExportFormat,
+  ExportType,
+} from "../../model/local/ExportConfig";
 
 interface ExportVocabularyDialogProps {
   show: boolean;
@@ -18,39 +18,33 @@ interface ExportVocabularyDialogProps {
   vocabulary: Vocabulary;
 }
 
-export const Type = {
-  SKOS: "skos",
-  SKOS_WITH_REFS: "skosWithRefs",
-};
-
 const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
   show,
   onClose,
   vocabulary,
 }) => {
   const { i18n } = useI18n();
-  const [type, setType] = useState(Type.SKOS);
-  const [format, setFormat] = useState<ExportType>(ExportType.Turtle);
-  const selectSkos = (format: ExportType) => {
-    setType(Type.SKOS);
+  const [type, setType] = useState(ExportType.SKOS);
+  const [format, setFormat] = useState<ExportFormat>(ExportFormat.Turtle);
+  const selectSkos = (format: ExportFormat) => {
+    setType(ExportType.SKOS);
     setFormat(format);
   };
-  const selectSkosWithRefs = (format: ExportType) => {
-    setType(Type.SKOS_WITH_REFS);
+  const selectSkosWithRefs = (format: ExportFormat) => {
+    setType(ExportType.SKOS_WITH_REFERENCES);
     setFormat(format);
   };
   const dispatch: ThunkDispatch = useDispatch();
   const onExport = () => {
     const iri = VocabularyUtils.create(vocabulary.iri);
-    switch (type) {
-      case Type.SKOS:
-        dispatch(exportGlossary(iri, format)).then(onClose);
-        break;
-      case Type.SKOS_WITH_REFS:
-        dispatch(exportGlossaryWithExactMatchReferences(iri, format)).then(
-          onClose
-        );
+    const config = new ExportConfig(type, format);
+    if (
+      type === ExportType.SKOS_WITH_REFERENCES ||
+      type === ExportType.SKOS_FULL_WITH_REFERENCES
+    ) {
+      config.referenceProperties = [VocabularyUtils.SKOS_EXACT_MATCH];
     }
+    dispatch(exportGlossary(iri, config)).then(onClose);
   };
 
   return (
@@ -68,10 +62,10 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
             <Label check={true}>
               <Input
                 type="radio"
-                name={Type.SKOS}
-                value={Type.SKOS}
-                onChange={() => setType(Type.SKOS)}
-                checked={type === Type.SKOS}
+                name={ExportType.SKOS}
+                value={ExportType.SKOS}
+                onChange={() => setType(ExportType.SKOS)}
+                checked={type === ExportType.SKOS}
               />
               {i18n("vocabulary.summary.export.skos")}
             </Label>
@@ -82,10 +76,12 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
               <Label check={true}>
                 <Input
                   type="radio"
-                  name={ExportType.CSV.mimeType}
-                  value={ExportType.CSV.mimeType}
-                  onChange={() => selectSkos(ExportType.CSV)}
-                  checked={type === Type.SKOS && format === ExportType.CSV}
+                  name={ExportFormat.CSV.mimeType}
+                  value={ExportFormat.CSV.mimeType}
+                  onChange={() => selectSkos(ExportFormat.CSV)}
+                  checked={
+                    type === ExportType.SKOS && format === ExportFormat.CSV
+                  }
                 />
                 {i18n("vocabulary.summary.export.csv")}
               </Label>
@@ -95,10 +91,12 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
               <Label check={true}>
                 <Input
                   type="radio"
-                  name={ExportType.Excel.mimeType}
-                  value={ExportType.Excel.mimeType}
-                  onChange={() => selectSkos(ExportType.Excel)}
-                  checked={type === Type.SKOS && format === ExportType.Excel}
+                  name={ExportFormat.Excel.mimeType}
+                  value={ExportFormat.Excel.mimeType}
+                  onChange={() => selectSkos(ExportFormat.Excel)}
+                  checked={
+                    type === ExportType.SKOS && format === ExportFormat.Excel
+                  }
                 />
                 {i18n("vocabulary.summary.export.excel")}
               </Label>
@@ -110,10 +108,12 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
               <Label check={true}>
                 <Input
                   type="radio"
-                  name={ExportType.Turtle.mimeType}
-                  value={ExportType.Turtle.mimeType}
-                  onChange={() => selectSkos(ExportType.Turtle)}
-                  checked={type === Type.SKOS && format === ExportType.Turtle}
+                  name={ExportFormat.Turtle.mimeType}
+                  value={ExportFormat.Turtle.mimeType}
+                  onChange={() => selectSkos(ExportFormat.Turtle)}
+                  checked={
+                    type === ExportType.SKOS && format === ExportFormat.Turtle
+                  }
                 />
                 {i18n("vocabulary.summary.export.ttl")}
               </Label>
@@ -123,10 +123,12 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
               <Label check={true}>
                 <Input
                   type="radio"
-                  name={ExportType.RdfXml.mimeType}
-                  value={ExportType.RdfXml.mimeType}
-                  onChange={() => selectSkos(ExportType.RdfXml)}
-                  checked={type === Type.SKOS && format === ExportType.RdfXml}
+                  name={ExportFormat.RdfXml.mimeType}
+                  value={ExportFormat.RdfXml.mimeType}
+                  onChange={() => selectSkos(ExportFormat.RdfXml)}
+                  checked={
+                    type === ExportType.SKOS && format === ExportFormat.RdfXml
+                  }
                 />
                 {i18n("vocabulary.summary.export.rdfxml")}
               </Label>
@@ -139,13 +141,13 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
             <Label check={true}>
               <Input
                 type="radio"
-                name={Type.SKOS_WITH_REFS}
-                value={Type.SKOS_WITH_REFS}
+                name={ExportType.SKOS_WITH_REFERENCES}
+                value={ExportType.SKOS_WITH_REFERENCES}
                 onChange={() => {
-                  setType(Type.SKOS_WITH_REFS);
-                  setFormat(ExportType.Turtle);
+                  setType(ExportType.SKOS_WITH_REFERENCES);
+                  setFormat(ExportFormat.Turtle);
                 }}
-                checked={type === Type.SKOS_WITH_REFS}
+                checked={type === ExportType.SKOS_WITH_REFERENCES}
               />
               {i18n("vocabulary.summary.export.skosWithRefs")}
             </Label>
@@ -156,11 +158,12 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
               <Label check={true}>
                 <Input
                   type="radio"
-                  name={`${ExportType.Turtle.mimeType}-withRefs`}
-                  value={ExportType.Turtle.mimeType}
-                  onChange={() => selectSkosWithRefs(ExportType.Turtle)}
+                  name={`${ExportFormat.Turtle.mimeType}-withRefs`}
+                  value={ExportFormat.Turtle.mimeType}
+                  onChange={() => selectSkosWithRefs(ExportFormat.Turtle)}
                   checked={
-                    type === Type.SKOS_WITH_REFS && format === ExportType.Turtle
+                    type === ExportType.SKOS_WITH_REFERENCES &&
+                    format === ExportFormat.Turtle
                   }
                 />
                 {i18n("vocabulary.summary.export.ttl")}
@@ -171,11 +174,12 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
               <Label check={true}>
                 <Input
                   type="radio"
-                  name={`${ExportType.RdfXml.mimeType}-withRefs`}
-                  value={ExportType.RdfXml.mimeType}
-                  onChange={() => selectSkosWithRefs(ExportType.RdfXml)}
+                  name={`${ExportFormat.RdfXml.mimeType}-withRefs`}
+                  value={ExportFormat.RdfXml.mimeType}
+                  onChange={() => selectSkosWithRefs(ExportFormat.RdfXml)}
                   checked={
-                    type === Type.SKOS_WITH_REFS && format === ExportType.RdfXml
+                    type === ExportType.SKOS_WITH_REFERENCES &&
+                    format === ExportFormat.RdfXml
                   }
                 />
                 {i18n("vocabulary.summary.export.rdfxml")}
