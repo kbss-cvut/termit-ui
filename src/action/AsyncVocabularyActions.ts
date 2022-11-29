@@ -8,14 +8,13 @@ import {
   publishMessage,
   publishNotification,
 } from "./SyncActions";
-import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
+import { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import Ajax, { param, params } from "../util/Ajax";
+import Ajax, { param } from "../util/Ajax";
 import Constants from "../util/Constants";
 import { ErrorData } from "../model/ErrorInfo";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
-import ExportType from "../util/ExportType";
 import { AxiosResponse } from "axios";
 import Utils from "../util/Utils";
 import JsonLdUtils from "../util/JsonLdUtils";
@@ -26,6 +25,7 @@ import AggregatedChangeInfo, {
 import { getApiPrefix } from "./ActionUtils";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import NotificationType from "../model/NotificationType";
+import ExportConfig from "../model/local/ExportConfig";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -54,11 +54,7 @@ export function loadTermCount(vocabularyIri: IRI) {
   };
 }
 
-export function exportGlossary(
-  vocabularyIri: IRI,
-  type: ExportType,
-  queryParams: {} = {}
-) {
+export function exportGlossary(vocabularyIri: IRI, config: ExportConfig) {
   const action = {
     type: ActionType.EXPORT_GLOSSARY,
   };
@@ -71,9 +67,10 @@ export function exportGlossary(
       "/terms";
     return Ajax.getRaw(
       url,
-      params(queryParams)
-        .param("namespace", vocabularyIri.namespace)
-        .accept(type.mimeType)
+      param("namespace", vocabularyIri.namespace)
+        .param("exportType", config.type)
+        .param("property", config.referenceProperties)
+        .accept(config.format.mimeType)
         .responseType("arraybuffer")
     )
       .then((resp: AxiosResponse) => {
@@ -83,7 +80,7 @@ export function exportGlossary(
           : null;
         if (filenameMatch) {
           const fileName = filenameMatch[1];
-          Utils.fileDownload(resp.data, fileName, type.mimeType);
+          Utils.fileDownload(resp.data, fileName, config.format.mimeType);
           return dispatch(asyncActionSuccess(action));
         } else {
           const error: ErrorData = {
@@ -98,16 +95,6 @@ export function exportGlossary(
       })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
-}
-
-export function exportGlossaryWithExactMatchReferences(
-  vocabularyIri: IRI,
-  type: ExportType
-) {
-  return exportGlossary(vocabularyIri, type, {
-    withReferences: true,
-    property: [VocabularyUtils.SKOS_EXACT_MATCH],
-  });
 }
 
 /**

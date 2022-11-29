@@ -19,6 +19,7 @@ interface ConfirmCancelDialogProps {
   title: string;
   confirmKey: string;
   cancelKey?: string;
+  size?: string;
 }
 
 /**
@@ -30,7 +31,12 @@ const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
   const { i18n } = useI18n();
 
   return (
-    <Modal id={props.id} isOpen={props.show} toggle={props.onClose}>
+    <Modal
+      id={props.id}
+      isOpen={props.show}
+      toggle={props.onClose}
+      size={props.size}
+    >
       <ModalHeader toggle={props.onClose}>{props.title}</ModalHeader>
       <ModalBody>{props.children}</ModalBody>
       <ModalFooter>

@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import Vocabulary from "../../model/Vocabulary";
 import { useI18n } from "../hook/useI18n";
-import { Form, FormGroup, FormText, Input, Label } from "reactstrap";
+import { Col, Form, FormGroup, FormText, Input, Label, Row } from "reactstrap";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {
-  exportGlossary,
-  exportGlossaryWithExactMatchReferences,
-} from "../../action/AsyncVocabularyActions";
-import ExportType from "../../util/ExportType";
+import { exportGlossary } from "../../action/AsyncVocabularyActions";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
+import ExportConfig, {
+  ExportFormat,
+  ExportType,
+} from "../../model/local/ExportConfig";
 
 interface ExportVocabularyDialogProps {
   show: boolean;
@@ -18,39 +18,34 @@ interface ExportVocabularyDialogProps {
   vocabulary: Vocabulary;
 }
 
-export const Type = {
-  SKOS: "skos",
-  SKOS_WITH_REFS: "skosWithRefs",
-};
-
 const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
   show,
   onClose,
   vocabulary,
 }) => {
   const { i18n } = useI18n();
-  const [type, setType] = useState(Type.SKOS);
-  const [format, setFormat] = useState<ExportType>(ExportType.Turtle);
-  const selectSkos = (format: ExportType) => {
-    setType(Type.SKOS);
-    setFormat(format);
-  };
-  const selectSkosWithRefs = (format: ExportType) => {
-    setType(Type.SKOS_WITH_REFS);
-    setFormat(format);
+  const [type, setType] = useState(ExportType.SKOS);
+  const [format, setFormat] = useState<ExportFormat>(ExportFormat.Turtle);
+  const selectType = (selected: ExportType) => {
+    setType(selected);
+    if (
+      selected !== ExportType.SKOS &&
+      (format === ExportFormat.CSV || format === ExportFormat.Excel)
+    ) {
+      setFormat(ExportFormat.Turtle);
+    }
   };
   const dispatch: ThunkDispatch = useDispatch();
   const onExport = () => {
     const iri = VocabularyUtils.create(vocabulary.iri);
-    switch (type) {
-      case Type.SKOS:
-        dispatch(exportGlossary(iri, format)).then(onClose);
-        break;
-      case Type.SKOS_WITH_REFS:
-        dispatch(exportGlossaryWithExactMatchReferences(iri, format)).then(
-          onClose
-        );
+    const config = new ExportConfig(type, format);
+    if (
+      type === ExportType.SKOS_WITH_REFERENCES ||
+      type === ExportType.SKOS_FULL_WITH_REFERENCES
+    ) {
+      config.referenceProperties = [VocabularyUtils.SKOS_EXACT_MATCH];
     }
+    dispatch(exportGlossary(iri, config)).then(onClose);
   };
 
   return (
@@ -61,130 +56,140 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
       onClose={onClose}
       onConfirm={onExport}
       title={i18n("vocabulary.summary.export.title")}
+      size="lg"
     >
       <Form>
-        <FormGroup tag="fieldset">
-          <FormGroup check={true} className="mb-3">
-            <Label check={true}>
-              <Input
-                type="radio"
-                name={Type.SKOS}
-                value={Type.SKOS}
-                onChange={() => setType(Type.SKOS)}
-                checked={type === Type.SKOS}
-              />
-              {i18n("vocabulary.summary.export.skos")}
-            </Label>
-            <FormText className="mb-2">
-              {i18n("vocabulary.summary.export.skos.title")}
-            </FormText>
-            <FormGroup check={true} className="ml-2">
-              <Label check={true}>
-                <Input
-                  type="radio"
-                  name={ExportType.CSV.mimeType}
-                  value={ExportType.CSV.mimeType}
-                  onChange={() => selectSkos(ExportType.CSV)}
-                  checked={type === Type.SKOS && format === ExportType.CSV}
-                />
-                {i18n("vocabulary.summary.export.csv")}
-              </Label>
-              <FormText>{i18n("vocabulary.summary.export.csv.title")}</FormText>
-            </FormGroup>
-            <FormGroup check={true} className="ml-2">
-              <Label check={true}>
-                <Input
-                  type="radio"
-                  name={ExportType.Excel.mimeType}
-                  value={ExportType.Excel.mimeType}
-                  onChange={() => selectSkos(ExportType.Excel)}
-                  checked={type === Type.SKOS && format === ExportType.Excel}
-                />
-                {i18n("vocabulary.summary.export.excel")}
-              </Label>
-              <FormText>
-                {i18n("vocabulary.summary.export.excel.title")}
-              </FormText>
-            </FormGroup>
-            <FormGroup check={true} className="ml-2">
-              <Label check={true}>
-                <Input
-                  type="radio"
-                  name={ExportType.Turtle.mimeType}
-                  value={ExportType.Turtle.mimeType}
-                  onChange={() => selectSkos(ExportType.Turtle)}
-                  checked={type === Type.SKOS && format === ExportType.Turtle}
-                />
-                {i18n("vocabulary.summary.export.ttl")}
-              </Label>
-              <FormText>{i18n("vocabulary.summary.export.ttl.title")}</FormText>
-            </FormGroup>
-            <FormGroup check={true} className="ml-2">
-              <Label check={true}>
-                <Input
-                  type="radio"
-                  name={ExportType.RdfXml.mimeType}
-                  value={ExportType.RdfXml.mimeType}
-                  onChange={() => selectSkos(ExportType.RdfXml)}
-                  checked={type === Type.SKOS && format === ExportType.RdfXml}
-                />
-                {i18n("vocabulary.summary.export.rdfxml")}
-              </Label>
-              <FormText>
-                {i18n("vocabulary.summary.export.rdfxml.title")}
-              </FormText>
-            </FormGroup>
-          </FormGroup>
-          <FormGroup check={true}>
-            <Label check={true}>
-              <Input
-                type="radio"
-                name={Type.SKOS_WITH_REFS}
-                value={Type.SKOS_WITH_REFS}
-                onChange={() => {
-                  setType(Type.SKOS_WITH_REFS);
-                  setFormat(ExportType.Turtle);
-                }}
-                checked={type === Type.SKOS_WITH_REFS}
-              />
-              {i18n("vocabulary.summary.export.skosWithRefs")}
-            </Label>
-            <FormText className="mb-2">
-              {i18n("vocabulary.summary.export.skosWithRefs.title")}
-            </FormText>
-            <FormGroup check={true} className="ml-2">
-              <Label check={true}>
-                <Input
-                  type="radio"
-                  name={`${ExportType.Turtle.mimeType}-withRefs`}
-                  value={ExportType.Turtle.mimeType}
-                  onChange={() => selectSkosWithRefs(ExportType.Turtle)}
-                  checked={
-                    type === Type.SKOS_WITH_REFS && format === ExportType.Turtle
-                  }
-                />
-                {i18n("vocabulary.summary.export.ttl")}
-              </Label>
-              <FormText>{i18n("vocabulary.summary.export.ttl.title")}</FormText>
-            </FormGroup>
-            <FormGroup check={true} className="ml-2">
-              <Label check={true}>
-                <Input
-                  type="radio"
-                  name={`${ExportType.RdfXml.mimeType}-withRefs`}
-                  value={ExportType.RdfXml.mimeType}
-                  onChange={() => selectSkosWithRefs(ExportType.RdfXml)}
-                  checked={
-                    type === Type.SKOS_WITH_REFS && format === ExportType.RdfXml
-                  }
-                />
-                {i18n("vocabulary.summary.export.rdfxml")}
-              </Label>
-              <FormText>
-                {i18n("vocabulary.summary.export.rdfxml.title")}
-              </FormText>
-            </FormGroup>
-          </FormGroup>
+        <FormGroup tag="fieldset" className="mb-0">
+          <Row>
+            <Col xs={7} lg={8}>
+              <FormGroup check={true}>
+                <Label check={true}>
+                  <Input
+                    type="radio"
+                    name={ExportType.SKOS}
+                    value={ExportType.SKOS}
+                    onChange={() => selectType(ExportType.SKOS)}
+                    checked={type === ExportType.SKOS}
+                  />
+                  {i18n("vocabulary.summary.export.skos")}
+                </Label>
+                <FormText className="mb-2">
+                  {i18n("vocabulary.summary.export.skos.title")}
+                </FormText>
+                <Label check={true}>
+                  <Input
+                    type="radio"
+                    name={ExportType.SKOS_FULL}
+                    value={ExportType.SKOS_FULL}
+                    onChange={() => selectType(ExportType.SKOS_FULL)}
+                    checked={type === ExportType.SKOS_FULL}
+                  />
+                  {i18n("vocabulary.summary.export.skosFull")}
+                </Label>
+                <FormText className="mb-2">
+                  {i18n("vocabulary.summary.export.skosFull.title")}
+                </FormText>
+                <Label check={true}>
+                  <Input
+                    type="radio"
+                    name={ExportType.SKOS_WITH_REFERENCES}
+                    value={ExportType.SKOS_WITH_REFERENCES}
+                    onChange={() => selectType(ExportType.SKOS_WITH_REFERENCES)}
+                    checked={type === ExportType.SKOS_WITH_REFERENCES}
+                  />
+                  {i18n("vocabulary.summary.export.skosWithRefs")}
+                </Label>
+                <FormText className="mb-2">
+                  {i18n("vocabulary.summary.export.skosWithRefs.title")}
+                </FormText>
+                <Label check={true}>
+                  <Input
+                    type="radio"
+                    name={ExportType.SKOS_FULL_WITH_REFERENCES}
+                    value={ExportType.SKOS_FULL_WITH_REFERENCES}
+                    onChange={() =>
+                      selectType(ExportType.SKOS_FULL_WITH_REFERENCES)
+                    }
+                    checked={type === ExportType.SKOS_FULL_WITH_REFERENCES}
+                  />
+                  {i18n("vocabulary.summary.export.skosFullWithRefs")}
+                </Label>
+                <FormText className="mb-2">
+                  {i18n("vocabulary.summary.export.skosFullWithRefs.title")}
+                </FormText>
+              </FormGroup>
+            </Col>
+            <Col xs={5} lg={4}>
+              <FormGroup check={true}>
+                {type === ExportType.SKOS && (
+                  <>
+                    <Label check={true}>
+                      <Input
+                        type="radio"
+                        name={ExportFormat.CSV.mimeType}
+                        value={ExportFormat.CSV.mimeType}
+                        onChange={() => setFormat(ExportFormat.CSV)}
+                        checked={
+                          type === ExportType.SKOS &&
+                          format === ExportFormat.CSV
+                        }
+                      />
+                      {i18n("vocabulary.summary.export.csv")}
+                    </Label>
+                    <FormText>
+                      {i18n("vocabulary.summary.export.csv.title")}
+                    </FormText>
+                  </>
+                )}
+                {type === ExportType.SKOS && (
+                  <>
+                    <Label check={true}>
+                      <Input
+                        type="radio"
+                        name={ExportFormat.Excel.mimeType}
+                        value={ExportFormat.Excel.mimeType}
+                        onChange={() => setFormat(ExportFormat.Excel)}
+                        checked={
+                          type === ExportType.SKOS &&
+                          format === ExportFormat.Excel
+                        }
+                      />
+                      {i18n("vocabulary.summary.export.excel")}
+                    </Label>
+                    <FormText>
+                      {i18n("vocabulary.summary.export.excel.title")}
+                    </FormText>
+                  </>
+                )}
+                <Label check={true}>
+                  <Input
+                    type="radio"
+                    name={ExportFormat.Turtle.mimeType}
+                    value={ExportFormat.Turtle.mimeType}
+                    onChange={() => setFormat(ExportFormat.Turtle)}
+                    checked={format === ExportFormat.Turtle}
+                  />
+                  {i18n("vocabulary.summary.export.ttl")}
+                </Label>
+                <FormText>
+                  {i18n("vocabulary.summary.export.ttl.title")}
+                </FormText>
+                <Label check={true}>
+                  <Input
+                    type="radio"
+                    name={ExportFormat.RdfXml.mimeType}
+                    value={ExportFormat.RdfXml.mimeType}
+                    onChange={() => setFormat(ExportFormat.RdfXml)}
+                    checked={format === ExportFormat.RdfXml}
+                  />
+                  {i18n("vocabulary.summary.export.rdfxml")}
+                </Label>
+                <FormText>
+                  {i18n("vocabulary.summary.export.rdfxml.title")}
+                </FormText>
+              </FormGroup>
+            </Col>
+          </Row>
         </FormGroup>
       </Form>
     </ConfirmCancelDialog>
