@@ -212,6 +212,8 @@ const en = {
     "vocabulary.summary.export.title":
       "Export glossary terms from this vocabulary",
     "vocabulary.summary.export.text": "Export",
+    "vocabulary.summary.export.type": "Export type",
+    "vocabulary.summary.export.format": "Export format",
     "vocabulary.summary.export.skos": "Basic SKOS",
     "vocabulary.summary.export.skos.title":
       "Export a SKOS-compatible glossary.",

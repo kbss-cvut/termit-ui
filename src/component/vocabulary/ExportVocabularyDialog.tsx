@@ -62,6 +62,9 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
         <FormGroup tag="fieldset" className="mb-0">
           <Row>
             <Col xs={7} lg={8}>
+              <Label className="mb-3">
+                {i18n("vocabulary.summary.export.type")}
+              </Label>
               <FormGroup check={true}>
                 <Label check={true}>
                   <Input
@@ -120,6 +123,9 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
               </FormGroup>
             </Col>
             <Col xs={5} lg={4}>
+              <Label className="mb-3">
+                {i18n("vocabulary.summary.export.format")}
+              </Label>
               <FormGroup check={true}>
                 {type === ExportType.SKOS && (
                   <>

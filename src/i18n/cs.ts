@@ -220,6 +220,8 @@ const cs = {
     "vocabulary.summary.gotodetail.text": "Zobrazit",
     "vocabulary.summary.export.title": "Exportovat pojmy ze slovníku",
     "vocabulary.summary.export.text": "Exportovat",
+    "vocabulary.summary.export.type": "Typ exportu",
+    "vocabulary.summary.export.format": "Formát exportu",
     "vocabulary.summary.export.skos": "Základní SKOS",
     "vocabulary.summary.export.skos.title":
       "Export glosáře ve struktuře kompatibilní se SKOS.",
