@@ -212,12 +212,20 @@ const en = {
     "vocabulary.summary.export.title":
       "Export glossary terms from this vocabulary",
     "vocabulary.summary.export.text": "Export",
-    "vocabulary.summary.export.skos": "SKOS",
+    "vocabulary.summary.export.type": "Export type",
+    "vocabulary.summary.export.format": "Export format",
+    "vocabulary.summary.export.skos": "Basic SKOS",
     "vocabulary.summary.export.skos.title":
       "Export a SKOS-compatible glossary.",
-    "vocabulary.summary.export.skosWithRefs": "SKOS + exact matches",
+    "vocabulary.summary.export.skosFull": "Full SKOS",
+    "vocabulary.summary.export.skosFull.title":
+      "Export a SKOS-compatible glossary including all additional properties of terms.",
+    "vocabulary.summary.export.skosWithRefs": "Basic SKOS + exact matches",
     "vocabulary.summary.export.skosWithRefs.title":
       "Export a SKOS-compatible glossary including terms from other vocabularies referenced via the exact match relationship.",
+    "vocabulary.summary.export.skosFullWithRefs": "Full SKOS + exact matches",
+    "vocabulary.summary.export.skosFullWithRefs.title":
+      "Export a SKOS-compatible glossary including all additional properties of terms. The export also contains terms from other vocabularies referenced via the exact match relationship.",
     "vocabulary.summary.export.csv": "CSV",
     "vocabulary.summary.export.csv.title": "Export to CSV.",
     "vocabulary.summary.export.excel": "Excel",

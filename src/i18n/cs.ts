@@ -220,12 +220,20 @@ const cs = {
     "vocabulary.summary.gotodetail.text": "Zobrazit",
     "vocabulary.summary.export.title": "Exportovat pojmy ze slovníku",
     "vocabulary.summary.export.text": "Exportovat",
-    "vocabulary.summary.export.skos": "SKOS",
+    "vocabulary.summary.export.type": "Typ exportu",
+    "vocabulary.summary.export.format": "Formát exportu",
+    "vocabulary.summary.export.skos": "Základní SKOS",
     "vocabulary.summary.export.skos.title":
       "Export glosáře ve struktuře kompatibilní se SKOS.",
-    "vocabulary.summary.export.skosWithRefs": "SKOS + exact matches",
+    "vocabulary.summary.export.skosFull": "Plný SKOS",
+    "vocabulary.summary.export.skosFull.title":
+      "Export glosáře ve struktuře kompatibilní se SKOS včetně všech dalších atributů pojmů.",
+    "vocabulary.summary.export.skosWithRefs": "Základní SKOS + stejné významy",
     "vocabulary.summary.export.skosWithRefs.title":
       "Export glosáře ve struktuře kompatibilní se SKOS, obsahující i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku.",
+    "vocabulary.summary.export.skosFullWithRefs": "Plný SKOS + stejné významy",
+    "vocabulary.summary.export.skosFullWithRefs.title":
+      "Export glosáře ve struktuře kompatibilní se SKOS včetně všech dalších atributů pojmů. Export obsahuje i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku.",
     "vocabulary.summary.export.csv": "CSV",
     "vocabulary.summary.export.csv.title": "Export ve formátu CSV.",
     "vocabulary.summary.export.excel": "Excel",

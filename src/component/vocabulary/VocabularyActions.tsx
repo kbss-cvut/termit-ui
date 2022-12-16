@@ -6,7 +6,7 @@ import {
   DropdownToggle,
   UncontrolledButtonDropdown,
 } from "reactstrap";
-import { GoClippy, GoCloudDownload } from "react-icons/go";
+import { GoClippy, GoCloudDownload, GoCloudUpload } from "react-icons/go";
 import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
 import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
@@ -28,64 +28,79 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
   onCreateSnapshot,
 }) => {
   const { i18n } = useI18n();
+  const [showImportDialog, setShowImportDialog] = React.useState(false);
 
   return (
-    <UncontrolledButtonDropdown className="ml-1">
-      <DropdownToggle
-        size="sm"
-        caret={false}
-        color="primary"
-        style={{ borderRadius: "0.2rem" }}
-      >
-        <span className="dropdown-toggle">{i18n("moreActions")}</span>
-      </DropdownToggle>
-      <DropdownMenu className="vocabulary-actions-menu" right={true}>
-        <DropdownItem
-          key="vocabulary-export"
-          name="vocabulary-export"
-          className="btn-sm"
-          onClick={onExport}
-          title={i18n("vocabulary.summary.export.title")}
+    <>
+      <ImportBackupOfVocabulary
+        onImport={onImport}
+        showDialog={showImportDialog}
+        closeDialog={() => setShowImportDialog(false)}
+      />
+      <UncontrolledButtonDropdown className="ml-1">
+        <DropdownToggle
+          size="sm"
+          caret={false}
+          color="primary"
+          style={{ borderRadius: "0.2rem" }}
         >
-          <GoCloudDownload className="mr-1" />
-          {i18n("vocabulary.summary.export.text")}
-        </DropdownItem>
-        <IfVocabularyEditAuthorized
-          key="vocabulary-import"
-          vocabulary={vocabulary}
-        >
-          <ImportBackupOfVocabulary performAction={onImport} />
-        </IfVocabularyEditAuthorized>
-        <IfVocabularyEditAuthorized
-          key="vocabulary-analyze"
-          vocabulary={vocabulary}
-        >
+          <span className="dropdown-toggle">{i18n("moreActions")}</span>
+        </DropdownToggle>
+        <DropdownMenu className="vocabulary-actions-menu" right={true}>
           <DropdownItem
-            name="vocabulary-analyze"
+            key="vocabulary-export"
+            name="vocabulary-export"
             className="btn-sm"
-            onClick={onAnalyze}
-            title={i18n("vocabulary.summary.startTextAnalysis.title")}
+            onClick={onExport}
+            title={i18n("vocabulary.summary.export.title")}
           >
-            <GoClippy className="mr-1 align-text-top" />
-            {i18n("file.metadata.startTextAnalysis.text")}
+            <GoCloudDownload className="mr-1" />
+            {i18n("vocabulary.summary.export.text")}
           </DropdownItem>
-        </IfVocabularyEditAuthorized>
-        <IfVocabularyEditAuthorized
-          key="vocabulary-snapshot"
-          vocabulary={vocabulary}
-        >
-          <DropdownItem
-            name="vocabulary-snapshot"
-            className="btn-sm"
-            onClick={onCreateSnapshot}
-            title={i18n("vocabulary.snapshot.create.title")}
+          <IfVocabularyEditAuthorized
+            key="vocabulary-import"
+            vocabulary={vocabulary}
           >
-            <FaCamera className="mr-1 align-text-top" />
-            {i18n("vocabulary.snapshot.create.label")}
-          </DropdownItem>
-        </IfVocabularyEditAuthorized>
-      </DropdownMenu>
-    </UncontrolledButtonDropdown>
+            <DropdownItem
+              className="btn-sm"
+              onClick={() => setShowImportDialog(true)}
+              title={i18n("vocabulary.summary.import.action.tooltip")}
+            >
+              <GoCloudUpload className="mr-1" />
+              {i18n("vocabulary.summary.import.action")}
+            </DropdownItem>
+          </IfVocabularyEditAuthorized>
+          <IfVocabularyEditAuthorized
+            key="vocabulary-analyze"
+            vocabulary={vocabulary}
+          >
+            <DropdownItem
+              name="vocabulary-analyze"
+              className="btn-sm"
+              onClick={onAnalyze}
+              title={i18n("vocabulary.summary.startTextAnalysis.title")}
+            >
+              <GoClippy className="mr-1 align-text-top" />
+              {i18n("file.metadata.startTextAnalysis.text")}
+            </DropdownItem>
+          </IfVocabularyEditAuthorized>
+          <IfVocabularyEditAuthorized
+            key="vocabulary-snapshot"
+            vocabulary={vocabulary}
+          >
+            <DropdownItem
+              name="vocabulary-snapshot"
+              className="btn-sm"
+              onClick={onCreateSnapshot}
+              title={i18n("vocabulary.snapshot.create.title")}
+            >
+              <FaCamera className="mr-1 align-text-top" />
+              {i18n("vocabulary.snapshot.create.label")}
+            </DropdownItem>
+          </IfVocabularyEditAuthorized>
+        </DropdownMenu>
+      </UncontrolledButtonDropdown>
+    </>
   );
 };
 

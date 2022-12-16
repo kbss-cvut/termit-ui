@@ -1,27 +1,28 @@
-import { useState } from "react";
-import { DropdownItem, Modal, ModalBody, ModalHeader } from "reactstrap";
-import { GoCloudUpload } from "react-icons/go";
+import React from "react";
+import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import ImportVocabularyPanel from "./ImportVocabularyPanel";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 
 interface ImportVocabularyProps {
-  performAction: (file: File, rename: Boolean) => Promise<any>;
+  showDialog: boolean;
+  onImport: (file: File, rename: Boolean) => Promise<any>;
+  closeDialog: () => void;
 }
 
-export const ImportVocabulary = (props: ImportVocabularyProps) => {
+export const ImportVocabulary: React.FC<ImportVocabularyProps> = ({
+  showDialog,
+  closeDialog,
+  onImport,
+}) => {
   const { i18n } = useI18n();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const toggle = () => setDialogOpen(!dialogOpen);
   const onSubmit = (file: File, rename: Boolean) =>
-    trackPromise(props.performAction(file, rename), "vocabulary-import").then(
-      toggle
-    );
+    trackPromise(onImport(file, rename), "vocabulary-import").then(closeDialog);
 
   return (
     <>
-      <Modal isOpen={dialogOpen} toggle={toggle}>
+      <Modal isOpen={showDialog} toggle={closeDialog}>
         <ModalHeader>
           {i18n("vocabulary.summary.import.dialog.title")}
         </ModalHeader>
@@ -30,19 +31,11 @@ export const ImportVocabulary = (props: ImportVocabularyProps) => {
           <ImportVocabularyPanel
             propKeyPrefix="vocabulary.summary.import"
             onSubmit={onSubmit}
-            onCancel={toggle}
+            onCancel={closeDialog}
             allowRename={false}
           />
         </ModalBody>
       </Modal>
-      <DropdownItem
-        className="btn-sm"
-        onClick={toggle}
-        title={i18n("vocabulary.summary.import.action.tooltip")}
-      >
-        <GoCloudUpload className="mr-1" />
-        {i18n("vocabulary.summary.import.action")}
-      </DropdownItem>
     </>
   );
 };
