@@ -722,6 +722,10 @@ const en = {
     "auth.notEditable.message.unauthorized":
       "You have insufficient rights to edit this { type }.",
     "auth.notEditable.message.readOnly": "This { type } is read only.",
+
+    "demo.notice":
+      "This is a demo deployment. Use <b>demo</b>/<b>demo</b> to log in or register a new account. " +
+      "Please be aware that user-created data in this deployment may be deleted without prior warning.",
   },
 };
 

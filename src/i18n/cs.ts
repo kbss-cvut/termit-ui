@@ -734,6 +734,10 @@ const cs = {
     "auth.notEditable.message.unauthorized":
       "K editaci tohoto objektu nemáte dostatečná práva.",
     "auth.notEditable.message.readOnly": "Tento { type } je pouze pro čtení.",
+
+    "demo.notice":
+      "Toto je demo instance. K přihlášení můžete použít <b>demo</b>/<b>demo</b> nebo se zaregistrujte. " +
+      "Vezměte, prosím, na vědomí, že data vytvořená uživateli v této instanci mohou být bez předchozího varování smazána.",
   },
 };
 
