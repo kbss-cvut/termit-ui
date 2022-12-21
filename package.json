@@ -75,7 +75,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "prettier:check": "prettier --check ./src",
     "prettier:fix": "prettier --write ./src",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "version": "echo $npm_package_version"
   },
   "devDependencies": {
     "@redux-devtools/extension": "^3.2.2",
