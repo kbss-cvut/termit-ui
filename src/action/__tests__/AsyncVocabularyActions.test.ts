@@ -9,14 +9,16 @@ import { ThunkDispatch } from "../../util/Types";
 import ActionType from "../ActionType";
 import {
   exportGlossary,
-  exportGlossaryWithExactMatchReferences,
   loadTermCount,
   loadVocabularyContentChanges,
   loadVocabularySnapshots,
 } from "../AsyncVocabularyActions";
 import AsyncActionStatus from "../AsyncActionStatus";
-import ExportType from "../../util/ExportType";
 import Utils from "../../util/Utils";
+import ExportConfig, {
+  ExportFormat,
+  ExportType,
+} from "../../model/local/ExportConfig";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -101,7 +103,7 @@ describe("AsyncTermActions", () => {
       Ajax.getRaw = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: "test",
-          headers: { "Content-type": ExportType.CSV.mimeType },
+          headers: { "Content-type": ExportFormat.CSV.mimeType },
         })
       );
       return Promise.resolve(
@@ -111,7 +113,7 @@ describe("AsyncTermActions", () => {
               namespace,
               fragment: name,
             },
-            ExportType.CSV
+            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
           )
         )
       ).then(() => {
@@ -127,16 +129,20 @@ describe("AsyncTermActions", () => {
 
     it("passes additional parameters as query parameters when specified", () => {
       const name = "test-vocabulary";
-      const qParams = {
-        withReferences: true,
-        property: [Generator.generateUri(), Generator.generateUri()],
-      };
       Ajax.getRaw = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: "test",
-          headers: { "Content-type": ExportType.Turtle.mimeType },
+          headers: { "Content-type": ExportFormat.Turtle.mimeType },
         })
       );
+      const exportConfig = new ExportConfig(
+        ExportType.SKOS_WITH_REFERENCES,
+        ExportFormat.Turtle
+      );
+      exportConfig.referenceProperties = [
+        Generator.generateUri(),
+        Generator.generateUri(),
+      ];
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           exportGlossary(
@@ -144,8 +150,7 @@ describe("AsyncTermActions", () => {
               namespace,
               fragment: name,
             },
-            ExportType.Turtle,
-            qParams
+            exportConfig
           )
         )
       ).then(() => {
@@ -156,34 +161,37 @@ describe("AsyncTermActions", () => {
         );
         const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
         expect(config.getParams().namespace).toEqual(namespace);
-        Object.getOwnPropertyNames((p: string) =>
-          expect(config.getParams()[p]).toEqual(qParams[p])
+        expect(config.getParams().exportType).toEqual(exportConfig.type);
+        expect(config.getParams().property).toEqual(
+          exportConfig.referenceProperties
         );
       });
     });
 
     it.each([
-      ExportType.CSV,
-      ExportType.Excel,
-      ExportType.Turtle,
-      ExportType.RdfXml,
+      ExportFormat.CSV,
+      ExportFormat.Excel,
+      ExportFormat.Turtle,
+      ExportFormat.RdfXml,
     ])(
       "sets accept type based on specified export type",
-      (type: ExportType) => {
+      (format: ExportFormat) => {
         const iri = VocabularyUtils.create(Generator.generateUri());
         Ajax.getRaw = jest.fn().mockImplementation(() =>
           Promise.resolve({
             data: "test",
-            headers: { "Content-type": type.mimeType },
+            headers: { "Content-type": format.mimeType },
           })
         );
         return Promise.resolve(
-          (store.dispatch as ThunkDispatch)(exportGlossary(iri, type))
+          (store.dispatch as ThunkDispatch)(
+            exportGlossary(iri, new ExportConfig(ExportType.SKOS, format))
+          )
         ).then(() => {
           expect(Ajax.getRaw).toHaveBeenCalled();
           const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
           expect(config.getHeaders()[Constants.Headers.ACCEPT]).toEqual(
-            type.mimeType
+            format.mimeType
           );
         });
       }
@@ -204,7 +212,12 @@ describe("AsyncTermActions", () => {
       );
       Utils.fileDownload = jest.fn();
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
+        (store.dispatch as ThunkDispatch)(
+          exportGlossary(
+            iri,
+            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
+          )
+        )
       ).then(() => {
         expect(Utils.fileDownload).toHaveBeenCalledWith(
           data,
@@ -229,7 +242,12 @@ describe("AsyncTermActions", () => {
       );
       Utils.fileDownload = jest.fn();
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
+        (store.dispatch as ThunkDispatch)(
+          exportGlossary(
+            iri,
+            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
+          )
+        )
       ).then(() => {
         expect(store.getActions().length).toEqual(2);
         const successAction = store.getActions()[1];
@@ -251,47 +269,17 @@ describe("AsyncTermActions", () => {
       );
       Utils.fileDownload = jest.fn();
       return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(exportGlossary(iri, ExportType.CSV))
+        (store.dispatch as ThunkDispatch)(
+          exportGlossary(
+            iri,
+            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
+          )
+        )
       ).then(() => {
         expect(store.getActions().length).toEqual(3);
         const successAction = store.getActions()[1];
         expect(successAction.type).toEqual(ActionType.EXPORT_GLOSSARY);
         expect(successAction.status).toEqual(AsyncActionStatus.FAILURE);
-      });
-    });
-  });
-
-  describe("exportGlossaryWithExactMatchReferences", () => {
-    it("exports terms using skos:exactMatch as reference property", () => {
-      const name = "test-vocabulary";
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: "test",
-          headers: { "Content-type": ExportType.Turtle.mimeType },
-        })
-      );
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          exportGlossaryWithExactMatchReferences(
-            {
-              namespace,
-              fragment: name,
-            },
-            ExportType.Turtle
-          )
-        )
-      ).then(() => {
-        expect(Ajax.getRaw).toHaveBeenCalled();
-        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
-        expect(url).toEqual(
-          Constants.API_PREFIX + "/vocabularies/" + name + "/terms"
-        );
-        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
-        expect(config.getParams().namespace).toEqual(namespace);
-        expect(config.getParams().withReferences).toBeTruthy();
-        expect(config.getParams().property).toEqual([
-          VocabularyUtils.SKOS_EXACT_MATCH,
-        ]);
       });
     });
   });
