@@ -1,3 +1,8 @@
+#### Version 2.15.0
+
+- SKOS export extended with full export (all term attributes). Excel export extended as well.
+- SKOS reimport now preserves document references.
+
 #### Version 2.14.1
 
 - Do not send comment changes notification email when there are no changes.

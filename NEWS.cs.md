@@ -1,3 +1,8 @@
+#### Verze 2.15.0
+
+- Rozšíření možností exportu o plný export (všechny atributy pojmů). Přepracován i Excel export.
+- SKOS reimport nyní zachovává reference na dokument.
+
 #### Verze 2.14.1
 
 - Systém nyní neodesílá týdenní přehled nových a upravených komentářů, když žádné změny v komentářích nejsou.
