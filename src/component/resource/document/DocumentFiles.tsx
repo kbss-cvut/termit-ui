@@ -1,8 +1,7 @@
-import { useCallback } from "react";
 import Document from "../../../model/Document";
 import TermItFile, { FileData } from "../../../model/File";
 import { ThunkDispatch } from "../../../util/Types";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   createFileInDocument,
   removeFileFromDocument,
@@ -12,62 +11,47 @@ import {
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Files from "./Files";
 import NotificationType from "../../../model/NotificationType";
-import AppNotification from "../../../model/AppNotification";
 import { publishNotification } from "../../../action/SyncActions";
 import AddFile from "./AddFile";
 import FileContentLink from "../file/FileContentLink";
 import RemoveFile from "./RemoveFile";
 import RenameFile from "./RenameFile";
-import Resource from "../../../model/Resource";
 
 interface DocumentFilesProps {
   document: Document;
-  removeFile: (file: TermItFile, documentIri: string) => Promise<void>;
   onFileRemoved: () => void;
-  renameFile: (file: TermItFile) => Promise<Resource | null>;
   onFileRenamed: () => void;
-  addFile: (file: TermItFile, documentIri: string) => Promise<any>;
   onFileAdded: () => void;
-  uploadFile: (fileIri: string, file: File) => Promise<any>;
-  notify: (notification: AppNotification) => void;
 }
 
 export const DocumentFiles = (props: DocumentFilesProps) => {
-  const {
-    document,
-    addFile,
-    removeFile,
-    uploadFile,
-    renameFile,
-    notify,
-    onFileAdded,
-    onFileRemoved,
-    onFileRenamed,
-  } = props;
+  const { document, onFileAdded, onFileRemoved, onFileRenamed } = props;
+  const dispatch: ThunkDispatch = useDispatch();
 
-  const createFile = useCallback(
-    (termitFile: TermItFile, file: File): Promise<void> =>
-      addFile(termitFile, document.iri)
-        .then(() =>
-          uploadFile(termitFile.iri, file).then(() =>
-            notify({ source: { type: NotificationType.FILE_CONTENT_UPLOADED } })
+  const createFile = (termitFile: TermItFile, file: File): Promise<void> =>
+    dispatch(
+      createFileInDocument(termitFile, VocabularyUtils.create(document.iri))
+    )
+      .then(() =>
+        dispatch(
+          uploadFileContent(VocabularyUtils.create(termitFile.iri), file)
+        ).then(() =>
+          dispatch(
+            publishNotification({
+              source: { type: NotificationType.FILE_CONTENT_UPLOADED },
+            })
           )
         )
-        .then(onFileAdded),
-    [document, notify, onFileAdded, addFile, uploadFile]
-  );
+      )
+      .then(onFileAdded);
 
-  const deleteFile = useCallback(
-    (termitFile: TermItFile): Promise<void> =>
-      removeFile(termitFile, document.iri).then(onFileRemoved),
-    [document, onFileRemoved, removeFile]
-  );
+  const deleteFile = (termitFile: TermItFile) =>
+    dispatch(
+      removeFileFromDocument(termitFile, VocabularyUtils.create(document.iri))
+    ).then(onFileRemoved);
 
-  const modifyFile = useCallback(
-    (termitFile: FileData): Promise<void> =>
-      renameFile(new TermItFile(termitFile)).then(onFileRenamed),
-    [onFileRenamed, renameFile]
-  );
+  const modifyFile = (termitFile: FileData) =>
+    dispatch(updateResource(new TermItFile(termitFile))).then(onFileRenamed);
 
   if (!document) {
     return null;
@@ -91,18 +75,4 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
   );
 };
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    addFile: (file: TermItFile, documentIri: string) =>
-      dispatch(createFileInDocument(file, VocabularyUtils.create(documentIri))),
-    removeFile: (file: TermItFile, documentIri: string) =>
-      dispatch(
-        removeFileFromDocument(file, VocabularyUtils.create(documentIri))
-      ),
-    uploadFile: (fileIri: string, file: File) =>
-      dispatch(uploadFileContent(VocabularyUtils.create(fileIri), file)),
-    notify: (notification: AppNotification) =>
-      dispatch(publishNotification(notification)),
-    renameFile: (file: TermItFile) => dispatch(updateResource(file)),
-  };
-})(DocumentFiles);
+export default DocumentFiles;
