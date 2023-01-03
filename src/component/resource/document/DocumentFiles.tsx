@@ -4,6 +4,7 @@ import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch } from "react-redux";
 import {
   createFileInDocument,
+  exportFileContent,
   removeFileFromDocument,
   updateResource,
   uploadFileContent,
@@ -13,9 +14,9 @@ import Files from "./Files";
 import NotificationType from "../../../model/NotificationType";
 import { publishNotification } from "../../../action/SyncActions";
 import AddFile from "./AddFile";
-import FileContentLink from "../file/FileContentLink";
 import RemoveFile from "./RemoveFile";
 import RenameFile from "./RenameFile";
+import FileContentActions from "./FileContentActions";
 
 interface DocumentFilesProps {
   document: Document;
@@ -53,6 +54,9 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
   const modifyFile = (termitFile: FileData) =>
     dispatch(updateResource(new TermItFile(termitFile))).then(onFileRenamed);
 
+  const downloadFile = (termitFile: TermItFile) =>
+    dispatch(exportFileContent(VocabularyUtils.create(termitFile.iri)));
+
   if (!document) {
     return null;
   }
@@ -62,14 +66,18 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
       files={document.files}
       actions={[<AddFile key="add-file" performAction={createFile} />]}
       itemActions={(file: TermItFile) => [
-        <FileContentLink key="show-content-file" file={file} />,
+        <FileContentActions
+          key="file-content-actions"
+          file={file}
+          onDownload={downloadFile}
+        />,
+        <RenameFile key="rename-file" file={file} performAction={modifyFile} />,
         <RemoveFile
           key="remove-file"
           file={file}
           performAction={deleteFile.bind(this, file)}
           withConfirmation={true}
         />,
-        <RenameFile key="rename-file" file={file} performAction={modifyFile} />,
       ]}
     />
   );

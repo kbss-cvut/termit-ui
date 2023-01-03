@@ -309,11 +309,12 @@ const en = {
     "resource.create.file.select.label":
       "Drag & drop a file here, or click to select file",
     "resource.metadata.description": "Description",
-    "resource.metadata.file.content": "Show Content",
+    "resource.metadata.file.content": "Content",
     "resource.metadata.file.content.view": "View",
     "resource.metadata.file.content.view.tooltip":
       "View file content and annotate it",
     "resource.metadata.file.content.download": "Download",
+    "resource.metadata.file.content.download.tooltip": "Download the file",
     "resource.metadata.document.files.actions.add": "Add",
     "resource.metadata.document.files.actions.add.tooltip":
       "Add new file to this document",
