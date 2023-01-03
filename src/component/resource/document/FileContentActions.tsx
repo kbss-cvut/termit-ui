@@ -14,11 +14,13 @@ interface FileContentActionsProps {
   file: TermItFile;
 
   onDownload: (file: TermItFile) => void;
+  onDownloadOriginal: (file: TermItFile) => void;
 }
 
 const FileContentActions: React.FC<FileContentActionsProps> = ({
   file,
   onDownload,
+  onDownloadOriginal,
 }) => {
   const { i18n } = useI18n();
   return (
@@ -33,12 +35,26 @@ const FileContentActions: React.FC<FileContentActionsProps> = ({
         {i18n("resource.metadata.file.content")}
       </DropdownToggle>
       <DropdownMenu>
-        <FileContentLink file={file} wrapperComponent={DropdownItem} />
+        <FileContentLink
+          key="view-content"
+          file={file}
+          wrapperComponent={DropdownItem}
+        />
         <DropdownItem
+          key="download"
           onClick={() => onDownload(file)}
           title={i18n("resource.metadata.file.content.download.tooltip")}
         >
           {i18n("resource.metadata.file.content.download")}
+        </DropdownItem>
+        <DropdownItem
+          key="download-original"
+          onClick={() => onDownloadOriginal(file)}
+          title={i18n(
+            "resource.metadata.file.content.download.original.tooltip"
+          )}
+        >
+          {i18n("resource.metadata.file.content.download.original")}
         </DropdownItem>
       </DropdownMenu>
     </UncontrolledButtonDropdown>

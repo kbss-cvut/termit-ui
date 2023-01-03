@@ -17,6 +17,8 @@ import AddFile from "./AddFile";
 import RemoveFile from "./RemoveFile";
 import RenameFile from "./RenameFile";
 import FileContentActions from "./FileContentActions";
+import { DateTime } from "luxon";
+import Constants from "../../../util/Constants";
 
 interface DocumentFilesProps {
   document: Document;
@@ -45,17 +47,22 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
         )
       )
       .then(onFileAdded);
-
   const deleteFile = (termitFile: TermItFile) =>
     dispatch(
       removeFileFromDocument(termitFile, VocabularyUtils.create(document.iri))
     ).then(onFileRemoved);
-
   const modifyFile = (termitFile: FileData) =>
     dispatch(updateResource(new TermItFile(termitFile))).then(onFileRenamed);
-
   const downloadFile = (termitFile: TermItFile) =>
     dispatch(exportFileContent(VocabularyUtils.create(termitFile.iri)));
+  const downloadOriginal = (termitFile: TermItFile) => {
+    const timestamp = DateTime.fromMillis(0).toFormat(
+      Constants.TIMESTAMP_PARAM_FORMAT
+    );
+    dispatch(
+      exportFileContent(VocabularyUtils.create(termitFile.iri), timestamp)
+    );
+  };
 
   if (!document) {
     return null;
@@ -70,6 +77,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           key="file-content-actions"
           file={file}
           onDownload={downloadFile}
+          onDownloadOriginal={downloadOriginal}
         />,
         <RenameFile key="rename-file" file={file} performAction={modifyFile} />,
         <RemoveFile

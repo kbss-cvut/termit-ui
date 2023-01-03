@@ -321,6 +321,9 @@ const cs = {
       "Zobrazit obsah souboru a anotovat ho",
     "resource.metadata.file.content.download": "Stáhnout",
     "resource.metadata.file.content.download.tooltip": "Stáhnout soubor",
+    "resource.metadata.file.content.download.original": "Stáhnout originál",
+    "resource.metadata.file.content.download.original.tooltip":
+      "Stáhnout původní nahranou verzi souboru",
     "resource.metadata.document.files.actions.add": "Přidat",
     "resource.metadata.document.files.actions.add.tooltip":
       "Přidat nový soubor do tohoto dokumentu",

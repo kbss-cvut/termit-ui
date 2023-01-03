@@ -315,6 +315,9 @@ const en = {
       "View file content and annotate it",
     "resource.metadata.file.content.download": "Download",
     "resource.metadata.file.content.download.tooltip": "Download the file",
+    "resource.metadata.file.content.download.original": "Download original",
+    "resource.metadata.file.content.download.original.tooltip":
+      "Download the original uploaded file",
     "resource.metadata.document.files.actions.add": "Add",
     "resource.metadata.document.files.actions.add.tooltip":
       "Add new file to this document",

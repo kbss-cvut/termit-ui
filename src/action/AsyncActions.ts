@@ -1132,7 +1132,7 @@ export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
   };
 }
 
-export function exportFileContent(fileIri: IRI) {
+export function exportFileContent(fileIri: IRI, at?: string) {
   const action = {
     type: ActionType.EXPORT_FILE_CONTENT,
   };
@@ -1144,6 +1144,7 @@ export function exportFileContent(fileIri: IRI) {
       url,
       param("namespace", fileIri.namespace)
         .param("attachment", "true")
+        .param("at", at)
         .responseType("arraybuffer")
     )
       .then((resp: AxiosResponse) => {
