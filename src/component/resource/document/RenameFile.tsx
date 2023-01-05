@@ -28,7 +28,7 @@ export const RenameFile = (props: RenameFileProps) => {
         show={confirmationDialogOpen}
         asset={props.file}
       />
-      <Button color="success" size="sm" onClick={toggle} title={i18n("edit")}>
+      <Button color="primary" size="sm" onClick={toggle} title={i18n("edit")}>
         <GoPencil className="mr-1" />
         {i18n("edit")}
       </Button>

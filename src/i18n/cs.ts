@@ -315,11 +315,15 @@ const cs = {
     "resource.create.file.select.label":
       "Přetáhněte sem soubor myší, nebo klikněte pro výběr pomocí dialogu",
     "resource.metadata.description": "Popis",
-    "resource.metadata.file.content": "Zobraz obsah",
+    "resource.metadata.file.content": "Obsah",
     "resource.metadata.file.content.view": "Zobrazit",
     "resource.metadata.file.content.view.tooltip":
       "Zobrazit obsah souboru a anotovat ho",
     "resource.metadata.file.content.download": "Stáhnout",
+    "resource.metadata.file.content.download.tooltip": "Stáhnout soubor",
+    "resource.metadata.file.content.download.original": "Stáhnout originál",
+    "resource.metadata.file.content.download.original.tooltip":
+      "Stáhnout původní nahranou verzi souboru",
     "resource.metadata.document.files.actions.add": "Přidat",
     "resource.metadata.document.files.actions.add.tooltip":
       "Přidat nový soubor do tohoto dokumentu",
