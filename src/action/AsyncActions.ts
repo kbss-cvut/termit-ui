@@ -853,10 +853,7 @@ export function saveFileContent(fileIri: IRI, fileContent: string) {
     dispatch(asyncActionRequest(action, true));
     const fileBlob = new Blob([fileContent], { type: "text/html" });
     return uploadFile(fileIri, fileBlob)
-      .then(() => {
-        dispatch(asyncActionSuccess(action));
-        return dispatch(loadFileContent(fileIri));
-      })
+      .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return dispatch(
