@@ -1,11 +1,16 @@
 import { MainView } from "../MainView";
 import User, { EMPTY_USER } from "../../model/User";
+import {
+  Configuration,
+  DEFAULT_CONFIGURATION,
+} from "../../model/Configuration";
 import { intlFunctions } from "../../__tests__/environment/IntlUtil";
 import { shallow } from "enzyme";
 import { createMemoryHistory } from "history";
 import { Breadcrumbs } from "react-breadcrumbs";
 import { match, routingProps } from "../../__tests__/environment/TestUtil";
 import Generator from "../../__tests__/environment/Generator";
+import Constants from "../../util/Constants";
 
 describe("MainView", () => {
   let loadUser: () => Promise<any>;
@@ -19,6 +24,13 @@ describe("MainView", () => {
     username: "halsey@unsc.org",
     iri: Generator.generateUri(),
   });
+  const configuration: Configuration = {
+    iri: Generator.generateUri(),
+    language: Constants.DEFAULT_LANGUAGE,
+    roles: [],
+    maxFileUploadSize: "10MB",
+    versionSeparator: "/version",
+  };
 
   let actions: {
     loadUser: () => Promise<any>;
@@ -47,6 +59,7 @@ describe("MainView", () => {
           user={EMPTY_USER}
           sidebarExpanded={true}
           desktopView={true}
+          configuration={DEFAULT_CONFIGURATION}
           {...actions}
           {...intlFunctions()}
           {...routingProps()}
@@ -66,6 +79,7 @@ describe("MainView", () => {
           user={EMPTY_USER}
           sidebarExpanded={true}
           desktopView={true}
+          configuration={DEFAULT_CONFIGURATION}
           {...actions}
           {...intlFunctions()}
           {...routing}
@@ -85,6 +99,7 @@ describe("MainView", () => {
           user={nonEmptyUser}
           sidebarExpanded={true}
           desktopView={true}
+          configuration={DEFAULT_CONFIGURATION}
           {...actions}
           {...intlFunctions()}
           {...routing}
@@ -99,6 +114,7 @@ describe("MainView", () => {
           user={nonEmptyUser}
           sidebarExpanded={true}
           desktopView={true}
+          configuration={DEFAULT_CONFIGURATION}
           {...actions}
           {...intlFunctions()}
           {...routingProps()}
@@ -113,6 +129,7 @@ describe("MainView", () => {
           user={nonEmptyUser}
           sidebarExpanded={true}
           desktopView={true}
+          configuration={DEFAULT_CONFIGURATION}
           {...actions}
           {...intlFunctions()}
           {...routingProps()}
@@ -127,6 +144,7 @@ describe("MainView", () => {
           user={EMPTY_USER}
           sidebarExpanded={true}
           desktopView={true}
+          configuration={DEFAULT_CONFIGURATION}
           {...actions}
           {...intlFunctions()}
           {...routingProps()}
@@ -142,6 +160,7 @@ describe("MainView", () => {
         user={nonEmptyUser}
         sidebarExpanded={true}
         desktopView={true}
+        configuration={DEFAULT_CONFIGURATION}
         {...actions}
         {...intlFunctions()}
         {...routingProps()}
@@ -163,6 +182,7 @@ describe("MainView", () => {
         user={nonEmptyUser}
         sidebarExpanded={true}
         desktopView={true}
+        configuration={configuration}
         {...actions}
         history={createMemoryHistory()}
         location={locationVocabularies}
@@ -179,6 +199,7 @@ describe("MainView", () => {
         user={nonEmptyUser}
         sidebarExpanded={true}
         desktopView={true}
+        configuration={configuration}
         {...actions}
         {...intlFunctions()}
         {...routingProps()}
@@ -193,6 +214,7 @@ describe("MainView", () => {
         user={nonEmptyUser}
         sidebarExpanded={true}
         desktopView={false}
+        configuration={configuration}
         {...actions}
         {...intlFunctions()}
         {...routingProps()}

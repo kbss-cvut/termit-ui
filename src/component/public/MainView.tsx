@@ -112,8 +112,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
               </Navbar>
             )}
 
-            {/*
-                        // @ts-ignore */}
             {!this.isDashboardRoute() && (
               <Breadcrumbs className="breadcrumb-bar" separator="/" />
             )}

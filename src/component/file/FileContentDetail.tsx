@@ -20,6 +20,8 @@ import Mask from "../misc/Mask";
 import AppNotification from "../../model/AppNotification";
 import NotificationType from "../../model/NotificationType";
 import { loadAllTerms } from "../../action/AsyncAnnotatorActions";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
 interface FileDetailProvidedProps {
   iri: IRI;
@@ -31,8 +33,8 @@ interface FileDetailOwnProps extends HasI18n {
   fileContent: string | null;
   consumeNotification: (notification: AppNotification) => void;
   notifications: AppNotification[];
-  loadFileContent: (fileIri: IRI) => void;
-  saveFileContent: (fileIri: IRI, fileContent: string) => void;
+  loadFileContent: (fileIri: IRI) => Promise<any>;
+  saveFileContent: (fileIri: IRI, fileContent: string) => Promise<any>;
   clearFileContent: () => void;
   loadVocabulary: (vocabularyIri: IRI) => void;
   fetchTerms: (vocabularyIri: IRI) => Promise<any>;
@@ -42,7 +44,6 @@ type FileDetailProps = FileDetailOwnProps & FileDetailProvidedProps;
 
 interface FileDetailState {
   fileContentId: number;
-  termsLoading: boolean;
 }
 
 export class FileContentDetail extends React.Component<
@@ -53,7 +54,6 @@ export class FileContentDetail extends React.Component<
     super(props);
     this.state = {
       fileContentId: 1,
-      termsLoading: false,
     };
   }
 
@@ -65,10 +65,7 @@ export class FileContentDetail extends React.Component<
   };
 
   private initializeTermFetching = (): void => {
-    this.setState({ termsLoading: true });
-    this.props
-      .fetchTerms(this.props.vocabularyIri)
-      .then(() => this.setState({ termsLoading: false }));
+    trackPromise(this.props.fetchTerms(this.props.vocabularyIri), "annotator");
   };
 
   public componentDidMount(): void {
@@ -106,28 +103,34 @@ export class FileContentDetail extends React.Component<
   }
 
   private onUpdate = (newFileContent: string) => {
-    this.props.saveFileContent(
-      {
-        fragment: this.props.iri.fragment,
-        namespace: this.props.iri.namespace,
-      },
-      newFileContent
+    trackPromise(
+      this.props.saveFileContent(
+        {
+          fragment: this.props.iri.fragment,
+          namespace: this.props.iri.namespace,
+        },
+        newFileContent
+      ),
+      "annotator"
     );
   };
 
   public render() {
-    if (!this.props.fileContent || this.state.termsLoading) {
+    if (!this.props.fileContent) {
       return <Mask text={this.props.i18n("annotator.content.loading")} />;
     }
     return (
-      <Annotator
-        key={this.state.fileContentId}
-        fileIri={this.props.iri}
-        vocabularyIri={this.props.vocabularyIri}
-        initialHtml={this.props.fileContent}
-        scrollTo={this.props.scrollTo}
-        onUpdate={this.onUpdate}
-      />
+      <>
+        <PromiseTrackingMask area="annotator" coverViewport={true} />
+        <Annotator
+          key={this.state.fileContentId}
+          fileIri={this.props.iri}
+          vocabularyIri={this.props.vocabularyIri}
+          initialHtml={this.props.fileContent}
+          scrollTo={this.props.scrollTo}
+          onUpdate={this.onUpdate}
+        />
+      </>
     );
   }
 }

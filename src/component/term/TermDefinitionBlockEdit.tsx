@@ -33,7 +33,7 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
   };
   const onSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const src = e.currentTarget.value;
-    props.onChange({ sources: [src] });
+    props.onChange({ sources: src.trim().length > 0 ? [src] : [] });
   };
   const source = term.sources
     ? Utils.sanitizeArray(term.sources!).join()

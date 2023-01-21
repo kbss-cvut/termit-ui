@@ -4,7 +4,6 @@ import { FileData } from "../../../model/File";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { Link } from "react-router-dom";
 import Routes from "../../../util/Routes";
-import { GoFile } from "react-icons/go";
 import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch } from "react-redux";
 import { getContentType } from "../../../action/AsyncActions";
@@ -15,6 +14,7 @@ import { useI18n } from "../../hook/useI18n";
 interface FileContentLinkProps {
   id?: string;
   file: FileData;
+  wrapperComponent?: React.ComponentType;
 }
 
 function isSupported(contentType?: string | null) {
@@ -26,7 +26,7 @@ function isSupported(contentType?: string | null) {
 }
 
 const FileContentLink: React.FC<FileContentLinkProps> = (props) => {
-  const { id, file } = props;
+  const { id, file, wrapperComponent } = props;
   const dispatch = useDispatch<ThunkDispatch>();
   const { i18n } = useI18n();
   const [contentType, setContentType] = useState<string | null>(null);
@@ -43,16 +43,18 @@ const FileContentLink: React.FC<FileContentLinkProps> = (props) => {
     namespace: vocabularyIri.namespace,
     fileNamespace: fileIri.namespace,
   };
+  const Wrapper = wrapperComponent || React.Fragment;
   return isSupported(contentType) ? (
-    <Link
-      id={id}
-      className="btn btn-primary btn-sm"
-      title={i18n("resource.metadata.file.content.view.tooltip")}
-      to={Routes.annotateFile.link(params, query)}
-    >
-      <GoFile className="mr-1" />
-      {i18n("resource.metadata.file.content")}
-    </Link>
+    <Wrapper>
+      <Link
+        id={id}
+        title={i18n("resource.metadata.file.content.view.tooltip")}
+        to={Routes.annotateFile.link(params, query)}
+        style={{ color: "inherit" }}
+      >
+        {i18n("resource.metadata.file.content.view")}
+      </Link>
+    </Wrapper>
   ) : (
     <></>
   );

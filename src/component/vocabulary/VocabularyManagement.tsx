@@ -14,6 +14,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
+import IfUserIsAdmin from "../authorization/IfUserIsAdmin";
 
 interface VocabularyManagementProps {
   loadVocabularies: () => void;
@@ -41,7 +42,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         &nbsp;{i18n("vocabulary.management.new")}
       </Link>
     </IfUserIsEditor>,
-    <IfUserIsEditor key="analyze-vocabularies">
+    <IfUserIsAdmin key="analyze-vocabularies">
       <Button
         id="analyze-vocabularies"
         className="btn"
@@ -53,7 +54,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         <GoClippy />
         &nbsp;{i18n("file.metadata.startTextAnalysis.text")}
       </Button>
-    </IfUserIsEditor>,
+    </IfUserIsAdmin>,
   ];
 
   return (

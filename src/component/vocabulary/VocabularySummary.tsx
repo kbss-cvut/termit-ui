@@ -44,6 +44,7 @@ import classNames from "classnames";
 import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
 import Resource from "../../model/Resource";
 import Document, { DocumentData } from "../../model/Document";
+import NothingIfEmptyAsset from "../asset/NothingIfEmptyAsset";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -221,47 +222,49 @@ export class VocabularySummary extends EditableComponent<
     );
 
     return (
-      <div id="vocabulary-detail">
-        <WindowTitle
-          title={`${vocabulary.label} | ${i18n(
-            "vocabulary.management.vocabularies"
-          )}`}
-        />
-        <HeaderWithActions title={this.renderTitle()} actions={buttons} />
-        <RemoveAssetDialog
-          show={this.state.showRemoveDialog}
-          asset={vocabulary}
-          onCancel={this.onCloseRemove}
-          onSubmit={this.onRemove}
-        />
-        <ExportVocabularyDialog
-          show={this.state.showExportDialog}
-          onClose={this.onExportToggle}
-          vocabulary={vocabulary}
-        />
-        <CreateSnapshotDialog
-          vocabulary={vocabulary}
-          show={this.state.showSnapshotDialog}
-          onClose={this.onCreateSnapshotToggle}
-          onConfirm={this.onCreateSnapshot}
-        />
-        <PromiseTrackingMask area="vocabulary-summary" />
-        {this.state.edit ? (
-          <VocabularyEdit
-            save={this.onSave}
-            saveDocument={this.onDocumentSave}
-            cancel={this.onCloseEdit}
+      <NothingIfEmptyAsset asset={vocabulary}>
+        <div id="vocabulary-detail">
+          <WindowTitle
+            title={`${vocabulary.label} | ${i18n(
+              "vocabulary.management.vocabularies"
+            )}`}
+          />
+          <HeaderWithActions title={this.renderTitle()} actions={buttons} />
+          <RemoveAssetDialog
+            show={this.state.showRemoveDialog}
+            asset={vocabulary}
+            onCancel={this.onCloseRemove}
+            onSubmit={this.onRemove}
+          />
+          <ExportVocabularyDialog
+            show={this.state.showExportDialog}
+            onClose={this.onExportToggle}
             vocabulary={vocabulary}
           />
-        ) : (
-          <VocabularyMetadata
+          <CreateSnapshotDialog
             vocabulary={vocabulary}
-            location={this.props.location}
-            match={this.props.match}
-            onChange={this.loadVocabulary}
+            show={this.state.showSnapshotDialog}
+            onClose={this.onCreateSnapshotToggle}
+            onConfirm={this.onCreateSnapshot}
           />
-        )}
-      </div>
+          <PromiseTrackingMask area="vocabulary-summary" />
+          {this.state.edit ? (
+            <VocabularyEdit
+              save={this.onSave}
+              saveDocument={this.onDocumentSave}
+              cancel={this.onCloseEdit}
+              vocabulary={vocabulary}
+            />
+          ) : (
+            <VocabularyMetadata
+              vocabulary={vocabulary}
+              location={this.props.location}
+              match={this.props.match}
+              onChange={this.loadVocabulary}
+            />
+          )}
+        </div>
+      </NothingIfEmptyAsset>
     );
   }
 

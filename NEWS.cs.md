@@ -1,3 +1,9 @@
+#### Verze 2.16.0
+
+- Excel export vytváří nyní sheety pro jednotlivé jazyky slovníku.
+- Přidána možnost stáhnout soubor v současné verzi a ve verzi, ve které byl původně nahrán do TermItu.
+- Opravy drobných chyb, zrychlení práce s anotátorem (po označení/potvrzení výskytu pojmu se již dokument znovu nenačítá).
+
 #### Verze 2.15.0
 
 - Rozšíření možností exportu o plný export (všechny atributy pojmů). Přepracován i Excel export.
