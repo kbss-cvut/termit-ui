@@ -222,7 +222,7 @@ export default connect(
     return {
       loading: state.loading,
       user: state.user,
-      configuraton: state.configuration,
+      configuration: state.configuration,
       intl: state.intl, // Pass intl in props to force UI re-render on language switch
       sidebarExpanded: state.sidebarExpanded,
       desktopView: state.desktopView,
