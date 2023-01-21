@@ -1,3 +1,9 @@
+#### Version 2.16.0
+
+- Excel export now creates sheets for individual languages used in a vocabulary.
+- Added the possibility to download a file in its current version and the version originally uploaded to TermIt.
+- Minor fixes, improved annotator performance (the document is now not reloaded after a term occurrence is created/confirmed).
+
 #### Version 2.15.0
 
 - SKOS export extended with full export (all term attributes). Excel export extended as well.
