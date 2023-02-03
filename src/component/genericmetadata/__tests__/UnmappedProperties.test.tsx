@@ -44,6 +44,7 @@ describe("UnmappedProperties", () => {
     const items = wrapper.find("li");
     expect(items.length).toEqual(1);
     expect(items.exists(OutgoingLink)).toBeTruthy();
+    expect(items.get(0).props.children.props.label).toEqual(v);
   });
 
   it("renders multiple property values sorted lexicographically", () => {
