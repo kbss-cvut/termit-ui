@@ -22,8 +22,11 @@ export const ModifyFile = (props: ModifyFileProps) => {
     props
       .performRename(modifiedFile)
       .then(() => {
-        if (file) return props.performFileUpdate(props.file, file);
-        else return Promise.resolve();
+        if (file) {
+          return props.performFileUpdate(props.file, file);
+        } else {
+          return Promise.resolve();
+        }
       })
       .then(toggle);
   };

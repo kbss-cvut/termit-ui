@@ -182,7 +182,7 @@ const en = {
     "asset.create.hideAdvancedSection": "Hide advanced options",
     "asset.remove.tooltip": "Remove this asset",
     "asset.remove.dialog.title": 'Remove {type} "{label}"?',
-    "asset.rename.dialog.title": 'Modify {type} "{label}"',
+    "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
 
