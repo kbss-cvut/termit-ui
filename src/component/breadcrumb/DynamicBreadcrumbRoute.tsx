@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Route, RouteComponentProps, RouteProps } from "react-router-dom";
-import { Breadcrumb } from "react-breadcrumbs";
 import TermItState from "../../model/TermItState";
 import { useSelector } from "react-redux";
 import Asset from "../../model/Asset";
 import { useI18n } from "../hook/useI18n";
+import Breadcrumb from "./Breadcrumb";
 
 interface DynamicBreadcrumbRouteProps extends RouteProps {
   component: React.ComponentType<any>;
