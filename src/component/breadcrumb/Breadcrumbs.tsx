@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
@@ -21,18 +21,21 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   children,
 }) => {
   let hiddenMod = hidden ? `${block}--hidden` : "";
-  const crumbs = useSelector((state: TermItState) =>
-    state.breadcrumbs.sort((a, b) => {
+  const crumbs = useSelector((state: TermItState) => state.breadcrumbs);
+
+  const sortedCrumbs = useMemo(() => {
+    return [...crumbs].sort((a, b) => {
       return a.pathname.length - b.pathname.length;
-    })
-  );
+    });
+  }, [crumbs]);
+
   const Wrapper = wrapper;
 
   return (
     <div className={className}>
       <Wrapper className={`${block} ${hiddenMod}`}>
         <div className={`${block}__inner`}>
-          {crumbs.map((crumb, i) => (
+          {sortedCrumbs.map((crumb, i) => (
             <span key={crumb.id} className={`${block}__section`}>
               <NavLink
                 exact
