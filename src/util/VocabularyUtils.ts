@@ -130,6 +130,7 @@ const VocabularyUtils = {
   DC_LANGUAGE: _NS_DC + "language",
 
   XSD_DATETIME: _NS_XSD + "dateTime",
+  XSD_DATE: _NS_XSD + "date",
 
   SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
   SH_SOURCE_SHAPE: _NS_SH + "sourceShape",
