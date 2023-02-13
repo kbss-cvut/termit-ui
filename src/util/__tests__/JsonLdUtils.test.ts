@@ -19,7 +19,10 @@ describe("JsonLdUtils", () => {
         },
         lastModified: Date.now(),
       };
-      const result: any = JsonLdUtils.resolveReferences(data);
+      const result: any = JsonLdUtils.resolveReferences(
+        data,
+        new Map<string, object>()
+      );
       expect(result.lastEditor).toEqual(data.author);
     });
 
@@ -46,7 +49,10 @@ describe("JsonLdUtils", () => {
         ],
         lastModified: Date.now(),
       };
-      const result: any = JsonLdUtils.resolveReferences(data);
+      const result: any = JsonLdUtils.resolveReferences(
+        data,
+        new Map<string, object>()
+      );
       expect(result.editors[0]).toEqual(data.author);
     });
   });

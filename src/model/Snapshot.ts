@@ -2,7 +2,10 @@ import VocabularyUtils from "../util/VocabularyUtils";
 import { ASSET_CONTEXT, HasTypes } from "./Asset";
 
 const ctx = {
-  created: `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-vytvo\u0159en\u00ed-verze`,
+  created: {
+    "@id": `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-vytvo\u0159en\u00ed-verze`,
+    "@type": VocabularyUtils.XSD_DATETIME,
+  },
   versionOf: `${VocabularyUtils.PREFIX}/je-verz\u00ed`,
 };
 
