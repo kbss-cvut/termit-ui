@@ -52,6 +52,7 @@ const _NS_DC = "http://purl.org/dc/terms/";
 const _NS_SH = "http://www.w3.org/ns/shacl#";
 const _NS_SIOC = "http://rdfs.org/sioc/";
 const _NS_ACTIVITY_STREAMS = "http://www.w3.org/ns/activitystreams#";
+const _NS_XSD = "http://www.w3.org/2001/XMLSchema#";
 
 const VocabularyUtils = {
   PREFIX: _NS_POPIS_DAT,
@@ -127,6 +128,8 @@ const VocabularyUtils = {
   DC_LICENSE: _NS_DC + "license",
   DC_MODIFIED: _NS_DC + "modified",
   DC_LANGUAGE: _NS_DC + "language",
+
+  XSD_DATETIME: _NS_XSD + "dateTime",
 
   SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
   SH_SOURCE_SHAPE: _NS_SH + "sourceShape",

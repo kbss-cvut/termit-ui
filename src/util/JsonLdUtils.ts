@@ -17,7 +17,7 @@ export default class JsonLdUtils {
     context: JsonLdContext
   ): Promise<T> {
     return compact<T>(input, context).then((res) =>
-      JsonLdUtils.resolveReferences<T>(res)
+      JsonLdUtils.resolveReferences<T>(res, new Map<string, object>())
     );
   }
 
@@ -37,9 +37,12 @@ export default class JsonLdUtils {
     if (Array.isArray(input) && input.length === 0) {
       return Promise.resolve([]);
     }
+    const idMap = new Map<string, object>();
     return compact(input, context)
       .then((res) => JsonLdUtils.loadArrayFromCompactedGraph<T>(res))
-      .then((arr) => arr.map((item) => JsonLdUtils.resolveReferences<T>(item)));
+      .then((arr) =>
+        arr.map((item) => JsonLdUtils.resolveReferences<T>(item, idMap))
+      );
   }
 
   /**
@@ -64,11 +67,12 @@ export default class JsonLdUtils {
    * Replaces JSON-LD references to nodes (i.e., nodes with a single attribute - iri) with existing nodes encountered
    * in the specified input.
    * @param input JSON-LD compaction result to be processed
+   * @param idMap Map of already processed nodes (id -> node) to replace references with. Optional
    */
   public static resolveReferences<T extends JsonLdDictionary>(
-    input: JsonLdDictionary
+    input: JsonLdDictionary,
+    idMap: Map<string, object> = new Map<string, object>()
   ): T {
-    const idMap = new Map<string, object>();
     JsonLdUtils.processNode(input, idMap);
     return input as T;
   }
