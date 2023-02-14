@@ -3,6 +3,7 @@ import UnmappedProperties from "../UnmappedProperties";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import Utils from "../../../util/Utils";
+import OutgoingLink from "../../misc/OutgoingLink";
 
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
@@ -19,6 +20,7 @@ describe("UnmappedProperties", () => {
     const items = wrapper.find("li");
     expect(items.length).toEqual(1);
     expect(items.get(0).props.children).toEqual("test");
+    expect(items.exists(OutgoingLink)).toBeFalsy();
   });
 
   it("renders multiple literal values for a property", () => {
@@ -30,6 +32,7 @@ describe("UnmappedProperties", () => {
     expect(items.length).toEqual(2);
     expect(items.get(0).props.children).toEqual("test");
     expect(items.get(1).props.children).toEqual("test2");
+    expect(items.exists(OutgoingLink)).toBeFalsy();
   });
 
   it("handles object value for a property", () => {
@@ -40,7 +43,8 @@ describe("UnmappedProperties", () => {
     );
     const items = wrapper.find("li");
     expect(items.length).toEqual(1);
-    expect(items.get(0).props.children).toEqual(v);
+    expect(items.exists(OutgoingLink)).toBeTruthy();
+    expect(items.get(0).props.children.props.label).toEqual(v);
   });
 
   it("renders multiple property values sorted lexicographically", () => {
@@ -52,6 +56,7 @@ describe("UnmappedProperties", () => {
       <UnmappedProperties properties={properties} />
     );
     const items = wrapper.find("li");
+    expect(items.exists(OutgoingLink)).toBeFalsy();
     expect(items.length).toEqual(values.length);
     for (let i = 0; i < sortedValues.length; i++) {
       expect(items.get(i).props.children).toEqual(sortedValues[i]);

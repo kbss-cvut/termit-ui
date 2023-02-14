@@ -1,3 +1,8 @@
+#### Verze 2.16.1
+
+- Hodnoty dalších atributů, které reprezentují URL, jsou nyní zobrazeny jako klikatelné externí linky.
+- Interní technická vylepšení.
+
 #### Verze 2.16.0
 
 - Excel export vytváří nyní sheety pro jednotlivé jazyky slovníku.

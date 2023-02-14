@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Route, RouteComponentProps, RouteProps } from "react-router-dom";
-import { Breadcrumb } from "react-breadcrumbs";
+import Breadcrumb from "./Breadcrumb";
 
 interface BreadcrumbRouteProps extends RouteProps {
   title: string;

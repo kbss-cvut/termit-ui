@@ -192,7 +192,7 @@ const cs = {
     "asset.create.hideAdvancedSection": "Skrýt pokročilé možnosti",
     "asset.remove.tooltip": "Odstranit tento záznam",
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
-    "asset.rename.dialog.title": 'Přejmenovat {type} "{label}"',
+    "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
 
     "document.remove.tooltip.disabled":
@@ -314,6 +314,7 @@ const cs = {
 
     "resource.create.file.select.label":
       "Přetáhněte sem soubor myší, nebo klikněte pro výběr pomocí dialogu",
+    "resource.reupload.file.select.label": "Nahrajte novou verzi souboru",
     "resource.metadata.description": "Popis",
     "resource.metadata.file.content": "Obsah",
     "resource.metadata.file.content.view": "Zobrazit",

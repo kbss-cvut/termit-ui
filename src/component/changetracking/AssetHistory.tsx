@@ -2,7 +2,7 @@ import * as React from "react";
 import Asset, { AssetData } from "../../model/Asset";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import { Table } from "reactstrap";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { loadHistory as loadHistoryAction } from "../../action/AsyncActions";
 import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
@@ -17,13 +17,11 @@ import Term from "../../model/Term";
 
 interface AssetHistoryProps {
   asset: Asset;
-
-  loadHistory: (asset: Asset) => Promise<ChangeRecord[]>;
 }
 
-export const AssetHistory: React.FC<AssetHistoryProps> = (props) => {
-  const { asset, loadHistory } = props;
+export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
   const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
   React.useEffect(() => {
     if (asset.iri !== Constants.EMPTY_ASSET_IRI) {
@@ -37,7 +35,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = (props) => {
           types: asset.types,
         };
         const snapshotTimeCreated = Date.parse(asset.snapshotCreated()!);
-        loadHistory(modifiedAsset as Asset).then((recs) => {
+        dispatch(loadHistoryAction(modifiedAsset as Asset)).then((recs) => {
           //Show history which is relevant to the snapshot
           const filteredRecs = recs.filter(
             (r) => Date.parse(r.timestamp) < snapshotTimeCreated
@@ -45,12 +43,12 @@ export const AssetHistory: React.FC<AssetHistoryProps> = (props) => {
           setRecords(filteredRecs);
         });
       } else {
-        loadHistory(asset).then((recs) => {
+        dispatch(loadHistoryAction(asset)).then((recs) => {
           setRecords(recs);
         });
       }
     }
-  }, [asset, loadHistory]);
+  }, [asset, dispatch]);
   if (!records) {
     return <ContainerMask text={i18n("history.loading")} />;
   }
@@ -90,8 +88,4 @@ export const AssetHistory: React.FC<AssetHistoryProps> = (props) => {
   );
 };
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    loadHistory: (asset: Asset) => dispatch(loadHistoryAction(asset)),
-  };
-})(AssetHistory);
+export default AssetHistory;

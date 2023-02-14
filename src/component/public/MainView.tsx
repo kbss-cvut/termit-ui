@@ -4,7 +4,6 @@ import { Route, RouteComponentProps, Switch, withRouter } from "react-router";
 import Utils from "../../util/Utils";
 import classNames from "classnames";
 import { Container, Nav, Navbar, NavItem } from "reactstrap";
-import { Breadcrumbs } from "react-breadcrumbs";
 import Messages from "../message/Messages";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import Routes from "../../util/Routes";
@@ -27,6 +26,7 @@ import SearchVocabularies from "../search/SearchVocabularies";
 import Search from "../search/label/Search";
 import "../MainView.scss";
 import { loadConfiguration } from "../../action/AsyncActions";
+import Breadcrumbs from "../breadcrumb/Breadcrumbs";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   sidebarExpanded: boolean;

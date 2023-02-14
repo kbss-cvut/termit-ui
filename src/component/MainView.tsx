@@ -15,7 +15,6 @@ import Messages from "./message/Messages";
 import NavbarSearch from "./search/label/NavbarSearch";
 import { ThunkDispatch } from "../util/Types";
 import SearchTypeTabs from "./search/SearchTypeTabs";
-import { Breadcrumbs } from "react-breadcrumbs";
 import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
 import { loadUser } from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
@@ -30,6 +29,7 @@ import { openForEditing } from "../action/AsyncWorkspaceActions";
 import Constants from "../util/Constants";
 import Routing from "src/util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
+import Breadcrumbs from "./breadcrumb/Breadcrumbs";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")

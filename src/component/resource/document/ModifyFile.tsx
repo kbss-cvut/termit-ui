@@ -4,25 +4,35 @@ import IfUserIsEditor from "../../authorization/IfUserIsEditor";
 import { Button } from "reactstrap";
 import { GoPencil } from "react-icons/go";
 import TermItFile from "../../../model/File";
-import RenameFileDialog from "../../asset/RenameFileDialog";
+import ModifyFileDialog from "../../asset/ModifyFileDialog";
 
-interface RenameFileProps {
-  performAction: (file: TermItFile) => Promise<void>;
+interface ModifyFileProps {
+  performRename: (file: TermItFile) => Promise<void>;
+  performFileUpdate: (termitFile: TermItFile, file: File) => Promise<void>;
   file: TermItFile;
 }
 
-export const RenameFile = (props: RenameFileProps) => {
+export const ModifyFile = (props: ModifyFileProps) => {
   const { i18n } = useI18n();
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const toggle = () => setConfirmationDialogOpen(!confirmationDialogOpen);
 
-  const performAction = (label: string) => {
+  const performAction = (label: string, file?: File) => {
     const modifiedFile = Object.assign({}, props.file, { label: label.trim() });
-    props.performAction(modifiedFile).then(toggle);
+    props
+      .performRename(modifiedFile)
+      .then(() => {
+        if (file) {
+          return props.performFileUpdate(props.file, file);
+        } else {
+          return Promise.resolve();
+        }
+      })
+      .then(toggle);
   };
   return (
     <IfUserIsEditor>
-      <RenameFileDialog
+      <ModifyFileDialog
         onCancel={toggle}
         onSubmit={performAction}
         show={confirmationDialogOpen}
@@ -36,4 +46,4 @@ export const RenameFile = (props: RenameFileProps) => {
   );
 };
 
-export default RenameFile;
+export default ModifyFile;

@@ -3,7 +3,6 @@ import AssetCount from "./assetcount/AssetCount";
 import Vocabulary from "../../util/VocabularyUtils";
 import raw from "raw.macro";
 import TermTypeFrequency from "./termtypefrequency/TermTypeFrequency";
-import FullscreenablePanelWithActions from "../misc/FullscreenablePanelWithActions";
 import PanelWithActions from "../misc/PanelWithActions";
 import { Col, Row } from "reactstrap";
 import HeaderWithActions from "../misc/HeaderWithActions";
@@ -42,17 +41,14 @@ const Statistics: React.FC = () => {
       </Row>
       <Row>
         <Col>
-          <FullscreenablePanelWithActions
-            actions={[]}
-            title={i18n("statistics.term.count")}
-          >
+          <PanelWithActions title={i18n("statistics.term.count")}>
             <TermTypeFrequency
               sparqlQuery={raw("./termtypefrequency/TermTypeFrequency.rq")}
               empty={i18n("statistics.types.frequency.empty")}
               notFilled={i18n("statistics.notFilled")}
               lang={locale}
             />
-          </FullscreenablePanelWithActions>
+          </PanelWithActions>
         </Col>
       </Row>
     </div>

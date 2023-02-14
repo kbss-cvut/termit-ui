@@ -3,7 +3,10 @@ import User, { CONTEXT as USER_CONTEXT, UserData } from "../User";
 import Utils from "../../util/Utils";
 
 const ctx = {
-  timestamp: `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-modifikace`,
+  timestamp: {
+    "@id": `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-modifikace`,
+    "@type": VocabularyUtils.XSD_DATETIME,
+  },
   author: `${VocabularyUtils.PREFIX}m\u00e1-editora`,
   changedEntity: `${VocabularyUtils.PREFIX}m\u00e1-zm\u011bn\u011bnou-entitu`,
   changedAttribute: `${VocabularyUtils.PREFIX}m\u00e1-zm\u011bn\u011bn\u00fd-atribut`,

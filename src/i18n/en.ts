@@ -182,7 +182,7 @@ const en = {
     "asset.create.hideAdvancedSection": "Hide advanced options",
     "asset.remove.tooltip": "Remove this asset",
     "asset.remove.dialog.title": 'Remove {type} "{label}"?',
-    "asset.rename.dialog.title": 'Rename {type} "{label}"',
+    "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
 
@@ -308,6 +308,7 @@ const en = {
 
     "resource.create.file.select.label":
       "Drag & drop a file here, or click to select file",
+    "resource.reupload.file.select.label": "Upload a new version of the file",
     "resource.metadata.description": "Description",
     "resource.metadata.file.content": "Content",
     "resource.metadata.file.content.view": "View",

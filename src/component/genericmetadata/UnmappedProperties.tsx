@@ -33,7 +33,9 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
     const items = (
       <ul>
         {sortedItems.map((v: string) => (
-          <li key={Utils.hashCode(v)}>{v}</li>
+          <li key={Utils.hashCode(v)}>
+            {Utils.isLink(v) ? <OutgoingLink label={v} iri={v} /> : v}
+          </li>
         ))}
       </ul>
     );

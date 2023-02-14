@@ -5,7 +5,10 @@ import Utils from "../util/Utils";
 
 const ctx = {
   label: VocabularyUtils.RDFS_LABEL,
-  modified: VocabularyUtils.DC_MODIFIED,
+  modified: {
+    "@id": VocabularyUtils.DC_MODIFIED,
+    "@type": VocabularyUtils.XSD_DATETIME,
+  },
   editor: VocabularyUtils.PREFIX + "má-editora",
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
 };
