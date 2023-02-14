@@ -246,12 +246,4 @@ describe("Utils", () => {
       expect(result).toEqual({ testAtt: value });
     });
   });
-
-  describe("createDomId", () => {
-    it("returns a string without forbidden ID characters", () => {
-      const iri = "https://slovník.gov.cz/generický/test-pk ";
-      const expectedID = "httpsslovníkgovczgenerickýtestpk";
-      expect(Utils.createDomId(iri)).toEqual(expectedID);
-    });
-  });
 });

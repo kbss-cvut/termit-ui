@@ -316,13 +316,6 @@ const Utils = {
     change[attName] = value;
     return change;
   },
-  /**
-   * Returns a string which can be used as ID in HTML. Removes following characters: '/', '-', '.', ':', ' '
-   * @param value String to be cleared of invalid ID characters
-   */
-  createDomId(value: string) {
-    return value.replace(/[/\-.:\s]/g, "");
-  },
 };
 
 export default Utils;
