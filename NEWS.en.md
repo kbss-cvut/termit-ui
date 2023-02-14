@@ -1,3 +1,8 @@
+#### Version 2.16.1
+
+- Additional properties values representing URLs are now displayed as external links.
+- Internal technological improvements.
+
 #### Version 2.16.0
 
 - Excel export now creates sheets for individual languages used in a vocabulary.
