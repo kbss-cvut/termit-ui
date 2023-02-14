@@ -36,6 +36,8 @@ export default class JsonLdUtils {
   ): Promise<T[]> {
     if (Array.isArray(input) && input.length === 0) {
       return Promise.resolve([]);
+    } else if (Array.isArray(input["@graph"]) && input["@graph"].length === 0) {
+      return Promise.resolve([]);
     }
     const idMap = new Map<string, object>();
     return compact(input, context)
