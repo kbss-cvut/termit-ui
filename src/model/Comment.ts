@@ -7,8 +7,14 @@ const ctx = {
   content: VocabularyUtils.NS_SIOC + "ns#content",
   author: VocabularyUtils.NS_SIOC + "ns#has_creator",
   asset: VocabularyUtils.NS_SIOC + "ns#topic",
-  created: VocabularyUtils.CREATED,
-  modified: VocabularyUtils.LAST_MODIFIED,
+  created: {
+    "@id": VocabularyUtils.CREATED,
+    "@type": VocabularyUtils.XSD_DATETIME,
+  },
+  modified: {
+    "@id": VocabularyUtils.LAST_MODIFIED,
+    "@type": VocabularyUtils.XSD_DATETIME,
+  },
   reactions: VocabularyUtils.NS_TERMIT + "má-reakci",
   actor: VocabularyUtils.NS_ACTIVITY_STREAMS + "actor",
   object: VocabularyUtils.NS_ACTIVITY_STREAMS + "object",

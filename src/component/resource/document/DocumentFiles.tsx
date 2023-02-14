@@ -15,7 +15,7 @@ import NotificationType from "../../../model/NotificationType";
 import { publishNotification } from "../../../action/SyncActions";
 import AddFile from "./AddFile";
 import RemoveFile from "./RemoveFile";
-import RenameFile from "./RenameFile";
+import ModifyFile from "./ModifyFile";
 import FileContentActions from "./FileContentActions";
 import { DateTime } from "luxon";
 import Constants from "../../../util/Constants";
@@ -25,10 +25,17 @@ interface DocumentFilesProps {
   onFileRemoved: () => void;
   onFileRenamed: () => void;
   onFileAdded: () => void;
+  onFileReupload: () => void;
 }
 
 export const DocumentFiles = (props: DocumentFilesProps) => {
-  const { document, onFileAdded, onFileRemoved, onFileRenamed } = props;
+  const {
+    document,
+    onFileAdded,
+    onFileRemoved,
+    onFileRenamed,
+    onFileReupload,
+  } = props;
   const dispatch: ThunkDispatch = useDispatch();
 
   const createFile = (termitFile: TermItFile, file: File): Promise<void> =>
@@ -51,7 +58,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     dispatch(
       removeFileFromDocument(termitFile, VocabularyUtils.create(document.iri))
     ).then(onFileRemoved);
-  const modifyFile = (termitFile: FileData) =>
+  const renameFile = (termitFile: FileData) =>
     dispatch(updateResource(new TermItFile(termitFile))).then(onFileRenamed);
   const downloadFile = (termitFile: TermItFile) =>
     dispatch(exportFileContent(VocabularyUtils.create(termitFile.iri)));
@@ -63,6 +70,17 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
       exportFileContent(VocabularyUtils.create(termitFile.iri), timestamp)
     );
   };
+
+  const reuploadFile = (termitFile: TermItFile, file: File): Promise<void> =>
+    dispatch(uploadFileContent(VocabularyUtils.create(termitFile.iri), file))
+      .then(() =>
+        dispatch(
+          publishNotification({
+            source: { type: NotificationType.FILE_CONTENT_UPLOADED },
+          })
+        )
+      )
+      .then(onFileReupload);
 
   if (!document) {
     return null;
@@ -79,7 +97,12 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           onDownload={downloadFile}
           onDownloadOriginal={downloadOriginal}
         />,
-        <RenameFile key="rename-file" file={file} performAction={modifyFile} />,
+        <ModifyFile
+          key="rename-file"
+          file={file}
+          performRename={renameFile}
+          performFileUpdate={reuploadFile}
+        />,
         <RemoveFile
           key="remove-file"
           file={file}

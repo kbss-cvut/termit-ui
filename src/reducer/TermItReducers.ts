@@ -2,6 +2,7 @@ import { Action, combineReducers } from "redux";
 import ActionType, {
   AsyncAction,
   AsyncActionSuccess,
+  BreadcrumbAction,
   ExecuteQueryAction,
   FacetedSearchAction,
   FailureAction,
@@ -38,6 +39,7 @@ import File, { EMPTY_FILE } from "../model/File";
 import { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 import TermStatus from "../model/TermStatus";
+import { Breadcrumb } from "../model/Breadcrumb";
 
 /**
  * Handles changes to the currently logged in user.
@@ -594,6 +596,21 @@ function definitionallyRelatedTerms(
   }
 }
 
+function breadcrumbs(state: Breadcrumb[] = [], action: BreadcrumbAction) {
+  switch (action.type) {
+    case ActionType.ADD_CRUMB:
+      return [...state, action.payload];
+
+    case ActionType.REMOVE_CRUMB:
+      return state.filter((crumb) => {
+        return crumb.id !== action.payload.id;
+      });
+
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -625,6 +642,7 @@ const rootReducer = combineReducers<TermItState>({
   configuration,
   validationResults,
   definitionallyRelatedTerms,
+  breadcrumbs,
 });
 
 export default rootReducer;

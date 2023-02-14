@@ -16,6 +16,7 @@ import { Configuration, DEFAULT_CONFIGURATION } from "./Configuration";
 import { ConsolidatedResults } from "./ConsolidatedResults";
 import File, { EMPTY_FILE } from "./File";
 import TermOccurrence from "./TermOccurrence";
+import { Breadcrumb } from "./Breadcrumb";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -56,6 +57,7 @@ export default class TermItState {
   public configuration: Configuration;
   public validationResults: { [vocabularyIri: string]: ConsolidatedResults };
   public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
+  public breadcrumbs: Breadcrumb[];
 
   constructor() {
     this.loading = false;
@@ -88,6 +90,7 @@ export default class TermItState {
     this.configuration = DEFAULT_CONFIGURATION;
     this.validationResults = {};
     this.definitionallyRelatedTerms = { targeting: [], of: [] };
+    this.breadcrumbs = [];
   }
 
   /**

@@ -7,10 +7,10 @@ import {
 import { intlFunctions } from "../../__tests__/environment/IntlUtil";
 import { shallow } from "enzyme";
 import { createMemoryHistory } from "history";
-import { Breadcrumbs } from "react-breadcrumbs";
 import { match, routingProps } from "../../__tests__/environment/TestUtil";
 import Generator from "../../__tests__/environment/Generator";
 import Constants from "../../util/Constants";
+import Breadcrumbs from "../breadcrumb/Breadcrumbs";
 
 describe("MainView", () => {
   let loadUser: () => Promise<any>;

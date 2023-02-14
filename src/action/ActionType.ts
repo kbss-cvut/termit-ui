@@ -5,6 +5,7 @@ import Term from "../model/Term";
 import { Action } from "redux";
 import SearchResult from "../model/SearchResult";
 import AppNotification from "../model/AppNotification";
+import { Breadcrumb } from "../model/Breadcrumb";
 
 export interface AsyncAction extends Action {
   status: AsyncActionStatus;
@@ -62,6 +63,10 @@ export interface UpdateLastModifiedAction extends Action {
 export interface PushRoutingPayloadAction extends Action {
   routeName: string;
   payload: any;
+}
+
+export interface BreadcrumbAction extends Action {
+  payload: Breadcrumb;
 }
 
 const ActionType = {
@@ -207,6 +212,9 @@ const ActionType = {
   IMPORT_SKOS: "IMPORT_SKOS",
 
   OPEN_CONTEXTS_FOR_EDITING: "OPEN_CONTEXTS_FOR_EDITING",
+
+  ADD_CRUMB: "ADD_CRUMB",
+  REMOVE_CRUMB: "REMOVE_CRUMB",
 };
 
 export default ActionType;

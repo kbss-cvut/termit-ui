@@ -29,6 +29,7 @@ const DocumentSummary: React.FC<DocumentSummaryProps> = ({
         onFileAdded={reload}
         onFileRemoved={reload}
         onFileRenamed={reload}
+        onFileReupload={reload}
       />
     </div>
   ) : null;

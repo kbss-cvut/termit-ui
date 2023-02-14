@@ -1,7 +1,10 @@
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 export const CONTEXT = {
-  date: `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-modifikace`,
+  date: {
+    "@id": `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-modifikace`,
+    "@type": VocabularyUtils.XSD_DATE,
+  },
   count: "http://www.w3.org/ns/activitystreams#totalItems",
   types: "@type",
 };

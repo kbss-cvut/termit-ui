@@ -1,6 +1,4 @@
 import Generator from "../../../__tests__/environment/Generator";
-import Asset from "../../../model/Asset";
-import ChangeRecord from "../../../model/changetracking/ChangeRecord";
 import { AssetHistory } from "../AssetHistory";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import {
@@ -11,34 +9,38 @@ import { act } from "react-dom/test-utils";
 import { Table } from "reactstrap";
 import PersistRecord from "../../../model/changetracking/PersistRecord";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import * as Redux from "react-redux";
+import { ThunkDispatch } from "../../../util/Types";
+import * as AsyncActions from "../../../action/AsyncActions";
 
 jest.mock("../../misc/AssetLabel", () => () => <label>Asset</label>);
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+}));
 
 describe("AssetHistory", () => {
-  let loadHistory: (asset: Asset) => Promise<ChangeRecord[]>;
+  let mockDispatch: ThunkDispatch;
 
   beforeEach(() => {
-    loadHistory = jest.fn().mockResolvedValue([]);
+    mockDispatch = jest.fn();
+    jest.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
+    jest.spyOn(AsyncActions, "loadHistory");
   });
 
   it("loads asset history on mount", async () => {
     const asset = Generator.generateTerm();
-    mountWithIntl(
-      <AssetHistory
-        asset={asset}
-        loadHistory={loadHistory}
-        {...intlFunctions()}
-      />
-    );
+    (mockDispatch as jest.Mock).mockResolvedValue([]);
+    mountWithIntl(<AssetHistory asset={asset} {...intlFunctions()} />);
     await act(async () => {
       await flushPromises();
     });
-    expect(loadHistory).toHaveBeenCalledWith(asset);
+    expect(AsyncActions.loadHistory).toHaveBeenCalledWith(asset);
   });
 
   it("renders table with history records when they are available", async () => {
     const asset = Generator.generateTerm();
-    loadHistory = jest.fn().mockResolvedValue([
+    (mockDispatch as jest.Mock).mockResolvedValue([
       new PersistRecord({
         iri: Generator.generateUri(),
         timestamp: new Date().toISOString(),
@@ -48,11 +50,7 @@ describe("AssetHistory", () => {
       }),
     ]);
     const wrapper = mountWithIntl(
-      <AssetHistory
-        asset={asset}
-        loadHistory={loadHistory}
-        {...intlFunctions()}
-      />
+      <AssetHistory asset={asset} {...intlFunctions()} />
     );
     await act(async () => {
       await flushPromises();
@@ -62,13 +60,10 @@ describe("AssetHistory", () => {
   });
 
   it("shows notice about empty history when no records are found", async () => {
+    (mockDispatch as jest.Mock).mockResolvedValue([]);
     const asset = Generator.generateTerm();
     const wrapper = mountWithIntl(
-      <AssetHistory
-        asset={asset}
-        loadHistory={loadHistory}
-        {...intlFunctions()}
-      />
+      <AssetHistory asset={asset} {...intlFunctions()} />
     );
     await act(async () => {
       await flushPromises();

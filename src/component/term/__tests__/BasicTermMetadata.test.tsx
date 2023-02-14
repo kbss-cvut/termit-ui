@@ -1,14 +1,11 @@
 import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
 import Term, { TermInfo } from "../../../model/Term";
-import { shallow } from "enzyme";
 import {
   intlFunctions,
   mockUseI18n,
 } from "../../../__tests__/environment/IntlUtil";
 import TermLink from "../TermLink";
-import VocabularyUtils from "../../../util/VocabularyUtils";
-import OutgoingLink from "../../misc/OutgoingLink";
 import BasicTermMetadata from "../BasicTermMetadata";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
@@ -17,6 +14,7 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 jest.mock("../TermLink", () => () => <span>Term link</span>);
 jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);
 jest.mock("../DraftToggle", () => () => <span>Draft toggle</span>);
+jest.mock("../TermTypes", () => () => <div>Term types</div>);
 
 describe("BasicTermMetadata", () => {
   const vocabulary: Vocabulary = new Vocabulary({
@@ -47,26 +45,13 @@ describe("BasicTermMetadata", () => {
     const wrapper = mountWithIntl(
       <BasicTermMetadata
         term={term}
+        vocabulary={vocabulary}
         language={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
     const subTermLinks = wrapper.find(TermLink);
     expect(subTermLinks.length).toEqual(subTerms.length);
-  });
-
-  it("skips implicit term type when rendering types", () => {
-    term.types = [VocabularyUtils.TERM, Generator.generateUri()];
-    const wrapper = shallow(
-      <BasicTermMetadata
-        term={term}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    const renderedTypes = wrapper.find(OutgoingLink);
-    expect(renderedTypes.length).toEqual(1);
-    expect(renderedTypes.get(0).props.iri).toEqual(term.types[1]);
   });
 
   it("renders parent term link when parent term exists", () => {
@@ -80,6 +65,7 @@ describe("BasicTermMetadata", () => {
     const wrapper = mountWithIntl(
       <BasicTermMetadata
         term={term}
+        vocabulary={vocabulary}
         language={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -107,6 +93,7 @@ describe("BasicTermMetadata", () => {
     const wrapper = mountWithIntl(
       <BasicTermMetadata
         term={term}
+        vocabulary={vocabulary}
         language={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />

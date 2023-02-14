@@ -17,6 +17,7 @@ import Term, { TermData } from "../model/Term";
 import { Action } from "redux";
 import AppNotification from "../model/AppNotification";
 import { Route } from "../util/Routes";
+import { Breadcrumb } from "../model/Breadcrumb";
 
 export function asyncActionRequest(
   a: Action,
@@ -184,4 +185,11 @@ export function pushRoutingPayload(route: Route, payload: any) {
 
 export function popRoutingPayload(route: Route) {
   return { type: ActionType.POP_ROUTING_PAYLOAD, routeName: route.name };
+}
+
+export function addCrumb(crumb: Breadcrumb) {
+  return { type: ActionType.ADD_CRUMB, payload: crumb };
+}
+export function removeCrumb(crumb: Breadcrumb) {
+  return { type: ActionType.REMOVE_CRUMB, payload: crumb };
 }

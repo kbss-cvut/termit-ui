@@ -4,10 +4,6 @@ import Term from "../../model/Term";
 import { Col, Label, List, Row } from "reactstrap";
 import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import Utils from "../../util/Utils";
-import OutgoingLink from "../misc/OutgoingLink";
-import AssetLabel from "../misc/AssetLabel";
-import VocabularyUtils from "../../util/VocabularyUtils";
-import { OWL, SKOS } from "../../util/Namespaces";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import TermList from "./TermList";
 import RelatedTermsList from "./RelatedTermsList";
@@ -16,29 +12,13 @@ import MarkdownView from "../misc/MarkdownView";
 import { useI18n } from "../hook/useI18n";
 import TermStatus from "./TermStatus";
 import Vocabulary from "../../model/Vocabulary";
+import TermTypes from "./TermTypes";
 
 interface BasicTermMetadataProps {
   term: Term;
   vocabulary: Vocabulary;
   withDefinitionSource?: boolean;
   language: string;
-}
-
-function renderTermTypes(types?: string[]) {
-  const source = Utils.sanitizeArray(types).filter(
-    (t) =>
-      t !== VocabularyUtils.TERM &&
-      !t.startsWith(SKOS.namespace) &&
-      !t.startsWith(OWL.namespace)
-  );
-
-  const renderItem = (item: string) =>
-    Utils.isLink(item) ? (
-      <OutgoingLink iri={item} label={<AssetLabel iri={item} />} />
-    ) : (
-      <p>{item}</p>
-    );
-  return renderItemList("term-metadata-types", renderItem, source);
 }
 
 function renderItemList(
@@ -82,7 +62,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           </Label>
         </Col>
         <Col xl={10} md={8}>
-          {renderTermTypes(term.types)}
+          <TermTypes types={term.types} />
         </Col>
       </Row>
       <TermList
