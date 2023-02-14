@@ -124,5 +124,16 @@ describe("JsonLdUtils", () => {
         expect(result.length).toEqual(0);
       });
     });
+
+    it("returns and empty array when input JSON-LD contains context and empty graph", () => {
+      const input: object = { "@context": {}, "@graph": [] };
+      return JsonLdUtils.compactAndResolveReferencesAsArray(
+        input,
+        VOCABULARY_CONTEXT
+      ).then((result: any[]) => {
+        expect(Array.isArray(result)).toBeTruthy();
+        expect(result.length).toEqual(0);
+      });
+    });
   });
 });
