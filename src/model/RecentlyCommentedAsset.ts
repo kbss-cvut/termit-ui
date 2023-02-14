@@ -3,7 +3,10 @@ import { ASSET_CONTEXT, HasTypes } from "./Asset";
 import Comment, { CONTEXT as COMMENT_CONTEXT } from "./Comment";
 
 const ctx = {
-  modified: VocabularyUtils.DC_MODIFIED,
+  modified: {
+    "@id": VocabularyUtils.DC_MODIFIED,
+    "@type": VocabularyUtils.XSD_DATETIME,
+  },
   editor: VocabularyUtils.PREFIX + "má-editora",
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
   lastComment: VocabularyUtils.JE_TEMATEM,
