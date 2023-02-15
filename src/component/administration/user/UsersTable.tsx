@@ -15,6 +15,7 @@ import Table from "../../misc/table/Table";
 import UserRoles from "./UserRoles";
 import UserActionsButtons, { UserActions } from "./UserActionsButtons";
 import UserStatusInfo, { resolveStatus } from "./UserStatusInfo";
+import classNames from "classnames";
 
 interface UsersTableProps extends UserActions {
   users: User[];
@@ -72,6 +73,7 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
       {
         Header: i18n("actions"),
         id: "actions",
+        headerClassName: "text-center align-top",
         disableFilters: true,
         disableSortBy: true,
         // @ts-ignore
@@ -112,7 +114,16 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
 
   return (
     <>
-      <Table instance={tableInstance} />
+      <Table
+        instance={tableInstance}
+        overrideRowProps={(props, meta) => ({
+          className: classNames({
+            bold: meta.row.original.iri === currentUser.iri,
+          }),
+          title: i18n("administration.users.you"),
+          ...props,
+        })}
+      />
     </>
   );
 };

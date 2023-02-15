@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Row,
+  RowPropGetter,
   TableInstance,
   UseFiltersColumnProps,
   UseSortByColumnProps,
@@ -11,9 +12,11 @@ import Pagination from "./Pagination";
 
 interface TableProps<T extends Object> {
   instance: TableInstance<T>;
+  // Allows overriding row props. Do not forget to include the provided row props
+  overrideRowProps?: RowPropGetter<T>;
 }
 
-const Table: React.FC<TableProps<any>> = ({ instance }) => {
+const Table: React.FC<TableProps<any>> = ({ instance, overrideRowProps }) => {
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow } =
     instance;
   const page: Row<any>[] = (instance as any).page;
@@ -62,7 +65,7 @@ const Table: React.FC<TableProps<any>> = ({ instance }) => {
           {page.map((row) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps(overrideRowProps)}>
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps([
