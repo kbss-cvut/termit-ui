@@ -1,10 +1,10 @@
-import User from "../../../model/User";
+import User from "../../../../model/User";
 import { Users } from "../Users";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import Generator from "../../../__tests__/environment/Generator";
-import UserRow from "../UserRow";
+import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
+import Generator from "../../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
 import PasswordReset from "../PasswordReset";
+import { UserRoleData } from "../../../../model/UserRole";
 
 describe("Users", () => {
   const currentUser = Generator.generateUser();
@@ -18,12 +18,14 @@ describe("Users", () => {
   let disableUser: (user: User) => Promise<any>;
   let enableUser: (user: User) => Promise<any>;
   let unlockUser: (user: User, newPass: string) => Promise<any>;
+  let changeRole: (user: User, role: UserRoleData) => Promise<any>;
 
   beforeEach(() => {
     loadUsers = jest.fn().mockImplementation(() => Promise.resolve(users));
     disableUser = jest.fn().mockImplementation(() => Promise.resolve());
     enableUser = jest.fn().mockImplementation(() => Promise.resolve());
     unlockUser = jest.fn().mockImplementation(() => Promise.resolve());
+    changeRole = jest.fn().mockResolvedValue({});
   });
 
   function render() {
@@ -34,6 +36,7 @@ describe("Users", () => {
         enableUser={enableUser}
         unlockUser={unlockUser}
         currentUser={currentUser}
+        changeRole={changeRole}
         {...intlFunctions()}
       />
     );
@@ -42,16 +45,6 @@ describe("Users", () => {
   it("loads users on mount", async () => {
     render();
     expect(loadUsers).toHaveBeenCalled();
-  });
-
-  it("renders loaded users as table rows", async () => {
-    const wrapper = render();
-
-    return Promise.resolve().then(() => {
-      wrapper.update();
-      const rows = wrapper.find(UserRow);
-      expect(rows.length).toEqual(users.length);
-    });
   });
 
   it("disables user and reloads all users on finish", () => {
@@ -71,16 +64,6 @@ describe("Users", () => {
     return Promise.resolve().then(() => {
       expect(enableUser).toHaveBeenCalledWith(users[0]);
       expect(loadUsers).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  it("passes info to row about whether rendered user is the currently logged in user", () => {
-    const wrapper = render();
-
-    return Promise.resolve().then(() => {
-      const rows = wrapper.find(UserRow);
-      expect(rows.at(0).prop("currentUser")).toBeFalsy();
-      expect(rows.at(2).prop("currentUser")).toBeTruthy();
     });
   });
 

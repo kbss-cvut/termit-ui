@@ -1,27 +1,27 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
-import User, { EMPTY_USER } from "../../model/User";
-import withI18n, { HasI18n } from "../hoc/withI18n";
+import User, { EMPTY_USER } from "../../../model/User";
+import withI18n, { HasI18n } from "../../hoc/withI18n";
 import { connect } from "react-redux";
-import { ThunkDispatch } from "../../util/Types";
+import { ThunkDispatch } from "../../../util/Types";
 import {
   changeRole,
   disableUser,
   enableUser,
   loadUsers,
   unlockUser,
-} from "../../action/AsyncUserActions";
-import { Card, CardBody, Table } from "reactstrap";
-import UserRow from "./UserRow";
+} from "../../../action/AsyncUserActions";
+import { Card, CardBody } from "reactstrap";
 import "./Users.scss";
-import TermItState from "../../model/TermItState";
+import TermItState from "../../../model/TermItState";
 import PasswordReset from "./PasswordReset";
 import { Link } from "react-router-dom";
-import Routes from "../../util/Routes";
-import HeaderWithActions from "../misc/HeaderWithActions";
+import Routes from "../../../util/Routes";
+import HeaderWithActions from "../../misc/HeaderWithActions";
 import { GoPlus } from "react-icons/go";
 import { UserRoleData } from "src/model/UserRole";
 import UserRolesEdit from "./UserRolesEdit";
+import UsersTable from "./UsersTable";
 
 interface UsersProps extends HasI18n {
   currentUser: User;
@@ -100,12 +100,6 @@ export class Users extends React.Component<UsersProps, UsersState> {
 
   public render() {
     const i18n = this.props.i18n;
-    const actions = {
-      disable: this.disableUser,
-      enable: this.enableUser,
-      unlock: this.onUnlockUser,
-      changeRole: this.onChangeRole,
-    };
     return (
       <>
         <HeaderWithActions
@@ -136,30 +130,14 @@ export class Users extends React.Component<UsersProps, UsersState> {
               onSubmit={this.changeRole}
               onCancel={this.onCloseRolesEdit}
             />
-            <Table striped={true}>
-              <thead>
-                <tr>
-                  <th>&nbsp;</th>
-                  <th>{i18n("administration.users.name")}</th>
-                  <th>{i18n("administration.users.username")}</th>
-                  <th>{i18n("administration.users.status")}</th>
-                  <th>{i18n("administration.users.role")}</th>
-                  <th className="users-row-actions text-center">
-                    {i18n("actions")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.users.map((u) => (
-                  <UserRow
-                    key={u.iri}
-                    user={u}
-                    currentUser={u.iri === this.props.currentUser.iri}
-                    actions={actions}
-                  />
-                ))}
-              </tbody>
-            </Table>
+            <UsersTable
+              users={this.state.users}
+              currentUser={this.props.currentUser}
+              disable={this.disableUser}
+              enable={this.enableUser}
+              unlock={this.onUnlockUser}
+              changeRole={this.onChangeRole}
+            />
           </CardBody>
         </Card>
       </>

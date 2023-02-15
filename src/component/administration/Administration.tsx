@@ -1,5 +1,5 @@
 import * as React from "react";
-import Users from "./Users";
+import Users from "./user/Users";
 import Maintenance from "./Maintenance";
 import WindowTitle from "../misc/WindowTitle";
 import { useI18n } from "../hook/useI18n";

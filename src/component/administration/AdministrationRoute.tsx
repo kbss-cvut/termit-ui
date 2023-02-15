@@ -6,7 +6,7 @@ import TermItState from "../../model/TermItState";
 import { Route, Switch } from "react-router";
 import Routes from "../../util/Routes";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
-import CreateNewUser from "./CreateNewUser";
+import CreateNewUser from "./user/CreateNewUser";
 import Administration from "./Administration";
 import Unauthorized from "../authorization/Unauthorized";
 import { useI18n } from "../hook/useI18n";

@@ -16,7 +16,7 @@ import { updateProfile } from "../../action/AsyncUserActions";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import { Card, CardBody } from "reactstrap";
 import WindowTitle from "../misc/WindowTitle";
-import UserRoles from "../administration/UserRoles";
+import UserRoles from "../administration/user/UserRoles";
 
 interface ProfileProps extends HasI18n {
   user: User;
