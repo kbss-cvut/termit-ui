@@ -9,6 +9,7 @@ import {
 import { Table as ReactstrapTable } from "reactstrap";
 import AlphaNumSortToggle from "./AlphaNumSortToggle";
 import Pagination from "./Pagination";
+import "./Table.scss";
 
 interface TableProps<T extends Object> {
   instance: TableInstance<T>;

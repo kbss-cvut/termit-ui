@@ -11,17 +11,16 @@ import {
   loadUsers,
   unlockUser,
 } from "../../../action/AsyncUserActions";
-import { Card, CardBody } from "reactstrap";
 import "./Users.scss";
 import TermItState from "../../../model/TermItState";
 import PasswordReset from "./PasswordReset";
 import { Link } from "react-router-dom";
 import Routes from "../../../util/Routes";
-import HeaderWithActions from "../../misc/HeaderWithActions";
 import { GoPlus } from "react-icons/go";
 import { UserRoleData } from "src/model/UserRole";
 import UserRolesEdit from "./UserRolesEdit";
 import UsersTable from "./UsersTable";
+import PanelWithActions from "../../misc/PanelWithActions";
 
 interface UsersProps extends HasI18n {
   currentUser: User;
@@ -102,7 +101,8 @@ export class Users extends React.Component<UsersProps, UsersState> {
     const i18n = this.props.i18n;
     return (
       <>
-        <HeaderWithActions
+        <PanelWithActions
+          id="users"
           title={i18n("administration.users")}
           actions={
             <Link
@@ -115,31 +115,28 @@ export class Users extends React.Component<UsersProps, UsersState> {
               &nbsp;{i18n("administration.users.create")}
             </Link>
           }
-        />
-        <Card id="users">
-          <CardBody>
-            <PasswordReset
-              open={this.state.displayUnlock}
-              user={this.state.userToUnlock}
-              onSubmit={this.unlockUser}
-              onCancel={this.onCloseUnlock}
-            />
-            <UserRolesEdit
-              open={this.state.displayRoleEdit}
-              user={this.state.userToEdit}
-              onSubmit={this.changeRole}
-              onCancel={this.onCloseRolesEdit}
-            />
-            <UsersTable
-              users={this.state.users}
-              currentUser={this.props.currentUser}
-              disable={this.disableUser}
-              enable={this.enableUser}
-              unlock={this.onUnlockUser}
-              changeRole={this.onChangeRole}
-            />
-          </CardBody>
-        </Card>
+        >
+          <PasswordReset
+            open={this.state.displayUnlock}
+            user={this.state.userToUnlock}
+            onSubmit={this.unlockUser}
+            onCancel={this.onCloseUnlock}
+          />
+          <UserRolesEdit
+            open={this.state.displayRoleEdit}
+            user={this.state.userToEdit}
+            onSubmit={this.changeRole}
+            onCancel={this.onCloseRolesEdit}
+          />
+          <UsersTable
+            users={this.state.users}
+            currentUser={this.props.currentUser}
+            disable={this.disableUser}
+            enable={this.enableUser}
+            unlock={this.onUnlockUser}
+            changeRole={this.onChangeRole}
+          />
+        </PanelWithActions>
       </>
     );
   }
