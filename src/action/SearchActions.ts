@@ -112,13 +112,11 @@ export function search(searchString: string, disableLoading: boolean = true) {
       Constants.API_PREFIX + "/search/fts",
       params({ searchString })
     )
-      .then((data: object[]) =>
-        data.length > 0
-          ? JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
-              data,
-              SEARCH_RESULT_CONTEXT
-            )
-          : []
+      .then((data: object) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
+          data,
+          SEARCH_RESULT_CONTEXT
+        )
       )
       .then((data: SearchResultData[]) => {
         dispatch(searchResult(data.map((d) => new SearchResult(d))));
