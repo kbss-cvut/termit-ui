@@ -36,6 +36,7 @@ const Routes = {
     "createNewUserGroup",
     "/administration/groups/create"
   ),
+  editUserGroup: new Route("editUserGroup", "/administration/groups/:name"),
   login: new Route("login", "/login"),
   profile: new Route("profile", "/profile"),
   changePassword: new Route("changePassword", "/profile/change-password"),

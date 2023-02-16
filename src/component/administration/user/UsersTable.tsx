@@ -87,7 +87,7 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
             changeRole={changeRole}
           />
         ),
-        className: "align-middle users-row-actions text-center",
+        className: "align-middle table-row-actions text-center",
       },
     ],
     [i18n, disable, enable, unlock, changeRole, currentUser]
@@ -113,18 +113,16 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
   );
 
   return (
-    <>
-      <Table
-        instance={tableInstance}
-        overrideRowProps={(props, meta) => ({
-          className: classNames({
-            bold: meta.row.original.iri === currentUser.iri,
-          }),
-          title: i18n("administration.users.you"),
-          ...props,
-        })}
-      />
-    </>
+    <Table
+      instance={tableInstance}
+      overrideRowProps={(props, meta) => ({
+        className: classNames({
+          bold: meta.row.original.iri === currentUser.iri,
+        }),
+        title: i18n("administration.users.you"),
+        ...props,
+      })}
+    />
   );
 };
 

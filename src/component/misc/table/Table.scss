@@ -1,3 +1,26 @@
 .card-body table:first-child th {
   border-top: none;
 }
+
+.table-row-actions {
+  text-align: center;
+  @media screen and (min-width: 1280px) {
+    width: 18rem;
+    & > button {
+      margin-right: 0.5rem;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1280px) {
+    width: 7.25rem;
+  }
+
+  & > button {
+    margin-top: 0.125rem;
+    margin-bottom: 0.125rem;
+  }
+}

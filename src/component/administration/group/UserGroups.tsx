@@ -10,18 +10,20 @@ import { loadUserGroups } from "../../../action/AsyncUserGroupActions";
 import { trackPromise } from "react-promise-tracker";
 import { Link } from "react-router-dom";
 import Routes from "../../../util/Routes";
+import UserGroupsTable from "./UserGroupsTable";
 
 const UserGroups: React.FC = () => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  // TODO
-  // @ts-ignore
   const [groups, setGroups] = React.useState<UserGroup[]>([]);
   React.useEffect(() => {
     trackPromise(dispatch(loadUserGroups()), "groups").then((data) =>
       setGroups(data)
     );
   }, [dispatch, setGroups]);
+  const onDelete = (group: UserGroup) => {
+    // TODO
+  };
 
   return (
     <PanelWithActions
@@ -40,6 +42,7 @@ const UserGroups: React.FC = () => {
       }
     >
       <PromiseTrackingMask area="groups" />
+      <UserGroupsTable groups={groups} onDelete={onDelete} />
     </PanelWithActions>
   );
 };
