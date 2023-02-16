@@ -50,7 +50,7 @@ const _NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
 const _NS_DC = "http://purl.org/dc/terms/";
 const _NS_SH = "http://www.w3.org/ns/shacl#";
-const _NS_SIOC = "http://rdfs.org/sioc/";
+const _NS_SIOC = "http://rdfs.org/sioc/ns#";
 const _NS_ACTIVITY_STREAMS = "http://www.w3.org/ns/activitystreams#";
 const _NS_XSD = "http://www.w3.org/2001/XMLSchema#";
 
@@ -111,6 +111,7 @@ const VocabularyUtils = {
   USER_DISABLED: _NS_TERMIT + "zablokovan\u00fd-u\u017eivatel-termitu",
   USER_RESTRICTED: _NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
   USER_EDITOR: _NS_TERMIT + "pln\u00fd-u\u017eivatel-termitu",
+  USER_GROUP: _NS_SIOC + "Usergroup",
   HAS_COUNT: _NS_TERMIT + "has-count",
   PREFIX_RDFS: _NS_RDFS,
   RDF_TYPE: _NS_RDF + "type",
@@ -141,7 +142,7 @@ const VocabularyUtils = {
   SH_WARNING: _NS_SH + "Warning",
 
   NS_SIOC: _NS_SIOC,
-  COMMENT: _NS_SIOC + "types#Comment",
+  COMMENT: "http://rdfs.org/sioc/types#Comment",
 
   NS_ACTIVITY_STREAMS: _NS_ACTIVITY_STREAMS,
 

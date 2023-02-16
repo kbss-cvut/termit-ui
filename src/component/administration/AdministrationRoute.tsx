@@ -10,6 +10,7 @@ import CreateNewUser from "./user/CreateNewUser";
 import Administration from "./Administration";
 import Unauthorized from "../authorization/Unauthorized";
 import { useI18n } from "../hook/useI18n";
+import CreateUserGroup from "./group/CreateUserGroup";
 
 /**
  * Wraps administration in authorization to be able to display an error message in case an unauthorized user attempts
@@ -29,6 +30,11 @@ const AdministrationRoute: React.FC = () => {
           title={i18n("administration.users.create")}
           path={Routes.createNewUser.path}
           component={CreateNewUser}
+        />
+        <BreadcrumbRoute
+          title={i18n("administration.groups.create")}
+          path={Routes.createNewUserGroup.path}
+          component={CreateUserGroup}
         />
         <Route
           path={Routes.administration.path}

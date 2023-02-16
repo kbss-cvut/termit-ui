@@ -31,6 +31,7 @@ describe("Users", () => {
   function render() {
     return shallow<Users>(
       <Users
+        users={[]}
         loadUsers={loadUsers}
         disableUser={disableUser}
         enableUser={enableUser}
@@ -42,18 +43,13 @@ describe("Users", () => {
     );
   }
 
-  it("loads users on mount", async () => {
-    render();
-    expect(loadUsers).toHaveBeenCalled();
-  });
-
   it("disables user and reloads all users on finish", () => {
     const wrapper = render();
 
     wrapper.instance().disableUser(users[0]);
     return Promise.resolve().then(() => {
       expect(disableUser).toHaveBeenCalledWith(users[0]);
-      expect(loadUsers).toHaveBeenCalledTimes(2);
+      expect(loadUsers).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -63,7 +59,7 @@ describe("Users", () => {
     wrapper.instance().enableUser(users[0]);
     return Promise.resolve().then(() => {
       expect(enableUser).toHaveBeenCalledWith(users[0]);
-      expect(loadUsers).toHaveBeenCalledTimes(2);
+      expect(loadUsers).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -125,7 +121,7 @@ describe("Users", () => {
       wrapper.instance().unlockUser(newPassword);
       return Promise.resolve().then(() => {
         wrapper.update();
-        expect(loadUsers).toHaveBeenCalledTimes(2);
+        expect(loadUsers).toHaveBeenCalledTimes(1);
       });
     });
   });

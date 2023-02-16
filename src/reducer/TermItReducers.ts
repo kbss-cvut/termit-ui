@@ -611,6 +611,20 @@ function breadcrumbs(state: Breadcrumb[] = [], action: BreadcrumbAction) {
   }
 }
 
+function users(state: User[] = [], action: AsyncActionSuccess<User[]>) {
+  switch (action.type) {
+    case ActionType.LOAD_USERS:
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload;
+      }
+      return state;
+    case ActionType.LOGOUT:
+      return [];
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -643,6 +657,7 @@ const rootReducer = combineReducers<TermItState>({
   validationResults,
   definitionallyRelatedTerms,
   breadcrumbs,
+  users,
 });
 
 export default rootReducer;

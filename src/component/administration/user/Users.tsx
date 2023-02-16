@@ -23,8 +23,9 @@ import UsersTable from "./UsersTable";
 import PanelWithActions from "../../misc/PanelWithActions";
 
 interface UsersProps extends HasI18n {
+  users: User[];
   currentUser: User;
-  loadUsers: () => Promise<User[]>;
+  loadUsers: () => Promise<any>;
   disableUser: (user: User) => Promise<any>;
   enableUser: (user: User) => Promise<any>;
   unlockUser: (user: User, newPassword: string) => Promise<any>;
@@ -32,7 +33,6 @@ interface UsersProps extends HasI18n {
 }
 
 interface UsersState {
-  users: User[];
   displayUnlock: boolean;
   userToUnlock: User;
   displayRoleEdit: boolean;
@@ -43,7 +43,6 @@ export class Users extends React.Component<UsersProps, UsersState> {
   constructor(props: UsersProps) {
     super(props);
     this.state = {
-      users: [],
       displayUnlock: false,
       userToUnlock: EMPTY_USER,
       displayRoleEdit: false,
@@ -51,20 +50,12 @@ export class Users extends React.Component<UsersProps, UsersState> {
     };
   }
 
-  public componentDidMount(): void {
-    this.loadUsers();
-  }
-
-  private loadUsers() {
-    this.props.loadUsers().then((data) => this.setState({ users: data }));
-  }
-
   public disableUser = (user: User) => {
-    this.props.disableUser(user).then(() => this.loadUsers());
+    this.props.disableUser(user).then(() => this.props.loadUsers());
   };
 
   public enableUser = (user: User) => {
-    this.props.enableUser(user).then(() => this.loadUsers());
+    this.props.enableUser(user).then(() => this.props.loadUsers());
   };
 
   public onUnlockUser = (user: User) => {
@@ -78,7 +69,7 @@ export class Users extends React.Component<UsersProps, UsersState> {
   public unlockUser = (newPassword: string) => {
     this.props.unlockUser(this.state.userToUnlock, newPassword).then(() => {
       this.onCloseUnlock();
-      this.loadUsers();
+      this.props.loadUsers();
     });
   };
 
@@ -93,7 +84,7 @@ export class Users extends React.Component<UsersProps, UsersState> {
   public changeRole = (role: UserRoleData) => {
     this.props.changeRole(this.state.userToEdit, role).then(() => {
       this.onCloseRolesEdit();
-      this.loadUsers();
+      this.props.loadUsers();
     });
   };
 
@@ -129,7 +120,7 @@ export class Users extends React.Component<UsersProps, UsersState> {
             onCancel={this.onCloseRolesEdit}
           />
           <UsersTable
-            users={this.state.users}
+            users={this.props.users}
             currentUser={this.props.currentUser}
             disable={this.disableUser}
             enable={this.enableUser}
@@ -144,7 +135,7 @@ export class Users extends React.Component<UsersProps, UsersState> {
 
 export default connect(
   (state: TermItState) => {
-    return { currentUser: state.user };
+    return { currentUser: state.user, users: state.users };
   },
   (dispatch: ThunkDispatch) => {
     return {

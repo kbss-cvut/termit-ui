@@ -177,6 +177,12 @@ const cs = {
       "Vyprázdnit interní cache systému",
     "administration.maintenance.invalidateCaches.success":
       "Cache úspěšně vyprázdněna.",
+    "administration.groups": "Uživatelské skupiny",
+    "administration.groups.create": "Vytvořit skupinu",
+    "administration.groups.create.tooltip":
+      "Umožňuje vytvořit novou uživatelskou skupinu",
+    "administration.groups.create.success": "Skupina byla úspěšně vytvořena.",
+    "administration.groups.members": "Členové skupiny",
 
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",

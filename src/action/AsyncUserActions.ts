@@ -181,13 +181,12 @@ export function loadUsers() {
         )
       )
       .then((data: UserData[]) => {
-        dispatch(asyncActionSuccess(action));
-        return data.map((d) => new User(d));
+        const users = data.map((d) => new User(d));
+        return dispatch(asyncActionSuccessWithPayload(action, users));
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
-        dispatch(publishMessage(new Message(error, MessageType.ERROR)));
-        return [];
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
       });
   };
 }

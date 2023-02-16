@@ -32,6 +32,10 @@ const Routes = {
   dashboard: new Route("dashboard", "/"),
   administration: new Route("administration", "/administration"),
   createNewUser: new Route("createNewUser", "/administration/users/create"),
+  createNewUserGroup: new Route(
+    "createNewUserGroup",
+    "/administration/groups/create"
+  ),
   login: new Route("login", "/login"),
   profile: new Route("profile", "/profile"),
   changePassword: new Route("changePassword", "/profile/change-password"),

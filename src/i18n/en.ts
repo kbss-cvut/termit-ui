@@ -167,6 +167,11 @@ const en = {
       "Invalidate system's internal caches",
     "administration.maintenance.invalidateCaches.success":
       "Caches successfully cleared.",
+    "administration.groups": "User groups",
+    "administration.groups.create": "Create group",
+    "administration.groups.create.tooltip": "Allows to create a new user group",
+    "administration.groups.create.success": "User group successfully created.",
+    "administration.groups.members": "Group members",
 
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
