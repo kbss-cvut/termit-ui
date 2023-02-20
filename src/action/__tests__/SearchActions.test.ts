@@ -55,6 +55,27 @@ describe("SearchActions", () => {
         });
       });
     });
+
+    it("discards results of earlier search when they arrive after the most recent search", async () => {
+      const results = require("../../rest-mock/searchResults");
+      Ajax.get = jest
+        .fn()
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve: (val: any) => void) =>
+              setTimeout(() => resolve([]), 1000)
+            )
+        )
+        .mockImplementationOnce(() => Promise.resolve(results));
+      await Promise.all([
+        (store.dispatch as ThunkDispatch)(search("t", true)),
+        (store.dispatch as ThunkDispatch)(search("test", true)),
+      ]);
+      const actions = store
+        .getActions()
+        .filter((a) => a.type === ActionType.SEARCH_RESULT);
+      expect(actions.length).toEqual(1);
+    });
   });
 
   describe("updateSearchFilter", () => {
