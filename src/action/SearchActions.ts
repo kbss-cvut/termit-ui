@@ -102,13 +102,20 @@ export function searchEverything() {
   };
 }
 
+/**
+ * The latest search promise. Results of any earlier ones that finish after it will be discarded.
+ *
+ * Inspired by https://github.com/domenic/last
+ */
+let latestSearch: Promise<any>;
+
 export function search(searchString: string, disableLoading: boolean = true) {
   const action = {
     type: ActionType.SEARCH,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(SyncActions.asyncActionRequest(action, disableLoading));
-    return Ajax.get(
+    const promiseToReturn = Ajax.get(
       Constants.API_PREFIX + "/search/fts",
       params({ searchString })
     )
@@ -119,7 +126,10 @@ export function search(searchString: string, disableLoading: boolean = true) {
         )
       )
       .then((data: SearchResultData[]) => {
-        dispatch(searchResult(data.map((d) => new SearchResult(d))));
+        // If not the latest, do not dispatch results (Bug #380)
+        if (latestSearch === promiseToReturn) {
+          dispatch(searchResult(data.map((d) => new SearchResult(d))));
+        }
         return dispatch(SyncActions.asyncActionSuccess(action));
       })
       .catch((error: ErrorData) => {
@@ -128,6 +138,8 @@ export function search(searchString: string, disableLoading: boolean = true) {
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
       });
+    latestSearch = promiseToReturn;
+    return promiseToReturn;
   };
 }
 
