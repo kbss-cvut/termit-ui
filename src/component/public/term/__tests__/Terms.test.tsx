@@ -12,6 +12,7 @@ import Generator from "../../../../__tests__/environment/Generator";
 import * as TermTreeSelectHelper from "../../../term/TermTreeSelectHelper";
 import { langString } from "../../../../model/MultilingualString";
 import { TermFetchParams } from "../../../../util/Types";
+import { AssetData } from "../../../../model/Asset";
 
 jest.mock("../../../../util/Routing");
 
@@ -154,7 +155,9 @@ describe("Terms", () => {
         Generator.generateUri(),
         Generator.generateUri(),
       ];
-      vocabulary.allImportedVocabularies = vocabularies;
+      vocabulary.importedVocabularies = vocabularies.map(
+        (vocabulary) => ({ iri: vocabulary } as AssetData)
+      );
       const terms: Term[] = [];
       const matching: Term[] = [];
       for (let i = 0; i < 5; i++) {
