@@ -2,6 +2,7 @@ import { UserData } from "./User";
 import VocabularyUtils from "../util/VocabularyUtils";
 import { CONTEXT as USER_CONTEXT } from "./User";
 import Utils from "../util/Utils";
+import { HasLabel } from "./Asset";
 
 const CTX = {
   iri: "@id",
@@ -18,7 +19,7 @@ export interface UserGroupData {
   members?: UserData[];
 }
 
-export default class UserGroup implements UserGroupData {
+export default class UserGroup implements UserGroupData, HasLabel {
   public iri?: string;
   public label: string;
   public members: UserData[];
@@ -27,6 +28,10 @@ export default class UserGroup implements UserGroupData {
     this.iri = data.iri;
     this.label = data.label;
     this.members = Utils.sanitizeArray(data.members);
+  }
+
+  getLabel(): string {
+    return this.label;
   }
 
   public toJson(): UserGroupData {

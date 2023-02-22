@@ -182,6 +182,8 @@ const cs = {
     "administration.groups.create.tooltip":
       "Umožňuje vytvořit novou uživatelskou skupinu",
     "administration.groups.create.success": "Skupina byla úspěšně vytvořena.",
+    "administration.groups.remove.type": "uživatelskou skupinu",
+    "administration.groups.remove.success": "Skupina byla úspěšně odstraněna.",
     "administration.groups.members": "Členové skupiny",
 
     "asset.link.tooltip": "Zobrazit detail záznamu",

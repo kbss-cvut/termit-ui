@@ -41,6 +41,7 @@ const UserGroupsTable: React.FC<UserGroupsTableProps> = ({
         Header: i18n("administration.groups.members"),
         accessor: "members",
         disableFilters: true,
+        disableSortBy: true,
         Cell: ({ row }) => (
           <ul>
             {row.original.members.map((m) => (

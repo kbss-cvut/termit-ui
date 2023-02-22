@@ -6,23 +6,33 @@ import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import UserGroup from "../../../model/UserGroup";
-import { loadUserGroups } from "../../../action/AsyncUserGroupActions";
+import {
+  loadUserGroups,
+  removeUserGroup,
+} from "../../../action/AsyncUserGroupActions";
 import { trackPromise } from "react-promise-tracker";
 import { Link } from "react-router-dom";
 import Routes from "../../../util/Routes";
 import UserGroupsTable from "./UserGroupsTable";
+import RemoveAssetDialog from "../../asset/RemoveAssetDialog";
 
 const UserGroups: React.FC = () => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [groups, setGroups] = React.useState<UserGroup[]>([]);
+  const [groupToDelete, setGroupToDelete] =
+    React.useState<UserGroup | null>(null);
   React.useEffect(() => {
     trackPromise(dispatch(loadUserGroups()), "groups").then((data) =>
       setGroups(data)
     );
   }, [dispatch, setGroups]);
-  const onDelete = (group: UserGroup) => {
-    // TODO
+  const onDelete = () => {
+    const g = groupToDelete;
+    setGroupToDelete(null);
+    trackPromise(dispatch(removeUserGroup(g!)), "groups").then(
+      (data: UserGroup[]) => setGroups(data)
+    );
   };
 
   return (
@@ -42,7 +52,14 @@ const UserGroups: React.FC = () => {
       }
     >
       <PromiseTrackingMask area="groups" />
-      <UserGroupsTable groups={groups} onDelete={onDelete} />
+      <RemoveAssetDialog
+        show={groupToDelete !== null}
+        onSubmit={onDelete}
+        onCancel={() => setGroupToDelete(null)}
+        asset={groupToDelete}
+        typeLabelId="administration.groups.remove.type"
+      />
+      <UserGroupsTable groups={groups} onDelete={(g) => setGroupToDelete(g)} />
     </PanelWithActions>
   );
 };

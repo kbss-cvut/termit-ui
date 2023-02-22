@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { Col, Input, Label, Row } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
+import "./UserGroupSelector.scss";
 
 const COLUMN_COUNT = 3;
 const COLUMN_WIDTH = 12 / COLUMN_COUNT;
@@ -32,7 +33,7 @@ const UserGroupSelector: React.FC<{
   const rows = [];
   for (let i = 0; i < rowCount; i++) {
     rows.push(
-      <Row key={i}>
+      <Row key={i} className="mb-2">
         <Col xs={COLUMN_WIDTH}>
           <UserCheckbox
             user={allUsers[i]}
@@ -61,7 +62,7 @@ const UserGroupSelector: React.FC<{
   }
   return (
     <>
-      <Label className="attribute-label">
+      <Label className="attribute-label mb-2">
         {i18n("administration.groups.members")}
       </Label>
       {rows}
@@ -80,8 +81,8 @@ const UserCheckbox: React.FC<{
         type="checkbox"
         checked={checked}
         onChange={() => onChange(user)}
+        className="user-checkbox"
       />
-      &nbsp;
       {`${user.fullName} (${user.username})`}
     </>
   );
