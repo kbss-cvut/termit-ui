@@ -83,8 +83,7 @@ export default class JsonLdUtils {
     if (!node.hasOwnProperty("iri")) {
       return;
     }
-    // @ts-ignore
-    idMap.set(node.iri, node);
+    idMap.set((node as Partial<{ iri: string }>).iri!, node);
     Object.getOwnPropertyNames(node)
       .sort()
       .forEach((p) => {
@@ -119,7 +118,10 @@ export default class JsonLdUtils {
     idMap: Map<string, object>
   ): object | undefined {
     const valProps = Object.getOwnPropertyNames(node);
-    if (valProps.length === 1 && valProps[0] === "iri" && idMap.has(node.iri)) {
+    if (
+      idMap.has(node.iri) &&
+      Object.getOwnPropertyNames(idMap.get(node.iri)).length > valProps.length
+    ) {
       return idMap.get(node.iri);
     } else {
       return undefined;
