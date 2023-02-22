@@ -174,9 +174,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       )
       .then((terms) => {
         const matchingVocabularies = this.state.includeImported
-          ? Utils.sanitizeArray(
-              this.props.vocabulary!.allImportedVocabularies
-            ).concat(this.props.vocabulary!.iri)
+          ? Utils.sanitizeArray(this.props.vocabulary!.importedVocabularies)
+              .map((vocabulary) => vocabulary.iri!)
+              .concat(this.props.vocabulary!.iri)
           : [this.props.vocabulary!.iri];
         this.setState({
           disableIncludeImportedToggle: this.props.isDetailView || false,
