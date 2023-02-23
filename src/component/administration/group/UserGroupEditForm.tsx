@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Row } from "reactstrap";
 import CustomInput from "../../misc/CustomInput";
 import { useI18n } from "../../hook/useI18n";
-import UserGroupSelector from "./UserGroupSelector";
+import UserGroupMemberSelector from "./UserGroupMemberSelector";
 import { UserData } from "../../../model/User";
 
 interface GroupEditFormProps {
@@ -33,7 +33,10 @@ const UserGroupEditForm: React.FC<GroupEditFormProps> = ({
       </Row>
       <Row>
         <Col>
-          <UserGroupSelector members={members} onChange={onMembersChange} />
+          <UserGroupMemberSelector
+            members={members}
+            onChange={onMembersChange}
+          />
         </Col>
       </Row>
     </>

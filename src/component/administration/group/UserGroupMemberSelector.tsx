@@ -1,21 +1,29 @@
 import React from "react";
 import User, { UserData } from "../../../model/User";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { Col, Input, Label, Row } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
 import "./UserGroupSelector.scss";
+import { ThunkDispatch } from "../../../util/Types";
+import { loadUsers } from "../../../action/AsyncUserActions";
 
 const COLUMN_COUNT = 3;
 const COLUMN_WIDTH = 12 / COLUMN_COUNT;
 
-const UserGroupSelector: React.FC<{
+const UserGroupMemberSelector: React.FC<{
   members: UserData[];
   onChange: (members: UserData[]) => void;
 }> = ({ members, onChange }) => {
   const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
   const memberIds = new Set(members.map((m) => m.iri));
   const allUsers = useSelector((state: TermItState) => state.users);
+  React.useEffect(() => {
+    if (allUsers.length === 0) {
+      dispatch(loadUsers());
+    }
+  }, [dispatch, allUsers]);
   const onToggle = (user: User) => {
     const newMembers = [...members];
     if (memberIds.has(user.iri)) {
@@ -88,4 +96,4 @@ const UserCheckbox: React.FC<{
   );
 };
 
-export default UserGroupSelector;
+export default UserGroupMemberSelector;
