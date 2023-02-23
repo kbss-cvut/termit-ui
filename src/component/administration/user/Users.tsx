@@ -1,8 +1,6 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
 import User, { EMPTY_USER } from "../../../model/User";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import {
   changeRole,
@@ -21,131 +19,83 @@ import { UserRoleData } from "src/model/UserRole";
 import UserRolesEdit from "./UserRolesEdit";
 import UsersTable from "./UsersTable";
 import PanelWithActions from "../../misc/PanelWithActions";
+import { useI18n } from "../../hook/useI18n";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
-interface UsersProps extends HasI18n {
-  users: User[];
-  currentUser: User;
-  loadUsers: () => Promise<any>;
-  disableUser: (user: User) => Promise<any>;
-  enableUser: (user: User) => Promise<any>;
-  unlockUser: (user: User, newPassword: string) => Promise<any>;
-  changeRole: (user: User, role: UserRoleData) => Promise<any>;
-}
-
-interface UsersState {
-  displayUnlock: boolean;
-  userToUnlock: User;
-  displayRoleEdit: boolean;
-  userToEdit: User;
-}
-
-export class Users extends React.Component<UsersProps, UsersState> {
-  constructor(props: UsersProps) {
-    super(props);
-    this.state = {
-      displayUnlock: false,
-      userToUnlock: EMPTY_USER,
-      displayRoleEdit: false,
-      userToEdit: EMPTY_USER,
-    };
-  }
-
-  public disableUser = (user: User) => {
-    this.props.disableUser(user).then(() => this.props.loadUsers());
-  };
-
-  public enableUser = (user: User) => {
-    this.props.enableUser(user).then(() => this.props.loadUsers());
-  };
-
-  public onUnlockUser = (user: User) => {
-    this.setState({ displayUnlock: true, userToUnlock: user });
-  };
-
-  public onCloseUnlock = () => {
-    this.setState({ displayUnlock: false, userToUnlock: EMPTY_USER });
-  };
-
-  public unlockUser = (newPassword: string) => {
-    this.props.unlockUser(this.state.userToUnlock, newPassword).then(() => {
-      this.onCloseUnlock();
-      this.props.loadUsers();
-    });
-  };
-
-  public onChangeRole = (user: User) => {
-    this.setState({ displayRoleEdit: true, userToEdit: user });
-  };
-
-  public onCloseRolesEdit = () => {
-    this.setState({ displayRoleEdit: false, userToEdit: EMPTY_USER });
-  };
-
-  public changeRole = (role: UserRoleData) => {
-    this.props.changeRole(this.state.userToEdit, role).then(() => {
-      this.onCloseRolesEdit();
-      this.props.loadUsers();
-    });
-  };
-
-  public render() {
-    const i18n = this.props.i18n;
-    return (
-      <>
-        <PanelWithActions
-          id="users"
-          title={i18n("administration.users")}
-          actions={
-            <Link
-              id="administration-users-create"
-              to={Routes.createNewUser.path}
-              title={i18n("administration.users.create.tooltip")}
-              className="btn btn-primary btn-sm users-action-button"
-            >
-              <GoPlus />
-              &nbsp;{i18n("administration.users.create")}
-            </Link>
-          }
-        >
-          <PasswordReset
-            open={this.state.displayUnlock}
-            user={this.state.userToUnlock}
-            onSubmit={this.unlockUser}
-            onCancel={this.onCloseUnlock}
-          />
-          <UserRolesEdit
-            open={this.state.displayRoleEdit}
-            user={this.state.userToEdit}
-            onSubmit={this.changeRole}
-            onCancel={this.onCloseRolesEdit}
-          />
-          <UsersTable
-            users={this.props.users}
-            currentUser={this.props.currentUser}
-            disable={this.disableUser}
-            enable={this.enableUser}
-            unlock={this.onUnlockUser}
-            changeRole={this.onChangeRole}
-          />
-        </PanelWithActions>
-      </>
+const Users: React.FC = () => {
+  const { i18n } = useI18n();
+  const [userToUnlock, setUserToUnlock] = React.useState(EMPTY_USER);
+  const [editedUser, setEditedUser] = React.useState(EMPTY_USER);
+  const users = useSelector((state: TermItState) => state.users);
+  const currentUser = useSelector((state: TermItState) => state.user);
+  const dispatch: ThunkDispatch = useDispatch();
+  const onDisableUser = (user: User) => {
+    trackPromise(dispatch(disableUser(user)), "users").then(() =>
+      dispatch(loadUsers())
     );
-  }
-}
+  };
+  const onEnableUser = (user: User) => {
+    trackPromise(dispatch(enableUser(user)), "users").then(() =>
+      dispatch(loadUsers())
+    );
+  };
+  const onUnlockUserSubmit = (newPassword: string) => {
+    trackPromise(dispatch(unlockUser(userToUnlock, newPassword)), "users").then(
+      () => {
+        setUserToUnlock(EMPTY_USER);
+        dispatch(loadUsers());
+      }
+    );
+  };
+  const onUserRoleSubmit = (role: UserRoleData) => {
+    trackPromise(dispatch(changeRole(editedUser, role)), "users").then(() => {
+      setEditedUser(EMPTY_USER);
+      dispatch(loadUsers());
+    });
+  };
 
-export default connect(
-  (state: TermItState) => {
-    return { currentUser: state.user, users: state.users };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      loadUsers: () => dispatch(loadUsers()),
-      disableUser: (user: User) => dispatch(disableUser(user)),
-      changeRole: (user: User, role: UserRoleData) =>
-        dispatch(changeRole(user, role)),
-      enableUser: (user: User) => dispatch(enableUser(user)),
-      unlockUser: (user: User, newPassword: string) =>
-        dispatch(unlockUser(user, newPassword)),
-    };
-  }
-)(injectIntl(withI18n(Users)));
+  return (
+    <>
+      <PanelWithActions
+        id="users"
+        title={i18n("administration.users")}
+        actions={
+          <Link
+            id="administration-users-create"
+            to={Routes.createNewUser.path}
+            title={i18n("administration.users.create.tooltip")}
+            className="btn btn-primary btn-sm users-action-button"
+          >
+            <GoPlus />
+            &nbsp;{i18n("administration.users.create")}
+          </Link>
+        }
+      >
+        <PromiseTrackingMask area="users" />
+        <PasswordReset
+          open={userToUnlock !== EMPTY_USER}
+          user={userToUnlock}
+          onSubmit={onUnlockUserSubmit}
+          onCancel={() => setUserToUnlock(EMPTY_USER)}
+        />
+        <UserRolesEdit
+          open={editedUser !== EMPTY_USER}
+          user={editedUser}
+          onSubmit={onUserRoleSubmit}
+          onCancel={() => setEditedUser(EMPTY_USER)}
+        />
+        <UsersTable
+          users={users}
+          currentUser={currentUser}
+          disable={onDisableUser}
+          enable={onEnableUser}
+          unlock={(user) => setUserToUnlock(user)}
+          changeRole={(user) => setEditedUser(user)}
+        />
+      </PanelWithActions>
+    </>
+  );
+};
+
+export default Users;

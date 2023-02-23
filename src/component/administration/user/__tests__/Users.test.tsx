@@ -1,10 +1,17 @@
-import User from "../../../../model/User";
-import { Users } from "../Users";
-import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
+import Users from "../Users";
 import Generator from "../../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
 import PasswordReset from "../PasswordReset";
-import { UserRoleData } from "../../../../model/UserRole";
+import * as UserActions from "../../../../action/AsyncUserActions";
+import UsersTable from "../UsersTable";
+import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
+import * as Redux from "react-redux";
+
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+  useSelector: jest.fn(),
+}));
 
 describe("Users", () => {
   const currentUser = Generator.generateUser();
@@ -14,52 +21,43 @@ describe("Users", () => {
     currentUser,
   ];
 
-  let loadUsers: () => Promise<User[]>;
-  let disableUser: (user: User) => Promise<any>;
-  let enableUser: (user: User) => Promise<any>;
-  let unlockUser: (user: User, newPass: string) => Promise<any>;
-  let changeRole: (user: User, role: UserRoleData) => Promise<any>;
-
   beforeEach(() => {
-    loadUsers = jest.fn().mockImplementation(() => Promise.resolve(users));
-    disableUser = jest.fn().mockImplementation(() => Promise.resolve());
-    enableUser = jest.fn().mockImplementation(() => Promise.resolve());
-    unlockUser = jest.fn().mockImplementation(() => Promise.resolve());
-    changeRole = jest.fn().mockResolvedValue({});
+    jest.resetAllMocks();
+    jest
+      .spyOn(Redux, "useDispatch")
+      .mockReturnValue(jest.fn().mockResolvedValue({}));
   });
 
   function render() {
-    return shallow<Users>(
-      <Users
-        users={[]}
-        loadUsers={loadUsers}
-        disableUser={disableUser}
-        enableUser={enableUser}
-        unlockUser={unlockUser}
-        currentUser={currentUser}
-        changeRole={changeRole}
-        {...intlFunctions()}
-      />
-    );
+    jest
+      .spyOn(Redux, "useSelector")
+      .mockReturnValueOnce(users)
+      .mockReturnValueOnce(currentUser);
+    mockUseI18n();
+    return shallow(<Users />);
   }
 
   it("disables user and reloads all users on finish", () => {
+    jest.spyOn(UserActions, "loadUsers");
+    jest.spyOn(UserActions, "disableUser");
     const wrapper = render();
 
-    wrapper.instance().disableUser(users[0]);
+    wrapper.find(UsersTable).prop("disable")(users[0]);
     return Promise.resolve().then(() => {
-      expect(disableUser).toHaveBeenCalledWith(users[0]);
-      expect(loadUsers).toHaveBeenCalledTimes(1);
+      expect(UserActions.disableUser).toHaveBeenCalledWith(users[0]);
+      expect(UserActions.loadUsers).toHaveBeenCalledTimes(1);
     });
   });
 
   it("enables user and reloads all users on finish", () => {
+    jest.spyOn(UserActions, "loadUsers");
+    jest.spyOn(UserActions, "enableUser");
     const wrapper = render();
 
-    wrapper.instance().enableUser(users[0]);
+    wrapper.find(UsersTable).prop("enable")(users[0]);
     return Promise.resolve().then(() => {
-      expect(enableUser).toHaveBeenCalledWith(users[0]);
-      expect(loadUsers).toHaveBeenCalledTimes(1);
+      expect(UserActions.enableUser).toHaveBeenCalledWith(users[0]);
+      expect(UserActions.loadUsers).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -69,7 +67,7 @@ describe("Users", () => {
 
       return Promise.resolve().then(() => {
         expect(wrapper.find(PasswordReset).prop("open")).toBeFalsy();
-        wrapper.instance().onUnlockUser(users[0]);
+        wrapper.find(UsersTable).prop("unlock")(users[0]);
         wrapper.update();
         const passwordResetDialog = wrapper.find(PasswordReset);
         expect(passwordResetDialog.prop("open")).toBeTruthy();
@@ -81,47 +79,56 @@ describe("Users", () => {
       const wrapper = render();
 
       return Promise.resolve().then(() => {
-        wrapper.setState({ userToUnlock: users[0], displayUnlock: true });
+        wrapper.find(UsersTable).prop("unlock")(users[0]);
         wrapper.update();
         expect(wrapper.find(PasswordReset).prop("open")).toBeTruthy();
-        wrapper.instance().onCloseUnlock();
+        wrapper.find(PasswordReset).prop("onCancel")();
         wrapper.update();
         expect(wrapper.find(PasswordReset).prop("open")).toBeFalsy();
       });
     });
 
     it("invokes user unlock action on unlock submit", () => {
+      jest.spyOn(UserActions, "unlockUser");
       const newPassword = "new_password";
       const wrapper = render();
 
-      wrapper.setState({ userToUnlock: users[0], displayUnlock: true });
-      wrapper.instance().unlockUser(newPassword);
+      wrapper.find(UsersTable).prop("unlock")(users[0]);
+      wrapper.update();
+      wrapper.find(PasswordReset).prop("onSubmit")(newPassword);
       return Promise.resolve().then(() => {
-        expect(unlockUser).toHaveBeenCalledWith(users[0], newPassword);
+        expect(UserActions.unlockUser).toHaveBeenCalledWith(
+          users[0],
+          newPassword
+        );
       });
     });
 
     it("closes unlock user dialog when unlock action returns", () => {
+      jest.spyOn(UserActions, "unlockUser");
       const newPassword = "new_password";
       const wrapper = render();
 
-      wrapper.setState({ userToUnlock: users[0], displayUnlock: true });
-      wrapper.instance().unlockUser(newPassword);
+      wrapper.find(UsersTable).prop("unlock")(users[0]);
+      wrapper.update();
+      wrapper.find(PasswordReset).prop("onSubmit")(newPassword);
       return Promise.resolve().then(() => {
         wrapper.update();
-        expect(wrapper.state().displayUnlock).toBeFalsy();
+        expect(wrapper.find(PasswordReset).prop("open")).toBeFalsy();
       });
     });
 
     it("reloads users after unlock action returns", () => {
+      jest.spyOn(UserActions, "unlockUser");
+      jest.spyOn(UserActions, "loadUsers");
       const newPassword = "new_password";
       const wrapper = render();
 
-      wrapper.setState({ userToUnlock: users[0], displayUnlock: true });
-      wrapper.instance().unlockUser(newPassword);
+      wrapper.find(UsersTable).prop("unlock")(users[0]);
+      wrapper.update();
+      wrapper.find(PasswordReset).prop("onSubmit")(newPassword);
       return Promise.resolve().then(() => {
-        wrapper.update();
-        expect(loadUsers).toHaveBeenCalledTimes(1);
+        expect(UserActions.loadUsers).toHaveBeenCalled();
       });
     });
   });

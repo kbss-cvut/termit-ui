@@ -10,13 +10,14 @@ import { ThunkDispatch } from "../../util/Types";
 import { loadUsers } from "../../action/AsyncUserActions";
 import { useLocation } from "react-router-dom";
 import Utils from "../../util/Utils";
+import { trackPromise } from "react-promise-tracker";
 
 const Administration: React.FC = () => {
   const { i18n } = useI18n();
   const [activeTab, setActiveTab] = React.useState("administration.users");
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
-    dispatch(loadUsers());
+    trackPromise(dispatch(loadUsers()), "users");
   }, [dispatch]);
   const location = useLocation();
   React.useEffect(() => {

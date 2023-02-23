@@ -119,7 +119,10 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
         className: classNames({
           bold: meta.row.original.iri === currentUser.iri,
         }),
-        title: i18n("administration.users.you"),
+        title:
+          meta.row.original.iri === currentUser.iri
+            ? i18n("administration.users.you")
+            : undefined,
         ...props,
       })}
     />

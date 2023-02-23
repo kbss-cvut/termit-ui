@@ -170,7 +170,7 @@ export function loadUsers() {
   };
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
     if (isActionRequestPending(getState(), action)) {
-      return Promise.resolve([]);
+      return Promise.resolve({});
     }
     dispatch(asyncActionRequest(action));
     return Ajax.get(Constants.API_PREFIX + USERS_ENDPOINT)
