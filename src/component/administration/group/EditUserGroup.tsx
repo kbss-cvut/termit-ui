@@ -68,22 +68,25 @@ const EditUserGroup: React.FC = () => {
     });
   }, [dispatch, location, name, setGroup]);
   const onUpdateGroup = () => {
-    const promises: Promise<any>[] = [];
-    if (group!.label !== label) {
-      promises.push(
-        dispatch(
-          updateUserGroupLabel(new UserGroup({ iri: group!.iri, label }))
-        )
-      );
-    }
     const { toAdd, toRemove } = resolveMembersDiff(group!.members, members);
-    if (toAdd.length > 0) {
-      promises.push(dispatch(addGroupMembers(group!, toAdd)));
-    }
-    if (toRemove.length > 0) {
-      promises.push(dispatch(removeGroupMembers(group!, toRemove)));
-    }
-    trackPromise(Promise.all(promises), "update-group").then(() => {
+    trackPromise(
+      new Promise<void>(async (resolve) => {
+        // Execute group editing requests sequentially to prevent concurrency issues
+        if (group!.label !== label) {
+          await dispatch(
+            updateUserGroupLabel(new UserGroup({ iri: group!.iri, label }))
+          );
+        }
+        if (toAdd.length > 0) {
+          await dispatch(addGroupMembers(group!, toAdd));
+        }
+        if (toRemove.length > 0) {
+          await dispatch(removeGroupMembers(group!, toRemove));
+        }
+        resolve();
+      }),
+      "update-group"
+    ).then(() => {
       dispatch(
         publishMessage(
           new Message(
