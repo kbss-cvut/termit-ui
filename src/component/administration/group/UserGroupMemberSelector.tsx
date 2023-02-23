@@ -37,7 +37,7 @@ const UserGroupMemberSelector: React.FC<{
     onChange(newMembers);
   };
 
-  const rowCount = allUsers.length / COLUMN_COUNT;
+  const rowCount = Math.ceil(allUsers.length / COLUMN_COUNT);
   const rows = [];
   for (let i = 0; i < rowCount; i++) {
     rows.push(
