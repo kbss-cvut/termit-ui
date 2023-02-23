@@ -171,12 +171,22 @@ const cs = {
       'Uživatel "{name}" úspěšně vytvořen.',
     "administration.users.you": "Toto je Váš účet",
     "administration.users.types.admin": "Tento uživatel je administrátor",
-    "administration.maintenance.title": "Správa",
+    "administration.maintenance.title": "Správa systému",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":
       "Vyprázdnit interní cache systému",
     "administration.maintenance.invalidateCaches.success":
       "Cache úspěšně vyprázdněna.",
+    "administration.groups": "Uživatelské skupiny",
+    "administration.groups.create": "Vytvořit skupinu",
+    "administration.groups.create.tooltip":
+      "Umožňuje vytvořit novou uživatelskou skupinu",
+    "administration.groups.create.success": "Skupina byla úspěšně vytvořena.",
+    "administration.groups.remove.type": "uživatelskou skupinu",
+    "administration.groups.remove.success": "Skupina byla úspěšně odstraněna.",
+    "administration.groups.update": "Upravit skupinu",
+    "administration.groups.update.success": "Skupina byla úspěšně upravena.",
+    "administration.groups.members": "Členové skupiny",
 
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",

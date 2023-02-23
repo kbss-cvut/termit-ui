@@ -59,6 +59,9 @@ export default class TermItState {
   public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
   public breadcrumbs: Breadcrumb[];
 
+  // Administration
+  public users: User[];
+
   constructor() {
     this.loading = false;
     this.user = EMPTY_USER;
@@ -91,6 +94,7 @@ export default class TermItState {
     this.validationResults = {};
     this.definitionallyRelatedTerms = { targeting: [], of: [] };
     this.breadcrumbs = [];
+    this.users = [];
   }
 
   /**
