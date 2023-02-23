@@ -173,6 +173,8 @@ const en = {
     "administration.groups.create.success": "User group successfully created.",
     "administration.groups.remove.type": "user group",
     "administration.groups.remove.success": "User group successfully removed.",
+    "administration.groups.update": "Update user group",
+    "administration.groups.update.success": "User group successfully updated.",
     "administration.groups.members": "Group members",
 
     "asset.link.tooltip": "View detail of this asset",

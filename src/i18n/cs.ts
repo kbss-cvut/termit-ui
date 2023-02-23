@@ -184,6 +184,8 @@ const cs = {
     "administration.groups.create.success": "Skupina byla úspěšně vytvořena.",
     "administration.groups.remove.type": "uživatelskou skupinu",
     "administration.groups.remove.success": "Skupina byla úspěšně odstraněna.",
+    "administration.groups.update": "Upravit skupinu",
+    "administration.groups.update.success": "Skupina byla úspěšně upravena.",
     "administration.groups.members": "Členové skupiny",
 
     "asset.link.tooltip": "Zobrazit detail záznamu",

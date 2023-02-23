@@ -28,6 +28,7 @@ export default class UserGroup implements UserGroupData, HasLabel {
     this.iri = data.iri;
     this.label = data.label;
     this.members = Utils.sanitizeArray(data.members);
+    this.members.sort((a, b) => a.username.localeCompare(b.username));
   }
 
   getLabel(): string {

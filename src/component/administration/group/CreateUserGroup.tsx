@@ -40,7 +40,7 @@ const CreateUserGroup: React.FC = () => {
       <WindowTitle title={i18n("administration.groups.create")} />
       <HeaderWithActions title={i18n("administration.groups.create")} />
       <Card id="create-group" className="mb-3">
-        <CardBody className="card-body-basic-info">
+        <CardBody>
           <PromiseTrackingMask area="create-group" />
           <UserGroupEditForm
             label={label}
