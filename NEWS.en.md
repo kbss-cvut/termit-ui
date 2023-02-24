@@ -1,3 +1,8 @@
+#### Version 2.16.2
+
+- Bug fixes.
+- Initial implementation of user group management (will be used in vocabulary access management).
+
 #### Version 2.16.1
 
 - Additional properties values representing URLs are now displayed as external links.

@@ -4,9 +4,9 @@ import User, { CONTEXT as USER_CONTEXT, UserData } from "./User";
 import Utils from "../util/Utils";
 
 const ctx = {
-  content: VocabularyUtils.NS_SIOC + "ns#content",
-  author: VocabularyUtils.NS_SIOC + "ns#has_creator",
-  asset: VocabularyUtils.NS_SIOC + "ns#topic",
+  content: VocabularyUtils.NS_SIOC + "content",
+  author: VocabularyUtils.NS_SIOC + "has_creator",
+  asset: VocabularyUtils.NS_SIOC + "topic",
   created: {
     "@id": VocabularyUtils.CREATED,
     "@type": VocabularyUtils.XSD_DATETIME,

@@ -164,23 +164,19 @@ describe("AsyncUserActions", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(users));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadUsers())
-      ).then((result: User[]) => {
-        expect(result.length).toEqual(users.length);
-        result.forEach((u) =>
+      ).then(() => {
+        const action = store
+          .getActions()
+          .find(
+            (a) =>
+              a.type === ActionType.LOAD_USERS &&
+              a.status === AsyncActionStatus.SUCCESS
+          );
+        expect(action).toBeDefined();
+        expect(action.payload.length).toEqual(users.length);
+        action.payload.forEach((u: User) =>
           expect(users.find((uu: object) => uu["@id"] === u.iri)).toBeDefined()
         );
-      });
-    });
-
-    it("returns empty array on error", () => {
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.reject({ message: "Error" }));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadUsers())
-      ).then((result: User[]) => {
-        expect(result).toBeDefined();
-        expect(result.length).toEqual(0);
       });
     });
   });

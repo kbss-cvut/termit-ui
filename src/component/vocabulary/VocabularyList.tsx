@@ -4,22 +4,17 @@ import TermItState from "../../model/TermItState";
 import Vocabulary from "../../model/Vocabulary";
 import {
   Column,
-  Row,
   useFilters,
-  UseFiltersColumnProps,
   usePagination,
   useSortBy,
-  UseSortByColumnProps,
   useTable,
 } from "react-table";
-import { Table } from "reactstrap";
 import TextBasedFilter, {
   textContainsFilter,
 } from "../misc/table/TextBasedFilter";
 import VocabularyLink from "./VocabularyLink";
-import AlphaNumSortToggle from "../misc/table/AlphaNumSortToggle";
-import Pagination from "../misc/table/Pagination";
 import { useI18n } from "../hook/useI18n";
+import Table from "../misc/table/Table";
 
 export const VocabularyList: React.FC = () => {
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
@@ -59,70 +54,10 @@ export const VocabularyList: React.FC = () => {
     useSortBy,
     usePagination
   );
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow } =
-    tableInstance;
-  const page: Row<Vocabulary>[] = (tableInstance as any).page;
 
   return (
     <div id="vocabulary-list" className="asset-list">
-      <Table {...getTableProps()} striped={true} responsive={true}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => {
-                const col: UseSortByColumnProps<Vocabulary> &
-                  UseFiltersColumnProps<Vocabulary> = column as any;
-                return (
-                  <th
-                    {...column.getHeaderProps([
-                      { className: (column as any).className },
-                    ])}
-                  >
-                    {column.render("Header")}
-                    {col.canSort && (
-                      <AlphaNumSortToggle
-                        sortProps={column.getHeaderProps(
-                          col.getSortByToggleProps()
-                        )}
-                        desc={col.isSortedDesc}
-                        isSorted={col.isSorted}
-                      />
-                    )}
-                    {col.canFilter && (
-                      <div className="filter-wrapper">
-                        {column.render("Filter")}
-                      </div>
-                    )}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td
-                    {...cell.getCellProps([
-                      { className: (cell.column as any).className },
-                    ])}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
-      <Pagination
-        pagingProps={tableInstance as any}
-        pagingState={tableInstance.state as any}
-        allowSizeChange={true}
-      />
+      <Table instance={tableInstance} />
     </div>
   );
 };

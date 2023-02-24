@@ -1,4 +1,8 @@
-.users-row-actions {
+.card-body table:first-child th {
+  border-top: none;
+}
+
+.table-row-actions {
   text-align: center;
   @media screen and (min-width: 1280px) {
     width: 18rem;
@@ -19,8 +23,4 @@
     margin-top: 0.125rem;
     margin-bottom: 0.125rem;
   }
-}
-
-.m-user-status .info-icon {
-  margin-left: 0.25rem;
 }
