@@ -8,7 +8,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { Badge } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import TermLink from "./TermLink";
-import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
+import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
 
 interface DefinitionRelatedTermsProps {
   term: Term;
@@ -67,7 +67,9 @@ const DefinitionRelatedTerms: React.FC<DefinitionRelatedTermsProps> = (
             <DefinitionBadge />
             <TermLink term={termCache[iri]} language={language} />
             {term.vocabulary?.iri !== termCache[iri].vocabulary?.iri && (
-              <VocabularyNameBadge vocabulary={termCache[iri].vocabulary} />
+              <VocabularyNameBadgeButton
+                vocabulary={termCache[iri].vocabulary}
+              />
             )}
           </li>
         ))}

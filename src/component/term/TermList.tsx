@@ -3,8 +3,8 @@ import Term, { termComparator, TermInfo } from "../../model/Term";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import TermLink from "./TermLink";
-import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 import Utils from "../../util/Utils";
+import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
 
 interface TermListProps {
   terms?: (Term | TermInfo)[];
@@ -33,7 +33,7 @@ const TermList: React.FC<TermListProps> = (props) => {
               {addonBeforeRenderer && addonBeforeRenderer(item)}
               <TermLink term={item} language={language} />
               {vocabularyIri !== item.vocabulary?.iri && (
-                <VocabularyNameBadge vocabulary={item.vocabulary} />
+                <VocabularyNameBadgeButton vocabulary={item.vocabulary} />
               )}
             </li>
           ))}
