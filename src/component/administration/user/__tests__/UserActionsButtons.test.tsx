@@ -1,13 +1,13 @@
-import Generator from "../../../__tests__/environment/Generator";
+import Generator from "../../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
-import { UserActions, UserRow } from "../UserRow";
 import {
   intlFunctions,
   mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
-import User from "../../../model/User";
-import Utils from "../../../util/Utils";
-import VocabularyUtils from "../../../util/VocabularyUtils";
+} from "../../../../__tests__/environment/IntlUtil";
+import User from "../../../../model/User";
+import Utils from "../../../../util/Utils";
+import VocabularyUtils from "../../../../util/VocabularyUtils";
+import UserActionsButtons, { UserActions } from "../UserActionsButtons";
 
 describe("UserRow", () => {
   let user: User;
@@ -26,7 +26,12 @@ describe("UserRow", () => {
 
   it("renders disable button for non-disabled user", () => {
     const wrapper = shallow(
-      <UserRow user={user} actions={actions} {...intlFunctions()} />
+      <UserActionsButtons
+        user={user}
+        currentUser={Generator.generateUser()}
+        {...actions}
+        {...intlFunctions()}
+      />
     );
     expect(
       wrapper.exists(`#user-${Utils.hashCode(user.iri)}-disable`)
@@ -36,7 +41,12 @@ describe("UserRow", () => {
   it("renders enable button for disabled user", () => {
     user.types.push(VocabularyUtils.USER_DISABLED);
     const wrapper = shallow(
-      <UserRow user={user} actions={actions} {...intlFunctions()} />
+      <UserActionsButtons
+        user={user}
+        currentUser={Generator.generateUser()}
+        {...actions}
+        {...intlFunctions()}
+      />
     );
     expect(
       wrapper.exists(`#user-${Utils.hashCode(user.iri)}-disable`)
@@ -48,7 +58,12 @@ describe("UserRow", () => {
 
   it("invokes disable action when disable button is clicked", () => {
     const wrapper = shallow(
-      <UserRow user={user} actions={actions} {...intlFunctions()} />
+      <UserActionsButtons
+        user={user}
+        currentUser={Generator.generateUser()}
+        {...actions}
+        {...intlFunctions()}
+      />
     );
     const button = wrapper.find(`#user-${Utils.hashCode(user.iri)}-disable`);
     expect(button.exists()).toBeTruthy();
@@ -59,7 +74,12 @@ describe("UserRow", () => {
   it("invokes enable action when enable button is clicked", () => {
     user.types.push(VocabularyUtils.USER_DISABLED);
     const wrapper = shallow(
-      <UserRow user={user} actions={actions} {...intlFunctions()} />
+      <UserActionsButtons
+        user={user}
+        currentUser={Generator.generateUser()}
+        {...actions}
+        {...intlFunctions()}
+      />
     );
     const button = wrapper.find(`#user-${Utils.hashCode(user.iri)}-enable`);
     expect(button.exists()).toBeTruthy();
@@ -69,10 +89,10 @@ describe("UserRow", () => {
 
   it("does not render action buttons for currently logged-in user", () => {
     const wrapper = shallow(
-      <UserRow
+      <UserActionsButtons
         user={user}
-        currentUser={true}
-        actions={actions}
+        currentUser={user}
+        {...actions}
         {...intlFunctions()}
       />
     );
@@ -82,7 +102,12 @@ describe("UserRow", () => {
   it("renders unlock button for locked user", () => {
     user.types.push(VocabularyUtils.USER_LOCKED);
     const wrapper = shallow(
-      <UserRow user={user} actions={actions} {...intlFunctions()} />
+      <UserActionsButtons
+        user={user}
+        currentUser={Generator.generateUser()}
+        {...actions}
+        {...intlFunctions()}
+      />
     );
     expect(
       wrapper.exists(`#user-${Utils.hashCode(user.iri)}-unlock`)
@@ -92,19 +117,16 @@ describe("UserRow", () => {
   it("invokes unlock action when unlock button is clicked", () => {
     user.types.push(VocabularyUtils.USER_LOCKED);
     const wrapper = shallow(
-      <UserRow user={user} actions={actions} {...intlFunctions()} />
+      <UserActionsButtons
+        user={user}
+        currentUser={Generator.generateUser()}
+        {...actions}
+        {...intlFunctions()}
+      />
     );
     const button = wrapper.find(`#user-${Utils.hashCode(user.iri)}-unlock`);
     expect(button.exists()).toBeTruthy();
     button.simulate("click");
     expect(actions.unlock).toHaveBeenCalledWith(user);
-  });
-
-  it("renders admin user with admin badge", () => {
-    user.types.push(VocabularyUtils.USER_ADMIN);
-    const wrapper = shallow(
-      <UserRow user={user} actions={actions} {...intlFunctions()} />
-    );
-    expect(wrapper.exists(".m-user-admin")).toBeTruthy();
   });
 });

@@ -1,3 +1,8 @@
+#### Verze 2.16.2
+
+- Opravy chyb.
+- Prvotní verze správy uživatelských skupin (bude dále využita při řízení přístupu ke slovníkům).
+
 #### Verze 2.16.1
 
 - Hodnoty dalších atributů, které reprezentují URL, jsou nyní zobrazeny jako klikatelné externí linky.

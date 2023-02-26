@@ -9,9 +9,9 @@ import {
   ModalHeader,
   Row,
 } from "reactstrap";
-import User from "../../model/User";
-import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
-import { useI18n } from "../hook/useI18n";
+import User from "../../../model/User";
+import EnhancedInput, { LabelDirection } from "../../misc/EnhancedInput";
+import { useI18n } from "../../hook/useI18n";
 
 interface PasswordResetProps {
   open?: boolean;

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Button,
   ButtonToolbar,
@@ -8,28 +8,30 @@ import {
   ModalBody,
   ModalHeader,
 } from "reactstrap";
-import UserRole, { UserRoleData } from "../../model/UserRole";
-import { getLocalized } from "../../model/MultilingualString";
-import Select from "../misc/Select";
+import { UserRoleData } from "../../../model/UserRole";
+import { getLocalized } from "../../../model/MultilingualString";
+import Select from "../../misc/Select";
 import { filterActualRoles } from "./UserRoles";
-import User from "../../model/User";
-import TermItState from "../../model/TermItState";
-import { useI18n } from "../hook/useI18n";
-import Utils from "../../util/Utils";
-import VocabularyUtils from "../../util/VocabularyUtils";
+import User from "../../../model/User";
+import TermItState from "../../../model/TermItState";
+import { useI18n } from "../../hook/useI18n";
+import Utils from "../../../util/Utils";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 interface UserRolesEditProps {
   user: User;
   open: boolean;
-  availableRoles: UserRole[];
   onCancel: () => void;
   onSubmit: (role: UserRoleData) => void;
 }
 
 const UserRolesEdit = (props: UserRolesEditProps) => {
-  const { user, open, availableRoles, onCancel, onSubmit } = props;
+  const { user, open, onCancel, onSubmit } = props;
   const { i18n, formatMessage, locale } = useI18n();
   const [role, setRole] = useState<string>(VocabularyUtils.USER_RESTRICTED);
+  const availableRoles = useSelector(
+    (state: TermItState) => state.configuration.roles
+  );
 
   useEffect(() => {
     if (user != null) {
@@ -111,6 +113,4 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
   );
 };
 
-export default connect((state: TermItState) => ({
-  availableRoles: state.configuration.roles,
-}))(UserRolesEdit);
+export default UserRolesEdit;

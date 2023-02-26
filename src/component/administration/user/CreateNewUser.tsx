@@ -1,16 +1,16 @@
 import * as React from "react";
-import { UserAccountData } from "../../model/User";
-import { AsyncFailureAction } from "../../action/ActionType";
+import { UserAccountData } from "../../../model/User";
+import { AsyncFailureAction } from "../../../action/ActionType";
 import { useDispatch } from "react-redux";
-import { ThunkDispatch } from "../../util/Types";
-import { createNewUser } from "../../action/AsyncUserActions";
-import Routing from "../../util/Routing";
-import Routes from "../../util/Routes";
-import RegistrationForm from "../register/RegistrationForm";
-import AsyncActionStatus from "../../action/AsyncActionStatus";
+import { ThunkDispatch } from "../../../util/Types";
+import { createNewUser } from "../../../action/AsyncUserActions";
+import Routing from "../../../util/Routing";
+import Routes from "../../../util/Routes";
+import RegistrationForm from "../../register/RegistrationForm";
+import AsyncActionStatus from "../../../action/AsyncActionStatus";
 import { Card, CardBody } from "reactstrap";
-import HeaderWithActions from "../misc/HeaderWithActions";
-import { useI18n } from "../hook/useI18n";
+import HeaderWithActions from "../../misc/HeaderWithActions";
+import { useI18n } from "../../hook/useI18n";
 
 export const CreateNewUser: React.FC = () => {
   const { i18n } = useI18n();
