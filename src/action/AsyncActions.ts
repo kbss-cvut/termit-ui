@@ -1065,12 +1065,10 @@ export function getProperties() {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(Constants.API_PREFIX + "/data/properties")
       .then((data: object[]) =>
-        data.length > 0
-          ? JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
-              data,
-              RDFS_RESOURCE_CONTEXT
-            )
-          : []
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
+          data,
+          RDFS_RESOURCE_CONTEXT
+        )
       )
       .then((data: RdfsResourceData[]) =>
         dispatch(
