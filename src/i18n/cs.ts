@@ -186,6 +186,7 @@ const cs = {
     "administration.groups.remove.success": "Skupina byla úspěšně odstraněna.",
     "administration.groups.update": "Upravit skupinu",
     "administration.groups.update.success": "Skupina byla úspěšně upravena.",
+    "administration.groups.label.invalid": "Název skupiny nesmí být prázdný.",
     "administration.groups.members": "Členové skupiny",
 
     "asset.link.tooltip": "Zobrazit detail záznamu",
