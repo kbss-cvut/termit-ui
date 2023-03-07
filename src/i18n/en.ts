@@ -175,6 +175,8 @@ const en = {
     "administration.groups.remove.success": "User group successfully removed.",
     "administration.groups.update": "Update user group",
     "administration.groups.update.success": "User group successfully updated.",
+    "administration.groups.label.invalid":
+      "User group label must not be empty.",
     "administration.groups.members": "Group members",
 
     "asset.link.tooltip": "View detail of this asset",
