@@ -17,14 +17,14 @@ interface VocabularyNameBadgeButtonProps {
   vocabulary?: AssetData;
   className?: string;
   termIri: string;
-  section: string;
+  section?: string;
 }
 
 const VocabularyNameBadgeButton: React.FC<VocabularyNameBadgeButtonProps> = ({
   className,
   vocabulary,
   termIri,
-  section,
+  section = "",
 }) => {
   const dispatch: ThunkDispatch = useDispatch();
   const user = useSelector((state: TermItState) => state.user);
