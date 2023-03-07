@@ -22,6 +22,9 @@ jest.mock("react-redux", () => ({
   useSelector: jest.fn(),
   useDispatch: jest.fn(),
 }));
+jest.mock("../../vocabulary/VocabularyNameBadgeButton", () => () => (
+  <span>vocabulary-name</span>
+));
 
 describe("RelatedTermsList", () => {
   let term: Term;
