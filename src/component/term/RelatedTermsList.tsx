@@ -42,7 +42,11 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
             <li key={`${item.iri}`}>
               <TermLink term={item} language={language} />
               {term.vocabulary?.iri !== item.vocabulary?.iri && (
-                <VocabularyNameBadgeButton vocabulary={item.vocabulary} />
+                <VocabularyNameBadgeButton
+                  vocabulary={item.vocabulary}
+                  termIri={item.iri}
+                  section={"related-terms-"}
+                />
               )}
             </li>
           ))}

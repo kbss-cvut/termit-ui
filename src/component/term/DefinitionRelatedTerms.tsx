@@ -69,6 +69,8 @@ const DefinitionRelatedTerms: React.FC<DefinitionRelatedTermsProps> = (
             {term.vocabulary?.iri !== termCache[iri].vocabulary?.iri && (
               <VocabularyNameBadgeButton
                 vocabulary={termCache[iri].vocabulary}
+                termIri={iri}
+                section={"definition-related-terms-"}
               />
             )}
           </li>

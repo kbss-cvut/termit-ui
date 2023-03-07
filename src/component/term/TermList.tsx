@@ -33,7 +33,11 @@ const TermList: React.FC<TermListProps> = (props) => {
               {addonBeforeRenderer && addonBeforeRenderer(item)}
               <TermLink term={item} language={language} />
               {vocabularyIri !== item.vocabulary?.iri && (
-                <VocabularyNameBadgeButton vocabulary={item.vocabulary} />
+                <VocabularyNameBadgeButton
+                  vocabulary={item.vocabulary}
+                  termIri={item.iri}
+                  section={"terms-"}
+                />
               )}
             </li>
           ))}
