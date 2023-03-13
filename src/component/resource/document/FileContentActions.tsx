@@ -8,7 +8,10 @@ import {
   UncontrolledButtonDropdown,
 } from "reactstrap";
 import { GoFile } from "react-icons/go";
-import FileContentLink from "../file/FileContentLink";
+import ViewContentAction from "./ViewContentAction";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import Routing from "../../../util/Routing";
+import Routes from "../../../util/Routes";
 
 interface FileContentActionsProps {
   file: TermItFile;
@@ -23,6 +26,20 @@ const FileContentActions: React.FC<FileContentActionsProps> = ({
   onDownloadOriginal,
 }) => {
   const { i18n } = useI18n();
+  const onViewContent = () => {
+    const fileIri = VocabularyUtils.create(file.iri);
+    const vocabularyIri = VocabularyUtils.create(file.owner!.vocabulary!.iri!);
+    const params = new Map<string, string>([
+      ["name", vocabularyIri.fragment],
+      ["fileName", fileIri.fragment],
+    ]);
+    const query = new Map<string, string>([
+      ["namespace", vocabularyIri.namespace!],
+      ["fileNamespace", fileIri.namespace!],
+    ]);
+    Routing.transitionTo(Routes.annotateFile, { params, query });
+  };
+
   return (
     <UncontrolledButtonDropdown>
       <DropdownToggle
@@ -35,10 +52,10 @@ const FileContentActions: React.FC<FileContentActionsProps> = ({
         {i18n("resource.metadata.file.content")}
       </DropdownToggle>
       <DropdownMenu>
-        <FileContentLink
+        <ViewContentAction
           key="view-content"
           file={file}
-          wrapperComponent={DropdownItem}
+          onClick={onViewContent}
         />
         <DropdownItem
           key="download"
