@@ -1,6 +1,6 @@
 {
   "name": "termit-ui",
-  "version": "2.16.1",
+  "version": "2.16.2",
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
@@ -21,7 +21,7 @@
     "easymde": "2.15.0",
     "html-to-react": "1.5.0",
     "htmlparser2": "^4.1.0",
-    "intelligent-tree-select": "0.10.6",
+    "intelligent-tree-select": "0.10.8",
     "iso-639-1": "^2.1.15",
     "javascript-time-ago": "2.5.9",
     "js-cookie": "^3.0.1",

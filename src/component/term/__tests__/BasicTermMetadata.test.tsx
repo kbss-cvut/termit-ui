@@ -10,6 +10,7 @@ import BasicTermMetadata from "../BasicTermMetadata";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { MemoryRouter } from "react-router";
 
 jest.mock("../TermLink", () => () => <span>Term link</span>);
 jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);
@@ -63,12 +64,14 @@ describe("BasicTermMetadata", () => {
       }),
     ];
     const wrapper = mountWithIntl(
-      <BasicTermMetadata
-        term={term}
-        vocabulary={vocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+      <MemoryRouter>
+        <BasicTermMetadata
+          term={term}
+          vocabulary={vocabulary}
+          language={Constants.DEFAULT_LANGUAGE}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
     );
     const parentLinks = wrapper.find(TermLink);
     expect(parentLinks.length).toEqual(term.parentTerms.length);
@@ -91,12 +94,14 @@ describe("BasicTermMetadata", () => {
     ];
 
     const wrapper = mountWithIntl(
-      <BasicTermMetadata
-        term={term}
-        vocabulary={vocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+      <MemoryRouter>
+        <BasicTermMetadata
+          term={term}
+          vocabulary={vocabulary}
+          language={Constants.DEFAULT_LANGUAGE}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
     );
     const relatedList = wrapper.find("#term-metadata-related");
     expect(relatedList.find(TermLink).length).toEqual(

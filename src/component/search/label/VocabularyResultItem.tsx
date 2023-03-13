@@ -13,6 +13,8 @@ import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
 import AssetFactory from "../../../util/AssetFactory";
 import VocabularyBadge from "../../badge/VocabularyBadge";
+import { getLocalized } from "../../../model/MultilingualString";
+import { getShortLocale } from "../../../util/IntlUtil";
 
 interface VocabularyResultItemOwnProps {
   result: SearchResultItem;
@@ -51,7 +53,12 @@ export class VocabularyResultItem extends React.Component<
       const iri = VocabularyUtils.create(this.props.result.iri);
       this.props.getResource(iri).then((resource) => {
         if (resource) {
-          this.setState({ comment: resource.comment });
+          this.setState({
+            comment: getLocalized(
+              resource.comment,
+              getShortLocale(this.props.locale)
+            ),
+          });
         }
       });
     }
@@ -70,7 +77,7 @@ export class VocabularyResultItem extends React.Component<
     }
 
     if (text && text!.length > 200) {
-      text = text!.substr(0, 200) + " ...";
+      text = text!.substring(0, 200) + " ...";
     }
 
     const res = this.props.result;

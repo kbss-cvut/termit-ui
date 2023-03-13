@@ -204,16 +204,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       }
       this.props.selectVocabularyTerm(term);
     } else {
-      // The tree component adds depth and expanded attributes to the options when rendering,
-      // We need to get rid of them before working with the term
-      // We are creating a defensive copy of the term so that the rest of the application and the tree component
-      // have their own versions
-      const cloneData = Object.assign({}, term);
-      // @ts-ignore
-      delete cloneData.expanded;
-      // @ts-ignore
-      delete cloneData.depth;
-      const clone = new Term(cloneData);
+      const clone = Terms.cloneAndRemoveTreeSelectAttributes(term);
       this.props.selectVocabularyTerm(clone);
       Routing.transitionToAsset(clone, {
         query: new Map([
@@ -222,6 +213,20 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       });
     }
   };
+
+  /**
+   * Creates a copy of the specified term and removes attributes added by the intelligent-tree-select.
+   * @param term Data to clone and cleanup
+   * @private
+   */
+  private static cloneAndRemoveTreeSelectAttributes(term: TermData): Term {
+    let clone: any = Object.assign({}, term);
+    delete clone.expanded;
+    delete clone.depth;
+    delete clone.path;
+    delete clone.visible;
+    return new Term(clone);
+  }
 
   private onIncludeImportedToggle = () => {
     this.setState({ includeImported: !this.state.includeImported }, () =>
