@@ -285,10 +285,10 @@ const cs = {
     "vocabulary.detail.imports": "Importuje",
     "vocabulary.detail.imports.edit": "Importuje slovníky",
     "vocabulary.detail.document": "Dokument",
-    "vocabulary.text-analysis.finished.message":
-      "Textová analýza definic pojmů v tomto slovníku úspěšně dokončena.",
+    "vocabulary.text-analysis.invoke.message":
+      "Textová analýza definic pojmů v tomto slovníku spuštěna.",
     "vocabulary.all.text-analysis.invoke.message":
-      "Textová analýza definic pojmů ve všech slovnících úspěšně spuštěna.",
+      "Textová analýza definic pojmů ve všech slovnících spuštěna.",
     "vocabulary.termchanges.creations": "Vytvořené pojmy",
     "vocabulary.termchanges.updates": "Aktualizované pojmy",
     "vocabulary.termchanges.termcount": "Počet změněných pojmů",
@@ -515,6 +515,7 @@ const cs = {
     "file.upload": "Nahrát",
     "file.upload.hint":
       "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8.",
+    "file.upload.size.exceeded": "Soubor je příliš velký.",
 
     "dataset.license": "Licence",
     "dataset.format": "Formát",

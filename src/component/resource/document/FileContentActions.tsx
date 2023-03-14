@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TermItFile from "../../../model/File";
 import { useI18n } from "../../hook/useI18n";
 import {
@@ -8,10 +8,21 @@ import {
   UncontrolledButtonDropdown,
 } from "reactstrap";
 import { GoFile } from "react-icons/go";
-import ViewContentAction from "./ViewContentAction";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
+import { getContentType } from "../../../action/AsyncActions";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../../util/Types";
+import mimetype from "whatwg-mimetype";
+
+function isContentTypeSupported(contentType?: string | null) {
+  if (!contentType) {
+    return false;
+  }
+  const mt = mimetype.parse(contentType);
+  return mt && (mt.isHTML() || mt.isXML());
+}
 
 interface FileContentActionsProps {
   file: TermItFile;
@@ -26,6 +37,13 @@ const FileContentActions: React.FC<FileContentActionsProps> = ({
   onDownloadOriginal,
 }) => {
   const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  const [contentType, setContentType] = useState<string | null>(null);
+  useEffect(() => {
+    dispatch(getContentType(VocabularyUtils.create(file.iri))).then((ct) =>
+      setContentType(ct)
+    );
+  }, [dispatch, file.iri]);
   const onViewContent = () => {
     const fileIri = VocabularyUtils.create(file.iri);
     const vocabularyIri = VocabularyUtils.create(file.owner!.vocabulary!.iri!);
@@ -39,6 +57,9 @@ const FileContentActions: React.FC<FileContentActionsProps> = ({
     ]);
     Routing.transitionTo(Routes.annotateFile, { params, query });
   };
+  if (!contentType) {
+    return null;
+  }
 
   return (
     <UncontrolledButtonDropdown>
@@ -52,11 +73,15 @@ const FileContentActions: React.FC<FileContentActionsProps> = ({
         {i18n("resource.metadata.file.content")}
       </DropdownToggle>
       <DropdownMenu>
-        <ViewContentAction
-          key="view-content"
-          file={file}
-          onClick={onViewContent}
-        />
+        {isContentTypeSupported(contentType) && (
+          <DropdownItem
+            key="view-content"
+            onClick={onViewContent}
+            title={i18n("resource.metadata.file.content.view.tooltip")}
+          >
+            {i18n("resource.metadata.file.content.view")}
+          </DropdownItem>
+        )}
         <DropdownItem
           key="download"
           onClick={() => onDownload(file)}
