@@ -3,20 +3,13 @@ import UploadFile from "../UploadFile";
 import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import * as Redux from "react-redux";
 import Dropzone from "react-dropzone";
+import Generator from "../../../../__tests__/environment/Generator";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
   useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
-
-function generateMockFileContent(size: number) {
-  let output = "";
-  for (let i = 0; i < size; i++) {
-    output += "a";
-  }
-  return output;
-}
 
 describe("UploadFile", () => {
   let setFile: (file: File) => void;
@@ -31,7 +24,7 @@ describe("UploadFile", () => {
       maxFileUploadSize: "1KB",
     });
     const wrapper = shallow(<UploadFile setFile={setFile} />);
-    const file = new File([generateMockFileContent(100)], "test.html");
+    const file = Generator.generateFile("test.html", 100);
     wrapper.find(Dropzone).prop("onDrop")!([file], [], {} as any);
     expect(setFile).toHaveBeenCalledWith(file);
   });
@@ -41,7 +34,7 @@ describe("UploadFile", () => {
       maxFileUploadSize: "1KB",
     });
     const wrapper = shallow(<UploadFile setFile={setFile} />);
-    const file = new File([generateMockFileContent(1025)], "test.html");
+    const file = Generator.generateFile("test.html", 1025);
     wrapper.find(Dropzone).prop("onDrop")!([file], [], {} as any);
     expect(setFile).not.toHaveBeenCalled();
   });

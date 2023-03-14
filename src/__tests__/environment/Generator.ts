@@ -7,6 +7,7 @@ import { langString } from "../../model/MultilingualString";
 import Comment from "../../model/Comment";
 import ValidationResult from "../../model/ValidationResult";
 import TermOccurrence from "../../model/TermOccurrence";
+import Constants from "../../util/Constants";
 
 export default class Generator {
   public static readonly URI_BASE =
@@ -126,6 +127,13 @@ export default class Generator {
         },
         types: [],
       },
+    });
+  }
+
+  public static generateFile(fileName: string, size: number = 1024) {
+    return new File(["a".repeat(size)], fileName, {
+      lastModified: Date.now(),
+      type: Constants.HTML_MIME_TYPE,
     });
   }
 }

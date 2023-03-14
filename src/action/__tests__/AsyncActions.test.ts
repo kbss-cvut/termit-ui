@@ -1304,12 +1304,12 @@ describe("Async actions", () => {
 
     it("attaches file data to server request", () => {
       Ajax.put = jest.fn().mockResolvedValue(undefined);
-      const blob = new Blob([""], { type: "text/html" });
-      // @ts-ignore
-      blob.name = fileName;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          uploadFileContent(VocabularyUtils.create(fileIri), blob as File)
+          uploadFileContent(
+            VocabularyUtils.create(fileIri),
+            Generator.generateFile(fileName)
+          )
         )
       ).then(() => {
         const actions = store.getActions();
@@ -1324,12 +1324,12 @@ describe("Async actions", () => {
         "http://onto.fel.cvut.cz/ontologies/slovník/datový/soubory/";
       const iri = `${namespace}${fileName}`;
       Ajax.put = jest.fn().mockResolvedValue(undefined);
-      const blob = new Blob([""], { type: "text/html" });
-      // @ts-ignore
-      blob.name = fileName;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          uploadFileContent(VocabularyUtils.create(iri), blob as File)
+          uploadFileContent(
+            VocabularyUtils.create(iri),
+            Generator.generateFile(fileName)
+          )
         )
       ).then(() => {
         const args = (Ajax.put as jest.Mock).mock.calls[0];
