@@ -7,6 +7,7 @@ import { shallow } from "enzyme";
 import RdfsResource from "../../../model/RdfsResource";
 import BadgeButton from "../../misc/BadgeButton";
 import Utils from "../../../util/Utils";
+import { langString } from "../../../model/MultilingualString";
 
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 
@@ -80,7 +81,7 @@ describe("UnmappedPropertiesEdit", () => {
     ).onPropertySelect(
       new RdfsResource({
         iri: property,
-        label: "Property",
+        label: langString("Property"),
       })
     );
     const valueInput = wrapper.find('input[name="value"]');
@@ -100,7 +101,7 @@ describe("UnmappedPropertiesEdit", () => {
     ).onPropertySelect(
       new RdfsResource({
         iri: property,
-        label: "Property",
+        label: langString("Property"),
       })
     );
     const valueInput = wrapper.find('input[name="value"]');
@@ -121,7 +122,7 @@ describe("UnmappedPropertiesEdit", () => {
     ).onPropertySelect(
       new RdfsResource({
         iri: property,
-        label: "Property",
+        label: langString("Property"),
       })
     );
     const valueInput = wrapper.find('input[name="value"]');
@@ -143,7 +144,7 @@ describe("UnmappedPropertiesEdit", () => {
     ).onPropertySelect(
       new RdfsResource({
         iri: Generator.generateUri(),
-        label: "Property",
+        label: langString("Property"),
       })
     );
     addButton = wrapper.find(GoPlus).parent();
@@ -164,7 +165,7 @@ describe("UnmappedPropertiesEdit", () => {
     ).onPropertySelect(
       new RdfsResource({
         iri: property,
-        label: "Property",
+        label: langString("Property"),
       })
     );
     const valueInput = wrapper.find('input[name="value"]');
@@ -204,7 +205,7 @@ describe("UnmappedPropertiesEdit", () => {
     );
     const propertyData = {
       iri: Generator.generateUri(),
-      label: "Test",
+      label: langString("Test"),
     };
     (wrapper.instance() as UnmappedPropertiesEdit).onCreateProperty(
       propertyData

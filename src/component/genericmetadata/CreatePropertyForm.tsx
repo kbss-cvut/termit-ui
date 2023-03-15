@@ -14,13 +14,16 @@ import CustomInput from "../misc/CustomInput";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { useI18n } from "../hook/useI18n";
 import TextArea from "../misc/TextArea";
+import { langString } from "../../model/MultilingualString";
+import { useSelector } from "react-redux";
+import TermItState from "../../model/TermItState";
 
 interface CreatePropertyFormProps {
   onOptionCreate: (option: RdfsResourceData) => void;
   toggleModal: () => void;
 }
 
-function isValid(data: RdfsResourceData) {
+function isValid(data: { iri: string }) {
   // "http://".length => 7
   return data.iri.length > 7;
 }
@@ -33,12 +36,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [iri, setIri] = useState("");
   const [label, setLabel] = useState("");
   const [comment, setComment] = useState("");
+  const language = useSelector(
+    (state: TermItState) => state.configuration.language
+  );
   const onCreate = () => {
     toggleModal();
     const newProperty: RdfsResourceData = {
       iri,
-      label: label!.length > 0 ? label : undefined,
-      comment: comment!.length > 0 ? comment : undefined,
+      label: label!.length > 0 ? langString(label, language) : undefined,
+      comment: comment!.length > 0 ? langString(comment, language) : undefined,
       types: [VocabularyUtils.RDF_PROPERTY],
     };
     onOptionCreate(newProperty);
@@ -84,7 +90,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 color="success"
                 size="sm"
                 onClick={onCreate}
-                disabled={!isValid({ iri, label, comment })}
+                disabled={!isValid({ iri })}
               >
                 {i18n("save")}
               </Button>
