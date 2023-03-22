@@ -1,3 +1,7 @@
+#### Verze 2.16.3
+
+- Opravy chyb.
+
 #### Verze 2.16.2
 
 - Opravy chyb.

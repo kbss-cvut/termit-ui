@@ -280,9 +280,9 @@ const en = {
     "vocabulary.detail.imports.edit": "Imports vocabularies",
     "vocabulary.detail.document": "Document",
     "vocabulary.text-analysis.finished.message":
-      "Text analysis of terms' definitions in this vocabulary successfully finished.",
+      "Text analysis of terms' definitions in this vocabulary invoked.",
     "vocabulary.all.text-analysis.invoke.message":
-      "Text analysis of terms' definitions in all vocabularies successfully invoked.",
+      "Text analysis of terms' definitions in all vocabularies invoked.",
     "vocabulary.termchanges.creations": "Created terms",
     "vocabulary.termchanges.updates": "Updated terms",
     "vocabulary.termchanges.termcount": "Changed term count",
@@ -505,6 +505,7 @@ const en = {
     "file.upload": "Upload",
     "file.upload.hint":
       "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8.",
+    "file.upload.size.exceeded": "File is too large.",
 
     "dataset.license": "License",
     "dataset.format": "Format",

@@ -8,18 +8,39 @@ import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import "./UploadFile.scss";
 
+const BYTES_PER_UNIT = 1024;
+const UNITS = ["B", "KB", "MB", "GB", "TB"];
+
 function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) {
     return "0B";
   }
 
-  const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(BYTES_PER_UNIT));
+  return (
+    parseFloat((bytes / Math.pow(BYTES_PER_UNIT, i)).toFixed(dm)) +
+    " " +
+    UNITS[i]
+  );
+}
 
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+function isFileSizeValid(fileSize: number, limitStr: string) {
+  return fileSize < limitStringToBytes(limitStr);
+}
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+function limitStringToBytes(limitStr: string) {
+  let limit = "";
+  let i = 0;
+  let char = limitStr.charAt(i);
+  while (char >= "0" && char <= "9") {
+    limit += char;
+    i++;
+    char = limitStr.charAt(i);
+  }
+  const unit = limitStr.substring(i).toUpperCase();
+  const unitIndex = UNITS.indexOf(unit);
+  return Number(limit) * Math.pow(BYTES_PER_UNIT, unitIndex);
 }
 
 interface UploadFileProps {
@@ -36,7 +57,7 @@ export const UploadFile: React.FC<UploadFileProps> = (props) => {
     const file = files[0];
     setDragActive(false);
     setCurrentFile(file);
-    if (file) {
+    if (file && isFileSizeValid(file.size, serverConfig.maxFileUploadSize)) {
       setFile(file);
     }
   };
@@ -74,6 +95,14 @@ export const UploadFile: React.FC<UploadFileProps> = (props) => {
                           " - " +
                           formatBytes(currentFile.size)}
                       </Label>
+                      {!isFileSizeValid(
+                        currentFile.size,
+                        serverConfig.maxFileUploadSize
+                      ) && (
+                        <div className="font-italic text-danger">
+                          {i18n("file.upload.size.exceeded")}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -90,4 +119,5 @@ export const UploadFile: React.FC<UploadFileProps> = (props) => {
     </Row>
   );
 };
+
 export default UploadFile;

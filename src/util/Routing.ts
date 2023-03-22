@@ -159,7 +159,7 @@ export class Routing {
         this.transitionToHome();
         break;
       case VocabularyUtils.TERM:
-        this.transitionToTerm(asset as Term);
+        this.transitionToTerm(asset as Term, options);
         break;
     }
   }
