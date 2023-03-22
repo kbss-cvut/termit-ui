@@ -1117,11 +1117,19 @@ describe("Async actions", () => {
     });
 
     it("loads data from response and passes them to store", () => {
+      const label = "Label";
+      const comment = "Comment";
       const result = [
         {
           "@id": "http://www.w3.org/2000/01/rdf-schema#label",
-          "http://www.w3.org/2000/01/rdf-schema#label": "Label",
-          "http://www.w3.org/2000/01/rdf-schema#comment": "Comment",
+          "http://www.w3.org/2000/01/rdf-schema#label": {
+            "@value": label,
+            "@language": Constants.DEFAULT_LANGUAGE,
+          },
+          "http://www.w3.org/2000/01/rdf-schema#comment": {
+            "@value": comment,
+            "@language": Constants.DEFAULT_LANGUAGE,
+          },
         },
       ];
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(result));
@@ -1132,12 +1140,8 @@ describe("Async actions", () => {
           store.getActions()[1];
         expect(action.payload.length).toEqual(1);
         expect(action.payload[0].iri).toEqual(result[0]["@id"]);
-        expect(action.payload[0].label).toEqual(
-          result[0]["http://www.w3.org/2000/01/rdf-schema#label"]
-        );
-        expect(action.payload[0].comment).toEqual(
-          result[0]["http://www.w3.org/2000/01/rdf-schema#comment"]
-        );
+        expect(action.payload[0].label).toEqual(langString(label));
+        expect(action.payload[0].comment).toEqual(langString(comment));
       });
     });
 
@@ -1145,8 +1149,8 @@ describe("Async actions", () => {
       const data = [
         new RdfsResource({
           iri: "http://www.w3.org/2000/01/rdf-schema#label",
-          label: "Label",
-          comment: "Comment",
+          label: langString("Label"),
+          comment: langString("Comment"),
         }),
       ];
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
@@ -1162,8 +1166,8 @@ describe("Async actions", () => {
     it("sends property data in JSON-LD to server", () => {
       const data = new RdfsResource({
         iri: "http://www.w3.org/2000/01/rdf-schema#label",
-        label: "Label",
-        comment: "Comment",
+        label: langString("Label"),
+        comment: langString("Comment"),
       });
       Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
@@ -1300,12 +1304,12 @@ describe("Async actions", () => {
 
     it("attaches file data to server request", () => {
       Ajax.put = jest.fn().mockResolvedValue(undefined);
-      const blob = new Blob([""], { type: "text/html" });
-      // @ts-ignore
-      blob.name = fileName;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          uploadFileContent(VocabularyUtils.create(fileIri), blob as File)
+          uploadFileContent(
+            VocabularyUtils.create(fileIri),
+            Generator.generateFile(fileName)
+          )
         )
       ).then(() => {
         const actions = store.getActions();
@@ -1320,12 +1324,12 @@ describe("Async actions", () => {
         "http://onto.fel.cvut.cz/ontologies/slovník/datový/soubory/";
       const iri = `${namespace}${fileName}`;
       Ajax.put = jest.fn().mockResolvedValue(undefined);
-      const blob = new Blob([""], { type: "text/html" });
-      // @ts-ignore
-      blob.name = fileName;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          uploadFileContent(VocabularyUtils.create(iri), blob as File)
+          uploadFileContent(
+            VocabularyUtils.create(iri),
+            Generator.generateFile(fileName)
+          )
         )
       ).then(() => {
         const args = (Ajax.put as jest.Mock).mock.calls[0];

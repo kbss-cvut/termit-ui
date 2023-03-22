@@ -1,18 +1,22 @@
 import { AssetData, HasLabel } from "./Asset";
 import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
+import MultilingualString, {
+  context,
+  getLocalized,
+} from "./MultilingualString";
 
 export const CONTEXT = {
   iri: "@id",
-  label: VocabularyUtils.RDFS_LABEL,
-  comment: VocabularyUtils.RDFS_COMMENT,
+  label: context(VocabularyUtils.RDFS_LABEL),
+  comment: context(VocabularyUtils.RDFS_COMMENT),
   types: "@type",
 };
 
 export interface RdfsResourceData extends AssetData {
   iri: string;
-  label?: string;
-  comment?: string;
+  label?: MultilingualString;
+  comment?: MultilingualString;
   types?: string[];
 }
 
@@ -21,8 +25,8 @@ export interface RdfsResourceData extends AssetData {
  */
 export default class RdfsResource implements RdfsResourceData, HasLabel {
   public readonly iri: string;
-  public readonly label?: string;
-  public readonly comment?: string;
+  public readonly label?: MultilingualString;
+  public readonly comment?: MultilingualString;
   public readonly types: string[];
 
   constructor(data: RdfsResourceData) {
@@ -35,8 +39,8 @@ export default class RdfsResource implements RdfsResourceData, HasLabel {
     }
   }
 
-  getLabel(): string {
-    return this.label ? this.label : "";
+  getLabel(lang?: string): string {
+    return getLocalized(this.label, lang);
   }
 
   public toJsonLd() {

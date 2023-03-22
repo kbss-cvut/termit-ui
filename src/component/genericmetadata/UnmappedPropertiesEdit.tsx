@@ -20,6 +20,9 @@ import Utils from "../../util/Utils";
 import AttributeSectionContainer from "../layout/AttributeSectionContainer";
 import BadgeButton from "../misc/BadgeButton";
 import "./UnmappedProperties.scss";
+import Constants from "../../util/Constants";
+import { getLocalized } from "../../model/MultilingualString";
+import { getShortLocale } from "../../util/IntlUtil";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
   properties: Map<string, string[]>;
@@ -188,7 +191,7 @@ export class UnmappedPropertiesEdit extends React.Component<
   }
 
   private renderPropertyInput() {
-    const i18n = this.props.i18n;
+    const { i18n, locale } = this.props;
     return (
       <>
         {this.state.showCreatePropertyForm && (
@@ -219,7 +222,9 @@ export class UnmappedPropertiesEdit extends React.Component<
               onChange={this.onPropertySelect}
               childrenKey="children"
               valueKey="iri"
-              labelKey="label"
+              getOptionLabel={(opt: RdfsResourceData) =>
+                getLocalized(opt.label, getShortLocale(locale))
+              }
               showSettings={true}
               maxHeight={150}
               multi={false}
@@ -239,9 +244,13 @@ export class UnmappedPropertiesEdit extends React.Component<
   }
 
   private prepareKnownPropertiesForRendering() {
-    const options = this.props.knownProperties.map((p) =>
-      p.label ? p : Object.assign(p, { label: p.iri })
-    );
+    const options = this.props.knownProperties.map((p) => {
+      const iriAsLabel = {};
+      iriAsLabel[Constants.DEFAULT_LANGUAGE] = p.iri;
+      return p.label
+        ? p
+        : new RdfsResource(Object.assign(p, { label: iriAsLabel }));
+    });
     if (!this.props.ignoredProperties) {
       return options;
     }

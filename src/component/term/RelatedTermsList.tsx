@@ -7,9 +7,9 @@ import { Col, Label, List, Row } from "reactstrap";
 import { loadDefinitionRelatedTermsTargeting } from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermLink from "./TermLink";
-import VocabularyNameBadge from "../vocabulary/VocabularyNameBadge";
 import DefinitionRelatedTerms from "./DefinitionRelatedTerms";
 import { ThunkDispatch } from "../../util/Types";
+import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
 
 interface RelatedTermsListProps {
   term: Term;
@@ -42,7 +42,11 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
             <li key={`${item.iri}`}>
               <TermLink term={item} language={language} />
               {term.vocabulary?.iri !== item.vocabulary?.iri && (
-                <VocabularyNameBadge vocabulary={item.vocabulary} />
+                <VocabularyNameBadgeButton
+                  vocabulary={item.vocabulary}
+                  termIri={item.iri}
+                  section={"related-terms-"}
+                />
               )}
             </li>
           ))}
