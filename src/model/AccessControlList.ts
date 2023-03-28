@@ -9,6 +9,10 @@ const ctx = {
   types: "@type",
   records: VocabularyUtils.HAS_ACCESS_CONTROL_RECORD,
   holder: VocabularyUtils.HAS_ACCESS_LEVEL_HOLDER,
+  level: {
+    "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
+    "@type": "@id",
+  },
 };
 
 export const CONTEXT = Object.assign(

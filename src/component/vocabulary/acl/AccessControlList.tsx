@@ -1,7 +1,10 @@
 import React from "react";
 import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch } from "react-redux";
-import { loadVocabularyAccessControlList } from "../../../action/AsyncAccessControlActions";
+import {
+  loadAccessLevels,
+  loadVocabularyAccessControlList,
+} from "../../../action/AsyncAccessControlActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import {
   AccessControlList as AccessControlListModel,
@@ -21,6 +24,9 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
     React.useState<AccessControlListModel | undefined>(undefined);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
+    dispatch(loadAccessLevels());
+  }, [dispatch]);
+  React.useEffect(() => {
     dispatch(
       loadVocabularyAccessControlList(VocabularyUtils.create(vocabularyIri))
     ).then((data?: AccessControlListModel) => setAcl(data));
@@ -32,7 +38,7 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
     return null;
   }
   return (
-    <div className="additional-metadata-container">
+    <div id="vocabulary-acl" className="additional-metadata-container">
       <div className="mb-2 text-right">
         <Button
           id="acl-record-create"
