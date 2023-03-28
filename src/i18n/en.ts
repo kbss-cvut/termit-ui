@@ -309,6 +309,12 @@ const en = {
     "vocabulary.snapshot.create.dialog.confirm": "Create",
     "vocabulary.snapshot.create.success":
       "Vocabulary revision successfully created.",
+    "vocabulary.acl": "Access control",
+    "vocabulary.acl.record.create": "New record",
+    "vocabulary.acl.record.create.title":
+      "Create a new record in this vocabulary's access control list",
+    "vocabulary.acl.record.holder": "Access holder",
+    "vocabulary.acl.record.level": "Access level",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
@@ -457,7 +463,7 @@ const en = {
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":
       "Number of terms in the vocabulary (excluding imported vocabularies)",
-    "glossary.new": "New Term",
+    "glossary.new": "New term",
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",
     "glossary.excludeImported.help":
@@ -658,6 +664,9 @@ const en = {
     "type.file": "File",
     "type.dataset": "Dataset",
     "type.document.vocabulary": "Document vocabulary",
+    "type.user": "User",
+    "type.usergroup": "User group",
+    "type.userrole": "User role",
 
     "log-viewer.title": "Error log",
     "log-viewer.timestamp": "Timestamp",
