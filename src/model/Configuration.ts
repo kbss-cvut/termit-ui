@@ -8,6 +8,10 @@ const ctx = {
   roles: `${VocabularyUtils.NS_TERMIT}má-uživatelskou-roli`,
   maxFileUploadSize: `${VocabularyUtils.NS_TERMIT}má-maximální-velikost-souboru`,
   versionSeparator: `${VocabularyUtils.NS_TERMIT}má-oddělovač-verze`,
+  accessLevels: {
+    "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
+    "@type": "@id",
+  },
 };
 
 export const CONTEXT = Object.assign({}, USERROLE_CONTEXT, ctx);
@@ -21,6 +25,7 @@ export interface Configuration {
   roles: UserRole[];
   maxFileUploadSize: string;
   versionSeparator: string;
+  accessLevels: string[];
 }
 
 export const DEFAULT_CONFIGURATION: Configuration = {
@@ -29,4 +34,5 @@ export const DEFAULT_CONFIGURATION: Configuration = {
   roles: [],
   maxFileUploadSize: "",
   versionSeparator: "",
+  accessLevels: [],
 };

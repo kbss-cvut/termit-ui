@@ -154,6 +154,17 @@ const VocabularyUtils = {
   IS_SNAPSHOT_OF_TERM: _NS_POPIS_DAT + "je-verz\u00ed-pojmu",
   IS_SNAPSHOT_OF_VOCABULARY: _NS_POPIS_DAT + "je-verz\u00ed-slovn\u00edku",
 
+  ACCESS_CONTROL_LIST:
+    _NS_TERMIT + "seznam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu",
+  HAS_ACCESS_CONTROL_RECORD:
+    _NS_TERMIT + "m\u00e1-z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu",
+  HAS_ACCESS_LEVEL:
+    _NS_TERMIT +
+    "m\u00e1-\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed",
+  HAS_ACCESS_LEVEL_HOLDER:
+    _NS_TERMIT +
+    "m\u00e1-dr\u017eitele-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed",
+
   IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
 
   getFragment(iri: string): string {
