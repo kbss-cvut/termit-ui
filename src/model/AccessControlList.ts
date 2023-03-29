@@ -32,4 +32,5 @@ export interface AccessControlRecord<
 > {
   holder: T;
   level: string;
+  types: string[];
 }

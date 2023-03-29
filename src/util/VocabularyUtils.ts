@@ -112,6 +112,7 @@ const VocabularyUtils = {
   USER_RESTRICTED: _NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
   USER_EDITOR: _NS_TERMIT + "pln\u00fd-u\u017eivatel-termitu",
   USER_GROUP: _NS_SIOC + "Usergroup",
+  USER_ROLE: _NS_TERMIT + "u\u017eivatelsk\u00e1-role",
   HAS_COUNT: _NS_TERMIT + "has-count",
   PREFIX_RDFS: _NS_RDFS,
   RDF_TYPE: _NS_RDF + "type",
