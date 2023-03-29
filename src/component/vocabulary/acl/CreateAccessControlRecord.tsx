@@ -3,10 +3,12 @@ import { AccessControlRecord } from "../../../model/AccessControlList";
 import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
 import { useI18n } from "../../hook/useI18n";
 import AccessControlRecordForm from "./AccessControlRecordForm";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
 interface CreateAccessControlRecordProps {
   show: boolean;
-  onSubmit: (record: AccessControlRecord<any>) => void;
+  onSubmit: (record: AccessControlRecord<any>) => Promise<any>;
   onCancel: () => void;
 }
 
@@ -23,7 +25,7 @@ const CreateAccessControlRecord: React.FC<CreateAccessControlRecordProps> = ({
     setRecord(Object.assign({}, record, change));
   };
   const submit = () => {
-    onSubmit(record);
+    trackPromise(onSubmit(record), "create-acr-dialog");
     setRecord({} as AccessControlRecord<any>);
   };
   const onClose = () => {
@@ -41,6 +43,7 @@ const CreateAccessControlRecord: React.FC<CreateAccessControlRecordProps> = ({
       confirmDisabled={!record.holder || !record.level}
       title={i18n("vocabulary.acl.record.create.modal.title")}
     >
+      <PromiseTrackingMask area="create-acr-dialog" />
       <AccessControlRecordForm record={record} onChange={onChange} />
     </ConfirmCancelDialog>
   );

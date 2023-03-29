@@ -315,6 +315,8 @@ const en = {
       "Create a new record in this vocabulary's access control list",
     "vocabulary.acl.record.create.modal.title":
       "Create new access control record",
+    "vocabulary.acl.record.save.success":
+      "Access control record successfully saved.",
     "vocabulary.acl.record.holder": "Access holder",
     "vocabulary.acl.record.level": "Access level",
 

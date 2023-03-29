@@ -17,6 +17,12 @@ import {
   UpdateRecordData,
 } from "../model/changetracking/UpdateRecord";
 import { langString } from "../model/MultilingualString";
+import {
+  AccessControlRecord,
+  UserAccessControlRecord,
+  UserGroupAccessControlRecord,
+  UserRoleAccessControlRecord,
+} from "../model/AccessControlList";
 
 const AssetFactory = {
   /**
@@ -115,6 +121,25 @@ const AssetFactory = {
     }
     throw new TypeError(
       "Unsupported type of change record data " + JSON.stringify(data)
+    );
+  },
+
+  /**
+   * Creates an access control record instance based on the record holder type.
+   * @param data
+   */
+  createAccessControlRecord(data: AccessControlRecord<any>) {
+    const holderTypes = Utils.sanitizeArray(data.holder.types);
+    if (holderTypes.indexOf(VocabularyUtils.USER) !== -1) {
+      return new UserAccessControlRecord(data);
+    } else if (holderTypes.indexOf(VocabularyUtils.USER_GROUP) !== -1) {
+      return new UserGroupAccessControlRecord(data);
+    } else if (holderTypes.indexOf(VocabularyUtils.USER_ROLE) !== -1) {
+      return new UserRoleAccessControlRecord(data);
+    }
+    throw new TypeError(
+      "Unsupported type of access control record holder. Data: " +
+        JSON.stringify(data)
     );
   },
 };

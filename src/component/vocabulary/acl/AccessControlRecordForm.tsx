@@ -81,7 +81,7 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
         <AccessControlHolderSelector
           holderType={holderType}
           holder={record.holder}
-          onChange={(holder) => onChange({ holder })}
+          onChange={(holder) => onChange({ holder, types: [holderType] })}
         />
       </FormGroup>
 

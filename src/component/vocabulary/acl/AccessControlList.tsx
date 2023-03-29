@@ -2,6 +2,7 @@ import React from "react";
 import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  createAccessControlRecord,
   loadAccessLevels,
   loadVocabularyAccessControlList,
 } from "../../../action/AsyncAccessControlActions";
@@ -18,6 +19,7 @@ import "./AccessControlList.scss";
 import Utils from "../../../util/Utils";
 import TermItState from "../../../model/TermItState";
 import CreateAccessControlRecord from "./CreateAccessControlRecord";
+import AssetFactory from "../../../util/AssetFactory";
 
 function sortRecords(records: AccessControlRecord<any>[], levels: string[]) {
   const grouped = {};
@@ -73,23 +75,40 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
   React.useEffect(() => {
     dispatch(loadAccessLevels());
   }, [dispatch]);
+  const processLoadedAcl = React.useMemo(
+    () => (data?: AccessControlListModel) => {
+      if (!data) {
+        return;
+      }
+      data.records = sortRecords(data.records, Object.keys(accessLevels));
+      setAcl(data);
+    },
+    [accessLevels, setAcl]
+  );
   React.useEffect(() => {
     if (Object.keys(accessLevels).length > 0) {
       dispatch(
         loadVocabularyAccessControlList(VocabularyUtils.create(vocabularyIri))
-      ).then((data?: AccessControlListModel) => {
-        if (!data) {
-          return;
-        }
-        data.records = sortRecords(data.records, Object.keys(accessLevels));
-        setAcl(data);
-      });
+      ).then((data) => processLoadedAcl(data));
     }
-  }, [dispatch, vocabularyIri, accessLevels]);
+  }, [dispatch, vocabularyIri, accessLevels, processLoadedAcl]);
   // TODO
   const onEditClick = (record: AccessControlRecord<any>) => {};
   const onRemoveClick = (record: AccessControlRecord<any>) => {};
-  const onAddRecord = (record: AccessControlRecord<any>) => {};
+  const onAddRecord = (record: AccessControlRecord<any>) => {
+    const iri = VocabularyUtils.create(vocabularyIri);
+    return dispatch(
+      createAccessControlRecord(
+        iri,
+        AssetFactory.createAccessControlRecord(record)
+      )
+    )
+      .then(() => {
+        setShowCreateDialog(false);
+        return dispatch(loadVocabularyAccessControlList(iri));
+      })
+      .then((data) => processLoadedAcl(data));
+  };
 
   if (!acl) {
     return null;

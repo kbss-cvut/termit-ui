@@ -6,17 +6,24 @@ import {
   asyncActionRequest,
   asyncActionSuccess,
   asyncActionSuccessWithPayload,
+  publishMessage,
 } from "./SyncActions";
-import Ajax, { param } from "../util/Ajax";
+import Ajax, { content, param } from "../util/Ajax";
 import Constants from "../util/Constants";
 import JsonLdUtils from "../util/JsonLdUtils";
-import { AccessControlList, CONTEXT } from "../model/AccessControlList";
+import {
+  AccessControlList,
+  AccessControlRecord,
+  CONTEXT,
+} from "../model/AccessControlList";
 import { ErrorData } from "../model/ErrorInfo";
 import RdfsResource, {
-  RdfsResourceData,
   CONTEXT as RDFS_CONTEXT,
+  RdfsResourceData,
 } from "../model/RdfsResource";
 import TermItState from "../model/TermItState";
+import Message from "../model/Message";
+import MessageType from "../model/MessageType";
 
 /**
  * Loads access level options.
@@ -69,5 +76,35 @@ export function loadVocabularyAccessControlList(vocabularyIri: IRI) {
         dispatch(asyncActionFailure(action, error));
         return Promise.resolve(undefined);
       });
+  };
+}
+
+export function createAccessControlRecord(
+  vocabularyIri: IRI,
+  record: AccessControlRecord<any>
+) {
+  const action = {
+    type: ActionType.CREATE_ACCESS_CONTROL_RECORD,
+    vocabularyIri,
+    record,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/acl/records`,
+      content(record.toJsonLd()).param("namespace", vocabularyIri.namespace)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "vocabulary.acl.record.save.success" },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

@@ -320,6 +320,8 @@ const cs = {
     "vocabulary.acl.record.create.title":
       "Vytvořit nový záznam pro řízení přístupu k tomuto slovníku",
     "vocabulary.acl.record.create.modal.title": "Nový záznam řízení přístupu",
+    "vocabulary.acl.record.save.success":
+      "Záznam řízení přístupu úspěšně uložen.",
     "vocabulary.acl.record.holder": "Držitel oprávnění",
     "vocabulary.acl.record.level": "Úroveň oprávnění",
 
