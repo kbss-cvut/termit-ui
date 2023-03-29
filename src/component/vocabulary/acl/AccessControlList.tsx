@@ -13,10 +13,11 @@ import {
 import { Button } from "reactstrap";
 import { GoPlus } from "react-icons/go";
 import { useI18n } from "../../hook/useI18n";
-import AccessRecordsTable from "./AccessRecordsTable";
+import AccessControlRecordsTable from "./AccessControlRecordsTable";
 import "./AccessControlList.scss";
 import Utils from "../../../util/Utils";
 import TermItState from "../../../model/TermItState";
+import CreateAccessControlRecord from "./CreateAccessControlRecord";
 
 function sortRecords(records: AccessControlRecord<any>[], levels: string[]) {
   const grouped = {};
@@ -66,6 +67,7 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
   const { i18n } = useI18n();
   const [acl, setAcl] =
     React.useState<AccessControlListModel | undefined>(undefined);
+  const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const accessLevels = useSelector((state: TermItState) => state.accessLevels);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
@@ -84,26 +86,34 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
       });
     }
   }, [dispatch, vocabularyIri, accessLevels]);
+  // TODO
   const onEditClick = (record: AccessControlRecord<any>) => {};
   const onRemoveClick = (record: AccessControlRecord<any>) => {};
+  const onAddRecord = (record: AccessControlRecord<any>) => {};
 
   if (!acl) {
     return null;
   }
   return (
     <div id="vocabulary-acl" className="additional-metadata-container">
+      <CreateAccessControlRecord
+        show={showCreateDialog}
+        onSubmit={onAddRecord}
+        onCancel={() => setShowCreateDialog(false)}
+      />
       <div className="mb-2 text-right">
         <Button
           id="acl-record-create"
           color="primary"
           size="sm"
           title={i18n("vocabulary.acl.record.create.title")}
+          onClick={() => setShowCreateDialog(true)}
         >
           <GoPlus />
           &nbsp;{i18n("vocabulary.acl.record.create")}
         </Button>
       </div>
-      <AccessRecordsTable
+      <AccessControlRecordsTable
         acl={acl}
         onEdit={onEditClick}
         onRemove={onRemoveClick}

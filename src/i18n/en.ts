@@ -313,6 +313,8 @@ const en = {
     "vocabulary.acl.record.create": "New record",
     "vocabulary.acl.record.create.title":
       "Create a new record in this vocabulary's access control list",
+    "vocabulary.acl.record.create.modal.title":
+      "Create new access control record",
     "vocabulary.acl.record.holder": "Access holder",
     "vocabulary.acl.record.level": "Access level",
 

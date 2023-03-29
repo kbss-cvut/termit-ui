@@ -4,7 +4,7 @@ import TermItState from "../../../model/TermItState";
 import { useI18n } from "../../hook/useI18n";
 import { getLocalized } from "../../../model/MultilingualString";
 
-function stripLabel(label: string) {
+export function stripAccessLevelLabel(label: string) {
   return label.substring(label.indexOf("-") + 1).trim();
 }
 
@@ -17,7 +17,7 @@ const AccessLevelBadge: React.FC<{ level: string }> = ({ level }) => {
       className="font-weight-bold"
       title={getLocalized(matchingResource.comment, locale)}
     >
-      {stripLabel(getLocalized(matchingResource.label, locale))}
+      {stripAccessLevelLabel(getLocalized(matchingResource.label, locale))}
     </div>
   ) : (
     <>{level}</>

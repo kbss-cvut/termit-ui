@@ -27,10 +27,11 @@ export interface AccessControlList extends AssetData {
   records: AccessControlRecord<any>[];
 }
 
-export interface AccessControlRecord<
-  T extends UserData | UserGroupData | UserRoleData
-> {
-  holder: T;
+export type AccessHolderType = UserData | UserGroupData | UserRoleData;
+
+export interface AccessControlRecord<AccessHolderType> {
+  iri?: string;
+  holder: AccessHolderType;
   level: string;
   types: string[];
 }

@@ -64,7 +64,7 @@ function renderHolder(
   }
 }
 
-const AccessRecordsTable: React.FC<AccessRecordsTableProps> = ({
+const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
   acl,
   onEdit,
   onRemove,
@@ -135,4 +135,4 @@ const AccessRecordsTable: React.FC<AccessRecordsTableProps> = ({
   return <Table instance={tableInstance} />;
 };
 
-export default AccessRecordsTable;
+export default AccessControlRecordsTable;

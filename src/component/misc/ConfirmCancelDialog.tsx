@@ -18,14 +18,13 @@ interface ConfirmCancelDialogProps {
   id: string;
   title: string;
   confirmKey: string;
+  confirmDisabled?: boolean;
   cancelKey?: string;
   size?: string;
 }
 
 /**
- * Generic dialog with confirm and cancel buttons. Body of the dialog is specified via React children
- * @param props
- * @constructor
+ * Generic dialog with confirm and cancel buttons. Body of the dialog is specified via React children.
  */
 const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
   const { i18n } = useI18n();
@@ -45,6 +44,7 @@ const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
             id={`${props.id}-submit`}
             color="primary"
             size="sm"
+            disabled={props.confirmDisabled}
             onClick={props.onConfirm}
           >
             {i18n(props.confirmKey)}
@@ -65,6 +65,7 @@ const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
 
 ConfirmCancelDialog.defaultProps = {
   cancelKey: "cancel",
+  confirmDisabled: false,
 };
 
 export default ConfirmCancelDialog;
