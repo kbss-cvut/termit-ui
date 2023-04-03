@@ -3,28 +3,43 @@ import { CONTEXT as USER_CONTEXT, UserData } from "./User";
 import { CONTEXT as USERGROUP_CONTEXT, UserGroupData } from "./UserGroup";
 import { CONTEXT as USERROLE_CONTEXT, UserRoleData } from "./UserRole";
 import { AssetData, SupportsJsonLd } from "./Asset";
+import { context, MultilingualString } from "./MultilingualString";
 
-const ctx = {
+export const CONTEXT = {
   iri: "@id",
   types: "@type",
   records: VocabularyUtils.HAS_ACCESS_CONTROL_RECORD,
+  accessLevel: {
+    "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
+    "@type": "@id",
+  },
+  label: context(VocabularyUtils.RDFS_LABEL),
   holder: VocabularyUtils.HAS_ACCESS_LEVEL_HOLDER,
-  level: {
+};
+
+const RECORD_CONTEXT = {
+  iri: "@id",
+  types: "@type",
+  holder: VocabularyUtils.HAS_ACCESS_LEVEL_HOLDER,
+  accessLevel: {
     "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
     "@type": "@id",
   },
 };
 
-export const CONTEXT = Object.assign(
-  {},
-  ctx,
-  USER_CONTEXT,
-  USERGROUP_CONTEXT,
-  USERROLE_CONTEXT
-);
-
 export interface AccessControlList extends AssetData {
-  records: AccessControlRecord<any>[];
+  records: AccessControlRecordData[];
+}
+
+export interface AccessControlRecordData extends AssetData {
+  iri: string;
+  holder: {
+    iri: string;
+    label: MultilingualString;
+    types: string[];
+  };
+  accessLevel: string;
+  types: string[];
 }
 
 export type AccessHolderType = UserData | UserGroupData | UserRoleData;
@@ -33,7 +48,7 @@ export interface AccessControlRecord<AccessHolderType>
   extends SupportsJsonLd<AccessControlRecord<AccessHolderType>> {
   iri?: string;
   holder: AccessHolderType;
-  level: string;
+  accessLevel: string;
   types: string[];
 }
 
@@ -42,46 +57,53 @@ abstract class AbstractAccessControlRecord<T>
 {
   public iri?: string;
   public holder: T;
-  public level: string;
+  public accessLevel: string;
   public types: string[];
 
   protected constructor(data: AccessControlRecord<any>) {
     this.holder = data.holder;
-    this.level = data.level;
+    this.accessLevel = data.accessLevel;
     this.types = [];
   }
 
-  public toJsonLd(): AccessControlRecord<T> {
-    return Object.assign({}, this, { "@context": CONTEXT });
-  }
+  public abstract toJsonLd(): AccessControlRecord<T>;
 }
 
 export class UserAccessControlRecord extends AbstractAccessControlRecord<UserData> {
   public constructor(data: AccessControlRecord<any>) {
     super(data);
-    this.types = [
-      VocabularyUtils.NS_TERMIT +
-        "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatele",
-    ];
+    this.types = [VocabularyUtils.USER_ACCESS_RECORD];
+  }
+
+  toJsonLd(): AccessControlRecord<UserData> {
+    return Object.assign({}, this, {
+      "@context": Object.assign({}, RECORD_CONTEXT, USER_CONTEXT),
+    });
   }
 }
 
 export class UserGroupAccessControlRecord extends AbstractAccessControlRecord<UserGroupData> {
   public constructor(data: AccessControlRecord<any>) {
     super(data);
-    this.types = [
-      VocabularyUtils.NS_TERMIT +
-        "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatelsk\u00e9-skupiny",
-    ];
+    this.types = [VocabularyUtils.USERGROUP_ACCESS_RECORD];
+  }
+
+  toJsonLd(): AccessControlRecord<UserGroupData> {
+    return Object.assign({}, this, {
+      "@context": Object.assign({}, RECORD_CONTEXT, USERGROUP_CONTEXT),
+    });
   }
 }
 
 export class UserRoleAccessControlRecord extends AbstractAccessControlRecord<UserRoleData> {
   public constructor(data: AccessControlRecord<any>) {
     super(data);
-    this.types = [
-      VocabularyUtils.NS_TERMIT +
-        "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatelsk\u00e9-role",
-    ];
+    this.types = [VocabularyUtils.USERROLE_ACCESS_RECORD];
+  }
+
+  toJsonLd(): AccessControlRecord<UserRoleData> {
+    return Object.assign({}, this, {
+      "@context": Object.assign({}, RECORD_CONTEXT, USERROLE_CONTEXT),
+    });
   }
 }

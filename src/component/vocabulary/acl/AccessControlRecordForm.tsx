@@ -52,7 +52,7 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
     onChange({ holder: undefined });
   };
   const onLevelSelect = (option: RdfsResource) => {
-    onChange({ level: option.iri });
+    onChange({ accessLevel: option.iri });
   };
 
   return (
@@ -92,7 +92,7 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
         <IntelligentTreeSelect
           options={accessLevels}
           onChange={onLevelSelect}
-          value={accessLevels.find((l) => l.iri === record.level)}
+          value={accessLevels.find((l) => l.iri === record.accessLevel)}
           valueKey="iri"
           renderAsTree={false}
           getOptionLabel={(option: RdfsResource) =>

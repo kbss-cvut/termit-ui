@@ -14,7 +14,7 @@ import JsonLdUtils from "../util/JsonLdUtils";
 import {
   AccessControlList,
   AccessControlRecord,
-  CONTEXT,
+  CONTEXT as ACL_CONTEXT,
 } from "../model/AccessControlList";
 import { ErrorData } from "../model/ErrorInfo";
 import RdfsResource, {
@@ -65,7 +65,7 @@ export function loadVocabularyAccessControlList(vocabularyIri: IRI) {
       .then((data) =>
         JsonLdUtils.compactAndResolveReferences<AccessControlList>(
           data,
-          CONTEXT
+          ACL_CONTEXT
         )
       )
       .then((acl: AccessControlList) => {

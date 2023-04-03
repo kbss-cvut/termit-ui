@@ -13,63 +13,22 @@ import {
 } from "react-table";
 import UserGroup from "../../../model/UserGroup";
 import { textContainsFilter } from "../../misc/table/TextBasedFilter";
-import { Badge, Button } from "reactstrap";
+import { Button } from "reactstrap";
 import Table from "../../misc/table/Table";
-import Utils from "../../../util/Utils";
-import VocabularyUtils from "../../../util/VocabularyUtils";
-import User, { UserData } from "../../../model/User";
-import UserRole from "../../../model/UserRole";
-import { getLocalized } from "../../../model/MultilingualString";
 import AccessLevelBadge from "./AccessLevelBadge";
+import AccessHolder from "./AccessHolder";
 
 interface AccessRecordsTableProps {
   acl: AccessControlList;
   onEdit: (record: AccessControlRecord<any>) => void;
   onRemove: (record: AccessControlRecord<any>) => void;
 }
-
-function renderHolder(
-  record: AccessControlRecord<any>,
-  i18n: (id?: string) => string,
-  locale: string
-) {
-  const types = Utils.sanitizeArray(record.holder.types);
-  if (types.indexOf(VocabularyUtils.USER) !== -1) {
-    return (
-      <>
-        <Badge className="acl-holder-type-badge mr-1 align-text-bottom">
-          {i18n("type.user")}
-        </Badge>
-        {new User(record.holder as UserData).fullName}
-      </>
-    );
-  } else if (types.indexOf(VocabularyUtils.USER_GROUP) !== -1) {
-    return (
-      <>
-        <Badge className="acl-holder-type-badge mr-1 align-text-bottom">
-          {i18n("type.usergroup")}
-        </Badge>
-        {(record.holder as UserGroup).label}
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Badge className="acl-holder-type-badge mr-1 align-text-bottom">
-          {i18n("type.userrole")}
-        </Badge>
-        {getLocalized((record.holder as UserRole).label, locale)}
-      </>
-    );
-  }
-}
-
 const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
   acl,
   onEdit,
   onRemove,
 }) => {
-  const { i18n, locale } = useI18n();
+  const { i18n } = useI18n();
   const data = React.useMemo(() => acl.records, [acl]);
   const columns: Column<AccessControlRecord<any>>[] = React.useMemo(
     () => [
@@ -79,15 +38,17 @@ const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
         className: "align-middle",
         disableFilters: true,
         disableSortBy: true,
-        Cell: ({ row }) => renderHolder(row.original, i18n, locale),
+        Cell: ({ row }) => <AccessHolder record={row.original} />,
       },
       {
         Header: i18n("vocabulary.acl.record.level"),
-        accessor: "level",
+        accessor: "accessLevel",
         className: "align-middle",
         disableFilters: true,
         disableSortBy: true,
-        Cell: ({ row }) => <AccessLevelBadge level={row.original.level} />,
+        Cell: ({ row }) => (
+          <AccessLevelBadge level={row.original.accessLevel} />
+        ),
       },
       {
         Header: i18n("actions"),
@@ -119,7 +80,7 @@ const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
         className: "table-row-actions text-center",
       },
     ],
-    [i18n, locale, onEdit, onRemove]
+    [i18n, onEdit, onRemove]
   );
   const filterTypes = React.useMemo(() => ({ text: textContainsFilter }), []);
   const tableInstance = useTable<UserGroup>(

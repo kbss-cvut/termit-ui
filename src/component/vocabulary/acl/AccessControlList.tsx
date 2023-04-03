@@ -10,6 +10,7 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import {
   AccessControlList as AccessControlListModel,
   AccessControlRecord,
+  AccessControlRecordData,
 } from "../../../model/AccessControlList";
 import { Button } from "reactstrap";
 import { GoPlus } from "react-icons/go";
@@ -21,18 +22,18 @@ import TermItState from "../../../model/TermItState";
 import CreateAccessControlRecord from "./CreateAccessControlRecord";
 import AssetFactory from "../../../util/AssetFactory";
 
-function sortRecords(records: AccessControlRecord<any>[], levels: string[]) {
+function sortRecords(records: AccessControlRecordData[], levels: string[]) {
   const grouped = {};
   levels.reverse();
   levels.forEach((l) => (grouped[l] = []));
   records.forEach((r) => {
-    const type = levels.find((level) => r.level === level);
+    const type = levels.find((level) => r.accessLevel === level);
     if (!type) {
       return;
     }
     grouped[type].push(r);
   });
-  const result: AccessControlRecord<any>[] = [];
+  const result: AccessControlRecordData[] = [];
   Object.keys(grouped).forEach((k) => {
     const arr = grouped[k];
     arr.sort(recordComparator);
@@ -42,8 +43,8 @@ function sortRecords(records: AccessControlRecord<any>[], levels: string[]) {
 }
 
 function recordComparator(
-  a: AccessControlRecord<any>,
-  b: AccessControlRecord<any>
+  a: AccessControlRecordData,
+  b: AccessControlRecordData
 ) {
   const tA = typeExtractor(a);
   const tB = typeExtractor(b);
@@ -53,14 +54,14 @@ function recordComparator(
   return a.holder.iri.localeCompare(b.holder.iri);
 }
 
-function typeExtractor(r: AccessControlRecord<any>) {
-  const types = Utils.sanitizeArray(r.holder.types);
-  if (types.indexOf(VocabularyUtils.USER) !== -1) {
-    return VocabularyUtils.USER;
-  } else if (types.indexOf(VocabularyUtils.USER_GROUP) !== -1) {
-    return VocabularyUtils.USER_GROUP;
+function typeExtractor(r: AccessControlRecordData) {
+  const types = Utils.sanitizeArray(r.types);
+  if (types.indexOf(VocabularyUtils.USER_ACCESS_RECORD) !== -1) {
+    return VocabularyUtils.USER_ACCESS_RECORD;
+  } else if (types.indexOf(VocabularyUtils.USERGROUP_ACCESS_RECORD) !== -1) {
+    return VocabularyUtils.USERGROUP_ACCESS_RECORD;
   }
-  return VocabularyUtils.USER_ROLE;
+  return VocabularyUtils.USERROLE_ACCESS_RECORD;
 }
 
 const AccessControlList: React.FC<{ vocabularyIri: string }> = ({

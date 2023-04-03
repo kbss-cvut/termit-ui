@@ -235,7 +235,7 @@ describe("AssetFactory", () => {
     it("creates UserAccessControlRecord for User holder", () => {
       const data = {
         holder: Generator.generateUser(),
-        level: Generator.generateUri(),
+        accessLevel: Generator.generateUri(),
       } as AccessControlRecord<any>;
       expect(AssetFactory.createAccessControlRecord(data)).toBeInstanceOf(
         UserAccessControlRecord
@@ -249,7 +249,7 @@ describe("AssetFactory", () => {
           label: "Test group",
           types: [VocabularyUtils.USER_GROUP],
         } as UserGroupData,
-        level: Generator.generateUri(),
+        accessLevel: Generator.generateUri(),
       } as AccessControlRecord<any>;
       expect(AssetFactory.createAccessControlRecord(data)).toBeInstanceOf(
         UserGroupAccessControlRecord
@@ -263,7 +263,7 @@ describe("AssetFactory", () => {
           label: langString("Test role"),
           types: [VocabularyUtils.USER_ROLE],
         } as UserRoleData,
-        level: Generator.generateUri(),
+        accessLevel: Generator.generateUri(),
       } as AccessControlRecord<any>;
       expect(AssetFactory.createAccessControlRecord(data)).toBeInstanceOf(
         UserRoleAccessControlRecord

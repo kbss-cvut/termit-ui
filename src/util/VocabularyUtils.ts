@@ -165,6 +165,15 @@ const VocabularyUtils = {
   HAS_ACCESS_LEVEL_HOLDER:
     _NS_TERMIT +
     "m\u00e1-dr\u017eitele-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed",
+  USER_ACCESS_RECORD:
+    _NS_TERMIT +
+    "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatele",
+  USERGROUP_ACCESS_RECORD:
+    _NS_TERMIT +
+    "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatelsk\u00e9-skupiny",
+  USERROLE_ACCESS_RECORD:
+    _NS_TERMIT +
+    "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatelsk\u00e9-role",
 
   IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
 
