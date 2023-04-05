@@ -8,7 +8,7 @@ import Generator from "../../__tests__/environment/Generator";
 import { langString } from "../MultilingualString";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { UserData } from "../User";
-import UserGroup, { UserGroupData } from "../UserGroup";
+import { UserGroupData } from "../UserGroup";
 import UserRole from "../UserRole";
 
 describe("AbstractAccessControlRecord", () => {
@@ -33,17 +33,8 @@ describe("AbstractAccessControlRecord", () => {
       expect(result.types).toEqual(data.types);
     });
 
-    function generateUserGroup() {
-      return new UserGroup({
-        iri: Generator.generateUri(),
-        label: "Test group " + Generator.randomInt(0, 1000),
-        members: [],
-        types: [VocabularyUtils.USER_GROUP],
-      });
-    }
-
     it("sets label of UserGroup holder from label of AccessControlRecordData", () => {
-      const group = generateUserGroup();
+      const group = Generator.generateUserGroup();
       const data: AccessControlRecordData = {
         iri: Generator.generateUri(),
         accessLevel:
@@ -63,7 +54,7 @@ describe("AbstractAccessControlRecord", () => {
 
     it.each([
       [VocabularyUtils.USER_ACCESS_RECORD, Generator.generateUser()],
-      [VocabularyUtils.USERGROUP_ACCESS_RECORD, generateUserGroup()],
+      [VocabularyUtils.USERGROUP_ACCESS_RECORD, Generator.generateUserGroup()],
       [VocabularyUtils.USERROLE_ACCESS_RECORD, getUserRole()],
     ])(
       "does not attempt to extract label when argument is AccessControlRecord instance",

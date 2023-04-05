@@ -3,7 +3,10 @@ import { useSelector } from "react-redux";
 import { Button, ButtonGroup, FormGroup, FormText, Label } from "reactstrap";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import { AccessControlRecord } from "../../../model/AccessControlList";
+import {
+  AccessControlRecord,
+  AccessHolderType,
+} from "../../../model/AccessControlList";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { useI18n } from "../../hook/useI18n";
 import TermItState from "../../../model/TermItState";
@@ -14,6 +17,7 @@ import { stripAccessLevelLabel } from "./AccessLevelBadge";
 import AccessControlHolderSelector from "./AccessControlHolderSelector";
 import Utils from "../../../util/Utils";
 import classNames from "classnames";
+import { AssetData } from "../../../model/Asset";
 
 interface AccessControlRecordFormProps {
   record: AccessControlRecord<any>;
@@ -38,6 +42,42 @@ function resolveHolderType(record: AccessControlRecord<any>): string {
   return HOLDER_TYPES[t];
 }
 
+/**
+ * The following holder types cannot have the maximum access level.
+ */
+const RESTRICTED_HOLDER_TYPES = [
+  VocabularyUtils.USER_RESTRICTED,
+  VocabularyUtils.USER_GROUP,
+];
+const MAX_ACCESS_LEVEL =
+  VocabularyUtils.NS_TERMIT +
+  "\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/spr\u00e1va";
+
+function filterAccessLevels(accessLevels: RdfsResource[], holder?: AssetData) {
+  if (!holder) {
+    return accessLevels;
+  }
+  const types = Utils.sanitizeArray(holder.types);
+  const shouldRestrict = types.some(
+    (t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1
+  );
+  return shouldRestrict
+    ? accessLevels.filter((r) => r.iri !== MAX_ACCESS_LEVEL)
+    : accessLevels;
+}
+
+function shouldResetAccessLevel(
+  holder?: AccessHolderType,
+  currentAccessLevel?: string
+) {
+  if (currentAccessLevel !== MAX_ACCESS_LEVEL || !holder) {
+    return false;
+  }
+  return Utils.sanitizeArray(holder.types).some(
+    (t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1
+  );
+}
+
 const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
   record,
   holderReadOnly = false,
@@ -48,9 +88,23 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
   const accessLevels = useSelector((state: TermItState) =>
     Object.values(state.accessLevels)
   );
+  const accessLevelOptions = React.useMemo(
+    () => filterAccessLevels(accessLevels, record.holder),
+    [accessLevels, record.holder]
+  );
   const onSelectHolderType = (type: string) => {
     setHolderType(type);
-    onChange({ holder: undefined });
+    onChange({ holder: undefined, accessLevel: undefined });
+  };
+  const onHolderSelect = (holder?: AccessHolderType) => {
+    const change: Partial<AccessControlRecord<any>> = {
+      holder,
+      types: [holderType],
+    };
+    if (shouldResetAccessLevel(holder, record.accessLevel)) {
+      change.accessLevel = undefined;
+    }
+    onChange(change);
   };
   const onLevelSelect = (option: RdfsResource) => {
     onChange({ accessLevel: option.iri });
@@ -85,7 +139,7 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
         <AccessControlHolderSelector
           holderType={holderType}
           holder={record.holder}
-          onChange={(holder) => onChange({ holder, types: [holderType] })}
+          onChange={onHolderSelect}
           disabled={holderReadOnly}
         />
       </FormGroup>
@@ -95,9 +149,10 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
           {i18n("vocabulary.acl.record.level")}
         </Label>
         <IntelligentTreeSelect
-          options={accessLevels}
+          id="access-level-selector"
+          options={accessLevelOptions}
           onChange={onLevelSelect}
-          value={accessLevels.find((l) => l.iri === record.accessLevel)}
+          value={accessLevelOptions.find((l) => l.iri === record.accessLevel)}
           valueKey="iri"
           renderAsTree={false}
           getOptionLabel={(option: RdfsResource) =>
