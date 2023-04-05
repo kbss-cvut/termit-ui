@@ -49,6 +49,12 @@ const RESTRICTED_HOLDER_TYPES = [
   VocabularyUtils.USER_RESTRICTED,
   VocabularyUtils.USER_GROUP,
 ];
+/**
+ * The following holder IRI (Restricted user role) cannot have the maximum access level.
+ */
+const RESTRICTED_HOLDER_IRI =
+  VocabularyUtils.NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu";
+
 const MAX_ACCESS_LEVEL =
   VocabularyUtils.NS_TERMIT +
   "\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/spr\u00e1va";
@@ -58,9 +64,9 @@ function filterAccessLevels(accessLevels: RdfsResource[], holder?: AssetData) {
     return accessLevels;
   }
   const types = Utils.sanitizeArray(holder.types);
-  const shouldRestrict = types.some(
-    (t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1
-  );
+  const shouldRestrict =
+    holder.iri === RESTRICTED_HOLDER_IRI ||
+    types.some((t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1);
   return shouldRestrict
     ? accessLevels.filter((r) => r.iri !== MAX_ACCESS_LEVEL)
     : accessLevels;
@@ -73,8 +79,10 @@ function shouldResetAccessLevel(
   if (currentAccessLevel !== MAX_ACCESS_LEVEL || !holder) {
     return false;
   }
-  return Utils.sanitizeArray(holder.types).some(
-    (t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1
+  return (
+    Utils.sanitizeArray(holder.types).some(
+      (t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1
+    ) || holder.iri === RESTRICTED_HOLDER_IRI
   );
 }
 
