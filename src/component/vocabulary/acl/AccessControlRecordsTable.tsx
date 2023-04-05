@@ -1,7 +1,7 @@
 import React from "react";
 import {
   AccessControlList,
-  AccessControlRecord,
+  AccessControlRecordData,
 } from "../../../model/AccessControlList";
 import { useI18n } from "../../hook/useI18n";
 import {
@@ -20,8 +20,8 @@ import AccessHolder from "./AccessHolder";
 
 interface AccessRecordsTableProps {
   acl: AccessControlList;
-  onEdit: (record: AccessControlRecord<any>) => void;
-  onRemove: (record: AccessControlRecord<any>) => void;
+  onEdit: (record: AccessControlRecordData) => void;
+  onRemove: (record: AccessControlRecordData) => void;
 }
 const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
   acl,
@@ -30,7 +30,7 @@ const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
 }) => {
   const { i18n } = useI18n();
   const data = React.useMemo(() => acl.records, [acl]);
-  const columns: Column<AccessControlRecord<any>>[] = React.useMemo(
+  const columns: Column<AccessControlRecordData>[] = React.useMemo(
     () => [
       {
         Header: i18n("vocabulary.acl.record.holder"),

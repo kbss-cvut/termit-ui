@@ -322,8 +322,13 @@ const cs = {
     "vocabulary.acl.record.create.modal.title": "Nový záznam řízení přístupu",
     "vocabulary.acl.record.save.success":
       "Záznam řízení přístupu úspěšně uložen.",
+    "vocabulary.acl.record.remove.success":
+      "Záznam řízení přístupu úspěšně odstraněn.",
     "vocabulary.acl.record.holder": "Držitel oprávnění",
     "vocabulary.acl.record.level": "Úroveň oprávnění",
+    "vocabulary.acl.record.remove.title": "Odstranit záznam?",
+    "vocabulary.acl.record.remove.text":
+      'Opravdu chcete odstranit záznam řízení přístupu pro "{holder}"?',
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",

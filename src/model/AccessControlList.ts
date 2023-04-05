@@ -3,7 +3,11 @@ import { CONTEXT as USER_CONTEXT, UserData } from "./User";
 import { CONTEXT as USERGROUP_CONTEXT, UserGroupData } from "./UserGroup";
 import { CONTEXT as USERROLE_CONTEXT, UserRoleData } from "./UserRole";
 import { AssetData, SupportsJsonLd } from "./Asset";
-import { context, MultilingualString } from "./MultilingualString";
+import {
+  context,
+  getLocalized,
+  MultilingualString,
+} from "./MultilingualString";
 
 export const CONTEXT = {
   iri: "@id",
@@ -44,16 +48,15 @@ export interface AccessControlRecordData extends AssetData {
 
 export type AccessHolderType = UserData | UserGroupData | UserRoleData;
 
-export interface AccessControlRecord<AccessHolderType>
-  extends SupportsJsonLd<AccessControlRecord<AccessHolderType>> {
+export interface AccessControlRecord<AccessHolderType> {
   iri?: string;
   holder: AccessHolderType;
   accessLevel: string;
   types: string[];
 }
 
-abstract class AbstractAccessControlRecord<T>
-  implements AccessControlRecord<T>
+export abstract class AbstractAccessControlRecord<T>
+  implements AccessControlRecord<T>, SupportsJsonLd<AccessControlRecord<T>>
 {
   public iri?: string;
   public holder: T;
@@ -61,12 +64,33 @@ abstract class AbstractAccessControlRecord<T>
   public types: string[];
 
   protected constructor(data: AccessControlRecord<any>) {
+    this.iri = data.iri;
     this.holder = data.holder;
     this.accessLevel = data.accessLevel;
     this.types = [];
   }
 
   public abstract toJsonLd(): AccessControlRecord<T>;
+
+  public static create(data: AccessControlRecordData) {
+    if (data.types.indexOf(VocabularyUtils.USER_ACCESS_RECORD) !== -1) {
+      const record = new UserAccessControlRecord(data);
+      const fullName = getLocalized(data.holder.label);
+      const fullNameSplit = fullName.split(" ");
+      // assert fullNameSplit.length === 2;
+      record.holder.firstName = fullNameSplit[0];
+      record.holder.lastName = fullNameSplit[1];
+      return record;
+    } else if (
+      data.types.indexOf(VocabularyUtils.USERGROUP_ACCESS_RECORD) !== -1
+    ) {
+      const record = new UserGroupAccessControlRecord(data);
+      record.holder.label = getLocalized(data.holder.label);
+      return record;
+    } else {
+      return new UserRoleAccessControlRecord(data);
+    }
+  }
 }
 
 export class UserAccessControlRecord extends AbstractAccessControlRecord<UserData> {

@@ -317,8 +317,13 @@ const en = {
       "Create new access control record",
     "vocabulary.acl.record.save.success":
       "Access control record successfully saved.",
+    "vocabulary.acl.record.remove.success":
+      "Access control record successfully removed.",
     "vocabulary.acl.record.holder": "Access holder",
     "vocabulary.acl.record.level": "Access level",
+    "vocabulary.acl.record.remove.title": "Remove access control record?",
+    "vocabulary.acl.record.remove.text":
+      'Are you sure you want to remove access control record for "{holder}"?',
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",

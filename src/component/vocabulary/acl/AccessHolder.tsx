@@ -1,12 +1,12 @@
 import React from "react";
-import { AccessControlRecord } from "../../../model/AccessControlList";
+import { AccessControlRecordData } from "../../../model/AccessControlList";
 import { useI18n } from "../../hook/useI18n";
 import Utils from "../../../util/Utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { Badge } from "reactstrap";
 import { getLocalized } from "../../../model/MultilingualString";
 
-const AccessHolder: React.FC<{ record: AccessControlRecord<any> }> = ({
+const AccessHolder: React.FC<{ record: AccessControlRecordData }> = ({
   record,
 }) => {
   const { i18n, locale } = useI18n();

@@ -12,8 +12,9 @@ import Ajax, { content, param } from "../util/Ajax";
 import Constants from "../util/Constants";
 import JsonLdUtils from "../util/JsonLdUtils";
 import {
+  AbstractAccessControlRecord,
   AccessControlList,
-  AccessControlRecord,
+  AccessControlRecordData,
   CONTEXT as ACL_CONTEXT,
 } from "../model/AccessControlList";
 import { ErrorData } from "../model/ErrorInfo";
@@ -81,7 +82,7 @@ export function loadVocabularyAccessControlList(vocabularyIri: IRI) {
 
 export function createAccessControlRecord(
   vocabularyIri: IRI,
-  record: AccessControlRecord<any>
+  record: AbstractAccessControlRecord<any>
 ) {
   const action = {
     type: ActionType.CREATE_ACCESS_CONTROL_RECORD,
@@ -100,6 +101,39 @@ export function createAccessControlRecord(
           publishMessage(
             new Message(
               { messageId: "vocabulary.acl.record.save.success" },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function removeAccessControlRecord(
+  vocabularyIri: IRI,
+  record: AccessControlRecordData
+) {
+  const action = {
+    type: ActionType.REMOVE_ACCESS_CONTROL_RECORD,
+    vocabularyIri,
+    record,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.delete(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/acl/records`,
+      content(AbstractAccessControlRecord.create(record).toJsonLd()).param(
+        "namespace",
+        vocabularyIri.namespace
+      )
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "vocabulary.acl.record.remove.success" },
               MessageType.SUCCESS
             )
           )
