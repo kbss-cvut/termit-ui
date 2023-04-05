@@ -1,3 +1,11 @@
+@import "../../../styles/custom/variables";
+@import "../../../styles/custom/mixins";
+
 .acl-holder-type-badge {
   min-width: 7rem;
+}
+
+.acl-active-disabled-button {
+  @include button-variant($primary, $primary);
+  box-shadow: $btn-active-box-shadow !important;
 }

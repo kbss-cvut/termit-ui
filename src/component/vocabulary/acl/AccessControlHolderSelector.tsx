@@ -18,10 +18,11 @@ interface AccessControlHolderSelectorProps {
   holderType: string;
   holder?: AccessHolderType;
   onChange: (holder?: AccessHolderType) => void;
+  disabled?: boolean;
 }
 
 const AccessControlHolderSelector: React.FC<AccessControlHolderSelectorProps> =
-  ({ holderType, holder, onChange }) => {
+  ({ holderType, holder, onChange, disabled = false }) => {
     const { i18n, locale } = useI18n();
     const users = useSelector((state: TermItState) => state.users);
     const roles = useSelector(
@@ -82,6 +83,7 @@ const AccessControlHolderSelector: React.FC<AccessControlHolderSelectorProps> =
           placeholder=""
           isClearable={false}
           valueRenderer={Utils.simpleValueRenderer}
+          isDisabled={disabled}
         />
         <FormText>{i18n("required")}</FormText>
       </>

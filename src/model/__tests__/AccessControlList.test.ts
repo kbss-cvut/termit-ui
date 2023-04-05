@@ -1,12 +1,15 @@
 import {
   AbstractAccessControlRecord,
+  AccessControlRecord,
   AccessControlRecordData,
+  AccessHolderType,
 } from "../AccessControlList";
 import Generator from "../../__tests__/environment/Generator";
 import { langString } from "../MultilingualString";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { UserData } from "../User";
 import UserGroup, { UserGroupData } from "../UserGroup";
+import UserRole from "../UserRole";
 
 describe("AbstractAccessControlRecord", () => {
   describe("create", () => {
@@ -30,13 +33,17 @@ describe("AbstractAccessControlRecord", () => {
       expect(result.types).toEqual(data.types);
     });
 
-    it("sets label of UserGroup holder from label of AccessControlRecordData", () => {
-      const group = new UserGroup({
+    function generateUserGroup() {
+      return new UserGroup({
         iri: Generator.generateUri(),
-        label: "Test group",
+        label: "Test group " + Generator.randomInt(0, 1000),
         members: [],
         types: [VocabularyUtils.USER_GROUP],
       });
+    }
+
+    it("sets label of UserGroup holder from label of AccessControlRecordData", () => {
+      const group = generateUserGroup();
       const data: AccessControlRecordData = {
         iri: Generator.generateUri(),
         accessLevel:
@@ -53,5 +60,35 @@ describe("AbstractAccessControlRecord", () => {
       expect((result.holder as UserGroupData).label).toEqual(group.label);
       expect(result.types).toEqual(data.types);
     });
+
+    it.each([
+      [VocabularyUtils.USER_ACCESS_RECORD, Generator.generateUser()],
+      [VocabularyUtils.USERGROUP_ACCESS_RECORD, generateUserGroup()],
+      [VocabularyUtils.USERROLE_ACCESS_RECORD, getUserRole()],
+    ])(
+      "does not attempt to extract label when argument is AccessControlRecord instance",
+      (recordType: string, holder: AccessHolderType) => {
+        const data: AccessControlRecord<AccessHolderType> = {
+          iri: Generator.generateUri(),
+          accessLevel:
+            "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/z\u00e1pis",
+          holder,
+          types: [recordType],
+        };
+        const result = AbstractAccessControlRecord.create(data);
+        expect(result.iri).toEqual(data.iri);
+        expect(result.holder).toEqual(holder);
+        expect(result.accessLevel).toEqual(data.accessLevel);
+        expect(result.types).toEqual(data.types);
+      }
+    );
+
+    function getUserRole() {
+      return new UserRole({
+        iri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/pln\u00fd-u\u017eivatel-termitu",
+        label: langString("Editor"),
+        types: [VocabularyUtils.USER_ROLE],
+      });
+    }
   });
 });

@@ -313,7 +313,7 @@ const en = {
     "vocabulary.acl.record.create": "New record",
     "vocabulary.acl.record.create.title":
       "Create a new record in this vocabulary's access control list",
-    "vocabulary.acl.record.create.modal.title":
+    "vocabulary.acl.record.create.dialog.title":
       "Create new access control record",
     "vocabulary.acl.record.save.success":
       "Access control record successfully saved.",
@@ -321,9 +321,13 @@ const en = {
       "Access control record successfully removed.",
     "vocabulary.acl.record.holder": "Access holder",
     "vocabulary.acl.record.level": "Access level",
-    "vocabulary.acl.record.remove.title": "Remove access control record?",
-    "vocabulary.acl.record.remove.text":
+    "vocabulary.acl.record.remove.dialog.title":
+      "Remove access control record?",
+    "vocabulary.acl.record.remove.dialog.text":
       'Are you sure you want to remove access control record for "{holder}"?',
+    "vocabulary.acl.record.update.dialog.title": "Update access control record",
+    "vocabulary.acl.record.update.success":
+      "Access control record successfully updated.",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",

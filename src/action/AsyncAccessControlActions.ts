@@ -1,4 +1,4 @@
-import { IRI } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { ThunkDispatch } from "../util/Types";
 import {
@@ -134,6 +134,34 @@ export function removeAccessControlRecord(
           publishMessage(
             new Message(
               { messageId: "vocabulary.acl.record.remove.success" },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function updateAccessControlRecord(
+  vocabularyIri: IRI,
+  record: AbstractAccessControlRecord<any>
+) {
+  const action = { type: ActionType.UPDATE_ACCESS_CONTROL_RECORD, record };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.put(
+      `${Constants.API_PREFIX}/vocabularies/${
+        vocabularyIri.fragment
+      }/acl/records/${VocabularyUtils.create(record.iri!).fragment}`,
+      content(record.toJsonLd()).param("namespace", vocabularyIri.namespace)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "vocabulary.acl.record.update.success" },
               MessageType.SUCCESS
             )
           )

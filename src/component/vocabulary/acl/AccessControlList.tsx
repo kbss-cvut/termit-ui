@@ -6,9 +6,11 @@ import {
   loadAccessLevels,
   loadVocabularyAccessControlList,
   removeAccessControlRecord,
+  updateAccessControlRecord,
 } from "../../../action/AsyncAccessControlActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import {
+  AbstractAccessControlRecord,
   AccessControlList as AccessControlListModel,
   AccessControlRecord,
   AccessControlRecordData,
@@ -23,6 +25,7 @@ import TermItState from "../../../model/TermItState";
 import CreateAccessControlRecord from "./CreateAccessControlRecord";
 import AssetFactory from "../../../util/AssetFactory";
 import RemoveAccessControlRecordDialog from "./RemoveAccessControlRecordDialog";
+import EditAccessControlRecordDialog from "./EditAccessControlRecordDialog";
 
 function sortRecords(records: AccessControlRecordData[], levels: string[]) {
   const grouped = {};
@@ -75,6 +78,8 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [recordToRemove, setRecordToRemove] =
     React.useState<AccessControlRecordData | undefined>();
+  const [recordToUpdate, setRecordToUpdate] =
+    React.useState<AbstractAccessControlRecord<any> | undefined>();
   const accessLevels = useSelector((state: TermItState) => state.accessLevels);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
@@ -97,8 +102,9 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
       ).then((data) => processLoadedAcl(data));
     }
   }, [dispatch, vocabularyIri, accessLevels, processLoadedAcl]);
-  // TODO
-  const onEditClick = (record: AccessControlRecordData) => {};
+  const onEditClick = (record: AccessControlRecordData) => {
+    setRecordToUpdate(AbstractAccessControlRecord.create(record));
+  };
   const onRemoveClick = (record: AccessControlRecordData) => {
     setRecordToRemove(record);
   };
@@ -107,6 +113,22 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
     dispatch(removeAccessControlRecord(vocIri, recordToRemove!))
       .then(() => {
         setRecordToRemove(undefined);
+        return dispatch(loadVocabularyAccessControlList(vocIri));
+      })
+      .then((data) => processLoadedAcl(data));
+  };
+  const onChange = (change: Partial<AccessControlRecord<any>>) => {
+    setRecordToUpdate(
+      AbstractAccessControlRecord.create(
+        Object.assign({}, recordToUpdate, change)
+      )
+    );
+  };
+  const onUpdateRecord = () => {
+    const vocIri = VocabularyUtils.create(vocabularyIri);
+    dispatch(updateAccessControlRecord(vocIri, recordToUpdate!))
+      .then(() => {
+        setRecordToUpdate(undefined);
         return dispatch(loadVocabularyAccessControlList(vocIri));
       })
       .then((data) => processLoadedAcl(data));
@@ -141,6 +163,13 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
         onSubmit={onRemoveRecord}
         onCancel={() => setRecordToRemove(undefined)}
         record={recordToRemove}
+      />
+      <EditAccessControlRecordDialog
+        show={recordToUpdate !== undefined}
+        record={recordToUpdate!}
+        onChange={onChange}
+        onSubmit={onUpdateRecord}
+        onCancel={() => setRecordToUpdate(undefined)}
       />
       <div className="mb-2 text-right">
         <Button

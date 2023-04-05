@@ -13,10 +13,11 @@ import RdfsResource from "../../../model/RdfsResource";
 import { stripAccessLevelLabel } from "./AccessLevelBadge";
 import AccessControlHolderSelector from "./AccessControlHolderSelector";
 import Utils from "../../../util/Utils";
+import classNames from "classnames";
 
 interface AccessControlRecordFormProps {
   record: AccessControlRecord<any>;
-  canSelectHolderType?: boolean; // If the record is new, it should be possible to select holder type.
+  holderReadOnly?: boolean; // Holder and its type is editable only for new records
   onChange: (change: Partial<AccessControlRecord<any>>) => void;
 }
 
@@ -39,7 +40,7 @@ function resolveHolderType(record: AccessControlRecord<any>): string {
 
 const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
   record,
-  canSelectHolderType = true,
+  holderReadOnly = false,
   onChange,
 }) => {
   const { i18n, locale } = useI18n();
@@ -67,11 +68,14 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
               key={k}
               id={`acr-holder-type-${k}`}
               color="primary"
-              className="w-100"
+              className={classNames("w-100", {
+                "acl-active-disabled-button":
+                  holderReadOnly && holderType === HOLDER_TYPES[k],
+              })}
               outline={true}
               size="sm"
               active={holderType === HOLDER_TYPES[k]}
-              disabled={!canSelectHolderType}
+              disabled={holderReadOnly}
               onClick={() => onSelectHolderType(HOLDER_TYPES[k])}
             >
               {i18n(k)}
@@ -82,6 +86,7 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
           holderType={holderType}
           holder={record.holder}
           onChange={(holder) => onChange({ holder, types: [holderType] })}
+          disabled={holderReadOnly}
         />
       </FormGroup>
 

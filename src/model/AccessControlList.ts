@@ -72,14 +72,18 @@ export abstract class AbstractAccessControlRecord<T>
 
   public abstract toJsonLd(): AccessControlRecord<T>;
 
-  public static create(data: AccessControlRecordData) {
+  public static create(
+    data: AccessControlRecordData | AccessControlRecord<any>
+  ) {
     if (data.types.indexOf(VocabularyUtils.USER_ACCESS_RECORD) !== -1) {
       const record = new UserAccessControlRecord(data);
-      const fullName = getLocalized(data.holder.label);
-      const fullNameSplit = fullName.split(" ");
-      // assert fullNameSplit.length === 2;
-      record.holder.firstName = fullNameSplit[0];
-      record.holder.lastName = fullNameSplit[1];
+      if (data.holder.label) {
+        const fullName = getLocalized(data.holder.label);
+        const fullNameSplit = fullName.split(" ");
+        // assert fullNameSplit.length === 2;
+        record.holder.firstName = fullNameSplit[0];
+        record.holder.lastName = fullNameSplit[1];
+      }
       return record;
     } else if (
       data.types.indexOf(VocabularyUtils.USERGROUP_ACCESS_RECORD) !== -1

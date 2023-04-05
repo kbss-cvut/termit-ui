@@ -41,7 +41,7 @@ const CreateAccessControlRecord: React.FC<CreateAccessControlRecordProps> = ({
       onClose={onClose}
       onConfirm={submit}
       confirmDisabled={!record.holder || !record.accessLevel}
-      title={i18n("vocabulary.acl.record.create.modal.title")}
+      title={i18n("vocabulary.acl.record.create.dialog.title")}
     >
       <PromiseTrackingMask area="create-acr-dialog" />
       <AccessControlRecordForm record={record} onChange={onChange} />

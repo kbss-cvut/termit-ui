@@ -26,10 +26,10 @@ const RemoveAccessControlRecordDialog: React.FC<RemoveAccessControlRecordDialogP
         confirmKey="remove"
         onClose={onCancel}
         onConfirm={onSubmit}
-        title={i18n("vocabulary.acl.record.remove.title")}
+        title={i18n("vocabulary.acl.record.remove.dialog.title")}
       >
         <Label>
-          {formatMessage("vocabulary.acl.record.remove.text", {
+          {formatMessage("vocabulary.acl.record.remove.dialog.text", {
             holder: getLocalized(record.holder.label, locale),
           })}
         </Label>
