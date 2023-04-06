@@ -58,10 +58,13 @@ const AccessControlHolderSelector: React.FC<AccessControlHolderSelectorProps> =
         case VocabularyUtils.USER_GROUP:
           return groups.map((g) => ({ value: g.iri, label: g.label }));
         case VocabularyUtils.USER_ROLE:
-          return roles.map((r) => ({
-            value: r.iri,
-            label: getLocalized(r.label, locale),
-          }));
+          // Admin has always Security access, no point in setting access rights to them
+          return roles
+            .filter((r) => r.iri !== VocabularyUtils.USER_ADMIN)
+            .map((r) => ({
+              value: r.iri,
+              label: getLocalized(r.label, locale),
+            }));
         default:
           return [];
       }
