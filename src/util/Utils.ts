@@ -214,16 +214,6 @@ const Utils = {
   },
 
   /**
-   * Value renderer for the intelligent tree select component.
-   *
-   * This renderer takes the specified option and renders its label.
-   * @param option Options to render
-   */
-  labelValueRenderer(option: { label: string }) {
-    return option.label;
-  },
-
-  /**
    * Calculates a hash of the specified string.
    * @param str String to get hash for
    */
@@ -315,6 +305,14 @@ const Utils = {
     const change = {};
     change[attName] = value;
     return change;
+  },
+
+  /**
+   * Value renderer for the intelligent-tree-select which does not render URI-based values as links.
+   * @param children Children to render
+   */
+  simpleValueRenderer(children: any) {
+    return children;
   },
 };
 

@@ -309,6 +309,25 @@ const en = {
     "vocabulary.snapshot.create.dialog.confirm": "Create",
     "vocabulary.snapshot.create.success":
       "Vocabulary revision successfully created.",
+    "vocabulary.acl": "Access control",
+    "vocabulary.acl.record.create": "New record",
+    "vocabulary.acl.record.create.title":
+      "Create a new record in this vocabulary's access control list",
+    "vocabulary.acl.record.create.dialog.title":
+      "Create new access control record",
+    "vocabulary.acl.record.save.success":
+      "Access control record successfully saved.",
+    "vocabulary.acl.record.remove.success":
+      "Access control record successfully removed.",
+    "vocabulary.acl.record.holder": "Access holder",
+    "vocabulary.acl.record.level": "Access level",
+    "vocabulary.acl.record.remove.dialog.title":
+      "Remove access control record?",
+    "vocabulary.acl.record.remove.dialog.text":
+      'Are you sure you want to remove access control record for "{holder}"?',
+    "vocabulary.acl.record.update.dialog.title": "Update access control record",
+    "vocabulary.acl.record.update.success":
+      "Access control record successfully updated.",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
@@ -457,7 +476,7 @@ const en = {
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":
       "Number of terms in the vocabulary (excluding imported vocabularies)",
-    "glossary.new": "New Term",
+    "glossary.new": "New term",
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",
     "glossary.excludeImported.help":
@@ -658,6 +677,9 @@ const en = {
     "type.file": "File",
     "type.dataset": "Dataset",
     "type.document.vocabulary": "Document vocabulary",
+    "type.user": "User",
+    "type.usergroup": "User group",
+    "type.userrole": "User role",
 
     "log-viewer.title": "Error log",
     "log-viewer.timestamp": "Timestamp",

@@ -8,6 +8,7 @@ import Comment from "../../model/Comment";
 import ValidationResult from "../../model/ValidationResult";
 import TermOccurrence from "../../model/TermOccurrence";
 import Constants from "../../util/Constants";
+import UserGroup from "../../model/UserGroup";
 
 export default class Generator {
   public static readonly URI_BASE =
@@ -134,6 +135,15 @@ export default class Generator {
     return new File(["a".repeat(size)], fileName, {
       lastModified: Date.now(),
       type: Constants.HTML_MIME_TYPE,
+    });
+  }
+
+  public static generateUserGroup() {
+    return new UserGroup({
+      iri: Generator.generateUri(),
+      label: "Test group " + Generator.randomInt(0, 1000),
+      members: [],
+      types: [VocabularyUtils.USER_GROUP],
     });
   }
 }

@@ -315,6 +315,24 @@ const cs = {
       "other {revize dalších # slovníků, které jsou s ním (i nepřímo) propojeny vztahy mezi pojmy}}.",
     "vocabulary.snapshot.create.dialog.confirm": "Vytvořit",
     "vocabulary.snapshot.create.success": "Revize slovníku úspěšně vytvořena.",
+    "vocabulary.acl": "Správa přístupu",
+    "vocabulary.acl.record.create": "Nový záznam",
+    "vocabulary.acl.record.create.title":
+      "Vytvořit nový záznam pro řízení přístupu k tomuto slovníku",
+    "vocabulary.acl.record.create.dialog.title": "Nový záznam řízení přístupu",
+    "vocabulary.acl.record.save.success":
+      "Záznam řízení přístupu úspěšně uložen.",
+    "vocabulary.acl.record.remove.success":
+      "Záznam řízení přístupu úspěšně odstraněn.",
+    "vocabulary.acl.record.holder": "Držitel oprávnění",
+    "vocabulary.acl.record.level": "Úroveň oprávnění",
+    "vocabulary.acl.record.remove.dialog.title": "Odstranit záznam?",
+    "vocabulary.acl.record.remove.dialog.text":
+      'Opravdu chcete odstranit záznam řízení přístupu pro "{holder}"?',
+    "vocabulary.acl.record.update.dialog.title":
+      "Upravit záznam řízení přístupu",
+    "vocabulary.acl.record.update.success":
+      "Záznam řízení přístupu úspěšně upraven.",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",
@@ -667,6 +685,9 @@ const cs = {
     "type.file": "Soubor",
     "type.dataset": "Datová sada",
     "type.document.vocabulary": "Dokumentový slovník",
+    "type.user": "Uživatel",
+    "type.usergroup": "Uživatelská skupina",
+    "type.userrole": "Uživatelská role",
 
     "log-viewer.title": "Prohlížení chyb",
     "log-viewer.timestamp": "Čas",

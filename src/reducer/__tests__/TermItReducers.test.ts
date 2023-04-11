@@ -79,6 +79,9 @@ function stateToPlainObject(state: TermItState): TermItState {
     configuration: state.configuration,
     validationResults: state.validationResults,
     definitionallyRelatedTerms: state.definitionallyRelatedTerms,
+    breadcrumbs: state.breadcrumbs,
+    users: state.users,
+    accessLevels: state.accessLevels,
   };
 }
 
@@ -524,8 +527,8 @@ describe("Reducers", () => {
       const properties: RdfsResource[] = [
         new RdfsResource({
           iri: "http://www.w3.org/2000/01/rdf-schema#label",
-          label: "Label",
-          comment: "RDFS label property",
+          label: langString("Label"),
+          comment: langString("RDFS label property"),
         }),
       ];
       expect(
@@ -543,8 +546,8 @@ describe("Reducers", () => {
       initialState.properties = [
         new RdfsResource({
           iri: "http://www.w3.org/2000/01/rdf-schema#label",
-          label: "Label",
-          comment: "RDFS label property",
+          label: langString("Label"),
+          comment: langString("RDFS label property"),
         }),
       ];
       expect(
@@ -874,6 +877,7 @@ describe("Reducers", () => {
         language: "es",
         maxFileUploadSize: "25MB",
         roles: [],
+        versionSeparator: "/version",
       };
       const result = reducers(
         stateToPlainObject(initialState),
@@ -941,6 +945,31 @@ describe("Reducers", () => {
         removeSearchListener()
       );
       expect(result.searchListenerCount).toEqual(0);
+    });
+  });
+
+  describe("accessLevels", () => {
+    it("maps provided array of resources by their keys into state", () => {
+      const resources = [
+        new RdfsResource({
+          iri: VocabularyUtils.NS_TERMIT + "read",
+          label: langString("Read"),
+        }),
+        new RdfsResource({
+          iri: VocabularyUtils.NS_TERMIT + "write",
+          label: langString("Write"),
+        }),
+      ];
+      const result = reducers(
+        stateToPlainObject(initialState),
+        asyncActionSuccessWithPayload(
+          { type: ActionType.LOAD_ACCESS_LEVELS },
+          resources
+        )
+      );
+      resources.forEach((r) => {
+        expect(result.accessLevels[r.iri]).toEqual(r);
+      });
     });
   });
 });
