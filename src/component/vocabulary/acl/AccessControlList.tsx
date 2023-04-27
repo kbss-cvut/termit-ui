@@ -75,6 +75,10 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
   const { i18n } = useI18n();
   const [acl, setAcl] =
     React.useState<AccessControlListModel | undefined>(undefined);
+  const existingHolders = React.useMemo(
+    () => (acl ? acl.records.map((r) => r.holder.iri) : []),
+    [acl]
+  );
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
   const [recordToRemove, setRecordToRemove] =
     React.useState<AccessControlRecordData | undefined>();
@@ -157,6 +161,7 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
         show={showCreateDialog}
         onSubmit={onAddRecord}
         onCancel={() => setShowCreateDialog(false)}
+        existingHolders={existingHolders}
       />
       <RemoveAccessControlRecordDialog
         show={recordToRemove !== undefined}
@@ -170,6 +175,7 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
         onChange={onChange}
         onSubmit={onUpdateRecord}
         onCancel={() => setRecordToUpdate(undefined)}
+        existingHolders={existingHolders}
       />
       <div className="mb-2 text-right">
         <Button

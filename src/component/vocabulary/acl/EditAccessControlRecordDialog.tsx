@@ -10,10 +10,11 @@ interface EditAccessControlRecordDialogProps {
   onChange: (change: Partial<AccessControlRecord<any>>) => void;
   onSubmit: () => void;
   onCancel: () => void;
+  existingHolders?: string[];
 }
 
 const EditAccessControlRecordDialog: React.FC<EditAccessControlRecordDialogProps> =
-  ({ show, record, onChange, onSubmit, onCancel }) => {
+  ({ show, record, onChange, onSubmit, onCancel, existingHolders }) => {
     const { i18n } = useI18n();
     return (
       <ConfirmCancelDialog
@@ -30,6 +31,7 @@ const EditAccessControlRecordDialog: React.FC<EditAccessControlRecordDialogProps
             record={record}
             onChange={onChange}
             holderReadOnly={true}
+            existingHolders={existingHolders}
           />
         )}
       </ConfirmCancelDialog>

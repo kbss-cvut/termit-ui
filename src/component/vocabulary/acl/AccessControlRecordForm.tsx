@@ -22,6 +22,7 @@ import { AssetData } from "../../../model/Asset";
 interface AccessControlRecordFormProps {
   record: AccessControlRecord<any>;
   holderReadOnly?: boolean; // Holder and its type is editable only for new records
+  existingHolders?: string[]; // Identifiers of existing record holders. They should not be available in the selector
   onChange: (change: Partial<AccessControlRecord<any>>) => void;
 }
 
@@ -89,6 +90,7 @@ function shouldResetAccessLevel(
 const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
   record,
   holderReadOnly = false,
+  existingHolders = [],
   onChange,
 }) => {
   const { i18n, locale } = useI18n();
@@ -149,6 +151,7 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
           holder={record.holder}
           onChange={onHolderSelect}
           disabled={holderReadOnly}
+          existingHolders={existingHolders}
         />
       </FormGroup>
 

@@ -10,12 +10,14 @@ interface CreateAccessControlRecordProps {
   show: boolean;
   onSubmit: (record: AccessControlRecord<any>) => Promise<any>;
   onCancel: () => void;
+  existingHolders?: string[];
 }
 
 const CreateAccessControlRecord: React.FC<CreateAccessControlRecordProps> = ({
   show,
   onSubmit,
   onCancel,
+  existingHolders,
 }) => {
   const { i18n } = useI18n();
   const [record, setRecord] = React.useState<AccessControlRecord<any>>(
@@ -44,7 +46,11 @@ const CreateAccessControlRecord: React.FC<CreateAccessControlRecordProps> = ({
       title={i18n("vocabulary.acl.record.create.dialog.title")}
     >
       <PromiseTrackingMask area="create-acr-dialog" />
-      <AccessControlRecordForm record={record} onChange={onChange} />
+      <AccessControlRecordForm
+        record={record}
+        onChange={onChange}
+        existingHolders={existingHolders}
+      />
     </ConfirmCancelDialog>
   );
 };

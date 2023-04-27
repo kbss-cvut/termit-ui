@@ -19,10 +19,16 @@ interface AccessControlHolderSelectorProps {
   holder?: AccessHolderType;
   onChange: (holder?: AccessHolderType) => void;
   disabled?: boolean;
+  existingHolders: string[];
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
 }
 
 const AccessControlHolderSelector: React.FC<AccessControlHolderSelectorProps> =
-  ({ holderType, holder, onChange, disabled = false }) => {
+  ({ holderType, holder, onChange, disabled = false, existingHolders }) => {
     const { i18n, locale } = useI18n();
     const users = useSelector((state: TermItState) => state.users);
     const roles = useSelector(
@@ -49,26 +55,36 @@ const AccessControlHolderSelector: React.FC<AccessControlHolderSelectorProps> =
     };
 
     const options = React.useMemo(() => {
+      let optionArr: SelectOption[] = [];
       switch (holderType) {
         case VocabularyUtils.USER:
-          return users.map((u) => ({
+          optionArr = users.map((u) => ({
             value: u.iri,
             label: `${u.fullName} (${u.username})`,
           }));
+          break;
         case VocabularyUtils.USER_GROUP:
-          return groups.map((g) => ({ value: g.iri, label: g.label }));
+          optionArr = groups.map((g) => ({ value: g.iri!, label: g.label }));
+          break;
         case VocabularyUtils.USER_ROLE:
           // Admin has always Security access, no point in setting access rights to them
-          return roles
+          optionArr = roles
             .filter((r) => r.iri !== VocabularyUtils.USER_ADMIN)
             .map((r) => ({
               value: r.iri,
               label: getLocalized(r.label, locale),
             }));
+          break;
         default:
-          return [];
+          break;
       }
-    }, [users, roles, groups, locale, holderType]);
+      if (!disabled) {
+        optionArr = optionArr.filter(
+          (o) => existingHolders.indexOf(o.value) === -1
+        );
+      }
+      return optionArr;
+    }, [users, roles, groups, locale, holderType, disabled, existingHolders]);
 
     return (
       <>
