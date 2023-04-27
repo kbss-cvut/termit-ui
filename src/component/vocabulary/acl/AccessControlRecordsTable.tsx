@@ -22,6 +22,8 @@ import TermItState from "../../../model/TermItState";
 import User from "../../../model/User";
 import { IfAuthorized } from "react-authorization";
 import classNames from "classnames";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import Utils from "../../../util/Utils";
 
 interface AccessRecordsTableProps {
   acl: AccessControlList;
@@ -31,6 +33,14 @@ interface AccessRecordsTableProps {
 
 function isMine(record: AccessControlRecordData, currentUser: User) {
   return record.holder.iri === currentUser.iri;
+}
+
+function isRemovable(record: AccessControlRecordData) {
+  return (
+    Utils.sanitizeArray(record.types).indexOf(
+      VocabularyUtils.USERROLE_ACCESS_RECORD
+    ) === -1
+  );
 }
 
 const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
@@ -78,17 +88,19 @@ const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
             >
               {i18n("edit")}
             </Button>
-            <Button
-              key="group-delete"
-              size="sm"
-              onClick={() => onRemove(row.original)}
-              color="outline-danger"
-            >
-              {i18n("remove")}
-            </Button>
+            {isRemovable(row.original) && (
+              <Button
+                key="group-delete"
+                size="sm"
+                onClick={() => onRemove(row.original)}
+                color="outline-danger"
+              >
+                {i18n("remove")}
+              </Button>
+            )}
           </IfAuthorized>
         ),
-        className: "table-row-actions text-center",
+        className: "table-row-actions text-left",
       },
     ],
     [currentUser, i18n, onEdit, onRemove]
