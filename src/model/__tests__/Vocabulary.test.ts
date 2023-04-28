@@ -139,6 +139,14 @@ describe("Vocabulary", () => {
       expect(json).toBeDefined();
       expect(result.document!.vocabulary).not.toEqual(sut);
     });
+
+    it("removes accessLevel attribute", () => {
+      const sut = new Vocabulary(
+        Object.assign({}, data, { accessLevel: Generator.generateUri() })
+      );
+      const result = sut.toJsonLd();
+      expect(result.accessLevel).not.toBeDefined();
+    });
   });
 
   describe("isSnapshot", () => {

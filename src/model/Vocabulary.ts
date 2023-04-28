@@ -9,6 +9,7 @@ import WithUnmappedProperties from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
 import { SupportsSnapshots } from "./Snapshot";
+import JsonLdUtils from "../util/JsonLdUtils";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
@@ -18,6 +19,7 @@ const ctx = {
   glossary: VocabularyUtils.HAS_GLOSSARY,
   model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
+  accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
@@ -34,6 +36,7 @@ const MAPPED_PROPERTIES = [
   "importedVocabularies",
   "allImportedVocabularies",
   "termCount",
+  "accessLevel",
 ];
 
 export interface VocabularyData extends AssetData {
@@ -43,6 +46,7 @@ export interface VocabularyData extends AssetData {
   glossary?: AssetData;
   model?: AssetData;
   importedVocabularies?: AssetData[];
+  accessLevel?: string;
 }
 
 export default class Vocabulary
@@ -56,6 +60,7 @@ export default class Vocabulary
   public model?: AssetData;
   public importedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
+  public accessLevel?: string;
 
   public termCount?: number;
 
@@ -82,6 +87,7 @@ export default class Vocabulary
     });
     delete (result as any).allImportedVocabularies;
     delete (result as any).termCount;
+    delete (result as any).accessLevel;
     if (result.document) {
       result.document = this.document?.toJsonLd();
     }

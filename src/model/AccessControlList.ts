@@ -8,15 +8,13 @@ import {
   getLocalized,
   MultilingualString,
 } from "./MultilingualString";
+import JsonLdUtils from "../util/JsonLdUtils";
 
 export const CONTEXT = {
   iri: "@id",
   types: "@type",
   records: VocabularyUtils.HAS_ACCESS_CONTROL_RECORD,
-  accessLevel: {
-    "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
-    "@type": "@id",
-  },
+  accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
   label: context(VocabularyUtils.RDFS_LABEL),
   holder: VocabularyUtils.HAS_ACCESS_LEVEL_HOLDER,
 };
@@ -25,10 +23,7 @@ const RECORD_CONTEXT = {
   iri: "@id",
   types: "@type",
   holder: VocabularyUtils.HAS_ACCESS_LEVEL_HOLDER,
-  accessLevel: {
-    "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
-    "@type": "@id",
-  },
+  accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
 };
 
 export interface AccessControlList extends AssetData {
