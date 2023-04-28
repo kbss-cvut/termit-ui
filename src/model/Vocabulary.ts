@@ -10,6 +10,7 @@ import Utils from "../util/Utils";
 import Constants from "../util/Constants";
 import { SupportsSnapshots } from "./Snapshot";
 import JsonLdUtils from "../util/JsonLdUtils";
+import AccessLevel, { strToAccessLevel } from "./acl/AccessLevel";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
@@ -46,7 +47,7 @@ export interface VocabularyData extends AssetData {
   glossary?: AssetData;
   model?: AssetData;
   importedVocabularies?: AssetData[];
-  accessLevel?: string;
+  accessLevel?: AccessLevel;
 }
 
 export default class Vocabulary
@@ -60,7 +61,7 @@ export default class Vocabulary
   public model?: AssetData;
   public importedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
-  public accessLevel?: string;
+  public accessLevel?: AccessLevel;
 
   public termCount?: number;
 
@@ -75,6 +76,9 @@ export default class Vocabulary
     if (data.document) {
       this.document = new Document(data.document);
     }
+    this.accessLevel = data.accessLevel
+      ? strToAccessLevel(data.accessLevel)
+      : undefined;
   }
 
   getLabel(): string {

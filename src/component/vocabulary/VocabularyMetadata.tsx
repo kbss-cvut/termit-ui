@@ -124,6 +124,7 @@ export class VocabularyMetadata extends React.Component<
       <DocumentSummary
         document={vocabulary.document}
         onChange={this.props.onChange}
+        accessLevel={vocabulary.accessLevel || AccessLevel.READ}
       />
     );
     tabs[TABS[2]] = <AssetHistory asset={vocabulary} />;

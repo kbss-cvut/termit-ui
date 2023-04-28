@@ -19,9 +19,11 @@ import ModifyFile from "./ModifyFile";
 import FileContentActions from "./FileContentActions";
 import { DateTime } from "luxon";
 import Constants from "../../../util/Constants";
+import AccessLevel from "../../../model/acl/AccessLevel";
 
 interface DocumentFilesProps {
   document: Document;
+  accessLevel: AccessLevel;
   onFileRemoved: () => void;
   onFileRenamed: () => void;
   onFileAdded: () => void;

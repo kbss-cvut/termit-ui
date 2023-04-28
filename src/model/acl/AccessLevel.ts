@@ -34,4 +34,11 @@ export function hasAccess(
   }
 }
 
+export function strToAccessLevel(str: string) {
+  if (Object.values(AccessLevel).some((col: string) => col === str)) {
+    return str as AccessLevel;
+  }
+  throw new TypeError(`Unsupported AccessLevel constant '${str}'.`);
+}
+
 export default AccessLevel;

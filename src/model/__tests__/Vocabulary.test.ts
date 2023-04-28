@@ -2,6 +2,7 @@ import Vocabulary, { VocabularyData } from "../Vocabulary";
 import Document from "../Document";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
+import AccessLevel from "../acl/AccessLevel";
 
 describe("Vocabulary", () => {
   let data: VocabularyData;
@@ -142,7 +143,7 @@ describe("Vocabulary", () => {
 
     it("removes accessLevel attribute", () => {
       const sut = new Vocabulary(
-        Object.assign({}, data, { accessLevel: Generator.generateUri() })
+        Object.assign({}, data, { accessLevel: AccessLevel.WRITE })
       );
       const result = sut.toJsonLd();
       expect(result.accessLevel).not.toBeDefined();
