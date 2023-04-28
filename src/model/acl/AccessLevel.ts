@@ -7,6 +7,8 @@ enum AccessLevel {
 
 /**
  * Checks if the required access level is satisfied by the current user's actual access level.
+ *
+ * This check is hierarchical, so if the user has higher access level than required, this method returns true.
  * @param required Required level of access to a resource/feature
  * @param actual Actual level of access of the current user
  */

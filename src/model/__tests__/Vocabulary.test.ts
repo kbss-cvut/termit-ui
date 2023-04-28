@@ -176,4 +176,22 @@ describe("Vocabulary", () => {
       expect(sut.snapshotOf()).toEqual(currentIri);
     });
   });
+
+  describe("isEditable", () => {
+    it("returns false when vocabulary is a snapshot", () => {
+      const sut = Generator.generateVocabulary();
+      sut.types = [VocabularyUtils.VOCABULARY_SNAPSHOT];
+      expect(sut.isEditable()).toBeFalsy();
+    });
+
+    it("returns false when vocabulary has read only type", () => {
+      const sut = Generator.generateVocabulary();
+      sut.types = [VocabularyUtils.IS_READ_ONLY];
+      expect(sut.isEditable()).toBeFalsy();
+    });
+
+    it("returns true for regular vocabulary", () => {
+      expect(Generator.generateVocabulary().isEditable()).toBeTruthy();
+    });
+  });
 });

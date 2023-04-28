@@ -10,7 +10,8 @@ import { GoClippy, GoCloudDownload, GoCloudUpload } from "react-icons/go";
 import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
 import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
-import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
+import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 interface VocabularyActionsProps {
   vocabulary: Vocabulary;
@@ -57,7 +58,8 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
             <GoCloudDownload className="mr-1" />
             {i18n("vocabulary.summary.export.text")}
           </DropdownItem>
-          <IfVocabularyEditAuthorized
+          <IfVocabularyActionAuthorized
+            requiredAccessLevel={AccessLevel.SECURITY}
             key="vocabulary-import"
             vocabulary={vocabulary}
           >
@@ -69,8 +71,9 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               <GoCloudUpload className="mr-1" />
               {i18n("vocabulary.summary.import.action")}
             </DropdownItem>
-          </IfVocabularyEditAuthorized>
-          <IfVocabularyEditAuthorized
+          </IfVocabularyActionAuthorized>
+          <IfVocabularyActionAuthorized
+            requiredAccessLevel={AccessLevel.WRITE}
             key="vocabulary-analyze"
             vocabulary={vocabulary}
           >
@@ -83,8 +86,9 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               <GoClippy className="mr-1 align-text-top" />
               {i18n("file.metadata.startTextAnalysis.text")}
             </DropdownItem>
-          </IfVocabularyEditAuthorized>
-          <IfVocabularyEditAuthorized
+          </IfVocabularyActionAuthorized>
+          <IfVocabularyActionAuthorized
+            requiredAccessLevel={AccessLevel.SECURITY}
             key="vocabulary-snapshot"
             vocabulary={vocabulary}
           >
@@ -97,7 +101,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               <FaCamera className="mr-1 align-text-top" />
               {i18n("vocabulary.snapshot.create.label")}
             </DropdownItem>
-          </IfVocabularyEditAuthorized>
+          </IfVocabularyActionAuthorized>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
     </>

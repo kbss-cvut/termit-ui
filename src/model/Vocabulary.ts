@@ -1,6 +1,6 @@
 import OntologicalVocabulary from "../util/VocabularyUtils";
 import VocabularyUtils from "../util/VocabularyUtils";
-import Asset, { ASSET_CONTEXT, AssetData } from "./Asset";
+import Asset, { ASSET_CONTEXT, AssetData, Editable } from "./Asset";
 import Document, {
   CONTEXT as DOCUMENT_CONTEXT,
   DocumentData,
@@ -51,7 +51,7 @@ export interface VocabularyData extends AssetData {
 
 export default class Vocabulary
   extends Asset
-  implements VocabularyData, SupportsSnapshots
+  implements Editable, VocabularyData, SupportsSnapshots
 {
   public label: string;
   public comment?: string;
@@ -112,6 +112,10 @@ export default class Vocabulary
     return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
       ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
       : undefined;
+  }
+
+  public isEditable(): boolean {
+    return !this.isSnapshot() && !this.hasType(VocabularyUtils.IS_READ_ONLY);
   }
 
   public get unmappedProperties(): Map<string, string[]> {
