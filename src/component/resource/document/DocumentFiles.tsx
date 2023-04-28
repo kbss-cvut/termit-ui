@@ -19,7 +19,8 @@ import ModifyFile from "./ModifyFile";
 import FileContentActions from "./FileContentActions";
 import { DateTime } from "luxon";
 import Constants from "../../../util/Constants";
-import AccessLevel from "../../../model/acl/AccessLevel";
+import AccessLevel, { hasAccess } from "../../../model/acl/AccessLevel";
+import { IfAuthorized } from "react-authorization";
 
 interface DocumentFilesProps {
   document: Document;
@@ -37,6 +38,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     onFileRemoved,
     onFileRenamed,
     onFileReupload,
+    accessLevel,
   } = props;
   const dispatch: ThunkDispatch = useDispatch();
 
@@ -91,7 +93,11 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
   return (
     <Files
       files={document.files}
-      actions={[<AddFile key="add-file" performAction={createFile} />]}
+      actions={[
+        <IfAuthorized isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}>
+          <AddFile key="add-file" performAction={createFile} />
+        </IfAuthorized>,
+      ]}
       itemActions={(file: TermItFile) => [
         <FileContentActions
           key="file-content-actions"
