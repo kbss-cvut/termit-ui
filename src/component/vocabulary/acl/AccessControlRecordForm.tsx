@@ -6,7 +6,7 @@ import { IntelligentTreeSelect } from "intelligent-tree-select";
 import {
   AccessControlRecord,
   AccessHolderType,
-} from "../../../model/AccessControlList";
+} from "../../../model/acl/AccessControlList";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { useI18n } from "../../hook/useI18n";
 import TermItState from "../../../model/TermItState";

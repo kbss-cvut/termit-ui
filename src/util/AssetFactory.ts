@@ -22,7 +22,7 @@ import {
   UserAccessControlRecord,
   UserGroupAccessControlRecord,
   UserRoleAccessControlRecord,
-} from "../model/AccessControlList";
+} from "../model/acl/AccessControlList";
 
 const AssetFactory = {
   /**

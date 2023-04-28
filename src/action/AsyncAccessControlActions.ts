@@ -16,7 +16,7 @@ import {
   AccessControlList,
   AccessControlRecordData,
   CONTEXT as ACL_CONTEXT,
-} from "../model/AccessControlList";
+} from "../model/acl/AccessControlList";
 import { ErrorData } from "../model/ErrorInfo";
 import RdfsResource, {
   CONTEXT as RDFS_CONTEXT,

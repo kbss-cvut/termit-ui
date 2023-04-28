@@ -2,7 +2,7 @@ import React from "react";
 import {
   AccessControlList,
   AccessControlRecordData,
-} from "../../../model/AccessControlList";
+} from "../../../model/acl/AccessControlList";
 import { useI18n } from "../../hook/useI18n";
 import {
   Column,

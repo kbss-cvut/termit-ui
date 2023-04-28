@@ -1,5 +1,5 @@
 import React from "react";
-import { AccessControlRecordData } from "../../../model/AccessControlList";
+import { AccessControlRecordData } from "../../../model/acl/AccessControlList";
 import { useI18n } from "../../hook/useI18n";
 import Utils from "../../../util/Utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";

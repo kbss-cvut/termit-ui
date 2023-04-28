@@ -14,7 +14,7 @@ import {
   AccessControlList as AccessControlListModel,
   AccessControlRecord,
   AccessControlRecordData,
-} from "../../../model/AccessControlList";
+} from "../../../model/acl/AccessControlList";
 import { Button } from "reactstrap";
 import { GoPlus } from "react-icons/go";
 import { useI18n } from "../../hook/useI18n";

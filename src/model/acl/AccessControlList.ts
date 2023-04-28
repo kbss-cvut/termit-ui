@@ -1,14 +1,14 @@
-import VocabularyUtils from "../util/VocabularyUtils";
-import { CONTEXT as USER_CONTEXT, UserData } from "./User";
-import { CONTEXT as USERGROUP_CONTEXT, UserGroupData } from "./UserGroup";
-import { CONTEXT as USERROLE_CONTEXT, UserRoleData } from "./UserRole";
-import { AssetData, SupportsJsonLd } from "./Asset";
+import VocabularyUtils from "../../util/VocabularyUtils";
+import { CONTEXT as USER_CONTEXT, UserData } from "../User";
+import { CONTEXT as USERGROUP_CONTEXT, UserGroupData } from "../UserGroup";
+import { CONTEXT as USERROLE_CONTEXT, UserRoleData } from "../UserRole";
+import { AssetData, SupportsJsonLd } from "../Asset";
 import {
   context,
   getLocalized,
   MultilingualString,
-} from "./MultilingualString";
-import JsonLdUtils from "../util/JsonLdUtils";
+} from "../MultilingualString";
+import JsonLdUtils from "../../util/JsonLdUtils";
 
 export const CONTEXT = {
   iri: "@id",

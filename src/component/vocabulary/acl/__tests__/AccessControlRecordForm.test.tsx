@@ -3,7 +3,7 @@ import VocabularyUtils from "../../../../util/VocabularyUtils";
 import {
   AccessControlRecord,
   AccessHolderType,
-} from "../../../../model/AccessControlList";
+} from "../../../../model/acl/AccessControlList";
 import * as Redux from "react-redux";
 import { shallow } from "enzyme";
 // @ts-ignore
