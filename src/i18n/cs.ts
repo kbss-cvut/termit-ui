@@ -769,8 +769,7 @@ const cs = {
     "snapshot.removed.message": "Revize odstraněna.",
     "snapshot.label.short": "revize z",
 
-    "auth.notEditable.message.unauthorized":
-      "K editaci tohoto objektu nemáte dostatečná práva.",
+    "auth.action.unauthorized": "K této akci nemáte dostatečná práva.",
     "auth.notEditable.message.readOnly": "Tento { type } je pouze pro čtení.",
   },
 };

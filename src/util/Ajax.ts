@@ -218,9 +218,18 @@ export class Ajax {
           });
         } else {
           return Promise.reject(
-            Object.assign({}, response.data, {
-              status: response.status,
-            })
+            Object.assign(
+              {
+                messageId:
+                  response.status === Constants.STATUS_FORBIDDEN
+                    ? "auth.action.unauthorized"
+                    : undefined,
+              },
+              response.data,
+              {
+                status: response.status,
+              }
+            )
           );
         }
       }
