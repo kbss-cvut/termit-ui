@@ -44,8 +44,9 @@ import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import "./Terms.scss";
 import StatusFilter from "./StatusFilter";
-import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
 import { Configuration } from "../../model/Configuration";
+import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -333,7 +334,10 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             )}
           </h4>
           {!isDetailView && (
-            <IfVocabularyEditAuthorized vocabulary={this.props.vocabulary}>
+            <IfVocabularyActionAuthorized
+              vocabulary={this.props.vocabulary}
+              requiredAccessLevel={AccessLevel.WRITE}
+            >
               <Button
                 id="terms-create"
                 color="primary"
@@ -344,7 +348,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
                 <GoPlus />
                 &nbsp;{i18n("glossary.new")}
               </Button>
-            </IfVocabularyEditAuthorized>
+            </IfVocabularyActionAuthorized>
           )}
           {isDetailView && renderIncludeImported ? (
             this.renderIncludeImported()
