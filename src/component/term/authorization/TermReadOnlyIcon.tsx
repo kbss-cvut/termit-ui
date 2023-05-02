@@ -1,17 +1,15 @@
 import React from "react";
-import Vocabulary from "../../../model/Vocabulary";
-import { useSelector } from "react-redux";
-import TermItState from "../../../model/TermItState";
-import { isAssetEditable } from "../../../util/Authorization";
 import AssetReadOnlyIcon from "../../authorization/AssetReadOnlyIcon";
 import { useI18n } from "../../hook/useI18n";
+import Term from "../../../model/Term";
+import AccessLevel from "../../../model/acl/AccessLevel";
 
-const TermReadOnlyIcon: React.FC<{ vocabulary: Vocabulary }> = ({
-  vocabulary,
+const TermReadOnlyIcon: React.FC<{ term: Term; accessLevel?: AccessLevel }> = ({
+  term,
+  accessLevel,
 }) => {
   const { i18n } = useI18n();
-  const user = useSelector((state: TermItState) => state.user);
-  return !isAssetEditable(vocabulary, user) ? (
+  return !term.isEditable() || accessLevel === AccessLevel.READ ? (
     <AssetReadOnlyIcon
       explanationId="auth.notEditable.message.readOnly"
       explanationValues={{ type: i18n("type.term").toLowerCase() }}

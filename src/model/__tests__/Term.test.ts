@@ -415,4 +415,19 @@ describe("Term tests", () => {
       expect(sut.snapshotOf()).toEqual(currentIri);
     });
   });
+
+  describe("isEditable", () => {
+    it("returns true for a regular term", () => {
+      expect(Generator.generateTerm().isEditable()).toBeTruthy();
+    });
+
+    it("returns false when term is a snapshot", () => {
+      const currentIri = Generator.generateUri();
+      const sut = Generator.generateTerm();
+      sut[VocabularyUtils.IS_SNAPSHOT_OF_TERM] = currentIri;
+      sut.types = [VocabularyUtils.TERM_SNAPSHOT];
+
+      expect(sut.isEditable()).toBeFalsy();
+    });
+  });
 });
