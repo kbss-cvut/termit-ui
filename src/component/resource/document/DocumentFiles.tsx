@@ -105,18 +105,24 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           onDownload={downloadFile}
           onDownloadOriginal={downloadOriginal}
         />,
-        <ModifyFile
-          key="rename-file"
-          file={file}
-          performRename={renameFile}
-          performFileUpdate={reuploadFile}
-        />,
-        <RemoveFile
-          key="remove-file"
-          file={file}
-          performAction={deleteFile.bind(this, file)}
-          withConfirmation={true}
-        />,
+        <IfAuthorized isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}>
+          <ModifyFile
+            key="rename-file"
+            file={file}
+            performRename={renameFile}
+            performFileUpdate={reuploadFile}
+          />
+        </IfAuthorized>,
+        <IfAuthorized
+          isAuthorized={hasAccess(AccessLevel.SECURITY, accessLevel)}
+        >
+          <RemoveFile
+            key="remove-file"
+            file={file}
+            performAction={deleteFile.bind(this, file)}
+            withConfirmation={true}
+          />
+        </IfAuthorized>,
       ]}
     />
   );
