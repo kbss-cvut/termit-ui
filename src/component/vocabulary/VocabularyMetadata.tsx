@@ -19,6 +19,7 @@ import DocumentSummary from "../resource/document/DocumentSummary";
 import MarkdownView from "../misc/MarkdownView";
 import VocabularySnapshots from "./snapshot/VocabularySnapshots";
 import AccessControlList from "./acl/AccessControlList";
+import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -109,7 +110,6 @@ export class VocabularyMetadata extends React.Component<
   private renderTabs() {
     const vocabulary = this.props.vocabulary;
     const tabs = {};
-    // Ensure order of tabs Terms | (Files) | Unmapped properties | History
 
     tabs[TABS[0]] = (
       <Terms
@@ -124,6 +124,11 @@ export class VocabularyMetadata extends React.Component<
       <DocumentSummary
         document={vocabulary.document}
         onChange={this.props.onChange}
+        accessLevel={
+          !vocabulary.isEditable() || !vocabulary.accessLevel
+            ? AccessLevel.READ
+            : vocabulary.accessLevel
+        }
       />
     );
     tabs[TABS[2]] = <AssetHistory asset={vocabulary} />;
@@ -138,7 +143,9 @@ export class VocabularyMetadata extends React.Component<
         showInfoOnEmpty={true}
       />
     );
-    tabs[TABS[6]] = <AccessControlList vocabularyIri={vocabulary.iri} />;
+    if (hasAccess(AccessLevel.SECURITY, vocabulary.accessLevel)) {
+      tabs[TABS[6]] = <AccessControlList vocabularyIri={vocabulary.iri} />;
+    }
 
     return (
       <Tabs

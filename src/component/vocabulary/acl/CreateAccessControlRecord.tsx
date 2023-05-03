@@ -1,5 +1,5 @@
 import React from "react";
-import { AccessControlRecord } from "../../../model/AccessControlList";
+import { AccessControlRecord } from "../../../model/acl/AccessControlList";
 import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
 import { useI18n } from "../../hook/useI18n";
 import AccessControlRecordForm from "./AccessControlRecordForm";

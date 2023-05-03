@@ -758,8 +758,7 @@ const en = {
       "other {# related snapshots}}.",
     "snapshot.label.short": "snapshot from",
 
-    "auth.notEditable.message.unauthorized":
-      "You have insufficient rights to edit this { type }.",
+    "auth.action.unauthorized": "You have insufficient rights for this action.",
     "auth.notEditable.message.readOnly": "This { type } is read only.",
   },
 };

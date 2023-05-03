@@ -1,6 +1,6 @@
 import React from "react";
 import { useI18n } from "../../hook/useI18n";
-import { AccessControlRecordData } from "../../../model/AccessControlList";
+import { AccessControlRecordData } from "../../../model/acl/AccessControlList";
 import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
 import { Label } from "reactstrap";
 import { getLocalized } from "../../../model/MultilingualString";

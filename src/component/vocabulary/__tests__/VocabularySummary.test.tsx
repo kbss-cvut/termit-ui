@@ -12,6 +12,7 @@ import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil";
 import TermItState from "../../../model/TermItState";
+import AccessLevel from "../../../model/acl/AccessLevel";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -79,6 +80,7 @@ describe("VocabularySummary", () => {
     vocabulary = new Vocabulary({
       iri: namespace + normalizedName,
       label: "Test vocabulary",
+      accessLevel: AccessLevel.WRITE,
     });
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_EDITOR);
@@ -306,10 +308,8 @@ describe("VocabularySummary", () => {
     expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
   });
 
-  it("does not render modification buttons for restricted user", () => {
-    const user = Generator.generateUser();
-    user.types.push(VocabularyUtils.USER_RESTRICTED);
-    state.user = user;
+  it("does not render modification buttons for user with read access", () => {
+    vocabulary.accessLevel = AccessLevel.READ;
     const wrapper = mountWithIntlAttached(
       <VocabularySummary
         vocabulary={vocabulary}

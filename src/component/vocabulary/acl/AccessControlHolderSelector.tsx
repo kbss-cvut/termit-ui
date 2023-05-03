@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import UserGroup from "../../../model/UserGroup";
-import { AccessHolderType } from "../../../model/AccessControlList";
+import { AccessHolderType } from "../../../model/acl/AccessControlList";
 import TermItState from "../../../model/TermItState";
 import { ThunkDispatch } from "../../../util/Types";
 import { loadUserGroups } from "../../../action/AsyncUserGroupActions";

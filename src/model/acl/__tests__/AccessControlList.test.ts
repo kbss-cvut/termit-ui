@@ -4,12 +4,12 @@ import {
   AccessControlRecordData,
   AccessHolderType,
 } from "../AccessControlList";
-import Generator from "../../__tests__/environment/Generator";
-import { langString } from "../MultilingualString";
-import VocabularyUtils from "../../util/VocabularyUtils";
-import { UserData } from "../User";
-import { UserGroupData } from "../UserGroup";
-import UserRole from "../UserRole";
+import Generator from "../../../__tests__/environment/Generator";
+import { langString } from "../../MultilingualString";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import { UserData } from "../../User";
+import { UserGroupData } from "../../UserGroup";
+import UserRole from "../../UserRole";
 
 describe("AbstractAccessControlRecord", () => {
   describe("create", () => {

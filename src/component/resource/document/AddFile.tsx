@@ -4,7 +4,6 @@ import TermItFile from "../../../model/File";
 import { GoPlus } from "react-icons/go";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import CreateFileMetadata from "../file/CreateFileMetadata";
-import IfUserIsEditor from "../../authorization/IfUserIsEditor";
 import { useI18n } from "../../hook/useI18n";
 
 interface AddFileProps {
@@ -22,7 +21,7 @@ export const AddFile = (props: AddFileProps) => {
   };
 
   return (
-    <IfUserIsEditor>
+    <>
       <Modal
         id="document-create-file"
         isOpen={createFileDialogOpen}
@@ -45,7 +44,7 @@ export const AddFile = (props: AddFileProps) => {
         <GoPlus className="mr-1" />
         {i18n("resource.metadata.document.files.actions.add")}
       </Button>
-    </IfUserIsEditor>
+    </>
   );
 };
 

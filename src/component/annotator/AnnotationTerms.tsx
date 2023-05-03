@@ -22,10 +22,11 @@ import {
   createTermsWithImportsOptionRenderer,
   createTermValueRenderer,
 } from "../misc/treeselect/Renderers";
-import IfUserIsEditor from "../authorization/IfUserIsEditor";
+import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
-  vocabulary?: Vocabulary;
+  vocabulary: Vocabulary;
   terms: { [key: string]: Term };
   counter: number;
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
@@ -97,14 +98,15 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
     const { i18n, vocabulary } = this.props;
     const terms = processTermsForTreeSelect(
       Object.keys(this.props.terms).map((k) => this.props.terms[k]),
-      Utils.sanitizeArray(vocabulary!.allImportedVocabularies).concat(
+      Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
         vocabulary!.iri
       )
     );
 
     return (
-      <IfUserIsEditor
-        renderUnauthorizedAlert={true}
+      <IfVocabularyActionAuthorized
+        vocabulary={vocabulary}
+        requiredAccessLevel={AccessLevel.WRITE}
         unauthorized={<p>{i18n("annotator.unknown.unauthorized")}</p>}
       >
         <FormGroup>
@@ -144,7 +146,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
           />
           <FormText>{i18n("annotation.term.select.placeholder")}</FormText>
         </FormGroup>
-      </IfUserIsEditor>
+      </IfVocabularyActionAuthorized>
     );
   }
 }

@@ -1,22 +1,20 @@
-import VocabularyUtils from "../util/VocabularyUtils";
-import { CONTEXT as USER_CONTEXT, UserData } from "./User";
-import { CONTEXT as USERGROUP_CONTEXT, UserGroupData } from "./UserGroup";
-import { CONTEXT as USERROLE_CONTEXT, UserRoleData } from "./UserRole";
-import { AssetData, SupportsJsonLd } from "./Asset";
+import VocabularyUtils from "../../util/VocabularyUtils";
+import { CONTEXT as USER_CONTEXT, UserData } from "../User";
+import { CONTEXT as USERGROUP_CONTEXT, UserGroupData } from "../UserGroup";
+import { CONTEXT as USERROLE_CONTEXT, UserRoleData } from "../UserRole";
+import { AssetData, SupportsJsonLd } from "../Asset";
 import {
   context,
   getLocalized,
   MultilingualString,
-} from "./MultilingualString";
+} from "../MultilingualString";
+import JsonLdUtils from "../../util/JsonLdUtils";
 
 export const CONTEXT = {
   iri: "@id",
   types: "@type",
   records: VocabularyUtils.HAS_ACCESS_CONTROL_RECORD,
-  accessLevel: {
-    "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
-    "@type": "@id",
-  },
+  accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
   label: context(VocabularyUtils.RDFS_LABEL),
   holder: VocabularyUtils.HAS_ACCESS_LEVEL_HOLDER,
 };
@@ -25,10 +23,7 @@ const RECORD_CONTEXT = {
   iri: "@id",
   types: "@type",
   holder: VocabularyUtils.HAS_ACCESS_LEVEL_HOLDER,
-  accessLevel: {
-    "@id": VocabularyUtils.HAS_ACCESS_LEVEL,
-    "@type": "@id",
-  },
+  accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
 };
 
 export interface AccessControlList extends AssetData {

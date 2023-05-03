@@ -24,7 +24,7 @@ jest.mock("../ExactMatchesSelector", () => () => (
 jest.mock("../RelatedTermsSelector", () => () => (
   <div>Related terms selector</div>
 ));
-jest.mock("../TermTypesEdit");
+jest.mock("../TermTypesEdit", () => () => <div>Term types edit</div>);
 jest.mock("../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
 
 describe("Term edit", () => {

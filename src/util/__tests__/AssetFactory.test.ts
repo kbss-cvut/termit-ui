@@ -21,7 +21,7 @@ import {
   UserAccessControlRecord,
   UserGroupAccessControlRecord,
   UserRoleAccessControlRecord,
-} from "../../model/AccessControlList";
+} from "../../model/acl/AccessControlList";
 import { UserGroupData } from "../../model/UserGroup";
 import { UserRoleData } from "../../model/UserRole";
 

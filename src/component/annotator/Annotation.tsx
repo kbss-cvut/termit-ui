@@ -10,6 +10,7 @@ import TermItState from "../../model/TermItState";
 import { ThunkDispatch } from "../../util/Types";
 import { loadTermByIri } from "../../action/AsyncAnnotatorActions";
 import Asset from "../../model/Asset";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 interface AnnotationProps extends AnnotationSpanProps {
   about: string;
@@ -27,6 +28,7 @@ interface AnnotationProps extends AnnotationSpanProps {
   term?: Term;
   onFetchTerm: (termIri: string) => Promise<Term | null>;
   onResetSticky: () => void; // Resets sticky annotation status
+  accessLevel: AccessLevel;
 }
 
 interface AnnotationState {
@@ -281,6 +283,7 @@ export class Annotation extends React.Component<
         onCreateTerm={this.onCreateTerm}
         onToggleDetailOpen={this.toggleOpenDetail}
         onClose={this.onCloseDetail}
+        accessLevel={this.props.accessLevel}
       />
     );
   }
@@ -296,6 +299,7 @@ export class Annotation extends React.Component<
         onSelectTerm={this.onSelectTerm}
         onToggleDetailOpen={this.toggleOpenDetail}
         onClose={this.onCloseDetail}
+        accessLevel={this.props.accessLevel}
       />
     );
   }
