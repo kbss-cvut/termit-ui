@@ -8,15 +8,18 @@ import { Location } from "history";
 import { mountWithIntlAttached } from "../../../annotator/__tests__/AnnotationUtil";
 import { DEFAULT_CONFIGURATION } from "../../../../model/Configuration";
 import * as redux from "react-redux";
+import * as Redux from "react-redux";
 import * as router from "react-router-dom";
-import * as Actions from "../../../../action/SyncActions";
+import * as SyncActions from "../../../../action/SyncActions";
+import * as AsyncActions from "../../../../action/AsyncActions";
 
 jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
+  ...(jest.requireActual("react-redux") as {}),
   useSelector: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+  ...(jest.requireActual("react-router-dom") as {}),
   useLocation: jest.fn(),
   useRouteMatch: jest.fn(),
 }));
@@ -54,13 +57,17 @@ describe("Public VocabularySummary", () => {
       .spyOn(redux, "useSelector")
       .mockReturnValueOnce(EMPTY_VOCABULARY)
       .mockReturnValueOnce(DEFAULT_CONFIGURATION);
+    jest
+      .spyOn(Redux, "useDispatch")
+      .mockReturnValue(jest.fn().mockResolvedValue({}));
     jest.spyOn(router, "useLocation").mockReturnValue(location);
     jest.spyOn(router, "useRouteMatch").mockReturnValue(match);
-    jest.spyOn(Actions, "selectVocabularyTerm");
+    jest.spyOn(SyncActions, "selectVocabularyTerm");
+    jest.spyOn(AsyncActions, "loadVocabulary");
     mountWithIntlAttached(<VocabularySummary />);
     await act(async () => {
       await flushPromises();
     });
-    expect(Actions.selectVocabularyTerm).toHaveBeenCalledWith(null);
+    expect(SyncActions.selectVocabularyTerm).toHaveBeenCalledWith(null);
   });
 });
