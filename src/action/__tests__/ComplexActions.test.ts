@@ -17,7 +17,7 @@ const mockStore = configureMockStore([thunk]);
 describe("Complex actions", () => {
   describe("logout", () => {
     beforeEach(() => {
-      (Ajax.get as jest.Mock).mockResolvedValue({});
+      (Ajax.post as jest.Mock).mockResolvedValue({});
     });
 
     it("invokes authentication logout in order to invalidate authentication token", () => {
