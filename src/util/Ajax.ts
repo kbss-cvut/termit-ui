@@ -302,7 +302,10 @@ export class Ajax {
     return this.getResponse(path, config);
   }
 
-  public post(path: string, config: RequestConfigBuilder) {
+  public post(
+    path: string,
+    config: RequestConfigBuilder = new RequestConfigBuilder()
+  ) {
     const conf = {
       headers: config.getHeaders(),
       paramsSerializer,

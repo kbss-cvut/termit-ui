@@ -76,7 +76,7 @@ export function login(username: string, password: string) {
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.post(
-      "/j_spring_security_check",
+      "/login",
       params({
         username,
         password,
@@ -95,6 +95,18 @@ export function login(username: string, password: string) {
       .then(() =>
         dispatch(publishMessage(createFormattedMessage("message.welcome")))
       )
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function logout() {
+  const action = {
+    type: ActionType.LOGOUT,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post("/logout")
+      .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }
