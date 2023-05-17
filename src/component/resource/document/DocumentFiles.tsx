@@ -94,8 +94,11 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     <Files
       files={document.files}
       actions={[
-        <IfAuthorized isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}>
-          <AddFile key="add-file" performAction={createFile} />
+        <IfAuthorized
+          isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+          key="add-file"
+        >
+          <AddFile performAction={createFile} />
         </IfAuthorized>,
       ]}
       itemActions={(file: TermItFile) => [
@@ -105,9 +108,11 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           onDownload={downloadFile}
           onDownloadOriginal={downloadOriginal}
         />,
-        <IfAuthorized isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}>
+        <IfAuthorized
+          isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+          key="rename-file"
+        >
           <ModifyFile
-            key="rename-file"
             file={file}
             performRename={renameFile}
             performFileUpdate={reuploadFile}
@@ -115,9 +120,9 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
         </IfAuthorized>,
         <IfAuthorized
           isAuthorized={hasAccess(AccessLevel.SECURITY, accessLevel)}
+          key="remove-file"
         >
           <RemoveFile
-            key="remove-file"
             file={file}
             performAction={deleteFile.bind(this, file)}
             withConfirmation={true}

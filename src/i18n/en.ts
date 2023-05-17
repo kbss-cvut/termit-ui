@@ -279,7 +279,7 @@ const en = {
     "vocabulary.detail.imports": "Imports",
     "vocabulary.detail.imports.edit": "Imports vocabularies",
     "vocabulary.detail.document": "Document",
-    "vocabulary.text-analysis.finished.message":
+    "vocabulary.text-analysis.invoke.message":
       "Text analysis of terms' definitions in this vocabulary invoked.",
     "vocabulary.all.text-analysis.invoke.message":
       "Text analysis of terms' definitions in all vocabularies invoked.",
