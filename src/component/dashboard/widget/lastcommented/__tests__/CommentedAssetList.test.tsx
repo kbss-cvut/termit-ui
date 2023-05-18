@@ -65,6 +65,8 @@ describe("CommentedAssetList", () => {
               {
                 lastComment: comment,
                 iri: Generator.generateUri(),
+                label: "Test",
+                vocabulary: { iri: Generator.generateUri() },
                 type: VocabularyUtils.COMMENT,
               },
             ]}
@@ -101,6 +103,8 @@ describe("CommentedAssetList", () => {
               {
                 lastComment: comment,
                 iri: Generator.generateUri(),
+                label: "Test",
+                vocabulary: { iri: Generator.generateUri() },
                 type: VocabularyUtils.COMMENT,
               },
             ]}
@@ -122,6 +126,8 @@ describe("CommentedAssetList", () => {
               {
                 lastComment: comment,
                 iri: Generator.generateUri(),
+                label: "Test",
+                vocabulary: { iri: Generator.generateUri() },
                 type: VocabularyUtils.COMMENT,
               },
             ]}

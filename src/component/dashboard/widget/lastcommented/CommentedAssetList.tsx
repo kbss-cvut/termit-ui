@@ -5,12 +5,13 @@ import TimeAgo from "javascript-time-ago";
 import User from "../../../../model/User";
 import { useSelector } from "react-redux";
 import TermItState from "../../../../model/TermItState";
-import TermIriLink from "../../../term/TermIriLink";
 import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
 import { useI18n } from "../../../hook/useI18n";
 import "./CommentedAssetList.scss";
 import Comment from "../../../../model/Comment";
 import { FaRegBell } from "react-icons/fa";
+import TermLink from "../../../term/TermLink";
+import { langString } from "../../../../model/MultilingualString";
 
 export const DISPLAY_LENGTH_THRESHOLD = 65;
 export const ELLIPSIS = "...";
@@ -97,7 +98,14 @@ export const CommentedAssetList: React.FC<{
                 title={i18n("dashboard.widget.assetList.new.tooltip")}
               />
             )}
-            <TermIriLink iri={commentedAsset.iri!} activeTab="comments.title" />
+            <TermLink
+              term={{
+                iri: commentedAsset.iri,
+                label: langString(commentedAsset.label),
+                vocabulary: commentedAsset.vocabulary,
+              }}
+              activeTab="comments.title"
+            />
             <br />
             {commentedAsset.myLastComment ? (
               <>
