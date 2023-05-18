@@ -12,6 +12,7 @@ import Comment from "../../../../model/Comment";
 import { FaRegBell } from "react-icons/fa";
 import TermLink from "../../../term/TermLink";
 import { langString } from "../../../../model/MultilingualString";
+import VocabularyUtils from "../../../../util/VocabularyUtils";
 
 export const DISPLAY_LENGTH_THRESHOLD = 65;
 export const ELLIPSIS = "...";
@@ -38,6 +39,25 @@ function shouldHighlight(
       : item.lastComment.created!
   );
   return lastSeen < modified && userUri !== item.lastComment.author?.iri;
+}
+
+function renderLink(
+  item: RecentlyCommentedAsset,
+  i18n: (messageId: string) => string
+) {
+  if (item.types.indexOf(VocabularyUtils.IS_FORBIDDEN) !== -1) {
+    return <span title={i18n("auth.view.unauthorized")}>{item.label}</span>;
+  }
+  return (
+    <TermLink
+      term={{
+        iri: item.iri,
+        label: langString(item.label),
+        vocabulary: item.vocabulary,
+      }}
+      activeTab="comments.title"
+    />
+  );
 }
 
 export const CommentedAssetList: React.FC<{
@@ -98,14 +118,7 @@ export const CommentedAssetList: React.FC<{
                 title={i18n("dashboard.widget.assetList.new.tooltip")}
               />
             )}
-            <TermLink
-              term={{
-                iri: commentedAsset.iri,
-                label: langString(commentedAsset.label),
-                vocabulary: commentedAsset.vocabulary,
-              }}
-              activeTab="comments.title"
-            />
+            {renderLink(commentedAsset, i18n)}
             <br />
             {commentedAsset.myLastComment ? (
               <>

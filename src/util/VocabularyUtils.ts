@@ -176,6 +176,7 @@ const VocabularyUtils = {
     "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatelsk\u00e9-role",
 
   IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
+  IS_FORBIDDEN: `${_NS_TERMIT}zak\u00e1zan\u00fd`,
 
   getFragment(iri: string): string {
     return this.create(iri).fragment;

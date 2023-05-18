@@ -12,6 +12,7 @@ import {
 import Comment from "../../../../../model/Comment";
 import VocabularyUtils from "../../../../../util/VocabularyUtils";
 import * as Redux from "react-redux";
+import TermLink from "../../../../term/TermLink";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -67,7 +68,7 @@ describe("CommentedAssetList", () => {
                 iri: Generator.generateUri(),
                 label: "Test",
                 vocabulary: { iri: Generator.generateUri() },
-                type: VocabularyUtils.COMMENT,
+                types: [VocabularyUtils.TERM],
               },
             ]}
             {...intlFunctions()}
@@ -105,7 +106,7 @@ describe("CommentedAssetList", () => {
                 iri: Generator.generateUri(),
                 label: "Test",
                 vocabulary: { iri: Generator.generateUri() },
-                type: VocabularyUtils.COMMENT,
+                types: [VocabularyUtils.TERM],
               },
             ]}
             {...intlFunctions()}
@@ -128,7 +129,7 @@ describe("CommentedAssetList", () => {
                 iri: Generator.generateUri(),
                 label: "Test",
                 vocabulary: { iri: Generator.generateUri() },
-                type: VocabularyUtils.COMMENT,
+                types: [VocabularyUtils.TERM],
               },
             ]}
             {...intlFunctions()}
@@ -137,6 +138,36 @@ describe("CommentedAssetList", () => {
       );
       const renderedContent = wrapper.find(".comment-text").text();
       expect(renderedContent).toEqual(comment.content);
+    });
+
+    it("renders masked label and comment without link to detail when comment view is forbidden", () => {
+      jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+      const forbiddenComment = createComment("*****");
+      const normalComment = createComment("Comment content");
+      const wrapper = mountWithIntl(
+        <MemoryRouter>
+          <CommentedAssetList
+            assets={[
+              {
+                lastComment: forbiddenComment,
+                iri: Generator.generateUri(),
+                label: "*****",
+                vocabulary: { iri: Generator.generateUri() },
+                types: [VocabularyUtils.TERM, VocabularyUtils.IS_FORBIDDEN],
+              },
+              {
+                lastComment: normalComment,
+                iri: Generator.generateUri(),
+                label: "Term term",
+                vocabulary: { iri: Generator.generateUri() },
+                types: [VocabularyUtils.TERM],
+              },
+            ]}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      );
+      expect(wrapper.find(TermLink).length).toEqual(1);
     });
   });
 });

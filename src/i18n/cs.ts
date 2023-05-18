@@ -770,6 +770,7 @@ const cs = {
     "snapshot.label.short": "revize z",
 
     "auth.action.unauthorized": "K této akci nemáte dostatečná práva.",
+    "auth.view.unauthorized": "K zobrazení nemáte dostatečná práva.",
     "auth.notEditable.message.readOnly": "Tento { type } je pouze pro čtení.",
   },
 };

@@ -759,6 +759,7 @@ const en = {
     "snapshot.label.short": "snapshot from",
 
     "auth.action.unauthorized": "You have insufficient rights for this action.",
+    "auth.view.unauthorized": "You have insufficient rights to view this.",
     "auth.notEditable.message.readOnly": "This { type } is read only.",
   },
 };
