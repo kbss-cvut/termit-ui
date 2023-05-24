@@ -154,6 +154,8 @@ const en = {
     "administration.users.action.changerole": "Change role",
     "administration.users.roles.edit.title": 'Role of the user "{name}"',
     "administration.users.role": "Role",
+    "administration.users.role.managedAssetsNotEmpty":
+      "Selected user manages the following vocabularies. Before restricting their role, you have to revoke their managing access.",
     "administration.users.create": "Create user",
     "administration.users.create.tooltip": "Allows to create new user account",
     "administration.users.create.title": "New user",
