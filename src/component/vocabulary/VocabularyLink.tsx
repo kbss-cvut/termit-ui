@@ -6,6 +6,7 @@ import { useI18n } from "../hook/useI18n";
 interface VocabularyLinkProps {
   vocabulary: Vocabulary;
   id?: string;
+  className?: string;
 }
 
 const VocabularyLink = (props: VocabularyLinkProps) => {
@@ -20,6 +21,7 @@ const VocabularyLink = (props: VocabularyLinkProps) => {
       asset={props.vocabulary}
       path={path}
       tooltip={i18n("asset.link.tooltip")}
+      className={props.className}
     />
   );
 };

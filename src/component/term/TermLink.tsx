@@ -14,6 +14,7 @@ import { useI18n } from "../hook/useI18n";
 interface TermLinkProps {
   term: Term | TermInfo;
   id?: string;
+  className?: string;
   language?: string;
   activeTab?: string;
 }
@@ -59,6 +60,7 @@ export const TermLink: React.FC<TermLinkProps> = (props) => {
       asset={t}
       path={path}
       tooltip={i18n("asset.link.tooltip")}
+      className={props.className}
     />
   );
 };

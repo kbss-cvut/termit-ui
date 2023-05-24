@@ -9,6 +9,7 @@ import * as Redux from "react-redux";
 import { langString } from "../../../../model/MultilingualString";
 import RdfsResource from "../../../../model/RdfsResource";
 import { act } from "react-dom/test-utils";
+import { MemoryRouter } from "react-router";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -55,12 +56,14 @@ describe("UserRolesEdit", () => {
     jest.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
     user.types.push(VocabularyUtils.USER_EDITOR);
     const wrapper = mountWithIntlAttached(
-      <UserRolesEdit
-        user={user}
-        open={true}
-        onCancel={onCancel}
-        onSubmit={onSubmit}
-      />
+      <MemoryRouter>
+        <UserRolesEdit
+          user={user}
+          open={true}
+          onCancel={onCancel}
+          onSubmit={onSubmit}
+        />
+      </MemoryRouter>
     );
     expect(
       wrapper.find("button#role-edit-submit").prop("disabled")
