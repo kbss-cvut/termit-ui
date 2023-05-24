@@ -163,6 +163,8 @@ const cs = {
     "administration.users.action.changerole": "Změnit roli",
     "administration.users.roles.edit.title": 'Role uživatele "{name}"',
     "administration.users.role": "Role",
+    "administration.users.role.managedAssetsNotEmpty":
+      "Uživatel je správcem následujících slovníků. Než budete moci omezit jeho roli, je třeba mu správcovství odebrat.",
     "administration.users.create": "Přidat uživatele",
     "administration.users.create.tooltip":
       "Umožňuje vytvořit nový uživatelský účet",
