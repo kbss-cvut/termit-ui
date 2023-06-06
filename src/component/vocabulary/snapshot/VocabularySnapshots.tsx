@@ -19,8 +19,7 @@ import SnapshotsTable from "../../snapshot/SnapshotsTable";
 import RemoveSnapshotDialog from "./RemoveSnapshotDialog";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
-import { IfAuthorized } from "react-authorization";
-import AccessLevel, { hasAccess } from "../../../model/acl/AccessLevel";
+import IfUserIsAdmin from "../../authorization/IfUserIsAdmin";
 
 interface VocabularySnapshotsProps {
   asset: Vocabulary;
@@ -102,12 +101,7 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
                 {i18n("snapshots.show")}
               </Link>
               {
-                <IfAuthorized
-                  isAuthorized={hasAccess(
-                    AccessLevel.SECURITY,
-                    asset.accessLevel
-                  )}
-                >
+                <IfUserIsAdmin>
                   <Button
                     size="sm"
                     color="outline-danger"
@@ -115,7 +109,7 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
                   >
                     {i18n("remove")}
                   </Button>
-                </IfAuthorized>
+                </IfUserIsAdmin>
               }
             </>
           );

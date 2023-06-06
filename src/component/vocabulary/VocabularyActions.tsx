@@ -12,6 +12,7 @@ import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
+import IfUserIsAdmin from "../authorization/IfUserIsAdmin";
 
 interface VocabularyActionsProps {
   vocabulary: Vocabulary;
@@ -87,11 +88,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               {i18n("file.metadata.startTextAnalysis.text")}
             </DropdownItem>
           </IfVocabularyActionAuthorized>
-          <IfVocabularyActionAuthorized
-            requiredAccessLevel={AccessLevel.SECURITY}
-            key="vocabulary-snapshot"
-            vocabulary={vocabulary}
-          >
+          <IfUserIsAdmin key="vocabulary-snapshot">
             <DropdownItem
               name="vocabulary-snapshot"
               className="btn-sm"
@@ -101,7 +98,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               <FaCamera className="mr-1 align-text-top" />
               {i18n("vocabulary.snapshot.create.label")}
             </DropdownItem>
-          </IfVocabularyActionAuthorized>
+          </IfUserIsAdmin>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
     </>
