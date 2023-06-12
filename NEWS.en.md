@@ -1,3 +1,10 @@
+#### Version 2.17.0
+
+- Added support for user groups.
+- Implemented vocabulary access control based on users, user groups, and user roles.
+- OpenAPI REST API documentation now available for each deployment.
+- Bug fixes.
+
 #### Version 2.16.3
 
 - Bug fixes.
