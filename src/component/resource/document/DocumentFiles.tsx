@@ -19,9 +19,12 @@ import ModifyFile from "./ModifyFile";
 import FileContentActions from "./FileContentActions";
 import { DateTime } from "luxon";
 import Constants from "../../../util/Constants";
+import AccessLevel, { hasAccess } from "../../../model/acl/AccessLevel";
+import { IfAuthorized } from "react-authorization";
 
 interface DocumentFilesProps {
   document: Document;
+  accessLevel: AccessLevel;
   onFileRemoved: () => void;
   onFileRenamed: () => void;
   onFileAdded: () => void;
@@ -35,6 +38,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     onFileRemoved,
     onFileRenamed,
     onFileReupload,
+    accessLevel,
   } = props;
   const dispatch: ThunkDispatch = useDispatch();
 
@@ -89,7 +93,14 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
   return (
     <Files
       files={document.files}
-      actions={[<AddFile key="add-file" performAction={createFile} />]}
+      actions={[
+        <IfAuthorized
+          isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+          key="add-file"
+        >
+          <AddFile performAction={createFile} />
+        </IfAuthorized>,
+      ]}
       itemActions={(file: TermItFile) => [
         <FileContentActions
           key="file-content-actions"
@@ -97,18 +108,26 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
           onDownload={downloadFile}
           onDownloadOriginal={downloadOriginal}
         />,
-        <ModifyFile
+        <IfAuthorized
+          isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
           key="rename-file"
-          file={file}
-          performRename={renameFile}
-          performFileUpdate={reuploadFile}
-        />,
-        <RemoveFile
+        >
+          <ModifyFile
+            file={file}
+            performRename={renameFile}
+            performFileUpdate={reuploadFile}
+          />
+        </IfAuthorized>,
+        <IfAuthorized
+          isAuthorized={hasAccess(AccessLevel.SECURITY, accessLevel)}
           key="remove-file"
-          file={file}
-          performAction={deleteFile.bind(this, file)}
-          withConfirmation={true}
-        />,
+        >
+          <RemoveFile
+            file={file}
+            performAction={deleteFile.bind(this, file)}
+            withConfirmation={true}
+          />
+        </IfAuthorized>,
       ]}
     />
   );

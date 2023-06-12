@@ -2,6 +2,7 @@ import Vocabulary, { VocabularyData } from "../Vocabulary";
 import Document from "../Document";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
+import AccessLevel from "../acl/AccessLevel";
 
 describe("Vocabulary", () => {
   let data: VocabularyData;
@@ -139,6 +140,14 @@ describe("Vocabulary", () => {
       expect(json).toBeDefined();
       expect(result.document!.vocabulary).not.toEqual(sut);
     });
+
+    it("removes accessLevel attribute", () => {
+      const sut = new Vocabulary(
+        Object.assign({}, data, { accessLevel: AccessLevel.WRITE })
+      );
+      const result = sut.toJsonLd();
+      expect(result.accessLevel).not.toBeDefined();
+    });
   });
 
   describe("isSnapshot", () => {
@@ -166,6 +175,24 @@ describe("Vocabulary", () => {
       sut.types = [VocabularyUtils.VOCABULARY_SNAPSHOT];
 
       expect(sut.snapshotOf()).toEqual(currentIri);
+    });
+  });
+
+  describe("isEditable", () => {
+    it("returns false when vocabulary is a snapshot", () => {
+      const sut = Generator.generateVocabulary();
+      sut.types = [VocabularyUtils.VOCABULARY_SNAPSHOT];
+      expect(sut.isEditable()).toBeFalsy();
+    });
+
+    it("returns false when vocabulary has read only type", () => {
+      const sut = Generator.generateVocabulary();
+      sut.types = [VocabularyUtils.IS_READ_ONLY];
+      expect(sut.isEditable()).toBeFalsy();
+    });
+
+    it("returns true for regular vocabulary", () => {
+      expect(Generator.generateVocabulary().isEditable()).toBeTruthy();
     });
   });
 });

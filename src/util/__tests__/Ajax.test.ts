@@ -122,6 +122,15 @@ describe("Ajax", () => {
       });
     });
 
+    it("inserts default forbidden message id into error data after receiving status 403 Forbidden", () => {
+      jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
+      mock.onGet("/users/current").reply(Constants.STATUS_FORBIDDEN);
+      return sut.get("/users/current").catch((data: ErrorData) => {
+        expect(data.status).toEqual(Constants.STATUS_FORBIDDEN);
+        expect(data.messageId).toEqual("auth.action.unauthorized");
+      });
+    });
+
     it("returns connection error object when network error occurs", () => {
       mock.onAny().networkError();
       return sut.get("/users/current").catch((error) => {

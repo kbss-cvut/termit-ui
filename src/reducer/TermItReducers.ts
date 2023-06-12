@@ -625,6 +625,21 @@ function users(state: User[] = [], action: AsyncActionSuccess<User[]>) {
   }
 }
 
+function accessLevels(
+  state: { [key: string]: RdfsResource } = {},
+  action: AsyncActionSuccess<RdfsResource[]>
+) {
+  if (
+    action.type === ActionType.LOAD_ACCESS_LEVELS &&
+    action.status === AsyncActionStatus.SUCCESS
+  ) {
+    const newState = {};
+    action.payload.forEach((r) => (newState[r.iri] = r));
+    return newState;
+  }
+  return state;
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -658,6 +673,7 @@ const rootReducer = combineReducers<TermItState>({
   definitionallyRelatedTerms,
   breadcrumbs,
   users,
+  accessLevels,
 });
 
 export default rootReducer;

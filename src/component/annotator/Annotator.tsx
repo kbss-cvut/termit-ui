@@ -26,16 +26,18 @@ import { injectIntl } from "react-intl";
 import WindowTitle from "../misc/WindowTitle";
 import TermDefinitionEdit from "./TermDefinitionEdit";
 import { updateTerm } from "../../action/AsyncActions";
-import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import TermItState from "../../model/TermItState";
 import User from "../../model/User";
 import "./Annotator.scss";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import { Card, CardBody } from "reactstrap";
-import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
 import File from "../../model/File";
 import TextAnalysisInvocationButton from "./TextAnalysisInvocationButton";
 import classNames from "classnames";
+import VocabularyLink from "../vocabulary/VocabularyLink";
+import Vocabulary from "../../model/Vocabulary";
+import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
+import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -44,6 +46,7 @@ interface AnnotatorProps extends HasI18n {
   scrollTo?: TextQuoteSelector; // Selector of an annotation to scroll to (and highlight) after rendering
   user: User;
   file: File;
+  vocabulary: Vocabulary;
 
   onUpdate(newHtml: string): void;
 
@@ -382,11 +385,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
   };
 
   private handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (
-      Utils.sanitizeArray(this.props.user.types).indexOf(
-        VocabularyUtils.USER_RESTRICTED
-      ) !== -1
-    ) {
+    if (!hasAccess(AccessLevel.WRITE, this.props.vocabulary.accessLevel)) {
+      // Insufficient access level
       return;
     }
     if (this.containerElement.current) {
@@ -509,7 +509,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             "annotator-header-scrolled": window.pageYOffset > 0,
           })}
           actions={[
-            <IfUserIsEditor key="text-analysis-button">
+            <IfVocabularyActionAuthorized
+              key="text-analysis-button"
+              vocabulary={this.props.vocabulary}
+              requiredAccessLevel={AccessLevel.WRITE}
+            >
               <TextAnalysisInvocationButton
                 className="annotator-action-button"
                 fileIri={this.props.fileIri}
@@ -517,7 +521,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                   this.props.vocabularyIri
                 )}
               />
-            </IfUserIsEditor>,
+            </IfVocabularyActionAuthorized>,
             <LegendToggle key="legend-toggle" />,
           ]}
         />
@@ -556,6 +560,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 content={this.state.internalHtml}
                 prefixMap={this.state.prefixMap}
                 stickyAnnotationId={this.state.stickyAnnotationId}
+                accessLevel={
+                  this.props.vocabulary.accessLevel || AccessLevel.NONE
+                }
                 onCreateTerm={this.onCreateTerm}
                 onUpdate={this.onAnnotationTermSelected}
                 onRemove={this.onRemove}
@@ -573,7 +580,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       <>
         {this.props.file.getLabel()}
         <div className="small italics">
-          <VocabularyIriLink iri={IRIImpl.toString(this.props.vocabularyIri)} />
+          <VocabularyLink vocabulary={this.props.vocabulary} />
         </div>
       </>
     );
@@ -644,6 +651,7 @@ export default connect(
   (state: TermItState) => ({
     user: state.user,
     file: state.selectedFile,
+    vocabulary: state.vocabulary,
   }),
   (dispatch: ThunkDispatch) => {
     return {

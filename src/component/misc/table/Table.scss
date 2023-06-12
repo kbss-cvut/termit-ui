@@ -3,7 +3,6 @@
 }
 
 .table-row-actions {
-  text-align: center;
   @media screen and (min-width: 1280px) {
     width: 18rem;
     & > button {
@@ -17,10 +16,20 @@
 
   @media screen and (max-width: 1280px) {
     width: 7.25rem;
+
+    & > button:not(:last-child) {
+      margin-right: 0;
+    }
+    & > .btn + .btn {
+      margin-left: 0;
+    }
   }
 
   & > button {
     margin-top: 0.125rem;
     margin-bottom: 0.125rem;
+  }
+  & > .btn:nth-child(3) {
+    margin-left: 0;
   }
 }

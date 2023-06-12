@@ -1,6 +1,5 @@
 import { useI18n } from "../../hook/useI18n";
 import { useState } from "react";
-import IfUserIsEditor from "../../authorization/IfUserIsEditor";
 import { Button } from "reactstrap";
 import { GoPencil } from "react-icons/go";
 import TermItFile from "../../../model/File";
@@ -31,7 +30,7 @@ export const ModifyFile = (props: ModifyFileProps) => {
       .then(toggle);
   };
   return (
-    <IfUserIsEditor>
+    <>
       <ModifyFileDialog
         onCancel={toggle}
         onSubmit={performAction}
@@ -42,7 +41,7 @@ export const ModifyFile = (props: ModifyFileProps) => {
         <GoPencil className="mr-1" />
         {i18n("edit")}
       </Button>
-    </IfUserIsEditor>
+    </>
   );
 };
 

@@ -14,11 +14,13 @@ import HtmlParserUtils from "./HtmlParserUtils";
 import Annotation from "./Annotation";
 import HtmlDomUtils from "./HtmlDomUtils";
 import Utils from "../../util/Utils";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 interface AnnotatorContentProps {
   prefixMap: Map<string, string>;
   stickyAnnotationId: string;
   content: DomHandlerNode[];
+  accessLevel: AccessLevel; // The level of access rights the current user has
 
   onRemove: (annotationId: string | string[]) => void;
   onUpdate: (annotationSpan: AnnotationSpanProps, term: Term | null) => void;
@@ -51,6 +53,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onUpdate,
     onResetSticky,
     onCreateTerm,
+    accessLevel,
   } = props;
 
   // Using memoization to skip processing and re-rendering of the content DOM in case it hasn't changed
@@ -94,6 +97,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
               onCreateTerm={onCreateTerm}
               sticky={sticky}
               text={HtmlDomUtils.getTextContent(node)}
+              accessLevel={accessLevel}
               {...attribs}
             >
               {children}
@@ -122,6 +126,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onUpdate,
     onResetSticky,
     onCreateTerm,
+    accessLevel,
   ]);
 
   return (

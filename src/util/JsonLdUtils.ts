@@ -134,4 +134,15 @@ export default class JsonLdUtils {
   public static generateBlankNodeId(): string {
     return "_:" + Math.random().toString(36).substring(8);
   }
+
+  /**
+   * JSON-LD term definition with type "@id".
+   * @param property Property identifier
+   */
+  public static idContext(property: string) {
+    return {
+      "@id": property,
+      "@type": "@id",
+    };
+  }
 }

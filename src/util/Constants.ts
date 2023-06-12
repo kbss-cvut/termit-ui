@@ -68,6 +68,7 @@ const constants = {
   MULTIPART_FORM_DATA: "multipart/form-data",
   // HTTP response status 401 Unauthorized
   STATUS_UNAUTHORIZED: 401,
+  STATUS_FORBIDDEN: 403,
   // HTTP response status 409 Conflict
   STATUS_CONFLICT: 409,
   // Axios uses lower case for header names

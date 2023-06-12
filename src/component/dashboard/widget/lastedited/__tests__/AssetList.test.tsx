@@ -9,6 +9,7 @@ import { intlFunctions } from "../../../../../__tests__/environment/IntlUtil";
 import { Label } from "reactstrap";
 import RecentlyModifiedAsset from "../../../../../model/RecentlyModifiedAsset";
 import * as Redux from "react-redux";
+import TermLink from "../../../../term/TermLink";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -94,7 +95,7 @@ describe("AssetList", () => {
     jest.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <AssetList assets={assets} {...intlFunctions()} />
+        <AssetList assets={assets} />
       </MemoryRouter>
     );
     return Promise.resolve().then(() => {
@@ -113,5 +114,33 @@ describe("AssetList", () => {
   it("renders an asset with user name if the author is not the currently logged user", () => {
     const author = Generator.generateUser();
     renderTermInList(author, author.fullName);
+  });
+
+  it("renders masked label without link when asset view is forbidden", () => {
+    const assets = [
+      new RecentlyModifiedAsset({
+        iri: Generator.generateUri(),
+        label: "Term",
+        types: [VocabularyUtils.TERM],
+        vocabulary: { iri: Generator.generateUri() },
+        editor: user,
+        modified: new Date().toISOString(),
+      }),
+      new RecentlyModifiedAsset({
+        iri: Generator.generateUri(),
+        label: "*****",
+        types: [VocabularyUtils.TERM, VocabularyUtils.IS_FORBIDDEN],
+        vocabulary: { iri: Generator.generateUri() },
+        editor: user,
+        modified: new Date().toISOString(),
+      }),
+    ];
+    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    const wrapper = mountWithIntl(
+      <MemoryRouter>
+        <AssetList assets={assets} />
+      </MemoryRouter>
+    );
+    expect(wrapper.find(TermLink).length).toEqual(1);
   });
 });

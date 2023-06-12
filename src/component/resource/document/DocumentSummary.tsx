@@ -6,15 +6,18 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import { loadResource } from "../../../action/AsyncActions";
 import ResourceMetadata from "../ResourceMetadata";
 import DocumentFiles from "./DocumentFiles";
+import AccessLevel from "../../../model/acl/AccessLevel";
 
 interface DocumentSummaryProps {
   document?: Document;
   onChange: () => void;
+  accessLevel: AccessLevel;
 }
 
 const DocumentSummary: React.FC<DocumentSummaryProps> = ({
   document,
   onChange,
+  accessLevel,
 }) => {
   const dispatch: ThunkDispatch = useDispatch();
   const reload = () =>
@@ -23,9 +26,10 @@ const DocumentSummary: React.FC<DocumentSummaryProps> = ({
     );
   return document ? (
     <div className="metadata-panel">
-      <ResourceMetadata resource={document} inTab={true} />
+      <ResourceMetadata resource={document} />
       <DocumentFiles
         document={document}
+        accessLevel={accessLevel}
         onFileAdded={reload}
         onFileRemoved={reload}
         onFileRenamed={reload}

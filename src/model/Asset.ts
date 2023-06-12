@@ -22,6 +22,10 @@ export interface SupportsJsonLd<T extends any> {
   toJsonLd(): T;
 }
 
+export interface Editable {
+  isEditable(): boolean;
+}
+
 export default abstract class Asset implements AssetData, HasLabel {
   public iri: string;
   public types?: string[];

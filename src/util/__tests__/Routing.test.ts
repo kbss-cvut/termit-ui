@@ -222,5 +222,18 @@ describe("Routing", () => {
         Routing.getTransitionPath(Routes.administration)
       );
     });
+
+    it("resets original target after transition", () => {
+      const originalPath = Routes.administration.path;
+      RoutingInstance.history.location = {
+        hash: originalPath,
+        pathname: originalPath,
+        state: null,
+        search: "",
+      };
+      RoutingInstance.saveOriginalTarget();
+      RoutingInstance.transitionToOriginalTarget();
+      expect(RoutingInstance.originalRoutingTarget).not.toBeDefined();
+    });
   });
 });

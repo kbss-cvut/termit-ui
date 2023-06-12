@@ -10,7 +10,8 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Status from "../../model/TermStatus";
 import DraftBadge from "./DraftBadge";
 import Vocabulary from "../../model/Vocabulary";
-import IfVocabularyEditAuthorized from "../vocabulary/authorization/IfVocabularyEditAuthorized";
+import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 interface TermStatusProps {
   term: Term;
@@ -38,8 +39,9 @@ const TermStatus: React.FC<TermStatusProps> = ({ term, vocabulary }) => {
         </Label>
       </Col>
       <Col xl={10} md={8}>
-        <IfVocabularyEditAuthorized
+        <IfVocabularyActionAuthorized
           vocabulary={vocabulary}
+          requiredAccessLevel={AccessLevel.WRITE}
           unauthorized={<DraftBadge isDraft={isDraft} />}
         >
           <DraftToggle
@@ -47,7 +49,7 @@ const TermStatus: React.FC<TermStatusProps> = ({ term, vocabulary }) => {
             draft={isDraft}
             onToggle={onToggle}
           />
-        </IfVocabularyEditAuthorized>
+        </IfVocabularyActionAuthorized>
       </Col>
     </>
   );

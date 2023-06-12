@@ -36,7 +36,6 @@ import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { createVocabularySnapshot } from "../../action/AsyncVocabularyActions";
 import { trackPromise } from "react-promise-tracker";
 import VocabularyReadOnlyIcon from "./authorization/VocabularyReadOnlyIcon";
-import IfVocabularyEditAuthorized from "./authorization/IfVocabularyEditAuthorized";
 import { Configuration } from "../../model/Configuration";
 import VocabularySnapshotIcon from "./snapshot/VocabularySnapshotIcon";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
@@ -45,6 +44,8 @@ import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
 import Resource from "../../model/Resource";
 import Document, { DocumentData } from "../../model/Document";
 import NothingIfEmptyAsset from "../asset/NothingIfEmptyAsset";
+import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -174,7 +175,8 @@ export class VocabularySummary extends EditableComponent<
     const buttons = [];
     if (!this.state.edit) {
       buttons.push(
-        <IfVocabularyEditAuthorized
+        <IfVocabularyActionAuthorized
+          requiredAccessLevel={AccessLevel.WRITE}
           key="vocabulary-summary-edit"
           vocabulary={vocabulary}
         >
@@ -189,11 +191,12 @@ export class VocabularySummary extends EditableComponent<
             <GoPencil />
             &nbsp;{i18n("edit")}
           </Button>
-        </IfVocabularyEditAuthorized>
+        </IfVocabularyActionAuthorized>
       );
     }
     buttons.push(
-      <IfVocabularyEditAuthorized
+      <IfVocabularyActionAuthorized
+        requiredAccessLevel={AccessLevel.SECURITY}
         key="vocabulary-summary-remove"
         vocabulary={vocabulary}
       >
@@ -208,7 +211,7 @@ export class VocabularySummary extends EditableComponent<
           <FaTrashAlt />
           &nbsp;{i18n("remove")}
         </Button>
-      </IfVocabularyEditAuthorized>
+      </IfVocabularyActionAuthorized>
     );
     buttons.push(
       <VocabularyActions

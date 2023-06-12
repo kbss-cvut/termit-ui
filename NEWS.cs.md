@@ -1,3 +1,10 @@
+#### Verze 2.17.0
+
+- Přidána správa uživatelských skupin.
+- Implementována podpora řízení přístupu ke slovníkům pro uživatele, skupiny a role.
+- OpenAPI dokumentace REST API nyní součástí instance.
+- Opravy chyb.
+
 #### Verze 2.16.3
 
 - Opravy chyb.
