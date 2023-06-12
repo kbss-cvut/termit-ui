@@ -3,7 +3,6 @@ import { Button } from "reactstrap";
 import File from "../../../model/File";
 import RemoveAssetDialog from "../../asset/RemoveAssetDialog";
 import { FaTrashAlt } from "react-icons/fa";
-import IfUserIsEditor from "../../authorization/IfUserIsEditor";
 import { useI18n } from "../../hook/useI18n";
 
 interface RemoveFileProps {
@@ -22,7 +21,7 @@ export const RemoveFile = (props: RemoveFileProps) => {
   };
 
   return (
-    <IfUserIsEditor>
+    <>
       <RemoveAssetDialog
         onCancel={toggle}
         onSubmit={performAction}
@@ -38,7 +37,7 @@ export const RemoveFile = (props: RemoveFileProps) => {
         <FaTrashAlt className="mr-1" />
         {i18n("remove")}
       </Button>
-    </IfUserIsEditor>
+    </>
   );
 };
 

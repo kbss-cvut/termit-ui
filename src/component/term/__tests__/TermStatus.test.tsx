@@ -8,6 +8,7 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import DraftToggle from "../DraftToggle";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { Badge } from "reactstrap";
+import AccessLevel from "../../../model/acl/AccessLevel";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -25,9 +26,7 @@ describe("TermStatus", () => {
     "passes correct status to setTermStatus on toggle",
     (expected: Status, draftValue?: boolean) => {
       const vocabulary = Generator.generateVocabulary();
-      const user = Generator.generateUser();
-      user.types.push(VocabularyUtils.USER_EDITOR);
-      (redux.useSelector as jest.Mock).mockReturnValue(user);
+      vocabulary.accessLevel = AccessLevel.WRITE;
       const fakeDispatch = jest.fn().mockResolvedValue({});
       (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
       jest.spyOn(AsyncTermActions, "setTermStatus");
@@ -47,9 +46,7 @@ describe("TermStatus", () => {
 
   it("renders non-editable badge when user has no editing authority", () => {
     const vocabulary = Generator.generateVocabulary();
-    const user = Generator.generateUser();
-    user.types.push(VocabularyUtils.USER_RESTRICTED);
-    (redux.useSelector as jest.Mock).mockReturnValue(user);
+    vocabulary.accessLevel = AccessLevel.READ;
     const fakeDispatch = jest.fn().mockResolvedValue({});
     (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
     const term = Generator.generateTerm(vocabulary.iri);

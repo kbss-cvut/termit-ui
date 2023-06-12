@@ -2,7 +2,7 @@ import { UserData } from "./User";
 import VocabularyUtils from "../util/VocabularyUtils";
 import { CONTEXT as USER_CONTEXT } from "./User";
 import Utils from "../util/Utils";
-import { HasLabel } from "./Asset";
+import { HasLabel, HasTypes } from "./Asset";
 
 const CTX = {
   iri: "@id",
@@ -13,7 +13,7 @@ const CTX = {
 
 export const CONTEXT = Object.assign({}, CTX, USER_CONTEXT);
 
-export interface UserGroupData {
+export interface UserGroupData extends HasTypes {
   iri?: string;
   label: string;
   members?: UserData[];
@@ -23,10 +23,12 @@ export default class UserGroup implements UserGroupData, HasLabel {
   public iri?: string;
   public label: string;
   public members: UserData[];
+  public types?: string[] | string;
 
   constructor(data: UserGroupData) {
     this.iri = data.iri;
     this.label = data.label;
+    this.types = Utils.sanitizeArray(data.types);
     this.members = Utils.sanitizeArray(data.members);
     this.members.sort((a, b) => a.username.localeCompare(b.username));
   }

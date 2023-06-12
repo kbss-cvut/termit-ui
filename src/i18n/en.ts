@@ -154,6 +154,8 @@ const en = {
     "administration.users.action.changerole": "Change role",
     "administration.users.roles.edit.title": 'Role of the user "{name}"',
     "administration.users.role": "Role",
+    "administration.users.role.managedAssetsNotEmpty":
+      "Selected user manages the following vocabularies. Before restricting their role, you have to revoke their managing access.",
     "administration.users.create": "Create user",
     "administration.users.create.tooltip": "Allows to create new user account",
     "administration.users.create.title": "New user",
@@ -279,7 +281,7 @@ const en = {
     "vocabulary.detail.imports": "Imports",
     "vocabulary.detail.imports.edit": "Imports vocabularies",
     "vocabulary.detail.document": "Document",
-    "vocabulary.text-analysis.finished.message":
+    "vocabulary.text-analysis.invoke.message":
       "Text analysis of terms' definitions in this vocabulary invoked.",
     "vocabulary.all.text-analysis.invoke.message":
       "Text analysis of terms' definitions in all vocabularies invoked.",
@@ -309,6 +311,25 @@ const en = {
     "vocabulary.snapshot.create.dialog.confirm": "Create",
     "vocabulary.snapshot.create.success":
       "Vocabulary revision successfully created.",
+    "vocabulary.acl": "Access control",
+    "vocabulary.acl.record.create": "New record",
+    "vocabulary.acl.record.create.title":
+      "Create a new record in this vocabulary's access control list",
+    "vocabulary.acl.record.create.dialog.title":
+      "Create new access control record",
+    "vocabulary.acl.record.save.success":
+      "Access control record successfully saved.",
+    "vocabulary.acl.record.remove.success":
+      "Access control record successfully removed.",
+    "vocabulary.acl.record.holder": "Access holder",
+    "vocabulary.acl.record.level": "Access level",
+    "vocabulary.acl.record.remove.dialog.title":
+      "Remove access control record?",
+    "vocabulary.acl.record.remove.dialog.text":
+      'Are you sure you want to remove access control record for "{holder}"?',
+    "vocabulary.acl.record.update.dialog.title": "Update access control record",
+    "vocabulary.acl.record.update.success":
+      "Access control record successfully updated.",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
@@ -457,7 +478,7 @@ const en = {
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":
       "Number of terms in the vocabulary (excluding imported vocabularies)",
-    "glossary.new": "New Term",
+    "glossary.new": "New term",
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",
     "glossary.excludeImported.help":
@@ -658,6 +679,9 @@ const en = {
     "type.file": "File",
     "type.dataset": "Dataset",
     "type.document.vocabulary": "Document vocabulary",
+    "type.user": "User",
+    "type.usergroup": "User group",
+    "type.userrole": "User role",
 
     "log-viewer.title": "Error log",
     "log-viewer.timestamp": "Timestamp",
@@ -736,8 +760,8 @@ const en = {
       "other {# related snapshots}}.",
     "snapshot.label.short": "snapshot from",
 
-    "auth.notEditable.message.unauthorized":
-      "You have insufficient rights to edit this { type }.",
+    "auth.action.unauthorized": "You have insufficient rights for this action.",
+    "auth.view.unauthorized": "You have insufficient rights to view this.",
     "auth.notEditable.message.readOnly": "This { type } is read only.",
   },
 };

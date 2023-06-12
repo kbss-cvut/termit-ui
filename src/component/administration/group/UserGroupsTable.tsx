@@ -77,7 +77,7 @@ const UserGroupsTable: React.FC<UserGroupsTableProps> = ({
             </Button>
           </>
         ),
-        className: "table-row-actions text-center",
+        className: "table-row-actions",
       },
     ],
     [i18n, onDelete]

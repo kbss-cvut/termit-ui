@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   ButtonToolbar,
@@ -17,6 +17,12 @@ import TermItState from "../../../model/TermItState";
 import { useI18n } from "../../hook/useI18n";
 import Utils from "../../../util/Utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import RdfsResource from "../../../model/RdfsResource";
+import { ThunkDispatch } from "../../../util/Types";
+import { loadManagedAssets } from "../../../action/AsyncUserActions";
+import ManagedAssets from "./ManagedAssets";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
 
 interface UserRolesEditProps {
   user: User;
@@ -32,8 +38,11 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
   const availableRoles = useSelector(
     (state: TermItState) => state.configuration.roles
   );
+  const [managedAssets, setManagedAssets] = useState<RdfsResource[]>([]);
+  const dispatch: ThunkDispatch = useDispatch();
 
   useEffect(() => {
+    setManagedAssets([]);
     if (user != null) {
       const actualRoles = filterActualRoles(user.types, availableRoles).map(
         (r) => r.iri
@@ -54,6 +63,17 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
       {getLocalized(r.label, locale)}
     </option>
   ));
+
+  const onRoleSelect = (role: string) => {
+    setRole(role);
+    if (role === VocabularyUtils.USER_RESTRICTED) {
+      trackPromise(dispatch(loadManagedAssets(user)), "role-edit").then(
+        (assets) => setManagedAssets(assets)
+      );
+    } else {
+      setManagedAssets([]);
+    }
+  };
 
   const save = () =>
     onSubmit(availableRoles.find((r: UserRoleData) => r.iri === role)!);
@@ -78,26 +98,30 @@ const UserRolesEdit = (props: UserRolesEditProps) => {
           })}
         </ModalHeader>
         <ModalBody>
+          <PromiseTrackingMask area="role-edit" />
           <Form>
             <Select
               value={roleObject.iri}
-              onChange={(e: any) => setRole(e.target.value)}
+              onChange={(e: any) => onRoleSelect(e.target.value)}
               placeholder={i18n("select.placeholder")}
               help={description}
             >
               {options}
             </Select>
+            <ManagedAssets managedAssets={managedAssets} />
             <ButtonToolbar className="float-right">
               <Button
+                id="role-edit-submit"
                 color="success"
                 className="users-action-button"
                 size="sm"
-                disabled={!role}
+                disabled={!role || managedAssets.length > 0}
                 onClick={save}
               >
                 {i18n("save")}
               </Button>
               <Button
+                id="role-edit-cancel"
                 color="outline-dark"
                 className="users-action-button"
                 size="sm"

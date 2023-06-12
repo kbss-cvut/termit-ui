@@ -34,6 +34,9 @@ import { AxiosResponse } from "axios";
 import Routing from "../util/Routing";
 import { UserRoleData } from "../model/UserRole";
 import Routes from "../util/Routes";
+import RdfsResource, {
+  CONTEXT as RDFS_RESOURCE_CONTEXT,
+} from "../model/RdfsResource";
 
 const USERS_ENDPOINT = "/users";
 
@@ -76,7 +79,7 @@ export function login(username: string, password: string) {
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.post(
-      "/j_spring_security_check",
+      "/login",
       params({
         username,
         password,
@@ -95,6 +98,18 @@ export function login(username: string, password: string) {
       .then(() =>
         dispatch(publishMessage(createFormattedMessage("message.welcome")))
       )
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function logout() {
+  const action = {
+    type: ActionType.LOGOUT,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post("/logout")
+      .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }
@@ -357,4 +372,33 @@ export function changePassword(user: User) {
     type: ActionType.CHANGE_PASSWORD,
   };
   return updateUser(user, action, "change-password.updated.message");
+}
+
+/**
+ * Loads assets to which the specified user has managing access.
+ */
+export function loadManagedAssets(user: User) {
+  const action = { type: ActionType.LOAD_MANAGED_ASSETS };
+  return (dispatch: ThunkDispatch) => {
+    const iri = VocabularyUtils.create(user.iri);
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${Constants.API_PREFIX}${USERS_ENDPOINT}/${iri.fragment}/managed-assets`,
+      param("namespace", iri.namespace)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResource>(
+          data,
+          RDFS_RESOURCE_CONTEXT
+        )
+      )
+      .then((data: RdfsResource[]) => {
+        dispatch(asyncActionSuccess(action));
+        return Promise.resolve(data);
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return Promise.resolve([]);
+      });
+  };
 }

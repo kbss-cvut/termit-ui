@@ -1,6 +1,6 @@
 import OntologicalVocabulary from "../util/VocabularyUtils";
 import VocabularyUtils from "../util/VocabularyUtils";
-import Asset, { ASSET_CONTEXT, AssetData } from "./Asset";
+import Asset, { ASSET_CONTEXT, AssetData, Editable } from "./Asset";
 import Document, {
   CONTEXT as DOCUMENT_CONTEXT,
   DocumentData,
@@ -9,6 +9,8 @@ import WithUnmappedProperties from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
 import { SupportsSnapshots } from "./Snapshot";
+import JsonLdUtils from "../util/JsonLdUtils";
+import AccessLevel, { strToAccessLevel } from "./acl/AccessLevel";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
@@ -18,6 +20,7 @@ const ctx = {
   glossary: VocabularyUtils.HAS_GLOSSARY,
   model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
+  accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
@@ -34,6 +37,7 @@ const MAPPED_PROPERTIES = [
   "importedVocabularies",
   "allImportedVocabularies",
   "termCount",
+  "accessLevel",
 ];
 
 export interface VocabularyData extends AssetData {
@@ -43,11 +47,12 @@ export interface VocabularyData extends AssetData {
   glossary?: AssetData;
   model?: AssetData;
   importedVocabularies?: AssetData[];
+  accessLevel?: AccessLevel;
 }
 
 export default class Vocabulary
   extends Asset
-  implements VocabularyData, SupportsSnapshots
+  implements Editable, VocabularyData, SupportsSnapshots
 {
   public label: string;
   public comment?: string;
@@ -56,6 +61,7 @@ export default class Vocabulary
   public model?: AssetData;
   public importedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
+  public accessLevel?: AccessLevel;
 
   public termCount?: number;
 
@@ -70,6 +76,9 @@ export default class Vocabulary
     if (data.document) {
       this.document = new Document(data.document);
     }
+    this.accessLevel = data.accessLevel
+      ? strToAccessLevel(data.accessLevel)
+      : undefined;
   }
 
   getLabel(): string {
@@ -82,6 +91,7 @@ export default class Vocabulary
     });
     delete (result as any).allImportedVocabularies;
     delete (result as any).termCount;
+    delete (result as any).accessLevel;
     if (result.document) {
       result.document = this.document?.toJsonLd();
     }
@@ -106,6 +116,10 @@ export default class Vocabulary
     return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
       ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
       : undefined;
+  }
+
+  public isEditable(): boolean {
+    return !this.isSnapshot() && !this.hasType(VocabularyUtils.IS_READ_ONLY);
   }
 
   public get unmappedProperties(): Map<string, string[]> {

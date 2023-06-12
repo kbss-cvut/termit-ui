@@ -6,11 +6,12 @@ import SimplePopupWithActions from "./SimplePopupWithActions";
 import AnnotationTerms from "./AnnotationTerms";
 import TermDefinitionAnnotationView from "./TermDefinitionAnnotationView";
 import { GoPencil } from "react-icons/go";
-import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { removeTermDefinitionSource } from "../../action/AsyncTermActions";
+import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
+import { IfAuthorized } from "react-authorization";
 
 interface TermDefinitionAnnotationProps {
   target: string;
@@ -18,6 +19,7 @@ interface TermDefinitionAnnotationProps {
   resource?: string;
   text: string;
   isOpen: boolean;
+  accessLevel: AccessLevel;
 
   onRemove: () => void;
   onSelectTerm: (term: Term | null) => void;
@@ -34,12 +36,16 @@ interface ButtonHandlers {
 function createActionButtons(
   i18n: (msgId: string) => string,
   editing: boolean,
-  handlers: ButtonHandlers
+  handlers: ButtonHandlers,
+  accessLevel: AccessLevel
 ) {
   const actions = [];
   if (!editing) {
     actions.push(
-      <IfUserIsEditor key="annotation.definition.edit">
+      <IfAuthorized
+        key="annotation.definition.edit"
+        isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+      >
         <Button
           className="m-annotation-definition-edit"
           color="primary"
@@ -49,11 +55,14 @@ function createActionButtons(
         >
           <GoPencil />
         </Button>
-      </IfUserIsEditor>
+      </IfAuthorized>
     );
   }
   actions.push(
-    <IfUserIsEditor key="annotation.definition.remove">
+    <IfAuthorized
+      key="annotation.definition.remove"
+      isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+    >
       <Button
         className="m-annotation-definition-remove"
         color="primary"
@@ -63,7 +72,7 @@ function createActionButtons(
       >
         <TiTrash />
       </Button>
-    </IfUserIsEditor>
+    </IfAuthorized>
   );
   actions.push(
     <Button
@@ -117,11 +126,16 @@ export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> =
         target={props.target}
         toggle={props.onToggleDetailOpen}
         component={bodyContent}
-        actions={createActionButtons(i18n, editing, {
-          onClose: props.onClose,
-          onEdit: () => setEditing(!editing),
-          onRemove,
-        })}
+        actions={createActionButtons(
+          i18n,
+          editing,
+          {
+            onClose: props.onClose,
+            onEdit: () => setEditing(!editing),
+            onRemove,
+          },
+          props.accessLevel
+        )}
         title={i18n("annotation.definition.title")}
       />
     );

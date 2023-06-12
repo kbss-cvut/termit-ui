@@ -5,12 +5,14 @@ import TimeAgo from "javascript-time-ago";
 import User from "../../../../model/User";
 import { useSelector } from "react-redux";
 import TermItState from "../../../../model/TermItState";
-import TermIriLink from "../../../term/TermIriLink";
 import RecentlyCommentedAsset from "../../../../model/RecentlyCommentedAsset";
 import { useI18n } from "../../../hook/useI18n";
 import "./CommentedAssetList.scss";
 import Comment from "../../../../model/Comment";
 import { FaRegBell } from "react-icons/fa";
+import TermLink from "../../../term/TermLink";
+import { langString } from "../../../../model/MultilingualString";
+import VocabularyUtils from "../../../../util/VocabularyUtils";
 
 export const DISPLAY_LENGTH_THRESHOLD = 65;
 export const ELLIPSIS = "...";
@@ -37,6 +39,25 @@ function shouldHighlight(
       : item.lastComment.created!
   );
   return lastSeen < modified && userUri !== item.lastComment.author?.iri;
+}
+
+function renderLink(
+  item: RecentlyCommentedAsset,
+  i18n: (messageId: string) => string
+) {
+  if (item.types.indexOf(VocabularyUtils.IS_FORBIDDEN) !== -1) {
+    return <span title={i18n("auth.view.unauthorized")}>{item.label}</span>;
+  }
+  return (
+    <TermLink
+      term={{
+        iri: item.iri,
+        label: langString(item.label),
+        vocabulary: item.vocabulary,
+      }}
+      activeTab="comments.title"
+    />
+  );
 }
 
 export const CommentedAssetList: React.FC<{
@@ -97,7 +118,7 @@ export const CommentedAssetList: React.FC<{
                 title={i18n("dashboard.widget.assetList.new.tooltip")}
               />
             )}
-            <TermIriLink iri={commentedAsset.iri!} activeTab="comments.title" />
+            {renderLink(commentedAsset, i18n)}
             <br />
             {commentedAsset.myLastComment ? (
               <>

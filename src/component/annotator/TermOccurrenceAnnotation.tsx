@@ -8,8 +8,9 @@ import { AnnotationOrigin } from "./Annotation";
 import SimplePopupWithActions from "./SimplePopupWithActions";
 import TermOccurrenceAnnotationView from "./TermOccurrenceAnnotationView";
 import { GoPencil } from "react-icons/go";
-import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
+import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
+import { IfAuthorized } from "react-authorization";
 
 interface TermOccurrenceAnnotationProps {
   target: string;
@@ -20,6 +21,7 @@ interface TermOccurrenceAnnotationProps {
   annotationClass: string;
   annotationOrigin: string;
   isOpen: boolean;
+  accessLevel: AccessLevel;
 
   onRemove: () => void;
   onSelectTerm: (term: Term | null) => void;
@@ -32,13 +34,17 @@ function createActionButtons(
   props: TermOccurrenceAnnotationProps,
   i18n: (msgId: string) => string,
   editing: boolean,
-  onEdit: () => void
+  onEdit: () => void,
+  accessLevel: AccessLevel
 ) {
   const actions = [];
   const t = props.term ? props.term : null;
   if (props.annotationOrigin === AnnotationOrigin.PROPOSED && t !== null) {
     actions.push(
-      <IfUserIsEditor key="annotation.confirm">
+      <IfAuthorized
+        key="annotation.confirm"
+        isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+      >
         <Button
           color="primary"
           title={i18n("annotation.confirm")}
@@ -47,12 +53,15 @@ function createActionButtons(
         >
           <FaCheck />
         </Button>
-      </IfUserIsEditor>
+      </IfAuthorized>
     );
   }
   if (!editing) {
     actions.push(
-      <IfUserIsEditor key="annotation.edit">
+      <IfAuthorized
+        key="annotation.edit"
+        isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+      >
         <Button
           color="primary"
           title={i18n("annotation.edit")}
@@ -61,11 +70,14 @@ function createActionButtons(
         >
           <GoPencil />
         </Button>
-      </IfUserIsEditor>
+      </IfAuthorized>
     );
   }
   actions.push(
-    <IfUserIsEditor key="annotation.remove">
+    <IfAuthorized
+      key="annotation.remove"
+      isAuthorized={hasAccess(AccessLevel.WRITE, accessLevel)}
+    >
       <Button
         color="primary"
         title={i18n("annotation.remove")}
@@ -74,7 +86,7 @@ function createActionButtons(
       >
         <TiTrash />
       </Button>
-    </IfUserIsEditor>
+    </IfAuthorized>
   );
   actions.push(
     <Button
@@ -132,7 +144,8 @@ export const TermOccurrenceAnnotation: React.FC<TermOccurrenceAnnotationProps> =
           }),
           i18n,
           editing,
-          () => setEditing(!editing)
+          () => setEditing(!editing),
+          props.accessLevel
         )}
         title={i18n("annotation.occurrence.title")}
       />

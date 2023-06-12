@@ -754,7 +754,7 @@ export function executeTextAnalysisOnAllTerms(vocabularyIri: IRI) {
           publishMessage(
             new Message(
               {
-                messageId: "vocabulary.text-analysis.finished.message",
+                messageId: "vocabulary.text-analysis.invoke.message",
               },
               MessageType.SUCCESS
             )

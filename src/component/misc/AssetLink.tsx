@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import OutgoingLink from "./OutgoingLink";
+import classNames from "classnames";
 
 interface AssetType {
   iri: string;
@@ -12,51 +13,40 @@ interface AssetLinkProps<T extends AssetType> {
   path: string;
   tooltip?: string;
   id?: string;
+  className?: string;
 }
 
-interface AssetLinkState {
-  showLink: boolean;
-}
+const AssetLink: React.FC<AssetLinkProps<AssetType>> = ({
+  asset,
+  path,
+  tooltip,
+  id,
+  className,
+}) => {
+  const [showLink, setShowLink] = React.useState(false);
+  return (
+    <span
+      className="m-asset-link-wrapper"
+      onMouseOut={() => setShowLink(false)}
+      onMouseOver={() => setShowLink(true)}
+    >
+      <OutgoingLink
+        label={
+          <Link
+            id={id}
+            title={tooltip ? tooltip : undefined}
+            to={path}
+            className={className}
+          >
+            {asset.label}
+          </Link>
+        }
+        iri={asset.iri}
+        showLink={showLink}
+        className={classNames("m-asset-link", className)}
+      />
+    </span>
+  );
+};
 
-export default class AssetLink<T extends AssetType> extends React.Component<
-  AssetLinkProps<T>,
-  AssetLinkState
-> {
-  constructor(props: AssetLinkProps<T>) {
-    super(props);
-    this.state = { showLink: false };
-  }
-
-  private setVisible() {
-    this.setState({ showLink: true });
-  }
-
-  private setInvisible() {
-    this.setState({ showLink: false });
-  }
-
-  public render() {
-    const props = this.props;
-    const setInvisible = this.setInvisible.bind(this);
-    const setVisible = this.setVisible.bind(this);
-
-    return (
-      <span onMouseOut={setInvisible} onMouseOver={setVisible}>
-        <OutgoingLink
-          label={
-            <Link
-              id={this.props.id}
-              title={this.props.tooltip ? this.props.tooltip : undefined}
-              to={props.path}
-            >
-              {props.asset.label}
-            </Link>
-          }
-          iri={props.asset.iri}
-          showLink={this.state.showLink}
-          className="m-asset-link"
-        />
-      </span>
-    );
-  }
-}
+export default AssetLink;

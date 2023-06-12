@@ -15,7 +15,7 @@ interface AssetLabelState {
 }
 
 /**
- * Retrieves and renders label (RDFS:label) of an assert with the specified IRI.
+ * Retrieves and renders label (RDFS:label) of an asset with the specified IRI.
  *
  * If the label cannot be retrieved, the IRI is returned instead.
  *

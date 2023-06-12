@@ -9,6 +9,7 @@ import RecentlyModifiedAsset from "../../../../model/RecentlyModifiedAsset";
 import AssetFactory from "../../../../util/AssetFactory";
 import { useI18n } from "../../../hook/useI18n";
 import { FaRegBell } from "react-icons/fa";
+import VocabularyUtils from "../../../../util/VocabularyUtils";
 
 function shouldHighlight(
   lastSeen: number,
@@ -17,6 +18,16 @@ function shouldHighlight(
 ) {
   const modifiedTimestamp = Date.parse(item.modified!);
   return lastSeen < modifiedTimestamp && userUri !== item.editor.iri;
+}
+
+function renderLink(
+  item: RecentlyModifiedAsset,
+  i18n: (msgId: string) => string
+) {
+  if (item.types.indexOf(VocabularyUtils.IS_FORBIDDEN) !== -1) {
+    return <span title={i18n("auth.view.unauthorized")}>{item.label}</span>;
+  }
+  return AssetLinkFactory.createAssetLink(AssetFactory.createAsset(item));
 }
 
 export const AssetList: React.FC<{ assets: RecentlyModifiedAsset[] | null }> =
@@ -49,9 +60,7 @@ export const AssetList: React.FC<{ assets: RecentlyModifiedAsset[] | null }> =
                       <span className="pr-2">
                         <AssetBadge asset={asset} />
                       </span>
-                      {AssetLinkFactory.createAssetLink(
-                        AssetFactory.createAsset(asset)
-                      )}
+                      {renderLink(asset, i18n)}
                     </div>
                     <Row>
                       <Col xs={12}>

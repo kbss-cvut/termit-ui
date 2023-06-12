@@ -119,6 +119,7 @@ export class Routing {
   public transitionToOriginalTarget = () => {
     if (this.originalTarget) {
       this.mHistory.push(this.originalTarget);
+      this.originalTarget = undefined;
     } else {
       this.transitionTo(Constants.HOME_ROUTE);
     }

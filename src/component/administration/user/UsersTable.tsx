@@ -87,7 +87,7 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
             changeRole={changeRole}
           />
         ),
-        className: "align-middle table-row-actions text-center",
+        className: "align-middle table-row-actions",
       },
     ],
     [i18n, disable, enable, unlock, changeRole, currentUser]

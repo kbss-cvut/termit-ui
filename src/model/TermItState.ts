@@ -57,6 +57,7 @@ export default class TermItState {
   public configuration: Configuration;
   public validationResults: { [vocabularyIri: string]: ConsolidatedResults };
   public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
+  public accessLevels: { [key: string]: RdfsResource };
   public breadcrumbs: Breadcrumb[];
 
   // Administration
@@ -95,6 +96,7 @@ export default class TermItState {
     this.definitionallyRelatedTerms = { targeting: [], of: [] };
     this.breadcrumbs = [];
     this.users = [];
+    this.accessLevels = {};
   }
 
   /**

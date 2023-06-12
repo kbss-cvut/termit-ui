@@ -218,9 +218,18 @@ export class Ajax {
           });
         } else {
           return Promise.reject(
-            Object.assign({}, response.data, {
-              status: response.status,
-            })
+            Object.assign(
+              {
+                messageId:
+                  response.status === Constants.STATUS_FORBIDDEN
+                    ? "auth.action.unauthorized"
+                    : undefined,
+              },
+              response.data,
+              {
+                status: response.status,
+              }
+            )
           );
         }
       }
@@ -293,7 +302,10 @@ export class Ajax {
     return this.getResponse(path, config);
   }
 
-  public post(path: string, config: RequestConfigBuilder) {
+  public post(
+    path: string,
+    config: RequestConfigBuilder = new RequestConfigBuilder()
+  ) {
     const conf = {
       headers: config.getHeaders(),
       paramsSerializer,

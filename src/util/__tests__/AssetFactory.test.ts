@@ -16,6 +16,14 @@ import {
   UpdateRecordData,
 } from "../../model/changetracking/UpdateRecord";
 import { langString } from "../../model/MultilingualString";
+import {
+  AccessControlRecord,
+  UserAccessControlRecord,
+  UserGroupAccessControlRecord,
+  UserRoleAccessControlRecord,
+} from "../../model/acl/AccessControlList";
+import { UserGroupData } from "../../model/UserGroup";
+import { UserRoleData } from "../../model/UserRole";
 
 describe("AssetFactory", () => {
   describe("createAsset", () => {
@@ -182,7 +190,7 @@ describe("AssetFactory", () => {
     it("creates a persist record for persist event data", () => {
       const persistRecord: ChangeRecordData = {
         iri: Generator.generateUri(),
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         author: Generator.generateUser(),
         changedEntity: { iri: Generator.generateUri() },
         types: [changeClass, VocabularyUtils.PERSIST_EVENT],
@@ -195,7 +203,7 @@ describe("AssetFactory", () => {
     it("creates an update record for update event data", () => {
       const updateRecord: UpdateRecordData = {
         iri: Generator.generateUri(),
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         author: Generator.generateUser(),
         changedEntity: { iri: Generator.generateUri() },
         changedAttribute: { iri: VocabularyUtils.SKOS_PREF_LABEL },
@@ -210,7 +218,7 @@ describe("AssetFactory", () => {
     it("throws a type error if an invalid record type is provided in data", () => {
       const record: ChangeRecordData = {
         iri: Generator.generateUri(),
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         author: Generator.generateUser(),
         changedEntity: { iri: Generator.generateUri() },
         types: [changeClass],
@@ -219,6 +227,46 @@ describe("AssetFactory", () => {
         new TypeError(
           "Unsupported type of change record data " + JSON.stringify(record)
         )
+      );
+    });
+  });
+
+  describe("createAccessControlRecord", () => {
+    it("creates UserAccessControlRecord for User holder", () => {
+      const data = {
+        holder: Generator.generateUser(),
+        accessLevel: Generator.generateUri(),
+      } as AccessControlRecord<any>;
+      expect(AssetFactory.createAccessControlRecord(data)).toBeInstanceOf(
+        UserAccessControlRecord
+      );
+    });
+
+    it("creates UserGroupAccessControlRecord for UserGroup holder", () => {
+      const data = {
+        holder: {
+          iri: Generator.generateUri(),
+          label: "Test group",
+          types: [VocabularyUtils.USER_GROUP],
+        } as UserGroupData,
+        accessLevel: Generator.generateUri(),
+      } as AccessControlRecord<any>;
+      expect(AssetFactory.createAccessControlRecord(data)).toBeInstanceOf(
+        UserGroupAccessControlRecord
+      );
+    });
+
+    it("creates UserRoleAccessControlRecord for UserRole holder", () => {
+      const data = {
+        holder: {
+          iri: Generator.generateUri(),
+          label: langString("Test role"),
+          types: [VocabularyUtils.USER_ROLE],
+        } as UserRoleData,
+        accessLevel: Generator.generateUri(),
+      } as AccessControlRecord<any>;
+      expect(AssetFactory.createAccessControlRecord(data)).toBeInstanceOf(
+        UserRoleAccessControlRecord
       );
     });
   });
