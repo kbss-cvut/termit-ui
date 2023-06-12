@@ -32,6 +32,9 @@ const cs = {
 
     "footer.copyright": "KBSS FEL ČVUT v Praze",
     "footer.version": "Verze",
+    "footer.version.tooltip": "Verze aplikace. Kliknutím zobrazíte popis změn.",
+    "footer.apidocs": "API",
+    "footer.apidocs.tooltip": "Dokumentace serverového rozhraní.",
 
     "news-viewer.title": "Novinky",
 

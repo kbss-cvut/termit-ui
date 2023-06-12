@@ -33,6 +33,10 @@ const en = {
 
     "footer.copyright": "KBSS at FEE CTU in Prague",
     "footer.version": "Version",
+    "footer.version.tooltip":
+      "Application version. Click to view release notes.",
+    "footer.apidocs": "API",
+    "footer.apidocs.tooltip": "Server API documentation.",
 
     "news-viewer.title": "News",
 
