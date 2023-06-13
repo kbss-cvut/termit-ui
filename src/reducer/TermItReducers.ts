@@ -4,7 +4,6 @@ import ActionType, {
   AsyncActionSuccess,
   BreadcrumbAction,
   ExecuteQueryAction,
-  FacetedSearchAction,
   FailureAction,
   MessageAction,
   NotificationAction,
@@ -260,19 +259,6 @@ function queryResults(
       } else {
         return state;
       }
-    case ActionType.LOGOUT:
-      return {};
-    default:
-      return state;
-  }
-}
-
-function facetedSearchResult(state: object = {}, action: FacetedSearchAction) {
-  switch (action.type) {
-    case ActionType.FACETED_SEARCH:
-      return action.status === AsyncActionStatus.SUCCESS
-        ? action.payload
-        : state;
     case ActionType.LOGOUT:
       return {};
     default:
@@ -652,7 +638,6 @@ const rootReducer = combineReducers<TermItState>({
   queryResults,
   createdTermsCounter,
   fileContent,
-  facetedSearchResult,
   searchQuery,
   searchResults,
   searchListenerCount,

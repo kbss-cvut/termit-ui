@@ -3,7 +3,8 @@
  */
 
 import * as SyncActions from "./SyncActions";
-import Ajax, { params } from "../util/Ajax";
+import { asyncActionRequest, asyncActionSuccess } from "./SyncActions";
+import Ajax, { content, params } from "../util/Ajax";
 import { ThunkDispatch } from "../util/Types";
 import Constants from "../util/Constants";
 import { ErrorData } from "../model/ErrorInfo";
@@ -16,6 +17,8 @@ import SearchResult, {
 } from "../model/search/SearchResult";
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
+import SearchParam from "../model/search/SearchParam";
+import { FacetedSearchResult } from "../model/search/FacetedSearchResult";
 
 /**
  * Add a search listener using a simple reference counting.
@@ -147,5 +150,27 @@ export function searchResult(searchResults: SearchResult[]) {
   return (dispatch: ThunkDispatch) => {
     dispatch({ type: ActionType.SEARCH_RESULT, searchResults });
     dispatch({ type: ActionType.SEARCH_FINISH });
+  };
+}
+
+export function executeFacetedTermSearch(params: SearchParam[]) {
+  const action = { type: ActionType.FACETED_SEARCH };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      Constants.API_PREFIX + "/search/faceted/terms",
+      content(params)
+    )
+      .then((resp) => {
+        dispatch(asyncActionSuccess(action));
+        return Promise.resolve(resp.data as FacetedSearchResult[]);
+      })
+      .catch((error: ErrorData) => {
+        dispatch(SyncActions.asyncActionFailure(action, error));
+        dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+        return Promise.resolve([]);
+      });
   };
 }
