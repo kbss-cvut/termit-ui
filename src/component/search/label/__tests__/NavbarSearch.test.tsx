@@ -3,7 +3,7 @@ import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import SearchResultsOverlay from "../SearchResultsOverlay";
 import Routes, { Route } from "../../../../util/Routes";
 import { shallow } from "enzyme";
-import SearchResult from "../../../../model/SearchResult";
+import SearchResult from "../../../../model/search/SearchResult";
 import Generator from "../../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import Routing from "../../../../util/Routing";

@@ -13,7 +13,7 @@ import ActionType from "./ActionType";
 import SearchResult, {
   CONTEXT as SEARCH_RESULT_CONTEXT,
   SearchResultData,
-} from "../model/SearchResult";
+} from "../model/search/SearchResult";
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
 

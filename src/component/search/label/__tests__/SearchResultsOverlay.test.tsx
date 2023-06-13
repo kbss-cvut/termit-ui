@@ -1,4 +1,6 @@
-import SearchResult, { SearchResultData } from "../../../../model/SearchResult";
+import SearchResult, {
+  SearchResultData,
+} from "../../../../model/search/SearchResult";
 import Generator from "../../../../__tests__/environment/Generator";
 import Vocabulary from "../../../../util/VocabularyUtils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";

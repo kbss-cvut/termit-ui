@@ -38,7 +38,7 @@ import Term, { TermData } from "../../model/Term";
 import RdfsResource from "../../model/RdfsResource";
 import AppNotification from "../../model/AppNotification";
 import Generator from "../../__tests__/environment/Generator";
-import SearchQuery from "../../model/SearchQuery";
+import SearchQuery from "../../model/search/SearchQuery";
 import QueryResult from "../../model/QueryResult";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";

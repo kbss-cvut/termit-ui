@@ -1,7 +1,7 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../../hoc/withI18n";
-import SearchResult from "../../../model/SearchResult";
+import SearchResult from "../../../model/search/SearchResult";
 import { Card, CardBody, Label, Table } from "reactstrap";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import TermResultItem from "./TermResultItem";

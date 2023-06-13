@@ -8,7 +8,7 @@ import {
   InputGroupAddon,
   InputGroupText,
 } from "reactstrap";
-import SearchResult from "../../../model/SearchResult";
+import SearchResult from "../../../model/search/SearchResult";
 import { connect } from "react-redux";
 import { updateSearchFilter } from "../../../action/SearchActions";
 import SearchResultsOverlay from "./SearchResultsOverlay";

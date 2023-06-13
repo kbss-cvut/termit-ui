@@ -3,7 +3,7 @@ import { ReactWrapper } from "enzyme";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import TermResultVocabularyFilter from "../TermResultVocabularyFilter";
 import Generator from "../../../../__tests__/environment/Generator";
-import SearchResult from "../../../../model/SearchResult";
+import SearchResult from "../../../../model/search/SearchResult";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import * as redux from "react-redux";
 import { ThunkDispatch } from "../../../../util/Types";

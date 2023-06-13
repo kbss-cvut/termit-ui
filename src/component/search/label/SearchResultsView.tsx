@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import * as SearchActions from "../../../action/SearchActions";
 import { ThunkDispatch } from "../../../util/Types";
 import TermItState from "../../../model/TermItState";
-import SearchResult from "../../../model/SearchResult";
+import SearchResult from "../../../model/search/SearchResult";
 import SearchResults from "./SearchResults";
 
 interface SearchResultVocabulariesProps

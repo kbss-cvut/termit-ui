@@ -1,7 +1,7 @@
 import SearchTerms from "../../SearchTerms";
 import Generator from "../../../../__tests__/environment/Generator";
 import SearchResults from "../SearchResults";
-import SearchResult from "../../../../model/SearchResult";
+import SearchResult from "../../../../model/search/SearchResult";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import TermResultVocabularyFilter from "../TermResultVocabularyFilter";
