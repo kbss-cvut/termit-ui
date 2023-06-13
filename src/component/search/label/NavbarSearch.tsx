@@ -121,7 +121,7 @@ export class NavbarSearch extends React.Component<
 
   private onSearchIconClick = () => {
     if (!this.props.location.pathname.startsWith(Routes.search.path)) {
-      Routing.transitionTo(Routes.search);
+      Routing.transitionTo(Routes.facetedSearch);
     }
   };
 

@@ -13,12 +13,14 @@ class RequestConfigBuilder {
   private mFormData?: {};
   private mResponseType?: ResponseType;
   private mHeaders: {};
+  private preserveAcceptHeader: boolean;
 
   constructor() {
     this.mHeaders = {};
     this.mHeaders[Constants.Headers.CONTENT_TYPE] = Constants.JSON_LD_MIME_TYPE;
     this.mHeaders[Constants.Headers.ACCEPT] = Constants.JSON_LD_MIME_TYPE;
     this.mResponseType = undefined;
+    this.preserveAcceptHeader = false;
   }
 
   public content(value: any): RequestConfigBuilder {
@@ -77,6 +79,11 @@ class RequestConfigBuilder {
     return this;
   }
 
+  public preserveAcceptHeaderInPost() {
+    this.preserveAcceptHeader = true;
+    return this;
+  }
+
   public getContent() {
     return this.mContent;
   }
@@ -95,6 +102,13 @@ class RequestConfigBuilder {
 
   public getHeaders() {
     return this.mHeaders;
+  }
+
+  /**
+   * Whether to preserve accept header in POST requests.
+   */
+  public shouldPreserveAcceptHeader() {
+    return this.preserveAcceptHeader;
   }
 
   /**
@@ -310,7 +324,9 @@ export class Ajax {
       headers: config.getHeaders(),
       paramsSerializer,
     };
-    delete conf.headers[Constants.Headers.ACCEPT];
+    if (!config.shouldPreserveAcceptHeader()) {
+      delete conf.headers[Constants.Headers.ACCEPT];
+    }
     const par = new URLSearchParams();
     // @ts-ignore
     const paramData: object =

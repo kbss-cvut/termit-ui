@@ -18,7 +18,10 @@ import SearchResult, {
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
 import SearchParam from "../model/search/SearchParam";
-import { FacetedSearchResult } from "../model/search/FacetedSearchResult";
+import {
+  CONTEXT as FACETED_SEARCH_RESULT_CONTEXT,
+  FacetedSearchResult,
+} from "../model/search/FacetedSearchResult";
 
 /**
  * Add a search listener using a simple reference counting.
@@ -160,10 +163,16 @@ export function executeFacetedTermSearch(params: SearchParam[]) {
     return Ajax.post(
       Constants.API_PREFIX + "/search/faceted/terms",
       content(params)
+        .contentType(Constants.JSON_MIME_TYPE)
+        .accept(Constants.JSON_LD_MIME_TYPE)
+        .preserveAcceptHeaderInPost()
     )
       .then((resp) => {
         dispatch(asyncActionSuccess(action));
-        return Promise.resolve(resp.data as FacetedSearchResult[]);
+        return JsonLdUtils.compactAndResolveReferencesAsArray<FacetedSearchResult>(
+          resp.data,
+          FACETED_SEARCH_RESULT_CONTEXT
+        );
       })
       .catch((error: ErrorData) => {
         dispatch(SyncActions.asyncActionFailure(action, error));
