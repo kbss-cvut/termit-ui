@@ -59,7 +59,7 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
   };
 
   return (
-    <Row className="mb-3">
+    <Row>
       <Col>
         <IntelligentTreeSelect
           value={selectedVocabularies}

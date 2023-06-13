@@ -1,90 +1,57 @@
-import * as SearchActions from "../../action/SearchActions";
-import { injectIntl } from "react-intl";
-import withI18n from "../hoc/withI18n";
-import { connect } from "react-redux";
+import React from "react";
+import {
+  addSearchListener,
+  removeSearchListener,
+} from "../../action/SearchActions";
+import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import TermItState from "../../model/TermItState";
-import { Search, SearchProps } from "./label/Search";
-import SearchResult from "../../model/SearchResult";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import ContainerMask from "../misc/ContainerMask";
 import WindowTitle from "../misc/WindowTitle";
 import SearchResults from "./label/SearchResults";
 import TermResultVocabularyFilter from "./label/TermResultVocabularyFilter";
+import { useI18n } from "../hook/useI18n";
+import Utils from "../../util/Utils";
 import { Card, CardBody } from "reactstrap";
 
-interface SearchTermsState {
-  vocabularies: string[];
-}
-
-export class SearchTerms extends Search<SearchProps, SearchTermsState> {
-  constructor(props: SearchProps) {
-    super(props);
-    this.state = {
-      vocabularies: [],
-    };
-  }
-
-  protected getResults(): SearchResult[] | null {
-    return this.props.searchResults
-      ? this.props.searchResults.filter(
-          (r) => r.hasType(VocabularyUtils.TERM) && this.doesVocabularyMatch(r)
-        )
-      : null;
-  }
-
-  private doesVocabularyMatch(r: SearchResult) {
-    return (
-      r.vocabulary !== undefined &&
-      (this.state.vocabularies.length === 0 ||
-        this.state.vocabularies.indexOf(r.vocabulary.iri) !== -1)
+const SearchTerms: React.FC = () => {
+  const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(addSearchListener());
+    return () => dispatch(removeSearchListener()) as any;
+  }, [dispatch]);
+  const [vocabularies, setVocabularies] = React.useState<string[]>([]);
+  let allResults = useSelector((state: TermItState) => state.searchResults);
+  let loading = useSelector((state: TermItState) => state.searchInProgress);
+  let resultsToRender = null;
+  if (allResults !== null) {
+    resultsToRender = allResults.filter(
+      (r) =>
+        r.hasType(VocabularyUtils.TERM) &&
+        r.vocabulary !== undefined &&
+        (vocabularies.length === 0 ||
+          vocabularies.indexOf(r.vocabulary.iri) !== -1)
     );
   }
 
-  public onFilteringVocabulariesSelect = (vocabularyIris: string[]) => {
-    this.setState({ vocabularies: vocabularyIris });
-  };
+  return (
+    <div className="relative">
+      <WindowTitle title={i18n("search.title")} />
+      <Card className="mb-0">
+        <CardBody>
+          <TermResultVocabularyFilter
+            searchResults={Utils.sanitizeArray(allResults)}
+            selectedVocabularies={vocabularies}
+            onChange={setVocabularies}
+          />
+        </CardBody>
+      </Card>
+      <SearchResults results={resultsToRender} />
+      {loading && <ContainerMask />}
+    </div>
+  );
+};
 
-  public render() {
-    const loading = this.props.searchInProgress ? <ContainerMask /> : null;
-    const results = this.getResults();
-
-    return (
-      <div className="relative">
-        <WindowTitle title={this.props.i18n("search.title")} />
-        {results && (
-          <Card className="mb-3">
-            <CardBody>
-              <TermResultVocabularyFilter
-                searchResults={this.props.searchResults!}
-                selectedVocabularies={this.state.vocabularies}
-                onChange={this.onFilteringVocabulariesSelect}
-              />
-              <SearchResults results={results} />
-            </CardBody>
-          </Card>
-        )}
-        {loading}
-      </div>
-    );
-  }
-}
-
-export default connect(
-  (state: TermItState) => {
-    return {
-      searchQuery: state.searchQuery,
-      searchResults: state.searchResults,
-      searchInProgress: state.searchInProgress,
-    };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      updateSearchFilter: (searchString: string) =>
-        dispatch(SearchActions.updateSearchFilter(searchString)),
-      addSearchListener: () => dispatch(SearchActions.addSearchListener()),
-      removeSearchListener: () =>
-        dispatch(SearchActions.removeSearchListener()),
-    };
-  }
-)(injectIntl(withI18n(SearchTerms)));
+export default SearchTerms;
