@@ -38,7 +38,7 @@ interface NavbarSearchState {
 }
 
 /**
- * Routes for which the results results preview popup should not be displayed.
+ * Routes for which the results preview popup should not be displayed.
  */
 const ROUTES_WITHOUT_SEARCH_OVERLAY = [
   Routes.search,
@@ -125,11 +125,23 @@ export class NavbarSearch extends React.Component<
     );
   }
 
+  private onSearchIconClick = () => {
+    if (!this.props.location.pathname.startsWith(Routes.search.path)) {
+      Routing.transitionTo(Routes.search);
+    }
+  };
+
   public render() {
     const { i18n, navbar } = this.props;
 
     const searchIcon = (
-      <InputGroupAddon addonType="prepend" id="icon">
+      <InputGroupAddon
+        addonType="prepend"
+        id="icon"
+        title={i18n("main.search.tooltip")}
+        className="search-icon"
+        onClick={this.onSearchIconClick}
+      >
         <InputGroupText>
           <span className="fas fa-search" />
         </InputGroupText>
