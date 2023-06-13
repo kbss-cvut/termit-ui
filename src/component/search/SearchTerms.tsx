@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import TermItState from "../../model/TermItState";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import ContainerMask from "../misc/ContainerMask";
 import WindowTitle from "../misc/WindowTitle";
 import SearchResults from "./label/SearchResults";
 import TermResultVocabularyFilter from "./label/TermResultVocabularyFilter";
 import { useI18n } from "../hook/useI18n";
 import Utils from "../../util/Utils";
 import { Card, CardBody } from "reactstrap";
+import SearchMask from "./label/SearchMask";
 
 const SearchTerms: React.FC = () => {
   const { i18n } = useI18n();
@@ -24,7 +24,6 @@ const SearchTerms: React.FC = () => {
   }, [dispatch]);
   const [vocabularies, setVocabularies] = React.useState<string[]>([]);
   let allResults = useSelector((state: TermItState) => state.searchResults);
-  let loading = useSelector((state: TermItState) => state.searchInProgress);
   let resultsToRender = null;
   if (allResults !== null) {
     resultsToRender = allResults.filter(
@@ -49,7 +48,7 @@ const SearchTerms: React.FC = () => {
         </CardBody>
       </Card>
       <SearchResults results={resultsToRender} />
-      {loading && <ContainerMask />}
+      <SearchMask />
     </div>
   );
 };

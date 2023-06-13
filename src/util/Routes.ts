@@ -16,12 +16,13 @@ export class Route {
     if (query) {
       // TODO: Encode URI components properly (and parse them too)
       const queryPart = Object.keys(query)
+        .filter((key) => query[key] !== undefined)
         .map(
           (key) =>
             /*encodeURIComponent*/ key + "=" + /*encodeURIComponent*/ query[key]
         )
         .join("&");
-      return path + "?" + queryPart;
+      return queryPart.length > 0 ? path + "?" + queryPart : path;
     } else {
       return path;
     }

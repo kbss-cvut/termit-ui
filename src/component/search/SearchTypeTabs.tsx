@@ -8,7 +8,6 @@ import { Nav, NavItem, NavLink } from "reactstrap";
 import Routes, { Route } from "../../util/Routes";
 import { isLoggedIn } from "../../util/Authorization";
 import { useI18n } from "../hook/useI18n";
-import Utils from "../../util/Utils";
 
 const SearchTypeTabs: React.FC = () => {
   const dispatch: ThunkDispatch = useDispatch();
@@ -20,10 +19,6 @@ const SearchTypeTabs: React.FC = () => {
   const { i18n } = useI18n();
   const loggedIn = isLoggedIn(user);
   const path = useLocation().pathname;
-  const searchString = Utils.extractQueryParams(
-    useLocation().search,
-    "searchString"
-  )[0];
 
   const tabs: {
     route: Route;
@@ -95,7 +90,7 @@ const SearchTypeTabs: React.FC = () => {
               <NavLink
                 id={tab.id}
                 active={tab === activeTab}
-                href={"#" + tab.route.link(undefined, { searchString })}
+                href={"#" + tab.route.link()}
               >
                 {tab.label}
               </NavLink>

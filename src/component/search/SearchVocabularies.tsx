@@ -10,7 +10,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import WindowTitle from "../misc/WindowTitle";
 import { useI18n } from "../hook/useI18n";
 import SearchResults from "./label/SearchResults";
-import ContainerMask from "../misc/ContainerMask";
+import SearchMask from "./label/SearchMask";
 
 const SearchVocabularies: React.FC = () => {
   const { i18n } = useI18n();
@@ -20,7 +20,6 @@ const SearchVocabularies: React.FC = () => {
     return () => dispatch(removeSearchListener()) as any;
   }, [dispatch]);
   let results = useSelector((state: TermItState) => state.searchResults);
-  let loading = useSelector((state: TermItState) => state.searchInProgress);
   if (results !== null) {
     results = results.filter((r) => r.hasType(VocabularyUtils.VOCABULARY));
   }
@@ -29,7 +28,7 @@ const SearchVocabularies: React.FC = () => {
     <div className="relative">
       <WindowTitle title={i18n("search.title")} />
       <SearchResults results={results} />
-      {loading && <ContainerMask />}
+      <SearchMask />
     </div>
   );
 };

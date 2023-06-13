@@ -101,15 +101,9 @@ export class NavbarSearch extends React.Component<
   };
 
   private openSearchView = () => {
-    const query = new Map();
-    const searchString = this.props.searchString.trim();
-    if (searchString.length > 0) {
-      query.set("searchString", encodeURI(searchString));
-    }
     this.closeResults();
     Routing.transitionTo(
-      isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch,
-      { query }
+      isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch
     );
   };
 

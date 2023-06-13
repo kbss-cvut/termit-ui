@@ -169,28 +169,7 @@ describe("NavbarSearch", () => {
     );
     const input = wrapper.find("#main-search-input");
     input.simulate("keyPress", { key: "Enter" });
-    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search, {
-      query: new Map(),
-    });
-  });
-
-  it("passes search string as query parameter when transitioning to search view", () => {
-    const searchString = "test";
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchString={searchString}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const input = wrapper.find("#main-search-input");
-    input.simulate("keyPress", { key: "Enter" });
-    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search, {
-      query: new Map([["searchString", searchString]]),
-    });
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
   });
 
   it("renders icon before input if search is in navbar", () => {
@@ -262,9 +241,7 @@ describe("NavbarSearch", () => {
     );
     const input = wrapper.find("#main-search-input");
     input.simulate("keyPress", { key: "Enter" });
-    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch, {
-      query: new Map(),
-    });
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
   });
 
   it("does not display search results when current route is public search results", () => {
