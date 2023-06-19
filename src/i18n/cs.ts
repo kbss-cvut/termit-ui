@@ -561,7 +561,7 @@ const cs = {
     "search.tab.terms": "Pojmy",
     "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
     "search.tab.vocabularies": "Slovníky",
-    "search.tab.facets": "Facetové vyhledávání",
+    "search.tab.facets": "Facetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
     "search.results.countInfo":

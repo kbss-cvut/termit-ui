@@ -553,7 +553,7 @@ const en = {
     "search.tab.terms": "Terms",
     "search.tab.terms.filter.allVocabularies": "All vocabularies",
     "search.tab.vocabularies": "Vocabularies",
-    "search.tab.facets": "Faceted search",
+    "search.tab.facets": "Faceted term search",
     "search.reset": "Reset search",
     "search.results.title": 'Results for "{searchString}"',
     "search.results.countInfo": "Found {matches} matches in {assets} assets.",

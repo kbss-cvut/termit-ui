@@ -11,8 +11,10 @@ import { useDispatch } from "react-redux";
 import { executeFacetedTermSearch } from "../../../action/SearchActions";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
-import TermLink from "../../term/TermLink";
-import Term from "../../../model/Term";
+import FacetedSearchResults from "./FacetedSearchResults";
+import "./FacetedSearch.scss";
+import "../label/Search.scss";
+import { loadTypes } from "../../../action/AsyncActions";
 
 const FacetedSearch: React.FC = () => {
   const { i18n } = useI18n();
@@ -24,6 +26,9 @@ const FacetedSearch: React.FC = () => {
   });
   const [results, setResults] =
     React.useState<FacetedSearchResult[] | null>(null);
+  React.useEffect(() => {
+    dispatch(loadTypes());
+  }, [dispatch]);
   React.useEffect(() => {
     const params: SearchParam[] = [];
     if (notationParam.value[0].trim().length > 0) {
@@ -57,15 +62,7 @@ const FacetedSearch: React.FC = () => {
       </Card>
       <Card>
         <CardBody>
-          {results && (
-            <ul>
-              {results?.map((r) => (
-                <li>
-                  <TermLink term={new Term(r)} />
-                </li>
-              ))}
-            </ul>
-          )}
+          {results && <FacetedSearchResults results={results} />}
         </CardBody>
       </Card>
     </div>

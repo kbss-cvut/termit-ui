@@ -15,6 +15,7 @@ const ctx = {
   notations: VocabularyUtils.SKOS_NOTATION,
   examples: context(VocabularyUtils.SKOS_EXAMPLE),
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+  draft: VocabularyUtils.IS_DRAFT,
 };
 
 export const CONTEXT = { ...ctx, ...ASSET_CONTEXT };
@@ -30,4 +31,5 @@ export interface FacetedSearchResult extends AssetData {
   notations?: string[];
   examples?: PluralMultilingualString;
   vocabulary?: AssetData;
+  draft: boolean;
 }
