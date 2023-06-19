@@ -14,39 +14,17 @@ import { loadTypes } from "../../action/AsyncActions";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import IntlData from "../../model/IntlData";
-import _ from "lodash";
 import HelpIcon from "../misc/HelpIcon";
+import { mapTypeOptions } from "../misc/treeselect/OptionMappers";
 
 interface TermTypesEditProps extends HasI18n {
   termTypes: string[];
   onChange: (types: string[]) => void;
-  validationMessage?: string | JSX.Element;
+  validationMessage?: string | React.JSX.Element;
   availableTypes: { [key: string]: Term };
   intl: IntlData;
   loadTypes: () => void;
 }
-
-const getTypesForSelector = _.memoize(
-  (availableTypes: { [key: string]: Term }) => {
-    if (!availableTypes) {
-      return [];
-    }
-    const typesMap = {};
-    // Make a deep copy of the available types since we're going to modify them for the tree select
-    Object.keys(availableTypes).forEach(
-      (t) => (typesMap[t] = new Term(availableTypes[t]))
-    );
-    const types = Object.keys(typesMap).map((k) => typesMap[k]);
-    types.forEach((t) => {
-      if (t.subTerms) {
-        // The tree-select needs parent for proper function
-        // @ts-ignore
-        t.subTerms.forEach((st) => (typesMap[st].parent = t.iri));
-      }
-    });
-    return types;
-  }
-);
 
 export class TermTypesEdit extends React.Component<TermTypesEditProps> {
   public componentDidMount(): void {
@@ -69,7 +47,7 @@ export class TermTypesEdit extends React.Component<TermTypesEditProps> {
   }
 
   public render() {
-    const types = getTypesForSelector(this.props.availableTypes);
+    const types = mapTypeOptions(this.props.availableTypes);
     const selected = this.resolveSelectedTypes(types);
     const { i18n, intl } = this.props;
     return (

@@ -14,7 +14,7 @@ import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import FacetedSearchResults from "./FacetedSearchResults";
 import "./FacetedSearch.scss";
 import "../label/Search.scss";
-import { loadTypes } from "../../../action/AsyncActions";
+import TermTypeFacet from "./TermTypeFacet";
 
 const FacetedSearch: React.FC = () => {
   const { i18n } = useI18n();
@@ -24,15 +24,20 @@ const FacetedSearch: React.FC = () => {
     value: [""],
     matchType: MatchType.EXACT_MATCH,
   });
+  const [typeParam, setTypeParam] = React.useState<SearchParam>({
+    property: VocabularyUtils.RDF_TYPE,
+    value: [],
+    matchType: MatchType.IRI,
+  });
   const [results, setResults] =
     React.useState<FacetedSearchResult[] | null>(null);
-  React.useEffect(() => {
-    dispatch(loadTypes());
-  }, [dispatch]);
   React.useEffect(() => {
     const params: SearchParam[] = [];
     if (notationParam.value[0].trim().length > 0) {
       params.push(notationParam);
+    }
+    if (typeParam.value.length > 0) {
+      params.push(typeParam);
     }
     if (params.length > 0) {
       trackPromise(
@@ -40,7 +45,7 @@ const FacetedSearch: React.FC = () => {
         "faceted-search"
       ).then((res) => setResults(res));
     }
-  }, [notationParam, dispatch]);
+  }, [notationParam, typeParam, dispatch]);
   // TODO
   return (
     <div id="faceted-search" className="relative">
@@ -56,6 +61,9 @@ const FacetedSearch: React.FC = () => {
                 value={notationParam}
                 onChange={setNotationParam}
               />
+            </Col>
+            <Col xs={4}>
+              <TermTypeFacet value={typeParam} onChange={setTypeParam} />
             </Col>
           </Row>
         </CardBody>
