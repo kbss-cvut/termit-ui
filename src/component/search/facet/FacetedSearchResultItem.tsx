@@ -37,6 +37,7 @@ const FacetedSearchResultItem: React.FC<{ item: FacetedSearchResult }> = ({
       </>
     ),
   };
+  const def = getLocalized(item.definition, locale);
 
   return (
     <tr className="search-result-match-row">
@@ -49,9 +50,7 @@ const FacetedSearchResultItem: React.FC<{ item: FacetedSearchResult }> = ({
           tooltip={i18n("asset.link.tooltip")}
         />
         <br />
-        <div className="faceted-term-definition">
-          {getLocalized(item.definition, locale)}
-        </div>
+        {def && <div className="faceted-term-definition">{def}</div>}
         <ul className="mb-0">
           {Object.keys(types)
             .filter((t) => Utils.sanitizeArray(item.types).indexOf(t) !== -1)
