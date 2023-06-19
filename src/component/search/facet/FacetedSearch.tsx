@@ -15,6 +15,7 @@ import FacetedSearchResults from "./FacetedSearchResults";
 import "./FacetedSearch.scss";
 import "../label/Search.scss";
 import TermTypeFacet from "./TermTypeFacet";
+import VocabularyFacet from "./VocabularyFacet";
 
 const FacetedSearch: React.FC = () => {
   const { i18n } = useI18n();
@@ -29,6 +30,11 @@ const FacetedSearch: React.FC = () => {
     value: [],
     matchType: MatchType.IRI,
   });
+  const [vocabularyParam, setVocabularyParam] = React.useState<SearchParam>({
+    property: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+    value: [],
+    matchType: MatchType.IRI,
+  });
   const [results, setResults] =
     React.useState<FacetedSearchResult[] | null>(null);
   React.useEffect(() => {
@@ -39,14 +45,17 @@ const FacetedSearch: React.FC = () => {
     if (typeParam.value.length > 0) {
       params.push(typeParam);
     }
+    if (vocabularyParam.value.length > 0) {
+      params.push(vocabularyParam);
+    }
     if (params.length > 0) {
       trackPromise(
         dispatch(executeFacetedTermSearch(params)),
         "faceted-search"
       ).then((res) => setResults(res));
     }
-  }, [notationParam, typeParam, dispatch]);
-  // TODO
+  }, [notationParam, typeParam, vocabularyParam, dispatch]);
+
   return (
     <div id="faceted-search" className="relative">
       <WindowTitle title={i18n("search.tab.facets")} />
@@ -64,6 +73,12 @@ const FacetedSearch: React.FC = () => {
             </Col>
             <Col xs={4}>
               <TermTypeFacet value={typeParam} onChange={setTypeParam} />
+            </Col>
+            <Col xs={4}>
+              <VocabularyFacet
+                value={vocabularyParam}
+                onChange={setVocabularyParam}
+              />
             </Col>
           </Row>
         </CardBody>
