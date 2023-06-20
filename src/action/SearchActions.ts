@@ -5,7 +5,7 @@
 import * as SyncActions from "./SyncActions";
 import { asyncActionRequest, asyncActionSuccess } from "./SyncActions";
 import Ajax, { content, params } from "../util/Ajax";
-import { ThunkDispatch } from "../util/Types";
+import { PageRequest, ThunkDispatch } from "../util/Types";
 import Constants from "../util/Constants";
 import { ErrorData } from "../model/ErrorInfo";
 import Message from "../model/Message";
@@ -156,13 +156,20 @@ export function searchResult(searchResults: SearchResult[]) {
   };
 }
 
-export function executeFacetedTermSearch(params: SearchParam[]) {
+export function executeFacetedTermSearch(
+  params: SearchParam[],
+  pageSpec: PageRequest = {
+    page: 0,
+    size: Constants.DEFAULT_PAGE_SIZE,
+  }
+) {
   const action = { type: ActionType.FACETED_SEARCH };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.post(
       Constants.API_PREFIX + "/search/faceted/terms",
       content(params)
+        .params(pageSpec)
         .contentType(Constants.JSON_MIME_TYPE)
         .accept(Constants.JSON_LD_MIME_TYPE)
         .preserveAcceptHeaderInPost()
