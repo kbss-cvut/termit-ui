@@ -577,6 +577,8 @@ const cs = {
     "search.results.vocabulary.from": "z",
     "search.faceted.matchType.exact": "Přesná shoda",
     "search.faceted.matchType.substring": "Částečná shoda",
+    "search.faceted.no-results":
+      "Zadaným parametrů neodpovídají již žádná další data.",
 
     "profile.first.name": "Křestní jméno",
     "profile.last.name": "Příjmení",

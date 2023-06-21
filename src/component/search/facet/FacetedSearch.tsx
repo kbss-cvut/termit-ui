@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import WindowTitle from "../../misc/WindowTitle";
 import { useI18n } from "../../hook/useI18n";
 import { Card, CardBody, Col, Row } from "reactstrap";
@@ -16,10 +16,21 @@ import "./FacetedSearch.scss";
 import "../label/Search.scss";
 import TermTypeFacet from "./TermTypeFacet";
 import VocabularyFacet from "./VocabularyFacet";
+import SimplePagination from "../../dashboard/widget/lastcommented/SimplePagination";
+import Constants from "../../../util/Constants";
+
+function aggregateSearchParams(...params: SearchParam[]) {
+  return params.filter((p) =>
+    p.matchType === MatchType.IRI
+      ? p.value.length > 0
+      : p.value[0].trim().length > 0
+  );
+}
 
 const FacetedSearch: React.FC = () => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
+  const [page, setPage] = useState(0);
   const [notationParam, setNotationParam] = React.useState<SearchParam>({
     property: VocabularyUtils.SKOS_NOTATION,
     value: [""],
@@ -37,24 +48,25 @@ const FacetedSearch: React.FC = () => {
   });
   const [results, setResults] =
     React.useState<FacetedSearchResult[] | null>(null);
+  const runSearch = React.useCallback(
+    (params: SearchParam[]) => {
+      if (params.length > 0) {
+        trackPromise(
+          dispatch(
+            executeFacetedTermSearch(params, {
+              page,
+              size: Constants.DEFAULT_PAGE_SIZE,
+            })
+          ),
+          "faceted-search"
+        ).then((res) => setResults(res));
+      }
+    },
+    [page, dispatch, setResults]
+  );
   React.useEffect(() => {
-    const params: SearchParam[] = [];
-    if (notationParam.value[0].trim().length > 0) {
-      params.push(notationParam);
-    }
-    if (typeParam.value.length > 0) {
-      params.push(typeParam);
-    }
-    if (vocabularyParam.value.length > 0) {
-      params.push(vocabularyParam);
-    }
-    if (params.length > 0) {
-      trackPromise(
-        dispatch(executeFacetedTermSearch(params)),
-        "faceted-search"
-      ).then((res) => setResults(res));
-    }
-  }, [notationParam, typeParam, vocabularyParam, dispatch]);
+    runSearch(aggregateSearchParams(notationParam, typeParam, vocabularyParam));
+  }, [notationParam, typeParam, vocabularyParam, runSearch]);
 
   return (
     <div id="faceted-search" className="relative">
@@ -68,16 +80,28 @@ const FacetedSearch: React.FC = () => {
                 id="faceted-search-notation"
                 label={i18n("term.metadata.notation.label")}
                 value={notationParam}
-                onChange={setNotationParam}
+                onChange={(v) => {
+                  setNotationParam(v);
+                  setPage(0);
+                }}
               />
             </Col>
             <Col xs={4}>
-              <TermTypeFacet value={typeParam} onChange={setTypeParam} />
+              <TermTypeFacet
+                value={typeParam}
+                onChange={(v) => {
+                  setTypeParam(v);
+                  setPage(0);
+                }}
+              />
             </Col>
             <Col xs={4}>
               <VocabularyFacet
                 value={vocabularyParam}
-                onChange={setVocabularyParam}
+                onChange={(v) => {
+                  setVocabularyParam(v);
+                  setPage(0);
+                }}
               />
             </Col>
           </Row>
@@ -86,6 +110,17 @@ const FacetedSearch: React.FC = () => {
       <Card>
         <CardBody>
           {results && <FacetedSearchResults results={results} />}
+          {results && (
+            <SimplePagination
+              page={page}
+              setPage={setPage}
+              pageSize={Constants.LAST_COMMENTED_ASSET_LIMIT}
+              itemCount={
+                results.length === 0 ? 0 : Constants.LAST_COMMENTED_ASSET_LIMIT
+              }
+              className="mt-3"
+            />
+          )}
         </CardBody>
       </Card>
     </div>

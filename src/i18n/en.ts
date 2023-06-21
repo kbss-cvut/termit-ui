@@ -568,6 +568,8 @@ const en = {
     "search.results.vocabulary.from": "from",
     "search.faceted.matchType.exact": "Exact match",
     "search.faceted.matchType.substring": "Substring",
+    "search.faceted.no-results":
+      "No more results found for the specified parameters.",
 
     "profile.first.name": "First name",
     "profile.last.name": "Last name",
