@@ -988,24 +988,22 @@ export function updateVocabulary(vocabulary: Vocabulary) {
   };
 }
 
+// const pendingGetLabelRequests = {};
+
 /**
  * Fetches RDFS:label of a resource with the specified identifier.
  * @param iri Resource identifier
  */
 export function getLabel(iri: string) {
-  return getTextualField(iri, "label", ActionType.GET_LABEL);
-}
-
-function getTextualField(iri: string, field: string, actionType: string) {
   const action = {
-    type: actionType,
+    type: ActionType.GET_LABEL,
   };
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-    if (field === "label" && getState().labelCache[iri]) {
+    if (getState().labelCache[iri]) {
       return Promise.resolve(getState().labelCache[iri]);
     }
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(Constants.API_PREFIX + "/data/" + field, param("iri", iri))
+    return Ajax.get(Constants.API_PREFIX + "/data/label", param("iri", iri))
       .then((data) => {
         const payload = {};
         payload[iri] = data;
