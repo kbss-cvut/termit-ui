@@ -86,12 +86,19 @@ export class NavbarSearch extends React.Component<
   public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     this.closeResults();
-    this.props.updateSearchFilter(value).then(() =>
+    this.props.updateSearchFilter(value).then(() => {
+      const path = this.props.location.pathname;
+      if (
+        path.endsWith(Routes.publicFacetedSearch.path) ||
+        path.endsWith(Routes.facetedSearch.path)
+      ) {
+        this.openSearchView();
+      }
       this.setState({
         showResults: true,
         searchOriginNavbar: this.props.navbar,
-      })
-    );
+      });
+    });
   };
 
   private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -121,7 +128,11 @@ export class NavbarSearch extends React.Component<
 
   private onSearchIconClick = () => {
     if (!this.props.location.pathname.startsWith(Routes.search.path)) {
-      Routing.transitionTo(Routes.facetedSearch);
+      Routing.transitionTo(
+        isLoggedIn(this.props.user)
+          ? Routes.facetedSearch
+          : Routes.publicFacetedSearch
+      );
     }
   };
 
@@ -131,7 +142,7 @@ export class NavbarSearch extends React.Component<
     const searchIcon = (
       <InputGroupAddon
         addonType="prepend"
-        id="icon"
+        id="search-icon"
         title={i18n("main.search.tooltip")}
         className="search-icon"
         onClick={this.onSearchIconClick}

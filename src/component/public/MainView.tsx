@@ -144,7 +144,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
               />
               <BreadcrumbRoute
                 title={i18n("main.nav.facetedSearch")}
-                path={Routes.facetedSearch.path}
+                path={Routes.publicFacetedSearch.path}
                 component={FacetedSearch}
               />
               <BreadcrumbRoute
