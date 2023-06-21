@@ -4,7 +4,7 @@ import thunk from "redux-thunk";
 import Ajax from "../../util/Ajax";
 import { ThunkDispatch } from "../../util/Types";
 import ActionType, { AsyncAction } from "../ActionType";
-import SearchResult from "../../model/SearchResult";
+import SearchResult from "../../model/search/SearchResult";
 import Vocabulary2 from "../../util/VocabularyUtils";
 import { search, updateSearchFilter } from "../SearchActions";
 

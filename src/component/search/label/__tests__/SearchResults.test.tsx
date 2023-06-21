@@ -3,7 +3,7 @@ import { SearchResults } from "../SearchResults";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import { Label } from "reactstrap";
 import en from "../../../../i18n/en";
-import SearchResult from "../../../../model/SearchResult";
+import SearchResult from "../../../../model/search/SearchResult";
 import Generator from "../../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import TermBadge from "../../../badge/TermBadge";

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../../hoc/withI18n";
-import SearchResult from "../../../model/SearchResult";
-import { Label, Table } from "reactstrap";
+import SearchResult from "../../../model/search/SearchResult";
+import { Card, CardBody, Label, Table } from "reactstrap";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import TermResultItem from "./TermResultItem";
 import VocabularyResultItem from "./VocabularyResultItem";
@@ -21,7 +21,7 @@ export class SearchResultItem extends SearchResult {
 }
 
 interface SearchResultsProps extends HasI18n {
-  results: SearchResult[];
+  results: SearchResult[] | null;
 }
 
 /**
@@ -36,36 +36,46 @@ function scoreSort(a: SearchResultItem, b: SearchResultItem) {
 export class SearchResults extends React.Component<SearchResultsProps> {
   public render() {
     const i18n = this.props.i18n;
-    if (this.props.results.length === 0) {
+    const results = this.props.results;
+    if (results === null) {
+      return null;
+    }
+    if (results.length === 0) {
       return (
-        <Label className="italics small text-gray">
-          {i18n("main.search.no-results")}
-        </Label>
+        <Card className="mb-3">
+          <CardBody>
+            <Label className="italics small text-gray">
+              {i18n("main.search.no-results")}
+            </Label>
+          </CardBody>
+        </Card>
       );
     }
-    const rows = this.renderResults();
+    const rows = this.renderResults(results);
     return (
-      <div>
-        <div className="italics small text-gray mb-3">
-          {this.props.formatMessage("search.results.countInfo", {
-            matches: this.props.results.length,
-            assets: rows.length,
-          })}
-        </div>
-        <Table
-          responsive={true}
-          bordered={false}
-          borderless={true}
-          className="search-results"
-        >
-          <tbody>{rows}</tbody>
-        </Table>
-      </div>
+      <Card className="mb-3">
+        <CardBody>
+          <div className="italics small text-gray mb-3">
+            {this.props.formatMessage("search.results.countInfo", {
+              matches: results.length,
+              assets: rows.length,
+            })}
+          </div>
+          <Table
+            responsive={true}
+            bordered={false}
+            borderless={true}
+            className="search-results"
+          >
+            <tbody>{rows}</tbody>
+          </Table>
+        </CardBody>
+      </Card>
     );
   }
 
-  private renderResults() {
-    const items = SearchResults.mergeDuplicates(this.props.results);
+  private renderResults(results: SearchResult[]) {
+    const items = SearchResults.mergeDuplicates(results);
     return items.map((r) => {
       return (
         <tr key={r.iri} className="search-result-match-row">

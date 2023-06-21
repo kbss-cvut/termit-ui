@@ -84,7 +84,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
             onChange={this.onChange}
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
-            fetchLimit={Constants.DEFAULT_TERM_SELECTOR_FETCH_SIZE}
+            fetchLimit={Constants.DEFAULT_PAGE_SIZE}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(

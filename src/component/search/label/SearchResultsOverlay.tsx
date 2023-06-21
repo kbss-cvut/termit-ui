@@ -1,7 +1,7 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../../hoc/withI18n";
-import SearchResult from "../../../model/SearchResult";
+import SearchResult from "../../../model/search/SearchResult";
 import { Popover, PopoverBody } from "reactstrap";
 import TermBadge from "../../badge/TermBadge";
 import { SearchResults } from "./SearchResults";

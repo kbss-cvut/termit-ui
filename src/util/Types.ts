@@ -66,3 +66,11 @@ export interface BasicRouteProps {
 export interface TreeSelectOption {
   expanded?: boolean;
 }
+
+/**
+ * Specification of page of data requested from the server.
+ */
+export interface PageRequest {
+  page: number;
+  size: number;
+}

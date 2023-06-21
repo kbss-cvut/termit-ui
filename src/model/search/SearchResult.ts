@@ -1,7 +1,7 @@
-import Vocabulary from "../util/VocabularyUtils";
-import VocabularyUtils from "../util/VocabularyUtils";
-import { AssetData } from "./Asset";
-import Utils from "../util/Utils";
+import Vocabulary from "../../util/VocabularyUtils";
+import VocabularyUtils from "../../util/VocabularyUtils";
+import { AssetData } from "../Asset";
+import Utils from "../../util/Utils";
 
 export const CONTEXT = {
   iri: "@id",

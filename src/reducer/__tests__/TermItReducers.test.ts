@@ -38,7 +38,7 @@ import Term, { TermData } from "../../model/Term";
 import RdfsResource from "../../model/RdfsResource";
 import AppNotification from "../../model/AppNotification";
 import Generator from "../../__tests__/environment/Generator";
-import SearchQuery from "../../model/SearchQuery";
+import SearchQuery from "../../model/search/SearchQuery";
 import QueryResult from "../../model/QueryResult";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
@@ -59,7 +59,6 @@ function stateToPlainObject(state: TermItState): TermItState {
     selectedTerm: state.selectedTerm,
     createdTermsCounter: state.createdTermsCounter,
     fileContent: state.fileContent,
-    facetedSearchResult: state.facetedSearchResult,
     searchListenerCount: state.searchListenerCount,
     searchInProgress: state.searchInProgress,
     searchQuery: state.searchQuery,
@@ -294,10 +293,6 @@ describe("Reducers", () => {
       initialState.searchQuery = new SearchQuery();
       initialState.searchQuery.searchQuery = "hello";
       initialState.searchInProgress = true;
-      initialState.facetedSearchResult = {
-        search: "test",
-        anotherAtt: "yas",
-      };
       initialState.queryResults = { test: new QueryResult("test", {}) };
       initialState.searchListenerCount = 2;
       expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
@@ -305,7 +300,6 @@ describe("Reducers", () => {
           searchResults: null,
           searchQuery: new SearchQuery(),
           searchInProgress: false,
-          facetedSearchResult: {},
           searchListenerCount: 0,
           queryResults: {},
         })

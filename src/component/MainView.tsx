@@ -43,6 +43,7 @@ const SearchVocabularies = React.lazy(
   () => import("./search/SearchVocabularies")
 );
 const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
+const FacetedSearch = React.lazy(() => import("./search/facet/FacetedSearch"));
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
@@ -185,6 +186,11 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                   title={i18n("main.nav.searchVocabularies")}
                   path={Routes.searchVocabularies.path}
                   component={SearchVocabularies}
+                />
+                <BreadcrumbRoute
+                  title={i18n("main.nav.facetedSearch")}
+                  path={Routes.facetedSearch.path}
+                  component={FacetedSearch}
                 />
                 <BreadcrumbRoute
                   title={i18n("main.nav.search")}

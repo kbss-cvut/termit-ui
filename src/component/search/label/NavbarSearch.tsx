@@ -8,7 +8,7 @@ import {
   InputGroupAddon,
   InputGroupText,
 } from "reactstrap";
-import SearchResult from "../../../model/SearchResult";
+import SearchResult from "../../../model/search/SearchResult";
 import { connect } from "react-redux";
 import { updateSearchFilter } from "../../../action/SearchActions";
 import SearchResultsOverlay from "./SearchResultsOverlay";
@@ -38,7 +38,7 @@ interface NavbarSearchState {
 }
 
 /**
- * Routes for which the results results preview popup should not be displayed.
+ * Routes for which the results preview popup should not be displayed.
  */
 const ROUTES_WITHOUT_SEARCH_OVERLAY = [
   Routes.search,
@@ -86,12 +86,19 @@ export class NavbarSearch extends React.Component<
   public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     this.closeResults();
-    this.props.updateSearchFilter(value).then(() =>
+    this.props.updateSearchFilter(value).then(() => {
+      const path = this.props.location.pathname;
+      if (
+        path.endsWith(Routes.publicFacetedSearch.path) ||
+        path.endsWith(Routes.facetedSearch.path)
+      ) {
+        this.openSearchView();
+      }
       this.setState({
         showResults: true,
         searchOriginNavbar: this.props.navbar,
-      })
-    );
+      });
+    });
   };
 
   private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -101,15 +108,9 @@ export class NavbarSearch extends React.Component<
   };
 
   private openSearchView = () => {
-    const query = new Map();
-    const searchString = this.props.searchString.trim();
-    if (searchString.length > 0) {
-      query.set("searchString", encodeURI(searchString));
-    }
     this.closeResults();
     Routing.transitionTo(
-      isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch,
-      { query }
+      isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch
     );
   };
 
@@ -125,11 +126,27 @@ export class NavbarSearch extends React.Component<
     );
   }
 
+  private onSearchIconClick = () => {
+    if (!this.props.location.pathname.startsWith(Routes.search.path)) {
+      Routing.transitionTo(
+        isLoggedIn(this.props.user)
+          ? Routes.facetedSearch
+          : Routes.publicFacetedSearch
+      );
+    }
+  };
+
   public render() {
     const { i18n, navbar } = this.props;
 
     const searchIcon = (
-      <InputGroupAddon addonType="prepend" id="icon">
+      <InputGroupAddon
+        addonType="prepend"
+        id="search-icon"
+        title={i18n("main.search.tooltip")}
+        className="search-icon"
+        onClick={this.onSearchIconClick}
+      >
         <InputGroupText>
           <span className="fas fa-search" />
         </InputGroupText>

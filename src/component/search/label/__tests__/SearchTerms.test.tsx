@@ -1,48 +1,41 @@
-import { SearchTerms } from "../../SearchTerms";
-import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
-import SearchQuery from "../../../../model/SearchQuery";
+import SearchTerms from "../../SearchTerms";
 import Generator from "../../../../__tests__/environment/Generator";
 import SearchResults from "../SearchResults";
-import SearchResult from "../../../../model/SearchResult";
+import SearchResult from "../../../../model/search/SearchResult";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import TermResultVocabularyFilter from "../TermResultVocabularyFilter";
+import * as Redux from "react-redux";
+import { act } from "react-dom/test-utils";
 
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
+}));
 jest.mock("../TermResultVocabularyFilter", () => () => (
   <div>Vocabulary filter</div>
 ));
 jest.mock("../SearchResults", () => () => <div>Results</div>);
 
 describe("SearchTerms", () => {
-  let dispatchFunctions: {
-    addSearchListener: () => void;
-    removeSearchListener: () => void;
-    updateSearchFilter: (searchString: string) => any;
-  };
-
   beforeEach(() => {
-    dispatchFunctions = {
-      addSearchListener: jest.fn(),
-      removeSearchListener: jest.fn(),
-      updateSearchFilter: jest.fn(),
-    };
+    const fakeDispatch = jest.fn();
+    (Redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
   });
 
   it("renders only term results", () => {
     const results = generateSearchResults([]);
-    const wrapper = mountWithIntl(
-      <SearchTerms
-        {...dispatchFunctions}
-        searchQuery={new SearchQuery()}
-        searchResults={results}
-        searchInProgress={false}
-        {...intlFunctions()}
-      />
-    );
+    jest
+      .spyOn(Redux, "useSelector")
+      .mockReturnValueOnce(results)
+      .mockReturnValueOnce(false);
+    const wrapper = mountWithIntl(<SearchTerms />);
 
     const renderedResults = wrapper.find(SearchResults).props().results;
-    expect(renderedResults.length).toBeGreaterThan(0);
-    renderedResults.forEach((rr) => {
+    expect(renderedResults).not.toBeNull();
+    expect(renderedResults!.length).toBeGreaterThan(0);
+    renderedResults!.forEach((rr) => {
       expect(rr.types).toEqual([VocabularyUtils.TERM]);
     });
   });
@@ -53,23 +46,24 @@ describe("SearchTerms", () => {
       Generator.generateUri(),
     ];
     const results = generateSearchResults(selectedVocabularies);
-    const wrapper = mountWithIntl(
-      <SearchTerms
-        {...dispatchFunctions}
-        searchQuery={new SearchQuery()}
-        searchResults={results}
-        searchInProgress={false}
-        {...intlFunctions()}
-      />
-    );
-    (wrapper.find(TermResultVocabularyFilter).prop("onChange") as any)(
-      selectedVocabularies
-    );
+    jest
+      .spyOn(Redux, "useSelector")
+      .mockReturnValueOnce(results)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(results)
+      .mockReturnValueOnce(false);
+    const wrapper = mountWithIntl(<SearchTerms />);
+    act(() => {
+      (wrapper.find(TermResultVocabularyFilter).prop("onChange") as any)(
+        selectedVocabularies
+      );
+    });
     wrapper.update();
 
     const renderedResults = wrapper.find(SearchResults).props().results;
-    expect(renderedResults.length).toBeGreaterThan(0);
-    renderedResults.forEach((rr) => {
+    expect(renderedResults).not.toBeNull();
+    expect(renderedResults!.length).toBeGreaterThan(0);
+    renderedResults!.forEach((rr) => {
       expect(rr.vocabulary).toBeDefined();
       expect(selectedVocabularies.indexOf(rr.vocabulary!.iri)).not.toEqual(-1);
     });
