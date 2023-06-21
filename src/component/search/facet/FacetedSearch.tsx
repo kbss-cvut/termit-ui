@@ -50,22 +50,30 @@ const FacetedSearch: React.FC = () => {
     React.useState<FacetedSearchResult[] | null>(null);
   const runSearch = React.useCallback(
     (params: SearchParam[]) => {
-      if (params.length > 0) {
-        trackPromise(
-          dispatch(
-            executeFacetedTermSearch(params, {
-              page,
-              size: Constants.DEFAULT_PAGE_SIZE,
-            })
-          ),
-          "faceted-search"
-        ).then((res) => setResults(res));
-      }
+      trackPromise(
+        dispatch(
+          executeFacetedTermSearch(params, {
+            page,
+            size: Constants.DEFAULT_PAGE_SIZE,
+          })
+        ),
+        "faceted-search"
+      ).then((res) => setResults(res));
     },
     [page, dispatch, setResults]
   );
   React.useEffect(() => {
-    runSearch(aggregateSearchParams(notationParam, typeParam, vocabularyParam));
+    const params = aggregateSearchParams(
+      notationParam,
+      typeParam,
+      vocabularyParam
+    );
+    if (params.length === 0) {
+      setPage(0);
+      setResults(null);
+      return;
+    }
+    runSearch(params);
   }, [notationParam, typeParam, vocabularyParam, runSearch]);
 
   return (
