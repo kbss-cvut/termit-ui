@@ -988,7 +988,12 @@ export function updateVocabulary(vocabulary: Vocabulary) {
   };
 }
 
-// const pendingGetLabelRequests = {};
+/**
+ * Stores pending promises with requests to get labels so that
+ * they can be reused when multiple calls for the same label
+ * arrive simultaneously (i.e., while one is already running).
+ */
+const pendingGetLabelRequests: { [key: string]: Promise<any> } = {};
 
 /**
  * Fetches RDFS:label of a resource with the specified identifier.
@@ -1002,8 +1007,14 @@ export function getLabel(iri: string) {
     if (getState().labelCache[iri]) {
       return Promise.resolve(getState().labelCache[iri]);
     }
+    if (pendingGetLabelRequests[iri] !== undefined) {
+      return pendingGetLabelRequests[iri];
+    }
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(Constants.API_PREFIX + "/data/label", param("iri", iri))
+    const promise = Ajax.get(
+      Constants.API_PREFIX + "/data/label",
+      param("iri", iri)
+    )
       .then((data) => {
         const payload = {};
         payload[iri] = data;
@@ -1013,7 +1024,12 @@ export function getLabel(iri: string) {
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return undefined;
+      })
+      .finally(() => {
+        delete pendingGetLabelRequests[iri];
       });
+    pendingGetLabelRequests[iri] = promise;
+    return promise;
   };
 }
 
