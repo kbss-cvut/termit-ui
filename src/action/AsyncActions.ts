@@ -989,23 +989,32 @@ export function updateVocabulary(vocabulary: Vocabulary) {
 }
 
 /**
+ * Stores pending promises with requests to get labels so that
+ * they can be reused when multiple calls for the same label
+ * arrive simultaneously (i.e., while one is already running).
+ */
+const pendingGetLabelRequests: { [key: string]: Promise<any> } = {};
+
+/**
  * Fetches RDFS:label of a resource with the specified identifier.
  * @param iri Resource identifier
  */
 export function getLabel(iri: string) {
-  return getTextualField(iri, "label", ActionType.GET_LABEL);
-}
-
-function getTextualField(iri: string, field: string, actionType: string) {
   const action = {
-    type: actionType,
+    type: ActionType.GET_LABEL,
   };
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-    if (field === "label" && getState().labelCache[iri]) {
+    if (getState().labelCache[iri]) {
       return Promise.resolve(getState().labelCache[iri]);
     }
+    if (pendingGetLabelRequests[iri] !== undefined) {
+      return pendingGetLabelRequests[iri];
+    }
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(Constants.API_PREFIX + "/data/" + field, param("iri", iri))
+    const promise = Ajax.get(
+      Constants.API_PREFIX + "/data/label",
+      param("iri", iri)
+    )
       .then((data) => {
         const payload = {};
         payload[iri] = data;
@@ -1015,7 +1024,12 @@ function getTextualField(iri: string, field: string, actionType: string) {
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return undefined;
+      })
+      .finally(() => {
+        delete pendingGetLabelRequests[iri];
       });
+    pendingGetLabelRequests[iri] = promise;
+    return promise;
   };
 }
 
