@@ -1,3 +1,9 @@
+#### Version 2.18.0
+
+- Implemented faceted term search.
+- Added link to generated REST API documentation to the page footer.
+- More efficient asset label retrieval.
+
 #### Version 2.17.0
 
 - Added support for user groups.

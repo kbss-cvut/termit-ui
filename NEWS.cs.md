@@ -1,3 +1,9 @@
+#### Verze 2.18.0
+
+- Implementováno facetové vyhledávání pojmů.
+- Přidán link na generovanou dokumentaci REST API do paty stránky.
+- Zefektivněno načítání názvů objektů.
+
 #### Verze 2.17.0
 
 - Přidána správa uživatelských skupin.
