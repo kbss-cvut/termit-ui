@@ -98,21 +98,6 @@ export function selectVocabularyTerm(
   };
 }
 
-export function fireFacetedSearchRequested() {
-  return asyncActionRequest({ type: ActionType.FACETED_SEARCH });
-}
-
-export function fireFacetedSearchFinished(data: any) {
-  return asyncActionSuccessWithPayload(
-    { type: ActionType.FACETED_SEARCH },
-    data
-  );
-}
-
-export function fireFacetedSearchFailed(error: any) {
-  return asyncActionFailure({ type: ActionType.FACETED_SEARCH }, error);
-}
-
 export function clearProperties() {
   return {
     type: ActionType.CLEAR_PROPERTIES,

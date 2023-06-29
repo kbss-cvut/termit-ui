@@ -1,9 +1,9 @@
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
-import { SearchResults } from "../SearchResults";
-import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
+import SearchResults from "../SearchResults";
+import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import { Label } from "reactstrap";
 import en from "../../../../i18n/en";
-import SearchResult from "../../../../model/SearchResult";
+import SearchResult from "../../../../model/search/SearchResult";
 import Generator from "../../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import TermBadge from "../../../badge/TermBadge";
@@ -18,15 +18,14 @@ jest.mock("../../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
 describe("SearchResults", () => {
   beforeEach(() => {
     Ajax.get = jest.fn().mockResolvedValue({});
+    mockUseI18n();
   });
 
   it("render no results info when no results are found", () => {
-    const wrapper = mountWithIntl(
-      <SearchResults results={[]} {...intlFunctions()} />
-    );
+    const wrapper = renderWithResults([]);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
-    expect(label.text()).toContain(en.messages["main.search.no-results"]);
+    expect(label.text()).toContain(en.messages["search.no-results"]);
   });
 
   function generateTermResult(score?: number) {
@@ -43,11 +42,7 @@ describe("SearchResults", () => {
 
   it("renders term results", () => {
     const result = generateTermResult();
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults([result]);
     const rows = wrapper.find("tr");
     // result row
     expect(rows.length).toEqual(1);
@@ -55,6 +50,14 @@ describe("SearchResults", () => {
     const label = wrapper.find(AssetLink);
     expect(label.text().startsWith(result.label)).toBeTruthy();
   });
+
+  function renderWithResults(results: SearchResult[]) {
+    return mountWithIntl(
+      <MemoryRouter>
+        <SearchResults results={results} />
+      </MemoryRouter>
+    );
+  }
 
   function generateVocabularyResult(score?: number) {
     return new SearchResult({
@@ -69,11 +72,7 @@ describe("SearchResults", () => {
 
   it("renders vocabulary results", () => {
     const result = generateVocabularyResult();
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults([result]);
     const rows = wrapper.find("tr");
     // Result row
     expect(rows.length).toEqual(1);
@@ -86,7 +85,7 @@ describe("SearchResults", () => {
     const results = [generateTermResult(), generateVocabularyResult()];
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
+        <SearchResults results={results} />
       </MemoryRouter>
     );
     const rows = wrapper.find("tr");
@@ -98,11 +97,7 @@ describe("SearchResults", () => {
 
   it("renders VocabularyLink for vocabulary result", () => {
     const result = generateVocabularyResult();
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults([result]);
     expect(wrapper.find(VocabularyLink).exists()).toBeTruthy();
   });
 
@@ -110,7 +105,7 @@ describe("SearchResults", () => {
     const result = generateTermResult();
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
+        <SearchResults results={[result]} />
       </MemoryRouter>
     );
     expect(wrapper.find(AssetLink).exists()).toBeTruthy();
@@ -137,11 +132,7 @@ describe("SearchResults", () => {
         types: [VocabularyUtils.VOCABULARY],
       }),
     ];
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults(results);
     const rows = wrapper.find("tr");
     // result row
     expect(rows.length).toEqual(1);
@@ -178,11 +169,7 @@ describe("SearchResults", () => {
         types: [VocabularyUtils.VOCABULARY],
       }),
     ];
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults(results);
     const rows = wrapper.find("tr");
     // result row
     expect(rows.length).toEqual(1);
@@ -194,12 +181,17 @@ describe("SearchResults", () => {
 
   it("ensures results are sorted by score descending", () => {
     const results = [generateTermResult(1.1), generateVocabularyResult(2.5)];
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults(results);
     const rows = wrapper.find(AssetLink);
     expect(rows.at(0).text().startsWith(results[1].label)).toBeTruthy();
+  });
+
+  it("renders link to faceted search when no results are found and link display is enabled", () => {
+    const wrapper = mountWithIntl(
+      <MemoryRouter>
+        <SearchResults results={[]} withFacetedSearchLink={true} />
+      </MemoryRouter>
+    );
+    expect(wrapper.exists("#search-results-faceted-link")).toBeTruthy();
   });
 });

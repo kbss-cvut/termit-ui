@@ -83,8 +83,22 @@ class Footer extends React.Component<FooterProps, FooterState> {
             <ErrorLogViewer />
           </FooterModalViewer>
         </div>
+        <div>
+          <a
+            href={`${Constants.SERVER_URL}/swagger-ui/index.html`}
+            title={i18n("footer.apidocs.tooltip")}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {i18n("footer.apidocs")}
+          </a>
+        </div>
         <div className="news-viewer-toggle px-sm-2 px-sm-3 px-1 text-right">
-          <span onClick={this.toggleNewsViewer} id="news-toggler">
+          <span
+            onClick={this.toggleNewsViewer}
+            id="news-toggler"
+            title={i18n("footer.version.tooltip")}
+          >
             <span className="footer-version">
               {i18n("footer.version")}&nbsp;
             </span>

@@ -33,6 +33,10 @@ const en = {
 
     "footer.copyright": "KBSS at FEE CTU in Prague",
     "footer.version": "Version",
+    "footer.version.tooltip":
+      "Application version. Click to view release notes.",
+    "footer.apidocs": "API",
+    "footer.apidocs.tooltip": "Server API documentation.",
 
     "news-viewer.title": "News",
 
@@ -79,6 +83,7 @@ const en = {
     "main.nav.search": "Search",
     "main.nav.searchTerms": "Search terms",
     "main.nav.searchVocabularies": "Search vocabularies",
+    "main.nav.facetedSearch": "Faceted search",
     "main.nav.admin": "Administration",
     "main.nav.create-vocabulary": "New Vocabulary",
     "main.nav.import-vocabulary": "Import Vocabulary",
@@ -88,7 +93,7 @@ const en = {
     "main.search.tooltip": "Go to the search screen",
     "main.search.count-info-and-link":
       "Showing {displayed} of {count} results. See all results.",
-    "main.search.no-results": "No results found.",
+    "main.search.no-results": "No results found. Click to try faceted search.",
     "main.lang-selector.tooltip": "Select user interface language",
 
     "dashboard.widget.assetList.empty": "Found no assets to show here.",
@@ -548,9 +553,10 @@ const en = {
     "search.tab.terms": "Terms",
     "search.tab.terms.filter.allVocabularies": "All vocabularies",
     "search.tab.vocabularies": "Vocabularies",
-    "search.tab.facets": "Faceted search",
+    "search.tab.facets": "Faceted term search",
     "search.reset": "Reset search",
     "search.results.title": 'Results for "{searchString}"',
+    "search.no-results": "No results found.",
     "search.results.countInfo": "Found {matches} matches in {assets} assets.",
     "search.results.table.label": "Label",
     "search.results.table.label.tooltip": "Open asset detail",
@@ -561,14 +567,11 @@ const en = {
     "search.results.field.comment": "Comment",
     "search.results.field.definition": "Definition",
     "search.results.vocabulary.from": "from",
-    "search.slovnik": "Vocabulary",
-    "search.informace": "Information",
-    "search.je-instanci-typu": "has type",
-    "search.je-specializaci": "specializes",
-    "search.ma-vlastnosti-typu": "has intrinsic trope types",
-    "search.ma-vztahy-typu": "has relation types",
-    "search.pojem": "Term",
-    "search.typ": "Type",
+    "search.results.facetedLink": "Try using {link}.",
+    "search.faceted.matchType.exact": "Exact match",
+    "search.faceted.matchType.substring": "Substring",
+    "search.faceted.no-results":
+      "No more results found for the specified parameters.",
 
     "profile.first.name": "First name",
     "profile.last.name": "Last name",

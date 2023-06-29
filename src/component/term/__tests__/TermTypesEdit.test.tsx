@@ -1,24 +1,30 @@
 import Term from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { TermTypesEdit } from "../TermTypesEdit";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import intlData from "../../../i18n/en";
+import TermTypesEdit from "../TermTypesEdit";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Generator from "../../../__tests__/environment/Generator";
-import { shallow } from "enzyme";
 import { langString } from "../../../model/MultilingualString";
+import * as Redux from "react-redux";
+import { ThunkDispatch } from "../../../util/Types";
+
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
+}));
 
 jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
 
 describe("TermTypesEdit", () => {
   let onChange: (types: string[]) => void;
-  let loadTypes: () => void;
+  let fakeDispatch: ThunkDispatch;
 
   beforeEach(() => {
     onChange = jest.fn();
-    loadTypes = jest.fn();
+    fakeDispatch = jest.fn();
+    jest.spyOn(Redux, "useDispatch").mockReturnValue(fakeDispatch);
   });
 
   it("does not render implicit term type in the selector when no other type is assigned to term", () => {
@@ -27,16 +33,10 @@ describe("TermTypesEdit", () => {
       iri: VocabularyUtils.TERM,
       label: langString("Term"),
     });
+    jest.spyOn(Redux, "useSelector").mockReturnValue(availableTypes);
     const types = [VocabularyUtils.TERM];
     const wrapper = mountWithIntl(
-      <TermTypesEdit
-        termTypes={types}
-        availableTypes={availableTypes}
-        intl={intlData}
-        loadTypes={loadTypes}
-        onChange={onChange}
-        {...intlFunctions()}
-      />
+      <TermTypesEdit termTypes={types} onChange={onChange} />
     );
     const selector = wrapper.find(IntelligentTreeSelect);
     expect(selector.prop("value")).not.toBeDefined();
@@ -50,16 +50,10 @@ describe("TermTypesEdit", () => {
       label: langString("Term"),
     });
     availableTypes[iri] = new Term({ iri, label: langString("Other type") });
+    jest.spyOn(Redux, "useSelector").mockReturnValue(availableTypes);
     const types = [VocabularyUtils.TERM, iri];
-    const wrapper = shallow(
-      <TermTypesEdit
-        termTypes={types}
-        availableTypes={availableTypes}
-        intl={intlData}
-        loadTypes={loadTypes}
-        onChange={onChange}
-        {...intlFunctions()}
-      />
+    const wrapper = mountWithIntl(
+      <TermTypesEdit termTypes={types} onChange={onChange} />
     );
     const selector = wrapper.find(IntelligentTreeSelect);
     expect(selector.prop("value")).toEqual(availableTypes[iri].iri);
@@ -70,17 +64,11 @@ describe("TermTypesEdit", () => {
       iri: Generator.generateUri(),
       label: langString("Selected term"),
     });
-    const wrapper = shallow(
-      <TermTypesEdit
-        termTypes={[VocabularyUtils.TERM]}
-        availableTypes={{}}
-        intl={intlData}
-        loadTypes={loadTypes}
-        onChange={onChange}
-        {...intlFunctions()}
-      />
+    jest.spyOn(Redux, "useSelector").mockReturnValue({});
+    const wrapper = mountWithIntl(
+      <TermTypesEdit termTypes={[VocabularyUtils.TERM]} onChange={onChange} />
     );
-    (wrapper.instance() as TermTypesEdit).onChange(selected);
+    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(selected);
     expect(onChange).toHaveBeenCalled();
     const newTypes = (onChange as jest.Mock).mock.calls[0][0];
     expect(newTypes.length).toEqual(2);
@@ -96,33 +84,12 @@ describe("TermTypesEdit", () => {
       label: langString("Term"),
     });
     availableTypes[iri] = new Term({ iri, label: langString("Other type") });
+    jest.spyOn(Redux, "useSelector").mockReturnValue(availableTypes);
     const types = [VocabularyUtils.TERM, iri];
-    const wrapper = shallow<TermTypesEdit>(
-      <TermTypesEdit
-        termTypes={types}
-        availableTypes={availableTypes}
-        loadTypes={loadTypes}
-        intl={intlData}
-        onChange={onChange}
-        {...intlFunctions()}
-      />
+    const wrapper = mountWithIntl(
+      <TermTypesEdit termTypes={types} onChange={onChange} />
     );
-    // Simulate tree reset (using the real component did not work)
-    wrapper.instance().onChange(null);
+    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(null);
     expect(onChange).toHaveBeenCalledWith([VocabularyUtils.TERM]);
-  });
-
-  it("loads types on mount", () => {
-    shallow(
-      <TermTypesEdit
-        termTypes={[VocabularyUtils.TERM]}
-        availableTypes={{}}
-        intl={intlData}
-        loadTypes={loadTypes}
-        onChange={onChange}
-        {...intlFunctions()}
-      />
-    );
-    expect(loadTypes).toHaveBeenCalled();
   });
 });

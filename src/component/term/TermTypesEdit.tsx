@@ -1,11 +1,9 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import Term, { TermData } from "../../model/Term";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { FormFeedback, FormGroup, Label } from "reactstrap";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -13,109 +11,76 @@ import { ThunkDispatch } from "../../util/Types";
 import { loadTypes } from "../../action/AsyncActions";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
-import IntlData from "../../model/IntlData";
-import _ from "lodash";
 import HelpIcon from "../misc/HelpIcon";
+import { mapTypeOptions } from "../misc/treeselect/OptionMappers";
+import { useI18n } from "../hook/useI18n";
 
-interface TermTypesEditProps extends HasI18n {
+interface TermTypesEditProps {
   termTypes: string[];
   onChange: (types: string[]) => void;
-  validationMessage?: string | JSX.Element;
-  availableTypes: { [key: string]: Term };
-  intl: IntlData;
-  loadTypes: () => void;
+  validationMessage?: string | React.JSX.Element;
 }
 
-const getTypesForSelector = _.memoize(
-  (availableTypes: { [key: string]: Term }) => {
-    if (!availableTypes) {
-      return [];
-    }
-    const typesMap = {};
-    // Make a deep copy of the available types since we're going to modify them for the tree select
-    Object.keys(availableTypes).forEach(
-      (t) => (typesMap[t] = new Term(availableTypes[t]))
-    );
-    const types = Object.keys(typesMap).map((k) => typesMap[k]);
-    types.forEach((t) => {
-      if (t.subTerms) {
-        // The tree-select needs parent for proper function
-        // @ts-ignore
-        t.subTerms.forEach((st) => (typesMap[st].parent = t.iri));
-      }
-    });
-    return types;
-  }
-);
+function resolveSelectedTypes(
+  selected: string[],
+  options: Term[]
+): string | undefined {
+  const matching = options.filter(
+    (t) => t.iri !== VocabularyUtils.TERM && selected.indexOf(t.iri) !== -1
+  );
+  return matching.length > 0 ? matching[0].iri : undefined;
+}
 
-export class TermTypesEdit extends React.Component<TermTypesEditProps> {
-  public componentDidMount(): void {
-    this.props.loadTypes();
-  }
-
-  public onChange = (val: Term | null) => {
-    this.props.onChange(
-      val ? [val.iri, VocabularyUtils.TERM] : [VocabularyUtils.TERM]
-    );
+const TermTypesEdit: React.FC<TermTypesEditProps> = ({
+  termTypes,
+  onChange,
+  validationMessage,
+}) => {
+  const { i18n, locale } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(loadTypes());
+  }, [dispatch]);
+  const onSelect = (val: Term | null) => {
+    onChange(val ? [val.iri, VocabularyUtils.TERM] : [VocabularyUtils.TERM]);
   };
+  const types = useSelector((state: TermItState) => state.types);
+  const typeOptions = React.useMemo(() => mapTypeOptions(types), [types]);
 
-  private resolveSelectedTypes(types: Term[]): string | undefined {
-    const matching = types.filter(
-      (t) =>
-        t.iri !== VocabularyUtils.TERM &&
-        this.props.termTypes.indexOf(t.iri) !== -1
-    );
-    return matching.length > 0 ? matching[0].iri : undefined;
-  }
+  return (
+    <FormGroup>
+      <Label className="attribute-label">
+        {i18n("term.metadata.types")}
+        <HelpIcon id={"test-types-edit"} text={i18n("term.types.help")} />
+      </Label>
+      <IntelligentTreeSelect
+        onChange={onSelect}
+        value={resolveSelectedTypes(termTypes, typeOptions)}
+        options={typeOptions}
+        valueKey="iri"
+        getOptionLabel={(option: TermData) =>
+          getLocalized(option.label, getShortLocale(locale))
+        }
+        childrenKey="subTerms"
+        showSettings={false}
+        maxHeight={150}
+        multi={false}
+        displayInfoOnHover={true}
+        expanded={true}
+        renderAsTree={true}
+        placeholder=""
+        classNamePrefix="react-select"
+      />
+      {validationMessage && (
+        <FormFeedback
+          className="validation-feedback"
+          title={i18n("validation.message.tooltip")}
+        >
+          {validationMessage}
+        </FormFeedback>
+      )}
+    </FormGroup>
+  );
+};
 
-  public render() {
-    const types = getTypesForSelector(this.props.availableTypes);
-    const selected = this.resolveSelectedTypes(types);
-    const { i18n, intl } = this.props;
-    return (
-      <FormGroup>
-        <Label className="attribute-label">
-          {i18n("term.metadata.types")}
-          <HelpIcon id={"test-types-edit"} text={i18n("term.types.help")} />
-        </Label>
-        <IntelligentTreeSelect
-          onChange={this.onChange}
-          value={selected}
-          options={types}
-          valueKey="iri"
-          getOptionLabel={(option: TermData) =>
-            getLocalized(option.label, getShortLocale(intl.locale))
-          }
-          childrenKey="subTerms"
-          showSettings={false}
-          maxHeight={150}
-          multi={false}
-          displayInfoOnHover={true}
-          expanded={true}
-          renderAsTree={true}
-          placeholder=""
-          classNamePrefix="react-select"
-        />
-        {this.props.validationMessage && (
-          <FormFeedback
-            className="validation-feedback"
-            title={i18n("validation.message.tooltip")}
-          >
-            {this.props.validationMessage}
-          </FormFeedback>
-        )}
-      </FormGroup>
-    );
-  }
-}
-
-export default connect(
-  (state: TermItState) => {
-    return { availableTypes: state.types, intl: state.intl };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      loadTypes: () => dispatch(loadTypes()),
-    };
-  }
-)(injectIntl(withI18n(TermTypesEdit)));
+export default TermTypesEdit;

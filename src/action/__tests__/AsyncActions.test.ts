@@ -1092,7 +1092,7 @@ describe("Async actions", () => {
     it("returns label immediately if it is stored in label cache", () => {
       const iri = Generator.generateUri();
       const label = "test";
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(label));
+      Ajax.get = jest.fn().mockResolvedValue(label);
       store.getState().labelCache[iri] = label;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(getLabel(iri))
@@ -1102,6 +1102,17 @@ describe("Async actions", () => {
         ).not.toBeDefined();
         expect(Ajax.get).not.toHaveBeenCalled();
       });
+    });
+
+    it("returns existing promise when one for label with the same IRI is pending", async () => {
+      const iri = Generator.generateUri();
+      const label = "test";
+      Ajax.get = jest.fn().mockResolvedValue(label);
+      await Promise.all([
+        (store.dispatch as ThunkDispatch)(getLabel(iri)),
+        (store.dispatch as ThunkDispatch)(getLabel(iri)),
+      ]);
+      expect(Ajax.get).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -27,6 +27,7 @@ import Search from "../search/label/Search";
 import "../MainView.scss";
 import { loadConfiguration } from "../../action/AsyncActions";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
+import FacetedSearch from "../search/facet/FacetedSearch";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   sidebarExpanded: boolean;
@@ -140,6 +141,11 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                 title={i18n("main.nav.searchVocabularies")}
                 path={Routes.publicSearchVocabularies.path}
                 component={SearchVocabularies}
+              />
+              <BreadcrumbRoute
+                title={i18n("main.nav.facetedSearch")}
+                path={Routes.publicFacetedSearch.path}
+                component={FacetedSearch}
               />
               <BreadcrumbRoute
                 title={i18n("main.nav.search")}

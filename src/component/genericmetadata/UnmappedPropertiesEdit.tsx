@@ -233,7 +233,7 @@ export class UnmappedPropertiesEdit extends React.Component<
               options={this.prepareKnownPropertiesForRendering()}
               placeholder=""
               classNamePrefix="react-select"
-              noResultsText={i18n("main.search.no-results")}
+              noResultsText={i18n("search.no-results")}
             />
           ) : (
             <CustomInput disabled={true} />

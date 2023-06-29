@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SearchResult from "../../../model/SearchResult";
+import SearchResult from "../../../model/search/SearchResult";
 import Utils from "../../../util/Utils";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
@@ -59,7 +59,7 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
   };
 
   return (
-    <Row className="mb-3">
+    <Row>
       <Col>
         <IntelligentTreeSelect
           value={selectedVocabularies}
@@ -74,7 +74,7 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
           options={options}
           placeholder={i18n("search.tab.terms.filter.allVocabularies")}
           showSettings={false}
-          noResultsText={i18n("main.search.no-results")}
+          noResultsText={i18n("search.no-results")}
         />
       </Col>
     </Row>

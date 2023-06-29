@@ -7,6 +7,7 @@ interface SimplePaginationProps {
   setPage: (pageNo: number) => void;
   pageSize: number;
   itemCount?: number;
+  className?: string;
 }
 
 const SimplePagination: React.FC<SimplePaginationProps> = ({
@@ -14,12 +15,16 @@ const SimplePagination: React.FC<SimplePaginationProps> = ({
   setPage,
   itemCount = 0,
   pageSize,
+  className,
 }) => {
   const { i18n } = useI18n();
 
   return (
     <>
-      <Pagination aria-label="Last commented assets pagination">
+      <Pagination
+        aria-label="Last commented assets pagination"
+        className={className}
+      >
         <PaginationItem disabled={page === 0}>
           <PaginationLink
             first={true}

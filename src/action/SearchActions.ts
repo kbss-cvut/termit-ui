@@ -3,8 +3,9 @@
  */
 
 import * as SyncActions from "./SyncActions";
-import Ajax, { params } from "../util/Ajax";
-import { ThunkDispatch } from "../util/Types";
+import { asyncActionRequest, asyncActionSuccess } from "./SyncActions";
+import Ajax, { content, params } from "../util/Ajax";
+import { PageRequest, ThunkDispatch } from "../util/Types";
 import Constants from "../util/Constants";
 import { ErrorData } from "../model/ErrorInfo";
 import Message from "../model/Message";
@@ -13,9 +14,14 @@ import ActionType from "./ActionType";
 import SearchResult, {
   CONTEXT as SEARCH_RESULT_CONTEXT,
   SearchResultData,
-} from "../model/SearchResult";
+} from "../model/search/SearchResult";
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
+import SearchParam from "../model/search/SearchParam";
+import {
+  CONTEXT as FACETED_SEARCH_RESULT_CONTEXT,
+  FacetedSearchResult,
+} from "../model/search/FacetedSearchResult";
 
 /**
  * Add a search listener using a simple reference counting.
@@ -147,5 +153,40 @@ export function searchResult(searchResults: SearchResult[]) {
   return (dispatch: ThunkDispatch) => {
     dispatch({ type: ActionType.SEARCH_RESULT, searchResults });
     dispatch({ type: ActionType.SEARCH_FINISH });
+  };
+}
+
+export function executeFacetedTermSearch(
+  params: SearchParam[],
+  pageSpec: PageRequest = {
+    page: 0,
+    size: Constants.DEFAULT_PAGE_SIZE,
+  }
+) {
+  const action = { type: ActionType.FACETED_SEARCH };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      Constants.API_PREFIX + "/search/faceted/terms",
+      content(params)
+        .params(pageSpec)
+        .contentType(Constants.JSON_MIME_TYPE)
+        .accept(Constants.JSON_LD_MIME_TYPE)
+        .preserveAcceptHeaderInPost()
+    )
+      .then((resp) => {
+        dispatch(asyncActionSuccess(action));
+        return JsonLdUtils.compactAndResolveReferencesAsArray<FacetedSearchResult>(
+          resp.data,
+          FACETED_SEARCH_RESULT_CONTEXT
+        );
+      })
+      .catch((error: ErrorData) => {
+        dispatch(SyncActions.asyncActionFailure(action, error));
+        dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+        return Promise.resolve([]);
+      });
   };
 }
