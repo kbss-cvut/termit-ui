@@ -7,6 +7,9 @@ import TermResultItem from "./TermResultItem";
 import VocabularyResultItem from "./VocabularyResultItem";
 import { useI18n } from "../../hook/useI18n";
 import Routes from "../../../util/Routes";
+import { useSelector } from "react-redux";
+import TermItState from "../../../model/TermItState";
+import { EMPTY_USER } from "../../../model/User";
 
 export class SearchResultItem extends SearchResult {
   public totalScore: number;
@@ -62,6 +65,9 @@ const SearchResults: React.FC<{
   withFacetedSearchLink?: boolean;
 }> = ({ results, withFacetedSearchLink = false }) => {
   const { i18n, formatMessage } = useI18n();
+  const isLoggedIn = useSelector(
+    (state: TermItState) => state.user !== EMPTY_USER
+  );
   if (results === null) {
     return null;
   }
@@ -78,7 +84,11 @@ const SearchResults: React.FC<{
                   link: (
                     <Link
                       id="search-results-faceted-link"
-                      to={Routes.facetedSearch.path}
+                      to={
+                        isLoggedIn
+                          ? Routes.facetedSearch.path
+                          : Routes.publicFacetedSearch.path
+                      }
                       className="font-weight-bold"
                     >
                       {i18n("search.tab.facets").toLowerCase()}
