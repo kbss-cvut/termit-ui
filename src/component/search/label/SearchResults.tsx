@@ -70,7 +70,7 @@ const SearchResults: React.FC<{
       <Card className="mb-3">
         <CardBody>
           <Label className="italics small text-gray">
-            {i18n("main.search.no-results")}
+            {i18n("search.no-results")}
             {withFacetedSearchLink && (
               <>
                 &nbsp;

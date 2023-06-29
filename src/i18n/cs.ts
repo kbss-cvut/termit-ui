@@ -95,7 +95,8 @@ const cs = {
     "main.search.tooltip": "Přejít na stránku hledání",
     "main.search.count-info-and-link":
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
-    "main.search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
+    "main.search.no-results":
+      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte facetové hledání.",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":
@@ -564,6 +565,7 @@ const cs = {
     "search.tab.facets": "Facetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
+    "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
     "search.results.countInfo":
       "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}}.",
     "search.results.table.label": "Název",

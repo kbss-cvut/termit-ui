@@ -74,7 +74,7 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
           options={options}
           placeholder={i18n("search.tab.terms.filter.allVocabularies")}
           showSettings={false}
-          noResultsText={i18n("main.search.no-results")}
+          noResultsText={i18n("search.no-results")}
         />
       </Col>
     </Row>

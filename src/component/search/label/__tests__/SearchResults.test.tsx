@@ -25,7 +25,7 @@ describe("SearchResults", () => {
     const wrapper = renderWithResults([]);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
-    expect(label.text()).toContain(en.messages["main.search.no-results"]);
+    expect(label.text()).toContain(en.messages["search.no-results"]);
   });
 
   function generateTermResult(score?: number) {

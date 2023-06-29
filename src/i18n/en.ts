@@ -93,7 +93,7 @@ const en = {
     "main.search.tooltip": "Go to the search screen",
     "main.search.count-info-and-link":
       "Showing {displayed} of {count} results. See all results.",
-    "main.search.no-results": "No results found.",
+    "main.search.no-results": "No results found. Click to try faceted search.",
     "main.lang-selector.tooltip": "Select user interface language",
 
     "dashboard.widget.assetList.empty": "Found no assets to show here.",
@@ -556,6 +556,7 @@ const en = {
     "search.tab.facets": "Faceted term search",
     "search.reset": "Reset search",
     "search.results.title": 'Results for "{searchString}"',
+    "search.no-results": "No results found.",
     "search.results.countInfo": "Found {matches} matches in {assets} assets.",
     "search.results.table.label": "Label",
     "search.results.table.label.tooltip": "Open asset detail",

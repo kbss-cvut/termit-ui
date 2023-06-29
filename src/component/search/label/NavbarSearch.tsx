@@ -126,12 +126,18 @@ export class NavbarSearch extends React.Component<
     );
   }
 
-  private onSearchIconClick = () => {
-    if (!this.props.location.pathname.startsWith(Routes.search.path)) {
-      Routing.transitionTo(
-        isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch
-      );
-    }
+  public onOpenSearch = () => {
+    Routing.transitionTo(
+      isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch
+    );
+  };
+
+  public onOpenFacetedSearch = () => {
+    Routing.transitionTo(
+      isLoggedIn(this.props.user)
+        ? Routes.facetedSearch
+        : Routes.publicFacetedSearch
+    );
   };
 
   public render() {
@@ -143,7 +149,7 @@ export class NavbarSearch extends React.Component<
         id="search-icon"
         title={i18n("main.search.tooltip")}
         className="search-icon"
-        onClick={this.onSearchIconClick}
+        onClick={this.onOpenSearch}
       >
         <InputGroupText>
           <span className="fas fa-search" />
@@ -207,6 +213,7 @@ export class NavbarSearch extends React.Component<
           onClose={this.closeResults}
           targetId={`main-search-input${navbar ? "-navbar" : ""}`}
           onOpenSearch={this.openSearchView}
+          onOpenFacetedSearch={this.onOpenFacetedSearch}
         />
       );
     }

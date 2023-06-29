@@ -16,6 +16,7 @@ interface SearchResultsOverlayProps {
   targetId: string;
   onClose: () => void;
   onOpenSearch: () => void;
+  onOpenFacetedSearch: () => void;
 }
 
 export const MAX_RENDERED_RESULTS = 10;
@@ -31,7 +32,7 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
         id="search-results-link"
         key="full-info"
         className="btn-link search-result-no-results"
-        onClick={props.onOpenSearch}
+        onClick={props.onOpenFacetedSearch}
         title={i18n("main.search.tooltip")}
       >
         {i18n("main.search.no-results")}
