@@ -1,10 +1,12 @@
 import * as React from "react";
 import SearchResult from "../../../model/search/SearchResult";
 import { Card, CardBody, Label, Table } from "reactstrap";
+import { Link } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import TermResultItem from "./TermResultItem";
 import VocabularyResultItem from "./VocabularyResultItem";
 import { useI18n } from "../../hook/useI18n";
+import Routes from "../../../util/Routes";
 
 export class SearchResultItem extends SearchResult {
   public totalScore: number;
@@ -55,9 +57,10 @@ export function mergeDuplicates(results: SearchResult[]) {
   return arr;
 }
 
-const SearchResults: React.FC<{ results: SearchResult[] | null }> = ({
-  results,
-}) => {
+const SearchResults: React.FC<{
+  results: SearchResult[] | null;
+  withFacetedSearchLink?: boolean;
+}> = ({ results, withFacetedSearchLink = false }) => {
   const { i18n, formatMessage } = useI18n();
   if (results === null) {
     return null;
@@ -68,6 +71,22 @@ const SearchResults: React.FC<{ results: SearchResult[] | null }> = ({
         <CardBody>
           <Label className="italics small text-gray">
             {i18n("main.search.no-results")}
+            {withFacetedSearchLink && (
+              <>
+                &nbsp;
+                {formatMessage("search.results.facetedLink", {
+                  link: (
+                    <Link
+                      id="search-results-faceted-link"
+                      to={Routes.facetedSearch.path}
+                      className="font-weight-bold"
+                    >
+                      {i18n("search.tab.facets").toLowerCase()}
+                    </Link>
+                  ),
+                })}
+              </>
+            )}
           </Label>
         </CardBody>
       </Card>

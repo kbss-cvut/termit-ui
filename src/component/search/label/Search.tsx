@@ -24,7 +24,7 @@ const Search: React.FC = () => {
   return (
     <div className="relative">
       <WindowTitle title={i18n("search.title")} />
-      <SearchResults results={results} />
+      <SearchResults results={results} withFacetedSearchLink={true} />
       <SearchMask />
     </div>
   );

@@ -47,7 +47,7 @@ const SearchTerms: React.FC = () => {
           />
         </CardBody>
       </Card>
-      <SearchResults results={resultsToRender} />
+      <SearchResults results={resultsToRender} withFacetedSearchLink={true} />
       <SearchMask />
     </div>
   );

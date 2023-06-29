@@ -575,6 +575,7 @@ const cs = {
     "search.results.field.comment": "Popis",
     "search.results.field.definition": "Definice",
     "search.results.vocabulary.from": "z",
+    "search.results.facetedLink": "Zkuste {link}.",
     "search.faceted.matchType.exact": "Přesná shoda",
     "search.faceted.matchType.substring": "Částečná shoda",
     "search.faceted.no-results":

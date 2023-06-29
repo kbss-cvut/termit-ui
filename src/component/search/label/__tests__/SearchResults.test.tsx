@@ -22,7 +22,7 @@ describe("SearchResults", () => {
   });
 
   it("render no results info when no results are found", () => {
-    const wrapper = mountWithIntl(<SearchResults results={[]} />);
+    const wrapper = renderWithResults([]);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
     expect(label.text()).toContain(en.messages["main.search.no-results"]);
@@ -42,11 +42,7 @@ describe("SearchResults", () => {
 
   it("renders term results", () => {
     const result = generateTermResult();
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={[result]} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults([result]);
     const rows = wrapper.find("tr");
     // result row
     expect(rows.length).toEqual(1);
@@ -54,6 +50,14 @@ describe("SearchResults", () => {
     const label = wrapper.find(AssetLink);
     expect(label.text().startsWith(result.label)).toBeTruthy();
   });
+
+  function renderWithResults(results: SearchResult[]) {
+    return mountWithIntl(
+      <MemoryRouter>
+        <SearchResults results={results} />
+      </MemoryRouter>
+    );
+  }
 
   function generateVocabularyResult(score?: number) {
     return new SearchResult({
@@ -68,11 +72,7 @@ describe("SearchResults", () => {
 
   it("renders vocabulary results", () => {
     const result = generateVocabularyResult();
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={[result]} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults([result]);
     const rows = wrapper.find("tr");
     // Result row
     expect(rows.length).toEqual(1);
@@ -97,11 +97,7 @@ describe("SearchResults", () => {
 
   it("renders VocabularyLink for vocabulary result", () => {
     const result = generateVocabularyResult();
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={[result]} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults([result]);
     expect(wrapper.find(VocabularyLink).exists()).toBeTruthy();
   });
 
@@ -136,11 +132,7 @@ describe("SearchResults", () => {
         types: [VocabularyUtils.VOCABULARY],
       }),
     ];
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={results} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults(results);
     const rows = wrapper.find("tr");
     // result row
     expect(rows.length).toEqual(1);
@@ -177,11 +169,7 @@ describe("SearchResults", () => {
         types: [VocabularyUtils.VOCABULARY],
       }),
     ];
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={results} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults(results);
     const rows = wrapper.find("tr");
     // result row
     expect(rows.length).toEqual(1);
@@ -193,12 +181,17 @@ describe("SearchResults", () => {
 
   it("ensures results are sorted by score descending", () => {
     const results = [generateTermResult(1.1), generateVocabularyResult(2.5)];
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={results} />
-      </MemoryRouter>
-    );
+    const wrapper = renderWithResults(results);
     const rows = wrapper.find(AssetLink);
     expect(rows.at(0).text().startsWith(results[1].label)).toBeTruthy();
+  });
+
+  it("renders link to faceted search when no results are found and link display is enabled", () => {
+    const wrapper = mountWithIntl(
+      <MemoryRouter>
+        <SearchResults results={[]} withFacetedSearchLink={true} />
+      </MemoryRouter>
+    );
+    expect(wrapper.exists("#search-results-faceted-link")).toBeTruthy();
   });
 });

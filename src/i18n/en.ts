@@ -566,6 +566,7 @@ const en = {
     "search.results.field.comment": "Comment",
     "search.results.field.definition": "Definition",
     "search.results.vocabulary.from": "from",
+    "search.results.facetedLink": "Try using {link}.",
     "search.faceted.matchType.exact": "Exact match",
     "search.faceted.matchType.substring": "Substring",
     "search.faceted.no-results":
