@@ -123,7 +123,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
                 title={i18n("glossary.createTerm.tooltip")}
                 size="sm"
                 onClick={this.props.onCreateTerm}
-                className="pull-right"
+                className="float-right"
               >
                 <GoPlus className="mr-1" />
                 {i18n("annotator.createTerm.button")}

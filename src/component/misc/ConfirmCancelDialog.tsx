@@ -39,7 +39,7 @@ const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
       <ModalHeader toggle={props.onClose}>{props.title}</ModalHeader>
       <ModalBody>{props.children}</ModalBody>
       <ModalFooter>
-        <ButtonToolbar className="pull-right">
+        <ButtonToolbar className="float-right">
           <Button
             id={`${props.id}-submit`}
             color="primary"
