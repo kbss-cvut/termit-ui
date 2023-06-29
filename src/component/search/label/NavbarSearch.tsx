@@ -129,9 +129,7 @@ export class NavbarSearch extends React.Component<
   private onSearchIconClick = () => {
     if (!this.props.location.pathname.startsWith(Routes.search.path)) {
       Routing.transitionTo(
-        isLoggedIn(this.props.user)
-          ? Routes.facetedSearch
-          : Routes.publicFacetedSearch
+        isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch
       );
     }
   };

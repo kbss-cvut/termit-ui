@@ -255,7 +255,7 @@ describe("NavbarSearch", () => {
     verifyResultsNotDisplayed(Routes.publicSearchVocabularies);
   });
 
-  it("transitions to faceted search view on search icon click", () => {
+  it("transitions to search view on search icon click", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
         searchString=""
@@ -267,10 +267,10 @@ describe("NavbarSearch", () => {
       />
     );
     wrapper.find("#search-icon").simulate("click");
-    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.facetedSearch);
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
   });
 
-  it("transitions to public faceted search view on search icon click when user is not logged in", () => {
+  it("transitions to search view on search icon click when user is not logged in", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
         searchString=""
@@ -282,9 +282,7 @@ describe("NavbarSearch", () => {
       />
     );
     wrapper.find("#search-icon").simulate("click");
-    expect(Routing.transitionTo).toHaveBeenCalledWith(
-      Routes.publicFacetedSearch
-    );
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
   });
 
   it("transitions to search view on search input when view is faceted search", () => {

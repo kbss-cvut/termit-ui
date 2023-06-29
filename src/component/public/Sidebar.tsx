@@ -40,6 +40,11 @@ const mainNavRoutes: NavLinkRoute[] = [
     name: "main.nav.vocabularies",
     icon: "fas fa-book",
   },
+  {
+    path: Routes.publicFacetedSearch.path,
+    name: "main.nav.facetedSearch",
+    icon: "fas fa-search-plus",
+  },
 ];
 
 const actionNavRoutes: NavLinkRoute[] = [
