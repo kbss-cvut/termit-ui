@@ -1,6 +1,6 @@
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
-import { SearchResults } from "../SearchResults";
-import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
+import SearchResults from "../SearchResults";
+import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import { Label } from "reactstrap";
 import en from "../../../../i18n/en";
 import SearchResult from "../../../../model/search/SearchResult";
@@ -18,12 +18,11 @@ jest.mock("../../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
 describe("SearchResults", () => {
   beforeEach(() => {
     Ajax.get = jest.fn().mockResolvedValue({});
+    mockUseI18n();
   });
 
   it("render no results info when no results are found", () => {
-    const wrapper = mountWithIntl(
-      <SearchResults results={[]} {...intlFunctions()} />
-    );
+    const wrapper = mountWithIntl(<SearchResults results={[]} />);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
     expect(label.text()).toContain(en.messages["main.search.no-results"]);
@@ -45,7 +44,7 @@ describe("SearchResults", () => {
     const result = generateTermResult();
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
+        <SearchResults results={[result]} />
       </MemoryRouter>
     );
     const rows = wrapper.find("tr");
@@ -71,7 +70,7 @@ describe("SearchResults", () => {
     const result = generateVocabularyResult();
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
+        <SearchResults results={[result]} />
       </MemoryRouter>
     );
     const rows = wrapper.find("tr");
@@ -86,7 +85,7 @@ describe("SearchResults", () => {
     const results = [generateTermResult(), generateVocabularyResult()];
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
+        <SearchResults results={results} />
       </MemoryRouter>
     );
     const rows = wrapper.find("tr");
@@ -100,7 +99,7 @@ describe("SearchResults", () => {
     const result = generateVocabularyResult();
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
+        <SearchResults results={[result]} />
       </MemoryRouter>
     );
     expect(wrapper.find(VocabularyLink).exists()).toBeTruthy();
@@ -110,7 +109,7 @@ describe("SearchResults", () => {
     const result = generateTermResult();
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={[result]} {...intlFunctions()} />
+        <SearchResults results={[result]} />
       </MemoryRouter>
     );
     expect(wrapper.find(AssetLink).exists()).toBeTruthy();
@@ -139,7 +138,7 @@ describe("SearchResults", () => {
     ];
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
+        <SearchResults results={results} />
       </MemoryRouter>
     );
     const rows = wrapper.find("tr");
@@ -180,7 +179,7 @@ describe("SearchResults", () => {
     ];
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
+        <SearchResults results={results} />
       </MemoryRouter>
     );
     const rows = wrapper.find("tr");
@@ -196,7 +195,7 @@ describe("SearchResults", () => {
     const results = [generateTermResult(1.1), generateVocabularyResult(2.5)];
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <SearchResults results={results} {...intlFunctions()} />
+        <SearchResults results={results} />
       </MemoryRouter>
     );
     const rows = wrapper.find(AssetLink);

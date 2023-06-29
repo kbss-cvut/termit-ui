@@ -1,17 +1,16 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
 import SearchResult from "../../../model/search/SearchResult";
 import { Popover, PopoverBody } from "reactstrap";
 import TermBadge from "../../badge/TermBadge";
-import { SearchResults } from "./SearchResults";
+import { mergeDuplicates } from "./SearchResults";
 import AssetLinkFactory from "../../factory/AssetLinkFactory";
 import AssetFactory from "../../../util/AssetFactory";
 import AssetLabel from "../../misc/AssetLabel";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import VocabularyBadge from "../../badge/VocabularyBadge";
+import { useI18n } from "../../hook/useI18n";
 
-interface SearchResultsOverlayProps extends HasI18n {
+interface SearchResultsOverlayProps {
   show: boolean;
   searchResults: SearchResult[];
   targetId: string;
@@ -21,9 +20,10 @@ interface SearchResultsOverlayProps extends HasI18n {
 
 export const MAX_RENDERED_RESULTS = 10;
 
-export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
+const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
   props: SearchResultsOverlayProps
 ) => {
+  const { i18n, formatMessage } = useI18n();
   const items = [];
   if (props.searchResults.length === 0) {
     items.push(
@@ -32,13 +32,13 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
         key="full-info"
         className="btn-link search-result-no-results"
         onClick={props.onOpenSearch}
-        title={props.i18n("main.search.tooltip")}
+        title={i18n("main.search.tooltip")}
       >
-        {props.i18n("main.search.no-results")}
+        {i18n("main.search.no-results")}
       </li>
     );
   } else {
-    const mergedResults = SearchResults.mergeDuplicates(props.searchResults);
+    const mergedResults = mergeDuplicates(props.searchResults);
     let i = 0;
     for (i; i < mergedResults.length && i < MAX_RENDERED_RESULTS; i++) {
       const item = mergedResults[i];
@@ -59,7 +59,7 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
             <br />
             {item.vocabulary ? (
               <span className="small text-muted" style={{ marginLeft: "1em" }}>
-                {props.i18n("search.results.vocabulary.from")}{" "}
+                {i18n("search.results.vocabulary.from")}{" "}
                 <AssetLabel iri={item.vocabulary.iri} />
               </span>
             ) : (
@@ -79,7 +79,7 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
           className="btn-link search-result-info"
           onClick={props.onOpenSearch}
         >
-          {props.formatMessage("main.search.count-info-and-link", {
+          {formatMessage("main.search.count-info-and-link", {
             displayed: MAX_RENDERED_RESULTS,
             count: mergedResults.length,
           })}
@@ -104,4 +104,4 @@ export const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
   );
 };
 
-export default injectIntl(withI18n(SearchResultsOverlay));
+export default SearchResultsOverlay;

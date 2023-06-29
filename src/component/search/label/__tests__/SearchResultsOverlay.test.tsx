@@ -5,10 +5,9 @@ import Generator from "../../../../__tests__/environment/Generator";
 import Vocabulary from "../../../../util/VocabularyUtils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../../__tests__/environment/Environment";
-import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
-import {
+import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
+import SearchResultsOverlay, {
   MAX_RENDERED_RESULTS,
-  SearchResultsOverlay,
 } from "../SearchResultsOverlay";
 import { Simulate } from "react-dom/test-utils";
 import { ReactWrapper } from "enzyme";
@@ -54,6 +53,7 @@ describe("SearchResultsOverlay", () => {
     element.id = "root";
     document.body.appendChild(element);
     jest.useFakeTimers();
+    mockUseI18n();
   });
 
   afterEach(() => {
@@ -72,7 +72,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -90,7 +89,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={[]}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -112,7 +110,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -135,7 +132,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -153,7 +149,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={[]}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -175,7 +170,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -214,7 +208,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -234,7 +227,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -264,7 +256,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -285,7 +276,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          {...intlFunctions()}
         />
       </MemoryRouter>,
       { attachTo: element }
