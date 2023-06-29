@@ -85,16 +85,8 @@ header .nav-tabs {
   font-weight: bold;
 }
 
-.underline {
-  text-decoration: underline;
-}
-
 .relative {
   position: relative;
-}
-
-.pull-right {
-  float: right;
 }
 
 button.btn {
@@ -208,9 +200,16 @@ a.btn {
 }
 
 .react-select__control {
-  height: 36px;
-  max-height: 36px;
   min-height: 36px !important;
+}
+
+.react-select__indicators {
+  max-height: 34px !important;
+}
+
+.react-select__value-container {
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
 }
 
 .react-select__multi-value {

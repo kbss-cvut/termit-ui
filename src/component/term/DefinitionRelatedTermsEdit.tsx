@@ -259,7 +259,7 @@ export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProp
           {term && <TermLink term={term} language={language} />}
         </td>
         <td className="pr-0">
-          <ButtonToolbar className="d-inline pull-right ml-1">
+          <ButtonToolbar className="d-inline float-right ml-1">
             {canApprove && (
               <BadgeButton
                 color="primary"

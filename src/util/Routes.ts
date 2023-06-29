@@ -16,12 +16,13 @@ export class Route {
     if (query) {
       // TODO: Encode URI components properly (and parse them too)
       const queryPart = Object.keys(query)
+        .filter((key) => query[key] !== undefined)
         .map(
           (key) =>
             /*encodeURIComponent*/ key + "=" + /*encodeURIComponent*/ query[key]
         )
         .join("&");
-      return path + "?" + queryPart;
+      return queryPart.length > 0 ? path + "?" + queryPart : path;
     } else {
       return path;
     }
@@ -44,7 +45,7 @@ const Routes = {
   search: new Route("search", "/search"),
   searchTerms: new Route("searchTerms", "/search/terms"),
   searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),
-  facetedSearch: new Route("facetedSearch", "/facetedSearch"),
+  facetedSearch: new Route("facetedSearch", "/search/facets"),
   statistics: new Route("statistics", "/statistics"),
   vocabularies: new Route("vocabulary", "/vocabularies"),
   createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
@@ -95,6 +96,10 @@ const Routes = {
   publicSearchVocabularies: new Route(
     "publicSearchVocabularies",
     "/public/search/vocabularies"
+  ),
+  publicFacetedSearch: new Route(
+    "publicFacetedSearch",
+    "/public/search/facets"
   ),
 };
 

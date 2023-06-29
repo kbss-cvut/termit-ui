@@ -1,11 +1,15 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
-import SearchResult from "../../../model/SearchResult";
-import { Label, Table } from "reactstrap";
+import SearchResult from "../../../model/search/SearchResult";
+import { Card, CardBody, Label, Table } from "reactstrap";
+import { Link } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import TermResultItem from "./TermResultItem";
 import VocabularyResultItem from "./VocabularyResultItem";
+import { useI18n } from "../../hook/useI18n";
+import Routes from "../../../util/Routes";
+import { useSelector } from "react-redux";
+import TermItState from "../../../model/TermItState";
+import { EMPTY_USER } from "../../../model/User";
 
 export class SearchResultItem extends SearchResult {
   public totalScore: number;
@@ -20,10 +24,6 @@ export class SearchResultItem extends SearchResult {
   }
 }
 
-interface SearchResultsProps extends HasI18n {
-  results: SearchResult[];
-}
-
 /**
  * Comparator for sorting search results.
  *
@@ -33,22 +33,93 @@ function scoreSort(a: SearchResultItem, b: SearchResultItem) {
   return b.totalScore - a.totalScore;
 }
 
-export class SearchResults extends React.Component<SearchResultsProps> {
-  public render() {
-    const i18n = this.props.i18n;
-    if (this.props.results.length === 0) {
-      return (
-        <Label className="italics small text-gray">
-          {i18n("main.search.no-results")}
-        </Label>
-      );
+export function mergeDuplicates(results: SearchResult[]) {
+  const map = new Map<string, SearchResultItem>();
+  results.forEach((r) => {
+    if (!map.has(r.iri)) {
+      map.set(r.iri, new SearchResultItem(r));
+    } else {
+      const existing = map.get(r.iri)!;
+      existing.totalScore += r.score ? r.score : 0;
+      // If the match field is the same there is no need to update other attributes, as the match is already
+      // marked in the snippet of the existing item
+      if (existing.snippetField !== r.snippetField) {
+        if (r.snippetField === "label") {
+          // Render label match first
+          existing.snippets.unshift(r.snippetText);
+          existing.snippetFields.unshift(r.snippetField);
+        } else {
+          existing.snippets.push(r.snippetText);
+          existing.snippetFields.push(r.snippetField);
+        }
+      }
     }
-    const rows = this.renderResults();
+  });
+  const arr = Array.from(map.values());
+  arr.sort(scoreSort);
+  return arr;
+}
+
+const SearchResults: React.FC<{
+  results: SearchResult[] | null;
+  withFacetedSearchLink?: boolean;
+}> = ({ results, withFacetedSearchLink = false }) => {
+  const { i18n, formatMessage } = useI18n();
+  const isLoggedIn = useSelector(
+    (state: TermItState) => state.user !== EMPTY_USER
+  );
+  if (results === null) {
+    return null;
+  }
+  if (results.length === 0) {
     return (
-      <div>
+      <Card className="mb-3">
+        <CardBody>
+          <Label className="italics small text-gray">
+            {i18n("search.no-results")}
+            {withFacetedSearchLink && (
+              <>
+                &nbsp;
+                {formatMessage("search.results.facetedLink", {
+                  link: (
+                    <Link
+                      id="search-results-faceted-link"
+                      to={
+                        isLoggedIn
+                          ? Routes.facetedSearch.path
+                          : Routes.publicFacetedSearch.path
+                      }
+                      className="font-weight-bold"
+                    >
+                      {i18n("search.tab.facets").toLowerCase()}
+                    </Link>
+                  ),
+                })}
+              </>
+            )}
+          </Label>
+        </CardBody>
+      </Card>
+    );
+  }
+  const rows = mergeDuplicates(results).map((r) => (
+    <tr key={r.iri} className="search-result-match-row">
+      <td className="align-middle">
+        {r.hasType(VocabularyUtils.VOCABULARY) ? (
+          <VocabularyResultItem result={r} />
+        ) : (
+          <TermResultItem result={r} />
+        )}
+      </td>
+    </tr>
+  ));
+
+  return (
+    <Card className="mb-3">
+      <CardBody>
         <div className="italics small text-gray mb-3">
-          {this.props.formatMessage("search.results.countInfo", {
-            matches: this.props.results.length,
+          {formatMessage("search.results.countInfo", {
+            matches: results.length,
             assets: rows.length,
           })}
         </div>
@@ -60,55 +131,9 @@ export class SearchResults extends React.Component<SearchResultsProps> {
         >
           <tbody>{rows}</tbody>
         </Table>
-      </div>
-    );
-  }
+      </CardBody>
+    </Card>
+  );
+};
 
-  private renderResults() {
-    const items = SearchResults.mergeDuplicates(this.props.results);
-    return items.map((r) => {
-      return (
-        <tr key={r.iri} className="search-result-match-row">
-          <td className="align-middle">{SearchResults.renderMatch(r)}</td>
-        </tr>
-      );
-    });
-  }
-
-  public static mergeDuplicates(results: SearchResult[]) {
-    const map = new Map<string, SearchResultItem>();
-    results.forEach((r) => {
-      if (!map.has(r.iri)) {
-        map.set(r.iri, new SearchResultItem(r));
-      } else {
-        const existing = map.get(r.iri)!;
-        existing.totalScore += r.score ? r.score : 0;
-        // If the match field is the same there is no need to update other attributes, as the match is already
-        // marked in the snippet of the existing item
-        if (existing.snippetField !== r.snippetField) {
-          if (r.snippetField === "label") {
-            // Render label match first
-            existing.snippets.unshift(r.snippetText);
-            existing.snippetFields.unshift(r.snippetField);
-          } else {
-            existing.snippets.push(r.snippetText);
-            existing.snippetFields.push(r.snippetField);
-          }
-        }
-      }
-    });
-    const arr = Array.from(map.values());
-    arr.sort(scoreSort);
-    return arr;
-  }
-
-  private static renderMatch(item: SearchResultItem) {
-    return item.hasType(VocabularyUtils.VOCABULARY) ? (
-      <VocabularyResultItem result={item} />
-    ) : (
-      <TermResultItem result={item} />
-    );
-  }
-}
-
-export default injectIntl(withI18n(SearchResults));
+export default SearchResults;

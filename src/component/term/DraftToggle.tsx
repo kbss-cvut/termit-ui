@@ -1,6 +1,7 @@
 import * as React from "react";
 import Toggle from "react-bootstrap-toggle";
 import { useI18n } from "../hook/useI18n";
+import "../misc/CustomToggle.scss";
 
 interface DraftToggleProps {
   id: string; // Toggle id, required by the tooltip component

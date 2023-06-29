@@ -4,7 +4,6 @@ import ActionType, {
   AsyncActionSuccess,
   BreadcrumbAction,
   ExecuteQueryAction,
-  FacetedSearchAction,
   FailureAction,
   MessageAction,
   NotificationAction,
@@ -29,8 +28,8 @@ import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
 import Term from "../model/Term";
 import RdfsResource from "../model/RdfsResource";
 import AppNotification from "../model/AppNotification";
-import SearchResult from "../model/SearchResult";
-import SearchQuery from "../model/SearchQuery";
+import SearchResult from "../model/search/SearchResult";
+import SearchQuery from "../model/search/SearchQuery";
 import { ErrorLogItem } from "../model/ErrorInfo";
 import Utils from "../util/Utils";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
@@ -260,19 +259,6 @@ function queryResults(
       } else {
         return state;
       }
-    case ActionType.LOGOUT:
-      return {};
-    default:
-      return state;
-  }
-}
-
-function facetedSearchResult(state: object = {}, action: FacetedSearchAction) {
-  switch (action.type) {
-    case ActionType.FACETED_SEARCH:
-      return action.status === AsyncActionStatus.SUCCESS
-        ? action.payload
-        : state;
     case ActionType.LOGOUT:
       return {};
     default:
@@ -652,7 +638,6 @@ const rootReducer = combineReducers<TermItState>({
   queryResults,
   createdTermsCounter,
   fileContent,
-  facetedSearchResult,
   searchQuery,
   searchResults,
   searchListenerCount,

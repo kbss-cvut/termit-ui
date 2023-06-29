@@ -115,7 +115,8 @@ const constants = {
   WORKSPACE_EDITABLE_CONTEXT_PARAM: "edit-context",
   TIMESTAMP_PARAM_FORMAT: "yyyyMMdd'T'HHmmss'Z'",
 
-  DEFAULT_TERM_SELECTOR_FETCH_SIZE: 100,
+  // Size of page fetched from server
+  DEFAULT_PAGE_SIZE: 100,
 };
 
 constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =

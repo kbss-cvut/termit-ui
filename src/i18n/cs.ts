@@ -32,6 +32,9 @@ const cs = {
 
     "footer.copyright": "KBSS FEL ČVUT v Praze",
     "footer.version": "Verze",
+    "footer.version.tooltip": "Verze aplikace. Kliknutím zobrazíte popis změn.",
+    "footer.apidocs": "API",
+    "footer.apidocs.tooltip": "Dokumentace serverového rozhraní.",
 
     "news-viewer.title": "Novinky",
 
@@ -82,6 +85,7 @@ const cs = {
     "main.nav.search": "Vyhledávání",
     "main.nav.searchTerms": "Vyhledávání pojmů",
     "main.nav.searchVocabularies": "Vyhledávání slovníků",
+    "main.nav.facetedSearch": "Facetové vyhledávání",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
     "main.nav.import-vocabulary": "Importovat slovník",
@@ -91,7 +95,8 @@ const cs = {
     "main.search.tooltip": "Přejít na stránku hledání",
     "main.search.count-info-and-link":
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
-    "main.search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
+    "main.search.no-results":
+      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte facetové hledání.",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":
@@ -557,9 +562,10 @@ const cs = {
     "search.tab.terms": "Pojmy",
     "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
     "search.tab.vocabularies": "Slovníky",
-    "search.tab.facets": "Facetové vyhledávání",
+    "search.tab.facets": "Facetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
+    "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
     "search.results.countInfo":
       "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}}.",
     "search.results.table.label": "Název",
@@ -571,14 +577,11 @@ const cs = {
     "search.results.field.comment": "Popis",
     "search.results.field.definition": "Definice",
     "search.results.vocabulary.from": "z",
-    "search.slovnik": "Slovník",
-    "search.informace": "Informace",
-    "search.je-instanci-typu": "je instancí typu",
-    "search.je-specializaci": "je specializací",
-    "search.ma-vlastnosti-typu": "má vlastnosti typu",
-    "search.ma-vztahy-typu": "má vztahy typu",
-    "search.pojem": "Pojem",
-    "search.typ": "Typ",
+    "search.results.facetedLink": "Zkuste {link}.",
+    "search.faceted.matchType.exact": "Přesná shoda",
+    "search.faceted.matchType.substring": "Částečná shoda",
+    "search.faceted.no-results":
+      "Zadaným parametrů neodpovídají již žádná další data.",
 
     "profile.first.name": "Křestní jméno",
     "profile.last.name": "Příjmení",

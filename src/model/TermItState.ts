@@ -7,8 +7,8 @@ import { QueryResultIF } from "./QueryResult";
 import Term from "./Term";
 import RdfsResource from "./RdfsResource";
 import AppNotification from "./AppNotification";
-import SearchResult from "./SearchResult";
-import SearchQuery from "./SearchQuery";
+import SearchResult from "./search/SearchResult";
+import SearchQuery from "./search/SearchQuery";
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import { ErrorLogItem } from "./ErrorInfo";
 import Utils from "../util/Utils";
@@ -33,7 +33,6 @@ export default class TermItState {
   public selectedTerm: Term | null;
   public queryResults: { [key: string]: QueryResultIF };
   public createdTermsCounter: number;
-  public facetedSearchResult: object;
   public searchListenerCount: number;
   public searchInProgress: boolean;
   public searchQuery: SearchQuery;
@@ -75,7 +74,6 @@ export default class TermItState {
     this.selectedTerm = null;
     this.queryResults = {};
     this.createdTermsCounter = 0;
-    this.facetedSearchResult = {};
     this.searchListenerCount = 0;
     this.searchInProgress = false;
     this.searchQuery = new SearchQuery();

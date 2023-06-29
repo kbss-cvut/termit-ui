@@ -73,7 +73,7 @@ const ResourceSelectVocabulary: React.FC<ResourceSelectVocabularyProps> = (
         />
       </ModalBody>
       <ModalFooter>
-        <ButtonToolbar className="pull-right">
+        <ButtonToolbar className="float-right">
           <Button
             id="select-vocabulary-submit"
             color="primary"

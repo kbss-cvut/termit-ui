@@ -3,7 +3,7 @@ import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import SearchResultsOverlay from "../SearchResultsOverlay";
 import Routes, { Route } from "../../../../util/Routes";
 import { shallow } from "enzyme";
-import SearchResult from "../../../../model/SearchResult";
+import SearchResult from "../../../../model/search/SearchResult";
 import Generator from "../../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import Routing from "../../../../util/Routing";
@@ -169,28 +169,7 @@ describe("NavbarSearch", () => {
     );
     const input = wrapper.find("#main-search-input");
     input.simulate("keyPress", { key: "Enter" });
-    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search, {
-      query: new Map(),
-    });
-  });
-
-  it("passes search string as query parameter when transitioning to search view", () => {
-    const searchString = "test";
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchString={searchString}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const input = wrapper.find("#main-search-input");
-    input.simulate("keyPress", { key: "Enter" });
-    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search, {
-      query: new Map([["searchString", searchString]]),
-    });
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
   });
 
   it("renders icon before input if search is in navbar", () => {
@@ -206,7 +185,7 @@ describe("NavbarSearch", () => {
       />
     );
     const inputGroup = wrapper.find(InputGroup);
-    expect(inputGroup.childAt(0).prop("id")).toEqual("icon");
+    expect(inputGroup.childAt(0).prop("id")).toEqual("search-icon");
     expect(inputGroup.childAt(1).prop("id")).toEqual(
       "main-search-input-navbar"
     );
@@ -228,7 +207,7 @@ describe("NavbarSearch", () => {
     );
     const inputGroup = wrapper.find(InputGroup);
     expect(inputGroup.childAt(0).prop("id")).toEqual("main-search-input");
-    expect(inputGroup.childAt(1).prop("id")).toEqual("icon");
+    expect(inputGroup.childAt(1).prop("id")).toEqual("search-icon");
     expect(inputGroup.childAt(2).prop("id")).toEqual("search-reset");
     expect(inputGroup.children().length).toEqual(3);
   });
@@ -249,10 +228,9 @@ describe("NavbarSearch", () => {
   });
 
   it("transitions to public search view on enter when user is not logged in", () => {
-    const searchString = "";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchString=""
         navbar={false}
         user={EMPTY_USER}
         searchResults={null}
@@ -262,9 +240,7 @@ describe("NavbarSearch", () => {
     );
     const input = wrapper.find("#main-search-input");
     input.simulate("keyPress", { key: "Enter" });
-    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch, {
-      query: new Map(),
-    });
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
   });
 
   it("does not display search results when current route is public search results", () => {
@@ -277,5 +253,56 @@ describe("NavbarSearch", () => {
 
   it("does not display search results when current route is public term search results", () => {
     verifyResultsNotDisplayed(Routes.publicSearchVocabularies);
+  });
+
+  it("transitions to search view on search icon click", () => {
+    const wrapper = shallow<NavbarSearch>(
+      <NavbarSearch
+        searchString=""
+        navbar={false}
+        user={user}
+        searchResults={null}
+        {...navbarConnections()}
+        {...intlFunctions()}
+      />
+    );
+    wrapper.find("#search-icon").simulate("click");
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
+  });
+
+  it("transitions to search view on search icon click when user is not logged in", () => {
+    const wrapper = shallow<NavbarSearch>(
+      <NavbarSearch
+        searchString=""
+        navbar={false}
+        user={EMPTY_USER}
+        searchResults={null}
+        {...navbarConnections()}
+        {...intlFunctions()}
+      />
+    );
+    wrapper.find("#search-icon").simulate("click");
+    expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
+  });
+
+  it("transitions to search view on search input when view is faceted search", () => {
+    const props = navbarConnections();
+    props.location.pathname = Routes.facetedSearch.path;
+    props.match.path = Routes.facetedSearch.path;
+    const wrapper = shallow<NavbarSearch>(
+      <NavbarSearch
+        searchString=""
+        navbar={false}
+        user={user}
+        searchResults={null}
+        {...props}
+        {...intlFunctions()}
+      />
+    );
+    const input = wrapper.find("#main-search-input");
+    input.simulate("change", { target: { value: "abc" } });
+    return Promise.resolve().then(() => {
+      expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
+    });
   });
 });

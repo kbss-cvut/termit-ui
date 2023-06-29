@@ -98,7 +98,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
               showSettings={false}
               isClearable={false}
               placeholder={i18n("term.language.add.placeholder")}
-              noResultsText={i18n("main.search.no-results")}
+              noResultsText={i18n("search.no-results")}
             />
           )}
         </NavItem>

@@ -3,7 +3,7 @@ import Message from "../model/Message";
 import AsyncActionStatus from "./AsyncActionStatus";
 import Term from "../model/Term";
 import { Action } from "redux";
-import SearchResult from "../model/SearchResult";
+import SearchResult from "../model/search/SearchResult";
 import AppNotification from "../model/AppNotification";
 import { Breadcrumb } from "../model/Breadcrumb";
 
