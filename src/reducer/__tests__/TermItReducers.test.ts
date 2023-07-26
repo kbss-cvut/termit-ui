@@ -65,6 +65,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     searchResults: state.searchResults,
     selectedFile: state.selectedFile,
     types: state.types,
+    states: state.states,
     properties: state.properties,
     notifications: state.notifications,
     pendingActions: state.pendingActions,

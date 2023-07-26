@@ -656,7 +656,7 @@ export function loadTypes() {
     type: ActionType.LOAD_TYPES,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState): Promise<any> => {
-    if (Object.getOwnPropertyNames(getState().types).length > 0) {
+    if (!TermItState.isEmpty(getState().types)) {
       // No need to load types if they are already loaded
       return Promise.resolve([]);
     }
@@ -683,6 +683,35 @@ export function loadTypes() {
       })
       .then((result: Term[]) =>
         dispatch(asyncActionSuccessWithPayload(action, result))
+      )
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(
+          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+        );
+      });
+  };
+}
+
+export function loadTermStates() {
+  const action = { type: ActionType.LOAD_STATES };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    if (!TermItState.isEmpty(getState().states)) {
+      return Promise.resolve({});
+    }
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(`${Constants.API_PREFIX}/languages/states`)
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
+          data,
+          RDFS_RESOURCE_CONTEXT
+        )
+      )
+      .then((stateData: RdfsResourceData[]) =>
+        stateData.map((sd) => new RdfsResource(sd))
+      )
+      .then((states: RdfsResource[]) =>
+        dispatch(asyncActionSuccessWithPayload(action, states))
       )
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));

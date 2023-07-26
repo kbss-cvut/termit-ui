@@ -363,6 +363,22 @@ function types(
   }
 }
 
+function states(
+  state: { [key: string]: RdfsResource } = {},
+  action: AsyncActionSuccess<RdfsResource[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_STATES:
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        return Utils.mapArray(action.payload);
+      } else {
+        return state;
+      }
+    default:
+      return state;
+  }
+}
+
 function properties(
   state: RdfsResource[] = [],
   action: AsyncActionSuccess<RdfsResource[]> | Action
@@ -643,6 +659,7 @@ const rootReducer = combineReducers<TermItState>({
   searchListenerCount,
   searchInProgress,
   types,
+  states,
   properties,
   notifications,
   pendingActions,

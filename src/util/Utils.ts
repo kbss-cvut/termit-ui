@@ -28,6 +28,16 @@ const Utils = {
   },
 
   /**
+   * Takes an array of objects with identifiers and maps them to an object where key is the identifier.
+   * @param arr Array of identifiable objects
+   */
+  mapArray<T extends { iri: string }>(arr: T[]): { [key: string]: T } {
+    const map = {};
+    arr.forEach((i) => (map[i.iri] = i));
+    return map;
+  },
+
+  /**
    * Checks if the specified string is a link which can be dereferenced.
    * @param str
    */
