@@ -18,6 +18,7 @@ import TermTypeFacet from "./TermTypeFacet";
 import VocabularyFacet from "./VocabularyFacet";
 import SimplePagination from "../../dashboard/widget/lastcommented/SimplePagination";
 import Constants from "../../../util/Constants";
+import TermStateFacet from "./TermStateFacet";
 
 function aggregateSearchParams(...params: SearchParam[]) {
   return params.filter((p) =>
@@ -38,6 +39,11 @@ const FacetedSearch: React.FC = () => {
   });
   const [typeParam, setTypeParam] = React.useState<SearchParam>({
     property: VocabularyUtils.RDF_TYPE,
+    value: [],
+    matchType: MatchType.IRI,
+  });
+  const [stateParam, setStateParam] = React.useState<SearchParam>({
+    property: VocabularyUtils.TERM_STATE,
     value: [],
     matchType: MatchType.IRI,
   });
@@ -66,6 +72,7 @@ const FacetedSearch: React.FC = () => {
     const params = aggregateSearchParams(
       notationParam,
       typeParam,
+      stateParam,
       vocabularyParam
     );
     if (params.length === 0) {
@@ -74,7 +81,7 @@ const FacetedSearch: React.FC = () => {
       return;
     }
     runSearch(params);
-  }, [notationParam, typeParam, vocabularyParam, runSearch]);
+  }, [notationParam, typeParam, stateParam, vocabularyParam, runSearch]);
 
   return (
     <div id="faceted-search" className="relative">
@@ -83,7 +90,7 @@ const FacetedSearch: React.FC = () => {
       <Card className="mb-0">
         <CardBody>
           <Row>
-            <Col xs={4}>
+            <Col xl={3} xs={6}>
               <TextFacet
                 id="faceted-search-notation"
                 label={i18n("term.metadata.notation.label")}
@@ -94,7 +101,16 @@ const FacetedSearch: React.FC = () => {
                 }}
               />
             </Col>
-            <Col xs={4}>
+            <Col xl={3} xs={6}>
+              <VocabularyFacet
+                value={vocabularyParam}
+                onChange={(v) => {
+                  setVocabularyParam(v);
+                  setPage(0);
+                }}
+              />
+            </Col>
+            <Col xl={3} xs={6}>
               <TermTypeFacet
                 value={typeParam}
                 onChange={(v) => {
@@ -103,11 +119,11 @@ const FacetedSearch: React.FC = () => {
                 }}
               />
             </Col>
-            <Col xs={4}>
-              <VocabularyFacet
-                value={vocabularyParam}
+            <Col xl={3} xs={6}>
+              <TermStateFacet
+                value={stateParam}
                 onChange={(v) => {
-                  setVocabularyParam(v);
+                  setStateParam(v);
                   setPage(0);
                 }}
               />
