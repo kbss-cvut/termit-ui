@@ -431,7 +431,7 @@ const en = {
       "(Optional) search strings, which are not meant for visual presentation of terms and" +
       " serve mainly for search engines. Search strings do not need to be (contextual) synonyms to the label. E.g. " +
       "a term with label 'potato' can have search string 'spud'. ",
-    "term.metadata.status": "Status",
+    "term.metadata.status": "State",
     "term.updated.message": "Term successfully updated.",
     "term.metadata.labelExists.message":
       'Term with label "{label}" already exists in this vocabulary',
@@ -462,7 +462,7 @@ const en = {
     "term.metadata.status.draft": "Draft",
     "term.metadata.status.confirmed": "Confirmed",
     "term.metadata.status.help":
-      "Draft term is not ready to be used yet, while Confirmed term is.",
+      "Term state represents various phases of the term's lifecycle, from its inception to its cancellation (for instance because it has been replaced by a different term).",
     "term.metadata.status.confirmed.edit.title":
       "Confirmed term cannot be edited. Switch it back to Draft to edit.",
     "term.metadata.notation.label": "Notation",

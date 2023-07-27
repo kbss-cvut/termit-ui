@@ -5,7 +5,7 @@ import { Col, Label } from "reactstrap";
 import DraftToggle from "./DraftToggle";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
-import { setTermStatus } from "../../action/AsyncTermActions";
+import { setTermState } from "../../action/AsyncTermActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Status from "../../model/TermStatus";
 import DraftBadge from "./DraftBadge";
@@ -24,7 +24,7 @@ const TermStatus: React.FC<TermStatusProps> = ({ term, vocabulary }) => {
   const isDraft = Term.isDraft(term);
   const onToggle = () => {
     dispatch(
-      setTermStatus(
+      setTermState(
         VocabularyUtils.create(term.iri),
         isDraft ? Status.CONFIRMED : Status.DRAFT
       )

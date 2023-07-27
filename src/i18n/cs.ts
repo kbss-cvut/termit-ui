@@ -470,7 +470,7 @@ const cs = {
     "term.metadata.status.draft": "Rozpracovaný",
     "term.metadata.status.confirmed": "Schválený",
     "term.metadata.status.help":
-      "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
+      "Stav pojmu reprezentuje různé fáze životního cyklu pojmu, od jeho prvotního návrhu až po jeho případné zrušení (např. z důvodu nahrazení jiným pojmem).",
     "term.metadata.status.confirmed.edit.title":
       "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
     "term.metadata.notation.label": "Notace",

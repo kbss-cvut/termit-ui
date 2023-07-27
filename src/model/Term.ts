@@ -28,6 +28,7 @@ const ctx = {
   sources: VocabularyUtils.DC_SOURCE,
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
   definitionSource: VocabularyUtils.HAS_DEFINITION_SOURCE,
+  state: VocabularyUtils.TERM_STATE,
   draft: VocabularyUtils.IS_DRAFT,
   glossary: VocabularyUtils.SKOS_IN_SCHEME,
   notations: VocabularyUtils.SKOS_NOTATION,
@@ -60,6 +61,7 @@ const MAPPED_PROPERTIES = [
   "vocabulary",
   "glossary",
   "definitionSource",
+  "state",
   "draft",
   "exactMatchTerms",
   "notations",
@@ -92,6 +94,7 @@ export interface TermData extends AssetData {
   plainSubTerms?: string[]; // Introduced in order to support the Intelligent Tree Select component
   vocabulary?: AssetData;
   definitionSource?: TermOccurrenceData;
+  state?: AssetData;
   draft?: boolean;
   notations?: string[];
   examples?: PluralMultilingualString;
@@ -129,6 +132,7 @@ export default class Term
   public plainSubTerms?: string[];
   public readonly vocabulary?: AssetData;
   public readonly definitionSource?: TermOccurrenceData;
+  public state?: AssetData;
   public draft: boolean;
   public notations?: string[];
   public examples?: PluralMultilingualString;
@@ -147,6 +151,7 @@ export default class Term
     }
     this.sanitizeTermInfoArrays();
     this.syncPlainSubTerms();
+    this.state = termData.state;
     this.draft = termData.draft !== undefined ? termData.draft : true;
   }
 

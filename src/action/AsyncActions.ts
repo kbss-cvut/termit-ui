@@ -700,7 +700,7 @@ export function loadTermStates() {
       return Promise.resolve({});
     }
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(`${Constants.API_PREFIX}/languages/states`)
+    return Ajax.get(`${Constants.API_PREFIX}/language/states`)
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
           data,
