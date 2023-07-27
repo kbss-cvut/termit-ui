@@ -38,11 +38,6 @@ export interface ExecuteQueryAction extends AsyncAction {
   queryString: string;
   queryResult: object;
 }
-
-export interface FacetedSearchAction extends AsyncAction {
-  payload: object;
-}
-
 export interface SearchAction extends Action {
   searchString: string;
 }
