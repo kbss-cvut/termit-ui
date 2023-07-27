@@ -462,7 +462,7 @@ const en = {
     "term.metadata.status.draft": "Draft",
     "term.metadata.status.confirmed": "Confirmed",
     "term.metadata.status.help":
-      "Term state represents various phases of the term's lifecycle, from its inception to its cancellation (for instance because it has been replaced by a different term).",
+      "Term state represents various phases of the term's lifecycle, from its inception to its possible retirement (for instance because it has been replaced by a different term).",
     "term.metadata.status.confirmed.edit.title":
       "Confirmed term cannot be edited. Switch it back to Draft to edit.",
     "term.metadata.notation.label": "Notation",

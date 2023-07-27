@@ -28,6 +28,7 @@ const TermStateSelector: React.FC<TermStateSelectorProps> = ({
 
   return (
     <IntelligentTreeSelect
+      id="term-state-selector"
       onChange={onSelect}
       options={options}
       value={value ? states[value.iri!] : undefined}
