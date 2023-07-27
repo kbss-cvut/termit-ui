@@ -16,7 +16,7 @@ jest.mock("react-redux", () => ({
   useDispatch: jest.fn(),
 }));
 
-describe("TermStatus", () => {
+describe("TermState", () => {
   it("does not render edit button when user has no editing authority", async () => {
     const states =
       await JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResource>(

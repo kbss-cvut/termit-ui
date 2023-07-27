@@ -43,7 +43,6 @@ import classNames from "classnames";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import "./Terms.scss";
-import StatusFilter from "./StatusFilter";
 import { Configuration } from "../../model/Configuration";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
@@ -71,11 +70,6 @@ interface GlossaryTermsProps extends HasI18n {
 interface TermsState {
   // Whether terms from imported vocabularies should be displayed as well
   includeImported: boolean;
-  // Whether draft terms should be shown
-  draft: boolean;
-
-  // Whether confirmed terms should be shown
-  confirmed: boolean;
   disableIncludeImportedToggle: boolean;
   unusedTermsForVocabulary: { [key: string]: string[] };
 }
@@ -95,8 +89,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       includeImported: includeImported || false,
       disableIncludeImportedToggle: props.isDetailView || false,
       unusedTermsForVocabulary: {},
-      draft: true,
-      confirmed: true,
     };
   }
 
@@ -166,12 +158,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           includeImported: this.state.includeImported,
         },
         vocabularyIri
-      )
-      .then((terms) =>
-        terms.filter(
-          (t) =>
-            (this.state.confirmed && !t.draft) || (this.state.draft && t.draft)
-        )
       )
       .then((terms) => {
         const matchingVocabularies = this.state.includeImported
@@ -252,38 +238,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     );
   }
 
-  private onDraftOnlyToggle = () => {
-    this.setState({ draft: !this.state.draft }, () =>
-      this.treeComponent.current.resetOptions()
-    );
-  };
-
-  private onConfirmedOnlyToggle = () => {
-    this.setState({ confirmed: !this.state.confirmed }, () =>
-      this.treeComponent.current.resetOptions()
-    );
-  };
-
-  private renderDraftOnly() {
-    return this.props.vocabulary && this.props.vocabulary.glossary ? (
-      <div
-        className={classNames({
-          "mt-2": this.props.isDetailView,
-          "draft-margin-detail": this.props.isDetailView,
-          "draft-margin": !this.props.isDetailView,
-        })}
-      >
-        <StatusFilter
-          id="glossary-draftOnly"
-          draft={this.state.draft}
-          confirmed={this.state.confirmed}
-          onDraftOnlyToggle={this.onDraftOnlyToggle}
-          onConfirmedOnlyToggle={this.onConfirmedOnlyToggle}
-        />
-      </div>
-    ) : null;
-  }
-
   public render() {
     if (!this.props.vocabulary) {
       return null;
@@ -317,7 +271,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           )}
         >
           <h4 className={classNames({ "mb-0": isDetailView })}>
-            {i18n("glossary.title")}
+            {isDetailView && i18n("glossary.title")}
             &nbsp;
             {isDetailView && renderIncludeImported ? (
               <>
@@ -355,7 +309,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           ) : (
             <></>
           )}
-          {isDetailView && this.renderDraftOnly()}
         </div>
         <div
           id="glossary-list"
@@ -366,7 +319,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           ) : (
             <></>
           )}
-          {!isDetailView && this.renderDraftOnly()}
           <IntelligentTreeSelect
             ref={this.treeComponent}
             isClearable={!isDetailView}

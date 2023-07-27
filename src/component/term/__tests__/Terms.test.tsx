@@ -12,6 +12,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
+import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 
 jest.mock("../../../util/Routing");
 
@@ -29,7 +30,6 @@ describe("Terms", () => {
       iri: namespace + vocabularyName,
     },
     types: [VocabularyUtils.TERM],
-    draft: true,
   };
   let vocabulary: Vocabulary;
 
@@ -116,6 +116,7 @@ describe("Terms", () => {
         match={match}
         isDetailView={isDetailView}
         fetchUnusedTerms={fetchUnusedTerms}
+        configuration={DEFAULT_CONFIGURATION}
       />
     );
   }
@@ -138,7 +139,6 @@ describe("Terms", () => {
       iri: Generator.generateUri(),
       label: langString("Test term"),
       vocabulary: { iri: Generator.generateUri() },
-      draft: true,
     });
     wrapper.instance().fetchOptions({ optionID: option.iri, option });
     expect((fetchTerms as jest.Mock).mock.calls[0][1]).toEqual(

@@ -459,12 +459,8 @@ const en = {
     "term.metadata.related.definitionally.suggested":
       "Occurrence has been identified by an automatic analysis of the definition text and has not been approved",
     "term.metadata.comments.public.title": "Public discussion",
-    "term.metadata.status.draft": "Draft",
-    "term.metadata.status.confirmed": "Confirmed",
     "term.metadata.status.help":
       "Term state represents various phases of the term's lifecycle, from its inception to its possible retirement (for instance because it has been replaced by a different term).",
-    "term.metadata.status.confirmed.edit.title":
-      "Confirmed term cannot be edited. Switch it back to Draft to edit.",
     "term.metadata.notation.label": "Notation",
     "term.metadata.notation.help":
       "(Optional) A notation is a string of characters such as 'UBA' or 'L2-3' used to uniquely identify a term within the scope of a given glossary. " +
@@ -493,8 +489,6 @@ const en = {
       "Terms from imported vocabularies are shown in this view, click to hide them",
     "glossary.importedIncluded": "with imported",
     "glossary.importedExcluded": "without imported",
-    "glossary.filter-draft": "Draft",
-    "glossary.filter-confirmed": "Confirmed",
     "glossary.importedTerm.tooltip": "Imported from vocabulary",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",

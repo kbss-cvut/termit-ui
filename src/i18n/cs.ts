@@ -467,12 +467,8 @@ const cs = {
     "term.metadata.related.definitionally.suggested":
       "Výskyt byl nalezen automaticky analýzou textu definice a ještě nebyl schválen",
     "term.metadata.comments.public.title": "Veřejná diskuse",
-    "term.metadata.status.draft": "Rozpracovaný",
-    "term.metadata.status.confirmed": "Schválený",
     "term.metadata.status.help":
       "Stav pojmu reprezentuje různé fáze životního cyklu pojmu, od jeho prvotního návrhu až po jeho případné zrušení (např. z důvodu nahrazení jiným pojmem).",
-    "term.metadata.status.confirmed.edit.title":
-      "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
     "term.metadata.notation.label": "Notace",
     "term.metadata.notation.help":
       "(Nepovinný) Notace je řetězec znaků, jako např. 'UBA' or 'L2-3', užívaný k identifikaci pojmu v rámci daného glosáře. " +
@@ -500,8 +496,6 @@ const cs = {
       "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete",
     "glossary.importedIncluded": "včetně importovaných",
     "glossary.importedExcluded": "bez importovaných",
-    "glossary.filter-draft": "Rozpracované",
-    "glossary.filter-confirmed": "Schválené",
     "glossary.importedTerm.tooltip": "Importován ze slovníku",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",

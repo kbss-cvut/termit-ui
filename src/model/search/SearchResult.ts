@@ -1,13 +1,13 @@
 import Vocabulary from "../../util/VocabularyUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import { AssetData } from "../Asset";
+import { AssetData, HasIdentifier } from "../Asset";
 import Utils from "../../util/Utils";
 
 export const CONTEXT = {
   iri: "@id",
   label: VocabularyUtils.RDFS_LABEL,
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
-  draft: VocabularyUtils.IS_DRAFT,
+  state: VocabularyUtils.TERM_STATE,
   snippetText:
     "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text",
   snippetField:
@@ -23,8 +23,8 @@ export interface SearchResultData extends AssetData {
   snippetField: string;
   score?: number;
   types: string[];
-  vocabulary?: { iri: string };
-  draft?: boolean;
+  vocabulary?: HasIdentifier;
+  state?: HasIdentifier;
 }
 
 export default class SearchResult implements AssetData {
@@ -34,8 +34,8 @@ export default class SearchResult implements AssetData {
   public readonly snippetField: string;
   public readonly score?: number;
   public readonly types: string[];
-  public readonly vocabulary?: { iri: string };
-  public readonly draft?: boolean;
+  public readonly vocabulary?: HasIdentifier;
+  public readonly state?: HasIdentifier;
 
   constructor(data: SearchResultData) {
     this.iri = data.iri;
@@ -44,7 +44,7 @@ export default class SearchResult implements AssetData {
     this.snippetText = data.snippetText;
     this.score = data.score;
     this.vocabulary = data.vocabulary;
-    this.draft = data.draft;
+    this.state = data.state;
     this.types = Utils.sanitizeArray(data.types);
   }
 

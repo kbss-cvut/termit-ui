@@ -27,10 +27,13 @@ interface TermStateProps {
 const TermState: React.FC<TermStateProps> = ({ term, vocabulary }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
+  const [editing, setEditing] = React.useState(false);
   React.useEffect(() => {
     dispatch(loadTermStates());
   }, [dispatch]);
-  const [editing, setEditing] = React.useState(false);
+  React.useEffect(() => {
+    setEditing(false);
+  }, [term.iri, setEditing]);
 
   return (
     <>
@@ -59,7 +62,7 @@ export const TermStateDisplay: React.FC<
 > = ({ term, vocabulary, onEdit }) => {
   const { i18n, locale } = useI18n();
   const states = useSelector((state: TermItState) => state.states);
-  const selectedState = states[term.state?.iri!];
+  const selectedState = term.state ? states[term.state.iri] : undefined;
 
   return (
     <>

@@ -16,7 +16,7 @@ const TermSnapshotIcon: React.FC<{ term: Term; vocabulary: Vocabulary }> = ({
     iri: term.snapshotOf()!,
     label: term.label,
     vocabulary: {
-      iri: vocabulary?.snapshotOf(),
+      iri: vocabulary?.snapshotOf()!,
     },
     types: [],
   };
