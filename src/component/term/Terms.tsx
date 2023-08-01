@@ -35,6 +35,7 @@ import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import { createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge } from "../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
+  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "./TermTreeSelectHelper";
 import { Location } from "history";
@@ -168,9 +169,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         this.setState({
           disableIncludeImportedToggle: this.props.isDetailView || false,
         });
-        return processTermsForTreeSelect(terms, matchingVocabularies, {
-          searchString: fetchOptions.searchString,
-        });
+        return processTermsForTreeSelect(
+          terms,
+          [createVocabularyMatcher(matchingVocabularies)],
+          {
+            searchString: fetchOptions.searchString,
+          }
+        );
       });
   };
 

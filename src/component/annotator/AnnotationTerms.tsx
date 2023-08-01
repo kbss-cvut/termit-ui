@@ -16,6 +16,7 @@ import { GoPlus } from "react-icons/go";
 import Utils from "../../util/Utils";
 import {
   commonTermTreeSelectProps,
+  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "../term/TermTreeSelectHelper";
 import {
@@ -98,9 +99,13 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
     const { i18n, vocabulary } = this.props;
     const terms = processTermsForTreeSelect(
       Object.keys(this.props.terms).map((k) => this.props.terms[k]),
-      Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
-        vocabulary!.iri
-      )
+      [
+        createVocabularyMatcher(
+          Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
+            vocabulary!.iri
+          )
+        ),
+      ]
     );
 
     return (

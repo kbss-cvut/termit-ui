@@ -1,21 +1,23 @@
 import Generator from "../../../__tests__/environment/Generator";
 import {
+  createVocabularyMatcher,
   loadAndPrepareTerms,
   processTermsForTreeSelect,
 } from "../TermTreeSelectHelper";
 import { TermFetchParams } from "../../../util/Types";
 import Term, { TermData } from "../../../model/Term";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("TermTreeSelectHelper", () => {
   describe("processTermsForTreeSelect", () => {
     const vocUri = Generator.generateUri();
 
-    it("returns all terms when no vocabularies are provided", () => {
+    it("returns all terms when no filter functions are provided", () => {
       const terms = [
         Generator.generateTerm(vocUri),
         Generator.generateTerm(vocUri),
       ];
-      const result = processTermsForTreeSelect(terms, undefined, {});
+      const result = processTermsForTreeSelect(terms, [], {});
       expect(result).toEqual(terms);
     });
 
@@ -23,10 +25,35 @@ describe("TermTreeSelectHelper", () => {
       const terms = [Generator.generateTerm(vocUri)];
       const parent = Generator.generateTerm(Generator.generateUri());
       terms[0].parentTerms = [parent];
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        searchString: "test",
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          searchString: "test",
+        }
+      );
       expect(result).toEqual(terms);
+    });
+
+    it("applies specified filter function on terms", () => {
+      const normalState = Generator.generateUri();
+      const terminalState = `${VocabularyUtils.NS_TERMIT}/cancelled-term`;
+      const terms: Term[] = [];
+      const matchingTerms: Term[] = [];
+      for (let i = 0; i < 10; i++) {
+        const t: Term = Generator.generateTerm(vocUri);
+        t.state = {
+          iri: Generator.randomBoolean() ? terminalState : normalState,
+        };
+        terms.push(t);
+        if (t.state.iri === normalState) {
+          matchingTerms.push(t);
+        }
+      }
+      const result = processTermsForTreeSelect(terms, [
+        (t) => t.state!.iri !== terminalState,
+      ]);
+      expect(result).toEqual(matchingTerms);
     });
 
     it("adds top level ancestor of a selected term into the results", () => {
@@ -40,9 +67,13 @@ describe("TermTreeSelectHelper", () => {
       const grandParent = Generator.generateTerm();
       parent.parentTerms = [grandParent];
       terms.push(included);
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        selectedIris: [included.iri],
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          selectedIris: [included.iri],
+        }
+      );
       expect(result).toContain(grandParent);
     });
 
@@ -70,9 +101,13 @@ describe("TermTreeSelectHelper", () => {
         },
       ];
       terms.push(included);
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        selectedIris: [included.iri],
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          selectedIris: [included.iri],
+        }
+      );
       const parent = result.find((t) => t.iri === fullParent.iri);
       expect(parent).toBeDefined();
       expect(parent!.subTerms).toBeDefined();
@@ -87,10 +122,14 @@ describe("TermTreeSelectHelper", () => {
       const grandParent = Generator.generateTerm();
       parent.parentTerms = [grandParent];
       terms.push(included);
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        selectedIris: [included.iri],
-        loadingSubTerms: true,
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          selectedIris: [included.iri],
+          loadingSubTerms: true,
+        }
+      );
       expect(result).not.toContain(grandParent);
     });
   });

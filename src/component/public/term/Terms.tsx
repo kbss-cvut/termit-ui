@@ -22,6 +22,7 @@ import IncludeImportedTermsToggle from "../../term/IncludeImportedTermsToggle";
 import { createTermsWithImportsOptionRenderer } from "../../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
+  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "../../term/TermTreeSelectHelper";
 import { connect } from "react-redux";
@@ -116,7 +117,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         });
         return processTermsForTreeSelect(
           terms,
-          matchingVocabularies,
+          [createVocabularyMatcher(matchingVocabularies)],
           fetchOptions
         );
       });

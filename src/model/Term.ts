@@ -107,6 +107,7 @@ export interface TermInfo {
   iri: string;
   label: MultilingualString; // Multilingual string due to the same context item (see ctx above)
   vocabulary: HasIdentifier;
+  state?: HasIdentifier;
   types?: string[];
 }
 

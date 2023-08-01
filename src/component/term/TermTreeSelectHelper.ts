@@ -40,34 +40,30 @@ export type TermTreeSelectProcessingOptions = {
  * Also, if selected terms are passed in options, it is ensured that their top-level ancestors are added to the result array to ensure the tree component is
  * able to display them properly.
  * @param terms Terms to process
- * @param vocabularies Vocabularies in which all the terms should be, or undefined to switch this filtering off
+ * @param filters An array of filter functions each term (and sub-term) must conform to
  * @param options Processing options
  */
 export function processTermsForTreeSelect(
   terms: Term[],
-  vocabularies: string[] | undefined,
+  filters: Array<(t: Term | TermInfo) => boolean>,
   options: TermTreeSelectProcessingOptions = {}
 ): Term[] {
   let result: Term[] = [];
   for (const t of terms) {
-    if (!vocabularyMatches(t, vocabularies)) {
+    if (!filters.reduce((v, f) => f(t) && v, true)) {
       continue;
     }
     result.push(t);
     if (t.subTerms) {
-      if (vocabularies) {
-        t.subTerms = t.subTerms
-          .filter((st) => vocabularyMatches(st, vocabularies))
-          .map((st) => {
-            return st;
-          });
-      }
+      t.subTerms = t.subTerms.filter((st) =>
+        filters.reduce((v, f) => f(st) && v, true)
+      );
       t.syncPlainSubTerms();
     }
     if (options.searchString && t.parentTerms) {
       result = result.concat(
         flattenAncestors(t.parentTerms).filter((pt) =>
-          vocabularyMatches(pt, vocabularies)
+          filters.reduce((v, f) => f(pt) && v, true)
         )
       );
     }
@@ -78,11 +74,9 @@ export function processTermsForTreeSelect(
   return result;
 }
 
-function vocabularyMatches(
-  term: Term | TermInfo,
-  vocabularies: string[] | undefined
-) {
-  return !vocabularies || vocabularies.indexOf(term.vocabulary!.iri!) !== -1;
+export function createVocabularyMatcher(vocabularies?: string[]) {
+  return (t: Term | TermInfo) =>
+    !vocabularies || vocabularies.indexOf(t.vocabulary!.iri) !== -1;
 }
 
 /**
@@ -219,11 +213,15 @@ export function loadAndPrepareTerms(
         .then((loaded) => loaded.concat(terms));
     })
     .then((terms) =>
-      processTermsForTreeSelect(terms, postOptions.matchingVocabularies, {
-        searchString: fetchOptions.searchString,
-        selectedIris,
-        loadingSubTerms: !!fetchOptions.optionID,
-      })
+      processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher(postOptions.matchingVocabularies)],
+        {
+          searchString: fetchOptions.searchString,
+          selectedIris,
+          loadingSubTerms: !!fetchOptions.optionID,
+        }
+      )
     );
 }
 
