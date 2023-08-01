@@ -689,6 +689,8 @@ const en = {
       "Cannot remove vocabulary import(s), there are still references between terms from this vocabulary and the imported one (or one of its imports).",
     "error.file.maxUploadSizeExceeded":
       "The file could not be uploaded because it exceeds the configured maximum file size limit.",
+    "error.term.state.terminal.liveChildren":
+      "Cannot set term state to a terminal when it has at least one sub term in non-terminal state.",
 
     "history.label": "Change history",
     "history.loading": "Loading history...",

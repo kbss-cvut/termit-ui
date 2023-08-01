@@ -697,6 +697,8 @@ const cs = {
       "Nelze odstranit import slovníku, neboť stále existují vazby mezi pojmy z tohoto a importovaného slovníku (či ze slovníků, které importuje).",
     "error.file.maxUploadSizeExceeded":
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
+    "error.term.state.terminal.liveChildren":
+      "Pojmu nelze nastavit koncový stav, dokud má alespoň jednoho potomka v jiném než koncovém stavu.",
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
