@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import {
   loadFileContent,
+  loadTermStates,
   loadVocabulary,
   saveFileContent,
 } from "../../action/AsyncActions";
@@ -38,6 +39,7 @@ interface FileDetailOwnProps extends HasI18n {
   clearFileContent: () => void;
   loadVocabulary: (vocabularyIri: IRI) => void;
   fetchTerms: (vocabularyIri: IRI) => Promise<any>;
+  loadTermStates(): void;
 }
 
 type FileDetailProps = FileDetailOwnProps & FileDetailProvidedProps;
@@ -70,6 +72,8 @@ export class FileContentDetail extends React.Component<
 
   public componentDidMount(): void {
     this.loadFileContentData();
+    // Term states are used to filter out terminated terms from selectors. Load them here so that they are loaded only once
+    this.props.loadTermStates();
     this.initializeTermFetching();
     this.props.loadVocabulary(this.props.vocabularyIri);
   }
@@ -162,6 +166,7 @@ export default connect(
         dispatch(loadAllTerms(vocabularyIri, true)),
       consumeNotification: (notification: AppNotification) =>
         dispatch(consumeNotification(notification)),
+      loadTermStates: () => dispatch(loadTermStates()),
     };
   }
 )(injectIntl(withI18n(FileContentDetail)));

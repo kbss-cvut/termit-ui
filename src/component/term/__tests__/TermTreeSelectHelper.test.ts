@@ -151,6 +151,7 @@ describe("TermTreeSelectHelper", () => {
       ];
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: selected,
+        states: [],
       }).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
           selected.map((t) => t.iri)
@@ -166,6 +167,7 @@ describe("TermTreeSelectHelper", () => {
       ];
       return loadAndPrepareTerms({ offset: 100 }, loadTerms, {
         selectedTerms: selected,
+        states: [],
       }).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
           []
@@ -184,6 +186,7 @@ describe("TermTreeSelectHelper", () => {
         loadTerms,
         {
           selectedTerms: selected,
+          states: [],
         }
       ).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
@@ -223,6 +226,7 @@ describe("TermTreeSelectHelper", () => {
         .mockResolvedValueOnce([selected]);
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: [selected],
+        states: [],
       }).then(() => {
         expect(loadTerms).toHaveBeenCalledTimes(3);
         expect(loadTerms).toHaveBeenCalledWith({ optionID: grandParent.iri });
@@ -261,6 +265,7 @@ describe("TermTreeSelectHelper", () => {
         .mockResolvedValueOnce([selected]);
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: [selected],
+        states: [],
       }).then((result: Term[]) => {
         expect(result).toContain(grandParent);
         expect(result).toContain(parent);
@@ -280,6 +285,7 @@ describe("TermTreeSelectHelper", () => {
 
       return loadAndPrepareTerms({}, loadTerms, {
         matchingVocabularies: [vocabularyIri],
+        states: [],
       }).then((result) => {
         expect(result.length).toBeLessThan(terms.length);
         result.forEach((t) => expect(t.vocabulary!.iri).toEqual(vocabularyIri));

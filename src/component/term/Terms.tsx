@@ -35,6 +35,7 @@ import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import { createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge } from "../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
+  createTermNonTerminalStateMatcher,
   createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "./TermTreeSelectHelper";
@@ -47,6 +48,7 @@ import "./Terms.scss";
 import { Configuration } from "../../model/Configuration";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
+import RdfsResource from "../../model/RdfsResource";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -54,6 +56,7 @@ interface GlossaryTermsProps extends HasI18n {
   selectedTerms: Term | null;
   notifications: AppNotification[];
   configuration: Configuration;
+  states: { [key: string]: RdfsResource };
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -171,7 +174,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         });
         return processTermsForTreeSelect(
           terms,
-          [createVocabularyMatcher(matchingVocabularies)],
+          [
+            createVocabularyMatcher(matchingVocabularies),
+            createTermNonTerminalStateMatcher(
+              Utils.mapToArray(this.props.states)
+            ),
+          ],
           {
             searchString: fetchOptions.searchString,
           }
@@ -360,6 +368,7 @@ export default connect(
       counter: state.createdTermsCounter,
       notifications: state.notifications,
       configuration: state.configuration,
+      states: state.states,
     };
   },
   (dispatch: ThunkDispatch) => {

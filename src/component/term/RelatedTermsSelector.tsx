@@ -31,6 +31,7 @@ import TermItState, {
   DefinitionallyRelatedTerms,
 } from "../../model/TermItState";
 import Constants from "../../util/Constants";
+import RdfsResource from "../../model/RdfsResource";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
@@ -39,6 +40,7 @@ interface RelatedTermsSelectorProps extends HasI18n {
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
   language: string;
+  states: { [key: string]: RdfsResource };
   loadTerms: (
     fetchOptions: TermFetchParams<TermData>,
     namespace?: string
@@ -65,6 +67,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
         this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
       {
         selectedTerms: this.props.selected,
+        states: Utils.mapToArray(this.props.states),
       }
     );
   };
@@ -108,6 +111,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
 export default connect(
   (state: TermItState) => ({
     definitionRelated: state.definitionallyRelatedTerms,
+    states: state.states,
   }),
   (dispatch: ThunkDispatch) => ({
     loadTerms: (fetchOptions: TermFetchParams<TermData>, namespace?: string) =>

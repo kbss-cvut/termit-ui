@@ -82,6 +82,7 @@ describe("Terms", () => {
       <Terms
         selectedTerms={selectedTerms}
         selectVocabularyTerm={selectVocabularyTerm}
+        states={{}}
         vocabulary={vocabulary}
         fetchTerms={fetchTerms}
         {...intlFunctions()}
@@ -270,9 +271,13 @@ describe("Terms", () => {
         .then((options) => {
           expect(options.length).toEqual(1);
           expect(options).toEqual(terms);
-          expect(spy).toHaveBeenCalledWith(terms, [expect.any(Function)], {
-            searchString: "test",
-          });
+          expect(spy).toHaveBeenCalledWith(
+            terms,
+            [expect.any(Function), expect.any(Function)],
+            {
+              searchString: "test",
+            }
+          );
         });
     });
   });

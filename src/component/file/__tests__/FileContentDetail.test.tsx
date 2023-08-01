@@ -15,11 +15,12 @@ describe("FileDetail", () => {
   let fileContent: string;
   let mockedFunctionLikeProps: {
     consumeNotification: (notification: AppNotification) => void;
-    loadFileContent: (fileIri: IRI) => void;
-    saveFileContent: (fileIri: IRI, fileContent: string) => void;
+    loadFileContent: (fileIri: IRI) => Promise<any>;
+    saveFileContent: (fileIri: IRI, fileContent: string) => Promise<any>;
     clearFileContent: () => void;
     loadVocabulary: (vocabularyIri: IRI) => void;
     fetchTerms: (vocabularyIri: IRI) => Promise<Term[]>;
+    loadTermStates: () => void;
   };
   let mockDataProps: {
     defaultTerms: Term[];
@@ -35,6 +36,7 @@ describe("FileDetail", () => {
       clearFileContent: jest.fn(),
       fetchTerms: jest.fn().mockResolvedValue({}),
       loadVocabulary: jest.fn(),
+      loadTermStates: jest.fn(),
     };
     mockDataProps = {
       defaultTerms: [],

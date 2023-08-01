@@ -21,7 +21,7 @@ const TermStateSelector: React.FC<TermStateSelectorProps> = ({
 }) => {
   const { locale } = useI18n();
   const states = useSelector((state: TermItState) => state.states);
-  const options = Object.keys(states).map((k) => states[k]);
+  const options = Utils.mapToArray(states);
   const onSelect = (item: RdfsResource) => {
     onChange(item.iri);
   };

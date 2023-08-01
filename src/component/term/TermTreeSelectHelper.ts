@@ -199,6 +199,7 @@ export function resolveAncestors(term: Term): string[] {
 export type TermFetchingPostProcessingOptions = {
   matchingVocabularies?: string[];
   selectedTerms?: TermInfo[] | TermData[];
+  states: RdfsResource[];
 };
 
 export function loadAndPrepareTerms(
@@ -238,7 +239,10 @@ export function loadAndPrepareTerms(
     .then((terms) =>
       processTermsForTreeSelect(
         terms,
-        [createVocabularyMatcher(postOptions.matchingVocabularies)],
+        [
+          createVocabularyMatcher(postOptions.matchingVocabularies),
+          createTermNonTerminalStateMatcher(postOptions.states),
+        ],
         {
           searchString: fetchOptions.searchString,
           selectedIris,

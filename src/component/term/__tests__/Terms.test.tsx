@@ -117,6 +117,7 @@ describe("Terms", () => {
         isDetailView={isDetailView}
         fetchUnusedTerms={fetchUnusedTerms}
         configuration={DEFAULT_CONFIGURATION}
+        states={{}}
       />
     );
   }
@@ -321,9 +322,13 @@ describe("Terms", () => {
         .then((options) => {
           expect(options.length).toEqual(1);
           expect(options).toEqual(terms);
-          expect(spy).toHaveBeenCalledWith(terms, [expect.any(Function)], {
-            searchString: "test",
-          });
+          expect(spy).toHaveBeenCalledWith(
+            terms,
+            [expect.any(Function), expect.any(Function)],
+            {
+              searchString: "test",
+            }
+          );
         });
     });
   });
