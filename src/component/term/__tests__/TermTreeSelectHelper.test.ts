@@ -1,5 +1,6 @@
 import Generator from "../../../__tests__/environment/Generator";
 import {
+  createTermNonTerminalStateMatcher,
   createVocabularyMatcher,
   loadAndPrepareTerms,
   processTermsForTreeSelect,
@@ -7,6 +8,8 @@ import {
 import { TermFetchParams } from "../../../util/Types";
 import Term, { TermData } from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import RdfsResource from "../../../model/RdfsResource";
+import { langString } from "../../../model/MultilingualString";
 
 describe("TermTreeSelectHelper", () => {
   describe("processTermsForTreeSelect", () => {
@@ -281,6 +284,78 @@ describe("TermTreeSelectHelper", () => {
         expect(result.length).toBeLessThan(terms.length);
         result.forEach((t) => expect(t.vocabulary!.iri).toEqual(vocabularyIri));
       });
+    });
+  });
+
+  describe("createVocabularyMatcher", () => {
+    it("returns a function that returns true for terms that match specified any of specified vocabularies", () => {
+      const vocabularyIri = Generator.generateUri();
+      const terms = [
+        Generator.generateTerm(vocabularyIri),
+        Generator.generateTerm(vocabularyIri),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      const matcher = createVocabularyMatcher([vocabularyIri]);
+      const result = terms.filter(matcher);
+      result.forEach((t) => expect(t.vocabulary!.iri).toEqual(vocabularyIri));
+    });
+
+    it("returns a function that matches all terms if no vocabulary identifiers are provided", () => {
+      const terms = [
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      const matcher = createVocabularyMatcher();
+      const result = terms.filter(matcher);
+      expect(result).toEqual(terms);
+    });
+  });
+
+  describe("createTermNonTerminalStateMatcher", () => {
+    const terminalState = new RdfsResource({
+      iri: Generator.generateUri(),
+      label: langString("Terminal state", "en"),
+      types: [VocabularyUtils.TERM_STATE_TERMINAL],
+    });
+    const states = [
+      new RdfsResource({
+        iri: Generator.generateUri(),
+        label: langString("Normal state", "en"),
+      }),
+      terminalState,
+    ];
+
+    it("returns a function that matches terms whose state is not one of specified terminal states", () => {
+      const terms = [
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      terms.forEach(
+        (t) =>
+          (t.state = {
+            iri: Generator.randomBoolean() ? states[0].iri : terminalState.iri,
+          })
+      );
+      const matcher = createTermNonTerminalStateMatcher(states);
+      const result = terms.filter(matcher);
+      result.forEach((t) =>
+        expect(t.state!.iri).not.toEqual(terminalState.iri)
+      );
+    });
+
+    it("returns a function that matches terms without state", () => {
+      const terms = [
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      const matcher = createTermNonTerminalStateMatcher(states);
+      const result = terms.filter(matcher);
+      expect(result).toEqual(terms);
     });
   });
 });

@@ -84,6 +84,7 @@ const VocabularyUtils = {
   IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "je-výskytem-termu",
   IS_DEFINITION_OF_TERM: _NS_TERMIT + "je-výskytem-definice-termu",
   TERM_STATE: _NS_POPIS_DAT + "má-stav-pojmu",
+  TERM_STATE_TERMINAL: _NS_TERMIT + "koncový-stav-pojmu",
   RESOURCE: _NS_POPIS_DAT + "zdroj",
   TERM_ASSIGNMENT: _NS_TERMIT + "přiřazení-termu",
   TERM_OCCURRENCE: _NS_TERMIT + "výskyt-termu",
