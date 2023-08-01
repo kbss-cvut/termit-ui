@@ -20,7 +20,6 @@ describe("FileDetail", () => {
     clearFileContent: () => void;
     loadVocabulary: (vocabularyIri: IRI) => void;
     fetchTerms: (vocabularyIri: IRI) => Promise<Term[]>;
-    loadTermStates: () => void;
   };
   let mockDataProps: {
     defaultTerms: Term[];
@@ -36,7 +35,6 @@ describe("FileDetail", () => {
       clearFileContent: jest.fn(),
       fetchTerms: jest.fn().mockResolvedValue({}),
       loadVocabulary: jest.fn(),
-      loadTermStates: jest.fn(),
     };
     mockDataProps = {
       defaultTerms: [],

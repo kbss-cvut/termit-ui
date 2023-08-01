@@ -41,8 +41,8 @@ INITIAL_STATE[VocabularyUtils.RDF_TYPE] = {
   value: [],
   matchType: MatchType.IRI,
 };
-INITIAL_STATE[VocabularyUtils.TERM_STATE] = {
-  property: VocabularyUtils.TERM_STATE,
+INITIAL_STATE[VocabularyUtils.HAS_TERM_STATE] = {
+  property: VocabularyUtils.HAS_TERM_STATE,
   value: [],
   matchType: MatchType.IRI,
 };
@@ -118,7 +118,7 @@ const FacetedSearch: React.FC = () => {
             </Col>
             <Col xl={3} xs={6}>
               <TermStateFacet
-                value={params[VocabularyUtils.TERM_STATE]}
+                value={params[VocabularyUtils.HAS_TERM_STATE]}
                 onChange={onChange}
               />
             </Col>

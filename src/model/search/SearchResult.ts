@@ -7,7 +7,7 @@ export const CONTEXT = {
   iri: "@id",
   label: VocabularyUtils.RDFS_LABEL,
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
-  state: VocabularyUtils.TERM_STATE,
+  state: VocabularyUtils.HAS_TERM_STATE,
   snippetText:
     "http://onto.fel.cvut.cz/ontologies/application/termit/fts/snippet-text",
   snippetField:

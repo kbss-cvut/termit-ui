@@ -30,6 +30,7 @@ import Constants from "../util/Constants";
 import Routing from "src/util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import Breadcrumbs from "./breadcrumb/Breadcrumbs";
+import { loadTermStates } from "../action/AsyncActions";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -51,6 +52,7 @@ interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   loadUser: () => Promise<any>;
   logout: () => void;
   openContextsForEditing: (contexts: string[]) => Promise<any>;
+  loadTermStates: () => void;
   sidebarExpanded: boolean;
   desktopView: boolean;
   changeView: () => void;
@@ -67,6 +69,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
   }
 
   public componentDidMount(): void {
+    this.props.loadTermStates();
     if (this.props.user === EMPTY_USER) {
       Routing.saveOriginalTarget();
       this.props.loadUser().then(() => {
@@ -239,6 +242,7 @@ export default connect(
       loadUser: () => dispatch(loadUser()),
       logout: () => dispatch(logout()),
       changeView: () => dispatch(changeView()),
+      loadTermStates: () => dispatch(loadTermStates()),
       openContextsForEditing: (contexts: string[]) =>
         dispatch(openForEditing(contexts)),
     };

@@ -15,7 +15,7 @@ const ctx = {
   notations: VocabularyUtils.SKOS_NOTATION,
   examples: context(VocabularyUtils.SKOS_EXAMPLE),
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
-  state: VocabularyUtils.TERM_STATE,
+  state: VocabularyUtils.HAS_TERM_STATE,
 };
 
 export const CONTEXT = { ...ctx, ...ASSET_CONTEXT };

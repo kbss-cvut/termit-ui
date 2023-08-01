@@ -6,6 +6,7 @@ import Utils from "../../util/Utils";
 import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import RdfsResource from "../../model/RdfsResource";
+import SearchResult from "../../model/search/SearchResult";
 
 /**
  * Common properties for a tree selector containing terms
@@ -87,18 +88,18 @@ export function createVocabularyMatcher(vocabularies?: string[]) {
 }
 
 /**
- * Creates a filter function that matches terms that are not in a terminal state.
+ * Creates a filter function that matches terms (or FTS results representing terms) that are not in a terminal state.
  *
  * Terminal states are resolved from the specified array of state options.
  * @param states Available states
  */
 export function createTermNonTerminalStateMatcher(
   states: RdfsResource[]
-): (t: Term | TermInfo) => boolean {
+): (t: Term | TermInfo | SearchResult) => boolean {
   const terminalStates = states
     .filter((s) => s.types.indexOf(VocabularyUtils.TERM_STATE_TERMINAL) !== -1)
     .map((t) => t.iri);
-  return (t: Term | TermInfo) =>
+  return (t: Term | TermInfo | SearchResult) =>
     !t.state || terminalStates.indexOf(t.state.iri) === -1;
 }
 

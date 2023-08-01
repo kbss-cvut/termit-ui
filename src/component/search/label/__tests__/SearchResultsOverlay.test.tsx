@@ -12,9 +12,17 @@ import SearchResultsOverlay, {
 import { Simulate } from "react-dom/test-utils";
 import { ReactWrapper } from "enzyme";
 import { MemoryRouter } from "react-router";
+import RdfsResource from "../../../../model/RdfsResource";
+import { langString } from "../../../../model/MultilingualString";
+import Constants from "../../../../util/Constants";
+import * as Redux from "react-redux";
 
 jest.mock("popper.js");
 jest.mock("../../../misc/AssetLabel", () => () => <span>Asset</span>);
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
 
 function generateResults(type: string, count: number = 5): SearchResult[] {
   const results: SearchResult[] = [];
@@ -56,6 +64,7 @@ describe("SearchResultsOverlay", () => {
     document.body.appendChild(element);
     jest.useFakeTimers();
     mockUseI18n();
+    jest.spyOn(Redux, "useSelector").mockReturnValue({});
   });
 
   afterEach(() => {
@@ -192,5 +201,38 @@ describe("SearchResultsOverlay", () => {
     expect(infoLink).toBeNull();
     const items = document.getElementsByClassName("search-result-link");
     expect(items.length).toEqual(1);
+  });
+
+  it("filters out results in terminal state", () => {
+    const states = [
+      new RdfsResource({
+        iri: Generator.generateUri(),
+        label: langString("Normal state", Constants.DEFAULT_LANGUAGE),
+        types: [VocabularyUtils.TERM_STATE],
+      }),
+      new RdfsResource({
+        iri: Generator.generateUri(),
+        label: langString("Terminal state", Constants.DEFAULT_LANGUAGE),
+        types: [
+          VocabularyUtils.TERM_STATE,
+          VocabularyUtils.TERM_STATE_TERMINAL,
+        ],
+      }),
+    ];
+    const results = [
+      new SearchResult(
+        Object.assign({}, generateResults(Vocabulary.TERM, 1)[0], {
+          state: { iri: states[1].iri },
+        })
+      ),
+    ];
+    (Redux.useSelector as jest.Mock).mockReset();
+    jest.spyOn(Redux, "useSelector").mockReturnValue(states);
+    renderWithResults(results);
+    const items = document.getElementsByClassName("search-result-link");
+    expect(items.length).toEqual(0);
+    expect(
+      document.getElementsByClassName("search-result-no-results").length
+    ).toEqual(1);
   });
 });

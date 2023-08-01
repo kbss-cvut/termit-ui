@@ -34,7 +34,7 @@ const ctx = {
   sources: VocabularyUtils.DC_SOURCE,
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
   definitionSource: VocabularyUtils.HAS_DEFINITION_SOURCE,
-  state: VocabularyUtils.TERM_STATE,
+  state: VocabularyUtils.HAS_TERM_STATE,
   glossary: VocabularyUtils.SKOS_IN_SCHEME,
   notations: VocabularyUtils.SKOS_NOTATION,
   examples: context(VocabularyUtils.SKOS_EXAMPLE),
