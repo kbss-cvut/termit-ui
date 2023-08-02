@@ -461,6 +461,8 @@ const en = {
     "term.metadata.comments.public.title": "Public discussion",
     "term.metadata.status.help":
       "Term state represents various phases of the term's lifecycle, from its inception to its possible retirement (for instance because it has been replaced by a different term).",
+    "term.metadata.status.terminal.help":
+      "Term is in a terminal state which means it should not be used anymore.",
     "term.metadata.notation.label": "Notation",
     "term.metadata.notation.help":
       "(Optional) A notation is a string of characters such as 'UBA' or 'L2-3' used to uniquely identify a term within the scope of a given glossary. " +

@@ -32,7 +32,7 @@ import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
-import { createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge } from "../misc/treeselect/Renderers";
+import { createFullTermRenderer } from "../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
   createTermNonTerminalStateMatcher,
@@ -267,6 +267,15 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     );
   }
 
+  private resolveTerminalStates() {
+    return Object.keys(this.props.states).filter(
+      (s) =>
+        this.props.states[s].types.indexOf(
+          VocabularyUtils.TERM_STATE_TERMINAL
+        ) !== -1
+    );
+  }
+
   public render() {
     if (!this.props.vocabulary) {
       return null;
@@ -354,8 +363,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             multi={false}
             autoFocus={!isDetailView}
             menuIsFloating={false}
-            optionRenderer={createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(
+            optionRenderer={createFullTermRenderer(
               unusedTerms,
+              this.resolveTerminalStates(),
               this.props.vocabulary.iri,
               this.props.showTermQualityBadge
             )}

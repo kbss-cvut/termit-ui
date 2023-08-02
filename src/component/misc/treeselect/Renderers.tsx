@@ -8,6 +8,8 @@ import TermLink from "../../term/TermLink";
 import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
 import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
+import TerminalTermStateIcon from "../../term/TerminalTermStateIcon";
+import Utils from "../../../util/Utils";
 
 interface TreeItem {
   depth: number;
@@ -31,9 +33,9 @@ interface OptionRendererParams<T> {
 export function createTermsWithImportsOptionRenderer(
   currentVocabularyIri?: string
 ) {
-  return createTermsWithImportsOptionRendererAndUnusedTerms(
-    [],
-    currentVocabularyIri
+  return createTermRenderer(
+    [createImportedTermRenderer(currentVocabularyIri)],
+    [createVocabularyBadgeRenderer(currentVocabularyIri)]
   );
 }
 
@@ -41,30 +43,31 @@ export function createTermsWithImportsOptionRenderer(
  * Intelligent tree select option renderer which visualizes imported Terms by adding icon to them.
  *
  * @param unusedTerms List of identifiers of terms which are not used anywhere
- * @param currentVocabularyIri IRI of the current vocabulary, used to resolve whether term is imported
- */
-export function createTermsWithImportsOptionRendererAndUnusedTerms(
-  unusedTerms: string[],
-  currentVocabularyIri?: string
-) {
-  return createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(
-    unusedTerms,
-    currentVocabularyIri,
-    false
-  );
-}
-
-/**
- * Intelligent tree select option renderer which visualizes imported Terms by adding icon to them.
- *
- * @param unusedTerms List of identifiers of terms which are not used anywhere
+ * @param terminalStates List of identifiers of term states that are terminal
  * @param currentVocabularyIri IRI of the current vocabulary, used to resolve whether term is imported
  * @param qualityBadge Whether quality badge should be rendered or not
  */
-export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadge(
+export function createFullTermRenderer(
   unusedTerms: string[],
+  terminalStates: string[],
   currentVocabularyIri?: string,
   qualityBadge?: boolean
+) {
+  const addonBeforeRenderers = [];
+  if (qualityBadge) {
+    addonBeforeRenderers.push(createQualityBadgeRenderer());
+  }
+  addonBeforeRenderers.push(createTerminalStateIconRenderer(terminalStates));
+  addonBeforeRenderers.push(createImportedTermRenderer(currentVocabularyIri));
+  addonBeforeRenderers.push(createUnusedTermInfoRenderer(unusedTerms));
+  return createTermRenderer(addonBeforeRenderers, [
+    createVocabularyBadgeRenderer(currentVocabularyIri),
+  ]);
+}
+
+export function createTermRenderer(
+  addonBeforeRenderers: Array<(t: Term & TreeItem) => JSX.Element | null>,
+  addonAfterRenderers: Array<(t: Term & TreeItem) => JSX.Element | null>
 ) {
   return (params: OptionRendererParams<Term>) => {
     //Conversion between old and new API
@@ -78,7 +81,6 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       params.selectProps;
 
     const className = classNames("VirtualizedSelectOption", {
-      // VirtualizedSelectFocusedOption: params.isFocused,
       VirtualizedSelectDisabledOption: params.isDisabled,
       VirtualizedSelectSelectedOption: params.isSelected,
     });
@@ -91,28 +93,10 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
         };
 
     const addonBefore = (
-      <span>
-        {qualityBadge ? <TermQualityBadge term={option} /> : undefined}
-        {!currentVocabularyIri ||
-        currentVocabularyIri === option.vocabulary!.iri ? undefined : (
-          <ImportedTermInfo term={option} />
-        )}
-        {unusedTerms.indexOf(option.iri) !== -1 ? (
-          <>
-            <UnusedTermInfo term={option} />
-          </>
-        ) : undefined}
-      </span>
+      <span>{addonBeforeRenderers.map((r) => r(option))}</span>
     );
 
-    const addonAfter = (
-      <span>
-        {!currentVocabularyIri ||
-        currentVocabularyIri === option.vocabulary!.iri ? undefined : (
-          <VocabularyNameBadge vocabulary={option.vocabulary} />
-        )}
-      </span>
-    );
+    const addonAfter = <span>{addonAfterRenderers.map((r) => r(option))}</span>;
 
     return (
       <ResultItem
@@ -133,6 +117,48 @@ export function createTermsWithImportsOptionRendererAndUnusedTermsAndQualityBadg
       />
     );
   };
+}
+
+function createQualityBadgeRenderer() {
+  return (option: Term & TreeItem) => (
+    <TermQualityBadge key="term-quality-addon" term={option} />
+  );
+}
+
+function createImportedTermRenderer(currentVocabularyIri?: string) {
+  return (option: Term & TreeItem) =>
+    !currentVocabularyIri ||
+    currentVocabularyIri === option.vocabulary!.iri ? null : (
+      <ImportedTermInfo key="imported-term-addon" term={option} />
+    );
+}
+
+function createUnusedTermInfoRenderer(unusedTerms: string[]) {
+  return (option: Term & TreeItem) =>
+    unusedTerms.indexOf(option.iri) !== -1 ? (
+      <UnusedTermInfo key="unused-term-addon" term={option} />
+    ) : null;
+}
+
+function createVocabularyBadgeRenderer(currentVocabularyIri?: string) {
+  return (option: Term & TreeItem) =>
+    !currentVocabularyIri ||
+    currentVocabularyIri === option.vocabulary!.iri ? null : (
+      <VocabularyNameBadge
+        key="vocabulary-name-addon"
+        vocabulary={option.vocabulary}
+      />
+    );
+}
+
+function createTerminalStateIconRenderer(terminalStates: string[]) {
+  return (option: Term & TreeItem) =>
+    option.state && terminalStates.indexOf(option.state.iri) !== -1 ? (
+      <TerminalTermStateIcon
+        key="terminal-state-icon"
+        id={`terminal-state-icon-${Utils.hashCode(option.iri)}`}
+      />
+    ) : null;
 }
 
 export function createTermValueRenderer(vocabularyIri: string) {

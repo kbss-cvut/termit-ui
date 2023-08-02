@@ -469,6 +469,8 @@ const cs = {
     "term.metadata.comments.public.title": "Veřejná diskuse",
     "term.metadata.status.help":
       "Stav pojmu reprezentuje různé fáze životního cyklu pojmu, od jeho prvotního návrhu až po jeho případné zrušení (např. z důvodu nahrazení jiným pojmem).",
+    "term.metadata.status.terminal.help":
+      "Pojem byl zrušen a neměl by být nadále používán.",
     "term.metadata.notation.label": "Notace",
     "term.metadata.notation.help":
       "(Nepovinný) Notace je řetězec znaků, jako např. 'UBA' or 'L2-3', užívaný k identifikaci pojmu v rámci daného glosáře. " +
@@ -497,10 +499,10 @@ const cs = {
     "glossary.importedIncluded": "včetně importovaných",
     "glossary.importedExcluded": "bez importovaných",
     "glossary.importedTerm.tooltip": "Importován ze slovníku",
-    "glossary.showTerminal": "Včetně uzavřených",
+    "glossary.showTerminal": "Včetně zrušených",
     "glossary.showNonTerminal": "Pouze aktivní",
     "glossary.showTerminal.help":
-      "Jsou zobrazeny též pojmy v koncovém (uzavřeném) stavu. Takové pojmy by se již neměly používat.",
+      "Jsou zobrazeny též zrušené pojmy (pojmy v koncovém stavu). Takové pojmy by se již neměly používat.",
     "glossary.showNonTerminal.help":
       "Jsou zobrazeny pouze pojmy v aktivním stavu, tj. pojmy, které lze používat.",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
