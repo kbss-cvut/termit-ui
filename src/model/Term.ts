@@ -1,4 +1,10 @@
-import { ASSET_CONTEXT, AssetData, default as Asset, Editable } from "./Asset";
+import {
+  ASSET_CONTEXT,
+  AssetData,
+  default as Asset,
+  Editable,
+  HasIdentifier,
+} from "./Asset";
 import Utils from "../util/Utils";
 import WithUnmappedProperties from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
@@ -28,7 +34,7 @@ const ctx = {
   sources: VocabularyUtils.DC_SOURCE,
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
   definitionSource: VocabularyUtils.HAS_DEFINITION_SOURCE,
-  draft: VocabularyUtils.IS_DRAFT,
+  state: VocabularyUtils.HAS_TERM_STATE,
   glossary: VocabularyUtils.SKOS_IN_SCHEME,
   notations: VocabularyUtils.SKOS_NOTATION,
   examples: context(VocabularyUtils.SKOS_EXAMPLE),
@@ -60,7 +66,7 @@ const MAPPED_PROPERTIES = [
   "vocabulary",
   "glossary",
   "definitionSource",
-  "draft",
+  "state",
   "exactMatchTerms",
   "notations",
   "examples",
@@ -90,9 +96,9 @@ export interface TermData extends AssetData {
   parentTerms?: TermData[];
   parent?: string; // Introduced in order to support the Intelligent Tree Select component
   plainSubTerms?: string[]; // Introduced in order to support the Intelligent Tree Select component
-  vocabulary?: AssetData;
+  vocabulary?: HasIdentifier;
   definitionSource?: TermOccurrenceData;
-  draft?: boolean;
+  state?: HasIdentifier;
   notations?: string[];
   examples?: PluralMultilingualString;
 }
@@ -100,7 +106,8 @@ export interface TermData extends AssetData {
 export interface TermInfo {
   iri: string;
   label: MultilingualString; // Multilingual string due to the same context item (see ctx above)
-  vocabulary: AssetData;
+  vocabulary: HasIdentifier;
+  state?: HasIdentifier;
   types?: string[];
 }
 
@@ -127,9 +134,9 @@ export default class Term
   public readonly parent?: string;
   public sources?: string[];
   public plainSubTerms?: string[];
-  public readonly vocabulary?: AssetData;
+  public readonly vocabulary?: HasIdentifier;
   public readonly definitionSource?: TermOccurrenceData;
-  public draft: boolean;
+  public state?: HasIdentifier;
   public notations?: string[];
   public examples?: PluralMultilingualString;
 
@@ -147,7 +154,7 @@ export default class Term
     }
     this.sanitizeTermInfoArrays();
     this.syncPlainSubTerms();
-    this.draft = termData.draft !== undefined ? termData.draft : true;
+    this.state = termData.state;
   }
 
   private handleParents(parents: TermData[], visitedTerms: TermMap): Term[] {
@@ -318,9 +325,5 @@ export default class Term
     }
     result.sort(termComparator);
     return result;
-  }
-
-  public static isDraft(term?: TermData | null): boolean {
-    return !!term && (term.draft === undefined || term.draft);
   }
 }

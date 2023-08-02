@@ -22,6 +22,8 @@ import IncludeImportedTermsToggle from "../../term/IncludeImportedTermsToggle";
 import { createTermsWithImportsOptionRenderer } from "../../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
+  createTermNonTerminalStateMatcher,
+  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "../../term/TermTreeSelectHelper";
 import { connect } from "react-redux";
@@ -31,10 +33,12 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import "../../term/Terms.scss";
 import { loadTerms } from "../../../action/AsyncActions";
+import RdfsResource from "../../../model/RdfsResource";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
   selectedTerms: Term | null;
+  states: { [key: string]: RdfsResource };
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -116,7 +120,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         });
         return processTermsForTreeSelect(
           terms,
-          matchingVocabularies,
+          [
+            createVocabularyMatcher(matchingVocabularies),
+            createTermNonTerminalStateMatcher(
+              Utils.mapToArray(this.props.states)
+            ),
+          ],
           fetchOptions
         );
       });
@@ -235,6 +244,7 @@ export default connect(
   (state: TermItState) => {
     return {
       selectedTerms: state.selectedTerm,
+      states: state.states,
     };
   },
   (dispatch: ThunkDispatch) => {

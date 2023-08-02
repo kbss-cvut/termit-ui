@@ -6,7 +6,10 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { langString } from "../../../model/MultilingualString";
-import { ExactMatchesSelector } from "../ExactMatchesSelector";
+import {
+  ExactMatchesSelector,
+  ExactMatchesSelectorProps,
+} from "../ExactMatchesSelector";
 import { TermFetchParams } from "../../../util/Types";
 
 describe("ExactMatchesSelector", () => {
@@ -25,38 +28,44 @@ describe("ExactMatchesSelector", () => {
 
   it("passes selected exact match as value to tree component", () => {
     const exactMatch = [Generator.generateTerm(vocabularyIri)];
-    const wrapper = shallow(
-      <ExactMatchesSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        selected={exactMatch}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({
+      termIri: Generator.generateUri(),
+      vocabularyIri: vocabularyIri,
+      selected: exactMatch,
+    });
     expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([
       exactMatch[0].iri,
     ]);
   });
+
+  function render(
+    props: Partial<ExactMatchesSelectorProps> & {
+      termIri: string;
+      vocabularyIri: string;
+    }
+  ) {
+    return shallow<ExactMatchesSelector>(
+      <ExactMatchesSelector
+        id="test"
+        states={{}}
+        onChange={onChange}
+        loadTerms={loadTerms}
+        {...props}
+        {...intlFunctions()}
+      />
+    );
+  }
 
   it("passes selected exact matches as value to tree component when there are multiple", () => {
     const exactMatches = [
       Generator.generateTerm(vocabularyIri),
       Generator.generateTerm(vocabularyIri),
     ];
-    const wrapper = shallow(
-      <ExactMatchesSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        selected={exactMatches}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({
+      termIri: Generator.generateUri(),
+      vocabularyIri: vocabularyIri,
+      selected: exactMatches,
+    });
     expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual(
       exactMatches.map((p) => p.iri)
     );
@@ -64,64 +73,34 @@ describe("ExactMatchesSelector", () => {
 
   it("invokes onChange with correct exact match object on selection", () => {
     const terms = [Generator.generateTerm()];
-    const wrapper = shallow<ExactMatchesSelector>(
-      <ExactMatchesSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({
+      termIri: Generator.generateUri(),
+      vocabularyIri: vocabularyIri,
+    });
     wrapper.instance().onChange([terms[0]]);
     expect(onChange).toHaveBeenCalledWith([terms[0]]);
   });
 
   it("supports selection of multiple exact matches", () => {
     const terms = [Generator.generateTerm(), Generator.generateTerm()];
-    const wrapper = shallow<ExactMatchesSelector>(
-      <ExactMatchesSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({
+      termIri: Generator.generateUri(),
+      vocabularyIri: vocabularyIri,
+    });
     wrapper.instance().onChange(terms);
     expect(onChange).toHaveBeenCalledWith(terms);
   });
 
   it("filters out selected exact match if it belongs to the same vocabulary", () => {
     const term = Generator.generateTerm(vocabularyIri);
-    const wrapper = shallow<ExactMatchesSelector>(
-      <ExactMatchesSelector
-        id="test"
-        termIri={term.iri}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({ termIri: term.iri, vocabularyIri: vocabularyIri });
     wrapper.instance().onChange([term]);
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
   it("handles selection reset by passing empty array to onChange handler", () => {
     const term = Generator.generateTerm(vocabularyIri);
-    const wrapper = shallow<ExactMatchesSelector>(
-      <ExactMatchesSelector
-        id="test"
-        termIri={term.iri}
-        vocabularyIri={Generator.generateUri()}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({ termIri: term.iri, vocabularyIri: vocabularyIri });
     wrapper.instance().onChange(null);
     expect(onChange).toHaveBeenCalledWith([]);
   });
@@ -133,16 +112,10 @@ describe("ExactMatchesSelector", () => {
         label: langString("parent"),
         vocabulary: { iri: vocabularyIri },
       });
-      const wrapper = shallow<ExactMatchesSelector>(
-        <ExactMatchesSelector
-          id="test"
-          termIri={Generator.generateUri()}
-          vocabularyIri={Generator.generateUri()}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: Generator.generateUri(),
+        vocabularyIri: Generator.generateUri(),
+      });
       wrapper
         .instance()
         .fetchOptions({ optionID: exactMatch.iri, option: exactMatch });
@@ -159,16 +132,10 @@ describe("ExactMatchesSelector", () => {
       }
       const currentTerm = options[Generator.randomInt(0, options.length)];
       loadTerms = jest.fn().mockImplementation(() => Promise.resolve(options));
-      const wrapper = shallow<ExactMatchesSelector>(
-        <ExactMatchesSelector
-          id="test"
-          termIri={currentTerm.iri}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: currentTerm.iri,
+        vocabularyIri: vocabularyIri,
+      });
       return wrapper
         .instance()
         .fetchOptions({})
@@ -182,17 +149,11 @@ describe("ExactMatchesSelector", () => {
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
       ];
-      const wrapper = shallow<ExactMatchesSelector>(
-        <ExactMatchesSelector
-          id="test"
-          termIri={Generator.generateUri()}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          selected={existingExactMatches}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: Generator.generateUri(),
+        vocabularyIri: vocabularyIri,
+        selected: existingExactMatches,
+      });
       wrapper.instance().fetchOptions({});
       expect(
         (loadTerms as jest.Mock).mock.calls[0][0].includeTerms

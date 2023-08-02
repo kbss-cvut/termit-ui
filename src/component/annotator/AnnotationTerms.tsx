@@ -16,6 +16,8 @@ import { GoPlus } from "react-icons/go";
 import Utils from "../../util/Utils";
 import {
   commonTermTreeSelectProps,
+  createTermNonTerminalStateMatcher,
+  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "../term/TermTreeSelectHelper";
 import {
@@ -24,11 +26,13 @@ import {
 } from "../misc/treeselect/Renderers";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
+import RdfsResource from "../../model/RdfsResource";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
   terms: { [key: string]: Term };
   counter: number;
+  states: { [key: string]: RdfsResource };
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
 }
 
@@ -97,10 +101,15 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
   public render() {
     const { i18n, vocabulary } = this.props;
     const terms = processTermsForTreeSelect(
-      Object.keys(this.props.terms).map((k) => this.props.terms[k]),
-      Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
-        vocabulary!.iri
-      )
+      Utils.mapToArray(this.props.terms),
+      [
+        createVocabularyMatcher(
+          Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
+            vocabulary!.iri
+          )
+        ),
+        createTermNonTerminalStateMatcher(Utils.mapToArray(this.props.states)),
+      ]
     );
 
     return (
@@ -157,6 +166,7 @@ export default connect(
       vocabulary: state.vocabulary,
       terms: state.annotatorTerms,
       counter: state.createdTermsCounter,
+      states: state.states,
     };
   },
   (dispatch: ThunkDispatch) => {

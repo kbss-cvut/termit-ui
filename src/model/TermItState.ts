@@ -38,6 +38,7 @@ export default class TermItState {
   public searchQuery: SearchQuery;
   public searchResults: SearchResult[] | null;
   public types: { [key: string]: Term };
+  public states: { [key: string]: RdfsResource };
   public properties: RdfsResource[];
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
@@ -79,6 +80,7 @@ export default class TermItState {
     this.searchQuery = new SearchQuery();
     this.searchResults = null;
     this.types = {};
+    this.states = {};
     this.properties = [];
     this.notifications = [];
     this.pendingActions = {};
@@ -107,6 +109,16 @@ export default class TermItState {
     result.selectedFile = state.selectedFile.toJsonLd();
     result.selectedTerm = state.selectedTerm?.toJsonLd();
     return result;
+  }
+
+  /**
+   * Checks if the specified state attribute value is empty.
+   * @param arg State attribute value
+   */
+  public static isEmpty(arg: any[] | { [key: string]: any }) {
+    return Array.isArray(arg)
+      ? arg.length === 0
+      : Object.getOwnPropertyNames(arg).length === 0;
   }
 }
 

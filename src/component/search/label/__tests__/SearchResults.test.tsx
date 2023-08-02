@@ -12,13 +12,25 @@ import { Link, MemoryRouter } from "react-router-dom";
 import VocabularyLink from "../../../vocabulary/VocabularyLink";
 import AssetLink from "../../../misc/AssetLink";
 import Ajax from "../../../../util/Ajax";
+import RdfsResource from "../../../../model/RdfsResource";
+import { langString } from "../../../../model/MultilingualString";
+import Constants from "../../../../util/Constants";
+import * as Redux from "react-redux";
 
 jest.mock("../../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+}));
 
 describe("SearchResults", () => {
   beforeEach(() => {
     Ajax.get = jest.fn().mockResolvedValue({});
     mockUseI18n();
+    jest
+      .spyOn(Redux, "useSelector")
+      .mockReturnValueOnce(true)
+      .mockReturnValue({});
   });
 
   it("render no results info when no results are found", () => {
@@ -193,5 +205,39 @@ describe("SearchResults", () => {
       </MemoryRouter>
     );
     expect(wrapper.exists("#search-results-faceted-link")).toBeTruthy();
+  });
+
+  it("filters out results representing terms in terminal state", () => {
+    const states = [
+      new RdfsResource({
+        iri: Generator.generateUri(),
+        label: langString("Normal state", Constants.DEFAULT_LANGUAGE),
+        types: [VocabularyUtils.TERM_STATE],
+      }),
+      new RdfsResource({
+        iri: Generator.generateUri(),
+        label: langString("Terminal state", Constants.DEFAULT_LANGUAGE),
+        types: [
+          VocabularyUtils.TERM_STATE,
+          VocabularyUtils.TERM_STATE_TERMINAL,
+        ],
+      }),
+    ];
+    const results = [
+      new SearchResult(
+        Object.assign({}, generateTermResult(1), {
+          state: { iri: states[1].iri },
+        })
+      ),
+    ];
+    (Redux.useSelector as jest.Mock).mockReset();
+    jest
+      .spyOn(Redux, "useSelector")
+      .mockReturnValueOnce(true)
+      .mockReturnValue(states);
+    const wrapper = renderWithResults(results);
+    const label = wrapper.find(Label);
+    expect(label.exists()).toBeTruthy();
+    expect(label.text()).toContain(en.messages["search.no-results"]);
   });
 });

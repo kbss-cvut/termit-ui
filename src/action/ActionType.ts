@@ -38,11 +38,6 @@ export interface ExecuteQueryAction extends AsyncAction {
   queryString: string;
   queryResult: object;
 }
-
-export interface FacetedSearchAction extends AsyncAction {
-  payload: object;
-}
-
 export interface SearchAction extends Action {
   searchString: string;
 }
@@ -121,7 +116,7 @@ const ActionType = {
     "LOAD_DEFINITION_RELATED_TERMS_TARGETING",
   LOAD_DEFINITION_RELATED_TERMS_OF: "LOAD_DEFINITION_RELATED_TERMS_OF",
   REMOVE_VOCABULARY_TERM: "REMOVE_VOCABULARY_TERM",
-  SET_TERM_STATUS: "SET_TERM_STATUS",
+  SET_TERM_STATE: "SET_TERM_STATE",
 
   CREATE_TERM_OCCURRENCE: "CREATE_TERM_OCCURRENCE",
   UPDATE_TERM_OCCURRENCE: "UPDATE_TERM_OCCURRENCE",
@@ -133,6 +128,7 @@ const ActionType = {
   LOAD_TERM_HISTORY: "LOAD_TERM_HISTORY",
 
   LOAD_TYPES: "LOAD_TYPES",
+  LOAD_STATES: "LOAD_STATES",
   LOAD_SNAPSHOTS: "LOAD_SNAPSHOTS",
   REMOVE_SNAPSHOT: "REMOVE_SNAPSHOT",
 

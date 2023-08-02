@@ -2,7 +2,6 @@ import React from "react";
 import { FacetedSearchResult } from "../../../model/search/FacetedSearchResult";
 import { useI18n } from "../../hook/useI18n";
 import TermBadge from "../../badge/TermBadge";
-import DraftBadge from "../../term/DraftBadge";
 import AssetLink from "../../misc/AssetLink";
 import { getTermPath } from "../../term/TermLink";
 import Term from "../../../model/Term";
@@ -12,6 +11,7 @@ import AssetLabel from "../../misc/AssetLabel";
 import { getLocalized } from "../../../model/MultilingualString";
 import Utils from "../../../util/Utils";
 import OutgoingLink from "../../misc/OutgoingLink";
+import TermStateBadge from "../../term/TermStateBadge";
 
 const FacetedSearchResultItem: React.FC<{ item: FacetedSearchResult }> = ({
   item,
@@ -43,7 +43,7 @@ const FacetedSearchResultItem: React.FC<{ item: FacetedSearchResult }> = ({
     <tr className="search-result-match-row">
       <td>
         <TermBadge className="search-result-badge" />
-        <DraftBadge isDraft={item.draft} />
+        <TermStateBadge state={item.state} />
         <AssetLink
           asset={t}
           path={getTermPath(item as Term, user)}

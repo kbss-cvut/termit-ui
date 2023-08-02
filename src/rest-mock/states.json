@@ -1,0 +1,82 @@
+[
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/nový-pojem",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/stav-pojmu",
+      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/úvodní-stav-pojmu"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Nový pojem",
+        "@language": "cs"
+      },
+      {
+        "@value": "New term",
+        "@language": "en"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#comment": [
+      {
+        "@value": "Pojem, který ještě nebyl schválen k publikaci.",
+        "@language": "cs"
+      },
+      {
+        "@value": "A new term that has not yet been confirmed for publication.",
+        "@language": "en"
+      }
+    ]
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/publikovaný-pojem",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/stav-pojmu"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Publikovaný pojem",
+        "@language": "cs"
+      },
+      {
+        "@value": "Published term",
+        "@language": "en"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#comment": [
+      {
+        "@value": "Pojem, který byl publikován a používá se.",
+        "@language": "cs"
+      },
+      {
+        "@value": "A published term that is in use.",
+        "@language": "en"
+      }
+    ]
+  },
+  {
+    "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/zrušený-pojem",
+    "@type": [
+      "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/stav-pojmu",
+      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/koncový-stav-pojmu"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Zrušený pojem",
+        "@language": "cs"
+      },
+      {
+        "@value": "Cancelled term",
+        "@language": "en"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#comment": [
+      {
+        "@value": "Pojem, který byl zrušen a již by se neměl používat.",
+        "@language": "cs"
+      },
+      {
+        "@value": "A term that has been cancelled and should not be used anymore.",
+        "@language": "en"
+      }
+    ]
+  }
+]

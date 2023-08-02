@@ -1,21 +1,26 @@
 import Generator from "../../../__tests__/environment/Generator";
 import {
+  createTermNonTerminalStateMatcher,
+  createVocabularyMatcher,
   loadAndPrepareTerms,
   processTermsForTreeSelect,
 } from "../TermTreeSelectHelper";
 import { TermFetchParams } from "../../../util/Types";
 import Term, { TermData } from "../../../model/Term";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import RdfsResource from "../../../model/RdfsResource";
+import { langString } from "../../../model/MultilingualString";
 
 describe("TermTreeSelectHelper", () => {
   describe("processTermsForTreeSelect", () => {
     const vocUri = Generator.generateUri();
 
-    it("returns all terms when no vocabularies are provided", () => {
+    it("returns all terms when no filter functions are provided", () => {
       const terms = [
         Generator.generateTerm(vocUri),
         Generator.generateTerm(vocUri),
       ];
-      const result = processTermsForTreeSelect(terms, undefined, {});
+      const result = processTermsForTreeSelect(terms, [], {});
       expect(result).toEqual(terms);
     });
 
@@ -23,10 +28,35 @@ describe("TermTreeSelectHelper", () => {
       const terms = [Generator.generateTerm(vocUri)];
       const parent = Generator.generateTerm(Generator.generateUri());
       terms[0].parentTerms = [parent];
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        searchString: "test",
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          searchString: "test",
+        }
+      );
       expect(result).toEqual(terms);
+    });
+
+    it("applies specified filter function on terms", () => {
+      const normalState = Generator.generateUri();
+      const terminalState = `${VocabularyUtils.NS_TERMIT}/cancelled-term`;
+      const terms: Term[] = [];
+      const matchingTerms: Term[] = [];
+      for (let i = 0; i < 10; i++) {
+        const t: Term = Generator.generateTerm(vocUri);
+        t.state = {
+          iri: Generator.randomBoolean() ? terminalState : normalState,
+        };
+        terms.push(t);
+        if (t.state.iri === normalState) {
+          matchingTerms.push(t);
+        }
+      }
+      const result = processTermsForTreeSelect(terms, [
+        (t) => t.state!.iri !== terminalState,
+      ]);
+      expect(result).toEqual(matchingTerms);
     });
 
     it("adds top level ancestor of a selected term into the results", () => {
@@ -40,9 +70,13 @@ describe("TermTreeSelectHelper", () => {
       const grandParent = Generator.generateTerm();
       parent.parentTerms = [grandParent];
       terms.push(included);
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        selectedIris: [included.iri],
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          selectedIris: [included.iri],
+        }
+      );
       expect(result).toContain(grandParent);
     });
 
@@ -70,9 +104,13 @@ describe("TermTreeSelectHelper", () => {
         },
       ];
       terms.push(included);
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        selectedIris: [included.iri],
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          selectedIris: [included.iri],
+        }
+      );
       const parent = result.find((t) => t.iri === fullParent.iri);
       expect(parent).toBeDefined();
       expect(parent!.subTerms).toBeDefined();
@@ -87,10 +125,14 @@ describe("TermTreeSelectHelper", () => {
       const grandParent = Generator.generateTerm();
       parent.parentTerms = [grandParent];
       terms.push(included);
-      const result = processTermsForTreeSelect(terms, [vocUri], {
-        selectedIris: [included.iri],
-        loadingSubTerms: true,
-      });
+      const result = processTermsForTreeSelect(
+        terms,
+        [createVocabularyMatcher([vocUri])],
+        {
+          selectedIris: [included.iri],
+          loadingSubTerms: true,
+        }
+      );
       expect(result).not.toContain(grandParent);
     });
   });
@@ -109,6 +151,7 @@ describe("TermTreeSelectHelper", () => {
       ];
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: selected,
+        states: [],
       }).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
           selected.map((t) => t.iri)
@@ -124,6 +167,7 @@ describe("TermTreeSelectHelper", () => {
       ];
       return loadAndPrepareTerms({ offset: 100 }, loadTerms, {
         selectedTerms: selected,
+        states: [],
       }).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
           []
@@ -142,6 +186,7 @@ describe("TermTreeSelectHelper", () => {
         loadTerms,
         {
           selectedTerms: selected,
+          states: [],
         }
       ).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
@@ -181,6 +226,7 @@ describe("TermTreeSelectHelper", () => {
         .mockResolvedValueOnce([selected]);
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: [selected],
+        states: [],
       }).then(() => {
         expect(loadTerms).toHaveBeenCalledTimes(3);
         expect(loadTerms).toHaveBeenCalledWith({ optionID: grandParent.iri });
@@ -219,6 +265,7 @@ describe("TermTreeSelectHelper", () => {
         .mockResolvedValueOnce([selected]);
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: [selected],
+        states: [],
       }).then((result: Term[]) => {
         expect(result).toContain(grandParent);
         expect(result).toContain(parent);
@@ -238,10 +285,83 @@ describe("TermTreeSelectHelper", () => {
 
       return loadAndPrepareTerms({}, loadTerms, {
         matchingVocabularies: [vocabularyIri],
+        states: [],
       }).then((result) => {
         expect(result.length).toBeLessThan(terms.length);
         result.forEach((t) => expect(t.vocabulary!.iri).toEqual(vocabularyIri));
       });
+    });
+  });
+
+  describe("createVocabularyMatcher", () => {
+    it("returns a function that returns true for terms that match specified any of specified vocabularies", () => {
+      const vocabularyIri = Generator.generateUri();
+      const terms = [
+        Generator.generateTerm(vocabularyIri),
+        Generator.generateTerm(vocabularyIri),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      const matcher = createVocabularyMatcher([vocabularyIri]);
+      const result = terms.filter(matcher);
+      result.forEach((t) => expect(t.vocabulary!.iri).toEqual(vocabularyIri));
+    });
+
+    it("returns a function that matches all terms if no vocabulary identifiers are provided", () => {
+      const terms = [
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      const matcher = createVocabularyMatcher();
+      const result = terms.filter(matcher);
+      expect(result).toEqual(terms);
+    });
+  });
+
+  describe("createTermNonTerminalStateMatcher", () => {
+    const terminalState = new RdfsResource({
+      iri: Generator.generateUri(),
+      label: langString("Terminal state", "en"),
+      types: [VocabularyUtils.TERM_STATE_TERMINAL],
+    });
+    const states = [
+      new RdfsResource({
+        iri: Generator.generateUri(),
+        label: langString("Normal state", "en"),
+      }),
+      terminalState,
+    ];
+
+    it("returns a function that matches terms whose state is not one of specified terminal states", () => {
+      const terms = [
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      terms.forEach(
+        (t) =>
+          (t.state = {
+            iri: Generator.randomBoolean() ? states[0].iri : terminalState.iri,
+          })
+      );
+      const matcher = createTermNonTerminalStateMatcher(states);
+      const result = terms.filter(matcher);
+      result.forEach((t) =>
+        expect(t.state!.iri).not.toEqual(terminalState.iri)
+      );
+    });
+
+    it("returns a function that matches terms without state", () => {
+      const terms = [
+        Generator.generateTerm(Generator.generateUri()),
+        Generator.generateTerm(Generator.generateUri()),
+      ];
+      const matcher = createTermNonTerminalStateMatcher(states);
+      const result = terms.filter(matcher);
+      expect(result).toEqual(terms);
     });
   });
 });

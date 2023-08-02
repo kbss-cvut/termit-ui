@@ -4,7 +4,7 @@ import {
   PluralMultilingualString,
 } from "../MultilingualString";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import { ASSET_CONTEXT, AssetData } from "../Asset";
+import { ASSET_CONTEXT, AssetData, HasIdentifier } from "../Asset";
 
 const ctx = {
   label: context(VocabularyUtils.SKOS_PREF_LABEL),
@@ -15,7 +15,7 @@ const ctx = {
   notations: VocabularyUtils.SKOS_NOTATION,
   examples: context(VocabularyUtils.SKOS_EXAMPLE),
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
-  draft: VocabularyUtils.IS_DRAFT,
+  state: VocabularyUtils.HAS_TERM_STATE,
 };
 
 export const CONTEXT = { ...ctx, ...ASSET_CONTEXT };
@@ -30,6 +30,6 @@ export interface FacetedSearchResult extends AssetData {
   definition?: MultilingualString;
   notations?: string[];
   examples?: PluralMultilingualString;
-  vocabulary?: AssetData;
-  draft: boolean;
+  vocabulary?: HasIdentifier;
+  state?: HasIdentifier;
 }

@@ -33,6 +33,7 @@ function showOccurrenceViewForm(
 }
 
 jest.mock("popper.js");
+jest.mock("../AnnotationTerms", () => () => <div>Annotation terms</div>);
 
 describe("Annotation", () => {
   const term = new Term({

@@ -14,7 +14,6 @@ describe("Term tests", () => {
       iri: "http://example.org/term1",
       label: langString("test term 1"),
       types: ["http://example.org/type1", OntologicalVocabulary.TERM],
-      draft: true,
       vocabulary: { iri: Generator.generateUri() },
     };
 
@@ -22,7 +21,6 @@ describe("Term tests", () => {
       iri: "http://example.org/term1",
       label: langString("test term 1"),
       types: ["http://example.org/type1", OntologicalVocabulary.TERM],
-      draft: true,
       vocabulary: { iri: termData.vocabulary!.iri },
     };
   });
@@ -369,23 +367,6 @@ describe("Term tests", () => {
         ...t.relatedMatchTerms,
         ...t.relatedTerms,
       ]);
-    });
-  });
-
-  describe("isDraft", () => {
-    it("returns true when term.draft is true", () => {
-      termData.draft = true;
-      expect(Term.isDraft(termData)).toBeTruthy();
-    });
-
-    it("returns true when term.draft is undefined", () => {
-      termData.draft = undefined;
-      expect(Term.isDraft(termData)).toBeTruthy();
-    });
-
-    it("returns false when term.draft is false", () => {
-      termData.draft = false;
-      expect(Term.isDraft(termData)).toBeFalsy();
     });
   });
 

@@ -1,5 +1,8 @@
 import { shallow } from "enzyme";
-import { ParentTermSelector } from "../ParentTermSelector";
+import {
+  ParentTermSelector,
+  ParentTermSelectorProps,
+} from "../ParentTermSelector";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Term, { TermData } from "../../../model/Term";
@@ -36,24 +39,33 @@ describe("ParentTermSelector", () => {
       label: "Test vocabulary",
     });
     vocabulary.allImportedVocabularies = [];
-    const parent = [Generator.generateTerm(vocabularyIri)];
-    const wrapper = shallow(
+    const parentTerms = [Generator.generateTerm(vocabularyIri)];
+    const wrapper = render({
+      termIri: Generator.generateUri(),
+      vocabularyIri,
+      currentVocabulary: vocabulary,
+      parentTerms,
+    });
+    expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([
+      parentTerms[0].iri,
+    ]);
+  });
+
+  function render(
+    props: Partial<ParentTermSelectorProps> & { vocabularyIri: string }
+  ) {
+    return shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
-        termIri={Generator.generateUri()}
-        parentTerms={parent}
-        vocabularyIri={vocabularyIri}
         onChange={onChange}
-        currentVocabulary={vocabulary}
         loadTerms={loadTerms}
         loadImportedVocabularies={loadImports}
+        states={{}}
+        {...props}
         {...intlFunctions()}
       />
     );
-    expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([
-      parent[0].iri,
-    ]);
-  });
+  }
 
   it("passes selected parents as value to tree component when there are multiple", () => {
     const vocabulary = new Vocabulary({
@@ -61,109 +73,58 @@ describe("ParentTermSelector", () => {
       label: "Test vocabulary",
     });
     vocabulary.allImportedVocabularies = [];
-    const parents = [
+    const parentTerms = [
       Generator.generateTerm(vocabularyIri),
       Generator.generateTerm(vocabularyIri),
     ];
-    const wrapper = shallow(
-      <ParentTermSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        parentTerms={parents}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        currentVocabulary={vocabulary}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({
+      termIri: Generator.generateUri(),
+      vocabularyIri,
+      currentVocabulary: vocabulary,
+      parentTerms,
+    });
     expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual(
-      parents.map((p) => p.iri)
+      parentTerms.map((p) => p.iri)
     );
   });
 
   it("invokes onChange with correct parent object on selection", () => {
     const terms = [Generator.generateTerm()];
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({ termIri: Generator.generateUri(), vocabularyIri });
     wrapper.instance().onChange([terms[0]]);
     expect(onChange).toHaveBeenCalledWith([terms[0]]);
   });
 
   it("supports selection of multiple parents", () => {
     const terms = [Generator.generateTerm(), Generator.generateTerm()];
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({ termIri: Generator.generateUri(), vocabularyIri });
     wrapper.instance().onChange(terms);
     expect(onChange).toHaveBeenCalledWith(terms);
   });
 
   it("filters out selected parent if it is the same as the term itself", () => {
     const term = Generator.generateTerm(vocabularyIri);
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={term.iri}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({ termIri: term.iri, vocabularyIri });
     wrapper.instance().onChange([term]);
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
   it("handles selection reset by passing empty array to onChange handler", () => {
     const term = Generator.generateTerm(vocabularyIri);
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={term.iri}
-        vocabularyIri={Generator.generateUri()}
-        onChange={onChange}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({
+      termIri: term.iri,
+      vocabularyIri: Generator.generateUri(),
+    });
     wrapper.instance().onChange(null);
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
   describe("fetchOptions", () => {
     it("fetches terms including imported when configured to", () => {
-      const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-          id="test"
-          termIri={Generator.generateUri()}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          loadImportedVocabularies={loadImports}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: Generator.generateUri(),
+        vocabularyIri,
+      });
       wrapper.setState({ includeImported: true });
       wrapper.update();
       wrapper.instance().fetchOptions({});
@@ -178,17 +139,10 @@ describe("ParentTermSelector", () => {
         label: langString("parent"),
         vocabulary: { iri: vocabularyIri },
       });
-      const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-          id="test"
-          termIri={Generator.generateUri()}
-          vocabularyIri={Generator.generateUri()}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          loadImportedVocabularies={loadImports}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: Generator.generateUri(),
+        vocabularyIri,
+      });
       wrapper.setState({ includeImported: true });
       wrapper.update();
       wrapper.instance().fetchOptions({ optionID: parent.iri, option: parent });
@@ -205,17 +159,7 @@ describe("ParentTermSelector", () => {
       }
       const currentTerm = options[Generator.randomInt(0, options.length)];
       loadTerms = jest.fn().mockResolvedValue(options);
-      const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-          id="test"
-          termIri={currentTerm.iri}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          loadImportedVocabularies={loadImports}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({ termIri: currentTerm.iri, vocabularyIri });
       return wrapper
         .instance()
         .fetchOptions({})
@@ -239,17 +183,10 @@ describe("ParentTermSelector", () => {
         options.push(t);
       }
       loadTerms = jest.fn().mockResolvedValue(options);
-      const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-          id="test"
-          termIri={Generator.generateUri()}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          loadImportedVocabularies={loadImports}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: Generator.generateUri(),
+        vocabularyIri,
+      });
       return wrapper
         .instance()
         .fetchOptions({})
@@ -268,17 +205,7 @@ describe("ParentTermSelector", () => {
       const currentTerm = options[1];
       options[0].plainSubTerms = [currentTerm.iri];
       loadTerms = jest.fn().mockResolvedValue(options);
-      const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-          id="test"
-          termIri={currentTerm.iri}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          loadImportedVocabularies={loadImports}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({ termIri: currentTerm.iri, vocabularyIri });
       return wrapper
         .instance()
         .fetchOptions({})
@@ -302,18 +229,10 @@ describe("ParentTermSelector", () => {
         label: "test",
       });
       vocabulary.allImportedVocabularies = [parent.vocabulary!.iri!];
-      const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-          id="test"
-          termIri={Generator.generateUri()}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          currentVocabulary={vocabulary}
-          loadImportedVocabularies={loadImports}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: Generator.generateUri(),
+        vocabularyIri,
+      });
       return wrapper
         .instance()
         .fetchOptions({ searchString: "test" })
@@ -328,18 +247,11 @@ describe("ParentTermSelector", () => {
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
       ];
-      const wrapper = shallow<ParentTermSelector>(
-        <ParentTermSelector
-          id="test"
-          termIri={Generator.generateUri()}
-          vocabularyIri={vocabularyIri}
-          onChange={onChange}
-          loadTerms={loadTerms}
-          parentTerms={existingParents}
-          loadImportedVocabularies={loadImports}
-          {...intlFunctions()}
-        />
-      );
+      const wrapper = render({
+        termIri: Generator.generateUri(),
+        vocabularyIri,
+        parentTerms: existingParents,
+      });
       wrapper.instance().fetchOptions({});
       expect(
         (loadTerms as jest.Mock).mock.calls[0][0].includeTerms
@@ -353,35 +265,13 @@ describe("ParentTermSelector", () => {
   it("sets includeImported to true when parent terms are from different vocabulary", () => {
     const termIri = Generator.generateUri();
     const parentTerms = [Generator.generateTerm(Generator.generateUri())];
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={termIri}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        parentTerms={parentTerms}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({ termIri, vocabularyIri, parentTerms });
     expect(wrapper.state().includeImported).toBeTruthy();
   });
 
   it("loads imported vocabularies on mount", () => {
     const termIri = Generator.generateUri();
-    shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={termIri}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        parentTerms={[]}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    render({ termIri, vocabularyIri, parentTerms: [] });
     expect(loadImports).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabularyIri)
     );
@@ -394,36 +284,18 @@ describe("ParentTermSelector", () => {
     });
     vocabulary.allImportedVocabularies = [];
     const termIri = Generator.generateUri();
-    shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={termIri}
-        vocabularyIri={vocabularyIri}
-        currentVocabulary={vocabulary}
-        onChange={onChange}
-        parentTerms={[]}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    render({
+      termIri,
+      vocabularyIri,
+      currentVocabulary: vocabulary,
+      parentTerms: [],
+    });
     expect(loadImports).not.toHaveBeenCalled();
   });
 
   it("does not render selector until imported vocabularies are available", () => {
     const termIri = Generator.generateUri();
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={termIri}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        parentTerms={[]}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({ termIri, vocabularyIri, parentTerms: [] });
     expect(wrapper.exists(IntelligentTreeSelect)).toBeFalsy();
     wrapper.setState({ importedVocabularies: [] });
     wrapper.update();
@@ -431,18 +303,11 @@ describe("ParentTermSelector", () => {
   });
 
   it("disables include imported terms toggle when fetching terms", () => {
-    const wrapper = shallow<ParentTermSelector>(
-      <ParentTermSelector
-        id="test"
-        termIri={Generator.generateUri()}
-        vocabularyIri={vocabularyIri}
-        onChange={onChange}
-        parentTerms={[]}
-        loadTerms={loadTerms}
-        loadImportedVocabularies={loadImports}
-        {...intlFunctions()}
-      />
-    );
+    const wrapper = render({
+      termIri: Generator.generateUri(),
+      vocabularyIri,
+      parentTerms: [],
+    });
     expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
     loadTerms = jest.fn().mockImplementation(() => {
       wrapper.update();

@@ -45,7 +45,6 @@ import Routes from "../../util/Routes";
 import { langString } from "../../model/MultilingualString";
 import { Configuration } from "../../model/Configuration";
 import { removeSearchListener } from "../../action/SearchActions";
-import TermStatus from "../../model/TermStatus";
 
 function stateToPlainObject(state: TermItState): TermItState {
   return {
@@ -65,6 +64,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     searchResults: state.searchResults,
     selectedFile: state.selectedFile,
     types: state.types,
+    states: state.states,
     properties: state.properties,
     notifications: state.notifications,
     pendingActions: state.pendingActions,
@@ -458,22 +458,21 @@ describe("Reducers", () => {
       ).toEqual(Object.assign({}, initialState, { selectedTerm: null }));
     });
 
-    it("sets term draft status after successful term status update action", () => {
-      const term = Generator.generateTerm();
-      term.draft = true;
-      initialState.selectedTerm = term;
+    it("sets term state after successful term state update action", () => {
+      initialState.selectedTerm = Generator.generateTerm();
+      const state = Generator.generateUri();
 
       const resultState = reducers(
         stateToPlainObject(initialState),
         asyncActionSuccessWithPayload(
           {
-            type: ActionType.SET_TERM_STATUS,
+            type: ActionType.SET_TERM_STATE,
             status: AsyncActionStatus.SUCCESS,
-          } as AsyncActionSuccess<TermStatus>,
-          TermStatus.CONFIRMED
+          } as AsyncActionSuccess<string>,
+          state
         )
       );
-      expect(resultState.selectedTerm!.draft).toBeFalsy();
+      expect(resultState.selectedTerm!.state).toEqual({ iri: state });
     });
   });
 
