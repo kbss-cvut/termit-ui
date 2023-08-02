@@ -483,13 +483,19 @@ const en = {
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",
     "glossary.excludeImported.help":
-      "Terms from imported vocabularies are hidden in this view, click to show them",
+      "Terms from imported vocabularies are hidden in this view, click to show them.",
     "glossary.includeImported": "Include imported",
     "glossary.includeImported.help":
-      "Terms from imported vocabularies are shown in this view, click to hide them",
+      "Terms from imported vocabularies are shown in this view, click to hide them.",
     "glossary.importedIncluded": "with imported",
     "glossary.importedExcluded": "without imported",
     "glossary.importedTerm.tooltip": "Imported from vocabulary",
+    "glossary.showTerminal": "Include terminal",
+    "glossary.showNonTerminal": "Only active",
+    "glossary.showTerminal.help":
+      "Displays also terms in a terminal state. Such terms should not be used anymore.",
+    "glossary.showNonTerminal.help":
+      "Displays only active terms (in non-terminal states).",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",
     "glossary.createTerm.tooltip": "Create new vocabulary's term",

@@ -490,13 +490,19 @@ const cs = {
     "glossary.select.placeholder": "Začněte psát pro filtrování pojmů",
     "glossary.excludeImported": "Včetně importů",
     "glossary.excludeImported.help":
-      "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte",
+      "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte.",
     "glossary.includeImported": "Včetně importů",
     "glossary.includeImported.help":
-      "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete",
+      "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete.",
     "glossary.importedIncluded": "včetně importovaných",
     "glossary.importedExcluded": "bez importovaných",
     "glossary.importedTerm.tooltip": "Importován ze slovníku",
+    "glossary.showTerminal": "Včetně uzavřených",
+    "glossary.showNonTerminal": "Pouze aktivní",
+    "glossary.showTerminal.help":
+      "Jsou zobrazeny též pojmy v koncovém (uzavřeném) stavu. Takové pojmy by se již neměly používat.",
+    "glossary.showNonTerminal.help":
+      "Jsou zobrazeny pouze pojmy v aktivním stavu, tj. pojmy, které lze používat.",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",

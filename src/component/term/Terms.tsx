@@ -49,6 +49,7 @@ import { Configuration } from "../../model/Configuration";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
 import RdfsResource from "../../model/RdfsResource";
+import ShowTerminalTermsToggle from "./ShowTerminalTermsToggle";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -76,6 +77,7 @@ interface TermsState {
   includeImported: boolean;
   disableIncludeImportedToggle: boolean;
   unusedTermsForVocabulary: { [key: string]: string[] };
+  showTerminalTerms: boolean;
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
@@ -93,6 +95,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       includeImported: includeImported || false,
       disableIncludeImportedToggle: props.isDetailView || false,
       unusedTermsForVocabulary: {},
+      showTerminalTerms: false,
     };
   }
 
@@ -172,18 +175,17 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         this.setState({
           disableIncludeImportedToggle: this.props.isDetailView || false,
         });
-        return processTermsForTreeSelect(
-          terms,
-          [
-            createVocabularyMatcher(matchingVocabularies),
+        const termFilters = [createVocabularyMatcher(matchingVocabularies)];
+        if (!this.state.showTerminalTerms) {
+          termFilters.push(
             createTermNonTerminalStateMatcher(
               Utils.mapToArray(this.props.states)
-            ),
-          ],
-          {
-            searchString: fetchOptions.searchString,
-          }
-        );
+            )
+          );
+        }
+        return processTermsForTreeSelect(terms, termFilters, {
+          searchString: fetchOptions.searchString,
+        });
       });
   };
 
@@ -234,20 +236,34 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     );
   };
 
-  private renderIncludeImported() {
+  private onShowTerminalTermsToggle = () => {
+    this.setState({ showTerminalTerms: !this.state.showTerminalTerms }, () =>
+      this.treeComponent.current.resetOptions()
+    );
+  };
+
+  private renderToggles(renderIncludeImported: boolean) {
     return (
-      <div className={classNames({ "mb-3": !this.props.isDetailView })}>
-        {this.props.isDetailView ? (
-          <></>
-        ) : (
-          <IncludeImportedTermsToggle
-            id="glossary-include-imported"
-            onToggle={this.onIncludeImportedToggle}
-            includeImported={this.state.includeImported}
-            disabled={this.state.disableIncludeImportedToggle}
+      !this.props.isDetailView && (
+        <div className="mb-3">
+          {renderIncludeImported && (
+            <>
+              <IncludeImportedTermsToggle
+                id="glossary-include-imported"
+                onToggle={this.onIncludeImportedToggle}
+                includeImported={this.state.includeImported}
+                disabled={this.state.disableIncludeImportedToggle}
+              />
+              &nbsp;
+            </>
+          )}
+          <ShowTerminalTermsToggle
+            onToggle={this.onShowTerminalTermsToggle}
+            value={this.state.showTerminalTerms}
+            id="glossary-show-terminal-terms"
           />
-        )}
-      </div>
+        </div>
+      )
     );
   }
 
@@ -267,7 +283,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
     const includeImported = this.state.includeImported;
     const renderIncludeImported =
-      this.props.vocabulary && this.props.vocabulary.importedVocabularies;
+      this.props.vocabulary &&
+      Utils.sanitizeArray(this.props.vocabulary.importedVocabularies).length >
+        0;
 
     return (
       <div id="vocabulary-terms">
@@ -317,21 +335,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
               </Button>
             </IfVocabularyActionAuthorized>
           )}
-          {isDetailView && renderIncludeImported ? (
-            this.renderIncludeImported()
-          ) : (
-            <></>
-          )}
         </div>
         <div
           id="glossary-list"
           className={classNames({ "card-header": isDetailView })}
         >
-          {!isDetailView && renderIncludeImported ? (
-            this.renderIncludeImported()
-          ) : (
-            <></>
-          )}
+          {this.renderToggles(renderIncludeImported)}
           <IntelligentTreeSelect
             ref={this.treeComponent}
             isClearable={!isDetailView}
