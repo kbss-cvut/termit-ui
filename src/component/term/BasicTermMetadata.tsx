@@ -12,7 +12,7 @@ import MarkdownView from "../misc/MarkdownView";
 import { useI18n } from "../hook/useI18n";
 import Vocabulary from "../../model/Vocabulary";
 import TermTypes from "./TermTypes";
-import TermState from "./TermState";
+import TermState from "./state/TermState";
 
 interface BasicTermMetadataProps {
   term: Term;

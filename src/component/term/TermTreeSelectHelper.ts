@@ -93,12 +93,12 @@ export function createVocabularyMatcher(vocabularies?: string[]) {
  * Terminal states are resolved from the specified array of state options.
  * @param states Available states
  */
-export function createTermNonTerminalStateMatcher(
-  states: RdfsResource[]
-): (t: Term | TermInfo | SearchResult) => boolean {
-  const terminalStates = states
-    .filter((s) => s.types.indexOf(VocabularyUtils.TERM_STATE_TERMINAL) !== -1)
-    .map((t) => t.iri);
+export function createTermNonTerminalStateMatcher(states: {
+  [key: string]: RdfsResource;
+}): (t: Term | TermInfo | SearchResult) => boolean {
+  const terminalStates = Object.keys(states).filter(
+    (k) => states[k].types.indexOf(VocabularyUtils.TERM_STATE_TERMINAL) !== -1
+  );
   return (t: Term | TermInfo | SearchResult) =>
     !t.state || terminalStates.indexOf(t.state.iri) === -1;
 }
@@ -200,7 +200,7 @@ export function resolveAncestors(term: Term): string[] {
 export type TermFetchingPostProcessingOptions = {
   matchingVocabularies?: string[];
   selectedTerms?: TermInfo[] | TermData[];
-  states: RdfsResource[];
+  states: { [key: string]: RdfsResource };
 };
 
 export function loadAndPrepareTerms(

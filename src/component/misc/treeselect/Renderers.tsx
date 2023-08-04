@@ -8,7 +8,7 @@ import TermLink from "../../term/TermLink";
 import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
 import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
-import TerminalTermStateIcon from "../../term/TerminalTermStateIcon";
+import TerminalTermStateIcon from "../../term/state/TerminalTermStateIcon";
 import Utils from "../../../util/Utils";
 
 interface TreeItem {

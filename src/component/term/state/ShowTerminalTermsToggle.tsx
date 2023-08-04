@@ -1,8 +1,8 @@
 import React from "react";
-import { useI18n } from "../hook/useI18n";
+import { useI18n } from "../../hook/useI18n";
 import Toggle from "react-bootstrap-toggle";
 import { UncontrolledTooltip } from "reactstrap";
-import { TOGGLE_STYLE } from "./IncludeImportedTermsToggle";
+import { TOGGLE_STYLE } from "../IncludeImportedTermsToggle";
 
 interface ShowTerminalTermsToggleProps {
   onToggle: () => void;

@@ -122,9 +122,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           terms,
           [
             createVocabularyMatcher(matchingVocabularies),
-            createTermNonTerminalStateMatcher(
-              Utils.mapToArray(this.props.states)
-            ),
+            createTermNonTerminalStateMatcher(this.props.states),
           ],
           fetchOptions
         );

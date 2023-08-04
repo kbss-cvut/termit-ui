@@ -160,7 +160,7 @@ export class ParentTermSelector extends React.Component<
       {
         selectedTerms: this.props.parentTerms,
         matchingVocabularies,
-        states: Utils.mapToArray(this.props.states),
+        states: this.props.states,
       }
     ).then((terms) => {
       this.toggleIncludeImportedDisabled();

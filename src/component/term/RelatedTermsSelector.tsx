@@ -67,7 +67,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
         this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
       {
         selectedTerms: this.props.selected,
-        states: Utils.mapToArray(this.props.states),
+        states: this.props.states,
       }
     );
   };

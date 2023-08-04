@@ -1,22 +1,22 @@
 import React from "react";
-import Term from "../../model/Term";
-import Vocabulary from "../../model/Vocabulary";
-import { useI18n } from "../hook/useI18n";
-import { ThunkDispatch } from "../../util/Types";
+import Term from "../../../model/Term";
+import Vocabulary from "../../../model/Vocabulary";
+import { useI18n } from "../../hook/useI18n";
+import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Col, Label } from "reactstrap";
-import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
-import AccessLevel from "../../model/acl/AccessLevel";
-import { loadTermStates } from "../../action/AsyncActions";
-import TermItState from "../../model/TermItState";
-import { getLocalized } from "../../model/MultilingualString";
-import { getShortLocale } from "../../util/IntlUtil";
+import IfVocabularyActionAuthorized from "../../vocabulary/authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../../model/acl/AccessLevel";
+import { loadTermStates } from "../../../action/AsyncActions";
+import TermItState from "../../../model/TermItState";
+import { getLocalized } from "../../../model/MultilingualString";
+import { getShortLocale } from "../../../util/IntlUtil";
 import { GoCircleSlash, GoPencil } from "react-icons/go";
 import TermStateSelector from "./TermStateSelector";
-import BadgeButton from "../misc/BadgeButton";
-import { setTermState } from "../../action/AsyncTermActions";
-import VocabularyUtils from "../../util/VocabularyUtils";
-import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import BadgeButton from "../../misc/BadgeButton";
+import { setTermState } from "../../../action/AsyncTermActions";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 
 interface TermStateProps {

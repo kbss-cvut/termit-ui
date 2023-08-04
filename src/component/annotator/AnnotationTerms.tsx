@@ -108,7 +108,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             vocabulary!.iri
           )
         ),
-        createTermNonTerminalStateMatcher(Utils.mapToArray(this.props.states)),
+        createTermNonTerminalStateMatcher(this.props.states),
       ]
     );
 

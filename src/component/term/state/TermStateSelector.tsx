@@ -1,14 +1,14 @@
 import React from "react";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import { AssetData } from "../../model/Asset";
+import { AssetData } from "../../../model/Asset";
 import { useSelector } from "react-redux";
-import TermItState from "../../model/TermItState";
-import { getLocalized } from "../../model/MultilingualString";
-import { getShortLocale } from "../../util/IntlUtil";
-import { useI18n } from "../hook/useI18n";
-import RdfsResource, { RdfsResourceData } from "../../model/RdfsResource";
-import Utils from "../../util/Utils";
+import TermItState from "../../../model/TermItState";
+import { getLocalized } from "../../../model/MultilingualString";
+import { getShortLocale } from "../../../util/IntlUtil";
+import { useI18n } from "../../hook/useI18n";
+import RdfsResource, { RdfsResourceData } from "../../../model/RdfsResource";
+import Utils from "../../../util/Utils";
 
 interface TermStateSelectorProps {
   value?: AssetData;

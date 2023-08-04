@@ -12,7 +12,6 @@ import { useI18n } from "../../hook/useI18n";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { createTermNonTerminalStateMatcher } from "../../term/TermTreeSelectHelper";
-import Utils from "../../../util/Utils";
 
 interface SearchResultsOverlayProps {
   show: boolean;
@@ -32,7 +31,7 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
   const states = useSelector((state: TermItState) => state.states);
   const mergedResults = mergeDuplicates(
     props.searchResults,
-    createTermNonTerminalStateMatcher(Utils.mapToArray(states))
+    createTermNonTerminalStateMatcher(states)
   );
   const items = [];
   if (mergedResults.length === 0) {

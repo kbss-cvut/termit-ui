@@ -77,7 +77,7 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
         this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
       {
         selectedTerms: this.props.selected,
-        states: Utils.mapToArray(this.props.states),
+        states: this.props.states,
       }
     ).then((terms) =>
       filterOutTermsFromCurrentVocabulary(terms, this.props.vocabularyIri)

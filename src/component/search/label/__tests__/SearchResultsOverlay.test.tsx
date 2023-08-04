@@ -16,6 +16,7 @@ import RdfsResource from "../../../../model/RdfsResource";
 import { langString } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
 import * as Redux from "react-redux";
+import Utils from "../../../../util/Utils";
 
 jest.mock("popper.js");
 jest.mock("../../../misc/AssetLabel", () => () => <span>Asset</span>);
@@ -227,7 +228,7 @@ describe("SearchResultsOverlay", () => {
       ),
     ];
     (Redux.useSelector as jest.Mock).mockReset();
-    jest.spyOn(Redux, "useSelector").mockReturnValue(states);
+    jest.spyOn(Redux, "useSelector").mockReturnValue(Utils.mapArray(states));
     renderWithResults(results);
     const items = document.getElementsByClassName("search-result-link");
     expect(items.length).toEqual(0);

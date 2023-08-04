@@ -11,7 +11,7 @@ import AssetLabel from "../../misc/AssetLabel";
 import { getLocalized } from "../../../model/MultilingualString";
 import Utils from "../../../util/Utils";
 import OutgoingLink from "../../misc/OutgoingLink";
-import TermStateBadge from "../../term/TermStateBadge";
+import TermStateBadge from "../../term/state/TermStateBadge";
 
 const FacetedSearchResultItem: React.FC<{ item: FacetedSearchResult }> = ({
   item,

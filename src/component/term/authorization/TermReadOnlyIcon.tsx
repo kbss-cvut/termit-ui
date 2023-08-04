@@ -13,7 +13,7 @@ const TermReadOnlyIcon: React.FC<{ term: Term; accessLevel?: AccessLevel }> = ({
     <AssetReadOnlyIcon
       explanationId="auth.notEditable.message.readOnly"
       explanationValues={{ type: i18n("type.term").toLowerCase() }}
-      id="vocabulary-read-only-icon"
+      id="term-read-only-icon"
       className="ml-1"
     />
   ) : null;

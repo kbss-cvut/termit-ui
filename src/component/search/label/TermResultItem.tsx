@@ -17,7 +17,7 @@ import { getTermPath } from "../../term/TermLink";
 import User from "../../../model/User";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
-import TermStateBadge from "../../term/TermStateBadge";
+import TermStateBadge from "../../term/state/TermStateBadge";
 
 interface TermResultItemOwnProps {
   result: SearchResultItem;

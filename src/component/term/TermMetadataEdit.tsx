@@ -47,7 +47,7 @@ import StringListEdit from "../misc/StringListEdit";
 import "./TermMetadata.scss";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
-import TermStateSelector from "./TermStateSelector";
+import TermStateSelector from "./state/TermStateSelector";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;

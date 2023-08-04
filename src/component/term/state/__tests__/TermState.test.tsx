@@ -1,14 +1,14 @@
-import Generator from "../../../__tests__/environment/Generator";
+import Generator from "../../../../__tests__/environment/Generator";
 import * as redux from "react-redux";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import AccessLevel from "../../../model/acl/AccessLevel";
-import BadgeButton from "../../misc/BadgeButton";
-import JsonLdUtils from "../../../util/JsonLdUtils";
-import RdfsResource, { CONTEXT } from "../../../model/RdfsResource";
-import Utils from "../../../util/Utils";
+import { mountWithIntl } from "../../../../__tests__/environment/Environment";
+import AccessLevel from "../../../../model/acl/AccessLevel";
+import BadgeButton from "../../../misc/BadgeButton";
+import JsonLdUtils from "../../../../util/JsonLdUtils";
+import RdfsResource, { CONTEXT } from "../../../../model/RdfsResource";
+import Utils from "../../../../util/Utils";
 import TermState, { TermStateDisplay } from "../TermState";
-import { getLocalized } from "../../../model/MultilingualString";
-import Constants from "../../../util/Constants";
+import { getLocalized } from "../../../../model/MultilingualString";
+import Constants from "../../../../util/Constants";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -20,7 +20,7 @@ describe("TermState", () => {
   it("does not render edit button when user has no editing authority", async () => {
     const states =
       await JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResource>(
-        require("../../../rest-mock/states"),
+        require("../../../../rest-mock/states"),
         CONTEXT
       );
     const storeState = Utils.mapArray(states);
@@ -40,7 +40,7 @@ describe("TermState", () => {
   it("maps state IRI to label based on state options stored in Redux store", async () => {
     const states =
       await JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResource>(
-        require("../../../rest-mock/states"),
+        require("../../../../rest-mock/states"),
         CONTEXT
       );
     const storeState = Utils.mapArray(states);

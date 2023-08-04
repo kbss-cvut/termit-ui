@@ -49,7 +49,7 @@ import { Configuration } from "../../model/Configuration";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
 import RdfsResource from "../../model/RdfsResource";
-import ShowTerminalTermsToggle from "./ShowTerminalTermsToggle";
+import ShowTerminalTermsToggle from "./state/ShowTerminalTermsToggle";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -178,9 +178,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         const termFilters = [createVocabularyMatcher(matchingVocabularies)];
         if (!this.state.showTerminalTerms) {
           termFilters.push(
-            createTermNonTerminalStateMatcher(
-              Utils.mapToArray(this.props.states)
-            )
+            createTermNonTerminalStateMatcher(this.props.states)
           );
         }
         return processTermsForTreeSelect(terms, termFilters, {

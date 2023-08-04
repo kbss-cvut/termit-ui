@@ -10,6 +10,7 @@ import Term, { TermData } from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import RdfsResource from "../../../model/RdfsResource";
 import { langString } from "../../../model/MultilingualString";
+import Utils from "../../../util/Utils";
 
 describe("TermTreeSelectHelper", () => {
   describe("processTermsForTreeSelect", () => {
@@ -151,7 +152,7 @@ describe("TermTreeSelectHelper", () => {
       ];
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: selected,
-        states: [],
+        states: {},
       }).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
           selected.map((t) => t.iri)
@@ -167,7 +168,7 @@ describe("TermTreeSelectHelper", () => {
       ];
       return loadAndPrepareTerms({ offset: 100 }, loadTerms, {
         selectedTerms: selected,
-        states: [],
+        states: {},
       }).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
           []
@@ -186,7 +187,7 @@ describe("TermTreeSelectHelper", () => {
         loadTerms,
         {
           selectedTerms: selected,
-          states: [],
+          states: {},
         }
       ).then(() => {
         expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
@@ -226,7 +227,7 @@ describe("TermTreeSelectHelper", () => {
         .mockResolvedValueOnce([selected]);
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: [selected],
-        states: [],
+        states: {},
       }).then(() => {
         expect(loadTerms).toHaveBeenCalledTimes(3);
         expect(loadTerms).toHaveBeenCalledWith({ optionID: grandParent.iri });
@@ -265,7 +266,7 @@ describe("TermTreeSelectHelper", () => {
         .mockResolvedValueOnce([selected]);
       return loadAndPrepareTerms({}, loadTerms, {
         selectedTerms: [selected],
-        states: [],
+        states: {},
       }).then((result: Term[]) => {
         expect(result).toContain(grandParent);
         expect(result).toContain(parent);
@@ -285,7 +286,7 @@ describe("TermTreeSelectHelper", () => {
 
       return loadAndPrepareTerms({}, loadTerms, {
         matchingVocabularies: [vocabularyIri],
-        states: [],
+        states: {},
       }).then((result) => {
         expect(result.length).toBeLessThan(terms.length);
         result.forEach((t) => expect(t.vocabulary!.iri).toEqual(vocabularyIri));
@@ -347,7 +348,7 @@ describe("TermTreeSelectHelper", () => {
             iri: Generator.randomBoolean() ? states[0].iri : terminalState.iri,
           })
       );
-      const matcher = createTermNonTerminalStateMatcher(states);
+      const matcher = createTermNonTerminalStateMatcher(Utils.mapArray(states));
       const result = terms.filter(matcher);
       result.forEach((t) =>
         expect(t.state!.iri).not.toEqual(terminalState.iri)
@@ -359,7 +360,7 @@ describe("TermTreeSelectHelper", () => {
         Generator.generateTerm(Generator.generateUri()),
         Generator.generateTerm(Generator.generateUri()),
       ];
-      const matcher = createTermNonTerminalStateMatcher(states);
+      const matcher = createTermNonTerminalStateMatcher(Utils.mapArray(states));
       const result = terms.filter(matcher);
       expect(result).toEqual(terms);
     });

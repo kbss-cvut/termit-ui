@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { EMPTY_USER } from "../../../model/User";
 import { createTermNonTerminalStateMatcher } from "../../term/TermTreeSelectHelper";
-import Utils from "../../../util/Utils";
 
 export class SearchResultItem extends SearchResult {
   public totalScore: number;
@@ -82,7 +81,7 @@ const SearchResults: React.FC<{
   }
   const finalResults = mergeDuplicates(
     results,
-    createTermNonTerminalStateMatcher(Utils.mapToArray(states))
+    createTermNonTerminalStateMatcher(states)
   );
   if (finalResults.length === 0) {
     return (

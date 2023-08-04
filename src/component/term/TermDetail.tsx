@@ -48,6 +48,8 @@ import classNames from "classnames";
 import SnapshotCreationInfo from "../snapshot/SnapshotCreationInfo";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
+import StoreBasedTerminalTermStateIcon from "./state/StoreBasedTerminalTermStateIcon";
+import IfNotInTerminalState from "./state/IfNotInTerminalState";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -186,23 +188,25 @@ export class TermDetail extends EditableComponent<
     const actions = [];
     if (!this.state.edit) {
       actions.push(
-        <IfVocabularyActionAuthorized
-          key="term-detail-edit"
-          vocabulary={this.props.vocabulary}
-          requiredAccessLevel={AccessLevel.WRITE}
-        >
-          <Button
-            id="term-detail-edit"
-            size="sm"
-            color="primary"
-            onClick={this.onEdit}
+        <IfNotInTerminalState term={this.props.term!}>
+          <IfVocabularyActionAuthorized
             key="term-detail-edit"
-            title={this.props.i18n("edit")}
+            vocabulary={this.props.vocabulary}
+            requiredAccessLevel={AccessLevel.WRITE}
           >
-            <GoPencil />
-            &nbsp;{this.props.i18n("edit")}
-          </Button>
-        </IfVocabularyActionAuthorized>
+            <Button
+              id="term-detail-edit"
+              size="sm"
+              color="primary"
+              onClick={this.onEdit}
+              key="term-detail-edit"
+              title={this.props.i18n("edit")}
+            >
+              <GoPencil />
+              &nbsp;{this.props.i18n("edit")}
+            </Button>
+          </IfVocabularyActionAuthorized>
+        </IfNotInTerminalState>
       );
     }
     actions.push(
@@ -287,6 +291,7 @@ export class TermDetail extends EditableComponent<
           term={term}
           accessLevel={this.props.vocabulary.accessLevel}
         />
+        <StoreBasedTerminalTermStateIcon term={term} id="term-detail-state" />
         <br />
         <div className="small italics">
           {altLabels.length > 0 ? altLabels : "\u00a0"}
