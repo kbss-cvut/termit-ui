@@ -22,7 +22,7 @@ RUN set -ex; \
 
 # RELEASE STAGE
 # Only include the static files in the final image
-FROM nginx:1.23
+FROM nginx
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
 # Make env var substitution happen on *.template files in the html dir
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=/usr/share/nginx/html
