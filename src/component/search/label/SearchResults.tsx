@@ -75,13 +75,15 @@ const SearchResults: React.FC<{
   const isLoggedIn = useSelector(
     (state: TermItState) => state.user !== EMPTY_USER
   );
-  const states = useSelector((state: TermItState) => state.states);
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
   if (results === null) {
     return null;
   }
   const finalResults = mergeDuplicates(
     results,
-    createTermNonTerminalStateMatcher(states)
+    createTermNonTerminalStateMatcher(terminalStates)
   );
   if (finalResults.length === 0) {
     return (

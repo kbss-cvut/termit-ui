@@ -28,10 +28,12 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
   props: SearchResultsOverlayProps
 ) => {
   const { i18n, formatMessage } = useI18n();
-  const states = useSelector((state: TermItState) => state.states);
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
   const mergedResults = mergeDuplicates(
     props.searchResults,
-    createTermNonTerminalStateMatcher(states)
+    createTermNonTerminalStateMatcher(terminalStates)
   );
   const items = [];
   if (mergedResults.length === 0) {

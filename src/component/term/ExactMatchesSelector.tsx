@@ -26,7 +26,6 @@ import {
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
-import RdfsResource from "../../model/RdfsResource";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -51,7 +50,7 @@ export interface ExactMatchesSelectorProps extends HasI18n {
   termIri?: string;
   selected?: TermData[];
   vocabularyIri: string;
-  states: { [key: string]: RdfsResource };
+  terminalStates: string[];
   onChange: (exactMatches: Term[]) => void;
   loadTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -77,7 +76,7 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
         this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
       {
         selectedTerms: this.props.selected,
-        states: this.props.states,
+        terminalStates: this.props.terminalStates,
       }
     ).then((terms) =>
       filterOutTermsFromCurrentVocabulary(terms, this.props.vocabularyIri)
@@ -116,7 +115,7 @@ export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorPr
 
 export default connect(
   (state: TermItState) => ({
-    states: state.states,
+    terminalStates: state.terminalStates,
   }),
   (dispatch: ThunkDispatch) => ({
     loadTerms: (fetchOptions: TermFetchParams<TermData>, namespace?: string) =>

@@ -29,7 +29,6 @@ import {
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
-import RdfsResource from "../../model/RdfsResource";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   if (currentTermIri) {
@@ -56,7 +55,7 @@ export interface ParentTermSelectorProps extends HasI18n {
   validationMessage?: string | JSX.Element;
   vocabularyIri: string;
   currentVocabulary?: Vocabulary;
-  states: { [key: string]: RdfsResource };
+  terminalStates: string[];
   onChange: (newParents: Term[]) => void;
   loadTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -160,7 +159,7 @@ export class ParentTermSelector extends React.Component<
       {
         selectedTerms: this.props.parentTerms,
         matchingVocabularies,
-        states: this.props.states,
+        terminalStates: this.props.terminalStates,
       }
     ).then((terms) => {
       this.toggleIncludeImportedDisabled();
@@ -251,7 +250,7 @@ export default connect(
   (state: TermItState) => {
     return {
       currentVocabulary: state.vocabulary,
-      states: state.states,
+      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {

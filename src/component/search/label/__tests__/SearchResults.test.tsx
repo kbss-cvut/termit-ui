@@ -16,7 +16,6 @@ import RdfsResource from "../../../../model/RdfsResource";
 import { langString } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
 import * as Redux from "react-redux";
-import Utils from "../../../../util/Utils";
 
 jest.mock("../../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
 jest.mock("react-redux", () => ({
@@ -31,7 +30,7 @@ describe("SearchResults", () => {
     jest
       .spyOn(Redux, "useSelector")
       .mockReturnValueOnce(true)
-      .mockReturnValue({});
+      .mockReturnValue([]);
   });
 
   it("render no results info when no results are found", () => {
@@ -235,7 +234,7 @@ describe("SearchResults", () => {
     jest
       .spyOn(Redux, "useSelector")
       .mockReturnValueOnce(true)
-      .mockReturnValue(Utils.mapArray(states));
+      .mockReturnValue([states[1].iri]);
     const wrapper = renderWithResults(results);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();

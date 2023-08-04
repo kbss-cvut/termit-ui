@@ -48,7 +48,6 @@ import "./Terms.scss";
 import { Configuration } from "../../model/Configuration";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
-import RdfsResource from "../../model/RdfsResource";
 import ShowTerminalTermsToggle from "./state/ShowTerminalTermsToggle";
 
 interface GlossaryTermsProps extends HasI18n {
@@ -57,7 +56,7 @@ interface GlossaryTermsProps extends HasI18n {
   selectedTerms: Term | null;
   notifications: AppNotification[];
   configuration: Configuration;
-  states: { [key: string]: RdfsResource };
+  terminalStates: string[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -178,7 +177,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         const termFilters = [createVocabularyMatcher(matchingVocabularies)];
         if (!this.state.showTerminalTerms) {
           termFilters.push(
-            createTermNonTerminalStateMatcher(this.props.states)
+            createTermNonTerminalStateMatcher(this.props.terminalStates)
           );
         }
         return processTermsForTreeSelect(terms, termFilters, {
@@ -262,15 +261,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           />
         </div>
       )
-    );
-  }
-
-  private resolveTerminalStates() {
-    return Object.keys(this.props.states).filter(
-      (s) =>
-        this.props.states[s].types.indexOf(
-          VocabularyUtils.TERM_STATE_TERMINAL
-        ) !== -1
     );
   }
 
@@ -363,7 +353,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             menuIsFloating={false}
             optionRenderer={createFullTermRenderer(
               unusedTerms,
-              this.resolveTerminalStates(),
+              this.props.terminalStates,
               this.props.vocabulary.iri,
               this.props.showTermQualityBadge
             )}
@@ -385,7 +375,7 @@ export default connect(
       counter: state.createdTermsCounter,
       notifications: state.notifications,
       configuration: state.configuration,
-      states: state.states,
+      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {

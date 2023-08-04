@@ -33,12 +33,11 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import "../../term/Terms.scss";
 import { loadTerms } from "../../../action/AsyncActions";
-import RdfsResource from "../../../model/RdfsResource";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
   selectedTerms: Term | null;
-  states: { [key: string]: RdfsResource };
+  terminalStates: string[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -122,7 +121,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           terms,
           [
             createVocabularyMatcher(matchingVocabularies),
-            createTermNonTerminalStateMatcher(this.props.states),
+            createTermNonTerminalStateMatcher(this.props.terminalStates),
           ],
           fetchOptions
         );
@@ -242,7 +241,7 @@ export default connect(
   (state: TermItState) => {
     return {
       selectedTerms: state.selectedTerm,
-      states: state.states,
+      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {

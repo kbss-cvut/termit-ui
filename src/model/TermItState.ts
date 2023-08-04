@@ -39,6 +39,8 @@ export default class TermItState {
   public searchResults: SearchResult[] | null;
   public types: { [key: string]: Term };
   public states: { [key: string]: RdfsResource };
+  // Identifiers of terminal states (a subset of all states)
+  public terminalStates: string[];
   public properties: RdfsResource[];
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
@@ -81,6 +83,7 @@ export default class TermItState {
     this.searchResults = null;
     this.types = {};
     this.states = {};
+    this.terminalStates = [];
     this.properties = [];
     this.notifications = [];
     this.pendingActions = {};

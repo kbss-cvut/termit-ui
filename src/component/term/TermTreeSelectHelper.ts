@@ -5,7 +5,6 @@ import { getShortLocale } from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
 import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import RdfsResource from "../../model/RdfsResource";
 import SearchResult from "../../model/search/SearchResult";
 
 /**
@@ -91,14 +90,11 @@ export function createVocabularyMatcher(vocabularies?: string[]) {
  * Creates a filter function that matches terms (or FTS results representing terms) that are not in a terminal state.
  *
  * Terminal states are resolved from the specified array of state options.
- * @param states Available states
+ * @param terminalStates Identifiers of terminal states
  */
-export function createTermNonTerminalStateMatcher(states: {
-  [key: string]: RdfsResource;
-}): (t: Term | TermInfo | SearchResult) => boolean {
-  const terminalStates = Object.keys(states).filter(
-    (k) => states[k].types.indexOf(VocabularyUtils.TERM_STATE_TERMINAL) !== -1
-  );
+export function createTermNonTerminalStateMatcher(
+  terminalStates: string[]
+): (t: Term | TermInfo | SearchResult) => boolean {
   return (t: Term | TermInfo | SearchResult) =>
     !t.state || terminalStates.indexOf(t.state.iri) === -1;
 }
@@ -200,7 +196,7 @@ export function resolveAncestors(term: Term): string[] {
 export type TermFetchingPostProcessingOptions = {
   matchingVocabularies?: string[];
   selectedTerms?: TermInfo[] | TermData[];
-  states: { [key: string]: RdfsResource };
+  terminalStates: string[];
 };
 
 export function loadAndPrepareTerms(
@@ -242,7 +238,7 @@ export function loadAndPrepareTerms(
         terms,
         [
           createVocabularyMatcher(postOptions.matchingVocabularies),
-          createTermNonTerminalStateMatcher(postOptions.states),
+          createTermNonTerminalStateMatcher(postOptions.terminalStates),
         ],
         {
           searchString: fetchOptions.searchString,

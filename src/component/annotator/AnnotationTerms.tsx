@@ -26,13 +26,12 @@ import {
 } from "../misc/treeselect/Renderers";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
-import RdfsResource from "../../model/RdfsResource";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
   terms: { [key: string]: Term };
   counter: number;
-  states: { [key: string]: RdfsResource };
+  terminalStates: string[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
 }
 
@@ -108,7 +107,7 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
             vocabulary!.iri
           )
         ),
-        createTermNonTerminalStateMatcher(this.props.states),
+        createTermNonTerminalStateMatcher(this.props.terminalStates),
       ]
     );
 
@@ -166,7 +165,7 @@ export default connect(
       vocabulary: state.vocabulary,
       terms: state.annotatorTerms,
       counter: state.createdTermsCounter,
-      states: state.states,
+      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {

@@ -9,8 +9,10 @@ const StoreBasedTerminalTermStateIcon: React.FC<{
   term: Term | TermInfo;
   id: string;
 }> = ({ term, id }) => {
-  const states = useSelector((state: TermItState) => state.states);
-  return createTermNonTerminalStateMatcher(states)(term) ? null : (
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
+  return createTermNonTerminalStateMatcher(terminalStates)(term) ? null : (
     <TerminalTermStateIcon id={id} className="top-0 ml-1" />
   );
 };

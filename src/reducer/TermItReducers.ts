@@ -35,7 +35,7 @@ import Utils from "../util/Utils";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
-import { IRIImpl } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 
@@ -378,6 +378,26 @@ function states(
   }
 }
 
+function terminalStates(
+  state: string[] = [],
+  action: AsyncActionSuccess<RdfsResource[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_STATES:
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload
+          .filter(
+            (r) => r.types.indexOf(VocabularyUtils.TERM_STATE_TERMINAL) !== -1
+          )
+          .map((r) => r.iri);
+      } else {
+        return state;
+      }
+    default:
+      return state;
+  }
+}
+
 function properties(
   state: RdfsResource[] = [],
   action: AsyncActionSuccess<RdfsResource[]> | Action
@@ -659,6 +679,7 @@ const rootReducer = combineReducers<TermItState>({
   searchInProgress,
   types,
   states,
+  terminalStates,
   properties,
   notifications,
   pendingActions,

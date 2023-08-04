@@ -8,8 +8,10 @@ const IfNotInTerminalState: React.FC<{ term: Term | TermInfo }> = ({
   term,
   children,
 }) => {
-  const states = useSelector((state: TermItState) => state.states);
-  return createTermNonTerminalStateMatcher(states)(term) ? (
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
+  return createTermNonTerminalStateMatcher(terminalStates)(term) ? (
     <>{children}</>
   ) : null;
 };
