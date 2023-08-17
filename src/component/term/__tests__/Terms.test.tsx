@@ -41,7 +41,6 @@ describe("Terms", () => {
     fetchOptions: TermFetchParams<TermData>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
-  let fetchUnusedTerms: (vocabularyIri: IRI) => Promise<string[]>;
 
   let location: Location;
   let match: Match<any>;
@@ -51,7 +50,6 @@ describe("Terms", () => {
     Utils.calculateAssetListHeight = jest.fn().mockImplementation(() => 100);
     selectVocabularyTerm = jest.fn();
     fetchTerms = jest.fn().mockImplementation(() => Promise.resolve([]));
-    fetchUnusedTerms = jest.fn().mockImplementation(() => Promise.resolve([]));
 
     location = {
       pathname: "/vocabulary/" + vocabularyName + "/term/",
@@ -115,9 +113,8 @@ describe("Terms", () => {
         location={location}
         match={match}
         isDetailView={isDetailView}
-        fetchUnusedTerms={fetchUnusedTerms}
         configuration={DEFAULT_CONFIGURATION}
-        states={{}}
+        terminalStates={[]}
       />
     );
   }
@@ -145,36 +142,6 @@ describe("Terms", () => {
     expect((fetchTerms as jest.Mock).mock.calls[0][1]).toEqual(
       VocabularyUtils.create(option.vocabulary!.iri!)
     );
-  });
-
-  it("fetches unused terms", () => {
-    const terms: Term[] = [];
-    const vocabularyIri: string = Generator.generateUri();
-    const t1: Term = Generator.generateTerm(vocabularyIri);
-    terms.push(t1);
-    const t2: Term = Generator.generateTerm(vocabularyIri);
-    terms.push(t2);
-
-    const unusedTerms: string[] = [];
-    unusedTerms.push(t1.iri);
-
-    fetchTerms = jest.fn().mockResolvedValue(terms);
-    fetchUnusedTerms = jest.fn().mockResolvedValue(unusedTerms);
-
-    const wrapper = renderShallow();
-    return wrapper
-      .instance()
-      .fetchOptions({})
-      .then(() => {
-        const vocabularyIris = Object.keys(
-          wrapper.state().unusedTermsForVocabulary
-        );
-        expect(vocabularyIris.length).toBe(1);
-        const unusedTermsX =
-          wrapper.state().unusedTermsForVocabulary[vocabularyIris[0]];
-        expect(unusedTermsX.length).toBe(1);
-        expect(unusedTermsX[0]).toBe(t1.iri);
-      });
   });
 
   it("disables include imported terms toggle when fetching terms", () => {

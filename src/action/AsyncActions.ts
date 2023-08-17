@@ -1200,27 +1200,6 @@ export function exportFileContent(fileIri: IRI, at?: string) {
   };
 }
 
-export function loadUnusedTermsForVocabulary(iri: IRI) {
-  const action = {
-    type: ActionType.FETCH_UNUSED_TERMS_FOR_VOCABULARY,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(
-      Constants.API_PREFIX + "/vocabularies/" + iri.fragment + "/unused-terms",
-      param("namespace", iri.namespace)
-    )
-      .then((terms: string[]) => {
-        dispatch(asyncActionSuccess(action));
-        return terms;
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return [];
-      });
-  };
-}
-
 export function loadHistory(asset: Asset) {
   const assetIri = VocabularyUtils.create(asset.iri);
   const historyConf = resolveHistoryLoadingParams(asset, assetIri);
