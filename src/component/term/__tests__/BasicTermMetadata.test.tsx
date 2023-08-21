@@ -14,7 +14,6 @@ import { MemoryRouter } from "react-router";
 
 jest.mock("../TermLink", () => () => <span>Term link</span>);
 jest.mock("../../misc/OutgoingLink", () => () => <span>Outgoing link</span>);
-jest.mock("../DraftToggle", () => () => <span>Draft toggle</span>);
 jest.mock("../TermTypes", () => () => <div>Term types</div>);
 
 describe("BasicTermMetadata", () => {

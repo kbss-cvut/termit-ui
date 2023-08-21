@@ -18,8 +18,8 @@ import {
   loadNews,
   loadResource,
   loadTerms,
+  loadTermStates,
   loadTypes,
-  loadUnusedTermsForVocabulary,
   loadVocabularies,
   loadVocabulary,
   removeTerm,
@@ -732,7 +732,7 @@ describe("Async actions", () => {
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTypes())
       ).then(() => {
-        const loadSuccessAction: AsyncActionSuccess<Vocabulary[]> = store
+        const loadSuccessAction: AsyncActionSuccess<Term[]> = store
           .getActions()
           .find(
             (a) =>
@@ -753,6 +753,41 @@ describe("Async actions", () => {
       Ajax.get = jest.fn().mockResolvedValue([]);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTypes())
+      ).then(() => {
+        expect(Ajax.get).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("load term states", () => {
+    it("loads states from the incoming JSON-LD", () => {
+      const states = require("../../rest-mock/states");
+      Ajax.get = jest.fn().mockResolvedValue(states);
+      store.getState().states = {};
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(loadTermStates())
+      ).then(() => {
+        const loadSuccessAction: AsyncActionSuccess<RdfsResource[]> = store
+          .getActions()
+          .find(
+            (a) =>
+              a.type === ActionType.LOAD_STATES &&
+              a.status === AsyncActionStatus.SUCCESS
+          );
+        expect(loadSuccessAction).toBeDefined();
+        const data = loadSuccessAction.payload;
+        verifyExpectedAssets(states, data);
+      });
+    });
+
+    it("does not send request if data with correct language are already loaded", () => {
+      const state = {};
+      const states = require("../../rest-mock/states");
+      states.forEach((s: any) => (state[s["@id"]] = s));
+      store.getState().states = state;
+      Ajax.get = jest.fn().mockResolvedValue([]);
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(loadTermStates())
       ).then(() => {
         expect(Ajax.get).not.toHaveBeenCalled();
       });
@@ -1618,40 +1653,6 @@ describe("Async actions", () => {
       ).then((result) => {
         expect(result).toEqual([]);
       });
-    });
-  });
-  describe("load unused terms", () => {
-    it("extracts terms from incoming JSON-LD", () => {
-      const terms = require("../../rest-mock/unusedTerms");
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadUnusedTermsForVocabulary({
-            fragment: "test-vocabulary",
-          })
-        ).then((data: string[]) => {
-          expect(data.length).toEqual(terms.length);
-          data.sort((a, b) => a.localeCompare(b));
-          terms.sort((a: string, b: string) => a.localeCompare(b));
-          for (let i = 0; i < terms.length; i++) {
-            expect(data[i]).toEqual(terms[i]);
-          }
-        })
-      );
-    });
-    it("returns empty list upon server error", () => {
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.reject(new Error("fail")));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadUnusedTermsForVocabulary({
-            fragment: "test-vocabulary",
-          })
-        ).then((data: string[]) => {
-          expect(data.length).toEqual(0);
-        })
-      );
     });
   });
 

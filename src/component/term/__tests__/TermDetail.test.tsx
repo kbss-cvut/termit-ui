@@ -83,7 +83,6 @@ describe("TermDetail", () => {
       iri: Generator.generateUri(),
       label: langString("Test term"),
       vocabulary: { iri: Generator.generateUri() },
-      draft: true,
     });
   });
 
@@ -326,7 +325,6 @@ describe("TermDetail", () => {
       new Term({
         iri: newParent,
         label: langString("New parent"),
-        draft: true,
       }),
     ];
     return wrapper

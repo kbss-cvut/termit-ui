@@ -16,6 +16,8 @@ import { GoPlus } from "react-icons/go";
 import Utils from "../../util/Utils";
 import {
   commonTermTreeSelectProps,
+  createTermNonTerminalStateMatcher,
+  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "../term/TermTreeSelectHelper";
 import {
@@ -29,6 +31,7 @@ interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
   terms: { [key: string]: Term };
   counter: number;
+  terminalStates: string[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
 }
 
@@ -97,10 +100,15 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
   public render() {
     const { i18n, vocabulary } = this.props;
     const terms = processTermsForTreeSelect(
-      Object.keys(this.props.terms).map((k) => this.props.terms[k]),
-      Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
-        vocabulary!.iri
-      )
+      Utils.mapToArray(this.props.terms),
+      [
+        createVocabularyMatcher(
+          Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
+            vocabulary!.iri
+          )
+        ),
+        createTermNonTerminalStateMatcher(this.props.terminalStates),
+      ]
     );
 
     return (
@@ -157,6 +165,7 @@ export default connect(
       vocabulary: state.vocabulary,
       terms: state.annotatorTerms,
       counter: state.createdTermsCounter,
+      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {

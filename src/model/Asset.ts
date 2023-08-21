@@ -6,6 +6,10 @@ export interface HasLabel {
   getLabel: () => string;
 }
 
+export interface HasIdentifier {
+  iri: string;
+}
+
 export interface AssetData extends HasTypes {
   iri?: string;
 }

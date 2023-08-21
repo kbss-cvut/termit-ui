@@ -15,8 +15,8 @@ describe("FileDetail", () => {
   let fileContent: string;
   let mockedFunctionLikeProps: {
     consumeNotification: (notification: AppNotification) => void;
-    loadFileContent: (fileIri: IRI) => void;
-    saveFileContent: (fileIri: IRI, fileContent: string) => void;
+    loadFileContent: (fileIri: IRI) => Promise<any>;
+    saveFileContent: (fileIri: IRI, fileContent: string) => Promise<any>;
     clearFileContent: () => void;
     loadVocabulary: (vocabularyIri: IRI) => void;
     fetchTerms: (vocabularyIri: IRI) => Promise<Term[]>;

@@ -97,6 +97,10 @@ a.btn {
   min-width: 6.7rem;
 }
 
+button.icon-button {
+  min-width: 2rem;
+}
+
 .btn-toolbar {
   & > button {
     margin-left: 0.5rem;

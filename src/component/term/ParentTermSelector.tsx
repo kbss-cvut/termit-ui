@@ -48,13 +48,14 @@ function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   }
 }
 
-interface ParentTermSelectorProps extends HasI18n {
+export interface ParentTermSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
   parentTerms?: TermData[];
   validationMessage?: string | JSX.Element;
   vocabularyIri: string;
   currentVocabulary?: Vocabulary;
+  terminalStates: string[];
   onChange: (newParents: Term[]) => void;
   loadTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -158,6 +159,7 @@ export class ParentTermSelector extends React.Component<
       {
         selectedTerms: this.props.parentTerms,
         matchingVocabularies,
+        terminalStates: this.props.terminalStates,
       }
     ).then((terms) => {
       this.toggleIncludeImportedDisabled();
@@ -248,6 +250,7 @@ export default connect(
   (state: TermItState) => {
     return {
       currentVocabulary: state.vocabulary,
+      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {

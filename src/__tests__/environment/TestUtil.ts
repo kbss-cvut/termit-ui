@@ -1,4 +1,4 @@
-import Asset from "../../model/Asset";
+import { AssetData } from "../../model/Asset";
 import { createMemoryHistory, Location } from "history";
 import { match as MatchType, RouteComponentProps } from "react-router";
 
@@ -9,13 +9,13 @@ import { match as MatchType, RouteComponentProps } from "react-router";
  */
 export function verifyExpectedAssets(
   expectedJsonLd: object[],
-  actual: Asset[]
+  actual: AssetData[]
 ) {
   expect(actual.length).toEqual(expectedJsonLd.length);
   expectedJsonLd.sort((a: object, b: object) =>
     a["@id"].localeCompare(b["@id"])
   );
-  actual.sort((a, b) => a.iri.localeCompare(b.iri));
+  actual.sort((a, b) => a.iri!.localeCompare(b.iri!));
   for (let i = 0; i < expectedJsonLd.length; i++) {
     expect(actual[i].iri).toEqual(expectedJsonLd[i]["@id"]);
   }

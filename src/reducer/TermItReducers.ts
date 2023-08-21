@@ -35,9 +35,8 @@ import Utils from "../util/Utils";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
-import { IRIImpl } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
-import TermStatus from "../model/TermStatus";
 import { Breadcrumb } from "../model/Breadcrumb";
 
 /**
@@ -207,7 +206,7 @@ function vocabularies(
 
 function selectedTerm(
   state: Term | null = null,
-  action: SelectingTermsAction | AsyncActionSuccess<Term | TermStatus>
+  action: SelectingTermsAction | AsyncActionSuccess<Term | string>
 ) {
   switch (action.type) {
     case ActionType.SELECT_VOCABULARY_TERM:
@@ -215,12 +214,12 @@ function selectedTerm(
     case ActionType.LOAD_TERM:
       const aa = action as AsyncActionSuccess<Term>;
       return aa.status === AsyncActionStatus.SUCCESS ? aa.payload : state;
-    case ActionType.SET_TERM_STATUS:
-      const sts = action as AsyncActionSuccess<TermStatus>;
+    case ActionType.SET_TERM_STATE:
+      const sts = action as AsyncActionSuccess<string>;
       return sts.status === AsyncActionStatus.SUCCESS
         ? new Term(
             Object.assign({}, state, {
-              draft: sts.payload === TermStatus.DRAFT,
+              state: { iri: sts.payload },
             })
           )
         : state;
@@ -355,6 +354,42 @@ function types(
         const map = {};
         action.payload.forEach((v) => (map[v.iri] = v));
         return map;
+      } else {
+        return state;
+      }
+    default:
+      return state;
+  }
+}
+
+function states(
+  state: { [key: string]: RdfsResource } = {},
+  action: AsyncActionSuccess<RdfsResource[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_STATES:
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        return Utils.mapArray(action.payload);
+      } else {
+        return state;
+      }
+    default:
+      return state;
+  }
+}
+
+function terminalStates(
+  state: string[] = [],
+  action: AsyncActionSuccess<RdfsResource[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_STATES:
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        return action.payload
+          .filter(
+            (r) => r.types.indexOf(VocabularyUtils.TERM_STATE_TERMINAL) !== -1
+          )
+          .map((r) => r.iri);
       } else {
         return state;
       }
@@ -643,6 +678,8 @@ const rootReducer = combineReducers<TermItState>({
   searchListenerCount,
   searchInProgress,
   types,
+  states,
+  terminalStates,
   properties,
   notifications,
   pendingActions,

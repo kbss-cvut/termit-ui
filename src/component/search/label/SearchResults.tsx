@@ -10,6 +10,7 @@ import Routes from "../../../util/Routes";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { EMPTY_USER } from "../../../model/User";
+import { createTermNonTerminalStateMatcher } from "../../term/TermTreeSelectHelper";
 
 export class SearchResultItem extends SearchResult {
   public totalScore: number;
@@ -33,9 +34,15 @@ function scoreSort(a: SearchResultItem, b: SearchResultItem) {
   return b.totalScore - a.totalScore;
 }
 
-export function mergeDuplicates(results: SearchResult[]) {
+export function mergeDuplicates(
+  results: SearchResult[],
+  resultFilter: (r: SearchResult) => boolean = () => true
+) {
   const map = new Map<string, SearchResultItem>();
   results.forEach((r) => {
+    if (!resultFilter(r)) {
+      return;
+    }
     if (!map.has(r.iri)) {
       map.set(r.iri, new SearchResultItem(r));
     } else {
@@ -68,10 +75,17 @@ const SearchResults: React.FC<{
   const isLoggedIn = useSelector(
     (state: TermItState) => state.user !== EMPTY_USER
   );
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
   if (results === null) {
     return null;
   }
-  if (results.length === 0) {
+  const finalResults = mergeDuplicates(
+    results,
+    createTermNonTerminalStateMatcher(terminalStates)
+  );
+  if (finalResults.length === 0) {
     return (
       <Card className="mb-3">
         <CardBody>
@@ -102,7 +116,7 @@ const SearchResults: React.FC<{
       </Card>
     );
   }
-  const rows = mergeDuplicates(results).map((r) => (
+  const rows = finalResults.map((r) => (
     <tr key={r.iri} className="search-result-match-row">
       <td className="align-middle">
         {r.hasType(VocabularyUtils.VOCABULARY) ? (

@@ -252,8 +252,6 @@ const cs = {
     "vocabulary.summary.export.skosFullWithRefs": "Plný SKOS + stejné významy",
     "vocabulary.summary.export.skosFullWithRefs.title":
       "Export glosáře ve struktuře kompatibilní se SKOS včetně všech dalších atributů pojmů. Export obsahuje i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku.",
-    "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export ve formátu CSV.",
     "vocabulary.summary.export.excel": "Excel",
     "vocabulary.summary.export.excel.title": "Export ve formátu MS Excel.",
     "vocabulary.summary.export.ttl": "Turtle",
@@ -467,12 +465,10 @@ const cs = {
     "term.metadata.related.definitionally.suggested":
       "Výskyt byl nalezen automaticky analýzou textu definice a ještě nebyl schválen",
     "term.metadata.comments.public.title": "Veřejná diskuse",
-    "term.metadata.status.draft": "Rozpracovaný",
-    "term.metadata.status.confirmed": "Schválený",
     "term.metadata.status.help":
-      "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
-    "term.metadata.status.confirmed.edit.title":
-      "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
+      "Stav pojmu reprezentuje různé fáze životního cyklu pojmu, od jeho prvotního návrhu až po jeho případné zrušení (např. z důvodu nahrazení jiným pojmem).",
+    "term.metadata.status.terminal.help":
+      "Pojem byl zrušen a neměl by být nadále používán.",
     "term.metadata.notation.label": "Notace",
     "term.metadata.notation.help":
       "(Nepovinný) Notace je řetězec znaků, jako např. 'UBA' or 'L2-3', užívaný k identifikaci pojmu v rámci daného glosáře. " +
@@ -494,15 +490,19 @@ const cs = {
     "glossary.select.placeholder": "Začněte psát pro filtrování pojmů",
     "glossary.excludeImported": "Včetně importů",
     "glossary.excludeImported.help":
-      "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte",
+      "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte.",
     "glossary.includeImported": "Včetně importů",
     "glossary.includeImported.help":
-      "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete",
+      "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete.",
     "glossary.importedIncluded": "včetně importovaných",
     "glossary.importedExcluded": "bez importovaných",
-    "glossary.filter-draft": "Rozpracované",
-    "glossary.filter-confirmed": "Schválené",
     "glossary.importedTerm.tooltip": "Importován ze slovníku",
+    "glossary.showTerminal": "Včetně zrušených",
+    "glossary.showNonTerminal": "Pouze aktivní",
+    "glossary.showTerminal.help":
+      "Jsou zobrazeny též zrušené pojmy (pojmy v koncovém stavu). Takové pojmy by se již neměly používat.",
+    "glossary.showNonTerminal.help":
+      "Jsou zobrazeny pouze pojmy v aktivním stavu, tj. pojmy, které lze používat.",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",
@@ -703,6 +703,8 @@ const cs = {
       "Nelze odstranit import slovníku, neboť stále existují vazby mezi pojmy z tohoto a importovaného slovníku (či ze slovníků, které importuje).",
     "error.file.maxUploadSizeExceeded":
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
+    "error.term.state.terminal.liveChildren":
+      "Pojmu nelze nastavit koncový stav, dokud má alespoň jednoho potomka v jiném než koncovém stavu.",
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",

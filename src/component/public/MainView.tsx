@@ -25,7 +25,7 @@ import SearchTerms from "../search/SearchTerms";
 import SearchVocabularies from "../search/SearchVocabularies";
 import Search from "../search/label/Search";
 import "../MainView.scss";
-import { loadConfiguration } from "../../action/AsyncActions";
+import { loadConfiguration, loadTermStates } from "../../action/AsyncActions";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
 import FacetedSearch from "../search/facet/FacetedSearch";
 
@@ -34,6 +34,7 @@ interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   desktopView: boolean;
   changeView: () => void;
   loadConfiguration: () => void;
+  loadTermStates: () => void;
 }
 
 interface MainViewState {
@@ -51,6 +52,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
   public componentDidMount(): void {
     window.addEventListener("resize", this.handleResize, false);
     this.props.loadConfiguration();
+    this.props.loadTermStates();
   }
 
   public componentWillUnmount(): void {
@@ -175,6 +177,7 @@ export default connect(
     return {
       changeView: () => dispatch(changeView()),
       loadConfiguration: () => dispatch(loadConfiguration()),
+      loadTermStates: () => dispatch(loadTermStates()),
     };
   }
 )(

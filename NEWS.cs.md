@@ -1,3 +1,9 @@
+#### Verze 3.0.0
+
+- Draft status pojmu nahrazen podporou pro množinu stavů.
+- Odebrány některé nefunkční/nepoužívané funkce.
+- Aktualizace požadované verze platformy Java.
+
 #### Verze 2.18.0
 
 - Implementováno facetové vyhledávání pojmů.

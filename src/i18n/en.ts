@@ -244,8 +244,6 @@ const en = {
     "vocabulary.summary.export.skosFullWithRefs": "Full SKOS + exact matches",
     "vocabulary.summary.export.skosFullWithRefs.title":
       "Export a SKOS-compatible glossary including all additional properties of terms. The export also contains terms from other vocabularies referenced via the exact match relationship.",
-    "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export to CSV.",
     "vocabulary.summary.export.excel": "Excel",
     "vocabulary.summary.export.excel.title": "Export to MS Excel.",
     "vocabulary.summary.export.ttl": "Turtle",
@@ -431,7 +429,7 @@ const en = {
       "(Optional) search strings, which are not meant for visual presentation of terms and" +
       " serve mainly for search engines. Search strings do not need to be (contextual) synonyms to the label. E.g. " +
       "a term with label 'potato' can have search string 'spud'. ",
-    "term.metadata.status": "Status",
+    "term.metadata.status": "State",
     "term.updated.message": "Term successfully updated.",
     "term.metadata.labelExists.message":
       'Term with label "{label}" already exists in this vocabulary',
@@ -459,12 +457,10 @@ const en = {
     "term.metadata.related.definitionally.suggested":
       "Occurrence has been identified by an automatic analysis of the definition text and has not been approved",
     "term.metadata.comments.public.title": "Public discussion",
-    "term.metadata.status.draft": "Draft",
-    "term.metadata.status.confirmed": "Confirmed",
     "term.metadata.status.help":
-      "Draft term is not ready to be used yet, while Confirmed term is.",
-    "term.metadata.status.confirmed.edit.title":
-      "Confirmed term cannot be edited. Switch it back to Draft to edit.",
+      "Term state represents various phases of the term's lifecycle, from its inception to its possible retirement (for instance because it has been replaced by a different term).",
+    "term.metadata.status.terminal.help":
+      "Term is in a terminal state which means it should not be used anymore.",
     "term.metadata.notation.label": "Notation",
     "term.metadata.notation.help":
       "(Optional) A notation is a string of characters such as 'UBA' or 'L2-3' used to uniquely identify a term within the scope of a given glossary. " +
@@ -487,15 +483,19 @@ const en = {
     "glossary.select.placeholder": "Start typing to filter terms by label",
     "glossary.excludeImported": "Include imported",
     "glossary.excludeImported.help":
-      "Terms from imported vocabularies are hidden in this view, click to show them",
+      "Terms from imported vocabularies are hidden in this view, click to show them.",
     "glossary.includeImported": "Include imported",
     "glossary.includeImported.help":
-      "Terms from imported vocabularies are shown in this view, click to hide them",
+      "Terms from imported vocabularies are shown in this view, click to hide them.",
     "glossary.importedIncluded": "with imported",
     "glossary.importedExcluded": "without imported",
-    "glossary.filter-draft": "Draft",
-    "glossary.filter-confirmed": "Confirmed",
     "glossary.importedTerm.tooltip": "Imported from vocabulary",
+    "glossary.showTerminal": "Include terminal",
+    "glossary.showNonTerminal": "Only active",
+    "glossary.showTerminal.help":
+      "Displays also terms in a terminal state. Such terms should not be used anymore.",
+    "glossary.showNonTerminal.help":
+      "Displays only active terms (in non-terminal states).",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",
     "glossary.createTerm.tooltip": "Create new vocabulary's term",
@@ -695,6 +695,8 @@ const en = {
       "Cannot remove vocabulary import(s), there are still references between terms from this vocabulary and the imported one (or one of its imports).",
     "error.file.maxUploadSizeExceeded":
       "The file could not be uploaded because it exceeds the configured maximum file size limit.",
+    "error.term.state.terminal.liveChildren":
+      "Cannot set term state to a terminal when it has at least one sub term in non-terminal state.",
 
     "history.label": "Change history",
     "history.loading": "Loading history...",

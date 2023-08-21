@@ -39,7 +39,6 @@ import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/form/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
 import ExactMatchesSelector from "./ExactMatchesSelector";
-import DraftToggle from "./DraftToggle";
 import MultilingualIcon from "../misc/MultilingualIcon";
 import RelatedTermsSelector from "./RelatedTermsSelector";
 import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
@@ -48,6 +47,7 @@ import StringListEdit from "../misc/StringListEdit";
 import "./TermMetadata.scss";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
+import TermStateSelector from "./state/TermStateSelector";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -211,8 +211,8 @@ export class TermMetadataEdit extends React.Component<
     return { sameVocabulary, differentVocabulary };
   }
 
-  public onStatusChange = () => {
-    this.setState({ draft: !this.state.draft });
+  public onStateChange = (stateIri: string) => {
+    this.setState({ state: { iri: stateIri } });
   };
 
   private onPropertiesChange = (update: Map<string, string[]>) => {
@@ -451,10 +451,9 @@ export class TermMetadataEdit extends React.Component<
                         />
                       </Label>
                       <br />
-                      <DraftToggle
-                        id="edit-term-status"
-                        draft={Term.isDraft(this.state)}
-                        onToggle={this.onStatusChange}
+                      <TermStateSelector
+                        value={this.state.state}
+                        onChange={this.onStateChange}
                       />
                     </FormGroup>
                   </Col>

@@ -22,6 +22,8 @@ import IncludeImportedTermsToggle from "../../term/IncludeImportedTermsToggle";
 import { createTermsWithImportsOptionRenderer } from "../../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
+  createTermNonTerminalStateMatcher,
+  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "../../term/TermTreeSelectHelper";
 import { connect } from "react-redux";
@@ -35,6 +37,7 @@ import { loadTerms } from "../../../action/AsyncActions";
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
   selectedTerms: Term | null;
+  terminalStates: string[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
     fetchOptions: TermFetchParams<TermData>,
@@ -116,7 +119,10 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         });
         return processTermsForTreeSelect(
           terms,
-          matchingVocabularies,
+          [
+            createVocabularyMatcher(matchingVocabularies),
+            createTermNonTerminalStateMatcher(this.props.terminalStates),
+          ],
           fetchOptions
         );
       });
@@ -235,6 +241,7 @@ export default connect(
   (state: TermItState) => {
     return {
       selectedTerms: state.selectedTerm,
+      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {
