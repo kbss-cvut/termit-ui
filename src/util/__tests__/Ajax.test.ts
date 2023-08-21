@@ -390,7 +390,7 @@ describe("Ajax", () => {
         })
       );
       return sut
-        .getRaw("/vocabularies?test/terms", accept(Constants.CSV_MIME_TYPE))
+        .getRaw("/vocabularies?test/terms", accept(Constants.EXCEL_MIME_TYPE))
         .then((resp: any) => {
           expect(resp.status).toEqual(200);
           expect(resp.headers).toBeDefined();

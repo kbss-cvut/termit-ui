@@ -252,8 +252,6 @@ const cs = {
     "vocabulary.summary.export.skosFullWithRefs": "Plný SKOS + stejné významy",
     "vocabulary.summary.export.skosFullWithRefs.title":
       "Export glosáře ve struktuře kompatibilní se SKOS včetně všech dalších atributů pojmů. Export obsahuje i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku.",
-    "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export ve formátu CSV.",
     "vocabulary.summary.export.excel": "Excel",
     "vocabulary.summary.export.excel.title": "Export ve formátu MS Excel.",
     "vocabulary.summary.export.ttl": "Turtle",

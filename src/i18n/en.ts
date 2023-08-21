@@ -244,8 +244,6 @@ const en = {
     "vocabulary.summary.export.skosFullWithRefs": "Full SKOS + exact matches",
     "vocabulary.summary.export.skosFullWithRefs.title":
       "Export a SKOS-compatible glossary including all additional properties of terms. The export also contains terms from other vocabularies referenced via the exact match relationship.",
-    "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export to CSV.",
     "vocabulary.summary.export.excel": "Excel",
     "vocabulary.summary.export.excel.title": "Export to MS Excel.",
     "vocabulary.summary.export.ttl": "Turtle",
