@@ -8,7 +8,6 @@ export enum ExportType {
 }
 
 export class ExportFormat {
-  public static CSV: ExportFormat = new ExportFormat(Constants.CSV_MIME_TYPE);
   public static Excel: ExportFormat = new ExportFormat(
     Constants.EXCEL_MIME_TYPE
   );

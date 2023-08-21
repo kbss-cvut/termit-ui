@@ -25,7 +25,6 @@ describe("ExportVocabularyDialog", () => {
   });
 
   it.each([
-    [ExportType.SKOS, ExportFormat.CSV],
     [ExportType.SKOS, ExportFormat.Excel],
     [ExportType.SKOS, ExportFormat.Turtle],
     [ExportType.SKOS, ExportFormat.RdfXml],
@@ -81,11 +80,8 @@ describe("ExportVocabularyDialog", () => {
   );
 
   it.each([
-    [ExportType.SKOS_FULL, ExportFormat.CSV],
     [ExportType.SKOS_FULL, ExportFormat.Excel],
-    [ExportType.SKOS_WITH_REFERENCES, ExportFormat.CSV],
     [ExportType.SKOS_WITH_REFERENCES, ExportFormat.Excel],
-    [ExportType.SKOS_FULL_WITH_REFERENCES, ExportFormat.CSV],
     [ExportType.SKOS_FULL_WITH_REFERENCES, ExportFormat.Excel],
   ])(
     "switches to from invalid export type %p to correct export type when format %p is selected",

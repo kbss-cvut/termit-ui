@@ -103,7 +103,7 @@ describe("AsyncTermActions", () => {
       Ajax.getRaw = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: "test",
-          headers: { "Content-type": ExportFormat.CSV.mimeType },
+          headers: { "Content-type": ExportFormat.Excel.mimeType },
         })
       );
       return Promise.resolve(
@@ -113,7 +113,7 @@ describe("AsyncTermActions", () => {
               namespace,
               fragment: name,
             },
-            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
+            new ExportConfig(ExportType.SKOS, ExportFormat.Excel)
           )
         )
       ).then(() => {
@@ -168,12 +168,7 @@ describe("AsyncTermActions", () => {
       });
     });
 
-    it.each([
-      ExportFormat.CSV,
-      ExportFormat.Excel,
-      ExportFormat.Turtle,
-      ExportFormat.RdfXml,
-    ])(
+    it.each([ExportFormat.Excel, ExportFormat.Turtle, ExportFormat.RdfXml])(
       "sets accept type based on specified export type",
       (format: ExportFormat) => {
         const iri = VocabularyUtils.create(Generator.generateUri());
@@ -200,12 +195,12 @@ describe("AsyncTermActions", () => {
     it("invokes file save on request success", () => {
       const iri = VocabularyUtils.create(Generator.generateUri());
       const data = "test";
-      const fileName = "test.csv";
+      const fileName = "test.xlsx";
       Ajax.getRaw = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data,
           headers: {
-            "content-type": Constants.CSV_MIME_TYPE,
+            "content-type": Constants.EXCEL_MIME_TYPE,
             "content-disposition": 'attachment; filename="' + fileName + '"',
           },
         })
@@ -215,14 +210,14 @@ describe("AsyncTermActions", () => {
         (store.dispatch as ThunkDispatch)(
           exportGlossary(
             iri,
-            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
+            new ExportConfig(ExportType.SKOS, ExportFormat.Excel)
           )
         )
       ).then(() => {
         expect(Utils.fileDownload).toHaveBeenCalledWith(
           data,
           fileName,
-          Constants.CSV_MIME_TYPE
+          Constants.EXCEL_MIME_TYPE
         );
       });
     });
@@ -230,12 +225,12 @@ describe("AsyncTermActions", () => {
     it("dispatches async success on request success and correct data", () => {
       const iri = VocabularyUtils.create(Generator.generateUri());
       const data = "test";
-      const fileName = "test.csv";
+      const fileName = "test.xlsx";
       Ajax.getRaw = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data,
           headers: {
-            "content-type": Constants.CSV_MIME_TYPE,
+            "content-type": Constants.EXCEL_MIME_TYPE,
             "content-disposition": 'attachment; filename="' + fileName + '"',
           },
         })
@@ -245,7 +240,7 @@ describe("AsyncTermActions", () => {
         (store.dispatch as ThunkDispatch)(
           exportGlossary(
             iri,
-            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
+            new ExportConfig(ExportType.SKOS, ExportFormat.Excel)
           )
         )
       ).then(() => {
@@ -263,7 +258,7 @@ describe("AsyncTermActions", () => {
         Promise.resolve({
           data,
           headers: {
-            "content-type": Constants.CSV_MIME_TYPE,
+            "content-type": Constants.EXCEL_MIME_TYPE,
           },
         })
       );
@@ -272,7 +267,7 @@ describe("AsyncTermActions", () => {
         (store.dispatch as ThunkDispatch)(
           exportGlossary(
             iri,
-            new ExportConfig(ExportType.SKOS, ExportFormat.CSV)
+            new ExportConfig(ExportType.SKOS, ExportFormat.Excel)
           )
         )
       ).then(() => {

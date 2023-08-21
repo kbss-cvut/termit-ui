@@ -28,10 +28,7 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
   const [format, setFormat] = useState<ExportFormat>(ExportFormat.Turtle);
   const selectType = (selected: ExportType) => {
     setType(selected);
-    if (
-      selected !== ExportType.SKOS &&
-      (format === ExportFormat.CSV || format === ExportFormat.Excel)
-    ) {
+    if (selected !== ExportType.SKOS && format === ExportFormat.Excel) {
       setFormat(ExportFormat.Turtle);
     }
   };
@@ -127,26 +124,6 @@ const ExportVocabularyDialog: React.FC<ExportVocabularyDialogProps> = ({
                 {i18n("vocabulary.summary.export.format")}
               </Label>
               <FormGroup check={true}>
-                {type === ExportType.SKOS && (
-                  <>
-                    <Label check={true}>
-                      <Input
-                        type="radio"
-                        name={ExportFormat.CSV.mimeType}
-                        value={ExportFormat.CSV.mimeType}
-                        onChange={() => setFormat(ExportFormat.CSV)}
-                        checked={
-                          type === ExportType.SKOS &&
-                          format === ExportFormat.CSV
-                        }
-                      />
-                      {i18n("vocabulary.summary.export.csv")}
-                    </Label>
-                    <FormText>
-                      {i18n("vocabulary.summary.export.csv.title")}
-                    </FormText>
-                  </>
-                )}
                 {type === ExportType.SKOS && (
                   <>
                     <Label check={true}>
