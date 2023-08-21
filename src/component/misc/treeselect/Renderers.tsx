@@ -2,7 +2,6 @@ import Term from "../../../model/Term";
 import classNames from "classnames";
 import ResultItem from "./ResultItem";
 import ImportedTermInfo from "../../term/ImportedTermInfo";
-import UnusedTermInfo from "../../term/UnusedTermInfo";
 import TermQualityBadge from "../../term/TermQualityBadge";
 import TermLink from "../../term/TermLink";
 import Vocabulary from "../../../model/Vocabulary";
@@ -42,13 +41,11 @@ export function createTermsWithImportsOptionRenderer(
 /**
  * Intelligent tree select option renderer which visualizes imported Terms by adding icon to them.
  *
- * @param unusedTerms List of identifiers of terms which are not used anywhere
  * @param terminalStates List of identifiers of term states that are terminal
  * @param currentVocabularyIri IRI of the current vocabulary, used to resolve whether term is imported
  * @param qualityBadge Whether quality badge should be rendered or not
  */
 export function createFullTermRenderer(
-  unusedTerms: string[],
   terminalStates: string[],
   currentVocabularyIri?: string,
   qualityBadge?: boolean
@@ -59,7 +56,6 @@ export function createFullTermRenderer(
   }
   addonBeforeRenderers.push(createTerminalStateIconRenderer(terminalStates));
   addonBeforeRenderers.push(createImportedTermRenderer(currentVocabularyIri));
-  addonBeforeRenderers.push(createUnusedTermInfoRenderer(unusedTerms));
   return createTermRenderer(addonBeforeRenderers, [
     createVocabularyBadgeRenderer(currentVocabularyIri),
   ]);
@@ -131,13 +127,6 @@ function createImportedTermRenderer(currentVocabularyIri?: string) {
     currentVocabularyIri === option.vocabulary!.iri ? null : (
       <ImportedTermInfo key="imported-term-addon" term={option} />
     );
-}
-
-function createUnusedTermInfoRenderer(unusedTerms: string[]) {
-  return (option: Term & TreeItem) =>
-    unusedTerms.indexOf(option.iri) !== -1 ? (
-      <UnusedTermInfo key="unused-term-addon" term={option} />
-    ) : null;
 }
 
 function createVocabularyBadgeRenderer(currentVocabularyIri?: string) {

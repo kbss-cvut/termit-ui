@@ -16,10 +16,7 @@ import {
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
 import Term, { TermData } from "../../model/Term";
-import {
-  loadTerms,
-  loadUnusedTermsForVocabulary,
-} from "../../action/AsyncActions";
+import { loadTerms } from "../../action/AsyncActions";
 import {
   TermFetchParams,
   ThunkDispatch,
@@ -63,7 +60,6 @@ interface GlossaryTermsProps extends HasI18n {
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   consumeNotification: (notification: AppNotification) => void;
-  fetchUnusedTerms: (vocabularyIri: IRI) => Promise<string[]>;
   location: Location;
   match: Match<any>;
   isDetailView?: boolean;
@@ -75,7 +71,6 @@ interface TermsState {
   // Whether terms from imported vocabularies should be displayed as well
   includeImported: boolean;
   disableIncludeImportedToggle: boolean;
-  unusedTermsForVocabulary: { [key: string]: string[] };
   showTerminalTerms: boolean;
 }
 
@@ -93,7 +88,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     this.state = {
       includeImported: includeImported || false,
       disableIncludeImportedToggle: props.isDetailView || false,
-      unusedTermsForVocabulary: {},
       showTerminalTerms: false,
     };
   }
@@ -152,11 +146,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           this.props.location.search,
           this.props.configuration
         );
-    this.props.fetchUnusedTerms(vocabularyIri).then((data) => {
-      const unusedTermsForVocabulary = this.state.unusedTermsForVocabulary;
-      unusedTermsForVocabulary[vocabularyIri.toString()] = data;
-      this.setState({ unusedTermsForVocabulary });
-    });
     return this.props
       .fetchTerms(
         {
@@ -270,14 +259,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
     const { i18n, isDetailView } = this.props;
 
-    const unusedTerms: string[] = [];
-    Object.keys(this.state.unusedTermsForVocabulary).forEach((vocabularyIri) =>
-      Array.prototype.push.apply(
-        unusedTerms,
-        this.state.unusedTermsForVocabulary[vocabularyIri]
-      )
-    );
-
     const includeImported = this.state.includeImported;
     const renderIncludeImported =
       this.props.vocabulary &&
@@ -352,7 +333,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             autoFocus={!isDetailView}
             menuIsFloating={false}
             optionRenderer={createFullTermRenderer(
-              unusedTerms,
               this.props.terminalStates,
               this.props.vocabulary.iri,
               this.props.showTermQualityBadge
@@ -388,8 +368,6 @@ export default connect(
       ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
       consumeNotification: (notification: AppNotification) =>
         dispatch(consumeNotification(notification)),
-      fetchUnusedTerms: (vocabularyIri: IRI) =>
-        dispatch(loadUnusedTermsForVocabulary(vocabularyIri)),
     };
   }
 )(injectIntl(withI18n(Terms)));

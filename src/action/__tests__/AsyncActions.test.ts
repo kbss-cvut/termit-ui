@@ -20,7 +20,6 @@ import {
   loadTerms,
   loadTermStates,
   loadTypes,
-  loadUnusedTermsForVocabulary,
   loadVocabularies,
   loadVocabulary,
   removeTerm,
@@ -1654,40 +1653,6 @@ describe("Async actions", () => {
       ).then((result) => {
         expect(result).toEqual([]);
       });
-    });
-  });
-  describe("load unused terms", () => {
-    it("extracts terms from incoming JSON-LD", () => {
-      const terms = require("../../rest-mock/unusedTerms");
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(terms));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadUnusedTermsForVocabulary({
-            fragment: "test-vocabulary",
-          })
-        ).then((data: string[]) => {
-          expect(data.length).toEqual(terms.length);
-          data.sort((a, b) => a.localeCompare(b));
-          terms.sort((a: string, b: string) => a.localeCompare(b));
-          for (let i = 0; i < terms.length; i++) {
-            expect(data[i]).toEqual(terms[i]);
-          }
-        })
-      );
-    });
-    it("returns empty list upon server error", () => {
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.reject(new Error("fail")));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          loadUnusedTermsForVocabulary({
-            fragment: "test-vocabulary",
-          })
-        ).then((data: string[]) => {
-          expect(data.length).toEqual(0);
-        })
-      );
     });
   });
 
