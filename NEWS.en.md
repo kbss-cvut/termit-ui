@@ -1,3 +1,9 @@
+#### Version 3.0.0
+
+- Term draft status replaced with support for a set of state option.
+- Removed several unused/broken features.
+- Updated the required Java platform version.
+
 #### Version 2.18.0
 
 - Implemented faceted term search.
