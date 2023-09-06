@@ -1,23 +1,18 @@
 import * as React from "react";
 import { Provider } from "react-redux";
 import TermItStore from "./store/TermItStore";
-import { ReactKeycloakProvider } from "@react-keycloak/web";
 import IntlApp from "./IntlApp";
-import keycloak from "./util/Keycloak";
-import SecurityUtils from "./util/SecurityUtils";
-import IntlAppKeycloak from "./IntlAppKeycloak";
+import OidcAuthWrapper from "./component/misc/oidc/OidcAuthWrapper";
+import { getEnv } from "./util/Constants";
 
 const App: React.FC = () => {
-  if (process.env.REACT_APP_AUTHENTICATION === "keycloak") {
+  if (getEnv("AUTHENTICATION", "") === "oidc") {
     return (
-      <ReactKeycloakProvider
-        authClient={keycloak}
-        onTokens={SecurityUtils.tokenSaver}
-      >
+      <OidcAuthWrapper>
         <Provider store={TermItStore}>
-          <IntlAppKeycloak />
+          <IntlApp />
         </Provider>
-      </ReactKeycloakProvider>
+      </OidcAuthWrapper>
     );
   } else {
     return (

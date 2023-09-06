@@ -29,6 +29,8 @@ interface ProfileState {
   edit: boolean;
 }
 
+// TODO Prevent edit when using OIDC authorization service
+
 export class Profile extends React.Component<ProfileProps, ProfileState> {
   constructor(props: ProfileProps) {
     super(props);

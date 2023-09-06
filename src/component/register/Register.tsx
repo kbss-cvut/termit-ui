@@ -24,6 +24,8 @@ interface RegisterProps extends HasI18n {
   ) => Promise<AsyncFailureAction | MessageAction>;
 }
 
+// TODO Prevent registration when using OIDC authentication
+
 export const Register: React.FC<RegisterProps> = (props) => {
   React.useEffect(() => {
     SecurityUtils.clearToken();

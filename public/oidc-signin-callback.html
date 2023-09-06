@@ -1,0 +1,15 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/oidc-client/1.10.1/oidc-client.js"></script>
+<script>
+  const mgr = new Oidc.UserManager();
+  mgr
+    .signinRedirectCallback()
+    .then(() => {
+      const searchParams = new URLSearchParams(location.search);
+      if (!searchParams.has("forward_uri")) {
+        throw Error("Missing parameter forward_uri");
+      }
+      const forwardUri = atob(searchParams.get("forward_uri"));
+      window.location.replace(forwardUri);
+    })
+    .catch(console.error);
+</script>

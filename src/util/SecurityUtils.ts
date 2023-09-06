@@ -1,9 +1,9 @@
-import Constants from "./Constants";
+import Constants, { getEnv } from "./Constants";
 import BrowserStorage from "./BrowserStorage";
 import VocabularyUtils from "./VocabularyUtils";
 import Utils from "./Utils";
-import { AuthClientTokens } from "@react-keycloak/core";
 import User, { EMPTY_USER } from "../model/User";
+import { getOidcIdentityStorageKey } from "./OidcUtils";
 
 export default class SecurityUtils {
   public static saveToken(jwt: string): void {
@@ -11,7 +11,22 @@ export default class SecurityUtils {
   }
 
   public static loadToken(): string {
+    if (getEnv("AUTHENTICATION", "") === "oidc") {
+      return SecurityUtils.getToken();
+    }
     return BrowserStorage.get(Constants.STORAGE_JWT_KEY, "")!;
+  }
+
+  /**
+   * Return access token of the currently logged-in user.
+   * To be used as an Authorization header content for API fetch calls.
+   */
+  private static getToken(): string {
+    const identityData = sessionStorage.getItem(getOidcIdentityStorageKey());
+    const identity = identityData
+      ? JSON.parse(identityData)
+      : (null as User | null);
+    return `${identity?.token_type} ${identity?.access_token}`;
   }
 
   public static clearToken(): void {
@@ -30,10 +45,4 @@ export default class SecurityUtils {
       ) === -1
     );
   }
-
-  public static tokenSaver = (tokens: AuthClientTokens) => {
-    if (tokens.token) {
-      SecurityUtils.saveToken("Bearer " + tokens.token);
-    }
-  };
 }
