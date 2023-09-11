@@ -8,7 +8,7 @@
       if (!searchParams.has("forward_uri")) {
         throw Error("Missing parameter forward_uri");
       }
-      const forwardUri = atob(searchParams.get("forward_uri"));
+      const forwardUri = window.atob(searchParams.get("forward_uri"));
       window.location.replace(forwardUri);
     })
     .catch(console.error);

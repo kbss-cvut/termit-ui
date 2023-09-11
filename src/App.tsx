@@ -2,17 +2,15 @@ import * as React from "react";
 import { Provider } from "react-redux";
 import TermItStore from "./store/TermItStore";
 import IntlApp from "./IntlApp";
-import OidcAuthWrapper from "./component/misc/oidc/OidcAuthWrapper";
-import { useOidcAuth } from "./util/OidcUtils";
+import { isUsingOidcAuth } from "./util/OidcUtils";
+import OidcIntlApp from "./OidcIntlApp";
 
 const App: React.FC = () => {
-  if (useOidcAuth()) {
+  if (isUsingOidcAuth()) {
     return (
-      <OidcAuthWrapper>
-        <Provider store={TermItStore}>
-          <IntlApp />
-        </Provider>
-      </OidcAuthWrapper>
+      <Provider store={TermItStore}>
+        <OidcIntlApp />
+      </Provider>
     );
   } else {
     return (

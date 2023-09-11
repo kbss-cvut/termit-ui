@@ -32,9 +32,9 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
   const user = useSelector((state: TermItState) => state.user);
   const dispatch: ThunkDispatch = useDispatch();
   const context = useContext(AuthContext);
-  const onLogout = () => {
+  const onLogout = async () => {
     if (context && context.logout) {
-      context.logout();
+      await context.logout();
     }
     dispatch(logout());
   };

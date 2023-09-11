@@ -1,8 +1,8 @@
 import React from "react";
-import { useOidcAuth } from "../../../util/OidcUtils";
+import { isUsingOidcAuth } from "../../../util/OidcUtils";
 
 const IfInternalAuth: React.FC = ({ children }) => {
-  if (useOidcAuth()) {
+  if (isUsingOidcAuth()) {
     return null;
   }
   return <>{children}</>;

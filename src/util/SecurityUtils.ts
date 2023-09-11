@@ -3,7 +3,7 @@ import BrowserStorage from "./BrowserStorage";
 import VocabularyUtils from "./VocabularyUtils";
 import Utils from "./Utils";
 import User, { EMPTY_USER } from "../model/User";
-import { getOidcIdentityStorageKey, useOidcAuth } from "./OidcUtils";
+import { getOidcIdentityStorageKey, isUsingOidcAuth } from "./OidcUtils";
 
 export default class SecurityUtils {
   public static saveToken(jwt: string): void {
@@ -11,7 +11,7 @@ export default class SecurityUtils {
   }
 
   public static loadToken(): string {
-    if (useOidcAuth()) {
+    if (isUsingOidcAuth()) {
       return SecurityUtils.getOidcToken();
     }
     return BrowserStorage.get(Constants.STORAGE_JWT_KEY, "")!;
@@ -30,7 +30,7 @@ export default class SecurityUtils {
   }
 
   public static clearToken(): void {
-    if (useOidcAuth()) {
+    if (isUsingOidcAuth()) {
       sessionStorage.removeItem(getOidcIdentityStorageKey());
     } else {
       BrowserStorage.remove(Constants.STORAGE_JWT_KEY);

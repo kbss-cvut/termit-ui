@@ -33,6 +33,8 @@ import {
 } from "../sidebar/Sidebar";
 import "../sidebar/Sidebar.scss";
 import ConfigParam from "../../util/ConfigParam";
+import { PUBLIC_LOGIN_ROUTE } from "../../util/Routing";
+import { isUsingOidcAuth } from "../../util/OidcUtils";
 
 const mainNavRoutes: NavLinkRoute[] = [
   {
@@ -49,7 +51,7 @@ const mainNavRoutes: NavLinkRoute[] = [
 
 const actionNavRoutes: NavLinkRoute[] = [
   {
-    path: Routes.login.path,
+    path: PUBLIC_LOGIN_ROUTE.path,
     name: "login.submit",
     icon: "fas fa-user",
   },
@@ -57,7 +59,7 @@ const actionNavRoutes: NavLinkRoute[] = [
 
 if (
   getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") !== true.toString() &&
-  getEnv(ConfigParam.AUTH_TYPE, "") !== "oidc"
+  !isUsingOidcAuth()
 ) {
   actionNavRoutes.push({
     path: Routes.register.path,

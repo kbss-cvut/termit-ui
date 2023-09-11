@@ -1,5 +1,6 @@
 import { getEnv } from "./Constants";
 import ConfigParam from "./ConfigParam";
+import Routes from "./Routes";
 
 // Taken from https://github.com/datagov-cz/assembly-line-shared but using a different config processing mechanism
 
@@ -28,7 +29,7 @@ export const getOidcConfig = () => {
       baseUrl
     )}`,
     silent_redirect_uri: `${baseUrl}/oidc-silent-callback.html`,
-    post_logout_redirect_uri: baseUrl,
+    post_logout_redirect_uri: `${baseUrl}#${Routes.publicDashboard.path}`,
     response_type: "code",
     loadUserInfo: true,
     automaticSilentRenew: true,
@@ -58,6 +59,6 @@ export const getOidcIdentityStorageKey = () => {
   return `oidc.user:${oidcConfig.authority}:${oidcConfig.client_id}`;
 };
 
-export function useOidcAuth() {
+export function isUsingOidcAuth() {
   return getEnv(ConfigParam.AUTH_TYPE, "") === "oidc";
 }

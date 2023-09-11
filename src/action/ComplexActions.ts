@@ -3,7 +3,7 @@ import Routes from "../util/Routes";
 import Routing from "../util/Routing";
 import { logout as asyncLogout } from "./AsyncUserActions";
 import { ThunkDispatch } from "../util/Types";
-import { useOidcAuth } from "../util/OidcUtils";
+import { isUsingOidcAuth } from "../util/OidcUtils";
 
 /*
  * Complex actions are basically just nice names for actions which involve both synchronous and asynchronous actions.
@@ -13,13 +13,11 @@ import { useOidcAuth } from "../util/OidcUtils";
 
 export function logout() {
   return (dispatch: ThunkDispatch) => {
-    const externalAuth = useOidcAuth();
+    const externalAuth = isUsingOidcAuth();
     if (!externalAuth) {
       dispatch(asyncLogout());
     }
     SecurityUtils.clearToken();
-    Routing.transitionTo(
-      externalAuth ? Routes.publicVocabularies : Routes.login
-    );
+    Routing.transitionTo(externalAuth ? Routes.publicDashboard : Routes.login);
   };
 }
