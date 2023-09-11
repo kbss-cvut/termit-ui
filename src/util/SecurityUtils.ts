@@ -1,9 +1,9 @@
-import Constants, { getEnv } from "./Constants";
+import Constants from "./Constants";
 import BrowserStorage from "./BrowserStorage";
 import VocabularyUtils from "./VocabularyUtils";
 import Utils from "./Utils";
 import User, { EMPTY_USER } from "../model/User";
-import { getOidcIdentityStorageKey } from "./OidcUtils";
+import { getOidcIdentityStorageKey, useOidcAuth } from "./OidcUtils";
 
 export default class SecurityUtils {
   public static saveToken(jwt: string): void {
@@ -11,8 +11,8 @@ export default class SecurityUtils {
   }
 
   public static loadToken(): string {
-    if (getEnv("AUTHENTICATION", "") === "oidc") {
-      return SecurityUtils.getToken();
+    if (useOidcAuth()) {
+      return SecurityUtils.getOidcToken();
     }
     return BrowserStorage.get(Constants.STORAGE_JWT_KEY, "")!;
   }
@@ -21,7 +21,7 @@ export default class SecurityUtils {
    * Return access token of the currently logged-in user.
    * To be used as an Authorization header content for API fetch calls.
    */
-  private static getToken(): string {
+  private static getOidcToken(): string {
     const identityData = sessionStorage.getItem(getOidcIdentityStorageKey());
     const identity = identityData
       ? JSON.parse(identityData)
@@ -30,7 +30,11 @@ export default class SecurityUtils {
   }
 
   public static clearToken(): void {
-    BrowserStorage.remove(Constants.STORAGE_JWT_KEY);
+    if (useOidcAuth()) {
+      sessionStorage.removeItem(getOidcIdentityStorageKey());
+    } else {
+      BrowserStorage.remove(Constants.STORAGE_JWT_KEY);
+    }
   }
 
   public static isLoggedIn(currentUser?: User | null): boolean {

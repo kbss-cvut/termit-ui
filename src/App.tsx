@@ -3,10 +3,10 @@ import { Provider } from "react-redux";
 import TermItStore from "./store/TermItStore";
 import IntlApp from "./IntlApp";
 import OidcAuthWrapper from "./component/misc/oidc/OidcAuthWrapper";
-import { getEnv } from "./util/Constants";
+import { useOidcAuth } from "./util/OidcUtils";
 
 const App: React.FC = () => {
-  if (getEnv("AUTHENTICATION", "") === "oidc") {
+  if (useOidcAuth()) {
     return (
       <OidcAuthWrapper>
         <Provider store={TermItStore}>

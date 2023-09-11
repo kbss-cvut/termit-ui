@@ -55,7 +55,10 @@ const actionNavRoutes: NavLinkRoute[] = [
   },
 ];
 
-if (getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") !== true.toString()) {
+if (
+  getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") !== true.toString() &&
+  getEnv(ConfigParam.AUTH_TYPE, "") !== "oidc"
+) {
   actionNavRoutes.push({
     path: Routes.register.path,
     name: "register.submit",

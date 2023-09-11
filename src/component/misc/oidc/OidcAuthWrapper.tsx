@@ -44,6 +44,8 @@ type AuthProps = PropsWithChildren<{
   history?: History;
 }>;
 
+// TODO Public view access without authentication
+
 const OidcAuthWrapper: React.FC<AuthProps> = ({
   children,
   location = window.location,

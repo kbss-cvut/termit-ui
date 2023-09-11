@@ -1,4 +1,5 @@
 import { getEnv } from "./Constants";
+import ConfigParam from "./ConfigParam";
 
 // Taken from https://github.com/datagov-cz/assembly-line-shared but using a different config processing mechanism
 
@@ -56,3 +57,7 @@ export const getOidcIdentityStorageKey = () => {
   const oidcConfig = getOidcConfig();
   return `oidc.user:${oidcConfig.authority}:${oidcConfig.client_id}`;
 };
+
+export function useOidcAuth() {
+  return getEnv(ConfigParam.AUTH_TYPE, "") === "oidc";
+}

@@ -13,6 +13,8 @@ import { logout } from "../../action/ComplexActions";
 import "./UserDropdown.scss";
 import { useI18n } from "../hook/useI18n";
 import { ThunkDispatch } from "../../util/Types";
+import { useContext } from "react";
+import { AuthContext } from "./oidc/OidcAuthWrapper";
 
 interface UserDropdownProps {
   dark: boolean;
@@ -29,7 +31,13 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
   const { i18n } = useI18n();
   const user = useSelector((state: TermItState) => state.user);
   const dispatch: ThunkDispatch = useDispatch();
-  const onLogout = () => dispatch(logout());
+  const context = useContext(AuthContext);
+  const onLogout = () => {
+    if (context && context.logout) {
+      context.logout();
+    }
+    dispatch(logout());
+  };
   return (
     <UncontrolledDropdown nav={true}>
       <DropdownToggle
