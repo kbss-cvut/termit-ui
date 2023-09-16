@@ -22,6 +22,7 @@ import PanelWithActions from "../../misc/PanelWithActions";
 import { useI18n } from "../../hook/useI18n";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
+import IfInternalAuth from "../../misc/oidc/IfInternalAuth";
 
 const Users: React.FC = () => {
   const { i18n } = useI18n();
@@ -61,15 +62,17 @@ const Users: React.FC = () => {
         id="users"
         title={i18n("administration.users")}
         actions={
-          <Link
-            id="administration-users-create"
-            to={Routes.createNewUser.path}
-            title={i18n("administration.users.create.tooltip")}
-            className="btn btn-primary btn-sm users-action-button"
-          >
-            <GoPlus />
-            &nbsp;{i18n("administration.users.create")}
-          </Link>
+          <IfInternalAuth>
+            <Link
+              id="administration-users-create"
+              to={Routes.createNewUser.path}
+              title={i18n("administration.users.create.tooltip")}
+              className="btn btn-primary btn-sm users-action-button"
+            >
+              <GoPlus />
+              &nbsp;{i18n("administration.users.create")}
+            </Link>
+          </IfInternalAuth>
         }
       >
         <PromiseTrackingMask area="users" />

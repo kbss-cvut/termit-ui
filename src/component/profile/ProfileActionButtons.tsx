@@ -9,6 +9,8 @@ interface ProfileActionButtonsProps {
   navigateToChangePasswordRoute: () => void;
 }
 
+// TODO Prevent edit when using OIDC authentication
+
 export const ProfileActionButtons: React.FC<ProfileActionButtonsProps> = ({
   edit,
   showProfileEdit,

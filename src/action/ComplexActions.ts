@@ -1,9 +1,9 @@
 import SecurityUtils from "../util/SecurityUtils";
 import Routes from "../util/Routes";
 import Routing from "../util/Routing";
-import keycloak from "../util/Keycloak";
 import { logout as asyncLogout } from "./AsyncUserActions";
 import { ThunkDispatch } from "../util/Types";
+import { isUsingOidcAuth } from "../util/OidcUtils";
 
 /*
  * Complex actions are basically just nice names for actions which involve both synchronous and asynchronous actions.
@@ -13,14 +13,11 @@ import { ThunkDispatch } from "../util/Types";
 
 export function logout() {
   return (dispatch: ThunkDispatch) => {
-    if (process.env.REACT_APP_AUTHENTICATION === "keycloak") {
-      keycloak.logout({
-        redirectUri: Routing.buildFullUrl(Routes.publicDashboard),
-      });
-    } else {
+    const externalAuth = isUsingOidcAuth();
+    if (!externalAuth) {
       dispatch(asyncLogout());
     }
     SecurityUtils.clearToken();
-    Routing.transitionTo(Routes.login);
+    Routing.transitionTo(externalAuth ? Routes.publicDashboard : Routes.login);
   };
 }

@@ -17,6 +17,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import { Card, CardBody } from "reactstrap";
 import WindowTitle from "../misc/WindowTitle";
 import UserRoles from "../administration/user/UserRoles";
+import IfInternalAuth from "../misc/oidc/IfInternalAuth";
 
 interface ProfileProps extends HasI18n {
   user: User;
@@ -128,11 +129,13 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
 
   private renderActionButtons() {
     return (
-      <ProfileActionButtons
-        edit={this.state.edit}
-        showProfileEdit={this.showProfileEdit}
-        navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}
-      />
+      <IfInternalAuth>
+        <ProfileActionButtons
+          edit={this.state.edit}
+          showProfileEdit={this.showProfileEdit}
+          navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}
+        />
+      </IfInternalAuth>
     );
   }
 }

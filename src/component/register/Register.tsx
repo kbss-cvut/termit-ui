@@ -16,6 +16,7 @@ import RegistrationForm from "./RegistrationForm";
 import Constants from "../../util/Constants";
 import { Link } from "react-router-dom";
 import WindowTitle from "../misc/WindowTitle";
+import IfInternalAuth from "../misc/oidc/IfInternalAuth";
 
 interface RegisterProps extends HasI18n {
   loading: boolean;
@@ -34,35 +35,37 @@ export const Register: React.FC<RegisterProps> = (props) => {
   return (
     <PublicLayout title={props.i18n("register.title")}>
       <WindowTitle title={props.i18n("register.title")} />
-      <Card className="modal-panel">
-        <CardHeader className="border-bottom-0 pb-0 text-center">
-          <h1>{Constants.APP_NAME}</h1>
-          <div>{props.i18n("register.subtitle")}</div>
-        </CardHeader>
-        <CardBody>
-          <RegistrationForm
-            register={onRegister}
-            cancel={onCancel}
-            loading={props.loading}
-          />
-          <div className="text-center">
-            <FormattedMessage
-              id="register.login.label"
-              values={{
-                a: (chunks: any) => (
-                  <Link
-                    id="register-login"
-                    to={Routes.login.link()}
-                    className="bold"
-                  >
-                    {chunks}
-                  </Link>
-                ),
-              }}
+      <IfInternalAuth>
+        <Card className="modal-panel">
+          <CardHeader className="border-bottom-0 pb-0 text-center">
+            <h1>{Constants.APP_NAME}</h1>
+            <div>{props.i18n("register.subtitle")}</div>
+          </CardHeader>
+          <CardBody>
+            <RegistrationForm
+              register={onRegister}
+              cancel={onCancel}
+              loading={props.loading}
             />
-          </div>
-        </CardBody>
-      </Card>
+            <div className="text-center">
+              <FormattedMessage
+                id="register.login.label"
+                values={{
+                  a: (chunks: any) => (
+                    <Link
+                      id="register-login"
+                      to={Routes.login.link()}
+                      className="bold"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                }}
+              />
+            </div>
+          </CardBody>
+        </Card>
+      </IfInternalAuth>
     </PublicLayout>
   );
 };
