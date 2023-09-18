@@ -1,3 +1,8 @@
+#### Version 3.0.1
+
+- Fixed an issue with setting exact match terms.
+- Technical improvements inside TermIt.
+
 #### Version 3.0.0
 
 - Term draft status replaced with support for a set of state option.
