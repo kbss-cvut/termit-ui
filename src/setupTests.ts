@@ -27,3 +27,4 @@ enableHooks(jest, { dontMockByDefault: true });
 process.env.REACT_APP_VERSION = "0.0.1";
 process.env.REACT_APP_SERVER_URL = "http://localhost:8080/termit";
 process.env.REACT_APP_DEPLOYMENT_NAME = "";
+process.env.REACT_APP_AUTHENTICATION = "";

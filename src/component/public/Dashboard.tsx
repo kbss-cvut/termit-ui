@@ -7,6 +7,8 @@ import Constants, { getEnv } from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
 import { useI18n } from "../hook/useI18n";
 import ConfigParam from "../../util/ConfigParam";
+import { PUBLIC_LOGIN_ROUTE } from "../../util/Routing";
+import IfInternalAuth from "../misc/oidc/IfInternalAuth";
 
 const Dashboard: React.FC = () => {
   const { i18n } = useI18n();
@@ -18,17 +20,19 @@ const Dashboard: React.FC = () => {
         <p className="lead">{i18n("public.dashboard.intro")}</p>
         <hr className="my-2" />
         <ButtonToolbar>
-          <Link to={Routes.login.path}>
+          <Link to={PUBLIC_LOGIN_ROUTE.path}>
             <Button size="lg">{i18n("public.dashboard.actions.login")}</Button>
           </Link>
-          {getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") !==
-            true.toString() && (
-            <Link to={Routes.register.path} className="ml-3">
-              <Button size="lg">
-                {i18n("public.dashboard.actions.register")}
-              </Button>
-            </Link>
-          )}
+          <IfInternalAuth>
+            {getEnv(ConfigParam.ADMIN_REGISTRATION_ONLY, "") !==
+              true.toString() && (
+              <Link to={Routes.register.path} className="ml-3">
+                <Button size="lg">
+                  {i18n("public.dashboard.actions.register")}
+                </Button>
+              </Link>
+            )}
+          </IfInternalAuth>
           <Link to={Routes.publicVocabularies.path} className="ml-3">
             <Button size="lg">
               {i18n("public.dashboard.actions.vocabularies")}

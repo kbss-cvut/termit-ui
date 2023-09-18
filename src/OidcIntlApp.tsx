@@ -1,14 +1,13 @@
 import * as React from "react";
 import { IntlProvider } from "react-intl";
-import { Route, Router, Switch } from "react-router-dom";
+import { Router, Switch } from "react-router-dom";
 import Routing from "./util/Routing";
 import Routes from "./util/Routes";
-import Login from "./component/login/Login";
-import Register from "./component/register/Register";
 import { useSelector } from "react-redux";
 import TermItState from "./model/TermItState";
 import BreadcrumbRoute from "./component/breadcrumb/BreadcrumbRoute";
 import Mask from "./component/misc/Mask";
+import OidcAuthWrapper from "./component/misc/oidc/OidcAuthWrapper";
 
 const PublicMainView = React.lazy(() => import("./component/public/MainView"));
 const MainView = React.lazy(() => import("./component/MainView"));
@@ -20,8 +19,6 @@ const IntlWrapper: React.FC = () => {
       <Router history={Routing.history}>
         <React.Suspense fallback={<Mask />}>
           <Switch>
-            <Route path={Routes.login.path} component={Login} />
-            <Route path={Routes.register.path} component={Register} />
             <BreadcrumbRoute
               path={Routes.publicDashboard.path}
               title={intl.messages["main.nav.dashboard"]}
@@ -29,7 +26,7 @@ const IntlWrapper: React.FC = () => {
             />
             <BreadcrumbRoute
               title={intl.messages["main.nav.dashboard"]}
-              component={MainView}
+              component={OidcMainView}
             />
           </Switch>
         </React.Suspense>
@@ -37,5 +34,11 @@ const IntlWrapper: React.FC = () => {
     </IntlProvider>
   );
 };
+
+const OidcMainView = () => (
+  <OidcAuthWrapper>
+    <MainView />
+  </OidcAuthWrapper>
+);
 
 export default IntlWrapper;

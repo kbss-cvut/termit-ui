@@ -518,13 +518,13 @@ export function genericLoadTerms(
   const action = { type };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
-    let url = `${getApiPrefix(getState())}${prefix}/terms/`;
+    let url = `${getApiPrefix(getState())}${prefix}/terms`;
     if (fetchOptions.optionID) {
       const parentIri = VocabularyUtils.create(fetchOptions.optionID);
       url = `${getApiPrefix(getState())}/terms/${parentIri.fragment}/subterms`;
       target.namespace = parentIri.namespace;
     } else if (!fetchOptions.searchString) {
-      url += "roots";
+      url += "/roots";
     }
     return Ajax.get(
       url,

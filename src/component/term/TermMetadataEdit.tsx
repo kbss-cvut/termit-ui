@@ -12,7 +12,7 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import Term, { CONTEXT, TermData, TermInfo } from "../../model/Term";
+import Term, { CONTEXT, TermData } from "../../model/Term";
 import CustomInput from "../misc/CustomInput";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermTypesEdit from "./TermTypesEdit";
@@ -170,7 +170,7 @@ export class TermMetadataEdit extends React.Component<
 
   public onExactMatchesChange = (exactMatchTerms: Term[]) => {
     this.setState({
-      exactMatchTerms: exactMatchTerms.map((e) => e as TermInfo),
+      exactMatchTerms: exactMatchTerms.map((e) => Term.toTermInfo(e)),
     });
   };
 

@@ -1,3 +1,8 @@
+#### Verze 3.0.1
+
+- Opraven problém s nastavováním pojmů se stejným významem.
+- Technické úpravy uvnitř aplikace.
+
 #### Verze 3.0.0
 
 - Draft status pojmu nahrazen podporou pro množinu stavů.
