@@ -178,6 +178,8 @@ const cs = {
       'Uživatel "{name}" úspěšně vytvořen.',
     "administration.users.you": "Toto je Váš účet",
     "administration.users.types.admin": "Tento uživatel je administrátor",
+    "administration.users.oidc":
+      "Pro správu uživatelů je využívána externí autentizační služba.",
     "administration.maintenance.title": "Správa systému",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":

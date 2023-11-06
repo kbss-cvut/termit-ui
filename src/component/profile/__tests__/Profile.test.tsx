@@ -8,6 +8,8 @@ import Generator from "../../../__tests__/environment/Generator";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import ProfileEditForm from "../ProfileEditForm";
 import HeaderWithActions from "../../misc/HeaderWithActions";
+import * as OidcUtils from "../../../util/OidcUtils";
+import * as Constats from "../../../util/Constants";
 
 describe("Profile", () => {
   let updateProfile: (user: User) => Promise<AsyncAction>;
@@ -46,5 +48,23 @@ describe("Profile", () => {
 
     expect(actionButtons.length).toEqual(1);
     expect(wrapper.find(ProfileEditForm).length).toEqual(1);
+  });
+
+  it("does not render edit buttons when using OIDC authentication", () => {
+    jest.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
+    const wrapper = mountWithIntl(
+      <Profile updateProfile={updateProfile} user={user} {...intlFunctions()} />
+    );
+    expect(wrapper.exists(ProfileActionButtons)).toBeFalsy();
+  });
+
+  it("renders link to user profile in auth service when using OIDC authentication", () => {
+    const link = "http://localhost/services/auth/profile";
+    jest.spyOn(Constats, "getEnv").mockReturnValue(link);
+    jest.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
+    const wrapper = mountWithIntl(
+      <Profile updateProfile={updateProfile} user={user} {...intlFunctions()} />
+    );
+    expect(wrapper.exists("#oidc-notice")).toBeTruthy();
   });
 });

@@ -6,6 +6,8 @@ import * as UserActions from "../../../../action/AsyncUserActions";
 import UsersTable from "../UsersTable";
 import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import * as Redux from "react-redux";
+import * as OidcUtils from "../../../../util/OidcUtils";
+import * as Constats from "../../../../util/Constants";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -59,6 +61,22 @@ describe("Users", () => {
       expect(UserActions.enableUser).toHaveBeenCalledWith(users[0]);
       expect(UserActions.loadUsers).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it("renders users table read only when using OIDC authentication", () => {
+    jest.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
+    jest.spyOn(UserActions, "loadUsers");
+    const wrapper = render();
+    expect(wrapper.find(UsersTable).prop("readOnly")).toBeTruthy();
+  });
+
+  it("renders link to auth service administration when using OIDC authentication", () => {
+    const link = "http://localhost/services/auth";
+    jest.spyOn(Constats, "getEnv").mockReturnValue(link);
+    jest.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
+    jest.spyOn(UserActions, "loadUsers");
+    const wrapper = render();
+    expect(wrapper.exists("#oidc-notice")).toBeTruthy();
   });
 
   describe("user unlocking", () => {
