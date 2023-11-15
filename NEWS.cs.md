@@ -1,3 +1,8 @@
+#### Verze 3.0.2
+
+- Přidána podpora pro nasazení s externí autorizační službou.
+- Přidána možnost specifikovat soubor s taxonomií stavů/typů pojmů.
+
 #### Verze 3.0.1
 
 - Opraven problém s nastavováním pojmů se stejným významem.

@@ -1,4 +1,9 @@
-import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios";
+import axios, {
+  AxiosHeaders,
+  AxiosInstance,
+  AxiosRequestConfig,
+  ResponseType,
+} from "axios";
 import Routing from "./Routing";
 import Constants, { getEnv } from "./Constants";
 import Routes from "./Routes";
@@ -189,18 +194,17 @@ export class Ajax {
   constructor() {
     this.axiosInstance.interceptors.request.use((reqConfig) => {
       if (!reqConfig.headers) {
-        reqConfig.headers = {};
+        reqConfig.headers = new AxiosHeaders();
       }
-      reqConfig.headers[Constants.Headers.AUTHORIZATION] =
-        SecurityUtils.loadToken();
+      reqConfig.headers.setAuthorization(SecurityUtils.loadToken());
       reqConfig.withCredentials = true;
       return reqConfig;
     });
     this.axiosInstance.interceptors.response.use(
       (resp) => {
-        if (resp.headers && resp.headers[Constants.Headers.AUTHORIZATION]) {
+        if (resp.headers && (resp.headers as AxiosHeaders).hasAuthorization()) {
           SecurityUtils.saveToken(
-            resp.headers[Constants.Headers.AUTHORIZATION]
+            (resp.headers as AxiosHeaders).getAuthorization() as any
           );
         }
         return resp;

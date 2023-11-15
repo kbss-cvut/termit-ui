@@ -20,10 +20,12 @@ import classNames from "classnames";
 interface UsersTableProps extends UserActions {
   users: User[];
   currentUser: User;
+  readOnly?: boolean;
 }
 
 const UsersTable: React.FC<UsersTableProps> = (props) => {
-  const { users, currentUser, disable, enable, unlock, changeRole } = props;
+  const { users, currentUser, disable, enable, unlock, changeRole, readOnly } =
+    props;
   const { i18n } = useI18n();
   const data = React.useMemo(() => users, [users]);
   const columns: Column<User>[] = React.useMemo(
@@ -77,20 +79,21 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
         disableFilters: true,
         disableSortBy: true,
         // @ts-ignore
-        Cell: ({ row }) => (
-          <UserActionsButtons
-            user={row.original}
-            currentUser={currentUser}
-            disable={disable}
-            enable={enable}
-            unlock={unlock}
-            changeRole={changeRole}
-          />
-        ),
+        Cell: ({ row }) =>
+          !readOnly && (
+            <UserActionsButtons
+              user={row.original}
+              currentUser={currentUser}
+              disable={disable}
+              enable={enable}
+              unlock={unlock}
+              changeRole={changeRole}
+            />
+          ),
         className: "align-middle table-row-actions",
       },
     ],
-    [i18n, disable, enable, unlock, changeRole, currentUser]
+    [i18n, disable, enable, unlock, changeRole, currentUser, readOnly]
   );
   const filterTypes = React.useMemo(() => ({ text: textContainsFilter }), []);
   const tableInstance = useTable<User>(
