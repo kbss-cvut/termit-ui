@@ -1,3 +1,8 @@
+#### Version 3.0.2
+
+- Added support for running with an external authentication service.
+- Added support for providing files with custom term states/types taxonomies.
+
 #### Version 3.0.1
 
 - Fixed an issue with setting exact match terms.
