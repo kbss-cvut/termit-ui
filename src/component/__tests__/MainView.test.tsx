@@ -12,6 +12,10 @@ import Generator from "../../__tests__/environment/Generator";
 import Constants from "../../util/Constants";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
 
+jest.mock("../dashboard/widget/TermFrequencyWidget", () => () => (
+  <div>Term frequency</div>
+));
+
 describe("MainView", () => {
   let loadUser: () => Promise<any>;
   let logout: () => void;
