@@ -1,6 +1,7 @@
 import Constants from "./Constants";
 import IntlData from "../model/IntlData";
 import BrowserStorage from "./BrowserStorage";
+import Utils from "./Utils";
 
 export function loadInitialLocalizationData(): IntlData {
   const prefLang = BrowserStorage.get(Constants.STORAGE_LANG_KEY);
@@ -41,4 +42,43 @@ export function getShortLocale(language: string): string {
   } else {
     return language;
   }
+}
+
+/**
+ * Resolves unique languages in which the specified object has a value.
+ *
+ * The languages are resolved from the specified attributes.
+ * @param multilingualAttributes Attributes to check
+ * @param object Object to examine
+ */
+export function getLanguages(multilingualAttributes: string[], object: any) {
+  const languages: Set<string> = new Set();
+  multilingualAttributes
+    .filter((att) => object[att])
+    .forEach((att) => {
+      Utils.sanitizeArray(object[att]).forEach((attValue) =>
+        Object.getOwnPropertyNames(attValue).forEach((n) => languages.add(n))
+      );
+    });
+  const langArr = Array.from(languages);
+  langArr.sort();
+  return langArr;
+}
+
+/**
+ * Removes attribute values in the specified language.
+ * @param multilingualAttributes Attributes whose values will be affected
+ * @param object Object to process
+ * @param language Language whose values to remove
+ */
+export function removeTranslation(
+  multilingualAttributes: string[],
+  object: any,
+  language: string
+) {
+  multilingualAttributes.forEach((att) => {
+    if (object[att]) {
+      delete object[att][language];
+    }
+  });
 }

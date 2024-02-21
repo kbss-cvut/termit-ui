@@ -19,6 +19,7 @@ import MultilingualString, {
   PluralMultilingualString,
 } from "./MultilingualString";
 import { SupportsSnapshots } from "./Snapshot";
+import { getLanguages, removeTranslation } from "../util/IntlUtil";
 
 const ctx = {
   label: context(VocabularyUtils.SKOS_PREF_LABEL),
@@ -295,23 +296,11 @@ export default class Term
    * @param lang Language to remove
    */
   public static removeTranslation(data: TermData, lang: string) {
-    TERM_MULTILINGUAL_ATTRIBUTES.forEach((att) => {
-      if (data[att]) {
-        delete data[att][lang];
-      }
-    });
+    removeTranslation(TERM_MULTILINGUAL_ATTRIBUTES, data, lang);
   }
 
   public static getLanguages(term: Term | TermData): string[] {
-    const languages: Set<string> = new Set();
-    TERM_MULTILINGUAL_ATTRIBUTES.filter((att) => term[att]).forEach((att) => {
-      Utils.sanitizeArray(term[att]).forEach((attValue) =>
-        Object.getOwnPropertyNames(attValue).forEach((n) => languages.add(n))
-      );
-    });
-    const langArr = Array.from(languages);
-    langArr.sort();
-    return langArr;
+    return getLanguages(TERM_MULTILINGUAL_ATTRIBUTES, term);
   }
 
   public static consolidateRelatedAndRelatedMatch(
