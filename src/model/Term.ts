@@ -299,7 +299,7 @@ export default class Term
     removeTranslation(TERM_MULTILINGUAL_ATTRIBUTES, data, lang);
   }
 
-  public static getLanguages(term: Term | TermData): string[] {
+  public static getLanguages(term?: Term | TermData | null): string[] {
     return getLanguages(TERM_MULTILINGUAL_ATTRIBUTES, term);
   }
 

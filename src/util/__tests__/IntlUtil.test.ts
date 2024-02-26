@@ -67,6 +67,19 @@ describe("IntlUtil", () => {
       const result = getLanguages(VOCABULARY_MULTILINGUAL_ATTRIBUTES, voc);
       expect(result).toEqual(["cs", "de", "en"]);
     });
+
+    it("resolves unique languages from plural attribute", () => {
+      const term = Generator.generateTerm();
+      term.label.cs = "Český název";
+      term.altLabels = {
+        en: ["Alt one", "Alt two"],
+        cs: ["Alt jedna", "Alt dvě"],
+        de: ["Alt eins", "Alt zwei"],
+        es: ["Alt un", "Alt dos"],
+      };
+      const result = getLanguages(TERM_MULTILINGUAL_ATTRIBUTES, term);
+      expect(result).toEqual(["cs", "de", "en", "es"]);
+    });
   });
 
   describe("removeTranslation", () => {

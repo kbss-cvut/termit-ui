@@ -46,6 +46,8 @@ import Document, { DocumentData } from "../../model/Document";
 import NothingIfEmptyAsset from "../asset/NothingIfEmptyAsset";
 import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
+import { getShortLocale } from "../../util/IntlUtil";
+import { getLocalized } from "../../model/MultilingualString";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -65,6 +67,17 @@ export interface VocabularySummaryState extends EditableComponentState {
   selectDocumentDialogOpen: boolean;
   showExportDialog: boolean;
   showSnapshotDialog: boolean;
+  language: string;
+}
+
+export function resolveInitialLanguage(
+  vocabulary: Vocabulary | null,
+  locale: string,
+  configuredLanguage: string
+) {
+  const supported = vocabulary ? Vocabulary.getLanguages(vocabulary) : [];
+  const langLocale = getShortLocale(locale);
+  return supported.indexOf(langLocale) !== -1 ? langLocale : configuredLanguage;
 }
 
 export class VocabularySummary extends EditableComponent<
@@ -79,6 +92,11 @@ export class VocabularySummary extends EditableComponent<
       showExportDialog: false,
       showSnapshotDialog: false,
       selectDocumentDialogOpen: false,
+      language: resolveInitialLanguage(
+        props.vocabulary,
+        props.locale,
+        props.configuration.language
+      ),
     };
   }
 
@@ -87,11 +105,19 @@ export class VocabularySummary extends EditableComponent<
   }
 
   public componentDidUpdate(prevProps: Readonly<VocabularySummaryProps>): void {
-    if (this.props.vocabulary !== EMPTY_VOCABULARY) {
+    const vocabulary = this.props.vocabulary;
+    if (vocabulary !== EMPTY_VOCABULARY) {
       this.loadVocabulary();
     }
-    if (prevProps.vocabulary.iri !== this.props.vocabulary.iri) {
+    if (prevProps.vocabulary.iri !== vocabulary.iri) {
       this.onCloseEdit();
+      this.setState({
+        language: resolveInitialLanguage(
+          vocabulary,
+          this.props.locale,
+          this.props.configuration.language
+        ),
+      });
     }
   }
 
@@ -108,6 +134,10 @@ export class VocabularySummary extends EditableComponent<
     ) {
       trackPromise(this.props.loadVocabulary(iriFromUrl), "vocabulary-summary");
     }
+  };
+
+  public setLanguage = (language: string) => {
+    this.setState({ language });
   };
 
   public onSave = (vocabulary: Vocabulary) => {
@@ -228,9 +258,10 @@ export class VocabularySummary extends EditableComponent<
       <NothingIfEmptyAsset asset={vocabulary}>
         <div id="vocabulary-detail">
           <WindowTitle
-            title={`${vocabulary.label} | ${i18n(
-              "vocabulary.management.vocabularies"
-            )}`}
+            title={`${getLocalized(
+              vocabulary.label,
+              this.state.language
+            )} | ${i18n("vocabulary.management.vocabularies")}`}
           />
           <HeaderWithActions title={this.renderTitle()} actions={buttons} />
           <RemoveAssetDialog
@@ -263,6 +294,8 @@ export class VocabularySummary extends EditableComponent<
               vocabulary={vocabulary}
               location={this.props.location}
               match={this.props.match}
+              language={this.state.language}
+              selectLanguage={this.setLanguage}
               onChange={this.loadVocabulary}
             />
           )}
@@ -277,7 +310,9 @@ export class VocabularySummary extends EditableComponent<
     return (
       <>
         <VocabularySnapshotIcon vocabulary={vocabulary} />
-        <span className={labelClass}>{vocabulary.label}</span>
+        <span className={labelClass}>
+          {getLocalized(vocabulary.label, this.state.language)}
+        </span>
         <SnapshotCreationInfo asset={vocabulary} />
         <CopyIriIcon url={vocabulary.iri} />
         <VocabularyReadOnlyIcon vocabulary={vocabulary} />

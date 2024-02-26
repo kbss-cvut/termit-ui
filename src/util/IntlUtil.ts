@@ -51,7 +51,13 @@ export function getShortLocale(language: string): string {
  * @param multilingualAttributes Attributes to check
  * @param object Object to examine
  */
-export function getLanguages(multilingualAttributes: string[], object: any) {
+export function getLanguages(
+  multilingualAttributes: string[],
+  object?: any | null
+) {
+  if (!object) {
+    return [];
+  }
   const languages: Set<string> = new Set();
   multilingualAttributes
     .filter((att) => object[att])

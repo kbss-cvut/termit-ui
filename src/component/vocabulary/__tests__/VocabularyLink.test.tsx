@@ -6,6 +6,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Generator from "../../../__tests__/environment/Generator";
 import TermItStore from "../../../store/TermItStore";
 import TermItState from "../../../model/TermItState";
+import { langString } from "../../../model/MultilingualString";
 
 describe("Vocabulary Link links to correct internal asset", () => {
   const namespace = "https://test.org/";
@@ -17,7 +18,7 @@ describe("Vocabulary Link links to correct internal asset", () => {
 
   const vocGen = (namespace: string) =>
     new Vocabulary({
-      label: "Test asset",
+      label: langString("Test asset"),
       iri: namespace + fragment,
     });
 

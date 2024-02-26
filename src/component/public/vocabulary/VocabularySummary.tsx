@@ -17,15 +17,23 @@ import MarkdownView from "../../misc/MarkdownView";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
+import {
+  getLocalized,
+  getLocalizedOrDefault,
+} from "../../../model/MultilingualString";
+import { resolveInitialLanguage } from "../../vocabulary/VocabularySummary";
 
 export const VocabularySummary: React.FC = () => {
-  const { i18n } = useI18n();
+  const { i18n, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const location = useLocation();
   const match = useRouteMatch<{ name: string }>();
   const vocabulary = useSelector((state: TermItState) => state.vocabulary);
   const configuration = useSelector(
     (state: TermItState) => state.configuration
+  );
+  const [language, setLanguage] = React.useState(
+    resolveInitialLanguage(vocabulary, locale, configuration.language)
   );
 
   React.useEffect(() => {
@@ -48,11 +56,16 @@ export const VocabularySummary: React.FC = () => {
       );
     }
   }, [vocabulary, configuration, location, match, dispatch]);
+  React.useEffect(() => {
+    setLanguage(
+      resolveInitialLanguage(vocabulary, locale, configuration.language)
+    );
+  }, [vocabulary, locale, configuration, setLanguage]);
 
   return (
     <div id="public-vocabulary-detail">
       <WindowTitle
-        title={`${vocabulary.label} | ${i18n(
+        title={`${getLocalized(vocabulary.label, language)} | ${i18n(
           "vocabulary.management.vocabularies"
         )}`}
       />
@@ -61,7 +74,7 @@ export const VocabularySummary: React.FC = () => {
         id="public-vocabulary-summary"
         title={
           <>
-            {vocabulary.label}
+            {getLocalized(vocabulary.label, language)}
             <CopyIriIcon url={vocabulary.iri as string} />
           </>
         }
@@ -76,7 +89,7 @@ export const VocabularySummary: React.FC = () => {
             </Col>
             <Col xl={10} md={8}>
               <MarkdownView id="vocabulary-metadata-comment">
-                {vocabulary.comment}
+                {getLocalizedOrDefault(vocabulary.comment, "", language)}
               </MarkdownView>
             </Col>
           </Row>

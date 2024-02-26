@@ -150,7 +150,7 @@ export default class Vocabulary
     removeTranslation(VOCABULARY_MULTILINGUAL_ATTRIBUTES, data, lang);
   }
 
-  public static getLanguages(vocabulary: VocabularyData): string[] {
+  public static getLanguages(vocabulary?: VocabularyData | null): string[] {
     return getLanguages(VOCABULARY_MULTILINGUAL_ATTRIBUTES, vocabulary);
   }
 }
