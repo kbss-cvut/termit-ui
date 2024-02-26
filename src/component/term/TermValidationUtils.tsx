@@ -2,7 +2,7 @@ import Ajax, { params } from "../../util/Ajax";
 import Constants from "../../util/Constants";
 import { IRI } from "../../util/VocabularyUtils";
 import { TermData } from "../../model/Term";
-import { getLocalized } from "../../model/MultilingualString";
+import { hasNonBlankValue } from "../../model/MultilingualString";
 
 export function checkLabelUniqueness(
   vocabularyIri: IRI,
@@ -50,8 +50,7 @@ export function isTermValid<T extends TermData>(
 }
 
 export function isLabelValid<T extends TermData>(data: T, language: string) {
-  const localizedLabel = getLocalized(data.label, language);
-  return localizedLabel !== undefined && localizedLabel.trim().length > 0;
+  return hasNonBlankValue(data.label, language);
 }
 
 export type LabelExists = { [language: string]: boolean };

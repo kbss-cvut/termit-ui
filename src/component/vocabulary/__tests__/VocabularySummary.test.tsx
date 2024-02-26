@@ -100,6 +100,7 @@ describe("VocabularySummary", () => {
         loadVocabulary={onLoad}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         {...exportFunctions}
         validateVocabulary={validateVocabulary}
         match={match}

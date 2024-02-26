@@ -288,6 +288,8 @@ export class VocabularySummary extends EditableComponent<
               saveDocument={this.onDocumentSave}
               cancel={this.onCloseEdit}
               vocabulary={vocabulary}
+              language={this.state.language}
+              selectLanguage={this.setLanguage}
             />
           ) : (
             <VocabularyMetadata

@@ -62,7 +62,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
   return (
     <div>
       <Nav
-        id="term-edit-language-selector"
+        id="edit-language-selector"
         tabs={true}
         className="language-selector-nav"
       >
