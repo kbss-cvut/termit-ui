@@ -30,7 +30,7 @@ const VocabularyFacet: React.FC<VocabularyFacetProps> = ({
         value: vocabularies[v].iri,
         label: getLocalized(vocabularies[v].label, getShortLocale(locale)),
       })),
-    [vocabularies]
+    [vocabularies, locale]
   );
 
   return (
