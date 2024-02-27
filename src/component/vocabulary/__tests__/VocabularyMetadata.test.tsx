@@ -7,11 +7,13 @@ import { shallow } from "enzyme";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Location } from "history";
 import { match as Match } from "react-router";
+import { langString } from "../../../model/MultilingualString";
+import Constants from "../../../util/Constants";
 
 describe("VocabularyMetadata", () => {
   const normalizedVocabularyName = "test-vocabulary";
 
-  let onFileAdded: () => void;
+  let onChange: () => void;
   let resetSelectedTerm: () => void;
 
   let vocabulary: Vocabulary;
@@ -20,11 +22,11 @@ describe("VocabularyMetadata", () => {
   let match: Match<any>;
 
   beforeEach(() => {
-    onFileAdded = jest.fn();
+    onChange = jest.fn();
     resetSelectedTerm = jest.fn();
     vocabulary = vocabulary = new Vocabulary({
       iri: Generator.generateUri(),
-      label: "Test vocabulary",
+      label: langString("Test vocabulary"),
       types: [VocabularyUtils.VOCABULARY],
     });
 
@@ -57,7 +59,9 @@ describe("VocabularyMetadata", () => {
         vocabulary={vocabulary}
         location={location}
         match={match}
-        onFileAdded={onFileAdded}
+        language={Constants.DEFAULT_LANGUAGE}
+        selectLanguage={jest.fn()}
+        onChange={onChange}
         {...intlFunctions()}
       />
     );
@@ -77,7 +81,9 @@ describe("VocabularyMetadata", () => {
         vocabulary={vocabulary}
         location={location}
         match={match}
-        onFileAdded={onFileAdded}
+        language={Constants.DEFAULT_LANGUAGE}
+        selectLanguage={jest.fn()}
+        onChange={onChange}
         {...intlFunctions()}
       />
     );

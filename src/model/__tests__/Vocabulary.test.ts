@@ -3,6 +3,7 @@ import Document from "../Document";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 import AccessLevel from "../acl/AccessLevel";
+import { langString } from "../MultilingualString";
 
 describe("Vocabulary", () => {
   let data: VocabularyData;
@@ -10,7 +11,7 @@ describe("Vocabulary", () => {
   beforeEach(() => {
     data = {
       iri: "http://data.iprpraha.cz/zdroj/slovnik/test-vocabulary/vocabularies/metropolitan-plan",
-      label: "Metropolitan plan",
+      label: langString("Metropolitan plan"),
     };
   });
 
@@ -38,7 +39,7 @@ describe("Vocabulary", () => {
     it("initializes document when document data are available", () => {
       const vocData: VocabularyData = {
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         types: [VocabularyUtils.VOCABULARY],
         document: {
           iri: Generator.generateUri(),

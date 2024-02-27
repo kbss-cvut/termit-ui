@@ -12,6 +12,8 @@ import { loadVocabularies } from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 import { useI18n } from "../hook/useI18n";
 import { ThunkDispatch } from "../../util/Types";
+import { getLocalized } from "../../model/MultilingualString";
+import { getShortLocale } from "../../util/IntlUtil";
 
 interface VocabularySelectProps {
   id?: string;
@@ -29,7 +31,7 @@ const VocabularySelect: React.FC<VocabularySelectProps> = (props) => {
     }
   });
   const onChange = (vIri: string) => onVocabularySet(vocabularies[vIri]);
-  const { i18n } = useI18n();
+  const { i18n, locale } = useI18n();
 
   const items = Object.keys(vocabularies || []).map((vIri) => {
     return (
@@ -38,7 +40,7 @@ const VocabularySelect: React.FC<VocabularySelectProps> = (props) => {
         key={vIri}
         onClick={() => onChange(vIri)}
       >
-        {vocabularies[vIri].label}
+        {getLocalized(vocabularies[vIri].label, getShortLocale(locale))}
       </DropdownItem>
     );
   });
@@ -51,7 +53,9 @@ const VocabularySelect: React.FC<VocabularySelectProps> = (props) => {
       className="w-100"
     >
       <DropdownToggle caret={true} className="w-100">
-        {vocabulary ? vocabulary.label : i18n("vocabulary.select-vocabulary")}
+        {vocabulary
+          ? getLocalized(vocabulary.label, getShortLocale(locale))
+          : i18n("vocabulary.select-vocabulary")}
       </DropdownToggle>
       <DropdownMenu
         modifiers={{

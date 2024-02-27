@@ -24,12 +24,12 @@ import {
   getLocalized,
   getLocalizedOrDefault,
   getLocalizedPlural,
+  hasNonBlankValue,
 } from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
-import * as _ from "lodash";
+import _ from "lodash";
 import {
   checkLabelUniqueness,
-  isLabelValid,
   isTermValid,
   LabelExists,
 } from "./TermValidationUtils";
@@ -86,10 +86,7 @@ export class TermMetadataEdit extends React.Component<
     );
   }
 
-  public componentDidUpdate(
-    prevProps: TermMetadataEditProps,
-    prevState: TermMetadataEditState
-  ): void {
+  public componentDidUpdate(prevProps: TermMetadataEditProps): void {
     if (this.props.language && prevProps.language !== this.props.language) {
       this.onPrefLabelChange(this.state.label[this.props.language] || "");
     }
@@ -249,7 +246,7 @@ export class TermMetadataEdit extends React.Component<
   private getPrefLabelValidation() {
     const results: ValidationResult[] = [];
     const language = this.props.language;
-    if (!isLabelValid(this.state, language)) {
+    if (!hasNonBlankValue(this.state.label, language)) {
       results.push(ValidationResult.BLOCKER);
     } else if (this.state.labelExist[language]) {
       results.push(
@@ -284,8 +281,8 @@ export class TermMetadataEdit extends React.Component<
       <>
         <EditLanguageSelector
           key="term-edit-language-selector"
-          term={this.state}
           language={language}
+          existingLanguages={Term.getLanguages(this.state)}
           onSelect={this.props.selectLanguage}
           onRemove={this.removeTranslation}
         />

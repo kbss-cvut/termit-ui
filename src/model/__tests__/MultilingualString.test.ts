@@ -2,6 +2,7 @@ import {
   getLocalized,
   getLocalizedOrDefault,
   getLocalizedPlural,
+  hasNonBlankValue,
   NO_LANG,
 } from "../MultilingualString";
 import Constants from "../../util/Constants";
@@ -96,6 +97,19 @@ describe("MultilingualString", () => {
     it("returns empty array when no matching value is present", () => {
       const value = { es: ["casa"] };
       expect(getLocalizedPlural(value)).toEqual([]);
+    });
+  });
+
+  describe("hasNonBlankValue", () => {
+    it.each([
+      { expected: true, value: { cs: "budova" } },
+      { expected: false, value: { en: "building" } },
+      {
+        expected: false,
+        value: { cs: "" },
+      },
+    ])("returns correct value", ({ expected, value }) => {
+      expect(hasNonBlankValue(value as any, "cs")).toEqual(expected);
     });
   });
 });

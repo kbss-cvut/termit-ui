@@ -72,7 +72,10 @@ export default class Generator {
   public static generateVocabulary(seed: Partial<VocabularyData> = {}) {
     return new Vocabulary(
       Object.assign(
-        this.generateAssetData("Vocabulary " + this.randomInt(0, 10000)),
+        {
+          iri: Generator.generateUri(),
+          label: langString("Vocabulary " + this.randomInt(0, 10000)),
+        },
         seed
       )
     );

@@ -135,4 +135,11 @@ export function getLocalizedOrDefault(
     : defaultValue;
 }
 
+export function hasNonBlankValue(
+  str?: MultilingualString,
+  lang: string = Constants.DEFAULT_LANGUAGE
+) {
+  return str && (str[getShortLocale(lang)] || "").trim().length > 0;
+}
+
 export default MultilingualString;

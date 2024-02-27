@@ -13,6 +13,8 @@ import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil";
 import TermItState from "../../../model/TermItState";
 import AccessLevel from "../../../model/acl/AccessLevel";
+import { langString } from "../../../model/MultilingualString";
+import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -79,7 +81,7 @@ describe("VocabularySummary", () => {
     state = new TermItState();
     vocabulary = new Vocabulary({
       iri: namespace + normalizedName,
-      label: "Test vocabulary",
+      label: langString("Test vocabulary"),
       accessLevel: AccessLevel.WRITE,
     });
     const user = Generator.generateUser();
@@ -98,6 +100,7 @@ describe("VocabularySummary", () => {
         loadVocabulary={onLoad}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         {...exportFunctions}
         validateVocabulary={validateVocabulary}
         match={match}
@@ -119,6 +122,7 @@ describe("VocabularySummary", () => {
         loadVocabulary={onLoad}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         {...exportFunctions}
         validateVocabulary={validateVocabulary}
         match={match}
@@ -139,6 +143,7 @@ describe("VocabularySummary", () => {
         loadVocabulary={onLoad}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         {...exportFunctions}
         validateVocabulary={validateVocabulary}
         match={match}
@@ -160,6 +165,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}
@@ -182,6 +188,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}
@@ -208,6 +215,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}
@@ -231,6 +239,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}
@@ -254,6 +263,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}
@@ -276,6 +286,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}
@@ -299,6 +310,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}
@@ -318,6 +330,7 @@ describe("VocabularySummary", () => {
         {...exportFunctions}
         history={history}
         location={location}
+        configuration={DEFAULT_CONFIGURATION}
         validateVocabulary={validateVocabulary}
         match={match}
         {...intlFunctions()}

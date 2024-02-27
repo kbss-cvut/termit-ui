@@ -20,11 +20,15 @@ import MarkdownView from "../misc/MarkdownView";
 import VocabularySnapshots from "./snapshot/VocabularySnapshots";
 import AccessControlList from "./acl/AccessControlList";
 import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
+import { getLocalizedOrDefault } from "../../model/MultilingualString";
+import LanguageSelector from "../multilingual/LanguageSelector";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
   onChange: () => void;
   resetSelectedTerm: () => void;
+  language: string;
+  selectLanguage: (lang: string) => void;
   location: Location;
   match: Match<any>;
 }
@@ -72,11 +76,16 @@ export class VocabularyMetadata extends React.Component<
   };
 
   public render() {
-    const i18n = this.props.i18n;
-    const vocabulary = this.props.vocabulary;
+    const { i18n, vocabulary, language, selectLanguage } = this.props;
 
     return (
       <>
+        <LanguageSelector
+          key="vocabulary-language-selector"
+          language={language}
+          languages={Vocabulary.getLanguages(vocabulary)}
+          onSelect={selectLanguage}
+        />
         <Card className="mb-3">
           <CardBody className="card-body-basic-info">
             <Row>
@@ -87,7 +96,11 @@ export class VocabularyMetadata extends React.Component<
               </Col>
               <Col xl={10} md={8}>
                 <MarkdownView id="vocabulary-metadata-comment">
-                  {vocabulary.comment}
+                  {getLocalizedOrDefault(
+                    vocabulary.comment,
+                    "",
+                    this.props.language
+                  )}
                 </MarkdownView>
               </Col>
             </Row>

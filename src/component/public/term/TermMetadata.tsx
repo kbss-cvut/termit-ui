@@ -23,8 +23,8 @@ const TermMetadata: React.FC<TermMetadataProps> = (props) => {
     <>
       <LanguageSelector
         key="term-language-selector"
-        term={term}
         language={language}
+        languages={Term.getLanguages(term)}
         onSelect={setLanguage}
       />
       <Row>
