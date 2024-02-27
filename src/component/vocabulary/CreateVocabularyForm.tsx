@@ -97,6 +97,12 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       }
     });
   };
+  const onLanguageSwitch = (lang: string) => {
+    if (iri.length > 0) {
+      setShouldGenerateIri(false);
+      selectLanguage(lang);
+    }
+  };
   const onSubmit = () => {
     const vocabulary = new Vocabulary({
       iri,
@@ -130,7 +136,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       <EditLanguageSelector
         language={language}
         existingLanguages={Vocabulary.getLanguages({ label, comment })}
-        onSelect={selectLanguage}
+        onSelect={onLanguageSwitch}
         onRemove={removeTranslation}
       />
       <Card id="create-vocabulary">

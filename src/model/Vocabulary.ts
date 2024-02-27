@@ -23,14 +23,17 @@ import {
 const ctx = {
   label: context(VocabularyUtils.DC_TITLE),
   comment: context(VocabularyUtils.DC_DESCRIPTION),
-  document: VocabularyUtils.DESCRIBES_DOCUMENT,
+  document: {
+    "@id": VocabularyUtils.DESCRIBES_DOCUMENT,
+    "@context": DOCUMENT_CONTEXT,
+  },
   glossary: VocabularyUtils.HAS_GLOSSARY,
   model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
 };
 
-export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
+export const CONTEXT = Object.assign({}, ASSET_CONTEXT, ctx);
 
 const MAPPED_PROPERTIES = [
   "@context",
