@@ -31,7 +31,7 @@ function labelInEachLanguageValid<T extends TermData>(
 ): boolean {
   const languages = Object.keys(data.label);
   for (const lang of languages) {
-    if (!isLabelValid(data, lang) || labelExists[lang]) {
+    if (!hasNonBlankValue(data.label, lang) || labelExists[lang]) {
       return false;
     }
   }
@@ -48,9 +48,4 @@ export function isTermValid<T extends TermData>(
     labelInEachLanguageValid(data, labelExists)
   );
 }
-
-export function isLabelValid<T extends TermData>(data: T, language: string) {
-  return hasNonBlankValue(data.label, language);
-}
-
 export type LabelExists = { [language: string]: boolean };

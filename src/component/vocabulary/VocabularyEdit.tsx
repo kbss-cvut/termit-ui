@@ -21,11 +21,11 @@ import Constants from "../../util/Constants";
 import Document from "../../model/Document";
 import MultilingualString, {
   getLocalizedOrDefault,
-  hasNonBlankValue,
   langString,
 } from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
+import { isValid } from "./VocabularyValidationUtils";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -116,8 +116,8 @@ export class VocabularyEdit extends React.Component<
       <>
         <EditLanguageSelector
           key="vocabulary-edit-language-selector"
-          term={this.state}
           language={language}
+          existingLanguages={Vocabulary.getLanguages(this.state)}
           onSelect={this.props.selectLanguage}
           onRemove={this.removeTranslation}
         />
@@ -201,7 +201,7 @@ export class VocabularyEdit extends React.Component<
                       color="success"
                       size="sm"
                       disabled={
-                        !hasNonBlankValue(this.state.label, language) ||
+                        !isValid(this.state.label) ||
                         this.state.documentLabel?.trim().length === 0
                       }
                     >
