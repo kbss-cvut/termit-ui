@@ -217,6 +217,8 @@ const en = {
       "Start text analysis on definitions of terms in all vocabularies",
     "vocabulary.management.new": "New Vocabulary",
     "vocabulary.vocabularies.create.tooltip": "Create new vocabulary",
+    "vocabulary.vocabularies.import.tooltip":
+      "Create vocabulary by importing data",
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",

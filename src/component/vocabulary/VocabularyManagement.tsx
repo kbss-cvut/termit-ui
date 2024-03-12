@@ -15,6 +15,7 @@ import WindowTitle from "../misc/WindowTitle";
 import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
 import IfUserIsAdmin from "../authorization/IfUserIsAdmin";
+import { FaFileImport } from "react-icons/fa";
 
 interface VocabularyManagementProps {
   loadVocabularies: () => void;
@@ -40,6 +41,15 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
       >
         <GoPlus />
         &nbsp;{i18n("vocabulary.management.new")}
+      </Link>
+      <Link
+        id="vocabularies-import"
+        className="btn btn-primary btn-sm"
+        title={i18n("vocabulary.vocabularies.import.tooltip")}
+        to={Routes.importVocabulary.path}
+      >
+        <FaFileImport />
+        &nbsp;{i18n("main.nav.import-vocabulary")}
       </Link>
     </IfUserIsEditor>,
     <IfUserIsAdmin key="analyze-vocabularies">
