@@ -316,7 +316,7 @@ describe("Reducers", () => {
     it("sets vocabulary when it was successfully loaded", () => {
       const action = { type: ActionType.LOAD_VOCABULARY };
       const vocabularyData: VocabularyData = {
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
       };
       expect(
@@ -334,7 +334,7 @@ describe("Reducers", () => {
     it("sets transitive imports on vocabulary when they are loaded", () => {
       const imports = [Generator.generateUri(), Generator.generateUri()];
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
       });
       const vocabulary = reducers(
@@ -352,7 +352,7 @@ describe("Reducers", () => {
       // the vocabulary needs to be reloaded
       const action = { type: ActionType.REMOVE_RESOURCE };
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -367,7 +367,7 @@ describe("Reducers", () => {
       // the vocabulary needs to be reloaded
       const action = { type: ActionType.CREATE_RESOURCE };
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -379,7 +379,7 @@ describe("Reducers", () => {
 
     it("sets term count on vocabulary when it is loaded", () => {
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -399,7 +399,7 @@ describe("Reducers", () => {
 
     it("does not set term count on vocabulary when its identifier does not match action", () => {
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -420,7 +420,7 @@ describe("Reducers", () => {
     it("resets vocabulary to empty when vocabulary loading request is sent", () => {
       const action = { type: ActionType.LOAD_VOCABULARY };
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -986,6 +986,22 @@ describe("Reducers", () => {
       expect(result.terminalStates).toEqual([
         "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/zrušený-pojem",
       ]);
+    });
+  });
+
+  describe("vocabularies", () => {
+    it("are reset on successful SKOS import action", () => {
+      initialState.vocabularies = require("../../rest-mock/vocabularies.json");
+      expect(
+        reducers(
+          stateToPlainObject(initialState),
+          asyncActionSuccess({ type: ActionType.IMPORT_SKOS })
+        )
+      ).toEqual(
+        Object.assign({}, initialState, {
+          vocabularies: {},
+        })
+      );
     });
   });
 });
