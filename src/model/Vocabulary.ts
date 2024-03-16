@@ -11,19 +11,29 @@ import Constants from "../util/Constants";
 import { SupportsSnapshots } from "./Snapshot";
 import JsonLdUtils from "../util/JsonLdUtils";
 import AccessLevel, { strToAccessLevel } from "./acl/AccessLevel";
+import { getLanguages, removeTranslation } from "../util/IntlUtil";
+import {
+  context,
+  getLocalized,
+  langString,
+  MultilingualString,
+} from "./MultilingualString";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
-  label: VocabularyUtils.DC_TITLE,
-  comment: VocabularyUtils.DC_DESCRIPTION,
-  document: VocabularyUtils.DESCRIBES_DOCUMENT,
+  label: context(VocabularyUtils.DC_TITLE),
+  comment: context(VocabularyUtils.DC_DESCRIPTION),
+  document: {
+    "@id": VocabularyUtils.DESCRIBES_DOCUMENT,
+    "@context": DOCUMENT_CONTEXT,
+  },
   glossary: VocabularyUtils.HAS_GLOSSARY,
   model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
 };
 
-export const CONTEXT = Object.assign({}, ASSET_CONTEXT, DOCUMENT_CONTEXT, ctx);
+export const CONTEXT = Object.assign({}, ASSET_CONTEXT, ctx);
 
 const MAPPED_PROPERTIES = [
   "@context",
@@ -40,9 +50,11 @@ const MAPPED_PROPERTIES = [
   "accessLevel",
 ];
 
+export const VOCABULARY_MULTILINGUAL_ATTRIBUTES = ["label", "comment"];
+
 export interface VocabularyData extends AssetData {
-  label: string;
-  comment?: string;
+  label: MultilingualString;
+  comment?: MultilingualString;
   document?: DocumentData;
   glossary?: AssetData;
   model?: AssetData;
@@ -54,8 +66,8 @@ export default class Vocabulary
   extends Asset
   implements Editable, VocabularyData, SupportsSnapshots
 {
-  public label: string;
-  public comment?: string;
+  public label: MultilingualString;
+  public comment?: MultilingualString;
   public document?: Document;
   public glossary?: AssetData;
   public model?: AssetData;
@@ -81,8 +93,8 @@ export default class Vocabulary
       : undefined;
   }
 
-  getLabel(): string {
-    return this.label;
+  getLabel(lang?: string): string {
+    return getLocalized(this.label, lang);
   }
 
   public toJsonLd(): VocabularyData {
@@ -136,9 +148,17 @@ export default class Vocabulary
       MAPPED_PROPERTIES
     );
   }
+
+  public static removeTranslation(data: VocabularyData, lang: string) {
+    removeTranslation(VOCABULARY_MULTILINGUAL_ATTRIBUTES, data, lang);
+  }
+
+  public static getLanguages(vocabulary?: VocabularyData | null): string[] {
+    return getLanguages(VOCABULARY_MULTILINGUAL_ATTRIBUTES, vocabulary);
+  }
 }
 
 export const EMPTY_VOCABULARY = new Vocabulary({
   iri: Constants.EMPTY_ASSET_IRI,
-  label: "",
+  label: langString(""),
 });

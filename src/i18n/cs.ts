@@ -226,6 +226,7 @@ const cs = {
       "Spustit textovou analýzu definic všech termínů ve všech slovnících",
     "vocabulary.management.new": "Nový slovník",
     "vocabulary.vocabularies.create.tooltip": "Vytvořit nový slovník",
+    "vocabulary.vocabularies.import.tooltip": "Vytvořit slovník importem dat",
     "vocabulary.vocabularies.select.placeholder":
       "Začněte psát pro filtrování slovníků dle názvu",
     "vocabulary.title": "Název",

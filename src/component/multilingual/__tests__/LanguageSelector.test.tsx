@@ -1,6 +1,3 @@
-import Term from "../../../model/Term";
-import Generator from "../../../__tests__/environment/Generator";
-import VocabularyUtils from "../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import LanguageSelector, { renderLanguages } from "../LanguageSelector";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
@@ -16,40 +13,26 @@ describe("LanguageSelector", () => {
   });
 
   it("renders list of languages extracted from multilingual attributes of specified term", () => {
-    const term = new Term({
-      iri: Generator.generateUri(),
-      label: {
-        en: "Building",
-        cs: "Budova",
-        de: "Bauwerk, das",
-      },
-      types: [VocabularyUtils.TERM],
-    });
+    const languages = ["cs", "de", "en"];
     const result = mountWithIntl(
       <LanguageSelector
-        term={term}
         onSelect={onSelect}
         language={Constants.DEFAULT_LANGUAGE}
+        languages={languages}
         {...intlFunctions()}
       />
     );
     const items = result.find(NavItem);
-    expect(items.length).toEqual(Object.getOwnPropertyNames(term.label).length);
+    expect(items.length).toEqual(languages.length);
   });
 
   it("renders value in selected language as active nav item", () => {
-    const label = { cs: "Budova" };
-    label[Constants.DEFAULT_LANGUAGE] = "Building";
-    const term = new Term({
-      iri: Generator.generateUri(),
-      label,
-      types: [VocabularyUtils.TERM],
-    });
+    const languages = ["cs", Constants.DEFAULT_LANGUAGE];
     const result = mountWithIntl(
       <LanguageSelector
-        term={term}
         onSelect={onSelect}
         language={Constants.DEFAULT_LANGUAGE}
+        languages={languages}
         {...intlFunctions()}
       />
     );
@@ -60,52 +43,15 @@ describe("LanguageSelector", () => {
   });
 
   it("renders nothing when there are no alternative translations", () => {
-    const term = new Term({
-      iri: Generator.generateUri(),
-      label: {
-        en: "Building",
-      },
-      types: [VocabularyUtils.TERM],
-    });
     const result = mountWithIntl(
       <LanguageSelector
-        term={term}
         onSelect={onSelect}
         language={Constants.DEFAULT_LANGUAGE}
+        languages={[Constants.DEFAULT_LANGUAGE]}
         {...intlFunctions()}
       />
     );
     expect(result.exists("#term-language-selector")).toBeFalsy();
-  });
-
-  it("handles plural multilingual attributes when determining languages to show", () => {
-    const term = new Term({
-      iri: Generator.generateUri(),
-      label: {
-        en: "Building",
-      },
-      definition: {
-        en: "Building is a bunch of concrete with windows and doors.",
-      },
-      altLabels: { en: ["Construction"], cs: ["Stavba"] },
-      types: [VocabularyUtils.TERM],
-    });
-    const result = mountWithIntl(
-      <LanguageSelector
-        term={term}
-        onSelect={onSelect}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    const items = result.find(NavItem);
-    expect(items.length).toEqual(2);
-    const texts = items.map((i) => i.text());
-    ["cs", "en"].forEach((lang) =>
-      expect(
-        texts.find((t) => t.indexOf(ISO6391.getNativeName(lang)) !== -1)
-      ).toBeDefined()
-    );
   });
 
   describe("language removal", () => {

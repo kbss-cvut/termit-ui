@@ -13,7 +13,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
-import * as _ from "lodash";
+import _ from "lodash";
 import { isTermValid } from "./TermValidationUtils";
 
 interface TermMetadataCreateOwnProps {
@@ -96,9 +96,9 @@ export class TermMetadataCreate extends React.Component<
         <HeaderWithActions title={i18n("glossary.form.header")} />
         <EditLanguageSelector
           language={this.state.language}
+          existingLanguages={Term.getLanguages(this.state)}
           onSelect={this.setLanguage}
           onRemove={this.onRemoveTranslation}
-          term={this.state}
         />
         <Card id="create-term">
           <CardBody>
