@@ -1,3 +1,8 @@
+#### Version 3.0.3
+
+- Added support for multilingual vocabulary attributes.
+- Improved performance of repeated document annotation.
+
 #### Version 3.0.2
 
 - Added support for running with an external authentication service.

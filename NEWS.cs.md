@@ -1,3 +1,8 @@
+#### Verze 3.0.3
+
+- Přidána podpora pro vícejazyčné atributy slovníků.
+- Zlepšena rychlost opakované anotace dokumentů.
+
 #### Verze 3.0.2
 
 - Přidána podpora pro nasazení s externí autorizační službou.
