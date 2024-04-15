@@ -1,3 +1,7 @@
+#### Verze 3.0.4
+
+- Opravy chyb.
+
 #### Verze 3.0.3
 
 - Přidána podpora pro vícejazyčné atributy slovníků.

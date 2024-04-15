@@ -1,3 +1,7 @@
+#### Version 3.0.4
+
+- Minor bug fixes.
+
 #### Version 3.0.3
 
 - Added support for multilingual vocabulary attributes.
