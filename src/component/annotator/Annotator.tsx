@@ -17,7 +17,11 @@ import Message from "../../model/Message";
 import { publishMessage } from "../../action/SyncActions";
 import MessageType from "../../model/MessageType";
 import TermOccurrence, { TextQuoteSelector } from "../../model/TermOccurrence";
-import { setTermDefinitionSource } from "../../action/AsyncTermActions";
+import {
+  approveOccurrence,
+  removeOccurrence,
+  setTermDefinitionSource,
+} from "../../action/AsyncTermActions";
 import JsonLdUtils from "../../util/JsonLdUtils";
 import Utils from "../../util/Utils";
 import AnnotatorContent from "./AnnotatorContent";
@@ -38,6 +42,8 @@ import VocabularyLink from "../vocabulary/VocabularyLink";
 import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
+import { AssetData } from "../../model/Asset";
+import { annotationIdToTermOccurrenceIri } from "./AnnotatorUtil";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -48,13 +54,13 @@ interface AnnotatorProps extends HasI18n {
   file: File;
   vocabulary: Vocabulary;
 
-  onUpdate(newHtml: string): void;
+  onUpdate: (newHtml: string) => void;
 
-  publishMessage(message: Message): void;
-
-  setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
-
-  updateTerm(term: Term): Promise<any>;
+  publishMessage: (message: Message) => void;
+  setTermDefinitionSource: (src: TermOccurrence, term: Term) => Promise<any>;
+  updateTerm: (term: Term) => Promise<any>;
+  approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
+  removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
 }
 
 interface AnnotatorState {
@@ -190,6 +196,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       );
       if (ann) {
         AnnotationDomHelper.removeAnnotation(ann, dom);
+        this.removeOccurrence(id, ann);
         removed = true;
       }
     }
@@ -198,6 +205,16 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       this.updateInternalHtml(dom);
     }
   };
+
+  private removeOccurrence(annotationId: string, element: Element) {
+    if (element.attribs.typeof === AnnotationType.OCCURRENCE) {
+      const iri = annotationIdToTermOccurrenceIri(
+        annotationId,
+        this.props.fileIri
+      );
+      this.props.removeTermOccurrence({ iri });
+    }
+  }
 
   public onAnnotationTermSelected = (
     annotationSpan: AnnotationSpanProps,
@@ -220,12 +237,27 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       let shouldUpdate = true;
       if (term !== null) {
         shouldUpdate = this.createOccurrence(annotationSpan, term);
+        this.approveOccurrence(annotationSpan);
       }
       if (shouldUpdate) {
         this.updateInternalHtml(dom);
       }
     }
   };
+
+  private approveOccurrence(annotationSpan: AnnotationSpanProps) {
+    if (
+      annotationSpan.typeof !== AnnotationType.OCCURRENCE ||
+      !annotationSpan.score
+    ) {
+      return;
+    }
+    const iri = annotationIdToTermOccurrenceIri(
+      annotationSpan.about!,
+      this.props.fileIri
+    );
+    this.props.approveTermOccurrence({ iri });
+  }
 
   /**
    * Creates occurrence based on the specified annotation and term.
@@ -659,6 +691,10 @@ export default connect(
       setTermDefinitionSource: (src: TermOccurrence, term: Term) =>
         dispatch(setTermDefinitionSource(src, term)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
+      approveTermOccurrence: (occurrence: AssetData) =>
+        dispatch(approveOccurrence(occurrence)),
+      removeTermOccurrence: (occurrence: AssetData) =>
+        dispatch(removeOccurrence(occurrence)),
     };
   }
 )(injectIntl(withI18n(Annotator)));
