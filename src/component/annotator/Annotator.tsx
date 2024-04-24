@@ -207,7 +207,12 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
   };
 
   private removeOccurrence(annotationId: string, element: Element) {
-    if (element.attribs.typeof === AnnotationType.OCCURRENCE) {
+    if (
+      HtmlParserUtils.resolveIri(
+        element.attribs.typeof,
+        this.state.prefixMap
+      ) === AnnotationType.OCCURRENCE
+    ) {
       const iri = annotationIdToTermOccurrenceIri(
         annotationId,
         this.props.fileIri
@@ -692,9 +697,9 @@ export default connect(
         dispatch(setTermDefinitionSource(src, term)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
       approveTermOccurrence: (occurrence: AssetData) =>
-        dispatch(approveOccurrence(occurrence)),
+        dispatch(approveOccurrence(occurrence, true)),
       removeTermOccurrence: (occurrence: AssetData) =>
-        dispatch(removeOccurrence(occurrence)),
+        dispatch(removeOccurrence(occurrence, true)),
     };
   }
 )(injectIntl(withI18n(Annotator)));

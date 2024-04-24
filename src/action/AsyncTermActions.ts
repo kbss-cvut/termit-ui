@@ -226,7 +226,10 @@ export function removeTermDefinitionSource(term: Term) {
   };
 }
 
-export function removeOccurrence(occurrence: TermOccurrence | AssetData) {
+export function removeOccurrence(
+  occurrence: TermOccurrence | AssetData,
+  ignoreNotFound = false
+) {
   const action = {
     type: ActionType.REMOVE_TERM_OCCURRENCE,
   };
@@ -239,15 +242,27 @@ export function removeOccurrence(occurrence: TermOccurrence | AssetData) {
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
+        if (error.status !== 404 || !ignoreNotFound) {
+          dispatch(asyncActionFailure(action, error));
+          return dispatch(
+            SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+          );
+        } else {
+          return dispatch(asyncActionFailure(action, error));
+        }
       });
   };
 }
 
-export function approveOccurrence(occurrence: TermOccurrence | AssetData) {
+/**
+ * Approves the specified term occurrence.
+ * @param occurrence Occurrence to approve
+ * @param ignoreNotFound In case the annotations in the document have different identifiers than the stored term occurrences, not found exceptions may be thrown. This allows to not show errors in such cases
+ */
+export function approveOccurrence(
+  occurrence: TermOccurrence | AssetData,
+  ignoreNotFound = false
+) {
   const action = {
     type: ActionType.APPROVE_TERM_OCCURRENCE,
   };
@@ -260,10 +275,14 @@ export function approveOccurrence(occurrence: TermOccurrence | AssetData) {
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
+        if (error.status !== 404 || !ignoreNotFound) {
+          dispatch(asyncActionFailure(action, error));
+          return dispatch(
+            SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+          );
+        } else {
+          return dispatch(asyncActionFailure(action, error));
+        }
       });
   };
 }
