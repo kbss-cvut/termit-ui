@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Input } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
+import { getLocalized } from "../../../model/MultilingualString";
 
 interface TextBasedFilterProps {
   column: {
@@ -23,6 +24,24 @@ export function textContainsFilter(
           .indexOf(String(filterValue).toLowerCase()) !== -1
       : true;
   });
+}
+
+export function multilingualTextContainsFilterFactory(lang: string) {
+  return (rows: any[], id: string, filterValue?: string) => {
+    return rows.filter((row) => {
+      const rowValue = row.values[id];
+      if (rowValue === undefined) {
+        return true;
+      }
+      let toMatch = rowValue;
+      if (typeof rowValue === "object") {
+        toMatch = getLocalized(rowValue, lang);
+      }
+      return (
+        toMatch.toLowerCase().indexOf(String(filterValue).toLowerCase()) !== -1
+      );
+    });
+  };
 }
 
 const TextBasedFilter: React.FC<TextBasedFilterProps> = (props) => {
