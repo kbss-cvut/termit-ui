@@ -10,15 +10,16 @@ import {
   useTable,
 } from "react-table";
 import TextBasedFilter, {
-  textContainsFilter,
+  multilingualTextContainsFilterFactory,
 } from "../misc/table/TextBasedFilter";
 import VocabularyLink from "./VocabularyLink";
 import { useI18n } from "../hook/useI18n";
 import Table from "../misc/table/Table";
+import { getShortLocale } from "../../util/IntlUtil";
 
 export const VocabularyList: React.FC = () => {
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
-  const { i18n } = useI18n();
+  const { i18n, locale } = useI18n();
   const data = React.useMemo(
     () => Object.keys(vocabularies).map((v) => vocabularies[v]),
     [vocabularies]
@@ -35,7 +36,12 @@ export const VocabularyList: React.FC = () => {
     ],
     [i18n]
   );
-  const filterTypes = React.useMemo(() => ({ text: textContainsFilter }), []);
+  const filterTypes = React.useMemo(
+    () => ({
+      text: multilingualTextContainsFilterFactory(getShortLocale(locale)),
+    }),
+    [locale]
+  );
   const tableInstance = useTable<Vocabulary>(
     {
       columns,
