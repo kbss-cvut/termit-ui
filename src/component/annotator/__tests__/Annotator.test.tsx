@@ -51,6 +51,7 @@ describe("Annotator", () => {
     updateTerm(term: Term): Promise<any>;
     approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
     removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
+    saveTermOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   };
   let user: User;
   let file: File;
@@ -69,6 +70,7 @@ describe("Annotator", () => {
       updateTerm: jest.fn().mockResolvedValue({}),
       approveTermOccurrence: jest.fn().mockResolvedValue({}),
       removeTermOccurrence: jest.fn().mockResolvedValue({}),
+      saveTermOccurrence: jest.fn().mockResolvedValue({}),
     };
     user = Generator.generateUser();
     file = new File({

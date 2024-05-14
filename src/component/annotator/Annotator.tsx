@@ -43,7 +43,11 @@ import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
 import { AssetData } from "../../model/Asset";
-import { annotationIdToTermOccurrenceIri } from "./AnnotatorUtil";
+import {
+  annotationIdToTermOccurrenceIri,
+  createTermOccurrence,
+} from "./AnnotatorUtil";
+import { saveOccurrence } from "../../action/AsyncAnnotatorActions";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -61,6 +65,7 @@ interface AnnotatorProps extends HasI18n {
   updateTerm: (term: Term) => Promise<any>;
   approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
   removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
+  saveTermOccurrence: (occurrence: TermOccurrence) => Promise<any>;
 }
 
 interface AnnotatorState {
@@ -241,7 +246,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       delete ann.attribs.score;
       let shouldUpdate = true;
       if (term !== null) {
-        shouldUpdate = this.createOccurrence(annotationSpan, term);
+        shouldUpdate = this.createOccurrence(annotationSpan, ann, term);
         this.approveOccurrence(annotationSpan);
       }
       if (shouldUpdate) {
@@ -266,13 +271,15 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   /**
    * Creates occurrence based on the specified annotation and term.
-   * @param annotationNode Annotation
+   * @param annotationNode Representation of the annotation
+   * @param annotationElem The DOM element representing the annotation
    * @param term Term whose occurrence this should be
    * @private
    * @return Whether the HTML content of the annotator should be updated
    */
   private createOccurrence(
     annotationNode: AnnotationSpanProps,
+    annotationElem: Element,
     term: Term
   ): boolean {
     if (annotationNode.typeof === AnnotationType.DEFINITION) {
@@ -286,9 +293,12 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
           ) as Element,
       });
       return false;
+    } else {
+      const to = createTermOccurrence(term, annotationElem, this.props.fileIri);
+      to.types = [VocabularyUtils.TERM_FILE_OCCURRENCE];
+      this.props.saveTermOccurrence(to);
+      return true;
     }
-    return true;
-    // TODO Creating occurrences is not implemented, yet
   }
 
   public onSaveTermDefinition = (term: Term) => {
@@ -307,17 +317,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   private setTermDefinitionSource(term: Term, annotationElement: Element) {
     const dom = [...this.state.internalHtml];
-    const defSource = new TermOccurrence({
+    const defSource = createTermOccurrence(
       term,
-      target: {
-        source: {
-          iri: this.props.fileIri.namespace + this.props.fileIri.fragment,
-        },
-        selectors: [AnnotationDomHelper.generateSelector(annotationElement)],
-        types: [VocabularyUtils.FILE_OCCURRENCE_TARGET],
-      },
-      types: [],
-    });
+      annotationElement,
+      this.props.fileIri
+    );
     defSource.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
     return this.props
       .setTermDefinitionSource(defSource, term)
@@ -698,6 +702,8 @@ export default connect(
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
       approveTermOccurrence: (occurrence: AssetData) =>
         dispatch(approveOccurrence(occurrence, true)),
+      saveTermOccurrence: (occurrence: TermOccurrence) =>
+        dispatch(saveOccurrence(occurrence)),
       removeTermOccurrence: (occurrence: AssetData) =>
         dispatch(removeOccurrence(occurrence, true)),
     };
