@@ -4,10 +4,11 @@ import { GetStoreState, ThunkDispatch } from "../util/Types";
 import {
   asyncActionFailure,
   asyncActionRequest,
+  asyncActionSuccess,
   asyncActionSuccessWithPayload,
 } from "./SyncActions";
 import Constants from "../util/Constants";
-import Ajax, { params } from "../util/Ajax";
+import Ajax, { content, params } from "../util/Ajax";
 import JsonLdUtils from "../util/JsonLdUtils";
 import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
 import { ErrorData } from "../model/ErrorInfo";
@@ -15,6 +16,7 @@ import {
   isActionRequestPending,
   loadTermByIri as loadTermByIriBase,
 } from "./AsyncActions";
+import TermOccurrence from "../model/TermOccurrence";
 
 export function loadAllTerms(
   vocabularyIri: IRI,
@@ -78,5 +80,17 @@ export function loadTermByIri(termIri: string) {
       }
       return t;
     });
+  };
+}
+
+export function saveOccurrence(occurrence: TermOccurrence) {
+  const action = { type: ActionType.CREATE_TERM_OCCURRENCE };
+  return (dispatch: ThunkDispatch) => {
+    return Ajax.put(
+      `${Constants.API_PREFIX}/occurrence`,
+      content(occurrence.toJsonLd())
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }
