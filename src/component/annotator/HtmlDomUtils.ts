@@ -40,6 +40,8 @@ const BLOCK_ELEMENTS = [
   "ul",
 ];
 
+const PUNCTUATION_CHARS = [".", ",", "!", "?", ":", ";"];
+
 function calculatePathLength(node: Node, ancestor: Node): number {
   let parent = node.parentNode;
   let length = 0;
@@ -137,12 +139,22 @@ const HtmlDomUtils = {
         sel.modify("move", "backward", "word");
         const text = endNode.textContent || "";
         let index = endOffset;
-        while (text.charAt(index).trim().length !== 0 && index < text.length) {
+        while (
+          !this.isWhitespaceOrPunctuation(text.charAt(index)) &&
+          index < text.length
+        ) {
           index++;
         }
         sel.extend(endNode, index);
       }
     }
+  },
+
+  isWhitespaceOrPunctuation(character: string) {
+    return (
+      character.trim().length === 0 ||
+      PUNCTUATION_CHARS.indexOf(character) !== -1
+    );
   },
 
   /**
