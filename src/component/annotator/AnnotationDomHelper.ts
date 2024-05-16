@@ -73,11 +73,14 @@ const AnnotationDomHelper = {
   removeAnnotation(annotation: DomHandlerNode, dom: DomHandlerNode[]): void {
     // assuming annotation.type === "tag"
     const elem = annotation as DomHandlerElement;
-    if (
-      Utils.sanitizeArray(elem.children).length === 1 &&
-      elem.children![0].type === "text"
-    ) {
-      const newNode = this.createTextualNode(elem);
+    if (Utils.sanitizeArray(elem.children).length === 1) {
+      let newNode;
+      const child = elem.children![0];
+      if (child.type === "text") {
+        newNode = this.createTextualNode(elem);
+      } else {
+        newNode = child;
+      }
       DomUtils.replaceElement(elem, newNode);
       const elemInd = dom.indexOf(elem);
       if (elemInd !== -1) {
