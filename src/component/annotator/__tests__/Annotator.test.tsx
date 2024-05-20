@@ -1087,5 +1087,23 @@ describe("Annotator", () => {
       wrapper.instance().onAnnotationTermSelected(annotation, term);
       expect(mockedCallbackProps.onUpdate).not.toHaveBeenCalled();
     });
+
+    it("does not create term occurrence when user approves existing annotation", () => {
+      const wrapper = shallow<Annotator>(
+        <Annotator
+          fileIri={fileIri}
+          vocabularyIri={vocabularyIri}
+          {...mockedCallbackProps}
+          {...stateProps}
+          initialHtml={generalHtmlContent}
+          {...intlFunctions()}
+        />
+      );
+      const term = Generator.generateTerm();
+      annotation.resource = term.iri;
+      annotation.score = "1.0";
+      wrapper.instance().onAnnotationTermSelected(annotation, term);
+      expect(mockedCallbackProps.saveTermOccurrence).not.toHaveBeenCalled();
+    });
   });
 });

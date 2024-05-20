@@ -86,6 +86,7 @@ export function loadTermByIri(termIri: string) {
 export function saveOccurrence(occurrence: TermOccurrence) {
   const action = { type: ActionType.CREATE_TERM_OCCURRENCE };
   return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
     return Ajax.put(
       `${Constants.API_PREFIX}/occurrence`,
       content(occurrence.toJsonLd())
