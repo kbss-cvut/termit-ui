@@ -234,7 +234,7 @@ export function removeOccurrence(
     type: ActionType.REMOVE_TERM_OCCURRENCE,
   };
   return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
     return Ajax.delete(
       Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
@@ -267,7 +267,7 @@ export function approveOccurrence(
     type: ActionType.APPROVE_TERM_OCCURRENCE,
   };
   return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
     return Ajax.put(
       Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,

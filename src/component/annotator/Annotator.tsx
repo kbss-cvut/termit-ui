@@ -243,12 +243,12 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       } else {
         delete ann.attribs.resource;
       }
-      delete ann.attribs.score;
       let shouldUpdate = true;
       if (term !== null) {
         shouldUpdate = this.createOccurrence(annotationSpan, ann, term);
         this.approveOccurrence(annotationSpan);
       }
+      delete ann.attribs.score;
       if (shouldUpdate) {
         this.updateInternalHtml(dom);
       }
@@ -294,9 +294,16 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       });
       return false;
     } else {
-      const to = createTermOccurrence(term, annotationElem, this.props.fileIri);
-      to.types = [VocabularyUtils.TERM_FILE_OCCURRENCE];
-      this.props.saveTermOccurrence(to);
+      if (!annotationNode.score) {
+        // Create occurrence only if we are not just approving an existing one
+        const to = createTermOccurrence(
+          term,
+          annotationElem,
+          this.props.fileIri
+        );
+        to.types = [VocabularyUtils.TERM_FILE_OCCURRENCE];
+        this.props.saveTermOccurrence(to);
+      }
       return true;
     }
   }
