@@ -630,6 +630,8 @@ const cs = {
     "annotator.highlight.selector.title": "Najít výskyty pojmu",
     "annotator.highlight.selector.label":
       "Vyberte pojem, jehož výskyty budou zvýrazněny",
+    "annotator.highlight.countInfo":
+      "V tomto dokumentu {count, plural, one {nalezen # výskyt} few {nalezeny # výskyty} other {nalezeno # výskytů}}.",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",

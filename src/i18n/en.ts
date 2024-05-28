@@ -621,6 +621,8 @@ const en = {
     "annotator.highlight.selector.title": "Find occurrences of term",
     "annotator.highlight.selector.label":
       "Select term whose occurrences to highlight",
+    "annotator.highlight.countInfo":
+      "Found {count, plural, one {# occurrence} other {# occurrences}} in this document.",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",

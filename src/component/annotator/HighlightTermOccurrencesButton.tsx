@@ -12,6 +12,7 @@ import { useI18n } from "../hook/useI18n";
 import { TermData } from "../../model/Term";
 import AnnotatorTermsSelector from "./AnnotatorTermsSelector";
 import { getLocalized } from "../../model/MultilingualString";
+import TermOccurrenceCountInfo from "./TermOccurrenceCountInfo";
 
 interface HighlightTermOccurrencesButtonProps {
   term: TermData | null;
@@ -41,7 +42,7 @@ const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonPro
             {i18n("annotator.highlight.selector.title")}
           </PopoverHeader>
           <PopoverBody>
-            <FormGroup>
+            <FormGroup className="mb-2">
               <div className="align-items-center d-flex mb-2">
                 <div className="flex-grow-1">
                   <Label className="attribute-label mb-0">
@@ -54,6 +55,7 @@ const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonPro
                 term={term}
                 autoFocus={true}
               />
+              <TermOccurrenceCountInfo term={term} />
             </FormGroup>
           </PopoverBody>
         </Popover>
