@@ -622,6 +622,10 @@ const cs = {
     "annotator.tutorial.title": "Návod",
     "annotator.tutorial.tooltip":
       "Zobrazit stránku s návodem k používání anotátoru",
+    "annotator.highlight.button.label": "Najít",
+    "annotator.highlight.selector.title": "Najít výskyty pojmu",
+    "annotator.highlight.selector.label":
+      "Vyberte pojem, jehož výskyty budou zvýrazněny",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",

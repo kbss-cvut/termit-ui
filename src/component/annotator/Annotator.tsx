@@ -2,7 +2,7 @@ import * as React from "react";
 import { Element, Node as DomHandlerNode } from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
 import AnnotationDomHelper, { AnnotationType } from "./AnnotationDomHelper";
-import Term from "../../model/Term";
+import Term, { TermData } from "../../model/Term";
 import HtmlDomUtils from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
 import { DomUtils } from "htmlparser2";
@@ -48,6 +48,7 @@ import {
   createTermOccurrence,
 } from "./AnnotatorUtil";
 import { saveOccurrence } from "../../action/AsyncAnnotatorActions";
+import HighlightTermOccurrencesButton from "./HighlightTermOccurrencesButton";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -82,6 +83,7 @@ interface AnnotatorState {
 
   existingTermDefinitionAnnotationElement?: Element;
   selectedTerm?: Term;
+  highlightedTerm: TermData | null;
 }
 
 export interface AnnotationSpanProps {
@@ -112,6 +114,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       showSelectionPurposeDialog: false,
       selectionPurposeDialogAnchorPosition: { x: 0, y: 0 },
       showNewTermDialog: false,
+      highlightedTerm: null,
     };
   }
 
@@ -541,6 +544,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             "annotator-header-scrolled": window.pageYOffset > 0,
           })}
           actions={[
+            <HighlightTermOccurrencesButton
+              onChange={(t) => this.setState({ highlightedTerm: t })}
+              term={this.state.highlightedTerm}
+            />,
             <IfVocabularyActionAuthorized
               key="text-analysis-button"
               vocabulary={this.props.vocabulary}

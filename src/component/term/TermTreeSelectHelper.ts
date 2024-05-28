@@ -20,7 +20,7 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     renderAsTree: true,
     simpleTreeData: true,
     showSettings: false,
-    noResultsText: intl.i18n("main.search.no-results"),
+    noResultsText: intl.i18n("search.no-results"),
     loadingText: intl.i18n("select.loading"),
     placeholder: "",
     searchDelay: 300,
