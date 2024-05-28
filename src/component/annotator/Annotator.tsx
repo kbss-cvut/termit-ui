@@ -95,19 +95,13 @@ export interface AnnotationSpanProps {
 
 const ANNOTATION_HIGHLIGHT_TIMEOUT = 5000;
 
-interface HtmlSplit {
-  prefix: string;
-  body: string;
-  suffix: string;
-}
-
 export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
   private containerElement = React.createRef<HTMLDivElement>();
   private createNewTermDialog = React.createRef<CT>();
 
   constructor(props: AnnotatorProps) {
     super(props);
-    const htmlSplit = Annotator.matchHtml(props.initialHtml);
+    const htmlSplit = HtmlDomUtils.splitHtml(props.initialHtml);
     const prefixMap = Annotator.getPrefixesOfHtmlTag(
       htmlSplit.prefix + htmlSplit.suffix
     );
@@ -429,7 +423,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   private updateInternalHtml = (dom: DomHandlerNode[]) => {
     this.setState({ internalHtml: dom });
-    this.props.onUpdate(this.reconstructHtml(HtmlParserUtils.dom2html(dom)));
+    const htmlSplit = HtmlDomUtils.splitHtml(this.props.initialHtml);
+    const html =
+      htmlSplit.prefix + HtmlParserUtils.dom2html(dom) + htmlSplit.suffix;
+    this.props.onUpdate(html);
   };
 
   private handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -447,7 +444,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
           this.setState({
             showSelectionPurposeDialog: true,
             selectionPurposeDialogAnchorPosition:
-              Annotator.resolvePopupPosition(e),
+              HtmlDomUtils.resolvePopupPosition(e),
           });
         }
       } else {
@@ -455,19 +452,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       }
     }
   };
-
-  private static resolvePopupPosition(
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) {
-    const annotatorElem = document.getElementById("annotator")!;
-    const fontSize = parseFloat(
-      window.getComputedStyle(annotatorElem).getPropertyValue("font-size")
-    );
-    return {
-      x: e.clientX,
-      y: e.clientY - fontSize / 2,
-    };
-  }
 
   public createTermFromSelection = () => {
     // No sticky when new term dialog will be open from the annotation
@@ -642,11 +626,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     );
   }
 
-  private reconstructHtml(htmlBodyContent: string) {
-    const htmlSplit = Annotator.matchHtml(this.props.initialHtml);
-    return htmlSplit.prefix + htmlBodyContent + htmlSplit.suffix;
-  }
-
   /**
    * Creates a new annotation around the current text selection and returns it.
    * @param about
@@ -674,23 +653,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         HtmlParserUtils.dom2html([newAnnotationNode])
       ),
       annotation: newAnnotationNode,
-    };
-  }
-
-  private static matchHtml(htmlContent: string): HtmlSplit {
-    const htmlSplit = htmlContent.split(/(<body.*>|<\/body>)/gi);
-
-    if (htmlSplit.length === 5) {
-      return {
-        prefix: htmlSplit[0] + htmlSplit[1],
-        body: htmlSplit[2],
-        suffix: htmlSplit[3] + htmlSplit[4],
-      };
-    }
-    return {
-      prefix: "",
-      body: htmlContent,
-      suffix: "",
     };
   }
 }

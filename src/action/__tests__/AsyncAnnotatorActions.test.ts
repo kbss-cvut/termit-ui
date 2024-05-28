@@ -67,10 +67,11 @@ describe("AsyncAnnotatorActions", () => {
       Ajax.get = jest.fn().mockResolvedValue(term);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTermByIri(term["@id"]))
-      ).then((result: Term) => {
+      ).then((result: Term | null) => {
         expect(Ajax.get).toHaveBeenCalled();
         expect(result).toBeDefined();
-        expect(result.iri).toEqual(term["@id"]);
+        expect(result).not.toBeNull();
+        expect(result!.iri).toEqual(term["@id"]);
       });
     });
 
@@ -80,9 +81,10 @@ describe("AsyncAnnotatorActions", () => {
       Ajax.get = jest.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTermByIri(term.iri))
-      ).then((result: Term) => {
+      ).then((result: Term | null) => {
         expect(Ajax.get).not.toHaveBeenCalled();
         expect(result).toBeDefined();
+        expect(result).not.toBeNull();
         expect(result).toEqual(term);
       });
     });

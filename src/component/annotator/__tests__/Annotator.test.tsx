@@ -31,7 +31,6 @@ import AccessLevel from "../../../model/acl/AccessLevel";
 import { MemoryRouter } from "react-router";
 import { AssetData } from "../../../model/Asset";
 
-jest.mock("../HtmlDomUtils");
 jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
 
 describe("Annotator", () => {
@@ -296,6 +295,7 @@ describe("Annotator", () => {
         property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
         typeof: VocabularyUtils.TERM_OCCURRENCE,
       };
+      HtmlDomUtils.generateVirtualElement = jest.fn();
     });
 
     it("stores annotation from which the new term is being created for later reference", () => {
@@ -486,6 +486,7 @@ describe("Annotator", () => {
       window.getComputedStyle = jest.fn().mockReturnValue({
         getPropertyValue: () => "16px",
       });
+      HtmlDomUtils.isInPopup = jest.fn().mockReturnValue(false);
       const wrapper = mountWithIntl(
         <MemoryRouter>
           <Annotator

@@ -3,6 +3,7 @@ import Utils from "../../util/Utils";
 import { TextQuoteSelector } from "../../model/TermOccurrence";
 import { AnnotationType } from "./AnnotationDomHelper";
 import { fromRange, toRange } from "xpath-range";
+import * as React from "react";
 
 const BLOCK_ELEMENTS = [
   "address",
@@ -65,6 +66,12 @@ function isBackwards(sel: Selection): boolean {
   return backwards;
 }
 
+export interface HtmlSplit {
+  prefix: string;
+  body: string;
+  suffix: string;
+}
+
 const HtmlDomUtils = {
   /**
    * Returns true if there is a non-empty selection in the current window.
@@ -87,6 +94,23 @@ const HtmlDomUtils = {
     return null;
   },
 
+  splitHtml(htmlContent: string): HtmlSplit {
+    const htmlSplit = htmlContent.split(/(<body.*>|<\/body>)/gi);
+
+    if (htmlSplit.length === 5) {
+      return {
+        prefix: htmlSplit[0] + htmlSplit[1],
+        body: htmlSplit[2],
+        suffix: htmlSplit[3] + htmlSplit[4],
+      };
+    }
+    return {
+      prefix: "",
+      body: htmlContent,
+      suffix: "",
+    };
+  },
+
   /**
    * Checks whether the specified selection is in a popper.js popup.
    * @param range Range to check
@@ -97,6 +121,17 @@ const HtmlDomUtils = {
       commonAnc.parentElement !== null &&
       commonAnc.parentElement.closest(".popover") !== null
     );
+  },
+
+  resolvePopupPosition(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const annotatorElem = document.getElementById("annotator")!;
+    const fontSize = parseFloat(
+      window.getComputedStyle(annotatorElem).getPropertyValue("font-size")
+    );
+    return {
+      x: e.clientX,
+      y: e.clientY - fontSize / 2,
+    };
   },
 
   extendSelectionToWords() {
