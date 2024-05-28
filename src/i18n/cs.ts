@@ -623,6 +623,10 @@ const cs = {
     "annotator.tutorial.tooltip":
       "Zobrazit stránku s návodem k používání anotátoru",
     "annotator.highlight.button.label": "Najít",
+    "annotator.highlight.button.active.tooltip":
+      'Jsou zvýrazněny výskyty pojmu "{term}"',
+    "annotator.highlight.button.inactive.tooltip":
+      "Žádný pojem ke zvýraznění není vybrán",
     "annotator.highlight.selector.title": "Najít výskyty pojmu",
     "annotator.highlight.selector.label":
       "Vyberte pojem, jehož výskyty budou zvýrazněny",
