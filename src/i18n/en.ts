@@ -613,6 +613,10 @@ const en = {
     "annotator.tutorial.title": "Tutorial",
     "annotator.tutorial.tooltip":
       "View a page with tutorial on how to use the annotator",
+    "annotator.highlight.button.label": "Find",
+    "annotator.highlight.selector.title": "Find occurrences of term",
+    "annotator.highlight.selector.label":
+      "Select term whose occurrences to highlight",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",

@@ -32,6 +32,9 @@ import { MemoryRouter } from "react-router";
 import { AssetData } from "../../../model/Asset";
 
 jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
+jest.mock("../HighlightTermOccurrencesButton", () => () => (
+  <button>Highlight terms</button>
+));
 
 describe("Annotator", () => {
   const fileIri = VocabularyUtils.create(Generator.generateUri());
