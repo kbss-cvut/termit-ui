@@ -21,6 +21,10 @@ const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonPro
   ({ term, onChange }) => {
     const { i18n } = useI18n();
     const [showPopup, setShowPopup] = React.useState(false);
+    const onSelect = (t: TermData | null) => {
+      setShowPopup(false);
+      onChange(t);
+    };
 
     return (
       <>
@@ -45,7 +49,7 @@ const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonPro
                 </div>
               </div>
               <AnnotatorTermsSelector
-                onChange={onChange}
+                onChange={onSelect}
                 term={term}
                 autoFocus={true}
               />

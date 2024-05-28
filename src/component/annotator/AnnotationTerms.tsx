@@ -17,9 +17,7 @@ import AnnotatorTermsSelector from "./AnnotatorTermsSelector";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
-  terms: { [key: string]: Term };
   counter: number;
-  terminalStates: string[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
 }
 
@@ -112,9 +110,7 @@ export default connect(
   (state: TermItState) => {
     return {
       vocabulary: state.vocabulary,
-      terms: state.annotatorTerms,
       counter: state.createdTermsCounter,
-      terminalStates: state.terminalStates,
     };
   },
   (dispatch: ThunkDispatch) => {

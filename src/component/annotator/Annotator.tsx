@@ -606,6 +606,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 onUpdate={this.onAnnotationTermSelected}
                 onRemove={this.onRemove}
                 onResetSticky={this.resetStickyAnnotationId}
+                highlightedTerm={this.state.highlightedTerm}
               />
             </div>
           </CardBody>

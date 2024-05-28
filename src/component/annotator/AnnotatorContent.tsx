@@ -1,5 +1,5 @@
 import * as React from "react";
-import Term from "../../model/Term";
+import Term, { TermData } from "../../model/Term";
 import { AnnotationSpanProps } from "./Annotator";
 import {
   Parser as HtmlToReactParser,
@@ -21,6 +21,7 @@ interface AnnotatorContentProps {
   stickyAnnotationId: string;
   content: DomHandlerNode[];
   accessLevel: AccessLevel; // The level of access rights the current user has
+  highlightedTerm: TermData | null;
 
   onRemove: (annotationId: string | string[]) => void;
   onUpdate: (annotationSpan: AnnotationSpanProps, term: Term | null) => void;
@@ -54,6 +55,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onResetSticky,
     onCreateTerm,
     accessLevel,
+    highlightedTerm,
   } = props;
 
   // Using memoization to skip processing and re-rendering of the content DOM in case it hasn't changed
@@ -98,6 +100,10 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
               sticky={sticky}
               text={HtmlDomUtils.getTextContent(node)}
               accessLevel={accessLevel}
+              highlight={
+                highlightedTerm !== null &&
+                elem.attribs.resource === highlightedTerm.iri
+              }
               {...attribs}
             >
               {children}
@@ -127,6 +133,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onResetSticky,
     onCreateTerm,
     accessLevel,
+    highlightedTerm,
   ]);
 
   return (
