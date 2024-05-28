@@ -11,6 +11,7 @@ import {
 import { useI18n } from "../hook/useI18n";
 import { TermData } from "../../model/Term";
 import AnnotatorTermsSelector from "./AnnotatorTermsSelector";
+import { getLocalized } from "../../model/MultilingualString";
 
 interface HighlightTermOccurrencesButtonProps {
   term: TermData | null;
@@ -19,10 +20,10 @@ interface HighlightTermOccurrencesButtonProps {
 
 const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonProps> =
   ({ term, onChange }) => {
-    const { i18n } = useI18n();
+    const { i18n, formatMessage, locale } = useI18n();
     const [showPopup, setShowPopup] = React.useState(false);
     const onSelect = (t: TermData | null) => {
-      setShowPopup(false);
+      // setShowPopup(false);
       onChange(t);
     };
 
@@ -64,6 +65,13 @@ const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonPro
           onClick={() => setShowPopup(!showPopup)}
           className="annotator-action-button"
           active={term !== null}
+          title={
+            term != null
+              ? formatMessage("annotator.highlight.button.active.tooltip", {
+                  term: getLocalized(term.label, locale),
+                })
+              : i18n("annotator.highlight.button.inactive.tooltip")
+          }
         >
           <FaSearchengin className="mr-1" />
           {i18n("annotator.highlight.button.label")}

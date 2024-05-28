@@ -614,6 +614,10 @@ const en = {
     "annotator.tutorial.tooltip":
       "View a page with tutorial on how to use the annotator",
     "annotator.highlight.button.label": "Find",
+    "annotator.highlight.button.active.tooltip":
+      'Highlighting occurrences of term "{term}"',
+    "annotator.highlight.button.inactive.tooltip":
+      "No term selected for highlighting",
     "annotator.highlight.selector.title": "Find occurrences of term",
     "annotator.highlight.selector.label":
       "Select term whose occurrences to highlight",
