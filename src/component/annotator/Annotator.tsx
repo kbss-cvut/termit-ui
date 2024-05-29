@@ -545,6 +545,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
           })}
           actions={[
             <HighlightTermOccurrencesButton
+              key="highlight-occurrences-button"
               onChange={(t) => this.setState({ highlightedTerm: t })}
               term={this.state.highlightedTerm}
             />,
@@ -554,6 +555,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               requiredAccessLevel={AccessLevel.WRITE}
             >
               <TextAnalysisInvocationButton
+                key="text-analysis-invocation-button"
                 className="annotator-action-button"
                 fileIri={this.props.fileIri}
                 defaultVocabularyIri={IRIImpl.toString(
