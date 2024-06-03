@@ -40,6 +40,9 @@ const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonPro
         >
           <PopoverHeader>
             {i18n("annotator.highlight.selector.title")}
+            <button className="close" onClick={() => setShowPopup(false)}>
+              ×
+            </button>
           </PopoverHeader>
           <PopoverBody>
             <FormGroup className="mb-2">
