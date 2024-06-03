@@ -541,7 +541,11 @@ function annotatorTerms(
   switch (action.type) {
     case ActionType.ANNOTATOR_LOAD_TERMS:
       if (isAsyncSuccess(action)) {
-        return action.payload as { [key: string]: Term };
+        return Object.assign(
+          {},
+          state,
+          action.payload as { [key: string]: Term }
+        );
       }
       return {};
     case ActionType.ANNOTATOR_LOAD_TERM:

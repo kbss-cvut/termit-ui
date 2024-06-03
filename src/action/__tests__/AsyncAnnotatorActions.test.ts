@@ -8,6 +8,7 @@ import ActionType from "../ActionType";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Term from "../../model/Term";
 import Generator from "../../__tests__/environment/Generator";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => ({
@@ -105,6 +106,29 @@ describe("AsyncAnnotatorActions", () => {
               a.status === AsyncActionStatus.SUCCESS
           );
         expect(successAction).not.toBeDefined();
+      });
+    });
+
+    // Terms loaded for annotator by IRI are not from the vocabulary associated with the file
+    // Since there is no additional term fetching available for such terms, it is not possible to load
+    // subterms. Therefore, we will just keep them as a flat list with no hierarchical structure
+    it("removes child term references of loaded term", () => {
+      const term = require("../../rest-mock/terms")[0];
+      term[VocabularyUtils.NARROWER] = [
+        {
+          "@id": Generator.generateUri(),
+          label: "Child one",
+        },
+      ];
+      Ajax.get = jest.fn().mockResolvedValue(term);
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(loadTermByIri(term["@id"]))
+      ).then((result: Term | null) => {
+        expect(Ajax.get).toHaveBeenCalled();
+        expect(result).toBeDefined();
+        expect(result).not.toBeNull();
+        expect(result!.iri).toEqual(term["@id"]);
+        expect(result!.subTerms).toEqual([]);
       });
     });
   });

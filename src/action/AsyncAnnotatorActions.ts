@@ -76,6 +76,8 @@ export function loadTermByIri(termIri: string) {
     return promise.then((t) => {
       delete pendingTermFetches[termIri];
       if (t) {
+        // No hierarchy for on-demand loaded terms in annotator. We cannot load children anyway
+        t.subTerms = [];
         dispatch(asyncActionSuccessWithPayload(action, t));
       }
       return t;
