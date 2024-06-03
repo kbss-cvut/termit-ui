@@ -8,7 +8,6 @@ import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,
   createTermNonTerminalStateMatcher,
-  createVocabularyMatcher,
   processTermsForTreeSelect,
 } from "../term/TermTreeSelectHelper";
 import Utils from "../../util/Utils";
@@ -43,11 +42,6 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
     treeSelect.current.forceUpdate();
   }, [treeSelect, intl.locale]);
   const options = processTermsForTreeSelect(Utils.mapToArray(annotatorTerms), [
-    createVocabularyMatcher(
-      Utils.sanitizeArray(vocabulary.allImportedVocabularies).concat(
-        vocabulary!.iri
-      )
-    ),
     createTermNonTerminalStateMatcher(terminalStates),
   ]);
 
