@@ -1,7 +1,8 @@
 import React from "react";
-import { FaSearchengin } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaSearchengin } from "react-icons/fa";
 import {
   Button,
+  ButtonToolbar,
   FormGroup,
   Label,
   Popover,
@@ -12,21 +13,23 @@ import { useI18n } from "../hook/useI18n";
 import { TermData } from "../../model/Term";
 import AnnotatorTermsSelector from "./AnnotatorTermsSelector";
 import { getLocalized } from "../../model/MultilingualString";
-import TermOccurrenceCountInfo from "./TermOccurrenceCountInfo";
+import { getTermOccurrences } from "./HtmlDomUtils";
 
 interface HighlightTermOccurrencesButtonProps {
   term: TermData | null;
+  highlightIndex: number;
   onChange: (t: TermData | null) => void;
+  onHighlightIndexChange: (change: number) => void;
 }
 
 const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonProps> =
-  ({ term, onChange }) => {
+  ({ term, highlightIndex, onChange, onHighlightIndexChange }) => {
     const { i18n, formatMessage, locale } = useI18n();
     const [showPopup, setShowPopup] = React.useState(false);
     const onSelect = (t: TermData | null) => {
-      // setShowPopup(false);
       onChange(t);
     };
+    const count = term !== null ? getTermOccurrences(term.iri!).length : -1;
 
     return (
       <>
@@ -58,8 +61,30 @@ const HighlightTermOccurrencesButton: React.FC<HighlightTermOccurrencesButtonPro
                 term={term}
                 autoFocus={true}
               />
-              <TermOccurrenceCountInfo term={term} />
             </FormGroup>
+            {term !== null && (
+              <>
+                <ButtonToolbar className="w-100 justify-content-between mb-2 align-middle">
+                  <Button
+                    size="sm"
+                    onClick={() => onHighlightIndexChange(-1)}
+                    disabled={highlightIndex < 0}
+                  >
+                    <FaChevronLeft />
+                  </Button>
+                  <div className="align-content-center">
+                    {highlightIndex + 1} / {count}
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => onHighlightIndexChange(1)}
+                    disabled={highlightIndex >= count - 1}
+                  >
+                    <FaChevronRight />
+                  </Button>
+                </ButtonToolbar>
+              </>
+            )}
           </PopoverBody>
         </Popover>
         <Button

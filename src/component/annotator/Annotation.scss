@@ -82,6 +82,10 @@
   border-radius: 0.2rem;
 }
 
+.annotator-highlighted-annotation-current {
+  background-color: orange !important;
+}
+
 .assigned-term-occurrence.annotator-highlighted-annotation:not(.proposed-occurrence) {
   border: 0.15rem solid green;
 }

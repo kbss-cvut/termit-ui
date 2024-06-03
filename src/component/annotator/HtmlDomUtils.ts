@@ -412,4 +412,10 @@ function suffixMatch(selector: TextQuoteSelector, element: Element) {
   );
 }
 
+export function getTermOccurrences(termIri: string) {
+  return document
+    .getElementById("annotator")!
+    .querySelectorAll(`span[resource="${termIri}"]`);
+}
+
 export default HtmlDomUtils;

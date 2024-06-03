@@ -3,7 +3,7 @@ import { Element, Node as DomHandlerNode } from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
 import AnnotationDomHelper, { AnnotationType } from "./AnnotationDomHelper";
 import Term, { TermData } from "../../model/Term";
-import HtmlDomUtils from "./HtmlDomUtils";
+import HtmlDomUtils, { getTermOccurrences } from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
 import { DomUtils } from "htmlparser2";
 import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
@@ -84,6 +84,7 @@ interface AnnotatorState {
   existingTermDefinitionAnnotationElement?: Element;
   selectedTerm?: Term;
   highlightedTerm: TermData | null;
+  highlightedOccurrenceIndex: number;
 }
 
 export interface AnnotationSpanProps {
@@ -115,6 +116,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       selectionPurposeDialogAnchorPosition: { x: 0, y: 0 },
       showNewTermDialog: false,
       highlightedTerm: null,
+      highlightedOccurrenceIndex: -1,
     };
   }
 
@@ -534,6 +536,34 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     this.setState({ showSelectionPurposeDialog: false });
   };
 
+  public updateTermOccurrenceHighlight = (change: number) => {
+    if (this.state.highlightedTerm === null) {
+      return;
+    }
+    const occurrences = getTermOccurrences(this.state.highlightedTerm!.iri!);
+    const newHighlightIndex = this.state.highlightedOccurrenceIndex + change;
+    if (occurrences.length <= newHighlightIndex || newHighlightIndex < 0) {
+      return;
+    }
+    if (
+      occurrences.length > 0 &&
+      this.state.highlightedOccurrenceIndex >= 0 &&
+      this.state.highlightedOccurrenceIndex <= occurrences.length
+    ) {
+      HtmlDomUtils.removeClassFromElement(
+        occurrences[this.state.highlightedOccurrenceIndex],
+        "annotator-highlighted-annotation-current"
+      );
+    }
+    const occurrence = occurrences[newHighlightIndex];
+    HtmlDomUtils.addClassToElement(
+      occurrence,
+      "annotator-highlighted-annotation-current"
+    );
+    occurrence.scrollIntoView({ block: "center" });
+    this.setState({ highlightedOccurrenceIndex: newHighlightIndex });
+  };
+
   public render() {
     return (
       <>
@@ -546,8 +576,19 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
           actions={[
             <HighlightTermOccurrencesButton
               key="highlight-occurrences-button"
-              onChange={(t) => this.setState({ highlightedTerm: t })}
+              onChange={(t) =>
+                this.setState(
+                  {
+                    highlightedTerm: t,
+                    // Since the term changed, all existing highlights are removed, including additional assigned classes
+                    highlightedOccurrenceIndex: -1,
+                  },
+                  () => this.updateTermOccurrenceHighlight(1)
+                )
+              }
               term={this.state.highlightedTerm}
+              highlightIndex={this.state.highlightedOccurrenceIndex}
+              onHighlightIndexChange={this.updateTermOccurrenceHighlight}
             />,
             <IfVocabularyActionAuthorized
               key="text-analysis-button"
