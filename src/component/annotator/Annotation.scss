@@ -79,6 +79,9 @@
 
 .annotator-highlighted-annotation {
   background-color: yellow !important;
-  border: 1px solid #6f42c1;
   border-radius: 0.2rem;
+}
+
+.assigned-term-occurrence.annotator-highlighted-annotation:not(.proposed-occurrence) {
+  border: 0.15rem solid green;
 }
