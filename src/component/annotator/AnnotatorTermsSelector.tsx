@@ -3,6 +3,7 @@ import { TermData } from "../../model/Term";
 import { useSelector } from "react-redux";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
+import "intelligent-tree-select/lib/styles.css";
 import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,

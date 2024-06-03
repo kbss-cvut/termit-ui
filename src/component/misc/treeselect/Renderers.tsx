@@ -79,6 +79,7 @@ export function createTermRenderer(
     const className = classNames("VirtualizedSelectOption", {
       VirtualizedSelectDisabledOption: params.isDisabled,
       VirtualizedSelectSelectedOption: params.isSelected,
+      VirtualizedSelectFocusedOption: params.isFocused,
     });
 
     const eventHandlers = params.isDisabled
