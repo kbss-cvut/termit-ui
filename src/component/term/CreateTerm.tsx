@@ -16,10 +16,12 @@ import { RouteComponentProps } from "react-router";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import { injectIntl } from "react-intl";
 import WindowTitle from "../misc/WindowTitle";
+import { getLocalized } from "../../model/MultilingualString";
 
 interface CreateTermProps extends RouteComponentProps<any>, HasI18n {
   vocabulary: Vocabulary;
   createTerm: (term: Term, vocabularyIri: IRI) => Promise<string | undefined>;
+  language: string;
 
   loadVocabulary(iri: IRI): void;
 }
@@ -69,7 +71,10 @@ export class CreateTerm extends React.Component<CreateTermProps> {
       return (
         <>
           <WindowTitle
-            title={`${this.props.i18n("glossary.new")} | ${vocabulary.label}`}
+            title={`${this.props.i18n("glossary.new")} | ${getLocalized(
+              vocabulary.label,
+              this.props.language
+            )}`}
           />
           <TermMetadataCreate
             onCreate={this.onCreate}
@@ -85,6 +90,7 @@ export class CreateTerm extends React.Component<CreateTermProps> {
 export default connect(
   (state: TermItState) => {
     return {
+      language: state.configuration.language,
       vocabulary: state.vocabulary,
     };
   },
