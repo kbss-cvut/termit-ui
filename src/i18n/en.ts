@@ -169,7 +169,7 @@ const en = {
     "administration.users.you": "This is you",
     "administration.users.types.admin": "This user is an administrator",
     "administration.users.oidc":
-      "An external authentication service is used to management users.",
+      "An external authentication service is used to manage users.",
     "administration.maintenance.title": "Maintenance",
     "administration.maintenance.invalidateCaches": "Invalidate caches",
     "administration.maintenance.invalidateCaches.tooltip":
