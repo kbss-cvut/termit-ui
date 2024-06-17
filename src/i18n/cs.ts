@@ -622,6 +622,16 @@ const cs = {
     "annotator.tutorial.title": "Návod",
     "annotator.tutorial.tooltip":
       "Zobrazit stránku s návodem k používání anotátoru",
+    "annotator.highlight.button.label": "Najít",
+    "annotator.highlight.button.active.tooltip":
+      'Jsou zvýrazněny výskyty pojmu "{term}"',
+    "annotator.highlight.button.inactive.tooltip":
+      "Žádný pojem ke zvýraznění není vybrán",
+    "annotator.highlight.selector.title": "Najít výskyty pojmu",
+    "annotator.highlight.selector.label":
+      "Vyberte pojem, jehož výskyty budou zvýrazněny",
+    "annotator.highlight.countInfo":
+      "V tomto dokumentu {count, plural, one {nalezen # výskyt} few {nalezeny # výskyty} other {nalezeno # výskytů}}.",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",

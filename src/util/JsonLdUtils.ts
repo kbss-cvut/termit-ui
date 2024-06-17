@@ -4,6 +4,8 @@ import { compact, JsonLdContext, JsonLdDictionary, JsonLdInput } from "jsonld";
  * Utility functions for processing JSON-LD data.
  */
 export default class JsonLdUtils {
+  public static readonly BNODE_PREFIX = "_:";
+
   /**
    * Compacts the specified JSON-LD input and ensures that node references (i.e., nodes with a single attribute -
    * iri) are replaced with previously encountered nodes which they represent.
@@ -132,7 +134,7 @@ export default class JsonLdUtils {
    * Generates a random RDF blank node identifier.
    */
   public static generateBlankNodeId(): string {
-    return "_:" + Math.random().toString(36).substring(8);
+    return JsonLdUtils.BNODE_PREFIX + Math.random().toString(36).substring(8);
   }
 
   /**

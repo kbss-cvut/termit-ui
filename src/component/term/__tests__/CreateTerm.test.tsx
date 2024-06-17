@@ -39,7 +39,7 @@ describe("CreateTerm", () => {
       iri:
         "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/" +
         normalizedVocabName,
-      label: "test vocabulary",
+      label: langString("test vocabulary"),
     });
     term = new Term({
       iri: Generator.generateUri(),
@@ -70,6 +70,7 @@ describe("CreateTerm", () => {
         location={location}
         match={match}
         loadVocabulary={loadVocabulary}
+        language={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -89,6 +90,7 @@ describe("CreateTerm", () => {
         location={location}
         match={match}
         loadVocabulary={loadVocabulary}
+        language={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -119,6 +121,7 @@ describe("CreateTerm", () => {
         location={location}
         match={match}
         loadVocabulary={loadVocabulary}
+        language={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -146,6 +149,7 @@ describe("CreateTerm", () => {
         location={location}
         match={match}
         loadVocabulary={loadVocabulary}
+        language={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );

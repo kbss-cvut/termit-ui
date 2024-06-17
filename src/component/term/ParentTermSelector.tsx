@@ -52,7 +52,7 @@ export interface ParentTermSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
   parentTerms?: TermData[];
-  validationMessage?: string | JSX.Element;
+  validationMessage?: string | React.JSX.Element;
   vocabularyIri: string;
   currentVocabulary?: Vocabulary;
   terminalStates: string[];
@@ -151,8 +151,8 @@ export class ParentTermSelector extends React.Component<
         this.props.loadTerms(
           options,
           VocabularyUtils.create(
-            options.option
-              ? options.option.vocabulary!.iri!
+            options.option && options.option.vocabulary
+              ? options.option.vocabulary.iri!
               : this.props.vocabularyIri
           )
         ),

@@ -2,8 +2,8 @@ import * as React from "react";
 import { Element, Node as DomHandlerNode } from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
 import AnnotationDomHelper, { AnnotationType } from "./AnnotationDomHelper";
-import Term from "../../model/Term";
-import HtmlDomUtils from "./HtmlDomUtils";
+import Term, { TermData } from "../../model/Term";
+import HtmlDomUtils, { getTermOccurrences } from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
 import { DomUtils } from "htmlparser2";
 import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
@@ -17,7 +17,11 @@ import Message from "../../model/Message";
 import { publishMessage } from "../../action/SyncActions";
 import MessageType from "../../model/MessageType";
 import TermOccurrence, { TextQuoteSelector } from "../../model/TermOccurrence";
-import { setTermDefinitionSource } from "../../action/AsyncTermActions";
+import {
+  approveOccurrence,
+  removeOccurrence,
+  setTermDefinitionSource,
+} from "../../action/AsyncTermActions";
 import JsonLdUtils from "../../util/JsonLdUtils";
 import Utils from "../../util/Utils";
 import AnnotatorContent from "./AnnotatorContent";
@@ -38,6 +42,13 @@ import VocabularyLink from "../vocabulary/VocabularyLink";
 import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
+import { AssetData } from "../../model/Asset";
+import {
+  annotationIdToTermOccurrenceIri,
+  createTermOccurrence,
+} from "./AnnotatorUtil";
+import { saveOccurrence } from "../../action/AsyncAnnotatorActions";
+import HighlightTermOccurrencesButton from "./HighlightTermOccurrencesButton";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -48,13 +59,14 @@ interface AnnotatorProps extends HasI18n {
   file: File;
   vocabulary: Vocabulary;
 
-  onUpdate(newHtml: string): void;
+  onUpdate: (newHtml: string) => void;
 
-  publishMessage(message: Message): void;
-
-  setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
-
-  updateTerm(term: Term): Promise<any>;
+  publishMessage: (message: Message) => void;
+  setTermDefinitionSource: (src: TermOccurrence, term: Term) => Promise<any>;
+  updateTerm: (term: Term) => Promise<any>;
+  approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
+  removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
+  saveTermOccurrence: (occurrence: TermOccurrence) => Promise<any>;
 }
 
 interface AnnotatorState {
@@ -71,6 +83,8 @@ interface AnnotatorState {
 
   existingTermDefinitionAnnotationElement?: Element;
   selectedTerm?: Term;
+  highlightedTerm: TermData | null;
+  highlightedOccurrenceIndex: number;
 }
 
 export interface AnnotationSpanProps {
@@ -84,19 +98,13 @@ export interface AnnotationSpanProps {
 
 const ANNOTATION_HIGHLIGHT_TIMEOUT = 5000;
 
-interface HtmlSplit {
-  prefix: string;
-  body: string;
-  suffix: string;
-}
-
 export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
   private containerElement = React.createRef<HTMLDivElement>();
   private createNewTermDialog = React.createRef<CT>();
 
   constructor(props: AnnotatorProps) {
     super(props);
-    const htmlSplit = Annotator.matchHtml(props.initialHtml);
+    const htmlSplit = HtmlDomUtils.splitHtml(props.initialHtml);
     const prefixMap = Annotator.getPrefixesOfHtmlTag(
       htmlSplit.prefix + htmlSplit.suffix
     );
@@ -107,6 +115,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       showSelectionPurposeDialog: false,
       selectionPurposeDialogAnchorPosition: { x: 0, y: 0 },
       showNewTermDialog: false,
+      highlightedTerm: null,
+      highlightedOccurrenceIndex: -1,
     };
   }
 
@@ -190,6 +200,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       );
       if (ann) {
         AnnotationDomHelper.removeAnnotation(ann, dom);
+        this.removeOccurrence(id, ann);
         removed = true;
       }
     }
@@ -198,6 +209,21 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       this.updateInternalHtml(dom);
     }
   };
+
+  private removeOccurrence(annotationId: string, element: Element) {
+    if (
+      HtmlParserUtils.resolveIri(
+        element.attribs.typeof,
+        this.state.prefixMap
+      ) === AnnotationType.OCCURRENCE
+    ) {
+      const iri = annotationIdToTermOccurrenceIri(
+        annotationId,
+        this.props.fileIri
+      );
+      this.props.removeTermOccurrence({ iri });
+    }
+  }
 
   public onAnnotationTermSelected = (
     annotationSpan: AnnotationSpanProps,
@@ -216,26 +242,43 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       } else {
         delete ann.attribs.resource;
       }
-      delete ann.attribs.score;
       let shouldUpdate = true;
       if (term !== null) {
-        shouldUpdate = this.createOccurrence(annotationSpan, term);
+        shouldUpdate = this.createOccurrence(annotationSpan, ann, term);
+        this.approveOccurrence(annotationSpan);
       }
+      delete ann.attribs.score;
       if (shouldUpdate) {
         this.updateInternalHtml(dom);
       }
     }
   };
 
+  private approveOccurrence(annotationSpan: AnnotationSpanProps) {
+    if (
+      annotationSpan.typeof !== AnnotationType.OCCURRENCE ||
+      !annotationSpan.score
+    ) {
+      return;
+    }
+    const iri = annotationIdToTermOccurrenceIri(
+      annotationSpan.about!,
+      this.props.fileIri
+    );
+    this.props.approveTermOccurrence({ iri });
+  }
+
   /**
    * Creates occurrence based on the specified annotation and term.
-   * @param annotationNode Annotation
+   * @param annotationNode Representation of the annotation
+   * @param annotationElem The DOM element representing the annotation
    * @param term Term whose occurrence this should be
    * @private
    * @return Whether the HTML content of the annotator should be updated
    */
   private createOccurrence(
     annotationNode: AnnotationSpanProps,
+    annotationElem: Element,
     term: Term
   ): boolean {
     if (annotationNode.typeof === AnnotationType.DEFINITION) {
@@ -249,9 +292,19 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
           ) as Element,
       });
       return false;
+    } else {
+      if (!annotationNode.score) {
+        // Create occurrence only if we are not just approving an existing one
+        const to = createTermOccurrence(
+          term,
+          annotationElem,
+          this.props.fileIri
+        );
+        to.types = [VocabularyUtils.TERM_FILE_OCCURRENCE];
+        this.props.saveTermOccurrence(to);
+      }
+      return true;
     }
-    return true;
-    // TODO Creating occurrences is not implemented, yet
   }
 
   public onSaveTermDefinition = (term: Term) => {
@@ -270,17 +323,11 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   private setTermDefinitionSource(term: Term, annotationElement: Element) {
     const dom = [...this.state.internalHtml];
-    const defSource = new TermOccurrence({
+    const defSource = createTermOccurrence(
       term,
-      target: {
-        source: {
-          iri: this.props.fileIri.namespace + this.props.fileIri.fragment,
-        },
-        selectors: [AnnotationDomHelper.generateSelector(annotationElement)],
-        types: [VocabularyUtils.FILE_OCCURRENCE_TARGET],
-      },
-      types: [],
-    });
+      annotationElement,
+      this.props.fileIri
+    );
     defSource.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
     return this.props
       .setTermDefinitionSource(defSource, term)
@@ -381,7 +428,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   private updateInternalHtml = (dom: DomHandlerNode[]) => {
     this.setState({ internalHtml: dom });
-    this.props.onUpdate(this.reconstructHtml(HtmlParserUtils.dom2html(dom)));
+    const htmlSplit = HtmlDomUtils.splitHtml(this.props.initialHtml);
+    const html =
+      htmlSplit.prefix + HtmlParserUtils.dom2html(dom) + htmlSplit.suffix;
+    this.props.onUpdate(html);
   };
 
   private handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -399,7 +449,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
           this.setState({
             showSelectionPurposeDialog: true,
             selectionPurposeDialogAnchorPosition:
-              Annotator.resolvePopupPosition(e),
+              HtmlDomUtils.resolvePopupPosition(e),
           });
         }
       } else {
@@ -407,19 +457,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       }
     }
   };
-
-  private static resolvePopupPosition(
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) {
-    const annotatorElem = document.getElementById("annotator")!;
-    const fontSize = parseFloat(
-      window.getComputedStyle(annotatorElem).getPropertyValue("font-size")
-    );
-    return {
-      x: e.clientX,
-      y: e.clientY - fontSize / 2,
-    };
-  }
 
   public createTermFromSelection = () => {
     // No sticky when new term dialog will be open from the annotation
@@ -499,6 +536,34 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     this.setState({ showSelectionPurposeDialog: false });
   };
 
+  public updateTermOccurrenceHighlight = (change: number) => {
+    if (this.state.highlightedTerm === null) {
+      return;
+    }
+    const occurrences = getTermOccurrences(this.state.highlightedTerm!.iri!);
+    const newHighlightIndex = this.state.highlightedOccurrenceIndex + change;
+    if (occurrences.length <= newHighlightIndex || newHighlightIndex < 0) {
+      return;
+    }
+    if (
+      occurrences.length > 0 &&
+      this.state.highlightedOccurrenceIndex >= 0 &&
+      this.state.highlightedOccurrenceIndex <= occurrences.length
+    ) {
+      HtmlDomUtils.removeClassFromElement(
+        occurrences[this.state.highlightedOccurrenceIndex],
+        "annotator-highlighted-annotation-current"
+      );
+    }
+    const occurrence = occurrences[newHighlightIndex];
+    HtmlDomUtils.addClassToElement(
+      occurrence,
+      "annotator-highlighted-annotation-current"
+    );
+    occurrence.scrollIntoView({ block: "center" });
+    this.setState({ highlightedOccurrenceIndex: newHighlightIndex });
+  };
+
   public render() {
     return (
       <>
@@ -509,12 +574,29 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             "annotator-header-scrolled": window.pageYOffset > 0,
           })}
           actions={[
+            <HighlightTermOccurrencesButton
+              key="highlight-occurrences-button"
+              onChange={(t) =>
+                this.setState(
+                  {
+                    highlightedTerm: t,
+                    // Since the term changed, all existing highlights are removed, including additional assigned classes
+                    highlightedOccurrenceIndex: -1,
+                  },
+                  () => this.updateTermOccurrenceHighlight(1)
+                )
+              }
+              term={this.state.highlightedTerm}
+              highlightIndex={this.state.highlightedOccurrenceIndex}
+              onHighlightIndexChange={this.updateTermOccurrenceHighlight}
+            />,
             <IfVocabularyActionAuthorized
               key="text-analysis-button"
               vocabulary={this.props.vocabulary}
               requiredAccessLevel={AccessLevel.WRITE}
             >
               <TextAnalysisInvocationButton
+                key="text-analysis-invocation-button"
                 className="annotator-action-button"
                 fileIri={this.props.fileIri}
                 defaultVocabularyIri={IRIImpl.toString(
@@ -567,6 +649,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 onUpdate={this.onAnnotationTermSelected}
                 onRemove={this.onRemove}
                 onResetSticky={this.resetStickyAnnotationId}
+                highlightedTerm={this.state.highlightedTerm}
               />
             </div>
           </CardBody>
@@ -592,11 +675,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       this.state.selectionPurposeDialogAnchorPosition.x,
       this.state.selectionPurposeDialogAnchorPosition.y
     );
-  }
-
-  private reconstructHtml(htmlBodyContent: string) {
-    const htmlSplit = Annotator.matchHtml(this.props.initialHtml);
-    return htmlSplit.prefix + htmlBodyContent + htmlSplit.suffix;
   }
 
   /**
@@ -628,23 +706,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       annotation: newAnnotationNode,
     };
   }
-
-  private static matchHtml(htmlContent: string): HtmlSplit {
-    const htmlSplit = htmlContent.split(/(<body.*>|<\/body>)/gi);
-
-    if (htmlSplit.length === 5) {
-      return {
-        prefix: htmlSplit[0] + htmlSplit[1],
-        body: htmlSplit[2],
-        suffix: htmlSplit[3] + htmlSplit[4],
-      };
-    }
-    return {
-      prefix: "",
-      body: htmlContent,
-      suffix: "",
-    };
-  }
 }
 
 export default connect(
@@ -659,6 +720,12 @@ export default connect(
       setTermDefinitionSource: (src: TermOccurrence, term: Term) =>
         dispatch(setTermDefinitionSource(src, term)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
+      approveTermOccurrence: (occurrence: AssetData) =>
+        dispatch(approveOccurrence(occurrence, true)),
+      saveTermOccurrence: (occurrence: TermOccurrence) =>
+        dispatch(saveOccurrence(occurrence)),
+      removeTermOccurrence: (occurrence: AssetData) =>
+        dispatch(removeOccurrence(occurrence, true)),
     };
   }
 )(injectIntl(withI18n(Annotator)));

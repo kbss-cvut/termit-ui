@@ -38,6 +38,9 @@ const LegendToggle = () => {
         >
           <CardHeader className="py-2">
             {i18n("annotator.legend.title")}
+            <button className="close" onClick={() => toggle()}>
+              ×
+            </button>
           </CardHeader>
           <CardBody>
             <Legend />
@@ -64,7 +67,7 @@ const LegendToggle = () => {
         color="primary"
         size="sm"
         onClick={toggle}
-        className="annotator-action-button"
+        className="annotator-action-button legend-toggle-button"
         active={showLegend}
       >
         <FaQuestionCircle className="mr-1" />

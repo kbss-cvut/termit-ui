@@ -52,20 +52,22 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
               id="create-term-select-definition-group"
               style={{ marginBottom: 0 }}
             >
-              <Label className="attribute-label definition">
-                {i18n("term.metadata.definition.text")}
-                <MultilingualIcon id="term-definition-multilingual" />
-              </Label>
-              <Button
-                id="create-term-select-definition"
-                color="muted"
-                onClick={props.definitionSelector}
-                size="sm"
-                title={i18n("annotator.createTerm.selectDefinition.tooltip")}
-                style={{ float: "right" }}
-              >
-                {i18n("annotator.createTerm.selectDefinition")}
-              </Button>
+              <div className="d-flex justify-content-between">
+                <Label className="attribute-label definition">
+                  {i18n("term.metadata.definition.text")}
+                  <MultilingualIcon id="term-definition-multilingual" />
+                </Label>
+                <Button
+                  id="create-term-select-definition"
+                  color="muted"
+                  onClick={props.definitionSelector}
+                  size="sm"
+                  title={i18n("annotator.createTerm.selectDefinition.tooltip")}
+                  style={{ marginBottom: "0.125rem" }}
+                >
+                  {i18n("annotator.createTerm.selectDefinition")}
+                </Button>
+              </div>
             </FormGroup>
           ) : (
             <FormGroup style={{ marginBottom: 0 }}>

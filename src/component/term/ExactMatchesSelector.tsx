@@ -39,7 +39,7 @@ function filterOutTermsFromCurrentVocabulary(
     .forEach(
       (t) =>
         (t.plainSubTerms = t
-          .subTerms!.filter((st) => st.vocabulary!.iri !== currentVocabularyIri)
+          .subTerms!.filter((st) => st.vocabulary?.iri !== currentVocabularyIri)
           .map((st) => st.iri))
     );
   return result;

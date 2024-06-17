@@ -29,9 +29,12 @@ import File from "../../../model/File";
 import Vocabulary from "../../../model/Vocabulary";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import { MemoryRouter } from "react-router";
+import { AssetData } from "../../../model/Asset";
 
-jest.mock("../HtmlDomUtils");
 jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
+jest.mock("../HighlightTermOccurrencesButton", () => () => (
+  <button>Highlight terms</button>
+));
 
 describe("Annotator", () => {
   const fileIri = VocabularyUtils.create(Generator.generateUri());
@@ -48,6 +51,9 @@ describe("Annotator", () => {
     publishMessage(msg: Message): void;
     setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
     updateTerm(term: Term): Promise<any>;
+    approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
+    removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
+    saveTermOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   };
   let user: User;
   let file: File;
@@ -64,6 +70,9 @@ describe("Annotator", () => {
       publishMessage: jest.fn(),
       setTermDefinitionSource: jest.fn().mockResolvedValue(null),
       updateTerm: jest.fn().mockResolvedValue({}),
+      approveTermOccurrence: jest.fn().mockResolvedValue({}),
+      removeTermOccurrence: jest.fn().mockResolvedValue({}),
+      saveTermOccurrence: jest.fn().mockResolvedValue({}),
     };
     user = Generator.generateUser();
     file = new File({
@@ -289,6 +298,7 @@ describe("Annotator", () => {
         property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
         typeof: VocabularyUtils.TERM_OCCURRENCE,
       };
+      HtmlDomUtils.generateVirtualElement = jest.fn();
     });
 
     it("stores annotation from which the new term is being created for later reference", () => {
@@ -321,13 +331,13 @@ describe("Annotator", () => {
       wrapper.instance().setState({ newTermLabelAnnotation: annotation });
       AnnotationDomHelper.findAnnotation = jest
         .fn()
-        .mockReturnValue(annotation);
+        .mockReturnValue({ attribs: { ...annotation } });
       AnnotationDomHelper.removeAnnotation = jest.fn();
 
       wrapper.instance().onCloseCreate();
       expect(wrapper.state().newTermLabelAnnotation).not.toBeDefined();
       expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(
-        annotation,
+        { attribs: { ...annotation } },
         expect.anything()
       );
     });
@@ -406,15 +416,15 @@ describe("Annotator", () => {
         .fn()
         .mockImplementation((dom: any, annotationId: string) => {
           return annotationId === labelAnnotation.about
-            ? labelAnnotation
-            : definitionAnnotation;
+            ? { attribs: { ...labelAnnotation } }
+            : { attribs: { ...definitionAnnotation } };
         });
       AnnotationDomHelper.removeAnnotation = jest.fn();
 
       wrapper.instance().onCloseCreate();
       expect(wrapper.state().newTermDefinitionAnnotation).not.toBeDefined();
       expect(AnnotationDomHelper.removeAnnotation).toHaveBeenCalledWith(
-        definitionAnnotation,
+        { attribs: { ...definitionAnnotation } },
         expect.anything()
       );
     });
@@ -479,6 +489,7 @@ describe("Annotator", () => {
       window.getComputedStyle = jest.fn().mockReturnValue({
         getPropertyValue: () => "16px",
       });
+      HtmlDomUtils.isInPopup = jest.fn().mockReturnValue(false);
       const wrapper = mountWithIntl(
         <MemoryRouter>
           <Annotator
@@ -932,6 +943,38 @@ describe("Annotator", () => {
         expect(newContent).not.toBe(originalContent);
       });
     });
+
+    it("removes term occurrence when annotation was term occurrence", () => {
+      const wrapper = shallow<Annotator>(
+        <Annotator
+          fileIri={fileIri}
+          vocabularyIri={vocabularyIri}
+          {...mockedCallbackProps}
+          {...stateProps}
+          initialHtml={generalHtmlContent}
+          {...intlFunctions()}
+        />
+      );
+      const annotation = {
+        about: "_:14",
+        property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
+        typeof: VocabularyUtils.TERM_OCCURRENCE,
+      };
+      const annotationNode = {
+        attribs: {
+          about: annotation.about,
+          resource: Generator.generateUri(),
+          typeof: annotation.typeof,
+        },
+      };
+      AnnotationDomHelper.findAnnotation = jest
+        .fn()
+        .mockReturnValue(annotationNode);
+      wrapper.instance().onRemove(annotation.about);
+      expect(mockedCallbackProps.removeTermOccurrence).toHaveBeenCalledWith({
+        iri: `${fileIri.toString()}/occurrences/14`,
+      });
+    });
   });
 
   describe("onAnnotationTermSelected", () => {
@@ -1007,6 +1050,28 @@ describe("Annotator", () => {
       expect(mockedCallbackProps.onUpdate).toHaveBeenCalled();
     });
 
+    it("approves term occurrences when annotation is term occurrence", () => {
+      const wrapper = shallow<Annotator>(
+        <Annotator
+          fileIri={fileIri}
+          vocabularyIri={vocabularyIri}
+          {...mockedCallbackProps}
+          {...stateProps}
+          initialHtml={generalHtmlContent}
+          {...intlFunctions()}
+        />
+      );
+      const term = Generator.generateTerm();
+      annotation.resource = term.iri;
+      annotation.score = "1.0";
+      wrapper.instance().onAnnotationTermSelected(annotation, term);
+      expect(mockedCallbackProps.approveTermOccurrence).toHaveBeenCalledWith({
+        iri: `${fileIri.toString()}/occurrences/${annotation.about!.substring(
+          2
+        )}`,
+      });
+    });
+
     // Term definition sources have to be confirmed by user before the HTML is updated
     it("does not update content when annotation is term definition source", () => {
       annotation.property = VocabularyUtils.IS_DEFINITION_OF_TERM;
@@ -1025,6 +1090,24 @@ describe("Annotator", () => {
       annotation.resource = term.iri;
       wrapper.instance().onAnnotationTermSelected(annotation, term);
       expect(mockedCallbackProps.onUpdate).not.toHaveBeenCalled();
+    });
+
+    it("does not create term occurrence when user approves existing annotation", () => {
+      const wrapper = shallow<Annotator>(
+        <Annotator
+          fileIri={fileIri}
+          vocabularyIri={vocabularyIri}
+          {...mockedCallbackProps}
+          {...stateProps}
+          initialHtml={generalHtmlContent}
+          {...intlFunctions()}
+        />
+      );
+      const term = Generator.generateTerm();
+      annotation.resource = term.iri;
+      annotation.score = "1.0";
+      wrapper.instance().onAnnotationTermSelected(annotation, term);
+      expect(mockedCallbackProps.saveTermOccurrence).not.toHaveBeenCalled();
     });
   });
 });

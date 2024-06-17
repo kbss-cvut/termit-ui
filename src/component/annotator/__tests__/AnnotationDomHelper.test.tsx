@@ -299,5 +299,12 @@ describe("AnnotationDomHelper", () => {
         (annotationSpan.children![0] as DataNode).data
       );
     });
+
+    it("uses previous and next siblings to provide selector prefix and suffix", () => {
+      const selector = sut.generateSelector(annotationSpan);
+      expect(selector).toBeDefined();
+      expect(selector.prefix).toEqual("First paragraph.\n        ");
+      expect(selector.suffix).toEqual("\n    ");
+    });
   });
 });
