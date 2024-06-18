@@ -35,7 +35,7 @@ function textContains(text: string, toContain: string) {
 }
 
 export function multilingualTextContainsFilterFactory(lang: string) {
-  return (rows: any[], id: string, filterValue?: string) => {
+  return (rows: any[], id: string, filterValue: string) => {
     const normalizedFilterValue = Utils.normalizeString(
       String(filterValue)
     ).toLowerCase();
