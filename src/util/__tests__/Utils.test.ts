@@ -110,7 +110,7 @@ describe("Utils", () => {
     it("returns vocabulary type label message id for vocabulary", () => {
       const vocabulary: Vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test",
+        label: langString("Test"),
         types: [VocabularyUtils.VOCABULARY],
       });
       expect(Utils.getAssetTypeLabelId(vocabulary)).toEqual("type.vocabulary");
@@ -147,7 +147,7 @@ describe("Utils", () => {
     it("returns undefined for asset without type definition", () => {
       const asset: Vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test",
+        label: langString("Test"),
       });
       asset.types = undefined;
       expect(Utils.getAssetTypeLabelId(asset)).not.toBeDefined();
@@ -244,6 +244,19 @@ describe("Utils", () => {
       const value = Generator.generateUri();
       const result = Utils.createDynamicAttributeChange("testAtt", value);
       expect(result).toEqual({ testAtt: value });
+    });
+  });
+
+  describe("normalizeString", () => {
+    it("returns ASCII string unchanged", () => {
+      const str = "Test string without ACCENTS";
+      expect(Utils.normalizeString(str)).toEqual(str);
+    });
+
+    it("removes accents from string", () => {
+      expect(
+        Utils.normalizeString("pěkňoučký řetězec s mnoha háčky a čárkami")
+      ).toEqual("peknoucky retezec s mnoha hacky a carkami");
     });
   });
 });
