@@ -1,3 +1,11 @@
+#### Version 3.1.0
+
+- Added the possibility to highlight occurrences of the selected term in annotator.
+- Improvements to repeated document annotation - remember approved occurrences even if the document content changes (to a degree).
+- Modified visualization of term occurrences in annotator.
+- Ignore accents when filtering in tables.
+- Bug fixes, dependency updates.
+
 #### Version 3.0.4
 
 - Minor bug fixes.
