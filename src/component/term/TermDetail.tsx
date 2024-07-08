@@ -240,9 +240,10 @@ export class TermDetail extends EditableComponent<
     return (
       <div id="term-detail">
         <WindowTitle
-          title={`${getLocalized(term.label, this.state.language)} | ${
-            vocabulary.label
-          }`}
+          title={`${getLocalized(
+            term.label,
+            this.state.language
+          )} | ${getLocalized(vocabulary.label, this.state.language)}`}
         />
 
         <HeaderWithActions title={this.renderTitle()} actions={buttons} />

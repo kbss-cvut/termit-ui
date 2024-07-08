@@ -16,6 +16,8 @@ export const AnnotationType = {
   DEFINITION: VocabularyUtils.DEFINITION,
 };
 
+export const SELECTOR_CONTEXT_LENGTH = 32;
+
 function toHtmlString(nodeList: NodeList): string {
   let result = "";
   for (let i = 0; i < nodeList.length; i++) {
@@ -71,11 +73,14 @@ const AnnotationDomHelper = {
   removeAnnotation(annotation: DomHandlerNode, dom: DomHandlerNode[]): void {
     // assuming annotation.type === "tag"
     const elem = annotation as DomHandlerElement;
-    if (
-      Utils.sanitizeArray(elem.children).length === 1 &&
-      elem.children![0].type === "text"
-    ) {
-      const newNode = this.createTextualNode(elem);
+    if (Utils.sanitizeArray(elem.children).length === 1) {
+      let newNode;
+      const child = elem.children![0];
+      if (child.type === "text") {
+        newNode = this.createTextualNode(elem);
+      } else {
+        newNode = child;
+      }
       DomUtils.replaceElement(elem, newNode);
       const elemInd = dom.indexOf(elem);
       if (elemInd !== -1) {
@@ -156,8 +161,24 @@ const AnnotationDomHelper = {
   },
 
   generateSelector(node: DomHandlerNode): TextQuoteSelector {
+    let prefix = undefined;
+    let suffix = undefined;
+    if (node.previousSibling) {
+      prefix = HtmlDomUtils.getTextContent(node.previousSibling);
+      if (prefix.length > SELECTOR_CONTEXT_LENGTH) {
+        prefix = prefix.substring(prefix.length - SELECTOR_CONTEXT_LENGTH);
+      }
+    }
+    if (node.nextSibling) {
+      suffix = HtmlDomUtils.getTextContent(node.nextSibling);
+      if (suffix.length > SELECTOR_CONTEXT_LENGTH) {
+        suffix = suffix.substring(0, SELECTOR_CONTEXT_LENGTH);
+      }
+    }
     return {
       exactMatch: HtmlDomUtils.getTextContent(node),
+      prefix,
+      suffix,
       types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
     };
   },

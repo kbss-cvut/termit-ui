@@ -843,6 +843,23 @@ describe("Reducers", () => {
       expect(result.annotatorTerms).toEqual(terms);
     });
 
+    // This is in case single term loads finish before loading of all vocabulary terms finishes
+    it("sets loaded terms to state on success, retaining already loaded terms", () => {
+      const term = Generator.generateTerm();
+      const existing = {};
+      existing[term.iri] = term;
+      initialState.annotatorTerms = existing;
+      const expected = Object.assign({}, existing, terms);
+      const result = reducers(
+        stateToPlainObject(initialState),
+        asyncActionSuccessWithPayload(
+          { type: ActionType.ANNOTATOR_LOAD_TERMS },
+          terms
+        )
+      );
+      expect(result.annotatorTerms).toEqual(expected);
+    });
+
     it("resets state terms on request", () => {
       initialState.annotatorTerms = terms;
       const result = reducers(

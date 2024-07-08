@@ -3,6 +3,7 @@ import Utils from "../../util/Utils";
 import { TextQuoteSelector } from "../../model/TermOccurrence";
 import { AnnotationType } from "./AnnotationDomHelper";
 import { fromRange, toRange } from "xpath-range";
+import * as React from "react";
 
 const BLOCK_ELEMENTS = [
   "address",
@@ -40,6 +41,8 @@ const BLOCK_ELEMENTS = [
   "ul",
 ];
 
+const PUNCTUATION_CHARS = [".", ",", "!", "?", ":", ";"];
+
 function calculatePathLength(node: Node, ancestor: Node): number {
   let parent = node.parentNode;
   let length = 0;
@@ -61,6 +64,12 @@ function isBackwards(sel: Selection): boolean {
   const backwards = range.collapsed;
   range.detach();
   return backwards;
+}
+
+export interface HtmlSplit {
+  prefix: string;
+  body: string;
+  suffix: string;
 }
 
 const HtmlDomUtils = {
@@ -85,6 +94,23 @@ const HtmlDomUtils = {
     return null;
   },
 
+  splitHtml(htmlContent: string): HtmlSplit {
+    const htmlSplit = htmlContent.split(/(<body.*>|<\/body>)/gi);
+
+    if (htmlSplit.length === 5) {
+      return {
+        prefix: htmlSplit[0] + htmlSplit[1],
+        body: htmlSplit[2],
+        suffix: htmlSplit[3] + htmlSplit[4],
+      };
+    }
+    return {
+      prefix: "",
+      body: htmlContent,
+      suffix: "",
+    };
+  },
+
   /**
    * Checks whether the specified selection is in a popper.js popup.
    * @param range Range to check
@@ -95,6 +121,17 @@ const HtmlDomUtils = {
       commonAnc.parentElement !== null &&
       commonAnc.parentElement.closest(".popover") !== null
     );
+  },
+
+  resolvePopupPosition(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const annotatorElem = document.getElementById("annotator")!;
+    const fontSize = parseFloat(
+      window.getComputedStyle(annotatorElem).getPropertyValue("font-size")
+    );
+    return {
+      x: e.clientX,
+      y: e.clientY - fontSize / 2,
+    };
   },
 
   extendSelectionToWords() {
@@ -137,12 +174,22 @@ const HtmlDomUtils = {
         sel.modify("move", "backward", "word");
         const text = endNode.textContent || "";
         let index = endOffset;
-        while (text.charAt(index).trim().length !== 0 && index < text.length) {
+        while (
+          !this.isWhitespaceOrPunctuation(text.charAt(index)) &&
+          index < text.length
+        ) {
           index++;
         }
         sel.extend(endNode, index);
       }
     }
+  },
+
+  isWhitespaceOrPunctuation(character: string) {
+    return (
+      character.trim().length === 0 ||
+      PUNCTUATION_CHARS.indexOf(character) !== -1
+    );
   },
 
   /**
@@ -363,6 +410,12 @@ function suffixMatch(selector: TextQuoteSelector, element: Element) {
     element.nextSibling.textContent &&
     element.nextSibling.textContent!.indexOf(selector.suffix) !== -1
   );
+}
+
+export function getTermOccurrences(termIri: string) {
+  return document
+    .getElementById("annotator")!
+    .querySelectorAll(`span[resource="${termIri}"]`);
 }
 
 export default HtmlDomUtils;

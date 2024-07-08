@@ -11,6 +11,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { loadTermByIri } from "../../action/AsyncAnnotatorActions";
 import Asset from "../../model/Asset";
 import AccessLevel from "../../model/acl/AccessLevel";
+import classNames from "classnames";
 
 interface AnnotationProps extends AnnotationSpanProps {
   about: string;
@@ -29,6 +30,7 @@ interface AnnotationProps extends AnnotationSpanProps {
   onFetchTerm: (termIri: string) => Promise<Term | null>;
   onResetSticky: () => void; // Resets sticky annotation status
   accessLevel: AccessLevel;
+  highlight?: boolean;
 }
 
 interface AnnotationState {
@@ -103,7 +105,8 @@ export class Annotation extends React.Component<
       nextProps.sticky !== this.props.sticky ||
       nextProps.text !== this.props.text ||
       nextProps.resource !== this.props.resource ||
-      nextProps.score !== this.props.score
+      nextProps.score !== this.props.score ||
+      nextProps.highlight !== this.props.highlight
     ) {
       return true;
     }
@@ -159,6 +162,7 @@ export class Annotation extends React.Component<
         about: this.props.about,
         property: this.props.property,
         typeof: this.props.typeof,
+        score: this.props.score,
       };
       newAnnotation.resource = t ? t.iri : undefined;
       this.props.onUpdate(newAnnotation, t);
@@ -257,7 +261,9 @@ export class Annotation extends React.Component<
         {...contentProps}
         typeof={this.props.typeof}
         {...scoreProps}
-        className={termClassName + " " + termCreatorClassName}
+        className={classNames(termClassName, termCreatorClassName, {
+          "annotator-highlighted-annotation": this.props.highlight,
+        })}
       >
         {this.props.children}
         {this.props.typeof === AnnotationType.DEFINITION

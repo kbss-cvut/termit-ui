@@ -1,3 +1,11 @@
+#### Verze 3.1.0
+
+- Přidána možnost zvýraznit v anotátoru výskyty vybraného pojmu.
+- Vylepšená opakovaná anotace souborů - zapamatování si již potvrzených výskytů i při (omezené) změně obsahu dokumentu.
+- Úprava vizualizace výskytů v anotátoru.
+- Filtrování v tabulkách ignoruje diakritiku.
+- Opravy chyb, aktualizace knihoven.
+
 #### Verze 3.0.4
 
 - Opravy chyb.

@@ -3,15 +3,17 @@
 }
 
 .assigned-term-occurrence {
-  background: rgba(188, 239, 184, 0.8);
+  background: rgba(#bcefb8, 0.8);
+  border: 0.15rem solid green;
 }
 
 .suggested-term-occurrence {
-  background: rgba(239, 207, 184, 0.8);
+  background: rgba(#efcfb8, 0.8);
 }
 
 .invalid-term-occurrence {
   background: rgba(239, 66, 24, 0.7);
+  border: 0.15em solid rgb(239, 69, 27);
 }
 
 .loading-term-occurrence {
@@ -19,11 +21,13 @@
 }
 
 .assigned-term-occurrence.proposed-occurrence {
-  border: 0.15em dotted green;
+  background: none;
+  border: 0.15em dashed green;
 }
 
 .suggested-term-occurrence.proposed-occurrence {
-  border: 0.15em dotted rgb(239, 69, 27);
+  background: none;
+  border: 0.15em dashed rgb(239, 69, 27);
 }
 
 .invalid-term-occurrence.proposed-occurrence {
@@ -79,6 +83,9 @@
 
 .annotator-highlighted-annotation {
   background-color: yellow !important;
-  border: 1px solid #6f42c1;
   border-radius: 0.2rem;
+}
+
+.annotator-highlighted-annotation-current {
+  background-color: orange !important;
 }

@@ -51,9 +51,10 @@ export const TermDetail: React.FC<TermDetailProps> = (props) => {
   return (
     <div id="public-term-detail">
       <WindowTitle
-        title={`${getLocalized(term.label, language)} | ${
-          props.vocabulary.label
-        }`}
+        title={`${getLocalized(term.label, language)} | ${getLocalized(
+          props.vocabulary.label,
+          language
+        )}`}
       />
       <HeaderWithActions
         title={

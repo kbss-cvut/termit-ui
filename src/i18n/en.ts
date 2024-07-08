@@ -169,7 +169,7 @@ const en = {
     "administration.users.you": "This is you",
     "administration.users.types.admin": "This user is an administrator",
     "administration.users.oidc":
-      "An external authentication service is used to management users.",
+      "An external authentication service is used to manage users.",
     "administration.maintenance.title": "Maintenance",
     "administration.maintenance.invalidateCaches": "Invalidate caches",
     "administration.maintenance.invalidateCaches.tooltip":
@@ -613,6 +613,16 @@ const en = {
     "annotator.tutorial.title": "Tutorial",
     "annotator.tutorial.tooltip":
       "View a page with tutorial on how to use the annotator",
+    "annotator.highlight.button.label": "Find",
+    "annotator.highlight.button.active.tooltip":
+      'Highlighting occurrences of term "{term}"',
+    "annotator.highlight.button.inactive.tooltip":
+      "No term selected for highlighting",
+    "annotator.highlight.selector.title": "Find occurrences of term",
+    "annotator.highlight.selector.label":
+      "Select term whose occurrences to highlight",
+    "annotator.highlight.countInfo":
+      "Found {count, plural, one {# occurrence} other {# occurrences}} in this document.",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",
