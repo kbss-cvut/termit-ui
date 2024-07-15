@@ -129,6 +129,21 @@ export function register(user: UserAccountData) {
   };
 }
 
+export function resetPassword(username: string) {
+  const action = {
+    type: ActionType.RESET_PASSWORD,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post(
+      Constants.API_PREFIX + "/password/reset",
+      content({ username }).contentType(Constants.X_WWW_FORM_URLENCODED)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
 /**
  * This is basically the same as 'register', but is used from administration to add new users by admin and does not do
  * synthetic login on success.

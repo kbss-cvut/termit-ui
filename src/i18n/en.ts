@@ -53,6 +53,7 @@ const en = {
     "login.submit": "Login",
     "login.register": "Register",
     "login.register.label": "Don't have an account? <a>Register</a>",
+    "login.forgotPassword.label": "<a>Forgot your password?</a>",
     "login.error": "Authentication failed.",
     "login.progress-mask": "Logging in...",
     "login.locked": "Account locked.",
@@ -76,6 +77,16 @@ const en = {
     "register.login.label": "Already a member? <a>Log in</a>",
     "register.username-exists.tooltip": "Username already exists",
     "register.username.notValidEmail": "Username has to be an email address",
+
+    "forgotPassword.title": "Forgot password",
+    "forgotPassword.subtitle": "Forgot password",
+    "forgotPassword.login.label": "Back to <a>Log in</a>",
+    "forgotPassword.username": "Username",
+    "forgotPassword.username.placeholder": "Enter Your Username",
+    "forgotPassword.username.notValidEmail":
+      "Username has to be an email address",
+    "forgotPassword.submit": "Send recovery email",
+    "forgotPassword.success": "Email sent",
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",

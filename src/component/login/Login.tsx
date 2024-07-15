@@ -105,6 +105,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                 onKeyPress={this.onKeyPress}
                 onChange={this.onChange}
                 placeholder={i18n("login.password.placeholder")}
+                hint={this.renderForgotPasswordLink()}
               />
 
               <Button
@@ -141,6 +142,25 @@ export class Login extends React.Component<LoginProps, LoginState> {
     const error = this.state.error;
     const messageId = error.messageId ? error.messageId : "login.error";
     return <Alert color="danger">{this.props.i18n(messageId)}</Alert>;
+  }
+
+  private renderForgotPasswordLink() {
+    return (
+      <FormattedMessage
+        id="login.forgotPassword.label"
+        values={{
+          a: (chunks: any) => (
+            <Link
+              id="login-reset-password"
+              to={Routes.forgotPassword.link()}
+              className="bold"
+            >
+              {chunks}
+            </Link>
+          ),
+        }}
+      />
+    );
   }
 
   private renderRegistrationLink() {
