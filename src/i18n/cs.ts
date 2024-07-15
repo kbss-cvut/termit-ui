@@ -52,6 +52,7 @@ const cs = {
     "login.submit": "Přihlásit se",
     "login.register": "Registrace",
     "login.register.label": "Nemáte zatím účet? <a>Zaregistrujte se</a>",
+    "login.forgotPassword.label": "<a>Zapomněli jste heslo?</a>",
     "login.error": "Přihlášení se nezdařilo.",
     "login.progress-mask": "Přihlašuji...",
     "login.locked": "Účet je zablokován.",
@@ -78,6 +79,16 @@ const cs = {
     "register.username-exists.tooltip": "Uživatelské jméno již existuje",
     "register.username.notValidEmail":
       "Uživatelské jméno musí být emailovou adresou",
+
+    "forgotPassword.title": "Zapomenuté heslo",
+    "forgotPassword.subtitle": "Zapomenuté heslo",
+    "forgotPassword.login.label": "Zpět na <a>Přihlášení</a>",
+    "forgotPassword.username": "Uživatelské jméno",
+    "forgotPassword.username.placeholder": "Zadejte uživatelské jméno",
+    "forgotPassword.username.notValidEmail":
+      "Uživatelské jméno musí být emailovou adresou",
+    "forgotPassword.submit": "Odeslat email pro obnovení hesla",
+    "forgotPassword.success": "Email odeslán",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",

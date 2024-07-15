@@ -5,6 +5,7 @@ import Routing from "./util/Routing";
 import Routes from "./util/Routes";
 import Login from "./component/login/Login";
 import Register from "./component/register/Register";
+import ForgotPassword from "./component/forgotpassword/ForgotPassword";
 import { useSelector } from "react-redux";
 import TermItState from "./model/TermItState";
 import BreadcrumbRoute from "./component/breadcrumb/BreadcrumbRoute";
@@ -22,6 +23,10 @@ const IntlWrapper: React.FC = () => {
           <Switch>
             <Route path={Routes.login.path} component={Login} />
             <Route path={Routes.register.path} component={Register} />
+            <Route
+              path={Routes.forgotPassword.path}
+              component={ForgotPassword}
+            />
             <BreadcrumbRoute
               path={Routes.publicDashboard.path}
               title={intl.messages["main.nav.dashboard"]}
