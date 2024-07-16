@@ -1,4 +1,5 @@
 import { compact, JsonLdContext, JsonLdDictionary, JsonLdInput } from "jsonld";
+import Utils from "./Utils";
 
 /**
  * Utility functions for processing JSON-LD data.
@@ -18,9 +19,36 @@ export default class JsonLdUtils {
     input: JsonLdInput,
     context: JsonLdContext
   ): Promise<T> {
-    return compact<T>(input, context).then((res) =>
-      JsonLdUtils.resolveReferences<T>(res, new Map<string, object>())
-    );
+    return compact<T>(input, context).then((res) => {
+      res = JsonLdUtils.removeEmptyPluralLanguageContainers<T>(res, context);
+      return JsonLdUtils.resolveReferences<T>(res, new Map<string, object>());
+    });
+  }
+
+  /**
+   * An empty array is added for plural language containers (context @container = @language and @set) if they are not specified
+   * in the data. This function removes them, because otherwise they show up as unmapped properties
+   * (e.g., instead of altLabels, the term would have attribute http://www.w3.org/2004/02/skos/core#altLabel with value []).
+   * @param input Input object
+   * @param context JSON-LD context definition
+   * @private
+   */
+  private static removeEmptyPluralLanguageContainers<
+    T extends JsonLdDictionary
+  >(input: T, context: JsonLdContext): T {
+    Object.keys(context)
+      .filter((k) => {
+        return (
+          Array.isArray(context[k]["@container"]) &&
+          Utils.arraysAreEqual(context[k]["@container"], [
+            "@language",
+            "@set",
+          ]) &&
+          Utils.sanitizeArray(input[context[k]["@id"]]).length === 0
+        );
+      })
+      .forEach((k) => delete input[context[k]["@id"]]);
+    return input;
   }
 
   /**

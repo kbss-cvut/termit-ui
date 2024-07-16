@@ -16,6 +16,7 @@ import {
 import MultilingualString, {
   context,
   getLocalized,
+  pluralContext,
   PluralMultilingualString,
 } from "./MultilingualString";
 import { SupportsSnapshots } from "./Snapshot";
@@ -23,8 +24,8 @@ import { getLanguages, removeTranslation } from "../util/IntlUtil";
 
 const ctx = {
   label: context(VocabularyUtils.SKOS_PREF_LABEL),
-  altLabels: context(VocabularyUtils.SKOS_ALT_LABEL),
-  hiddenLabels: context(VocabularyUtils.SKOS_HIDDEN_LABEL),
+  altLabels: pluralContext(VocabularyUtils.SKOS_ALT_LABEL),
+  hiddenLabels: pluralContext(VocabularyUtils.SKOS_HIDDEN_LABEL),
   definition: context(VocabularyUtils.DEFINITION),
   scopeNote: context(VocabularyUtils.SKOS_SCOPE_NOTE),
   parentTerms: VocabularyUtils.BROADER,
@@ -38,7 +39,7 @@ const ctx = {
   state: VocabularyUtils.HAS_TERM_STATE,
   glossary: VocabularyUtils.SKOS_IN_SCHEME,
   notations: VocabularyUtils.SKOS_NOTATION,
-  examples: context(VocabularyUtils.SKOS_EXAMPLE),
+  examples: pluralContext(VocabularyUtils.SKOS_EXAMPLE),
   types: "@type",
 };
 
