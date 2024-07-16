@@ -81,6 +81,7 @@ const cs = {
       "Uživatelské jméno musí být emailovou adresou",
 
     "forgotPassword.title": "Zapomenuté heslo",
+    "forgotPassword.mask": "Odesílám...",
     "forgotPassword.subtitle": "Zapomenuté heslo",
     "forgotPassword.login.label": "Zpět na <a>Přihlášení</a>",
     "forgotPassword.username": "Uživatelské jméno",
@@ -89,6 +90,18 @@ const cs = {
       "Uživatelské jméno musí být emailovou adresou",
     "forgotPassword.submit": "Odeslat email pro obnovení hesla",
     "forgotPassword.success": "Email odeslán",
+
+    "resetPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
+    "resetPassword.mask": "Měním heslo...",
+    "resetPassword.title": "Změna hesla",
+    "resetPassword.subtitle": "Změna hesla",
+    "resetPassword.password": "Nové heslo",
+    "resetPassword.password.placeholder": "Zvolte si nové heslo",
+    "resetPassword.password.confirm": "Potvrzení hesla",
+    "resetPassword.submit": "Změnit heslo",
+    "resetPassword.success": "Heslo změněno",
+    "resetPassword.invalidToken":
+      "Neplatný nebo expirovaný link pro změnu hesla. Zažádejte o změnu hesla znovu.",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",

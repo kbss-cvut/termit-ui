@@ -79,6 +79,7 @@ const en = {
     "register.username.notValidEmail": "Username has to be an email address",
 
     "forgotPassword.title": "Forgot password",
+    "forgotPassword.mask": "Sending...",
     "forgotPassword.subtitle": "Forgot password",
     "forgotPassword.login.label": "Back to <a>Log in</a>",
     "forgotPassword.username": "Username",
@@ -87,6 +88,18 @@ const en = {
       "Username has to be an email address",
     "forgotPassword.submit": "Send recovery email",
     "forgotPassword.success": "Email sent",
+
+    "resetPassword.passwordsNotEqual": "Passwords don't match",
+    "resetPassword.mask": "Changing password...",
+    "resetPassword.title": "Change password",
+    "resetPassword.subtitle": "Change password",
+    "resetPassword.password": "New password",
+    "resetPassword.password.placeholder": "Choose a new password",
+    "resetPassword.password.confirm": "Confirm password",
+    "resetPassword.submit": "Change password",
+    "resetPassword.success": "Password changed",
+    "resetPassword.invalidToken":
+      "Invalid or expired password change link. Please request a password change again.",
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",

@@ -43,6 +43,10 @@ const Routes = {
   changePassword: new Route("changePassword", "/profile/change-password"),
   register: new Route("register", "/register"),
   forgotPassword: new Route("forgotPassword", "/forgot-password"),
+  resetPassword: new Route(
+    "resetPassword",
+    "/reset-password/:token/:token_uri"
+  ),
   search: new Route("search", "/search"),
   searchTerms: new Route("searchTerms", "/search/terms"),
   searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),

@@ -9,7 +9,7 @@ import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
 import { ThunkDispatch } from "../../util/Types";
 import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
-import { resetPassword } from "../../action/AsyncUserActions";
+import { requestPasswordReset } from "../../action/AsyncUserActions";
 import Constants from "../../util/Constants";
 import { Link } from "react-router-dom";
 import WindowTitle from "../misc/WindowTitle";
@@ -24,7 +24,7 @@ import MessageType from "../../model/MessageType";
 
 interface ForgotPasswordProps extends HasI18n {
   loading: boolean;
-  resetPassword: (
+  requestPasswordReset: (
     username: string
   ) => Promise<AsyncFailureAction | AsyncAction>;
 }
@@ -33,7 +33,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
   React.useEffect(() => {
     SecurityUtils.clearToken();
   }, []);
-  const { i18n, resetPassword } = props;
+  const { i18n, requestPasswordReset } = props;
   const [username, setUsername] = React.useState("");
   const [message, setMessage] = React.useState(null as Message | null);
 
@@ -64,7 +64,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
 
   const renderMask = () =>
     props.loading ? (
-      <Mask text={props.i18n("register.mask")} classes="mask-container" />
+      <Mask text={props.i18n("forgotPassword.mask")} classes="mask-container" />
     ) : null;
 
   const renderAlert = () => {
@@ -77,7 +77,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
   };
 
   const sendRequest = () => {
-    resetPassword(username).then((result) => {
+    requestPasswordReset(username).then((result) => {
       const asyncResult = result as AsyncFailureAction;
       if (asyncResult.status === AsyncActionStatus.FAILURE) {
         const error = asyncResult.error;
@@ -129,7 +129,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
                 validation={validateUsername()}
               />
               <Button
-                id="login-submit"
+                id="forgotPassword-submit"
                 color="success"
                 onClick={sendRequest}
                 className="btn-block"
@@ -169,7 +169,8 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      resetPassword: (username: string) => dispatch(resetPassword(username)),
+      requestPasswordReset: (username: string) =>
+        dispatch(requestPasswordReset(username)),
     };
   }
 )(injectIntl(withI18n(ForgotPassword)));
