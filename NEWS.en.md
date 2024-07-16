@@ -1,3 +1,7 @@
+#### Version 3.1.1
+
+- Bug fixes, dependency updates.
+
 #### Version 3.1.0
 
 - Added the possibility to highlight occurrences of the selected term in annotator.
