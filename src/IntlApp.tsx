@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import TermItState from "./model/TermItState";
 import BreadcrumbRoute from "./component/breadcrumb/BreadcrumbRoute";
 import Mask from "./component/misc/Mask";
+import ResetPassword from "./component/forgotpassword/ResetPassword";
 
 const PublicMainView = React.lazy(() => import("./component/public/MainView"));
 const MainView = React.lazy(() => import("./component/MainView"));
@@ -27,6 +28,7 @@ const IntlWrapper: React.FC = () => {
               path={Routes.forgotPassword.path}
               component={ForgotPassword}
             />
+            <Route path={Routes.resetPassword.path} component={ResetPassword} />
             <BreadcrumbRoute
               path={Routes.publicDashboard.path}
               title={intl.messages["main.nav.dashboard"]}

@@ -36,6 +36,7 @@ import Routes from "../util/Routes";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
 } from "../model/RdfsResource";
+import ChangePasswordDto from "../model/ChangePasswordDto";
 
 const USERS_ENDPOINT = "/users";
 
@@ -129,15 +130,27 @@ export function register(user: UserAccountData) {
   };
 }
 
-export function resetPassword(username: string) {
+export function requestPasswordReset(username: string) {
+  const action = {
+    type: ActionType.REQUEST_PASSWORD_RESET,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post(Constants.API_PREFIX + "/password/reset/" + username)
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function resetPassword(dto: ChangePasswordDto) {
   const action = {
     type: ActionType.RESET_PASSWORD,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.post(
-      Constants.API_PREFIX + "/password/reset",
-      content({ username }).contentType(Constants.X_WWW_FORM_URLENCODED)
+      Constants.API_PREFIX + "/password/change",
+      content(dto).contentType("application/json")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
