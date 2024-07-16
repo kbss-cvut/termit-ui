@@ -1,3 +1,7 @@
+#### Verze 3.1.1
+
+- Opravy chyb, aktualizace knihoven.
+
 #### Verze 3.1.0
 
 - Přidána možnost zvýraznit v anotátoru výskyty vybraného pojmu.

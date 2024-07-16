@@ -24,8 +24,11 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
       </div>
     ) : null;
   }
-  const result: JSX.Element[] = [];
+  const result: React.JSX.Element[] = [];
   props.properties.forEach((values, k) => {
+    if (values.length === 0) {
+      return;
+    }
     const sortedItems = values.map((v) =>
       (v as { iri: string }).iri ? (v as { iri: string }).iri : (v as string)
     );

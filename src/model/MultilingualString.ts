@@ -9,6 +9,13 @@ export function context(propertyIri: string) {
   };
 }
 
+export function pluralContext(propertyIri: string) {
+  return {
+    "@id": propertyIri,
+    "@container": ["@language", "@set"],
+  };
+}
+
 export interface MultilingualString {
   [key: string]: string;
 }

@@ -1,6 +1,7 @@
 import VocabularyUtils from "../VocabularyUtils";
 import JsonLdUtils from "../JsonLdUtils";
 import { CONTEXT as VOCABULARY_CONTEXT } from "../../model/Vocabulary";
+import { CONTEXT as TERM_CONTEXT, TermData } from "../../model/Term";
 
 describe("JsonLdUtils", () => {
   describe("resolveReferences", () => {
@@ -72,6 +73,76 @@ describe("JsonLdUtils", () => {
         expect(result.document.vocabulary).toBeDefined();
         expect(result.document.vocabulary).toEqual(result);
       });
+    });
+
+    it("does not add empty arrays for plural language containers", () => {
+      const input = {
+        "@context": {
+          types: "@type",
+          sources: "http://purl.org/dc/terms/source",
+          notations: "http://www.w3.org/2004/02/skos/core#notation",
+          label: {
+            "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "@container": "@language",
+          },
+          uri: "@id",
+          subTerms: "http://www.w3.org/2004/02/skos/core#narrower",
+          glossary: "http://www.w3.org/2004/02/skos/core#inScheme",
+          vocabulary:
+            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku",
+          hiddenLabels: "http://www.w3.org/2004/02/skos/core#hiddenLabel",
+          examples: "http://www.w3.org/2004/02/skos/core#example",
+          related: "http://www.w3.org/2004/02/skos/core#related",
+          relatedMatch: "http://www.w3.org/2004/02/skos/core#relatedMatch",
+          definition: {
+            "@id": "http://www.w3.org/2004/02/skos/core#definition",
+            "@container": "@language",
+          },
+          state:
+            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-stav-pojmu",
+          parentTerms: "http://www.w3.org/2004/02/skos/core#broader",
+          altLabels: {
+            "@id": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "@container": "@language",
+          },
+          exactMatchTerms: "http://www.w3.org/2004/02/skos/core#exactMatch",
+        },
+        uri: "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test/pojem/lokalita",
+        types: [
+          "http://onto.fel.cvut.cz/ontologies/ufo/object",
+          "http://www.w3.org/2004/02/skos/core#Concept",
+        ],
+        label: {
+          cs: "Lokalita",
+          en: "Locality",
+        },
+        subTerms: [],
+        notations: [],
+        definition: {
+          cs: "Plocha nebo soubor ploch, popřípadě část plochy, vymezená na základě převažujícího charakteru. Upraveno. Ještě přidána explicitně zmíněná testovací plocha, aby se nám přidala do definičně souvisejících pojmů.\n\nDefinice znovu upravena, abychom spustili textovou analýzu. A znovu.",
+          en: "English definition of the term Locality is just a placeholder proving that multilingual definition works.",
+        },
+        sources: [],
+        altLabels: [],
+        hiddenLabels: [],
+        examples: [],
+        vocabulary: {
+          uri: "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test",
+        },
+        glossary: {
+          uri: "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test/glosář",
+        },
+        state: {
+          uri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/publikovaný-pojem",
+        },
+      };
+      return JsonLdUtils.compactAndResolveReferences(input, TERM_CONTEXT).then(
+        (result: TermData) => {
+          expect(result[VocabularyUtils.SKOS_ALT_LABEL]).not.toBeDefined();
+          expect(result[VocabularyUtils.SKOS_HIDDEN_LABEL]).not.toBeDefined();
+          expect(result[VocabularyUtils.SKOS_EXAMPLE]).not.toBeDefined();
+        }
+      );
     });
   });
 
