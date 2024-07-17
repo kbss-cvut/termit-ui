@@ -52,9 +52,17 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
     setpasswordConfirm(e.currentTarget.value);
   };
 
-  const arePasswordsEqual = () => password === passwordConfirm;
+  const arePasswordsEqualAndNotEmpty = () =>
+    password === passwordConfirm && password != "";
   const validatePasswords = () => {
-    if (arePasswordsEqual()) return ValidationResult.VALID;
+    if (arePasswordsEqualAndNotEmpty()) {
+      return ValidationResult.VALID;
+    }
+
+    if (password == "") {
+      return new ValidationResult(Severity.BLOCKER);
+    }
+
     return new ValidationResult(
       Severity.BLOCKER,
       i18n("resetPassword.passwordsNotEqual")
@@ -63,7 +71,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
 
   // Listen to keys and check if enter was pressed, validate the form and send request
   const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && arePasswordsEqual()) {
+    if (e.key === "Enter" && arePasswordsEqualAndNotEmpty()) {
       sendRequest();
     }
   };
@@ -107,6 +115,8 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
             )
           );
           setPasswordChanged(true);
+          setPassword("");
+          setpasswordConfirm("");
         }
       }
     );
@@ -156,7 +166,9 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
                 onClick={sendRequest}
                 className="btn-block"
                 disabled={
-                  props.loading || !arePasswordsEqual() || passwordChanged
+                  props.loading ||
+                  !arePasswordsEqualAndNotEmpty() ||
+                  passwordChanged
                 }
               >
                 {i18n("resetPassword.submit")}
