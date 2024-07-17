@@ -99,6 +99,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
             MessageType.SUCCESS
           )
         );
+        setUsername("");
       }
     });
   };

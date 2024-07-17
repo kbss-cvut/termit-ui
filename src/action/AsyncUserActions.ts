@@ -130,6 +130,10 @@ export function register(user: UserAccountData) {
   };
 }
 
+/**
+ * Creates a request to change a password of account with provided username.
+ * @param username The username specifying user account
+ */
 export function requestPasswordReset(username: string) {
   const action = {
     type: ActionType.REQUEST_PASSWORD_RESET,
@@ -142,6 +146,10 @@ export function requestPasswordReset(username: string) {
   };
 }
 
+/**
+ * uses password reset token to change password of associated account
+ * @param dto ChangePasswordDto with required data
+ */
 export function resetPassword(dto: ChangePasswordDto) {
   const action = {
     type: ActionType.RESET_PASSWORD,
