@@ -1,11 +1,9 @@
 import * as React from "react";
 import { Alert, Button, Card, CardBody, CardHeader, Form } from "reactstrap";
-import { FormattedMessage, injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
+import { FormattedMessage } from "react-intl";
 import Routes from "../../util/Routes";
-import { connect } from "react-redux";
-import TermItState from "../../model/TermItState";
-import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
+import { useDispatch } from "react-redux";
+import { AsyncFailureAction } from "../../action/ActionType";
 import { ThunkDispatch } from "../../util/Types";
 import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
@@ -14,30 +12,28 @@ import Constants from "../../util/Constants";
 import { Link, useParams } from "react-router-dom";
 import WindowTitle from "../misc/WindowTitle";
 import IfInternalAuth from "../misc/oidc/IfInternalAuth";
-import Mask from "../misc/Mask";
 import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
 import ValidationResult, { Severity } from "../../model/form/ValidationResult";
 import Message from "../../model/Message";
-import ChangePasswordDto from "../../model/ChangePasswordDto";
 import MessageType from "../../model/MessageType";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
+import { useI18n } from "../hook/useI18n";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 
-interface ResetPasswordProps extends HasI18n {
-  loading: boolean;
-  resetPassword: (
-    data: ChangePasswordDto
-  ) => Promise<AsyncFailureAction | AsyncAction>;
-}
 interface ResetPasswordGetParams {
   token: string;
   token_uri: string;
 }
 
-export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
+export const ResetPassword: React.FC<{}> = () => {
   React.useEffect(() => {
     SecurityUtils.clearToken();
   }, []);
-  const { i18n, resetPassword } = props;
+
+  const dispatch: ThunkDispatch = useDispatch();
+  const { i18n } = useI18n();
+
   const { token, token_uri } = useParams<ResetPasswordGetParams>();
   const [password, setPassword] = React.useState("");
   const [passwordConfirm, setpasswordConfirm] = React.useState("");
@@ -76,11 +72,6 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
     }
   };
 
-  const renderMask = () =>
-    props.loading ? (
-      <Mask text={props.i18n("resetPassword.mask")} classes="mask-container" />
-    ) : null;
-
   const renderAlert = () => {
     if (!message) {
       return null;
@@ -91,11 +82,16 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
   };
 
   const sendRequest = () => {
-    resetPassword({
-      token,
-      uri: decodeURIComponent(token_uri),
-      newPassword: password,
-    }).then((result) => {
+    trackPromise(
+      dispatch(
+        resetPassword({
+          token,
+          uri: decodeURIComponent(token_uri),
+          newPassword: password,
+        })
+      ),
+      "resetPassword"
+    ).then((result) => {
       const asyncResult = result as AsyncFailureAction;
       if (asyncResult.status === AsyncActionStatus.FAILURE) {
         const error = asyncResult.error;
@@ -134,7 +130,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
             <div>{i18n("resetPassword.subtitle")}</div>
           </CardHeader>
           <CardBody>
-            {renderMask()}
+            <PromiseTrackingMask area="resetPassword" />
             <Form>
               {renderAlert()}
               <EnhancedInput
@@ -167,11 +163,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
                 color="success"
                 onClick={sendRequest}
                 className="btn-block"
-                disabled={
-                  props.loading ||
-                  !arePasswordsEqualAndNotEmpty() ||
-                  passwordChanged
-                }
+                disabled={!arePasswordsEqualAndNotEmpty() || passwordChanged}
               >
                 {i18n("resetPassword.submit")}
               </Button>
@@ -199,15 +191,4 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
   );
 };
 
-export default connect(
-  (state: TermItState) => {
-    return {
-      loading: state.loading,
-    };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      resetPassword: (dto: ChangePasswordDto) => dispatch(resetPassword(dto)),
-    };
-  }
-)(injectIntl(withI18n(ResetPassword)));
+export default ResetPassword;

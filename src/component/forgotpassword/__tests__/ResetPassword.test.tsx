@@ -1,7 +1,7 @@
 import { AsyncAction, AsyncFailureAction } from "../../../action/ActionType";
 import { MemoryRouter } from "react-router";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { i18n, intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import { i18n } from "../../../__tests__/environment/IntlUtil";
 import MessageType from "../../../model/MessageType";
 import { Alert } from "reactstrap";
 import { act } from "react-dom/test-utils";
@@ -27,11 +27,7 @@ describe("ResetPassword", () => {
   it("renders submit button disabled when any field is empty", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
     const button = () => wrapper.find("button#resetPassword-submit");
@@ -56,11 +52,7 @@ describe("ResetPassword", () => {
   it("renders submit button disabled when passwords does not match", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
     const button = () => wrapper.find("button#resetPassword-submit");
@@ -86,11 +78,7 @@ describe("ResetPassword", () => {
   it("renders submit button enabled when passwords match", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
     const button = () => wrapper.find("button#resetPassword-submit");
@@ -113,11 +101,7 @@ describe("ResetPassword", () => {
   it("does send form when button is pressed and passwords match", async () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
     const button = () => wrapper.find("button#resetPassword-submit");
@@ -142,11 +126,7 @@ describe("ResetPassword", () => {
   it("does send form when enter is pressed and passwords match", async () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
 
@@ -171,11 +151,7 @@ describe("ResetPassword", () => {
   it("does send form when enter is pressed and passwords match", async () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
 
@@ -213,11 +189,7 @@ describe("ResetPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
 
@@ -253,11 +225,7 @@ describe("ResetPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
 
@@ -289,11 +257,7 @@ describe("ResetPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
 
@@ -325,11 +289,7 @@ describe("ResetPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
 
@@ -362,11 +322,7 @@ describe("ResetPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ResetPassword
-          loading={false}
-          resetPassword={resetPassword}
-          {...intlFunctions()}
-        />
+        <ResetPassword />
       </MemoryRouter>
     );
 

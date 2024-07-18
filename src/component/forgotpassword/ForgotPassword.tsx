@@ -1,11 +1,10 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { Alert, Button, Card, CardBody, CardHeader, Form } from "reactstrap";
-import { FormattedMessage, injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
+import { FormattedMessage } from "react-intl";
 import Routes from "../../util/Routes";
-import { connect } from "react-redux";
-import TermItState from "../../model/TermItState";
-import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
+import { useDispatch } from "react-redux";
+import { AsyncFailureAction } from "../../action/ActionType";
 import { ThunkDispatch } from "../../util/Types";
 import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
@@ -14,26 +13,24 @@ import Constants from "../../util/Constants";
 import { Link } from "react-router-dom";
 import WindowTitle from "../misc/WindowTitle";
 import IfInternalAuth from "../misc/oidc/IfInternalAuth";
-import Mask from "../misc/Mask";
 import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
 import ValidationResult, { Severity } from "../../model/form/ValidationResult";
 import Utils from "../../util/Utils";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import Message from "../../model/Message";
 import MessageType from "../../model/MessageType";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
+import { useI18n } from "../hook/useI18n";
 
-interface ForgotPasswordProps extends HasI18n {
-  loading: boolean;
-  requestPasswordReset: (
-    username: string
-  ) => Promise<AsyncFailureAction | AsyncAction>;
-}
-
-export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
-  React.useEffect(() => {
+export const ForgotPassword: React.FC<{}> = () => {
+  useEffect(() => {
     SecurityUtils.clearToken();
   }, []);
-  const { i18n, requestPasswordReset } = props;
+
+  const dispatch: ThunkDispatch = useDispatch();
+  const { i18n } = useI18n();
+
   const [username, setUsername] = React.useState("");
   const [message, setMessage] = React.useState(null as Message | null);
 
@@ -62,11 +59,6 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
     }
   };
 
-  const renderMask = () =>
-    props.loading ? (
-      <Mask text={props.i18n("forgotPassword.mask")} classes="mask-container" />
-    ) : null;
-
   const renderAlert = () => {
     if (!message) {
       return null;
@@ -77,7 +69,10 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
   };
 
   const sendRequest = () => {
-    requestPasswordReset(username).then((result) => {
+    trackPromise(
+      dispatch(requestPasswordReset(username)),
+      "requestPasswordReset"
+    ).then((result) => {
       const asyncResult = result as AsyncFailureAction;
       if (asyncResult.status === AsyncActionStatus.FAILURE) {
         const error = asyncResult.error;
@@ -114,7 +109,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
             <div>{i18n("forgotPassword.subtitle")}</div>
           </CardHeader>
           <CardBody>
-            {renderMask()}
+            <PromiseTrackingMask area="requestPasswordReset" />
             <Form>
               {renderAlert()}
               <EnhancedInput
@@ -134,7 +129,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
                 color="success"
                 onClick={sendRequest}
                 className="btn-block"
-                disabled={props.loading || !isUsernameValid()}
+                disabled={!isUsernameValid()}
               >
                 {i18n("forgotPassword.submit")}
               </Button>
@@ -162,16 +157,4 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = (props) => {
   );
 };
 
-export default connect(
-  (state: TermItState) => {
-    return {
-      loading: state.loading,
-    };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      requestPasswordReset: (username: string) =>
-        dispatch(requestPasswordReset(username)),
-    };
-  }
-)(injectIntl(withI18n(ForgotPassword)));
+export default ForgotPassword;

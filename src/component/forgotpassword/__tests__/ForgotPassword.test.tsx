@@ -2,7 +2,7 @@ import { AsyncAction, AsyncFailureAction } from "../../../action/ActionType";
 import { MemoryRouter } from "react-router";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { ForgotPassword } from "../ForgotPassword";
-import { i18n, intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import { i18n } from "../../../__tests__/environment/IntlUtil";
 import MessageType from "../../../model/MessageType";
 import { Alert } from "reactstrap";
 import { act } from "react-dom/test-utils";
@@ -28,11 +28,7 @@ describe("ForgotPassword", () => {
   it("renders submit button disabled when username field is empty", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
     const button = () => wrapper.find("button#forgotPassword-submit");
@@ -54,11 +50,7 @@ describe("ForgotPassword", () => {
   it("renders submit button disabled when username field is not valid email", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
     const button = () => wrapper.find("button#forgotPassword-submit");
@@ -80,11 +72,7 @@ describe("ForgotPassword", () => {
   it("does send form when button is pressed and username is valid", async () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
     const button = () => wrapper.find("button#forgotPassword-submit");
@@ -106,11 +94,7 @@ describe("ForgotPassword", () => {
   it("does send form when enter is pressed and username is valid", async () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
     const usernameInput = () => wrapper.find('input[name="username"]');
@@ -131,11 +115,7 @@ describe("ForgotPassword", () => {
   it("does not send form when enter is pressed and username is invalid", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
     const usernameInput = () => wrapper.find('input[name="username"]');
@@ -159,11 +139,7 @@ describe("ForgotPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
 
@@ -197,11 +173,7 @@ describe("ForgotPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
 
@@ -233,11 +205,7 @@ describe("ForgotPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
 
@@ -267,11 +235,7 @@ describe("ForgotPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
 
@@ -301,11 +265,7 @@ describe("ForgotPassword", () => {
       .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
-        <ForgotPassword
-          loading={false}
-          requestPasswordReset={requestPasswordReset}
-          {...intlFunctions()}
-        />
+        <ForgotPassword />
       </MemoryRouter>
     );
 
