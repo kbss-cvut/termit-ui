@@ -91,35 +91,37 @@ export const ResetPassword: React.FC<ResetPasswordProps> = (props) => {
   };
 
   const sendRequest = () => {
-    resetPassword({ token, uri: token_uri, newPassword: password }).then(
-      (result) => {
-        const asyncResult = result as AsyncFailureAction;
-        if (asyncResult.status === AsyncActionStatus.FAILURE) {
-          const error = asyncResult.error;
-          setMessage(
-            new Message(
-              {
-                messageId: error.messageId,
-                message: error.message,
-              },
-              MessageType.ERROR
-            )
-          );
-        } else {
-          setMessage(
-            new Message(
-              {
-                messageId: "resetPassword.success",
-              },
-              MessageType.SUCCESS
-            )
-          );
-          setPasswordChanged(true);
-          setPassword("");
-          setpasswordConfirm("");
-        }
+    resetPassword({
+      token,
+      uri: decodeURIComponent(token_uri),
+      newPassword: password,
+    }).then((result) => {
+      const asyncResult = result as AsyncFailureAction;
+      if (asyncResult.status === AsyncActionStatus.FAILURE) {
+        const error = asyncResult.error;
+        setMessage(
+          new Message(
+            {
+              messageId: error.messageId,
+              message: error.message,
+            },
+            MessageType.ERROR
+          )
+        );
+      } else {
+        setMessage(
+          new Message(
+            {
+              messageId: "resetPassword.success",
+            },
+            MessageType.SUCCESS
+          )
+        );
+        setPasswordChanged(true);
+        setPassword("");
+        setpasswordConfirm("");
       }
-    );
+    });
   };
 
   return (
