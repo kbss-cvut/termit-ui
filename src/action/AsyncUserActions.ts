@@ -140,7 +140,10 @@ export function requestPasswordReset(username: string) {
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
-    return Ajax.post(Constants.API_PREFIX + "/password/reset/" + username)
+    return Ajax.post(
+      Constants.API_PREFIX + "/password",
+      content(username).contentType("text/plain")
+    )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
@@ -156,8 +159,8 @@ export function resetPassword(dto: ChangePasswordDto) {
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
-    return Ajax.post(
-      Constants.API_PREFIX + "/password/change",
+    return Ajax.put(
+      Constants.API_PREFIX + "/password",
       content(dto).contentType("application/json")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
