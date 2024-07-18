@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Alert, Button, Card, CardBody, CardHeader, Form } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Form } from "reactstrap";
 import { FormattedMessage } from "react-intl";
 import Routes from "../../util/Routes";
 import { useDispatch } from "react-redux";
@@ -20,6 +20,8 @@ import AsyncActionStatus from "../../action/AsyncActionStatus";
 import { useI18n } from "../hook/useI18n";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { publishMessage } from "../../action/SyncActions";
+import Messages from "../message/Messages";
 
 interface ResetPasswordGetParams {
   token: string;
@@ -37,7 +39,6 @@ export const ResetPassword: React.FC<{}> = () => {
   const { token, token_uri } = useParams<ResetPasswordGetParams>();
   const [password, setPassword] = React.useState("");
   const [passwordConfirm, setpasswordConfirm] = React.useState("");
-  const [message, setMessage] = React.useState(null as Message | null);
   // will block UI once the request was successfully sent
   const [passwordChanged, setPasswordChanged] = React.useState(false);
 
@@ -72,15 +73,6 @@ export const ResetPassword: React.FC<{}> = () => {
     }
   };
 
-  const renderAlert = () => {
-    if (!message) {
-      return null;
-    }
-
-    const text = message.messageId ? i18n(message.messageId) : message.message;
-    return <Alert color={message.type}>{text}</Alert>;
-  };
-
   const sendRequest = () => {
     trackPromise(
       dispatch(
@@ -95,27 +87,31 @@ export const ResetPassword: React.FC<{}> = () => {
       const asyncResult = result as AsyncFailureAction;
       if (asyncResult.status === AsyncActionStatus.FAILURE) {
         const error = asyncResult.error;
-        setMessage(
-          new Message(
-            {
-              messageId: error.messageId,
-              message: error.message,
-            },
-            MessageType.ERROR
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: error.messageId,
+                message: error.message,
+              },
+              MessageType.ERROR
+            )
           )
         );
       } else {
-        setMessage(
-          new Message(
-            {
-              messageId: "resetPassword.success",
-            },
-            MessageType.SUCCESS
-          )
-        );
         setPasswordChanged(true);
         setPassword("");
         setpasswordConfirm("");
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "resetPassword.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
       }
     });
   };
@@ -132,7 +128,7 @@ export const ResetPassword: React.FC<{}> = () => {
           <CardBody>
             <PromiseTrackingMask area="resetPassword" />
             <Form>
-              {renderAlert()}
+              <Messages renderInPlace={true} />
               <EnhancedInput
                 type="password"
                 name="newPassword"

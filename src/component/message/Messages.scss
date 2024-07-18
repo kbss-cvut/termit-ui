@@ -16,6 +16,15 @@
   }
 }
 
+/**
+ * Option to render the container in defined place,
+ * rather than floating in the right upper corner
+ */
+.message-fixed-container {
+  width: 100%;
+  margin: auto;
+}
+
 .messages-0 {
   height: 0;
 }
