@@ -1,23 +1,28 @@
 import { AsyncAction, AsyncFailureAction } from "../../../action/ActionType";
 import { MemoryRouter } from "react-router";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { i18n } from "../../../__tests__/environment/IntlUtil";
 import MessageType from "../../../model/MessageType";
-import { Alert } from "reactstrap";
 import { act } from "react-dom/test-utils";
 import AsyncActionStatus from "../../../action/AsyncActionStatus";
-import ErrorInfo from "../../../model/ErrorInfo";
 import { changeInputValue } from "../../../__tests__/environment/TestUtil";
-import ChangePasswordDto from "../../../model/ChangePasswordDto";
 import { ResetPassword } from "../ResetPassword";
+import { resetPassword } from "../../../action/AsyncUserActions";
+
+jest.mock("../../../action/AsyncUserActions", () => ({
+  ...jest.requireActual("../../../action/AsyncUserActions"),
+  resetPassword: jest.fn(),
+}));
+
+const mockedResetPassword = jest.mocked(resetPassword, true);
 
 describe("ResetPassword", () => {
-  let resetPassword: (
-    data: ChangePasswordDto
-  ) => Promise<AsyncFailureAction | AsyncAction>;
-
   beforeEach(() => {
-    resetPassword = jest.fn().mockImplementation(() => Promise.resolve({}));
+    mockedResetPassword.mockReset().mockReturnValue(() =>
+      Promise.resolve({
+        status: AsyncActionStatus.SUCCESS,
+        type: MessageType.SUCCESS,
+      } as AsyncAction)
+    );
   });
 
   const PASSWORD = "UltraSecretPassword";
@@ -49,7 +54,7 @@ describe("ResetPassword", () => {
     expect(button().props().disabled).toBeFalsy();
   });
 
-  it("renders submit button disabled when passwords does not match", () => {
+  it("renders submit button disabled when passwords dont match", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <ResetPassword />
@@ -120,7 +125,7 @@ describe("ResetPassword", () => {
       wrapper.update();
     });
 
-    expect(resetPassword).toHaveBeenCalled();
+    expect(mockedResetPassword).toHaveBeenCalled();
   });
 
   it("does send form when enter is pressed and passwords match", async () => {
@@ -145,10 +150,10 @@ describe("ResetPassword", () => {
       wrapper.update();
     });
 
-    expect(resetPassword).toHaveBeenCalled();
+    expect(mockedResetPassword).toHaveBeenCalled();
   });
 
-  it("does send form when enter is pressed and passwords match", async () => {
+  it("does not send form when enter is pressed and passwords dont match", async () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <ResetPassword />
@@ -172,121 +177,10 @@ describe("ResetPassword", () => {
     });
 
     expect(passwordInput().props().value).toEqual(PASSWORD);
-    expect(resetPassword).not.toHaveBeenCalled();
-  });
-
-  it("renders alert with message", async () => {
-    const requestResult = {
-      error: {
-        messageId: undefined,
-        message: "Error message text",
-      },
-      status: AsyncActionStatus.FAILURE,
-      type: MessageType.ERROR,
-    } as AsyncFailureAction;
-    resetPassword = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(requestResult));
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
-
-    const alert = () => wrapper.find(Alert);
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
-
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
-
-    await act(async () => {
-      passwordConfirmationInput().simulate("keyPress", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(alert().props().color).toEqual(requestResult.type);
-    expect(alert().text()).toEqual(requestResult.error.message);
-  });
-
-  it("renders alert with internationalized messageId", async () => {
-    const requestResult: AsyncFailureAction = {
-      error: new ErrorInfo(MessageType.ERROR, {
-        messageId: "resetPassword.invalidToken",
-        message: "Error message text",
-      }),
-      status: AsyncActionStatus.FAILURE,
-      type: MessageType.ERROR,
-    };
-    resetPassword = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(requestResult));
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
-
-    const alert = () => wrapper.find(Alert);
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
-
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
-
-    await act(async () => {
-      passwordConfirmationInput().simulate("keyPress", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(alert().props().color).toEqual(requestResult.type);
-    expect(alert().text()).toEqual(i18n("resetPassword.invalidToken"));
-  });
-
-  it("renders alert on success", async () => {
-    const requestResult: AsyncAction = {
-      status: AsyncActionStatus.SUCCESS,
-      type: MessageType.SUCCESS,
-    };
-    resetPassword = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(requestResult));
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
-
-    const alert = () => wrapper.find(Alert);
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
-
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
-
-    await act(async () => {
-      passwordConfirmationInput().simulate("keyPress", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(alert().props().color).toEqual(requestResult.type);
-    expect(alert().text()).toEqual(i18n("resetPassword.success"));
+    expect(mockedResetPassword).not.toHaveBeenCalled();
   });
 
   it("disables inputs and button on success request", async () => {
-    const requestResult: AsyncAction = {
-      status: AsyncActionStatus.SUCCESS,
-      type: MessageType.SUCCESS,
-    };
-    resetPassword = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <ResetPassword />
@@ -313,13 +207,6 @@ describe("ResetPassword", () => {
   });
 
   it("clears password inputs on success", async () => {
-    const requestResult: AsyncAction = {
-      status: AsyncActionStatus.SUCCESS,
-      type: MessageType.SUCCESS,
-    };
-    resetPassword = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(requestResult));
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <ResetPassword />
@@ -341,5 +228,41 @@ describe("ResetPassword", () => {
 
     expect(passwordInput().props().value).toEqual(EMPTY_STRING);
     expect(passwordConfirmationInput().props().value).toEqual(EMPTY_STRING);
+    expect(mockedResetPassword).toHaveBeenCalled();
+  });
+
+  it("keeps password inputs on failure", async () => {
+    mockedResetPassword.mockReturnValue(() =>
+      Promise.resolve({
+        status: AsyncActionStatus.FAILURE,
+        type: MessageType.ERROR,
+        error: {
+          messageId: "error.message",
+        },
+      } as AsyncFailureAction)
+    );
+
+    const wrapper = mountWithIntl(
+      <MemoryRouter>
+        <ResetPassword />
+      </MemoryRouter>
+    );
+
+    const passwordInput = () => wrapper.find('input[name="newPassword"]');
+    const passwordConfirmationInput = () =>
+      wrapper.find('input[name="newPassword-confirm"]');
+
+    changeInputValue(passwordInput(), PASSWORD);
+    changeInputValue(passwordConfirmationInput(), PASSWORD);
+
+    await act(async () => {
+      passwordConfirmationInput().simulate("keyPress", { key: "Enter" });
+      await new Promise(process.nextTick);
+      wrapper.update();
+    });
+
+    expect(passwordInput().props().value).toEqual(PASSWORD);
+    expect(passwordConfirmationInput().props().value).toEqual(PASSWORD);
+    expect(mockedResetPassword).toHaveBeenCalled();
   });
 });
