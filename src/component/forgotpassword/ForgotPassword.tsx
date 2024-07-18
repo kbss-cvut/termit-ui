@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Alert, Button, Card, CardBody, CardHeader, Form } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Form } from "reactstrap";
 import { FormattedMessage } from "react-intl";
 import Routes from "../../util/Routes";
 import { useDispatch } from "react-redux";
@@ -22,6 +22,8 @@ import MessageType from "../../model/MessageType";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 import { useI18n } from "../hook/useI18n";
+import { publishMessage } from "../../action/SyncActions";
+import Messages from "../message/Messages";
 
 export const ForgotPassword: React.FC<{}> = () => {
   useEffect(() => {
@@ -32,7 +34,6 @@ export const ForgotPassword: React.FC<{}> = () => {
   const { i18n } = useI18n();
 
   const [username, setUsername] = React.useState("");
-  const [message, setMessage] = React.useState(null as Message | null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.currentTarget.value);
@@ -59,15 +60,6 @@ export const ForgotPassword: React.FC<{}> = () => {
     }
   };
 
-  const renderAlert = () => {
-    if (!message) {
-      return null;
-    }
-
-    const text = message.messageId ? i18n(message.messageId) : message.message;
-    return <Alert color={message.type}>{text}</Alert>;
-  };
-
   const sendRequest = () => {
     trackPromise(
       dispatch(requestPasswordReset(username)),
@@ -76,25 +68,29 @@ export const ForgotPassword: React.FC<{}> = () => {
       const asyncResult = result as AsyncFailureAction;
       if (asyncResult.status === AsyncActionStatus.FAILURE) {
         const error = asyncResult.error;
-        setMessage(
-          new Message(
-            {
-              messageId: error.messageId,
-              message: error.message,
-            },
-            MessageType.ERROR
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: error.messageId,
+                message: error.message,
+              },
+              MessageType.ERROR
+            )
           )
         );
       } else {
-        setMessage(
-          new Message(
-            {
-              messageId: "forgotPassword.success",
-            },
-            MessageType.SUCCESS
+        setUsername("");
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "forgotPassword.success",
+              },
+              MessageType.SUCCESS
+            )
           )
         );
-        setUsername("");
       }
     });
   };
@@ -111,7 +107,7 @@ export const ForgotPassword: React.FC<{}> = () => {
           <CardBody>
             <PromiseTrackingMask area="requestPasswordReset" />
             <Form>
-              {renderAlert()}
+              <Messages renderInPlace={true} />
               <EnhancedInput
                 name="username"
                 label={i18n("forgotPassword.username")}
