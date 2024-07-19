@@ -161,7 +161,7 @@ export function resetPassword(dto: ChangePasswordDto) {
     dispatch(asyncActionRequest(action));
     return Ajax.put(
       Constants.API_PREFIX + "/password",
-      content(dto).contentType("application/json")
+      content(dto.toJsonLd()).contentType("application/ld+json")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
