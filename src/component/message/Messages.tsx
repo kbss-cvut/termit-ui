@@ -4,6 +4,7 @@ import TermItState from "../../model/TermItState";
 import Constants from "../../util/Constants";
 import Message from "./Message";
 import "./Messages.scss";
+import classNames from "classnames";
 
 interface MessagesProps {
   /**
@@ -24,10 +25,10 @@ export const Messages: React.FC<MessagesProps> = ({
   const toRender = messages.slice(0, count);
   return (
     <div
-      className={
-        (renderInPlace ? "message-fixed-container" : "message-container") +
-        (" messages-" + count)
-      }
+      className={classNames(" messages-" + count, {
+        "message-fixed-container": renderInPlace,
+        "message-container": !renderInPlace,
+      })}
     >
       {toRender.map((m) => (
         <Message key={m.timestamp} message={m} />
