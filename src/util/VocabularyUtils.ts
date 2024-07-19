@@ -107,6 +107,7 @@ const VocabularyUtils = {
   HAS_LAST_EDITOR: _NS_POPIS_DAT + "má-posledního-editora",
   LAST_MODIFIED: _NS_POPIS_DAT + "má-datum-a-čas-poslední-modifikace",
   IMPORTS_VOCABULARY: _NS_POPIS_DAT + "importuje-slovník",
+  HAS_PASSWORD: _NS_POPIS_DAT + "m\u00e1-heslo",
   NS_TERMIT: _NS_TERMIT,
   USER: _NS_TERMIT + "uživatel-termitu",
   USER_ADMIN: _NS_TERMIT + "administrátor-termitu",
@@ -133,6 +134,7 @@ const VocabularyUtils = {
   DC_LICENSE: _NS_DC + "license",
   DC_MODIFIED: _NS_DC + "modified",
   DC_LANGUAGE: _NS_DC + "language",
+  DC_IDENTIFIER: _NS_DC + "identifier",
 
   XSD_DATETIME: _NS_XSD + "dateTime",
   XSD_DATE: _NS_XSD + "date",

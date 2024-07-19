@@ -52,6 +52,7 @@ const cs = {
     "login.submit": "Přihlásit se",
     "login.register": "Registrace",
     "login.register.label": "Nemáte zatím účet? <a>Zaregistrujte se</a>",
+    "login.forgotPassword.label": "<a>Zapomněli jste heslo?</a>",
     "login.error": "Přihlášení se nezdařilo.",
     "login.progress-mask": "Přihlašuji...",
     "login.locked": "Účet je zablokován.",
@@ -78,6 +79,29 @@ const cs = {
     "register.username-exists.tooltip": "Uživatelské jméno již existuje",
     "register.username.notValidEmail":
       "Uživatelské jméno musí být emailovou adresou",
+
+    "forgotPassword.title": "Zapomenuté heslo",
+    "forgotPassword.mask": "Odesílám...",
+    "forgotPassword.subtitle": "Zapomenuté heslo",
+    "forgotPassword.login.label": "Zpět na <a>Přihlášení</a>",
+    "forgotPassword.username": "Uživatelské jméno",
+    "forgotPassword.username.placeholder": "Zadejte uživatelské jméno",
+    "forgotPassword.username.notValidEmail":
+      "Uživatelské jméno musí být emailovou adresou",
+    "forgotPassword.submit": "Odeslat email pro obnovení hesla",
+    "forgotPassword.success": "Email odeslán",
+
+    "resetPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
+    "resetPassword.mask": "Měním heslo...",
+    "resetPassword.title": "Změna hesla",
+    "resetPassword.subtitle": "Změna hesla",
+    "resetPassword.password": "Nové heslo",
+    "resetPassword.password.placeholder": "Zvolte si nové heslo",
+    "resetPassword.password.confirm": "Potvrzení hesla",
+    "resetPassword.submit": "Změnit heslo",
+    "resetPassword.success": "Heslo změněno",
+    "resetPassword.invalidToken":
+      "Neplatný nebo expirovaný link pro změnu hesla. Zažádejte o změnu hesla znovu.",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
