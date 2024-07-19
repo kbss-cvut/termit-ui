@@ -1,12 +1,12 @@
-import { AsyncAction } from "../../../action/ActionType";
+import ActionType from "../../../action/ActionType";
 import { MemoryRouter } from "react-router";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { ForgotPassword } from "../ForgotPassword";
 import MessageType from "../../../model/MessageType";
 import { act } from "react-dom/test-utils";
-import AsyncActionStatus from "../../../action/AsyncActionStatus";
 import { changeInputValue } from "../../../__tests__/environment/TestUtil";
 import { requestPasswordReset } from "../../../action/AsyncUserActions";
+import Message from "../../../model/Message";
 
 jest.mock("../../../action/AsyncUserActions", () => ({
   ...jest.requireActual("../../../action/AsyncUserActions"),
@@ -23,9 +23,9 @@ describe("ForgotPassword", () => {
   beforeEach(() => {
     mockedRequestPasswordReset.mockReset().mockReturnValue(() =>
       Promise.resolve({
-        status: AsyncActionStatus.SUCCESS,
-        type: MessageType.SUCCESS,
-      } as AsyncAction)
+        message: new Message({ message: "text" }, MessageType.SUCCESS),
+        type: ActionType.REQUEST_PASSWORD_RESET,
+      })
     );
   });
 
@@ -122,9 +122,6 @@ describe("ForgotPassword", () => {
         <ForgotPassword />
       </MemoryRouter>
     );
-    mockedRequestPasswordReset.mockReturnValue(() =>
-      Promise.resolve({} as AsyncAction)
-    );
     const usernameInput = () => wrapper.find('input[name="username"]');
     changeInputValue(usernameInput(), INVALID_EMAIL);
     usernameInput().simulate("keyPress", { key: "Enter" });
@@ -133,13 +130,6 @@ describe("ForgotPassword", () => {
   });
 
   it("clears username input on success", async () => {
-    const requestResult: AsyncAction = {
-      status: AsyncActionStatus.SUCCESS,
-      type: MessageType.SUCCESS,
-    };
-    mockedRequestPasswordReset.mockReturnValue(() =>
-      Promise.resolve(requestResult)
-    );
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <ForgotPassword />

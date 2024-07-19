@@ -3,7 +3,6 @@ import { Button, Card, CardBody, CardHeader, Form } from "reactstrap";
 import { FormattedMessage } from "react-intl";
 import Routes from "../../util/Routes";
 import { useDispatch } from "react-redux";
-import { AsyncFailureAction } from "../../action/ActionType";
 import { ThunkDispatch } from "../../util/Types";
 import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
@@ -14,13 +13,10 @@ import WindowTitle from "../misc/WindowTitle";
 import IfInternalAuth from "../misc/oidc/IfInternalAuth";
 import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
 import ValidationResult, { Severity } from "../../model/form/ValidationResult";
-import Message from "../../model/Message";
 import MessageType from "../../model/MessageType";
-import AsyncActionStatus from "../../action/AsyncActionStatus";
 import { useI18n } from "../hook/useI18n";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
-import { publishMessage } from "../../action/SyncActions";
 import Messages from "../message/Messages";
 import ChangePasswordDto from "../../model/ChangePasswordDto";
 
@@ -82,35 +78,11 @@ export const ResetPassword: React.FC<{}> = () => {
         )
       ),
       "resetPassword"
-    ).then((result) => {
-      const asyncResult = result as AsyncFailureAction;
-      if (asyncResult.status === AsyncActionStatus.FAILURE) {
-        const error = asyncResult.error;
-        dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId: error.messageId,
-                message: error.message,
-              },
-              MessageType.ERROR
-            )
-          )
-        );
-      } else {
+    ).then((message) => {
+      if (message.message.type === MessageType.SUCCESS) {
         setPasswordChanged(true);
         setPassword("");
         setpasswordConfirm("");
-        dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId: "resetPassword.success",
-              },
-              MessageType.SUCCESS
-            )
-          )
-        );
       }
     });
   };

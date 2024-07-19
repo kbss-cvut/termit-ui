@@ -4,7 +4,6 @@ import { Button, Card, CardBody, CardHeader, Form } from "reactstrap";
 import { FormattedMessage } from "react-intl";
 import Routes from "../../util/Routes";
 import { useDispatch } from "react-redux";
-import { AsyncFailureAction } from "../../action/ActionType";
 import { ThunkDispatch } from "../../util/Types";
 import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
@@ -16,14 +15,11 @@ import IfInternalAuth from "../misc/oidc/IfInternalAuth";
 import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
 import ValidationResult, { Severity } from "../../model/form/ValidationResult";
 import Utils from "../../util/Utils";
-import AsyncActionStatus from "../../action/AsyncActionStatus";
-import Message from "../../model/Message";
-import MessageType from "../../model/MessageType";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 import { useI18n } from "../hook/useI18n";
-import { publishMessage } from "../../action/SyncActions";
 import Messages from "../message/Messages";
+import MessageType from "../../model/MessageType";
 
 export const ForgotPassword: React.FC<{}> = () => {
   useEffect(() => {
@@ -64,33 +60,9 @@ export const ForgotPassword: React.FC<{}> = () => {
     trackPromise(
       dispatch(requestPasswordReset(username)),
       "requestPasswordReset"
-    ).then((result) => {
-      const asyncResult = result as AsyncFailureAction;
-      if (asyncResult.status === AsyncActionStatus.FAILURE) {
-        const error = asyncResult.error;
-        dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId: error.messageId,
-                message: error.message,
-              },
-              MessageType.ERROR
-            )
-          )
-        );
-      } else {
+    ).then((message) => {
+      if (message.message.type === MessageType.SUCCESS) {
         setUsername("");
-        dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId: "forgotPassword.success",
-              },
-              MessageType.SUCCESS
-            )
-          )
-        );
       }
     });
   };
