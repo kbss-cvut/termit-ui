@@ -1,12 +1,12 @@
-import { AsyncAction, AsyncFailureAction } from "../../../action/ActionType";
+import ActionType from "../../../action/ActionType";
 import { MemoryRouter } from "react-router";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import MessageType from "../../../model/MessageType";
 import { act } from "react-dom/test-utils";
-import AsyncActionStatus from "../../../action/AsyncActionStatus";
 import { changeInputValue } from "../../../__tests__/environment/TestUtil";
 import { ResetPassword } from "../ResetPassword";
 import { resetPassword } from "../../../action/AsyncUserActions";
+import Message from "../../../model/Message";
 
 jest.mock("../../../action/AsyncUserActions", () => ({
   ...jest.requireActual("../../../action/AsyncUserActions"),
@@ -19,9 +19,9 @@ describe("ResetPassword", () => {
   beforeEach(() => {
     mockedResetPassword.mockReset().mockReturnValue(() =>
       Promise.resolve({
-        status: AsyncActionStatus.SUCCESS,
-        type: MessageType.SUCCESS,
-      } as AsyncAction)
+        message: new Message({ message: "text" }, MessageType.SUCCESS),
+        type: ActionType.RESET_PASSWORD,
+      })
     );
   });
 
@@ -234,12 +234,9 @@ describe("ResetPassword", () => {
   it("keeps password inputs on failure", async () => {
     mockedResetPassword.mockReturnValue(() =>
       Promise.resolve({
-        status: AsyncActionStatus.FAILURE,
-        type: MessageType.ERROR,
-        error: {
-          messageId: "error.message",
-        },
-      } as AsyncFailureAction)
+        message: new Message({ messageId: "error.message" }, MessageType.ERROR),
+        type: ActionType.REQUEST_PASSWORD_RESET,
+      })
     );
 
     const wrapper = mountWithIntl(

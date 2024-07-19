@@ -145,7 +145,22 @@ export function requestPasswordReset(username: string) {
       content(username).contentType("text/plain")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "forgotPassword.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+      });
   };
 }
 
@@ -164,7 +179,22 @@ export function resetPassword(dto: ChangePasswordDto) {
       content(dto.toJsonLd()).contentType("application/ld+json")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "resetPassword.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+      });
   };
 }
 
