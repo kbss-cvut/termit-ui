@@ -98,7 +98,11 @@ export function login(username: string, password: string) {
       .then(() =>
         dispatch(publishMessage(createFormattedMessage("message.welcome")))
       )
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        error.messageId = error.messageId ? error.messageId : "login.error";
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+      });
   };
 }
 
@@ -179,6 +183,7 @@ export function resetPassword(dto: ChangePasswordDto) {
       content(dto.toJsonLd()).contentType("application/ld+json")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() => Routing.transitionTo(Routes.login))
       .then(() =>
         dispatch(
           publishMessage(
