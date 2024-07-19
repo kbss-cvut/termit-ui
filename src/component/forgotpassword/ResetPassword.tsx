@@ -25,7 +25,7 @@ interface ResetPasswordGetParams {
   token_uri: string;
 }
 
-export const ResetPassword: React.FC<{}> = () => {
+export const ResetPassword: React.FC = () => {
   React.useEffect(() => {
     SecurityUtils.clearToken();
   }, []);
@@ -47,13 +47,13 @@ export const ResetPassword: React.FC<{}> = () => {
   };
 
   const arePasswordsEqualAndNotEmpty = () =>
-    password === passwordConfirm && password != "";
+    password === passwordConfirm && password !== "";
   const validatePasswords = () => {
     if (arePasswordsEqualAndNotEmpty()) {
       return ValidationResult.VALID;
     }
 
-    if (password == "") {
+    if (password === "") {
       return new ValidationResult(Severity.BLOCKER);
     }
 
