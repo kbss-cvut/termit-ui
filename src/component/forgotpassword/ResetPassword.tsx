@@ -22,6 +22,7 @@ import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { publishMessage } from "../../action/SyncActions";
 import Messages from "../message/Messages";
+import ChangePasswordDto from "../../model/ChangePasswordDto";
 
 interface ResetPasswordGetParams {
   token: string;
@@ -76,11 +77,9 @@ export const ResetPassword: React.FC<{}> = () => {
   const sendRequest = () => {
     trackPromise(
       dispatch(
-        resetPassword({
-          token,
-          uri: decodeURIComponent(token_uri),
-          newPassword: password,
-        })
+        resetPassword(
+          new ChangePasswordDto(decodeURIComponent(token_uri), token, password)
+        )
       ),
       "resetPassword"
     ).then((result) => {
