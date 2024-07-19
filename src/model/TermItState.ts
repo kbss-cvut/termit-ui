@@ -17,6 +17,7 @@ import { ConsolidatedResults } from "./ConsolidatedResults";
 import File, { EMPTY_FILE } from "./File";
 import TermOccurrence from "./TermOccurrence";
 import { Breadcrumb } from "./Breadcrumb";
+import AnnotatorLegendFilter from "./AnnotatorLegendFilter";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -62,6 +63,8 @@ export default class TermItState {
   public accessLevels: { [key: string]: RdfsResource };
   public breadcrumbs: Breadcrumb[];
 
+  public annotatorLegendFilter: AnnotatorLegendFilter;
+
   // Administration
   public users: User[];
 
@@ -100,6 +103,7 @@ export default class TermItState {
     this.breadcrumbs = [];
     this.users = [];
     this.accessLevels = {};
+    this.annotatorLegendFilter = new AnnotatorLegendFilter();
   }
 
   /**

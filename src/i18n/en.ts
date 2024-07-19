@@ -623,6 +623,8 @@ const en = {
       "Select term whose occurrences to highlight",
     "annotator.highlight.countInfo":
       "Found {count, plural, one {# occurrence} other {# occurrences}} in this document.",
+    "annotator.legend.annotationHidingHint":
+      "You can show/hide the term highlighting by clicking on the legend item.",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",

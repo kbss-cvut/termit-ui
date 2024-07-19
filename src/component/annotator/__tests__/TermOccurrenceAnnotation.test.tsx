@@ -6,7 +6,10 @@ import {
 import { TermOccurrenceAnnotation } from "../TermOccurrenceAnnotation";
 import { shallow } from "enzyme";
 import SimplePopupWithActions from "../SimplePopupWithActions";
-import { AnnotationClass, AnnotationOrigin } from "../Annotation";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../../model/AnnotatorLegendFilter";
 import Generator from "../../../__tests__/environment/Generator";
 import { withHooks } from "jest-react-hooks-shallow";
 

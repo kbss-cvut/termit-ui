@@ -1,5 +1,6 @@
 .legend-list-item {
   margin-bottom: 2px;
+  cursor: pointer;
 }
 
 .assigned-term-occurrence {
@@ -88,4 +89,9 @@
 
 .annotator-highlighted-annotation-current {
   background-color: orange !important;
+}
+
+.legend-list-item.hidden-occurrence {
+  border-color: rgb(184, 184, 184);
+  background: rgba(184, 184, 184, 0.5);
 }

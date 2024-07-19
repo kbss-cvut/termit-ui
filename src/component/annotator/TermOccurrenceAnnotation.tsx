@@ -4,7 +4,7 @@ import AnnotationTerms from "./AnnotationTerms";
 import { Button } from "reactstrap";
 import { FaCheck } from "react-icons/fa";
 import { TiTimes, TiTrash } from "react-icons/ti";
-import { AnnotationOrigin } from "./Annotation";
+import { AnnotationOrigin } from "../../model/AnnotatorLegendFilter";
 import SimplePopupWithActions from "./SimplePopupWithActions";
 import TermOccurrenceAnnotationView from "./TermOccurrenceAnnotationView";
 import { GoPencil } from "react-icons/go";
