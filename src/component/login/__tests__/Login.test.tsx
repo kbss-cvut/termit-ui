@@ -1,27 +1,27 @@
 import { Login } from "../Login";
-import ErrorInfo from "../../../model/ErrorInfo";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import ActionType, {
-  AsyncFailureAction,
-  MessageAction,
-} from "../../../action/ActionType";
-import { Alert } from "reactstrap";
+import { MessageAction } from "../../../action/ActionType";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { shallow } from "enzyme";
 import { MemoryRouter } from "react-router";
 import * as Constants from "../../../util/Constants";
 import ConfigParam from "../../../util/ConfigParam";
+import Message from "../../../model/Message";
+import MessageType from "../../../model/MessageType";
 
 jest.mock("../../../util/Routing");
 
 describe("Login", () => {
-  let login: (
-    username: string,
-    password: string
-  ) => Promise<MessageAction | AsyncFailureAction>;
+  let login: (username: string, password: string) => Promise<MessageAction>;
 
   beforeEach(() => {
-    login = jest.fn().mockImplementation(() => Promise.resolve({}));
+    login = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        message: new Message(
+          { message: "dummy success message" },
+          MessageType.SUCCESS
+        ),
+      })
+    );
   });
 
   afterEach(() => {
@@ -95,33 +95,6 @@ describe("Login", () => {
     usernameInput.simulate("change", usernameInput);
     passwordInput.simulate("keyPress", { key: "Enter" });
     expect(login).not.toHaveBeenCalled();
-  });
-
-  it("renders alert with error when error is set", () => {
-    const error = new ErrorInfo(ActionType.LOGIN, {});
-    const wrapper = shallow<Login>(
-      <Login loading={false} login={login} {...intlFunctions()} />
-    );
-    wrapper.setState({ error });
-    wrapper.update();
-    const alert = wrapper.find(Alert);
-    expect(alert.exists()).toBeTruthy();
-  });
-
-  it("clears error on user input", () => {
-    const error = new ErrorInfo(ActionType.LOGIN, {});
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
-      </MemoryRouter>
-    );
-    (wrapper.find(Login).instance() as Login).setState({ error });
-    wrapper.update();
-    const usernameInput = wrapper.find('input[name="username"]');
-    (usernameInput.getDOMNode() as HTMLInputElement).value = "aaaa";
-    usernameInput.simulate("change", usernameInput);
-    wrapper.update();
-    expect((wrapper.find(Login).instance() as Login).state.error).toBeNull();
   });
 
   it("renders registration link by default", () => {
