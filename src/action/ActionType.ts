@@ -6,6 +6,10 @@ import { Action } from "redux";
 import SearchResult from "../model/search/SearchResult";
 import AppNotification from "../model/AppNotification";
 import { Breadcrumb } from "../model/Breadcrumb";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../model/AnnotatorLegendFilter";
 
 export interface AsyncAction extends Action {
   status: AsyncActionStatus;
@@ -62,6 +66,11 @@ export interface PushRoutingPayloadAction extends Action {
 
 export interface BreadcrumbAction extends Action {
   payload: Breadcrumb;
+}
+
+export interface AnnotatorLegendFilterAction extends Action {
+  annotationClass: AnnotationClass;
+  annotationOrigin: AnnotationOrigin;
 }
 
 const ActionType = {
@@ -125,6 +134,8 @@ const ActionType = {
   APPROVE_TERM_OCCURRENCE: "APPROVE_TERM_OCCURRENCE",
   SET_TERM_DEFINITION_SOURCE: "SET_TERM_DEFINITION_SOURCE",
   REMOVE_TERM_DEFINITION_SOURCE: "REMOVE_TERM_DEFINITION_SOURCE",
+
+  TOGGLE_ANNOTATOR_LEGEND_FILTER: "TOGGLE_ANNOTATOR_LEGEND_FILTER",
 
   LOAD_TERM_HISTORY: "LOAD_TERM_HISTORY",
 

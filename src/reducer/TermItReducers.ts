@@ -1,5 +1,6 @@
 import { Action, combineReducers } from "redux";
 import ActionType, {
+  AnnotatorLegendFilterAction,
   AsyncAction,
   AsyncActionSuccess,
   BreadcrumbAction,
@@ -38,6 +39,7 @@ import File, { EMPTY_FILE } from "../model/File";
 import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
+import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 
 function isAsyncSuccess(action: AsyncAction) {
   return action.status === AsyncActionStatus.SUCCESS;
@@ -633,6 +635,22 @@ function breadcrumbs(state: Breadcrumb[] = [], action: BreadcrumbAction) {
   }
 }
 
+function annotatorLegendFilter(
+  state: AnnotatorLegendFilter | undefined,
+  action: AnnotatorLegendFilterAction
+) {
+  if (state == null) state = new AnnotatorLegendFilter();
+  if (action.type === ActionType.TOGGLE_ANNOTATOR_LEGEND_FILTER) {
+    const newState = state.clone();
+    const oldValue = state.get(action.annotationClass, action.annotationOrigin);
+
+    newState.set(action.annotationClass, action.annotationOrigin, !oldValue);
+
+    return newState;
+  }
+  return state;
+}
+
 function users(state: User[] = [], action: AsyncActionSuccess<User[]>) {
   switch (action.type) {
     case ActionType.LOAD_USERS:
@@ -692,6 +710,7 @@ const rootReducer = combineReducers<TermItState>({
   validationResults,
   definitionallyRelatedTerms,
   breadcrumbs,
+  annotatorLegendFilter,
   users,
   accessLevels,
 });

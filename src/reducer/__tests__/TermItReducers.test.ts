@@ -86,6 +86,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     breadcrumbs: state.breadcrumbs,
     users: state.users,
     accessLevels: state.accessLevels,
+    annotatorLegendFilter: state.annotatorLegendFilter,
   };
 }
 

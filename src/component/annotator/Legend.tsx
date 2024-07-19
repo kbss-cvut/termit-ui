@@ -1,42 +1,111 @@
 import * as React from "react";
 import { useI18n } from "../hook/useI18n";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleLegendClassFilter } from "../../action/SyncActions";
+import classNames from "classnames";
+import TermItState from "../../model/TermItState";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../model/AnnotatorLegendFilter";
 
 const Legend: React.FC = () => {
   const { i18n } = useI18n();
+  const dispatch = useDispatch();
+  const filter = useSelector(
+    (state: TermItState) => state.annotatorLegendFilter
+  );
+
   return (
     <ul className="legend-list">
       <li
-        className="suggested-term-occurrence legend-list-item"
+        onClick={() =>
+          dispatch(
+            toggleLegendClassFilter(AnnotationClass.SUGGESTED_OCCURRENCE)
+          )
+        }
+        className={classNames("suggested-term-occurrence legend-list-item", {
+          "hidden-occurrence": !filter.get(
+            AnnotationClass.SUGGESTED_OCCURRENCE
+          ),
+        })}
         title={i18n("annotator.legend.confirmed.unknown.term.tooltip")}
       >
         {i18n("annotator.legend.confirmed.unknown.term")}
       </li>
       <li
-        className="assigned-term-occurrence legend-list-item"
+        onClick={() =>
+          dispatch(toggleLegendClassFilter(AnnotationClass.ASSIGNED_OCCURRENCE))
+        }
+        className={classNames("assigned-term-occurrence legend-list-item", {
+          "hidden-occurrence": !filter.get(AnnotationClass.ASSIGNED_OCCURRENCE),
+        })}
         title={i18n("annotator.legend.confirmed.existing.term.tooltip")}
       >
         {i18n("annotator.legend.confirmed.existing.term")}
       </li>
       <li
-        className="term-definition legend-list-item"
+        onClick={() => {
+          dispatch(toggleLegendClassFilter(AnnotationClass.DEFINITION));
+        }}
+        className={classNames("term-definition legend-list-item", {
+          "hidden-occurrence": !filter.get(AnnotationClass.DEFINITION),
+        })}
         title={i18n("annotator.legend.definition.tooltip")}
       >
         {i18n("annotator.legend.definition")}
       </li>
       <li
-        className="pending-term-definition legend-list-item"
+        onClick={() => {
+          dispatch(toggleLegendClassFilter(AnnotationClass.PENDING_DEFINITION));
+        }}
+        className={classNames("pending-term-definition legend-list-item", {
+          "hidden-occurrence": !filter.get(AnnotationClass.PENDING_DEFINITION),
+        })}
         title={i18n("annotator.legend.definition.pending.tooltip")}
       >
         {i18n("annotator.legend.definition.pending")}
       </li>
       <li
-        className="proposed-occurrence suggested-term-occurrence legend-list-item"
+        onClick={() => {
+          dispatch(
+            toggleLegendClassFilter(
+              AnnotationClass.SUGGESTED_OCCURRENCE,
+              AnnotationOrigin.PROPOSED
+            )
+          );
+        }}
+        className={classNames(
+          "proposed-occurrence suggested-term-occurrence legend-list-item",
+          {
+            "hidden-occurrence": !filter.get(
+              AnnotationClass.SUGGESTED_OCCURRENCE,
+              AnnotationOrigin.PROPOSED
+            ),
+          }
+        )}
         title={i18n("annotator.legend.proposed.unknown.term.tooltip")}
       >
         {i18n("annotator.legend.proposed.unknown.term")}
       </li>
       <li
-        className="proposed-occurrence assigned-term-occurrence legend-list-item"
+        onClick={() => {
+          dispatch(
+            toggleLegendClassFilter(
+              AnnotationClass.ASSIGNED_OCCURRENCE,
+              AnnotationOrigin.PROPOSED
+            )
+          );
+        }}
+        className={classNames(
+          "proposed-occurrence assigned-term-occurrence legend-list-item",
+          {
+            "hidden-occurrence": !filter.get(
+              AnnotationClass.ASSIGNED_OCCURRENCE,
+              AnnotationOrigin.PROPOSED
+            ),
+          }
+        )}
         title={i18n("annotator.legend.proposed.existing.term.tooltip")}
       >
         {i18n("annotator.legend.proposed.existing.term")}
