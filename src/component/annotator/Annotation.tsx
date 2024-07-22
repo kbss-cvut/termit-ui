@@ -230,7 +230,9 @@ export class Annotation extends React.Component<
   };
 
   private isHidden = (props: AnnotationProps) => {
-    if (!props.filter) return false;
+    if (!props.filter) {
+      return false;
+    }
     return !props.filter.get(this.getTermState(), this.getTermCreatorState());
   };
 

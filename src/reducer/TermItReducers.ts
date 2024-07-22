@@ -639,7 +639,9 @@ function annotatorLegendFilter(
   state: AnnotatorLegendFilter | undefined,
   action: AnnotatorLegendFilterAction
 ) {
-  if (state == null) state = new AnnotatorLegendFilter();
+  if (state == null) {
+    state = new AnnotatorLegendFilter();
+  }
   if (action.type === ActionType.TOGGLE_ANNOTATOR_LEGEND_FILTER) {
     const newState = state.clone();
     const oldValue = state.get(action.annotationClass, action.annotationOrigin);

@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 export enum AnnotationClass {
   INVALID = "invalid-term-occurrence",
   ASSIGNED_OCCURRENCE = "assigned-term-occurrence",
@@ -30,13 +32,12 @@ export default class AnnotatorLegendFilter {
   constructor() {
     this.filter = {} as AnnotationLegendFilter;
 
-    Object.values(AnnotationClass).forEach((classValue) =>
+    Object.values(AnnotationClass).forEach((classValue) => {
+      this.filter[classValue] = {} as AnnotationOriginFilter;
       Object.values(AnnotationOrigin).forEach((originValue) => {
-        if (!this.filter[classValue])
-          this.filter[classValue] = {} as AnnotationOriginFilter;
         this.filter[classValue][originValue] = true;
-      })
-    );
+      });
+    });
   }
 
   public get(
@@ -58,15 +59,6 @@ export default class AnnotatorLegendFilter {
    * Creates deep clone of this filter
    */
   public clone() {
-    const copy = new AnnotatorLegendFilter();
-    Object.values(AnnotationClass).forEach((classValue) =>
-      Object.values(AnnotationOrigin).forEach(
-        (originValue) =>
-          (copy.filter[classValue][originValue] =
-            this.filter[classValue][originValue])
-      )
-    );
-
-    return copy;
+    return _.cloneDeep(this);
   }
 }
