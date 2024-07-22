@@ -194,6 +194,14 @@ const en = {
     "administration.users.types.admin": "This user is an administrator",
     "administration.users.oidc":
       "An external authentication service is used to manage users.",
+    "administration.users.create.password-toggle.user":
+      "Have the new user create a password",
+    "administration.users.create.password-toggle.admin": "Enter password now",
+    "administration.users.create.password-toggle.tooltip.user":
+      "An email will be sent to the new user with a link to create a new password.",
+    "administration.users.create.password-toggle.tooltip.admin":
+      "Enter the password for the new user now.",
+    "administration.users.create.submit": "Create user",
     "administration.maintenance.title": "Maintenance",
     "administration.maintenance.invalidateCaches": "Invalidate caches",
     "administration.maintenance.invalidateCaches.tooltip":

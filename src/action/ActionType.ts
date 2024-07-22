@@ -238,6 +238,8 @@ const ActionType = {
 
   ADD_CRUMB: "ADD_CRUMB",
   REMOVE_CRUMB: "REMOVE_CRUMB",
+
+  DOES_USERNAME_EXISTS: "DOES_USERNAME_EXISTS",
 };
 
 export default ActionType;

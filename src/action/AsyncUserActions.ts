@@ -460,3 +460,18 @@ export function loadManagedAssets(user: User) {
       });
   };
 }
+
+export function doesUsernameExists(username: string) {
+  const action = { type: ActionType.DOES_USERNAME_EXISTS };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${Constants.API_PREFIX}${USERS_ENDPOINT}/username`,
+      params({ username })
+    )
+      .then((data) =>
+        dispatch(asyncActionSuccessWithPayload(action, data === true))
+      )
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
