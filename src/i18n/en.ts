@@ -93,6 +93,7 @@ const en = {
     "resetPassword.mask": "Changing password...",
     "resetPassword.title": "Change password",
     "resetPassword.subtitle": "Change password",
+    "resetPassword.login.label": "Back to <a>Log in</a>",
     "resetPassword.password": "New password",
     "resetPassword.password.placeholder": "Choose a new password",
     "resetPassword.password.confirm": "Confirm password",
@@ -100,6 +101,18 @@ const en = {
     "resetPassword.success": "Password changed",
     "resetPassword.invalidToken":
       "Invalid or expired password change link. Please request a password change again.",
+
+    "createPassword.passwordsNotEqual": "Passwords don't match",
+    "createPassword.mask": "Creating password...",
+    "createPassword.title": "Create password",
+    "createPassword.subtitle": "Create password",
+    "createPassword.password": "New password",
+    "createPassword.password.placeholder": "Choose a new password",
+    "createPassword.password.confirm": "Confirm password",
+    "createPassword.submit": "Create password",
+    "createPassword.success": "Password created",
+    "createPassword.invalidToken":
+      "Invalid or expired password create link. Please request a password change.",
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",
@@ -154,7 +167,7 @@ const en = {
     "administration.users.status": "Status",
     "administration.users.status.locked": "Locked",
     "administration.users.status.locked.help":
-      "User account is locked due to exceeding the maximum amount of unsuccessful login attempts. User cannot log in under this account unless an administrator sets a new password for it.",
+      "User account is locked due to exceeding the maximum amount of unsuccessful login attempts, or the account is waiting for the user to set a new password. User cannot log in under this account unless they reset their password or an administrator sets a new password for it.",
     "administration.users.status.disabled": "Disabled",
     "administration.users.status.disabled.help":
       "User account has been disabled by an administrator and cannot be used to log in.",

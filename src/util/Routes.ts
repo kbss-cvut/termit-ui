@@ -47,6 +47,10 @@ const Routes = {
     "resetPassword",
     "/reset-password/:token/:token_uri"
   ),
+  createPassword: new Route(
+    "createPassword",
+    "/create-password/:token/:token_uri"
+  ),
   search: new Route("search", "/search"),
   searchTerms: new Route("searchTerms", "/search/terms"),
   searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),
