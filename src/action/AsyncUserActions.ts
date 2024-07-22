@@ -213,7 +213,7 @@ export function createNewUser(user: UserAccountData) {
   const action = { type: ActionType.CREATE_USER };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
-    return Ajax.post(
+    return Ajax.put(
       Constants.API_PREFIX + "/users",
       content(user).contentType("application/json")
     )

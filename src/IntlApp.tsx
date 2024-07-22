@@ -29,6 +29,10 @@ const IntlWrapper: React.FC = () => {
               component={ForgotPassword}
             />
             <Route path={Routes.resetPassword.path} component={ResetPassword} />
+            <Route
+              path={Routes.createPassword.path}
+              component={ResetPassword}
+            />
             <BreadcrumbRoute
               path={Routes.publicDashboard.path}
               title={intl.messages["main.nav.dashboard"]}
