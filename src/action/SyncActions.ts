@@ -184,13 +184,12 @@ export function removeCrumb(crumb: Breadcrumb) {
   return { type: ActionType.REMOVE_CRUMB, payload: crumb };
 }
 
-export function toggleLegendClassFilter(
+export function toggleAnnotatorLegendFilter(
   annotationClass: AnnotationClass,
   annotationOrigin: AnnotationOrigin = AnnotationOrigin.SELECTED
 ): AnnotatorLegendFilterAction {
-  const action = { type: ActionType.TOGGLE_ANNOTATOR_LEGEND_FILTER };
   return {
-    ...action,
+    type: ActionType.TOGGLE_ANNOTATOR_LEGEND_FILTER,
     annotationClass,
     annotationOrigin,
   };

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useI18n } from "../hook/useI18n";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleLegendClassFilter } from "../../action/SyncActions";
+import { toggleAnnotatorLegendFilter } from "../../action/SyncActions";
 import classNames from "classnames";
 import TermItState from "../../model/TermItState";
 import {
@@ -21,7 +21,7 @@ const Legend: React.FC = () => {
       <li
         onClick={() =>
           dispatch(
-            toggleLegendClassFilter(AnnotationClass.SUGGESTED_OCCURRENCE)
+            toggleAnnotatorLegendFilter(AnnotationClass.SUGGESTED_OCCURRENCE)
           )
         }
         className={classNames("suggested-term-occurrence legend-list-item", {
@@ -35,7 +35,9 @@ const Legend: React.FC = () => {
       </li>
       <li
         onClick={() =>
-          dispatch(toggleLegendClassFilter(AnnotationClass.ASSIGNED_OCCURRENCE))
+          dispatch(
+            toggleAnnotatorLegendFilter(AnnotationClass.ASSIGNED_OCCURRENCE)
+          )
         }
         className={classNames("assigned-term-occurrence legend-list-item", {
           "hidden-occurrence": !filter.get(AnnotationClass.ASSIGNED_OCCURRENCE),
@@ -46,7 +48,7 @@ const Legend: React.FC = () => {
       </li>
       <li
         onClick={() => {
-          dispatch(toggleLegendClassFilter(AnnotationClass.DEFINITION));
+          dispatch(toggleAnnotatorLegendFilter(AnnotationClass.DEFINITION));
         }}
         className={classNames("term-definition legend-list-item", {
           "hidden-occurrence": !filter.get(AnnotationClass.DEFINITION),
@@ -57,7 +59,9 @@ const Legend: React.FC = () => {
       </li>
       <li
         onClick={() => {
-          dispatch(toggleLegendClassFilter(AnnotationClass.PENDING_DEFINITION));
+          dispatch(
+            toggleAnnotatorLegendFilter(AnnotationClass.PENDING_DEFINITION)
+          );
         }}
         className={classNames("pending-term-definition legend-list-item", {
           "hidden-occurrence": !filter.get(AnnotationClass.PENDING_DEFINITION),
@@ -69,7 +73,7 @@ const Legend: React.FC = () => {
       <li
         onClick={() => {
           dispatch(
-            toggleLegendClassFilter(
+            toggleAnnotatorLegendFilter(
               AnnotationClass.SUGGESTED_OCCURRENCE,
               AnnotationOrigin.PROPOSED
             )
@@ -91,7 +95,7 @@ const Legend: React.FC = () => {
       <li
         onClick={() => {
           dispatch(
-            toggleLegendClassFilter(
+            toggleAnnotatorLegendFilter(
               AnnotationClass.ASSIGNED_OCCURRENCE,
               AnnotationOrigin.PROPOSED
             )

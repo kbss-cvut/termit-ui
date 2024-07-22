@@ -703,7 +703,7 @@ const cs = {
       "Uživatelem označená definice existujícího pojmu.",
     "annotator.unknown.unauthorized": "Pojem nevybrán.",
     "annotator.legend.annotationHidingHint":
-      "Zvýraznění pojmů můžete zobrazit/skrýt kliknutím na položku legendy.",
+      "Zvýraznění výskytů pojmů můžete zobrazit/skrýt kliknutím na položku legendy.",
 
     "message.welcome": "Vítejte v aplikaci TermIt!",
     "link.external.title": "{url} - otevřít v nové záložce",
