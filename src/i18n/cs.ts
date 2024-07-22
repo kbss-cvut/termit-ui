@@ -204,6 +204,14 @@ const cs = {
     "administration.users.types.admin": "Tento uživatel je administrátor",
     "administration.users.oidc":
       "Pro správu uživatelů je využívána externí autentizační služba.",
+    "administration.users.create.password-toggle.user":
+      "Nechat nového uživatele vytvořit heslo",
+    "administration.users.create.password-toggle.admin": "Zadat heslo nyní",
+    "administration.users.create.password-toggle.tooltip.user":
+      "Novému uživateli bude zaslán email s odkazem pro vytvoření nového hesla.",
+    "administration.users.create.password-toggle.tooltip.admin":
+      "Heslo pro nového uživatele zadejte nyní.",
+    "administration.users.create.submit": "Vytvořit uživatele",
     "administration.maintenance.title": "Správa systému",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":
