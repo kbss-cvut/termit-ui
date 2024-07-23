@@ -45,7 +45,10 @@ const LegendToggle = () => {
           <CardBody>
             <Legend />
           </CardBody>
-          <CardFooter className="py-2">
+          <CardFooter className="d-flex flex-column py-2">
+            <span className="small italics">
+              {i18n("annotator.legend.annotationHidingHint")}
+            </span>
             <OutgoingLink
               id="annotator-tutorial-link"
               iri={Constants.ANNOTATOR_TUTORIAL[locale]}

@@ -1,4 +1,5 @@
 import ActionType, {
+  AnnotatorLegendFilterAction,
   AsyncAction,
   AsyncActionSuccess,
   AsyncFailureAction,
@@ -18,6 +19,10 @@ import { Action } from "redux";
 import AppNotification from "../model/AppNotification";
 import { Route } from "../util/Routes";
 import { Breadcrumb } from "../model/Breadcrumb";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../model/AnnotatorLegendFilter";
 
 export function asyncActionRequest(
   a: Action,
@@ -177,4 +182,15 @@ export function addCrumb(crumb: Breadcrumb) {
 }
 export function removeCrumb(crumb: Breadcrumb) {
   return { type: ActionType.REMOVE_CRUMB, payload: crumb };
+}
+
+export function toggleAnnotatorLegendFilter(
+  annotationClass: AnnotationClass,
+  annotationOrigin: AnnotationOrigin = AnnotationOrigin.SELECTED
+): AnnotatorLegendFilterAction {
+  return {
+    type: ActionType.TOGGLE_ANNOTATOR_LEGEND_FILTER,
+    annotationClass,
+    annotationOrigin,
+  };
 }

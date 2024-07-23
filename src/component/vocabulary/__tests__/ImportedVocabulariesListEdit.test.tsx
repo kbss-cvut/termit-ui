@@ -2,27 +2,40 @@ import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { shallow } from "enzyme";
-import { ImportedVocabulariesListEdit } from "../ImportedVocabulariesListEdit";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import ImportedVocabulariesListEdit from "../ImportedVocabulariesListEdit";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
+import { langString } from "../../../model/MultilingualString";
+import * as Redux from "react-redux";
+import { ThunkDispatch } from "src/util/Types";
+import * as AsyncActions from "../../../action/AsyncActions";
+import { loadVocabularies } from "../../../action/AsyncActions";
+import { mountWithIntl } from "../../../__tests__/environment/Environment";
+
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
+}));
 
 describe("ImportedVocabulariesListEdit", () => {
   let vocabularies: { [key: string]: Vocabulary };
   let vocabulary: Vocabulary;
 
   let onChange: (change: object) => void;
-  let loadVocabularies: () => void;
+
+  let fakeDispatch: ThunkDispatch;
 
   beforeEach(() => {
     const vOne = new Vocabulary({
       iri: Generator.generateUri(),
-      label: "Vocabulary One",
+      label: langString("Vocabulary One"),
       types: [VocabularyUtils.VOCABULARY],
     });
     const vTwo = new Vocabulary({
       iri: Generator.generateUri(),
-      label: "Vocabulary two",
+      label: langString("Vocabulary two"),
       types: [VocabularyUtils.VOCABULARY],
     });
     vocabularies = {};
@@ -30,21 +43,22 @@ describe("ImportedVocabulariesListEdit", () => {
     vocabularies[vTwo.iri] = vTwo;
     vocabulary = new Vocabulary({
       iri: Generator.generateUri(),
-      label: "Edited vocabulary",
+      label: langString("Edited vocabulary"),
     });
     vocabularies[vocabulary.iri] = vocabulary;
     onChange = jest.fn();
-    loadVocabularies = jest.fn();
+    fakeDispatch = jest.fn();
+    jest.spyOn(Redux, "useDispatch").mockReturnValue(fakeDispatch);
+    jest.spyOn(AsyncActions, "loadVocabularies");
+    mockUseI18n();
   });
 
   it("loads vocabularies after mount when they are not loaded yet", () => {
-    shallow(
+    jest.spyOn(Redux, "useSelector").mockReturnValue({});
+    mountWithIntl(
       <ImportedVocabulariesListEdit
         vocabulary={vocabulary}
-        vocabularies={{}}
-        loadVocabularies={loadVocabularies}
         onChange={onChange}
-        {...intlFunctions()}
       />
     );
     expect(loadVocabularies).toHaveBeenCalled();
@@ -54,29 +68,26 @@ describe("ImportedVocabulariesListEdit", () => {
     const wrapper = shallow(
       <ImportedVocabulariesListEdit
         vocabulary={vocabulary}
-        vocabularies={vocabularies}
-        loadVocabularies={loadVocabularies}
         onChange={onChange}
-        {...intlFunctions()}
       />
     );
     expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([]);
   });
 
   it("calls onChange with selected vocabularies IRIs on vocabulary selection", () => {
+    jest.spyOn(Redux, "useSelector").mockReturnValue(vocabularies);
     const vocabularyArray = Object.keys(vocabularies).map(
       (v) => vocabularies[v]
     );
-    const wrapper = shallow<ImportedVocabulariesListEdit>(
+    const wrapper = shallow(
       <ImportedVocabulariesListEdit
         vocabulary={vocabulary}
-        loadVocabularies={loadVocabularies}
-        vocabularies={vocabularies}
         onChange={onChange}
-        {...intlFunctions()}
       />
     );
-    wrapper.instance().onChange(vocabularyArray);
+    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
+      vocabularyArray
+    );
     expect(onChange).toHaveBeenCalledWith({
       importedVocabularies: vocabularyArray.map((v) => ({ iri: v.iri })),
     });
@@ -84,47 +95,22 @@ describe("ImportedVocabulariesListEdit", () => {
 
   it("calls onChange with empty array when vocabulary selector is reset", () => {
     const selected = Object.keys(vocabularies).map((k) => ({ iri: k }));
-    const wrapper = shallow<ImportedVocabulariesListEdit>(
+    const wrapper = shallow(
       <ImportedVocabulariesListEdit
         vocabulary={vocabulary}
-        loadVocabularies={loadVocabularies}
-        vocabularies={vocabularies}
         importedVocabularies={selected}
         onChange={onChange}
-        {...intlFunctions()}
       />
     );
-    wrapper.instance().onChange([]);
+    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)([]);
     expect(onChange).toHaveBeenCalledWith({ importedVocabularies: [] });
-  });
-
-  it("updates vocabulary selection when props are updated", () => {
-    const wrapper = shallow<ImportedVocabulariesListEdit>(
-      <ImportedVocabulariesListEdit
-        vocabulary={vocabulary}
-        loadVocabularies={loadVocabularies}
-        vocabularies={vocabularies}
-        onChange={onChange}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([]);
-    const newSelected = [{ iri: Object.keys(vocabularies)[0] }];
-    wrapper.setProps({ importedVocabularies: newSelected });
-    wrapper.update();
-    expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([
-      newSelected[0].iri,
-    ]);
   });
 
   it("does not offer the vocabulary itself for importing", () => {
     const wrapper = shallow(
       <ImportedVocabulariesListEdit
         vocabulary={vocabulary}
-        vocabularies={vocabularies}
-        loadVocabularies={loadVocabularies}
         onChange={onChange}
-        {...intlFunctions()}
       />
     );
     const options: Vocabulary[] = wrapper

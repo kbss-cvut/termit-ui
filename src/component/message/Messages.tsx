@@ -4,8 +4,19 @@ import TermItState from "../../model/TermItState";
 import Constants from "../../util/Constants";
 import Message from "./Message";
 import "./Messages.scss";
+import classNames from "classnames";
 
-export const Messages: React.FC = () => {
+interface MessagesProps {
+  /**
+   * Option to render the container in defined place,
+   * rather than floating in the right upper corner
+   */
+  renderInPlace?: boolean;
+}
+
+export const Messages: React.FC<MessagesProps> = ({
+  renderInPlace = false,
+}) => {
   const messages = useSelector((state: TermItState) => state.messages);
   const count =
     messages.length < Constants.MESSAGE_DISPLAY_COUNT
@@ -13,7 +24,12 @@ export const Messages: React.FC = () => {
       : Constants.MESSAGE_DISPLAY_COUNT;
   const toRender = messages.slice(0, count);
   return (
-    <div className={"message-container messages-" + count}>
+    <div
+      className={classNames(" messages-" + count, {
+        "message-fixed-container": renderInPlace,
+        "message-container": !renderInPlace,
+      })}
+    >
       {toRender.map((m) => (
         <Message key={m.timestamp} message={m} />
       ))}

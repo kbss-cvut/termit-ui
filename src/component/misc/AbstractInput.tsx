@@ -23,7 +23,7 @@ export interface AbstractInputProps {
    *
    * Hint text should be short, not disturbing.
    */
-  hint?: string;
+  hint?: string | React.ReactElement;
   /**
    * Help is displayed in a popup on hover/click on the help icon displayed next to the input label.
    *

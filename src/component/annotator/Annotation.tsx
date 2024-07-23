@@ -12,6 +12,10 @@ import { loadTermByIri } from "../../action/AsyncAnnotatorActions";
 import Asset from "../../model/Asset";
 import AccessLevel from "../../model/acl/AccessLevel";
 import classNames from "classnames";
+import AnnotatorLegendFilter, {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../model/AnnotatorLegendFilter";
 
 interface AnnotationProps extends AnnotationSpanProps {
   about: string;
@@ -31,6 +35,7 @@ interface AnnotationProps extends AnnotationSpanProps {
   onResetSticky: () => void; // Resets sticky annotation status
   accessLevel: AccessLevel;
   highlight?: boolean;
+  filter: AnnotatorLegendFilter;
 }
 
 interface AnnotationState {
@@ -38,20 +43,6 @@ interface AnnotationState {
   term: Term | null | undefined;
   termFetchFinished: boolean;
 }
-
-export const AnnotationClass = {
-  INVALID: "invalid-term-occurrence",
-  ASSIGNED_OCCURRENCE: "assigned-term-occurrence",
-  SUGGESTED_OCCURRENCE: "suggested-term-occurrence",
-  LOADING: "loading-term-occurrence",
-  PENDING_DEFINITION: "pending-term-definition",
-  DEFINITION: "term-definition",
-};
-
-export const AnnotationOrigin = {
-  PROPOSED: "proposed-occurrence",
-  SELECTED: "selected-occurrence",
-};
 
 export function isDefinitionAnnotation(type: string) {
   return type === AnnotationType.DEFINITION;
@@ -106,7 +97,8 @@ export class Annotation extends React.Component<
       nextProps.text !== this.props.text ||
       nextProps.resource !== this.props.resource ||
       nextProps.score !== this.props.score ||
-      nextProps.highlight !== this.props.highlight
+      nextProps.highlight !== this.props.highlight ||
+      this.isHidden(nextProps) !== this.isHidden(this.props)
     ) {
       return true;
     }
@@ -237,6 +229,13 @@ export class Annotation extends React.Component<
     return;
   };
 
+  private isHidden = (props: AnnotationProps) => {
+    if (!props.filter) {
+      return false;
+    }
+    return !props.filter.get(this.getTermState(), this.getTermCreatorState());
+  };
+
   public render() {
     const id = "id" + this.props.about.substring(2);
     const termClassName = this.getTermState();
@@ -251,6 +250,11 @@ export class Annotation extends React.Component<
       ? { content: this.props.content }
       : {};
     const Tag = this.props.tag;
+
+    if (this.isHidden(this.props)) {
+      return this.props.children;
+    }
+
     return (
       <Tag
         id={id}
@@ -315,6 +319,7 @@ export default connect(
   (state: TermItState, props: AnnotationProps) => {
     return {
       term: props.resource ? state.annotatorTerms[props.resource] : undefined,
+      filter: state.annotatorLegendFilter,
     };
   },
   (dispatch: ThunkDispatch) => {

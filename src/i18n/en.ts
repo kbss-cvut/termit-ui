@@ -53,6 +53,7 @@ const en = {
     "login.submit": "Login",
     "login.register": "Register",
     "login.register.label": "Don't have an account? <a>Register</a>",
+    "login.forgotPassword.label": "<a>Forgot your password?</a>",
     "login.error": "Authentication failed.",
     "login.progress-mask": "Logging in...",
     "login.locked": "Account locked.",
@@ -76,6 +77,29 @@ const en = {
     "register.login.label": "Already a member? <a>Log in</a>",
     "register.username-exists.tooltip": "Username already exists",
     "register.username.notValidEmail": "Username has to be an email address",
+
+    "forgotPassword.title": "Forgot password",
+    "forgotPassword.mask": "Sending...",
+    "forgotPassword.subtitle": "Forgot password",
+    "forgotPassword.login.label": "Back to <a>Log in</a>",
+    "forgotPassword.username": "Username",
+    "forgotPassword.username.placeholder": "Enter Your Username",
+    "forgotPassword.username.notValidEmail":
+      "Username has to be an email address",
+    "forgotPassword.submit": "Send recovery email",
+    "forgotPassword.success": "Email sent",
+
+    "resetPassword.passwordsNotEqual": "Passwords don't match",
+    "resetPassword.mask": "Changing password...",
+    "resetPassword.title": "Change password",
+    "resetPassword.subtitle": "Change password",
+    "resetPassword.password": "New password",
+    "resetPassword.password.placeholder": "Choose a new password",
+    "resetPassword.password.confirm": "Confirm password",
+    "resetPassword.submit": "Change password",
+    "resetPassword.success": "Password changed",
+    "resetPassword.invalidToken":
+      "Invalid or expired password change link. Please request a password change again.",
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",
@@ -623,6 +647,8 @@ const en = {
       "Select term whose occurrences to highlight",
     "annotator.highlight.countInfo":
       "Found {count, plural, one {# occurrence} other {# occurrences}} in this document.",
+    "annotator.legend.annotationHidingHint":
+      "You can show/hide the term occurrence highlighting by clicking on the legend item.",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",

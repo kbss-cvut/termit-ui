@@ -1,44 +1,48 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import { AssetData } from "../../model/Asset";
 import { Col, FormGroup, Label, Row } from "reactstrap";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import Utils from "../../util/Utils";
 import { createVocabularyValueRenderer } from "../misc/treeselect/Renderers";
 import { ThunkDispatch } from "../../util/Types";
 import { loadVocabularies } from "../../action/AsyncActions";
+import { useI18n } from "../hook/useI18n";
+import Term, { TermData } from "../../model/Term";
+import { getLocalized } from "../../model/MultilingualString";
+import { getShortLocale } from "../../util/IntlUtil";
 
-interface ImportedVocabulariesListEditProps extends HasI18n {
+interface ImportedVocabulariesListEditProps {
   vocabulary: Vocabulary;
-  vocabularies: { [key: string]: Vocabulary };
   importedVocabularies?: AssetData[];
   onChange: (change: object) => void;
-  loadVocabularies: () => void;
 }
 
-export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabulariesListEditProps> {
-  public componentDidMount() {
-    if (Object.getOwnPropertyNames(this.props.vocabularies).length === 0) {
-      this.props.loadVocabularies();
-    }
-  }
+const ImportedVocabulariesListEdit: React.FC<ImportedVocabulariesListEditProps> =
+  ({ vocabulary, importedVocabularies, onChange }) => {
+    const { i18n, locale } = useI18n();
+    const vocabularies = useSelector(
+      (state: TermItState) => state.vocabularies
+    );
+    const dispatch: ThunkDispatch = useDispatch();
+    React.useEffect(() => {
+      if (Object.getOwnPropertyNames(vocabularies).length === 0) {
+        dispatch(loadVocabularies());
+      }
+    }, [dispatch, vocabularies]);
 
-  public onChange = (selected: Vocabulary[]) => {
-    const selectedVocabs = selected.map((v) => ({ iri: v.iri }));
-    this.props.onChange({ importedVocabularies: selectedVocabs });
-  };
+    const onSelect = (selected: Vocabulary[]) => {
+      const selectedVocabs = selected.map((v) => ({ iri: v.iri }));
+      onChange({ importedVocabularies: selectedVocabs });
+    };
 
-  public render() {
-    const i18n = this.props.i18n;
-    const options = Object.keys(this.props.vocabularies)
-      .map((v) => this.props.vocabularies[v])
-      .filter((v) => v.iri !== this.props.vocabulary.iri);
-    const selected = Utils.sanitizeArray(this.props.importedVocabularies).map(
+    const options = Object.keys(vocabularies)
+      .map((v) => vocabularies[v])
+      .filter((v) => v.iri !== vocabulary.iri);
+    const selected = Utils.sanitizeArray(importedVocabularies).map(
       (v) => v.iri!
     );
     return (
@@ -50,11 +54,13 @@ export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabu
             </Label>
             <IntelligentTreeSelect
               className="p-0"
-              onChange={this.onChange}
+              onChange={onSelect}
               value={selected}
               options={options}
               valueKey="iri"
-              labelKey="label"
+              getOptionLabel={(option: Term | TermData) =>
+                getLocalized(option.label, getShortLocale(locale))
+              }
               childrenKey="children"
               placeholder={i18n("select.placeholder")}
               classNamePrefix="react-select"
@@ -70,14 +76,6 @@ export class ImportedVocabulariesListEdit extends React.Component<ImportedVocabu
         </Col>
       </Row>
     );
-  }
-}
+  };
 
-export default connect(
-  (state: TermItState) => ({ vocabularies: state.vocabularies }),
-  (dispatch: ThunkDispatch) => {
-    return {
-      loadVocabularies: () => dispatch(loadVocabularies()),
-    };
-  }
-)(injectIntl(withI18n(ImportedVocabulariesListEdit)));
+export default ImportedVocabulariesListEdit;
