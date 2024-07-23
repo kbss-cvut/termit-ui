@@ -451,12 +451,12 @@ describe("AsyncUserActions", () => {
     };
 
     it("sends user data to server for registration", () => {
-      Ajax.post = jest.fn().mockResolvedValue({});
+      Ajax.put = jest.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createNewUser(userInfo))
       ).then(() => {
-        expect(Ajax.post).toHaveBeenCalled();
-        const args = (Ajax.post as jest.Mock).mock.calls[0];
+        expect(Ajax.put).toHaveBeenCalled();
+        const args = (Ajax.put as jest.Mock).mock.calls[0];
         expect(args[0]).toEqual(`${Constants.API_PREFIX}/users`);
         expect(args[1].getContent()).toEqual(userInfo);
       });
@@ -486,7 +486,7 @@ describe("AsyncUserActions", () => {
 
     it("returns dispatched error action on error", () => {
       const error = { status: 409, message: "This does not work" };
-      Ajax.post = jest.fn().mockRejectedValue(error);
+      Ajax.put = jest.fn().mockRejectedValue(error);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createNewUser(userInfo))
       ).then((result) => {
