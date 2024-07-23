@@ -56,13 +56,6 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
     }, 250)
   ).current;
 
-  // on username change, contact API and check if username already exists
-  useEffect(() => {
-    if (validateUsername(false) === ValidationResult.VALID) {
-      fetchUsernameExists(username);
-    }
-  }, [username]);
-
   const onFormSubmit = () => {
     if (!isValid()) {
       return;
@@ -89,12 +82,12 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
     }
   };
 
-  const validateNonEmpty = (value: string) => {
+  const validateNonEmpty = useRef((value: string) => {
     if (value == null || value.trim().length === 0) {
       return ValidationResult.BLOCKER;
     }
     return ValidationResult.VALID;
-  };
+  }).current;
 
   const validateFirstName = () => {
     return validateNonEmpty(firstName);
@@ -108,7 +101,7 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
     return validateNonEmpty(password);
   };
 
-  const validateUsername = (checkExists = true) => {
+  const validateUsername = useRef((checkExists = true) => {
     if (validateNonEmpty(username) === ValidationResult.BLOCKER) {
       return ValidationResult.BLOCKER;
     }
@@ -120,7 +113,14 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
     }
 
     return ValidationResult.VALID;
-  };
+  }).current;
+
+  // on username change, contact API and check if username already exists
+  useEffect(() => {
+    if (validateUsername(false) === ValidationResult.VALID) {
+      fetchUsernameExists(username);
+    }
+  }, [username, validateUsername, fetchUsernameExists]);
 
   const validatePasswordConfirmation = () => {
     if (password !== passwordConfirmation) {
