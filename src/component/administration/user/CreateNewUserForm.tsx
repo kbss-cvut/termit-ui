@@ -47,7 +47,6 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
   const fetchUsernameExists = useRef(
     _.debounce((username) => {
       dispatch(doesUsernameExists(username)).then((action) => {
-        console.debug(username, action);
         if (action.status === AsyncActionStatus.SUCCESS) {
           const actionSuccess = action as AsyncActionSuccess<boolean>;
           setUsernameExists(actionSuccess.payload);
