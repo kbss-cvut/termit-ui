@@ -1,3 +1,8 @@
+#### Version 3.1.2
+
+- Added password recovery.
+- Bug fixes.
+
 #### Version 3.1.1
 
 - Bug fixes, dependency updates.

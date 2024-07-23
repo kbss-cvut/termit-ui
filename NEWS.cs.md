@@ -1,3 +1,8 @@
+#### Verze 3.1.2
+
+- Přidána možnost resetovat zapomenuté heslo.
+- Opravy chyb.
+
 #### Verze 3.1.1
 
 - Opravy chyb, aktualizace knihoven.
