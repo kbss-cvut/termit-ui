@@ -17,7 +17,7 @@ import { getTermPath } from "../../term/TermLink";
 import User from "../../../model/User";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
-import DraftBadge from "../../term/DraftBadge";
+import TermStateBadge from "../../term/state/TermStateBadge";
 
 interface TermResultItemOwnProps {
   result: SearchResultItem;
@@ -114,7 +114,7 @@ export class TermResultItem extends React.Component<
     return (
       <>
         <TermBadge className="search-result-badge" />
-        <DraftBadge isDraft={result.draft} />
+        <TermStateBadge state={result.state} />
         <AssetLink
           asset={t}
           path={getTermPath(asset as Term, this.props.user)}

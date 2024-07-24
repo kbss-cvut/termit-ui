@@ -33,7 +33,6 @@ import Utils from "../util/Utils";
 import { AxiosResponse } from "axios";
 import { getApiPrefix } from "./ActionUtils";
 import { AssetData } from "../model/Asset";
-import TermStatus from "../model/TermStatus";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import TermItState from "../model/TermItState";
 
@@ -227,12 +226,15 @@ export function removeTermDefinitionSource(term: Term) {
   };
 }
 
-export function removeOccurrence(occurrence: TermOccurrence | AssetData) {
+export function removeOccurrence(
+  occurrence: TermOccurrence | AssetData,
+  ignoreNotFound = false
+) {
   const action = {
     type: ActionType.REMOVE_TERM_OCCURRENCE,
   };
   return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
     return Ajax.delete(
       Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
@@ -240,20 +242,32 @@ export function removeOccurrence(occurrence: TermOccurrence | AssetData) {
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
+        if (error.status !== 404 || !ignoreNotFound) {
+          dispatch(asyncActionFailure(action, error));
+          return dispatch(
+            SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+          );
+        } else {
+          return dispatch(asyncActionFailure(action, error));
+        }
       });
   };
 }
 
-export function approveOccurrence(occurrence: TermOccurrence | AssetData) {
+/**
+ * Approves the specified term occurrence.
+ * @param occurrence Occurrence to approve
+ * @param ignoreNotFound In case the annotations in the document have different identifiers than the stored term occurrences, not found exceptions may be thrown. This allows to not show errors in such cases
+ */
+export function approveOccurrence(
+  occurrence: TermOccurrence | AssetData,
+  ignoreNotFound = false
+) {
   const action = {
     type: ActionType.APPROVE_TERM_OCCURRENCE,
   };
   return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     const OccurrenceIri = VocabularyUtils.create(occurrence.iri!);
     return Ajax.put(
       Constants.API_PREFIX + "/occurrence/" + OccurrenceIri.fragment,
@@ -261,27 +275,31 @@ export function approveOccurrence(occurrence: TermOccurrence | AssetData) {
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
+        if (error.status !== 404 || !ignoreNotFound) {
+          dispatch(asyncActionFailure(action, error));
+          return dispatch(
+            SyncActions.publishMessage(new Message(error, MessageType.ERROR))
+          );
+        } else {
+          return dispatch(asyncActionFailure(action, error));
+        }
       });
   };
 }
 
-export function setTermStatus(termIri: IRI, status: TermStatus) {
+export function setTermState(termIri: IRI, state: string) {
   const action = {
-    type: ActionType.SET_TERM_STATUS,
+    type: ActionType.SET_TERM_STATE,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(action);
     return Ajax.put(
-      `${Constants.API_PREFIX}/terms/${termIri.fragment}/status`,
+      `${Constants.API_PREFIX}/terms/${termIri.fragment}/state`,
       param("namespace", termIri.namespace)
-        .content(status)
+        .content(state)
         .contentType(Constants.TEXT_MIME_TYPE)
     )
-      .then(() => dispatch(asyncActionSuccessWithPayload(action, status)))
+      .then(() => dispatch(asyncActionSuccessWithPayload(action, state)))
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return dispatch(

@@ -9,6 +9,13 @@ export function context(propertyIri: string) {
   };
 }
 
+export function pluralContext(propertyIri: string) {
+  return {
+    "@id": propertyIri,
+    "@container": ["@language", "@set"],
+  };
+}
+
 export interface MultilingualString {
   [key: string]: string;
 }
@@ -133,6 +140,13 @@ export function getLocalizedOrDefault(
     : str[NO_LANG] !== undefined
     ? str[NO_LANG]
     : defaultValue;
+}
+
+export function hasNonBlankValue(
+  str?: MultilingualString,
+  lang: string = Constants.DEFAULT_LANGUAGE
+) {
+  return str && (str[getShortLocale(lang)] || "").trim().length > 0;
 }
 
 export default MultilingualString;

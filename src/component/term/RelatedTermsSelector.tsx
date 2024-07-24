@@ -39,6 +39,7 @@ interface RelatedTermsSelectorProps extends HasI18n {
   selected: TermInfo[];
   onChange: (value: Term[]) => void;
   language: string;
+  terminalStates: string[];
   loadTerms: (
     fetchOptions: TermFetchParams<TermData>,
     namespace?: string
@@ -65,6 +66,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
         this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
       {
         selectedTerms: this.props.selected,
+        terminalStates: this.props.terminalStates,
       }
     );
   };
@@ -108,6 +110,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
 export default connect(
   (state: TermItState) => ({
     definitionRelated: state.definitionallyRelatedTerms,
+    terminalStates: state.terminalStates,
   }),
   (dispatch: ThunkDispatch) => ({
     loadTerms: (fetchOptions: TermFetchParams<TermData>, namespace?: string) =>

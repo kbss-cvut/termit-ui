@@ -12,7 +12,7 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import Term, { CONTEXT, TermData, TermInfo } from "../../model/Term";
+import Term, { CONTEXT, TermData } from "../../model/Term";
 import CustomInput from "../misc/CustomInput";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermTypesEdit from "./TermTypesEdit";
@@ -24,12 +24,12 @@ import {
   getLocalized,
   getLocalizedOrDefault,
   getLocalizedPlural,
+  hasNonBlankValue,
 } from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
-import * as _ from "lodash";
+import _ from "lodash";
 import {
   checkLabelUniqueness,
-  isLabelValid,
   isTermValid,
   LabelExists,
 } from "./TermValidationUtils";
@@ -39,7 +39,6 @@ import { ConsolidatedResults } from "../../model/ConsolidatedResults";
 import ValidationResult from "../../model/form/ValidationResult";
 import { renderValidationMessages } from "./forms/FormUtils";
 import ExactMatchesSelector from "./ExactMatchesSelector";
-import DraftToggle from "./DraftToggle";
 import MultilingualIcon from "../misc/MultilingualIcon";
 import RelatedTermsSelector from "./RelatedTermsSelector";
 import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
@@ -48,6 +47,7 @@ import StringListEdit from "../misc/StringListEdit";
 import "./TermMetadata.scss";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
+import TermStateSelector from "./state/TermStateSelector";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -86,10 +86,7 @@ export class TermMetadataEdit extends React.Component<
     );
   }
 
-  public componentDidUpdate(
-    prevProps: TermMetadataEditProps,
-    prevState: TermMetadataEditState
-  ): void {
+  public componentDidUpdate(prevProps: TermMetadataEditProps): void {
     if (this.props.language && prevProps.language !== this.props.language) {
       this.onPrefLabelChange(this.state.label[this.props.language] || "");
     }
@@ -170,7 +167,7 @@ export class TermMetadataEdit extends React.Component<
 
   public onExactMatchesChange = (exactMatchTerms: Term[]) => {
     this.setState({
-      exactMatchTerms: exactMatchTerms.map((e) => e as TermInfo),
+      exactMatchTerms: exactMatchTerms.map((e) => Term.toTermInfo(e)),
     });
   };
 
@@ -211,8 +208,8 @@ export class TermMetadataEdit extends React.Component<
     return { sameVocabulary, differentVocabulary };
   }
 
-  public onStatusChange = () => {
-    this.setState({ draft: !this.state.draft });
+  public onStateChange = (stateIri: string) => {
+    this.setState({ state: { iri: stateIri } });
   };
 
   private onPropertiesChange = (update: Map<string, string[]>) => {
@@ -249,7 +246,7 @@ export class TermMetadataEdit extends React.Component<
   private getPrefLabelValidation() {
     const results: ValidationResult[] = [];
     const language = this.props.language;
-    if (!isLabelValid(this.state, language)) {
+    if (!hasNonBlankValue(this.state.label, language)) {
       results.push(ValidationResult.BLOCKER);
     } else if (this.state.labelExist[language]) {
       results.push(
@@ -284,8 +281,8 @@ export class TermMetadataEdit extends React.Component<
       <>
         <EditLanguageSelector
           key="term-edit-language-selector"
-          term={this.state}
           language={language}
+          existingLanguages={Term.getLanguages(this.state)}
           onSelect={this.props.selectLanguage}
           onRemove={this.removeTranslation}
         />
@@ -451,10 +448,9 @@ export class TermMetadataEdit extends React.Component<
                         />
                       </Label>
                       <br />
-                      <DraftToggle
-                        id="edit-term-status"
-                        draft={Term.isDraft(this.state)}
-                        onToggle={this.onStatusChange}
+                      <TermStateSelector
+                        value={this.state.state}
+                        onChange={this.onStateChange}
                       />
                     </FormGroup>
                   </Col>

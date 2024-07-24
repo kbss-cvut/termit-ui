@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadVocabularies } from "../../../action/AsyncActions";
 import TermItState from "../../../model/TermItState";
 import MultiSelectFacet from "./MultiSelectFacet";
+import { getLocalized } from "../../../model/MultilingualString";
+import { getShortLocale } from "../../../util/IntlUtil";
 
 interface VocabularyFacetProps {
   value: SearchParam;
@@ -16,7 +18,7 @@ const VocabularyFacet: React.FC<VocabularyFacetProps> = ({
   value,
   onChange,
 }) => {
-  const { i18n } = useI18n();
+  const { i18n, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     dispatch(loadVocabularies());
@@ -26,9 +28,9 @@ const VocabularyFacet: React.FC<VocabularyFacetProps> = ({
     () =>
       Object.keys(vocabularies).map((v) => ({
         value: vocabularies[v].iri,
-        label: vocabularies[v].label,
+        label: getLocalized(vocabularies[v].label, getShortLocale(locale)),
       })),
-    [vocabularies]
+    [vocabularies, locale]
   );
 
   return (

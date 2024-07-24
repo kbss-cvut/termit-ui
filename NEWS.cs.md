@@ -1,3 +1,45 @@
+#### Verze 3.1.2
+
+- Přidána možnost resetovat zapomenuté heslo.
+- Opravy chyb.
+
+#### Verze 3.1.1
+
+- Opravy chyb, aktualizace knihoven.
+
+#### Verze 3.1.0
+
+- Přidána možnost zvýraznit v anotátoru výskyty vybraného pojmu.
+- Vylepšená opakovaná anotace souborů - zapamatování si již potvrzených výskytů i při (omezené) změně obsahu dokumentu.
+- Úprava vizualizace výskytů v anotátoru.
+- Filtrování v tabulkách ignoruje diakritiku.
+- Opravy chyb, aktualizace knihoven.
+
+#### Verze 3.0.4
+
+- Opravy chyb.
+
+#### Verze 3.0.3
+
+- Přidána podpora pro vícejazyčné atributy slovníků.
+- Zlepšena rychlost opakované anotace dokumentů.
+
+#### Verze 3.0.2
+
+- Přidána podpora pro nasazení s externí autorizační službou.
+- Přidána možnost specifikovat soubor s taxonomií stavů/typů pojmů.
+
+#### Verze 3.0.1
+
+- Opraven problém s nastavováním pojmů se stejným významem.
+- Technické úpravy uvnitř aplikace.
+
+#### Verze 3.0.0
+
+- Draft status pojmu nahrazen podporou pro množinu stavů.
+- Odebrány některé nefunkční/nepoužívané funkce.
+- Aktualizace požadované verze platformy Java.
+
 #### Verze 2.18.0
 
 - Implementováno facetové vyhledávání pojmů.

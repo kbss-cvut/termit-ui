@@ -10,10 +10,14 @@ import {
 } from "../Ajax";
 import Routing from "../Routing";
 import { EMPTY_USER } from "../../model/User";
-import Constants from "../Constants";
-import * as Const from "../Constants";
+import Constants, * as Const from "../Constants";
 import Routes from "../Routes";
-import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import {
+  AxiosHeaders,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import { ErrorData } from "../../model/ErrorInfo";
 import SecurityUtils from "../SecurityUtils";
 import VocabularyUtils from "../VocabularyUtils";
@@ -34,12 +38,12 @@ describe("Ajax", () => {
   const mock = new MockAdapter(sut.axios);
   const jwt = "12345";
 
-  let headers: {};
+  let headers: AxiosHeaders;
 
   beforeEach(() => {
     mock.reset();
-    headers = {};
-    headers[Constants.Headers.AUTHORIZATION] = jwt;
+    headers = new AxiosHeaders();
+    headers.setAuthorization(jwt);
   });
 
   afterEach(() => {
@@ -49,14 +53,16 @@ describe("Ajax", () => {
   it("loads JWT and sets it on request", () => {
     SecurityUtils.loadToken = jest.fn().mockReturnValue(jwt);
     mock.onGet("/users/current").reply((config: AxiosRequestConfig) => {
-      expect(config.headers![Constants.Headers.AUTHORIZATION]).toContain(jwt);
+      expect((config.headers as AxiosHeaders).getAuthorization()).toContain(
+        jwt
+      );
       return [200, require("../../rest-mock/current"), headers];
     });
     return sut.get("/users/current");
   });
 
   it("extracts current JWT from response and saves it using Authentication", () => {
-    headers[Constants.Headers.AUTHORIZATION] = jwt;
+    headers.setAuthorization(jwt);
     SecurityUtils.saveToken = jest.fn();
     mock
       .onGet("/users/current")
@@ -390,7 +396,7 @@ describe("Ajax", () => {
         })
       );
       return sut
-        .getRaw("/vocabularies?test/terms", accept(Constants.CSV_MIME_TYPE))
+        .getRaw("/vocabularies?test/terms", accept(Constants.EXCEL_MIME_TYPE))
         .then((resp: any) => {
           expect(resp.status).toEqual(200);
           expect(resp.headers).toBeDefined();

@@ -10,9 +10,9 @@ import RelatedTermsList from "./RelatedTermsList";
 import TermDefinitionBlock from "./TermDefinitionBlock";
 import MarkdownView from "../misc/MarkdownView";
 import { useI18n } from "../hook/useI18n";
-import TermStatus from "./TermStatus";
 import Vocabulary from "../../model/Vocabulary";
 import TermTypes from "./TermTypes";
+import TermState from "./state/TermState";
 
 interface BasicTermMetadataProps {
   term: Term;
@@ -148,7 +148,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
         </Col>
       </Row>
       <Row>
-        <TermStatus term={term} vocabulary={vocabulary} />
+        <TermState term={term} vocabulary={vocabulary} />
       </Row>
     </>
   );

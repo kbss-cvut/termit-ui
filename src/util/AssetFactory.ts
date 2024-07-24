@@ -105,7 +105,6 @@ const AssetFactory = {
       altLabels: undefined,
       hiddenLabels: undefined,
       definitionSource: undefined,
-      draft: true,
     };
   },
 

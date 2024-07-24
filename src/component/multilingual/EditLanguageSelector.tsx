@@ -5,7 +5,6 @@ import classNames from "classnames";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Constants from "../../util/Constants";
 import { getShortLocale } from "../../util/IntlUtil";
-import Term, { TermData } from "../../model/Term";
 import { renderLanguages } from "./LanguageSelector";
 import { Nav, NavItem, NavLink } from "reactstrap";
 import { FaPlusCircle } from "react-icons/fa";
@@ -14,7 +13,7 @@ import "./LanguageSelector.scss";
 
 interface EditLanguageSelectorProps {
   language: string;
-  term: Term | TermData;
+  existingLanguages: string[];
   onSelect: (lang: string) => void;
   onRemove: (lang: string) => void;
 }
@@ -43,13 +42,12 @@ const OPTIONS = prioritizeLanguages(
 );
 
 const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
-  const { language, term, onSelect, onRemove } = props;
+  const { language, existingLanguages, onSelect, onRemove } = props;
   const { i18n, formatMessage } = useI18n();
   const [adding, setAdding] = React.useState(false);
   React.useEffect(() => {
     setAdding(false);
   }, [language]);
-  const existingLanguages = Term.getLanguages(term);
   if (existingLanguages.indexOf(language) === -1) {
     existingLanguages.push(language);
   }
@@ -62,7 +60,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
   return (
     <div>
       <Nav
-        id="term-edit-language-selector"
+        id="edit-language-selector"
         tabs={true}
         className="language-selector-nav"
       >

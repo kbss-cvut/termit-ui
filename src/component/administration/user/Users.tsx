@@ -22,6 +22,12 @@ import PanelWithActions from "../../misc/PanelWithActions";
 import { useI18n } from "../../hook/useI18n";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
+import IfInternalAuth from "../../misc/oidc/IfInternalAuth";
+import { isUsingOidcAuth } from "../../../util/OidcUtils";
+import IfOidcAuth from "../../misc/oidc/IfOidcAuth";
+import { getEnv } from "../../../util/Constants";
+import ConfigParam from "../../../util/ConfigParam";
+import OutgoingLink from "../../misc/OutgoingLink";
 
 const Users: React.FC = () => {
   const { i18n } = useI18n();
@@ -61,15 +67,17 @@ const Users: React.FC = () => {
         id="users"
         title={i18n("administration.users")}
         actions={
-          <Link
-            id="administration-users-create"
-            to={Routes.createNewUser.path}
-            title={i18n("administration.users.create.tooltip")}
-            className="btn btn-primary btn-sm users-action-button"
-          >
-            <GoPlus />
-            &nbsp;{i18n("administration.users.create")}
-          </Link>
+          <IfInternalAuth>
+            <Link
+              id="administration-users-create"
+              to={Routes.createNewUser.path}
+              title={i18n("administration.users.create.tooltip")}
+              className="btn btn-primary btn-sm users-action-button"
+            >
+              <GoPlus />
+              &nbsp;{i18n("administration.users.create")}
+            </Link>
+          </IfInternalAuth>
         }
       >
         <PromiseTrackingMask area="users" />
@@ -85,6 +93,15 @@ const Users: React.FC = () => {
           onSubmit={onUserRoleSubmit}
           onCancel={() => setEditedUser(EMPTY_USER)}
         />
+        <IfOidcAuth>
+          <p id="oidc-notice" className="italics">
+            <OutgoingLink
+              iri={getEnv(ConfigParam.AUTH_SERVER_MANAGEMENT_URL, "")}
+              label={i18n("administration.users.oidc")}
+              showLink={true}
+            />
+          </p>
+        </IfOidcAuth>
         <UsersTable
           users={users}
           currentUser={currentUser}
@@ -92,6 +109,7 @@ const Users: React.FC = () => {
           enable={onEnableUser}
           unlock={(user) => setUserToUnlock(user)}
           changeRole={(user) => setEditedUser(user)}
+          readOnly={isUsingOidcAuth()}
         />
       </PanelWithActions>
     </>

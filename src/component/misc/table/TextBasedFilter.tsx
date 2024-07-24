@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Input } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
+import { getLocalized } from "../../../model/MultilingualString";
+import Utils from "../../../util/Utils";
 
 interface TextBasedFilterProps {
   column: {
@@ -13,16 +15,42 @@ interface TextBasedFilterProps {
 export function textContainsFilter(
   rows: any[],
   id: string,
-  filterValue?: string
+  filterValue: string
 ) {
+  const normalizedFilterValue = Utils.normalizeString(
+    String(filterValue)
+  ).toLowerCase();
   return rows.filter((row) => {
     const rowValue = row.values[id];
     return rowValue !== undefined
-      ? String(rowValue)
-          .toLowerCase()
-          .indexOf(String(filterValue).toLowerCase()) !== -1
+      ? textContains(rowValue, normalizedFilterValue)
       : true;
   });
+}
+
+function textContains(text: string, toContain: string) {
+  return (
+    Utils.normalizeString(String(text).toLowerCase()).indexOf(toContain) !== -1
+  );
+}
+
+export function multilingualTextContainsFilterFactory(lang: string) {
+  return (rows: any[], id: string, filterValue: string) => {
+    const normalizedFilterValue = Utils.normalizeString(
+      String(filterValue)
+    ).toLowerCase();
+    return rows.filter((row) => {
+      const rowValue = row.values[id];
+      if (rowValue === undefined) {
+        return true;
+      }
+      let toMatch = rowValue;
+      if (typeof rowValue === "object") {
+        toMatch = getLocalized(rowValue, lang);
+      }
+      return textContains(toMatch, normalizedFilterValue);
+    });
+  };
 }
 
 const TextBasedFilter: React.FC<TextBasedFilterProps> = (props) => {

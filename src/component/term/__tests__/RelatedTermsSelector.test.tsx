@@ -53,6 +53,7 @@ describe("RelatedTermsSelector", () => {
         definitionRelated={definitionRelated}
         definitionRelatedChanges={definitionRelatedChanges}
         onDefinitionRelatedChange={onDefinitionRelatedChange}
+        states={{}}
         {...intlFunctions()}
       />
     );

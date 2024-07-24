@@ -9,6 +9,9 @@ import AssetLabel from "../../misc/AssetLabel";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import VocabularyBadge from "../../badge/VocabularyBadge";
 import { useI18n } from "../../hook/useI18n";
+import { useSelector } from "react-redux";
+import TermItState from "../../../model/TermItState";
+import { createTermNonTerminalStateMatcher } from "../../term/TermTreeSelectHelper";
 
 interface SearchResultsOverlayProps {
   show: boolean;
@@ -25,8 +28,15 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
   props: SearchResultsOverlayProps
 ) => {
   const { i18n, formatMessage } = useI18n();
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
+  const mergedResults = mergeDuplicates(
+    props.searchResults,
+    createTermNonTerminalStateMatcher(terminalStates)
+  );
   const items = [];
-  if (props.searchResults.length === 0) {
+  if (mergedResults.length === 0) {
     items.push(
       <li
         id="search-results-link"
@@ -39,7 +49,6 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
       </li>
     );
   } else {
-    const mergedResults = mergeDuplicates(props.searchResults);
     let i = 0;
     for (i; i < mergedResults.length && i < MAX_RENDERED_RESULTS; i++) {
       const item = mergedResults[i];

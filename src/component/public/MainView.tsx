@@ -25,15 +25,17 @@ import SearchTerms from "../search/SearchTerms";
 import SearchVocabularies from "../search/SearchVocabularies";
 import Search from "../search/label/Search";
 import "../MainView.scss";
-import { loadConfiguration } from "../../action/AsyncActions";
+import { loadConfiguration, loadTermStates } from "../../action/AsyncActions";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
 import FacetedSearch from "../search/facet/FacetedSearch";
+import { PUBLIC_LOGIN_ROUTE } from "../../util/Routing";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   sidebarExpanded: boolean;
   desktopView: boolean;
   changeView: () => void;
   loadConfiguration: () => void;
+  loadTermStates: () => void;
 }
 
 interface MainViewState {
@@ -51,6 +53,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
   public componentDidMount(): void {
     window.addEventListener("resize", this.handleResize, false);
     this.props.loadConfiguration();
+    this.props.loadTermStates();
   }
 
   public componentWillUnmount(): void {
@@ -102,7 +105,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                 <Nav navbar={true} className="nav-menu-user flex-row-reverse">
                   <NavItem>
                     <Link
-                      to={Routes.login.path}
+                      to={PUBLIC_LOGIN_ROUTE.path}
                       className="text-dark mx-3"
                       title={i18n("public.nav.user")}
                     >
@@ -175,6 +178,7 @@ export default connect(
     return {
       changeView: () => dispatch(changeView()),
       loadConfiguration: () => dispatch(loadConfiguration()),
+      loadTermStates: () => dispatch(loadTermStates()),
     };
   }
 )(

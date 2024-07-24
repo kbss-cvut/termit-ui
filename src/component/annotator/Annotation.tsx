@@ -11,6 +11,11 @@ import { ThunkDispatch } from "../../util/Types";
 import { loadTermByIri } from "../../action/AsyncAnnotatorActions";
 import Asset from "../../model/Asset";
 import AccessLevel from "../../model/acl/AccessLevel";
+import classNames from "classnames";
+import AnnotatorLegendFilter, {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../model/AnnotatorLegendFilter";
 
 interface AnnotationProps extends AnnotationSpanProps {
   about: string;
@@ -29,6 +34,8 @@ interface AnnotationProps extends AnnotationSpanProps {
   onFetchTerm: (termIri: string) => Promise<Term | null>;
   onResetSticky: () => void; // Resets sticky annotation status
   accessLevel: AccessLevel;
+  highlight?: boolean;
+  filter: AnnotatorLegendFilter;
 }
 
 interface AnnotationState {
@@ -36,20 +43,6 @@ interface AnnotationState {
   term: Term | null | undefined;
   termFetchFinished: boolean;
 }
-
-export const AnnotationClass = {
-  INVALID: "invalid-term-occurrence",
-  ASSIGNED_OCCURRENCE: "assigned-term-occurrence",
-  SUGGESTED_OCCURRENCE: "suggested-term-occurrence",
-  LOADING: "loading-term-occurrence",
-  PENDING_DEFINITION: "pending-term-definition",
-  DEFINITION: "term-definition",
-};
-
-export const AnnotationOrigin = {
-  PROPOSED: "proposed-occurrence",
-  SELECTED: "selected-occurrence",
-};
 
 export function isDefinitionAnnotation(type: string) {
   return type === AnnotationType.DEFINITION;
@@ -103,7 +96,9 @@ export class Annotation extends React.Component<
       nextProps.sticky !== this.props.sticky ||
       nextProps.text !== this.props.text ||
       nextProps.resource !== this.props.resource ||
-      nextProps.score !== this.props.score
+      nextProps.score !== this.props.score ||
+      nextProps.highlight !== this.props.highlight ||
+      this.isHidden(nextProps) !== this.isHidden(this.props)
     ) {
       return true;
     }
@@ -159,6 +154,7 @@ export class Annotation extends React.Component<
         about: this.props.about,
         property: this.props.property,
         typeof: this.props.typeof,
+        score: this.props.score,
       };
       newAnnotation.resource = t ? t.iri : undefined;
       this.props.onUpdate(newAnnotation, t);
@@ -233,6 +229,13 @@ export class Annotation extends React.Component<
     return;
   };
 
+  private isHidden = (props: AnnotationProps) => {
+    if (!props.filter) {
+      return false;
+    }
+    return !props.filter.get(this.getTermState(), this.getTermCreatorState());
+  };
+
   public render() {
     const id = "id" + this.props.about.substring(2);
     const termClassName = this.getTermState();
@@ -247,6 +250,11 @@ export class Annotation extends React.Component<
       ? { content: this.props.content }
       : {};
     const Tag = this.props.tag;
+
+    if (this.isHidden(this.props)) {
+      return this.props.children;
+    }
+
     return (
       <Tag
         id={id}
@@ -257,7 +265,9 @@ export class Annotation extends React.Component<
         {...contentProps}
         typeof={this.props.typeof}
         {...scoreProps}
-        className={termClassName + " " + termCreatorClassName}
+        className={classNames(termClassName, termCreatorClassName, {
+          "annotator-highlighted-annotation": this.props.highlight,
+        })}
       >
         {this.props.children}
         {this.props.typeof === AnnotationType.DEFINITION
@@ -309,6 +319,7 @@ export default connect(
   (state: TermItState, props: AnnotationProps) => {
     return {
       term: props.resource ? state.annotatorTerms[props.resource] : undefined,
+      filter: state.annotatorLegendFilter,
     };
   },
   (dispatch: ThunkDispatch) => {

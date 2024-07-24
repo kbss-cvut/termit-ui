@@ -102,8 +102,8 @@ export class TermMetadata extends React.Component<
       <>
         <LanguageSelector
           key="term-language-selector"
-          term={term}
           language={language}
+          languages={Term.getLanguages(term)}
           onSelect={selectLanguage}
         />
         <Row>

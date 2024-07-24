@@ -38,11 +38,17 @@ const LegendToggle = () => {
         >
           <CardHeader className="py-2">
             {i18n("annotator.legend.title")}
+            <button className="close" onClick={() => toggle()}>
+              ×
+            </button>
           </CardHeader>
           <CardBody>
             <Legend />
           </CardBody>
-          <CardFooter className="py-2">
+          <CardFooter className="d-flex flex-column py-2">
+            <span className="small italics">
+              {i18n("annotator.legend.annotationHidingHint")}
+            </span>
             <OutgoingLink
               id="annotator-tutorial-link"
               iri={Constants.ANNOTATOR_TUTORIAL[locale]}
@@ -64,7 +70,7 @@ const LegendToggle = () => {
         color="primary"
         size="sm"
         onClick={toggle}
-        className="annotator-action-button"
+        className="annotator-action-button legend-toggle-button"
         active={showLegend}
       >
         <FaQuestionCircle className="mr-1" />

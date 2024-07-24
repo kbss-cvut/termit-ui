@@ -6,7 +6,6 @@
  */
 
 import ActionType from "./ActionType";
-import keycloak from "../util/Keycloak";
 import { ThunkDispatch } from "../util/Types";
 import Ajax, { content, param, params } from "../util/Ajax";
 import Constants from "../util/Constants";
@@ -37,6 +36,7 @@ import Routes from "../util/Routes";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
 } from "../model/RdfsResource";
+import ChangePasswordDto from "../model/ChangePasswordDto";
 
 const USERS_ENDPOINT = "/users";
 
@@ -98,7 +98,11 @@ export function login(username: string, password: string) {
       .then(() =>
         dispatch(publishMessage(createFormattedMessage("message.welcome")))
       )
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        error.messageId = error.messageId ? error.messageId : "login.error";
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+      });
   };
 }
 
@@ -111,21 +115,6 @@ export function logout() {
     return Ajax.post("/logout")
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
-export function loginKeycloak() {
-  const action = {
-    type: ActionType.LOGIN_KEYCLOAK,
-  };
-  const redirectUri = Routing.buildFullUrl(
-    Routing.originalRoutingTarget
-      ? Routing.originalRoutingTarget
-      : Routes.dashboard
-  );
-  keycloak.login({ redirectUri });
-  return (dispatch: ThunkDispatch) => {
-    dispatch(action);
   };
 }
 
@@ -142,6 +131,75 @@ export function register(user: UserAccountData) {
       .then(() => dispatch(asyncActionSuccess(action)))
       .then(() => dispatch(login(user.username, user.password)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+/**
+ * Creates a request to change a password of account with provided username.
+ * @param username The username specifying user account
+ */
+export function requestPasswordReset(username: string) {
+  const action = {
+    type: ActionType.REQUEST_PASSWORD_RESET,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post(
+      Constants.API_PREFIX + "/password",
+      content(username).contentType("text/plain")
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "forgotPassword.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+      });
+  };
+}
+
+/**
+ * uses password reset token to change password of associated account
+ * @param dto ChangePasswordDto with required data
+ */
+export function resetPassword(dto: ChangePasswordDto) {
+  const action = {
+    type: ActionType.RESET_PASSWORD,
+  };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.put(
+      Constants.API_PREFIX + "/password",
+      content(dto.toJsonLd()).contentType("application/ld+json")
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() => Routing.transitionTo(Routes.login))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "resetPassword.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+      });
   };
 }
 

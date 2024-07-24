@@ -1,6 +1,6 @@
 {
   "name": "termit-ui",
-  "version": "2.18.0",
+  "version": "3.1.2",
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
@@ -9,10 +9,8 @@
     "@formatjs/intl-relativetimeformat": "^11.2.4",
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@opendata-mvcr/assembly-line-shared": "^0.3.2",
-    "@react-keycloak/core": "^3.2.0",
-    "@react-keycloak/web": "^3.4.0",
     "apexcharts": "^3.41.0",
-    "axios": "^0.27.2",
+    "axios": "^1.6.5",
     "bootstrap": "4.6.2",
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
@@ -21,17 +19,17 @@
     "easymde": "2.15.0",
     "html-to-react": "1.5.0",
     "htmlparser2": "^4.1.0",
-    "intelligent-tree-select": "0.10.9",
+    "intelligent-tree-select": "0.11.4",
     "iso-639-1": "^2.1.15",
     "javascript-time-ago": "2.5.9",
     "js-cookie": "^3.0.5",
     "jsonld": "5.2.0",
-    "keycloak-js": "^19.0.3",
     "last": "^1.1.0",
     "ld-query": "^2.6.1",
     "lodash": "^4.17.21",
     "luxon": "^3.3.0",
     "object-assign": "4.1.1",
+    "oidc-client": "^1.11.5",
     "promise": "8.3.0",
     "raf": "3.4.1",
     "react": "^17.0.2",
@@ -96,7 +94,8 @@
     "@types/uuid": "^9.0.2",
     "@types/whatwg-mimetype": "^2.1.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
-    "axios-mock-adapter": "^1.21.4",
+    "axios-mock-adapter": "^1.22.0",
+    "babel-plugin-macros": "2.8.0",
     "cross-env": "^7.0.3",
     "enzyme": "^3.11.0",
     "husky": "^7.0.4",
@@ -106,7 +105,7 @@
     "jest-watch-typeahead": "^0.6.5",
     "prettier": "2.3.0",
     "pretty-quick": "^3.1.3",
-    "raw.macro": "^0.6.2",
+    "raw.macro": "0.6.2",
     "redux-mock-store": "^1.5.4",
     "sass": "^1.63.3",
     "source-map-explorer": "^2.5.3",
@@ -130,6 +129,9 @@
     ]
   },
   "jest": {
-    "resetMocks": false
+    "resetMocks": false,
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)/"
+    ]
   }
 }

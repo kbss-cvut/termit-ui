@@ -35,7 +35,10 @@ import Vocabulary, {
 } from "../../model/Vocabulary";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import Term, { TermData } from "../../model/Term";
-import RdfsResource from "../../model/RdfsResource";
+import RdfsResource, {
+  CONTEXT as RDFS_RESOURCE_CONTEXT,
+  RdfsResourceData,
+} from "../../model/RdfsResource";
 import AppNotification from "../../model/AppNotification";
 import Generator from "../../__tests__/environment/Generator";
 import SearchQuery from "../../model/search/SearchQuery";
@@ -45,7 +48,7 @@ import Routes from "../../util/Routes";
 import { langString } from "../../model/MultilingualString";
 import { Configuration } from "../../model/Configuration";
 import { removeSearchListener } from "../../action/SearchActions";
-import TermStatus from "../../model/TermStatus";
+import JsonLdUtils from "../../util/JsonLdUtils";
 
 function stateToPlainObject(state: TermItState): TermItState {
   return {
@@ -65,6 +68,8 @@ function stateToPlainObject(state: TermItState): TermItState {
     searchResults: state.searchResults,
     selectedFile: state.selectedFile,
     types: state.types,
+    states: state.states,
+    terminalStates: state.terminalStates,
     properties: state.properties,
     notifications: state.notifications,
     pendingActions: state.pendingActions,
@@ -81,6 +86,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     breadcrumbs: state.breadcrumbs,
     users: state.users,
     accessLevels: state.accessLevels,
+    annotatorLegendFilter: state.annotatorLegendFilter,
   };
 }
 
@@ -311,7 +317,7 @@ describe("Reducers", () => {
     it("sets vocabulary when it was successfully loaded", () => {
       const action = { type: ActionType.LOAD_VOCABULARY };
       const vocabularyData: VocabularyData = {
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
       };
       expect(
@@ -329,7 +335,7 @@ describe("Reducers", () => {
     it("sets transitive imports on vocabulary when they are loaded", () => {
       const imports = [Generator.generateUri(), Generator.generateUri()];
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
       });
       const vocabulary = reducers(
@@ -347,7 +353,7 @@ describe("Reducers", () => {
       // the vocabulary needs to be reloaded
       const action = { type: ActionType.REMOVE_RESOURCE };
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -362,7 +368,7 @@ describe("Reducers", () => {
       // the vocabulary needs to be reloaded
       const action = { type: ActionType.CREATE_RESOURCE };
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -374,7 +380,7 @@ describe("Reducers", () => {
 
     it("sets term count on vocabulary when it is loaded", () => {
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -394,7 +400,7 @@ describe("Reducers", () => {
 
     it("does not set term count on vocabulary when its identifier does not match action", () => {
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -415,7 +421,7 @@ describe("Reducers", () => {
     it("resets vocabulary to empty when vocabulary loading request is sent", () => {
       const action = { type: ActionType.LOAD_VOCABULARY };
       initialState.vocabulary = new Vocabulary({
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
         types: [VocabularyUtils.VOCABULARY],
       });
@@ -458,22 +464,21 @@ describe("Reducers", () => {
       ).toEqual(Object.assign({}, initialState, { selectedTerm: null }));
     });
 
-    it("sets term draft status after successful term status update action", () => {
-      const term = Generator.generateTerm();
-      term.draft = true;
-      initialState.selectedTerm = term;
+    it("sets term state after successful term state update action", () => {
+      initialState.selectedTerm = Generator.generateTerm();
+      const state = Generator.generateUri();
 
       const resultState = reducers(
         stateToPlainObject(initialState),
         asyncActionSuccessWithPayload(
           {
-            type: ActionType.SET_TERM_STATUS,
+            type: ActionType.SET_TERM_STATE,
             status: AsyncActionStatus.SUCCESS,
-          } as AsyncActionSuccess<TermStatus>,
-          TermStatus.CONFIRMED
+          } as AsyncActionSuccess<string>,
+          state
         )
       );
-      expect(resultState.selectedTerm!.draft).toBeFalsy();
+      expect(resultState.selectedTerm!.state).toEqual({ iri: state });
     });
   });
 
@@ -839,6 +844,23 @@ describe("Reducers", () => {
       expect(result.annotatorTerms).toEqual(terms);
     });
 
+    // This is in case single term loads finish before loading of all vocabulary terms finishes
+    it("sets loaded terms to state on success, retaining already loaded terms", () => {
+      const term = Generator.generateTerm();
+      const existing = {};
+      existing[term.iri] = term;
+      initialState.annotatorTerms = existing;
+      const expected = Object.assign({}, existing, terms);
+      const result = reducers(
+        stateToPlainObject(initialState),
+        asyncActionSuccessWithPayload(
+          { type: ActionType.ANNOTATOR_LOAD_TERMS },
+          terms
+        )
+      );
+      expect(result.annotatorTerms).toEqual(expected);
+    });
+
     it("resets state terms on request", () => {
       initialState.annotatorTerms = terms;
       const result = reducers(
@@ -964,6 +986,40 @@ describe("Reducers", () => {
       resources.forEach((r) => {
         expect(result.accessLevels[r.iri]).toEqual(r);
       });
+    });
+  });
+
+  describe("states", () => {
+    it("sets states and terminal states on the same action success", async () => {
+      const payload: RdfsResource[] =
+        await JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
+          require("../../rest-mock/states"),
+          RDFS_RESOURCE_CONTEXT
+        ).then((data) => data.map((d) => new RdfsResource(d)));
+      const result = reducers(
+        stateToPlainObject(initialState),
+        asyncActionSuccessWithPayload({ type: ActionType.LOAD_STATES }, payload)
+      );
+      expect(Object.keys(result.states)).toEqual(payload.map((r) => r.iri));
+      expect(result.terminalStates).toEqual([
+        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/zrušený-pojem",
+      ]);
+    });
+  });
+
+  describe("vocabularies", () => {
+    it("are reset on successful SKOS import action", () => {
+      initialState.vocabularies = require("../../rest-mock/vocabularies.json");
+      expect(
+        reducers(
+          stateToPlainObject(initialState),
+          asyncActionSuccess({ type: ActionType.IMPORT_SKOS })
+        )
+      ).toEqual(
+        Object.assign({}, initialState, {
+          vocabularies: {},
+        })
+      );
     });
   });
 });

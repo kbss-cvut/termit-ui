@@ -17,6 +17,7 @@ describe("MainView", () => {
   let logout: () => void;
   let changeView: () => void;
   let openContextsForEditing: () => Promise<any>;
+  let loadTermStates: () => void;
 
   const nonEmptyUser = new User({
     firstName: "Catherine",
@@ -37,6 +38,7 @@ describe("MainView", () => {
     logout: () => void;
     openContextsForEditing: (contexts: string[]) => Promise<any>;
     changeView: () => void;
+    loadTermStates: () => void;
   };
 
   beforeEach(() => {
@@ -44,11 +46,13 @@ describe("MainView", () => {
     logout = jest.fn();
     changeView = jest.fn();
     openContextsForEditing = jest.fn().mockResolvedValue({});
+    loadTermStates = jest.fn();
     actions = {
       loadUser,
       logout,
       openContextsForEditing,
       changeView,
+      loadTermStates,
     };
   });
 

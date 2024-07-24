@@ -28,6 +28,24 @@ const Utils = {
   },
 
   /**
+   * Takes an array of objects with identifiers and maps them to an object where key is the identifier.
+   * @param arr Array of identifiable objects
+   */
+  mapArray<T extends { iri: string }>(arr: T[]): { [key: string]: T } {
+    const map = {};
+    arr.forEach((i) => (map[i.iri] = i));
+    return map;
+  },
+
+  /**
+   * Takes an object where keys map to values and returns an array of the values.
+   * @param map Object representing a map of keys to values
+   */
+  mapToArray<T>(map: { [key: string]: T }): T[] {
+    return Object.keys(map).map((k) => map[k]);
+  },
+
+  /**
    * Checks if the specified string is a link which can be dereferenced.
    * @param str
    */
@@ -313,6 +331,37 @@ const Utils = {
    */
   simpleValueRenderer(children: any) {
     return children;
+  },
+
+  /**
+   * Normalizes the specified string - mainly replaces accented characters with non-accented ones.
+   * @param str String to normalize
+   */
+  normalizeString(str: string) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  },
+
+  /**
+   * Checks if the specified arrays are equal.
+   * @param a Array
+   * @param b Array
+   */
+  arraysAreEqual(a: any[], b: any[]) {
+    if (a === b) {
+      return true;
+    }
+    if (a == null || b == null) {
+      return false;
+    }
+    if (a.length !== b.length) {
+      return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+    return true;
   },
 };
 

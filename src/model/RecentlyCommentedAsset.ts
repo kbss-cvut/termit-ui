@@ -1,5 +1,5 @@
 import VocabularyUtils from "../util/VocabularyUtils";
-import { ASSET_CONTEXT, AssetData, HasTypes } from "./Asset";
+import { ASSET_CONTEXT, HasIdentifier, HasTypes } from "./Asset";
 import Comment, { CONTEXT as COMMENT_CONTEXT } from "./Comment";
 import Utils from "../util/Utils";
 
@@ -20,7 +20,7 @@ export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, COMMENT_CONTEXT);
 export interface RecentlyCommentedAssetData extends HasTypes {
   iri: string;
   label: string;
-  vocabulary: AssetData;
+  vocabulary: HasIdentifier;
   types: string[];
   lastComment: Comment;
   myLastComment?: Comment;
@@ -31,7 +31,7 @@ export default class RecentlyCommentedAsset
 {
   public readonly iri: string;
   public readonly label: string;
-  public readonly vocabulary: AssetData;
+  public readonly vocabulary: HasIdentifier;
   public readonly types: string[];
   lastComment: Comment;
   myLastComment?: Comment;

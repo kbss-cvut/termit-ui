@@ -1,8 +1,8 @@
 import * as React from "react";
 import Term from "../../model/Term";
 import TermLink from "../term/TermLink";
-import { AnnotationClass } from "./Annotation";
 import { useI18n } from "../hook/useI18n";
+import { AnnotationClass } from "../../model/AnnotatorLegendFilter";
 
 interface TermOccurrenceAnnotationViewProps {
   term?: Term | null;

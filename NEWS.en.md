@@ -1,3 +1,45 @@
+#### Version 3.1.2
+
+- Added password recovery.
+- Bug fixes.
+
+#### Version 3.1.1
+
+- Bug fixes, dependency updates.
+
+#### Version 3.1.0
+
+- Added the possibility to highlight occurrences of the selected term in annotator.
+- Improvements to repeated document annotation - remember approved occurrences even if the document content changes (to a degree).
+- Modified visualization of term occurrences in annotator.
+- Ignore accents when filtering in tables.
+- Bug fixes, dependency updates.
+
+#### Version 3.0.4
+
+- Minor bug fixes.
+
+#### Version 3.0.3
+
+- Added support for multilingual vocabulary attributes.
+- Improved performance of repeated document annotation.
+
+#### Version 3.0.2
+
+- Added support for running with an external authentication service.
+- Added support for providing files with custom term states/types taxonomies.
+
+#### Version 3.0.1
+
+- Fixed an issue with setting exact match terms.
+- Technical improvements inside TermIt.
+
+#### Version 3.0.0
+
+- Term draft status replaced with support for a set of state option.
+- Removed several unused/broken features.
+- Updated the required Java platform version.
+
 #### Version 2.18.0
 
 - Implemented faceted term search.

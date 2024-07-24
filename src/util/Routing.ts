@@ -8,6 +8,7 @@ import Term, { TermData, TermInfo } from "../model/Term";
 import TermItStore from "../store/TermItStore";
 import Vocabulary from "../model/Vocabulary";
 import { isLoggedIn } from "./Authorization";
+import { isUsingOidcAuth } from "./OidcUtils";
 
 export class Routing {
   get history(): History {
@@ -330,3 +331,13 @@ export class Vocabularies {
     };
   }
 }
+
+/**
+ * Route to the login screen from public view.
+ *
+ * If OIDC authentication is used, the route used is dashboard, which triggers redirect to the remote authentication service.
+ * Otherwise, regular TermIt login screen is used.
+ */
+export const PUBLIC_LOGIN_ROUTE = isUsingOidcAuth()
+  ? Routes.dashboard
+  : Routes.login;

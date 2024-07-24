@@ -12,6 +12,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
+import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 
 jest.mock("../../../util/Routing");
 
@@ -29,7 +30,6 @@ describe("Terms", () => {
       iri: namespace + vocabularyName,
     },
     types: [VocabularyUtils.TERM],
-    draft: true,
   };
   let vocabulary: Vocabulary;
 
@@ -41,7 +41,6 @@ describe("Terms", () => {
     fetchOptions: TermFetchParams<TermData>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
-  let fetchUnusedTerms: (vocabularyIri: IRI) => Promise<string[]>;
 
   let location: Location;
   let match: Match<any>;
@@ -51,7 +50,6 @@ describe("Terms", () => {
     Utils.calculateAssetListHeight = jest.fn().mockImplementation(() => 100);
     selectVocabularyTerm = jest.fn();
     fetchTerms = jest.fn().mockImplementation(() => Promise.resolve([]));
-    fetchUnusedTerms = jest.fn().mockImplementation(() => Promise.resolve([]));
 
     location = {
       pathname: "/vocabulary/" + vocabularyName + "/term/",
@@ -115,7 +113,8 @@ describe("Terms", () => {
         location={location}
         match={match}
         isDetailView={isDetailView}
-        fetchUnusedTerms={fetchUnusedTerms}
+        configuration={DEFAULT_CONFIGURATION}
+        terminalStates={[]}
       />
     );
   }
@@ -138,42 +137,11 @@ describe("Terms", () => {
       iri: Generator.generateUri(),
       label: langString("Test term"),
       vocabulary: { iri: Generator.generateUri() },
-      draft: true,
     });
     wrapper.instance().fetchOptions({ optionID: option.iri, option });
     expect((fetchTerms as jest.Mock).mock.calls[0][1]).toEqual(
       VocabularyUtils.create(option.vocabulary!.iri!)
     );
-  });
-
-  it("fetches unused terms", () => {
-    const terms: Term[] = [];
-    const vocabularyIri: string = Generator.generateUri();
-    const t1: Term = Generator.generateTerm(vocabularyIri);
-    terms.push(t1);
-    const t2: Term = Generator.generateTerm(vocabularyIri);
-    terms.push(t2);
-
-    const unusedTerms: string[] = [];
-    unusedTerms.push(t1.iri);
-
-    fetchTerms = jest.fn().mockResolvedValue(terms);
-    fetchUnusedTerms = jest.fn().mockResolvedValue(unusedTerms);
-
-    const wrapper = renderShallow();
-    return wrapper
-      .instance()
-      .fetchOptions({})
-      .then(() => {
-        const vocabularyIris = Object.keys(
-          wrapper.state().unusedTermsForVocabulary
-        );
-        expect(vocabularyIris.length).toBe(1);
-        const unusedTermsX =
-          wrapper.state().unusedTermsForVocabulary[vocabularyIris[0]];
-        expect(unusedTermsX.length).toBe(1);
-        expect(unusedTermsX[0]).toBe(t1.iri);
-      });
   });
 
   it("disables include imported terms toggle when fetching terms", () => {
@@ -321,9 +289,13 @@ describe("Terms", () => {
         .then((options) => {
           expect(options.length).toEqual(1);
           expect(options).toEqual(terms);
-          expect(spy).toHaveBeenCalledWith(terms, [vocabulary.iri], {
-            searchString: "test",
-          });
+          expect(spy).toHaveBeenCalledWith(
+            terms,
+            [expect.any(Function), expect.any(Function)],
+            {
+              searchString: "test",
+            }
+          );
         });
     });
   });

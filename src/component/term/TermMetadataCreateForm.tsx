@@ -17,7 +17,7 @@ import {
 import ValidationResult from "../../model/form/ValidationResult";
 import { checkLabelUniqueness } from "./TermValidationUtils";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
-import { loadIdentifier } from "../asset/AbstractCreateAsset";
+import { loadIdentifier } from "../asset/CreateAssetUtils";
 import MultilingualIcon from "../misc/MultilingualIcon";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import AttributeSectionContainer from "./../layout/AttributeSectionContainer";

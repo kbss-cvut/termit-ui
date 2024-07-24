@@ -17,6 +17,11 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import { Card, CardBody } from "reactstrap";
 import WindowTitle from "../misc/WindowTitle";
 import UserRoles from "../administration/user/UserRoles";
+import IfInternalAuth from "../misc/oidc/IfInternalAuth";
+import { getEnv } from "../../util/Constants";
+import ConfigParam from "../../util/ConfigParam";
+import IfOidcAuth from "../misc/oidc/IfOidcAuth";
+import OutgoingLink from "../misc/OutgoingLink";
 
 interface ProfileProps extends HasI18n {
   user: User;
@@ -107,6 +112,15 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
         />
         <Card id="panel-profile">
           <CardBody>
+            <IfOidcAuth>
+              <p id="oidc-notice" className="italics">
+                <OutgoingLink
+                  iri={getEnv(ConfigParam.AUTH_SERVER_USER_PROFILE_URL, "")}
+                  label={i18n("administration.users.oidc")}
+                  showLink={true}
+                />
+              </p>
+            </IfOidcAuth>
             {!this.state.edit ? (
               <ProfileView user={user} />
             ) : (
@@ -128,11 +142,13 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
 
   private renderActionButtons() {
     return (
-      <ProfileActionButtons
-        edit={this.state.edit}
-        showProfileEdit={this.showProfileEdit}
-        navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}
-      />
+      <IfInternalAuth>
+        <ProfileActionButtons
+          edit={this.state.edit}
+          showProfileEdit={this.showProfileEdit}
+          navigateToChangePasswordRoute={this.navigateToChangePasswordRoute}
+        />
+      </IfInternalAuth>
     );
   }
 }

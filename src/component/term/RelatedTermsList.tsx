@@ -1,6 +1,6 @@
 import Term from "../../model/Term";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useI18n } from "../hook/useI18n";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
@@ -10,6 +10,8 @@ import TermLink from "./TermLink";
 import DefinitionRelatedTerms from "./DefinitionRelatedTerms";
 import { ThunkDispatch } from "../../util/Types";
 import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
+import TermItState from "../../model/TermItState";
+import { createTermNonTerminalStateMatcher } from "./TermTreeSelectHelper";
 
 interface RelatedTermsListProps {
   term: Term;
@@ -19,6 +21,10 @@ interface RelatedTermsListProps {
 const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
   const { term, language } = props;
   const { i18n } = useI18n();
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
+  const terminalStateFilter = createTermNonTerminalStateMatcher(terminalStates);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     dispatch(
@@ -26,8 +32,9 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
     );
   }, [dispatch, term.iri, term.vocabulary]);
   const terms = React.useMemo(
-    () => Term.consolidateRelatedAndRelatedMatch(term),
-    [term]
+    () =>
+      Term.consolidateRelatedAndRelatedMatch(term).filter(terminalStateFilter),
+    [term, terminalStateFilter]
   );
   return (
     <Row>

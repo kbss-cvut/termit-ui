@@ -1,6 +1,8 @@
-import Asset from "../../model/Asset";
+import { AssetData } from "../../model/Asset";
 import { createMemoryHistory, Location } from "history";
 import { match as MatchType, RouteComponentProps } from "react-router";
+import { ReactWrapper } from "enzyme";
+import { HTMLAttributes } from "react";
 
 /**
  * Verifies that the actual assets are correspond to the expected JSON-LD data.
@@ -9,13 +11,13 @@ import { match as MatchType, RouteComponentProps } from "react-router";
  */
 export function verifyExpectedAssets(
   expectedJsonLd: object[],
-  actual: Asset[]
+  actual: AssetData[]
 ) {
   expect(actual.length).toEqual(expectedJsonLd.length);
   expectedJsonLd.sort((a: object, b: object) =>
     a["@id"].localeCompare(b["@id"])
   );
-  actual.sort((a, b) => a.iri.localeCompare(b.iri));
+  actual.sort((a, b) => a.iri!.localeCompare(b.iri!));
   for (let i = 0; i < expectedJsonLd.length; i++) {
     expect(actual[i].iri).toEqual(expectedJsonLd[i]["@id"]);
   }
@@ -54,4 +56,21 @@ export function routingProps(): RouteComponentProps<any> {
     match: match(),
     history: createMemoryHistory(),
   };
+}
+
+/**
+ * Changes value attribute of inputElement and simulates change event on it
+ * @param inputElement
+ * @param value
+ */
+export function changeInputValue<T>(
+  inputElement: ReactWrapper<
+    HTMLAttributes<T>,
+    any,
+    React.Component<{}, {}, any>
+  >,
+  value: string
+) {
+  (inputElement.getDOMNode() as HTMLInputElement).value = value;
+  inputElement.simulate("change", inputElement);
 }

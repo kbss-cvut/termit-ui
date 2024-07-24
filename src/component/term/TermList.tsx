@@ -5,6 +5,9 @@ import { Col, Label, List, Row } from "reactstrap";
 import TermLink from "./TermLink";
 import Utils from "../../util/Utils";
 import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
+import { createTermNonTerminalStateMatcher } from "./TermTreeSelectHelper";
+import { useSelector } from "react-redux";
+import TermItState from "../../model/TermItState";
 
 interface TermListProps {
   terms?: (Term | TermInfo)[];
@@ -19,7 +22,11 @@ interface TermListProps {
 const TermList: React.FC<TermListProps> = (props) => {
   const { terms, label, id, language, vocabularyIri, addonBeforeRenderer } =
     props;
-  const toRender = Utils.sanitizeArray(terms);
+  const terminalStates = useSelector(
+    (state: TermItState) => state.terminalStates
+  );
+  const terminalStateFilter = createTermNonTerminalStateMatcher(terminalStates);
+  const toRender = Utils.sanitizeArray(terms).filter(terminalStateFilter);
   toRender.sort(termComparator);
   return (
     <Row>

@@ -1,4 +1,4 @@
-import Term, { CONTEXT } from "../../../model/Term";
+import Term, { CONTEXT, TermInfo } from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import { TermMetadataEdit } from "../TermMetadataEdit";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
@@ -433,6 +433,33 @@ describe("Term edit", () => {
       expect(wrapper.state().relatedMatchTerms).toEqual(
         relatedMatch.map((t) => Term.toTermInfo(t))
       );
+    });
+  });
+
+  describe("onExactMatchesChange", () => {
+    it("transforms provided Term instances to TermInfo to prevent issues with circular references serialization", () => {
+      const change = [Generator.generateTerm()];
+      change[0].parentTerms = [Generator.generateTerm()];
+      change[0].parentTerms[0].subTerms = [change[0] as TermInfo];
+      const wrapper = shallow<TermMetadataEdit>(
+        <TermMetadataEdit
+          save={onSave}
+          term={term}
+          cancel={onCancel}
+          language="en"
+          selectLanguage={selectLanguage}
+          validationResults={validationResults}
+          {...intlFunctions()}
+        />
+      );
+      wrapper.instance().onExactMatchesChange(change);
+      wrapper
+        .state()
+        .exactMatchTerms!.forEach((et) =>
+          expect(et).toEqual(
+            expect.not.objectContaining({ parentTerms: expect.any(Array) })
+          )
+        );
     });
   });
 });

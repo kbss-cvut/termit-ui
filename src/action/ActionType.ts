@@ -6,6 +6,10 @@ import { Action } from "redux";
 import SearchResult from "../model/search/SearchResult";
 import AppNotification from "../model/AppNotification";
 import { Breadcrumb } from "../model/Breadcrumb";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../model/AnnotatorLegendFilter";
 
 export interface AsyncAction extends Action {
   status: AsyncActionStatus;
@@ -38,11 +42,6 @@ export interface ExecuteQueryAction extends AsyncAction {
   queryString: string;
   queryResult: object;
 }
-
-export interface FacetedSearchAction extends AsyncAction {
-  payload: object;
-}
-
 export interface SearchAction extends Action {
   searchString: string;
 }
@@ -69,11 +68,18 @@ export interface BreadcrumbAction extends Action {
   payload: Breadcrumb;
 }
 
+export interface AnnotatorLegendFilterAction extends Action {
+  annotationClass: AnnotationClass;
+  annotationOrigin: AnnotationOrigin;
+}
+
 const ActionType = {
   FETCH_USER: "FETCH_USER",
   LOGIN: "LOGIN",
   LOGIN_KEYCLOAK: "LOGIN_KEYCLOAK",
   REGISTER: "REGISTER",
+  REQUEST_PASSWORD_RESET: "REQUEST_PASSWORD_RESET",
+  RESET_PASSWORD: "RESET_PASSWORD",
   UPDATE_PROFILE: "UPDATE_PROFILE",
   CHANGE_PASSWORD: "CHANGE_PASSWORD",
   LOGOUT: "LOGOUT",
@@ -98,7 +104,6 @@ const ActionType = {
   UPDATE_VOCABULARY: "UPDATE_VOCABULARY",
   LOAD_VOCABULARY_IMPORTS: "LOAD_VOCABULARY_IMPORTS",
   LOAD_RELATED_VOCABULARIES: "LOAD_RELATED_VOCABULARIES",
-  FETCH_UNUSED_TERMS_FOR_VOCABULARY: "FETCH_UNUSED_TERMS_FOR_VOCABULARY",
   REMOVE_VOCABULARY: "REMOVE_VOCABULARY",
   CREATE_VOCABULARY_SNAPSHOT: "CREATE_VOCABULARY_SNAPSHOT",
 
@@ -121,7 +126,7 @@ const ActionType = {
     "LOAD_DEFINITION_RELATED_TERMS_TARGETING",
   LOAD_DEFINITION_RELATED_TERMS_OF: "LOAD_DEFINITION_RELATED_TERMS_OF",
   REMOVE_VOCABULARY_TERM: "REMOVE_VOCABULARY_TERM",
-  SET_TERM_STATUS: "SET_TERM_STATUS",
+  SET_TERM_STATE: "SET_TERM_STATE",
 
   CREATE_TERM_OCCURRENCE: "CREATE_TERM_OCCURRENCE",
   UPDATE_TERM_OCCURRENCE: "UPDATE_TERM_OCCURRENCE",
@@ -130,9 +135,12 @@ const ActionType = {
   SET_TERM_DEFINITION_SOURCE: "SET_TERM_DEFINITION_SOURCE",
   REMOVE_TERM_DEFINITION_SOURCE: "REMOVE_TERM_DEFINITION_SOURCE",
 
+  TOGGLE_ANNOTATOR_LEGEND_FILTER: "TOGGLE_ANNOTATOR_LEGEND_FILTER",
+
   LOAD_TERM_HISTORY: "LOAD_TERM_HISTORY",
 
   LOAD_TYPES: "LOAD_TYPES",
+  LOAD_STATES: "LOAD_STATES",
   LOAD_SNAPSHOTS: "LOAD_SNAPSHOTS",
   REMOVE_SNAPSHOT: "REMOVE_SNAPSHOT",
 

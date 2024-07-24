@@ -52,6 +52,7 @@ const cs = {
     "login.submit": "Přihlásit se",
     "login.register": "Registrace",
     "login.register.label": "Nemáte zatím účet? <a>Zaregistrujte se</a>",
+    "login.forgotPassword.label": "<a>Zapomněli jste heslo?</a>",
     "login.error": "Přihlášení se nezdařilo.",
     "login.progress-mask": "Přihlašuji...",
     "login.locked": "Účet je zablokován.",
@@ -78,6 +79,29 @@ const cs = {
     "register.username-exists.tooltip": "Uživatelské jméno již existuje",
     "register.username.notValidEmail":
       "Uživatelské jméno musí být emailovou adresou",
+
+    "forgotPassword.title": "Zapomenuté heslo",
+    "forgotPassword.mask": "Odesílám...",
+    "forgotPassword.subtitle": "Zapomenuté heslo",
+    "forgotPassword.login.label": "Zpět na <a>Přihlášení</a>",
+    "forgotPassword.username": "Uživatelské jméno",
+    "forgotPassword.username.placeholder": "Zadejte uživatelské jméno",
+    "forgotPassword.username.notValidEmail":
+      "Uživatelské jméno musí být emailovou adresou",
+    "forgotPassword.submit": "Odeslat email pro obnovení hesla",
+    "forgotPassword.success": "Email odeslán",
+
+    "resetPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
+    "resetPassword.mask": "Měním heslo...",
+    "resetPassword.title": "Změna hesla",
+    "resetPassword.subtitle": "Změna hesla",
+    "resetPassword.password": "Nové heslo",
+    "resetPassword.password.placeholder": "Zvolte si nové heslo",
+    "resetPassword.password.confirm": "Potvrzení hesla",
+    "resetPassword.submit": "Změnit heslo",
+    "resetPassword.success": "Heslo změněno",
+    "resetPassword.invalidToken":
+      "Neplatný nebo expirovaný link pro změnu hesla. Zažádejte o změnu hesla znovu.",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
@@ -178,6 +202,8 @@ const cs = {
       'Uživatel "{name}" úspěšně vytvořen.',
     "administration.users.you": "Toto je Váš účet",
     "administration.users.types.admin": "Tento uživatel je administrátor",
+    "administration.users.oidc":
+      "Pro správu uživatelů je využívána externí autentizační služba.",
     "administration.maintenance.title": "Správa systému",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":
@@ -224,6 +250,7 @@ const cs = {
       "Spustit textovou analýzu definic všech termínů ve všech slovnících",
     "vocabulary.management.new": "Nový slovník",
     "vocabulary.vocabularies.create.tooltip": "Vytvořit nový slovník",
+    "vocabulary.vocabularies.import.tooltip": "Vytvořit slovník importem dat",
     "vocabulary.vocabularies.select.placeholder":
       "Začněte psát pro filtrování slovníků dle názvu",
     "vocabulary.title": "Název",
@@ -252,8 +279,6 @@ const cs = {
     "vocabulary.summary.export.skosFullWithRefs": "Plný SKOS + stejné významy",
     "vocabulary.summary.export.skosFullWithRefs.title":
       "Export glosáře ve struktuře kompatibilní se SKOS včetně všech dalších atributů pojmů. Export obsahuje i pojmy z jiných slovníků mající stejný význam jako pojmy v tomto slovníku.",
-    "vocabulary.summary.export.csv": "CSV",
-    "vocabulary.summary.export.csv.title": "Export ve formátu CSV.",
     "vocabulary.summary.export.excel": "Excel",
     "vocabulary.summary.export.excel.title": "Export ve formátu MS Excel.",
     "vocabulary.summary.export.ttl": "Turtle",
@@ -467,12 +492,10 @@ const cs = {
     "term.metadata.related.definitionally.suggested":
       "Výskyt byl nalezen automaticky analýzou textu definice a ještě nebyl schválen",
     "term.metadata.comments.public.title": "Veřejná diskuse",
-    "term.metadata.status.draft": "Rozpracovaný",
-    "term.metadata.status.confirmed": "Schválený",
     "term.metadata.status.help":
-      "Rozpracovaný pojem není připraven k používání, zatímco schválený ano.",
-    "term.metadata.status.confirmed.edit.title":
-      "Schválený pojem nelze editovat. Chcete-li jej upravit, přepněte pojem zpět na rozpracovaný.",
+      "Stav pojmu reprezentuje různé fáze životního cyklu pojmu, od jeho prvotního návrhu až po jeho případné zrušení (např. z důvodu nahrazení jiným pojmem).",
+    "term.metadata.status.terminal.help":
+      "Pojem byl zrušen a neměl by být nadále používán.",
     "term.metadata.notation.label": "Notace",
     "term.metadata.notation.help":
       "(Nepovinný) Notace je řetězec znaků, jako např. 'UBA' or 'L2-3', užívaný k identifikaci pojmu v rámci daného glosáře. " +
@@ -494,15 +517,19 @@ const cs = {
     "glossary.select.placeholder": "Začněte psát pro filtrování pojmů",
     "glossary.excludeImported": "Včetně importů",
     "glossary.excludeImported.help":
-      "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte",
+      "Pojmy z importovaných slovníků jsou v tomto zobrazení skryté, kliknutím je zobrazíte.",
     "glossary.includeImported": "Včetně importů",
     "glossary.includeImported.help":
-      "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete",
+      "Pojmy z importovaných slovníků jsou v tomto zobrazení viditelné, kliknutím je skryjete.",
     "glossary.importedIncluded": "včetně importovaných",
     "glossary.importedExcluded": "bez importovaných",
-    "glossary.filter-draft": "Rozpracované",
-    "glossary.filter-confirmed": "Schválené",
     "glossary.importedTerm.tooltip": "Importován ze slovníku",
+    "glossary.showTerminal": "Včetně zrušených",
+    "glossary.showNonTerminal": "Pouze aktivní",
+    "glossary.showTerminal.help":
+      "Jsou zobrazeny též zrušené pojmy (pojmy v koncovém stavu). Takové pojmy by se již neměly používat.",
+    "glossary.showNonTerminal.help":
+      "Jsou zobrazeny pouze pojmy v aktivním stavu, tj. pojmy, které lze používat.",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",
@@ -619,6 +646,16 @@ const cs = {
     "annotator.tutorial.title": "Návod",
     "annotator.tutorial.tooltip":
       "Zobrazit stránku s návodem k používání anotátoru",
+    "annotator.highlight.button.label": "Najít",
+    "annotator.highlight.button.active.tooltip":
+      'Jsou zvýrazněny výskyty pojmu "{term}"',
+    "annotator.highlight.button.inactive.tooltip":
+      "Žádný pojem ke zvýraznění není vybrán",
+    "annotator.highlight.selector.title": "Najít výskyty pojmu",
+    "annotator.highlight.selector.label":
+      "Vyberte pojem, jehož výskyty budou zvýrazněny",
+    "annotator.highlight.countInfo":
+      "V tomto dokumentu {count, plural, one {nalezen # výskyt} few {nalezeny # výskyty} other {nalezeno # výskytů}}.",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",
@@ -665,6 +702,8 @@ const cs = {
     "annotator.legend.definition.tooltip":
       "Uživatelem označená definice existujícího pojmu.",
     "annotator.unknown.unauthorized": "Pojem nevybrán.",
+    "annotator.legend.annotationHidingHint":
+      "Zvýraznění výskytů pojmů můžete zobrazit/skrýt kliknutím na položku legendy.",
 
     "message.welcome": "Vítejte v aplikaci TermIt!",
     "link.external.title": "{url} - otevřít v nové záložce",
@@ -703,6 +742,8 @@ const cs = {
       "Nelze odstranit import slovníku, neboť stále existují vazby mezi pojmy z tohoto a importovaného slovníku (či ze slovníků, které importuje).",
     "error.file.maxUploadSizeExceeded":
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
+    "error.term.state.terminal.liveChildren":
+      "Pojmu nelze nastavit koncový stav, dokud má alespoň jednoho potomka v jiném než koncovém stavu.",
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",

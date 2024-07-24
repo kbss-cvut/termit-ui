@@ -1,5 +1,6 @@
 import { Action, combineReducers } from "redux";
 import ActionType, {
+  AnnotatorLegendFilterAction,
   AsyncAction,
   AsyncActionSuccess,
   BreadcrumbAction,
@@ -35,10 +36,14 @@ import Utils from "../util/Utils";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import File, { EMPTY_FILE } from "../model/File";
-import { IRIImpl } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
-import TermStatus from "../model/TermStatus";
 import { Breadcrumb } from "../model/Breadcrumb";
+import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
+
+function isAsyncSuccess(action: AsyncAction) {
+  return action.status === AsyncActionStatus.SUCCESS;
+}
 
 /**
  * Handles changes to the currently logged in user.
@@ -51,9 +56,7 @@ function user(
 ): User {
   switch (action.type) {
     case ActionType.FETCH_USER:
-      return action.status === AsyncActionStatus.SUCCESS
-        ? action.payload
-        : state;
+      return isAsyncSuccess(action) ? action.payload : state;
     case ActionType.LOGOUT:
       return EMPTY_USER;
     default:
@@ -122,13 +125,13 @@ function vocabulary(
     case ActionType.LOAD_VOCABULARY:
       if (action.status === AsyncActionStatus.REQUEST) {
         return EMPTY_VOCABULARY;
-      } else if (action.status === AsyncActionStatus.SUCCESS) {
+      } else if (isAsyncSuccess(action)) {
         return action.payload as Vocabulary;
       } else {
         return state;
       }
     case ActionType.LOAD_VOCABULARY_IMPORTS:
-      return action.status === AsyncActionStatus.SUCCESS
+      return isAsyncSuccess(action)
         ? new Vocabulary(
             Object.assign(state, {
               allImportedVocabularies: action.payload as string[],
@@ -143,9 +146,7 @@ function vocabulary(
     case ActionType.UPDATE_RESOURCE:
     case ActionType.CREATE_RESOURCE: // intentional fall-through
       // the resource might have been/be related to the vocabulary
-      return action.status === AsyncActionStatus.SUCCESS
-        ? EMPTY_VOCABULARY
-        : state;
+      return isAsyncSuccess(action) ? EMPTY_VOCABULARY : state;
     default:
       return state;
   }
@@ -172,7 +173,7 @@ function selectedFile(
 ): File {
   switch (action.type) {
     case ActionType.LOAD_RESOURCE:
-      return action.status === AsyncActionStatus.SUCCESS
+      return isAsyncSuccess(action)
         ? action.payload.owner
           ? new File(action.payload)
           : action.payload
@@ -191,7 +192,7 @@ function vocabularies(
 ): { [key: string]: Vocabulary } {
   switch (action.type) {
     case ActionType.LOAD_VOCABULARIES:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         const map = {};
         action.payload.forEach((v) => (map[v.iri] = v));
         return map;
@@ -200,6 +201,11 @@ function vocabularies(
       }
     case ActionType.LOGOUT:
       return {};
+    case ActionType.IMPORT_SKOS:
+      if (isAsyncSuccess(action)) {
+        return {};
+      }
+      return state;
     default:
       return state;
   }
@@ -207,7 +213,7 @@ function vocabularies(
 
 function selectedTerm(
   state: Term | null = null,
-  action: SelectingTermsAction | AsyncActionSuccess<Term | TermStatus>
+  action: SelectingTermsAction | AsyncActionSuccess<Term | string>
 ) {
   switch (action.type) {
     case ActionType.SELECT_VOCABULARY_TERM:
@@ -215,12 +221,12 @@ function selectedTerm(
     case ActionType.LOAD_TERM:
       const aa = action as AsyncActionSuccess<Term>;
       return aa.status === AsyncActionStatus.SUCCESS ? aa.payload : state;
-    case ActionType.SET_TERM_STATUS:
-      const sts = action as AsyncActionSuccess<TermStatus>;
+    case ActionType.SET_TERM_STATE:
+      const sts = action as AsyncActionSuccess<string>;
       return sts.status === AsyncActionStatus.SUCCESS
         ? new Term(
             Object.assign({}, state, {
-              draft: sts.payload === TermStatus.DRAFT,
+              state: { iri: sts.payload },
             })
           )
         : state;
@@ -234,7 +240,7 @@ function selectedTerm(
 function createdTermsCounter(state: number = 0, action: AsyncAction) {
   switch (action.type) {
     case ActionType.CREATE_VOCABULARY_TERM:
-      return action.status === AsyncActionStatus.SUCCESS ? state + 1 : state;
+      return isAsyncSuccess(action) ? state + 1 : state;
     case ActionType.LOGOUT:
       return 0;
     default:
@@ -248,7 +254,7 @@ function queryResults(
 ) {
   switch (action.type) {
     case ActionType.EXECUTE_QUERY:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         return {
           ...state,
           [action.queryString]: new QueryResult(
@@ -272,7 +278,7 @@ function fileContent(
 ): string | null {
   switch (action.type) {
     case ActionType.LOAD_FILE_CONTENT:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         return action.payload;
       } else if (action.status === AsyncActionStatus.REQUEST) {
         return null;
@@ -351,10 +357,46 @@ function types(
 ): { [key: string]: Term } {
   switch (action.type) {
     case ActionType.LOAD_TYPES:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         const map = {};
         action.payload.forEach((v) => (map[v.iri] = v));
         return map;
+      } else {
+        return state;
+      }
+    default:
+      return state;
+  }
+}
+
+function states(
+  state: { [key: string]: RdfsResource } = {},
+  action: AsyncActionSuccess<RdfsResource[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_STATES:
+      if (isAsyncSuccess(action)) {
+        return Utils.mapArray(action.payload);
+      } else {
+        return state;
+      }
+    default:
+      return state;
+  }
+}
+
+function terminalStates(
+  state: string[] = [],
+  action: AsyncActionSuccess<RdfsResource[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_STATES:
+      if (isAsyncSuccess(action)) {
+        return action.payload
+          .filter(
+            (r) => r.types.indexOf(VocabularyUtils.TERM_STATE_TERMINAL) !== -1
+          )
+          .map((r) => r.iri);
       } else {
         return state;
       }
@@ -370,9 +412,7 @@ function properties(
   switch (action.type) {
     case ActionType.GET_PROPERTIES:
       const asyncAction = action as AsyncActionSuccess<RdfsResource[]>;
-      return asyncAction.status === AsyncActionStatus.SUCCESS
-        ? asyncAction.payload
-        : state;
+      return isAsyncSuccess(asyncAction) ? asyncAction.payload : state;
     case ActionType.CLEAR_PROPERTIES:
       return [];
     default:
@@ -454,10 +494,7 @@ function labelCache(
   state: { [key: string]: string } = {},
   action: AsyncActionSuccess<{ [key: string]: string }>
 ) {
-  if (
-    action.type === ActionType.GET_LABEL &&
-    action.status === AsyncActionStatus.SUCCESS
-  ) {
+  if (action.type === ActionType.GET_LABEL && isAsyncSuccess(action)) {
     return Object.assign({}, state, action.payload);
   }
   return state;
@@ -505,12 +542,16 @@ function annotatorTerms(
 ): { [key: string]: Term } {
   switch (action.type) {
     case ActionType.ANNOTATOR_LOAD_TERMS:
-      if (action.status === AsyncActionStatus.SUCCESS) {
-        return action.payload as { [key: string]: Term };
+      if (isAsyncSuccess(action)) {
+        return Object.assign(
+          {},
+          state,
+          action.payload as { [key: string]: Term }
+        );
       }
       return {};
     case ActionType.ANNOTATOR_LOAD_TERM:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         const change = {};
         const payload = action.payload as Term;
         change[payload.iri] = payload;
@@ -526,10 +567,7 @@ function configuration(
   state: Configuration = DEFAULT_CONFIGURATION,
   action: AsyncActionSuccess<Configuration>
 ) {
-  if (
-    action.type === ActionType.LOAD_CONFIGURATION &&
-    action.status === AsyncActionStatus.SUCCESS
-  ) {
+  if (action.type === ActionType.LOAD_CONFIGURATION && isAsyncSuccess(action)) {
     return action.payload;
   }
   return state;
@@ -541,7 +579,7 @@ function validationResults(
 ) {
   switch (action.type) {
     case ActionType.FETCH_VALIDATION_RESULTS:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         return {
           ...state,
           ...action.payload,
@@ -562,13 +600,13 @@ function definitionallyRelatedTerms(
 ) {
   switch (action.type) {
     case ActionType.LOAD_DEFINITION_RELATED_TERMS_TARGETING:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         return Object.assign({}, state, { targeting: action.payload });
       } else {
         return state;
       }
     case ActionType.LOAD_DEFINITION_RELATED_TERMS_OF:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         return Object.assign({}, state, { of: action.payload });
       } else {
         return state;
@@ -597,10 +635,28 @@ function breadcrumbs(state: Breadcrumb[] = [], action: BreadcrumbAction) {
   }
 }
 
+function annotatorLegendFilter(
+  state: AnnotatorLegendFilter | undefined,
+  action: AnnotatorLegendFilterAction
+) {
+  if (state == null) {
+    state = new AnnotatorLegendFilter();
+  }
+  if (action.type === ActionType.TOGGLE_ANNOTATOR_LEGEND_FILTER) {
+    const newState = state.clone();
+    const oldValue = state.get(action.annotationClass, action.annotationOrigin);
+
+    newState.set(action.annotationClass, action.annotationOrigin, !oldValue);
+
+    return newState;
+  }
+  return state;
+}
+
 function users(state: User[] = [], action: AsyncActionSuccess<User[]>) {
   switch (action.type) {
     case ActionType.LOAD_USERS:
-      if (action.status === AsyncActionStatus.SUCCESS) {
+      if (isAsyncSuccess(action)) {
         return action.payload;
       }
       return state;
@@ -615,10 +671,7 @@ function accessLevels(
   state: { [key: string]: RdfsResource } = {},
   action: AsyncActionSuccess<RdfsResource[]>
 ) {
-  if (
-    action.type === ActionType.LOAD_ACCESS_LEVELS &&
-    action.status === AsyncActionStatus.SUCCESS
-  ) {
+  if (action.type === ActionType.LOAD_ACCESS_LEVELS && isAsyncSuccess(action)) {
     const newState = {};
     action.payload.forEach((r) => (newState[r.iri] = r));
     return newState;
@@ -643,6 +696,8 @@ const rootReducer = combineReducers<TermItState>({
   searchListenerCount,
   searchInProgress,
   types,
+  states,
+  terminalStates,
   properties,
   notifications,
   pendingActions,
@@ -657,6 +712,7 @@ const rootReducer = combineReducers<TermItState>({
   validationResults,
   definitionallyRelatedTerms,
   breadcrumbs,
+  annotatorLegendFilter,
   users,
   accessLevels,
 });

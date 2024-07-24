@@ -1,16 +1,19 @@
 import AssetLink from "../AssetLink";
-import { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import { MemoryRouter } from "react-router";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import OutgoingLink from "../OutgoingLink";
+import Generator from "../../../__tests__/environment/Generator";
 
 describe("Asset Link", () => {
-  const voc = EMPTY_VOCABULARY;
+  const asset = {
+    iri: Generator.generateUri(),
+    label: "Test label",
+  };
 
   function mount() {
     return mountWithIntl(
       <MemoryRouter>
-        <AssetLink asset={voc} path={"/vocabulary"} />
+        <AssetLink asset={asset} path={"/vocabulary"} />
       </MemoryRouter>
     );
   }
@@ -21,7 +24,7 @@ describe("Asset Link", () => {
   });
   it("Render outgoing link", () => {
     const wrapper = mount();
-    expect(wrapper.find('a[href="http://empty"]').exists()).toBeTruthy();
+    expect(wrapper.find(`a[href="${asset.iri}"]`).exists()).toBeTruthy();
   });
   it("showLink is false by default", () => {
     const wrapper = mount();

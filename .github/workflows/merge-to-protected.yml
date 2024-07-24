@@ -20,13 +20,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: "16.x"
       - name: Install
-        run: npm install --legacy-peer-deps
+        run: npm install
       - name: Prettier Check
         run: npm run prettier:check
       - name: Build
@@ -37,3 +37,7 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: npm run-script test-ci
+      - name: Build
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+        run: npm run-script build

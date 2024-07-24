@@ -1,4 +1,3 @@
-import IntlData from "./model/IntlData";
 import * as React from "react";
 import { IntlProvider } from "react-intl";
 import { Route, Router, Switch } from "react-router-dom";
@@ -6,20 +5,18 @@ import Routing from "./util/Routing";
 import Routes from "./util/Routes";
 import Login from "./component/login/Login";
 import Register from "./component/register/Register";
-import { connect } from "react-redux";
+import ForgotPassword from "./component/forgotpassword/ForgotPassword";
+import { useSelector } from "react-redux";
 import TermItState from "./model/TermItState";
 import BreadcrumbRoute from "./component/breadcrumb/BreadcrumbRoute";
 import Mask from "./component/misc/Mask";
+import ResetPassword from "./component/forgotpassword/ResetPassword";
 
 const PublicMainView = React.lazy(() => import("./component/public/MainView"));
 const MainView = React.lazy(() => import("./component/MainView"));
 
-interface IntlWrapperProps {
-  intl: IntlData;
-}
-
-const IntlWrapper: React.FC<IntlWrapperProps> = (props) => {
-  const { intl } = props;
+const IntlWrapper: React.FC = () => {
+  const intl = useSelector((state: TermItState) => state.intl);
   return (
     <IntlProvider {...intl}>
       <Router history={Routing.history}>
@@ -27,6 +24,11 @@ const IntlWrapper: React.FC<IntlWrapperProps> = (props) => {
           <Switch>
             <Route path={Routes.login.path} component={Login} />
             <Route path={Routes.register.path} component={Register} />
+            <Route
+              path={Routes.forgotPassword.path}
+              component={ForgotPassword}
+            />
+            <Route path={Routes.resetPassword.path} component={ResetPassword} />
             <BreadcrumbRoute
               path={Routes.publicDashboard.path}
               title={intl.messages["main.nav.dashboard"]}
@@ -43,6 +45,4 @@ const IntlWrapper: React.FC<IntlWrapperProps> = (props) => {
   );
 };
 
-export default connect((state: TermItState) => {
-  return { intl: state.intl };
-})(IntlWrapper);
+export default IntlWrapper;
