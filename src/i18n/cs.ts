@@ -82,7 +82,6 @@ const cs = {
 
     "forgotPassword.title": "Zapomenuté heslo",
     "forgotPassword.mask": "Odesílám...",
-    "forgotPassword.subtitle": "Zapomenuté heslo",
     "forgotPassword.login.label": "Zpět na <a>Přihlášení</a>",
     "forgotPassword.username": "Uživatelské jméno",
     "forgotPassword.username.placeholder": "Zadejte uživatelské jméno",
@@ -94,7 +93,6 @@ const cs = {
     "resetPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
     "resetPassword.mask": "Měním heslo...",
     "resetPassword.title": "Změna hesla",
-    "resetPassword.subtitle": "Změna hesla",
     "resetPassword.login.label": "Zpět na <a>Přihlášení</a>",
     "resetPassword.password": "Nové heslo",
     "resetPassword.password.placeholder": "Zvolte si nové heslo",
@@ -107,7 +105,6 @@ const cs = {
     "createPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
     "createPassword.mask": "Vytvářím heslo...",
     "createPassword.title": "Vytvoření hesla",
-    "createPassword.subtitle": "Vytvoření hesla",
     "createPassword.password": "Nové heslo",
     "createPassword.password.placeholder": "Zvolte si nové heslo",
     "createPassword.password.confirm": "Potvrzení hesla",

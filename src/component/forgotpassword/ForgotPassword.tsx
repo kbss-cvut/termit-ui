@@ -74,7 +74,7 @@ export const ForgotPassword: React.FC<{}> = () => {
         <Card className="modal-panel">
           <CardHeader className="border-bottom-0 pb-0 text-center">
             <h1>{Constants.APP_NAME}</h1>
-            <div>{i18n("forgotPassword.subtitle")}</div>
+            <div>{i18n("forgotPassword.title")}</div>
           </CardHeader>
           <CardBody>
             <PromiseTrackingMask area="requestPasswordReset" />

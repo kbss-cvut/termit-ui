@@ -92,6 +92,9 @@ const constants = {
   MESSAGE_DISPLAY_TIMEOUT: 5000,
   MARKDOWN_EDITOR_HEIGHT: "200px",
 
+  // For how long debounce should wait when used with input field [milliseconds]
+  INPUT_DEBOUNCE_WAIT_TIME: 250,
+
   // News
   NEWS_MD_URL: {
     cs: window.location.origin + window.location.pathname + "NEWS.cs.md",
