@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { doesUsernameExists } from "../../../action/AsyncUserActions";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
-import AsyncActionStatus from "../../../action/AsyncActionStatus";
-import { AsyncActionSuccess } from "../../../action/ActionType";
 import * as _ from "lodash";
 import ValidationResult, {
   Severity,
@@ -25,6 +23,7 @@ import EnhancedInput, { LabelDirection } from "../../misc/EnhancedInput";
 import Toggle from "react-bootstrap-toggle";
 import { TOGGLE_STYLE } from "../../term/IncludeImportedTermsToggle";
 import { UserAccountData } from "../../../model/User";
+import Constants from "../../../util/Constants";
 
 interface CreateNewUserFormProps {
   onSubmit: (userAccountData: UserAccountData) => void;
@@ -47,12 +46,11 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
   const fetchUsernameExists = useRef(
     _.debounce((username) => {
       dispatch(doesUsernameExists(username)).then((action) => {
-        if (action.status === AsyncActionStatus.SUCCESS) {
-          const actionSuccess = action as AsyncActionSuccess<boolean>;
-          setUsernameExists(actionSuccess.payload);
+        if (_.isBoolean(action)) {
+          setUsernameExists(action);
         }
       });
-    }, 250)
+    }, Constants.INPUT_DEBOUNCE_WAIT_TIME)
   ).current;
 
   const onFormSubmit = () => {
@@ -88,35 +86,29 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
     return ValidationResult.VALID;
   }).current;
 
-  const validateFirstName = () => {
-    return validateNonEmpty(firstName);
-  };
+  const validateUsername = useRef(
+    (username: string, usernameExists?: boolean) => {
+      if (validateNonEmpty(username) === ValidationResult.BLOCKER) {
+        return ValidationResult.BLOCKER;
+      }
+      if (!Utils.isValidEmail(username)) {
+        return ValidationResult.blocker(
+          i18n("register.username.notValidEmail")
+        );
+      }
+      if (usernameExists) {
+        return ValidationResult.blocker(
+          i18n("register.username-exists.tooltip")
+        );
+      }
 
-  const validateLastName = () => {
-    return validateNonEmpty(lastName);
-  };
-
-  const validatePassword = () => {
-    return validateNonEmpty(password);
-  };
-
-  const validateUsername = useRef((checkExists = true) => {
-    if (validateNonEmpty(username) === ValidationResult.BLOCKER) {
-      return ValidationResult.BLOCKER;
+      return ValidationResult.VALID;
     }
-    if (!Utils.isValidEmail(username)) {
-      return ValidationResult.blocker(i18n("register.username.notValidEmail"));
-    }
-    if (checkExists && usernameExists) {
-      return ValidationResult.blocker(i18n("register.username-exists.tooltip"));
-    }
-
-    return ValidationResult.VALID;
-  }).current;
+  ).current;
 
   // on username change, contact API and check if username already exists
   useEffect(() => {
-    if (validateUsername(false) === ValidationResult.VALID) {
+    if (validateUsername(username) === ValidationResult.VALID) {
       fetchUsernameExists(username);
     }
   }, [username, validateUsername, fetchUsernameExists]);
@@ -139,58 +131,23 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
 
   const isValid = () => {
     const validationResults = [
-      validateFirstName(),
-      validateLastName(),
-      validateUsername(),
+      validateNonEmpty(firstName),
+      validateNonEmpty(lastName),
+      validateUsername(username, usernameExists),
     ];
     if (!emailPassword) {
       validationResults.push(
-        validatePassword(),
+        validateNonEmpty(password),
         validatePasswordConfirmation()
       );
     }
+
     // if there is at least one "false" value, the form is invalid
     return !validationResults
       // map validation results to booleans
       .map((result) => result.severity === Severity.VALID)
       // search "false" value
       .includes(false);
-  };
-
-  const renderPasswordInputs = () => {
-    return (
-      <Collapse isOpen={!emailPassword}>
-        <Row className="">
-          <Col md={12}>
-            <EnhancedInput
-              type="password"
-              name="password"
-              autoComplete="new-password"
-              label={i18n("register.password")}
-              labelDirection={LabelDirection.vertical}
-              onChange={onChange.bind(this, setPassword)}
-              value={password}
-              validation={validatePassword()}
-              disabled={emailPassword}
-            />
-          </Col>
-          <Col md={12}>
-            <EnhancedInput
-              type="password"
-              name="passwordConfirm"
-              autoComplete="new-password"
-              labelDirection={LabelDirection.vertical}
-              label={i18n("register.password-confirm")}
-              onChange={onChange.bind(this, setPasswordConfirmation)}
-              onKeyPress={onKeyPress}
-              value={passwordConfirmation}
-              validation={validatePasswordConfirmation()}
-              disabled={emailPassword}
-            />
-          </Col>
-        </Row>
-      </Collapse>
-    );
   };
 
   return (
@@ -207,7 +164,7 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
               labelDirection={LabelDirection.vertical}
               value={firstName}
               onChange={onChange.bind(this, setFirstName)}
-              validation={validateFirstName()}
+              validation={validateNonEmpty(firstName)}
               autoFocus={true}
             />
           </Col>
@@ -220,7 +177,7 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
               labelDirection={LabelDirection.vertical}
               value={lastName}
               onChange={onChange.bind(this, setLastName)}
-              validation={validateLastName()}
+              validation={validateNonEmpty(lastName)}
             />
           </Col>
         </Row>
@@ -235,7 +192,7 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
               value={username}
               onChange={onChange.bind(this, setUsername)}
               hint={i18n("register.username.help")}
-              validation={validateUsername()}
+              validation={validateUsername(username, usernameExists)}
             />
           </Col>
           <Col md={12}>
@@ -266,7 +223,37 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
             </UncontrolledTooltip>
           </Col>
         </Row>
-        {renderPasswordInputs()}
+        <Collapse isOpen={!emailPassword}>
+          <Row className="">
+            <Col md={12}>
+              <EnhancedInput
+                type="password"
+                name="password"
+                autoComplete="new-password"
+                label={i18n("register.password")}
+                labelDirection={LabelDirection.vertical}
+                onChange={onChange.bind(this, setPassword)}
+                value={password}
+                validation={validateNonEmpty(password)}
+                disabled={emailPassword}
+              />
+            </Col>
+            <Col md={12}>
+              <EnhancedInput
+                type="password"
+                name="passwordConfirm"
+                autoComplete="new-password"
+                labelDirection={LabelDirection.vertical}
+                label={i18n("register.password-confirm")}
+                onChange={onChange.bind(this, setPasswordConfirmation)}
+                onKeyPress={onKeyPress}
+                value={passwordConfirmation}
+                validation={validatePasswordConfirmation()}
+                disabled={emailPassword}
+              />
+            </Col>
+          </Row>
+        </Collapse>
         <Button
           id="register-submit"
           className="btn-block"

@@ -213,8 +213,8 @@ export function createNewUser(user: UserAccountData) {
   const action = { type: ActionType.CREATE_USER };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
-    return Ajax.put(
-      Constants.API_PREFIX + "/users",
+    return Ajax.post(
+      Constants.API_PREFIX + "/admin/users",
       content(user).contentType("application/json")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
@@ -469,9 +469,10 @@ export function doesUsernameExists(username: string) {
       `${Constants.API_PREFIX}${USERS_ENDPOINT}/username`,
       params({ username })
     )
-      .then((data) =>
-        dispatch(asyncActionSuccessWithPayload(action, data === true))
-      )
+      .then((data) => {
+        dispatch(asyncActionSuccess(action));
+        return data === true;
+      })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

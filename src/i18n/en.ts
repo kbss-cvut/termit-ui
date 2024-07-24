@@ -80,7 +80,6 @@ const en = {
 
     "forgotPassword.title": "Forgot password",
     "forgotPassword.mask": "Sending...",
-    "forgotPassword.subtitle": "Forgot password",
     "forgotPassword.login.label": "Back to <a>Log in</a>",
     "forgotPassword.username": "Username",
     "forgotPassword.username.placeholder": "Enter Your Username",
@@ -92,7 +91,6 @@ const en = {
     "resetPassword.passwordsNotEqual": "Passwords don't match",
     "resetPassword.mask": "Changing password...",
     "resetPassword.title": "Change password",
-    "resetPassword.subtitle": "Change password",
     "resetPassword.login.label": "Back to <a>Log in</a>",
     "resetPassword.password": "New password",
     "resetPassword.password.placeholder": "Choose a new password",
@@ -105,7 +103,6 @@ const en = {
     "createPassword.passwordsNotEqual": "Passwords don't match",
     "createPassword.mask": "Creating password...",
     "createPassword.title": "Create password",
-    "createPassword.subtitle": "Create password",
     "createPassword.password": "New password",
     "createPassword.password.placeholder": "Choose a new password",
     "createPassword.password.confirm": "Confirm password",
