@@ -16,11 +16,8 @@ import { Action } from "redux";
 import { loadVocabulary } from "./AsyncActions";
 import Utils from "../util/Utils";
 
-export function importSkosIntoExistingVocabulary(
-  vocabularyIri: IRI,
-  data: File
-) {
-  const action = { type: ActionType.IMPORT_SKOS };
+export function importIntoExistingVocabulary(vocabularyIri: IRI, data: File) {
+  const action = { type: ActionType.IMPORT_VOCABULARY };
   const formData = new FormData();
   formData.append("file", data, "thesaurus");
   formData.append("namespace", vocabularyIri.namespace!);
@@ -37,7 +34,7 @@ export function importSkosIntoExistingVocabulary(
 }
 
 export function importSkosAsNewVocabulary(data: File, rename: Boolean) {
-  const action = { type: ActionType.IMPORT_SKOS };
+  const action = { type: ActionType.IMPORT_VOCABULARY };
   const formData = new FormData();
   formData.append("file", data, "thesaurus");
   formData.append("rename", rename.toString());

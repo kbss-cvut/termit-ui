@@ -294,7 +294,7 @@ const cs = {
       "Obnova exportované verze slovníku",
     "vocabulary.summary.import.dialog.message":
       "Nahrajte vyexportovanou verzi tohoto slovníku " +
-      "(ve formátu SKOS a obsahující jedinou skos:ConceptScheme ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář nebo MS Excel odpovídající <a>této šabloně</a>).",
+      "(ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář nebo MS Excel odpovídající <a>této šabloně</a>).",
     "vocabulary.summary.import.excel.template.tooltip":
       "Stáhnout šablonu pro MS Excel",
     "vocabulary.import.action": "Importovat",
@@ -304,7 +304,7 @@ const cs = {
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
     "vocabulary.import.title": "Importovat slovník",
-    "vocabulary.import.success": "Slovník úspěšně importován",
+    "vocabulary.import.success": "Slovník úspěšně importován.",
     "vocabulary.import.allow-changing-identifiers":
       "Povolit změnu identifikátorů",
     "vocabulary.import.allow-changing-identifiers.tooltip":
@@ -569,7 +569,7 @@ const cs = {
       "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
     "file.upload": "Nahrát",
     "file.upload.hint":
-      "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8.",
+      "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8, nebo validní MS Excel.",
     "file.upload.size.exceeded": "Soubor je příliš velký.",
 
     "dataset.license": "Licence",

@@ -201,7 +201,7 @@ function vocabularies(
       }
     case ActionType.LOGOUT:
       return {};
-    case ActionType.IMPORT_SKOS:
+    case ActionType.IMPORT_VOCABULARY:
       if (isAsyncSuccess(action)) {
         return {};
       }
