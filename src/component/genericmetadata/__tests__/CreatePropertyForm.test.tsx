@@ -17,7 +17,12 @@ describe("CreatePropertyForm", () => {
   it("adds rdf:Property to types on create", () => {
     mockUseI18n();
     const wrapper = mountWithIntl(
-      <CreatePropertyForm onOptionCreate={onCreate} toggleModal={toggleModal} />
+      <CreatePropertyForm
+        onOptionCreate={onCreate}
+        toggleModal={toggleModal}
+        languages={["en"]}
+        language={"en"}
+      />
     );
     const iriInput = wrapper.find("input[name='iri']");
     (iriInput.getDOMNode() as HTMLInputElement).value = Generator.generateUri();

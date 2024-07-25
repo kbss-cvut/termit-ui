@@ -14,13 +14,15 @@ import CustomInput from "../misc/CustomInput";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { useI18n } from "../hook/useI18n";
 import TextArea from "../misc/TextArea";
-import { langString } from "../../model/MultilingualString";
-import { useSelector } from "react-redux";
-import TermItState from "../../model/TermItState";
+import MultilingualString from "../../model/MultilingualString";
+import EditLanguageSelector from "../multilingual/EditLanguageSelector";
+import MultilingualIcon from "../misc/MultilingualIcon";
 
 interface CreatePropertyFormProps {
   onOptionCreate: (option: RdfsResourceData) => void;
   toggleModal: () => void;
+  languages: string[];
+  language: string;
 }
 
 function isValid(data: { iri: string }) {
@@ -31,24 +33,55 @@ function isValid(data: { iri: string }) {
 const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   onOptionCreate,
   toggleModal,
+  languages,
+  language,
 }) => {
   const { i18n } = useI18n();
   const [iri, setIri] = useState("");
-  const [label, setLabel] = useState("");
-  const [comment, setComment] = useState("");
-  const language = useSelector(
-    (state: TermItState) => state.configuration.language
-  );
+  const [label, setLabel] = useState({} as MultilingualString);
+  const [comment, setComment] = useState({} as MultilingualString);
+  const [modalLanguages, setModalLanguages] = useState([...languages]);
+  const [modalLanguage, setModalLanguage] = useState(language);
   const onCreate = () => {
     toggleModal();
     const newProperty: RdfsResourceData = {
       iri,
-      label: label!.length > 0 ? langString(label, language) : undefined,
-      comment: comment!.length > 0 ? langString(comment, language) : undefined,
+      label,
+      comment,
       types: [VocabularyUtils.RDF_PROPERTY],
     };
     onOptionCreate(newProperty);
   };
+
+  const setMultilingualString = (
+    str: MultilingualString,
+    setter: (value: MultilingualString) => void,
+    value: string
+  ) => {
+    const copy = Object.assign({}, str);
+    copy[modalLanguage] = value;
+    setter(copy);
+  };
+
+  const removeTranslation = (lang: string) => {
+    const newLabel = Object.assign({}, label);
+    delete newLabel[lang];
+    setLabel(newLabel);
+
+    const newComment = Object.assign({}, comment);
+    delete newComment[language];
+    setComment(newComment);
+
+    const newModalLanguages = modalLanguages.filter((l) => l !== lang);
+    setModalLanguages(newModalLanguages);
+  };
+
+  const withMultilingualIcon = (text: string) => (
+    <>
+      {text}
+      <MultilingualIcon id={"string-list-edit-multilingual" + Date.now()} />
+    </>
+  );
 
   return (
     <Modal isOpen={true}>
@@ -57,10 +90,20 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       </ModalHeader>
       <ModalBody>
         <Row>
+          <EditLanguageSelector
+            key="vocabulary-edit-language-selector"
+            language={modalLanguage}
+            existingLanguages={modalLanguages}
+            onSelect={setModalLanguage}
+            onRemove={removeTranslation}
+          />
+        </Row>
+        <Row>
           <Col xs={12}>
             <CustomInput
               name="iri"
               label={i18n("properties.edit.new.iri")}
+              value={iri}
               onChange={(e) => setIri(e.currentTarget.value)}
               hint={i18n("required")}
             />
@@ -68,8 +111,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           <Col xs={12}>
             <CustomInput
               name="label"
-              label={i18n("properties.edit.new.label")}
-              onChange={(e) => setLabel(e.currentTarget.value)}
+              label={withMultilingualIcon(i18n("properties.edit.new.label"))}
+              value={label[modalLanguage] || ""}
+              onChange={(e) =>
+                setMultilingualString(label, setLabel, e.currentTarget.value)
+              }
               hint={i18n("required")}
             />
           </Col>
@@ -77,8 +123,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             <TextArea
               rows={3}
               name="comment"
-              label={i18n("properties.edit.new.comment")}
-              onChange={(e) => setComment(e.currentTarget.value)}
+              label={withMultilingualIcon(i18n("properties.edit.new.comment"))}
+              value={comment[modalLanguage] || ""}
+              onChange={(e) =>
+                setMultilingualString(
+                  comment,
+                  setComment,
+                  e.currentTarget.value
+                )
+              }
             />
           </Col>
         </Row>
