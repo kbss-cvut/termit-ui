@@ -19,11 +19,11 @@ import {
   Row,
   UncontrolledTooltip,
 } from "reactstrap";
-import EnhancedInput, { LabelDirection } from "../../misc/EnhancedInput";
 import Toggle from "react-bootstrap-toggle";
 import { TOGGLE_STYLE } from "../../term/IncludeImportedTermsToggle";
 import { UserAccountData } from "../../../model/User";
 import Constants from "../../../util/Constants";
+import CustomInput from "../../misc/CustomInput";
 
 interface CreateNewUserFormProps {
   onSubmit: (userAccountData: UserAccountData) => void;
@@ -81,15 +81,15 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
 
   const validateNonEmpty = useRef((value: string) => {
     if (value == null || value.trim().length === 0) {
-      return ValidationResult.BLOCKER;
+      return undefined;
     }
     return ValidationResult.VALID;
   }).current;
 
   const validateUsername = useRef(
     (username: string, usernameExists?: boolean) => {
-      if (validateNonEmpty(username) === ValidationResult.BLOCKER) {
-        return ValidationResult.BLOCKER;
+      if (validateNonEmpty(username) !== ValidationResult.VALID) {
+        return undefined;
       }
       if (!Utils.isValidEmail(username)) {
         return ValidationResult.blocker(
@@ -119,10 +119,8 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
         i18n("register.passwords-not-matching.tooltip")
       );
     }
-    if (validateNonEmpty(passwordConfirmation) === ValidationResult.BLOCKER) {
-      return ValidationResult.BLOCKER;
-    }
-    return ValidationResult.VALID;
+
+    return validateNonEmpty(passwordConfirmation);
   };
 
   const onEnterPasswordToggle = () => {
@@ -145,7 +143,7 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
     // if there is at least one "false" value, the form is invalid
     return !validationResults
       // map validation results to booleans
-      .map((result) => result.severity === Severity.VALID)
+      .map((result) => result && result.severity === Severity.VALID)
       // search "false" value
       .includes(false);
   };
@@ -156,12 +154,11 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
       <Form>
         <Row>
           <Col md={6}>
-            <EnhancedInput
+            <CustomInput
               type="text"
               name="firstName"
               autoComplete="given-name"
               label={i18n("register.first-name")}
-              labelDirection={LabelDirection.vertical}
               value={firstName}
               onChange={onChange.bind(this, setFirstName)}
               validation={validateNonEmpty(firstName)}
@@ -169,12 +166,11 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
             />
           </Col>
           <Col md={6}>
-            <EnhancedInput
+            <CustomInput
               type="text"
               name="lastName"
               autoComplete="family-name"
               label={i18n("register.last-name")}
-              labelDirection={LabelDirection.vertical}
               value={lastName}
               onChange={onChange.bind(this, setLastName)}
               validation={validateNonEmpty(lastName)}
@@ -183,15 +179,13 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
         </Row>
         <Row>
           <Col md={12}>
-            <EnhancedInput
+            <CustomInput
               type="text"
               name="username"
               autoComplete="username"
               label={i18n("register.username")}
-              labelDirection={LabelDirection.vertical}
               value={username}
               onChange={onChange.bind(this, setUsername)}
-              hint={i18n("register.username.help")}
               validation={validateUsername(username, usernameExists)}
             />
           </Col>
@@ -226,12 +220,11 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
         <Collapse isOpen={!emailPassword}>
           <Row className="">
             <Col md={12}>
-              <EnhancedInput
+              <CustomInput
                 type="password"
                 name="password"
                 autoComplete="new-password"
                 label={i18n("register.password")}
-                labelDirection={LabelDirection.vertical}
                 onChange={onChange.bind(this, setPassword)}
                 value={password}
                 validation={validateNonEmpty(password)}
@@ -239,11 +232,10 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
               />
             </Col>
             <Col md={12}>
-              <EnhancedInput
+              <CustomInput
                 type="password"
                 name="passwordConfirm"
                 autoComplete="new-password"
-                labelDirection={LabelDirection.vertical}
                 label={i18n("register.password-confirm")}
                 onChange={onChange.bind(this, setPasswordConfirmation)}
                 onKeyPress={onKeyPress}
