@@ -204,8 +204,7 @@ const en = {
     "administration.users.types.admin": "This user is an administrator",
     "administration.users.oidc":
       "An external authentication service is used to manage users.",
-    "administration.users.create.password-toggle.user":
-      "Have the new user create a password",
+    "administration.users.create.password-toggle.user": "Send activation email",
     "administration.users.create.password-toggle.admin": "Enter password now",
     "administration.users.create.password-toggle.tooltip.user":
       "An email will be sent to the new user with a link to create a new password.",

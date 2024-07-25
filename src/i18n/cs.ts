@@ -215,7 +215,7 @@ const cs = {
     "administration.users.oidc":
       "Pro správu uživatelů je využívána externí autentizační služba.",
     "administration.users.create.password-toggle.user":
-      "Nechat nového uživatele vytvořit heslo",
+      "Poslat aktivační email",
     "administration.users.create.password-toggle.admin": "Zadat heslo nyní",
     "administration.users.create.password-toggle.tooltip.user":
       "Novému uživateli bude zaslán email s odkazem pro vytvoření nového hesla.",
