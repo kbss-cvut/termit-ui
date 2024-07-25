@@ -1,5 +1,5 @@
 import ImportVocabularyDialog from "./ImportVocabularyDialog";
-import { useI18n } from "../hook/useI18n";
+import { useI18n } from "../../hook/useI18n";
 import { FormGroup, Label } from "reactstrap";
 
 interface ImportVocabularyPanelProps {

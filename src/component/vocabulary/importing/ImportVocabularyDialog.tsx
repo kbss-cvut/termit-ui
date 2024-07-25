@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
-import { useI18n } from "../hook/useI18n";
-import UploadFile from "../resource/file/UploadFile";
-import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
+import { useI18n } from "../../hook/useI18n";
+import UploadFile from "../../resource/file/UploadFile";
+import CustomCheckBoxInput from "../../misc/CustomCheckboxInput";
 import "./ImportVocabularyDialog.scss";
 
 interface ImportVocabularyDialogProps {

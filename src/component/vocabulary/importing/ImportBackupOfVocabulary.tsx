@@ -1,8 +1,8 @@
 import React from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
-import { useI18n } from "../hook/useI18n";
+import { useI18n } from "../../hook/useI18n";
 import ImportVocabularyPanel from "./ImportVocabularyPanel";
-import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 
 interface ImportVocabularyProps {
