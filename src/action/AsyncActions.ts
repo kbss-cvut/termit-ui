@@ -64,6 +64,7 @@ import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
+import { getShortLocale } from "../util/IntlUtil";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1039,10 +1040,14 @@ export function getLabel(iri: string) {
     if (pendingGetLabelRequests[iri] !== undefined) {
       return pendingGetLabelRequests[iri];
     }
+
+    // currently active language
+    const locale = getShortLocale(getState().intl.locale);
+
     dispatch(asyncActionRequest(action, true));
     const promise = Ajax.get(
       Constants.API_PREFIX + "/data/label",
-      param("iri", iri)
+      param("iri", iri).param("language", locale)
     )
       .then((data) => {
         const payload = {};
