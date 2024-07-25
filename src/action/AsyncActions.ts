@@ -449,7 +449,7 @@ export function loadVocabularies() {
     if (isActionRequestPending(getState(), action)) {
       return Promise.resolve({});
     }
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     return Ajax.get(`${getApiPrefix(getState())}/vocabularies`)
       .then((data: object[]) =>
         data.length !== 0
