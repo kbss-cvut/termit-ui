@@ -46,11 +46,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const optimizeOrUndefined = (string: MultilingualString) => {
     const optimized = Object.assign({}, string);
     Object.keys(string).forEach((lang) => {
-      if (string[lang] && string[lang].trim() == "") {
+      if (string[lang] && string[lang].trim() === "") {
         delete optimized[lang];
       }
     });
-    if (Object.keys(optimized).length == 0) {
+    if (Object.keys(optimized).length === 0) {
       return undefined;
     }
     return optimized;
