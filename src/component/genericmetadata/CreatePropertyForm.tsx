@@ -42,12 +42,27 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [comment, setComment] = useState({} as MultilingualString);
   const [modalLanguages, setModalLanguages] = useState([...languages]);
   const [modalLanguage, setModalLanguage] = useState(language);
+
+  const optimizeOrUndefined = (string: MultilingualString) => {
+    const optimized = Object.assign({}, string);
+    Object.keys(string).forEach((lang) => {
+      if (string[lang] && string[lang].trim() == "") {
+        delete optimized[lang];
+      }
+    });
+    if (Object.keys(optimized).length == 0) {
+      return undefined;
+    }
+    return optimized;
+  };
+
   const onCreate = () => {
     toggleModal();
+
     const newProperty: RdfsResourceData = {
       iri,
-      label,
-      comment,
+      label: optimizeOrUndefined(label),
+      comment: optimizeOrUndefined(comment),
       types: [VocabularyUtils.RDF_PROPERTY],
     };
     onOptionCreate(newProperty);
