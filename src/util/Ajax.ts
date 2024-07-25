@@ -154,6 +154,10 @@ export function headers(value: {}) {
   return new RequestConfigBuilder().headers(value);
 }
 
+export function responseType(value: ResponseType) {
+  return new RequestConfigBuilder().responseType(value);
+}
+
 export function ifModifiedSince(value?: string) {
   return new RequestConfigBuilder().header(
     Constants.Headers.IF_MODIFIED_SINCE,

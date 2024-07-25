@@ -4,7 +4,7 @@ import {
   asyncActionRequest,
   asyncActionSuccess,
 } from "./SyncActions";
-import Ajax, { contentType } from "../util/Ajax";
+import Ajax, { contentType, responseType } from "../util/Ajax";
 import { ThunkDispatch } from "../util/Types";
 import Constants from "../util/Constants";
 import { ErrorData } from "../model/ErrorInfo";
@@ -14,6 +14,7 @@ import { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { Action } from "redux";
 import { loadVocabulary } from "./AsyncActions";
+import Utils from "../util/Utils";
 
 export function importSkosIntoExistingVocabulary(
   vocabularyIri: IRI,
@@ -83,3 +84,23 @@ const processError =
       SyncActions.publishMessage(new Message(error, MessageType.ERROR))
     );
   };
+
+export function downloadExcelTemplate() {
+  return (dispatch: ThunkDispatch) => {
+    const action = { type: ActionType.LOAD_EXCEL_TEMPLATE };
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.getRaw(
+      `${Constants.API_PREFIX}/vocabularies/import/template`,
+      responseType("arraybuffer")
+    )
+      .then((response) => {
+        Utils.fileDownload(
+          response.data,
+          "termit-import.xlsx",
+          Constants.EXCEL_MIME_TYPE
+        );
+        dispatch(asyncActionSuccess(action));
+      })
+      .catch((error) => dispatch(asyncActionFailure(action, error)));
+  };
+}

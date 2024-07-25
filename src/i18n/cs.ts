@@ -289,11 +289,14 @@ const cs = {
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",
     "vocabulary.summary.import.action.tooltip":
-      "Obnovit slovník ze zálohy ve formátu SKOS",
-    "vocabulary.summary.import.dialog.title": "Obnova dřívější verze slovníku",
+      "Obnovit slovník ze zálohy ve formátu SKOS či MS Excel",
+    "vocabulary.summary.import.dialog.title":
+      "Obnova exportované verze slovníku",
     "vocabulary.summary.import.dialog.message":
-      "Nahrajte dříve vyexportovanou verzi tohoto slovníku " +
-      "(ve formátu SKOS a obsahující jedinou skos:ConceptScheme ve tvaru <IRI-TOHOTO-SLOVNÍKU>/glosář).",
+      "Nahrajte vyexportovanou verzi tohoto slovníku " +
+      "(ve formátu SKOS a obsahující jedinou skos:ConceptScheme ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář nebo MS Excel odpovídající <a>této šabloně</a>).",
+    "vocabulary.summary.import.excel.template.tooltip":
+      "Stáhnout šablonu pro MS Excel",
     "vocabulary.import.action": "Importovat",
     "vocabulary.import.action.tooltip": "Import SKOS slovníku.",
     "vocabulary.import.dialog.title": "Importovat SKOS slovník",

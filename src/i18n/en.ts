@@ -284,10 +284,12 @@ const en = {
     "vocabulary.summary.import.action.tooltip":
       "Restore the vocabulary from its previously exported version",
     "vocabulary.summary.import.dialog.title":
-      "Restore previous vocabulary version",
+      "Restore exported vocabulary version",
     "vocabulary.summary.import.dialog.message":
-      "Upload a previously exported version of this vocabulary " +
-      "(in the SKOS formát and containing a single skos:ConceptScheme with IRI <IRI-OF-THIS-VOCABULARY>/glosář).",
+      "Upload an exported version of this vocabulary " +
+      "(in the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář or as a MS Excel file corresponding to <a>this template</a>).",
+    "vocabulary.summary.import.excel.template.tooltip":
+      "Download a MS Excel template",
     "vocabulary.import.action": "Import",
     "vocabulary.import.action.tooltip": "SKOS vocabulary import.",
     "vocabulary.import.dialog.title": "Import SKOS vocabulary",

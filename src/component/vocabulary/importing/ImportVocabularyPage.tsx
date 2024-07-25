@@ -1,5 +1,4 @@
 import IfUserIsEditor from "../../authorization/IfUserIsEditor";
-import ImportVocabularyPanel from "./ImportVocabularyPanel";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import { useDispatch } from "react-redux";
@@ -7,10 +6,11 @@ import { ThunkDispatch } from "../../../util/Types";
 import { importSkosAsNewVocabulary } from "../../../action/AsyncImportActions";
 import { useI18n } from "../../hook/useI18n";
 import HeaderWithActions from "../../misc/HeaderWithActions";
-import { Card, CardBody } from "reactstrap";
+import { Card, CardBody, Label } from "reactstrap";
 import IdentifierResolver from "../../../util/IdentifierResolver";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
+import ImportVocabularyDialog from "./ImportVocabularyDialog";
 
 const ImportVocabularyPage = () => {
   const { i18n } = useI18n();
@@ -35,9 +35,12 @@ const ImportVocabularyPage = () => {
       <Card id="vocabulary-import" className="mb-3">
         <CardBody>
           <PromiseTrackingMask area="import-vocabulary" />
-          <ImportVocabularyPanel
+          <Label className="attribute-label mb-2">
+            {i18n("vocabulary.import.dialog.message")}
+          </Label>
+          <ImportVocabularyDialog
             propKeyPrefix="vocabulary.import"
-            onSubmit={createFile}
+            onCreate={createFile}
             onCancel={onCancel}
             allowRename={true}
           />
