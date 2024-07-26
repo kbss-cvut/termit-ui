@@ -9,6 +9,8 @@ import TermItStore from "../store/TermItStore";
 import Vocabulary from "../model/Vocabulary";
 import { isLoggedIn } from "./Authorization";
 import { isUsingOidcAuth } from "./OidcUtils";
+import Document from "../model/Document";
+import { TABS } from "../component/vocabulary/VocabularyMetadata";
 
 export class Routing {
   get history(): History {
@@ -328,6 +330,27 @@ export class Vocabularies {
       name: vocabularyIri.fragment,
       namespace: vocabularyIri.namespace!,
       timestamp,
+    };
+  }
+
+  /**
+   * @param document The document must contain information about the Vocabulary and its iri.
+   * @returns route, params and query to respective vocabulary summary and document tab
+   */
+  public static getDocumentRoutingOptions(document: Document) {
+    const loggedIn = isLoggedIn(TermItStore.getState().user);
+    const route = loggedIn
+      ? Routes.vocabularySummary
+      : Routes.publicVocabularySummary;
+
+    const iri = VocabularyUtils.create(document.vocabulary!.iri!);
+    return {
+      route,
+      params: new Map<string, string>([["name", iri.fragment]]),
+      query: new Map<string, string>([
+        ["namespace", iri.namespace!],
+        ["activeTab", TABS.document],
+      ]),
     };
   }
 }
