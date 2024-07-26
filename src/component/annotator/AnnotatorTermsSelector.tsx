@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import Term, { TermData } from "../../model/Term";
+import React, { useMemo, useRef } from "react";
+import { TermData } from "../../model/Term";
 import { useSelector } from "react-redux";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
@@ -33,7 +33,15 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
   const { annotatorTerms, vocabulary, terminalStates } = useSelector(
     (state: TermItState) => state
   );
-  const [options, setOptions] = useState([] as Term[]);
+
+  const options = useMemo(() => {
+    console.debug("memo");
+    return processTermsForTreeSelect(
+      Utils.mapToArray(annotatorTerms),
+      [createTermNonTerminalStateMatcher(terminalStates)],
+      { flattenAncestors: true }
+    );
+  }, [annotatorTerms, terminalStates]);
 
   React.useEffect(() => {
     if (autoFocus) {
@@ -44,15 +52,6 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
   React.useEffect(() => {
     treeSelect.current.forceUpdate();
   }, [treeSelect, intl.locale]);
-
-  React.useEffect(() => {
-    const options = processTermsForTreeSelect(
-      Utils.mapToArray(annotatorTerms),
-      [createTermNonTerminalStateMatcher(terminalStates)],
-      { flattenAncestors: true }
-    );
-    setOptions(options);
-  }, [annotatorTerms, terminalStates]);
 
   return (
     <IntelligentTreeSelect
