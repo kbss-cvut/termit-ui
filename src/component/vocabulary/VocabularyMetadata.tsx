@@ -37,15 +37,15 @@ interface VocabularyMetadataState {
   activeTab: string;
 }
 
-const TABS = [
-  "glossary.title",
-  "type.document",
-  "history.label",
-  "snapshots.title",
-  "changefrequency.label",
-  "properties.edit.title",
-  "vocabulary.acl",
-];
+export const TABS = {
+  glossary: "glossary.title",
+  document: "type.document",
+  history: "history.label",
+  snapshots: "snapshots.title",
+  changefrequency: "changefrequency.label",
+  properties: "properties.edit.title",
+  acl: "vocabulary.acl",
+};
 
 export class VocabularyMetadata extends React.Component<
   VocabularyMetadataProps,
@@ -55,9 +55,12 @@ export class VocabularyMetadata extends React.Component<
     super(props);
     const tabParam: string =
       Utils.extractQueryParam(this.props.location.search, "activeTab") || "";
+    const tabsArray = Object.values(TABS);
     this.state = {
       activeTab:
-        TABS.indexOf(tabParam) !== -1 ? TABS[TABS.indexOf(tabParam)] : TABS[0],
+        tabsArray.indexOf(tabParam) !== -1
+          ? tabsArray[tabsArray.indexOf(tabParam)]
+          : tabsArray[0],
     };
   }
 
@@ -67,7 +70,7 @@ export class VocabularyMetadata extends React.Component<
 
   public componentDidUpdate(prevProps: Readonly<VocabularyMetadataProps>) {
     if (this.props.vocabulary.iri !== prevProps.vocabulary.iri) {
-      this.setState({ activeTab: TABS[0] });
+      this.setState({ activeTab: TABS.glossary });
     }
   }
 
@@ -124,7 +127,7 @@ export class VocabularyMetadata extends React.Component<
     const vocabulary = this.props.vocabulary;
     const tabs = {};
 
-    tabs[TABS[0]] = (
+    tabs[TABS.glossary] = (
       <Terms
         vocabulary={this.props.vocabulary}
         match={this.props.match}
@@ -133,7 +136,7 @@ export class VocabularyMetadata extends React.Component<
       />
     );
 
-    tabs[TABS[1]] = (
+    tabs[TABS.document] = (
       <DocumentSummary
         document={vocabulary.document}
         onChange={this.props.onChange}
@@ -144,20 +147,22 @@ export class VocabularyMetadata extends React.Component<
         }
       />
     );
-    tabs[TABS[2]] = <AssetHistory asset={vocabulary} />;
+    tabs[TABS.history] = <AssetHistory asset={vocabulary} />;
     if (!vocabulary.isSnapshot()) {
-      tabs[TABS[3]] = <VocabularySnapshots asset={vocabulary} />;
+      tabs[TABS.snapshots] = <VocabularySnapshots asset={vocabulary} />;
     }
-    tabs[TABS[4]] = <TermChangeFrequency vocabulary={vocabulary} />;
+    tabs[TABS.changefrequency] = (
+      <TermChangeFrequency vocabulary={vocabulary} />
+    );
 
-    tabs[TABS[5]] = (
+    tabs[TABS.properties] = (
       <UnmappedProperties
         properties={vocabulary.unmappedProperties}
         showInfoOnEmpty={true}
       />
     );
     if (hasAccess(AccessLevel.SECURITY, vocabulary.accessLevel)) {
-      tabs[TABS[6]] = <AccessControlList vocabularyIri={vocabulary.iri} />;
+      tabs[TABS.acl] = <AccessControlList vocabularyIri={vocabulary.iri} />;
     }
 
     return (
