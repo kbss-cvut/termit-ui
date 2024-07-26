@@ -34,14 +34,15 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
     (state: TermItState) => state
   );
 
-  const options = useMemo(() => {
-    console.debug("memo");
-    return processTermsForTreeSelect(
-      Utils.mapToArray(annotatorTerms),
-      [createTermNonTerminalStateMatcher(terminalStates)],
-      { flattenAncestors: true }
-    );
-  }, [annotatorTerms, terminalStates]);
+  const options = useMemo(
+    () =>
+      processTermsForTreeSelect(
+        Utils.mapToArray(annotatorTerms),
+        [createTermNonTerminalStateMatcher(terminalStates)],
+        { flattenAncestors: true }
+      ),
+    [annotatorTerms, terminalStates]
+  );
 
   React.useEffect(() => {
     if (autoFocus) {
