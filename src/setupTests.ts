@@ -1,4 +1,4 @@
-import { TextDecoder } from "util";
+import { TextDecoder, TextEncoder } from "util";
 import "jest-localstorage-mock";
 import { configure } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
@@ -9,6 +9,7 @@ configure({ adapter: new Adapter() });
 // Polyfill for encoding which isn't present globally in jsdom, taken from Node
 // This is a jsdom issue: https://github.com/jsdom/jsdom/issues/2524
 (global as any).TextDecoder = TextDecoder;
+(global as any).TextEncoder = TextEncoder;
 
 // Polyfill for document.createRange which is needed by some tests
 // https://github.com/mui-org/material-ui/issues/15726
