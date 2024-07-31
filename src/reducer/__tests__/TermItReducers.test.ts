@@ -609,7 +609,7 @@ describe("Reducers", () => {
   });
 
   describe("pendingActions", () => {
-    it("adds action to pendingActions when it is async request action", () => {
+    it("adds action status to pendingActions when it is async request action and the abort controller is not present", () => {
       const action = asyncActionRequest(
         { type: ActionType.LOAD_RESOURCES },
         true
@@ -618,6 +618,19 @@ describe("Reducers", () => {
       added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
       expect(reducers(stateToPlainObject(initialState), action)).toEqual(
         Object.assign(initialState, { pendingActions: added })
+      );
+    });
+
+    it("adds abort controller to pending actions when the controller is present", () => {
+      const action = asyncActionRequest(
+        { type: ActionType.LOAD_RESOURCES },
+        true,
+        new AbortController()
+      );
+      const pendingActions = {};
+      pendingActions[action.type] = action.abortController;
+      expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+        Object.assign(initialState, { pendingActions })
       );
     });
 

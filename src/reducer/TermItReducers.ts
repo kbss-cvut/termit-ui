@@ -441,7 +441,7 @@ function notifications(
 }
 
 function pendingActions(
-  state: { [key: string]: AsyncActionStatus } = {},
+  state: { [key: string]: AsyncActionStatus | AbortController } = {},
   action: AsyncAction
 ) {
   switch (action.status) {
@@ -450,7 +450,11 @@ function pendingActions(
         return state;
       }
       const toAdd = {};
-      toAdd[action.type] = action.status;
+      if (action.abortController) {
+        toAdd[action.type] = action.abortController;
+      } else {
+        toAdd[action.type] = action.status;
+      }
       return Object.assign({}, state, toAdd);
     case AsyncActionStatus.SUCCESS:
     case AsyncActionStatus.FAILURE:

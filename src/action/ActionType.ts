@@ -14,6 +14,8 @@ import {
 export interface AsyncAction extends Action {
   status: AsyncActionStatus;
   ignoreLoading?: boolean; // Allows to prevent loading spinner display on async action
+  // allows to abort the action (needs to be explicitly implemented)
+  abortController?: AbortController;
 }
 
 export interface FailureAction extends Action {
