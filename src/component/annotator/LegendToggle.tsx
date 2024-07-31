@@ -97,7 +97,7 @@ const LegendToggle = () => {
       </Collapse>
       <Button
         id={TOGGLE_BUTTON_ID}
-        color={isAnyAnnotationHidden ? "warning" : "primary"}
+        color={isAnyAnnotationHidden ? "light" : "primary"}
         size="sm"
         onClick={toggle}
         className="annotator-action-button legend-toggle-button"
