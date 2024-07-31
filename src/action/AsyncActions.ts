@@ -29,7 +29,7 @@ import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
 import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
-import ActionType from "./ActionType";
+import ActionType, { PendingAsyncAction } from "./ActionType";
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
@@ -65,7 +65,6 @@ import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
 import { getShortLocale } from "../util/IntlUtil";
-import AsyncActionStatus from "./AsyncActionStatus";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -91,19 +90,17 @@ import AsyncActionStatus from "./AsyncActionStatus";
  * @returns true if there is a pending action that has not been aborted
  */
 export function isActionRequestPending(state: TermItState, action: Action) {
-  let isPending = state.pendingActions[action.type] !== undefined;
-  let isAborted = isActionStatusAborted(state.pendingActions[action.type]);
+  let pendingAction = state.pendingActions[action.type];
+  let isAborted = isActionStatusAborted(pendingAction);
 
-  return isPending && !isAborted;
+  return pendingAction !== undefined && !isAborted;
 }
 
 /**
  * @returns True if the status is AbortController with aborted signal, false otherwise
  */
-export function isActionStatusAborted(
-  status: AsyncActionStatus | AbortController
-) {
-  return status && status["signal"] && status["signal"].aborted;
+export function isActionStatusAborted(status: PendingAsyncAction): boolean {
+  return status?.abortController?.signal.aborted === true;
 }
 
 /**
@@ -112,9 +109,8 @@ export function isActionStatusAborted(
  */
 export function abortPendingActionRequest(state: TermItState, action: Action) {
   const pendingAction = state.pendingActions[action.type];
-  if (pendingAction && typeof pendingAction["abort"] === "function") {
-    const controller = pendingAction as AbortController;
-    controller.abort();
+  if (pendingAction?.abortController) {
+    pendingAction.abortController.abort();
   }
 }
 

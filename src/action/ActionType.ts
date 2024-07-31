@@ -11,11 +11,14 @@ import {
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
 
-export interface AsyncAction extends Action {
+export interface PendingAsyncAction {
   status: AsyncActionStatus;
-  ignoreLoading?: boolean; // Allows to prevent loading spinner display on async action
   // allows to abort the action (needs to be explicitly implemented)
   abortController?: AbortController;
+}
+
+export interface AsyncAction extends Action, PendingAsyncAction {
+  ignoreLoading?: boolean; // Allows to prevent loading spinner display on async action
 }
 
 export interface FailureAction extends Action {

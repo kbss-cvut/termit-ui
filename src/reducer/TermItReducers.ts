@@ -8,6 +8,7 @@ import ActionType, {
   FailureAction,
   MessageAction,
   NotificationAction,
+  PendingAsyncAction,
   PushRoutingPayloadAction,
   SearchAction,
   SearchResultAction,
@@ -441,7 +442,7 @@ function notifications(
 }
 
 function pendingActions(
-  state: { [key: string]: AsyncActionStatus | AbortController } = {},
+  state: { [key: string]: PendingAsyncAction } = {},
   action: AsyncAction
 ) {
   switch (action.status) {
@@ -450,11 +451,11 @@ function pendingActions(
         return state;
       }
       const toAdd = {};
-      if (action.abortController) {
-        toAdd[action.type] = action.abortController;
-      } else {
-        toAdd[action.type] = action.status;
-      }
+      const pendingAsyncAction: PendingAsyncAction = {
+        status: action.status,
+        abortController: action.abortController,
+      };
+      toAdd[action.type] = pendingAsyncAction;
       return Object.assign({}, state, toAdd);
     case AsyncActionStatus.SUCCESS:
     case AsyncActionStatus.FAILURE:

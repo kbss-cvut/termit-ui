@@ -2,6 +2,7 @@ import reducers from "../TermItReducers";
 import ActionType, {
   AsyncActionSuccess,
   FailureAction,
+  PendingAsyncAction,
 } from "../../action/ActionType";
 import TermItState from "../../model/TermItState";
 import {
@@ -615,7 +616,9 @@ describe("Reducers", () => {
         true
       );
       const added = {};
-      added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
+      added[ActionType.LOAD_RESOURCES] = {
+        status: AsyncActionStatus.REQUEST,
+      } as PendingAsyncAction;
       expect(reducers(stateToPlainObject(initialState), action)).toEqual(
         Object.assign(initialState, { pendingActions: added })
       );
@@ -628,9 +631,12 @@ describe("Reducers", () => {
         new AbortController()
       );
       const pendingActions = {};
-      pendingActions[action.type] = action.abortController;
+      pendingActions[ActionType.LOAD_RESOURCES] = {
+        status: AsyncActionStatus.REQUEST,
+        abortController: action.abortController,
+      } as PendingAsyncAction;
       expect(reducers(stateToPlainObject(initialState), action)).toEqual(
-        Object.assign(initialState, { pendingActions })
+        Object.assign(stateToPlainObject(initialState), { pendingActions })
       );
     });
 
