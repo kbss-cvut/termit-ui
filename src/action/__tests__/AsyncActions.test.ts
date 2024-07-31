@@ -1,5 +1,6 @@
 import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import {
+  abortPendingActionRequest,
   createFileInDocument,
   createProperty,
   createVocabulary,
@@ -9,6 +10,7 @@ import {
   getLabel,
   getProperties,
   hasFileContent,
+  isActionRequestPending,
   loadAllTerms,
   loadConfiguration,
   loadFileContent,
@@ -67,7 +69,7 @@ import {
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import NotificationType from "../../model/NotificationType";
-import { langString } from "../../model/MultilingualString";
+import MultilingualString, { langString } from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
 import UserRole from "../../model/UserRole";
 
@@ -97,6 +99,121 @@ describe("Async actions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     store = mockStore(new TermItState());
+  });
+
+  describe("pending async actions", () => {
+    it("returns action request as pending when status is present", () => {
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: AsyncActionStatus.REQUEST,
+        },
+      } as TermItState;
+
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeTruthy();
+    });
+
+    it("returns action request as pending when abort controller is present and signal is not aborted", () => {
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: new AbortController(),
+        },
+      } as TermItState;
+
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeTruthy();
+    });
+
+    it("does not returns action request as pending when abort controller is present and signal is aborted", () => {
+      const controller = new AbortController();
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: controller,
+        },
+      } as TermItState;
+
+      controller.abort();
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeFalsy();
+    });
+
+    it("does not returns action request as pending when action is not present", () => {
+      const state = {
+        pendingActions: {},
+      } as TermItState;
+
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeFalsy();
+    });
+
+    it("aborts pending action request when abort controller is present", () => {
+      const controller = new AbortController();
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: controller,
+        },
+      } as TermItState;
+
+      expect(controller.signal.aborted).toEqual(false);
+      abortPendingActionRequest(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(controller.signal.aborted).toEqual(true);
+    });
+
+    it("does noting when pending action status is present instead of abort controller", () => {
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: AsyncActionStatus.REQUEST,
+        },
+      } as TermItState;
+
+      abortPendingActionRequest(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(state).toEqual({
+        pendingActions: {
+          [ActionType.LOAD_RESOURCES]: AsyncActionStatus.REQUEST,
+        },
+      });
+    });
+
+    it("does nothing when pending action controller is already aborted", () => {
+      const controller = new AbortController();
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: controller,
+        },
+      } as TermItState;
+
+      controller.abort();
+      expect(controller.signal.aborted).toEqual(true);
+      abortPendingActionRequest(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(controller.signal.aborted).toEqual(true);
+    });
   });
 
   describe("create vocabulary", () => {

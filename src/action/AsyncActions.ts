@@ -65,6 +65,7 @@ import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
 import { getShortLocale } from "../util/IntlUtil";
+import AsyncActionStatus from "./AsyncActionStatus";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -86,8 +87,35 @@ import { getShortLocale } from "../util/IntlUtil";
  * TODO Consider splitting this file into multiple, it is becoming too long
  */
 
+/**
+ * @returns true if there is a pending action that has not been aborted
+ */
 export function isActionRequestPending(state: TermItState, action: Action) {
-  return state.pendingActions[action.type] !== undefined;
+  let isPending = state.pendingActions[action.type] !== undefined;
+  let isAborted = isActionStatusAborted(state.pendingActions[action.type]);
+
+  return isPending && !isAborted;
+}
+
+/**
+ * @returns True if the status is AbortController with aborted signal, false otherwise
+ */
+export function isActionStatusAborted(
+  status: AsyncActionStatus | AbortController
+) {
+  return status && status["signal"] && status["signal"].aborted;
+}
+
+/**
+ * Checks if a pending action exists in the TermItState,
+ * and if it does and the AbortController is available in the state, the pending action is aborted.
+ */
+export function abortPendingActionRequest(state: TermItState, action: Action) {
+  const pendingAction = state.pendingActions[action.type];
+  if (pendingAction && typeof pendingAction["abort"] === "function") {
+    const controller = pendingAction as AbortController;
+    controller.abort();
+  }
 }
 
 export function createVocabulary(vocabulary: Vocabulary) {

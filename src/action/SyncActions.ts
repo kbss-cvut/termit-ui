@@ -26,9 +26,15 @@ import {
 
 export function asyncActionRequest(
   a: Action,
-  ignoreLoading: boolean = false
+  ignoreLoading: boolean = false,
+  abortController?: AbortController
 ): AsyncAction {
-  return { ...a, status: AsyncActionStatus.REQUEST, ignoreLoading };
+  return {
+    ...a,
+    status: AsyncActionStatus.REQUEST,
+    ignoreLoading,
+    abortController,
+  };
 }
 
 export function asyncActionFailure(

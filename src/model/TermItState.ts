@@ -46,7 +46,7 @@ export default class TermItState {
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
   // Pending asynchronous actions. Can be used to prevent repeated requests when some are already pending
-  public pendingActions: { [key: string]: AsyncActionStatus };
+  public pendingActions: { [key: string]: AsyncActionStatus | AbortController };
   public errors: ErrorLogItem[];
   public lastModified: { [key: string]: string };
   public sidebarExpanded: boolean;
