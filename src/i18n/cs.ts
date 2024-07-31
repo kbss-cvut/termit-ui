@@ -674,6 +674,8 @@ const cs = {
       "Vyberte pojem, jehož výskyty budou zvýrazněny",
     "annotator.highlight.countInfo":
       "V tomto dokumentu {count, plural, one {nalezen # výskyt} few {nalezeny # výskyty} other {nalezeno # výskytů}}.",
+    "annotator.legend.activeFilter.tooltip":
+      "Některá zvýraznění výskytů pojmů jsou skrytá.",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",
