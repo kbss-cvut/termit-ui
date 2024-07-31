@@ -106,7 +106,7 @@ describe("Async actions", () => {
       const state = {
         pendingActions: {
           // set some action as pending
-          [ActionType.LOAD_RESOURCES]: AsyncActionStatus.REQUEST,
+          [ActionType.LOAD_RESOURCES]: { status: AsyncActionStatus.REQUEST },
         },
       } as TermItState;
 
@@ -121,7 +121,10 @@ describe("Async actions", () => {
       const state = {
         pendingActions: {
           // set some action as pending
-          [ActionType.LOAD_RESOURCES]: new AbortController(),
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: new AbortController(),
+          },
         },
       } as TermItState;
 
@@ -137,7 +140,10 @@ describe("Async actions", () => {
       const state = {
         pendingActions: {
           // set some action as pending
-          [ActionType.LOAD_RESOURCES]: controller,
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: controller,
+          },
         },
       } as TermItState;
 
@@ -166,7 +172,10 @@ describe("Async actions", () => {
       const state = {
         pendingActions: {
           // set some action as pending
-          [ActionType.LOAD_RESOURCES]: controller,
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: controller,
+          },
         },
       } as TermItState;
 
@@ -182,7 +191,7 @@ describe("Async actions", () => {
       const state = {
         pendingActions: {
           // set some action as pending
-          [ActionType.LOAD_RESOURCES]: AsyncActionStatus.REQUEST,
+          [ActionType.LOAD_RESOURCES]: { status: AsyncActionStatus.REQUEST },
         },
       } as TermItState;
 
@@ -192,7 +201,7 @@ describe("Async actions", () => {
 
       expect(state).toEqual({
         pendingActions: {
-          [ActionType.LOAD_RESOURCES]: AsyncActionStatus.REQUEST,
+          [ActionType.LOAD_RESOURCES]: { status: AsyncActionStatus.REQUEST },
         },
       });
     });
@@ -202,7 +211,10 @@ describe("Async actions", () => {
       const state = {
         pendingActions: {
           // set some action as pending
-          [ActionType.LOAD_RESOURCES]: controller,
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: controller,
+          },
         },
       } as TermItState;
 
@@ -293,8 +305,9 @@ describe("Async actions", () => {
           Promise.resolve(require("../../rest-mock/vocabulary"))
         );
 
-      store.getState().pendingActions[ActionType.LOAD_VOCABULARY] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.LOAD_VOCABULARY] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadVocabulary({ fragment: "metropolitan-plan" })
@@ -528,8 +541,9 @@ describe("Async actions", () => {
     it("does nothing when vocabularies loading action is already pending", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
 
-      store.getState().pendingActions[ActionType.LOAD_VOCABULARIES] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.LOAD_VOCABULARIES] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadVocabularies())
       ).then(() => {
@@ -574,8 +588,9 @@ describe("Async actions", () => {
     it("does nothing when file content loading action is already pending", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
 
-      store.getState().pendingActions[ActionType.LOAD_FILE_CONTENT] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.LOAD_FILE_CONTENT] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadFileContent({ fragment: "metropolitan-plan" })
@@ -1421,8 +1436,9 @@ describe("Async actions", () => {
 
     it("does nothing when loading action is already pending", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      store.getState().pendingActions[ActionType.FETCH_VALIDATION_RESULTS] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.FETCH_VALIDATION_RESULTS] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(validateVocabulary(v))
       ).then(() => {
