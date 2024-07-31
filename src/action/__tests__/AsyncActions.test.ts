@@ -69,7 +69,7 @@ import {
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import NotificationType from "../../model/NotificationType";
-import MultilingualString, { langString } from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 import ValidationResult from "../../model/ValidationResult";
 import UserRole from "../../model/UserRole";
 
@@ -219,7 +219,7 @@ describe("Async actions", () => {
   describe("create vocabulary", () => {
     it("adds context definition to vocabulary data and sends it over network", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: "http://test",
       });
       const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -238,7 +238,7 @@ describe("Async actions", () => {
 
     it("reloads vocabularies on success", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: "http://kbss.felk.cvut.cz/termit/rest/vocabularies/test",
       });
       Ajax.post = jest
@@ -440,7 +440,7 @@ describe("Async actions", () => {
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
     it("sends delete vocabulary request to the server", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: namespace + normalizedName,
       });
       Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
@@ -459,7 +459,7 @@ describe("Async actions", () => {
 
     it("refreshes vocabulary list on success", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: namespace + normalizedName,
       });
       Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
@@ -476,7 +476,7 @@ describe("Async actions", () => {
 
     it("transitions to vocabulary management on success", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: namespace + normalizedName,
       });
       Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
@@ -1011,7 +1011,7 @@ describe("Async actions", () => {
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
     const termName = "test-term";
     const vocabulary = new Vocabulary({
-      label: "Test Vocabulary",
+      label: langString("Test Vocabulary"),
       iri: namespace + normalizedName,
     });
     const term = new Term({
@@ -1078,7 +1078,7 @@ describe("Async actions", () => {
       const normalizedVocabularyName = "test-vocabulary";
       const vocabulary = new Vocabulary({
         iri: namespace + normalizedVocabularyName,
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       const mock = jest.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
@@ -1099,7 +1099,7 @@ describe("Async actions", () => {
     it("sends JSON-LD of vocabulary argument to REST endpoint", () => {
       const vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       const mock = jest.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
@@ -1115,7 +1115,7 @@ describe("Async actions", () => {
     it("reloads vocabulary on successful update", () => {
       const vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
@@ -1131,7 +1131,7 @@ describe("Async actions", () => {
     it("dispatches success message on successful update", () => {
       const vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve());
@@ -1797,7 +1797,7 @@ describe("Async actions", () => {
     it("loads vocabulary history when asset is vocabulary", () => {
       const asset = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         types: [VocabularyUtils.VOCABULARY],
       });
       Ajax.get = jest.fn().mockResolvedValue([]);
