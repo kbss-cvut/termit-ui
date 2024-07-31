@@ -14,6 +14,9 @@ export enum AnnotationOrigin {
   SELECTED = "selected-occurrence",
 }
 
+const CLASSES = Object.values(AnnotationClass);
+const ORIGINS = Object.values(AnnotationOrigin);
+
 export type AnnotationOriginFilter = {
   [key in AnnotationOrigin]: boolean;
 };
@@ -32,9 +35,9 @@ export default class AnnotatorLegendFilter {
   constructor() {
     this.filter = {} as AnnotationLegendFilter;
 
-    Object.values(AnnotationClass).forEach((classValue) => {
+    CLASSES.forEach((classValue) => {
       this.filter[classValue] = {} as AnnotationOriginFilter;
-      Object.values(AnnotationOrigin).forEach((originValue) => {
+      ORIGINS.forEach((originValue) => {
         this.filter[classValue][originValue] = true;
       });
     });
@@ -53,6 +56,16 @@ export default class AnnotatorLegendFilter {
     value: boolean
   ): void {
     this.filter[annotationClass][annotationOrigin] = value;
+  }
+
+  /**
+   * @returns true if any annotation is hidden (any filter value is false)
+   */
+  public isAnyHidden(): boolean {
+    const values = CLASSES.flatMap((classValue) =>
+      ORIGINS.map((originValue) => this.filter[classValue][originValue])
+    );
+    return values.includes(false);
   }
 
   /**
