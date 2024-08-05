@@ -1,32 +1,26 @@
 import VocabularyUtils from "../util/VocabularyUtils";
-import { TermData } from "./Term";
-import { CONTEXT as TERM_CONTEXT } from "./Term";
-import { CONTEXT as LANG_STRING_CONTEXT, LangString } from "./LangString";
+import { CONTEXT as TERM_CONTEXT, TermData } from "./Term";
 import { Severity } from "./Severity";
 import { SourceShape } from "./SourceShape";
 import { ResultPath } from "./ResultPath";
+import { context, MultilingualString } from "./MultilingualString";
 
 // @id and @type are merged from ASSET_CONTEXT
 const ctx = {
   term: VocabularyUtils.SH_FOCUS_NODE,
   severity: VocabularyUtils.SH_RESULT_SEVERITY,
-  message: VocabularyUtils.SH_RESULT_MESSAGE,
+  message: context(VocabularyUtils.SH_RESULT_MESSAGE),
   sourceShape: VocabularyUtils.SH_SOURCE_SHAPE,
   resultPath: VocabularyUtils.SH_RESULT_PATH,
 };
 
-export const CONTEXT = Object.assign(
-  {},
-  TERM_CONTEXT,
-  LANG_STRING_CONTEXT,
-  ctx
-);
+export const CONTEXT = Object.assign({}, TERM_CONTEXT, ctx);
 
 export default class ValidationResult {
   public iri: string;
   public term: TermData;
   public severity: Severity;
-  public message: LangString[];
+  public message: MultilingualString;
   public sourceShape: SourceShape;
   public resultPath: ResultPath;
 
@@ -34,7 +28,7 @@ export default class ValidationResult {
     iri: string,
     term: TermData,
     severity: Severity,
-    message: LangString[],
+    message: MultilingualString,
     sourceShape: SourceShape,
     resultPath: ResultPath
   ) {
