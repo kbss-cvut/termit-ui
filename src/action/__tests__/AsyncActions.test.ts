@@ -1394,7 +1394,7 @@ describe("Async actions", () => {
               "@id"
             ]
           );
-          expect(array[i].message.length).toEqual(
+          expect(Object.getOwnPropertyNames(array[i].message).length).toEqual(
             validationResults[i]["http://www.w3.org/ns/shacl#resultMessage"]
               .length
           );
@@ -1427,7 +1427,7 @@ describe("Async actions", () => {
             "@id"
           ]
         );
-        expect(array[0].message.length).toEqual(
+        expect(Object.getOwnPropertyNames(array[0].message).length).toEqual(
           validationResults[0]["http://www.w3.org/ns/shacl#resultMessage"]
             .length
         );
