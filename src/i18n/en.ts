@@ -285,11 +285,16 @@ const en = {
       "Restore the vocabulary from its previously exported version",
     "vocabulary.summary.import.dialog.title":
       "Restore exported vocabulary version",
-    "vocabulary.summary.import.dialog.message":
-      "Upload an exported version of this vocabulary " +
-      "(in the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář or as a MS Excel file corresponding to <a>this template</a>).",
+    "vocabulary.summary.import.dialog.label":
+      "Upload an exported version of this vocabulary",
+    "vocabulary.summary.import.dialog.skosImport":
+      "In the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
+    "vocabulary.summary.import.dialog.excelImport":
+      "MS Excel file corresponding to <a>this template</a>",
     "vocabulary.summary.import.excel.template.tooltip":
       "Download a MS Excel template",
+    "vocabulary.summary.import.nonEmpty.warning":
+      "Vocabulary is not empty, existing data will be overwritten by the imported.",
     "vocabulary.import.action": "Import",
     "vocabulary.import.action.tooltip": "SKOS vocabulary import.",
     "vocabulary.import.dialog.title": "Import SKOS vocabulary",

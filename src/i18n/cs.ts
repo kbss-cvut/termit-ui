@@ -292,11 +292,16 @@ const cs = {
       "Obnovit slovník ze zálohy ve formátu SKOS či MS Excel",
     "vocabulary.summary.import.dialog.title":
       "Obnova exportované verze slovníku",
-    "vocabulary.summary.import.dialog.message":
-      "Nahrajte vyexportovanou verzi tohoto slovníku " +
-      "(ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář nebo MS Excel odpovídající <a>této šabloně</a>).",
+    "vocabulary.summary.import.dialog.label":
+      "Nahrajte vyexportovanou verzi tohoto slovníku ",
+    "vocabulary.summary.import.dialog.skosImport":
+      "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář.",
+    "vocabulary.summary.import.dialog.excelImport":
+      "MS Excel odpovídající <a>této šabloně</a>",
     "vocabulary.summary.import.excel.template.tooltip":
       "Stáhnout šablonu pro MS Excel",
+    "vocabulary.summary.import.nonEmpty.warning":
+      "Slovník není prázdný, stávající data budou přepsána importovanými.",
     "vocabulary.import.action": "Importovat",
     "vocabulary.import.action.tooltip": "Import SKOS slovníku.",
     "vocabulary.import.dialog.title": "Importovat SKOS slovník",

@@ -1,13 +1,14 @@
 import React from "react";
-import { Label, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Alert, Label, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 import { FormattedMessage } from "react-intl";
 import ImportVocabularyDialog from "./ImportVocabularyDialog";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import { downloadExcelTemplate } from "../../../action/AsyncImportActions";
+import TermItState from "../../../model/TermItState";
 
 interface ImportVocabularyProps {
   showDialog: boolean;
@@ -27,6 +28,8 @@ export const ImportVocabulary: React.FC<ImportVocabularyProps> = ({
   const downloadTemplate = () => {
     dispatch(downloadExcelTemplate());
   };
+  const vocabularyNotEmpty =
+    (useSelector((state: TermItState) => state.vocabulary.termCount) || 0) > 0;
 
   return (
     <>
@@ -37,24 +40,37 @@ export const ImportVocabulary: React.FC<ImportVocabularyProps> = ({
         <ModalBody>
           <PromiseTrackingMask area="vocabulary-import" />
           <Label className="attribute-label mb-2">
-            <FormattedMessage
-              id="vocabulary.summary.import.dialog.message"
-              values={{
-                a: (chunks: any) => (
-                  <span
-                    role="button"
-                    className="bold btn-link link-like"
-                    onClick={downloadTemplate}
-                    title={i18n(
-                      "vocabulary.summary.import.excel.template.tooltip"
-                    )}
-                  >
-                    {chunks}
-                  </span>
-                ),
-              }}
-            />
+            <FormattedMessage id="vocabulary.summary.import.dialog.label" />
           </Label>
+          <ul>
+            <li>
+              <FormattedMessage id="vocabulary.summary.import.dialog.skosImport" />
+            </li>
+            <li>
+              <FormattedMessage
+                id="vocabulary.summary.import.dialog.excelImport"
+                values={{
+                  a: (chunks: any) => (
+                    <span
+                      role="button"
+                      className="bold btn-link link-like"
+                      onClick={downloadTemplate}
+                      title={i18n(
+                        "vocabulary.summary.import.excel.template.tooltip"
+                      )}
+                    >
+                      {chunks}
+                    </span>
+                  ),
+                }}
+              />
+            </li>
+          </ul>
+          {vocabularyNotEmpty && (
+            <Alert color="warning">
+              <FormattedMessage id="vocabulary.summary.import.nonEmpty.warning" />
+            </Alert>
+          )}
           <ImportVocabularyDialog
             propKeyPrefix="vocabulary.summary.import"
             onCreate={onSubmit}
