@@ -9,7 +9,6 @@ import RdfsResource from "./RdfsResource";
 import AppNotification from "./AppNotification";
 import SearchResult from "./search/SearchResult";
 import SearchQuery from "./search/SearchQuery";
-import AsyncActionStatus from "../action/AsyncActionStatus";
 import { ErrorLogItem } from "./ErrorInfo";
 import Utils from "../util/Utils";
 import { Configuration, DEFAULT_CONFIGURATION } from "./Configuration";
@@ -18,6 +17,7 @@ import File, { EMPTY_FILE } from "./File";
 import TermOccurrence from "./TermOccurrence";
 import { Breadcrumb } from "./Breadcrumb";
 import AnnotatorLegendFilter from "./AnnotatorLegendFilter";
+import { PendingAsyncAction } from "../action/ActionType";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -46,7 +46,7 @@ export default class TermItState {
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
   // Pending asynchronous actions. Can be used to prevent repeated requests when some are already pending
-  public pendingActions: { [key: string]: AsyncActionStatus };
+  public pendingActions: { [key: string]: PendingAsyncAction };
   public errors: ErrorLogItem[];
   public lastModified: { [key: string]: string };
   public sidebarExpanded: boolean;

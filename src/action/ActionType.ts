@@ -11,8 +11,13 @@ import {
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
 
-export interface AsyncAction extends Action {
+export interface PendingAsyncAction {
   status: AsyncActionStatus;
+  // allows to abort the action (needs to be explicitly implemented)
+  abortController?: AbortController;
+}
+
+export interface AsyncAction extends Action, PendingAsyncAction {
   ignoreLoading?: boolean; // Allows to prevent loading spinner display on async action
 }
 
@@ -238,6 +243,8 @@ const ActionType = {
 
   ADD_CRUMB: "ADD_CRUMB",
   REMOVE_CRUMB: "REMOVE_CRUMB",
+
+  DOES_USERNAME_EXISTS: "DOES_USERNAME_EXISTS",
 };
 
 export default ActionType;

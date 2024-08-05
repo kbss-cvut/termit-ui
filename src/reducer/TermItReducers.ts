@@ -8,6 +8,7 @@ import ActionType, {
   FailureAction,
   MessageAction,
   NotificationAction,
+  PendingAsyncAction,
   PushRoutingPayloadAction,
   SearchAction,
   SearchResultAction,
@@ -441,7 +442,7 @@ function notifications(
 }
 
 function pendingActions(
-  state: { [key: string]: AsyncActionStatus } = {},
+  state: { [key: string]: PendingAsyncAction } = {},
   action: AsyncAction
 ) {
   switch (action.status) {
@@ -450,7 +451,11 @@ function pendingActions(
         return state;
       }
       const toAdd = {};
-      toAdd[action.type] = action.status;
+      const pendingAsyncAction: PendingAsyncAction = {
+        status: action.status,
+        abortController: action.abortController,
+      };
+      toAdd[action.type] = pendingAsyncAction;
       return Object.assign({}, state, toAdd);
     case AsyncActionStatus.SUCCESS:
     case AsyncActionStatus.FAILURE:
@@ -496,6 +501,10 @@ function labelCache(
 ) {
   if (action.type === ActionType.GET_LABEL && isAsyncSuccess(action)) {
     return Object.assign({}, state, action.payload);
+  }
+  // When changing the language, discard the cache and let them reload.
+  if (action.type === ActionType.SWITCH_LANGUAGE) {
+    return {};
   }
   return state;
 }

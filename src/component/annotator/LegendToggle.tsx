@@ -7,18 +7,26 @@ import {
   CardFooter,
   CardHeader,
   Collapse,
+  UncontrolledTooltip,
 } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import classNames from "classnames";
 import BrowserStorage from "../../util/BrowserStorage";
 import Constants from "../../util/Constants";
 import OutgoingLink from "../misc/OutgoingLink";
-import { FaQuestionCircle } from "react-icons/fa";
+import { FaFilter, FaQuestionCircle } from "react-icons/fa";
+import TermItState from "../../model/TermItState";
+import { useSelector } from "react-redux";
+
+const TOGGLE_BUTTON_ID = "annotator-legend-toggle-button";
 
 const LegendToggle = () => {
   const [showLegend, setShowLegend] = React.useState(
     BrowserStorage.get(Constants.STORAGE_ANNOTATOR_LEGEND_OPEN_KEY, "true") ===
       "true"
+  );
+  const isAnyAnnotationHidden = useSelector((state: TermItState) =>
+    state.annotatorLegendFilter.isAnyHidden()
   );
   const { i18n, locale } = useI18n();
   const toggle = () => {
@@ -28,6 +36,27 @@ const LegendToggle = () => {
       String(!showLegend)
     );
   };
+
+  const renderIcon = () => {
+    if (isAnyAnnotationHidden) {
+      return <FaFilter className="mr-1" />;
+    }
+
+    return <FaQuestionCircle className="mr-1" />;
+  };
+
+  const renderTooltip = () => {
+    if (isAnyAnnotationHidden) {
+      return (
+        <UncontrolledTooltip target={TOGGLE_BUTTON_ID} placement={"left-start"}>
+          {i18n("annotator.legend.activeFilter.tooltip")}
+        </UncontrolledTooltip>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <>
       <Collapse isOpen={showLegend}>
@@ -67,15 +96,17 @@ const LegendToggle = () => {
         </Card>
       </Collapse>
       <Button
-        color="primary"
+        id={TOGGLE_BUTTON_ID}
+        color={isAnyAnnotationHidden ? "light" : "primary"}
         size="sm"
         onClick={toggle}
         className="annotator-action-button legend-toggle-button"
         active={showLegend}
       >
-        <FaQuestionCircle className="mr-1" />
+        {renderIcon()}
         {i18n("help.title")}
       </Button>
+      {renderTooltip()}
     </>
   );
 };

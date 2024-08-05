@@ -214,7 +214,7 @@ export function createNewUser(user: UserAccountData) {
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.post(
-      Constants.API_PREFIX + "/users",
+      Constants.API_PREFIX + "/admin/users",
       content(user).contentType("application/json")
     )
       .then(() => dispatch(asyncActionSuccess(action)))
@@ -458,5 +458,21 @@ export function loadManagedAssets(user: User) {
         dispatch(asyncActionFailure(action, error));
         return Promise.resolve([]);
       });
+  };
+}
+
+export function doesUsernameExists(username: string) {
+  const action = { type: ActionType.DOES_USERNAME_EXISTS };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${Constants.API_PREFIX}${USERS_ENDPOINT}/username`,
+      params({ username })
+    )
+      .then((data) => {
+        dispatch(asyncActionSuccess(action));
+        return data === true;
+      })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

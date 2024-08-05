@@ -29,7 +29,7 @@ import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
 import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
-import ActionType from "./ActionType";
+import ActionType, { PendingAsyncAction } from "./ActionType";
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
@@ -64,6 +64,7 @@ import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
+import { getShortLocale } from "../util/IntlUtil";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -85,8 +86,32 @@ import { getApiPrefix } from "./ActionUtils";
  * TODO Consider splitting this file into multiple, it is becoming too long
  */
 
+/**
+ * @returns true if there is a pending action that has not been aborted
+ */
 export function isActionRequestPending(state: TermItState, action: Action) {
-  return state.pendingActions[action.type] !== undefined;
+  let pendingAction = state.pendingActions[action.type];
+  let isAborted = isActionStatusAborted(pendingAction);
+
+  return pendingAction !== undefined && !isAborted;
+}
+
+/**
+ * @returns True if the status is AbortController with aborted signal, false otherwise
+ */
+export function isActionStatusAborted(status: PendingAsyncAction): boolean {
+  return status?.abortController?.signal.aborted === true;
+}
+
+/**
+ * Checks if a pending action exists in the TermItState,
+ * and if it does and the AbortController is available in the state, the pending action is aborted.
+ */
+export function abortPendingActionRequest(state: TermItState, action: Action) {
+  const pendingAction = state.pendingActions[action.type];
+  if (pendingAction?.abortController) {
+    pendingAction.abortController.abort();
+  }
 }
 
 export function createVocabulary(vocabulary: Vocabulary) {
@@ -1039,10 +1064,14 @@ export function getLabel(iri: string) {
     if (pendingGetLabelRequests[iri] !== undefined) {
       return pendingGetLabelRequests[iri];
     }
+
+    // currently active language
+    const locale = getShortLocale(getState().intl.locale);
+
     dispatch(asyncActionRequest(action, true));
     const promise = Ajax.get(
       Constants.API_PREFIX + "/data/label",
-      param("iri", iri)
+      param("iri", iri).param("language", locale)
     )
       .then((data) => {
         const payload = {};

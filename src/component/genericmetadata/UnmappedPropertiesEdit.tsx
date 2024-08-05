@@ -32,6 +32,8 @@ interface UnmappedPropertiesEditProps extends HasI18n {
   knownProperties: RdfsResource[];
   createProperty: (property: RdfsResource) => Promise<any>;
   clearProperties: () => void;
+  languages: string[];
+  language: string;
 }
 
 interface UnmappedPropertiesEditState {
@@ -198,6 +200,8 @@ export class UnmappedPropertiesEdit extends React.Component<
           <CreatePropertyForm
             onOptionCreate={this.onCreateProperty}
             toggleModal={() => this.setState({ showCreatePropertyForm: false })}
+            languages={this.props.languages}
+            language={this.props.language}
           />
         )}
         <FormGroup>

@@ -1,3 +1,10 @@
+#### Version 3.1.3
+
+- Added invitation-based new account registration (admin no longer has to set user's password).
+- Allow reading terms without label in primary instance language.
+- Allow setting multilingual label and comment on new properties.
+- Bug fixes, dependency updates.
+
 #### Version 3.1.2
 
 - Added password recovery.

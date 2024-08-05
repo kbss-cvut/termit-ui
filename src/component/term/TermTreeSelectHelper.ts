@@ -6,6 +6,7 @@ import Utils from "../../util/Utils";
 import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchResult from "../../model/search/SearchResult";
+import * as _ from "lodash";
 
 /**
  * Common properties for a tree selector containing terms
@@ -32,6 +33,7 @@ export type TermTreeSelectProcessingOptions = {
   searchString?: string;
   selectedIris?: string[];
   loadingSubTerms?: boolean;
+  flattenAncestors?: boolean;
 };
 
 /**
@@ -61,11 +63,17 @@ export function processTermsForTreeSelect(
       );
       t.syncPlainSubTerms();
     }
-    if (options.searchString && t.parentTerms) {
-      result = result.concat(
+    if (
+      (options.searchString || options.flattenAncestors) &&
+      t.parentTerms &&
+      t.parentTerms.length > 0
+    ) {
+      result = _.unionBy(
+        result,
         flattenAncestors(t.parentTerms).filter((pt) =>
           filters.reduce((v, f) => f(pt) && v, true)
-        )
+        ),
+        (t) => t.iri
       );
     }
   }

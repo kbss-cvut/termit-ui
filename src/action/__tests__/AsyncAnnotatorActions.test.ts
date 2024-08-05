@@ -48,8 +48,9 @@ describe("AsyncAnnotatorActions", () => {
     });
 
     it("does not invoke Ajax when a request is already pending", () => {
-      store.getState().pendingActions[ActionType.ANNOTATOR_LOAD_TERMS] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.ANNOTATOR_LOAD_TERMS] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockResolvedValue(terms);
       return Promise.resolve(

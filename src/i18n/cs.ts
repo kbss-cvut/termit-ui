@@ -82,7 +82,6 @@ const cs = {
 
     "forgotPassword.title": "Zapomenuté heslo",
     "forgotPassword.mask": "Odesílám...",
-    "forgotPassword.subtitle": "Zapomenuté heslo",
     "forgotPassword.login.label": "Zpět na <a>Přihlášení</a>",
     "forgotPassword.username": "Uživatelské jméno",
     "forgotPassword.username.placeholder": "Zadejte uživatelské jméno",
@@ -94,14 +93,25 @@ const cs = {
     "resetPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
     "resetPassword.mask": "Měním heslo...",
     "resetPassword.title": "Změna hesla",
-    "resetPassword.subtitle": "Změna hesla",
+    "resetPassword.login.label": "Zpět na <a>Přihlášení</a>",
     "resetPassword.password": "Nové heslo",
     "resetPassword.password.placeholder": "Zvolte si nové heslo",
     "resetPassword.password.confirm": "Potvrzení hesla",
     "resetPassword.submit": "Změnit heslo",
     "resetPassword.success": "Heslo změněno",
     "resetPassword.invalidToken":
-      "Neplatný nebo expirovaný link pro změnu hesla. Zažádejte o změnu hesla znovu.",
+      "Neplatný nebo expirovaný odkaz pro změnu hesla. Zažádejte o změnu hesla znovu.",
+
+    "createPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
+    "createPassword.mask": "Vytvářím heslo...",
+    "createPassword.title": "Vytvoření hesla",
+    "createPassword.password": "Nové heslo",
+    "createPassword.password.placeholder": "Zvolte si nové heslo",
+    "createPassword.password.confirm": "Potvrzení hesla",
+    "createPassword.submit": "Vytvořit heslo",
+    "createPassword.success": "Heslo vytvořeno",
+    "createPassword.invalidToken":
+      "Neplatný nebo expirovaný odkaz pro vytvoření hesla. Zažádejte o nový odkaz.",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
@@ -160,7 +170,7 @@ const cs = {
     "administration.users.status": "Status",
     "administration.users.status.locked": "Zablokovaný",
     "administration.users.status.locked.help":
-      "Uživatelský účet byl zablokován z důvodu příliš mnoha neúspěšných pokusů o přihlášení. Uživatel se nemůže znovu přihlásit, dokud mu administrátor nenastaví nové heslo.",
+      "Uživatelský účet byl zablokován z důvodu příliš mnoha neúspěšných pokusů o přihlášení, nebo účet vyčkává na nastavení nového hesla uživatelem. Uživatel se nemůže znovu přihlásit, dokud si heslo neobnoví, nebo mu administrátor nenastaví nové heslo.",
     "administration.users.status.disabled": "Neaktivní",
     "administration.users.status.disabled.help":
       "Uživatelský účet byl deaktivován administrátorem a nelze se pod ním přihlásit.",
@@ -204,6 +214,14 @@ const cs = {
     "administration.users.types.admin": "Tento uživatel je administrátor",
     "administration.users.oidc":
       "Pro správu uživatelů je využívána externí autentizační služba.",
+    "administration.users.create.password-toggle.user":
+      "Poslat aktivační email",
+    "administration.users.create.password-toggle.admin": "Zadat heslo nyní",
+    "administration.users.create.password-toggle.tooltip.user":
+      "Novému uživateli bude zaslán email s odkazem pro vytvoření nového hesla.",
+    "administration.users.create.password-toggle.tooltip.admin":
+      "Heslo pro nového uživatele zadejte nyní.",
+    "administration.users.create.submit": "Vytvořit uživatele",
     "administration.maintenance.title": "Správa systému",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":
@@ -656,6 +674,8 @@ const cs = {
       "Vyberte pojem, jehož výskyty budou zvýrazněny",
     "annotator.highlight.countInfo":
       "V tomto dokumentu {count, plural, one {nalezen # výskyt} few {nalezeny # výskyty} other {nalezeno # výskytů}}.",
+    "annotator.legend.activeFilter.tooltip":
+      "Některá zvýraznění výskytů pojmů jsou skrytá.",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",
