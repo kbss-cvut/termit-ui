@@ -387,6 +387,25 @@ const cs = {
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",
 
+    "vocabulary.remove.dialog.text.nonEmpty":
+      "Opravdu chcete odstranit  <b>neprázdný</b> slovník?",
+    "vocabulary.remove.dialog.text.empty":
+      "Opravdu chcete odstranit  <b>prázdný</b> slovník?",
+    "vocabulary.remove.dialog.text.termCount":
+      "Jeho odstraněním dojde k trvalému smazání {count, plural, one {<b>1</b> pojmu} other {<b>#</b> pojmů}}, dokumentu a všech souvisejících souborů.",
+    "vocabulary.remove.dialog.text.permanent": "Tato akce je nevratná!",
+    "vocabulary.remove.dialog.relationsExists.text":
+      "Existují vazby na jiné slovníky, slovník nezle odstranit.",
+    "vocabulary.remove.dialog.relations": "Vazby",
+    "vocabulary.remove.dialog.relations.error.cantRemove":
+      "Slovník nelze odstranit!",
+    "vocabulary.remove.dialog.relations.error.vocabularyRelations":
+      "Existuje {vocabularyRelations, plural, one {<b>1</b> vazba} other {<b>#</b> vazeb}} s jiným slovníkem",
+    "vocabulary.remove.dialog.relations.error.termsRelations":
+      "Existuje {termsRelations, plural, one {<b>1</b> vazba na pojem} other {<b>#</b> vazeb na pojmy}} z tohoto slovníku.",
+    "vocabulary.remove.dialog.input.label":
+      "Pro ověření, zadejte název slovníku",
+
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",
     "resource.removed.message": "Zdroj by odstraněn.",
