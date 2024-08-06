@@ -29,7 +29,7 @@ describe("TermLink", () => {
 
   beforeEach(() => {
     testVocabulary = new Vocabulary({
-      label: "Test vocabulary",
+      label: langString("Test vocabulary"),
       iri: vocNamespace + vocFragment,
     });
     (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
