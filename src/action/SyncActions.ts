@@ -200,3 +200,16 @@ export function toggleAnnotatorLegendFilter(
     annotationOrigin,
   };
 }
+
+export function setAnnotatorLegendFilter(
+  annotationClass: AnnotationClass,
+  annotationOrigin: AnnotationOrigin = AnnotationOrigin.SELECTED,
+  enabled: boolean
+): AnnotatorLegendFilterAction {
+  return {
+    type: ActionType.SET_ANNOTATOR_LEGEND_FILTER,
+    annotationClass,
+    annotationOrigin,
+    enabled,
+  };
+}
