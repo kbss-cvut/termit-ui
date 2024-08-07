@@ -12,6 +12,7 @@ import TermOccurrenceAnnotation from "../TermOccurrenceAnnotation";
 import { MemoryRouter } from "react-router-dom";
 import Generator from "../../../__tests__/environment/Generator";
 import { langString } from "../../../model/MultilingualString";
+import AnnotatorLegendFilter from "../../../model/AnnotatorLegendFilter";
 
 function assumeProps(
   wrapper: ReactWrapper,
@@ -48,11 +49,15 @@ describe("Annotation", () => {
     text,
   };
   let assignedOccProps: any;
+  let filter: AnnotatorLegendFilter;
   // @ts-ignore
   const popupComponentClass: ComponentClass<any> = SimplePopupWithActions;
 
   let mockedFunctions: {
-    onFetchTerm: (termIri: string) => Promise<Term>;
+    onFetchTerm: (
+      termIri: string,
+      abortController: AbortController
+    ) => Promise<Term>;
     onCreateTerm: (label: string, annotation: AnnotationSpanProps) => void;
     onResetSticky: () => void;
     onUpdate: (annotation: AnnotationSpanProps, term: Term | null) => void;
@@ -69,6 +74,7 @@ describe("Annotation", () => {
       onResetSticky: jest.fn(),
       onUpdate: jest.fn(),
     };
+    filter = new AnnotatorLegendFilter();
   });
 
   /* --- recognizes occurrence --- */
@@ -78,6 +84,7 @@ describe("Annotation", () => {
         {...mockedFunctions}
         {...intlFunctions()}
         {...suggestedOccProps}
+        filter={filter}
       />
     );
 
@@ -107,7 +114,8 @@ describe("Annotation", () => {
       />
     );
     expect(mockedFunctions.onFetchTerm).toHaveBeenCalledWith(
-      assignedOccProps.resource
+      assignedOccProps.resource,
+      expect.any(AbortController)
     );
   });
 
@@ -122,7 +130,10 @@ describe("Annotation", () => {
     const newResource = Generator.generateUri();
     wrapper.setProps({ resource: newResource });
     wrapper.update();
-    expect(mockedFunctions.onFetchTerm).toHaveBeenCalledWith(newResource);
+    expect(mockedFunctions.onFetchTerm).toHaveBeenCalledWith(
+      newResource,
+      expect.any(AbortController)
+    );
   });
 
   it("recognizes invalid occurrence", () => {

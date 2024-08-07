@@ -30,6 +30,11 @@ import Vocabulary from "../../../model/Vocabulary";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import { MemoryRouter } from "react-router";
 import { AssetData } from "../../../model/Asset";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../../model/AnnotatorLegendFilter";
+import { AnnotatorLegendFilterAction } from "../../../action/ActionType";
 
 jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
 jest.mock("../HighlightTermOccurrencesButton", () => () => (
@@ -54,6 +59,11 @@ describe("Annotator", () => {
     approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
     removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
     saveTermOccurrence: (occurrence: TermOccurrence) => Promise<any>;
+    setAnnotatorLegendFilter: (
+      annotationClass: AnnotationClass,
+      annotationOrigin: AnnotationOrigin,
+      enabled: boolean
+    ) => AnnotatorLegendFilterAction;
   };
   let user: User;
   let file: File;
@@ -73,6 +83,7 @@ describe("Annotator", () => {
       approveTermOccurrence: jest.fn().mockResolvedValue({}),
       removeTermOccurrence: jest.fn().mockResolvedValue({}),
       saveTermOccurrence: jest.fn().mockResolvedValue({}),
+      setAnnotatorLegendFilter: jest.fn().mockResolvedValue({}),
     };
     user = Generator.generateUser();
     file = new File({

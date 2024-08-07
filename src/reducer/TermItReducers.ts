@@ -658,7 +658,21 @@ function annotatorLegendFilter(
     newState.set(action.annotationClass, action.annotationOrigin, !oldValue);
 
     return newState;
+  } else if (
+    action.type === ActionType.SET_ANNOTATOR_LEGEND_FILTER &&
+    action.enabled !== undefined
+  ) {
+    const newState = state.clone();
+
+    newState.set(
+      action.annotationClass,
+      action.annotationOrigin,
+      action.enabled
+    );
+
+    return newState;
   }
+
   return state;
 }
 

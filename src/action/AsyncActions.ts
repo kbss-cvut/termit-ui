@@ -579,15 +579,18 @@ export function genericLoadTerms(
   };
 }
 
-export function loadTermByIri(termIri: IRI) {
+export function loadTermByIri(
+  termIri: IRI,
+  abortController: AbortController = new AbortController()
+) {
   const action = {
     type: ActionType.LOAD_TERM_BY_IRI,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    dispatch(asyncActionRequest(action, true));
+    dispatch(asyncActionRequest(action, true, abortController));
     return Ajax.get(
       `${getApiPrefix(getState())}/terms/${termIri.fragment}`,
-      param("namespace", termIri.namespace)
+      param("namespace", termIri.namespace).signal(abortController)
     )
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferences<TermData>(data, TERM_CONTEXT)

@@ -31,7 +31,10 @@ interface AnnotationProps extends AnnotationSpanProps {
   onUpdate: (annotation: AnnotationSpanProps, term: Term | null) => void;
   onCreateTerm: (label: string, annotation: AnnotationSpanProps) => void;
   term?: Term;
-  onFetchTerm: (termIri: string) => Promise<Term | null>;
+  onFetchTerm: (
+    termIri: string,
+    abortController: AbortController
+  ) => Promise<Term | null>;
   onResetSticky: () => void; // Resets sticky annotation status
   accessLevel: AccessLevel;
   highlight?: boolean;
@@ -42,6 +45,7 @@ interface AnnotationState {
   detailOpened: boolean;
   term: Term | null | undefined;
   termFetchFinished: boolean;
+  abortController: AbortController;
 }
 
 export function isDefinitionAnnotation(type: string) {
@@ -63,6 +67,7 @@ export class Annotation extends React.Component<
       detailOpened: false,
       term: resourceAssigned ? props.term : null,
       termFetchFinished: false,
+      abortController: new AbortController(),
     };
   }
 
@@ -109,27 +114,40 @@ export class Annotation extends React.Component<
     );
   }
 
+  componentWillUnmount() {
+    this.state.abortController.abort();
+  }
+
   private fetchTerm = () => {
     if (this.state.term) {
       this.setState({ termFetchFinished: true });
       return;
     }
     if (this.props.resource) {
-      this.setState({ termFetchFinished: false });
+      this.setState({
+        termFetchFinished: false,
+        abortController: new AbortController(),
+      });
       this.props
-        .onFetchTerm(this.props.resource)
-        .then((t) =>
+        .onFetchTerm(this.props.resource, this.state.abortController)
+        .then((t) => {
+          if (this.state.abortController.signal.aborted) {
+            return;
+          }
           this.setState({
             term: t,
             termFetchFinished: true,
-          })
-        )
-        .catch(() =>
+          });
+        })
+        .catch(() => {
+          if (this.state.abortController.signal.aborted) {
+            return;
+          }
           this.setState({
             term: undefined,
             termFetchFinished: true,
-          })
-        );
+          });
+        });
     } else {
       this.setState({
         term: null,
@@ -177,7 +195,9 @@ export class Annotation extends React.Component<
   };
 
   private onClick = () => {
-    this.toggleOpenDetail();
+    if (!this.isHidden(this.props)) {
+      this.toggleOpenDetail();
+    }
   };
 
   public onCreateTerm = () => {
@@ -251,8 +271,12 @@ export class Annotation extends React.Component<
       : {};
     const Tag = this.props.tag;
 
-    if (this.isHidden(this.props)) {
-      return this.props.children;
+    let className = classNames(termClassName, termCreatorClassName, {
+      "annotator-highlighted-annotation": this.props.highlight,
+    });
+
+    if (this.isHidden(this.props) && !this.props.highlight) {
+      className = "";
     }
 
     return (
@@ -265,9 +289,7 @@ export class Annotation extends React.Component<
         {...contentProps}
         typeof={this.props.typeof}
         {...scoreProps}
-        className={classNames(termClassName, termCreatorClassName, {
-          "annotator-highlighted-annotation": this.props.highlight,
-        })}
+        className={className}
       >
         {this.props.children}
         {this.props.typeof === AnnotationType.DEFINITION
@@ -324,7 +346,8 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
-      onFetchTerm: (iri: string) => dispatch(loadTermByIri(iri)),
+      onFetchTerm: (iri: string, abortController: AbortController) =>
+        dispatch(loadTermByIri(iri, abortController)),
     };
   }
 )(Annotation);
