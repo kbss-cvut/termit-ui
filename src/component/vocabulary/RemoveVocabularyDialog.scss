@@ -1,0 +1,19 @@
+#remove-vocabulary-dialog {
+  .modal-header {
+    background-color: var(--danger);
+  }
+  .modal-body {
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+    li {
+      padding: 5px 0 5px 10px;
+      border-bottom: 1px solid lightgray;
+    }
+  }
+}
+
+.asset-tooltip {
+  max-width: unset;
+}

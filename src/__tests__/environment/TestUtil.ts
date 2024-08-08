@@ -59,7 +59,7 @@ export function routingProps(): RouteComponentProps<any> {
 }
 
 /**
- * Changes value attribute of inputElement and simulates change event on it
+ * Changes value attribute of inputElement and simulates change event on it, should be executed in "act"!
  * @param inputElement
  * @param value
  */

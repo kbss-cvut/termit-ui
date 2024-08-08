@@ -382,6 +382,26 @@ const en = {
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
 
+    "vocabulary.remove.dialog.text.nonEmpty":
+      "Do you really want to remove the <b>non-empty</b> vocabulary?",
+    "vocabulary.remove.dialog.text.empty":
+      "Do you really want to remove the <b>empty</b> vocabulary?",
+    "vocabulary.remove.dialog.text.termCount":
+      "Deleting it will permanently delete {count, plural, one {<b>1</b> term} other {<b>#</b> terms}}, document and all related files.",
+    "vocabulary.remove.dialog.text.permanent":
+      "This action is permanent and cannot be undone!",
+    "vocabulary.remove.dialog.relationsExists.text":
+      "Relations with other vocabularies exist, the vocabulary cannot be removed.",
+    "vocabulary.remove.dialog.relations": "Relations",
+    "vocabulary.remove.dialog.relations.error.cantRemove":
+      "Vocabulary cannot be removed!",
+    "vocabulary.remove.dialog.relations.error.vocabularyRelations":
+      "{vocabularyRelations, plural, one {<b>1</b> relation to another vocabulary} other {<b>#</b> relations with other vocabularies}} exists.",
+    "vocabulary.remove.dialog.relations.error.termsRelations":
+      "{termsRelations, plural, one {<b>1</b> term relation} other {<b>#</b> term relations}} exists.",
+    "vocabulary.remove.dialog.input.label":
+      "To confirm, enter the name of the vocabulary",
+
     "resource.created.message": "Resource successfully created.",
     "resource.updated.message": "Resource successfully updated.",
     "resource.removed.message": "Resource successfully removed.",

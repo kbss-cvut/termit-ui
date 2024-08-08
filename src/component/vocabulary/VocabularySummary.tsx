@@ -26,7 +26,6 @@ import Utils from "../../util/Utils";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import { FaTrashAlt } from "react-icons/fa";
-import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
 import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
 import "./VocabularySummary.scss";
@@ -48,6 +47,7 @@ import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuth
 import AccessLevel from "../../model/acl/AccessLevel";
 import { getShortLocale } from "../../util/IntlUtil";
 import { getLocalized } from "../../model/MultilingualString";
+import RemoveVocabularyDialog from "./RemoveVocabularyDialog";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -264,11 +264,11 @@ export class VocabularySummary extends EditableComponent<
             )} | ${i18n("vocabulary.management.vocabularies")}`}
           />
           <HeaderWithActions title={this.renderTitle()} actions={buttons} />
-          <RemoveAssetDialog
+          <RemoveVocabularyDialog
             show={this.state.showRemoveDialog}
-            asset={vocabulary}
-            onCancel={this.onCloseRemove}
+            vocabulary={vocabulary}
             onSubmit={this.onRemove}
+            onCancel={this.onCloseRemove}
           />
           <ExportVocabularyDialog
             show={this.state.showExportDialog}

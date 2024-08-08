@@ -196,10 +196,10 @@ export class TermDetail extends EditableComponent<
           >
             <Button
               id="term-detail-edit"
+              key="term.detail.edit"
               size="sm"
               color="primary"
               onClick={this.onEdit}
-              key="term-detail-edit"
               title={this.props.i18n("edit")}
             >
               <GoPencil />
