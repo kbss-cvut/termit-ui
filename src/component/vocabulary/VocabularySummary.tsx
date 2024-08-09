@@ -111,6 +111,7 @@ export class VocabularySummary extends EditableComponent<
     }
     if (prevProps.vocabulary.iri !== vocabulary.iri) {
       this.onCloseEdit();
+      this.onCloseRemove();
       this.setState({
         language: resolveInitialLanguage(
           vocabulary,

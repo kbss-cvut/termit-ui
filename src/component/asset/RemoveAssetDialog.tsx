@@ -35,6 +35,7 @@ const RemoveAssetDialog: React.FC<RemoveAssetDialogProps> = (props) => {
         label: props.asset.getLabel(),
       })}
       confirmKey="remove"
+      confirmColor="outline-danger"
     >
       <Label>
         {formatMessage("asset.remove.dialog.text", {

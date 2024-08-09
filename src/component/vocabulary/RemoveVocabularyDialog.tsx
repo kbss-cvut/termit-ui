@@ -1,7 +1,7 @@
 import { useI18n } from "../hook/useI18n";
 import Utils from "../../util/Utils";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
-import { Label } from "reactstrap";
+import { Col, Label, Row } from "reactstrap";
 import Vocabulary from "../../model/Vocabulary";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { useEffect, useState } from "react";
@@ -82,10 +82,6 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
     return () => controller.abort();
   }, [props.vocabulary, props.show, dispatch]);
 
-  const cancel = () => {
-    props.onCancel();
-  };
-
   const submit = () => {
     if (validateInput() !== ValidationResult.VALID && !canRemoveSilently) {
       return;
@@ -100,27 +96,27 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
   ) =>
     statements.map((statement, index) => {
       return (
-        <li key={keyBase + index}>
-          <span id={keyBase + index + "object"}>
-            <LinkComponent iri={statement.object.iri} />
-          </span>
-          <br />
-          <span id={keyBase + index + "relation"}>
-            <AssetLabel iri={statement.relation.iri} shrinkFullIri={true} />
-            <CopyIriIcon url={statement.relation.iri} />
-          </span>
-          <br />
-          <span id={keyBase + index + "subject"}>
-            <AssetLabel iri={statement.subject.iri} shrinkFullIri={true} />
-            <CopyIriIcon url={statement.subject.iri} />
-          </span>
-        </li>
+        <Row key={keyBase + index + "row"}>
+          <Col md={4} xs={12}>
+            <span id={keyBase + index + "object"}>
+              <LinkComponent iri={statement.object.iri} />
+            </span>
+          </Col>
+          <Col md={4} xs={12}>
+            <span id={keyBase + index + "relation"}>
+              <AssetLabel iri={statement.relation.iri} shrinkFullIri={true} />
+              <CopyIriIcon url={statement.relation.iri} />
+            </span>
+          </Col>
+          <Col md={4} xs={12}>
+            <span id={keyBase + index + "subject"}>
+              <AssetLabel iri={statement.subject.iri} shrinkFullIri={true} />
+              <CopyIriIcon url={statement.subject.iri} />
+            </span>
+          </Col>
+        </Row>
       );
     });
-
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setconfirmationVocabularyName(e.currentTarget.value);
-  };
 
   const isConfirmDisabled =
     !canRemoveSilently &&
@@ -157,7 +153,9 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
         <CustomInput
           label={i18n("vocabulary.remove.dialog.input.label")}
           value={confirmationVocabularyName}
-          onChange={onInputChange}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setconfirmationVocabularyName(e.currentTarget.value)
+          }
           validation={validateInput()}
         />
       </If>
@@ -219,7 +217,7 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
     <ConfirmCancelDialog
       show={props.show}
       id="remove-vocabulary-dialog"
-      onClose={cancel}
+      onClose={() => props.onCancel()}
       onConfirm={submit}
       confirmColor={"outline-danger"}
       confirmDisabled={isConfirmDisabled}
