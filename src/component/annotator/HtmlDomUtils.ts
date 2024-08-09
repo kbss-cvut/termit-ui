@@ -2,10 +2,11 @@ import { Node as DomHandlerNode } from "domhandler";
 import Utils from "../../util/Utils";
 import { TextQuoteSelector } from "../../model/TermOccurrence";
 import { AnnotationType } from "./AnnotationDomHelper";
-import { fromRange, toRange } from "xpath-range";
+import { fromNode, toNode } from "simple-xpath-position";
 import * as React from "react";
+import TextSelection from "./TextSelection";
 
-const BLOCK_ELEMENTS = [
+export const BLOCK_ELEMENTS = [
   "address",
   "article",
   "aside",
@@ -40,31 +41,6 @@ const BLOCK_ELEMENTS = [
   "table",
   "ul",
 ];
-
-const PUNCTUATION_CHARS = [".", ",", "!", "?", ":", ";"];
-
-function calculatePathLength(node: Node, ancestor: Node): number {
-  let parent = node.parentNode;
-  let length = 0;
-  while (parent && parent !== ancestor) {
-    length++;
-    parent = parent.parentNode;
-  }
-  return length;
-}
-
-/**
- * Detects if the specified selection is backwards.
- * @param sel Selection to check
- */
-function isBackwards(sel: Selection): boolean {
-  const range = document.createRange();
-  range.setStart(sel.anchorNode!, sel.anchorOffset);
-  range.setEnd(sel.focusNode!, sel.focusOffset);
-  const backwards = range.collapsed;
-  range.detach();
-  return backwards;
-}
 
 export interface HtmlSplit {
   prefix: string;
@@ -134,62 +110,22 @@ const HtmlDomUtils = {
     };
   },
 
-  extendSelectionToWords() {
+  /**
+   * Extends and trims the selection so as not to contain leading/trailing spaces or punctuation characters.
+   * @param container
+   */
+  extendSelectionToWords(container: Node) {
     const sel = window.getSelection();
-    if (
-      sel &&
-      !sel.isCollapsed &&
-      sel.anchorNode &&
-      sel.focusNode &&
-      // @ts-ignore
-      sel.modify
-    ) {
-      const backwards = isBackwards(sel);
-      // modify() works on the focus of the selection
-      const endNode = sel.focusNode;
-      const endOffset = Math.max(0, sel.focusOffset - 1);
-      sel.collapse(
-        sel.anchorNode,
-        backwards ? sel.anchorOffset : sel.anchorOffset + 1
-      );
-      if (backwards) {
-        // Note that we are not using sel.modify by word due to issues with Firefox messing up the modification/extension
-        // in certain situations (Bug #1610)
-        const anchorText = sel.anchorNode.textContent || "";
-        while (
-          anchorText.charAt(sel.anchorOffset).trim().length !== 0 &&
-          sel.anchorOffset < anchorText.length
-        ) {
-          // @ts-ignore
-          sel.modify("move", "forward", "character");
-        }
-        const text = endNode.textContent || "";
-        let index = endOffset;
-        while (text.charAt(index).trim().length !== 0 && index >= 0) {
-          index--;
-        }
-        sel.extend(endNode, index + 1);
-      } else {
-        // @ts-ignore
-        sel.modify("move", "backward", "word");
-        const text = endNode.textContent || "";
-        let index = endOffset;
-        while (
-          !this.isWhitespaceOrPunctuation(text.charAt(index)) &&
-          index < text.length
-        ) {
-          index++;
-        }
-        sel.extend(endNode, index);
-      }
-    }
-  },
+    if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+      const selectionModifier = new TextSelection(sel, container);
 
-  isWhitespaceOrPunctuation(character: string) {
-    return (
-      character.trim().length === 0 ||
-      PUNCTUATION_CHARS.indexOf(character) !== -1
-    );
+      selectionModifier.adjustStart();
+      selectionModifier.adjustEnd();
+      selectionModifier.restoreSelection();
+
+      // Note that we are not using sel.modify by word due to issues with Firefox messing up the modification/extension
+      // in certain situations (Bug #1610)
+    }
   },
 
   /**
@@ -200,12 +136,15 @@ const HtmlDomUtils = {
    */
   doesRangeSpanMultipleElements(range: Range): boolean {
     return (
-      range.startContainer !== range.endContainer &&
-      calculatePathLength(
-        range.startContainer,
-        range.commonAncestorContainer
-      ) !==
-        calculatePathLength(range.endContainer, range.commonAncestorContainer)
+      // either they have the same parent node
+      // and they are different nodes
+      (range.startContainer.parentNode === range.endContainer.parentNode &&
+        range.startContainer !== range.endContainer &&
+        // and one of them is not a text node
+        (range.startContainer.nodeType !== Node.TEXT_NODE ||
+          range.endContainer.nodeType !== Node.TEXT_NODE)) ||
+      // or they have different parent
+      range.startContainer.parentNode !== range.endContainer.parentNode
     );
   },
 
@@ -214,12 +153,38 @@ const HtmlDomUtils = {
    *
    * This extension should handle situations when the range starts in one element and ends in another, which would
    * prevent its replacement/annotation due to invalid element boundary crossing. This method attempts to fix this by
-   * extending the range to be the contents of the closest common ancestor of the range's start and end containers.
+   * extending the range to contain both starting and ending elements.
    * @param range Range to fix
    */
-  extendRangeToPreventNodeCrossing(range: Range) {
+  extendRangeToPreventNodeCrossing(range: Range): void {
     if (this.doesRangeSpanMultipleElements(range)) {
-      range.selectNodeContents(range.commonAncestorContainer);
+      const startingChild = findLastParentBefore(
+        range.startContainer,
+        range.commonAncestorContainer
+      );
+      const endingChild = findLastParentBefore(
+        range.endContainer,
+        range.commonAncestorContainer
+      );
+
+      if (startingChild !== range.commonAncestorContainer) {
+        range.setStartBefore(startingChild);
+      } else {
+        range.setStart(range.commonAncestorContainer, 0);
+      }
+      if (endingChild !== range.commonAncestorContainer) {
+        range.setEndAfter(endingChild);
+      } else {
+        let offset = 0;
+        // just to be sure
+        if (range.commonAncestorContainer.hasChildNodes()) {
+          offset = range.commonAncestorContainer.childNodes.length - 1;
+        } else {
+          const text = range.commonAncestorContainer.textContent || "";
+          offset = text.length - 1;
+        }
+        range.setEnd(range.commonAncestorContainer, offset);
+      }
     }
   },
 
@@ -234,21 +199,20 @@ const HtmlDomUtils = {
     range: Range,
     surroundingElementHtml: string
   ): HTMLElement {
-    const xpathRange = fromRange(range, rootElement);
+    const startXpath = fromNode(range.startContainer, rootElement) || ".";
+    const endXpath = fromNode(range.endContainer, rootElement) || ".";
     const clonedElement = rootElement.cloneNode(true) as HTMLElement;
-    const newRange = toRange(
-      xpathRange.start,
-      xpathRange.startOffset,
-      xpathRange.end,
-      range.endContainer.nodeType === Node.TEXT_NODE ? xpathRange.endOffset : 0,
-      clonedElement
-    );
-    // This works around the issue that the toRange considers the offsets as textual characters, but if the end container is
-    // not a text node, the offset represents the number of elements before it and thus the offset in the newRange would be incorrect
-    // See https://developer.mozilla.org/en-US/docs/Web/API/Range/endOffset and in contrast the docs to toRange
-    if (range.endContainer.nodeType !== Node.TEXT_NODE) {
-      newRange.setEnd(newRange.endContainer, range.endOffset);
+
+    const startElement: Node | null = toNode(startXpath, clonedElement);
+    const endElement: Node | null = toNode(endXpath, clonedElement);
+
+    if (!startElement || !endElement) {
+      throw new Error("Unable to resolve selected range");
     }
+
+    const newRange = new Range();
+    newRange.setStart(startElement, range.startOffset);
+    newRange.setEnd(endElement, range.endOffset);
 
     const doc = clonedElement.ownerDocument;
     const template = doc!.createElement("template");
@@ -393,6 +357,14 @@ const HtmlDomUtils = {
     element.classList.remove(className);
   },
 };
+
+function findLastParentBefore(child: Node, parent: Node) {
+  let node = child;
+  while (node && node.parentNode && node.parentNode !== parent) {
+    node = node.parentNode;
+  }
+  return node;
+}
 
 function prefixMatch(selector: TextQuoteSelector, element: Element) {
   return (

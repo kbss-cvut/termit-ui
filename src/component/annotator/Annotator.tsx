@@ -463,7 +463,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       return;
     }
     if (this.containerElement.current) {
-      HtmlDomUtils.extendSelectionToWords();
+      HtmlDomUtils.extendSelectionToWords(this.containerElement.current);
+
       const range = HtmlDomUtils.getSelectionRange();
       if (range && !HtmlDomUtils.isInPopup(range)) {
         if (this.state.newTermLabelAnnotation) {
@@ -738,11 +739,13 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     about: string,
     annotationType: string
   ): { container: HTMLElement; annotation: Element } | null {
-    const range = HtmlDomUtils.getSelectionRange();
+    const range = HtmlDomUtils.getSelectionRange()?.cloneRange();
     if (!range) {
       return null;
     }
-    HtmlDomUtils.extendRangeToPreventNodeCrossing(range);
+    if (annotationType === AnnotationType.DEFINITION) {
+      HtmlDomUtils.extendRangeToPreventNodeCrossing(range);
+    }
     const rangeContent = HtmlDomUtils.getRangeContent(range);
     const newAnnotationNode = AnnotationDomHelper.createNewAnnotation(
       about,
