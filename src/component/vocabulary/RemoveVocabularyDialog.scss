@@ -1,7 +1,4 @@
 #remove-vocabulary-dialog {
-  .modal-header {
-    background-color: var(--danger);
-  }
   .modal-body {
     ul {
       padding: 0;
@@ -10,6 +7,11 @@
     li {
       padding: 5px 0 5px 10px;
       border-bottom: 1px solid lightgray;
+    }
+    details {
+      .row:hover {
+        background-color: rgba(0, 126, 255, 0.1);
+      }
     }
   }
 }

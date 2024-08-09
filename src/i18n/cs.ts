@@ -388,9 +388,9 @@ const cs = {
     "vocabulary.select-vocabulary": "Vyberte slovník",
 
     "vocabulary.remove.dialog.text.nonEmpty":
-      "Opravdu chcete odstranit  <b>neprázdný</b> slovník?",
+      "Opravdu chcete odstranit <b>neprázdný</b> slovník?",
     "vocabulary.remove.dialog.text.empty":
-      "Opravdu chcete odstranit  <b>prázdný</b> slovník?",
+      "Opravdu chcete odstranit <b>prázdný</b> slovník?",
     "vocabulary.remove.dialog.text.termCount":
       "Jeho odstraněním dojde k trvalému smazání {count, plural, one {<b>1</b> pojmu} other {<b>#</b> pojmů}}, dokumentu a všech souvisejících souborů.",
     "vocabulary.remove.dialog.text.permanent": "Tato akce je nevratná!",
