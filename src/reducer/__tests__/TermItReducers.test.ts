@@ -1032,7 +1032,7 @@ describe("Reducers", () => {
       expect(
         reducers(
           stateToPlainObject(initialState),
-          asyncActionSuccess({ type: ActionType.IMPORT_SKOS })
+          asyncActionSuccess({ type: ActionType.IMPORT_VOCABULARY })
         )
       ).toEqual(
         Object.assign({}, initialState, {

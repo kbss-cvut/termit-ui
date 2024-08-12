@@ -301,10 +301,17 @@ const en = {
     "vocabulary.summary.import.action.tooltip":
       "Restore the vocabulary from its previously exported version",
     "vocabulary.summary.import.dialog.title":
-      "Restore previous vocabulary version",
-    "vocabulary.summary.import.dialog.message":
-      "Upload a previously exported version of this vocabulary " +
-      "(in the SKOS formát and containing a single skos:ConceptScheme with IRI <IRI-OF-THIS-VOCABULARY>/glosář).",
+      "Restore exported vocabulary version",
+    "vocabulary.summary.import.dialog.label":
+      "Upload an exported version of this vocabulary",
+    "vocabulary.summary.import.dialog.skosImport":
+      "In the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
+    "vocabulary.summary.import.dialog.excelImport":
+      "MS Excel file corresponding to <a>this template</a>",
+    "vocabulary.summary.import.excel.template.tooltip":
+      "Download a MS Excel template",
+    "vocabulary.summary.import.nonEmpty.warning":
+      "Vocabulary is not empty, existing data will be overwritten by the imported.",
     "vocabulary.import.action": "Import",
     "vocabulary.import.action.tooltip": "SKOS vocabulary import.",
     "vocabulary.import.dialog.title": "Import SKOS vocabulary",
@@ -595,7 +602,7 @@ const en = {
       "Unable to determine vocabulary for annotating this file. Please, select one...",
     "file.upload": "Upload",
     "file.upload.hint":
-      "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8.",
+      "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8 or a valid MS Excel file.",
     "file.upload.size.exceeded": "File is too large.",
 
     "dataset.license": "License",

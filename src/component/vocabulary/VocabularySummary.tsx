@@ -27,7 +27,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import { FaTrashAlt } from "react-icons/fa";
 import WindowTitle from "../misc/WindowTitle";
-import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
+import { importIntoExistingVocabulary } from "../../action/AsyncImportActions";
 import "./VocabularySummary.scss";
 import VocabularyActions from "./VocabularyActions";
 import ExportVocabularyDialog from "./ExportVocabularyDialog";
@@ -341,7 +341,7 @@ export default connect(
         dispatch(removeVocabulary(vocabulary)),
       validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
       importSkos: (iri: IRI, file: File) =>
-        dispatch(importSkosIntoExistingVocabulary(iri, file)),
+        dispatch(importIntoExistingVocabulary(iri, file)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
       createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),

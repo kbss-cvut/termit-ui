@@ -4,7 +4,7 @@ import {
   asyncActionRequest,
   asyncActionSuccess,
 } from "./SyncActions";
-import Ajax, { contentType } from "../util/Ajax";
+import Ajax, { contentType, responseType } from "../util/Ajax";
 import { ThunkDispatch } from "../util/Types";
 import Constants from "../util/Constants";
 import { ErrorData } from "../model/ErrorInfo";
@@ -14,12 +14,10 @@ import { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { Action } from "redux";
 import { loadVocabulary } from "./AsyncActions";
+import Utils from "../util/Utils";
 
-export function importSkosIntoExistingVocabulary(
-  vocabularyIri: IRI,
-  data: File
-) {
-  const action = { type: ActionType.IMPORT_SKOS };
+export function importIntoExistingVocabulary(vocabularyIri: IRI, data: File) {
+  const action = { type: ActionType.IMPORT_VOCABULARY };
   const formData = new FormData();
   formData.append("file", data, "thesaurus");
   formData.append("namespace", vocabularyIri.namespace!);
@@ -36,7 +34,7 @@ export function importSkosIntoExistingVocabulary(
 }
 
 export function importSkosAsNewVocabulary(data: File, rename: Boolean) {
-  const action = { type: ActionType.IMPORT_SKOS };
+  const action = { type: ActionType.IMPORT_VOCABULARY };
   const formData = new FormData();
   formData.append("file", data, "thesaurus");
   formData.append("rename", rename.toString());
@@ -83,3 +81,23 @@ const processError =
       SyncActions.publishMessage(new Message(error, MessageType.ERROR))
     );
   };
+
+export function downloadExcelTemplate() {
+  return (dispatch: ThunkDispatch) => {
+    const action = { type: ActionType.LOAD_EXCEL_TEMPLATE };
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.getRaw(
+      `${Constants.API_PREFIX}/vocabularies/import/template`,
+      responseType("arraybuffer")
+    )
+      .then((response) => {
+        Utils.fileDownload(
+          response.data,
+          "termit-import.xlsx",
+          Constants.EXCEL_MIME_TYPE
+        );
+        dispatch(asyncActionSuccess(action));
+      })
+      .catch((error) => dispatch(asyncActionFailure(action, error)));
+  };
+}
