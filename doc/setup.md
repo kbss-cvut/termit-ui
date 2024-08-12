@@ -6,8 +6,8 @@ This guide provides information on how to build and deploy TermIt UI.
 
 ### System Requirements
 
-- NodeJS 12.x or later
-- npm 6.x or later
+- NodeJS 20.x or later
+- npm 10.x or later
 
 ### Setup
 
@@ -27,7 +27,7 @@ The following parameters can be configured for the build:
 
 ### Example
 
-1. `npm install`
+1. `npm install --legacy-peer-deps`
 2. `REACT_APP_SERVER_URL=https://kbss.felk.cvut.cz/termit-server-dev REACT_APP_DEPLOYMENT_NAME=dev REACT_APP_ADMIN_REGISTRATION_ONLY=true npm run build-prod`
 
 ## Deployment

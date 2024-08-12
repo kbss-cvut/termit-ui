@@ -17,7 +17,7 @@ Documentation for developers and system administrators is in the [doc folder](do
 
 ## Running TermIt UI
 
-NodeJS and npm are required to build and run TermIt UI. To run the TermIt UI, it is necessary to provide a value for
+NodeJS 20 and npm 10 are required to build and run TermIt UI. To run the TermIt UI, it is necessary to provide a value for
 `REACT_APP_SERVER_URL` representing the URL of the backend to connect to. Typically, this is done at build time.
 See the documentation for more details and other configuration options.
 
