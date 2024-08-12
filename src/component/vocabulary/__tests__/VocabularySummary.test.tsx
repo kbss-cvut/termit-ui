@@ -248,7 +248,7 @@ describe("VocabularySummary", () => {
     wrapper.instance().onEdit();
     const update = new Vocabulary({
       iri: vocabulary.iri,
-      label: "Updated label",
+      label: langString("Updated label"),
     });
     wrapper.instance().onSave(update);
     expect(onUpdate).toHaveBeenCalledWith(update);

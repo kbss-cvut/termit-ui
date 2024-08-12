@@ -58,30 +58,46 @@ export function loadAllTerms(
 }
 
 // Cache of pending term fetches, used to prevent repeated concurrent attempts at fetching the same term
-const pendingTermFetches: { [key: string]: Promise<Term | null> } = {};
+const pendingTermFetches: {
+  [key: string]: {
+    promise: Promise<Term | null>;
+    abortController: AbortController;
+  };
+} = {};
 
-export function loadTermByIri(termIri: string) {
+export function loadTermByIri(
+  termIri: string,
+  abortController: AbortController = new AbortController()
+) {
   const action = { type: ActionType.ANNOTATOR_LOAD_TERM };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    abortController.signal.throwIfAborted();
     if (getState().annotatorTerms[termIri]) {
       return Promise.resolve(getState().annotatorTerms[termIri]);
     }
-    if (pendingTermFetches[termIri] !== undefined) {
-      return pendingTermFetches[termIri];
+    if (
+      pendingTermFetches[termIri] !== undefined &&
+      !pendingTermFetches[termIri].abortController.signal.aborted
+    ) {
+      return pendingTermFetches[termIri].promise;
     }
     const promise = dispatch(
-      loadTermByIriBase(VocabularyUtils.create(termIri))
+      loadTermByIriBase(VocabularyUtils.create(termIri), abortController)
     );
-    pendingTermFetches[termIri] = promise;
-    return promise.then((t) => {
-      delete pendingTermFetches[termIri];
-      if (t) {
-        // No hierarchy for on-demand loaded terms in annotator. We cannot load children anyway
-        t.subTerms = [];
-        dispatch(asyncActionSuccessWithPayload(action, t));
-      }
-      return t;
-    });
+    pendingTermFetches[termIri] = { promise, abortController };
+    return promise
+      .then((t) => {
+        abortController.signal.throwIfAborted();
+        if (t) {
+          // No hierarchy for on-demand loaded terms in annotator. We cannot load children anyway
+          t.subTerms = [];
+          dispatch(asyncActionSuccessWithPayload(action, t));
+        }
+        return t;
+      })
+      .finally(() => {
+        delete pendingTermFetches[termIri];
+      });
   };
 }
 

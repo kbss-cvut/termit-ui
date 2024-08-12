@@ -2,7 +2,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormGroup, FormText, Label } from "reactstrap";
 import classNames from "classnames";
-import SimpleMDE from "easymde";
+import EasyMDE from "easymde";
 import { FaMarkdown } from "react-icons/fa";
 import SimpleMdeReact from "react-simplemde-editor";
 import { Editor } from "codemirror";
@@ -16,6 +16,7 @@ import Utils from "../../util/Utils";
 import { useI18n } from "../hook/useI18n";
 import "easymde/dist/easymde.min.css";
 import "./MarkdownEditor.scss";
+import { marked } from "marked";
 
 interface MarkdownEditorProps {
   name: string;
@@ -61,6 +62,92 @@ const EDITOR_TOOLBAR = [
   "heading",
 ];
 
+/**
+ * Modify HTML to add 'target="_blank"' to links so they open in new tabs by default.
+ * @param {string} htmlText - HTML to be modified.
+ * @return {string} The modified HTML text.
+ * @see https://github.com/Ionaru/easy-markdown-editor/tree/041594ae4a0de20bc536ededd61eceb981fcb568/src/js/easymde.js#L96
+ * @author Sparksuite, Inc., Jeroen Akkerman.
+ */
+function addAnchorTargetBlank(htmlText: string): string {
+  const anchorToExternalRegex = new RegExp(/(<a.*?https?:\/\/.*?[^a]>)+?/g);
+  let match;
+  while ((match = anchorToExternalRegex.exec(htmlText)) !== null) {
+    // With only one capture group in the RegExp, we can safely take the first index from the match.
+    const linkString = match[0];
+
+    if (linkString.indexOf("target=") === -1) {
+      const fixedLinkString = linkString.replace(/>$/, ' target="_blank">');
+      htmlText = htmlText.replace(linkString, fixedLinkString);
+    }
+  }
+  return htmlText;
+}
+
+/**
+ * Modify HTML to remove the list-style when rendering checkboxes.
+ * @param {string} htmlText - HTML to be modified.
+ * @return {string} The modified HTML text.
+ * @see https://github.com/Ionaru/easy-markdown-editor/blob/041594ae4a0de20bc536ededd61eceb981fcb568/src/js/easymde.js#L115
+ * @author Sparksuite, Inc., Jeroen Akkerman.
+ */
+function removeListStyleWhenCheckbox(htmlText: string): string {
+  const parser = new DOMParser();
+  const htmlDoc = parser.parseFromString(htmlText, "text/html");
+  const listItems = htmlDoc.getElementsByTagName("li");
+
+  for (let i = 0; i < listItems.length; i++) {
+    const listItem = listItems[i];
+
+    for (let j = 0; j < listItem.children.length; j++) {
+      const listItemChild = listItem.children[j];
+
+      if (
+        listItemChild instanceof HTMLInputElement &&
+        listItemChild.type === "checkbox"
+      ) {
+        // From Github: margin: 0 .2em .25em -1.6em;
+        listItem.style.marginLeft = "-1.5em";
+        listItem.style.listStyleType = "none";
+      }
+    }
+  }
+
+  return htmlDoc.documentElement.innerHTML;
+}
+
+/**
+ * Once we upgraded easymde from version 2.15.0 to 2.18.0, the Markdown editor stopped working
+ * (the preview was blank - [GitHub issue](https://github.com/RIP21/react-simplemde-editor/issues/197)).
+ * The breaking change happened in easymde 2.16.1-30.0, published on 14.1.2022,
+ * where a security issue in marked dependency was addressed.
+ * Version easymde 2.16.1-29.0 is fine.
+ * Following packages were upgraded:
+ * - easymde: 2.15.0 -> 2.18.0
+ * - react-simplemde-editor: ^5.0.2 -> ^5.2.0
+ *
+ * Added package:
+ * - marked: ^9.1.6 (v10s drops support for node v16)
+ *
+ * To keep the editor working, this function will substitute the preview renderer in EasyMDE (until it gets somehow fixed).
+ * @see https://github.com/Ionaru/easy-markdown-editor/blob/a6b121f2e6436fb3b7e3705fe5ca1ba1c991e0a9/src/js/easymde.js#L2059
+ */
+function previewRender(markdown: string, element: HTMLElement): string {
+  if (!markdown) {
+    return "";
+  }
+
+  // options for marked (substitutes renderingConfig from EasyMDE.Options)
+  marked.setOptions({ breaks: true });
+
+  // @ts-ignore
+  let htmlText: string = marked.parse(markdown) || "";
+  htmlText = addAnchorTargetBlank(htmlText);
+  htmlText = removeListStyleWhenCheckbox(htmlText);
+
+  return htmlText;
+}
+
 const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const { i18n } = useI18n();
   const {
@@ -78,25 +165,27 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     validation,
     value,
   } = props;
-  const options: SimpleMDE.Options = useMemo(
-    () =>
-      ({
-        autofocus: autoFocus,
-        maxHeight,
-        placeholder,
-        previewClass: readOnly
-          ? ["editor-preview", "markdown-editor-readonly"]
-          : "editor-preview",
-        sideBySideFullscreen: false,
-        spellChecker: false,
-        status: false,
-        toolbar: readOnly ? READONLY_TOOLBAR : EDITOR_TOOLBAR,
-      } as SimpleMDE.Options),
+  const options: EasyMDE.Options = useMemo(
+    // as long as previewRenderer is used, renderingConfig won't work here
+    (): EasyMDE.Options => ({
+      previewRender,
+      autofocus: autoFocus,
+      maxHeight,
+      placeholder,
+      previewClass: readOnly
+        ? ["editor-preview", "markdown-editor-readonly"]
+        : "editor-preview",
+      sideBySideFullscreen: false,
+      spellChecker: false,
+      status: false,
+      // @ts-ignore missing export for ToolbarButton from EasyMDE
+      toolbar: readOnly ? READONLY_TOOLBAR : EDITOR_TOOLBAR,
+    }),
     [autoFocus, maxHeight, placeholder, readOnly]
   );
-  const [simpleMdeInstance, setMdeInstance] = useState<SimpleMDE | null>(null);
-  const getMdeInstanceCallback = useCallback((simpleMde: SimpleMDE) => {
-    setMdeInstance(simpleMde);
+  const [easyMdeInstance, setMdeInstance] = useState<EasyMDE | null>(null);
+  const getMdeInstanceCallback = useCallback((easyMde: EasyMDE) => {
+    setMdeInstance(easyMde);
   }, []);
 
   const [codemirrorInstance, setCodemirrorInstance] =
@@ -108,9 +197,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     if (readOnly) {
       codemirrorInstance?.setOption("readOnly", readOnly);
       // @ts-ignore
-      simpleMdeInstance?.togglePreview();
+      easyMdeInstance?.togglePreview();
     }
-  }, [codemirrorInstance, readOnly, simpleMdeInstance]);
+  }, [codemirrorInstance, readOnly, easyMdeInstance]);
 
   return (
     <FormGroup>

@@ -80,7 +80,6 @@ const en = {
 
     "forgotPassword.title": "Forgot password",
     "forgotPassword.mask": "Sending...",
-    "forgotPassword.subtitle": "Forgot password",
     "forgotPassword.login.label": "Back to <a>Log in</a>",
     "forgotPassword.username": "Username",
     "forgotPassword.username.placeholder": "Enter Your Username",
@@ -92,7 +91,7 @@ const en = {
     "resetPassword.passwordsNotEqual": "Passwords don't match",
     "resetPassword.mask": "Changing password...",
     "resetPassword.title": "Change password",
-    "resetPassword.subtitle": "Change password",
+    "resetPassword.login.label": "Back to <a>Log in</a>",
     "resetPassword.password": "New password",
     "resetPassword.password.placeholder": "Choose a new password",
     "resetPassword.password.confirm": "Confirm password",
@@ -100,6 +99,17 @@ const en = {
     "resetPassword.success": "Password changed",
     "resetPassword.invalidToken":
       "Invalid or expired password change link. Please request a password change again.",
+
+    "createPassword.passwordsNotEqual": "Passwords don't match",
+    "createPassword.mask": "Creating password...",
+    "createPassword.title": "Create password",
+    "createPassword.password": "New password",
+    "createPassword.password.placeholder": "Choose a new password",
+    "createPassword.password.confirm": "Confirm password",
+    "createPassword.submit": "Create password",
+    "createPassword.success": "Password created",
+    "createPassword.invalidToken":
+      "Invalid or expired password create link. Please request a password change.",
 
     "main.nav.dashboard": "Dashboard",
     "main.nav.vocabularies": "Vocabularies",
@@ -154,7 +164,7 @@ const en = {
     "administration.users.status": "Status",
     "administration.users.status.locked": "Locked",
     "administration.users.status.locked.help":
-      "User account is locked due to exceeding the maximum amount of unsuccessful login attempts. User cannot log in under this account unless an administrator sets a new password for it.",
+      "User account is locked due to exceeding the maximum amount of unsuccessful login attempts, or the account is waiting for the user to set a new password. User cannot log in under this account unless they reset their password or an administrator sets a new password for it.",
     "administration.users.status.disabled": "Disabled",
     "administration.users.status.disabled.help":
       "User account has been disabled by an administrator and cannot be used to log in.",
@@ -194,6 +204,13 @@ const en = {
     "administration.users.types.admin": "This user is an administrator",
     "administration.users.oidc":
       "An external authentication service is used to manage users.",
+    "administration.users.create.password-toggle.user": "Send activation email",
+    "administration.users.create.password-toggle.admin": "Enter password now",
+    "administration.users.create.password-toggle.tooltip.user":
+      "An email will be sent to the new user with a link to create a new password.",
+    "administration.users.create.password-toggle.tooltip.admin":
+      "Enter the password for the new user now.",
+    "administration.users.create.submit": "Create user",
     "administration.maintenance.title": "Maintenance",
     "administration.maintenance.invalidateCaches": "Invalidate caches",
     "administration.maintenance.invalidateCaches.tooltip":
@@ -371,6 +388,26 @@ const en = {
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
+
+    "vocabulary.remove.dialog.text.nonEmpty":
+      "Do you really want to remove the <b>non-empty</b> vocabulary?",
+    "vocabulary.remove.dialog.text.empty":
+      "Do you really want to remove the <b>empty</b> vocabulary?",
+    "vocabulary.remove.dialog.text.termCount":
+      "Deleting it will permanently delete {count, plural, one {<b>1</b> term} other {<b>#</b> terms}}, document and all related files.",
+    "vocabulary.remove.dialog.text.permanent":
+      "This action is permanent and cannot be undone!",
+    "vocabulary.remove.dialog.relationsExists.text":
+      "Relations with other vocabularies exist, the vocabulary cannot be removed.",
+    "vocabulary.remove.dialog.relations": "Relations",
+    "vocabulary.remove.dialog.relations.error.cantRemove":
+      "Vocabulary cannot be removed!",
+    "vocabulary.remove.dialog.relations.error.vocabularyRelations":
+      "{vocabularyRelations, plural, one {<b>1</b> relation to another vocabulary} other {<b>#</b> relations with other vocabularies}} exists.",
+    "vocabulary.remove.dialog.relations.error.termsRelations":
+      "{termsRelations, plural, one {<b>1</b> term relation} other {<b>#</b> term relations}} exists.",
+    "vocabulary.remove.dialog.input.label":
+      "To confirm, enter the name of the vocabulary",
 
     "resource.created.message": "Resource successfully created.",
     "resource.updated.message": "Resource successfully updated.",
@@ -656,6 +693,8 @@ const en = {
       "Found {count, plural, one {# occurrence} other {# occurrences}} in this document.",
     "annotator.legend.annotationHidingHint":
       "You can show/hide the term occurrence highlighting by clicking on the legend item.",
+    "annotator.legend.activeFilter.tooltip":
+      "Some highlighted occurrences of terms are hidden.",
 
     "annotation.form.suggested-occurrence.message":
       "Phrase is not assigned to a vocabulary term.",

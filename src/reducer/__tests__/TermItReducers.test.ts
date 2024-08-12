@@ -2,6 +2,7 @@ import reducers from "../TermItReducers";
 import ActionType, {
   AsyncActionSuccess,
   FailureAction,
+  PendingAsyncAction,
 } from "../../action/ActionType";
 import TermItState from "../../model/TermItState";
 import {
@@ -609,15 +610,33 @@ describe("Reducers", () => {
   });
 
   describe("pendingActions", () => {
-    it("adds action to pendingActions when it is async request action", () => {
+    it("adds action status to pendingActions when it is async request action and the abort controller is not present", () => {
       const action = asyncActionRequest(
         { type: ActionType.LOAD_RESOURCES },
         true
       );
       const added = {};
-      added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
+      added[ActionType.LOAD_RESOURCES] = {
+        status: AsyncActionStatus.REQUEST,
+      } as PendingAsyncAction;
       expect(reducers(stateToPlainObject(initialState), action)).toEqual(
         Object.assign(initialState, { pendingActions: added })
+      );
+    });
+
+    it("adds abort controller to pending actions when the controller is present", () => {
+      const action = asyncActionRequest(
+        { type: ActionType.LOAD_RESOURCES },
+        true,
+        new AbortController()
+      );
+      const pendingActions = {};
+      pendingActions[ActionType.LOAD_RESOURCES] = {
+        status: AsyncActionStatus.REQUEST,
+        abortController: action.abortController,
+      } as PendingAsyncAction;
+      expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+        Object.assign(stateToPlainObject(initialState), { pendingActions })
       );
     });
 

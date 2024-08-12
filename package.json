@@ -1,6 +1,6 @@
 {
   "name": "termit-ui",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
@@ -16,7 +16,7 @@
     "classnames": "^2.3.2",
     "dom-serializer": "^1.3.2",
     "domhandler": "^4.3.1",
-    "easymde": "2.15.0",
+    "easymde": "2.18.0",
     "html-to-react": "1.5.0",
     "htmlparser2": "^4.1.0",
     "intelligent-tree-select": "0.11.4",
@@ -28,6 +28,7 @@
     "ld-query": "^2.6.1",
     "lodash": "^4.17.21",
     "luxon": "^3.3.0",
+    "marked": "^9.1.6",
     "object-assign": "4.1.1",
     "oidc-client": "^1.11.5",
     "promise": "8.3.0",
@@ -48,7 +49,7 @@
     "react-router-dom": "^5.3.0",
     "react-router-redux": "^4.0.8",
     "react-scripts": "5.0.1",
-    "react-simplemde-editor": "^5.0.2",
+    "react-simplemde-editor": "^5.2.0",
     "react-spinners": "^0.13.8",
     "react-table": "^7.8.0",
     "reactstrap": "^8.10.1",
@@ -56,10 +57,10 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
     "resolve": "1.22.2",
+    "simple-xpath-position": "^2.0.2",
     "uuid": "^9.0.0",
     "whatwg-fetch": "3.6.2",
-    "whatwg-mimetype": "3.0.0",
-    "xpath-range": "^1.1.1"
+    "whatwg-mimetype": "3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

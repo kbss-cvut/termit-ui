@@ -14,7 +14,10 @@ import SelectionPurposeDialog from "./SelectionPurposeDialog";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import Message from "../../model/Message";
-import { publishMessage } from "../../action/SyncActions";
+import {
+  publishMessage,
+  setAnnotatorLegendFilter,
+} from "../../action/SyncActions";
 import MessageType from "../../model/MessageType";
 import TermOccurrence, { TextQuoteSelector } from "../../model/TermOccurrence";
 import {
@@ -49,6 +52,10 @@ import {
 } from "./AnnotatorUtil";
 import { saveOccurrence } from "../../action/AsyncAnnotatorActions";
 import HighlightTermOccurrencesButton from "./HighlightTermOccurrencesButton";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../model/AnnotatorLegendFilter";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -60,6 +67,11 @@ interface AnnotatorProps extends HasI18n {
   vocabulary: Vocabulary;
 
   onUpdate: (newHtml: string) => void;
+  setAnnotatorLegendFilter: (
+    annotationClass: AnnotationClass,
+    annotationOrigin: AnnotationOrigin,
+    enabled: boolean
+  ) => void;
 
   publishMessage: (message: Message) => void;
   setTermDefinitionSource: (src: TermOccurrence, term: Term) => Promise<any>;
@@ -231,6 +243,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
   ) => {
     // Make a shallow copy to force re-render if changes to an annotation are really made
     const dom = [...this.state.internalHtml];
+    this.filterShowTermOccurence();
     const ann = AnnotationDomHelper.findAnnotation(
       dom,
       annotationSpan.about!,
@@ -266,6 +279,13 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       this.props.fileIri
     );
     this.props.approveTermOccurrence({ iri });
+
+    // reset filter for existing terms
+    this.props.setAnnotatorLegendFilter(
+      AnnotationClass.ASSIGNED_OCCURRENCE,
+      AnnotationOrigin.SELECTED,
+      true
+    );
   }
 
   /**
@@ -308,6 +328,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
   }
 
   public onSaveTermDefinition = (term: Term) => {
+    this.filterShowDefinitionOccurence();
     return this.setTermDefinitionSource(
       term,
       this.state.existingTermDefinitionAnnotationElement!
@@ -358,6 +379,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     if (this.createNewTermDialog.current) {
       this.createNewTermDialog.current.setLabel(label);
     }
+    this.filterShowTermOccurence();
   };
 
   public onCloseCreate = () => {
@@ -397,6 +419,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   public assignNewTerm = (newTerm: Term) => {
     const dom = [...this.state.internalHtml];
+    this.filterShowTermOccurence();
     if (this.state.newTermLabelAnnotation) {
       const ann = AnnotationDomHelper.findAnnotation(
         dom,
@@ -440,7 +463,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       return;
     }
     if (this.containerElement.current) {
-      HtmlDomUtils.extendSelectionToWords();
+      HtmlDomUtils.extendSelectionToWords(this.containerElement.current);
+
       const range = HtmlDomUtils.getSelectionRange();
       if (range && !HtmlDomUtils.isInPopup(range)) {
         if (this.state.newTermLabelAnnotation) {
@@ -469,6 +493,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
       });
     }
+    this.filterShowTermOccurence();
   };
 
   public createTermOccurrence = (preventSticky: boolean = false) => {
@@ -480,6 +505,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       about,
       AnnotationType.OCCURRENCE
     );
+    this.filterShowTermOccurence();
     if (annotationResult != null) {
       this.setState({
         internalHtml: HtmlParserUtils.html2dom(
@@ -494,6 +520,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   public markTermDefinition = () => {
     this.closeSelectionPurposeDialog();
+    this.filterShowDefinitionOccurence();
     const annotation = this.annotateDefinition();
     if (annotation) {
       if (this.state.newTermLabelAnnotation) {
@@ -513,6 +540,32 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       }
     }
   };
+
+  private filterShowDefinitionOccurence() {
+    this.props.setAnnotatorLegendFilter(
+      AnnotationClass.DEFINITION,
+      AnnotationOrigin.SELECTED,
+      true
+    );
+    this.props.setAnnotatorLegendFilter(
+      AnnotationClass.PENDING_DEFINITION,
+      AnnotationOrigin.SELECTED,
+      true
+    );
+  }
+
+  private filterShowTermOccurence() {
+    this.props.setAnnotatorLegendFilter(
+      AnnotationClass.SUGGESTED_OCCURRENCE,
+      AnnotationOrigin.SELECTED,
+      true
+    );
+    this.props.setAnnotatorLegendFilter(
+      AnnotationClass.ASSIGNED_OCCURRENCE,
+      AnnotationOrigin.SELECTED,
+      true
+    );
+  }
 
   private annotateDefinition() {
     const about = JsonLdUtils.generateBlankNodeId();
@@ -686,11 +739,13 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     about: string,
     annotationType: string
   ): { container: HTMLElement; annotation: Element } | null {
-    const range = HtmlDomUtils.getSelectionRange();
+    const range = HtmlDomUtils.getSelectionRange()?.cloneRange();
     if (!range) {
       return null;
     }
-    HtmlDomUtils.extendRangeToPreventNodeCrossing(range);
+    if (annotationType === AnnotationType.DEFINITION) {
+      HtmlDomUtils.extendRangeToPreventNodeCrossing(range);
+    }
     const rangeContent = HtmlDomUtils.getRangeContent(range);
     const newAnnotationNode = AnnotationDomHelper.createNewAnnotation(
       about,
@@ -726,6 +781,14 @@ export default connect(
         dispatch(saveOccurrence(occurrence)),
       removeTermOccurrence: (occurrence: AssetData) =>
         dispatch(removeOccurrence(occurrence, true)),
+      setAnnotatorLegendFilter: (
+        annotationClass: AnnotationClass,
+        annotationOrigin: AnnotationOrigin,
+        enabled: boolean
+      ) =>
+        dispatch(
+          setAnnotatorLegendFilter(annotationClass, annotationOrigin, enabled)
+        ),
     };
   }
 )(injectIntl(withI18n(Annotator)));

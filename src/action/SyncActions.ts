@@ -26,9 +26,15 @@ import {
 
 export function asyncActionRequest(
   a: Action,
-  ignoreLoading: boolean = false
+  ignoreLoading: boolean = false,
+  abortController?: AbortController
 ): AsyncAction {
-  return { ...a, status: AsyncActionStatus.REQUEST, ignoreLoading };
+  return {
+    ...a,
+    status: AsyncActionStatus.REQUEST,
+    ignoreLoading,
+    abortController,
+  };
 }
 
 export function asyncActionFailure(
@@ -192,5 +198,18 @@ export function toggleAnnotatorLegendFilter(
     type: ActionType.TOGGLE_ANNOTATOR_LEGEND_FILTER,
     annotationClass,
     annotationOrigin,
+  };
+}
+
+export function setAnnotatorLegendFilter(
+  annotationClass: AnnotationClass,
+  annotationOrigin: AnnotationOrigin = AnnotationOrigin.SELECTED,
+  enabled: boolean
+): AnnotatorLegendFilterAction {
+  return {
+    type: ActionType.SET_ANNOTATOR_LEGEND_FILTER,
+    annotationClass,
+    annotationOrigin,
+    enabled,
   };
 }

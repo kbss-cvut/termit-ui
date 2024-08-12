@@ -113,7 +113,7 @@ export default class Generator {
       Generator.generateUri(),
       { iri: termIri, label: { cs: "Test term" } },
       { iri: VocabularyUtils.SH_VIOLATION },
-      [{ language: "cs", value: "Chyba" }],
+      { cs: "Chyba" },
       { iri: "https://example.org/sourceShape" },
       { iri: VocabularyUtils.SKOS_PREF_LABEL }
     );

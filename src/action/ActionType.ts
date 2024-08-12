@@ -11,8 +11,13 @@ import {
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
 
-export interface AsyncAction extends Action {
+export interface PendingAsyncAction {
   status: AsyncActionStatus;
+  // allows to abort the action (needs to be explicitly implemented)
+  abortController?: AbortController;
+}
+
+export interface AsyncAction extends Action, PendingAsyncAction {
   ignoreLoading?: boolean; // Allows to prevent loading spinner display on async action
 }
 
@@ -71,6 +76,7 @@ export interface BreadcrumbAction extends Action {
 export interface AnnotatorLegendFilterAction extends Action {
   annotationClass: AnnotationClass;
   annotationOrigin: AnnotationOrigin;
+  enabled?: boolean;
 }
 
 const ActionType = {
@@ -106,6 +112,8 @@ const ActionType = {
   LOAD_RELATED_VOCABULARIES: "LOAD_RELATED_VOCABULARIES",
   REMOVE_VOCABULARY: "REMOVE_VOCABULARY",
   CREATE_VOCABULARY_SNAPSHOT: "CREATE_VOCABULARY_SNAPSHOT",
+  GET_VOCABULARY_TERMS_RELATIONS: "GET_VOCABULARY_TERMS_RELATIONS",
+  GET_VOCABULARY_RELATIONS: "GET_VOCABULARY_RELATIONS",
 
   LOAD_VOCABULARY_HISTORY: "LOAD_VOCABULARY_HISTORY",
   LOAD_VOCABULARY_CONTENT_HISTORY: "LOAD_VOCABULARY_CONTENT_HISTORY",
@@ -136,6 +144,7 @@ const ActionType = {
   REMOVE_TERM_DEFINITION_SOURCE: "REMOVE_TERM_DEFINITION_SOURCE",
 
   TOGGLE_ANNOTATOR_LEGEND_FILTER: "TOGGLE_ANNOTATOR_LEGEND_FILTER",
+  SET_ANNOTATOR_LEGEND_FILTER: "SET_ANNOTATOR_LEGEND_FILTER",
 
   LOAD_TERM_HISTORY: "LOAD_TERM_HISTORY",
 
@@ -239,6 +248,8 @@ const ActionType = {
 
   ADD_CRUMB: "ADD_CRUMB",
   REMOVE_CRUMB: "REMOVE_CRUMB",
+
+  DOES_USERNAME_EXISTS: "DOES_USERNAME_EXISTS",
 };
 
 export default ActionType;

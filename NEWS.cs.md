@@ -1,3 +1,10 @@
+#### Verze 3.1.3
+
+- Přidána možnost odeslat novému uživateli mail s pozvánkou (admin již nemusí uživateli nastavovat heslo).
+- Je možné zobrazit i pojmy bez názvu v primárním jazyce instance.
+- Formulář pro vytvoření nového atributu umožňuje vyplnit název a popis ve více jazycích.
+- Opravy chyb, aktualizace knihoven.
+
 #### Verze 3.1.2
 
 - Přidána možnost resetovat zapomenuté heslo.

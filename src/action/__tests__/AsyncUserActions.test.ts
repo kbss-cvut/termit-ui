@@ -457,7 +457,7 @@ describe("AsyncUserActions", () => {
       ).then(() => {
         expect(Ajax.post).toHaveBeenCalled();
         const args = (Ajax.post as jest.Mock).mock.calls[0];
-        expect(args[0]).toEqual(`${Constants.API_PREFIX}/users`);
+        expect(args[0]).toEqual(`${Constants.API_PREFIX}/admin/users`);
         expect(args[1].getContent()).toEqual(userInfo);
       });
     });

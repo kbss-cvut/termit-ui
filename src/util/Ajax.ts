@@ -18,6 +18,7 @@ class RequestConfigBuilder {
   private mFormData?: {};
   private mResponseType?: ResponseType;
   private mHeaders: {};
+  private mAbortSignal?: AbortSignal;
   private preserveAcceptHeader: boolean;
 
   constructor() {
@@ -25,6 +26,7 @@ class RequestConfigBuilder {
     this.mHeaders[Constants.Headers.CONTENT_TYPE] = Constants.JSON_LD_MIME_TYPE;
     this.mHeaders[Constants.Headers.ACCEPT] = Constants.JSON_LD_MIME_TYPE;
     this.mResponseType = undefined;
+    this.mAbortSignal = undefined;
     this.preserveAcceptHeader = false;
   }
 
@@ -123,6 +125,15 @@ class RequestConfigBuilder {
    */
   public getResponseType() {
     return this.mResponseType;
+  }
+
+  public getAbortSignal() {
+    return this.mAbortSignal;
+  }
+
+  public signal(controller: AbortController) {
+    this.mAbortSignal = controller.signal;
+    return this;
   }
 }
 
@@ -281,6 +292,7 @@ export class Ajax {
   ) {
     const conf = {
       params: config.getParams(),
+      signal: config.getAbortSignal(),
       paramsSerializer,
     };
     return this.axiosInstance.head(path, conf);
@@ -307,6 +319,7 @@ export class Ajax {
       params: config.getParams(),
       headers: config.getHeaders(),
       responseType: config.getResponseType(),
+      signal: config.getAbortSignal(),
       validateStatus: Ajax.validateGetStatus,
       paramsSerializer,
     };
@@ -330,6 +343,7 @@ export class Ajax {
   ) {
     const conf = {
       headers: config.getHeaders(),
+      signal: config.getAbortSignal(),
       paramsSerializer,
     };
     if (!config.shouldPreserveAcceptHeader()) {
@@ -358,6 +372,7 @@ export class Ajax {
     const conf = {
       params: config.getParams(),
       headers: config.getHeaders(),
+      signal: config.getAbortSignal(),
       paramsSerializer,
     };
     if (
@@ -374,6 +389,7 @@ export class Ajax {
     if (config) {
       conf = {
         params: config.getParams(),
+        signal: config.getAbortSignal(),
         paramsSerializer,
       };
       if (config.getContent()) {
