@@ -76,6 +76,7 @@ export interface BreadcrumbAction extends Action {
 export interface AnnotatorLegendFilterAction extends Action {
   annotationClass: AnnotationClass;
   annotationOrigin: AnnotationOrigin;
+  enabled?: boolean;
 }
 
 const ActionType = {
@@ -143,6 +144,7 @@ const ActionType = {
   REMOVE_TERM_DEFINITION_SOURCE: "REMOVE_TERM_DEFINITION_SOURCE",
 
   TOGGLE_ANNOTATOR_LEGEND_FILTER: "TOGGLE_ANNOTATOR_LEGEND_FILTER",
+  SET_ANNOTATOR_LEGEND_FILTER: "SET_ANNOTATOR_LEGEND_FILTER",
 
   LOAD_TERM_HISTORY: "LOAD_TERM_HISTORY",
 
