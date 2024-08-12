@@ -487,7 +487,19 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
+        setStart: function (node: Node, offset: number) {
+          this.startContainer = node;
+          this.startOffset = offset;
+        },
+        setEnd: function (node: Node, offset: number) {
+          this.endContainer = node;
+          this.endOffset = offset;
+        },
       };
+
       HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
     });
 
@@ -496,6 +508,8 @@ describe("Annotator", () => {
         isCollapsed: false,
         rangeCount: 1,
         getRangeAt: () => range,
+        removeAllRanges: () => null,
+        addRange: (r: Range) => (range = r),
       });
       window.getComputedStyle = jest.fn().mockReturnValue({
         getPropertyValue: () => "16px",
@@ -584,6 +598,9 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
       };
     });
 
@@ -632,6 +649,9 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
       };
     });
 
