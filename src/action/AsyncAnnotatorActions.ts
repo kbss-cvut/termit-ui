@@ -71,10 +71,7 @@ export function loadTermByIri(
 ) {
   const action = { type: ActionType.ANNOTATOR_LOAD_TERM };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    // TODO: remove throwIfAborted null check (problem with NodeJS version) support from 17.3.0 (Released 2021-12-17)
-    if (abortController.signal.throwIfAborted) {
-      abortController.signal.throwIfAborted();
-    }
+    abortController.signal.throwIfAborted();
     if (getState().annotatorTerms[termIri]) {
       return Promise.resolve(getState().annotatorTerms[termIri]);
     }
@@ -90,10 +87,7 @@ export function loadTermByIri(
     pendingTermFetches[termIri] = { promise, abortController };
     return promise
       .then((t) => {
-        // TODO: remove throwIfAborted null check (problem with NodeJS version) support from 17.3.0 (Released 2021-12-17)
-        if (abortController.signal.throwIfAborted) {
-          abortController.signal.throwIfAborted();
-        }
+        abortController.signal.throwIfAborted();
         if (t) {
           // No hierarchy for on-demand loaded terms in annotator. We cannot load children anyway
           t.subTerms = [];
