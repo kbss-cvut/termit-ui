@@ -320,9 +320,10 @@ const cs = {
       "Stáhnout šablonu pro MS Excel",
     "vocabulary.summary.import.nonEmpty.warning":
       "Slovník není prázdný, stávající data budou přepsána importovanými.",
+    "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",
-    "vocabulary.import.action.tooltip": "Import SKOS slovníku.",
-    "vocabulary.import.dialog.title": "Importovat SKOS slovník",
+    "vocabulary.import.dialog.title": "Importovat slovník",
     "vocabulary.import.dialog.message":
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
@@ -436,7 +437,7 @@ const cs = {
       "Přidat nový soubor do tohoto dokumentu",
     "resource.metadata.document.files.actions.add.dialog.title": "Nový soubor",
     "resource.metadata.document.files.empty":
-      "Žádné soubory nenalezeny. Vytvořte nějaký...",
+      "Žádné soubory nenalezeny. Přidejte nějaký...",
     "resource.file.vocabulary.create": "Přidat soubor",
 
     "term.language.selector.item":

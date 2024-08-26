@@ -11,7 +11,7 @@ interface TabsProps {
   /**
    * Map of IDs to the actual components
    */
-  tabs: { [activeTabLabelKey: string]: JSX.Element };
+  tabs: { [activeTabLabelKey: string]: React.JSX.Element };
   /**
    * Map of IDs to the tab badge (no badge shown if the key is missing)
    */
