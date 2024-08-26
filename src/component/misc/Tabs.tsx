@@ -24,6 +24,14 @@ interface TabsProps {
    * Navigation link style.
    */
   navLinkStyle?: string;
+  /**
+   * Classname for the Nav component
+   */
+  navClassName?: string;
+  /**
+   * Classname for the TabContent component
+   */
+  contentClassName?: string;
 }
 
 const Tabs: React.FC<TabsProps> = (props) => {
@@ -72,8 +80,15 @@ const Tabs: React.FC<TabsProps> = (props) => {
 
   return (
     <div>
-      <Nav tabs={true}>{navLinks}</Nav>
-      <TabContent activeTab={props.activeTabLabelKey}>{tabs}</TabContent>
+      <Nav tabs={true} className={props.navClassName}>
+        {navLinks}
+      </Nav>
+      <TabContent
+        activeTab={props.activeTabLabelKey}
+        className={props.contentClassName}
+      >
+        {tabs}
+      </TabContent>
     </div>
   );
 };
