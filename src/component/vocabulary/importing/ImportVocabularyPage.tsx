@@ -26,6 +26,7 @@ const ImportVocabularyPage = () => {
           "vocabulary.import.type.excel": <CreateVocabularyFromExcel />,
         }}
         changeTab={(k) => setActiveTab(k as ImportType)}
+        contentClassName="pt-3"
       />
     </IfUserIsEditor>
   );
