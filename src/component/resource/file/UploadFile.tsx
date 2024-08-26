@@ -45,10 +45,13 @@ function limitStringToBytes(limitStr: string) {
 
 interface UploadFileProps {
   setFile: (file: File) => void;
+  labelKey?: string;
 }
 
-export const UploadFile: React.FC<UploadFileProps> = (props) => {
-  const { setFile } = props;
+export const UploadFile: React.FC<UploadFileProps> = ({
+  setFile,
+  labelKey = "resource.create.file.select.label",
+}) => {
   const [currentFile, setCurrentFile] = React.useState<File | undefined>();
   const [dragActive, setDragActive] = React.useState(false);
   const { i18n, formatMessage } = useI18n();
@@ -82,7 +85,7 @@ export const UploadFile: React.FC<UploadFileProps> = (props) => {
                   <input {...getInputProps()} />
                   <div>
                     <Label className="placeholder-text w-100 text-center">
-                      {i18n("resource.create.file.select.label")}
+                      {i18n(labelKey)}
                     </Label>
                   </div>
                   <div className="w-100 icon-container text-center">

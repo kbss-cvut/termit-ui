@@ -312,9 +312,10 @@ const en = {
       "Download a MS Excel template",
     "vocabulary.summary.import.nonEmpty.warning":
       "Vocabulary is not empty, existing data will be overwritten by the imported.",
+    "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",
-    "vocabulary.import.action.tooltip": "SKOS vocabulary import.",
-    "vocabulary.import.dialog.title": "Import SKOS vocabulary",
+    "vocabulary.import.dialog.title": "Import vocabulary",
     "vocabulary.import.dialog.message":
       "Imported file must be in the SKOS format. " +
       "The file must contain exactly one instance of skos:ConceptScheme.",
