@@ -792,6 +792,10 @@ const cs = {
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
     "error.term.state.terminal.liveChildren":
       "Pojmu nelze nastavit koncový stav, dokud má alespoň jednoho potomka v jiném než koncovém stavu.",
+    "error.vocabulary.import.excel.duplicateIdentifier":
+      "Excel obsahuje více pojmů se stejným identifikátorem.",
+    "error.vocabulary.import.excel.duplicateLabel":
+      "Excel obsahuje více pojmů se stejným názvem.",
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
