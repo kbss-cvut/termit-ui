@@ -784,6 +784,10 @@ const en = {
       "The file could not be uploaded because it exceeds the configured maximum file size limit.",
     "error.term.state.terminal.liveChildren":
       "Cannot set term state to a terminal when it has at least one sub term in non-terminal state.",
+    "error.vocabulary.import.excel.duplicateIdentifier":
+      "The Excel file contains multiple terms with the same identifier.",
+    "error.vocabulary.import.excel.duplicateLabel":
+      "The Excel file contains multiple terms with the same label.",
 
     "history.label": "Change history",
     "history.loading": "Loading history...",
