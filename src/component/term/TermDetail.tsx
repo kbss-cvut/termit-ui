@@ -360,7 +360,7 @@ export default connect(
         withStompClient(
           withSubscription(
             TermDetail,
-            Constants.WS_ENDPOINT.VOCABULARIES_VALIDATION
+            "/user" + Constants.WS_ENDPOINT.VOCABULARIES_VALIDATION
           )
         )
       )

@@ -3,6 +3,7 @@ import { ThunkDispatch } from "../util/Types";
 import ActionType from "../action/ActionType";
 import { asyncActionFailure } from "../action/SyncActions";
 import { Action } from "redux";
+import { vocabularyValidation } from "./WebSocketVocabularyDispatchers";
 
 export type WebSocketDispatcher<A extends Action> = {
   action: A;
@@ -15,24 +16,28 @@ export type WebSocketDispatcherCallback<A> = (
   message: IMessage,
   action: A,
   dispatch: ThunkDispatch
-) => Promise<void>;
+) => Promise<any>;
 
-// function d<A extends Action>(
-//   destinations: string | string[],
-//   action: A,
-//   onMessage: WebSocketDispatcherCallback<A>,
-//   headers?: StompHeaders
-// ): WebSocketDispatcher<A> {
-//   return { destinations, action, onMessage, headers };
-// }
+/**
+ * Creates {@link WebSocketDispatcher}
+ */
+function d<A extends Action>(
+  destinations: string | string[],
+  action: A,
+  onMessage: WebSocketDispatcherCallback<A>,
+  headers?: StompHeaders
+): WebSocketDispatcher<A> {
+  return { destinations, action, onMessage, headers };
+}
+
 const DISPATCHERS: { [key in ActionType]?: WebSocketDispatcher<any> } = {
-  // [ActionType.FETCH_VALIDATION_RESULTS]: d(
-  //   "/vocabularies/validation",
-  //   {
-  //     type: ActionType.FETCH_VALIDATION_RESULTS,
-  //   },
-  //   vocabularyValidation
-  // ),
+  [ActionType.FETCH_VALIDATION_RESULTS]: d(
+    "/vocabularies/validation",
+    {
+      type: ActionType.FETCH_VALIDATION_RESULTS,
+    },
+    (message, action, dispatch) => dispatch(vocabularyValidation(message, null))
+  ),
 };
 
 export function dispatcherExceptionHandler(

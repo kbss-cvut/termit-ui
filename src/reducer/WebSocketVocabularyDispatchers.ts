@@ -4,22 +4,39 @@ import ValidationResult, {
 } from "../model/ValidationResult";
 import { asyncActionSuccessWithPayload } from "../action/SyncActions";
 import { IMessage } from "react-stomp-hooks";
-import { ThunkDispatch } from "../util/Types";
+import { GetStoreState, ThunkDispatch } from "../util/Types";
 import ActionType from "../action/ActionType";
+import TermItState from "../model/TermItState";
+
+function isValidationPresentFor(
+  messageVocabularyIri: string,
+  state: TermItState
+) {
+  return !!state.validationResults[messageVocabularyIri];
+}
 
 /**
- * When the vocabulary IRI from the messages matches the provided one, the validation results are loaded to the store
+ * When the vocabulary IRI from the messages matches the provided one, the validation results are loaded to the store.
+ * If the vocabulary IRI is null, then only existing validation results in the store are updated.
  * @param message the WS message
  * @param vocabularyIri iri to match
  * @return true when iri matched and validation was loaded, false otherwise
  */
-export function vocabularyValidation(message: IMessage, vocabularyIri: string) {
+export function vocabularyValidation(
+  message: IMessage,
+  vocabularyIri: string | null /* ensures that the parameter is explicit */
+) {
   const { body } = message;
   const messageVocabularyIri = message.headers["vocabulary"];
 
-  return async (dispatch: ThunkDispatch) => {
+  return async (dispatch: ThunkDispatch, getState: GetStoreState) => {
     message.ack();
-    if (messageVocabularyIri !== vocabularyIri) {
+
+    if (
+      (!vocabularyIri &&
+        !isValidationPresentFor(messageVocabularyIri, getState())) ||
+      (vocabularyIri && messageVocabularyIri !== vocabularyIri)
+    ) {
       return false;
     }
     const json = JSON.parse(body);
@@ -33,7 +50,7 @@ export function vocabularyValidation(message: IMessage, vocabularyIri: string) {
       asyncActionSuccessWithPayload(
         { type: ActionType.FETCH_VALIDATION_RESULTS },
         {
-          [vocabularyIri]: data,
+          [messageVocabularyIri]: data,
         }
       )
     );
