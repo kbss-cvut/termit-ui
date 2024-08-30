@@ -388,10 +388,7 @@ export default connect(
       withStompClient(
         withSubscription(
           VocabularySummary,
-          [
-            Constants.WS_ENDPOINT.VOCABULARIES_VALIDATION,
-            "/user" + Constants.WS_ENDPOINT.VOCABULARIES_VALIDATION,
-          ],
+          "/user" + Constants.WS_ENDPOINT.VOCABULARIES_VALIDATION,
           { ack: "client" }
         )
       )
