@@ -132,6 +132,10 @@ button.icon-button {
   }
 }
 
+.link-like {
+  cursor: pointer;
+}
+
 .breadcrumbs__crumb--active {
   pointer-events: none;
   color: #212529;
@@ -154,7 +158,7 @@ button.icon-button {
 }
 
 .dropdown-item {
-  cursor: pointer;
+  @extend .link-like;
 }
 
 .text-white-link {
@@ -194,8 +198,8 @@ button.icon-button {
 }
 
 .list-item-remove-icon {
+  @extend .link-like;
   margin-left: 0.5rem;
-  cursor: pointer;
 }
 
 .validation-feedback {

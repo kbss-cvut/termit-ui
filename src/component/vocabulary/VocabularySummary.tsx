@@ -26,9 +26,8 @@ import Utils from "../../util/Utils";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import { FaTrashAlt } from "react-icons/fa";
-import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
-import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
+import { importIntoExistingVocabulary } from "../../action/AsyncImportActions";
 import "./VocabularySummary.scss";
 import VocabularyActions from "./VocabularyActions";
 import ExportVocabularyDialog from "./ExportVocabularyDialog";
@@ -48,6 +47,7 @@ import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuth
 import AccessLevel from "../../model/acl/AccessLevel";
 import { getShortLocale } from "../../util/IntlUtil";
 import { getLocalized } from "../../model/MultilingualString";
+import RemoveVocabularyDialog from "./RemoveVocabularyDialog";
 
 interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
@@ -111,6 +111,7 @@ export class VocabularySummary extends EditableComponent<
     }
     if (prevProps.vocabulary.iri !== vocabulary.iri) {
       this.onCloseEdit();
+      this.onCloseRemove();
       this.setState({
         language: resolveInitialLanguage(
           vocabulary,
@@ -264,11 +265,11 @@ export class VocabularySummary extends EditableComponent<
             )} | ${i18n("vocabulary.management.vocabularies")}`}
           />
           <HeaderWithActions title={this.renderTitle()} actions={buttons} />
-          <RemoveAssetDialog
+          <RemoveVocabularyDialog
             show={this.state.showRemoveDialog}
-            asset={vocabulary}
-            onCancel={this.onCloseRemove}
+            vocabulary={vocabulary}
             onSubmit={this.onRemove}
+            onCancel={this.onCloseRemove}
           />
           <ExportVocabularyDialog
             show={this.state.showExportDialog}
@@ -340,7 +341,7 @@ export default connect(
         dispatch(removeVocabulary(vocabulary)),
       validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
       importSkos: (iri: IRI, file: File) =>
-        dispatch(importSkosIntoExistingVocabulary(iri, file)),
+        dispatch(importIntoExistingVocabulary(iri, file)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
       createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),

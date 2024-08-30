@@ -21,6 +21,13 @@ jest.mock("../../util/Ajax", () => ({
   formData: jest.requireActual("../../util/Ajax").formData,
 }));
 
+// Mock implementation for throwIfAborted which is missing in jsdom < 22.1.0
+AbortSignal.prototype.throwIfAborted = function () {
+  if (this.aborted) {
+    throw this.reason;
+  }
+};
+
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("AsyncAnnotatorActions", () => {

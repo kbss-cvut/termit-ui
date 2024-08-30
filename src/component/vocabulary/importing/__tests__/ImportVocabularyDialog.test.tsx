@@ -1,4 +1,4 @@
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import ImportVocabularyDialog from "../ImportVocabularyDialog";
 
 describe("ImportVocabularyDialog", () => {
