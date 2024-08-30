@@ -126,7 +126,6 @@ export class TermDetail extends EditableComponent<
       "namespace"
     );
     const iri: IRI = { fragment: name, namespace };
-    console.debug(iri.toString());
     this.props.loadVocabulary(iri, timestamp);
     this.props.requestVocabularyValidation(iri, this.props.stompClient);
   }
