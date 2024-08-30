@@ -35,6 +35,7 @@ export default class SecurityUtils {
     } else {
       BrowserStorage.remove(Constants.STORAGE_JWT_KEY);
     }
+    BrowserStorage.dispatchStorageEvent();
   }
 
   public static isLoggedIn(currentUser?: User | null): boolean {

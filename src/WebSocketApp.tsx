@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import Constants from "./util/Constants";
 import SecurityUtils from "./util/SecurityUtils";
 import DISPATCHERS, {
@@ -9,7 +9,29 @@ import DISPATCHERS, {
 import { ThunkDispatch } from "./util/Types";
 import { useDispatch } from "react-redux";
 import { StompSessionProvider, useSubscription } from "react-stomp-hooks";
-import { StompSessionProviderProps } from "react-stomp-hooks";
+import { StompConfig } from "@stomp/stompjs";
+import BrowserStorage from "./util/BrowserStorage";
+
+interface StompSessionProviderProps extends StompConfig {
+  // missing export in the lib
+  /**
+   * The URL to connect to the STOMP broker.
+   * The URL can be a SockJS URL (http(s)://) or a raw Websocket URL (ws(s)://).
+   */
+  url: string;
+  children: ReactNode;
+  /**
+   * If the STOMP connection should be enabled/disabled. Defaults to true.
+   */
+  enabled?: boolean;
+  /**
+   * The name of the StompSessionContext.
+   * This can be used to mix multiple StompSessionProviders/Stomp Connections in the same application.
+   * The default name is "default". When using a custom name, the same name must be specified as a parameter for all hooks and hocs.
+   *
+   */
+  name?: string;
+}
 
 /**
  * Creates subscription for specified dispatcher
@@ -65,16 +87,25 @@ export type StompSessionProviderType = (
 export const WebSocketWrapper: React.FC<{
   Provider?: StompSessionProviderType;
 }> = ({ children, Provider = StompSessionProvider }) => {
-  const [securityToken, setSecurityToken] = React.useState<string>("");
-  const [isTokenMissing, setIsTokenMissing] = React.useState<boolean>(true);
-  const token = SecurityUtils.loadToken();
-  useEffect(() => {
-    setSecurityToken(SecurityUtils.loadToken());
-    setIsTokenMissing(token == null || token.trim() === "");
-  }, [token]);
+  const [securityToken, setSecurityToken] = useState<string>("");
+
+  useEffect(
+    () =>
+      BrowserStorage.onChange((e) => {
+        const token = SecurityUtils.loadToken();
+        // using length prevents from aborting websocket due to token refresh
+        // but will abort it when token is cleared or new one is set
+        if (token.length !== securityToken.length) {
+          setSecurityToken(token);
+        }
+      }),
+    [securityToken]
+  );
+
   return (
     <Provider
-      url={isTokenMissing ? "" : Constants.WEBSOCKET_URL}
+      enabled={securityToken.trim() !== ""}
+      url={Constants.WEBSOCKET_URL}
       connectHeaders={{
         Authorization: securityToken,
       }}
@@ -83,7 +114,6 @@ export const WebSocketWrapper: React.FC<{
       onUnhandledReceipt={(receipt) =>
         console.warn("Unhandled STOMP receipt", receipt)
       }
-      onConnect={(frame) => console.debug("WebSocket connected")}
     >
       {registerDispatchers()}
       {children}
