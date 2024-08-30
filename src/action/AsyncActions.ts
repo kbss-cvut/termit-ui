@@ -28,7 +28,7 @@ import * as jsonld from "jsonld";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
-import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType, { PendingAsyncAction } from "./ActionType";
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
@@ -57,10 +57,6 @@ import {
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
 import NotificationType from "../model/NotificationType";
-import ValidationResult, {
-  CONTEXT as VALIDATION_RESULT_CONTEXT,
-} from "../model/ValidationResult";
-import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
@@ -147,11 +143,7 @@ export function createVocabulary(vocabulary: Vocabulary) {
   };
 }
 
-export function loadVocabulary(
-  iri: IRI,
-  withValidation = true,
-  timestamp?: string
-) {
+export function loadVocabulary(iri: IRI, timestamp?: string) {
   const action = {
     type: ActionType.LOAD_VOCABULARY,
   };
@@ -177,9 +169,6 @@ export function loadVocabulary(
       )
       .then((data: VocabularyData) => {
         dispatch(loadImportedVocabulariesIntoState(actualIri));
-        if (withValidation) {
-          dispatch(validateVocabulary(actualIri));
-        }
         dispatch(loadTermCount(actualIri));
         return dispatch(
           asyncActionSuccessWithPayload(action, new Vocabulary(data))
@@ -606,56 +595,6 @@ export function loadTermByIri(
   };
 }
 
-export function validateVocabulary(
-  vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
-) {
-  const action = {
-    type: ActionType.FETCH_VALIDATION_RESULTS,
-  };
-
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    if (isActionRequestPending(getState(), action)) {
-      return Promise.resolve([]);
-    }
-
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(
-      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`,
-      param("namespace", vocabularyIri.namespace)
-    )
-      .then((data: object[]) =>
-        data.length !== 0
-          ? JsonLdUtils.compactAndResolveReferencesAsArray<ValidationResult>(
-              data,
-              VALIDATION_RESULT_CONTEXT
-            )
-          : []
-      )
-      .then((data: ValidationResult[]) => consolidateResults(data))
-      .then((data: ConsolidatedResults) =>
-        dispatch(
-          asyncActionSuccessWithPayload(action, {
-            [IRIImpl.toString(vocabularyIri)]: data,
-          })
-        )
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return [];
-      });
-  };
-}
-
-function consolidateResults(validationResults: ValidationResult[]) {
-  const consolidatedResults = {};
-  validationResults.forEach((r) => {
-    consolidatedResults![r.term.iri!] = consolidatedResults![r.term.iri!] || [];
-    consolidatedResults![r.term.iri!].push(r);
-  });
-  return consolidatedResults;
-}
-
 export function executeQuery(queryString: string) {
   const action = {
     type: ActionType.EXECUTE_QUERY,
@@ -950,7 +889,6 @@ export function updateTerm(term: Term) {
             updated: term,
           })
         );
-        dispatch(validateVocabulary(vocabularyIri));
         return dispatch(
           publishMessage(
             new Message(
