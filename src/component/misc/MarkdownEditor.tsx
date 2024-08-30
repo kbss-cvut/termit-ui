@@ -210,6 +210,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         </Label>
       )}
       <SimpleMdeReact
+        id={name}
         value={value}
         onChange={onChange}
         options={options}

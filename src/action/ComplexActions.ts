@@ -4,6 +4,7 @@ import Routing from "../util/Routing";
 import { logout as asyncLogout } from "./AsyncUserActions";
 import { ThunkDispatch } from "../util/Types";
 import { isUsingOidcAuth } from "../util/OidcUtils";
+import { Client } from "react-stomp-hooks";
 
 /*
  * Complex actions are basically just nice names for actions which involve both synchronous and asynchronous actions.
@@ -11,13 +12,16 @@ import { isUsingOidcAuth } from "../util/OidcUtils";
  * the rest of the application.
  */
 
-export function logout() {
+export function logout(stomClient?: Client) {
   return (dispatch: ThunkDispatch) => {
     const externalAuth = isUsingOidcAuth();
     if (!externalAuth) {
       dispatch(asyncLogout());
     }
     SecurityUtils.clearToken();
+    if (stomClient) {
+      stomClient.deactivate({ force: true });
+    }
     Routing.transitionTo(externalAuth ? Routes.publicDashboard : Routes.login);
   };
 }

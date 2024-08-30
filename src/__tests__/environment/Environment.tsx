@@ -7,9 +7,11 @@ import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import TermItState from "../../model/TermItState";
+import { mock as stompMock } from "react-stomp-hooks";
 // @ts-ignore
 import TimeAgo from "javascript-time-ago";
 import IntlData from "../../model/IntlData";
+import WebSocketApp from "../../WebSocketApp";
 
 export const mockStore = configureMockStore<TermItState>([thunk])(
   new TermItState()
@@ -80,4 +82,12 @@ export function mockWindowSelection(selection: object) {
  */
 export function promiseDelay(ms: number, value: any): Promise<any> {
   return new Promise((resolve) => setTimeout(resolve, ms, value));
+}
+
+export function withWsApp(node: ReactElement<any>) {
+  return (
+    <WebSocketApp Provider={stompMock.StompSessionProviderMock}>
+      {node}
+    </WebSocketApp>
+  );
 }

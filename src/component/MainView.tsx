@@ -9,7 +9,6 @@ import { Container, Jumbotron, Nav, Navbar } from "reactstrap";
 import User, { EMPTY_USER } from "../model/User";
 import Routes from "../util/Routes";
 import Footer from "./footer/Footer";
-import { logout } from "../action/ComplexActions";
 import { Route, RouteComponentProps, Switch, withRouter } from "react-router";
 import Messages from "./message/Messages";
 import NavbarSearch from "./search/label/NavbarSearch";
@@ -50,7 +49,6 @@ interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
   configuration: Configuration;
   loadUser: () => Promise<any>;
-  logout: () => void;
   openContextsForEditing: (contexts: string[]) => Promise<any>;
   loadTermStates: () => void;
   sidebarExpanded: boolean;
@@ -240,7 +238,6 @@ export default connect(
   (dispatch: ThunkDispatch) => {
     return {
       loadUser: () => dispatch(loadUser()),
-      logout: () => dispatch(logout()),
       changeView: () => dispatch(changeView()),
       loadTermStates: () => dispatch(loadTermStates()),
       openContextsForEditing: (contexts: string[]) =>
@@ -250,7 +247,9 @@ export default connect(
 )(
   injectIntl(
     withI18n(
-      withLoading(withRouter(MainView), { containerClass: "app-container" })
+      withLoading(withRouter(MainView), {
+        containerClass: "app-container",
+      })
     )
   )
 );

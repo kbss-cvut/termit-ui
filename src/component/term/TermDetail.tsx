@@ -50,6 +50,16 @@ import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabula
 import AccessLevel from "../../model/acl/AccessLevel";
 import StoreBasedTerminalTermStateIcon from "./state/StoreBasedTerminalTermStateIcon";
 import IfNotInTerminalState from "./state/IfNotInTerminalState";
+import {
+  Client,
+  IMessage,
+  withStompClient,
+  withSubscription,
+} from "react-stomp-hooks";
+import { HasStompClient } from "../hoc/withStompClient";
+import Constants from "../../util/Constants";
+import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
+import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
 
 export interface CommonTermDetailProps extends HasI18n {
   configuredLanguage: string;
@@ -62,9 +72,15 @@ export interface CommonTermDetailProps extends HasI18n {
 
 interface TermDetailProps
   extends CommonTermDetailProps,
+    HasStompClient,
     RouteComponentProps<any> {
   updateTerm: (term: Term) => Promise<any>;
   removeTerm: (term: Term) => Promise<any>;
+  requestVocabularyValidation: (
+    vocabularyIri: IRI,
+    stompClient: Client
+  ) => void;
+  vocabularyValidation: (message: IMessage, vocabularyIri: string) => void;
   approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   publishNotification: (notification: AppNotification) => void;
@@ -109,7 +125,10 @@ export class TermDetail extends EditableComponent<
       this.props.location.search,
       "namespace"
     );
-    this.props.loadVocabulary({ fragment: name, namespace }, timestamp);
+    const iri: IRI = { fragment: name, namespace };
+    console.debug(iri.toString());
+    this.props.loadVocabulary(iri, timestamp);
+    this.props.requestVocabularyValidation(iri, this.props.stompClient);
   }
 
   private loadTerm(): void {
@@ -129,6 +148,10 @@ export class TermDetail extends EditableComponent<
     if (prevProps.term?.iri !== this.props.term?.iri) {
       this.setState({ language: resolveInitialLanguage(this.props) });
     }
+  }
+
+  public onMessage(message: IMessage) {
+    this.props.vocabularyValidation(message, this.props.vocabulary.iri);
   }
 
   public setLanguage = (language: string) => {
@@ -314,7 +337,11 @@ export default connect(
   (dispatch: ThunkDispatch) => {
     return {
       loadVocabulary: (iri: IRI, timestamp?: string) =>
-        dispatch(loadVocabulary(iri, true, timestamp)),
+        dispatch(loadVocabulary(iri, timestamp)),
+      requestVocabularyValidation: (vocabularyIri: IRI, stompClient: Client) =>
+        dispatch(requestVocabularyValidation(vocabularyIri, stompClient)),
+      vocabularyValidation: (message: IMessage, vocabularyIri: string) =>
+        dispatch(vocabularyValidation(message, vocabularyIri)),
       loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
         dispatch(loadTerm(termName, vocabularyIri, timestamp)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
@@ -327,4 +354,17 @@ export default connect(
         dispatch(publishNotification(notification)),
     };
   }
-)(injectIntl(withI18n(withRouter(TermDetail))));
+)(
+  injectIntl(
+    withI18n(
+      withRouter(
+        withStompClient(
+          withSubscription(
+            TermDetail,
+            Constants.WS_ENDPOINT.VOCABULARIES_VALIDATION
+          )
+        )
+      )
+    )
+  )
+);
