@@ -4,8 +4,9 @@ import ActionType from "./ActionType";
 import { GetStoreState, ThunkDispatch } from "../util/Types";
 import { asyncActionRequest } from "./SyncActions";
 import { isString, pickBy } from "lodash";
+import Constants from "../util/Constants";
 
-const sentVocabularyValidationRequests: string[] = [];
+const sentVocabularyValidationRequests: Map<string, number> = new Map();
 
 /**
  * @param vocabularyIri
@@ -25,12 +26,16 @@ export function requestVocabularyValidation(
     }
 
     const strIri = IRIImpl.create(vocabularyIri).toString();
+    const lastRequest = sentVocabularyValidationRequests.get(strIri) || 0;
+    const requestTimeoutExpired =
+      performance.now() - lastRequest > Constants.WEBSOCKET_REQUEST_TIMEOUT ||
+      lastRequest === 0;
 
-    if (sentVocabularyValidationRequests.includes(strIri)) {
+    if (!requestTimeoutExpired) {
       return;
     }
 
-    sentVocabularyValidationRequests.push(strIri);
+    sentVocabularyValidationRequests.set(strIri, performance.now());
 
     dispatch(asyncActionRequest(action, true));
     const headers = pickBy(

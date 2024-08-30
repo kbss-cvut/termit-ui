@@ -122,9 +122,11 @@ const constants = {
   // Size of page fetched from server
   DEFAULT_PAGE_SIZE: 100,
 
-  WS_ENDPOINT: {
+  WEBSOCKET_ENDPOINT: {
     VOCABULARIES_VALIDATION: "/vocabularies/validation",
   },
+  // Number of milliseconds after which a websocket request should be retried
+  WEBSOCKET_REQUEST_TIMEOUT: 60 * 1000 /* 1 minute */,
 };
 
 constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =
