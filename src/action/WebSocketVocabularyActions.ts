@@ -1,7 +1,7 @@
 import { IRI, IRIImpl } from "../util/VocabularyUtils";
 import { Client } from "react-stomp-hooks";
 import ActionType from "./ActionType";
-import { GetStoreState, ThunkDispatch } from "../util/Types";
+import { ThunkDispatch } from "../util/Types";
 import { asyncActionRequest } from "./SyncActions";
 import { isString, pickBy } from "lodash";
 import Constants from "../util/Constants";
@@ -20,7 +20,7 @@ export function requestVocabularyValidation(
     type: ActionType.FETCH_VALIDATION_RESULTS,
   };
 
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+  return (dispatch: ThunkDispatch) => {
     if (!stompClient || !stompClient.active) {
       return;
     }

@@ -120,15 +120,3 @@ export const WebSocketWrapper: React.FC<{
     </Provider>
   );
 };
-
-export const withWebSocket = <P extends object>(
-  Component: React.ComponentType<P>
-): React.FC<P> => {
-  return (props) => {
-    return (
-      <WebSocketWrapper>
-        <Component {...(props as P)} />
-      </WebSocketWrapper>
-    );
-  };
-};
