@@ -5,12 +5,12 @@ import { asyncActionFailure } from "../action/SyncActions";
 import { Action } from "redux";
 import { vocabularyValidation } from "./WebSocketVocabularyDispatchers";
 
-export type WebSocketDispatcher<A extends Action> = {
+export interface WebSocketDispatcher<A extends Action> {
   action: A;
   destinations: string | string[];
   onMessage: WebSocketDispatcherCallback<A>;
   headers?: StompHeaders;
-};
+}
 
 export type WebSocketDispatcherCallback<A> = (
   message: IMessage,

@@ -14,6 +14,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
+import { Client } from "react-stomp-hooks";
 
 jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
 jest.mock("../RelatedTermsSelector", () => () => (
@@ -39,6 +40,7 @@ describe("TermDetail", () => {
   let approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   let removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   let onPublishNotification: (notification: AppNotification) => void;
+  let requestVocabularyValidation: (iri: IRI, stompClient: Client) => void;
 
   let handlers: any;
 
@@ -69,12 +71,14 @@ describe("TermDetail", () => {
     approveOccurrence = jest.fn().mockResolvedValue({});
     removeOccurrence = jest.fn().mockResolvedValue({});
     onPublishNotification = jest.fn();
+    requestVocabularyValidation = jest.fn();
     handlers = {
       loadTerm: onLoad,
       loadVocabulary,
       updateTerm: onUpdate,
       removeTerm,
       publishNotification: onPublishNotification,
+      requestVocabularyValidation,
       approveOccurrence,
       removeOccurrence,
     };

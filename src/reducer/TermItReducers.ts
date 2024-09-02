@@ -589,6 +589,7 @@ function validationResults(
   switch (action.type) {
     case ActionType.FETCH_VALIDATION_RESULTS:
       if (isAsyncSuccess(action)) {
+        console.debug(action.payload);
         return {
           ...state,
           ...action.payload,

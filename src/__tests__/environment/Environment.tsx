@@ -11,7 +11,7 @@ import { mock as stompMock } from "react-stomp-hooks";
 // @ts-ignore
 import TimeAgo from "javascript-time-ago";
 import IntlData from "../../model/IntlData";
-import WebSocketApp from "../../WebSocketApp";
+import { WebSocketWrapper } from "../../WebSocketApp";
 
 export const mockStore = configureMockStore<TermItState>([thunk])(
   new TermItState()
@@ -84,10 +84,10 @@ export function promiseDelay(ms: number, value: any): Promise<any> {
   return new Promise((resolve) => setTimeout(resolve, ms, value));
 }
 
-export function withWsApp(node: ReactElement<any>) {
+export function withWebSocket(node: ReactElement) {
   return (
-    <WebSocketApp Provider={stompMock.StompSessionProviderMock}>
+    <WebSocketWrapper Provider={stompMock.StompSessionProviderMock}>
       {node}
-    </WebSocketApp>
+    </WebSocketWrapper>
   );
 }

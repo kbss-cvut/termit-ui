@@ -8,16 +8,19 @@ import { GetStoreState, ThunkDispatch } from "../util/Types";
 import ActionType from "../action/ActionType";
 import TermItState from "../model/TermItState";
 
-function isValidationPresentFor(
-  messageVocabularyIri: string,
-  state: TermItState
-) {
-  return !!state.validationResults[messageVocabularyIri];
+/**
+ * Checks whether there are validation results present in the TermItState
+ * @param vocabularyIri
+ * @param state the {@link TermItState}
+ * @returns true when validation is present, false otherwise
+ */
+function isValidationPresentFor(vocabularyIri: string, state: TermItState) {
+  return !!state.validationResults[vocabularyIri];
 }
 
 /**
  * When the vocabulary IRI from the messages matches the provided one, the validation results are loaded to the store.
- * If the vocabulary IRI is null, then only existing validation results in the store are updated.
+ * If the vocabulary IRI is null, then only existing validation results are updated in the store.
  * @param message the WS message
  * @param vocabularyIri iri to match
  * @return true when iri matched and validation was loaded, false otherwise
@@ -33,9 +36,9 @@ export function vocabularyValidation(
     message.ack();
 
     if (
-      (!vocabularyIri &&
+      (!vocabularyIri && // vocabulary not specified and validation is not present, then we don't want to load a new one
         !isValidationPresentFor(messageVocabularyIri, getState())) ||
-      (vocabularyIri && messageVocabularyIri !== vocabularyIri)
+      (vocabularyIri && messageVocabularyIri !== vocabularyIri) // iri specified and it does not match
     ) {
       return false;
     }
