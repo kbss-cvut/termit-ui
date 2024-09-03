@@ -47,13 +47,8 @@ import AccessLevel from "../../model/acl/AccessLevel";
 import { getShortLocale } from "../../util/IntlUtil";
 import { getLocalized } from "../../model/MultilingualString";
 import RemoveVocabularyDialog from "./RemoveVocabularyDialog";
-import {
-  Client,
-  IMessage,
-  withStompClient,
-  withSubscription,
-} from "react-stomp-hooks";
-import { HasStompClient } from "../hoc/withStompClient";
+import { IMessage, withStompClient, withSubscription } from "react-stomp-hooks";
+import { HasStompClient, StompClient } from "../hoc/withStompClient";
 import Constants from "../../util/Constants";
 import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
 import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
@@ -68,7 +63,7 @@ interface VocabularySummaryProps
   loadVocabulary: (iri: IRI) => Promise<any>;
   requestVocabularyValidation: (
     vocabularyIri: IRI,
-    stompClient: Client
+    stompClient: StompClient
   ) => void;
   vocabularyValidation: (
     message: IMessage,
@@ -365,8 +360,10 @@ export default connect(
     return {
       loadResource: (iri: IRI) => dispatch(loadResource(iri)),
       loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
-      requestVocabularyValidation: (vocabularyIri: IRI, stompClient: Client) =>
-        dispatch(requestVocabularyValidation(vocabularyIri, stompClient)),
+      requestVocabularyValidation: (
+        vocabularyIri: IRI,
+        stompClient: StompClient
+      ) => dispatch(requestVocabularyValidation(vocabularyIri, stompClient)),
       vocabularyValidation: (message: IMessage, vocabularyIri: string) =>
         dispatch(vocabularyValidation(message, vocabularyIri)),
       updateVocabulary: (vocabulary: Vocabulary) =>

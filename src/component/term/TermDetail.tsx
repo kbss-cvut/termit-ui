@@ -50,13 +50,8 @@ import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabula
 import AccessLevel from "../../model/acl/AccessLevel";
 import StoreBasedTerminalTermStateIcon from "./state/StoreBasedTerminalTermStateIcon";
 import IfNotInTerminalState from "./state/IfNotInTerminalState";
-import {
-  Client,
-  IMessage,
-  withStompClient,
-  withSubscription,
-} from "react-stomp-hooks";
-import { HasStompClient } from "../hoc/withStompClient";
+import { IMessage, withStompClient, withSubscription } from "react-stomp-hooks";
+import { HasStompClient, StompClient } from "../hoc/withStompClient";
 import Constants from "../../util/Constants";
 import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
 import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
@@ -78,7 +73,7 @@ interface TermDetailProps
   removeTerm: (term: Term) => Promise<any>;
   requestVocabularyValidation: (
     vocabularyIri: IRI,
-    stompClient: Client
+    stompClient: StompClient
   ) => void;
   vocabularyValidation: (message: IMessage, vocabularyIri: string) => void;
   approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
@@ -337,8 +332,10 @@ export default connect(
     return {
       loadVocabulary: (iri: IRI, timestamp?: string) =>
         dispatch(loadVocabulary(iri, timestamp)),
-      requestVocabularyValidation: (vocabularyIri: IRI, stompClient: Client) =>
-        dispatch(requestVocabularyValidation(vocabularyIri, stompClient)),
+      requestVocabularyValidation: (
+        vocabularyIri: IRI,
+        stompClient: StompClient
+      ) => dispatch(requestVocabularyValidation(vocabularyIri, stompClient)),
       vocabularyValidation: (message: IMessage, vocabularyIri: string) =>
         dispatch(vocabularyValidation(message, vocabularyIri)),
       loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
