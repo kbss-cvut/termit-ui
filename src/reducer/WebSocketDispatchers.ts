@@ -26,12 +26,12 @@ function d<A extends Action>(
   action: A,
   onMessage: WebSocketDispatcherCallback<A>,
   headers?: StompHeaders
-): WebSocketDispatcher<A> {
-  return { destinations, action, onMessage, headers };
+): { [key in ActionType]?: WebSocketDispatcher<A> } {
+  return { [action.type]: { destinations, action, onMessage, headers } };
 }
 
 const DISPATCHERS: { [key in ActionType]?: WebSocketDispatcher<any> } = {
-  [ActionType.FETCH_VALIDATION_RESULTS]: d(
+  ...d(
     "/vocabularies/validation",
     {
       type: ActionType.FETCH_VALIDATION_RESULTS,
