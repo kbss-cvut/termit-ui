@@ -2,8 +2,9 @@ import { IRIImpl } from "../../util/VocabularyUtils";
 import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
-import { Client, mock as stompMock, IPublishParams } from "react-stomp-hooks";
+import { mock as stompMock, IPublishParams } from "react-stomp-hooks";
 import { ThunkDispatch } from "../../util/Types";
+import { StompClient } from "../../component/hoc/withStompClient";
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
@@ -20,7 +21,7 @@ describe("Vocabulary validation request", () => {
   /**
    * The mock supports only the publish operation
    */
-  let stompClient: Client;
+  let stompClient: StompClient;
   let dispatch: ThunkDispatch;
 
   const getSentMessages = (): IPublishParams[] =>
@@ -31,7 +32,7 @@ describe("Vocabulary validation request", () => {
     stompMock.reset();
     store = mockStore(new TermItState());
     dispatch = store.dispatch;
-    stompClient = { ...stompMock.getMockClient(), active: true } as Client;
+    stompClient = { ...stompMock.getMockClient(), active: true } as StompClient;
 
     return import("../WebSocketVocabularyActions").then((module) => {
       sut = module;

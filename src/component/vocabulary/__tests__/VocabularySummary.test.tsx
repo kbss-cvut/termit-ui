@@ -15,7 +15,7 @@ import TermItState from "../../../model/TermItState";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import { langString } from "../../../model/MultilingualString";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
-import { Client } from "react-stomp-hooks";
+import { StompClient } from "../../hoc/withStompClient";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -44,7 +44,7 @@ describe("VocabularySummary", () => {
   let exportToExcel: (iri: IRI) => void;
   let exportToTurtle: (iri: IRI) => void;
   let exportWithReferences: (iri: IRI) => void;
-  let requestVocabularyValidation: (iri: IRI, stompClient: Client) => void;
+  let requestVocabularyValidation: (iri: IRI, stompClient: StompClient) => void;
   let exportFunctions: any;
 
   let vocabulary: Vocabulary;

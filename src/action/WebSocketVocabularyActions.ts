@@ -1,20 +1,20 @@
 import { IRI, IRIImpl } from "../util/VocabularyUtils";
-import { Client } from "react-stomp-hooks";
 import ActionType from "./ActionType";
 import { ThunkDispatch } from "../util/Types";
 import { asyncActionRequest } from "./SyncActions";
 import { isString, pickBy } from "lodash";
 import Constants from "../util/Constants";
+import { StompClient } from "../component/hoc/withStompClient";
 
 const sentVocabularyValidationRequests: Map<string, number> = new Map();
 
 /**
  * @param vocabularyIri
- * @param stompClient the client acquired from {@link import('react-stomp-hooks').useStompClient} hook
+ * @param stompClient the client acquired from {@link import('react-stomp-hooks')#useStompClient} hook
  */
 export function requestVocabularyValidation(
   vocabularyIri: IRI,
-  stompClient: Client
+  stompClient: StompClient
 ) {
   const action = {
     type: ActionType.FETCH_VALIDATION_RESULTS,
