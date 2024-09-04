@@ -8,6 +8,7 @@ import { getOidcIdentityStorageKey, isUsingOidcAuth } from "./OidcUtils";
 export default class SecurityUtils {
   public static saveToken(jwt: string): void {
     BrowserStorage.set(Constants.STORAGE_JWT_KEY, jwt);
+    BrowserStorage.dispatchTokenChangeEvent();
   }
 
   public static loadToken(): string {
@@ -20,13 +21,17 @@ export default class SecurityUtils {
   /**
    * Return access token of the currently logged-in user.
    * To be used as an Authorization header content for API fetch calls.
+   * @return Authorization header contents if the token is available, empty string otherwise
    */
   private static getOidcToken(): string {
     const identityData = sessionStorage.getItem(getOidcIdentityStorageKey());
     const identity = identityData
       ? JSON.parse(identityData)
       : (null as User | null);
-    return `${identity?.token_type} ${identity?.access_token}`;
+    if (identity) {
+      return `${identity.token_type} ${identity.access_token}`;
+    }
+    return "";
   }
 
   public static clearToken(): void {
@@ -35,7 +40,7 @@ export default class SecurityUtils {
     } else {
       BrowserStorage.remove(Constants.STORAGE_JWT_KEY);
     }
-    BrowserStorage.dispatchStorageEvent();
+    BrowserStorage.dispatchTokenChangeEvent();
   }
 
   public static isLoggedIn(currentUser?: User | null): boolean {
