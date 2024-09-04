@@ -89,18 +89,18 @@ export const WebSocketWrapper: React.FC<{
 }> = ({ children, Provider = StompSessionProvider }) => {
   const [securityToken, setSecurityToken] = useState<string>("");
 
-  useEffect(
-    () =>
-      BrowserStorage.onChange((e) => {
-        const token = SecurityUtils.loadToken();
-        // using length prevents from aborting websocket due to token refresh
-        // but will abort it when token is cleared or new one is set
-        if (token.length !== securityToken.length) {
-          setSecurityToken(token);
-        }
-      }),
-    [securityToken]
-  );
+  useEffect(() => {
+    const callback = () => {
+      const token = SecurityUtils.loadToken();
+      // using length prevents from aborting websocket due to token refresh
+      // but will abort it when token is cleared or new one is set
+      if (token.length !== securityToken.length) {
+        setSecurityToken(token);
+      }
+    };
+    callback();
+    return BrowserStorage.onTokenChange(callback);
+  }, [securityToken]);
 
   return (
     <Provider

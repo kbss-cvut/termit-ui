@@ -44,3 +44,11 @@ location accessible via HTTP(S), e.g., into an Apache HTTP server-managed locati
 TermIt can operate in one of two authentication modes - using its internal user database and authentication means (default)
 or via an OIDC authentication service such as [Keycloak](https://www.keycloak.org/). Corresponding parameters (service
 URL, clientId) need to be set up (see the table above for the relevant parameters and explanation).
+
+**example:**
+
+```
+REACT_APP_AUTHENTICATION=oidc
+REACT_APP_AUTH_SERVER_URL=http://keycloak.lan/realms/termit
+REACT_APP_AUTH_CLIENT_ID=termit-ui
+```
