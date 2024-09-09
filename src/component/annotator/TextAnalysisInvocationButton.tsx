@@ -9,11 +9,15 @@ import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { executeFileTextAnalysis } from "../../action/AsyncActions";
-import { publishNotification } from "../../action/SyncActions";
-import NotificationType from "../../model/NotificationType";
 import ResourceSelectVocabulary from "../resource/ResourceSelectVocabulary";
 import Vocabulary from "../../model/Vocabulary";
-import { IRI } from "../../util/VocabularyUtils";
+import { IRI, IRIImpl } from "../../util/VocabularyUtils";
+import { IMessage, withSubscription } from "react-stomp-hooks";
+import Constants from "../../util/Constants";
+import { publishMessage, publishNotification } from "../../action/SyncActions";
+import NotificationType from "../../model/NotificationType";
+import Message from "../../model/Message";
+import MessageType from "../../model/MessageType";
 
 interface TextAnalysisInvocationButtonProps extends HasI18n, InjectsLoading {
   id?: string;
@@ -43,10 +47,7 @@ export class TextAnalysisInvocationButton extends React.Component<
 
   private invokeTextAnalysis(fileIri: IRI, vocabularyIri: string) {
     this.props.loadingOn();
-    this.props.executeTextAnalysis(fileIri, vocabularyIri).then(() => {
-      this.props.loadingOff();
-      this.props.notifyAnalysisFinish();
-    });
+    this.props.executeTextAnalysis(fileIri, vocabularyIri);
   }
 
   public onVocabularySelect = (vocabulary: Vocabulary | null) => {
@@ -60,6 +61,19 @@ export class TextAnalysisInvocationButton extends React.Component<
   private closeVocabularySelect = () => {
     this.setState({ showVocabularySelector: false });
   };
+
+  public onMessage(message: IMessage) {
+    if (!message?.body) {
+      return;
+    }
+    if (
+      message.body.substring(1, message.body.length - 1) ===
+      IRIImpl.toString(this.props.fileIri)
+    ) {
+      this.props.loadingOff();
+      this.props.notifyAnalysisFinish();
+    }
+  }
 
   public render() {
     const i18n = this.props.i18n;
@@ -79,6 +93,7 @@ export class TextAnalysisInvocationButton extends React.Component<
           className={this.props.className}
           title={i18n("file.metadata.startTextAnalysis")}
           onClick={this.onClick}
+          disabled={this.props.loading}
         >
           <GoClippy className="mr-1" />
           {i18n("file.metadata.startTextAnalysis.text")}
@@ -92,11 +107,34 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
   return {
     executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) =>
       dispatch(executeFileTextAnalysis(fileIri, vocabularyIri)),
-    notifyAnalysisFinish: () =>
+    notifyAnalysisFinish: () => {
+      dispatch(
+        publishMessage(
+          new Message(
+            {
+              messageId: "file.text-analysis.finished.message",
+            },
+            MessageType.SUCCESS
+          )
+        )
+      );
       dispatch(
         publishNotification({
           source: { type: NotificationType.TEXT_ANALYSIS_FINISHED },
         })
-      ),
+      );
+    },
   };
-})(injectIntl(withI18n(withInjectableLoading(TextAnalysisInvocationButton))));
+})(
+  injectIntl(
+    withI18n(
+      withInjectableLoading(
+        withSubscription(
+          TextAnalysisInvocationButton,
+          Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE
+        ),
+        { maskClass: "annotator" }
+      )
+    )
+  )
+);

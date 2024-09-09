@@ -124,6 +124,8 @@ const constants = {
 
   WEBSOCKET_ENDPOINT: {
     VOCABULARIES_VALIDATION: "/vocabularies/validation",
+    VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE:
+      "/vocabularies/text_analysis/finished/file",
   },
   // Number of milliseconds after which a websocket request should be retried
   WEBSOCKET_REQUEST_TIMEOUT: 60 * 1000 /* 1 minute */,
