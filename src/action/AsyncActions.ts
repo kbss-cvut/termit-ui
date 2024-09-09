@@ -708,17 +708,7 @@ export function executeFileTextAnalysis(fileIri: IRI, vocabularyIri: string) {
       params(reqParams)
     )
       .then(() => {
-        dispatch(asyncActionSuccess(action));
-        return dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId: "file.text-analysis.finished.message",
-              },
-              MessageType.SUCCESS
-            )
-          )
-        );
+        return dispatch(asyncActionSuccess(action));
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
