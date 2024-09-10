@@ -205,9 +205,12 @@ export class TermDetail extends EditableComponent<
     const actions = [];
     if (!this.state.edit) {
       actions.push(
-        <IfNotInTerminalState term={this.props.term!}>
+        <IfNotInTerminalState
+          term={this.props.term!}
+          key="term.detail.edit.if.not.terminal"
+        >
           <IfVocabularyActionAuthorized
-            key="term-detail-edit"
+            key="term.detail.edit.if.authorized"
             vocabulary={this.props.vocabulary}
             requiredAccessLevel={AccessLevel.WRITE}
           >
@@ -228,7 +231,7 @@ export class TermDetail extends EditableComponent<
     }
     actions.push(
       <IfVocabularyActionAuthorized
-        key="term-detail-remove"
+        key="term.detail.remove.if"
         vocabulary={this.props.vocabulary}
         requiredAccessLevel={AccessLevel.WRITE}
       >
