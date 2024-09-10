@@ -1,9 +1,6 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import withInjectableLoading, {
-  InjectsLoading,
-} from "../hoc/withInjectableLoading";
 import { GoClippy } from "react-icons/go";
 import { Button } from "reactstrap";
 import { connect } from "react-redux";
@@ -19,7 +16,7 @@ import NotificationType from "../../model/NotificationType";
 import Message from "../../model/Message";
 import MessageType from "../../model/MessageType";
 
-interface TextAnalysisInvocationButtonProps extends HasI18n, InjectsLoading {
+interface TextAnalysisInvocationButtonProps extends HasI18n {
   id?: string;
   fileIri: IRI;
   defaultVocabularyIri?: string;
@@ -36,7 +33,7 @@ export class TextAnalysisInvocationButton extends React.Component<
   TextAnalysisInvocationButtonProps,
   TextAnalysisInvocationButtonState
 > {
-  constructor(props: InjectsLoading & TextAnalysisInvocationButtonProps) {
+  constructor(props: TextAnalysisInvocationButtonProps) {
     super(props);
     this.state = { showVocabularySelector: false };
   }
@@ -46,7 +43,6 @@ export class TextAnalysisInvocationButton extends React.Component<
   };
 
   private invokeTextAnalysis(fileIri: IRI, vocabularyIri: string) {
-    this.props.loadingOn();
     this.props.executeTextAnalysis(fileIri, vocabularyIri);
   }
 
@@ -70,7 +66,6 @@ export class TextAnalysisInvocationButton extends React.Component<
       message.body.substring(1, message.body.length - 1) ===
       IRIImpl.toString(this.props.fileIri)
     ) {
-      this.props.loadingOff();
       this.props.notifyAnalysisFinish();
     }
   }
@@ -93,7 +88,6 @@ export class TextAnalysisInvocationButton extends React.Component<
           className={this.props.className}
           title={i18n("file.metadata.startTextAnalysis")}
           onClick={this.onClick}
-          disabled={this.props.loading}
         >
           <GoClippy className="mr-1" />
           {i18n("file.metadata.startTextAnalysis.text")}
@@ -128,12 +122,9 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
 })(
   injectIntl(
     withI18n(
-      withInjectableLoading(
-        withSubscription(
-          TextAnalysisInvocationButton,
-          Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE
-        ),
-        { maskClass: "annotator" }
+      withSubscription(
+        TextAnalysisInvocationButton,
+        Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE
       )
     )
   )
