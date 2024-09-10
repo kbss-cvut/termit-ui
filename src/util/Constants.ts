@@ -124,6 +124,8 @@ const constants = {
 
   WEBSOCKET_ENDPOINT: {
     VOCABULARIES_VALIDATION: "/vocabularies/validation",
+    VOCABULARIES_TEXT_ANALYSIS_FINISHED_TERM_DEFINITION:
+      "/vocabularies/text_analysis/finished/term-definition",
     VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE:
       "/vocabularies/text_analysis/finished/file",
   },
