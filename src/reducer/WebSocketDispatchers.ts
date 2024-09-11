@@ -4,6 +4,8 @@ import ActionType from "../action/ActionType";
 import { asyncActionFailure } from "../action/SyncActions";
 import { Action } from "redux";
 import { vocabularyValidation } from "./WebSocketVocabularyDispatchers";
+import { updateLongRunningTasks } from "./WebSocketUtilityDispatchers";
+import Constants from "../util/Constants";
 
 export interface WebSocketDispatcher<A extends Action> {
   action: A;
@@ -32,11 +34,22 @@ function d<A extends Action>(
 
 const DISPATCHERS: { [key in ActionType]?: WebSocketDispatcher<any> } = {
   ...d(
-    "/vocabularies/validation",
+    Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_VALIDATION,
     {
       type: ActionType.FETCH_VALIDATION_RESULTS,
     },
     (message, action, dispatch) => dispatch(vocabularyValidation(message, null))
+  ),
+  ...d(
+    [
+      Constants.WEBSOCKET_ENDPOINT.LONG_RUNNING_TASKS_UPDATE,
+      "/user" + Constants.WEBSOCKET_ENDPOINT.LONG_RUNNING_TASKS_UPDATE,
+    ],
+    {
+      type: ActionType.LONG_RUNNING_TASKS_UPDATE,
+    },
+    (message, action, dispatch) =>
+      dispatch(updateLongRunningTasks(message, action))
   ),
 };
 

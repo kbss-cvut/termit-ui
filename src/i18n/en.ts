@@ -859,6 +859,21 @@ const en = {
     "auth.action.unauthorized": "You have insufficient rights for this action.",
     "auth.view.unauthorized": "You have insufficient rights to view this.",
     "auth.notEditable.message.readOnly": "This { type } is read only.",
+
+    "longrunningtasks.description": "The system is currently running:",
+    "longrunningtasks.state.done": "Completed",
+    "longrunningtasks.state.pending": "Pending",
+    "longrunningtasks.state.running": "Running",
+    "longrunningtasks.name.termDefinitionAnalysis":
+      "Text analysis of a term definition",
+    "longrunningtasks.name.allTermsVocabularyAnalysis":
+      "Text analysis of terms in a vocabulary",
+    "longrunningtasks.name.allVocabulariesAnalysis":
+      "Text analysis of all vocabularies",
+    "longrunningtasks.name.fileAnalysis": "Text analysis of a file",
+    "longrunningtasks.name.vocabularyValidation": "Vocabulary validation",
+    "longrunningtasks.name.documentAnnotationGeneration":
+      "Generation of a file annotations",
   },
 };
 

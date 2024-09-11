@@ -18,6 +18,7 @@ import TermOccurrence from "./TermOccurrence";
 import { Breadcrumb } from "./Breadcrumb";
 import AnnotatorLegendFilter from "./AnnotatorLegendFilter";
 import ActionType, { PendingAsyncAction } from "../action/ActionType";
+import { LongRunningTask } from "./LongRunningTask";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -64,6 +65,7 @@ export default class TermItState {
   public breadcrumbs: Breadcrumb[];
 
   public annotatorLegendFilter: AnnotatorLegendFilter;
+  public runningTasks: { [key: string]: LongRunningTask };
 
   // Administration
   public users: User[];
@@ -104,6 +106,7 @@ export default class TermItState {
     this.users = [];
     this.accessLevels = {};
     this.annotatorLegendFilter = new AnnotatorLegendFilter();
+    this.runningTasks = {};
   }
 
   /**

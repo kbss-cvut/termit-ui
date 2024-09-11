@@ -1,0 +1,31 @@
+.long-running-tasks-dropdown {
+  width: 32px;
+  margin: 0 1rem;
+}
+
+.long-running-tasks-toggle {
+  height: 100%;
+  width: 100%;
+}
+
+.long-running-tasks-menu {
+  width: max-content;
+}
+
+.long-running-tasks-label p {
+  margin: 0;
+}
+
+.long-running-tasks-task {
+  display: flex !important;
+  align-items: center;
+}
+
+.long-running-tasks-task i {
+  width: 24px;
+  color: var(--primary);
+}
+
+.long-running-tasks-task span {
+  margin: 0 0.5rem 0 0;
+}

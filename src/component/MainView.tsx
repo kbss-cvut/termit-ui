@@ -30,6 +30,7 @@ import Routing from "src/util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import Breadcrumbs from "./breadcrumb/Breadcrumbs";
 import { loadTermStates } from "../action/AsyncActions";
+import { LongRunningTasksStatus } from "./main/LongRunningTasksStatus";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -142,8 +143,11 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                   <NavbarSearch navbar={true} />
                 </Nav>
 
-                <Nav navbar={true} className="nav-menu-user flex-row-reverse">
-                  <UserDropdown dark={false} />
+                <Nav>
+                  <LongRunningTasksStatus />
+                  <Nav navbar={true} className="nav-menu-user flex-row-reverse">
+                    <UserDropdown dark={false} />
+                  </Nav>
                 </Nav>
               </Navbar>
             )}

@@ -870,6 +870,21 @@ const cs = {
     "auth.action.unauthorized": "K této akci nemáte dostatečná práva.",
     "auth.view.unauthorized": "K zobrazení nemáte dostatečná práva.",
     "auth.notEditable.message.readOnly": "Tento { type } je pouze pro čtení.",
+
+    "longrunningtasks.description": "V systému právě probíhá:",
+    "longrunningtasks.state.done": "Dokončeno",
+    "longrunningtasks.state.pending": "Bude spuštěno",
+    "longrunningtasks.state.running": "Probíhá",
+    "longrunningtasks.name.termDefinitionAnalysis":
+      "Textová analýza definice pojmu",
+    "longrunningtasks.name.allTermsVocabularyAnalysis":
+      "Textová analýza pojmů ze slovníku",
+    "longrunningtasks.name.allVocabulariesAnalysis":
+      "Textová analýza všech slovníků",
+    "longrunningtasks.name.fileAnalysis": "Textová analýza souboru",
+    "longrunningtasks.name.vocabularyValidation": "Validace slovníku",
+    "longrunningtasks.name.documentAnnotationGeneration":
+      "Generování anotací dokumentu",
   },
 };
 

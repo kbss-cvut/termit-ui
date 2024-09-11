@@ -41,6 +41,10 @@ import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
+import {
+  LongRunningTask,
+  LongRunningTaskState,
+} from "../model/LongRunningTask";
 
 function isAsyncSuccess(action: AsyncAction) {
   return action.status === AsyncActionStatus.SUCCESS;
@@ -702,6 +706,25 @@ function accessLevels(
   return state;
 }
 
+function runningTasks(
+  state: { [key: string]: LongRunningTask } = {},
+  action: AsyncActionSuccess<LongRunningTask>
+) {
+  if (action.type === ActionType.LONG_RUNNING_TASKS_UPDATE) {
+    if (!action.payload) {
+      return {};
+    }
+    const newState = Object.assign({}, state, {
+      [action.payload.uuid]: action.payload,
+    });
+    if (action.payload.state === LongRunningTaskState.DONE) {
+      delete newState[action.payload.uuid];
+    }
+    return newState;
+  }
+  return state;
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -738,6 +761,7 @@ const rootReducer = combineReducers<TermItState>({
   annotatorLegendFilter,
   users,
   accessLevels,
+  runningTasks,
 });
 
 export default rootReducer;
