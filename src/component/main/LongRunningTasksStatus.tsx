@@ -92,29 +92,32 @@ export const LongRunningTasksStatus: React.FC = () => {
           <p>{i18n("longrunningtasks.description")}</p>
         </DropdownItem>
 
-        {Object.keys(runningTasks).map((uuid, i) => (
-          <DropdownItem
-            key={"long-running-task-" + uuid + i}
-            text={true}
-            className="long-running-tasks-task"
-          >
-            {icon(runningTasks[uuid], i18n)}
-            <span>{i18n(runningTasks[uuid].name)}</span>
-            <If
-              expression={
-                !!runningTasks[uuid].startedAt &&
-                runningTasks[uuid].state === LongRunningTaskState.RUNNING
-              }
+        {Object.keys(runningTasks).map((uuid, i) => {
+          const task = runningTasks[uuid];
+          return (
+            <DropdownItem
+              key={"long-running-task-" + uuid + i}
+              text={true}
+              className="long-running-tasks-task"
             >
-              <span className="text-muted">
-                <DurationDisplay
-                  since={runningTasks[uuid].startedAt!}
-                  tasksToUpdate={tasksToUpdate}
-                />
-              </span>
-            </If>
-          </DropdownItem>
-        ))}
+              {icon(task, i18n)}
+              <span>{i18n(task.name)}</span>
+              <If
+                expression={
+                  !!task.startedAt &&
+                  task.state === LongRunningTaskState.RUNNING
+                }
+              >
+                <span className="text-muted">
+                  <DurationDisplay
+                    since={task.startedAt!}
+                    tasksToUpdate={tasksToUpdate}
+                  />
+                </span>
+              </If>
+            </DropdownItem>
+          );
+        })}
       </DropdownMenu>
     </UncontrolledDropdown>
   );

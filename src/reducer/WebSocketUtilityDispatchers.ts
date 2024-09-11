@@ -24,6 +24,7 @@ export function updateLongRunningTasks(message: IMessage, action: Action) {
       !(
         task &&
         task.state &&
+        isString(task.uuid) &&
         isString(task.name) &&
         LongRunningTaskState[task.state] &&
         (isNumber(task.startedAt) || !task.startedAt)
