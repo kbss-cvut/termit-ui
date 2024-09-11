@@ -86,7 +86,12 @@ export type StompSessionProviderType = (
  */
 export const WebSocketWrapper: React.FC<{
   Provider?: StompSessionProviderType;
-}> = ({ children, Provider = StompSessionProvider }) => {
+  loadDispatchers?: boolean;
+}> = ({
+  children,
+  Provider = StompSessionProvider,
+  loadDispatchers = true,
+}) => {
   const [securityToken, setSecurityToken] = useState<string>("");
 
   useEffect(() => {
@@ -115,7 +120,7 @@ export const WebSocketWrapper: React.FC<{
         console.warn("Unhandled STOMP receipt", receipt)
       }
     >
-      {registerDispatchers()}
+      {loadDispatchers && registerDispatchers()}
       {children}
     </Provider>
   );
