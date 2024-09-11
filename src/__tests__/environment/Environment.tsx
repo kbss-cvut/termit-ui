@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import TermItState from "../../model/TermItState";
-import { mock as stompMock } from "react-stomp-hooks";
+import { mock as stompMock, StompSessionProvider } from "react-stomp-hooks";
 // @ts-ignore
 import TimeAgo from "javascript-time-ago";
 import IntlData from "../../model/IntlData";
@@ -91,3 +91,7 @@ export function withWebSocket(node: ReactElement) {
     </WebSocketWrapper>
   );
 }
+
+export const webSocketProviderWrappingComponentOptions = {
+  wrappingComponent: StompSessionProvider,
+};

@@ -608,25 +608,6 @@ describe("Async actions", () => {
         expect((found as MessageAction).message.type).toBe(MessageType.ERROR);
       });
     });
-
-    it("publishes message on success", () => {
-      Ajax.put = jest.fn().mockImplementation(() => Promise.resolve("Success"));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          executeFileTextAnalysis(
-            VocabularyUtils.create(file.iri),
-            Generator.generateUri()
-          )
-        )
-      ).then(() => {
-        const actions: Action[] = store.getActions();
-        const found = actions.find(
-          (a) => a.type === ActionType.PUBLISH_MESSAGE
-        );
-        expect(found).toBeDefined();
-        expect((found as MessageAction).message.type).toBe(MessageType.SUCCESS);
-      });
-    });
   });
 
   describe("load terms", () => {

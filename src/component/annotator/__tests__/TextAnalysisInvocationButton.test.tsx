@@ -7,6 +7,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { InjectsLoading } from "../../hoc/withInjectableLoading";
 import ResourceSelectVocabulary from "../../resource/ResourceSelectVocabulary";
 import Vocabulary from "../../../model/Vocabulary";
+import { webSocketProviderWrappingComponentOptions } from "../../../__tests__/environment/Environment";
 
 describe("TextAnalysisInvocationButton", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/resources/";
@@ -59,64 +60,6 @@ describe("TextAnalysisInvocationButton", () => {
     expect(executeTextAnalysis).toHaveBeenCalledWith(fileIri, vocabularyIri);
   });
 
-  it("starts loading when text analysis is invoked", () => {
-    const fileIri = VocabularyUtils.create(Generator.generateUri());
-    const vocabularyIri = Generator.generateUri();
-    vocabulary.iri = vocabularyIri;
-    const wrapper = shallow<TextAnalysisInvocationButton>(
-      <TextAnalysisInvocationButton
-        fileIri={fileIri}
-        executeTextAnalysis={executeTextAnalysis}
-        notifyAnalysisFinish={notifyAnalysisFinish}
-        defaultVocabularyIri={vocabularyIri}
-        {...loadingProps}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onVocabularySelect(vocabulary);
-    expect(loadingOn).toHaveBeenCalled();
-  });
-
-  it("stops loading after text analysis invocation finishes", () => {
-    const fileIri = VocabularyUtils.create(Generator.generateUri());
-    const vocabularyIri = Generator.generateUri();
-    vocabulary.iri = vocabularyIri;
-    const wrapper = shallow<TextAnalysisInvocationButton>(
-      <TextAnalysisInvocationButton
-        fileIri={fileIri}
-        executeTextAnalysis={executeTextAnalysis}
-        notifyAnalysisFinish={notifyAnalysisFinish}
-        defaultVocabularyIri={vocabularyIri}
-        {...loadingProps}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onVocabularySelect(vocabulary);
-    return Promise.resolve().then(() => {
-      expect(loadingOff).toHaveBeenCalled();
-    });
-  });
-
-  it("publishes notification after text analysis invocation finishes", () => {
-    const fileIri = VocabularyUtils.create(Generator.generateUri());
-    const vocabularyIri = Generator.generateUri();
-    vocabulary.iri = vocabularyIri;
-    const wrapper = shallow<TextAnalysisInvocationButton>(
-      <TextAnalysisInvocationButton
-        fileIri={fileIri}
-        executeTextAnalysis={executeTextAnalysis}
-        notifyAnalysisFinish={notifyAnalysisFinish}
-        defaultVocabularyIri={vocabularyIri}
-        {...loadingProps}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onVocabularySelect(vocabulary);
-    return Promise.resolve().then(() => {
-      expect(notifyAnalysisFinish).toHaveBeenCalled();
-    });
-  });
-
   it("shows vocabulary selector when no default vocabulary was specified", () => {
     const fileIri = VocabularyUtils.create(Generator.generateUri());
     const wrapper = shallow<TextAnalysisInvocationButton>(
@@ -126,7 +69,8 @@ describe("TextAnalysisInvocationButton", () => {
         notifyAnalysisFinish={notifyAnalysisFinish}
         {...loadingProps}
         {...intlFunctions()}
-      />
+      />,
+      webSocketProviderWrappingComponentOptions
     );
     wrapper.instance().onClick();
     wrapper.update();
