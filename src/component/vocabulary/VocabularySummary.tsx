@@ -233,7 +233,7 @@ export class VocabularySummary extends EditableComponent<
       buttons.push(
         <IfVocabularyActionAuthorized
           requiredAccessLevel={AccessLevel.WRITE}
-          key="vocabulary.summary.edit.if"
+          key="vocabulary-summary-edit"
           vocabulary={vocabulary}
         >
           <Button
@@ -253,7 +253,7 @@ export class VocabularySummary extends EditableComponent<
     buttons.push(
       <IfVocabularyActionAuthorized
         requiredAccessLevel={AccessLevel.SECURITY}
-        key="vocabulary.summary.remove.if"
+        key="vocabulary-summary-remove"
         vocabulary={vocabulary}
       >
         <Button
@@ -271,7 +271,7 @@ export class VocabularySummary extends EditableComponent<
     );
     buttons.push(
       <VocabularyActions
-        key="vocabulary.summary.actions"
+        key="vocabulary-summary-actions"
         vocabulary={vocabulary}
         onAnalyze={this.onExecuteTextAnalysisOnAllTerms}
         onExport={this.onExportToggle}
