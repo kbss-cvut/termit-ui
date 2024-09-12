@@ -875,13 +875,11 @@ const cs = {
     "longrunningtasks.state.done": "Dokončeno",
     "longrunningtasks.state.pending": "Bude spuštěno",
     "longrunningtasks.state.running": "Probíhá",
-    "longrunningtasks.name.termDefinitionAnalysis":
-      "Textová analýza definice pojmu",
+    "longrunningtasks.name.termDefinitionAnalysis": "Analýza definice pojmu",
     "longrunningtasks.name.allTermsVocabularyAnalysis":
-      "Textová analýza pojmů ze slovníku",
-    "longrunningtasks.name.allVocabulariesAnalysis":
-      "Textová analýza všech slovníků",
-    "longrunningtasks.name.fileAnalysis": "Textová analýza souboru",
+      "Analýza pojmů ze slovníku",
+    "longrunningtasks.name.allVocabulariesAnalysis": "Analýza všech slovníků",
+    "longrunningtasks.name.fileAnalysis": "Analýza souboru",
     "longrunningtasks.name.vocabularyValidation": "Validace slovníku",
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generování anotací dokumentu",

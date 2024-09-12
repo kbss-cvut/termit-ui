@@ -865,12 +865,12 @@ const en = {
     "longrunningtasks.state.pending": "Pending",
     "longrunningtasks.state.running": "Running",
     "longrunningtasks.name.termDefinitionAnalysis":
-      "Text analysis of a term definition",
+      "Analysis of a term definition",
     "longrunningtasks.name.allTermsVocabularyAnalysis":
-      "Text analysis of terms in a vocabulary",
+      "Analysis of terms in a vocabulary",
     "longrunningtasks.name.allVocabulariesAnalysis":
-      "Text analysis of all vocabularies",
-    "longrunningtasks.name.fileAnalysis": "Text analysis of a file",
+      "Analysis of all vocabularies",
+    "longrunningtasks.name.fileAnalysis": "Analysis of a file",
     "longrunningtasks.name.vocabularyValidation": "Vocabulary validation",
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generation of a file annotations",
