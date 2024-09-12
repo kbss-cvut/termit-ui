@@ -1,11 +1,7 @@
 import { IMessage } from "react-stomp-hooks";
 import { Action } from "redux";
 import { ThunkDispatch } from "../util/Types";
-import {
-  LongRunningTask,
-  LongRunningTaskState,
-} from "../model/LongRunningTask";
-import { isNumber, isString } from "lodash";
+import { LongRunningTask } from "../model/LongRunningTask";
 import {
   asyncActionSuccess,
   asyncActionSuccessWithPayload,
@@ -18,28 +14,20 @@ export function updateLongRunningTasks(message: IMessage, action: Action) {
       return;
     }
 
-    const task: LongRunningTask = JSON.parse(message.body);
+    const tasks: { [uuid: string]: LongRunningTask } = JSON.parse(message.body);
 
-    if (
-      !(
-        task &&
-        task.state &&
-        isString(task.uuid) &&
-        isString(task.name) &&
-        LongRunningTaskState[task.state] &&
-        (isNumber(task.startedAt) || !task.startedAt)
-      ) ||
-      task.name.trim() === ""
-    ) {
-      return;
-    }
+    const mapped = Object.keys(tasks).map((uuid) => {
+      const task = tasks[uuid];
+      if (task.startedAt) {
+        // @ts-ignore
+        task.startedAt = new Date(task.startedAt * 1000);
+        task.startedAt.setMilliseconds(0); // round to second
+      }
 
-    if (task.startedAt) {
-      task.startedAt = new Date(task.startedAt * 1000);
-    }
+      task.name = "longrunningtasks.name." + task.name;
+      return task;
+    });
 
-    task.name = "longrunningtasks.name." + task.name;
-
-    dispatch(asyncActionSuccessWithPayload(action, task));
+    dispatch(asyncActionSuccessWithPayload(action, mapped));
   };
 }

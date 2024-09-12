@@ -41,10 +41,7 @@ import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
-import {
-  LongRunningTask,
-  LongRunningTaskState,
-} from "../model/LongRunningTask";
+import { LongRunningTask } from "../model/LongRunningTask";
 
 function isAsyncSuccess(action: AsyncAction) {
   return action.status === AsyncActionStatus.SUCCESS;
@@ -707,20 +704,14 @@ function accessLevels(
 }
 
 function runningTasks(
-  state: { [key: string]: LongRunningTask } = {},
-  action: AsyncActionSuccess<LongRunningTask>
+  state: { [uuid: string]: LongRunningTask } = {},
+  action: AsyncActionSuccess<{ [uuid: string]: LongRunningTask }>
 ) {
   if (action.type === ActionType.LONG_RUNNING_TASKS_UPDATE) {
     if (!action.payload) {
       return {};
     }
-    const newState = Object.assign({}, state, {
-      [action.payload.uuid]: action.payload,
-    });
-    if (action.payload.state === LongRunningTaskState.DONE) {
-      delete newState[action.payload.uuid];
-    }
-    return newState;
+    return Object.assign({}, action.payload);
   }
   return state;
 }
