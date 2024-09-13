@@ -796,6 +796,8 @@ const cs = {
       "Excel obsahuje více pojmů se stejným identifikátorem.",
     "error.vocabulary.import.excel.duplicateLabel":
       "Excel obsahuje více pojmů se stejným názvem.",
+    "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
+      'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
