@@ -799,6 +799,10 @@ const cs = {
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
 
+    "error.invalidUriCharacter":
+      'Neplatný identifikátor: "{uri}", neočekával se znak "{char}" na pozici {index}.',
+    "error.invalidIdentifier": 'Neplatný identifikátor: "{uri}"',
+
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
     "history.empty": "Zaznamenaná historie je prázdná.",

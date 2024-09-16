@@ -791,6 +791,10 @@ const en = {
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Vocabulary already contains a term with label "{label}" with a different identifier than the imported one. Existing identifier: {existingUri}',
 
+    "error.invalidUriCharacter":
+      'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
+    "error.invalidIdentifier": 'Invalid identifier: "{uri}"',
+
     "history.label": "Change history",
     "history.loading": "Loading history...",
     "history.empty": "The recorded history of this asset is empty.",
