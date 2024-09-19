@@ -800,7 +800,7 @@ const cs = {
       'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
 
     "error.invalidUriCharacter":
-      'Neplatný identifikátor: "{uri}", neočekával se znak "{char}" na pozici {index}.',
+      'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',
     "error.invalidIdentifier": 'Neplatný identifikátor: "{uri}"',
 
     "history.label": "Historie změn",
