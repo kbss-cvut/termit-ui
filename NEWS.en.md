@@ -1,3 +1,10 @@
+#### Version 3.2.0
+
+- Added support for importing a vocabulary from MS Excel.
+- Optimized performance of repeated term annotation and vocabulary validation.
+- Annotator UI improvements, it is now possible to hide occurrences of a selected type.
+- Support disabling generation of identifiers containing accented characters.
+
 #### Version 3.1.3
 
 - Added invitation-based new account registration (admin no longer has to set user's password).
