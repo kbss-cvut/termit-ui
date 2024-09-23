@@ -88,7 +88,7 @@ export default connect(
   (dispatch: ThunkDispatch) => {
     return {
       loadVocabulary: (iri: IRI, timestamp?: string) =>
-        dispatch(loadVocabulary(iri, false, timestamp)),
+        dispatch(loadVocabulary(iri, timestamp)),
       loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
         dispatch(loadTerm(termName, vocabularyIri, timestamp)),
     };

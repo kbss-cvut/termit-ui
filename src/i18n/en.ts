@@ -301,13 +301,21 @@ const en = {
     "vocabulary.summary.import.action.tooltip":
       "Restore the vocabulary from its previously exported version",
     "vocabulary.summary.import.dialog.title":
-      "Restore previous vocabulary version",
-    "vocabulary.summary.import.dialog.message":
-      "Upload a previously exported version of this vocabulary " +
-      "(in the SKOS formát and containing a single skos:ConceptScheme with IRI <IRI-OF-THIS-VOCABULARY>/glosář).",
+      "Restore exported vocabulary version",
+    "vocabulary.summary.import.dialog.label":
+      "Upload an exported version of this vocabulary",
+    "vocabulary.summary.import.dialog.skosImport":
+      "In the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
+    "vocabulary.summary.import.dialog.excelImport":
+      "MS Excel file corresponding to <a>this template</a>",
+    "vocabulary.summary.import.excel.template.tooltip":
+      "Download a MS Excel template",
+    "vocabulary.summary.import.nonEmpty.warning":
+      "Vocabulary is not empty, existing data will be overwritten by the imported.",
+    "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",
-    "vocabulary.import.action.tooltip": "SKOS vocabulary import.",
-    "vocabulary.import.dialog.title": "Import SKOS vocabulary",
+    "vocabulary.import.dialog.title": "Import vocabulary",
     "vocabulary.import.dialog.message":
       "Imported file must be in the SKOS format. " +
       "The file must contain exactly one instance of skos:ConceptScheme.",
@@ -381,6 +389,26 @@ const en = {
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
+
+    "vocabulary.remove.dialog.text.nonEmpty":
+      "Do you really want to remove the <b>non-empty</b> vocabulary?",
+    "vocabulary.remove.dialog.text.empty":
+      "Do you really want to remove the <b>empty</b> vocabulary?",
+    "vocabulary.remove.dialog.text.termCount":
+      "Deleting it will permanently delete {count, plural, one {<b>1</b> term} other {<b>#</b> terms}}, document and all related files.",
+    "vocabulary.remove.dialog.text.permanent":
+      "This action is permanent and cannot be undone!",
+    "vocabulary.remove.dialog.relationsExists.text":
+      "Relations with other vocabularies exist, the vocabulary cannot be removed.",
+    "vocabulary.remove.dialog.relations": "Relations",
+    "vocabulary.remove.dialog.relations.error.cantRemove":
+      "Vocabulary cannot be removed!",
+    "vocabulary.remove.dialog.relations.error.vocabularyRelations":
+      "{vocabularyRelations, plural, one {<b>1</b> relation to another vocabulary} other {<b>#</b> relations with other vocabularies}} exists.",
+    "vocabulary.remove.dialog.relations.error.termsRelations":
+      "{termsRelations, plural, one {<b>1</b> term relation} other {<b>#</b> term relations}} exists.",
+    "vocabulary.remove.dialog.input.label":
+      "To confirm, enter the name of the vocabulary",
 
     "resource.created.message": "Resource successfully created.",
     "resource.updated.message": "Resource successfully updated.",
@@ -575,7 +603,7 @@ const en = {
       "Unable to determine vocabulary for annotating this file. Please, select one...",
     "file.upload": "Upload",
     "file.upload.hint":
-      "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8.",
+      "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8 or a valid MS Excel file.",
     "file.upload.size.exceeded": "File is too large.",
 
     "dataset.license": "License",
@@ -756,6 +784,16 @@ const en = {
       "The file could not be uploaded because it exceeds the configured maximum file size limit.",
     "error.term.state.terminal.liveChildren":
       "Cannot set term state to a terminal when it has at least one sub term in non-terminal state.",
+    "error.vocabulary.import.excel.duplicateIdentifier":
+      "The Excel file contains multiple terms with the same identifier.",
+    "error.vocabulary.import.excel.duplicateLabel":
+      "The Excel file contains multiple terms with the same label.",
+    "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
+      'Vocabulary already contains a term with label "{label}" with a different identifier than the imported one. Existing identifier: {existingUri}',
+
+    "error.invalidUriCharacter":
+      'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
+    "error.invalidIdentifier": 'Invalid identifier: "{uri}"',
 
     "history.label": "Change history",
     "history.loading": "Loading history...",
@@ -827,6 +865,21 @@ const en = {
     "auth.action.unauthorized": "You have insufficient rights for this action.",
     "auth.view.unauthorized": "You have insufficient rights to view this.",
     "auth.notEditable.message.readOnly": "This { type } is read only.",
+
+    "longrunningtasks.description": "The system is currently running:",
+    "longrunningtasks.state.done": "Completed",
+    "longrunningtasks.state.pending": "Pending",
+    "longrunningtasks.state.running": "Running",
+    "longrunningtasks.name.termDefinitionAnalysis":
+      "Analysis of a term definition",
+    "longrunningtasks.name.allTermsVocabularyAnalysis":
+      "Analysis of terms in a vocabulary",
+    "longrunningtasks.name.allVocabulariesAnalysis":
+      "Analysis of all vocabularies",
+    "longrunningtasks.name.fileAnalysis": "Analysis of a file",
+    "longrunningtasks.name.vocabularyValidation": "Vocabulary validation",
+    "longrunningtasks.name.documentAnnotationGeneration":
+      "Generation of a file annotations",
   },
 };
 

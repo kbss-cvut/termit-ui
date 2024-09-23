@@ -41,6 +41,7 @@ import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
+import { LongRunningTask } from "../model/LongRunningTask";
 
 function isAsyncSuccess(action: AsyncAction) {
   return action.status === AsyncActionStatus.SUCCESS;
@@ -202,7 +203,7 @@ function vocabularies(
       }
     case ActionType.LOGOUT:
       return {};
-    case ActionType.IMPORT_SKOS:
+    case ActionType.IMPORT_VOCABULARY:
       if (isAsyncSuccess(action)) {
         return {};
       }
@@ -658,7 +659,21 @@ function annotatorLegendFilter(
     newState.set(action.annotationClass, action.annotationOrigin, !oldValue);
 
     return newState;
+  } else if (
+    action.type === ActionType.SET_ANNOTATOR_LEGEND_FILTER &&
+    action.enabled !== undefined
+  ) {
+    const newState = state.clone();
+
+    newState.set(
+      action.annotationClass,
+      action.annotationOrigin,
+      action.enabled
+    );
+
+    return newState;
   }
+
   return state;
 }
 
@@ -684,6 +699,19 @@ function accessLevels(
     const newState = {};
     action.payload.forEach((r) => (newState[r.iri] = r));
     return newState;
+  }
+  return state;
+}
+
+function runningTasks(
+  state: { [uuid: string]: LongRunningTask } = {},
+  action: AsyncActionSuccess<{ [uuid: string]: LongRunningTask }>
+) {
+  if (action.type === ActionType.LONG_RUNNING_TASKS_UPDATE) {
+    if (!action.payload) {
+      return {};
+    }
+    return Object.assign({}, action.payload);
   }
   return state;
 }
@@ -724,6 +752,7 @@ const rootReducer = combineReducers<TermItState>({
   annotatorLegendFilter,
   users,
   accessLevels,
+  runningTasks,
 });
 
 export default rootReducer;

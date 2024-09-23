@@ -34,6 +34,7 @@ const constants = {
   // Prefix of the server REST API
   API_PREFIX,
   PUBLIC_API_PREFIX: `${API_PREFIX}/public`,
+  WEBSOCKET_URL: "",
   APP_NAME: "TermIt",
   // Will be replaced with actual version during build
   VERSION: getEnv("VERSION"),
@@ -120,6 +121,17 @@ const constants = {
 
   // Size of page fetched from server
   DEFAULT_PAGE_SIZE: 100,
+
+  WEBSOCKET_ENDPOINT: {
+    VOCABULARIES_VALIDATION: "/vocabularies/validation",
+    VOCABULARIES_TEXT_ANALYSIS_FINISHED_TERM_DEFINITION:
+      "/vocabularies/text_analysis/finished/term-definition",
+    VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE:
+      "/vocabularies/text_analysis/finished/file",
+    LONG_RUNNING_TASKS_UPDATE: "/long-running-tasks/update",
+  },
+  // Number of milliseconds after which a websocket request should be retried
+  WEBSOCKET_REQUEST_TIMEOUT: 60 * 1000 /* 1 minute */,
 };
 
 constants.ANNOTATOR_TUTORIAL[constants.LANG.CS.locale] =
@@ -133,5 +145,7 @@ constants.STORAGE_JWT_KEY = `${constants.APP_NAME}-${deployment}${constants.Head
 constants.STORAGE_LANG_KEY = `${constants.APP_NAME}-${deployment}LANG`;
 constants.STORAGE_TABLE_PAGE_SIZE_KEY = `${constants.APP_NAME}-${deployment}TABLE_PAGE_SIZE`;
 constants.STORAGE_ANNOTATOR_LEGEND_OPEN_KEY = `${constants.APP_NAME}-${deployment}ANNOTATOR_LEGEND_OPEN`;
+
+constants.WEBSOCKET_URL = `${constants.SERVER_URL.replace(/^http/, "ws")}/ws`;
 
 export default constants;

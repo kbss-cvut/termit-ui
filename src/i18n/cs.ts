@@ -307,19 +307,28 @@ const cs = {
       "Nepodařilo se získat data z odpovědi serveru.",
     "vocabulary.summary.import.action": "Obnovit ze zálohy",
     "vocabulary.summary.import.action.tooltip":
-      "Obnovit slovník ze zálohy ve formátu SKOS",
-    "vocabulary.summary.import.dialog.title": "Obnova dřívější verze slovníku",
-    "vocabulary.summary.import.dialog.message":
-      "Nahrajte dříve vyexportovanou verzi tohoto slovníku " +
-      "(ve formátu SKOS a obsahující jedinou skos:ConceptScheme ve tvaru <IRI-TOHOTO-SLOVNÍKU>/glosář).",
+      "Obnovit slovník ze zálohy ve formátu SKOS či MS Excel",
+    "vocabulary.summary.import.dialog.title":
+      "Obnova exportované verze slovníku",
+    "vocabulary.summary.import.dialog.label":
+      "Nahrajte vyexportovanou verzi tohoto slovníku ",
+    "vocabulary.summary.import.dialog.skosImport":
+      "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář.",
+    "vocabulary.summary.import.dialog.excelImport":
+      "MS Excel odpovídající <a>této šabloně</a>",
+    "vocabulary.summary.import.excel.template.tooltip":
+      "Stáhnout šablonu pro MS Excel",
+    "vocabulary.summary.import.nonEmpty.warning":
+      "Slovník není prázdný, stávající data budou přepsána importovanými.",
+    "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",
-    "vocabulary.import.action.tooltip": "Import SKOS slovníku.",
-    "vocabulary.import.dialog.title": "Importovat SKOS slovník",
+    "vocabulary.import.dialog.title": "Importovat slovník",
     "vocabulary.import.dialog.message":
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
     "vocabulary.import.title": "Importovat slovník",
-    "vocabulary.import.success": "Slovník úspěšně importován",
+    "vocabulary.import.success": "Slovník úspěšně importován.",
     "vocabulary.import.allow-changing-identifiers":
       "Povolit změnu identifikátorů",
     "vocabulary.import.allow-changing-identifiers.tooltip":
@@ -387,6 +396,25 @@ const cs = {
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",
 
+    "vocabulary.remove.dialog.text.nonEmpty":
+      "Opravdu chcete odstranit <b>neprázdný</b> slovník?",
+    "vocabulary.remove.dialog.text.empty":
+      "Opravdu chcete odstranit <b>prázdný</b> slovník?",
+    "vocabulary.remove.dialog.text.termCount":
+      "Jeho odstraněním dojde k trvalému smazání {count, plural, one {<b>1</b> pojmu} other {<b>#</b> pojmů}}, dokumentu a všech souvisejících souborů.",
+    "vocabulary.remove.dialog.text.permanent": "Tato akce je nevratná!",
+    "vocabulary.remove.dialog.relationsExists.text":
+      "Existují vazby na jiné slovníky, slovník nezle odstranit.",
+    "vocabulary.remove.dialog.relations": "Vazby",
+    "vocabulary.remove.dialog.relations.error.cantRemove":
+      "Slovník nelze odstranit!",
+    "vocabulary.remove.dialog.relations.error.vocabularyRelations":
+      "Existuje {vocabularyRelations, plural, one {<b>1</b> vazba} other {<b>#</b> vazeb}} s jiným slovníkem",
+    "vocabulary.remove.dialog.relations.error.termsRelations":
+      "Existuje {termsRelations, plural, one {<b>1</b> vazba na pojem} other {<b>#</b> vazeb na pojmy}} z tohoto slovníku.",
+    "vocabulary.remove.dialog.input.label":
+      "Pro ověření, zadejte název slovníku",
+
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",
     "resource.removed.message": "Zdroj by odstraněn.",
@@ -409,7 +437,7 @@ const cs = {
       "Přidat nový soubor do tohoto dokumentu",
     "resource.metadata.document.files.actions.add.dialog.title": "Nový soubor",
     "resource.metadata.document.files.empty":
-      "Žádné soubory nenalezeny. Vytvořte nějaký...",
+      "Žádné soubory nenalezeny. Přidejte nějaký...",
     "resource.file.vocabulary.create": "Přidat soubor",
 
     "term.language.selector.item":
@@ -584,7 +612,7 @@ const cs = {
       "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
     "file.upload": "Nahrát",
     "file.upload.hint":
-      "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8.",
+      "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8, nebo validní MS Excel.",
     "file.upload.size.exceeded": "Soubor je příliš velký.",
 
     "dataset.license": "Licence",
@@ -764,6 +792,16 @@ const cs = {
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
     "error.term.state.terminal.liveChildren":
       "Pojmu nelze nastavit koncový stav, dokud má alespoň jednoho potomka v jiném než koncovém stavu.",
+    "error.vocabulary.import.excel.duplicateIdentifier":
+      "Excel obsahuje více pojmů se stejným identifikátorem.",
+    "error.vocabulary.import.excel.duplicateLabel":
+      "Excel obsahuje více pojmů se stejným názvem.",
+    "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
+      'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
+
+    "error.invalidUriCharacter":
+      'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',
+    "error.invalidIdentifier": 'Neplatný identifikátor: "{uri}"',
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
@@ -838,6 +876,19 @@ const cs = {
     "auth.action.unauthorized": "K této akci nemáte dostatečná práva.",
     "auth.view.unauthorized": "K zobrazení nemáte dostatečná práva.",
     "auth.notEditable.message.readOnly": "Tento { type } je pouze pro čtení.",
+
+    "longrunningtasks.description": "V systému právě probíhá:",
+    "longrunningtasks.state.done": "Dokončeno",
+    "longrunningtasks.state.pending": "Bude spuštěno",
+    "longrunningtasks.state.running": "Probíhá",
+    "longrunningtasks.name.termDefinitionAnalysis": "Analýza definice pojmu",
+    "longrunningtasks.name.allTermsVocabularyAnalysis":
+      "Analýza pojmů ze slovníku",
+    "longrunningtasks.name.allVocabulariesAnalysis": "Analýza všech slovníků",
+    "longrunningtasks.name.fileAnalysis": "Analýza souboru",
+    "longrunningtasks.name.vocabularyValidation": "Validace slovníku",
+    "longrunningtasks.name.documentAnnotationGeneration":
+      "Generování anotací dokumentu",
   },
 };
 

@@ -8,7 +8,7 @@ import { GoTrashcan } from "react-icons/go";
 import { useI18n } from "../hook/useI18n";
 
 const ErrorLogViewer: React.FC = () => {
-  const { i18n, locale } = useI18n();
+  const { i18n, formatMessage, locale } = useI18n();
   const errors = useSelector((state: TermItState) => state.errors);
   const dispatch: ThunkDispatch = useDispatch();
   const clear = () => {
@@ -44,7 +44,7 @@ const ErrorLogViewer: React.FC = () => {
             let error = item.error;
             if (error.messageId) {
               error = Object.assign({}, error, {
-                message: i18n(error.messageId),
+                message: formatMessage(error.messageId, error.values),
               });
             }
             return (

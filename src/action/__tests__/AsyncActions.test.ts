@@ -31,7 +31,6 @@ import {
   updateTerm,
   updateVocabulary,
   uploadFileContent,
-  validateVocabulary,
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, { param } from "../../util/Ajax";
@@ -42,7 +41,7 @@ import Vocabulary, {
   CONTEXT as VOCABULARY_CONTEXT,
 } from "../../model/Vocabulary";
 import Vocabulary2 from "../../util/VocabularyUtils";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
+import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
 import ActionType, {
   AsyncAction,
@@ -70,7 +69,6 @@ import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import NotificationType from "../../model/NotificationType";
 import { langString } from "../../model/MultilingualString";
-import ValidationResult from "../../model/ValidationResult";
 import UserRole from "../../model/UserRole";
 
 jest.mock("../../util/Routing");
@@ -335,24 +333,6 @@ describe("Async actions", () => {
       });
     });
 
-    it("dispatches vocabulary validation action on success", () => {
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve(require("../../rest-mock/vocabulary"))
-        );
-      const vocabularyIri: IRI = { fragment: "metropolitan-plan" };
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadVocabulary(vocabularyIri))
-      ).then(() => {
-        const validationAction = store
-          .getActions()
-          .find((a) => a.type === ActionType.LOAD_TERM_COUNT);
-        expect(validationAction).toBeDefined();
-        expect(validationAction.vocabularyIri).toEqual(vocabularyIri);
-      });
-    });
-
     it("dispatches vocabulary term count loading action on success", () => {
       Ajax.get = jest
         .fn()
@@ -364,10 +344,11 @@ describe("Async actions", () => {
           loadVocabulary({ fragment: "metropolitan-plan" })
         )
       ).then(() => {
-        const validationAction = store
+        const termCountAction: AsyncAction = store
           .getActions()
-          .find((a) => a.type === ActionType.FETCH_VALIDATION_RESULTS);
-        expect(validationAction).toBeDefined();
+          .find((a) => a.type === ActionType.LOAD_TERM_COUNT);
+        expect(termCountAction).toBeDefined();
+        expect(termCountAction.status).toBe(AsyncActionStatus.REQUEST);
       });
     });
 
@@ -441,7 +422,9 @@ describe("Async actions", () => {
           .getActions()
           .find((a) => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
         expect(loadImportsAction).toBeDefined();
-        expect((Ajax.get as jest.Mock).mock.calls.length).toBeGreaterThan(2);
+        expect(
+          (Ajax.get as jest.Mock).mock.calls.length
+        ).toBeGreaterThanOrEqual(2);
         const url = (Ajax.get as jest.Mock).mock.calls[1][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
       });
@@ -623,25 +606,6 @@ describe("Async actions", () => {
         );
         expect(found).toBeDefined();
         expect((found as MessageAction).message.type).toBe(MessageType.ERROR);
-      });
-    });
-
-    it("publishes message on success", () => {
-      Ajax.put = jest.fn().mockImplementation(() => Promise.resolve("Success"));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          executeFileTextAnalysis(
-            VocabularyUtils.create(file.iri),
-            Generator.generateUri()
-          )
-        )
-      ).then(() => {
-        const actions: Action[] = store.getActions();
-        const found = actions.find(
-          (a) => a.type === ActionType.PUBLISH_MESSAGE
-        );
-        expect(found).toBeDefined();
-        expect((found as MessageAction).message.type).toBe(MessageType.SUCCESS);
       });
     });
   });
@@ -1001,24 +965,6 @@ describe("Async actions", () => {
         expect(notifyAction.notification.updated).toEqual(updated);
       });
     });
-
-    it("dispatches vocabulary validation action after save", () => {
-      const original = Generator.generateTerm(
-        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary"
-      );
-      const updated = new Term(
-        Object.assign({}, original, { label: "Updated label" })
-      );
-      Ajax.put = jest.fn().mockResolvedValue(undefined);
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(updateTerm(updated))
-      ).then(() => {
-        const validationAction = store
-          .getActions()
-          .find((a) => a.type === ActionType.FETCH_VALIDATION_RESULTS);
-        expect(validationAction).toBeDefined();
-      });
-    });
   });
 
   describe("remove term", () => {
@@ -1357,92 +1303,6 @@ describe("Async actions", () => {
         expect(payload.label).toEqual(data.label);
         expect(payload.comment).toEqual(data.comment);
         expect(payload["@context"]).toEqual(RDFS_RESOURCE_CONTEXT);
-      });
-    });
-  });
-
-  describe("validate results", () => {
-    const v = VocabularyUtils.create("");
-    it("extracts validation results from incoming JSON", () => {
-      const validationResults = require("../../rest-mock/validation-results.json");
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(validationResults));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(validateVocabulary(v))
-      ).then(() => {
-        const successAction: AsyncActionSuccess<{
-          [vocabularyIri: string]: ValidationResult[];
-        }> = store.getActions()[1];
-        const result = successAction.payload[v.toString()];
-        const array =
-          result[
-            "http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"
-          ];
-        expect(array.length).toEqual(validationResults.length);
-        // @ts-ignore
-        array.sort((a, b) => a.term.iri.localeCompare(b.term.iri));
-        validationResults.sort((a: object, b: object) =>
-          a.toString().localeCompare(b.toString())
-        );
-        for (let i = 0; i < validationResults.length; i++) {
-          expect(array[i].term.iri).toEqual(
-            validationResults[i]["http://www.w3.org/ns/shacl#focusNode"]["@id"]
-          );
-          expect(array[i].severity.iri).toEqual(
-            validationResults[i]["http://www.w3.org/ns/shacl#resultSeverity"][
-              "@id"
-            ]
-          );
-          expect(Object.getOwnPropertyNames(array[i].message).length).toEqual(
-            validationResults[i]["http://www.w3.org/ns/shacl#resultMessage"]
-              .length
-          );
-        }
-      });
-    });
-
-    it("extracts single resource as an array of resources from incoming JSON-LD", () => {
-      const validationResults = require("../../rest-mock/validation-results.json");
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(validationResults));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(validateVocabulary(v))
-      ).then(() => {
-        const successAction: AsyncActionSuccess<{
-          [vocabularyIri: string]: ValidationResult[];
-        }> = store.getActions()[1];
-        const result = successAction.payload[v.toString()];
-        const array =
-          result[
-            "http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"
-          ];
-        expect(array).toBeDefined();
-        expect(array[0].term.iri).toEqual(
-          validationResults[0]["http://www.w3.org/ns/shacl#focusNode"]["@id"]
-        );
-        expect(array[0].severity.iri).toEqual(
-          validationResults[0]["http://www.w3.org/ns/shacl#resultSeverity"][
-            "@id"
-          ]
-        );
-        expect(Object.getOwnPropertyNames(array[0].message).length).toEqual(
-          validationResults[0]["http://www.w3.org/ns/shacl#resultMessage"]
-            .length
-        );
-      });
-    });
-
-    it("does nothing when loading action is already pending", () => {
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      store.getState().pendingActions[ActionType.FETCH_VALIDATION_RESULTS] = {
-        status: AsyncActionStatus.REQUEST,
-      };
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(validateVocabulary(v))
-      ).then(() => {
-        expect(Ajax.get).not.toHaveBeenCalled();
       });
     });
   });

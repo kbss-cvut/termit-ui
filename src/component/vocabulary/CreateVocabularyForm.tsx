@@ -31,6 +31,8 @@ interface CreateVocabularyFormProps {
   onCancel: () => void;
   language: string;
   selectLanguage: (lang: string) => void;
+  childrenBefore?: React.ReactNode;
+  childrenAfter?: React.ReactNode;
 }
 
 function generateIri(
@@ -51,6 +53,8 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
   onCancel,
   language,
   selectLanguage,
+  childrenBefore,
+  childrenAfter,
 }) => {
   const { i18n, formatMessage } = useI18n();
   const [iri, setIri] = useState<string>("");
@@ -141,6 +145,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       />
       <Card id="create-vocabulary">
         <CardBody>
+          {childrenBefore}
           <Row>
             <Col xs={12}>
               <Row>
@@ -203,6 +208,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
                   />,
                 ]}
               />
+              {childrenAfter}
               <Row>
                 <Col xs={12}>
                   <ButtonToolbar className="d-flex justify-content-center mt-4">

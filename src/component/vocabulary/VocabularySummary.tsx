@@ -11,11 +11,10 @@ import {
   removeVocabulary,
   updateResource,
   updateVocabulary,
-  validateVocabulary,
 } from "../../action/AsyncActions";
 import { Button } from "reactstrap";
 import { GoPencil } from "react-icons/go";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
+import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
 import EditableComponent, {
   EditableComponentState,
@@ -26,9 +25,8 @@ import Utils from "../../util/Utils";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import CopyIriIcon from "../misc/CopyIriIcon";
 import { FaTrashAlt } from "react-icons/fa";
-import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import WindowTitle from "../misc/WindowTitle";
-import { importSkosIntoExistingVocabulary } from "../../action/AsyncImportActions";
+import { importIntoExistingVocabulary } from "../../action/AsyncImportActions";
 import "./VocabularySummary.scss";
 import VocabularyActions from "./VocabularyActions";
 import ExportVocabularyDialog from "./ExportVocabularyDialog";
@@ -48,15 +46,31 @@ import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuth
 import AccessLevel from "../../model/acl/AccessLevel";
 import { getShortLocale } from "../../util/IntlUtil";
 import { getLocalized } from "../../model/MultilingualString";
+import RemoveVocabularyDialog from "./RemoveVocabularyDialog";
+import { IMessage, withStompClient, withSubscription } from "react-stomp-hooks";
+import { HasStompClient, StompClient } from "../hoc/withStompClient";
+import Constants from "../../util/Constants";
+import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
+import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
 
-interface VocabularySummaryProps extends HasI18n, RouteComponentProps<any> {
+interface VocabularySummaryProps
+  extends HasI18n,
+    RouteComponentProps<any>,
+    HasStompClient {
   vocabulary: Vocabulary;
   configuration: Configuration;
   loadResource: (iri: IRI) => void;
   loadVocabulary: (iri: IRI) => Promise<any>;
+  requestVocabularyValidation: (
+    vocabularyIri: IRI,
+    stompClient: StompClient
+  ) => void;
+  vocabularyValidation: (
+    message: IMessage,
+    vocabularyIri: string
+  ) => Promise<boolean>;
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
-  validateVocabulary: (iri: IRI) => Promise<any>;
   importSkos: (iri: IRI, file: File) => Promise<any>;
   executeTextAnalysisOnAllTerms: (iri: IRI) => void;
   createSnapshot: (iri: IRI) => Promise<any>;
@@ -106,11 +120,16 @@ export class VocabularySummary extends EditableComponent<
 
   public componentDidUpdate(prevProps: Readonly<VocabularySummaryProps>): void {
     const vocabulary = this.props.vocabulary;
-    if (vocabulary !== EMPTY_VOCABULARY) {
+    const stompWasLoaded =
+      this.props.stompClient &&
+      (prevProps.stompClient == null ||
+        (!prevProps.stompClient.active && this.props.stompClient.active));
+    if (vocabulary !== EMPTY_VOCABULARY || stompWasLoaded) {
       this.loadVocabulary();
     }
     if (prevProps.vocabulary.iri !== vocabulary.iri) {
       this.onCloseEdit();
+      this.onCloseRemove();
       this.setState({
         language: resolveInitialLanguage(
           vocabulary,
@@ -121,12 +140,23 @@ export class VocabularySummary extends EditableComponent<
     }
   }
 
-  public loadVocabulary = () => {
-    const iriFromUrl = Utils.resolveVocabularyIriFromRoute(
+  private getIriFromUrl(): IRI {
+    return Utils.resolveVocabularyIriFromRoute(
       this.props.match.params,
       this.props.location.search,
       this.props.configuration
     );
+  }
+
+  public onMessage(message: IMessage) {
+    this.props.vocabularyValidation(
+      message,
+      IRIImpl.create(this.getIriFromUrl()).toString()
+    );
+  }
+
+  public loadVocabulary = () => {
+    const iriFromUrl = this.getIriFromUrl();
     const iri = VocabularyUtils.create(this.props.vocabulary.iri);
     if (
       iri.fragment !== iriFromUrl.fragment ||
@@ -134,6 +164,7 @@ export class VocabularySummary extends EditableComponent<
     ) {
       trackPromise(this.props.loadVocabulary(iriFromUrl), "vocabulary-summary");
     }
+    this.props.requestVocabularyValidation(iriFromUrl, this.props.stompClient);
   };
 
   public setLanguage = (language: string) => {
@@ -146,7 +177,8 @@ export class VocabularySummary extends EditableComponent<
       "vocabulary-summary"
     ).then(() => {
       this.onCloseEdit();
-      this.props.loadVocabulary(VocabularyUtils.create(vocabulary.iri));
+      const iri = VocabularyUtils.create(vocabulary.iri);
+      this.props.loadVocabulary(iri);
     });
   };
 
@@ -158,12 +190,6 @@ export class VocabularySummary extends EditableComponent<
     this.props.removeVocabulary(this.props.vocabulary).then(() => {
       this.onCloseRemove();
     });
-  };
-
-  public onValidate = () => {
-    this.props.validateVocabulary(
-      VocabularyUtils.create(this.props.vocabulary.iri)
-    );
   };
 
   public onExportToggle = () => {
@@ -264,11 +290,11 @@ export class VocabularySummary extends EditableComponent<
             )} | ${i18n("vocabulary.management.vocabularies")}`}
           />
           <HeaderWithActions title={this.renderTitle()} actions={buttons} />
-          <RemoveAssetDialog
+          <RemoveVocabularyDialog
             show={this.state.showRemoveDialog}
-            asset={vocabulary}
-            onCancel={this.onCloseRemove}
+            vocabulary={vocabulary}
             onSubmit={this.onRemove}
+            onCancel={this.onCloseRemove}
           />
           <ExportVocabularyDialog
             show={this.state.showExportDialog}
@@ -334,13 +360,18 @@ export default connect(
     return {
       loadResource: (iri: IRI) => dispatch(loadResource(iri)),
       loadVocabulary: (iri: IRI) => dispatch(loadVocabulary(iri)),
+      requestVocabularyValidation: (
+        vocabularyIri: IRI,
+        stompClient: StompClient
+      ) => dispatch(requestVocabularyValidation(vocabularyIri, stompClient)),
+      vocabularyValidation: (message: IMessage, vocabularyIri: string) =>
+        dispatch(vocabularyValidation(message, vocabularyIri)),
       updateVocabulary: (vocabulary: Vocabulary) =>
         dispatch(updateVocabulary(vocabulary)),
       removeVocabulary: (vocabulary: Vocabulary) =>
         dispatch(removeVocabulary(vocabulary)),
-      validateVocabulary: (iri: IRI) => dispatch(validateVocabulary(iri)),
       importSkos: (iri: IRI, file: File) =>
-        dispatch(importSkosIntoExistingVocabulary(iri, file)),
+        dispatch(importIntoExistingVocabulary(iri, file)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
       createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),
@@ -348,4 +379,16 @@ export default connect(
         dispatch(updateResource(document)),
     };
   }
-)(injectIntl(withI18n(VocabularySummary)));
+)(
+  injectIntl(
+    withI18n(
+      withStompClient(
+        withSubscription(
+          VocabularySummary,
+          "/user" + Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_VALIDATION,
+          { ack: "client" }
+        )
+      )
+    )
+  )
+);

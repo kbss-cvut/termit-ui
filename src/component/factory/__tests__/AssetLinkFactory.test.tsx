@@ -38,7 +38,7 @@ describe("AssetLinkFactory", () => {
       const vocabularyNamespace = VocabularyUtils.PREFIX;
       const vocabulary = new Vocabulary({
         iri: vocabularyNamespace + name,
-        label: "Vocabulary",
+        label: langString("Vocabulary"),
         types: [VocabularyUtils.VOCABULARY],
       });
       const result = mountWithIntl(

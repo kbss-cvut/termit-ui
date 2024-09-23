@@ -9,6 +9,8 @@ import { ThunkDispatch } from "../../util/Types";
 import ActionType from "../ActionType";
 import {
   exportGlossary,
+  getVocabularyRelations,
+  getVocabularyTermsRelations,
   loadTermCount,
   loadVocabularyContentChanges,
   loadVocabularySnapshots,
@@ -311,6 +313,52 @@ describe("AsyncTermActions", () => {
       ).then((res) => {
         expect(res.length).toEqual(0);
         expect(Ajax.get).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("getVocabularyRelations", () => {
+    it("returns vocabulary relations", () => {
+      Ajax.get = jest.fn().mockResolvedValue({});
+      const vocabulary = Generator.generateVocabulary();
+      vocabulary.iri = namespace + vocabularyName;
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          getVocabularyRelations(
+            VocabularyUtils.create(vocabulary.iri),
+            new AbortController()
+          )
+        )
+      ).then(() => {
+        expect(Ajax.get).toHaveBeenCalled();
+        const args = (Ajax.get as jest.Mock).mock.calls[0];
+        expect(args[0]).toEqual(
+          `${Constants.API_PREFIX}/vocabularies/${vocabularyName}/relations`
+        );
+        expect(args[1].getParams().namespace).toEqual(namespace);
+      });
+    });
+  });
+
+  describe("getVocabularyTermsRelations", () => {
+    it("returns vocabulary terms relations", () => {
+      Ajax.get = jest.fn().mockResolvedValue({});
+      const vocabulary = Generator.generateVocabulary();
+      vocabulary.iri = namespace + vocabularyName;
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(
+          getVocabularyTermsRelations(
+            VocabularyUtils.create(vocabulary.iri),
+            new AbortController()
+          )
+        )
+      ).then(() => {
+        expect(Ajax.get).toHaveBeenCalled();
+        const args = (Ajax.get as jest.Mock).mock.calls[0];
+        expect(args[0]).toEqual(
+          `${Constants.API_PREFIX}/vocabularies/${vocabularyName}/terms/relations`
+        );
+        expect(args[1].getParams().namespace).toEqual(namespace);
       });
     });
   });

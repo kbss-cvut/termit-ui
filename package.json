@@ -1,6 +1,6 @@
 {
   "name": "termit-ui",
-  "version": "3.1.3",
+  "version": "3.2.0",
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
@@ -17,7 +17,6 @@
     "dom-serializer": "^1.3.2",
     "domhandler": "^4.3.1",
     "easymde": "2.18.0",
-    "marked": "^9.1.6",
     "html-to-react": "1.5.0",
     "htmlparser2": "^4.1.0",
     "intelligent-tree-select": "0.11.4",
@@ -29,6 +28,7 @@
     "ld-query": "^2.6.1",
     "lodash": "^4.17.21",
     "luxon": "^3.3.0",
+    "marked": "^9.1.6",
     "object-assign": "4.1.1",
     "oidc-client": "^1.11.5",
     "promise": "8.3.0",
@@ -51,22 +51,23 @@
     "react-scripts": "5.0.1",
     "react-simplemde-editor": "^5.2.0",
     "react-spinners": "^0.13.8",
+    "react-stomp-hooks": "^3.0.1",
     "react-table": "^7.8.0",
     "reactstrap": "^8.10.1",
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
     "resolve": "1.22.2",
+    "simple-xpath-position": "^2.0.2",
     "uuid": "^9.0.0",
     "whatwg-fetch": "3.6.2",
-    "whatwg-mimetype": "3.0.0",
-    "xpath-range": "^1.1.1"
+    "whatwg-mimetype": "3.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "craco start",
     "start-mock-rest": "cross-env REACT_APP_MOCK_REST_API=true react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
+    "build": "craco build",
+    "test": "craco test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
     "test-ci": "cross-env -CI=true react-scripts test -w 8 --env=jsdom --testPathPattern='.*\\.test\\.tsx?' --testResultsProcessor='jest-junit'",
     "eject": "react-scripts eject",
     "build-prod": "npm run test-ci && npm run build",
@@ -77,6 +78,7 @@
     "version": "echo $npm_package_version"
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@redux-devtools/extension": "^3.2.5",
     "@types/enzyme": "^3.10.13",
     "@types/jest": "^27.4.1",
@@ -134,5 +136,9 @@
     "transformIgnorePatterns": [
       "node_modules/(?!axios)/"
     ]
+  },
+  "overrides": {
+    "nth-check": "^2.0.1",
+    "resolve-url-loader": "^5.0.0"
   }
 }

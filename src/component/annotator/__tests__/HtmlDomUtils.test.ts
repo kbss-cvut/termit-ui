@@ -1,5 +1,3 @@
-// @ts-ignore
-import { fromRange, toRange, XPathRange } from "xpath-range";
 import HtmlDomUtils from "../HtmlDomUtils";
 import { mockWindowSelection } from "../../../__tests__/environment/Environment";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -7,10 +5,12 @@ import { TextQuoteSelector } from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
 import { NodeWithChildren, Text as DomHandlerText } from "domhandler";
 import { ElementType } from "domelementtype";
+// @ts-ignore
+import { fromNode, toNode } from "simple-xpath-position";
 
-jest.mock("xpath-range", () => ({
-  fromRange: jest.fn(),
-  toRange: jest.fn(),
+jest.mock("simple-xpath-position", () => ({
+  toNode: jest.fn(),
+  fromNode: jest.fn(),
 }));
 
 describe("Html dom utils", () => {
@@ -19,7 +19,7 @@ describe("Html dom utils", () => {
   const sampleDivContent =
     "before div<div>before span<span>sample text pointer in span</span>after span</div>after div";
   const surroundingElementHtml = "<span>text pointer</span>";
-  const xpathTextPointerRange: XPathRange = {
+  const xpathTextPointerRange = {
     start: "/div[1]/span[1]/text()[1]",
     end: "/div[1]/span[1]/text()[1]",
     startOffset: 7,
@@ -32,6 +32,8 @@ describe("Html dom utils", () => {
   let cloneContents: () => DocumentFragment;
   let textPointerRange: any;
   beforeEach(() => {
+    jest.resetAllMocks();
+
     // // @ts-ignore
     window.getSelection = jest.fn().mockImplementation(() => {
       return {
@@ -119,58 +121,66 @@ describe("Html dom utils", () => {
   describe("replace range", () => {
     it("returns clone of input element", () => {
       let ret: HTMLElement | null;
-      (fromRange as jest.Mock).mockImplementation(() => {
-        return xpathTextPointerRange;
+      // start and end element is the same span node
+      (fromNode as jest.Mock).mockReturnValue(xpathTextPointerRange.start);
+
+      (toNode as jest.Mock).mockImplementation((path: string, root: Node) => {
+        return root.childNodes[1].childNodes[1].childNodes[0]; // span
       });
 
-      (toRange as jest.Mock).mockImplementation(() => {
-        return textPointerRange;
-      });
-      textPointerRange.endContainer = {
-        nodeType: Node.TEXT_NODE,
-      };
+      textPointerRange = Object.assign(
+        { startContainer: {}, endContainer: {} },
+        xpathTextPointerRange,
+        textPointerRange
+      );
+
       ret = HtmlDomUtils.replaceRange(
         sampleDiv,
         textPointerRange,
         surroundingElementHtml
       );
-      expect(fromRange).toHaveBeenCalledWith(expect.any(Object), sampleDiv);
-      expect(toRange).toHaveBeenCalledWith(
-        xpathTextPointerRange.start,
-        xpathTextPointerRange.startOffset,
-        xpathTextPointerRange.end,
-        xpathTextPointerRange.endOffset,
-        expect.any(Object)
+
+      expect(fromNode).toHaveBeenNthCalledWith(
+        1,
+        textPointerRange.startContainer,
+        sampleDiv
       );
+      expect(fromNode).toHaveBeenNthCalledWith(
+        2,
+        textPointerRange.endContainer,
+        sampleDiv
+      );
+      expect(fromNode).toHaveBeenCalledTimes(2);
+
+      expect(toNode).toHaveBeenCalled();
       expect(ret).not.toBe(sampleDiv);
-      expect(ret.children[0].childNodes[0].nodeValue).toEqual(
-        sampleDiv.children[0].childNodes[0].nodeValue
+      expect((ret.children[0].childNodes[1] as HTMLElement).innerHTML).toEqual(
+        "sample <span>text pointer</span> in span"
       );
     });
 
-    // Bug #1564
-    it("uses original range end offset to work around offsetting issues when range end container is not a text node", () => {
-      (fromRange as jest.Mock).mockImplementation(() => {
-        return xpathTextPointerRange;
+    it("detects when a node has childrens and uses the offset correctly", () => {
+      (fromNode as jest.Mock).mockReturnValue(xpathTextPointerRange.start);
+      (toNode as jest.Mock).mockImplementation((path: string, root: Node) => {
+        return root.childNodes[1]; // div
       });
 
-      (toRange as jest.Mock).mockImplementation(() => {
-        return textPointerRange;
-      });
-      const originalRange: any = {
-        endContainer: {
-          nodeType: Node.ELEMENT_NODE,
-        },
-        endOffset: 10,
-      };
-      HtmlDomUtils.replaceRange(
+      const originalRange = new Range();
+      // a div element, range staring before second div child (span)
+      originalRange.setStart(sampleDiv.children[0], 1);
+      // a div element, range ending before third div child (text node after the span)
+      originalRange.setEnd(sampleDiv.children[0], 2);
+
+      const ret = HtmlDomUtils.replaceRange(
         sampleDiv,
         originalRange,
         surroundingElementHtml
       );
-      expect(textPointerRange.setEnd).toHaveBeenCalledWith(
-        textPointerRange.endContainer,
-        originalRange.endOffset
+
+      expect(toNode).toHaveBeenCalledTimes(2);
+      expect(fromNode).toHaveBeenCalledTimes(2);
+      expect(ret.children[0].innerHTML).toEqual(
+        "before span<span>text pointer</span>after span"
       );
     });
   });
@@ -200,6 +210,23 @@ describe("Html dom utils", () => {
       expect(
         HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)
       ).toBeFalsy();
+    });
+
+    it("returns true for range spanning between two nested siblings", () => {
+      const container = document.createElement("div");
+      container.innerHTML =
+        "before all<div>before first<span>first span</span>afterFirst</div>middle<div>before second<span>second span</span>after second</div>after all";
+
+      const range: any = {
+        startContainer: container.children[0].childNodes[1],
+        startOffset: 0,
+        endContainer: container.children[1].childNodes[1],
+        endOffset: 5,
+        commonAncestorContainer: container,
+      };
+      expect(
+        HtmlDomUtils.doesRangeSpanMultipleElements(range as Range)
+      ).toBeTruthy();
     });
 
     it("returns true for range spanning two elements", () => {

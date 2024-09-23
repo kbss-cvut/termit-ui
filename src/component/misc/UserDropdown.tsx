@@ -15,6 +15,7 @@ import { useI18n } from "../hook/useI18n";
 import { ThunkDispatch } from "../../util/Types";
 import { useContext } from "react";
 import { AuthContext } from "./oidc/OidcAuthWrapper";
+import { useStompClient } from "react-stomp-hooks";
 
 interface UserDropdownProps {
   dark: boolean;
@@ -32,11 +33,12 @@ export const UserDropdown: React.FC<UserDropdownProps> = (props) => {
   const user = useSelector((state: TermItState) => state.user);
   const dispatch: ThunkDispatch = useDispatch();
   const context = useContext(AuthContext);
+  const stompClient = useStompClient();
   const onLogout = async () => {
     if (context && context.logout) {
       await context.logout();
     }
-    dispatch(logout());
+    dispatch(logout(stompClient));
   };
   return (
     <UncontrolledDropdown nav={true}>

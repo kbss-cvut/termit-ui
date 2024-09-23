@@ -1,6 +1,7 @@
 import {
   mockWindowSelection,
   mountWithIntl,
+  withWebSocket,
 } from "../../../__tests__/environment/Environment";
 import { Element } from "domhandler";
 import { AnnotationSpanProps, Annotator } from "../Annotator";
@@ -30,6 +31,11 @@ import Vocabulary from "../../../model/Vocabulary";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import { MemoryRouter } from "react-router";
 import { AssetData } from "../../../model/Asset";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../../model/AnnotatorLegendFilter";
+import { AnnotatorLegendFilterAction } from "../../../action/ActionType";
 
 jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
 jest.mock("../HighlightTermOccurrencesButton", () => () => (
@@ -54,6 +60,11 @@ describe("Annotator", () => {
     approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
     removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
     saveTermOccurrence: (occurrence: TermOccurrence) => Promise<any>;
+    setAnnotatorLegendFilter: (
+      annotationClass: AnnotationClass,
+      annotationOrigin: AnnotationOrigin,
+      enabled: boolean
+    ) => AnnotatorLegendFilterAction;
   };
   let user: User;
   let file: File;
@@ -73,6 +84,7 @@ describe("Annotator", () => {
       approveTermOccurrence: jest.fn().mockResolvedValue({}),
       removeTermOccurrence: jest.fn().mockResolvedValue({}),
       saveTermOccurrence: jest.fn().mockResolvedValue({}),
+      setAnnotatorLegendFilter: jest.fn().mockResolvedValue({}),
     };
     user = Generator.generateUser();
     file = new File({
@@ -89,16 +101,18 @@ describe("Annotator", () => {
 
   it("renders body of provided html content", () => {
     const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <Annotator
-          fileIri={fileIri}
-          vocabularyIri={vocabularyIri}
-          {...mockedCallbackProps}
-          {...stateProps}
-          initialHtml={generalHtmlContent}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={generalHtmlContent}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
     );
 
     expect(wrapper.html().includes(sampleContent)).toBe(true);
@@ -110,16 +124,18 @@ describe("Annotator", () => {
     );
 
     const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <Annotator
-          fileIri={fileIri}
-          vocabularyIri={vocabularyIri}
-          {...mockedCallbackProps}
-          {...stateProps}
-          initialHtml={htmlContent}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={htmlContent}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
     );
     const sampleOutput =
       'This is a <a data-href="https://example.org/link">link</a>';
@@ -131,16 +147,18 @@ describe("Annotator", () => {
       createAnnotation(suggestedOccProps, "města")
     );
     const wrapper = mountWithIntlAttached(
-      <MemoryRouter>
-        <Annotator
-          fileIri={fileIri}
-          vocabularyIri={vocabularyIri}
-          {...mockedCallbackProps}
-          {...stateProps}
-          initialHtml={htmlWithOccurrence}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={htmlWithOccurrence}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
     );
 
     const constructedAnnProps = wrapper.find(Annotation).props();
@@ -476,7 +494,19 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
+        setStart: function (node: Node, offset: number) {
+          this.startContainer = node;
+          this.startOffset = offset;
+        },
+        setEnd: function (node: Node, offset: number) {
+          this.endContainer = node;
+          this.endOffset = offset;
+        },
       };
+
       HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
     });
 
@@ -485,22 +515,26 @@ describe("Annotator", () => {
         isCollapsed: false,
         rangeCount: 1,
         getRangeAt: () => range,
+        removeAllRanges: () => null,
+        addRange: (r: Range) => (range = r),
       });
       window.getComputedStyle = jest.fn().mockReturnValue({
         getPropertyValue: () => "16px",
       });
       HtmlDomUtils.isInPopup = jest.fn().mockReturnValue(false);
       const wrapper = mountWithIntl(
-        <MemoryRouter>
-          <Annotator
-            fileIri={fileIri}
-            vocabularyIri={vocabularyIri}
-            {...mockedCallbackProps}
-            {...stateProps}
-            initialHtml={generalHtmlContent}
-            {...intlFunctions()}
-          />
-        </MemoryRouter>
+        withWebSocket(
+          <MemoryRouter>
+            <Annotator
+              fileIri={fileIri}
+              vocabularyIri={vocabularyIri}
+              {...mockedCallbackProps}
+              {...stateProps}
+              initialHtml={generalHtmlContent}
+              {...intlFunctions()}
+            />
+          </MemoryRouter>
+        )
       );
       wrapper.find("#annotator").simulate("mouseUp");
       wrapper.update();
@@ -512,16 +546,18 @@ describe("Annotator", () => {
         getPropertyValue: () => "16px",
       });
       const wrapper = mountWithIntl(
-        <MemoryRouter>
-          <Annotator
-            fileIri={fileIri}
-            vocabularyIri={vocabularyIri}
-            {...mockedCallbackProps}
-            {...stateProps}
-            initialHtml={generalHtmlContent}
-            {...intlFunctions()}
-          />
-        </MemoryRouter>
+        withWebSocket(
+          <MemoryRouter>
+            <Annotator
+              fileIri={fileIri}
+              vocabularyIri={vocabularyIri}
+              {...mockedCallbackProps}
+              {...stateProps}
+              initialHtml={generalHtmlContent}
+              {...intlFunctions()}
+            />
+          </MemoryRouter>
+        )
       );
       wrapper.find("#annotator").simulate("mouseUp");
       expect(wrapper.find(SelectionPurposeDialog).props().show).toBeTruthy();
@@ -573,6 +609,9 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
       };
     });
 
@@ -621,6 +660,9 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
       };
     });
 

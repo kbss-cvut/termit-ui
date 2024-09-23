@@ -1,3 +1,10 @@
+#### Verze 3.2.0
+
+- Přidána podpora pro import slovníků z MS Excel.
+- Vylepšení výkonu při opakované anotaci pojmů ve slovníku a validaci slovníku.
+- Úpravy v UI anotátoru - je možné skrýt výskyty vybraného typu.
+- Přidána možnost generovat identifikátory bez znaků s háčky a čárkami.
+
 #### Verze 3.1.3
 
 - Přidána možnost odeslat novému uživateli mail s pozvánkou (admin již nemusí uživateli nastavovat heslo).

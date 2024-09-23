@@ -7,7 +7,10 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import * as Redux from "react-redux";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  mountWithIntl,
+  withWebSocket,
+} from "../../../__tests__/environment/Environment";
 import * as actions from "../../../action/ComplexActions";
 
 jest.mock("react-redux", () => ({
@@ -29,7 +32,7 @@ describe("UserDropdown", () => {
   });
 
   it("renders correct structure of component", () => {
-    const wrapper = mountWithIntl(<UserDropdown dark={true} />);
+    const wrapper = mountWithIntl(withWebSocket(<UserDropdown dark={true} />));
 
     expect(
       wrapper

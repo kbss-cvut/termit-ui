@@ -7,7 +7,7 @@ import {
   UncontrolledButtonDropdown,
 } from "reactstrap";
 import { GoClippy, GoCloudDownload, GoCloudUpload } from "react-icons/go";
-import ImportBackupOfVocabulary from "./ImportBackupOfVocabulary";
+import ImportBackupOfVocabulary from "./importing/ImportBackupOfVocabulary";
 import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuthorized";

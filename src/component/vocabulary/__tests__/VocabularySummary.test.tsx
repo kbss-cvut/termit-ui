@@ -15,6 +15,7 @@ import TermItState from "../../../model/TermItState";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import { langString } from "../../../model/MultilingualString";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
+import { StompClient } from "../../hoc/withStompClient";
 
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
@@ -43,7 +44,7 @@ describe("VocabularySummary", () => {
   let exportToExcel: (iri: IRI) => void;
   let exportToTurtle: (iri: IRI) => void;
   let exportWithReferences: (iri: IRI) => void;
-  let validateVocabulary: (iri: IRI) => void;
+  let requestVocabularyValidation: (iri: IRI, stompClient: StompClient) => void;
   let exportFunctions: any;
 
   let vocabulary: Vocabulary;
@@ -57,7 +58,7 @@ describe("VocabularySummary", () => {
     exportToExcel = jest.fn();
     exportToTurtle = jest.fn();
     exportWithReferences = jest.fn();
-    validateVocabulary = jest.fn();
+    requestVocabularyValidation = jest.fn();
     exportFunctions = {
       exportToCsv,
       exportToExcel,
@@ -102,7 +103,7 @@ describe("VocabularySummary", () => {
         location={location}
         configuration={DEFAULT_CONFIGURATION}
         {...exportFunctions}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -124,7 +125,7 @@ describe("VocabularySummary", () => {
         location={location}
         configuration={DEFAULT_CONFIGURATION}
         {...exportFunctions}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -145,7 +146,7 @@ describe("VocabularySummary", () => {
         location={location}
         configuration={DEFAULT_CONFIGURATION}
         {...exportFunctions}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -166,7 +167,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -189,7 +190,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />,
@@ -216,7 +217,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />,
@@ -240,7 +241,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -248,7 +249,7 @@ describe("VocabularySummary", () => {
     wrapper.instance().onEdit();
     const update = new Vocabulary({
       iri: vocabulary.iri,
-      label: "Updated label",
+      label: langString("Updated label"),
     });
     wrapper.instance().onSave(update);
     expect(onUpdate).toHaveBeenCalledWith(update);
@@ -264,7 +265,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -287,7 +288,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -311,7 +312,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />
@@ -331,7 +332,7 @@ describe("VocabularySummary", () => {
         history={history}
         location={location}
         configuration={DEFAULT_CONFIGURATION}
-        validateVocabulary={validateVocabulary}
+        requestVocabularyValidation={requestVocabularyValidation}
         match={match}
         {...intlFunctions()}
       />

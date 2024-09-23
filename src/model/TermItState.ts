@@ -17,7 +17,8 @@ import File, { EMPTY_FILE } from "./File";
 import TermOccurrence from "./TermOccurrence";
 import { Breadcrumb } from "./Breadcrumb";
 import AnnotatorLegendFilter from "./AnnotatorLegendFilter";
-import { PendingAsyncAction } from "../action/ActionType";
+import ActionType, { PendingAsyncAction } from "../action/ActionType";
+import { LongRunningTask } from "./LongRunningTask";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -46,7 +47,7 @@ export default class TermItState {
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
   // Pending asynchronous actions. Can be used to prevent repeated requests when some are already pending
-  public pendingActions: { [key: string]: PendingAsyncAction };
+  public pendingActions: { [key in ActionType]?: PendingAsyncAction };
   public errors: ErrorLogItem[];
   public lastModified: { [key: string]: string };
   public sidebarExpanded: boolean;
@@ -64,6 +65,7 @@ export default class TermItState {
   public breadcrumbs: Breadcrumb[];
 
   public annotatorLegendFilter: AnnotatorLegendFilter;
+  public runningTasks: { [key: string]: LongRunningTask };
 
   // Administration
   public users: User[];
@@ -104,6 +106,7 @@ export default class TermItState {
     this.users = [];
     this.accessLevels = {};
     this.annotatorLegendFilter = new AnnotatorLegendFilter();
+    this.runningTasks = {};
   }
 
   /**
