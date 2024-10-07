@@ -92,7 +92,7 @@
     "@types/react-highlight-words": "^0.16.4",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-table": "^7.7.14",
-    "@types/redux-logger": "^3.0.9",
+    "@types/redux-logger": "^3.0.13",
     "@types/redux-mock-store": "^1.0.3",
     "@types/uuid": "^9.0.2",
     "@types/whatwg-mimetype": "^2.1.1",
