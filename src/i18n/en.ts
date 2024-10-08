@@ -327,6 +327,12 @@ const en = {
       "When ticked, identifiers colliding with existing ones will be replaced by new ones.",
     "vocabulary.summary.startTextAnalysis.title":
       "Start text analysis on definitions of all terms in this vocabulary",
+    "vocabulary.summary.model.label": "Model relationships",
+    "vocabulary.summary.model.title":
+      "Model relationships between terms in this vocabulary using an external tool",
+    "vocabulary.summary.model.open": "Open",
+    "vocabulary.summary.model.dialog.title":
+      "Model relationships of terms in {vocabulary}",
     "vocabulary.updated.message": "Vocabulary successfully updated.",
     "vocabulary.created.message": "Vocabulary successfully created.",
     "vocabulary.detail.subtitle": "Created by {author} on ",

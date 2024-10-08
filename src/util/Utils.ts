@@ -363,6 +363,10 @@ const Utils = {
     }
     return true;
   },
+
+  notBlank(str?: string | null) {
+    return !!(str && str.trim().length > 0);
+  },
 };
 
 export default Utils;
