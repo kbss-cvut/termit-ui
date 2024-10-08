@@ -22,7 +22,8 @@ interface ConfirmCancelDialogProps {
   confirmDisabled?: boolean;
   cancelKey?: string;
   cancelColor?: string;
-  size?: string;
+  size?: "lg" | "sm";
+  className?: string;
 }
 
 /**
@@ -37,6 +38,7 @@ const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
       isOpen={props.show}
       toggle={props.onClose}
       size={props.size}
+      className={props.className}
     >
       <ModalHeader toggle={props.onClose}>{props.title}</ModalHeader>
       <ModalBody>{props.children}</ModalBody>

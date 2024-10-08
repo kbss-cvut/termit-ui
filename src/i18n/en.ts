@@ -333,6 +333,8 @@ const en = {
     "vocabulary.summary.model.open": "Open",
     "vocabulary.summary.model.dialog.title":
       "Model relationships of terms in {vocabulary}",
+    "vocabulary.summary.model.dialog.text":
+      "Select vocabularies you want to open for modeling. Vocabularies related to the one being open are pre-selected as they are required by the modeling tool.",
     "vocabulary.updated.message": "Vocabulary successfully updated.",
     "vocabulary.created.message": "Vocabulary successfully created.",
     "vocabulary.detail.subtitle": "Created by {author} on ",
