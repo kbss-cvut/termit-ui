@@ -40,19 +40,17 @@ const OpenModelingToolDialog: React.FC<OpenModelingToolDialogProps> = ({
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const vocabularyIris = Object.keys(vocabularies);
   React.useEffect(() => {
-    if (open) {
-      dispatch(
-        loadRelatedVocabularies(VocabularyUtils.create(vocabulary.iri))
-      ).then((data) => {
-        setRelatedVocabularies(data);
-        // The vocabulary is also among the related vocabularies loaded from the server
-        setSelectedVocabularies(data);
-      });
-      if (Object.keys(vocabularies).length === 0) {
-        dispatch(loadVocabularies());
-      }
+    dispatch(
+      loadRelatedVocabularies(VocabularyUtils.create(vocabulary.iri))
+    ).then((data) => {
+      setRelatedVocabularies(data);
+      // The vocabulary is also among the related vocabularies loaded from the server
+      setSelectedVocabularies(data);
+    });
+    if (Object.keys(vocabularies).length === 0) {
+      dispatch(loadVocabularies());
     }
-  }, [open, vocabulary.iri, vocabularies, dispatch]);
+  }, [vocabulary.iri, vocabularies, dispatch]);
 
   const onSelect = (vIri: string) => {
     if (selectedVocabularies.includes(vIri)) {
