@@ -1,4 +1,4 @@
-import { GetStoreState, ThunkDispatch } from "../util/Types";
+import { GetStoreState, PageRequest, ThunkDispatch } from "../util/Types";
 import * as SyncActions from "./SyncActions";
 import {
   asyncActionFailure,
@@ -27,6 +27,10 @@ import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import NotificationType from "../model/NotificationType";
 import ExportConfig from "../model/local/ExportConfig";
 import RDFStatement, { RDFSTATEMENT_CONTEXT } from "../model/RDFStatement";
+import ChangeRecord, {
+  CONTEXT as CHANGE_RECORD_CONTEXT,
+} from "../model/changetracking/ChangeRecord";
+import AssetFactory from "../util/AssetFactory";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -123,6 +127,39 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
       .then((data: AggregatedChangeInfoData[]) => {
         dispatch(asyncActionSuccess(action));
         return data.map((d) => new AggregatedChangeInfo(d));
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
+export function loadVocabularyContentDetailedChanges(
+  vocabularyIri: IRI,
+  pageReq: PageRequest
+) {
+  const action = {
+    type: ActionType.LOAD_TERM_HISTORY,
+  };
+
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content/detail`,
+      param("namespace", vocabularyIri.namespace)
+        .param("page", pageReq.page?.toString())
+        .param("size", pageReq.size?.toString())
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecord>(
+          data,
+          CHANGE_RECORD_CONTEXT
+        )
+      )
+      .then((data: ChangeRecord[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data.map((r) => AssetFactory.createChangeRecord(r));
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));

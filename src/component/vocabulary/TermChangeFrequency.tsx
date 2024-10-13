@@ -9,28 +9,49 @@ import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 import { useI18n } from "../hook/useI18n";
 import AggregatedChangeInfo from "../../model/changetracking/AggregatedChangeInfo";
-import { loadVocabularyContentChanges } from "../../action/AsyncVocabularyActions";
+import {
+  loadVocabularyContentChanges,
+  loadVocabularyContentDetailedChanges,
+} from "../../action/AsyncVocabularyActions";
+import ChangeRecord from "../../model/changetracking/ChangeRecord";
 
 interface TermChangeFrequencyProps {
   vocabulary: Vocabulary;
 }
 
 const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
-  const [records, setRecords] =
+  const [aggregatedRecords, setAggregatedRecords] =
     React.useState<null | AggregatedChangeInfo[]>(null);
+  const [changeRecords, setChangeRecords] =
+    React.useState<null | ChangeRecord[]>(null);
   const { vocabulary } = props;
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
+  const [page, setPage] = React.useState(0);
   React.useEffect(() => {
     if (vocabulary.iri !== Constants.EMPTY_ASSET_IRI) {
       trackPromise(
         dispatch(
           loadVocabularyContentChanges(VocabularyUtils.create(vocabulary.iri))
-        ),
+        ).then((recs) => setAggregatedRecords(recs)),
         "term-change-frequency"
-      ).then((recs) => setRecords(recs));
+      );
     }
   }, [vocabulary.iri, dispatch]);
+
+  React.useEffect(() => {
+    if (vocabulary.iri !== Constants.EMPTY_ASSET_IRI) {
+      trackPromise(
+        dispatch(
+          loadVocabularyContentDetailedChanges(
+            VocabularyUtils.create(vocabulary.iri),
+            { page: page, size: Constants.VOCABULARY_CONTENT_HISTORY_LIMIT }
+          )
+        ).then((changeRecords) => setChangeRecords(changeRecords)),
+        "term-change-frequency"
+      );
+    }
+  }, [vocabulary.iri, dispatch, page]);
 
   return (
     <>
@@ -38,7 +59,14 @@ const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
         area="term-change-frequency"
         text={i18n("vocabulary.termchanges.loading")}
       />
-      <TermChangeFrequencyUI records={records} />
+      <TermChangeFrequencyUI
+        aggregatedRecords={aggregatedRecords}
+        changeRecords={changeRecords}
+        page={page}
+        setPage={setPage}
+        pageSize={Constants.VOCABULARY_CONTENT_HISTORY_LIMIT}
+        itemCount={changeRecords?.length ?? 0}
+      />
     </>
   );
 };
