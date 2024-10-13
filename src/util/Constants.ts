@@ -121,6 +121,8 @@ const constants = {
 
   // Size of page fetched from server
   DEFAULT_PAGE_SIZE: 100,
+  // size of the page for change records in vocabulary activity tab
+  VOCABULARY_CONTENT_HISTORY_LIMIT: 15,
 
   WEBSOCKET_ENDPOINT: {
     VOCABULARIES_VALIDATION: "/vocabularies/validation",

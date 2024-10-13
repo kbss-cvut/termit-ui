@@ -1,14 +1,12 @@
 import * as React from "react";
 import { FormattedDate, FormattedTime } from "react-intl";
-import PersistRecord from "../../model/changetracking/PersistRecord";
+import AssetLabel from "../misc/AssetLabel";
 import { Badge } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
+import { UpdateRowProps } from "./UpdateRow";
+import TermIriLink from "../term/TermIriLink";
 
-export interface PersistRowProps {
-  record: PersistRecord;
-}
-
-export const PersistRow: React.FC<PersistRowProps> = (props) => {
+export const VocabularyContentUpdateRow: React.FC<UpdateRowProps> = (props) => {
   const { i18n } = useI18n();
   const record = props.record;
   const created = new Date(Date.parse(record.timestamp));
@@ -23,13 +21,16 @@ export const PersistRow: React.FC<PersistRowProps> = (props) => {
         </div>
       </td>
       <td>
-        <Badge color="dark">{i18n(record.typeLabel)}</Badge>
+        <TermIriLink iri={record.changedEntity.iri} />
       </td>
-      <td />
-      <td />
-      <td />
+      <td>
+        <Badge color="secondary">{i18n(record.typeLabel)}</Badge>
+      </td>
+      <td>
+        <AssetLabel iri={record.changedAttribute.iri} />
+      </td>
     </tr>
   );
 };
 
-export default PersistRow;
+export default VocabularyContentUpdateRow;
