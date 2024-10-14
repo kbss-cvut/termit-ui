@@ -10,10 +10,10 @@ const middlewares: Middleware[] = [thunk as ThunkMiddleware];
 if (process.env.NODE_ENV === "development") {
   middlewares.push(
     createLogger({
-      stateTransformer(state: TermItState): any {
+      stateTransformer: (state: TermItState) => {
         return TermItState.toLoggable(state);
       },
-    })
+    }) as Middleware
   );
 }
 
