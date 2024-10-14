@@ -1130,46 +1130,6 @@ export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
   };
 }
 
-/**
- * Downloads the content of a file with the specified IRI (assuming it is stored on the server).
- * @param fileIri File identifier
- * @param options File export options
- */
-export function exportFileContent(
-  fileIri: IRI,
-  options: {
-    at?: string;
-    withoutUnconfirmedOccurrences?: boolean;
-  } = {}
-) {
-  const action = {
-    type: ActionType.EXPORT_FILE_CONTENT,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    const url =
-      Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content";
-    return Ajax.getRaw(
-      url,
-      param("namespace", fileIri.namespace)
-        .param("attachment", "true")
-        .param("at", options.at)
-        .param(
-          "withoutUnconfirmedOccurrences",
-          options.withoutUnconfirmedOccurrences?.toString()
-        )
-        .responseType("arraybuffer")
-    )
-      .then((resp: AxiosResponse) => {
-        const fileName = fileIri.fragment;
-        const mimeType = resp.headers["content-type"];
-        Utils.fileDownload(resp.data, fileName, mimeType);
-        return dispatch(asyncActionSuccess(action));
-      })
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
 export function loadHistory(asset: Asset) {
   const assetIri = VocabularyUtils.create(asset.iri);
   const historyConf = resolveHistoryLoadingParams(asset, assetIri);

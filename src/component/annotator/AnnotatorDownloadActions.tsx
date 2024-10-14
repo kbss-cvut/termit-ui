@@ -10,10 +10,10 @@ import {
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import { exportFileContent } from "../../action/AsyncActions";
 import { trackPromise } from "react-promise-tracker";
 import { DateTime } from "luxon";
 import Constants from "../../util/Constants";
+import { exportFileContent } from "../../action/AsyncResourceActions";
 
 const AnnotatorDownloadActions: React.FC<{ fileIri: IRI }> = ({ fileIri }) => {
   const { i18n } = useI18n();
