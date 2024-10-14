@@ -1133,9 +1133,15 @@ export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
 /**
  * Downloads the content of a file with the specified IRI (assuming it is stored on the server).
  * @param fileIri File identifier
- * @param at Timestamp of the file version to download
+ * @param options File export options
  */
-export function exportFileContent(fileIri: IRI, at?: string) {
+export function exportFileContent(
+  fileIri: IRI,
+  options: {
+    at?: string;
+    withoutUnconfirmedOccurrences?: boolean;
+  } = {}
+) {
   const action = {
     type: ActionType.EXPORT_FILE_CONTENT,
   };
@@ -1147,7 +1153,11 @@ export function exportFileContent(fileIri: IRI, at?: string) {
       url,
       param("namespace", fileIri.namespace)
         .param("attachment", "true")
-        .param("at", at)
+        .param("at", options.at)
+        .param(
+          "withoutUnconfirmedOccurrences",
+          options.withoutUnconfirmedOccurrences?.toString()
+        )
         .responseType("arraybuffer")
     )
       .then((resp: AxiosResponse) => {

@@ -56,6 +56,7 @@ import {
   AnnotationClass,
   AnnotationOrigin,
 } from "../../model/AnnotatorLegendFilter";
+import AnnotatorDownloadActions from "./AnnotatorDownloadActions";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -657,6 +658,10 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 )}
               />
             </IfVocabularyActionAuthorized>,
+            <AnnotatorDownloadActions
+              fileIri={this.props.fileIri}
+              key="annotator-download-actions"
+            />,
             <LegendToggle key="legend-toggle" />,
           ]}
         />

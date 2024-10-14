@@ -671,6 +671,9 @@ const cs = {
 
     annotator: "Anotátor",
     "annotator.content.loading": "Načítám obsah souboru...",
+    "annotator.download.thisFile": "Tento soubor",
+    "annotator.download.original": "Originál",
+    "annotator.download.withoutUnconfirmed": "Bez nepotvrzených výskytů",
     "annotator.vocabulary": "Používá pojmy ze slovníku",
     "annotator.selectionPurpose.dialog.title":
       "K čemu bude sloužit vybraný text?",

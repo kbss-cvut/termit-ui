@@ -661,6 +661,9 @@ const en = {
 
     annotator: "Annotator",
     "annotator.content.loading": "Loading file content...",
+    "annotator.download.thisFile": "This file",
+    "annotator.download.original": "Original",
+    "annotator.download.withoutUnconfirmed": "Without unconfirmed occurrences",
     "annotator.vocabulary": "Uses terms from vocabulary",
     "annotator.selectionPurpose.dialog.title":
       "What do you want to do with the selected text?",
