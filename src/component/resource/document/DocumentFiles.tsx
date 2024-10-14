@@ -71,7 +71,9 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
       Constants.TIMESTAMP_PARAM_FORMAT
     );
     dispatch(
-      exportFileContent(VocabularyUtils.create(termitFile.iri), timestamp)
+      exportFileContent(VocabularyUtils.create(termitFile.iri), {
+        at: timestamp,
+      })
     );
   };
 
