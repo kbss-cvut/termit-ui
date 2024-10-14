@@ -23,7 +23,7 @@ marking it as production-ready.
 
 ## Development Requirements
 
-Unless you are using Docker to build the project, **Node.js 14** or later and **npm 7** or later (due to using lockfile v2) are required. Node.js 16 and npm 8 is recommended.
+Unless you are using Docker to build the project, **Node.js 20** or later and **npm 8** or later are required.
 
 ## Tests
 
@@ -123,15 +123,6 @@ tracking and the corresponding loading mask. See `TermChangeFrequency` for usage
 
 - Tests can be debugged directly in IDEA just like JUnit tests - IDEA is able to run singular tests.
 - The application can be debugged in IDEA as well, see the [JetBrains blog](https://blog.jetbrains.com/webstorm/2017/01/debugging-react-apps/).
-
-## Mocking Server REST API
-
-It is possible to mock server REST API, so that the application can be developed and run without having to start the backend application.
-To do so, use `npm run start-mock-rest`, which sets environment variables telling the app to mock the REST API. Now, the mock API is set up
-in `src/util/Ajax`, function `mockRestApi`, we are using [Axios Mock Adapter](https://github.com/ctimmerm/axios-mock-adapter). The usage should be
-fairly intuitive. Data should be kept in JSON files in `src/rest-mock` (has to be in `src`, otherwise webpack refuses to import the data).
-
-However, note that the current mocked API does not cover the actual backend REST API anymore, and it is recommended to run the backend (e.g. in Docker) for real and connect to it instead.
 
 ## Adjusting Bootstrap Styles
 
