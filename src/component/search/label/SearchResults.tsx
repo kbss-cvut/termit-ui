@@ -51,7 +51,7 @@ export function mergeDuplicates(
       // If the match field is the same there is no need to update other attributes, as the match is already
       // marked in the snippet of the existing item
       if (existing.snippetField !== r.snippetField) {
-        if (r.snippetField === "label") {
+        if (r.snippetField === "prefLabel") {
           // Render label match first
           existing.snippets.unshift(r.snippetText);
           existing.snippetFields.unshift(r.snippetField);
