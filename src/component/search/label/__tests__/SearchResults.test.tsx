@@ -131,7 +131,7 @@ describe("SearchResults", () => {
         iri,
         label: "Test",
         snippetText: "<em>Match</em> and another <em>match</em>",
-        snippetField: "comment",
+        snippetField: "description",
         vocabulary: { iri: vocabularyIri },
         types: [VocabularyUtils.VOCABULARY],
       }),
@@ -139,7 +139,7 @@ describe("SearchResults", () => {
         iri,
         label: "Test",
         snippetText: "<em>Match</em> and another <em>match</em>",
-        snippetField: "comment",
+        snippetField: "description",
         vocabulary: { iri: vocabularyIri },
         types: [VocabularyUtils.VOCABULARY],
       }),
@@ -162,22 +162,21 @@ describe("SearchResults", () => {
 
   it("merges matches of multiple fields of one asset into one result row", () => {
     const iri = Generator.generateUri();
-    const vocabularyIri = Generator.generateUri();
     const results = [
       new SearchResult({
         iri,
         label: "Test",
         snippetText: "<em>Match</em> in label",
-        snippetField: "label",
-        vocabulary: { iri: vocabularyIri },
+        description: "Vocabulary description",
+        snippetField: "title",
         types: [VocabularyUtils.VOCABULARY],
       }),
       new SearchResult({
         iri,
         label: "Test",
-        snippetText: "<em>Match</em> in comment",
-        snippetField: "comment",
-        vocabulary: { iri: vocabularyIri },
+        description: "Vocabulary description",
+        snippetText: "<em>Match</em> in description",
+        snippetField: "description",
         types: [VocabularyUtils.VOCABULARY],
       }),
     ];

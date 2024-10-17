@@ -6,6 +6,7 @@ import Utils from "../../util/Utils";
 export const CONTEXT = {
   iri: "@id",
   label: VocabularyUtils.RDFS_LABEL,
+  description: VocabularyUtils.DC_DESCRIPTION,
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
   state: VocabularyUtils.HAS_TERM_STATE,
   snippetText:
@@ -19,6 +20,7 @@ export const CONTEXT = {
 export interface SearchResultData extends AssetData {
   iri: string;
   label: string;
+  description?: string;
   snippetText: string;
   snippetField: string;
   score?: number;
@@ -30,6 +32,7 @@ export interface SearchResultData extends AssetData {
 export default class SearchResult implements AssetData {
   public readonly iri: string;
   public readonly label: string;
+  public readonly description?: string;
   public readonly snippetText: string;
   public readonly snippetField: string;
   public readonly score?: number;
@@ -40,6 +43,7 @@ export default class SearchResult implements AssetData {
   constructor(data: SearchResultData) {
     this.iri = data.iri;
     this.label = data.label;
+    this.description = data.description;
     this.snippetField = data.snippetField;
     this.snippetText = data.snippetText;
     this.score = data.score;
