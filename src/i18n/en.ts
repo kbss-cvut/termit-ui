@@ -813,9 +813,11 @@ const en = {
     "history.type": "Type",
     "history.type.persist": "Creation",
     "history.type.update": "Update",
+    "history.type.delete": "Deletion",
     "history.changedAttribute": "Attribute",
     "history.originalValue": "Original value",
     "history.newValue": "New value",
+    "history.filter.datetime": "Time period",
 
     "changefrequency.label": "Activity",
 

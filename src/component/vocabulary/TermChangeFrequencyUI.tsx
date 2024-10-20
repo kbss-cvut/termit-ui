@@ -10,6 +10,10 @@ import VocabularyContentPersistRow from "../changetracking/VocabularyContentPers
 import VocabularyContentUpdateRow from "../changetracking/VocabularyContentUpdateRow";
 import If from "../misc/If";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
+import CustomInput from "../misc/CustomInput";
+import Select from "../misc/Select";
+import "./TermChangeFrequencyUI.scss";
+import classNames from "classnames";
 
 interface TermChangeFrequencyUIProps {
   aggregatedRecords: AggregatedChangeInfo[] | null;
@@ -67,6 +71,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   itemCount,
 }) => {
   const { i18n, locale } = useI18n();
+  const [showFilter, setShowFilter] = React.useState(false);
   if (!aggregatedRecords || !changeRecords) {
     return <div className="additional-metadata-container">&nbsp;</div>;
   }
@@ -154,12 +159,74 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
         <div className="additional-metadata-container">
           <Table striped={true} responsive={true}>
             <thead>
+              <If expression={showFilter}>
+                <tr>
+                  <td className={"col-3 border-0"} colSpan={2}>
+                    <CustomInput
+                      name="date-filter"
+                      placeholder={i18n("history.filter.datetime")}
+                      value={""}
+                      onChange={(e) => {}}
+                    />
+                  </td>
+                </tr>
+              </If>
               <tr>
                 <th className="col-3">{i18n("history.whenwho")}</th>
                 <th className="col-3">{i18n("type.term")}</th>
                 <th className="col-1">{i18n("history.type")}</th>
-                <th className="col-2">{i18n("history.changedAttribute")}</th>
+                <th className="col d-flex justify-content-between">
+                  {i18n("history.changedAttribute")}
+                  <span
+                    className={classNames("cursor-pointer", {
+                      "color-primary": showFilter,
+                    })}
+                    onClick={() => setShowFilter(!showFilter)}
+                    title={i18n("main.nav.search")}
+                  >
+                    <i className={"fas fa-search fa-lg"} />
+                  </span>
+                </th>
               </tr>
+              <If expression={showFilter}>
+                <tr>
+                  <td className="col-3">
+                    <CustomInput
+                      name={i18n("asset.author")}
+                      placeholder={i18n("asset.author")}
+                    />
+                  </td>
+                  <td className="col-3">
+                    <CustomInput
+                      name={i18n("type.term")}
+                      placeholder={i18n("type.term")}
+                    />
+                  </td>
+                  <td className={"col-2"}>
+                    <Select
+                      placeholder={i18n("history.type")}
+                      value={i18n("history.type")}
+                    >
+                      <option value={""}></option>
+                      {[
+                        "history.type.persist",
+                        "history.type.update",
+                        "history.type.delete",
+                      ].map((type) => (
+                        <option key={type} value={type}>
+                          {i18n(type)}
+                        </option>
+                      ))}
+                    </Select>
+                  </td>
+                  <td className="col-2">
+                    <CustomInput
+                      name={i18n("history.changedAttribute")}
+                      placeholder={i18n("history.changedAttribute")}
+                    />
+                  </td>
+                </tr>
+              </If>
             </thead>
             <tbody>
               {changeRecords.map((r) =>
