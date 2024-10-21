@@ -635,7 +635,7 @@ const en = {
     "search.results.table.label.tooltip": "Open asset detail",
     "search.results.table.match": "Match",
     "search.results.table.score": "Match score",
-    "search.results.field.badge.tooltip": "Matched attribute",
+    "search.results.field": "Match found in attribute:",
     "search.results.field.label": "Label",
     "search.results.field.comment": "Comment",
     "search.results.field.definition": "Definition",
