@@ -56,7 +56,6 @@ export function removeSearchListener() {
  * Timer to delay search requests as user is still typing.
  */
 let updateSearchTimer: ReturnType<typeof setTimeout> | null = null;
-const updateSearchDelay = 400; // ms
 
 /**
  * Change the search criteria and trigger a new search.
@@ -85,7 +84,7 @@ export function updateSearchFilter(searchString: string) {
       updateSearchTimer = setTimeout(() => {
         updateSearchTimer = null;
         dispatch(searchEverything());
-      }, updateSearchDelay);
+      }, Constants.SEARCH_DEBOUNCE_DELAY);
       return Promise.resolve();
     }
   };

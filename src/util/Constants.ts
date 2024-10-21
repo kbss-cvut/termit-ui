@@ -119,6 +119,8 @@ const constants = {
   WORKSPACE_EDITABLE_CONTEXT_PARAM: "edit-context",
   TIMESTAMP_PARAM_FORMAT: "yyyyMMdd'T'HHmmss'Z'",
   FTS_SNIPPET_TEXT_SIZE: 250,
+  // Search debounce delay in milliseconds
+  SEARCH_DEBOUNCE_DELAY: 400,
 
   // Size of page fetched from server
   DEFAULT_PAGE_SIZE: 100,

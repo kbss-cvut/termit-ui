@@ -27,6 +27,10 @@ jest.mock("../FacetedSearchResultItem", () => () => (
 jest.mock("../TermTypeFacet", () => () => <div>Term type selector</div>);
 jest.mock("../VocabularyFacet", () => () => <div>Vocabulary selector</div>);
 jest.mock("../TextFacet", () => () => <div>Text facet</div>);
+jest.mock("use-debounce", () => ({
+  ...jest.requireActual("use-debounce"),
+  useDebouncedCallback: jest.fn().mockImplementation((arg) => arg),
+}));
 
 describe("FacetedSearch", () => {
   let fakeDispatch: ThunkDispatch;
