@@ -5,6 +5,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../../vocabulary/VocabularyLink";
 import AssetFactory from "../../../util/AssetFactory";
 import VocabularyBadge from "../../badge/VocabularyBadge";
+import Constants from "../../../util/Constants";
 
 interface VocabularyResultItemProps {
   result: SearchResultItem;
@@ -35,8 +36,8 @@ export function getResultDescription(
     text = result.description;
   }
 
-  if (text && text!.length > 200) {
-    text = text!.substring(0, 200) + " ...";
+  if (text && text!.length > Constants.FTS_SNIPPET_TEXT_SIZE) {
+    text = text!.substring(0, Constants.FTS_SNIPPET_TEXT_SIZE) + " ...";
   }
   return text || "";
 }

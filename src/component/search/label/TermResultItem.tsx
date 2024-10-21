@@ -12,6 +12,7 @@ import { getTermPath } from "../../term/TermLink";
 import TermStateBadge from "../../term/state/TermStateBadge";
 import { useI18n } from "../../hook/useI18n";
 import { getResultDescription } from "./VocabularyResultItem";
+import MatchInfo from "./MatchInfo";
 
 interface TermResultItemProps {
   result: SearchResultItem;
@@ -52,10 +53,10 @@ const TermResultItem: React.FC<TermResultItemProps> = ({ result }) => {
         path={getTermPath(asset as Term, user)}
         tooltip={i18n("asset.link.tooltip")}
       />
-      <br />
-      <span className="search-result-snippet">
+      <div className="search-result-snippet">
         <FTSMatch match={description} />
-      </span>
+      </div>
+      <MatchInfo result={result} />
     </>
   );
 };
