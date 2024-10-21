@@ -6,6 +6,7 @@ import VocabularyLink from "../../vocabulary/VocabularyLink";
 import AssetFactory from "../../../util/AssetFactory";
 import VocabularyBadge from "../../badge/VocabularyBadge";
 import Constants from "../../../util/Constants";
+import MatchInfo from "./MatchInfo";
 
 interface VocabularyResultItemProps {
   result: SearchResultItem;
@@ -55,10 +56,10 @@ const VocabularyResultItem: React.FC<VocabularyResultItemProps> = ({
           vocabulary={AssetFactory.createAsset(result) as Vocabulary}
         />
       </span>
-      <br />
-      <span className="search-result-snippet">
+      <div className="search-result-snippet">
         <FTSMatch match={description} />
-      </span>
+      </div>
+      <MatchInfo result={result} />
     </>
   );
 };

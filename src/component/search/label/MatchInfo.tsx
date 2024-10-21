@@ -12,6 +12,7 @@ const FIELD_NAME_MAPPING = {
   prefLabel: "asset.label",
   altLabel: "term.metadata.altLabels.label",
   hiddenLabel: "term.metadata.hiddenLabels.label",
+  title: "asset.label",
   scopeNote: "term.metadata.comment",
   definition: "term.metadata.definition",
   description: "description",
