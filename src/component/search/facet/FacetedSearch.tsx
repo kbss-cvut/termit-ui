@@ -36,6 +36,11 @@ INITIAL_STATE[VocabularyUtils.SKOS_NOTATION] = {
   value: [""],
   matchType: MatchType.EXACT_MATCH,
 };
+INITIAL_STATE[VocabularyUtils.SKOS_EXAMPLE] = {
+  property: VocabularyUtils.SKOS_EXAMPLE,
+  value: [""],
+  matchType: MatchType.SUBSTRING,
+};
 INITIAL_STATE[VocabularyUtils.RDF_TYPE] = {
   property: VocabularyUtils.RDF_TYPE,
   value: [],
@@ -96,7 +101,27 @@ const FacetedSearch: React.FC = () => {
       <Card className="mb-0">
         <CardBody>
           <Row>
-            <Col xl={3} xs={6}>
+            <Col xl={4} xs={6}>
+              <VocabularyFacet
+                value={params[VocabularyUtils.IS_TERM_FROM_VOCABULARY]}
+                onChange={onChange}
+              />
+            </Col>
+            <Col xl={4} xs={6}>
+              <TermTypeFacet
+                value={params[VocabularyUtils.RDF_TYPE]}
+                onChange={onChange}
+              />
+            </Col>
+            <Col xl={4} xs={6}>
+              <TermStateFacet
+                value={params[VocabularyUtils.HAS_TERM_STATE]}
+                onChange={onChange}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xl={4} xs={6}>
               <TextFacet
                 id="faceted-search-notation"
                 label={i18n("term.metadata.notation.label")}
@@ -104,21 +129,11 @@ const FacetedSearch: React.FC = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col xl={3} xs={6}>
-              <VocabularyFacet
-                value={params[VocabularyUtils.IS_TERM_FROM_VOCABULARY]}
-                onChange={onChange}
-              />
-            </Col>
-            <Col xl={3} xs={6}>
-              <TermTypeFacet
-                value={params[VocabularyUtils.RDF_TYPE]}
-                onChange={onChange}
-              />
-            </Col>
-            <Col xl={3} xs={6}>
-              <TermStateFacet
-                value={params[VocabularyUtils.HAS_TERM_STATE]}
+            <Col xl={4} xs={6}>
+              <TextFacet
+                id="faceted-search-examples"
+                label={i18n("term.metadata.example.label")}
+                value={params[VocabularyUtils.SKOS_EXAMPLE]}
                 onChange={onChange}
               />
             </Col>
