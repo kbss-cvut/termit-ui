@@ -643,7 +643,7 @@ const en = {
     "search.results.table.label.tooltip": "Open asset detail",
     "search.results.table.match": "Match",
     "search.results.table.score": "Match score",
-    "search.results.field.badge.tooltip": "Matched attribute",
+    "search.results.field": "Match found in attribute:",
     "search.results.field.label": "Label",
     "search.results.field.comment": "Comment",
     "search.results.field.definition": "Definition",
@@ -669,6 +669,9 @@ const en = {
 
     annotator: "Annotator",
     "annotator.content.loading": "Loading file content...",
+    "annotator.download.thisFile": "This file",
+    "annotator.download.original": "Original",
+    "annotator.download.withoutUnconfirmed": "Without unconfirmed occurrences",
     "annotator.vocabulary": "Uses terms from vocabulary",
     "annotator.selectionPurpose.dialog.title":
       "What do you want to do with the selected text?",

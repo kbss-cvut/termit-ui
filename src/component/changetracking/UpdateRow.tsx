@@ -9,7 +9,7 @@ import OutgoingLink from "../misc/OutgoingLink";
 import { Badge, Label } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 
-interface UpdateRowProps {
+export interface UpdateRowProps {
   record: UpdateRecord;
 }
 
