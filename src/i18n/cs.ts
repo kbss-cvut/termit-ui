@@ -335,6 +335,14 @@ const cs = {
       "Při zaškrtnutí tohoto políčka budou při importu identifikátory nahrazeny novými, pokud by kolidovaly s existujícími identifikátory.",
     "vocabulary.summary.startTextAnalysis.title":
       "Spustit textovou analýzu definic všech pojmů v tomto slovníku",
+    "vocabulary.summary.model.label": "Modelovat vztahy",
+    "vocabulary.summary.model.title":
+      "Modelovat vztahy mezi pojmy ve slovníku pomocí externího nástroje",
+    "vocabulary.summary.model.open": "Otevřít",
+    "vocabulary.summary.model.dialog.title":
+      "Modelovat vztahy pojmů slovníku {vocabulary}",
+    "vocabulary.summary.model.dialog.text":
+      "Vyberte slovníky, které chcete pro modelování otevřít. Předvybrány jsou slovníky, které s otevíraným slovníkem souvisí a musí být v seznamy zahrnuty.",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
     "vocabulary.created.message": "Slovník úspěšně vytvořen.",
     "vocabulary.detail.subtitle": "Vytvořen autorem {author} ",
