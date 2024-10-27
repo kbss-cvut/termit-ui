@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import Vocabulary from "../../model/Vocabulary";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
@@ -14,6 +15,7 @@ import {
   loadVocabularyContentDetailedChanges,
 } from "../../action/AsyncVocabularyActions";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
+import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 
 interface TermChangeFrequencyProps {
   vocabulary: Vocabulary;
@@ -30,6 +32,13 @@ const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [page, setPage] = React.useState(0);
+  const [filterData, setFilterData] =
+    useState<VocabularyContentChangeFilterData>({
+      term: "",
+      type: "",
+      attribute: "",
+      author: "",
+    });
   React.useEffect(() => {
     if (vocabulary.iri !== Constants.EMPTY_ASSET_IRI) {
       trackPromise(
@@ -47,13 +56,14 @@ const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
         dispatch(
           loadVocabularyContentDetailedChanges(
             VocabularyUtils.create(vocabulary.iri),
+            filterData,
             { page: page, size: Constants.VOCABULARY_CONTENT_HISTORY_LIMIT }
           )
         ).then((changeRecords) => setChangeRecords(changeRecords)),
         "term-change-frequency"
       );
     }
-  }, [vocabulary.iri, dispatch, page]);
+  }, [vocabulary.iri, dispatch, page, filterData]);
 
   return (
     <>
@@ -67,7 +77,7 @@ const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
         page={page}
         setPage={setPage}
         pageSize={Constants.VOCABULARY_CONTENT_HISTORY_LIMIT}
-        itemCount={changeRecords?.length ?? 0}
+        applyFilter={setFilterData}
       />
     </>
   );

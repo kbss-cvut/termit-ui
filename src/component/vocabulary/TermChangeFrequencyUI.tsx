@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { Col, Row, Table } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
@@ -13,7 +14,12 @@ import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination
 import CustomInput from "../misc/CustomInput";
 import Select from "../misc/Select";
 import "./TermChangeFrequencyUI.scss";
-import classNames from "classnames";
+import PersistRecord from "../../model/changetracking/PersistRecord";
+import DeleteRecord from "../../model/changetracking/DeleteRecord";
+import VocabularyContentDeleteRow from "../changetracking/VocabularyContentDeleteRow";
+import { debounce } from "lodash";
+import Constants from "../../util/Constants";
+import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 
 interface TermChangeFrequencyUIProps {
   aggregatedRecords: AggregatedChangeInfo[] | null;
@@ -21,7 +27,7 @@ interface TermChangeFrequencyUIProps {
   page: number;
   setPage: (page: number) => void;
   pageSize: number;
-  itemCount: number;
+  applyFilter: (filterData: VocabularyContentChangeFilterData) => void;
 }
 
 /**
@@ -68,10 +74,32 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   page,
   setPage,
   pageSize,
-  itemCount,
+  applyFilter,
 }) => {
   const { i18n, locale } = useI18n();
-  const [showFilter, setShowFilter] = React.useState(false);
+
+  const [filterAuthor, setFilterAuthor] = useState("");
+  const [filterTerm, setFilterTerm] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterAttribute, setFilterAttribute] = useState("");
+  const applyFilterDebounced = useCallback(
+    debounce(
+      (filterData: VocabularyContentChangeFilterData) =>
+        applyFilter(filterData),
+      Constants.INPUT_DEBOUNCE_WAIT_TIME
+    ),
+    [applyFilter]
+  );
+
+  useEffect(() => {
+    applyFilterDebounced({
+      author: filterTerm,
+      term: filterTerm,
+      type: filterType,
+      attribute: filterAttribute,
+    });
+  }, [filterAuthor, filterTerm, filterType, filterAttribute]);
+
   if (!aggregatedRecords || !changeRecords) {
     return <div className="additional-metadata-container">&nbsp;</div>;
   }
@@ -152,90 +180,77 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   ];
   return (
     <Row>
-      <Col xl={changeRecords.length === 0 ? 5 : 6} lg={12}>
+      <Col xl={6} lg={12}>
         <Chart options={options} series={series} width="100%" />
       </Col>
       <Col xl={6} lg={12} className={"border-left"}>
         <div className="additional-metadata-container">
           <Table striped={true} responsive={true}>
             <thead>
-              <If expression={showFilter}>
-                <tr>
-                  <td className={"col-3 border-0"} colSpan={2}>
-                    <CustomInput
-                      name="date-filter"
-                      placeholder={i18n("history.filter.datetime")}
-                      value={""}
-                      onChange={(e) => {}}
-                    />
-                  </td>
-                </tr>
-              </If>
               <tr>
                 <th className="col-3">{i18n("history.whenwho")}</th>
                 <th className="col-3">{i18n("type.term")}</th>
                 <th className="col-1">{i18n("history.type")}</th>
-                <th className="col d-flex justify-content-between">
-                  {i18n("history.changedAttribute")}
-                  <span
-                    className={classNames("cursor-pointer", {
-                      "color-primary": showFilter,
-                    })}
-                    onClick={() => setShowFilter(!showFilter)}
-                    title={i18n("main.nav.search")}
-                  >
-                    <i className={"fas fa-search fa-lg"} />
-                  </span>
-                </th>
+                <th className="col">{i18n("history.changedAttribute")}</th>
               </tr>
-              <If expression={showFilter}>
-                <tr>
-                  <td className="col-3">
-                    <CustomInput
-                      name={i18n("asset.author")}
-                      placeholder={i18n("asset.author")}
-                    />
-                  </td>
-                  <td className="col-3">
-                    <CustomInput
-                      name={i18n("type.term")}
-                      placeholder={i18n("type.term")}
-                    />
-                  </td>
-                  <td className={"col-2"}>
-                    <Select
-                      placeholder={i18n("history.type")}
-                      value={i18n("history.type")}
-                    >
-                      <option value={""}></option>
-                      {[
-                        "history.type.persist",
-                        "history.type.update",
-                        "history.type.delete",
-                      ].map((type) => (
-                        <option key={type} value={type}>
-                          {i18n(type)}
-                        </option>
-                      ))}
-                    </Select>
-                  </td>
-                  <td className="col-2">
-                    <CustomInput
-                      name={i18n("history.changedAttribute")}
-                      placeholder={i18n("history.changedAttribute")}
-                    />
-                  </td>
-                </tr>
-              </If>
+              <tr>
+                <td className="col-3">
+                  <CustomInput
+                    name={i18n("asset.author")}
+                    placeholder={i18n("asset.author")}
+                    value={filterAuthor}
+                    onChange={(e) => setFilterAuthor(e.target.value)}
+                  />
+                </td>
+                <td className="col-3">
+                  <CustomInput
+                    name={i18n("type.term")}
+                    placeholder={i18n("type.term")}
+                    value={filterTerm}
+                    onChange={(e) => setFilterTerm(e.target.value)}
+                  />
+                </td>
+                <td className={"col-2"}>
+                  <Select
+                    placeholder={i18n("history.type")}
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                  >
+                    <option value={""}></option>
+                    {[
+                      "history.type.persist",
+                      "history.type.update",
+                      "history.type.delete",
+                    ].map((type) => (
+                      <option key={type} value={type}>
+                        {i18n(type)}
+                      </option>
+                    ))}
+                  </Select>
+                </td>
+                <td className="col-2">
+                  <CustomInput
+                    name={i18n("history.changedAttribute")}
+                    placeholder={i18n("history.changedAttribute")}
+                    value={filterAttribute}
+                    onChange={(e) => setFilterAttribute(e.target.value)}
+                  />
+                </td>
+              </tr>
             </thead>
             <tbody>
-              {changeRecords.map((r) =>
-                r instanceof UpdateRecord ? (
-                  <VocabularyContentUpdateRow key={r.iri} record={r} />
-                ) : (
-                  <VocabularyContentPersistRow key={r.iri} record={r} />
-                )
-              )}
+              {changeRecords.map((r) => {
+                if (r instanceof PersistRecord) {
+                  return <VocabularyContentPersistRow key={r.iri} record={r} />;
+                }
+                if (r instanceof UpdateRecord) {
+                  return <VocabularyContentUpdateRow key={r.iri} record={r} />;
+                }
+                if (r instanceof DeleteRecord) {
+                  return <VocabularyContentDeleteRow key={r.iri} record={r} />;
+                }
+                return null;
+              })}
             </tbody>
           </Table>
         </div>
@@ -244,7 +259,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
             page={page}
             setPage={setPage}
             pageSize={pageSize}
-            itemCount={itemCount}
+            itemCount={pageSize + 1}
           />
         </If>
       </Col>

@@ -8,7 +8,7 @@ import {
   publishMessage,
   publishNotification,
 } from "./SyncActions";
-import { IRI } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import Ajax, { param } from "../util/Ajax";
 import Constants from "../util/Constants";
@@ -31,6 +31,7 @@ import ChangeRecord, {
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
 import AssetFactory from "../util/AssetFactory";
+import { VocabularyContentChangeFilterData } from "../model/filter/VocabularyContentChangeFilterData";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -137,6 +138,7 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
 
 export function loadVocabularyContentDetailedChanges(
   vocabularyIri: IRI,
+  filterData: VocabularyContentChangeFilterData,
   pageReq: PageRequest
 ) {
   const action = {
@@ -145,11 +147,26 @@ export function loadVocabularyContentDetailedChanges(
 
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
+    let params = param("namespace", vocabularyIri.namespace)
+      .param("page", pageReq.page?.toString())
+      .param("size", pageReq.size?.toString());
+    for (const [key, value] of Object.entries(filterData)) {
+      params = params.param(key, value);
+    }
+    switch (params.getParams()?.["type"]) {
+      case "history.type.persist":
+        params = params.param("type", VocabularyUtils.PERSIST_EVENT);
+        break;
+      case "history.type.update":
+        params = params.param("type", VocabularyUtils.UPDATE_EVENT);
+        break;
+      case "history.type.delete":
+        params = params.param("type", VocabularyUtils.DELETE_EVENT);
+        break;
+    }
     return Ajax.get(
       `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content/detail`,
-      param("namespace", vocabularyIri.namespace)
-        .param("page", pageReq.page?.toString())
-        .param("size", pageReq.size?.toString())
+      params
     )
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecord>(
