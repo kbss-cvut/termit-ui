@@ -168,6 +168,66 @@ describe("AsyncTermActions", () => {
         expect(data.vocabulary.iri).toEqual(vocabularyIri.toString());
       });
     });
+
+    it("adds term as root when parent is from different vocabulary", () => {
+      const term = new Term({
+        label: langString("Test term 1"),
+        iri: vocabularyIri.toString() + "term/test-term-1",
+        parentTerms: [
+          {
+            iri: Generator.generateUri(),
+            label: langString("Parent term from different vocabulary"),
+            vocabulary: {
+              iri: Generator.generateUri(),
+            },
+          },
+        ],
+      });
+      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.post = mock;
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(createTerm(term, vocabularyIri))
+      ).then(() => {
+        expect(Ajax.post).toHaveBeenCalled();
+        expect(mock.mock.calls[0][0]).toEqual(
+          `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms`
+        );
+      });
+    });
+
+    it("uses parent term from current vocabulary when multiple parents are set", () => {
+      const parentIri = vocabularyIri.toString() + "/terms/parent-one";
+      const term = new Term({
+        label: langString("Test term 1"),
+        iri: vocabularyIri.toString() + "term/test-term-1",
+        parentTerms: [
+          {
+            iri: parentIri,
+            label: langString("Parent term from this vocabulary"),
+            vocabulary: {
+              iri: vocabularyIri.toString(),
+            },
+          },
+          {
+            iri: Generator.generateUri(),
+            label: langString("Parent term from different vocabulary"),
+            vocabulary: {
+              iri: Generator.generateUri(),
+            },
+          },
+        ],
+      });
+      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.post = mock;
+      return Promise.resolve(
+        (store.dispatch as ThunkDispatch)(createTerm(term, vocabularyIri))
+      ).then(() => {
+        expect(Ajax.post).toHaveBeenCalled();
+        expect(mock.mock.calls[0][0]).toEqual(
+          `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/parent-one/subterms`
+        );
+      });
+    });
   });
 
   describe("setTermDefinitionSource", () => {
