@@ -4,7 +4,7 @@
  *
  * This file contains asynchronous actions related to term management in the frontend.
  */
-import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { GetStoreState, ThunkDispatch } from "../util/Types";
 import * as SyncActions from "./SyncActions";
@@ -84,8 +84,14 @@ function resolveTermCreationUrl(term: Term, targetVocabularyIri: IRI) {
   let url = `${ENDPOINT}${targetVocabularyIri.fragment}/terms`;
   const parents = Utils.sanitizeArray(term.parentTerms);
   if (parents.length > 0) {
-    // Use one of the parents, it does not matter which one
-    url += `/${VocabularyUtils.create(parents[0].iri!).fragment}/subterms`;
+    const parentInThisVocabulary = parents.find(
+      (p) => p.vocabulary!.iri === IRIImpl.toString(targetVocabularyIri)
+    );
+    if (parentInThisVocabulary) {
+      url += `/${
+        VocabularyUtils.create(parentInThisVocabulary.iri!).fragment
+      }/subterms`;
+    }
   }
   return url;
 }
