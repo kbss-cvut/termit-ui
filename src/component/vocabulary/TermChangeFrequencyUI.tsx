@@ -100,7 +100,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
     });
   }, [filterAuthor, filterTerm, filterType, filterAttribute]);
 
-  if (!aggregatedRecords || !changeRecords) {
+  if (!aggregatedRecords) {
     return <div className="additional-metadata-container">&nbsp;</div>;
   }
 
@@ -239,7 +239,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
               </tr>
             </thead>
             <tbody>
-              {changeRecords.map((r) => {
+              {changeRecords?.map((r) => {
                 if (r instanceof PersistRecord) {
                   return <VocabularyContentPersistRow key={r.iri} record={r} />;
                 }
@@ -254,7 +254,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
             </tbody>
           </Table>
         </div>
-        <If expression={changeRecords.length > 0}>
+        <If expression={(changeRecords?.length || 1) > 0}>
           <SimplePagination
             page={page}
             setPage={setPage}
