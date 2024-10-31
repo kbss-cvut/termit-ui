@@ -227,67 +227,68 @@ interface DefinitionalTermOccurrenceProps {
   isSuggested: boolean;
 }
 
-export const DefinitionalTermOccurrence: React.FC<DefinitionalTermOccurrenceProps> =
-  (props) => {
-    const {
-      occurrence,
-      term,
-      language,
-      onApprove,
-      onRemove,
-      canApprove,
-      canRemove,
-      isSuggested,
-    } = props;
-    const { i18n } = useI18n();
-    return (
-      <>
-        <td
-          className={classNames("pl-0 align-middle", {
-            italics: isSuggested,
-          })}
-        >
-          {isSuggested && (
-            <InfoIcon
-              className="mr-1"
-              text={i18n("term.metadata.related.definitionally.suggested")}
-              id={`term-metadata-definition-suggested-${Utils.hashCode(
-                occurrence.iri!
-              )}`}
-            />
+export const DefinitionalTermOccurrence: React.FC<
+  DefinitionalTermOccurrenceProps
+> = (props) => {
+  const {
+    occurrence,
+    term,
+    language,
+    onApprove,
+    onRemove,
+    canApprove,
+    canRemove,
+    isSuggested,
+  } = props;
+  const { i18n } = useI18n();
+  return (
+    <>
+      <td
+        className={classNames("pl-0 align-middle", {
+          italics: isSuggested,
+        })}
+      >
+        {isSuggested && (
+          <InfoIcon
+            className="mr-1"
+            text={i18n("term.metadata.related.definitionally.suggested")}
+            id={`term-metadata-definition-suggested-${Utils.hashCode(
+              occurrence.iri!
+            )}`}
+          />
+        )}
+        {term && <TermLink term={term} language={language} />}
+      </td>
+      <td className="pr-0">
+        <ButtonToolbar className="d-inline float-right ml-1">
+          {canApprove && (
+            <BadgeButton
+              color="primary"
+              size="sm"
+              title={i18n("annotation.confirm")}
+              onClick={() => onApprove(occurrence)}
+            >
+              <FaCheck className="mr-1" />
+              {i18n("approve")}
+            </BadgeButton>
           )}
-          {term && <TermLink term={term} language={language} />}
-        </td>
-        <td className="pr-0">
-          <ButtonToolbar className="d-inline float-right ml-1">
-            {canApprove && (
-              <BadgeButton
-                color="primary"
-                size="sm"
-                title={i18n("annotation.confirm")}
-                onClick={() => onApprove(occurrence)}
-              >
-                <FaCheck className="mr-1" />
-                {i18n("approve")}
-              </BadgeButton>
-            )}
-            {canRemove && (
-              <BadgeButton
-                color="danger"
-                size="sm"
-                outline={true}
-                title={i18n("annotation.remove")}
-                onClick={() => onRemove(occurrence)}
-              >
-                <FaTrashAlt className="mr-1" />
-                {i18n("remove")}
-              </BadgeButton>
-            )}
-          </ButtonToolbar>
-        </td>
-      </>
-    );
-  };
+          {canRemove && (
+            <BadgeButton
+              color="danger"
+              size="sm"
+              outline={true}
+              title={i18n("annotation.remove")}
+              onClick={() => onRemove(occurrence)}
+            >
+              <FaTrashAlt className="mr-1" />
+              {i18n("remove")}
+            </BadgeButton>
+          )}
+        </ButtonToolbar>
+      </td>
+    </>
+  );
+};
 
 export default connect(
   (state: TermItState) => ({

@@ -73,17 +73,20 @@ const AccessControlList: React.FC<{ vocabularyIri: string }> = ({
   vocabularyIri,
 }) => {
   const { i18n } = useI18n();
-  const [acl, setAcl] =
-    React.useState<AccessControlListModel | undefined>(undefined);
+  const [acl, setAcl] = React.useState<AccessControlListModel | undefined>(
+    undefined
+  );
   const existingHolders = React.useMemo(
     () => (acl ? acl.records.map((r) => r.holder.iri) : []),
     [acl]
   );
   const [showCreateDialog, setShowCreateDialog] = React.useState(false);
-  const [recordToRemove, setRecordToRemove] =
-    React.useState<AccessControlRecordData | undefined>();
-  const [recordToUpdate, setRecordToUpdate] =
-    React.useState<AbstractAccessControlRecord<any> | undefined>();
+  const [recordToRemove, setRecordToRemove] = React.useState<
+    AccessControlRecordData | undefined
+  >();
+  const [recordToUpdate, setRecordToUpdate] = React.useState<
+    AbstractAccessControlRecord<any> | undefined
+  >();
   const accessLevels = useSelector((state: TermItState) => state.accessLevels);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {

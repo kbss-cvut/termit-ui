@@ -12,29 +12,30 @@ interface RemoveAccessControlRecordDialogProps {
   onCancel: () => void;
 }
 
-const RemoveAccessControlRecordDialog: React.FC<RemoveAccessControlRecordDialogProps> =
-  ({ record, show, onSubmit, onCancel }) => {
-    const { i18n, formatMessage, locale } = useI18n();
-    if (!record) {
-      return null;
-    }
+const RemoveAccessControlRecordDialog: React.FC<
+  RemoveAccessControlRecordDialogProps
+> = ({ record, show, onSubmit, onCancel }) => {
+  const { i18n, formatMessage, locale } = useI18n();
+  if (!record) {
+    return null;
+  }
 
-    return (
-      <ConfirmCancelDialog
-        show={show}
-        id="remove-acr"
-        confirmKey="remove"
-        onClose={onCancel}
-        onConfirm={onSubmit}
-        title={i18n("vocabulary.acl.record.remove.dialog.title")}
-      >
-        <Label>
-          {formatMessage("vocabulary.acl.record.remove.dialog.text", {
-            holder: getLocalized(record.holder.label, locale),
-          })}
-        </Label>
-      </ConfirmCancelDialog>
-    );
-  };
+  return (
+    <ConfirmCancelDialog
+      show={show}
+      id="remove-acr"
+      confirmKey="remove"
+      onClose={onCancel}
+      onConfirm={onSubmit}
+      title={i18n("vocabulary.acl.record.remove.dialog.title")}
+    >
+      <Label>
+        {formatMessage("vocabulary.acl.record.remove.dialog.text", {
+          holder: getLocalized(record.holder.label, locale),
+        })}
+      </Label>
+    </ConfirmCancelDialog>
+  );
+};
 
 export default RemoveAccessControlRecordDialog;

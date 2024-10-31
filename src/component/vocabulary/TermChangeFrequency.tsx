@@ -20,10 +20,12 @@ interface TermChangeFrequencyProps {
 }
 
 const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
-  const [aggregatedRecords, setAggregatedRecords] =
-    React.useState<null | AggregatedChangeInfo[]>(null);
-  const [changeRecords, setChangeRecords] =
-    React.useState<null | ChangeRecord[]>(null);
+  const [aggregatedRecords, setAggregatedRecords] = React.useState<
+    null | AggregatedChangeInfo[]
+  >(null);
+  const [changeRecords, setChangeRecords] = React.useState<
+    null | ChangeRecord[]
+  >(null);
   const { vocabulary } = props;
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();

@@ -63,8 +63,9 @@ const FacetedSearch: React.FC = () => {
   const dispatch: ThunkDispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [params, setParams] = useState(INITIAL_STATE);
-  const [results, setResults] =
-    React.useState<FacetedSearchResult[] | null>(null);
+  const [results, setResults] = React.useState<FacetedSearchResult[] | null>(
+    null
+  );
 
   const onChange = (value: SearchParam) => {
     const change = {};

@@ -22,8 +22,9 @@ const CommentList: React.FC<CommentListProps> = (props) => {
     removeComment,
   } = props;
 
-  const [editedComment, setEditedComment] =
-    React.useState<Comment | null>(null);
+  const [editedComment, setEditedComment] = React.useState<Comment | null>(
+    null
+  );
   if (comments.length === 0) {
     return <span className="italics">{props.i18n("comments.list.empty")}</span>;
   }
