@@ -32,6 +32,7 @@ import ChangeRecord, {
 } from "../model/changetracking/ChangeRecord";
 import AssetFactory from "../util/AssetFactory";
 import { VocabularyContentChangeFilterData } from "../model/filter/VocabularyContentChangeFilterData";
+import { getLocalized } from "../model/MultilingualString";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -174,6 +175,19 @@ export function loadVocabularyContentDetailedChanges(
           CHANGE_RECORD_CONTEXT
         )
       )
+      .then((data: ChangeRecord[]) => {
+        // adding labels to the label cache as they cannot be fetched from server
+        const labels: { [key: string]: string } = {};
+        data.forEach((r) => {
+          if (r["label"]) {
+            labels[r.changedEntity.iri] = getLocalized(r["label"]);
+          }
+        });
+        dispatch(
+          asyncActionSuccessWithPayload({ type: ActionType.GET_LABEL }, labels)
+        );
+        return data;
+      })
       .then((data: ChangeRecord[]) => {
         dispatch(asyncActionSuccess(action));
         return data.map((r) => AssetFactory.createChangeRecord(r));

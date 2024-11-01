@@ -10,7 +10,6 @@ export interface DeleteRecordData extends ChangeRecordData {
  */
 export default class DeleteRecord extends ChangeRecord {
   public readonly label: MultilingualString;
-  public readonly vocabulary?: string;
   public constructor(data: DeleteRecordData) {
     super(data);
     this.label = data.label;

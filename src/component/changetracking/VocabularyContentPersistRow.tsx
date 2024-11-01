@@ -22,7 +22,7 @@ export const VocabularyContentPersistRow: React.FC<PersistRowProps> = (
         </div>
       </td>
       <td>
-        <TermIriLink iri={record.changedEntity.iri} />
+        <TermIriLink iri={record.changedEntity.iri} shrinkFullIri={true} />
       </td>
       <td>
         <Badge color="dark">{i18n(record.typeLabel)}</Badge>

@@ -24,7 +24,7 @@ export const VocabularyContentDeleteRow: React.FC<DeleteRowProps> = (props) => {
         </div>
       </td>
       <td>
-        <TermIriLink iri={record.changedEntity.iri} />
+        <TermIriLink iri={record.changedEntity.iri} shrinkFullIri={true} />
       </td>
       <td>
         <Badge color="danger">{i18n(record.typeLabel)}</Badge>
