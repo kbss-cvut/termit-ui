@@ -6,6 +6,7 @@ import VocabularyUtils from "../util/VocabularyUtils";
 const ctx = {
   content: VocabularyUtils.CONTENT,
   owner: VocabularyUtils.IS_PART_OF_DOCUMENT,
+  language: VocabularyUtils.DC_LANGUAGE,
 };
 
 /**
@@ -18,18 +19,21 @@ export const OWN_CONTEXT = ctx;
 export interface FileData extends ResourceData {
   origin?: string;
   content?: string;
+  language?: string;
   owner?: DocumentData;
 }
 
 export default class File extends Resource implements FileData {
   public origin: string;
   public content?: string;
+  public language?: string;
   public owner?: DocumentData;
 
   constructor(data: FileData) {
     super(data);
     this.origin = data.origin ? data.origin : "";
     this.content = data.content;
+    this.language = data.language;
     this.owner = data.owner;
   }
 

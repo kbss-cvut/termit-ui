@@ -1,11 +1,9 @@
 import Resource from "../../../../model/Resource";
 import Ajax from "../../../../util/Ajax";
-import {
-  flushPromises,
-  mountWithIntl,
-} from "../../../../__tests__/environment/Environment";
-import { CreateFileMetadata } from "../CreateFileMetadata";
+import { mountWithIntl } from "../../../../__tests__/environment/Environment";
+import CreateFileMetadata from "../CreateFileMetadata";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
+import UploadFile from "../UploadFile";
 
 jest.mock("../../../../util/Ajax", () => {
   const originalModule = jest.requireActual("../../../../util/Ajax");
@@ -43,9 +41,10 @@ describe("CreateFileMetadata", () => {
         {...intlFunctions()}
       />
     );
-    (wrapper.find(CreateFileMetadata).instance() as CreateFileMetadata).setFile(
-      file as File
-    );
+    wrapper
+      .find(UploadFile)
+      .props()
+      .setFile(file as File);
     const labelInput = wrapper.find('input[name="create-resource-label"]');
     expect((labelInput.getDOMNode() as HTMLInputElement).value).toEqual(
       fileName
