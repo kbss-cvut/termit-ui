@@ -1,3 +1,9 @@
+#### Verze 3.3.0
+
+- Přidána možnost stáhnout anotovaný soubor bez nepotvrzených výskytů.
+- Upraveno fulltextové vyhledávání - nově se zobrazuje informace o atributu, ve kterém byla shoda nalezena.
+- Do fasetového vyhledávání přidána možnost filtrovat dle příkladů (`skos:example`).
+
 #### Verze 3.2.0
 
 - Přidána podpora pro import slovníků z MS Excel.

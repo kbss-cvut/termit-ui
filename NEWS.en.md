@@ -1,3 +1,9 @@
+#### Version 3.3.0
+
+- Added the possibility to download annotated file without unconfirmed occurrences.
+- Enhanced fulltext search - now it shows information about the attribute in which a match was found.
+- Added support for filtering by example (`skos:example`) in the faceted search.
+
 #### Version 3.2.0
 
 - Added support for importing a vocabulary from MS Excel.

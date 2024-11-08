@@ -21,8 +21,9 @@ const CommonLastCommentedAssets: React.FC<CommonLastCommentedAssetsProps> = (
 ) => {
   const { loadAssets } = props;
   const [page, setPage] = useState(0);
-  const [lastCommentedAssets, setLastCommentedAssets] =
-    React.useState<RecentlyCommentedAsset[] | null>(null);
+  const [lastCommentedAssets, setLastCommentedAssets] = React.useState<
+    RecentlyCommentedAsset[] | null
+  >(null);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     trackPromise(

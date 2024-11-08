@@ -20,8 +20,9 @@ const CommonLastEditedAssets: React.FC<CommonLastEditedAssetsProps> = (
 ) => {
   const { loadAssets } = props;
   const [page, setPage] = useState(0);
-  const [lastEditedAssets, setLastEditedAssets] =
-    React.useState<RecentlyModifiedAsset[] | null>(null);
+  const [lastEditedAssets, setLastEditedAssets] = React.useState<
+    RecentlyModifiedAsset[] | null
+  >(null);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     trackPromise(

@@ -188,8 +188,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     setMdeInstance(easyMde);
   }, []);
 
-  const [codemirrorInstance, setCodemirrorInstance] =
-    useState<Editor | null>(null);
+  const [codemirrorInstance, setCodemirrorInstance] = useState<Editor | null>(
+    null
+  );
   const getCmInstanceCallback = useCallback((editor: Editor) => {
     setCodemirrorInstance(editor);
   }, []);

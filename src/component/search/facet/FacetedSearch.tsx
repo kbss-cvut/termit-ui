@@ -19,6 +19,7 @@ import VocabularyFacet from "./VocabularyFacet";
 import SimplePagination from "../../dashboard/widget/lastcommented/SimplePagination";
 import Constants from "../../../util/Constants";
 import TermStateFacet from "./TermStateFacet";
+import { useDebouncedCallback } from "use-debounce";
 
 function aggregateSearchParams(params: { [key: string]: SearchParam }) {
   return Object.entries(params)
@@ -35,6 +36,11 @@ INITIAL_STATE[VocabularyUtils.SKOS_NOTATION] = {
   property: VocabularyUtils.SKOS_NOTATION,
   value: [""],
   matchType: MatchType.EXACT_MATCH,
+};
+INITIAL_STATE[VocabularyUtils.SKOS_EXAMPLE] = {
+  property: VocabularyUtils.SKOS_EXAMPLE,
+  value: [""],
+  matchType: MatchType.SUBSTRING,
 };
 INITIAL_STATE[VocabularyUtils.RDF_TYPE] = {
   property: VocabularyUtils.RDF_TYPE,
@@ -57,19 +63,36 @@ const FacetedSearch: React.FC = () => {
   const dispatch: ThunkDispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [params, setParams] = useState(INITIAL_STATE);
+  const [results, setResults] = React.useState<FacetedSearchResult[] | null>(
+    null
+  );
+
   const onChange = (value: SearchParam) => {
     const change = {};
     change[value.property] = value;
     setParams({ ...params, ...change });
     setPage(0);
+    if (value.matchType === MatchType.IRI || value.value[0].length === 0) {
+      runSearch({ ...params, ...change }, page);
+    } else {
+      debouncedSearch({ ...params, ...change }, page);
+    }
   };
-  const [results, setResults] =
-    React.useState<FacetedSearchResult[] | null>(null);
+  const onPageChange = (page: number) => {
+    setPage(page);
+    runSearch(params, page);
+  };
   const runSearch = React.useCallback(
-    (params: SearchParam[]) => {
+    (params: {}, page: number) => {
+      const sp = aggregateSearchParams(params);
+      if (sp.length === 0) {
+        setPage(0);
+        setResults(null);
+        return;
+      }
       trackPromise(
         dispatch(
-          executeFacetedTermSearch(params, {
+          executeFacetedTermSearch(sp, {
             page,
             size: Constants.DEFAULT_PAGE_SIZE,
           })
@@ -77,17 +100,11 @@ const FacetedSearch: React.FC = () => {
         "faceted-search"
       ).then((res) => setResults(res));
     },
-    [page, dispatch, setResults]
+    [dispatch, setPage, setResults]
   );
-  React.useEffect(() => {
-    const sp = aggregateSearchParams(params);
-    if (sp.length === 0) {
-      setPage(0);
-      setResults(null);
-      return;
-    }
-    runSearch(sp);
-  }, [params, runSearch]);
+  const debouncedSearch = useDebouncedCallback((params: {}, page: number) => {
+    runSearch(params, page);
+  }, Constants.SEARCH_DEBOUNCE_DELAY);
 
   return (
     <div id="faceted-search" className="relative">
@@ -96,7 +113,27 @@ const FacetedSearch: React.FC = () => {
       <Card className="mb-0">
         <CardBody>
           <Row>
-            <Col xl={3} xs={6}>
+            <Col xl={4} xs={6}>
+              <VocabularyFacet
+                value={params[VocabularyUtils.IS_TERM_FROM_VOCABULARY]}
+                onChange={onChange}
+              />
+            </Col>
+            <Col xl={4} xs={6}>
+              <TermTypeFacet
+                value={params[VocabularyUtils.RDF_TYPE]}
+                onChange={onChange}
+              />
+            </Col>
+            <Col xl={4} xs={6}>
+              <TermStateFacet
+                value={params[VocabularyUtils.HAS_TERM_STATE]}
+                onChange={onChange}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xl={4} xs={6}>
               <TextFacet
                 id="faceted-search-notation"
                 label={i18n("term.metadata.notation.label")}
@@ -104,21 +141,11 @@ const FacetedSearch: React.FC = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col xl={3} xs={6}>
-              <VocabularyFacet
-                value={params[VocabularyUtils.IS_TERM_FROM_VOCABULARY]}
-                onChange={onChange}
-              />
-            </Col>
-            <Col xl={3} xs={6}>
-              <TermTypeFacet
-                value={params[VocabularyUtils.RDF_TYPE]}
-                onChange={onChange}
-              />
-            </Col>
-            <Col xl={3} xs={6}>
-              <TermStateFacet
-                value={params[VocabularyUtils.HAS_TERM_STATE]}
+            <Col xl={4} xs={6}>
+              <TextFacet
+                id="faceted-search-examples"
+                label={i18n("term.metadata.example.label")}
+                value={params[VocabularyUtils.SKOS_EXAMPLE]}
                 onChange={onChange}
               />
             </Col>
@@ -131,7 +158,7 @@ const FacetedSearch: React.FC = () => {
           {results && (
             <SimplePagination
               page={page}
-              setPage={setPage}
+              setPage={onPageChange}
               pageSize={Constants.LAST_COMMENTED_ASSET_LIMIT}
               itemCount={
                 results.length === 0 ? 0 : Constants.LAST_COMMENTED_ASSET_LIMIT

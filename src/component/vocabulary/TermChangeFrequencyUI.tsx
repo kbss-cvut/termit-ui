@@ -1,12 +1,23 @@
 import * as React from "react";
 import Chart from "react-apexcharts";
-import { Col, Row } from "reactstrap";
+import { Col, Row, Table } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import AggregatedChangeInfo from "../../model/changetracking/AggregatedChangeInfo";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import ChangeRecord from "../../model/changetracking/ChangeRecord";
+import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
+import VocabularyContentPersistRow from "../changetracking/VocabularyContentPersistRow";
+import VocabularyContentUpdateRow from "../changetracking/VocabularyContentUpdateRow";
+import If from "../misc/If";
+import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
 
 interface TermChangeFrequencyUIProps {
-  records: AggregatedChangeInfo[] | null;
+  aggregatedRecords: AggregatedChangeInfo[] | null;
+  changeRecords: ChangeRecord[] | null;
+  page: number;
+  setPage: (page: number) => void;
+  pageSize: number;
+  itemCount: number;
 }
 
 /**
@@ -48,14 +59,19 @@ const CZ_LOCALE = {
 };
 
 const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
-  records,
+  aggregatedRecords,
+  changeRecords,
+  page,
+  setPage,
+  pageSize,
+  itemCount,
 }) => {
   const { i18n, locale } = useI18n();
-  if (!records) {
+  if (!aggregatedRecords || !changeRecords) {
     return <div className="additional-metadata-container">&nbsp;</div>;
   }
 
-  if (records.length === 0) {
+  if (aggregatedRecords.length === 0) {
     return (
       <div
         id="history-empty-notice"
@@ -66,11 +82,11 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
     );
   }
 
-  const dates = Array.from(new Set(records.map((r) => r.getDate())));
-  const termCreations = records.filter(
+  const dates = Array.from(new Set(aggregatedRecords.map((r) => r.getDate())));
+  const termCreations = aggregatedRecords.filter(
     (r) => r.types.indexOf(VocabularyUtils.PERSIST_EVENT) !== -1
   );
-  const termUpdates = records.filter(
+  const termUpdates = aggregatedRecords.filter(
     (r) => r.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1
   );
 
@@ -131,8 +147,39 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   ];
   return (
     <Row>
-      <Col xl={8} lg={12}>
+      <Col xl={changeRecords.length === 0 ? 5 : 6} lg={12}>
         <Chart options={options} series={series} width="100%" />
+      </Col>
+      <Col xl={6} lg={12} className={"border-left"}>
+        <div className="additional-metadata-container">
+          <Table striped={true} responsive={true}>
+            <thead>
+              <tr>
+                <th className="col-3">{i18n("history.whenwho")}</th>
+                <th className="col-3">{i18n("type.term")}</th>
+                <th className="col-1">{i18n("history.type")}</th>
+                <th className="col-2">{i18n("history.changedAttribute")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {changeRecords.map((r) =>
+                r instanceof UpdateRecord ? (
+                  <VocabularyContentUpdateRow key={r.iri} record={r} />
+                ) : (
+                  <VocabularyContentPersistRow key={r.iri} record={r} />
+                )
+              )}
+            </tbody>
+          </Table>
+        </div>
+        <If expression={changeRecords.length > 0}>
+          <SimplePagination
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            itemCount={itemCount}
+          />
+        </If>
       </Col>
     </Row>
   );

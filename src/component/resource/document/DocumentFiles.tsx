@@ -4,11 +4,11 @@ import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch } from "react-redux";
 import {
   createFileInDocument,
-  exportFileContent,
   removeFileFromDocument,
   updateResource,
   uploadFileContent,
 } from "../../../action/AsyncActions";
+import { exportFileContent } from "../../../action/AsyncResourceActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Files from "./Files";
 import NotificationType from "../../../model/NotificationType";
@@ -71,7 +71,9 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
       Constants.TIMESTAMP_PARAM_FORMAT
     );
     dispatch(
-      exportFileContent(VocabularyUtils.create(termitFile.iri), timestamp)
+      exportFileContent(VocabularyUtils.create(termitFile.iri), {
+        at: timestamp,
+      })
     );
   };
 

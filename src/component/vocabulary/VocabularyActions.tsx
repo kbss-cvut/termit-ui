@@ -6,13 +6,23 @@ import {
   DropdownToggle,
   UncontrolledButtonDropdown,
 } from "reactstrap";
-import { GoClippy, GoCloudDownload, GoCloudUpload } from "react-icons/go";
+import {
+  GoClippy,
+  GoCloudDownload,
+  GoCloudUpload,
+  GoRepoForked,
+} from "react-icons/go";
 import ImportBackupOfVocabulary from "./importing/ImportBackupOfVocabulary";
 import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
 import IfUserIsAdmin from "../authorization/IfUserIsAdmin";
+import If from "../misc/If";
+import { useSelector } from "react-redux";
+import TermItState from "../../model/TermItState";
+import Utils from "../../util/Utils";
+import OpenModelingToolDialog from "./modeling/OpenModelingToolDialog";
 
 interface VocabularyActionsProps {
   vocabulary: Vocabulary;
@@ -31,6 +41,8 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
 }) => {
   const { i18n } = useI18n();
   const [showImportDialog, setShowImportDialog] = React.useState(false);
+  const [showModelingDialog, setShowModelingDialog] = React.useState(false);
+  const config = useSelector((state: TermItState) => state.configuration);
 
   return (
     <>
@@ -38,6 +50,11 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
         onImport={onImport}
         showDialog={showImportDialog}
         closeDialog={() => setShowImportDialog(false)}
+      />
+      <OpenModelingToolDialog
+        open={showModelingDialog}
+        onClose={() => setShowModelingDialog(false)}
+        vocabulary={vocabulary}
       />
       <UncontrolledButtonDropdown className="ml-1">
         <DropdownToggle
@@ -99,6 +116,23 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               {i18n("vocabulary.snapshot.create.label")}
             </DropdownItem>
           </IfUserIsAdmin>
+          <If expression={Utils.notBlank(config.modelingToolUrl)}>
+            <IfVocabularyActionAuthorized
+              vocabulary={vocabulary}
+              requiredAccessLevel={AccessLevel.WRITE}
+              key="vocabulary-model"
+            >
+              <DropdownItem
+                name="vocabulary-model"
+                className="btn-sm"
+                title={i18n("vocabulary.summary.model.title")}
+                onClick={() => setShowModelingDialog(true)}
+              >
+                <GoRepoForked className="mr-1 align-text-top" />
+                {i18n("vocabulary.summary.model.label")}
+              </DropdownItem>
+            </IfVocabularyActionAuthorized>
+          </If>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
     </>

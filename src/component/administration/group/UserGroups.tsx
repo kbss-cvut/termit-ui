@@ -20,8 +20,9 @@ const UserGroups: React.FC = () => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [groups, setGroups] = React.useState<UserGroup[]>([]);
-  const [groupToDelete, setGroupToDelete] =
-    React.useState<UserGroup | null>(null);
+  const [groupToDelete, setGroupToDelete] = React.useState<UserGroup | null>(
+    null
+  );
   React.useEffect(() => {
     trackPromise(dispatch(loadUserGroups()), "groups").then((data) =>
       setGroups(data)

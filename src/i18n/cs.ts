@@ -119,7 +119,7 @@ const cs = {
     "main.nav.search": "Vyhledávání",
     "main.nav.searchTerms": "Vyhledávání pojmů",
     "main.nav.searchVocabularies": "Vyhledávání slovníků",
-    "main.nav.facetedSearch": "Facetové vyhledávání",
+    "main.nav.facetedSearch": "Fasetové vyhledávání",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
     "main.nav.import-vocabulary": "Importovat slovník",
@@ -130,7 +130,7 @@ const cs = {
     "main.search.count-info-and-link":
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
     "main.search.no-results":
-      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte facetové hledání.",
+      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte fasetové hledání.",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":
@@ -335,6 +335,14 @@ const cs = {
       "Při zaškrtnutí tohoto políčka budou při importu identifikátory nahrazeny novými, pokud by kolidovaly s existujícími identifikátory.",
     "vocabulary.summary.startTextAnalysis.title":
       "Spustit textovou analýzu definic všech pojmů v tomto slovníku",
+    "vocabulary.summary.model.label": "Modelovat vztahy",
+    "vocabulary.summary.model.title":
+      "Modelovat vztahy mezi pojmy ve slovníku pomocí externího nástroje",
+    "vocabulary.summary.model.open": "Otevřít",
+    "vocabulary.summary.model.dialog.title":
+      "Modelovat vztahy pojmů slovníku {vocabulary}",
+    "vocabulary.summary.model.dialog.text":
+      "Vyberte slovníky, které chcete pro modelování otevřít. Předvybrány jsou slovníky, které s otevíraným slovníkem souvisí a musí být v seznamy zahrnuty.",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
     "vocabulary.created.message": "Slovník úspěšně vytvořen.",
     "vocabulary.detail.subtitle": "Vytvořen autorem {author} ",
@@ -635,7 +643,7 @@ const cs = {
     "search.tab.terms": "Pojmy",
     "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
     "search.tab.vocabularies": "Slovníky",
-    "search.tab.facets": "Facetové vyhledávání pojmů",
+    "search.tab.facets": "Fasetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
     "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
@@ -645,7 +653,7 @@ const cs = {
     "search.results.table.label.tooltip": "Zobrazit detail objektu",
     "search.results.table.match": "Nalezená shoda",
     "search.results.table.score": "Skóre shody",
-    "search.results.field.badge.tooltip": "Shoda nalezena v tomto atributu",
+    "search.results.field": "Shoda nalezena v atributu:",
     "search.results.field.label": "Název",
     "search.results.field.comment": "Popis",
     "search.results.field.definition": "Definice",
@@ -671,6 +679,9 @@ const cs = {
 
     annotator: "Anotátor",
     "annotator.content.loading": "Načítám obsah souboru...",
+    "annotator.download.thisFile": "Tento soubor",
+    "annotator.download.original": "Originál",
+    "annotator.download.withoutUnconfirmed": "Bez nepotvrzených výskytů",
     "annotator.vocabulary": "Používá pojmy ze slovníku",
     "annotator.selectionPurpose.dialog.title":
       "K čemu bude sloužit vybraný text?",

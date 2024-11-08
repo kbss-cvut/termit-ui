@@ -118,9 +118,14 @@ const constants = {
   ANNOTATOR_TUTORIAL: {},
   WORKSPACE_EDITABLE_CONTEXT_PARAM: "edit-context",
   TIMESTAMP_PARAM_FORMAT: "yyyyMMdd'T'HHmmss'Z'",
+  FTS_SNIPPET_TEXT_SIZE: 250,
+  // Search debounce delay in milliseconds
+  SEARCH_DEBOUNCE_DELAY: 400,
 
   // Size of page fetched from server
   DEFAULT_PAGE_SIZE: 100,
+  // size of the page for change records in vocabulary activity tab
+  VOCABULARY_CONTENT_HISTORY_LIMIT: 15,
 
   WEBSOCKET_ENDPOINT: {
     VOCABULARIES_VALIDATION: "/vocabularies/validation",
