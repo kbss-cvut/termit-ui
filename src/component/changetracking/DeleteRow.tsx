@@ -2,10 +2,13 @@ import * as React from "react";
 import { FormattedDate, FormattedTime } from "react-intl";
 import { Badge } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
-import TermIriLink from "../term/TermIriLink";
-import { DeleteRowProps } from "./DeleteRow";
+import DeleteRecord from "../../model/changetracking/DeleteRecord";
 
-export const VocabularyContentDeleteRow: React.FC<DeleteRowProps> = (props) => {
+export interface DeleteRowProps {
+  record: DeleteRecord;
+}
+
+export const DeleteRow: React.FC<DeleteRowProps> = (props) => {
   const { i18n } = useI18n();
   const record = props.record;
   const created = new Date(Date.parse(record.timestamp));
@@ -20,14 +23,13 @@ export const VocabularyContentDeleteRow: React.FC<DeleteRowProps> = (props) => {
         </div>
       </td>
       <td>
-        <TermIriLink iri={record.changedEntity.iri} shrinkFullIri={true} />
-      </td>
-      <td>
         <Badge color="danger">{i18n(record.typeLabel)}</Badge>
       </td>
-      <td></td>
+      <td />
+      <td />
+      <td />
     </tr>
   );
 };
 
-export default VocabularyContentDeleteRow;
+export default DeleteRow;

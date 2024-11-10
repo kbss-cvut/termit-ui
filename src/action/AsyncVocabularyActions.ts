@@ -8,7 +8,7 @@ import {
   publishMessage,
   publishNotification,
 } from "./SyncActions";
-import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
+import { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import Ajax, { param } from "../util/Ajax";
 import Constants from "../util/Constants";
@@ -31,7 +31,10 @@ import ChangeRecord, {
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
 import AssetFactory from "../util/AssetFactory";
-import { VocabularyContentChangeFilterData } from "../model/filter/VocabularyContentChangeFilterData";
+import {
+  getChangeTypeUri,
+  VocabularyContentChangeFilterData,
+} from "../model/filter/VocabularyContentChangeFilterData";
 import { getLocalized } from "../model/MultilingualString";
 
 export function loadTermCount(vocabularyIri: IRI) {
@@ -154,17 +157,7 @@ export function loadVocabularyContentDetailedChanges(
     for (const [key, value] of Object.entries(filterData)) {
       params = params.param(key, value);
     }
-    switch (params.getParams()?.["type"]) {
-      case "history.type.persist":
-        params = params.param("type", VocabularyUtils.PERSIST_EVENT);
-        break;
-      case "history.type.update":
-        params = params.param("type", VocabularyUtils.UPDATE_EVENT);
-        break;
-      case "history.type.delete":
-        params = params.param("type", VocabularyUtils.DELETE_EVENT);
-        break;
-    }
+    params = params.param("type", getChangeTypeUri(filterData));
     return Ajax.get(
       `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content/detail`,
       params

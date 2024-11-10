@@ -61,6 +61,29 @@ import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
 import { getShortLocale } from "../util/IntlUtil";
+import {
+  getChangeTypeUri,
+  VocabularyContentChangeFilterData,
+} from "../model/filter/VocabularyContentChangeFilterData";
+/*
+ * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
+ * of several synchronous sub-actions which inform the application of initiation of the request and its result.
+ *
+ * Some conventions (they are also described in README.md):
+ * API guidelines:
+ *      _Load_   - use IRI identifiers as parameters (+ normalized name as string if necessary, e.g. when fetching a term).
+ *      _Create_ - use the instance to be created as parameter + IRI identifier if additional context is necessary (e.g. when creating a term).
+ *      _Update_ - use the instance to be updated as parameter. It should contain all the necessary data.
+ *      _Remove_ - use the instance to be removed as parameter.
+ *
+ * Naming conventions for CRUD operations:
+ *      _load${ASSET(S)}_ - loading assets from the server, e.g. `loadVocabulary`
+ *      _create${ASSET}_  - creating an asset, e.g. `createVocabulary`
+ *      _update${ASSET}_  - updating an asset, e.g. `updateVocabulary`
+ *      _remove${ASSET}_  - removing an asset, e.g. `removeVocabulary`
+ *
+ * TODO Consider splitting this file into multiple, it is becoming too long
+ */
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1130,13 +1153,23 @@ export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
   };
 }
 
-export function loadHistory(asset: Asset) {
+export function loadHistory(
+  asset: Asset,
+  filterData?: VocabularyContentChangeFilterData
+) {
   const assetIri = VocabularyUtils.create(asset.iri);
   const historyConf = resolveHistoryLoadingParams(asset, assetIri);
   const action = { type: historyConf.actionType };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(historyConf.url, param("namespace", assetIri.namespace))
+    let params = param("namespace", assetIri.namespace);
+    if (filterData) {
+      for (const [key, value] of Object.entries(filterData)) {
+        params = params.param(key, value);
+      }
+      params = params.param("type", getChangeTypeUri(filterData));
+    }
+    return Ajax.get(historyConf.url, params)
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecordData>(
           data,

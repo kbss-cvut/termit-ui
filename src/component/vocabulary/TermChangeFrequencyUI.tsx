@@ -93,7 +93,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
 
   useEffect(() => {
     applyFilterDebounced({
-      author: filterTerm,
+      author: filterAuthor,
       term: filterTerm,
       type: filterType,
       attribute: filterAttribute,
@@ -190,11 +190,11 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
               <tr>
                 <th className="col-3">{i18n("history.whenwho")}</th>
                 <th className="col-3">{i18n("type.term")}</th>
-                <th className="col-1">{i18n("history.type")}</th>
+                <th className="col-2">{i18n("history.type")}</th>
                 <th className="col">{i18n("history.changedAttribute")}</th>
               </tr>
               <tr>
-                <td className="col-3">
+                <td>
                   <CustomInput
                     name={i18n("asset.author")}
                     placeholder={i18n("asset.author")}
@@ -202,7 +202,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
                     onChange={(e) => setFilterAuthor(e.target.value)}
                   />
                 </td>
-                <td className="col-3">
+                <td>
                   <CustomInput
                     name={i18n("type.term")}
                     placeholder={i18n("type.term")}
@@ -210,7 +210,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
                     onChange={(e) => setFilterTerm(e.target.value)}
                   />
                 </td>
-                <td className={"col-2"}>
+                <td>
                   <Select
                     placeholder={i18n("history.type")}
                     value={filterType}
@@ -228,7 +228,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
                     ))}
                   </Select>
                 </td>
-                <td className="col-2">
+                <td>
                   <CustomInput
                     name={i18n("history.changedAttribute")}
                     placeholder={i18n("history.changedAttribute")}
