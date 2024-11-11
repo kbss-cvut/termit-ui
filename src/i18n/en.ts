@@ -613,6 +613,7 @@ const en = {
     "file.upload.hint":
       "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8 or a valid MS Excel file.",
     "file.upload.size.exceeded": "File is too large.",
+    "file.language": "File content language",
 
     "dataset.license": "License",
     "dataset.format": "Format",

@@ -622,6 +622,7 @@ const cs = {
     "file.upload.hint":
       "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8, nebo validní MS Excel.",
     "file.upload.size.exceeded": "Soubor je příliš velký.",
+    "file.language": "Jazyk obsahu souboru",
 
     "dataset.license": "Licence",
     "dataset.format": "Formát",

@@ -1,10 +1,8 @@
 import * as React from "react";
-import ISO6391 from "iso-639-1";
 import classNames from "classnames";
 // @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import Constants from "../../util/Constants";
-import { getShortLocale } from "../../util/IntlUtil";
+import { getLanguageOptions, Language } from "../../util/IntlUtil";
 import { renderLanguages } from "./LanguageSelector";
 import { Nav, NavItem, NavLink } from "reactstrap";
 import { FaPlusCircle } from "react-icons/fa";
@@ -18,29 +16,6 @@ interface EditLanguageSelectorProps {
   onRemove: (lang: string) => void;
 }
 
-interface Language {
-  code: string;
-  name: string;
-  nativeName: string;
-}
-
-function prioritizeLanguages(options: Language[], languages: string[]) {
-  languages.forEach((lang) => {
-    const ind = options.findIndex((v) => v.code === lang);
-    const option = options[ind];
-    options.splice(ind, 1);
-    options.unshift(option);
-  });
-  return options;
-}
-
-const OPTIONS = prioritizeLanguages(
-  ISO6391.getLanguages(ISO6391.getAllCodes()),
-  Object.getOwnPropertyNames(Constants.LANG).map((lang) =>
-    getShortLocale(Constants.LANG[lang].locale)
-  )
-);
-
 const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
   const { language, existingLanguages, onSelect, onRemove } = props;
   const { i18n, formatMessage } = useI18n();
@@ -51,7 +26,7 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
   if (existingLanguages.indexOf(language) === -1) {
     existingLanguages.push(language);
   }
-  const options = OPTIONS.slice();
+  const options = getLanguageOptions().slice();
   for (const existing of existingLanguages) {
     const toRemove = options.findIndex((o) => o.code === existing);
     options.splice(toRemove, 1);

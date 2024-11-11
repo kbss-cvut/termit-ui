@@ -1,9 +1,20 @@
 import React from "react";
-import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
+import {
+  Button,
+  ButtonToolbar,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Row,
+} from "reactstrap";
 import UploadFile from "./UploadFile";
 import TermItFile from "../../../model/File";
 import CustomInput from "../../misc/CustomInput";
 import { useI18n } from "../../hook/useI18n";
+import { useSelector } from "react-redux";
+import TermItState from "../../../model/TermItState";
+import LanguageSelector from "./LanguageSelector";
 
 interface CreateFileMetadataProps {
   onCreate: (termItFile: TermItFile, file: File) => any;
@@ -17,6 +28,10 @@ const CreateFileMetadata: React.FC<CreateFileMetadataProps> = ({
   const { i18n } = useI18n();
   const [label, setLabel] = React.useState("");
   const [file, setFile] = React.useState<File>();
+  const lang = useSelector(
+    (state: TermItState) => state.configuration.language
+  );
+  const [language, setLanguage] = React.useState(lang);
 
   const onFileSelected = (file: File) => {
     setFile(file);
@@ -28,6 +43,7 @@ const CreateFileMetadata: React.FC<CreateFileMetadataProps> = ({
         new TermItFile({
           iri: "",
           label,
+          language,
         }),
         file
       );
@@ -49,6 +65,14 @@ const CreateFileMetadata: React.FC<CreateFileMetadataProps> = ({
             onChange={(e) => setLabel(e.target.value)}
             hint={i18n("required")}
           />
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12}>
+          <FormGroup>
+            <Label className="attribute-label">{i18n("file.language")}</Label>
+            <LanguageSelector onChange={setLanguage} value={language} />
+          </FormGroup>
         </Col>
       </Row>
       <Row>
