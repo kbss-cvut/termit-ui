@@ -90,6 +90,9 @@ export function removeTranslation(
   });
 }
 
+/**
+ * Type representing language data in an asset language selector.
+ */
 export interface Language {
   code: string;
   name: string;
@@ -113,6 +116,11 @@ const LANGUAGE_OPTIONS = prioritizeLanguages(
   )
 );
 
+/**
+ * Gets a list of all possible languages.
+ *
+ * The languages are retrieved using the iso-639-1 JS library.
+ */
 export function getLanguageOptions(): Language[] {
   return LANGUAGE_OPTIONS;
 }
