@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useRef, useState } from "react";
 import Asset, { AssetData } from "../../model/Asset";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import { Table } from "reactstrap";
@@ -33,7 +33,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   const [filterAuthor, setFilterAuthor] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterAttribute, setFilterAttribute] = useState("");
-  const loadHistoryActionDebounced = useCallback(
+  const loadHistoryActionDebounced = useRef(
     debounce(
       (
         asset: Asset,
@@ -41,8 +41,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
         cb: (records?: ChangeRecord[]) => void
       ) => dispatch(loadHistoryAction(asset, filterData)).then(cb),
       Constants.INPUT_DEBOUNCE_WAIT_TIME
-    ),
-    [dispatch]
+    )
   );
 
   React.useEffect(() => {
@@ -64,24 +63,35 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
           types: asset.types,
         };
         const snapshotTimeCreated = Date.parse(asset.snapshotCreated()!);
-        loadHistoryActionDebounced(modifiedAsset as Asset, filter, (recs) => {
-          if (recs) {
-            //Show history which is relevant to the snapshot
-            const filteredRecs = recs.filter(
-              (r) => Date.parse(r.timestamp) < snapshotTimeCreated
-            );
-            setRecords(filteredRecs);
+        loadHistoryActionDebounced.current(
+          modifiedAsset as Asset,
+          filter,
+          (recs) => {
+            if (recs) {
+              //Show history which is relevant to the snapshot
+              const filteredRecs = recs.filter(
+                (r) => Date.parse(r.timestamp) < snapshotTimeCreated
+              );
+              setRecords(filteredRecs);
+            }
           }
-        });
+        );
       } else {
-        loadHistoryActionDebounced(asset, filter, (recs) => {
+        loadHistoryActionDebounced.current(asset, filter, (recs) => {
           if (recs) {
             setRecords(recs);
           }
         });
       }
     }
-  }, [asset, dispatch, filterAuthor, filterType, filterAttribute]);
+  }, [
+    asset,
+    dispatch,
+    filterAuthor,
+    filterType,
+    filterAttribute,
+    loadHistoryActionDebounced,
+  ]);
   if (!records) {
     return <ContainerMask text={i18n("history.loading")} />;
   }

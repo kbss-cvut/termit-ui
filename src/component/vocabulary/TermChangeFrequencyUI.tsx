@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Chart from "react-apexcharts";
 import { Col, Row, Table } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
@@ -81,23 +81,24 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   const [filterTerm, setFilterTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterAttribute, setFilterAttribute] = useState("");
-  const applyFilterDebounced = useCallback(
-    debounce(
-      (filterData: VocabularyContentChangeFilterData) =>
-        applyFilter(filterData),
-      Constants.INPUT_DEBOUNCE_WAIT_TIME
-    ),
-    [applyFilter]
+  const applyFilterDebounced = useRef(
+    debounce(applyFilter, Constants.INPUT_DEBOUNCE_WAIT_TIME)
   );
 
   useEffect(() => {
-    applyFilterDebounced({
+    applyFilterDebounced.current({
       author: filterAuthor,
       term: filterTerm,
       type: filterType,
       attribute: filterAttribute,
     });
-  }, [filterAuthor, filterTerm, filterType, filterAttribute]);
+  }, [
+    filterAuthor,
+    filterTerm,
+    filterType,
+    filterAttribute,
+    applyFilterDebounced,
+  ]);
 
   if (!aggregatedRecords) {
     return <div className="additional-metadata-container">&nbsp;</div>;
