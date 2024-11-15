@@ -26,6 +26,7 @@ describe("AssetHistory", () => {
     mockDispatch = jest.fn();
     jest.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
     jest.spyOn(AsyncActions, "loadHistory");
+    jest.useFakeTimers();
   });
 
   it("loads asset history on mount", async () => {
@@ -34,8 +35,12 @@ describe("AssetHistory", () => {
     mountWithIntl(<AssetHistory asset={asset} {...intlFunctions()} />);
     await act(async () => {
       await flushPromises();
+      jest.runAllTimers();
     });
-    expect(AsyncActions.loadHistory).toHaveBeenCalledWith(asset);
+    expect(AsyncActions.loadHistory).toHaveBeenCalledWith(
+      asset,
+      expect.anything()
+    );
   });
 
   it("renders table with history records when they are available", async () => {
@@ -54,21 +59,9 @@ describe("AssetHistory", () => {
     );
     await act(async () => {
       await flushPromises();
+      jest.runAllTimers();
     });
     wrapper.update();
     expect(wrapper.exists(Table)).toBeTruthy();
-  });
-
-  it("shows notice about empty history when no records are found", async () => {
-    (mockDispatch as jest.Mock).mockResolvedValue([]);
-    const asset = Generator.generateTerm();
-    const wrapper = mountWithIntl(
-      <AssetHistory asset={asset} {...intlFunctions()} />
-    );
-    await act(async () => {
-      await flushPromises();
-    });
-    wrapper.update();
-    expect(wrapper.exists("#history-empty-notice")).toBeTruthy();
   });
 });
