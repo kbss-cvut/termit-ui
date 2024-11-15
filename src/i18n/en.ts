@@ -817,7 +817,6 @@ const en = {
     "history.changedAttribute": "Attribute",
     "history.originalValue": "Original value",
     "history.newValue": "New value",
-    "history.filter.datetime": "Time period",
 
     "changefrequency.label": "Activity",
 

@@ -9,7 +9,6 @@ import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import VocabularyContentPersistRow from "../changetracking/VocabularyContentPersistRow";
 import VocabularyContentUpdateRow from "../changetracking/VocabularyContentUpdateRow";
-import If from "../misc/If";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
 import CustomInput from "../misc/CustomInput";
 import Select from "../misc/Select";
@@ -254,14 +253,12 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
             </tbody>
           </Table>
         </div>
-        <If expression={(changeRecords?.length || 1) > 0}>
-          <SimplePagination
-            page={page}
-            setPage={setPage}
-            pageSize={pageSize}
-            itemCount={pageSize + 1}
-          />
-        </If>
+        <SimplePagination
+          page={page}
+          setPage={setPage}
+          pageSize={pageSize}
+          itemCount={pageSize + 1}
+        />
       </Col>
     </Row>
   );

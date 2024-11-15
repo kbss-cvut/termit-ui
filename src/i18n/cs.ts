@@ -825,7 +825,6 @@ const cs = {
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
-    "history.filter.datetime": "Období",
 
     "changefrequency.label": "Aktivita",
 
