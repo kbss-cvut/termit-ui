@@ -4,12 +4,33 @@ import render from "dom-serializer";
 
 const RDF_ATTRIBUTE_NAMES = ["about", "property", "resource", "typeof"];
 
+function removeAddedAttributes(elem: Element) {
+  // Restore links to their original state - see AnnotatorContent.PREPROCESSING_INSTRUCTIONS
+  if (elem.tagName === "a") {
+    if (elem.attribs["data-href"]) {
+      elem.attribs.href = elem.attribs["data-href"];
+      delete elem.attribs["data-href"];
+    }
+    delete elem.attribs["target"];
+    delete elem.attribs["rel"];
+    if (elem.attribs["data-rel"]) {
+      elem.attribs.rel = elem.attribs["data-rel"];
+      delete elem.attribs["data-rel"];
+    }
+    if (elem.attribs["data-target"]) {
+      elem.attribs.target = elem.attribs["data-target"];
+      delete elem.attribs["data-target"];
+    }
+  }
+}
+
 const HtmlParserUtils = {
   html2dom(html: string): Node[] {
     // Do not decode HTML entities (e.g., &lt;) when parsing content for object representation, it caused issues
     // with rendering
     const options = { decodeEntities: false };
-    const handler = new DomHandler();
+    // @ts-ignore
+    const handler = new DomHandler(null, null, removeAddedAttributes);
     const parser = new HtmlParser(handler, options);
     parser.parseComplete(html);
     return handler.dom as Node[];
