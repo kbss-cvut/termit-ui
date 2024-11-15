@@ -118,7 +118,7 @@ describe("Annotator", () => {
     expect(wrapper.html().includes(sampleContent)).toBe(true);
   });
 
-  it("renders body of provided html content with replaced anchor hrefs", () => {
+  it("preserves absolute URL href anchors", () => {
     const htmlContent = surroundWithHtml(
       'This is a <a href="https://example.org/link">link</a>'
     );
@@ -138,7 +138,28 @@ describe("Annotator", () => {
       )
     );
     const sampleOutput =
-      'This is a <a data-href="https://example.org/link">link</a>';
+      'This is a <a href="https://example.org/link" target="_blank" rel="noopener noreferrer">link</a>';
+    expect(wrapper.html().includes(sampleOutput)).toBe(true);
+  });
+
+  it("renders body of provided html content with replaced relative anchor hrefs", () => {
+    const htmlContent = surroundWithHtml('This is a <a href="./link">link</a>');
+
+    const wrapper = mountWithIntl(
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={htmlContent}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
+    );
+    const sampleOutput = 'This is a <a data-href="./link">link</a>';
     expect(wrapper.html().includes(sampleOutput)).toBe(true);
   });
 
