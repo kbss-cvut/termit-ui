@@ -1,6 +1,6 @@
 {
   "name": "termit-ui",
-  "version": "3.2.0",
+  "version": "3.3.1",
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
@@ -83,7 +83,7 @@
     "@redux-devtools/extension": "^3.2.5",
     "@types/enzyme": "^3.10.13",
     "@types/jest": "^27.4.1",
-    "@types/js-cookie": "^3.0.3",
+    "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.10",
     "@types/luxon": "^3.4.2",
     "@types/node": "^18.11.17",

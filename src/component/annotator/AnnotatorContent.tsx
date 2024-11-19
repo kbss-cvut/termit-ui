@@ -35,8 +35,16 @@ const PREPROCESSING_INSTRUCTIONS = [
     shouldPreprocessNode: (node: any): boolean =>
       node.name && node.name === "a",
     preprocessNode: (node: any) => {
-      node.attribs["data-href"] = node.attribs.href;
-      delete node.attribs.href;
+      // Remove href from relative links, absolute links will open in blank tab
+      if (!Utils.isLink(node.attribs.href)) {
+        node.attribs["data-href"] = node.attribs.href;
+        delete node.attribs.href;
+      } else {
+        node.attribs["data-target"] = node.attribs.target;
+        node.attribs["target"] = "_blank";
+        node.attribs["data-rel"] = node.attribs.rel;
+        node.attribs["rel"] = "noopener noreferrer";
+      }
     },
   },
 ];
