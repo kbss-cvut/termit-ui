@@ -807,6 +807,11 @@ const en = {
       'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
     "error.invalidIdentifier": 'Invalid identifier: "{uri}"',
 
+    "error.annotation.file.unsupportedLanguage":
+      "Text analysis service does not support the language of this file.",
+    "error.annotation.term.unsupportedLanguage":
+      "Text analysis service does not support the language of this term's definition.",
+
     "history.label": "Change history",
     "history.loading": "Loading history...",
     "history.empty": "The recorded history of this asset is empty.",

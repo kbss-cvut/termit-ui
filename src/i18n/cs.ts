@@ -815,6 +815,11 @@ const cs = {
       'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',
     "error.invalidIdentifier": 'Neplatný identifikátor: "{uri}"',
 
+    "error.annotation.file.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk obsahu souboru.",
+    "error.annotation.term.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk definice pojmu.",
+
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
     "history.empty": "Zaznamenaná historie je prázdná.",
