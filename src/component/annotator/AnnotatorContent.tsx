@@ -22,6 +22,7 @@ interface AnnotatorContentProps {
   content: DomHandlerNode[];
   accessLevel: AccessLevel; // The level of access rights the current user has
   highlightedTerm: TermData | null;
+  annotationLanguage?: string;
 
   onRemove: (annotationId: string | string[]) => void;
   onUpdate: (annotationSpan: AnnotationSpanProps, term: Term | null) => void;
@@ -64,6 +65,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onCreateTerm,
     accessLevel,
     highlightedTerm,
+    annotationLanguage,
   } = props;
 
   // Using memoization to skip processing and re-rendering of the content DOM in case it hasn't changed
@@ -112,6 +114,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
                 highlightedTerm !== null &&
                 elem.attribs.resource === highlightedTerm.iri
               }
+              language={annotationLanguage}
               {...attribs}
             >
               {children}
@@ -142,6 +145,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onCreateTerm,
     accessLevel,
     highlightedTerm,
+    annotationLanguage,
   ]);
 
   return (

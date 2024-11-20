@@ -20,6 +20,7 @@ interface TermDefinitionAnnotationProps {
   text: string;
   isOpen: boolean;
   accessLevel: AccessLevel;
+  language?: string;
 
   onRemove: () => void;
   onSelectTerm: (term: Term | null) => void;
@@ -118,6 +119,7 @@ export const TermDefinitionAnnotation: React.FC<
       term={term}
       resource={props.resource}
       textContent={props.text}
+      language={props.language}
     />
   );
 

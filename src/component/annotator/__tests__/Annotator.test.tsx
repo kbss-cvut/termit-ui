@@ -190,6 +190,39 @@ describe("Annotator", () => {
     );
   });
 
+  it("passes file language to content rendering", () => {
+    file.language = "en";
+    const wrapper = shallow<Annotator>(
+      <Annotator
+        fileIri={fileIri}
+        vocabularyIri={vocabularyIri}
+        {...stateProps}
+        {...mockedCallbackProps}
+        initialHtml={generalHtmlContent}
+        {...intlFunctions()}
+      />
+    );
+    const contentRenderer = wrapper.find(AnnotatorContent);
+    expect(contentRenderer.props().annotationLanguage).toEqual(file.language);
+  });
+
+  it("passes provided annotation language to content rendering", () => {
+    file.language = "en";
+    const wrapper = shallow<Annotator>(
+      <Annotator
+        fileIri={fileIri}
+        vocabularyIri={vocabularyIri}
+        {...stateProps}
+        {...mockedCallbackProps}
+        initialHtml={generalHtmlContent}
+        annotationLanguage={"cs"}
+        {...intlFunctions()}
+      />
+    );
+    const contentRenderer = wrapper.find(AnnotatorContent);
+    expect(contentRenderer.props().annotationLanguage).toEqual("cs");
+  });
+
   describe("on mount", () => {
     const selector: TextQuoteSelector = {
       exactMatch: "test-term",

@@ -27,6 +27,7 @@ interface FileDetailProvidedProps {
   iri: IRI;
   vocabularyIri: IRI;
   scrollTo?: TextQuoteSelector; // Selector of an annotation to scroll to (and highlight) after rendering
+  annotationLanguage?: string;
 }
 
 interface FileDetailOwnProps extends HasI18n {
@@ -129,6 +130,7 @@ export class FileContentDetail extends React.Component<
           initialHtml={this.props.fileContent}
           scrollTo={this.props.scrollTo}
           onUpdate={this.onUpdate}
+          annotationLanguage={this.props.annotationLanguage}
         />
       </>
     );

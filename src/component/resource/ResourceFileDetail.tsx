@@ -44,6 +44,7 @@ type ResourceFileDetailProps = StoreStateProps &
 interface ResourceFileDetailState {
   vocabularyIri?: IRI | null;
   scrollToSelector?: TextQuoteSelector;
+  annotationLanguage?: string;
 }
 
 export class ResourceFileDetail extends React.Component<
@@ -139,6 +140,7 @@ export class ResourceFileDetail extends React.Component<
         if (res) {
           this.setState({
             vocabularyIri: VocabularyUtils.create(res.vocabularies[0].iri!),
+            annotationLanguage: res.language,
           });
         } else {
           this.setState({ vocabularyIri: null });
