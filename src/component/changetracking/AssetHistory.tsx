@@ -49,7 +49,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
       const filter = {
         author: filterAuthor,
         term: "",
-        type: filterType,
+        changeType: filterType,
         attribute: filterAttribute,
       };
 

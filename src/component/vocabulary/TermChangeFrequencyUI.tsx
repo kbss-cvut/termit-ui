@@ -89,7 +89,7 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
     applyFilterDebounced.current({
       author: filterAuthor,
       term: filterTerm,
-      type: filterType,
+      changeType: filterType,
       attribute: filterAttribute,
     });
   }, [

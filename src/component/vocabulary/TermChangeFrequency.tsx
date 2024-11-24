@@ -35,7 +35,7 @@ const TermChangeFrequency: React.FC<TermChangeFrequencyProps> = (props) => {
   const [filterData, setFilterData] =
     useState<VocabularyContentChangeFilterData>({
       term: "",
-      type: "",
+      changeType: "",
       attribute: "",
       author: "",
     });
