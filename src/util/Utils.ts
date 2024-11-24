@@ -51,10 +51,11 @@ const Utils = {
    */
   isLink(str: string): boolean {
     return (
-      str.startsWith("http://") ||
-      str.startsWith("https://") ||
-      str.startsWith("ftp://") ||
-      str.startsWith("sftp://")
+      str !== undefined &&
+      (str.startsWith("http://") ||
+        str.startsWith("https://") ||
+        str.startsWith("ftp://") ||
+        str.startsWith("sftp://"))
     );
   },
 

@@ -66,6 +66,7 @@ interface AnnotatorProps extends HasI18n {
   user: User;
   file: File;
   vocabulary: Vocabulary;
+  annotationLanguage?: string;
 
   onUpdate: (newHtml: string) => void;
   setAnnotatorLegendFilter: (
@@ -625,7 +626,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         <HeaderWithActions
           title={this.renderTitle()}
           className={classNames("annotator-header", {
-            "annotator-header-scrolled": window.pageYOffset > 0,
+            "annotator-header-scrolled": window.scrollY > 0,
           })}
           actions={[
             <HighlightTermOccurrencesButton
@@ -708,6 +709,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
                 onRemove={this.onRemove}
                 onResetSticky={this.resetStickyAnnotationId}
                 highlightedTerm={this.state.highlightedTerm}
+                annotationLanguage={
+                  this.props.annotationLanguage || this.props.file.language
+                }
               />
             </div>
           </CardBody>

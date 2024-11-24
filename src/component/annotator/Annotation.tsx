@@ -39,6 +39,7 @@ interface AnnotationProps extends AnnotationSpanProps {
   accessLevel: AccessLevel;
   highlight?: boolean;
   filter: AnnotatorLegendFilter;
+  language?: string;
 }
 
 interface AnnotationState {
@@ -316,6 +317,7 @@ export class Annotation extends React.Component<
         onToggleDetailOpen={this.toggleOpenDetail}
         onClose={this.onCloseDetail}
         accessLevel={this.props.accessLevel}
+        language={this.props.language}
       />
     );
   }

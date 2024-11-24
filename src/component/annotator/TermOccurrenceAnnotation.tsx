@@ -22,6 +22,7 @@ interface TermOccurrenceAnnotationProps {
   annotationOrigin: string;
   isOpen: boolean;
   accessLevel: AccessLevel;
+  language?: string;
 
   onRemove: () => void;
   onSelectTerm: (term: Term | null) => void;
@@ -129,6 +130,7 @@ export const TermOccurrenceAnnotation: React.FC<
       score={props.score}
       resource={props.resource}
       annotationClass={props.annotationClass}
+      language={props.language}
     />
   );
 

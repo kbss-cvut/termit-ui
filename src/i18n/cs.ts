@@ -622,6 +622,7 @@ const cs = {
     "file.upload.hint":
       "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8, nebo validní MS Excel.",
     "file.upload.size.exceeded": "Soubor je příliš velký.",
+    "file.language": "Jazyk obsahu souboru",
 
     "dataset.license": "Licence",
     "dataset.format": "Formát",
@@ -813,6 +814,11 @@ const cs = {
     "error.invalidUriCharacter":
       'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',
     "error.invalidIdentifier": 'Neplatný identifikátor: "{uri}"',
+
+    "error.annotation.file.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk obsahu souboru.",
+    "error.annotation.term.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk definice pojmu.",
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",

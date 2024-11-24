@@ -613,6 +613,7 @@ const en = {
     "file.upload.hint":
       "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8 or a valid MS Excel file.",
     "file.upload.size.exceeded": "File is too large.",
+    "file.language": "File content language",
 
     "dataset.license": "License",
     "dataset.format": "Format",
@@ -805,6 +806,11 @@ const en = {
     "error.invalidUriCharacter":
       'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
     "error.invalidIdentifier": 'Invalid identifier: "{uri}"',
+
+    "error.annotation.file.unsupportedLanguage":
+      "Text analysis service does not support the language of this file.",
+    "error.annotation.term.unsupportedLanguage":
+      "Text analysis service does not support the language of this term's definition.",
 
     "history.label": "Change history",
     "history.loading": "Loading history...",
