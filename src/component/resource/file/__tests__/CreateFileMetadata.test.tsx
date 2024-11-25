@@ -4,6 +4,7 @@ import { mountWithIntl } from "../../../../__tests__/environment/Environment";
 import CreateFileMetadata from "../CreateFileMetadata";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import UploadFile from "../UploadFile";
+import { act } from "react-dom/test-utils";
 
 jest.mock("../../../../util/Ajax", () => {
   const originalModule = jest.requireActual("../../../../util/Ajax");
@@ -41,10 +42,12 @@ describe("CreateFileMetadata", () => {
         {...intlFunctions()}
       />
     );
-    wrapper
-      .find(UploadFile)
-      .props()
-      .setFile(file as File);
+    act(() => {
+      wrapper
+        .find(UploadFile)
+        .props()
+        .setFile(file as File);
+    });
     const labelInput = wrapper.find('input[name="create-resource-label"]');
     expect((labelInput.getDOMNode() as HTMLInputElement).value).toEqual(
       fileName
