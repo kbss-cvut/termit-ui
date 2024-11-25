@@ -31,7 +31,8 @@ jest.mock("../../../action/AsyncVocabularyActions", () => ({
 
 jest.mock("../../../action/AsyncActions", () => ({
   ...jest.requireActual("../../../action/AsyncActions"),
-  loadTermByIri: jest.fn().mockResolvedValue(null),
+  loadTermByIri: () => () => Promise.resolve(null),
+  getLabel: () => () => Promise.resolve(null),
 }));
 
 describe("RemoveVocabularyDialog", () => {
@@ -54,9 +55,15 @@ describe("RemoveVocabularyDialog", () => {
     (getVocabularyRelations as jest.Mock).mockResolvedValue([]);
     (getVocabularyTermsRelations as jest.Mock).mockResolvedValue([]);
 
-    (useDispatch as jest.Mock).mockReturnValue(
-      (value: any) => value || Promise.resolve()
-    );
+    (useDispatch as jest.Mock).mockReturnValue((arg: any) => {
+      if (arg instanceof Promise) {
+        return arg;
+      }
+      if (arg instanceof Function) {
+        return arg();
+      }
+      return arg;
+    });
 
     Ajax.get = jest.fn().mockResolvedValue(null);
 

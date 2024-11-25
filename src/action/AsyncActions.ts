@@ -61,6 +61,10 @@ import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
 import { getShortLocale } from "../util/IntlUtil";
+import {
+  getChangeTypeUri,
+  VocabularyContentChangeFilterData,
+} from "../model/filter/VocabularyContentChangeFilterData";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1130,13 +1134,23 @@ export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
   };
 }
 
-export function loadHistory(asset: Asset) {
+export function loadHistory(
+  asset: Asset,
+  filterData?: VocabularyContentChangeFilterData
+) {
   const assetIri = VocabularyUtils.create(asset.iri);
   const historyConf = resolveHistoryLoadingParams(asset, assetIri);
   const action = { type: historyConf.actionType };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(historyConf.url, param("namespace", assetIri.namespace))
+    let params = param("namespace", assetIri.namespace);
+    if (filterData) {
+      for (const [key, value] of Object.entries(filterData)) {
+        params = params.param(key, value);
+      }
+      params = params.param("type", getChangeTypeUri(filterData));
+    }
+    return Ajax.get(historyConf.url, params)
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecordData>(
           data,

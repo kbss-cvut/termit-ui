@@ -368,6 +368,20 @@ const Utils = {
   notBlank(str?: string | null) {
     return !!(str && str.trim().length > 0);
   },
+
+  shrinkFullIri(iri: string): string {
+    if (iri.indexOf("://") === -1) {
+      return iri; // It is prefixed
+    }
+    const lastSlashIndex = iri.lastIndexOf("/");
+    const lastHashIndex = iri.lastIndexOf("#");
+    return (
+      "..." +
+      iri.substring(
+        lastHashIndex > lastSlashIndex ? lastHashIndex : lastSlashIndex
+      )
+    );
+  },
 };
 
 export default Utils;

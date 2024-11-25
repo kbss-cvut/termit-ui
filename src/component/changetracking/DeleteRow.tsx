@@ -2,12 +2,13 @@ import * as React from "react";
 import { FormattedDate, FormattedTime } from "react-intl";
 import { Badge } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
-import { PersistRowProps } from "./PersistRow";
-import TermIriLink from "../term/TermIriLink";
+import DeleteRecord from "../../model/changetracking/DeleteRecord";
 
-export const VocabularyContentPersistRow: React.FC<PersistRowProps> = (
-  props
-) => {
+export interface DeleteRowProps {
+  record: DeleteRecord;
+}
+
+export const DeleteRow: React.FC<DeleteRowProps> = (props) => {
   const { i18n } = useI18n();
   const record = props.record;
   const created = new Date(Date.parse(record.timestamp));
@@ -22,14 +23,13 @@ export const VocabularyContentPersistRow: React.FC<PersistRowProps> = (
         </div>
       </td>
       <td>
-        <TermIriLink iri={record.changedEntity.iri} shrinkFullIri={true} />
+        <Badge color="danger">{i18n(record.typeLabel)}</Badge>
       </td>
-      <td>
-        <Badge color="dark">{i18n(record.typeLabel)}</Badge>
-      </td>
+      <td />
+      <td />
       <td />
     </tr>
   );
 };
 
-export default VocabularyContentPersistRow;
+export default DeleteRow;

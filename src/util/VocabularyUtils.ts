@@ -160,6 +160,7 @@ const VocabularyUtils = {
 
   PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
   UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,
+  DELETE_EVENT: `${_NS_POPIS_DAT}smaz\u00e1n\u00ed-entity`,
 
   TERM_SNAPSHOT: _NS_POPIS_DAT + "verze-pojmu",
   VOCABULARY_SNAPSHOT: _NS_POPIS_DAT + "verze-slovníku",

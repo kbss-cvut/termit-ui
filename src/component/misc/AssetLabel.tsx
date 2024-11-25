@@ -4,6 +4,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { getLabel } from "../../action/AsyncActions";
 import Namespaces from "../../util/Namespaces";
 import TermItState from "../../model/TermItState";
+import Utils from "../../util/Utils";
 
 interface AssetLabelProps {
   iri: string;
@@ -70,17 +71,10 @@ export class AssetLabel extends React.Component<
   }
 
   private shrinkFullIri(iri: string): string {
-    if (!this.props.shrinkFullIri || iri.indexOf("://") === -1) {
-      return iri; // It is prefixed
+    if (!this.props.shrinkFullIri) {
+      return iri;
     }
-    const lastSlashIndex = iri.lastIndexOf("/");
-    const lastHashIndex = iri.lastIndexOf("#");
-    return (
-      "..." +
-      iri.substring(
-        lastHashIndex > lastSlashIndex ? lastHashIndex : lastSlashIndex
-      )
-    );
+    return Utils.shrinkFullIri(iri);
   }
 }
 

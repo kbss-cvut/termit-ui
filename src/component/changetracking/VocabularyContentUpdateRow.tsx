@@ -21,7 +21,7 @@ export const VocabularyContentUpdateRow: React.FC<UpdateRowProps> = (props) => {
         </div>
       </td>
       <td>
-        <TermIriLink iri={record.changedEntity.iri} />
+        <TermIriLink iri={record.changedEntity.iri} shrinkFullIri={true} />
       </td>
       <td>
         <Badge color="secondary">{i18n(record.typeLabel)}</Badge>
