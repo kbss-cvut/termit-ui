@@ -387,7 +387,8 @@ export class TermMetadataEdit extends React.Component<
                       term={this.props.term}
                       vocabularyIri={this.props.term.vocabulary?.iri!}
                       selected={Term.consolidateRelatedAndRelatedMatch(
-                        this.state
+                        this.state,
+                        this.props.language
                       )}
                       onChange={this.onRelatedChange}
                       language={language}
