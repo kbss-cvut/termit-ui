@@ -171,16 +171,16 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
 
   const series = [
     {
-      name: i18n("vocabulary.termchanges.updates"),
-      type: "column",
-      data: termUpdates.map((a) => [a.getDate(), a.count]),
-      color: "var(--info)",
-    },
-    {
       name: i18n("vocabulary.termchanges.creations"),
       type: "column",
       data: termCreations.map((a) => [a.getDate(), a.count]),
       color: "var(--primary)",
+    },
+    {
+      name: i18n("vocabulary.termchanges.updates"),
+      type: "column",
+      data: termUpdates.map((a) => [a.getDate(), a.count]),
+      color: "var(--info)",
     },
     {
       name: i18n("vocabulary.termchanges.deletions"),
