@@ -351,6 +351,7 @@ const en = {
       "Text analysis of terms' definitions in all vocabularies invoked.",
     "vocabulary.termchanges.creations": "Created terms",
     "vocabulary.termchanges.updates": "Updated terms",
+    "vocabulary.termchanges.deletions": "Deleted terms",
     "vocabulary.termchanges.termcount": "Changed term count",
     "vocabulary.termchanges.loading": "Loading changes ...",
     "vocabulary.termchanges.empty": "No creations/updates of terms found.",

@@ -122,6 +122,9 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   const termUpdates = aggregatedRecords.filter(
     (r) => r.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1
   );
+  const termDeletions = aggregatedRecords.filter(
+    (r) => r.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1
+  );
 
   const options = {
     chart: {
@@ -170,12 +173,20 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
     {
       name: i18n("vocabulary.termchanges.updates"),
       type: "column",
-      data: termUpdates.map((a) => [a.getDate(), -1 * a.count]),
+      data: termUpdates.map((a) => [a.getDate(), a.count]),
+      color: "var(--info)",
     },
     {
       name: i18n("vocabulary.termchanges.creations"),
       type: "column",
       data: termCreations.map((a) => [a.getDate(), a.count]),
+      color: "var(--primary)",
+    },
+    {
+      name: i18n("vocabulary.termchanges.deletions"),
+      type: "column",
+      data: termDeletions.map((a) => [a.getDate(), a.count]),
+      color: "var(--danger)",
     },
   ];
   return (

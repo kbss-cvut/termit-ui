@@ -358,6 +358,7 @@ const cs = {
       "Textová analýza definic pojmů ve všech slovnících spuštěna.",
     "vocabulary.termchanges.creations": "Vytvořené pojmy",
     "vocabulary.termchanges.updates": "Aktualizované pojmy",
+    "vocabulary.termchanges.deletions": "Smazané pojmy",
     "vocabulary.termchanges.termcount": "Počet změněných pojmů",
     "vocabulary.termchanges.loading": "Načítám změny ...",
     "vocabulary.termchanges.empty":
