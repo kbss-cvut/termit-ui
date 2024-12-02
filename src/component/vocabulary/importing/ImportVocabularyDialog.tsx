@@ -7,7 +7,7 @@ import "./ImportVocabularyDialog.scss";
 
 interface ImportVocabularyDialogProps {
   propKeyPrefix: string;
-  onCreate: (file: File, rename: Boolean) => any;
+  onCreate: (file: File, rename: boolean) => any;
   onCancel: () => void;
   allowRename?: boolean;
 }
@@ -15,7 +15,7 @@ interface ImportVocabularyDialogProps {
 const ImportVocabularyDialog = (props: ImportVocabularyDialogProps) => {
   const { i18n } = useI18n();
   const [file, setFile] = useState<File>();
-  const [rename, setRename] = useState<Boolean>(false);
+  const [rename, setRename] = useState<boolean>(false);
 
   const onCreate = () => {
     if (!file) {

@@ -297,21 +297,25 @@ const en = {
     "vocabulary.summary.export.rdfxml.title": "Export to RDF/XML (RDF).",
     "vocabulary.summary.export.error":
       "Unable to retrieve exported data from server response.",
-    "vocabulary.summary.import.action": "Restore from backup",
+    "vocabulary.summary.import.action": "Load from file",
     "vocabulary.summary.import.action.tooltip":
-      "Restore the vocabulary from its previously exported version",
+      "Load vocabulary data from a file containing data in SKOS or MS Excel format",
     "vocabulary.summary.import.dialog.title":
-      "Restore exported vocabulary version",
+      "Import vocabulary content from file",
+    "vocabulary.summary.import.dialog.tab.replaceContent": "Replace content",
+    "vocabulary.summary.import.dialog.tab.translations": "Import translations",
     "vocabulary.summary.import.dialog.label":
       "Upload an exported version of this vocabulary",
     "vocabulary.summary.import.dialog.skosImport":
       "In the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
     "vocabulary.summary.import.dialog.excelImport":
-      "MS Excel file corresponding to <a>this template</a>",
+      "As an MS Excel file corresponding to <a>this template</a>",
     "vocabulary.summary.import.excel.template.tooltip":
       "Download a MS Excel template",
     "vocabulary.summary.import.nonEmpty.warning":
       "Vocabulary is not empty, existing data will be overwritten by the imported.",
+    "vocabulary.summary.import.translations.label":
+      "Upload an MS Excel file corresponding to <a>this template</a> from which translations of existing terms in this vocabulary will be imported.",
     "vocabulary.import.type.skos": "SKOS",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",
