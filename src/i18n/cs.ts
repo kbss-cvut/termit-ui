@@ -305,21 +305,25 @@ const cs = {
     "vocabulary.summary.export.rdfxml.title": "Export ve formátu RDF/XML.",
     "vocabulary.summary.export.error":
       "Nepodařilo se získat data z odpovědi serveru.",
-    "vocabulary.summary.import.action": "Obnovit ze zálohy",
+    "vocabulary.summary.import.action": "Nahrát ze souboru",
     "vocabulary.summary.import.action.tooltip":
-      "Obnovit slovník ze zálohy ve formátu SKOS či MS Excel",
+      "Nahrát obsah slovníku ze souboru obsahujícího data ve formátu SKOS či MS Excel",
     "vocabulary.summary.import.dialog.title":
-      "Obnova exportované verze slovníku",
+      "Import obsahu slovníku ze souboru",
+    "vocabulary.summary.import.dialog.tab.replaceContent": "Nahradit obsah",
+    "vocabulary.summary.import.dialog.tab.translations": "Importovat překlady",
     "vocabulary.summary.import.dialog.label":
-      "Nahrajte vyexportovanou verzi tohoto slovníku ",
+      "Nahrajte vyexportovanou verzi tohoto slovníku",
     "vocabulary.summary.import.dialog.skosImport":
       "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář.",
     "vocabulary.summary.import.dialog.excelImport":
-      "MS Excel odpovídající <a>této šabloně</a>",
+      "Ve formátu MS Excel odpovídající <a>této šabloně</a>",
     "vocabulary.summary.import.excel.template.tooltip":
       "Stáhnout šablonu pro MS Excel",
     "vocabulary.summary.import.nonEmpty.warning":
       "Slovník není prázdný, stávající data budou přepsána importovanými.",
+    "vocabulary.summary.import.translations.label":
+      "Nahrajte soubor ve formátu MS Excel odpovídající <a>této šabloně</a>, ze kterého mají být naimportovány překlady existujících pojmů ve slovníku.",
     "vocabulary.import.type.skos": "SKOS",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",

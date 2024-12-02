@@ -16,11 +16,18 @@ import { Action } from "redux";
 import { loadVocabulary } from "./AsyncActions";
 import Utils from "../util/Utils";
 
-export function importIntoExistingVocabulary(vocabularyIri: IRI, data: File) {
+export function importIntoExistingVocabulary(
+  vocabularyIri: IRI,
+  data: File,
+  translationsOnly: boolean = false
+) {
   const action = { type: ActionType.IMPORT_VOCABULARY };
   const formData = new FormData();
   formData.append("file", data, "thesaurus");
   formData.append("namespace", vocabularyIri.namespace!);
+  if (translationsOnly) {
+    formData.append("translationsOnly", true.toString());
+  }
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.post(
