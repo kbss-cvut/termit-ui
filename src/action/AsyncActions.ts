@@ -28,7 +28,7 @@ import * as jsonld from "jsonld";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
-import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
 import ActionType, { PendingAsyncAction } from "./ActionType";
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
@@ -150,6 +150,7 @@ export function createVocabulary(vocabulary: Vocabulary) {
 export function loadVocabulary(iri: IRI, timestamp?: string) {
   const action = {
     type: ActionType.LOAD_VOCABULARY,
+    iri: IRIImpl.toString(iri),
   };
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
     if (isActionRequestPending(getState(), action)) {
