@@ -316,6 +316,8 @@ const en = {
       "Vocabulary is not empty, existing data will be overwritten by the imported.",
     "vocabulary.summary.import.translations.label":
       "Upload an MS Excel file corresponding to <a>this template</a> from which translations of existing terms in this vocabulary will be imported.",
+    "vocabulary.summary.import.translations.help":
+      "Existing data will not be changed.",
     "vocabulary.import.type.skos": "SKOS",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",

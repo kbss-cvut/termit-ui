@@ -40,6 +40,9 @@ export const LoadVocabularyFromFile: React.FC<LoadVocabularyFromFileProps> = ({
   const downloadTemplate = () => {
     dispatch(downloadExcelTemplate());
   };
+  const downloadTranslationsTemplate = () => {
+    dispatch(downloadExcelTemplate(true));
+  };
   const vocabularyNotEmpty =
     (useSelector((state: TermItState) => state.vocabulary.termCount) || 0) > 0;
 
@@ -101,7 +104,7 @@ export const LoadVocabularyFromFile: React.FC<LoadVocabularyFromFileProps> = ({
                 <ImportTranslationsDialog
                   onSubmit={onImportTranslations}
                   onCancel={onClose}
-                  onDownloadTemplate={downloadTemplate}
+                  onDownloadTemplate={downloadTranslationsTemplate}
                 />
               ),
             }}

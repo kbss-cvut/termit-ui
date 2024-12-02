@@ -1,6 +1,6 @@
 import React from "react";
 import UploadFile from "../../resource/file/UploadFile";
-import { Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
+import { Alert, Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
 import { FormattedMessage } from "react-intl";
 
@@ -34,6 +34,9 @@ export const ImportTranslationsDialog: React.FC<{
             }}
           />
         </div>
+        <Alert color="info">
+          <FormattedMessage id="vocabulary.summary.import.translations.help" />
+        </Alert>
         <UploadFile setFile={setFile} />
         <Row>
           <Col xs={12}>

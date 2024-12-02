@@ -89,13 +89,16 @@ const processError =
     );
   };
 
-export function downloadExcelTemplate() {
+export function downloadExcelTemplate(translationsOnly: boolean = false) {
   return (dispatch: ThunkDispatch) => {
     const action = { type: ActionType.LOAD_EXCEL_TEMPLATE };
     dispatch(asyncActionRequest(action, true));
     return Ajax.getRaw(
       `${Constants.API_PREFIX}/vocabularies/import/template`,
-      responseType("arraybuffer")
+      responseType("arraybuffer").param(
+        "translationsOnly",
+        translationsOnly.toString()
+      )
     )
       .then((response) => {
         Utils.fileDownload(

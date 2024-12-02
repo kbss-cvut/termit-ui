@@ -324,6 +324,8 @@ const cs = {
       "Slovník není prázdný, stávající data budou přepsána importovanými.",
     "vocabulary.summary.import.translations.label":
       "Nahrajte soubor ve formátu MS Excel odpovídající <a>této šabloně</a>, ze kterého mají být naimportovány překlady existujících pojmů ve slovníku.",
+    "vocabulary.summary.import.translations.help":
+      "Stávající data nebudou přepsána.",
     "vocabulary.import.type.skos": "SKOS",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",
