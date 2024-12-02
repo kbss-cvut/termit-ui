@@ -126,7 +126,7 @@ function vocabulary(
   switch (action.type) {
     case ActionType.LOAD_VOCABULARY:
       if (action.status === AsyncActionStatus.REQUEST) {
-        return EMPTY_VOCABULARY;
+        return (action as any).iri === state.iri ? state : EMPTY_VOCABULARY;
       } else if (isAsyncSuccess(action)) {
         return action.payload as Vocabulary;
       } else {
@@ -144,11 +144,6 @@ function vocabulary(
       return onTermCountLoaded(state, action);
     case ActionType.LOGOUT:
       return EMPTY_VOCABULARY;
-    case ActionType.REMOVE_RESOURCE:
-    case ActionType.UPDATE_RESOURCE:
-    case ActionType.CREATE_RESOURCE: // intentional fall-through
-      // the resource might have been/be related to the vocabulary
-      return isAsyncSuccess(action) ? EMPTY_VOCABULARY : state;
     default:
       return state;
   }

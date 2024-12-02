@@ -350,36 +350,6 @@ describe("Reducers", () => {
       expect(vocabulary.allImportedVocabularies).toEqual(imports);
     });
 
-    it("resets vocabulary to empty when resource is removed", () => {
-      // The removed resource could have been a file from a document related to that vocabulary, in which case
-      // the vocabulary needs to be reloaded
-      const action = { type: ActionType.REMOVE_RESOURCE };
-      initialState.vocabulary = new Vocabulary({
-        label: langString("Test vocabulary"),
-        iri: Generator.generateUri(),
-        types: [VocabularyUtils.VOCABULARY],
-      });
-      expect(
-        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
-          .vocabulary
-      ).toEqual(EMPTY_VOCABULARY);
-    });
-
-    it("resets vocabulary to empty when resource is created", () => {
-      // The created resource could be a file added to a document related to that vocabulary, in which case
-      // the vocabulary needs to be reloaded
-      const action = { type: ActionType.CREATE_RESOURCE };
-      initialState.vocabulary = new Vocabulary({
-        label: langString("Test vocabulary"),
-        iri: Generator.generateUri(),
-        types: [VocabularyUtils.VOCABULARY],
-      });
-      expect(
-        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
-          .vocabulary
-      ).toEqual(EMPTY_VOCABULARY);
-    });
-
     it("sets term count on vocabulary when it is loaded", () => {
       initialState.vocabulary = new Vocabulary({
         label: langString("Test vocabulary"),

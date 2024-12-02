@@ -82,7 +82,6 @@ interface VocabularySummaryProps
 }
 
 export interface VocabularySummaryState extends EditableComponentState {
-  selectDocumentDialogOpen: boolean;
   showExportDialog: boolean;
   showSnapshotDialog: boolean;
   language: string;
@@ -109,7 +108,6 @@ export class VocabularySummary extends EditableComponent<
       showRemoveDialog: false,
       showExportDialog: false,
       showSnapshotDialog: false,
-      selectDocumentDialogOpen: false,
       language: resolveInitialLanguage(
         props.vocabulary,
         props.locale,
@@ -169,6 +167,11 @@ export class VocabularySummary extends EditableComponent<
       trackPromise(this.props.loadVocabulary(iriFromUrl), "vocabulary-summary");
     }
     this.props.requestVocabularyValidation(iriFromUrl, this.props.stompClient);
+  };
+
+  public reloadVocabulary = () => {
+    const iri = VocabularyUtils.create(this.props.vocabulary.iri);
+    this.props.loadVocabulary(iri);
   };
 
   public setLanguage = (language: string) => {
@@ -325,7 +328,7 @@ export class VocabularySummary extends EditableComponent<
               match={this.props.match}
               language={this.state.language}
               selectLanguage={this.setLanguage}
-              onChange={this.loadVocabulary}
+              onChange={this.reloadVocabulary}
             />
           )}
         </div>
