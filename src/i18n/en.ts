@@ -297,21 +297,27 @@ const en = {
     "vocabulary.summary.export.rdfxml.title": "Export to RDF/XML (RDF).",
     "vocabulary.summary.export.error":
       "Unable to retrieve exported data from server response.",
-    "vocabulary.summary.import.action": "Restore from backup",
+    "vocabulary.summary.import.action": "Load from file",
     "vocabulary.summary.import.action.tooltip":
-      "Restore the vocabulary from its previously exported version",
+      "Load vocabulary data from a file containing data in SKOS or MS Excel format",
     "vocabulary.summary.import.dialog.title":
-      "Restore exported vocabulary version",
+      "Import vocabulary content from file",
+    "vocabulary.summary.import.dialog.tab.replaceContent": "Replace content",
+    "vocabulary.summary.import.dialog.tab.translations": "Import translations",
     "vocabulary.summary.import.dialog.label":
       "Upload an exported version of this vocabulary",
     "vocabulary.summary.import.dialog.skosImport":
       "In the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
     "vocabulary.summary.import.dialog.excelImport":
-      "MS Excel file corresponding to <a>this template</a>",
+      "As an MS Excel file corresponding to <a>this template</a>",
     "vocabulary.summary.import.excel.template.tooltip":
       "Download a MS Excel template",
     "vocabulary.summary.import.nonEmpty.warning":
       "Vocabulary is not empty, existing data will be overwritten by the imported.",
+    "vocabulary.summary.import.translations.label":
+      "Upload an MS Excel file corresponding to <a>this template</a> from which translations of existing terms in this vocabulary will be imported.",
+    "vocabulary.summary.import.translations.help":
+      "Existing data will not be changed.",
     "vocabulary.import.type.skos": "SKOS",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",
@@ -351,6 +357,7 @@ const en = {
       "Text analysis of terms' definitions in all vocabularies invoked.",
     "vocabulary.termchanges.creations": "Created terms",
     "vocabulary.termchanges.updates": "Updated terms",
+    "vocabulary.termchanges.deletions": "Deleted terms",
     "vocabulary.termchanges.termcount": "Changed term count",
     "vocabulary.termchanges.loading": "Loading changes ...",
     "vocabulary.termchanges.empty": "No creations/updates of terms found.",
@@ -613,6 +620,7 @@ const en = {
     "file.upload.hint":
       "Maximum file size: {maxUploadFileSize}. To use the file for term extraction, it must be in UTF-8 or a valid MS Excel file.",
     "file.upload.size.exceeded": "File is too large.",
+    "file.language": "File content language",
 
     "dataset.license": "License",
     "dataset.format": "Format",
@@ -806,6 +814,11 @@ const en = {
       'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
     "error.invalidIdentifier": 'Invalid identifier: "{uri}"',
 
+    "error.annotation.file.unsupportedLanguage":
+      "Text analysis service does not support the language of this file.",
+    "error.annotation.term.unsupportedLanguage":
+      "Text analysis service does not support the language of this term's definition.",
+
     "history.label": "Change history",
     "history.loading": "Loading history...",
     "history.empty": "The recorded history of this asset is empty.",
@@ -813,6 +826,7 @@ const en = {
     "history.type": "Type",
     "history.type.persist": "Creation",
     "history.type.update": "Update",
+    "history.type.delete": "Deletion",
     "history.changedAttribute": "Attribute",
     "history.originalValue": "Original value",
     "history.newValue": "New value",

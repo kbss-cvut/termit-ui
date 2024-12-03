@@ -368,6 +368,27 @@ describe("Term tests", () => {
         ...t.relatedTerms,
       ]);
     });
+
+    it("sorts terms by label respecting specified language", () => {
+      const t = new Term(termData);
+      const t1Uri = Generator.generateUri();
+      const t2Uri = Generator.generateUri();
+      t.relatedTerms = [
+        {
+          iri: t1Uri,
+          label: langString("chalupa", "cs"),
+          vocabulary: { iri: t.vocabulary!.iri },
+        },
+        {
+          iri: t2Uri,
+          label: langString("činitel", "cs"),
+          vocabulary: { iri: t.vocabulary!.iri },
+        },
+      ];
+      const result = Term.consolidateRelatedAndRelatedMatch(t, "cs");
+      expect(result[0].iri).toEqual(t2Uri);
+      expect(result[1].iri).toEqual(t1Uri);
+    });
   });
 
   describe("isSnapshot", () => {

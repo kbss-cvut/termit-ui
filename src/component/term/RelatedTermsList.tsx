@@ -12,6 +12,7 @@ import { ThunkDispatch } from "../../util/Types";
 import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
 import TermItState from "../../model/TermItState";
 import { createTermNonTerminalStateMatcher } from "./TermTreeSelectHelper";
+import { getShortLocale } from "../../util/IntlUtil";
 
 interface RelatedTermsListProps {
   term: Term;
@@ -33,8 +34,11 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
   }, [dispatch, term.iri, term.vocabulary]);
   const terms = React.useMemo(
     () =>
-      Term.consolidateRelatedAndRelatedMatch(term).filter(terminalStateFilter),
-    [term, terminalStateFilter]
+      Term.consolidateRelatedAndRelatedMatch(
+        term,
+        getShortLocale(language)
+      ).filter(terminalStateFilter),
+    [language, term, terminalStateFilter]
   );
   return (
     <Row>

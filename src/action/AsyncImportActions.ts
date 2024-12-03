@@ -16,11 +16,18 @@ import { Action } from "redux";
 import { loadVocabulary } from "./AsyncActions";
 import Utils from "../util/Utils";
 
-export function importIntoExistingVocabulary(vocabularyIri: IRI, data: File) {
+export function importIntoExistingVocabulary(
+  vocabularyIri: IRI,
+  data: File,
+  translationsOnly: boolean = false
+) {
   const action = { type: ActionType.IMPORT_VOCABULARY };
   const formData = new FormData();
   formData.append("file", data, "thesaurus");
   formData.append("namespace", vocabularyIri.namespace!);
+  if (translationsOnly) {
+    formData.append("translationsOnly", true.toString());
+  }
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.post(
@@ -82,13 +89,16 @@ const processError =
     );
   };
 
-export function downloadExcelTemplate() {
+export function downloadExcelTemplate(translationsOnly: boolean = false) {
   return (dispatch: ThunkDispatch) => {
     const action = { type: ActionType.LOAD_EXCEL_TEMPLATE };
     dispatch(asyncActionRequest(action, true));
     return Ajax.getRaw(
       `${Constants.API_PREFIX}/vocabularies/import/template`,
-      responseType("arraybuffer")
+      responseType("arraybuffer").param(
+        "translationsOnly",
+        translationsOnly.toString()
+      )
     )
       .then((response) => {
         Utils.fileDownload(

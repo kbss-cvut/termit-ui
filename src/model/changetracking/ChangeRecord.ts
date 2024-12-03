@@ -1,6 +1,7 @@
 import VocabularyUtils from "../../util/VocabularyUtils";
 import User, { CONTEXT as USER_CONTEXT, UserData } from "../User";
 import Utils from "../../util/Utils";
+import { context } from "../MultilingualString";
 
 const ctx = {
   timestamp: {
@@ -12,6 +13,7 @@ const ctx = {
   changedAttribute: `${VocabularyUtils.PREFIX}m\u00e1-zm\u011bn\u011bn\u00fd-atribut`,
   originalValue: `${VocabularyUtils.PREFIX}m\u00e1-p\u016fvodn\u00ed-hodnotu`,
   newValue: `${VocabularyUtils.PREFIX}m\u00e1-novou-hodnotu`,
+  label: context(VocabularyUtils.RDFS_LABEL),
 };
 
 export const CONTEXT = Object.assign({}, ctx, USER_CONTEXT);

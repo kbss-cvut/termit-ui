@@ -1,5 +1,5 @@
 import * as React from "react";
-import Term, { termComparator, TermInfo } from "../../model/Term";
+import Term, { createTermComparator, TermInfo } from "../../model/Term";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
 import TermLink from "./TermLink";
@@ -16,7 +16,9 @@ interface TermListProps {
   vocabularyIri?: string;
   language: string;
 
-  addonBeforeRenderer?: (t: Term | TermInfo) => JSX.Element | undefined | null; // An element to render before the term link
+  addonBeforeRenderer?: (
+    t: Term | TermInfo
+  ) => React.JSX.Element | undefined | null; // An element to render before the term link
 }
 
 const TermList: React.FC<TermListProps> = (props) => {
@@ -27,7 +29,7 @@ const TermList: React.FC<TermListProps> = (props) => {
   );
   const terminalStateFilter = createTermNonTerminalStateMatcher(terminalStates);
   const toRender = Utils.sanitizeArray(terms).filter(terminalStateFilter);
-  toRender.sort(termComparator);
+  toRender.sort(createTermComparator(language));
   return (
     <Row>
       <Col xl={2} md={4}>

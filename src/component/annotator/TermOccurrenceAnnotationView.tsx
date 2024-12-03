@@ -9,6 +9,7 @@ interface TermOccurrenceAnnotationViewProps {
   score?: string;
   resource?: string;
   annotationClass: string;
+  language?: string;
 }
 
 const TermOccurrenceAnnotationView: React.FC<
@@ -25,7 +26,7 @@ const TermOccurrenceAnnotationView: React.FC<
                 {i18n("annotation.term.assigned-occurrence.termLabel")}
               </td>
               <td>
-                <TermLink term={props.term!} />
+                <TermLink term={props.term!} language={props.language} />
               </td>
             </tr>
           </tbody>

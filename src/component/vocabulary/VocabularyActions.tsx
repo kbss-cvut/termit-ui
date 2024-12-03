@@ -12,7 +12,7 @@ import {
   GoCloudUpload,
   GoRepoForked,
 } from "react-icons/go";
-import ImportBackupOfVocabulary from "./importing/ImportBackupOfVocabulary";
+import LoadVocabularyFromFile from "./importing/LoadVocabularyFromFile";
 import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
 import IfVocabularyActionAuthorized from "./authorization/IfVocabularyActionAuthorized";
@@ -28,7 +28,7 @@ interface VocabularyActionsProps {
   vocabulary: Vocabulary;
   onAnalyze: () => void;
   onExport: () => void;
-  onImport: (file: File, rename: Boolean) => Promise<any>;
+  onImport: (file: File, translationsOnly: boolean) => Promise<any>;
   onCreateSnapshot: () => void;
 }
 
@@ -46,7 +46,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
 
   return (
     <>
-      <ImportBackupOfVocabulary
+      <LoadVocabularyFromFile
         onImport={onImport}
         showDialog={showImportDialog}
         closeDialog={() => setShowImportDialog(false)}

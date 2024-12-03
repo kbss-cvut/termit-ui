@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import Chart from "react-apexcharts";
 import { Col, Row, Table } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
@@ -8,8 +9,16 @@ import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import VocabularyContentPersistRow from "../changetracking/VocabularyContentPersistRow";
 import VocabularyContentUpdateRow from "../changetracking/VocabularyContentUpdateRow";
-import If from "../misc/If";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
+import CustomInput from "../misc/CustomInput";
+import Select from "../misc/Select";
+import "./TermChangeFrequencyUI.scss";
+import PersistRecord from "../../model/changetracking/PersistRecord";
+import DeleteRecord from "../../model/changetracking/DeleteRecord";
+import VocabularyContentDeleteRow from "../changetracking/VocabularyContentDeleteRow";
+import { debounce } from "lodash";
+import Constants from "../../util/Constants";
+import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 
 interface TermChangeFrequencyUIProps {
   aggregatedRecords: AggregatedChangeInfo[] | null;
@@ -17,7 +26,7 @@ interface TermChangeFrequencyUIProps {
   page: number;
   setPage: (page: number) => void;
   pageSize: number;
-  itemCount: number;
+  applyFilter: (filterData: VocabularyContentChangeFilterData) => void;
 }
 
 /**
@@ -64,10 +73,34 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   page,
   setPage,
   pageSize,
-  itemCount,
+  applyFilter,
 }) => {
   const { i18n, locale } = useI18n();
-  if (!aggregatedRecords || !changeRecords) {
+
+  const [filterAuthor, setFilterAuthor] = useState("");
+  const [filterTerm, setFilterTerm] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterAttribute, setFilterAttribute] = useState("");
+  const applyFilterDebounced = useRef(
+    debounce(applyFilter, Constants.INPUT_DEBOUNCE_WAIT_TIME)
+  );
+
+  useEffect(() => {
+    applyFilterDebounced.current({
+      author: filterAuthor,
+      term: filterTerm,
+      changeType: filterType,
+      attribute: filterAttribute,
+    });
+  }, [
+    filterAuthor,
+    filterTerm,
+    filterType,
+    filterAttribute,
+    applyFilterDebounced,
+  ]);
+
+  if (!aggregatedRecords) {
     return <div className="additional-metadata-container">&nbsp;</div>;
   }
 
@@ -88,6 +121,9 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
   );
   const termUpdates = aggregatedRecords.filter(
     (r) => r.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1
+  );
+  const termDeletions = aggregatedRecords.filter(
+    (r) => r.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1
   );
 
   const options = {
@@ -135,19 +171,27 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
 
   const series = [
     {
-      name: i18n("vocabulary.termchanges.updates"),
-      type: "column",
-      data: termUpdates.map((a) => [a.getDate(), -1 * a.count]),
-    },
-    {
       name: i18n("vocabulary.termchanges.creations"),
       type: "column",
       data: termCreations.map((a) => [a.getDate(), a.count]),
+      color: "var(--primary)",
+    },
+    {
+      name: i18n("vocabulary.termchanges.updates"),
+      type: "column",
+      data: termUpdates.map((a) => [a.getDate(), a.count]),
+      color: "var(--info)",
+    },
+    {
+      name: i18n("vocabulary.termchanges.deletions"),
+      type: "column",
+      data: termDeletions.map((a) => [a.getDate(), a.count]),
+      color: "var(--danger)",
     },
   ];
   return (
     <Row>
-      <Col xl={changeRecords.length === 0 ? 5 : 6} lg={12}>
+      <Col xl={6} lg={12}>
         <Chart options={options} series={series} width="100%" />
       </Col>
       <Col xl={6} lg={12} className={"border-left"}>
@@ -157,29 +201,76 @@ const TermChangeFrequencyUI: React.FC<TermChangeFrequencyUIProps> = ({
               <tr>
                 <th className="col-3">{i18n("history.whenwho")}</th>
                 <th className="col-3">{i18n("type.term")}</th>
-                <th className="col-1">{i18n("history.type")}</th>
-                <th className="col-2">{i18n("history.changedAttribute")}</th>
+                <th className="col-2">{i18n("history.type")}</th>
+                <th className="col">{i18n("history.changedAttribute")}</th>
+              </tr>
+              <tr>
+                <td>
+                  <CustomInput
+                    name={i18n("asset.author")}
+                    placeholder={i18n("asset.author")}
+                    value={filterAuthor}
+                    onChange={(e) => setFilterAuthor(e.target.value)}
+                  />
+                </td>
+                <td>
+                  <CustomInput
+                    name={i18n("type.term")}
+                    placeholder={i18n("type.term")}
+                    value={filterTerm}
+                    onChange={(e) => setFilterTerm(e.target.value)}
+                  />
+                </td>
+                <td>
+                  <Select
+                    placeholder={i18n("history.type")}
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                  >
+                    <option value={""}></option>
+                    {[
+                      "history.type.persist",
+                      "history.type.update",
+                      "history.type.delete",
+                    ].map((type) => (
+                      <option key={type} value={type}>
+                        {i18n(type)}
+                      </option>
+                    ))}
+                  </Select>
+                </td>
+                <td>
+                  <CustomInput
+                    name={i18n("history.changedAttribute")}
+                    placeholder={i18n("history.changedAttribute")}
+                    value={filterAttribute}
+                    onChange={(e) => setFilterAttribute(e.target.value)}
+                  />
+                </td>
               </tr>
             </thead>
             <tbody>
-              {changeRecords.map((r) =>
-                r instanceof UpdateRecord ? (
-                  <VocabularyContentUpdateRow key={r.iri} record={r} />
-                ) : (
-                  <VocabularyContentPersistRow key={r.iri} record={r} />
-                )
-              )}
+              {changeRecords?.map((r) => {
+                if (r instanceof PersistRecord) {
+                  return <VocabularyContentPersistRow key={r.iri} record={r} />;
+                }
+                if (r instanceof UpdateRecord) {
+                  return <VocabularyContentUpdateRow key={r.iri} record={r} />;
+                }
+                if (r instanceof DeleteRecord) {
+                  return <VocabularyContentDeleteRow key={r.iri} record={r} />;
+                }
+                return null;
+              })}
             </tbody>
           </Table>
         </div>
-        <If expression={changeRecords.length > 0}>
-          <SimplePagination
-            page={page}
-            setPage={setPage}
-            pageSize={pageSize}
-            itemCount={itemCount}
-          />
-        </If>
+        <SimplePagination
+          page={page}
+          setPage={setPage}
+          pageSize={pageSize}
+          itemCount={pageSize + 1}
+        />
       </Col>
     </Row>
   );

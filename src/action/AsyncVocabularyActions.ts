@@ -31,6 +31,11 @@ import ChangeRecord, {
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
 import AssetFactory from "../util/AssetFactory";
+import {
+  getChangeTypeUri,
+  VocabularyContentChangeFilterData,
+} from "../model/filter/VocabularyContentChangeFilterData";
+import { getLocalized } from "../model/MultilingualString";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -137,6 +142,7 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
 
 export function loadVocabularyContentDetailedChanges(
   vocabularyIri: IRI,
+  filterData: VocabularyContentChangeFilterData,
   pageReq: PageRequest
 ) {
   const action = {
@@ -145,11 +151,16 @@ export function loadVocabularyContentDetailedChanges(
 
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
+    let params = param("namespace", vocabularyIri.namespace)
+      .param("page", pageReq.page?.toString())
+      .param("size", pageReq.size?.toString());
+    for (const [key, value] of Object.entries(filterData)) {
+      params = params.param(key, value);
+    }
+    params = params.param("type", getChangeTypeUri(filterData));
     return Ajax.get(
       `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content/detail`,
-      param("namespace", vocabularyIri.namespace)
-        .param("page", pageReq.page?.toString())
-        .param("size", pageReq.size?.toString())
+      params
     )
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecord>(
@@ -157,6 +168,19 @@ export function loadVocabularyContentDetailedChanges(
           CHANGE_RECORD_CONTEXT
         )
       )
+      .then((data: ChangeRecord[]) => {
+        // adding labels to the label cache as they cannot be fetched from server
+        const labels: { [key: string]: string } = {};
+        data.forEach((r) => {
+          if (r["label"]) {
+            labels[r.changedEntity.iri] = getLocalized(r["label"]);
+          }
+        });
+        dispatch(
+          asyncActionSuccessWithPayload({ type: ActionType.GET_LABEL }, labels)
+        );
+        return data;
+      })
       .then((data: ChangeRecord[]) => {
         dispatch(asyncActionSuccess(action));
         return data.map((r) => AssetFactory.createChangeRecord(r));

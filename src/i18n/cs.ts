@@ -305,21 +305,27 @@ const cs = {
     "vocabulary.summary.export.rdfxml.title": "Export ve formátu RDF/XML.",
     "vocabulary.summary.export.error":
       "Nepodařilo se získat data z odpovědi serveru.",
-    "vocabulary.summary.import.action": "Obnovit ze zálohy",
+    "vocabulary.summary.import.action": "Nahrát ze souboru",
     "vocabulary.summary.import.action.tooltip":
-      "Obnovit slovník ze zálohy ve formátu SKOS či MS Excel",
+      "Nahrát obsah slovníku ze souboru obsahujícího data ve formátu SKOS či MS Excel",
     "vocabulary.summary.import.dialog.title":
-      "Obnova exportované verze slovníku",
+      "Import obsahu slovníku ze souboru",
+    "vocabulary.summary.import.dialog.tab.replaceContent": "Nahradit obsah",
+    "vocabulary.summary.import.dialog.tab.translations": "Importovat překlady",
     "vocabulary.summary.import.dialog.label":
-      "Nahrajte vyexportovanou verzi tohoto slovníku ",
+      "Nahrajte vyexportovanou verzi tohoto slovníku",
     "vocabulary.summary.import.dialog.skosImport":
       "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář.",
     "vocabulary.summary.import.dialog.excelImport":
-      "MS Excel odpovídající <a>této šabloně</a>",
+      "Ve formátu MS Excel odpovídající <a>této šabloně</a>",
     "vocabulary.summary.import.excel.template.tooltip":
       "Stáhnout šablonu pro MS Excel",
     "vocabulary.summary.import.nonEmpty.warning":
       "Slovník není prázdný, stávající data budou přepsána importovanými.",
+    "vocabulary.summary.import.translations.label":
+      "Nahrajte soubor ve formátu MS Excel odpovídající <a>této šabloně</a>, ze kterého mají být naimportovány překlady existujících pojmů ve slovníku.",
+    "vocabulary.summary.import.translations.help":
+      "Stávající data nebudou přepsána.",
     "vocabulary.import.type.skos": "SKOS",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",
@@ -358,6 +364,7 @@ const cs = {
       "Textová analýza definic pojmů ve všech slovnících spuštěna.",
     "vocabulary.termchanges.creations": "Vytvořené pojmy",
     "vocabulary.termchanges.updates": "Aktualizované pojmy",
+    "vocabulary.termchanges.deletions": "Smazané pojmy",
     "vocabulary.termchanges.termcount": "Počet změněných pojmů",
     "vocabulary.termchanges.loading": "Načítám změny ...",
     "vocabulary.termchanges.empty":
@@ -622,6 +629,7 @@ const cs = {
     "file.upload.hint":
       "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8, nebo validní MS Excel.",
     "file.upload.size.exceeded": "Soubor je příliš velký.",
+    "file.language": "Jazyk obsahu souboru",
 
     "dataset.license": "Licence",
     "dataset.format": "Formát",
@@ -814,6 +822,11 @@ const cs = {
       'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',
     "error.invalidIdentifier": 'Neplatný identifikátor: "{uri}"',
 
+    "error.annotation.file.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk obsahu souboru.",
+    "error.annotation.term.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk definice pojmu.",
+
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
     "history.empty": "Zaznamenaná historie je prázdná.",
@@ -821,6 +834,7 @@ const cs = {
     "history.type": "Typ",
     "history.type.persist": "Vytvoření",
     "history.type.update": "Změna",
+    "history.type.delete": "Smazání",
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
