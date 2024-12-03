@@ -1,3 +1,10 @@
+#### Version 3.4.0
+
+- Added support for term deletion records. Term deletion events are also displayed in the vocabulary activity diagram.
+- Added support for filtering in change history.
+- Added support for saving and annotating files in multiple languages.
+- Added support for importing term translations from an MS Excel file.
+
 #### Version 3.3.0
 
 - Added the possibility to download annotated file without unconfirmed occurrences.

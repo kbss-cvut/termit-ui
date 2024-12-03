@@ -1,3 +1,10 @@
+#### Verze 3.4.0
+
+- Přidána podpora pro záznamy o smazání pojmů. Ty jsou zobrazovány i v grafu aktivity slovníku.
+- Přidána možnost filtrovat v historii změn.
+- Přidána podpora pro ukládání a anotaci souborů v různých jazycích v rámci jednoho slovníku.
+- Přidána podpora pro import překladů pojmů ze souboru MS Excel.
+
 #### Verze 3.3.0
 
 - Přidána možnost stáhnout anotovaný soubor bez nepotvrzených výskytů.
