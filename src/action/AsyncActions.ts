@@ -1234,6 +1234,29 @@ export function invalidateCaches() {
   };
 }
 
+export function clearLongRunningTasksQueue() {
+  const action = { type: ActionType.CLEAR_LONG_RUNNING_TASKS_QUEUE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.delete(`${Constants.API_PREFIX}/admin/long-running-tasks`)
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId:
+                  "administration.maintenance.clearLongRunningTasksQueue.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
 export function loadConfiguration() {
   const action = { type: ActionType.LOAD_CONFIGURATION };
   return (dispatch: ThunkDispatch) => {
