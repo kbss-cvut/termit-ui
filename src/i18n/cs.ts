@@ -228,6 +228,12 @@ const cs = {
       "Vyprázdnit interní cache systému",
     "administration.maintenance.invalidateCaches.success":
       "Cache úspěšně vyprázdněna.",
+    "administration.maintenance.clearLongRunningTasksQueue":
+      "Vyprádznit frontu procesů na pozadí",
+    "administration.maintenance.clearLongRunningTasksQueue.tooltip":
+      "Vyprázdnit frontu procesů čekajících na zpracování na pozadí",
+    "administration.maintenance.clearLongRunningTasksQueue.success":
+      "Fronta procesů na pozadí úspěšně vyprázdněna.",
     "administration.groups": "Uživatelské skupiny",
     "administration.groups.create": "Vytvořit skupinu",
     "administration.groups.create.tooltip":
