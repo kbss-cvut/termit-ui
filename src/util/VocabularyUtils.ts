@@ -115,6 +115,7 @@ const VocabularyUtils = {
   USER_ADMIN: _NS_TERMIT + "administrátor-termitu",
   USER_LOCKED: _NS_TERMIT + "uzam\u010den\u00fd-u\u017eivatel-termitu",
   USER_DISABLED: _NS_TERMIT + "zablokovan\u00fd-u\u017eivatel-termitu",
+  USER_ANONYMOUS: _NS_TERMIT + "anonymn\u00ed-u\u017eivatel-termitu",
   USER_RESTRICTED: _NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
   USER_EDITOR: _NS_TERMIT + "pln\u00fd-u\u017eivatel-termitu",
   USER_GROUP: _NS_SIOC + "Usergroup",
