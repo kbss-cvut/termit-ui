@@ -229,7 +229,7 @@ const cs = {
     "administration.maintenance.invalidateCaches.success":
       "Cache úspěšně vyprázdněna.",
     "administration.maintenance.clearLongRunningTasksQueue":
-      "Vyprádznit frontu procesů na pozadí",
+      "Vyprázdnit frontu procesů na pozadí",
     "administration.maintenance.clearLongRunningTasksQueue.tooltip":
       "Vyprázdnit frontu procesů čekajících na zpracování na pozadí",
     "administration.maintenance.clearLongRunningTasksQueue.success":
