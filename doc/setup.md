@@ -21,6 +21,7 @@ The following parameters can be configured for the build:
 | `REACT_APP_DEPLOYMENT_NAME`                  | `string`  | `''`    | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances                                                              |
 | `REACT_APP_ADMIN_REGISTRATION_ONLY`          | `boolean` | `false` | Configures whether the login page should contain a link to registration or not. If the parameter is true, only administrators can add new users and there is no registration link |
 | `REACT_APP_SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED` | `boolean` | `false` | Configures whether the application should show the public view dashboard if the user is not logged in. By default, the login screen is shown.                                     |
+| `REACT_APP_DISABLE_PUBLIC_VIEW`              | `boolean` | `false` | Whether the public view should be accessible. If set to false, login screen is always shown for unauthenticated user.                                                             |
 | `REACT_APP_AUTHENTICATION`                   | `string`  | `''`    | Authentication means. Use `oidc` to set up an OIDC sevice-based authentication such as Keycloak (must be configured on backend as well).                                          |
 | `REACT_APP_AUTH_SERVER_URL`                  | `string`  | `''`    | URL of the OIDC authentication service (including Realm identification, if relevant). Relevant only if OIDC-based authentication is enabled.                                      |
 | `REACT_APP_AUTH_CLIENT_ID`                   | `string`  | `''`    | Client identifier of this appliation. Relevant only if OIDC-based authentication is enabled.                                                                                      |
@@ -41,7 +42,8 @@ location accessible via HTTP(S), e.g., into an Apache HTTP server-managed locati
 
 ## Authentication
 
-TermIt can operate in one of two authentication modes - using its internal user database and authentication means (default)
+TermIt can operate in one of two authentication modes - using its internal user database and authentication means (
+default)
 or via an OIDC authentication service such as [Keycloak](https://www.keycloak.org/). Corresponding parameters (service
 URL, clientId) need to be set up (see the table above for the relevant parameters and explanation).
 
