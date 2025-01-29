@@ -28,7 +28,9 @@ import "../MainView.scss";
 import { loadConfiguration, loadTermStates } from "../../action/AsyncActions";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
 import FacetedSearch from "../search/facet/FacetedSearch";
-import { PUBLIC_LOGIN_ROUTE } from "../../util/Routing";
+import Routing, { PUBLIC_LOGIN_ROUTE } from "../../util/Routing";
+import { getEnv } from "../../util/Constants";
+import ConfigParam from "../../util/ConfigParam";
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   sidebarExpanded: boolean;
@@ -51,6 +53,9 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
   }
 
   public componentDidMount(): void {
+    if (getEnv(ConfigParam.DISABLE_PUBLIC_VIEW, "") === "true") {
+      Routing.transitionTo(Routes.login);
+    }
     window.addEventListener("resize", this.handleResize, false);
     this.props.loadConfiguration();
     this.props.loadTermStates();
