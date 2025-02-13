@@ -5,14 +5,14 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import { default as Routes } from "../../../util/Routes";
 import RoutingI from "../../../util/Routing";
 import withInjectableLoading from "../../hoc/withInjectableLoading";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../../hoc/withI18n";
+import { useI18n } from "../../hook/useI18n";
 
-interface Props extends PublicProps, HasI18n {
+interface Props extends PublicProps {
   lang: string;
 }
 
 const TermFrequency: React.FC<Props> = (props) => {
+  const { i18n } = useI18n();
   const queryResult = props.queryResults;
   if (!queryResult || !queryResult.result) {
     return <div>{props.renderMask()}</div>;
@@ -50,8 +50,8 @@ const TermFrequency: React.FC<Props> = (props) => {
       show: false,
     },
     colors: [
-      "#2bffc6",
-      "#ffd600",
+      "#1edaa8",
+      "#d3bb3a",
       "#29AB87",
       "#f3a4b5",
       "#11cdef",
@@ -69,7 +69,7 @@ const TermFrequency: React.FC<Props> = (props) => {
             total: {
               showAlways: true,
               show: true,
-              label: props.i18n("dashboard.widget.donut.total-terms"),
+              label: i18n("dashboard.widget.donut.total-terms"),
             },
           },
         },
@@ -99,6 +99,9 @@ const TermFrequency: React.FC<Props> = (props) => {
         },
       },
     },
+    tooltip: {
+      theme: "light",
+    },
   };
 
   return (
@@ -115,6 +118,4 @@ const TermFrequency: React.FC<Props> = (props) => {
   );
 };
 
-export default withInjectableLoading(
-  SparqlWidget(injectIntl(withI18n(TermFrequency)))
-);
+export default withInjectableLoading(SparqlWidget(TermFrequency));
