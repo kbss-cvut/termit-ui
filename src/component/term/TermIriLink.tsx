@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import Term from "../../model/Term";
+import { TermInfo } from "../../model/Term";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import { getLabel, loadTermByIri } from "../../action/AsyncActions";
+import { getLabel, loadTermInfoByIri } from "../../action/AsyncActions";
 import TermLink from "./TermLink";
 import OutgoingLink from "../misc/OutgoingLink";
 import Utils from "../../util/Utils";
@@ -18,12 +18,12 @@ interface TermIriLinkProps {
 
 const TermIriLink: React.FC<TermIriLinkProps> = (props) => {
   const { iri, id, activeTab } = props;
-  const [term, setTerm] = useState<Term | null>(null);
+  const [term, setTerm] = useState<TermInfo | null>(null);
   const dispatch: ThunkDispatch = useDispatch();
   const [label, setLabel] = useState<string>();
   useEffect(() => {
     const tIri = VocabularyUtils.create(iri);
-    dispatch(loadTermByIri(tIri)).then((term) => setTerm(term));
+    dispatch(loadTermInfoByIri(tIri)).then((term) => setTerm(term));
   }, [iri, dispatch, setTerm]);
 
   // if term is null, try to acquire the label from cache

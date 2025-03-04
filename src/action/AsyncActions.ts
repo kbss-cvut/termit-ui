@@ -27,7 +27,11 @@ import { AxiosResponse } from "axios";
 import * as jsonld from "jsonld";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
-import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
+import Term, {
+  CONTEXT as TERM_CONTEXT,
+  TermData,
+  TermInfo,
+} from "../model/Term";
 import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
 import ActionType, { PendingAsyncAction } from "./ActionType";
 import Resource, { ResourceData } from "../model/Resource";
@@ -569,6 +573,33 @@ export function genericLoadTerms(
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return [];
+      });
+  };
+}
+
+export function loadTermInfoByIri(
+  termIri: IRI,
+  abortController: AbortController = new AbortController()
+) {
+  const action = {
+    type: ActionType.LOAD_TERM_BY_IRI,
+  };
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    dispatch(asyncActionRequest(action, true, abortController));
+    return Ajax.get(
+      `${getApiPrefix(getState())}/terms/${termIri.fragment}/info`,
+      param("namespace", termIri.namespace).signal(abortController)
+    )
+      .then((data: object) =>
+        JsonLdUtils.compactAndResolveReferences<TermInfo>(data, TERM_CONTEXT)
+      )
+      .then((data: TermInfo) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return null;
       });
   };
 }

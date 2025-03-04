@@ -1,5 +1,5 @@
 import React from "react";
-import Term from "../../model/Term";
+import Term, { TermInfo } from "../../model/Term";
 import TermOccurrence from "../../model/TermOccurrence";
 import { connect } from "react-redux";
 import TermItState, {
@@ -12,7 +12,7 @@ import withI18n, { HasI18n } from "../hoc/withI18n";
 import { injectIntl } from "react-intl";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
-import { loadTermByIri } from "../../action/AsyncActions";
+import { loadTermInfoByIri } from "../../action/AsyncActions";
 import TermLink from "./TermLink";
 import classNames from "classnames";
 import Utils from "../../util/Utils";
@@ -26,7 +26,7 @@ interface DefinitionRelatedTermsEditProps extends HasI18n {
   onChange: (change: DefinitionRelatedChanges) => void;
 
   definitionRelatedTerms: DefinitionallyRelatedTerms;
-  loadTermByIri: (iri: IRI) => Promise<Term | null>;
+  loadTermInfoByIri: (iri: IRI) => Promise<TermInfo | null>;
 }
 
 export interface DefinitionRelatedChanges {
@@ -35,7 +35,7 @@ export interface DefinitionRelatedChanges {
 }
 
 interface DefinitionRelatedTermsEditState {
-  termCache: { [key: string]: Term };
+  termCache: { [key: string]: Term | TermInfo };
 }
 
 function findWithCommonTerm(
@@ -86,7 +86,7 @@ export class DefinitionRelatedTermsEdit extends React.Component<
       irisToLoad.add(to.target.source.iri!)
     );
     irisToLoad.forEach((iri) => {
-      this.props.loadTermByIri(VocabularyUtils.create(iri)).then((t) => {
+      this.props.loadTermInfoByIri(VocabularyUtils.create(iri)).then((t) => {
         const toAdd = {};
         toAdd[iri] = t;
         this.setState({
@@ -218,7 +218,7 @@ export class DefinitionRelatedTermsEdit extends React.Component<
 
 interface DefinitionalTermOccurrenceProps {
   occurrence: TermOccurrence;
-  term: Term;
+  term: Term | TermInfo;
   language: string;
   onApprove: (to: TermOccurrence) => void;
   onRemove: (to: TermOccurrence) => void;
@@ -296,7 +296,7 @@ export default connect(
   }),
   (dispatch: ThunkDispatch) => {
     return {
-      loadTermByIri: (iri: IRI) => dispatch(loadTermByIri(iri)),
+      loadTermInfoByIri: (iri: IRI) => dispatch(loadTermInfoByIri(iri)),
     };
   }
 )(injectIntl(withI18n(DefinitionRelatedTermsEdit)));
