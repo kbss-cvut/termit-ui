@@ -27,7 +27,7 @@ import {
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import Vocabulary, { EMPTY_VOCABULARY } from "../model/Vocabulary";
 import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
-import Term from "../model/Term";
+import Term, { TermInfo } from "../model/Term";
 import RdfsResource from "../model/RdfsResource";
 import AppNotification from "../model/AppNotification";
 import SearchResult from "../model/search/SearchResult";
@@ -505,6 +505,17 @@ function labelCache(
   return state;
 }
 
+// TODO Evict when term is removed or label changes
+function termInfoCache(
+  state: { [key: string]: TermInfo } = {},
+  action: AsyncActionSuccess<{ [key: string]: TermInfo }>
+) {
+  if (action.type === ActionType.LOAD_TERM_INFO && isAsyncSuccess(action)) {
+    return Object.assign({}, state, action.payload);
+  }
+  return state;
+}
+
 function sidebarExpanded(state: boolean = true, action: Action) {
   switch (action.type) {
     case ActionType.TOGGLE_SIDEBAR:
@@ -737,6 +748,7 @@ const rootReducer = combineReducers<TermItState>({
   lastModified,
   routeTransitionPayload,
   labelCache,
+  termInfoCache,
   sidebarExpanded,
   desktopView,
   annotatorTerms,

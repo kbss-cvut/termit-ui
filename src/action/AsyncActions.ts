@@ -577,16 +577,31 @@ export function genericLoadTerms(
   };
 }
 
+/**
+ * Stores pending promises with requests to get labels so that
+ * they can be reused when multiple calls for the same label
+ * arrive simultaneously (i.e., while one is already running).
+ */
+// TODO Unify with pendingLabelRequests
+const pendingTermInfoRequests: { [key: string]: Promise<any> } = {};
+
 export function loadTermInfoByIri(
   termIri: IRI,
   abortController: AbortController = new AbortController()
 ) {
   const action = {
-    type: ActionType.LOAD_TERM_BY_IRI,
+    type: ActionType.LOAD_TERM_INFO,
   };
+  const strIri = IRIImpl.toString(termIri);
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    if (getState().termInfoCache[strIri]) {
+      return Promise.resolve(getState().termInfoCache[strIri]);
+    }
+    if (pendingTermInfoRequests[strIri] !== undefined) {
+      return pendingTermInfoRequests[strIri];
+    }
     dispatch(asyncActionRequest(action, true, abortController));
-    return Ajax.get(
+    const promise = Ajax.get(
       `${getApiPrefix(getState())}/terms/${termIri.fragment}/info`,
       param("namespace", termIri.namespace).signal(abortController)
     )
@@ -600,7 +615,12 @@ export function loadTermInfoByIri(
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return null;
+      })
+      .finally(() => {
+        delete pendingGetLabelRequests[strIri];
       });
+    pendingTermInfoRequests[strIri] = promise;
+    return promise;
   };
 }
 
