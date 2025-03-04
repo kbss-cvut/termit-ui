@@ -23,15 +23,14 @@ const TermIriLink: React.FC<TermIriLinkProps> = (props) => {
   const [label, setLabel] = useState<string>();
   useEffect(() => {
     const tIri = VocabularyUtils.create(iri);
-    dispatch(loadTermInfoByIri(tIri)).then((term) => setTerm(term));
+    dispatch(loadTermInfoByIri(tIri)).then((term) => {
+      if (term != null) {
+        setTerm(term);
+      } else {
+        dispatch(getLabel(iri)).then((label) => setLabel(label));
+      }
+    });
   }, [iri, dispatch, setTerm]);
-
-  // if term is null, try to acquire the label from cache
-  useEffect(() => {
-    if (term === null) {
-      dispatch(getLabel(iri)).then((label) => setLabel(label));
-    }
-  }, [term, iri, dispatch]);
 
   return (
     <>
