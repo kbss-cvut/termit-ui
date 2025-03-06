@@ -145,6 +145,7 @@ const VocabularyUtils = {
 
   XSD_DATETIME: _NS_XSD + "dateTime",
   XSD_DATE: _NS_XSD + "date",
+  XSD_INT: _NS_XSD + "int",
 
   SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
   SH_SOURCE_SHAPE: _NS_SH + "sourceShape",
