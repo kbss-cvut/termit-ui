@@ -1077,38 +1077,6 @@ export function getLabel(iri: string) {
 }
 
 /**
- * Fetches RDFS:resource with the specified identifier.
- * @param iri Resource identifier
- */
-export function getRdfsResource(iri: IRI) {
-  const action = {
-    type: ActionType.GET_RESOURCE,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.get(
-      Constants.API_PREFIX + "/data/resource",
-      param("iri", iri.toString())
-    )
-      .then((data: object) =>
-        JsonLdUtils.compactAndResolveReferences<RdfsResource>(
-          data,
-          RDFS_RESOURCE_CONTEXT
-        )
-      )
-      .then((data: RdfsResource) => {
-        const res = new RdfsResource(data);
-        dispatch(asyncActionSuccessWithPayload(action, res));
-        return res;
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return undefined;
-      });
-  };
-}
-
-/**
  * Fetches properties existing in the server repository.
  */
 export function getProperties() {
