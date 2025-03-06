@@ -104,7 +104,7 @@ export class FileContentDetail extends React.Component<
   }
 
   private onUpdate = (newFileContent: string) => {
-    trackPromise(
+    return trackPromise(
       this.props.saveFileContent(
         {
           fragment: this.props.iri.fragment,

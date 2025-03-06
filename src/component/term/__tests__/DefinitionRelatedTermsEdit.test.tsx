@@ -46,7 +46,7 @@ describe("DefinitionRelatedTermsEdit", () => {
       <DefinitionRelatedTermsEdit
         term={term}
         language={Constants.DEFAULT_LANGUAGE}
-        loadTermByIri={loadTermByIri}
+        loadTermInfoByIri={loadTermByIri}
         pending={pending}
         onChange={onChange}
         definitionRelatedTerms={{

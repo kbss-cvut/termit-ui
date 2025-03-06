@@ -78,6 +78,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     lastModified: state.lastModified,
     routeTransitionPayload: state.routeTransitionPayload,
     labelCache: state.labelCache,
+    termInfoCache: state.termInfoCache,
     sidebarExpanded: state.sidebarExpanded,
     desktopView: state.desktopView,
     annotatorTerms: state.annotatorTerms,

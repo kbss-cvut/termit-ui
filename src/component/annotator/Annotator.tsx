@@ -68,7 +68,7 @@ interface AnnotatorProps extends HasI18n {
   vocabulary: Vocabulary;
   annotationLanguage?: string;
 
-  onUpdate: (newHtml: string) => void;
+  onUpdate: (newHtml: string) => Promise<void>;
   setAnnotatorLegendFilter: (
     annotationClass: AnnotationClass,
     annotationOrigin: AnnotationOrigin,
@@ -352,12 +352,8 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       this.props.fileIri
     );
     defSource.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
-    return this.props
-      .setTermDefinitionSource(defSource, term)
-      .then(() => {
-        this.updateInternalHtml(dom);
-        return Promise.resolve();
-      })
+    return this.updateInternalHtml(dom)
+      .then(() => this.props.setTermDefinitionSource(defSource, term))
       .catch(() => {
         this.onRemove(annotationElement.attribs!.about!);
       });
@@ -456,7 +452,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     const htmlSplit = HtmlDomUtils.splitHtml(this.props.initialHtml);
     const html =
       htmlSplit.prefix + HtmlParserUtils.dom2html(dom) + htmlSplit.suffix;
-    this.props.onUpdate(html);
+    return this.props.onUpdate(html);
   };
 
   private handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
