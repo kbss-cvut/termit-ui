@@ -51,7 +51,7 @@ const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
 const _NS_DC = "http://purl.org/dc/terms/";
 const _NS_SH = "http://www.w3.org/ns/shacl#";
 const _NS_SIOC = "http://rdfs.org/sioc/ns#";
-const _NS_ACTIVITY_STREAMS = "http://www.w3.org/ns/activitystreams#";
+const _NS_ACTIVITY_STREAMS = "https://www.w3.org/ns/activitystreams#";
 const _NS_XSD = "http://www.w3.org/2001/XMLSchema#";
 
 const VocabularyUtils = {

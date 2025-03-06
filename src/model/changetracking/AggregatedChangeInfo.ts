@@ -5,7 +5,7 @@ export const CONTEXT = {
     "@id": `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-modifikace`,
     "@type": VocabularyUtils.XSD_DATE,
   },
-  count: "http://www.w3.org/ns/activitystreams#totalItems",
+  count: `${VocabularyUtils.NS_ACTIVITY_STREAMS}totalItems`,
   types: "@type",
 };
 
