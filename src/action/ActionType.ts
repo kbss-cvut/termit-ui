@@ -79,6 +79,14 @@ export interface AnnotatorLegendFilterAction extends Action {
   enabled?: boolean;
 }
 
+export interface RemoveAssetAction extends Action {
+  iri: string;
+}
+
+export interface UpdateAssetAction extends Action {
+  iri: string;
+}
+
 enum ActionType {
   FETCH_USER = "FETCH_USER",
   LOGIN = "LOGIN",
@@ -128,6 +136,7 @@ enum ActionType {
   FETCH_TERM = "FETCH_TERM",
   LOAD_TERM = "LOAD_TERM",
   LOAD_TERM_BY_IRI = "LOAD_TERM_BY_IRI",
+  LOAD_TERM_INFO = "LOAD_TERM_INFO",
   UPDATE_TERM = "UPDATE_TERM",
   LOAD_RELATED_TERMS = "LOAD_RELATED_TERMS",
   LOAD_DEFINITION_RELATED_TERMS_TARGETING = "LOAD_DEFINITION_RELATED_TERMS_TARGETING",
