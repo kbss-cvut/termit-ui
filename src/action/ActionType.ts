@@ -79,6 +79,14 @@ export interface AnnotatorLegendFilterAction extends Action {
   enabled?: boolean;
 }
 
+export interface RemoveAssetAction extends Action {
+  iri: string;
+}
+
+export interface UpdateAssetAction extends Action {
+  iri: string;
+}
+
 enum ActionType {
   FETCH_USER = "FETCH_USER",
   LOGIN = "LOGIN",

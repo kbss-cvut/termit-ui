@@ -33,7 +33,11 @@ import Term, {
   TermInfo,
 } from "../model/Term";
 import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
-import ActionType, { PendingAsyncAction } from "./ActionType";
+import ActionType, {
+  PendingAsyncAction,
+  RemoveAssetAction,
+  UpdateAssetAction,
+} from "./ActionType";
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
@@ -438,7 +442,7 @@ export function removeAsset(
   transitionRoute: Route,
   options?: {}
 ) {
-  const action = { type };
+  const action: RemoveAssetAction = { type, iri: IRIImpl.toString(iri) };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.delete(
@@ -906,8 +910,9 @@ export function saveFileContent(fileIri: IRI, fileContent: string) {
 }
 
 export function updateTerm(term: Term) {
-  const action = {
+  const action: UpdateAssetAction = {
     type: ActionType.UPDATE_TERM,
+    iri: term.iri,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action));
@@ -954,8 +959,9 @@ export function updateTerm(term: Term) {
 }
 
 export function updateResource(res: Resource) {
-  const action = {
+  const action: UpdateAssetAction = {
     type: ActionType.UPDATE_RESOURCE,
+    iri: res.iri,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
@@ -987,8 +993,9 @@ export function updateResource(res: Resource) {
 }
 
 export function updateVocabulary(vocabulary: Vocabulary) {
-  const action = {
+  const action: UpdateAssetAction = {
     type: ActionType.UPDATE_VOCABULARY,
+    iri: vocabulary.iri,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));

@@ -10,10 +10,12 @@ import ActionType, {
   NotificationAction,
   PendingAsyncAction,
   PushRoutingPayloadAction,
+  RemoveAssetAction,
   SearchAction,
   SearchResultAction,
   SelectingTermsAction,
   SwitchLanguageAction,
+  UpdateAssetAction,
   UpdateLastModifiedAction,
 } from "../action/ActionType";
 import TermItState, { DefinitionallyRelatedTerms } from "../model/TermItState";
@@ -43,12 +45,12 @@ import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
 
-function isAsyncSuccess(action: AsyncAction) {
-  return action.status === AsyncActionStatus.SUCCESS;
+function isAsyncSuccess(action: Action) {
+  return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
 }
 
 /**
- * Handles changes to the currently logged in user.
+ * Handles changes to the currently logged-in user.
  *
  * The initial state is an empty user, which basically shouldn't be allowed to do anything.
  */
@@ -505,13 +507,35 @@ function labelCache(
   return state;
 }
 
-// TODO Evict when term is removed or label changes
+/**
+ * TermInfo cache.
+ *
+ * It is evicted on updates coming from this client. However, changes made on server may cause its content to become stale.
+ * However, such changes will likely be infrequent and the worst that can happen is that the user will click on a link
+ * that leads to a deleted term or a term whose label is now different. It seems like a reasonable trade-off for decreasing
+ * the traffic between backend and frontend.
+ */
 function termInfoCache(
   state: { [key: string]: TermInfo } = {},
-  action: AsyncActionSuccess<{ [key: string]: TermInfo }>
+  action: Action
 ) {
   if (action.type === ActionType.LOAD_TERM_INFO && isAsyncSuccess(action)) {
-    return Object.assign({}, state, action.payload);
+    return Object.assign(
+      {},
+      state,
+      (action as AsyncActionSuccess<TermInfo>).payload
+    );
+  } else if (
+    action.type === ActionType.REMOVE_VOCABULARY_TERM &&
+    isAsyncSuccess(action)
+  ) {
+    const newState = Object.assign({}, state);
+    delete newState[(action as RemoveAssetAction).iri];
+    return newState;
+  } else if (action.type === ActionType.UPDATE_TERM && isAsyncSuccess(action)) {
+    const newState = Object.assign({}, state);
+    delete newState[(action as UpdateAssetAction).iri];
+    return newState;
   }
   return state;
 }
