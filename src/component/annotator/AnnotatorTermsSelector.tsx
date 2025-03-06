@@ -46,7 +46,11 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
 
   React.useEffect(() => {
     if (autoFocus) {
-      setTimeout(() => treeSelect.current.focus(), 100);
+      setTimeout(() => {
+        if (treeSelect.current !== null) {
+          treeSelect.current.focus();
+        }
+      }, 100);
     }
   }, [autoFocus, treeSelect]);
 

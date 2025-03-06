@@ -217,6 +217,12 @@ const en = {
       "Invalidate system's internal caches",
     "administration.maintenance.invalidateCaches.success":
       "Caches successfully cleared.",
+    "administration.maintenance.clearLongRunningTasksQueue":
+      "Clear background process queue",
+    "administration.maintenance.clearLongRunningTasksQueue.tooltip":
+      "Clears the queue of processes that are waiting to be executed in the background",
+    "administration.maintenance.clearLongRunningTasksQueue.success":
+      "Background process queue successfully cleared.",
     "administration.groups": "User groups",
     "administration.groups.create": "Create group",
     "administration.groups.create.tooltip": "Allows to create a new user group",

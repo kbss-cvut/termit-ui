@@ -24,10 +24,6 @@ describe("Login", () => {
     );
   });
 
-  afterEach(() => {
-    delete process.env.REACT_APP_ADMIN_REGISTRATION_ONLY;
-  });
-
   it("renders submit button disabled when either field is empty", () => {
     const wrapper = mountWithIntl(
       <MemoryRouter>
@@ -98,9 +94,7 @@ describe("Login", () => {
   });
 
   it("renders registration link by default", () => {
-    jest.spyOn(Constants, "getEnv").mockImplementation((name: string) => {
-      return (name !== ConfigParam.ADMIN_REGISTRATION_ONLY).toString();
-    });
+    jest.spyOn(Constants, "getEnv").mockReturnValue("false");
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <Login loading={false} login={login} {...intlFunctions()} />
@@ -110,12 +104,29 @@ describe("Login", () => {
   });
 
   it("does not render registration link when admin registration only is turned on", () => {
-    jest.spyOn(Constants, "getEnv").mockReturnValue(true.toString());
+    jest.spyOn(Constants, "getEnv").mockImplementation((value: string) => {
+      return ConfigParam.ADMIN_REGISTRATION_ONLY === value ? "true" : "false";
+    });
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <Login loading={false} login={login} {...intlFunctions()} />
       </MemoryRouter>
     );
     expect(wrapper.exists("#login-register")).toBeFalsy();
+  });
+
+  it("does not render public view link when public view is disabled", () => {
+    jest.spyOn(Constants, "getEnv").mockImplementation((value: string) => {
+      return ConfigParam.ADMIN_REGISTRATION_ONLY === value ||
+        ConfigParam.DISABLE_PUBLIC_VIEW === value
+        ? "true"
+        : "false";
+    });
+    const wrapper = mountWithIntl(
+      <MemoryRouter>
+        <Login loading={false} login={login} {...intlFunctions()} />
+      </MemoryRouter>
+    );
+    expect(wrapper.exists("#login-public-view")).toBeFalsy();
   });
 });

@@ -2,7 +2,7 @@ import React from "react";
 import Term, { TermInfo } from "../../model/Term";
 import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
-import { loadTermByIri } from "../../action/AsyncActions";
+import { loadTermInfoByIri } from "../../action/AsyncActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
 import { Badge } from "reactstrap";
@@ -43,7 +43,7 @@ const DefinitionRelatedTerms: React.FC<DefinitionRelatedTermsProps> = (
     Promise.all(
       Array.from(irisToLoad)
         .filter((iri) => termCache[iri] === undefined)
-        .map((iri) => dispatch(loadTermByIri(VocabularyUtils.create(iri))))
+        .map((iri) => dispatch(loadTermInfoByIri(VocabularyUtils.create(iri))))
     ).then((res) => {
       if (res.length === 0) {
         return;

@@ -4,7 +4,7 @@ import en from "../i18n/en";
 import IntlData from "./IntlData";
 import Vocabulary, { EMPTY_VOCABULARY } from "./Vocabulary";
 import { QueryResultIF } from "./QueryResult";
-import Term from "./Term";
+import Term, { TermInfo } from "./Term";
 import RdfsResource from "./RdfsResource";
 import AppNotification from "./AppNotification";
 import SearchResult from "./search/SearchResult";
@@ -57,6 +57,7 @@ export default class TermItState {
   public routeTransitionPayload: { [key: string]: any };
   // Caches labels retrieved from the backend, so that they can be reused and thus server traffic reduced
   public labelCache: { [key: string]: string };
+  public termInfoCache: { [key: string]: TermInfo };
   public annotatorTerms: { [key: string]: Term };
   public configuration: Configuration;
   public validationResults: { [vocabularyIri: string]: ConsolidatedResults };
@@ -96,6 +97,7 @@ export default class TermItState {
     this.lastModified = {};
     this.routeTransitionPayload = {};
     this.labelCache = {};
+    this.termInfoCache = {};
     this.sidebarExpanded = true;
     this.desktopView = Utils.isDesktopView();
     this.annotatorTerms = {};

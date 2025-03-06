@@ -1,3 +1,10 @@
+#### Version 3.5.0
+
+- Added support for disabling the public view.
+- Added support for managing anonymous access to a vocabulary via ACL.
+- Improved term occurrence handling - text analysis of a re-uploaded file now reuses existing term occurrences.
+- Various performance improvements.
+
 #### Version 3.4.0
 
 - Added support for term deletion records. Term deletion events are also displayed in the vocabulary activity diagram.
