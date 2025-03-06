@@ -95,6 +95,12 @@ import {
  */
 
 /**
+ * Stores pending promises with requests the backend, mostly calls to get labels or TermInfo, where it happens that
+ * multiple requests to get the same resource are send almost simultaneously. This allows reusing the same promise.
+ */
+const pendingRequests: { [key: string]: Promise<any> } = {};
+
+/**
  * @returns true if there is a pending action that has not been aborted
  */
 export function isActionRequestPending(state: TermItState, action: Action) {
@@ -581,14 +587,6 @@ export function genericLoadTerms(
   };
 }
 
-/**
- * Stores pending promises with requests to get labels so that
- * they can be reused when multiple calls for the same label
- * arrive simultaneously (i.e., while one is already running).
- */
-// TODO Unify with pendingLabelRequests
-const pendingTermInfoRequests: { [key: string]: Promise<any> } = {};
-
 export function loadTermInfoByIri(
   termIri: IRI,
   abortController: AbortController = new AbortController()
@@ -601,8 +599,8 @@ export function loadTermInfoByIri(
     if (getState().termInfoCache[strIri]) {
       return Promise.resolve(getState().termInfoCache[strIri]);
     }
-    if (pendingTermInfoRequests[strIri] !== undefined) {
-      return pendingTermInfoRequests[strIri];
+    if (pendingRequests[strIri] !== undefined) {
+      return pendingRequests[strIri];
     }
     dispatch(asyncActionRequest(action, true, abortController));
     const promise = Ajax.get(
@@ -621,9 +619,9 @@ export function loadTermInfoByIri(
         return null;
       })
       .finally(() => {
-        delete pendingGetLabelRequests[strIri];
+        delete pendingRequests[strIri];
       });
-    pendingTermInfoRequests[strIri] = promise;
+    pendingRequests[strIri] = promise;
     return promise;
   };
 }
@@ -1037,13 +1035,6 @@ export function updateVocabulary(vocabulary: Vocabulary) {
 }
 
 /**
- * Stores pending promises with requests to get labels so that
- * they can be reused when multiple calls for the same label
- * arrive simultaneously (i.e., while one is already running).
- */
-const pendingGetLabelRequests: { [key: string]: Promise<any> } = {};
-
-/**
  * Fetches RDFS:label of a resource with the specified identifier.
  * @param iri Resource identifier
  */
@@ -1055,8 +1046,8 @@ export function getLabel(iri: string) {
     if (getState().labelCache[iri]) {
       return Promise.resolve(getState().labelCache[iri]);
     }
-    if (pendingGetLabelRequests[iri] !== undefined) {
-      return pendingGetLabelRequests[iri];
+    if (pendingRequests[iri] !== undefined) {
+      return pendingRequests[iri];
     }
 
     // currently active language
@@ -1078,9 +1069,9 @@ export function getLabel(iri: string) {
         return undefined;
       })
       .finally(() => {
-        delete pendingGetLabelRequests[iri];
+        delete pendingRequests[iri];
       });
-    pendingGetLabelRequests[iri] = promise;
+    pendingRequests[iri] = promise;
     return promise;
   };
 }
