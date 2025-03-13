@@ -1,6 +1,5 @@
 import * as React from "react";
 import AssetCount from "./assetcount/AssetCount";
-import Vocabulary from "../../util/VocabularyUtils";
 import raw from "raw.macro";
 import TermTypeFrequency from "./termtypefrequency/TermTypeFrequency";
 import PanelWithActions from "../misc/PanelWithActions";
@@ -11,12 +10,6 @@ import { useI18n } from "../hook/useI18n";
 
 const Statistics: React.FC = () => {
   const { i18n, locale } = useI18n();
-  const templateAssetCount = React.useMemo(
-    () => raw("./assetcount/AssetCount.rq"),
-    []
-  );
-  const query = (iri: string) =>
-    templateAssetCount.split("?assetType").join("<" + iri + ">");
 
   return (
     <div>
@@ -25,17 +18,17 @@ const Statistics: React.FC = () => {
       <Row>
         <Col lg={4} xs={12}>
           <PanelWithActions title={i18n("statistics.vocabulary.count")}>
-            <AssetCount sparqlQuery={query(Vocabulary.VOCABULARY)} />
+            <AssetCount assetType="VOCABULARY" />
           </PanelWithActions>
         </Col>
         <Col lg={4} xs={12}>
           <PanelWithActions title={i18n("statistics.term.count")}>
-            <AssetCount sparqlQuery={raw("./assetcount/TermCount.rq")} />
+            <AssetCount assetType="TERM" />
           </PanelWithActions>
         </Col>
         <Col lg={4} xs={12}>
           <PanelWithActions title={i18n("statistics.user.count")}>
-            <AssetCount sparqlQuery={query(Vocabulary.USER)} />
+            <AssetCount assetType="USER" />
           </PanelWithActions>
         </Col>
       </Row>
