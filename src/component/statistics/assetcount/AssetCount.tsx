@@ -1,18 +1,30 @@
 import * as React from "react";
-import SparqlWidget, { PublicProps } from "../SparqlWidget";
-import LD from "ld-query";
-import VocabularyUtils from "../../../util/VocabularyUtils";
-import withInjectableLoading from "../../hoc/withInjectableLoading";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../../util/Types";
+import { trackPromise } from "react-promise-tracker";
+import { loadAssetCountStatistics } from "../../../action/AsyncStatisticsActions";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 
-class AssetCount extends React.Component<PublicProps> {
-  public render() {
-    const context = LD({ termit: VocabularyUtils.NS_TERMIT });
-    return (
-      <h2>
-        {context(this.props.queryResults).query("termit:has-count @value")}
-      </h2>
-    );
-  }
-}
+export type CountableAssetType = "TERM" | "VOCABULARY" | "USER";
 
-export default withInjectableLoading(SparqlWidget<PublicProps>(AssetCount));
+const AssetCount: React.FC<{ assetType: CountableAssetType }> = ({
+  assetType,
+}) => {
+  const [count, setCount] = React.useState<number | null>(null);
+  const dispatch: ThunkDispatch = useDispatch();
+  React.useEffect(() => {
+    trackPromise(
+      dispatch(loadAssetCountStatistics(assetType)),
+      `count-${assetType}`
+    ).then(setCount);
+  }, [assetType, dispatch]);
+
+  return (
+    <h2>
+      <PromiseTrackingMask area={`count-${assetType}`} />
+      {count ? count : "N/A"}
+    </h2>
+  );
+};
+
+export default AssetCount;
