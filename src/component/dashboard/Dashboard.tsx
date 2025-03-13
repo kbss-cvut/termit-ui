@@ -5,7 +5,7 @@ import NewsAlert from "./widget/NewsAlert";
 import Constants from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
 import LastCommentedAssets from "./widget/lastcommented/LastCommentedAssets";
-import TermFrequencyWidget from "./widget/TermFrequencyWidget";
+import TermDistributionWidget from "./widget/TermDistributionWidget";
 import "./Dashboard.scss";
 
 const Dashboard: React.FC = () => {
@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
           <LastCommentedAssets />
         </Col>
         <Col xl={4} lg={6} md={12}>
-          <TermFrequencyWidget />
+          <TermDistributionWidget />
         </Col>
       </Row>
     </>
