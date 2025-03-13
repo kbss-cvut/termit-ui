@@ -1,37 +1,50 @@
 import * as React from "react";
-import SparqlWidget, { PublicProps } from "../SparqlWidget";
 import Chart from "react-apexcharts";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { default as Routes } from "../../../util/Routes";
 import RoutingI from "../../../util/Routing";
-import withInjectableLoading from "../../hoc/withInjectableLoading";
 import { useI18n } from "../../hook/useI18n";
+import { trackPromise } from "react-promise-tracker";
+import { loadTermDistributionStatistics } from "../../../action/AsyncStatisticsActions";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../../util/Types";
+import { DistributionDto } from "../../../model/statistics/DistributionDto";
+import { getLocalized } from "../../../model/MultilingualString";
+import { getShortLocale } from "../../../util/IntlUtil";
 
-interface Props extends PublicProps {
-  lang: string;
-}
+const COLORS = [
+  "#1edaa8",
+  "#d3bb3a",
+  "#29AB87",
+  "#f3a4b5",
+  "#11cdef",
+  "#fb6340",
+  "#5603ad",
+  "#ff6666",
+  "#5e72e4",
+  "#8965e0",
+];
 
-const TermFrequency: React.FC<Props> = (props) => {
-  const { i18n } = useI18n();
-  const queryResult = props.queryResults;
-  if (!queryResult || !queryResult.result) {
-    return <div>{props.renderMask()}</div>;
-  }
+const TermDistribution: React.FC = () => {
+  const { i18n, locale } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  const [data, setData] = React.useState<DistributionDto[]>([]);
 
-  const vocabularies = {};
-  queryResult.result.forEach((r: any) => {
-    const label = r[VocabularyUtils.RDFS_LABEL][0]["@value"];
-    const value = r[VocabularyUtils.HAS_COUNT][0]["@value"];
-    vocabularies[r["@id"]] = { value, label };
-  });
+  React.useEffect(() => {
+    trackPromise(
+      dispatch(loadTermDistributionStatistics()),
+      "term-distribution"
+    ).then((resp) => setData(resp));
+  }, [dispatch]);
 
-  const vocList: { id: string; label: string; value: number }[] = Object.keys(
-    vocabularies
-  ).map((key) => ({
-    id: key,
-    label: vocabularies[key].label,
-    value: parseInt(vocabularies[key].value, 10),
-  }));
+  const vocList: { id: string; label: string; value: number }[] = data.map(
+    (item) => ({
+      id: item.resource.iri,
+      label: getLocalized(item.resource.label, getShortLocale(locale)),
+      value: item.count,
+    })
+  );
 
   const total = vocList.reduce((a, b) => a + b.value, 0);
 
@@ -49,18 +62,7 @@ const TermFrequency: React.FC<Props> = (props) => {
     legend: {
       show: false,
     },
-    colors: [
-      "#1edaa8",
-      "#d3bb3a",
-      "#29AB87",
-      "#f3a4b5",
-      "#11cdef",
-      "#fb6340",
-      "#5603ad",
-      "#ff6666",
-      "#5e72e4",
-      "#8965e0",
-    ],
+    colors: COLORS,
     plotOptions: {
       pie: {
         donut: {
@@ -106,7 +108,7 @@ const TermFrequency: React.FC<Props> = (props) => {
 
   return (
     <>
-      {props.renderMask()}
+      <PromiseTrackingMask area="term-distribution" />
       <Chart
         options={options}
         type="donut"
@@ -118,4 +120,4 @@ const TermFrequency: React.FC<Props> = (props) => {
   );
 };
 
-export default withInjectableLoading(SparqlWidget(TermFrequency));
+export default TermDistribution;

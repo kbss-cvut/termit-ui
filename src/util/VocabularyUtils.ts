@@ -142,6 +142,7 @@ const VocabularyUtils = {
   DC_MODIFIED: _NS_DC + "modified",
   DC_LANGUAGE: _NS_DC + "language",
   DC_IDENTIFIER: _NS_DC + "identifier",
+  DC_SUBJECT: _NS_DC + "subject",
 
   XSD_DATETIME: _NS_XSD + "dateTime",
   XSD_DATE: _NS_XSD + "date",
