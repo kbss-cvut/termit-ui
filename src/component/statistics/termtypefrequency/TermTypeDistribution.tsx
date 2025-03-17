@@ -1,9 +1,8 @@
 import * as React from "react";
 import Chart from "react-apexcharts";
-import defaultChartOptions from "../DefaultTermCharacteristicsFrequencyChartOptions";
+import { useDispatch } from "react-redux";
 import { useI18n } from "../../hook/useI18n";
 import { TermTypeDistributionDto } from "../../../model/statistics/TermTypeDistributionDto";
-import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import { loadTermTypeDistributionStatistics } from "../../../action/AsyncStatisticsActions";
 import { trackPromise } from "react-promise-tracker";
@@ -11,8 +10,22 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { RdfsResourceData } from "../../../model/RdfsResource";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { COLORS } from "../StatisticsConstants";
 
-const TermTypeFrequency: React.FC = () => {
+const defaultChartOptions = {
+  chart: {
+    id: "types",
+    stacked: true,
+  },
+  plotOptions: {
+    bar: {
+      horizontal: true,
+    },
+  },
+  colors: COLORS,
+};
+
+const TermTypeDistribution: React.FC = () => {
   const { i18n, locale } = useI18n();
   const lang = getShortLocale(locale);
   const [data, setData] = React.useState<TermTypeDistributionDto[] | null>(
@@ -27,7 +40,7 @@ const TermTypeFrequency: React.FC = () => {
     ).then((data) => setData(data));
   }, [dispatch]);
 
-  const options = Object.assign(defaultChartOptions, {
+  const options = Object.assign({}, defaultChartOptions, {
     xaxis: {
       categories: (data || []).map((item) =>
         getLocalized(item.resource.label, lang)
@@ -86,4 +99,4 @@ const TermTypeFrequency: React.FC = () => {
   );
 };
 
-export default TermTypeFrequency;
+export default TermTypeDistribution;

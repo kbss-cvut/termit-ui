@@ -12,19 +12,7 @@ import { ThunkDispatch } from "../../../util/Types";
 import { DistributionDto } from "../../../model/statistics/DistributionDto";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
-
-const COLORS = [
-  "#1edaa8",
-  "#d3bb3a",
-  "#29AB87",
-  "#f3a4b5",
-  "#11cdef",
-  "#fb6340",
-  "#5603ad",
-  "#ff6666",
-  "#5e72e4",
-  "#8965e0",
-];
+import { COLORS } from "../StatisticsConstants";
 
 const TermDistribution: React.FC = () => {
   const { i18n, locale } = useI18n();
