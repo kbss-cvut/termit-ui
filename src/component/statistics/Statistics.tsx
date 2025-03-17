@@ -1,6 +1,5 @@
 import * as React from "react";
 import AssetCount from "./assetcount/AssetCount";
-import raw from "raw.macro";
 import TermTypeFrequency from "./termtypefrequency/TermTypeFrequency";
 import PanelWithActions from "../misc/PanelWithActions";
 import { Col, Row } from "reactstrap";
@@ -9,7 +8,7 @@ import WindowTitle from "../misc/WindowTitle";
 import { useI18n } from "../hook/useI18n";
 
 const Statistics: React.FC = () => {
-  const { i18n, locale } = useI18n();
+  const { i18n } = useI18n();
 
   return (
     <div>
@@ -35,12 +34,7 @@ const Statistics: React.FC = () => {
       <Row>
         <Col>
           <PanelWithActions title={i18n("statistics.term.count")}>
-            <TermTypeFrequency
-              sparqlQuery={raw("./termtypefrequency/TermTypeFrequency.rq")}
-              empty={i18n("statistics.types.frequency.empty")}
-              notFilled={i18n("statistics.notFilled")}
-              lang={locale}
-            />
+            <TermTypeFrequency />
           </PanelWithActions>
         </Col>
       </Row>
