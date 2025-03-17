@@ -13,6 +13,10 @@ import {
   DistributionDto,
 } from "../model/statistics/DistributionDto";
 import JsonLdUtils from "../util/JsonLdUtils";
+import {
+  CONTEXT as TYPE_DISTRIBUTION_CONTEXT,
+  TermTypeDistributionDto,
+} from "../model/statistics/TermTypeDistributionDto";
 
 export function loadTermDistributionStatistics() {
   const action = {
@@ -57,6 +61,31 @@ export function loadAssetCountStatistics(assetType: string) {
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         return -1;
+      });
+  };
+}
+
+export function loadTermTypeDistributionStatistics() {
+  const action = {
+    type: ActionType.LOAD_STATISTICS,
+    statistics: "term-type-distribution",
+  };
+  return (dispatch: ThunkDispatch) => {
+    asyncActionRequest(action, true);
+    return Ajax.get(`${Constants.API_PREFIX}/statistics/term-type-distribution`)
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<TermTypeDistributionDto>(
+          data,
+          TYPE_DISTRIBUTION_CONTEXT
+        )
+      )
+      .then((data: TermTypeDistributionDto[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
       });
   };
 }
