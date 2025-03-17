@@ -1,6 +1,6 @@
 import * as React from "react";
 import AssetCount from "./assetcount/AssetCount";
-import TermTypeFrequency from "./termtypefrequency/TermTypeFrequency";
+import TermTypeDistribution from "./termtypefrequency/TermTypeDistribution";
 import PanelWithActions from "../misc/PanelWithActions";
 import { Col, Row } from "reactstrap";
 import HeaderWithActions from "../misc/HeaderWithActions";
@@ -34,7 +34,7 @@ const Statistics: React.FC = () => {
       <Row>
         <Col>
           <PanelWithActions title={i18n("statistics.term.count")}>
-            <TermTypeFrequency />
+            <TermTypeDistribution />
           </PanelWithActions>
         </Col>
       </Row>
