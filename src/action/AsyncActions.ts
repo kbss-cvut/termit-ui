@@ -24,7 +24,6 @@ import Vocabulary, {
 import Routes, { Route } from "../util/Routes";
 import { ErrorData } from "../model/ErrorInfo";
 import { AxiosResponse } from "axios";
-import * as jsonld from "jsonld";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import Term, {
@@ -652,30 +651,6 @@ export function loadTermByIri(
       });
   };
 }
-
-export function executeQuery(queryString: string) {
-  const action = {
-    type: ActionType.EXECUTE_QUERY,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.get(
-      Constants.API_PREFIX + "/query",
-      params({ query: queryString })
-    )
-      .then((data: object) => jsonld.expand(data))
-      .then((data: object) =>
-        dispatch(SyncActions.executeQuerySuccess(queryString, data))
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-      });
-  };
-}
-
 export function loadTypes() {
   const action = {
     type: ActionType.LOAD_TYPES,
