@@ -4,7 +4,6 @@ import Generator from "../../../__tests__/environment/Generator";
 import { shallow } from "enzyme";
 import { TextAnalysisInvocationButton } from "../TextAnalysisInvocationButton";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { InjectsLoading } from "../../hoc/withInjectableLoading";
 import ResourceSelectVocabulary from "../../resource/ResourceSelectVocabulary";
 import Vocabulary from "../../../model/Vocabulary";
 import { webSocketProviderWrappingComponentOptions } from "../../../__tests__/environment/Environment";
@@ -20,11 +19,6 @@ describe("TextAnalysisInvocationButton", () => {
     vocabularyIri?: string
   ) => Promise<any>;
   let notifyAnalysisFinish: () => void;
-  let loadingOn: () => void;
-  let loadingOff: () => void;
-  let renderMask: () => JSX.Element | null;
-
-  let loadingProps: InjectsLoading;
   let vocabulary: Vocabulary;
 
   beforeEach(() => {
@@ -35,10 +29,6 @@ describe("TextAnalysisInvocationButton", () => {
     });
     executeTextAnalysis = jest.fn().mockImplementation(() => Promise.resolve());
     notifyAnalysisFinish = jest.fn();
-    loadingOn = jest.fn();
-    loadingOff = jest.fn();
-    renderMask = jest.fn();
-    loadingProps = { loadingOff, loadingOn, renderMask, loading: false };
     vocabulary = Generator.generateVocabulary();
   });
 
@@ -52,7 +42,6 @@ describe("TextAnalysisInvocationButton", () => {
         executeTextAnalysis={executeTextAnalysis}
         notifyAnalysisFinish={notifyAnalysisFinish}
         defaultVocabularyIri={vocabularyIri}
-        {...loadingProps}
         {...intlFunctions()}
       />
     );
@@ -67,7 +56,6 @@ describe("TextAnalysisInvocationButton", () => {
         fileIri={fileIri}
         executeTextAnalysis={executeTextAnalysis}
         notifyAnalysisFinish={notifyAnalysisFinish}
-        {...loadingProps}
         {...intlFunctions()}
       />,
       webSocketProviderWrappingComponentOptions
@@ -85,7 +73,6 @@ describe("TextAnalysisInvocationButton", () => {
         fileIri={VocabularyUtils.create(file.iri)}
         executeTextAnalysis={executeTextAnalysis}
         notifyAnalysisFinish={notifyAnalysisFinish}
-        {...loadingProps}
         {...intlFunctions()}
       />
     );
