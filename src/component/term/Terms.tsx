@@ -193,7 +193,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       this.props.selectVocabularyTerm(term);
     } else {
       const clone = Terms.cloneAndRemoveTreeSelectAttributes(term);
-      this.props.selectVocabularyTerm(clone);
       Routing.transitionToAsset(clone, {
         query: new Map([
           ["includeImported", this.state.includeImported.toString()],

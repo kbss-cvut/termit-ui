@@ -67,7 +67,7 @@ describe("Terms", () => {
     };
     vocabulary = new Vocabulary({
       iri: namespace + vocabularyName,
-      label: vocabularyName,
+      label: langString(vocabularyName),
     });
   });
 
@@ -79,15 +79,6 @@ describe("Terms", () => {
       expect(call[0].iri).toEqual(term.iri);
       expect(call[0].vocabulary).toEqual(term.vocabulary);
       expect(call[0].types).toEqual(term.types);
-    });
-
-    it("invokes term selected on term select", () => {
-      const wrapper = renderShallow();
-      wrapper.instance().onTermSelect(term);
-      expect(selectVocabularyTerm).toHaveBeenCalled();
-      expect((selectVocabularyTerm as jest.Mock).mock.calls[0][0].iri).toEqual(
-        term.iri
-      );
     });
 
     // Redmine #1349
