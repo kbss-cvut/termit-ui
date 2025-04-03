@@ -45,44 +45,45 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   );
 
   React.useEffect(() => {
-    if (asset.iri !== Constants.EMPTY_ASSET_IRI) {
-      const filter = {
-        author: filterAuthor,
-        term: "",
-        changeType: filterType,
-        attribute: filterAttribute,
-      };
+    if (asset.iri === Constants.EMPTY_ASSET_IRI) {
+      return;
+    }
+    const filter = {
+      author: filterAuthor,
+      term: "",
+      changeType: filterType,
+      attribute: filterAttribute,
+    };
 
-      //Check if vocabulary/term is a snapshot
-      if (
-        (asset instanceof Term || asset instanceof Vocabulary) &&
-        asset.snapshotOf()
-      ) {
-        const modifiedAsset: AssetData = {
-          iri: asset.snapshotOf(),
-          types: asset.types,
-        };
-        const snapshotTimeCreated = Date.parse(asset.snapshotCreated()!);
-        loadHistoryActionDebounced.current(
-          modifiedAsset as Asset,
-          filter,
-          (recs) => {
-            if (recs) {
-              //Show history which is relevant to the snapshot
-              const filteredRecs = recs.filter(
-                (r) => Date.parse(r.timestamp) < snapshotTimeCreated
-              );
-              setRecords(filteredRecs);
-            }
-          }
-        );
-      } else {
-        loadHistoryActionDebounced.current(asset, filter, (recs) => {
+    //Check if vocabulary/term is a snapshot
+    if (
+      (asset instanceof Term || asset instanceof Vocabulary) &&
+      asset.snapshotOf()
+    ) {
+      const modifiedAsset: AssetData = {
+        iri: asset.snapshotOf(),
+        types: asset.types,
+      };
+      const snapshotTimeCreated = Date.parse(asset.snapshotCreated()!);
+      loadHistoryActionDebounced.current(
+        modifiedAsset as Asset,
+        filter,
+        (recs) => {
           if (recs) {
-            setRecords(recs);
+            //Show history which is relevant to the snapshot
+            const filteredRecs = recs.filter(
+              (r) => Date.parse(r.timestamp) < snapshotTimeCreated
+            );
+            setRecords(filteredRecs);
           }
-        });
-      }
+        }
+      );
+    } else {
+      loadHistoryActionDebounced.current(asset, filter, (recs) => {
+        if (recs) {
+          setRecords(recs);
+        }
+      });
     }
   }, [
     asset,
