@@ -80,6 +80,7 @@
   "devDependencies": {
     "@craco/craco": "^7.1.0",
     "@redux-devtools/extension": "^3.2.5",
+    "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/enzyme": "^3.10.13",
     "@types/jest": "^27.4.1",
     "@types/js-cookie": "^3.0.6",
