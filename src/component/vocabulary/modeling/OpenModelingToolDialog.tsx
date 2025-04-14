@@ -48,9 +48,8 @@ const OpenModelingToolDialog: React.FC<OpenModelingToolDialogProps> = ({
       dispatch(loadRelatedVocabularies(VocabularyUtils.create(vocabulary.iri))),
       "vocabulary-summary"
     ).then((data) => {
-      setRelatedVocabularies(data);
-      // The vocabulary is also among the related vocabularies loaded from the server
-      setSelectedVocabularies(data);
+      setRelatedVocabularies([...data, vocabulary.iri]);
+      setSelectedVocabularies([...data, vocabulary.iri]);
     });
     if (Object.keys(vocabularies).length === 0) {
       dispatch(loadVocabularies());
