@@ -47,7 +47,7 @@ const OpenModelingToolDialog: React.FC<OpenModelingToolDialogProps> = ({
     trackPromise(
       dispatch(loadRelatedVocabularies(VocabularyUtils.create(vocabulary.iri))),
       "vocabulary-summary"
-    ).then((data) => {
+    ).then((data = []) => {
       setRelatedVocabularies([...data, vocabulary.iri]);
       setSelectedVocabularies([...data, vocabulary.iri]);
     });
