@@ -1,3 +1,8 @@
+#### Verze 3.5.1
+
+- Fixed an issue with deleting a term with unconfirmed occurrences in other assets.
+- Improved performance by increasing cache size.
+
 #### Version 3.5.0
 
 - Added support for disabling the public view.
