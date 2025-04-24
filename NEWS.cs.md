@@ -1,3 +1,8 @@
+#### Verze 3.5.1
+
+- Opravena chyba mazání pojmu, pro který existují nepotvrzené výskyty v jiných zdrojích/pojmech.
+- Zlepšení výkonu použitím větší cache.
+
 #### Verze 3.5.0
 
 - Přidána možnost zakázat veřejné prohlížení slovníků.
