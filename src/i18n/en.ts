@@ -815,6 +815,12 @@ const en = {
       "The Excel file contains multiple terms with the same label.",
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Vocabulary already contains a term with label "{label}" with a different identifier than the imported one. Existing identifier: {existingUri}',
+    "error.term.remove.annotationsExist":
+      "Cannot delete the term. It is used for annotating resources or terms:  {resources}",
+    "error.term.remove.hasSubTerms":
+      "Cannot delete the term. It is a parent of other terms: {subTerms}",
+    "error.term.remove.skosRelationshipsExist":
+      "Cannot delete the term. It is linked to other terms through properties: {properties}",
 
     "error.invalidUriCharacter":
       'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
