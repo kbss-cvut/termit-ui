@@ -15,6 +15,11 @@ import ActionType from "./ActionType";
 import { Action } from "redux";
 import { loadVocabulary } from "./AsyncActions";
 import Utils from "../util/Utils";
+import JsonLdUtils from "../util/JsonLdUtils";
+import RdfsResource, {
+  CONTEXT as RDFS_RESOURCE_CONTEXT,
+  RdfsResourceData,
+} from "../model/RdfsResource";
 
 export function importIntoExistingVocabulary(
   vocabularyIri: IRI,
@@ -37,6 +42,24 @@ export function importIntoExistingVocabulary(
       .then(() => processSuccess(dispatch, action, data))
       .then(() => dispatch(loadVocabulary(vocabularyIri)))
       .catch(processError(dispatch, action));
+  };
+}
+export function getAvailableVocabularies() {
+  const action = { type: ActionType.GET_AVAILABLE_VOCABULARIES };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(`${Constants.API_PREFIX}/vocabularies/imports/available`)
+      .then((data: object[]) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
+          data,
+          RDFS_RESOURCE_CONTEXT
+        )
+      )
+      .then((data: RdfsResourceData[]) => data.map((d) => new RdfsResource(d)))
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
   };
 }
 
