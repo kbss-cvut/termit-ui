@@ -1,26 +1,35 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import Term from "../../model/Term";
+import { TermInfo } from "../../model/Term";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import { loadTermByIri } from "../../action/AsyncActions";
+import { getLabel, loadTermInfoByIri } from "../../action/AsyncActions";
 import TermLink from "./TermLink";
 import OutgoingLink from "../misc/OutgoingLink";
+import Utils from "../../util/Utils";
 
 interface TermIriLinkProps {
   iri: string;
   id?: string;
   activeTab?: string;
+  shrinkFullIri?: boolean;
 }
 
 const TermIriLink: React.FC<TermIriLinkProps> = (props) => {
   const { iri, id, activeTab } = props;
-  const [term, setTerm] = useState<Term | null>(null);
+  const [term, setTerm] = useState<TermInfo | null>(null);
   const dispatch: ThunkDispatch = useDispatch();
+  const [label, setLabel] = useState<string>();
   useEffect(() => {
     const tIri = VocabularyUtils.create(iri);
-    dispatch(loadTermByIri(tIri)).then((term) => setTerm(term));
+    dispatch(loadTermInfoByIri(tIri)).then((term) => {
+      if (term != null) {
+        setTerm(term);
+      } else {
+        dispatch(getLabel(iri)).then((label) => setLabel(label));
+      }
+    });
   }, [iri, dispatch, setTerm]);
 
   return (
@@ -28,7 +37,12 @@ const TermIriLink: React.FC<TermIriLinkProps> = (props) => {
       {term !== null ? (
         <TermLink id={id} term={term} activeTab={activeTab} />
       ) : (
-        <OutgoingLink label={iri} iri={iri} />
+        <OutgoingLink
+          label={
+            label ?? (props.shrinkFullIri ? Utils.shrinkFullIri(iri) : iri)
+          }
+          iri={iri}
+        />
       )}
     </>
   );

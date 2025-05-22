@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Button, Card, CardBody, Col } from "reactstrap";
+import { Button, Card, CardBody } from "reactstrap";
 import Routes from "../../util/Routes";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
   executeTextAnalysisOnAllVocabularies,
-  loadVocabularies as loadVocabulariesAction,
+  loadVocabularies,
 } from "../../action/AsyncActions";
 import VocabularyList from "./VocabularyList";
 import { Link } from "react-router-dom";
@@ -16,20 +16,17 @@ import IfUserIsEditor from "../authorization/IfUserIsEditor";
 import { useI18n } from "../hook/useI18n";
 import IfUserIsAdmin from "../authorization/IfUserIsAdmin";
 import { FaFileImport } from "react-icons/fa";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 
-interface VocabularyManagementProps {
-  loadVocabularies: () => void;
-  analyzeAllVocabularies: () => void;
-}
-
-export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
-  props
-) => {
-  const { loadVocabularies, analyzeAllVocabularies } = props;
+export const VocabularyManagement: React.FC = () => {
   const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
-    loadVocabularies();
-  }, [loadVocabularies]);
+    trackPromise(dispatch(loadVocabularies()), "vocabularies");
+  }, [dispatch]);
+  const onAnalyzeAllVocabularies = () =>
+    dispatch(executeTextAnalysisOnAllVocabularies());
 
   const buttons = [
     <IfUserIsEditor key="vocabularies-create">
@@ -59,7 +56,7 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         size="sm"
         color="primary"
         title={i18n("vocabulary.management.startTextAnalysis.title")}
-        onClick={analyzeAllVocabularies}
+        onClick={onAnalyzeAllVocabularies}
       >
         <GoClippy />
         &nbsp;{i18n("file.metadata.startTextAnalysis.text")}
@@ -74,23 +71,14 @@ export const VocabularyManagement: React.FC<VocabularyManagementProps> = (
         title={i18n("vocabulary.management")}
         actions={buttons}
       />
-      <div className="row">
-        <Col md={12}>
-          <Card>
-            <CardBody>
-              <VocabularyList />
-            </CardBody>
-          </Card>
-        </Col>
-      </div>
+      <PromiseTrackingMask area="vocabularies" />
+      <Card>
+        <CardBody>
+          <VocabularyList />
+        </CardBody>
+      </Card>
     </>
   );
 };
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    loadVocabularies: () => dispatch(loadVocabulariesAction()),
-    analyzeAllVocabularies: () =>
-      dispatch(executeTextAnalysisOnAllVocabularies()),
-  };
-})(VocabularyManagement);
+export default VocabularyManagement;

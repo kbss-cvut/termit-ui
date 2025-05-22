@@ -23,6 +23,9 @@ import {
   UserGroupAccessControlRecord,
   UserRoleAccessControlRecord,
 } from "../model/acl/AccessControlList";
+import DeleteRecord, {
+  DeleteRecordData,
+} from "../model/changetracking/DeleteRecord";
 
 const AssetFactory = {
   /**
@@ -117,6 +120,8 @@ const AssetFactory = {
       return new PersistRecord(data);
     } else if (data.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1) {
       return new UpdateRecord(data as UpdateRecordData);
+    } else if (data.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1) {
+      return new DeleteRecord(data as DeleteRecordData);
     }
     throw new TypeError(
       "Unsupported type of change record data " + JSON.stringify(data)

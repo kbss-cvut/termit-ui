@@ -165,6 +165,9 @@ export class Login extends React.Component<LoginProps, LoginState> {
   }
 
   private renderPublicViewLink() {
+    if (getEnv(ConfigParam.DISABLE_PUBLIC_VIEW, "") === "true") {
+      return null;
+    }
     return (
       <div className="mt-2 text-center">
         <FormattedMessage

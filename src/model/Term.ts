@@ -113,8 +113,18 @@ export interface TermInfo {
   types?: string[];
 }
 
-export function termComparator(a: TermInfo | TermData, b: TermInfo | TermData) {
-  return getLocalized(a.label).localeCompare(getLocalized(b.label));
+/**
+ * Creates a localized Term comparator.
+ *
+ * I.e., the comparator uses term labels in the specified language and compares them based on the specified language/locale.
+ * @param lang Language (locale) for comparison, e.g., en, cs
+ */
+export function createTermComparator(lang?: string) {
+  return (a: TermInfo | TermData, b: TermInfo | TermData) => {
+    const aLabel = (getLocalized(a.label, lang) || "").toLowerCase();
+    const bLabel = (getLocalized(b.label, lang) || "").toLowerCase();
+    return aLabel.localeCompare(bLabel, lang);
+  };
 }
 
 declare type TermMap = { [key: string]: Term };
@@ -305,7 +315,8 @@ export default class Term
   }
 
   public static consolidateRelatedAndRelatedMatch(
-    term: Term | TermData
+    term: Term | TermData,
+    lang?: string
   ): TermInfo[] {
     const result = [...Utils.sanitizeArray(term.relatedTerms)];
     for (let rt of Utils.sanitizeArray(term.relatedMatchTerms)) {
@@ -313,7 +324,7 @@ export default class Term
         result.push(rt);
       }
     }
-    result.sort(termComparator);
+    result.sort(createTermComparator(lang));
     return result;
   }
 }

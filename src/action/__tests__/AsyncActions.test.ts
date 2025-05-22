@@ -1,14 +1,15 @@
 import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import {
+  abortPendingActionRequest,
   createFileInDocument,
   createProperty,
   createVocabulary,
   executeFileTextAnalysis,
-  exportFileContent,
   getContentType,
   getLabel,
   getProperties,
   hasFileContent,
+  isActionRequestPending,
   loadAllTerms,
   loadConfiguration,
   loadFileContent,
@@ -29,7 +30,6 @@ import {
   updateTerm,
   updateVocabulary,
   uploadFileContent,
-  validateVocabulary,
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
 import Ajax, { param } from "../../util/Ajax";
@@ -40,7 +40,7 @@ import Vocabulary, {
   CONTEXT as VOCABULARY_CONTEXT,
 } from "../../model/Vocabulary";
 import Vocabulary2 from "../../util/VocabularyUtils";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
+import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
 import ActionType, {
   AsyncAction,
@@ -55,7 +55,6 @@ import RdfsResource, {
 } from "../../model/RdfsResource";
 import TermItState from "../../model/TermItState";
 import Resource from "../../model/Resource";
-import Utils from "../../util/Utils";
 import AsyncActionStatus from "../AsyncActionStatus";
 import fileContent from "../../rest-mock/file";
 import TermItFile from "../../model/File";
@@ -68,7 +67,6 @@ import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import NotificationType from "../../model/NotificationType";
 import { langString } from "../../model/MultilingualString";
-import ValidationResult from "../../model/ValidationResult";
 import UserRole from "../../model/UserRole";
 
 jest.mock("../../util/Routing");
@@ -99,10 +97,137 @@ describe("Async actions", () => {
     store = mockStore(new TermItState());
   });
 
+  describe("pending async actions", () => {
+    it("returns action request as pending when status is present", () => {
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: { status: AsyncActionStatus.REQUEST },
+        },
+      } as TermItState;
+
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeTruthy();
+    });
+
+    it("returns action request as pending when abort controller is present and signal is not aborted", () => {
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: new AbortController(),
+          },
+        },
+      } as TermItState;
+
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeTruthy();
+    });
+
+    it("does not returns action request as pending when abort controller is present and signal is aborted", () => {
+      const controller = new AbortController();
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: controller,
+          },
+        },
+      } as TermItState;
+
+      controller.abort();
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeFalsy();
+    });
+
+    it("does not returns action request as pending when action is not present", () => {
+      const state = {
+        pendingActions: {},
+      } as TermItState;
+
+      const result = isActionRequestPending(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(result).toBeFalsy();
+    });
+
+    it("aborts pending action request when abort controller is present", () => {
+      const controller = new AbortController();
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: controller,
+          },
+        },
+      } as TermItState;
+
+      expect(controller.signal.aborted).toEqual(false);
+      abortPendingActionRequest(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(controller.signal.aborted).toEqual(true);
+    });
+
+    it("does noting when pending action status is present instead of abort controller", () => {
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: { status: AsyncActionStatus.REQUEST },
+        },
+      } as TermItState;
+
+      abortPendingActionRequest(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(state).toEqual({
+        pendingActions: {
+          [ActionType.LOAD_RESOURCES]: { status: AsyncActionStatus.REQUEST },
+        },
+      });
+    });
+
+    it("does nothing when pending action controller is already aborted", () => {
+      const controller = new AbortController();
+      const state = {
+        pendingActions: {
+          // set some action as pending
+          [ActionType.LOAD_RESOURCES]: {
+            status: AsyncActionStatus.REQUEST,
+            abortController: controller,
+          },
+        },
+      } as TermItState;
+
+      controller.abort();
+      expect(controller.signal.aborted).toEqual(true);
+      abortPendingActionRequest(state, {
+        type: ActionType.LOAD_RESOURCES,
+      });
+
+      expect(controller.signal.aborted).toEqual(true);
+    });
+  });
+
   describe("create vocabulary", () => {
     it("adds context definition to vocabulary data and sends it over network", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: "http://test",
       });
       const mock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -121,7 +246,7 @@ describe("Async actions", () => {
 
     it("reloads vocabularies on success", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: "http://kbss.felk.cvut.cz/termit/rest/vocabularies/test",
       });
       Ajax.post = jest
@@ -176,8 +301,9 @@ describe("Async actions", () => {
           Promise.resolve(require("../../rest-mock/vocabulary"))
         );
 
-      store.getState().pendingActions[ActionType.LOAD_VOCABULARY] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.LOAD_VOCABULARY] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadVocabulary({ fragment: "metropolitan-plan" })
@@ -205,24 +331,6 @@ describe("Async actions", () => {
       });
     });
 
-    it("dispatches vocabulary validation action on success", () => {
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve(require("../../rest-mock/vocabulary"))
-        );
-      const vocabularyIri: IRI = { fragment: "metropolitan-plan" };
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(loadVocabulary(vocabularyIri))
-      ).then(() => {
-        const validationAction = store
-          .getActions()
-          .find((a) => a.type === ActionType.LOAD_TERM_COUNT);
-        expect(validationAction).toBeDefined();
-        expect(validationAction.vocabularyIri).toEqual(vocabularyIri);
-      });
-    });
-
     it("dispatches vocabulary term count loading action on success", () => {
       Ajax.get = jest
         .fn()
@@ -234,10 +342,11 @@ describe("Async actions", () => {
           loadVocabulary({ fragment: "metropolitan-plan" })
         )
       ).then(() => {
-        const validationAction = store
+        const termCountAction: AsyncAction = store
           .getActions()
-          .find((a) => a.type === ActionType.FETCH_VALIDATION_RESULTS);
-        expect(validationAction).toBeDefined();
+          .find((a) => a.type === ActionType.LOAD_TERM_COUNT);
+        expect(termCountAction).toBeDefined();
+        expect(termCountAction.status).toBe(AsyncActionStatus.REQUEST);
       });
     });
 
@@ -311,7 +420,9 @@ describe("Async actions", () => {
           .getActions()
           .find((a) => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
         expect(loadImportsAction).toBeDefined();
-        expect((Ajax.get as jest.Mock).mock.calls.length).toBeGreaterThan(2);
+        expect(
+          (Ajax.get as jest.Mock).mock.calls.length
+        ).toBeGreaterThanOrEqual(2);
         const url = (Ajax.get as jest.Mock).mock.calls[1][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
       });
@@ -323,7 +434,7 @@ describe("Async actions", () => {
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
     it("sends delete vocabulary request to the server", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: namespace + normalizedName,
       });
       Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
@@ -342,7 +453,7 @@ describe("Async actions", () => {
 
     it("refreshes vocabulary list on success", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: namespace + normalizedName,
       });
       Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
@@ -359,7 +470,7 @@ describe("Async actions", () => {
 
     it("transitions to vocabulary management on success", () => {
       const vocabulary = new Vocabulary({
-        label: "Test",
+        label: langString("Test"),
         iri: namespace + normalizedName,
       });
       Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
@@ -411,8 +522,9 @@ describe("Async actions", () => {
     it("does nothing when vocabularies loading action is already pending", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
 
-      store.getState().pendingActions[ActionType.LOAD_VOCABULARIES] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.LOAD_VOCABULARIES] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadVocabularies())
       ).then(() => {
@@ -457,8 +569,9 @@ describe("Async actions", () => {
     it("does nothing when file content loading action is already pending", () => {
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
 
-      store.getState().pendingActions[ActionType.LOAD_FILE_CONTENT] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.LOAD_FILE_CONTENT] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadFileContent({ fragment: "metropolitan-plan" })
@@ -491,25 +604,6 @@ describe("Async actions", () => {
         );
         expect(found).toBeDefined();
         expect((found as MessageAction).message.type).toBe(MessageType.ERROR);
-      });
-    });
-
-    it("publishes message on success", () => {
-      Ajax.put = jest.fn().mockImplementation(() => Promise.resolve("Success"));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(
-          executeFileTextAnalysis(
-            VocabularyUtils.create(file.iri),
-            Generator.generateUri()
-          )
-        )
-      ).then(() => {
-        const actions: Action[] = store.getActions();
-        const found = actions.find(
-          (a) => a.type === ActionType.PUBLISH_MESSAGE
-        );
-        expect(found).toBeDefined();
-        expect((found as MessageAction).message.type).toBe(MessageType.SUCCESS);
       });
     });
   });
@@ -869,24 +963,6 @@ describe("Async actions", () => {
         expect(notifyAction.notification.updated).toEqual(updated);
       });
     });
-
-    it("dispatches vocabulary validation action after save", () => {
-      const original = Generator.generateTerm(
-        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/test-vocabulary"
-      );
-      const updated = new Term(
-        Object.assign({}, original, { label: "Updated label" })
-      );
-      Ajax.put = jest.fn().mockResolvedValue(undefined);
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(updateTerm(updated))
-      ).then(() => {
-        const validationAction = store
-          .getActions()
-          .find((a) => a.type === ActionType.FETCH_VALIDATION_RESULTS);
-        expect(validationAction).toBeDefined();
-      });
-    });
   });
 
   describe("remove term", () => {
@@ -894,7 +970,7 @@ describe("Async actions", () => {
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
     const termName = "test-term";
     const vocabulary = new Vocabulary({
-      label: "Test Vocabulary",
+      label: langString("Test Vocabulary"),
       iri: namespace + normalizedName,
     });
     const term = new Term({
@@ -961,7 +1037,7 @@ describe("Async actions", () => {
       const normalizedVocabularyName = "test-vocabulary";
       const vocabulary = new Vocabulary({
         iri: namespace + normalizedVocabularyName,
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       const mock = jest.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
@@ -982,7 +1058,7 @@ describe("Async actions", () => {
     it("sends JSON-LD of vocabulary argument to REST endpoint", () => {
       const vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       const mock = jest.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
@@ -998,7 +1074,7 @@ describe("Async actions", () => {
     it("reloads vocabulary on successful update", () => {
       const vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
@@ -1014,7 +1090,7 @@ describe("Async actions", () => {
     it("dispatches success message on successful update", () => {
       const vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
       Ajax.get = jest.fn().mockImplementation(() => Promise.resolve());
@@ -1225,91 +1301,6 @@ describe("Async actions", () => {
         expect(payload.label).toEqual(data.label);
         expect(payload.comment).toEqual(data.comment);
         expect(payload["@context"]).toEqual(RDFS_RESOURCE_CONTEXT);
-      });
-    });
-  });
-
-  describe("validate results", () => {
-    const v = VocabularyUtils.create("");
-    it("extracts validation results from incoming JSON", () => {
-      const validationResults = require("../../rest-mock/validation-results.json");
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(validationResults));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(validateVocabulary(v))
-      ).then(() => {
-        const successAction: AsyncActionSuccess<{
-          [vocabularyIri: string]: ValidationResult[];
-        }> = store.getActions()[1];
-        const result = successAction.payload[v.toString()];
-        const array =
-          result[
-            "http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"
-          ];
-        expect(array.length).toEqual(validationResults.length);
-        // @ts-ignore
-        array.sort((a, b) => a.term.iri.localeCompare(b.term.iri));
-        validationResults.sort((a: object, b: object) =>
-          a.toString().localeCompare(b.toString())
-        );
-        for (let i = 0; i < validationResults.length; i++) {
-          expect(array[i].term.iri).toEqual(
-            validationResults[i]["http://www.w3.org/ns/shacl#focusNode"]["@id"]
-          );
-          expect(array[i].severity.iri).toEqual(
-            validationResults[i]["http://www.w3.org/ns/shacl#resultSeverity"][
-              "@id"
-            ]
-          );
-          expect(array[i].message.length).toEqual(
-            validationResults[i]["http://www.w3.org/ns/shacl#resultMessage"]
-              .length
-          );
-        }
-      });
-    });
-
-    it("extracts single resource as an array of resources from incoming JSON-LD", () => {
-      const validationResults = require("../../rest-mock/validation-results.json");
-      Ajax.get = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(validationResults));
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(validateVocabulary(v))
-      ).then(() => {
-        const successAction: AsyncActionSuccess<{
-          [vocabularyIri: string]: ValidationResult[];
-        }> = store.getActions()[1];
-        const result = successAction.payload[v.toString()];
-        const array =
-          result[
-            "http://onto.fel.cvut.cz/ontologies/slovník/datový/psp-2016/pojem/chráněná-část-záplavového-území"
-          ];
-        expect(array).toBeDefined();
-        expect(array[0].term.iri).toEqual(
-          validationResults[0]["http://www.w3.org/ns/shacl#focusNode"]["@id"]
-        );
-        expect(array[0].severity.iri).toEqual(
-          validationResults[0]["http://www.w3.org/ns/shacl#resultSeverity"][
-            "@id"
-          ]
-        );
-        expect(array[0].message.length).toEqual(
-          validationResults[0]["http://www.w3.org/ns/shacl#resultMessage"]
-            .length
-        );
-      });
-    });
-
-    it("does nothing when loading action is already pending", () => {
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve([]));
-      store.getState().pendingActions[ActionType.FETCH_VALIDATION_RESULTS] =
-        AsyncActionStatus.REQUEST;
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(validateVocabulary(v))
-      ).then(() => {
-        expect(Ajax.get).not.toHaveBeenCalled();
       });
     });
   });
@@ -1563,61 +1554,6 @@ describe("Async actions", () => {
     });
   });
 
-  describe("exportFileContent", () => {
-    const fileName = "test-file.html";
-    const fileIri = VocabularyUtils.create(
-      "http://onto.fel.cvut.cz/ontologies/termit/resources/" + fileName
-    );
-
-    it("sends request asking for content as attachment", () => {
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: "test",
-          headers: {
-            "content-type": "text/html",
-            "content-disposition": 'attachment; filename="' + fileName + '"',
-          },
-        })
-      );
-      Utils.fileDownload = jest.fn();
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(exportFileContent(fileIri))
-      ).then(() => {
-        expect(Ajax.getRaw).toHaveBeenCalled();
-        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
-        expect(url).toEqual(
-          Constants.API_PREFIX + "/resources/" + fileName + "/content"
-        );
-        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
-        expect(config.getParams().attachment).toEqual("true");
-        expect(config.getParams().namespace).toEqual(fileIri.namespace);
-      });
-    });
-
-    it("stores response attachment", () => {
-      const data = '<html lang="en">test</html>';
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data,
-          headers: {
-            "content-type": "text/html",
-            "content-disposition": 'attachment; filename="' + fileName + '"',
-          },
-        })
-      );
-      Utils.fileDownload = jest.fn();
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(exportFileContent(fileIri))
-      ).then(() => {
-        expect(Utils.fileDownload).toHaveBeenCalled();
-        const args = (Utils.fileDownload as jest.Mock).mock.calls[0];
-        expect(args[0]).toEqual(data);
-        expect(args[1]).toEqual(fileName);
-        expect(args[2]).toEqual("text/html");
-      });
-    });
-  });
-
   describe("loadImportedVocabularies", () => {
     it("loads imported vocabularies for the specified vocabulary IRI", () => {
       const imports = [Generator.generateUri(), Generator.generateUri()];
@@ -1680,7 +1616,7 @@ describe("Async actions", () => {
     it("loads vocabulary history when asset is vocabulary", () => {
       const asset = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
         types: [VocabularyUtils.VOCABULARY],
       });
       Ajax.get = jest.fn().mockResolvedValue([]);

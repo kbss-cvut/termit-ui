@@ -20,6 +20,7 @@ interface TermDefinitionAnnotationProps {
   text: string;
   isOpen: boolean;
   accessLevel: AccessLevel;
+  language?: string;
 
   onRemove: () => void;
   onSelectTerm: (term: Term | null) => void;
@@ -89,56 +90,58 @@ function createActionButtons(
   return actions;
 }
 
-export const TermDefinitionAnnotation: React.FC<TermDefinitionAnnotationProps> =
-  (props) => {
-    const { i18n } = useI18n();
-    const term = props.term !== undefined ? props.term : null;
-    const [editing, setEditing] = React.useState(term === null);
-    React.useEffect(() => {
-      if (term) {
-        setEditing(false);
-      }
-    }, [term]);
-    const dispatch: ThunkDispatch = useDispatch();
-    const onRemove = () => {
-      props.onRemove();
-      if (term) {
-        dispatch(removeTermDefinitionSource(term));
-      }
-    };
-    const bodyContent = editing ? (
-      <AnnotationTerms
-        onChange={props.onSelectTerm}
-        canCreateTerm={false}
-        selectedTerm={term}
-      />
-    ) : (
-      <TermDefinitionAnnotationView
-        term={term}
-        resource={props.resource}
-        textContent={props.text}
-      />
-    );
-
-    return (
-      <SimplePopupWithActions
-        isOpen={props.isOpen}
-        target={props.target}
-        toggle={props.onToggleDetailOpen}
-        component={bodyContent}
-        actions={createActionButtons(
-          i18n,
-          editing,
-          {
-            onClose: props.onClose,
-            onEdit: () => setEditing(!editing),
-            onRemove,
-          },
-          props.accessLevel
-        )}
-        title={i18n("annotation.definition.title")}
-      />
-    );
+export const TermDefinitionAnnotation: React.FC<
+  TermDefinitionAnnotationProps
+> = (props) => {
+  const { i18n } = useI18n();
+  const term = props.term !== undefined ? props.term : null;
+  const [editing, setEditing] = React.useState(term === null);
+  React.useEffect(() => {
+    if (term) {
+      setEditing(false);
+    }
+  }, [term]);
+  const dispatch: ThunkDispatch = useDispatch();
+  const onRemove = () => {
+    props.onRemove();
+    if (term) {
+      dispatch(removeTermDefinitionSource(term));
+    }
   };
+  const bodyContent = editing ? (
+    <AnnotationTerms
+      onChange={props.onSelectTerm}
+      canCreateTerm={false}
+      selectedTerm={term}
+    />
+  ) : (
+    <TermDefinitionAnnotationView
+      term={term}
+      resource={props.resource}
+      textContent={props.text}
+      language={props.language}
+    />
+  );
+
+  return (
+    <SimplePopupWithActions
+      isOpen={props.isOpen}
+      target={props.target}
+      toggle={props.onToggleDetailOpen}
+      component={bodyContent}
+      actions={createActionButtons(
+        i18n,
+        editing,
+        {
+          onClose: props.onClose,
+          onEdit: () => setEditing(!editing),
+          onRemove,
+        },
+        props.accessLevel
+      )}
+      title={i18n("annotation.definition.title")}
+    />
+  );
+};
 
 export default TermDefinitionAnnotation;

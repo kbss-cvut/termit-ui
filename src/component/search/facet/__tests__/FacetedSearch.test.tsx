@@ -27,6 +27,10 @@ jest.mock("../FacetedSearchResultItem", () => () => (
 jest.mock("../TermTypeFacet", () => () => <div>Term type selector</div>);
 jest.mock("../VocabularyFacet", () => () => <div>Vocabulary selector</div>);
 jest.mock("../TextFacet", () => () => <div>Text facet</div>);
+jest.mock("use-debounce", () => ({
+  ...jest.requireActual("use-debounce"),
+  useDebouncedCallback: jest.fn().mockImplementation((arg) => arg),
+}));
 
 describe("FacetedSearch", () => {
   let fakeDispatch: ThunkDispatch;
@@ -46,7 +50,7 @@ describe("FacetedSearch", () => {
       matchType: MatchType.SUBSTRING,
     };
     await act(async () => {
-      wrapper.find(TextFacet).prop("onChange")(firstNotationValue);
+      wrapper.find(TextFacet).at(0).prop("onChange")(firstNotationValue);
     });
     wrapper.update();
     act(() => {
@@ -58,7 +62,7 @@ describe("FacetedSearch", () => {
       matchType: MatchType.SUBSTRING,
     };
     await act(async () => {
-      wrapper.find(TextFacet).prop("onChange")(secondNotationValue);
+      wrapper.find(TextFacet).at(0).prop("onChange")(secondNotationValue);
     });
     wrapper.update();
     expect(wrapper.find(SimplePagination).prop("page")).toEqual(0);
@@ -84,7 +88,7 @@ describe("FacetedSearch", () => {
       matchType: MatchType.SUBSTRING,
     };
     await act(async () => {
-      wrapper.find(TextFacet).prop("onChange")(firstNotationValue);
+      wrapper.find(TextFacet).at(0).prop("onChange")(firstNotationValue);
     });
     wrapper.update();
     (SearchActions.executeFacetedTermSearch as jest.Mock).mockReset();
@@ -140,7 +144,7 @@ describe("FacetedSearch", () => {
     expect(wrapper.exists(FacetedSearchResults)).toBeFalsy();
     expect(wrapper.exists(SimplePagination)).toBeFalsy();
     await act(async () => {
-      wrapper.find(TextFacet).prop("onChange")(firstNotationValue);
+      wrapper.find(TextFacet).at(0).prop("onChange")(firstNotationValue);
     });
     wrapper.update();
     act(() => {
@@ -155,7 +159,7 @@ describe("FacetedSearch", () => {
       matchType: MatchType.SUBSTRING,
     };
     act(() => {
-      wrapper.find(TextFacet).prop("onChange")(secondNotationValue);
+      wrapper.find(TextFacet).at(0).prop("onChange")(secondNotationValue);
     });
     await act(async () => {
       wrapper.update();

@@ -8,11 +8,14 @@ import ActionType, {
   FailureAction,
   MessageAction,
   NotificationAction,
+  PendingAsyncAction,
   PushRoutingPayloadAction,
+  RemoveAssetAction,
   SearchAction,
   SearchResultAction,
   SelectingTermsAction,
   SwitchLanguageAction,
+  UpdateAssetAction,
   UpdateLastModifiedAction,
 } from "../action/ActionType";
 import TermItState, { DefinitionallyRelatedTerms } from "../model/TermItState";
@@ -26,7 +29,7 @@ import {
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import Vocabulary, { EMPTY_VOCABULARY } from "../model/Vocabulary";
 import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
-import Term from "../model/Term";
+import Term, { TermInfo } from "../model/Term";
 import RdfsResource from "../model/RdfsResource";
 import AppNotification from "../model/AppNotification";
 import SearchResult from "../model/search/SearchResult";
@@ -40,13 +43,14 @@ import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
 import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
+import { LongRunningTask } from "../model/LongRunningTask";
 
-function isAsyncSuccess(action: AsyncAction) {
-  return action.status === AsyncActionStatus.SUCCESS;
+function isAsyncSuccess(action: Action) {
+  return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
 }
 
 /**
- * Handles changes to the currently logged in user.
+ * Handles changes to the currently logged-in user.
  *
  * The initial state is an empty user, which basically shouldn't be allowed to do anything.
  */
@@ -124,7 +128,7 @@ function vocabulary(
   switch (action.type) {
     case ActionType.LOAD_VOCABULARY:
       if (action.status === AsyncActionStatus.REQUEST) {
-        return EMPTY_VOCABULARY;
+        return (action as any).iri === state.iri ? state : EMPTY_VOCABULARY;
       } else if (isAsyncSuccess(action)) {
         return action.payload as Vocabulary;
       } else {
@@ -142,11 +146,6 @@ function vocabulary(
       return onTermCountLoaded(state, action);
     case ActionType.LOGOUT:
       return EMPTY_VOCABULARY;
-    case ActionType.REMOVE_RESOURCE:
-    case ActionType.UPDATE_RESOURCE:
-    case ActionType.CREATE_RESOURCE: // intentional fall-through
-      // the resource might have been/be related to the vocabulary
-      return isAsyncSuccess(action) ? EMPTY_VOCABULARY : state;
     default:
       return state;
   }
@@ -201,7 +200,7 @@ function vocabularies(
       }
     case ActionType.LOGOUT:
       return {};
-    case ActionType.IMPORT_SKOS:
+    case ActionType.IMPORT_VOCABULARY:
       if (isAsyncSuccess(action)) {
         return {};
       }
@@ -441,7 +440,7 @@ function notifications(
 }
 
 function pendingActions(
-  state: { [key: string]: AsyncActionStatus } = {},
+  state: { [key: string]: PendingAsyncAction } = {},
   action: AsyncAction
 ) {
   switch (action.status) {
@@ -450,7 +449,11 @@ function pendingActions(
         return state;
       }
       const toAdd = {};
-      toAdd[action.type] = action.status;
+      const pendingAsyncAction: PendingAsyncAction = {
+        status: action.status,
+        abortController: action.abortController,
+      };
+      toAdd[action.type] = pendingAsyncAction;
       return Object.assign({}, state, toAdd);
     case AsyncActionStatus.SUCCESS:
     case AsyncActionStatus.FAILURE:
@@ -496,6 +499,43 @@ function labelCache(
 ) {
   if (action.type === ActionType.GET_LABEL && isAsyncSuccess(action)) {
     return Object.assign({}, state, action.payload);
+  }
+  // When changing the language, discard the cache and let them reload.
+  if (action.type === ActionType.SWITCH_LANGUAGE) {
+    return {};
+  }
+  return state;
+}
+
+/**
+ * TermInfo cache.
+ *
+ * It is evicted on updates coming from this client. However, changes made on server may cause its content to become stale.
+ * However, such changes will likely be infrequent and the worst that can happen is that the user will click on a link
+ * that leads to a deleted term or a term whose label is now different. It seems like a reasonable trade-off for decreasing
+ * the traffic between backend and frontend.
+ */
+function termInfoCache(
+  state: { [key: string]: TermInfo } = {},
+  action: Action
+) {
+  if (action.type === ActionType.LOAD_TERM_INFO && isAsyncSuccess(action)) {
+    return Object.assign(
+      {},
+      state,
+      (action as AsyncActionSuccess<TermInfo>).payload
+    );
+  } else if (
+    action.type === ActionType.REMOVE_VOCABULARY_TERM &&
+    isAsyncSuccess(action)
+  ) {
+    const newState = Object.assign({}, state);
+    delete newState[(action as RemoveAssetAction).iri];
+    return newState;
+  } else if (action.type === ActionType.UPDATE_TERM && isAsyncSuccess(action)) {
+    const newState = Object.assign({}, state);
+    delete newState[(action as UpdateAssetAction).iri];
+    return newState;
   }
   return state;
 }
@@ -649,7 +689,21 @@ function annotatorLegendFilter(
     newState.set(action.annotationClass, action.annotationOrigin, !oldValue);
 
     return newState;
+  } else if (
+    action.type === ActionType.SET_ANNOTATOR_LEGEND_FILTER &&
+    action.enabled !== undefined
+  ) {
+    const newState = state.clone();
+
+    newState.set(
+      action.annotationClass,
+      action.annotationOrigin,
+      action.enabled
+    );
+
+    return newState;
   }
+
   return state;
 }
 
@@ -675,6 +729,19 @@ function accessLevels(
     const newState = {};
     action.payload.forEach((r) => (newState[r.iri] = r));
     return newState;
+  }
+  return state;
+}
+
+function runningTasks(
+  state: { [uuid: string]: LongRunningTask } = {},
+  action: AsyncActionSuccess<{ [uuid: string]: LongRunningTask }>
+) {
+  if (action.type === ActionType.LONG_RUNNING_TASKS_UPDATE) {
+    if (!action.payload) {
+      return {};
+    }
+    return Object.assign({}, action.payload);
   }
   return state;
 }
@@ -705,6 +772,7 @@ const rootReducer = combineReducers<TermItState>({
   lastModified,
   routeTransitionPayload,
   labelCache,
+  termInfoCache,
   sidebarExpanded,
   desktopView,
   annotatorTerms,
@@ -715,6 +783,7 @@ const rootReducer = combineReducers<TermItState>({
   annotatorLegendFilter,
   users,
   accessLevels,
+  runningTasks,
 });
 
 export default rootReducer;

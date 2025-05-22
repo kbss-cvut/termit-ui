@@ -21,6 +21,13 @@ jest.mock("../../util/Ajax", () => ({
   formData: jest.requireActual("../../util/Ajax").formData,
 }));
 
+// Mock implementation for throwIfAborted which is missing in jsdom < 22.1.0
+AbortSignal.prototype.throwIfAborted = function () {
+  if (this.aborted) {
+    throw this.reason;
+  }
+};
+
 const mockStore = configureMockStore<TermItState>([thunk]);
 
 describe("AsyncAnnotatorActions", () => {
@@ -48,8 +55,9 @@ describe("AsyncAnnotatorActions", () => {
     });
 
     it("does not invoke Ajax when a request is already pending", () => {
-      store.getState().pendingActions[ActionType.ANNOTATOR_LOAD_TERMS] =
-        AsyncActionStatus.REQUEST;
+      store.getState().pendingActions[ActionType.ANNOTATOR_LOAD_TERMS] = {
+        status: AsyncActionStatus.REQUEST,
+      };
       const terms = require("../../rest-mock/terms");
       Ajax.get = jest.fn().mockResolvedValue(terms);
       return Promise.resolve(

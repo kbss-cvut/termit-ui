@@ -2,6 +2,7 @@ import reducers from "../TermItReducers";
 import ActionType, {
   AsyncActionSuccess,
   FailureAction,
+  PendingAsyncAction,
 } from "../../action/ActionType";
 import TermItState from "../../model/TermItState";
 import {
@@ -77,6 +78,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     lastModified: state.lastModified,
     routeTransitionPayload: state.routeTransitionPayload,
     labelCache: state.labelCache,
+    termInfoCache: state.termInfoCache,
     sidebarExpanded: state.sidebarExpanded,
     desktopView: state.desktopView,
     annotatorTerms: state.annotatorTerms,
@@ -87,6 +89,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     users: state.users,
     accessLevels: state.accessLevels,
     annotatorLegendFilter: state.annotatorLegendFilter,
+    runningTasks: state.runningTasks,
   };
 }
 
@@ -348,36 +351,6 @@ describe("Reducers", () => {
       expect(vocabulary.allImportedVocabularies).toEqual(imports);
     });
 
-    it("resets vocabulary to empty when resource is removed", () => {
-      // The removed resource could have been a file from a document related to that vocabulary, in which case
-      // the vocabulary needs to be reloaded
-      const action = { type: ActionType.REMOVE_RESOURCE };
-      initialState.vocabulary = new Vocabulary({
-        label: langString("Test vocabulary"),
-        iri: Generator.generateUri(),
-        types: [VocabularyUtils.VOCABULARY],
-      });
-      expect(
-        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
-          .vocabulary
-      ).toEqual(EMPTY_VOCABULARY);
-    });
-
-    it("resets vocabulary to empty when resource is created", () => {
-      // The created resource could be a file added to a document related to that vocabulary, in which case
-      // the vocabulary needs to be reloaded
-      const action = { type: ActionType.CREATE_RESOURCE };
-      initialState.vocabulary = new Vocabulary({
-        label: langString("Test vocabulary"),
-        iri: Generator.generateUri(),
-        types: [VocabularyUtils.VOCABULARY],
-      });
-      expect(
-        reducers(stateToPlainObject(initialState), asyncActionSuccess(action))
-          .vocabulary
-      ).toEqual(EMPTY_VOCABULARY);
-    });
-
     it("sets term count on vocabulary when it is loaded", () => {
       initialState.vocabulary = new Vocabulary({
         label: langString("Test vocabulary"),
@@ -609,15 +582,33 @@ describe("Reducers", () => {
   });
 
   describe("pendingActions", () => {
-    it("adds action to pendingActions when it is async request action", () => {
+    it("adds action status to pendingActions when it is async request action and the abort controller is not present", () => {
       const action = asyncActionRequest(
         { type: ActionType.LOAD_RESOURCES },
         true
       );
       const added = {};
-      added[ActionType.LOAD_RESOURCES] = AsyncActionStatus.REQUEST;
+      added[ActionType.LOAD_RESOURCES] = {
+        status: AsyncActionStatus.REQUEST,
+      } as PendingAsyncAction;
       expect(reducers(stateToPlainObject(initialState), action)).toEqual(
         Object.assign(initialState, { pendingActions: added })
+      );
+    });
+
+    it("adds abort controller to pending actions when the controller is present", () => {
+      const action = asyncActionRequest(
+        { type: ActionType.LOAD_RESOURCES },
+        true,
+        new AbortController()
+      );
+      const pendingActions = {};
+      pendingActions[ActionType.LOAD_RESOURCES] = {
+        status: AsyncActionStatus.REQUEST,
+        abortController: action.abortController,
+      } as PendingAsyncAction;
+      expect(reducers(stateToPlainObject(initialState), action)).toEqual(
+        Object.assign(stateToPlainObject(initialState), { pendingActions })
       );
     });
 
@@ -1013,7 +1004,7 @@ describe("Reducers", () => {
       expect(
         reducers(
           stateToPlainObject(initialState),
-          asyncActionSuccess({ type: ActionType.IMPORT_SKOS })
+          asyncActionSuccess({ type: ActionType.IMPORT_VOCABULARY })
         )
       ).toEqual(
         Object.assign({}, initialState, {

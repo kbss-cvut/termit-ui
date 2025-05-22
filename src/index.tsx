@@ -5,6 +5,7 @@ import * as serviceWorker from "./serviceWorker";
 import TimeAgo from "javascript-time-ago";
 import timeagoEn from "javascript-time-ago/locale/en";
 import tiemagoCs from "javascript-time-ago/locale/cs";
+import { setUseWhatChange } from "@simbathesailor/use-what-changed";
 
 // @ts-ignore
 if (!Intl.PluralRules) {
@@ -29,6 +30,8 @@ if (!Intl.RelativeTimeFormat) {
 // Load locales for the TimeAgo library
 TimeAgo.addLocale(timeagoEn);
 TimeAgo.addLocale(tiemagoCs);
+
+setUseWhatChange(process.env.NODE_ENV === "development");
 
 ReactDOM.render(<App />, document.getElementById("root") as HTMLElement);
 

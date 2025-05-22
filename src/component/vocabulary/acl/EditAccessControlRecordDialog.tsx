@@ -13,29 +13,30 @@ interface EditAccessControlRecordDialogProps {
   existingHolders?: string[];
 }
 
-const EditAccessControlRecordDialog: React.FC<EditAccessControlRecordDialogProps> =
-  ({ show, record, onChange, onSubmit, onCancel, existingHolders }) => {
-    const { i18n } = useI18n();
-    return (
-      <ConfirmCancelDialog
-        show={show}
-        id="create-acr"
-        confirmKey="save"
-        onClose={onCancel}
-        onConfirm={onSubmit}
-        confirmDisabled={!record || !record.holder || !record.accessLevel}
-        title={i18n("vocabulary.acl.record.update.dialog.title")}
-      >
-        {record && (
-          <AccessControlRecordForm
-            record={record}
-            onChange={onChange}
-            holderReadOnly={true}
-            existingHolders={existingHolders}
-          />
-        )}
-      </ConfirmCancelDialog>
-    );
-  };
+const EditAccessControlRecordDialog: React.FC<
+  EditAccessControlRecordDialogProps
+> = ({ show, record, onChange, onSubmit, onCancel, existingHolders }) => {
+  const { i18n } = useI18n();
+  return (
+    <ConfirmCancelDialog
+      show={show}
+      id="create-acr"
+      confirmKey="save"
+      onClose={onCancel}
+      onConfirm={onSubmit}
+      confirmDisabled={!record || !record.holder || !record.accessLevel}
+      title={i18n("vocabulary.acl.record.update.dialog.title")}
+    >
+      {record && (
+        <AccessControlRecordForm
+          record={record}
+          onChange={onChange}
+          holderReadOnly={true}
+          existingHolders={existingHolders}
+        />
+      )}
+    </ConfirmCancelDialog>
+  );
+};
 
 export default EditAccessControlRecordDialog;

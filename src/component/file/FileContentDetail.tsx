@@ -27,6 +27,7 @@ interface FileDetailProvidedProps {
   iri: IRI;
   vocabularyIri: IRI;
   scrollTo?: TextQuoteSelector; // Selector of an annotation to scroll to (and highlight) after rendering
+  annotationLanguage?: string;
 }
 
 interface FileDetailOwnProps extends HasI18n {
@@ -103,7 +104,7 @@ export class FileContentDetail extends React.Component<
   }
 
   private onUpdate = (newFileContent: string) => {
-    trackPromise(
+    return trackPromise(
       this.props.saveFileContent(
         {
           fragment: this.props.iri.fragment,
@@ -129,6 +130,7 @@ export class FileContentDetail extends React.Component<
           initialHtml={this.props.fileContent}
           scrollTo={this.props.scrollTo}
           onUpdate={this.onUpdate}
+          annotationLanguage={this.props.annotationLanguage}
         />
       </>
     );
@@ -157,7 +159,7 @@ export default connect(
         dispatch(saveFileContent(fileIri, fileContent)),
       clearFileContent: () => dispatch(clearFileContent()),
       loadVocabulary: (vocabularyIri: IRI) =>
-        dispatch(loadVocabulary(vocabularyIri, false)),
+        dispatch(loadVocabulary(vocabularyIri)),
       fetchTerms: (vocabularyIri: IRI) =>
         dispatch(loadAllTerms(vocabularyIri, true)),
       consumeNotification: (notification: AppNotification) =>

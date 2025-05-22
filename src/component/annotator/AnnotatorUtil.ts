@@ -3,7 +3,6 @@ import VocabularyUtils, { IRI, IRIImpl } from "../../util/VocabularyUtils";
 import JsonLdUtils from "../../util/JsonLdUtils";
 import Term from "../../model/Term";
 import TermOccurrence from "../../model/TermOccurrence";
-import AnnotationDomHelper from "./AnnotationDomHelper";
 
 const OCCURRENCE_SEPARATOR = "/occurrences";
 
@@ -22,7 +21,7 @@ export function createTermOccurrence(
   annotationElement: Element,
   fileIri: IRI
 ) {
-  return new TermOccurrence({
+  const to = new TermOccurrence({
     iri: annotationIdToTermOccurrenceIri(
       annotationElement.attribs.about,
       fileIri
@@ -32,9 +31,13 @@ export function createTermOccurrence(
       source: {
         iri: fileIri.namespace + fileIri.fragment,
       },
-      selectors: [AnnotationDomHelper.generateSelector(annotationElement)],
+      selectors: [],
       types: [VocabularyUtils.FILE_OCCURRENCE_TARGET],
     },
     types: [],
   });
+  to.elementAbout = annotationElement.attribs.about.substring(
+    JsonLdUtils.BNODE_PREFIX.length
+  );
+  return to;
 }

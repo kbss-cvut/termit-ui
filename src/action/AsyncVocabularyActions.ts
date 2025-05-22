@@ -1,4 +1,4 @@
-import { GetStoreState, ThunkDispatch } from "../util/Types";
+import { GetStoreState, PageRequest, ThunkDispatch } from "../util/Types";
 import * as SyncActions from "./SyncActions";
 import {
   asyncActionFailure,
@@ -26,6 +26,16 @@ import { getApiPrefix } from "./ActionUtils";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import NotificationType from "../model/NotificationType";
 import ExportConfig from "../model/local/ExportConfig";
+import RDFStatement, { RDFSTATEMENT_CONTEXT } from "../model/RDFStatement";
+import ChangeRecord, {
+  CONTEXT as CHANGE_RECORD_CONTEXT,
+} from "../model/changetracking/ChangeRecord";
+import AssetFactory from "../util/AssetFactory";
+import {
+  getChangeTypeUri,
+  VocabularyContentChangeFilterData,
+} from "../model/filter/VocabularyContentChangeFilterData";
+import { getLocalized } from "../model/MultilingualString";
 
 export function loadTermCount(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_COUNT, vocabularyIri };
@@ -130,6 +140,58 @@ export function loadVocabularyContentChanges(vocabularyIri: IRI) {
   };
 }
 
+export function loadVocabularyContentDetailedChanges(
+  vocabularyIri: IRI,
+  filterData: VocabularyContentChangeFilterData,
+  pageReq: PageRequest
+) {
+  const action = {
+    type: ActionType.LOAD_TERM_HISTORY,
+  };
+
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    let params = param("namespace", vocabularyIri.namespace)
+      .param("page", pageReq.page?.toString())
+      .param("size", pageReq.size?.toString());
+    for (const [key, value] of Object.entries(filterData)) {
+      params = params.param(key, value);
+    }
+    params = params.param("type", getChangeTypeUri(filterData));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/history-of-content/detail`,
+      params
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecord>(
+          data,
+          CHANGE_RECORD_CONTEXT
+        )
+      )
+      .then((data: ChangeRecord[]) => {
+        // adding labels to the label cache as they cannot be fetched from server
+        const labels: { [key: string]: string } = {};
+        data.forEach((r) => {
+          if (r["label"]) {
+            labels[r.changedEntity.iri] = getLocalized(r["label"]);
+          }
+        });
+        dispatch(
+          asyncActionSuccessWithPayload({ type: ActionType.GET_LABEL }, labels)
+        );
+        return data;
+      })
+      .then((data: ChangeRecord[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data.map((r) => AssetFactory.createChangeRecord(r));
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
 export function loadRelatedVocabularies(vocabularyIri: IRI) {
   const action = { type: ActionType.LOAD_RELATED_VOCABULARIES, vocabularyIri };
   return (dispatch: ThunkDispatch) => {
@@ -211,6 +273,62 @@ export function loadVocabularySnapshots(vocabularyIri: IRI) {
       .then((snapshots: SnapshotData[]) => {
         dispatch(asyncActionSuccess(action));
         return snapshots;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
+export function getVocabularyRelations(
+  vocabularyIri: IRI,
+  abortController: AbortController = new AbortController()
+) {
+  const action = { type: ActionType.GET_VOCABULARY_RELATIONS };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, false));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/relations`,
+      param("namespace", vocabularyIri.namespace).signal(abortController)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RDFStatement>(
+          data,
+          RDFSTATEMENT_CONTEXT
+        )
+      )
+      .then((statements: RDFStatement[]) => {
+        dispatch(asyncActionSuccess(action));
+        return statements;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
+
+export function getVocabularyTermsRelations(
+  vocabularyIri: IRI,
+  abortController: AbortController = new AbortController()
+) {
+  const action = { type: ActionType.GET_VOCABULARY_TERMS_RELATIONS };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, false));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/relations`,
+      param("namespace", vocabularyIri.namespace).signal(abortController)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RDFStatement>(
+          data,
+          RDFSTATEMENT_CONTEXT
+        )
+      )
+      .then((statements: RDFStatement[]) => {
+        dispatch(asyncActionSuccess(action));
+        return statements;
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));

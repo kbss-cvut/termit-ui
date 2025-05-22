@@ -1,3 +1,42 @@
+#### Verze 3.5.1
+
+- Opravena chyba mazání pojmu, pro který existují nepotvrzené výskyty v jiných zdrojích/pojmech.
+- Zlepšení výkonu použitím větší cache.
+
+#### Verze 3.5.0
+
+- Přidána možnost zakázat veřejné prohlížení slovníků.
+- Přidána možnost řídit anonymní přístup k prohlížení slovníku.
+- Vylepšena práce s výskyty pojmů v souborech - při analýze po reuploadu souboru jsou použity existující výskyty.
+- Různá výkonnostní vylepšení.
+
+#### Verze 3.4.0
+
+- Přidána podpora pro záznamy o smazání pojmů. Ty jsou zobrazovány i v grafu aktivity slovníku.
+- Přidána možnost filtrovat v historii změn.
+- Přidána podpora pro ukládání a anotaci souborů v různých jazycích v rámci jednoho slovníku.
+- Přidána podpora pro import překladů pojmů ze souboru MS Excel.
+
+#### Verze 3.3.0
+
+- Přidána možnost stáhnout anotovaný soubor bez nepotvrzených výskytů.
+- Upraveno fulltextové vyhledávání - nově se zobrazuje informace o atributu, ve kterém byla shoda nalezena.
+- Do fasetového vyhledávání přidána možnost filtrovat dle příkladů (`skos:example`).
+
+#### Verze 3.2.0
+
+- Přidána podpora pro import slovníků z MS Excel.
+- Vylepšení výkonu při opakované anotaci pojmů ve slovníku a validaci slovníku.
+- Úpravy v UI anotátoru - je možné skrýt výskyty vybraného typu.
+- Přidána možnost generovat identifikátory bez znaků s háčky a čárkami.
+
+#### Verze 3.1.3
+
+- Přidána možnost odeslat novému uživateli mail s pozvánkou (admin již nemusí uživateli nastavovat heslo).
+- Je možné zobrazit i pojmy bez názvu v primárním jazyce instance.
+- Formulář pro vytvoření nového atributu umožňuje vyplnit název a popis ve více jazycích.
+- Opravy chyb, aktualizace knihoven.
+
 #### Verze 3.1.2
 
 - Přidána možnost resetovat zapomenuté heslo.

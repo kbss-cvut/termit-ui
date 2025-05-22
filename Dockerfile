@@ -1,6 +1,6 @@
 # BASE STAGE
 # Prepare node, copy package.json
-FROM node:16-alpine AS base
+FROM node:20-alpine AS base
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
@@ -9,11 +9,11 @@ COPY package.json package-lock.json ./
 FROM base AS dependencies
 # install node packages
 #RUN npm set progress=false && npm config set depth 0
-RUN npm install --legacy-peer-deps
+RUN npm ci --legacy-peer-deps
 
 # BUILD STAGE
 # run NPM build
-FROM dependencies as build
+FROM dependencies AS build
 # If an app is supposed to be deployed in a subdir, this is the place to specify that
 # Make sure that React app is built using the right path context
 COPY . .

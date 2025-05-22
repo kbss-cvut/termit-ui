@@ -3,11 +3,14 @@ import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { getLabel } from "../../action/AsyncActions";
 import Namespaces from "../../util/Namespaces";
+import TermItState from "../../model/TermItState";
+import Utils from "../../util/Utils";
 
 interface AssetLabelProps {
   iri: string;
   shrinkFullIri?: boolean;
   getLabel: (iri: string) => Promise<string>;
+  language: string;
 }
 
 interface AssetLabelState {
@@ -42,7 +45,11 @@ export class AssetLabel extends React.Component<
   }
 
   public componentDidUpdate(prevProps: AssetLabelProps): void {
-    if (prevProps.iri !== this.props.iri) {
+    if (
+      prevProps.iri !== this.props.iri ||
+      // When the language changes, the label needs to be updated.
+      prevProps.language !== this.props.language
+    ) {
       this.loadLabel(this.props.iri);
     }
   }
@@ -64,22 +71,18 @@ export class AssetLabel extends React.Component<
   }
 
   private shrinkFullIri(iri: string): string {
-    if (!this.props.shrinkFullIri || iri.indexOf("://") === -1) {
-      return iri; // It is prefixed
+    if (!this.props.shrinkFullIri) {
+      return iri;
     }
-    const lastSlashIndex = iri.lastIndexOf("/");
-    const lastHashIndex = iri.lastIndexOf("#");
-    return (
-      "..." +
-      iri.substring(
-        lastHashIndex > lastSlashIndex ? lastHashIndex : lastSlashIndex
-      )
-    );
+    return Utils.shrinkFullIri(iri);
   }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    getLabel: (iri: string) => dispatch(getLabel(iri)),
-  };
-})(AssetLabel);
+export default connect(
+  (state: TermItState) => ({ language: state.intl.locale }),
+  (dispatch: ThunkDispatch) => {
+    return {
+      getLabel: (iri: string) => dispatch(getLabel(iri)),
+    };
+  }
+)(AssetLabel);

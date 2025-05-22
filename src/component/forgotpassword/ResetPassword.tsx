@@ -8,7 +8,7 @@ import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
 import { resetPassword } from "../../action/AsyncUserActions";
 import Constants from "../../util/Constants";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useRouteMatch } from "react-router-dom";
 import WindowTitle from "../misc/WindowTitle";
 import IfInternalAuth from "../misc/oidc/IfInternalAuth";
 import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
@@ -19,6 +19,7 @@ import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import Messages from "../message/Messages";
 import ChangePasswordDto from "../../model/ChangePasswordDto";
+import classNames from "classnames";
 
 interface ResetPasswordGetParams {
   token: string;
@@ -34,6 +35,9 @@ export const ResetPassword: React.FC = () => {
   const { i18n } = useI18n();
 
   const { token, token_uri } = useParams<ResetPasswordGetParams>();
+  const isNewMatch = useRouteMatch(Routes.createPassword.path);
+  const isNew = isNewMatch != null;
+
   const [password, setPassword] = React.useState("");
   const [passwordConfirm, setpasswordConfirm] = React.useState("");
   // will block UI once the request was successfully sent
@@ -87,14 +91,17 @@ export const ResetPassword: React.FC = () => {
     });
   };
 
+  const id = (id: string): string =>
+    (isNew ? "createPassword." : "resetPassword.") + id;
+
   return (
-    <PublicLayout title={i18n("resetPassword.title")}>
-      <WindowTitle title={i18n("resetPassword.title")} />
+    <PublicLayout title={i18n(id("title"))}>
+      <WindowTitle title={i18n(id("title"))} />
       <IfInternalAuth>
         <Card className="modal-panel">
           <CardHeader className="border-bottom-0 pb-0 text-center">
             <h1>{Constants.APP_NAME}</h1>
-            <div>{i18n("resetPassword.subtitle")}</div>
+            <div>{i18n(id("title"))}</div>
           </CardHeader>
           <CardBody>
             <PromiseTrackingMask area="resetPassword" />
@@ -103,20 +110,20 @@ export const ResetPassword: React.FC = () => {
               <EnhancedInput
                 type="password"
                 name="newPassword"
-                label={i18n("resetPassword.password")}
+                label={i18n(id("password"))}
                 autoComplete="new-password"
                 labelDirection={LabelDirection.vertical}
                 value={password}
                 onKeyPress={onKeyPress}
                 onChange={onPasswordChange}
                 autoFocus={true}
-                placeholder={i18n("resetPassword.password.placeholder")}
+                placeholder={i18n(id("password.placeholder"))}
                 disabled={passwordChanged}
               />
               <EnhancedInput
                 type="password"
                 name="newPassword-confirm"
-                label={i18n("resetPassword.password.confirm")}
+                label={i18n(id("password.confirm"))}
                 autoComplete="new-password"
                 labelDirection={LabelDirection.vertical}
                 value={passwordConfirm}
@@ -132,12 +139,14 @@ export const ResetPassword: React.FC = () => {
                 className="btn-block"
                 disabled={!arePasswordsEqualAndNotEmpty() || passwordChanged}
               >
-                {i18n("resetPassword.submit")}
+                {i18n(id("submit"))}
               </Button>
             </Form>
-            <div className="mt-2 text-center">
+            <div
+              className={classNames("mt-2 text-center", { "d-none": isNew })}
+            >
               <FormattedMessage
-                id="forgotPassword.login.label"
+                id={id("login.label")}
                 values={{
                   a: (chunks: any) => (
                     <Link

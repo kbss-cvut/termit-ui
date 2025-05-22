@@ -22,6 +22,7 @@ interface AnnotatorContentProps {
   content: DomHandlerNode[];
   accessLevel: AccessLevel; // The level of access rights the current user has
   highlightedTerm: TermData | null;
+  annotationLanguage?: string;
 
   onRemove: (annotationId: string | string[]) => void;
   onUpdate: (annotationSpan: AnnotationSpanProps, term: Term | null) => void;
@@ -35,8 +36,16 @@ const PREPROCESSING_INSTRUCTIONS = [
     shouldPreprocessNode: (node: any): boolean =>
       node.name && node.name === "a",
     preprocessNode: (node: any) => {
-      node.attribs["data-href"] = node.attribs.href;
-      delete node.attribs.href;
+      // Remove href from relative links, absolute links will open in blank tab
+      if (!Utils.isLink(node.attribs.href)) {
+        node.attribs["data-href"] = node.attribs.href;
+        delete node.attribs.href;
+      } else {
+        node.attribs["data-target"] = node.attribs.target;
+        node.attribs["target"] = "_blank";
+        node.attribs["data-rel"] = node.attribs.rel;
+        node.attribs["rel"] = "noopener noreferrer";
+      }
     },
   },
 ];
@@ -56,6 +65,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onCreateTerm,
     accessLevel,
     highlightedTerm,
+    annotationLanguage,
   } = props;
 
   // Using memoization to skip processing and re-rendering of the content DOM in case it hasn't changed
@@ -104,6 +114,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
                 highlightedTerm !== null &&
                 elem.attribs.resource === highlightedTerm.iri
               }
+              language={annotationLanguage}
               {...attribs}
             >
               {children}
@@ -134,6 +145,7 @@ const AnnotatorContent: React.FC<AnnotatorContentProps> = (props) => {
     onCreateTerm,
     accessLevel,
     highlightedTerm,
+    annotationLanguage,
   ]);
 
   return (

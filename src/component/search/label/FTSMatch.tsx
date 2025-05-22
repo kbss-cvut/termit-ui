@@ -42,15 +42,13 @@ const processingInstructions: Instruction[] = [
 export const FTSMatch: React.FC<FTSMatchProps> = (props: FTSMatchProps) => {
   const parser = new HtmlToReactParser();
   return (
-    <div key={props.match}>
-      <React.Fragment>
-        {parser.parseWithInstructions(
-          props.match,
-          isValidNode,
-          processingInstructions
-        )}
-      </React.Fragment>
-    </div>
+    <React.Fragment>
+      {parser.parseWithInstructions(
+        props.match,
+        isValidNode,
+        processingInstructions
+      )}
+    </React.Fragment>
   );
 };
 

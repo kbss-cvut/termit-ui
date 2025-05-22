@@ -82,7 +82,6 @@ const cs = {
 
     "forgotPassword.title": "Zapomenuté heslo",
     "forgotPassword.mask": "Odesílám...",
-    "forgotPassword.subtitle": "Zapomenuté heslo",
     "forgotPassword.login.label": "Zpět na <a>Přihlášení</a>",
     "forgotPassword.username": "Uživatelské jméno",
     "forgotPassword.username.placeholder": "Zadejte uživatelské jméno",
@@ -94,14 +93,25 @@ const cs = {
     "resetPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
     "resetPassword.mask": "Měním heslo...",
     "resetPassword.title": "Změna hesla",
-    "resetPassword.subtitle": "Změna hesla",
+    "resetPassword.login.label": "Zpět na <a>Přihlášení</a>",
     "resetPassword.password": "Nové heslo",
     "resetPassword.password.placeholder": "Zvolte si nové heslo",
     "resetPassword.password.confirm": "Potvrzení hesla",
     "resetPassword.submit": "Změnit heslo",
     "resetPassword.success": "Heslo změněno",
     "resetPassword.invalidToken":
-      "Neplatný nebo expirovaný link pro změnu hesla. Zažádejte o změnu hesla znovu.",
+      "Neplatný nebo expirovaný odkaz pro změnu hesla. Zažádejte o změnu hesla znovu.",
+
+    "createPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
+    "createPassword.mask": "Vytvářím heslo...",
+    "createPassword.title": "Vytvoření hesla",
+    "createPassword.password": "Nové heslo",
+    "createPassword.password.placeholder": "Zvolte si nové heslo",
+    "createPassword.password.confirm": "Potvrzení hesla",
+    "createPassword.submit": "Vytvořit heslo",
+    "createPassword.success": "Heslo vytvořeno",
+    "createPassword.invalidToken":
+      "Neplatný nebo expirovaný odkaz pro vytvoření hesla. Zažádejte o nový odkaz.",
 
     "main.nav.dashboard": "Hlavní strana",
     "main.nav.vocabularies": "Slovníky",
@@ -109,7 +119,7 @@ const cs = {
     "main.nav.search": "Vyhledávání",
     "main.nav.searchTerms": "Vyhledávání pojmů",
     "main.nav.searchVocabularies": "Vyhledávání slovníků",
-    "main.nav.facetedSearch": "Facetové vyhledávání",
+    "main.nav.facetedSearch": "Fasetové vyhledávání",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
     "main.nav.import-vocabulary": "Importovat slovník",
@@ -120,7 +130,7 @@ const cs = {
     "main.search.count-info-and-link":
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
     "main.search.no-results":
-      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte facetové hledání.",
+      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte fasetové hledání.",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":
@@ -160,7 +170,7 @@ const cs = {
     "administration.users.status": "Status",
     "administration.users.status.locked": "Zablokovaný",
     "administration.users.status.locked.help":
-      "Uživatelský účet byl zablokován z důvodu příliš mnoha neúspěšných pokusů o přihlášení. Uživatel se nemůže znovu přihlásit, dokud mu administrátor nenastaví nové heslo.",
+      "Uživatelský účet byl zablokován z důvodu příliš mnoha neúspěšných pokusů o přihlášení, nebo účet vyčkává na nastavení nového hesla uživatelem. Uživatel se nemůže znovu přihlásit, dokud si heslo neobnoví, nebo mu administrátor nenastaví nové heslo.",
     "administration.users.status.disabled": "Neaktivní",
     "administration.users.status.disabled.help":
       "Uživatelský účet byl deaktivován administrátorem a nelze se pod ním přihlásit.",
@@ -204,12 +214,26 @@ const cs = {
     "administration.users.types.admin": "Tento uživatel je administrátor",
     "administration.users.oidc":
       "Pro správu uživatelů je využívána externí autentizační služba.",
+    "administration.users.create.password-toggle.user":
+      "Poslat aktivační email",
+    "administration.users.create.password-toggle.admin": "Zadat heslo nyní",
+    "administration.users.create.password-toggle.tooltip.user":
+      "Novému uživateli bude zaslán email s odkazem pro vytvoření nového hesla.",
+    "administration.users.create.password-toggle.tooltip.admin":
+      "Heslo pro nového uživatele zadejte nyní.",
+    "administration.users.create.submit": "Vytvořit uživatele",
     "administration.maintenance.title": "Správa systému",
     "administration.maintenance.invalidateCaches": "Vyprázdnit cache",
     "administration.maintenance.invalidateCaches.tooltip":
       "Vyprázdnit interní cache systému",
     "administration.maintenance.invalidateCaches.success":
       "Cache úspěšně vyprázdněna.",
+    "administration.maintenance.clearLongRunningTasksQueue":
+      "Vyprázdnit frontu procesů na pozadí",
+    "administration.maintenance.clearLongRunningTasksQueue.tooltip":
+      "Vyprázdnit frontu procesů čekajících na zpracování na pozadí",
+    "administration.maintenance.clearLongRunningTasksQueue.success":
+      "Fronta procesů na pozadí úspěšně vyprázdněna.",
     "administration.groups": "Uživatelské skupiny",
     "administration.groups.create": "Vytvořit skupinu",
     "administration.groups.create.tooltip":
@@ -287,27 +311,50 @@ const cs = {
     "vocabulary.summary.export.rdfxml.title": "Export ve formátu RDF/XML.",
     "vocabulary.summary.export.error":
       "Nepodařilo se získat data z odpovědi serveru.",
-    "vocabulary.summary.import.action": "Obnovit ze zálohy",
+    "vocabulary.summary.import.action": "Nahrát ze souboru",
     "vocabulary.summary.import.action.tooltip":
-      "Obnovit slovník ze zálohy ve formátu SKOS",
-    "vocabulary.summary.import.dialog.title": "Obnova dřívější verze slovníku",
-    "vocabulary.summary.import.dialog.message":
-      "Nahrajte dříve vyexportovanou verzi tohoto slovníku " +
-      "(ve formátu SKOS a obsahující jedinou skos:ConceptScheme ve tvaru <IRI-TOHOTO-SLOVNÍKU>/glosář).",
+      "Nahrát obsah slovníku ze souboru obsahujícího data ve formátu SKOS či MS Excel",
+    "vocabulary.summary.import.dialog.title":
+      "Import obsahu slovníku ze souboru",
+    "vocabulary.summary.import.dialog.tab.replaceContent": "Nahradit obsah",
+    "vocabulary.summary.import.dialog.tab.translations": "Importovat překlady",
+    "vocabulary.summary.import.dialog.label":
+      "Nahrajte vyexportovanou verzi tohoto slovníku",
+    "vocabulary.summary.import.dialog.skosImport":
+      "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář.",
+    "vocabulary.summary.import.dialog.excelImport":
+      "Ve formátu MS Excel odpovídající <a>této šabloně</a>",
+    "vocabulary.summary.import.excel.template.tooltip":
+      "Stáhnout šablonu pro MS Excel",
+    "vocabulary.summary.import.nonEmpty.warning":
+      "Slovník není prázdný, stávající data budou přepsána importovanými.",
+    "vocabulary.summary.import.translations.label":
+      "Nahrajte soubor ve formátu MS Excel odpovídající <a>této šabloně</a>, ze kterého mají být naimportovány překlady existujících pojmů ve slovníku.",
+    "vocabulary.summary.import.translations.help":
+      "Stávající data nebudou přepsána.",
+    "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",
-    "vocabulary.import.action.tooltip": "Import SKOS slovníku.",
-    "vocabulary.import.dialog.title": "Importovat SKOS slovník",
+    "vocabulary.import.dialog.title": "Importovat slovník",
     "vocabulary.import.dialog.message":
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
     "vocabulary.import.title": "Importovat slovník",
-    "vocabulary.import.success": "Slovník úspěšně importován",
+    "vocabulary.import.success": "Slovník úspěšně importován.",
     "vocabulary.import.allow-changing-identifiers":
       "Povolit změnu identifikátorů",
     "vocabulary.import.allow-changing-identifiers.tooltip":
       "Při zaškrtnutí tohoto políčka budou při importu identifikátory nahrazeny novými, pokud by kolidovaly s existujícími identifikátory.",
     "vocabulary.summary.startTextAnalysis.title":
       "Spustit textovou analýzu definic všech pojmů v tomto slovníku",
+    "vocabulary.summary.model.label": "Modelovat vztahy",
+    "vocabulary.summary.model.title":
+      "Modelovat vztahy mezi pojmy ve slovníku pomocí externího nástroje",
+    "vocabulary.summary.model.open": "Otevřít",
+    "vocabulary.summary.model.dialog.title":
+      "Modelovat vztahy pojmů slovníku {vocabulary}",
+    "vocabulary.summary.model.dialog.text":
+      "Vyberte slovníky, které chcete pro modelování otevřít. Předvybrány jsou slovníky, které s otevíraným slovníkem souvisí a musí být v seznamy zahrnuty.",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
     "vocabulary.created.message": "Slovník úspěšně vytvořen.",
     "vocabulary.detail.subtitle": "Vytvořen autorem {author} ",
@@ -323,6 +370,7 @@ const cs = {
       "Textová analýza definic pojmů ve všech slovnících spuštěna.",
     "vocabulary.termchanges.creations": "Vytvořené pojmy",
     "vocabulary.termchanges.updates": "Aktualizované pojmy",
+    "vocabulary.termchanges.deletions": "Smazané pojmy",
     "vocabulary.termchanges.termcount": "Počet změněných pojmů",
     "vocabulary.termchanges.loading": "Načítám změny ...",
     "vocabulary.termchanges.empty":
@@ -369,6 +417,25 @@ const cs = {
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",
 
+    "vocabulary.remove.dialog.text.nonEmpty":
+      "Opravdu chcete odstranit <b>neprázdný</b> slovník?",
+    "vocabulary.remove.dialog.text.empty":
+      "Opravdu chcete odstranit <b>prázdný</b> slovník?",
+    "vocabulary.remove.dialog.text.termCount":
+      "Jeho odstraněním dojde k trvalému smazání {count, plural, one {<b>1</b> pojmu} other {<b>#</b> pojmů}}, dokumentu a všech souvisejících souborů.",
+    "vocabulary.remove.dialog.text.permanent": "Tato akce je nevratná!",
+    "vocabulary.remove.dialog.relationsExists.text":
+      "Existují vazby na jiné slovníky, slovník nezle odstranit.",
+    "vocabulary.remove.dialog.relations": "Vazby",
+    "vocabulary.remove.dialog.relations.error.cantRemove":
+      "Slovník nelze odstranit!",
+    "vocabulary.remove.dialog.relations.error.vocabularyRelations":
+      "Existuje {vocabularyRelations, plural, one {<b>1</b> vazba} other {<b>#</b> vazeb}} s jiným slovníkem",
+    "vocabulary.remove.dialog.relations.error.termsRelations":
+      "Existuje {termsRelations, plural, one {<b>1</b> vazba na pojem} other {<b>#</b> vazeb na pojmy}} z tohoto slovníku.",
+    "vocabulary.remove.dialog.input.label":
+      "Pro ověření, zadejte název slovníku",
+
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",
     "resource.removed.message": "Zdroj by odstraněn.",
@@ -391,7 +458,7 @@ const cs = {
       "Přidat nový soubor do tohoto dokumentu",
     "resource.metadata.document.files.actions.add.dialog.title": "Nový soubor",
     "resource.metadata.document.files.empty":
-      "Žádné soubory nenalezeny. Vytvořte nějaký...",
+      "Žádné soubory nenalezeny. Přidejte nějaký...",
     "resource.file.vocabulary.create": "Přidat soubor",
 
     "term.language.selector.item":
@@ -566,8 +633,9 @@ const cs = {
       "Nelze určit slovník pro anotování tohoto souboru. Vyberte ho, prosím...",
     "file.upload": "Nahrát",
     "file.upload.hint":
-      "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8.",
+      "Maximální velikost souboru: {maxUploadFileSize}. Má-li být soubor použit pro extrakci pojmů do slovníku, musí být ve formátu UTF-8, nebo validní MS Excel.",
     "file.upload.size.exceeded": "Soubor je příliš velký.",
+    "file.language": "Jazyk obsahu souboru",
 
     "dataset.license": "Licence",
     "dataset.format": "Formát",
@@ -589,7 +657,7 @@ const cs = {
     "search.tab.terms": "Pojmy",
     "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
     "search.tab.vocabularies": "Slovníky",
-    "search.tab.facets": "Facetové vyhledávání pojmů",
+    "search.tab.facets": "Fasetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
     "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
@@ -599,7 +667,7 @@ const cs = {
     "search.results.table.label.tooltip": "Zobrazit detail objektu",
     "search.results.table.match": "Nalezená shoda",
     "search.results.table.score": "Skóre shody",
-    "search.results.field.badge.tooltip": "Shoda nalezena v tomto atributu",
+    "search.results.field": "Shoda nalezena v atributu:",
     "search.results.field.label": "Název",
     "search.results.field.comment": "Popis",
     "search.results.field.definition": "Definice",
@@ -625,6 +693,9 @@ const cs = {
 
     annotator: "Anotátor",
     "annotator.content.loading": "Načítám obsah souboru...",
+    "annotator.download.thisFile": "Tento soubor",
+    "annotator.download.original": "Originál",
+    "annotator.download.withoutUnconfirmed": "Bez nepotvrzených výskytů",
     "annotator.vocabulary": "Používá pojmy ze slovníku",
     "annotator.selectionPurpose.dialog.title":
       "K čemu bude sloužit vybraný text?",
@@ -656,6 +727,8 @@ const cs = {
       "Vyberte pojem, jehož výskyty budou zvýrazněny",
     "annotator.highlight.countInfo":
       "V tomto dokumentu {count, plural, one {nalezen # výskyt} few {nalezeny # výskyty} other {nalezeno # výskytů}}.",
+    "annotator.legend.activeFilter.tooltip":
+      "Některá zvýraznění výskytů pojmů jsou skrytá.",
 
     "annotation.form.suggested-occurrence.message":
       "Fráze není přiřazena žádnemu pojmu.",
@@ -744,6 +817,27 @@ const cs = {
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
     "error.term.state.terminal.liveChildren":
       "Pojmu nelze nastavit koncový stav, dokud má alespoň jednoho potomka v jiném než koncovém stavu.",
+    "error.vocabulary.import.excel.duplicateIdentifier":
+      "Excel obsahuje více pojmů se stejným identifikátorem.",
+    "error.vocabulary.import.excel.duplicateLabel":
+      "Excel obsahuje více pojmů se stejným názvem.",
+    "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
+      'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
+    "error.term.remove.annotationsExist":
+      "Pojem nelze odstranit, protože se je použit k anotaci jiných pojmů či zdrojů: {resources}",
+    "error.term.remove.hasSubTerms":
+      "Pojem nelze odstranit, protože má podřazené pojmy: {subTerms}",
+    "error.term.remove.skosRelationshipsExist":
+      "Pojem nelze odstranit, protože je propojen s jinými pojmy těmito SKOS vztahy: {properties}",
+
+    "error.invalidUriCharacter":
+      'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',
+    "error.invalidIdentifier": 'Neplatný identifikátor: "{uri}"',
+
+    "error.annotation.file.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk obsahu souboru.",
+    "error.annotation.term.unsupportedLanguage":
+      "Služba textové analýza nepodporuje jazyk definice pojmu.",
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
@@ -752,6 +846,7 @@ const cs = {
     "history.type": "Typ",
     "history.type.persist": "Vytvoření",
     "history.type.update": "Změna",
+    "history.type.delete": "Smazání",
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
@@ -818,6 +913,19 @@ const cs = {
     "auth.action.unauthorized": "K této akci nemáte dostatečná práva.",
     "auth.view.unauthorized": "K zobrazení nemáte dostatečná práva.",
     "auth.notEditable.message.readOnly": "Tento { type } je pouze pro čtení.",
+
+    "longrunningtasks.description": "V systému právě probíhá:",
+    "longrunningtasks.state.done": "Dokončeno",
+    "longrunningtasks.state.pending": "Bude spuštěno",
+    "longrunningtasks.state.running": "Probíhá",
+    "longrunningtasks.name.termDefinitionAnalysis": "Analýza definice pojmu",
+    "longrunningtasks.name.allTermsVocabularyAnalysis":
+      "Analýza pojmů ze slovníku",
+    "longrunningtasks.name.allVocabulariesAnalysis": "Analýza všech slovníků",
+    "longrunningtasks.name.fileAnalysis": "Analýza souboru",
+    "longrunningtasks.name.vocabularyValidation": "Validace slovníku",
+    "longrunningtasks.name.documentAnnotationGeneration":
+      "Generování anotací dokumentu",
 
     "demo.notice":
       "Toto je demo instance. K přihlášení můžete použít <b>demo</b>/<b>demo</b> nebo se zaregistrujte. " +

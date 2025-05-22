@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { useI18n } from "../hook/useI18n";
 import { isLoggedIn } from "../../util/Authorization";
+import VocabularyLink from "./VocabularyLink";
 
 interface VocabularyIriLinkProps {
   iri: string;
@@ -23,6 +24,12 @@ export const VocabularyIriLink: React.FC<VocabularyIriLinkProps> = (
 ) => {
   const { i18n } = useI18n();
   const user = useSelector((state: TermItState) => state.user);
+  const currentVocabulary = useSelector(
+    (state: TermItState) => state.vocabulary
+  );
+  if (currentVocabulary.iri === props.iri) {
+    return <VocabularyLink vocabulary={currentVocabulary} />;
+  }
   const iri = VocabularyUtils.create(props.iri);
   const path = Routing.getTransitionPath(
     isLoggedIn(user)

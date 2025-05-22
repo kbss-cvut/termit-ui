@@ -48,6 +48,7 @@ import "./TermMetadata.scss";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
 import TermStateSelector from "./state/TermStateSelector";
+import Vocabulary from "../../model/Vocabulary";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -59,6 +60,7 @@ interface TermMetadataEditProps extends HasI18n {
   language: string;
   selectLanguage: (lang: string) => void;
   validationResults: ConsolidatedResults;
+  vocabulary: Vocabulary;
 }
 
 interface TermMetadataEditState extends TermData {
@@ -385,7 +387,8 @@ export class TermMetadataEdit extends React.Component<
                       term={this.props.term}
                       vocabularyIri={this.props.term.vocabulary?.iri!}
                       selected={Term.consolidateRelatedAndRelatedMatch(
-                        this.state
+                        this.state,
+                        this.props.language
                       )}
                       onChange={this.onRelatedChange}
                       language={language}
@@ -463,6 +466,8 @@ export class TermMetadataEdit extends React.Component<
                     properties={this.state.unmappedProperties}
                     ignoredProperties={TermMetadataEdit.mappedPropertiesToIgnore()}
                     onChange={this.onPropertiesChange}
+                    language={language}
+                    languages={Vocabulary.getLanguages(this.state)}
                   />
                 </Col>
               </Row>
@@ -506,5 +511,6 @@ export class TermMetadataEdit extends React.Component<
 export default connect((state: TermItState) => {
   return {
     validationResults: state.validationResults[state.vocabulary.iri],
+    vocabulary: state.vocabulary,
   };
 })(injectIntl(withI18n(TermMetadataEdit)));

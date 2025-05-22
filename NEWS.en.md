@@ -1,3 +1,42 @@
+#### Verze 3.5.1
+
+- Fixed an issue with deleting a term with unconfirmed occurrences in other assets.
+- Improved performance by increasing cache size.
+
+#### Version 3.5.0
+
+- Added support for disabling the public view.
+- Added support for managing anonymous access to a vocabulary via ACL.
+- Improved term occurrence handling - text analysis of a re-uploaded file now reuses existing term occurrences.
+- Various performance improvements.
+
+#### Version 3.4.0
+
+- Added support for term deletion records. Term deletion events are also displayed in the vocabulary activity diagram.
+- Added support for filtering in change history.
+- Added support for saving and annotating files in multiple languages.
+- Added support for importing term translations from an MS Excel file.
+
+#### Version 3.3.0
+
+- Added the possibility to download annotated file without unconfirmed occurrences.
+- Enhanced fulltext search - now it shows information about the attribute in which a match was found.
+- Added support for filtering by example (`skos:example`) in the faceted search.
+
+#### Version 3.2.0
+
+- Added support for importing a vocabulary from MS Excel.
+- Optimized performance of repeated term annotation and vocabulary validation.
+- Annotator UI improvements, it is now possible to hide occurrences of a selected type.
+- Support disabling generation of identifiers containing accented characters.
+
+#### Version 3.1.3
+
+- Added invitation-based new account registration (admin no longer has to set user's password).
+- Allow reading terms without label in primary instance language.
+- Allow setting multilingual label and comment on new properties.
+- Bug fixes, dependency updates.
+
 #### Version 3.1.2
 
 - Added password recovery.

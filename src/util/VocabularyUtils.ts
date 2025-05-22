@@ -51,7 +51,7 @@ const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
 const _NS_DC = "http://purl.org/dc/terms/";
 const _NS_SH = "http://www.w3.org/ns/shacl#";
 const _NS_SIOC = "http://rdfs.org/sioc/ns#";
-const _NS_ACTIVITY_STREAMS = "http://www.w3.org/ns/activitystreams#";
+const _NS_ACTIVITY_STREAMS = "https://www.w3.org/ns/activitystreams#";
 const _NS_XSD = "http://www.w3.org/2001/XMLSchema#";
 
 const VocabularyUtils = {
@@ -70,6 +70,8 @@ const VocabularyUtils = {
   DEFINITION: _NS_SKOS + "definition",
   BROADER: _NS_SKOS + "broader",
   NARROWER: _NS_SKOS + "narrower",
+  SKOS_BROAD_MATCH: _NS_SKOS + "broadMatch",
+  SKOS_NARROW_MATCH: _NS_SKOS + "narrowMatch",
   SKOS_PREF_LABEL: _NS_SKOS + "prefLabel",
   SKOS_ALT_LABEL: _NS_SKOS + "altLabel",
   SKOS_HIDDEN_LABEL: _NS_SKOS + "hiddenLabel",
@@ -113,6 +115,7 @@ const VocabularyUtils = {
   USER_ADMIN: _NS_TERMIT + "administrátor-termitu",
   USER_LOCKED: _NS_TERMIT + "uzam\u010den\u00fd-u\u017eivatel-termitu",
   USER_DISABLED: _NS_TERMIT + "zablokovan\u00fd-u\u017eivatel-termitu",
+  USER_ANONYMOUS: _NS_TERMIT + "anonymn\u00ed-u\u017eivatel-termitu",
   USER_RESTRICTED: _NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
   USER_EDITOR: _NS_TERMIT + "pln\u00fd-u\u017eivatel-termitu",
   USER_GROUP: _NS_SIOC + "Usergroup",
@@ -126,6 +129,10 @@ const VocabularyUtils = {
   RDFS_SUB_CLASS_OF: _NS_RDFS + "subClassOf",
   RDFS_SUB_PROPERTY_OF: _NS_RDFS + "subPropertyOf",
   RDF_PROPERTY: _NS_RDF + "Property",
+  RDF_STATEMENT: _NS_RDF + "Statement",
+  RDF_OBJECT: _NS_RDF + "object",
+  RDF_SUBJECT: _NS_RDF + "subject",
+  RDF_PREDICATE: _NS_RDF + "predicate",
   PREFIX_DC: _NS_DC,
   DC_TITLE: _NS_DC + "title",
   DC_DESCRIPTION: _NS_DC + "description",
@@ -135,9 +142,11 @@ const VocabularyUtils = {
   DC_MODIFIED: _NS_DC + "modified",
   DC_LANGUAGE: _NS_DC + "language",
   DC_IDENTIFIER: _NS_DC + "identifier",
+  DC_SUBJECT: _NS_DC + "subject",
 
   XSD_DATETIME: _NS_XSD + "dateTime",
   XSD_DATE: _NS_XSD + "date",
+  XSD_INT: _NS_XSD + "int",
 
   SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
   SH_SOURCE_SHAPE: _NS_SH + "sourceShape",
@@ -154,6 +163,7 @@ const VocabularyUtils = {
 
   PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
   UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,
+  DELETE_EVENT: `${_NS_POPIS_DAT}smaz\u00e1n\u00ed-entity`,
 
   TERM_SNAPSHOT: _NS_POPIS_DAT + "verze-pojmu",
   VOCABULARY_SNAPSHOT: _NS_POPIS_DAT + "verze-slovníku",

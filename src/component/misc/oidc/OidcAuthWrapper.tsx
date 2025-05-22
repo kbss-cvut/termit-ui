@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import { User, UserManager } from "oidc-client";
 import { generateRedirectUri, getOidcConfig } from "../../../util/OidcUtils";
+import BrowserStorage from "../../../util/BrowserStorage";
 
 // Taken from https://github.com/datagov-cz/assembly-line-shared but using a different config processing mechanism
 
@@ -74,6 +75,7 @@ const OidcAuthWrapper: React.FC<AuthProps> = ({
       } catch (error) {
         throwError(error as Error);
       }
+      BrowserStorage.dispatchTokenChangeEvent();
     };
     getUser();
   }, [location, history, throwError, setUser, userManager]);
@@ -87,6 +89,7 @@ const OidcAuthWrapper: React.FC<AuthProps> = ({
       } catch (error) {
         throwError(error as Error);
       }
+      BrowserStorage.dispatchTokenChangeEvent();
     };
 
     userManager.events.addUserLoaded(updateUserData);

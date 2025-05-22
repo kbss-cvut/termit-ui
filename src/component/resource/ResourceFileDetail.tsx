@@ -15,7 +15,7 @@ import File from "../../model/File";
 import TermItState from "../../model/TermItState";
 import { TextAnalysisRecord } from "../../model/TextAnalysisRecord";
 import withI18n, { HasI18n } from "../hoc/withI18n";
-import { popRoutingPayload } from "../../action/SyncActions";
+import { clearResource, popRoutingPayload } from "../../action/SyncActions";
 import Routes from "../../util/Routes";
 import { TextQuoteSelector } from "../../model/TermOccurrence";
 import VocabularySelect from "../vocabulary/VocabularySelect";
@@ -28,6 +28,7 @@ interface StoreStateProps {
 }
 
 interface DispatchProps {
+  clearResource: () => void;
   loadResource: (resourceIri: IRI) => void;
   loadLatestTextAnalysisRecord: (
     resourceIri: IRI
@@ -43,6 +44,7 @@ type ResourceFileDetailProps = StoreStateProps &
 interface ResourceFileDetailState {
   vocabularyIri?: IRI | null;
   scrollToSelector?: TextQuoteSelector;
+  annotationLanguage?: string;
 }
 
 export class ResourceFileDetail extends React.Component<
@@ -138,11 +140,16 @@ export class ResourceFileDetail extends React.Component<
         if (res) {
           this.setState({
             vocabularyIri: VocabularyUtils.create(res.vocabularies[0].iri!),
+            annotationLanguage: res.language,
           });
         } else {
           this.setState({ vocabularyIri: null });
         }
       });
+  }
+
+  componentWillUnmount() {
+    this.props.clearResource();
   }
 
   public onSelectVocabulary = (voc: Vocabulary | null) => {
@@ -194,6 +201,7 @@ export default connect(
   },
   (dispatch: ThunkDispatch) => {
     return {
+      clearResource: () => dispatch(clearResource()),
       loadResource: (resourceIri: IRI) => dispatch(loadResource(resourceIri)),
       loadLatestTextAnalysisRecord: (resourceIri: IRI) =>
         dispatch(loadLatestTextAnalysisRecord(resourceIri)),

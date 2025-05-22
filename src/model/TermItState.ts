@@ -4,12 +4,11 @@ import en from "../i18n/en";
 import IntlData from "./IntlData";
 import Vocabulary, { EMPTY_VOCABULARY } from "./Vocabulary";
 import { QueryResultIF } from "./QueryResult";
-import Term from "./Term";
+import Term, { TermInfo } from "./Term";
 import RdfsResource from "./RdfsResource";
 import AppNotification from "./AppNotification";
 import SearchResult from "./search/SearchResult";
 import SearchQuery from "./search/SearchQuery";
-import AsyncActionStatus from "../action/AsyncActionStatus";
 import { ErrorLogItem } from "./ErrorInfo";
 import Utils from "../util/Utils";
 import { Configuration, DEFAULT_CONFIGURATION } from "./Configuration";
@@ -18,6 +17,8 @@ import File, { EMPTY_FILE } from "./File";
 import TermOccurrence from "./TermOccurrence";
 import { Breadcrumb } from "./Breadcrumb";
 import AnnotatorLegendFilter from "./AnnotatorLegendFilter";
+import ActionType, { PendingAsyncAction } from "../action/ActionType";
+import { LongRunningTask } from "./LongRunningTask";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -46,7 +47,7 @@ export default class TermItState {
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
   // Pending asynchronous actions. Can be used to prevent repeated requests when some are already pending
-  public pendingActions: { [key: string]: AsyncActionStatus };
+  public pendingActions: { [key in ActionType]?: PendingAsyncAction };
   public errors: ErrorLogItem[];
   public lastModified: { [key: string]: string };
   public sidebarExpanded: boolean;
@@ -56,6 +57,7 @@ export default class TermItState {
   public routeTransitionPayload: { [key: string]: any };
   // Caches labels retrieved from the backend, so that they can be reused and thus server traffic reduced
   public labelCache: { [key: string]: string };
+  public termInfoCache: { [key: string]: TermInfo };
   public annotatorTerms: { [key: string]: Term };
   public configuration: Configuration;
   public validationResults: { [vocabularyIri: string]: ConsolidatedResults };
@@ -64,6 +66,7 @@ export default class TermItState {
   public breadcrumbs: Breadcrumb[];
 
   public annotatorLegendFilter: AnnotatorLegendFilter;
+  public runningTasks: { [key: string]: LongRunningTask };
 
   // Administration
   public users: User[];
@@ -94,6 +97,7 @@ export default class TermItState {
     this.lastModified = {};
     this.routeTransitionPayload = {};
     this.labelCache = {};
+    this.termInfoCache = {};
     this.sidebarExpanded = true;
     this.desktopView = Utils.isDesktopView();
     this.annotatorTerms = {};
@@ -104,6 +108,7 @@ export default class TermItState {
     this.users = [];
     this.accessLevels = {};
     this.annotatorLegendFilter = new AnnotatorLegendFilter();
+    this.runningTasks = {};
   }
 
   /**

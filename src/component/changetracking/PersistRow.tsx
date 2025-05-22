@@ -4,7 +4,7 @@ import PersistRecord from "../../model/changetracking/PersistRecord";
 import { Badge } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 
-interface PersistRowProps {
+export interface PersistRowProps {
   record: PersistRecord;
 }
 

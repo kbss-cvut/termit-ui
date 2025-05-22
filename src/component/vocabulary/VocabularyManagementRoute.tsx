@@ -7,7 +7,7 @@ import VocabularyRoute from "./VocabularyRoute";
 import CreateVocabularyRoute from "./CreateVocabularyRoute";
 import VocabularyManagement from "./VocabularyManagement";
 import { useI18n } from "../hook/useI18n";
-import ImportVocabularyRoute from "./ImportVocabularyRoute";
+import ImportVocabularyRoute from "./importing/ImportVocabularyRoute";
 
 const VocabularyManagementRoute: React.FC = () => {
   const { i18n } = useI18n();

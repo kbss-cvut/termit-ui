@@ -24,12 +24,19 @@ import Vocabulary, {
 import Routes, { Route } from "../util/Routes";
 import { ErrorData } from "../model/ErrorInfo";
 import { AxiosResponse } from "axios";
-import * as jsonld from "jsonld";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
-import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../model/Term";
+import Term, {
+  CONTEXT as TERM_CONTEXT,
+  TermData,
+  TermInfo,
+} from "../model/Term";
 import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
-import ActionType from "./ActionType";
+import ActionType, {
+  PendingAsyncAction,
+  RemoveAssetAction,
+  UpdateAssetAction,
+} from "./ActionType";
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
@@ -57,13 +64,14 @@ import {
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
 import NotificationType from "../model/NotificationType";
-import ValidationResult, {
-  CONTEXT as VALIDATION_RESULT_CONTEXT,
-} from "../model/ValidationResult";
-import { ConsolidatedResults } from "../model/ConsolidatedResults";
 import UserRole, { UserRoleData } from "../model/UserRole";
 import { loadTermCount } from "./AsyncVocabularyActions";
 import { getApiPrefix } from "./ActionUtils";
+import { getShortLocale } from "../util/IntlUtil";
+import {
+  getChangeTypeUri,
+  VocabularyContentChangeFilterData,
+} from "../model/filter/VocabularyContentChangeFilterData";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -85,8 +93,38 @@ import { getApiPrefix } from "./ActionUtils";
  * TODO Consider splitting this file into multiple, it is becoming too long
  */
 
+/**
+ * Stores pending promises with requests the backend, mostly calls to get labels or TermInfo, where it happens that
+ * multiple requests to get the same resource are send almost simultaneously. This allows reusing the same promise.
+ */
+const pendingRequests: { [key: string]: Promise<any> } = {};
+
+/**
+ * @returns true if there is a pending action that has not been aborted
+ */
 export function isActionRequestPending(state: TermItState, action: Action) {
-  return state.pendingActions[action.type] !== undefined;
+  let pendingAction = state.pendingActions[action.type];
+  let isAborted = isActionStatusAborted(pendingAction);
+
+  return pendingAction !== undefined && !isAborted;
+}
+
+/**
+ * @returns True if the status is AbortController with aborted signal, false otherwise
+ */
+export function isActionStatusAborted(status: PendingAsyncAction): boolean {
+  return status?.abortController?.signal.aborted === true;
+}
+
+/**
+ * Checks if a pending action exists in the TermItState,
+ * and if it does and the AbortController is available in the state, the pending action is aborted.
+ */
+export function abortPendingActionRequest(state: TermItState, action: Action) {
+  const pendingAction = state.pendingActions[action.type];
+  if (pendingAction?.abortController) {
+    pendingAction.abortController.abort();
+  }
 }
 
 export function createVocabulary(vocabulary: Vocabulary) {
@@ -122,13 +160,10 @@ export function createVocabulary(vocabulary: Vocabulary) {
   };
 }
 
-export function loadVocabulary(
-  iri: IRI,
-  withValidation = true,
-  timestamp?: string
-) {
+export function loadVocabulary(iri: IRI, timestamp?: string) {
   const action = {
     type: ActionType.LOAD_VOCABULARY,
+    iri: IRIImpl.toString(iri),
   };
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
     if (isActionRequestPending(getState(), action)) {
@@ -152,9 +187,6 @@ export function loadVocabulary(
       )
       .then((data: VocabularyData) => {
         dispatch(loadImportedVocabulariesIntoState(actualIri));
-        if (withValidation) {
-          dispatch(validateVocabulary(actualIri));
-        }
         dispatch(loadTermCount(actualIri));
         return dispatch(
           asyncActionSuccessWithPayload(action, new Vocabulary(data))
@@ -415,7 +447,7 @@ export function removeAsset(
   transitionRoute: Route,
   options?: {}
 ) {
-  const action = { type };
+  const action: RemoveAssetAction = { type, iri: IRIImpl.toString(iri) };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
     return Ajax.delete(
@@ -449,7 +481,7 @@ export function loadVocabularies() {
     if (isActionRequestPending(getState(), action)) {
       return Promise.resolve({});
     }
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     return Ajax.get(`${getApiPrefix(getState())}/vocabularies`)
       .then((data: object[]) =>
         data.length !== 0
@@ -554,15 +586,57 @@ export function genericLoadTerms(
   };
 }
 
-export function loadTermByIri(termIri: IRI) {
+export function loadTermInfoByIri(
+  termIri: IRI,
+  abortController: AbortController = new AbortController()
+) {
+  const action = {
+    type: ActionType.LOAD_TERM_INFO,
+  };
+  const strIri = IRIImpl.toString(termIri);
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    if (getState().termInfoCache[strIri]) {
+      return Promise.resolve(getState().termInfoCache[strIri]);
+    }
+    if (pendingRequests[strIri] !== undefined) {
+      return pendingRequests[strIri];
+    }
+    dispatch(asyncActionRequest(action, true, abortController));
+    const promise = Ajax.get(
+      `${getApiPrefix(getState())}/terms/${termIri.fragment}/info`,
+      param("namespace", termIri.namespace).signal(abortController)
+    )
+      .then((data: object) =>
+        JsonLdUtils.compactAndResolveReferences<TermInfo>(data, TERM_CONTEXT)
+      )
+      .then((data: TermInfo) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return null;
+      })
+      .finally(() => {
+        delete pendingRequests[strIri];
+      });
+    pendingRequests[strIri] = promise;
+    return promise;
+  };
+}
+
+export function loadTermByIri(
+  termIri: IRI,
+  abortController: AbortController = new AbortController()
+) {
   const action = {
     type: ActionType.LOAD_TERM_BY_IRI,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    dispatch(asyncActionRequest(action, true));
+    dispatch(asyncActionRequest(action, true, abortController));
     return Ajax.get(
       `${getApiPrefix(getState())}/terms/${termIri.fragment}`,
-      param("namespace", termIri.namespace)
+      param("namespace", termIri.namespace).signal(abortController)
     )
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferences<TermData>(data, TERM_CONTEXT)
@@ -577,80 +651,6 @@ export function loadTermByIri(termIri: IRI) {
       });
   };
 }
-
-export function validateVocabulary(
-  vocabularyIri: IRI,
-  apiPrefix: string = Constants.API_PREFIX
-) {
-  const action = {
-    type: ActionType.FETCH_VALIDATION_RESULTS,
-  };
-
-  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
-    if (isActionRequestPending(getState(), action)) {
-      return Promise.resolve([]);
-    }
-
-    dispatch(asyncActionRequest(action));
-    return Ajax.get(
-      `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/validate`,
-      param("namespace", vocabularyIri.namespace)
-    )
-      .then((data: object[]) =>
-        data.length !== 0
-          ? JsonLdUtils.compactAndResolveReferencesAsArray<ValidationResult>(
-              data,
-              VALIDATION_RESULT_CONTEXT
-            )
-          : []
-      )
-      .then((data: ValidationResult[]) => consolidateResults(data))
-      .then((data: ConsolidatedResults) =>
-        dispatch(
-          asyncActionSuccessWithPayload(action, {
-            [IRIImpl.toString(vocabularyIri)]: data,
-          })
-        )
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return [];
-      });
-  };
-}
-
-function consolidateResults(validationResults: ValidationResult[]) {
-  const consolidatedResults = {};
-  validationResults.forEach((r) => {
-    consolidatedResults![r.term.iri!] = consolidatedResults![r.term.iri!] || [];
-    consolidatedResults![r.term.iri!].push(r);
-  });
-  return consolidatedResults;
-}
-
-export function executeQuery(queryString: string) {
-  const action = {
-    type: ActionType.EXECUTE_QUERY,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.get(
-      Constants.API_PREFIX + "/query",
-      params({ query: queryString })
-    )
-      .then((data: object) => jsonld.expand(data))
-      .then((data: object) =>
-        dispatch(SyncActions.executeQuerySuccess(queryString, data))
-      )
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return dispatch(
-          SyncActions.publishMessage(new Message(error, MessageType.ERROR))
-        );
-      });
-  };
-}
-
 export function loadTypes() {
   const action = {
     type: ActionType.LOAD_TYPES,
@@ -741,17 +741,7 @@ export function executeFileTextAnalysis(fileIri: IRI, vocabularyIri: string) {
       params(reqParams)
     )
       .then(() => {
-        dispatch(asyncActionSuccess(action));
-        return dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId: "file.text-analysis.finished.message",
-              },
-              MessageType.SUCCESS
-            )
-          )
-        );
+        return dispatch(asyncActionSuccess(action));
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
@@ -893,8 +883,9 @@ export function saveFileContent(fileIri: IRI, fileContent: string) {
 }
 
 export function updateTerm(term: Term) {
-  const action = {
+  const action: UpdateAssetAction = {
     type: ActionType.UPDATE_TERM,
+    iri: term.iri,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action));
@@ -922,7 +913,6 @@ export function updateTerm(term: Term) {
             updated: term,
           })
         );
-        dispatch(validateVocabulary(vocabularyIri));
         return dispatch(
           publishMessage(
             new Message(
@@ -942,8 +932,9 @@ export function updateTerm(term: Term) {
 }
 
 export function updateResource(res: Resource) {
-  const action = {
+  const action: UpdateAssetAction = {
     type: ActionType.UPDATE_RESOURCE,
+    iri: res.iri,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
@@ -975,8 +966,9 @@ export function updateResource(res: Resource) {
 }
 
 export function updateVocabulary(vocabulary: Vocabulary) {
-  const action = {
+  const action: UpdateAssetAction = {
     type: ActionType.UPDATE_VOCABULARY,
+    iri: vocabulary.iri,
   };
   return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
@@ -1018,13 +1010,6 @@ export function updateVocabulary(vocabulary: Vocabulary) {
 }
 
 /**
- * Stores pending promises with requests to get labels so that
- * they can be reused when multiple calls for the same label
- * arrive simultaneously (i.e., while one is already running).
- */
-const pendingGetLabelRequests: { [key: string]: Promise<any> } = {};
-
-/**
  * Fetches RDFS:label of a resource with the specified identifier.
  * @param iri Resource identifier
  */
@@ -1036,13 +1021,17 @@ export function getLabel(iri: string) {
     if (getState().labelCache[iri]) {
       return Promise.resolve(getState().labelCache[iri]);
     }
-    if (pendingGetLabelRequests[iri] !== undefined) {
-      return pendingGetLabelRequests[iri];
+    if (pendingRequests[iri] !== undefined) {
+      return pendingRequests[iri];
     }
+
+    // currently active language
+    const locale = getShortLocale(getState().intl.locale);
+
     dispatch(asyncActionRequest(action, true));
     const promise = Ajax.get(
       Constants.API_PREFIX + "/data/label",
-      param("iri", iri)
+      param("iri", iri).param("language", locale)
     )
       .then((data) => {
         const payload = {};
@@ -1055,42 +1044,10 @@ export function getLabel(iri: string) {
         return undefined;
       })
       .finally(() => {
-        delete pendingGetLabelRequests[iri];
+        delete pendingRequests[iri];
       });
-    pendingGetLabelRequests[iri] = promise;
+    pendingRequests[iri] = promise;
     return promise;
-  };
-}
-
-/**
- * Fetches RDFS:resource with the specified identifier.
- * @param iri Resource identifier
- */
-export function getRdfsResource(iri: IRI) {
-  const action = {
-    type: ActionType.GET_RESOURCE,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.get(
-      Constants.API_PREFIX + "/data/resource",
-      param("iri", iri.toString())
-    )
-      .then((data: object) =>
-        JsonLdUtils.compactAndResolveReferences<RdfsResource>(
-          data,
-          RDFS_RESOURCE_CONTEXT
-        )
-      )
-      .then((data: RdfsResource) => {
-        const res = new RdfsResource(data);
-        dispatch(asyncActionSuccessWithPayload(action, res));
-        return res;
-      })
-      .catch((error: ErrorData) => {
-        dispatch(asyncActionFailure(action, error));
-        return undefined;
-      });
   };
 }
 
@@ -1170,43 +1127,23 @@ export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
   };
 }
 
-/**
- * Downloads the content of a file with the specified IRI (assuming it is stored on the server).
- * @param fileIri File identifier
- * @param at Timestamp of the file version to download
- */
-export function exportFileContent(fileIri: IRI, at?: string) {
-  const action = {
-    type: ActionType.EXPORT_FILE_CONTENT,
-  };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
-    const url =
-      Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content";
-    return Ajax.getRaw(
-      url,
-      param("namespace", fileIri.namespace)
-        .param("attachment", "true")
-        .param("at", at)
-        .responseType("arraybuffer")
-    )
-      .then((resp: AxiosResponse) => {
-        const fileName = fileIri.fragment;
-        const mimeType = resp.headers["content-type"];
-        Utils.fileDownload(resp.data, fileName, mimeType);
-        return dispatch(asyncActionSuccess(action));
-      })
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
-export function loadHistory(asset: Asset) {
+export function loadHistory(
+  asset: Asset,
+  filterData?: VocabularyContentChangeFilterData
+) {
   const assetIri = VocabularyUtils.create(asset.iri);
   const historyConf = resolveHistoryLoadingParams(asset, assetIri);
   const action = { type: historyConf.actionType };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(historyConf.url, param("namespace", assetIri.namespace))
+    let params = param("namespace", assetIri.namespace);
+    if (filterData) {
+      for (const [key, value] of Object.entries(filterData)) {
+        params = params.param(key, value);
+      }
+      params = params.param("type", getChangeTypeUri(filterData));
+    }
+    return Ajax.get(historyConf.url, params)
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<ChangeRecordData>(
           data,
@@ -1279,6 +1216,29 @@ export function invalidateCaches() {
               {
                 messageId:
                   "administration.maintenance.invalidateCaches.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function clearLongRunningTasksQueue() {
+  const action = { type: ActionType.CLEAR_LONG_RUNNING_TASKS_QUEUE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.delete(`${Constants.API_PREFIX}/admin/long-running-tasks`)
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId:
+                  "administration.maintenance.clearLongRunningTasksQueue.success",
               },
               MessageType.SUCCESS
             )

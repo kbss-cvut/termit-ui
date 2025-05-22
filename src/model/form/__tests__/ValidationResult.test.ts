@@ -11,7 +11,7 @@ describe("ValidationResult", () => {
         "en"
       );
       expect(formResult.severity).toBeDefined();
-      expect(formResult.message).not.toBeDefined();
+      expect(formResult.message).toBeDefined();
     });
 
     it("constructs instance with correct severity", () => {

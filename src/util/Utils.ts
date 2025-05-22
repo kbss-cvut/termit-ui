@@ -3,8 +3,6 @@
  */
 import Asset, { HasLabel, HasTypes } from "../model/Asset";
 import VocabularyUtils, { IRI, IRIImpl } from "./VocabularyUtils";
-import { match } from "react-router";
-import { Location } from "history";
 import AppNotification, {
   AssetUpdateNotification,
 } from "../model/AppNotification";
@@ -51,10 +49,11 @@ const Utils = {
    */
   isLink(str: string): boolean {
     return (
-      str.startsWith("http://") ||
-      str.startsWith("https://") ||
-      str.startsWith("ftp://") ||
-      str.startsWith("sftp://")
+      str !== undefined &&
+      (str.startsWith("http://") ||
+        str.startsWith("https://") ||
+        str.startsWith("ftp://") ||
+        str.startsWith("sftp://"))
     );
   },
 
@@ -87,17 +86,6 @@ const Utils = {
       get: (searchParams, prop) => searchParams.getAll(prop.toString()),
     });
     return params[paramName];
-  },
-
-  /**
-   * Extracts asset IRI from the specified route props.
-   *
-   * Uses match param {@code name} as fragment value. Namespace is extracted from location search string.
-   */
-  extractAssetIri(routeMatch: match<any>, location: Location) {
-    const namespace = this.extractQueryParam(location.search, "namespace");
-    const normalizedName = routeMatch.params.name;
-    return { fragment: normalizedName, namespace };
   },
 
   /**
@@ -362,6 +350,24 @@ const Utils = {
       }
     }
     return true;
+  },
+
+  notBlank(str?: string | null) {
+    return !!(str && str.trim().length > 0);
+  },
+
+  shrinkFullIri(iri: string): string {
+    if (iri.indexOf("://") === -1) {
+      return iri; // It is prefixed
+    }
+    const lastSlashIndex = iri.lastIndexOf("/");
+    const lastHashIndex = iri.lastIndexOf("#");
+    return (
+      "..." +
+      iri.substring(
+        lastHashIndex > lastSlashIndex ? lastHashIndex : lastSlashIndex
+      )
+    );
   },
 };
 

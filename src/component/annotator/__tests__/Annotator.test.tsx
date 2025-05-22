@@ -1,6 +1,7 @@
 import {
   mockWindowSelection,
   mountWithIntl,
+  withWebSocket,
 } from "../../../__tests__/environment/Environment";
 import { Element } from "domhandler";
 import { AnnotationSpanProps, Annotator } from "../Annotator";
@@ -30,6 +31,11 @@ import Vocabulary from "../../../model/Vocabulary";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import { MemoryRouter } from "react-router";
 import { AssetData } from "../../../model/Asset";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../../model/AnnotatorLegendFilter";
+import { AnnotatorLegendFilterAction } from "../../../action/ActionType";
 
 jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
 jest.mock("../HighlightTermOccurrencesButton", () => () => (
@@ -47,13 +53,18 @@ describe("Annotator", () => {
     typeof: VocabularyUtils.TERM_OCCURRENCE,
   };
   let mockedCallbackProps: {
-    onUpdate(newHtml: string): void;
+    onUpdate(newHtml: string): Promise<void>;
     publishMessage(msg: Message): void;
     setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
     updateTerm(term: Term): Promise<any>;
     approveTermOccurrence: (occurrence: AssetData) => Promise<any>;
     removeTermOccurrence: (occurrence: AssetData) => Promise<any>;
     saveTermOccurrence: (occurrence: TermOccurrence) => Promise<any>;
+    setAnnotatorLegendFilter: (
+      annotationClass: AnnotationClass,
+      annotationOrigin: AnnotationOrigin,
+      enabled: boolean
+    ) => AnnotatorLegendFilterAction;
   };
   let user: User;
   let file: File;
@@ -66,13 +77,14 @@ describe("Annotator", () => {
 
   beforeEach(() => {
     mockedCallbackProps = {
-      onUpdate: jest.fn(),
+      onUpdate: jest.fn().mockResolvedValue(undefined),
       publishMessage: jest.fn(),
       setTermDefinitionSource: jest.fn().mockResolvedValue(null),
       updateTerm: jest.fn().mockResolvedValue({}),
       approveTermOccurrence: jest.fn().mockResolvedValue({}),
       removeTermOccurrence: jest.fn().mockResolvedValue({}),
       saveTermOccurrence: jest.fn().mockResolvedValue({}),
+      setAnnotatorLegendFilter: jest.fn().mockResolvedValue({}),
     };
     user = Generator.generateUser();
     file = new File({
@@ -89,40 +101,65 @@ describe("Annotator", () => {
 
   it("renders body of provided html content", () => {
     const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <Annotator
-          fileIri={fileIri}
-          vocabularyIri={vocabularyIri}
-          {...mockedCallbackProps}
-          {...stateProps}
-          initialHtml={generalHtmlContent}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={generalHtmlContent}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
     );
 
     expect(wrapper.html().includes(sampleContent)).toBe(true);
   });
 
-  it("renders body of provided html content with replaced anchor hrefs", () => {
+  it("preserves absolute URL href anchors", () => {
     const htmlContent = surroundWithHtml(
       'This is a <a href="https://example.org/link">link</a>'
     );
 
     const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <Annotator
-          fileIri={fileIri}
-          vocabularyIri={vocabularyIri}
-          {...mockedCallbackProps}
-          {...stateProps}
-          initialHtml={htmlContent}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={htmlContent}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
     );
     const sampleOutput =
-      'This is a <a data-href="https://example.org/link">link</a>';
+      'This is a <a href="https://example.org/link" target="_blank" rel="noopener noreferrer">link</a>';
+    expect(wrapper.html().includes(sampleOutput)).toBe(true);
+  });
+
+  it("renders body of provided html content with replaced relative anchor hrefs", () => {
+    const htmlContent = surroundWithHtml('This is a <a href="./link">link</a>');
+
+    const wrapper = mountWithIntl(
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={htmlContent}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
+    );
+    const sampleOutput = 'This is a <a data-href="./link">link</a>';
     expect(wrapper.html().includes(sampleOutput)).toBe(true);
   });
 
@@ -131,16 +168,18 @@ describe("Annotator", () => {
       createAnnotation(suggestedOccProps, "města")
     );
     const wrapper = mountWithIntlAttached(
-      <MemoryRouter>
-        <Annotator
-          fileIri={fileIri}
-          vocabularyIri={vocabularyIri}
-          {...mockedCallbackProps}
-          {...stateProps}
-          initialHtml={htmlWithOccurrence}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
+      withWebSocket(
+        <MemoryRouter>
+          <Annotator
+            fileIri={fileIri}
+            vocabularyIri={vocabularyIri}
+            {...mockedCallbackProps}
+            {...stateProps}
+            initialHtml={htmlWithOccurrence}
+            {...intlFunctions()}
+          />
+        </MemoryRouter>
+      )
     );
 
     const constructedAnnProps = wrapper.find(Annotation).props();
@@ -149,6 +188,39 @@ describe("Annotator", () => {
     expect(constructedAnnProps).toEqual(
       expect.objectContaining(expectedAnnProps)
     );
+  });
+
+  it("passes file language to content rendering", () => {
+    file.language = "en";
+    const wrapper = shallow<Annotator>(
+      <Annotator
+        fileIri={fileIri}
+        vocabularyIri={vocabularyIri}
+        {...stateProps}
+        {...mockedCallbackProps}
+        initialHtml={generalHtmlContent}
+        {...intlFunctions()}
+      />
+    );
+    const contentRenderer = wrapper.find(AnnotatorContent);
+    expect(contentRenderer.props().annotationLanguage).toEqual(file.language);
+  });
+
+  it("passes provided annotation language to content rendering", () => {
+    file.language = "en";
+    const wrapper = shallow<Annotator>(
+      <Annotator
+        fileIri={fileIri}
+        vocabularyIri={vocabularyIri}
+        {...stateProps}
+        {...mockedCallbackProps}
+        initialHtml={generalHtmlContent}
+        annotationLanguage={"cs"}
+        {...intlFunctions()}
+      />
+    );
+    const contentRenderer = wrapper.find(AnnotatorContent);
+    expect(contentRenderer.props().annotationLanguage).toEqual("cs");
   });
 
   describe("on mount", () => {
@@ -476,7 +548,19 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
+        setStart: function (node: Node, offset: number) {
+          this.startContainer = node;
+          this.startOffset = offset;
+        },
+        setEnd: function (node: Node, offset: number) {
+          this.endContainer = node;
+          this.endOffset = offset;
+        },
       };
+
       HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
     });
 
@@ -485,22 +569,26 @@ describe("Annotator", () => {
         isCollapsed: false,
         rangeCount: 1,
         getRangeAt: () => range,
+        removeAllRanges: () => null,
+        addRange: (r: Range) => (range = r),
       });
       window.getComputedStyle = jest.fn().mockReturnValue({
         getPropertyValue: () => "16px",
       });
       HtmlDomUtils.isInPopup = jest.fn().mockReturnValue(false);
       const wrapper = mountWithIntl(
-        <MemoryRouter>
-          <Annotator
-            fileIri={fileIri}
-            vocabularyIri={vocabularyIri}
-            {...mockedCallbackProps}
-            {...stateProps}
-            initialHtml={generalHtmlContent}
-            {...intlFunctions()}
-          />
-        </MemoryRouter>
+        withWebSocket(
+          <MemoryRouter>
+            <Annotator
+              fileIri={fileIri}
+              vocabularyIri={vocabularyIri}
+              {...mockedCallbackProps}
+              {...stateProps}
+              initialHtml={generalHtmlContent}
+              {...intlFunctions()}
+            />
+          </MemoryRouter>
+        )
       );
       wrapper.find("#annotator").simulate("mouseUp");
       wrapper.update();
@@ -512,16 +600,18 @@ describe("Annotator", () => {
         getPropertyValue: () => "16px",
       });
       const wrapper = mountWithIntl(
-        <MemoryRouter>
-          <Annotator
-            fileIri={fileIri}
-            vocabularyIri={vocabularyIri}
-            {...mockedCallbackProps}
-            {...stateProps}
-            initialHtml={generalHtmlContent}
-            {...intlFunctions()}
-          />
-        </MemoryRouter>
+        withWebSocket(
+          <MemoryRouter>
+            <Annotator
+              fileIri={fileIri}
+              vocabularyIri={vocabularyIri}
+              {...mockedCallbackProps}
+              {...stateProps}
+              initialHtml={generalHtmlContent}
+              {...intlFunctions()}
+            />
+          </MemoryRouter>
+        )
       );
       wrapper.find("#annotator").simulate("mouseUp");
       expect(wrapper.find(SelectionPurposeDialog).props().show).toBeTruthy();
@@ -573,6 +663,9 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
       };
     });
 
@@ -621,6 +714,9 @@ describe("Annotator", () => {
         startContainer: container,
         endContainer: container,
         commonAncestorContainer: container,
+        cloneRange: function () {
+          return Object.assign({}, this);
+        },
       };
     });
 
@@ -766,11 +862,13 @@ describe("Annotator", () => {
       });
       const term = Generator.generateTerm();
       wrapper.instance().assignNewTerm(term);
-      expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
-      const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)
-        .mock.calls[0][0];
-      expect(src.term).toEqual(term);
-      expect(src.target.source.iri).toEqual(fileIri.toString());
+      return Promise.resolve().then(() => {
+        expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
+        const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)
+          .mock.calls[0][0];
+        expect(src.term).toEqual(term);
+        expect(src.target.source.iri).toEqual(fileIri.toString());
+      });
     });
   });
 
@@ -795,7 +893,7 @@ describe("Annotator", () => {
       term = Generator.generateTerm();
     });
 
-    it("creates term definition source when annotation is definition", () => {
+    it("creates term definition source when annotation is definition", async () => {
       const wrapper = shallow<Annotator>(
         <Annotator
           fileIri={fileIri}
@@ -812,7 +910,7 @@ describe("Annotator", () => {
       wrapper.setState({
         existingTermDefinitionAnnotationElement: annotationNode as Element,
       });
-      wrapper.instance().onSaveTermDefinition(term);
+      await wrapper.instance().onSaveTermDefinition(term);
 
       expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
       const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)
