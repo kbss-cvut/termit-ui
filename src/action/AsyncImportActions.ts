@@ -92,7 +92,7 @@ export function importExternalSkosAsNewVocabulary(
   const action = { type: ActionType.IMPORT_EXTERNAL_VOCABULARIES };
   const formData = new FormData();
 
-  // Přidáme každý IRI zvlášť do formData (pole)
+  // Adds all IRIs into the formData as list
   vocabularyIris.forEach((iri) => {
     formData.append("vocabularyIris", iri);
   });
@@ -106,7 +106,6 @@ export function importExternalSkosAsNewVocabulary(
       contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
     )
       .then((response) => {
-        // processSuccess(dispatch, action, response);
         return response.headers[Constants.Headers.LOCATION];
       })
       .catch((error) => {

@@ -352,6 +352,7 @@ const en = {
       "Load available vocabularies and select which one you want to import. ",
     "vocabulary.import.dialog.external.errormessage":
       "There are no available vocabularies. ",
+    "vocabulary.import.dialog.external.button": "Import selected vocabularies",
     "vocabulary.import.title": "Import vocabulary",
     "vocabulary.import.success": "Vocabulary successfully imported.",
     "vocabulary.import.allow-changing-identifiers":

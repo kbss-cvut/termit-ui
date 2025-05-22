@@ -1,4 +1,4 @@
-import { Button, Col, Form, FormGroup, Label, Row } from "reactstrap";
+import { Button, Col, Form, FormGroup, Row } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
 import "./ImportVocabularyDialog.scss";
 import Select from "react-select";
@@ -19,7 +19,7 @@ const ImportExternalVocabularyDialog = (
 ) => {
   const { i18n, locale } = useI18n();
 
-  // 1. Místní stav pro vybrané položky
+  // State for selected options
   const [selectedOptions, setSelectedOptions] = useState<
     { value: string; label: string }[]
   >([]);
@@ -29,7 +29,7 @@ const ImportExternalVocabularyDialog = (
     label: getLocalized(item.label, locale),
   }));
 
-  // 2. Funkce pro odeslání
+  // Function for sending selected options
   const handleImport = () => {
     const selectedIris = selectedOptions.map((opt) => opt.value);
     props.onCreate(selectedIris, true);
@@ -44,9 +44,6 @@ const ImportExternalVocabularyDialog = (
             </p>
           )}
           <FormGroup>
-            <Label for="SelectVocabularies">
-              Select Multiple (React select)
-            </Label>
             <Select
               id="SelectVocabulariesReact"
               isMulti
@@ -65,7 +62,7 @@ const ImportExternalVocabularyDialog = (
             isDisabled={options.length === 0}
             onClick={handleImport}
           >
-            import selected Vocabularies.
+            {i18n("vocabulary.import.dialog.external.button")}
           </Button>
         </Col>
       </Row>

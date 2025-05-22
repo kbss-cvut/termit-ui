@@ -361,6 +361,7 @@ const cs = {
       "Načti dostupné slovníky a vyber ty, které chceš importovat. ",
     "vocabulary.import.dialog.external.errormessage":
       "Žádné slovníky k importu nejsou dostupné. ",
+    "vocabulary.import.dialog.external.button": "Importuj vybrané slovníky",
     "vocabulary.import.title": "Importovat slovník",
     "vocabulary.import.success": "Slovník úspěšně importován.",
     "vocabulary.import.allow-changing-identifiers":
