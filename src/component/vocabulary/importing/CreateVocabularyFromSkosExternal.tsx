@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { trackPromise } from "react-promise-tracker";
 import {
   getAvailableVocabularies,
-  importSkosAsNewVocabulary,
+  importExternalSkosAsNewVocabulary,
 } from "../../../action/AsyncImportActions";
 import ImportExternalVocabularyDialog from "./ImportExternalVocabularyDialog";
 import RdfsResource from "../../../model/RdfsResource";
@@ -21,9 +21,9 @@ const CreateVocabularyFromSkosExternal: React.FC = () => {
     RdfsResource[]
   >([]);
   const dispatch: ThunkDispatch = useDispatch();
-  const importExternalSkos = (file: File, rename: Boolean) =>
+  const importExternalSkos = (selectedItems: string[], rename: Boolean) =>
     trackPromise(
-      dispatch(importSkosAsNewVocabulary(file, rename)),
+      dispatch(importExternalSkosAsNewVocabulary(selectedItems, rename)),
       "import-vocabulary"
     ).then((location?: string) => {
       if (location) {

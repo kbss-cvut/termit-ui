@@ -85,6 +85,37 @@ export function importSkosAsNewVocabulary(data: File, rename: Boolean) {
   };
 }
 
+export function importExternalSkosAsNewVocabulary(
+  vocabularyIris: string[],
+  rename: Boolean
+) {
+  const action = { type: ActionType.IMPORT_EXTERNAL_VOCABULARIES };
+  const formData = new FormData();
+
+  // Přidáme každý IRI zvlášť do formData (pole)
+  vocabularyIris.forEach((iri) => {
+    formData.append("vocabularyIris", iri);
+  });
+
+  formData.append("rename", rename.toString());
+
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/vocabularies/import`,
+      contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
+    )
+      .then((response) => {
+        // processSuccess(dispatch, action, response);
+        return response.headers[Constants.Headers.LOCATION];
+      })
+      .catch((error) => {
+        processError(dispatch, action)(error);
+        return undefined;
+      });
+  };
+}
+
 const processSuccess = (
   dispatch: ThunkDispatch,
   action: Action,
