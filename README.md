@@ -32,6 +32,10 @@ where `<TERMIT_BACKEND_URL>` denotes the URL where [TermIt backend](https://gith
 Other Docker runtime configuration parameters are: `DEPLOYMENT_NAME`, `ADMIN_REGISTRATION_ONLY`, and `SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED`.
 See [doc/setup.md](doc/setup.md) for their explanation.
 
+## Getting TermIt
+
+Docker images of TermIt backend are available at [DockerHub](https://hub.docker.com/r/kbsscvut/termit-ui).
+
 ## License
 
 Licensed under GPL v3.0.
