@@ -1,3 +1,15 @@
+#### Verze 3.5.1
+
+- Opravena chyba mazání pojmu, pro který existují nepotvrzené výskyty v jiných zdrojích/pojmech.
+- Zlepšení výkonu použitím větší cache.
+
+#### Verze 3.5.0
+
+- Přidána možnost zakázat veřejné prohlížení slovníků.
+- Přidána možnost řídit anonymní přístup k prohlížení slovníku.
+- Vylepšena práce s výskyty pojmů v souborech - při analýze po reuploadu souboru jsou použity existující výskyty.
+- Různá výkonnostní vylepšení.
+
 #### Verze 3.4.0
 
 - Přidána podpora pro záznamy o smazání pojmů. Ty jsou zobrazovány i v grafu aktivity slovníku.

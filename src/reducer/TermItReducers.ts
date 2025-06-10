@@ -10,10 +10,12 @@ import ActionType, {
   NotificationAction,
   PendingAsyncAction,
   PushRoutingPayloadAction,
+  RemoveAssetAction,
   SearchAction,
   SearchResultAction,
   SelectingTermsAction,
   SwitchLanguageAction,
+  UpdateAssetAction,
   UpdateLastModifiedAction,
 } from "../action/ActionType";
 import TermItState, { DefinitionallyRelatedTerms } from "../model/TermItState";
@@ -27,7 +29,7 @@ import {
 import AsyncActionStatus from "../action/AsyncActionStatus";
 import Vocabulary, { EMPTY_VOCABULARY } from "../model/Vocabulary";
 import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
-import Term from "../model/Term";
+import Term, { TermInfo } from "../model/Term";
 import RdfsResource from "../model/RdfsResource";
 import AppNotification from "../model/AppNotification";
 import SearchResult from "../model/search/SearchResult";
@@ -43,12 +45,12 @@ import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
 
-function isAsyncSuccess(action: AsyncAction) {
-  return action.status === AsyncActionStatus.SUCCESS;
+function isAsyncSuccess(action: Action) {
+  return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
 }
 
 /**
- * Handles changes to the currently logged in user.
+ * Handles changes to the currently logged-in user.
  *
  * The initial state is an empty user, which basically shouldn't be allowed to do anything.
  */
@@ -505,6 +507,39 @@ function labelCache(
   return state;
 }
 
+/**
+ * TermInfo cache.
+ *
+ * It is evicted on updates coming from this client. However, changes made on server may cause its content to become stale.
+ * However, such changes will likely be infrequent and the worst that can happen is that the user will click on a link
+ * that leads to a deleted term or a term whose label is now different. It seems like a reasonable trade-off for decreasing
+ * the traffic between backend and frontend.
+ */
+function termInfoCache(
+  state: { [key: string]: TermInfo } = {},
+  action: Action
+) {
+  if (action.type === ActionType.LOAD_TERM_INFO && isAsyncSuccess(action)) {
+    return Object.assign(
+      {},
+      state,
+      (action as AsyncActionSuccess<TermInfo>).payload
+    );
+  } else if (
+    action.type === ActionType.REMOVE_VOCABULARY_TERM &&
+    isAsyncSuccess(action)
+  ) {
+    const newState = Object.assign({}, state);
+    delete newState[(action as RemoveAssetAction).iri];
+    return newState;
+  } else if (action.type === ActionType.UPDATE_TERM && isAsyncSuccess(action)) {
+    const newState = Object.assign({}, state);
+    delete newState[(action as UpdateAssetAction).iri];
+    return newState;
+  }
+  return state;
+}
+
 function sidebarExpanded(state: boolean = true, action: Action) {
   switch (action.type) {
     case ActionType.TOGGLE_SIDEBAR:
@@ -737,6 +772,7 @@ const rootReducer = combineReducers<TermItState>({
   lastModified,
   routeTransitionPayload,
   labelCache,
+  termInfoCache,
   sidebarExpanded,
   desktopView,
   annotatorTerms,

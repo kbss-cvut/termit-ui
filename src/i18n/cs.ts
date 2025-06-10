@@ -228,6 +228,12 @@ const cs = {
       "Vyprázdnit interní cache systému",
     "administration.maintenance.invalidateCaches.success":
       "Cache úspěšně vyprázdněna.",
+    "administration.maintenance.clearLongRunningTasksQueue":
+      "Vyprázdnit frontu procesů na pozadí",
+    "administration.maintenance.clearLongRunningTasksQueue.tooltip":
+      "Vyprázdnit frontu procesů čekajících na zpracování na pozadí",
+    "administration.maintenance.clearLongRunningTasksQueue.success":
+      "Fronta procesů na pozadí úspěšně vyprázdněna.",
     "administration.groups": "Uživatelské skupiny",
     "administration.groups.create": "Vytvořit skupinu",
     "administration.groups.create.tooltip":
@@ -817,6 +823,12 @@ const cs = {
       "Excel obsahuje více pojmů se stejným názvem.",
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
+    "error.term.remove.annotationsExist":
+      "Pojem nelze odstranit, protože se je použit k anotaci jiných pojmů či zdrojů: {resources}",
+    "error.term.remove.hasSubTerms":
+      "Pojem nelze odstranit, protože má podřazené pojmy: {subTerms}",
+    "error.term.remove.skosRelationshipsExist":
+      "Pojem nelze odstranit, protože je propojen s jinými pojmy těmito SKOS vztahy: {properties}",
 
     "error.invalidUriCharacter":
       'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',

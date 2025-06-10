@@ -37,10 +37,12 @@ export const TermDefinitionSourceLink: React.FC<
     if (!file || !file.owner) {
       return;
     }
-    // assert target.selectors.length === 1
+    const selector = Utils.sanitizeArray(target.selectors).find((s) =>
+      Utils.sanitizeArray(s.types).includes(VocabularyUtils.TEXT_QUOTE_SELECTOR)
+    );
     dispatch(
       pushRoutingPayload(Routes.annotateFile, {
-        selector: Utils.sanitizeArray(target.selectors)[0],
+        selector,
       })
     );
     const ownerIri = VocabularyUtils.create(file.owner.iri!);

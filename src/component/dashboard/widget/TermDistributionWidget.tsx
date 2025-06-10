@@ -1,11 +1,10 @@
 import React from "react";
 import { useI18n } from "../../hook/useI18n";
 import { Card, CardBody, CardHeader } from "reactstrap";
-import TermFrequency from "../../statistics/termfrequency/TermFrequency";
-import raw from "raw.macro";
+import TermDistribution from "../../statistics/termfrequency/TermDistribution";
 
-const TermFrequencyWidget: React.FC = () => {
-  const { i18n, locale } = useI18n();
+const TermDistributionWidget: React.FC = () => {
+  const { i18n } = useI18n();
 
   return (
     <Card className="h-100">
@@ -13,13 +12,10 @@ const TermFrequencyWidget: React.FC = () => {
         {i18n("dashboard.widget.typeFrequency.title")}
       </CardHeader>
       <CardBody className="p-1">
-        <TermFrequency
-          sparqlQuery={raw("../../statistics/termfrequency/TermFrequency.rq")}
-          lang={locale}
-        />
+        <TermDistribution />
       </CardBody>
     </Card>
   );
 };
 
-export default TermFrequencyWidget;
+export default TermDistributionWidget;

@@ -31,7 +31,7 @@ jest.mock("../../../action/AsyncVocabularyActions", () => ({
 
 jest.mock("../../../action/AsyncActions", () => ({
   ...jest.requireActual("../../../action/AsyncActions"),
-  loadTermByIri: () => () => Promise.resolve(null),
+  loadTermInfoByIri: () => () => Promise.resolve(null),
   getLabel: () => () => Promise.resolve(null),
 }));
 

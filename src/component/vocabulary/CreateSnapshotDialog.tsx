@@ -7,6 +7,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { loadRelatedVocabularies } from "../../action/AsyncVocabularyActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import { trackPromise } from "react-promise-tracker";
 
 interface CreateSnapshotDialogProps {
   vocabulary: Vocabulary;
@@ -25,10 +26,15 @@ const CreateSnapshotDialog: React.FC<CreateSnapshotDialogProps> = ({
   const [related, setRelated] = useState<string[]>([]);
   const dispatch: ThunkDispatch = useDispatch();
   useEffect(() => {
-    dispatch(
-      loadRelatedVocabularies(VocabularyUtils.create(vocabulary.iri))
-    ).then((data) => setRelated(data));
-  }, [dispatch, vocabulary.iri]);
+    if (show && related.length === 0) {
+      trackPromise(
+        dispatch(
+          loadRelatedVocabularies(VocabularyUtils.create(vocabulary.iri))
+        ),
+        "vocabulary-summary"
+      ).then((data) => setRelated(data));
+    }
+  }, [dispatch, vocabulary.iri, show, related.length]);
 
   return (
     <ConfirmCancelDialog

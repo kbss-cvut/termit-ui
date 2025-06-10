@@ -15,6 +15,7 @@ const textQuoteSelectorCtx = {
   exactMatch: VocabularyUtils.NS_TERMIT + "má-přesný-text-quote",
   prefix: VocabularyUtils.NS_TERMIT + "má-prefix-text-quote",
   suffix: VocabularyUtils.NS_TERMIT + "má-suffix-text-quote",
+  elementAbout: VocabularyUtils.DC_IDENTIFIER,
 };
 
 /**
@@ -55,6 +56,8 @@ export interface TermOccurrenceData extends TermAssignmentData {
 
 export default class TermOccurrence extends TermAssignment {
   public target: OccurrenceTarget;
+
+  public elementAbout?: string;
 
   constructor(data: TermOccurrenceData) {
     super(data);

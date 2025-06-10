@@ -290,21 +290,4 @@ describe("AnnotationDomHelper", () => {
       );
     });
   });
-
-  describe("generateSelector", () => {
-    it("creates TextQuoteSelector from text content of the specified node", () => {
-      const selector = sut.generateSelector(annotationSpan);
-      expect(selector).toBeDefined();
-      expect(selector.exactMatch).toEqual(
-        (annotationSpan.children![0] as DataNode).data
-      );
-    });
-
-    it("uses previous and next siblings to provide selector prefix and suffix", () => {
-      const selector = sut.generateSelector(annotationSpan);
-      expect(selector).toBeDefined();
-      expect(selector.prefix).toEqual("First paragraph.\n        ");
-      expect(selector.suffix).toEqual("\n    ");
-    });
-  });
 });

@@ -93,23 +93,28 @@ export const WebSocketWrapper: React.FC<{
   loadDispatchers = true,
 }) => {
   const [securityToken, setSecurityToken] = useState<string>("");
+  const [isTokenInvalid, setIsTokenInvalid] = useState<boolean>(false);
 
   useEffect(() => {
     const callback = () => {
-      const token = SecurityUtils.loadToken();
+      const token = SecurityUtils.loadToken() || "";
       // using length prevents from aborting websocket due to token refresh
       // but will abort it when token is cleared or new one is set
-      if (token.length !== securityToken.length) {
+      if (
+        token.length !== securityToken.length ||
+        (isTokenInvalid && token !== securityToken)
+      ) {
         setSecurityToken(token);
+        setIsTokenInvalid(false);
       }
     };
     callback();
     return BrowserStorage.onTokenChange(callback);
-  }, [securityToken]);
+  }, [securityToken, isTokenInvalid]);
 
   return (
     <Provider
-      enabled={securityToken.trim() !== ""}
+      enabled={securityToken.trim() !== "" && !isTokenInvalid}
       url={Constants.WEBSOCKET_URL}
       connectHeaders={{
         Authorization: securityToken,
@@ -119,6 +124,10 @@ export const WebSocketWrapper: React.FC<{
       onUnhandledReceipt={(receipt) =>
         console.warn("Unhandled STOMP receipt", receipt)
       }
+      onStompError={(frame) => {
+        console.error("WebSocket STOMP error", frame);
+        setIsTokenInvalid(true);
+      }}
     >
       {loadDispatchers && registerDispatchers()}
       {children}

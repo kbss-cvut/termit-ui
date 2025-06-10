@@ -53,7 +53,7 @@ describe("Annotator", () => {
     typeof: VocabularyUtils.TERM_OCCURRENCE,
   };
   let mockedCallbackProps: {
-    onUpdate(newHtml: string): void;
+    onUpdate(newHtml: string): Promise<void>;
     publishMessage(msg: Message): void;
     setTermDefinitionSource(src: TermOccurrence, term: Term): Promise<any>;
     updateTerm(term: Term): Promise<any>;
@@ -77,7 +77,7 @@ describe("Annotator", () => {
 
   beforeEach(() => {
     mockedCallbackProps = {
-      onUpdate: jest.fn(),
+      onUpdate: jest.fn().mockResolvedValue(undefined),
       publishMessage: jest.fn(),
       setTermDefinitionSource: jest.fn().mockResolvedValue(null),
       updateTerm: jest.fn().mockResolvedValue({}),
@@ -862,11 +862,13 @@ describe("Annotator", () => {
       });
       const term = Generator.generateTerm();
       wrapper.instance().assignNewTerm(term);
-      expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
-      const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)
-        .mock.calls[0][0];
-      expect(src.term).toEqual(term);
-      expect(src.target.source.iri).toEqual(fileIri.toString());
+      return Promise.resolve().then(() => {
+        expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
+        const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)
+          .mock.calls[0][0];
+        expect(src.term).toEqual(term);
+        expect(src.target.source.iri).toEqual(fileIri.toString());
+      });
     });
   });
 
@@ -891,7 +893,7 @@ describe("Annotator", () => {
       term = Generator.generateTerm();
     });
 
-    it("creates term definition source when annotation is definition", () => {
+    it("creates term definition source when annotation is definition", async () => {
       const wrapper = shallow<Annotator>(
         <Annotator
           fileIri={fileIri}
@@ -908,7 +910,7 @@ describe("Annotator", () => {
       wrapper.setState({
         existingTermDefinitionAnnotationElement: annotationNode as Element,
       });
-      wrapper.instance().onSaveTermDefinition(term);
+      await wrapper.instance().onSaveTermDefinition(term);
 
       expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
       const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)

@@ -8,15 +8,12 @@ import {
 import VocabularyUtils from "../../util/VocabularyUtils";
 import HtmlParserUtils from "./HtmlParserUtils";
 import HtmlDomUtils from "./HtmlDomUtils";
-import { TextQuoteSelector } from "../../model/TermOccurrence";
 import Utils from "../../util/Utils";
 
 export const AnnotationType = {
   OCCURRENCE: VocabularyUtils.TERM_OCCURRENCE,
   DEFINITION: VocabularyUtils.DEFINITION,
 };
-
-export const SELECTOR_CONTEXT_LENGTH = 32;
 
 function toHtmlString(nodeList: NodeList): string {
   let result = "";
@@ -120,13 +117,6 @@ const AnnotationDomHelper = {
     };
   },
 
-  replaceAnnotation(
-    oldAnnotation: DomHandlerNode,
-    newAnnotation: DomHandlerNode
-  ): void {
-    DomUtils.replaceElement(oldAnnotation, newAnnotation);
-  },
-
   createNewAnnotation(
     about: string,
     nodeList: NodeList,
@@ -158,29 +148,6 @@ const AnnotationDomHelper = {
       return true;
     }
     return score <= Number(node.attribs.score);
-  },
-
-  generateSelector(node: DomHandlerNode): TextQuoteSelector {
-    let prefix = undefined;
-    let suffix = undefined;
-    if (node.previousSibling) {
-      prefix = HtmlDomUtils.getTextContent(node.previousSibling);
-      if (prefix.length > SELECTOR_CONTEXT_LENGTH) {
-        prefix = prefix.substring(prefix.length - SELECTOR_CONTEXT_LENGTH);
-      }
-    }
-    if (node.nextSibling) {
-      suffix = HtmlDomUtils.getTextContent(node.nextSibling);
-      if (suffix.length > SELECTOR_CONTEXT_LENGTH) {
-        suffix = suffix.substring(0, SELECTOR_CONTEXT_LENGTH);
-      }
-    }
-    return {
-      exactMatch: HtmlDomUtils.getTextContent(node),
-      prefix,
-      suffix,
-      types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
-    };
   },
 };
 

@@ -18,6 +18,7 @@ import AccessControlHolderSelector from "./AccessControlHolderSelector";
 import Utils from "../../../util/Utils";
 import classNames from "classnames";
 import { AssetData } from "../../../model/Asset";
+import AccessLevel, { hasAccess } from "../../../model/acl/AccessLevel";
 
 interface AccessControlRecordFormProps {
   record: AccessControlRecord<any>;
@@ -25,6 +26,8 @@ interface AccessControlRecordFormProps {
   existingHolders?: string[]; // Identifiers of existing record holders. They should not be available in the selector
   onChange: (change: Partial<AccessControlRecord<any>>) => void;
 }
+
+const accessGreaterThan = (a: AccessLevel, b?: string) => hasAccess(a, b);
 
 const HOLDER_TYPES = {
   "type.user": VocabularyUtils.USER,
@@ -44,32 +47,50 @@ function resolveHolderType(record: AccessControlRecord<any>): string {
 }
 
 /**
- * The following holder types cannot have the maximum access level.
+ * The following holder types cannot have the specified access levels or greater.
  */
-const RESTRICTED_HOLDER_TYPES = [
-  VocabularyUtils.USER_RESTRICTED,
-  VocabularyUtils.USER_GROUP,
-];
-/**
- * The following holder IRI (Restricted user role) cannot have the maximum access level.
- */
-const RESTRICTED_HOLDER_IRI =
-  VocabularyUtils.NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu";
-
-const MAX_ACCESS_LEVEL =
-  VocabularyUtils.NS_TERMIT +
-  "\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/spr\u00e1va";
+const LIMITED_ACCESS_LEVEL_BY_HOLDER_TYPE = {
+  [VocabularyUtils.USER_ANONYMOUS]: AccessLevel.WRITE,
+  [VocabularyUtils.USER_RESTRICTED]: AccessLevel.SECURITY,
+  [VocabularyUtils.USER_GROUP]: AccessLevel.SECURITY,
+};
 
 function filterAccessLevels(accessLevels: RdfsResource[], holder?: AssetData) {
   if (!holder) {
     return accessLevels;
   }
-  const types = Utils.sanitizeArray(holder.types);
-  const shouldRestrict =
-    holder.iri === RESTRICTED_HOLDER_IRI ||
-    types.some((t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1);
-  return shouldRestrict
-    ? accessLevels.filter((r) => r.iri !== MAX_ACCESS_LEVEL)
+  let limitedAccessLevel: AccessLevel | undefined;
+  if (holder.types == null) {
+    return accessLevels;
+  }
+
+  const types = [...Utils.sanitizeArray(holder.types)];
+  // add the holder iri to the types
+  if (holder.iri) {
+    types.push(holder.iri);
+  }
+
+  types.forEach((type) => {
+    // if the type is in the limited access level list
+    if (LIMITED_ACCESS_LEVEL_BY_HOLDER_TYPE[type]) {
+      if (limitedAccessLevel) {
+        // compare the current max access level with the type max access level
+        // and set the higher one
+        limitedAccessLevel = accessGreaterThan(
+          limitedAccessLevel,
+          LIMITED_ACCESS_LEVEL_BY_HOLDER_TYPE[type]
+        )
+          ? limitedAccessLevel
+          : LIMITED_ACCESS_LEVEL_BY_HOLDER_TYPE[type];
+      } else {
+        // if no max access level is set, set it to the type max access level
+        limitedAccessLevel = LIMITED_ACCESS_LEVEL_BY_HOLDER_TYPE[type];
+      }
+    }
+  });
+
+  return limitedAccessLevel
+    ? accessLevels.filter((r) => !accessGreaterThan(limitedAccessLevel!, r.iri))
     : accessLevels;
 }
 
@@ -77,13 +98,12 @@ function shouldResetAccessLevel(
   holder?: AccessHolderType,
   currentAccessLevel?: string
 ) {
-  if (currentAccessLevel !== MAX_ACCESS_LEVEL || !holder) {
+  if (!holder || !currentAccessLevel || !holder.iri) {
     return false;
   }
-  return (
-    Utils.sanitizeArray(holder.types).some(
-      (t) => RESTRICTED_HOLDER_TYPES.indexOf(t) !== -1
-    ) || holder.iri === RESTRICTED_HOLDER_IRI
+  return accessGreaterThan(
+    LIMITED_ACCESS_LEVEL_BY_HOLDER_TYPE[holder.iri],
+    currentAccessLevel
   );
 }
 
