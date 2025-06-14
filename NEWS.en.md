@@ -1,4 +1,9 @@
-#### Verze 3.5.1
+#### Version 4.0.0
+
+- No feature changes, there were changes to the infrastructure - WAR deployment is no longer supported, validation has
+  been extracted into a separate service.
+
+#### Version 3.5.1
 
 - Fixed an issue with deleting a term with unconfirmed occurrences in other assets.
 - Improved performance by increasing cache size.
@@ -49,7 +54,8 @@
 #### Version 3.1.0
 
 - Added the possibility to highlight occurrences of the selected term in annotator.
-- Improvements to repeated document annotation - remember approved occurrences even if the document content changes (to a degree).
+- Improvements to repeated document annotation - remember approved occurrences even if the document content changes (to
+  a degree).
 - Modified visualization of term occurrences in annotator.
 - Ignore accents when filtering in tables.
 - Bug fixes, dependency updates.
@@ -110,7 +116,8 @@
 
 - Excel export now creates sheets for individual languages used in a vocabulary.
 - Added the possibility to download a file in its current version and the version originally uploaded to TermIt.
-- Minor fixes, improved annotator performance (the document is now not reloaded after a term occurrence is created/confirmed).
+- Minor fixes, improved annotator performance (the document is now not reloaded after a term occurrence is
+  created/confirmed).
 
 #### Version 2.15.0
 
@@ -144,7 +151,9 @@
 
 #### Version 2.12.0
 
-- Added support for snapshots of vocabularies (and their content). Snapshots represent the state of a vocabulary at the moment of creation of the snapshot. This feature is currently mainly on the backend, UI supports only snapshot creation.
+- Added support for snapshots of vocabularies (and their content). Snapshots represent the state of a vocabulary at the
+  moment of creation of the snapshot. This feature is currently mainly on the backend, UI supports only snapshot
+  creation.
 
 #### Version 2.11.3
 
@@ -186,7 +195,8 @@
 #### Version 2.8.0
 
 - Simplified related terms UI.
-- Implemented extension of SKOS export which allows exporting a glossary including terms from other vocabularies that are referenced in the glossary.
+- Implemented extension of SKOS export which allows exporting a glossary including terms from other vocabularies that
+  are referenced in the glossary.
 - Optimized removal of files containing term occurrences.
 - Fixed issues with processing various kinds of accents and apostrophes in Annotace.
 
@@ -225,7 +235,8 @@
 #### Version 2.4.0
 
 - Added a widget with comments to the dashboard.
-- Annotator now displays the vocabulary used to annotate the file content and allows selecting vocabulary for text analysis.
+- Annotator now displays the vocabulary used to annotate the file content and allows selecting vocabulary for text
+  analysis.
 
 #### Version 2.3.1
 
@@ -236,7 +247,8 @@
 #### Version 2.3.0
 
 - Added support for discussion on terms (logged-in users only).
-- Added support for user roles and basic authorization. Users may have restricted rights (view and commenting only), full rights (view and edit) or administrator rights.
+- Added support for user roles and basic authorization. Users may have restricted rights (view and commenting only),
+  full rights (view and edit) or administrator rights.
 - Admin can change roles of users.
 - Default admin account is no longer generated on startup if another admin exists.
 

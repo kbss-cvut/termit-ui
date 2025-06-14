@@ -1,3 +1,8 @@
+#### Verze 4.0.0
+
+- Žádné nové funkce, došlo ke změnám v infrastruktuře - aplikaci již nelze nasadit jako WAR, validace byla oddělena do
+  samostatné služby.
+
 #### Verze 3.5.1
 
 - Opravena chyba mazání pojmu, pro který existují nepotvrzené výskyty v jiných zdrojích/pojmech.
@@ -110,7 +115,8 @@
 
 - Excel export vytváří nyní sheety pro jednotlivé jazyky slovníku.
 - Přidána možnost stáhnout soubor v současné verzi a ve verzi, ve které byl původně nahrán do TermItu.
-- Opravy drobných chyb, zrychlení práce s anotátorem (po označení/potvrzení výskytu pojmu se již dokument znovu nenačítá).
+- Opravy drobných chyb, zrychlení práce s anotátorem (po označení/potvrzení výskytu pojmu se již dokument znovu
+  nenačítá).
 
 #### Verze 2.15.0
 
@@ -144,7 +150,9 @@
 
 #### Verze 2.12.0
 
-- Přidána podpora pro snapshoty slovníků (a jejich pojmů). Tyto snapshoty reprezentují zakonzerovaný stav slovníku k datu vytvoření snapshotu. Funkcionalita má v tuto chvíli především backendovou podporu, v uživatelském rozhraní TermItu lze snapshot pouze vytvořit.
+- Přidána podpora pro snapshoty slovníků (a jejich pojmů). Tyto snapshoty reprezentují zakonzerovaný stav slovníku k
+  datu vytvoření snapshotu. Funkcionalita má v tuto chvíli především backendovou podporu, v uživatelském rozhraní
+  TermItu lze snapshot pouze vytvořit.
 
 #### Verze 2.11.3
 
@@ -225,7 +233,8 @@
 #### Verze 2.4.0
 
 - Na hlavní stránku byl přidán widget komentářů.
-- Anotátor nyní zobrazuje slovník, kterým je soubor anotován a umožňuje vybrat slovník, který bude použit pro textovou analýzu.
+- Anotátor nyní zobrazuje slovník, kterým je soubor anotován a umožňuje vybrat slovník, který bude použit pro textovou
+  analýzu.
 
 #### Verze 2.3.1
 
@@ -239,7 +248,8 @@
 - Přidána podpora uživatelských rolí a základní autorizace. Uživatelé mohou mít omezená práva (pouze prohlížení a
   komentování), plná práva (prohlížení i editace) či administrátorská práva.
 - Administrátor může měnit role uživatelů.
-- Předdefinovaný administrátorský účet již není při startu generován, pokud v systém je alespoň jeden jiný administrátor.
+- Předdefinovaný administrátorský účet již není při startu generován, pokud v systém je alespoň jeden jiný
+  administrátor.
 
 #### Verze 2.2.0
 
