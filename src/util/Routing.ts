@@ -219,7 +219,7 @@ const INSTANCE = new Routing();
 
 export default INSTANCE;
 
-function namespaceQueryParam(namespace: string) {
+export function namespaceQueryParam(namespace: string) {
   return new Map<string, string>([
     ["namespace", encodeURIComponent(namespace)],
   ]);

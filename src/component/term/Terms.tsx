@@ -13,7 +13,7 @@ import {
   consumeNotification,
   selectVocabularyTerm,
 } from "../../action/SyncActions";
-import Routing from "../../util/Routing";
+import Routing, { namespaceQueryParam } from "../../util/Routing";
 import Routes from "../../util/Routes";
 import Term, { TermData } from "../../model/Term";
 import { loadTerms } from "../../action/AsyncActions";
@@ -180,7 +180,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     Routing.transitionTo(Routes.createVocabularyTerm, {
       params: new Map([["name", vocabularyIri.fragment]]),
       query: vocabularyIri.namespace
-        ? new Map([["namespace", vocabularyIri.namespace]])
+        ? namespaceQueryParam(vocabularyIri.namespace)
         : undefined,
     });
   };
