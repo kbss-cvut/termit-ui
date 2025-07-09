@@ -59,7 +59,7 @@ const ImportExternalVocabularyDialog = (
 
           <Button
             id="importVocabulariesButton"
-            isDisabled={options.length === 0}
+            disabled={options.length === 0}
             onClick={handleImport}
           >
             {i18n("vocabulary.import.dialog.external.button")}
