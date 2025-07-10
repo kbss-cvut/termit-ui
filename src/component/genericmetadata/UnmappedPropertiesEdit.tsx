@@ -23,11 +23,15 @@ import "./UnmappedProperties.scss";
 import Constants from "../../util/Constants";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
+import {
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "../../model/WithUnmappedProperties";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
-  properties: Map<string, string[]>;
+  properties: Map<string, PropertyValueType[]>;
   ignoredProperties?: string[]; // Properties which should not be offered in the editor
-  onChange: (properties: Map<string, string[]>) => void;
+  onChange: (properties: Map<string, PropertyValueType[]>) => void;
   loadKnownProperties: () => void;
   knownProperties: RdfsResource[];
   createProperty: (property: RdfsResource) => Promise<any>;
@@ -147,7 +151,7 @@ export class UnmappedPropertiesEdit extends React.Component<
   }
 
   private renderExisting() {
-    const result: JSX.Element[] = [];
+    const result: React.ReactNode[] = [];
     this.props.properties.forEach((values, k) => {
       result.push(
         <tr key={k}>
@@ -163,7 +167,7 @@ export class UnmappedPropertiesEdit extends React.Component<
           </td>
         </tr>
       );
-      const sortedItems = [...values];
+      const sortedItems = [...values].map((v) => stringifyPropertyValue(v));
       sortedItems.sort(Utils.localeComparator);
       sortedItems.forEach((v) =>
         result.push(
