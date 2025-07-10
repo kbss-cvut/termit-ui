@@ -269,6 +269,7 @@ const en = {
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
+    "vocabulary.primaryLanguage": "Primary vocabulary language",
     "vocabulary.create.title": "Create Vocabulary",
     "vocabulary.create.submit": "Create",
     "vocabulary.create.files": "Files",

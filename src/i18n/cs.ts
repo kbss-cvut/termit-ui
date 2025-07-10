@@ -278,6 +278,7 @@ const cs = {
     "vocabulary.vocabularies.select.placeholder":
       "Začněte psát pro filtrování slovníků dle názvu",
     "vocabulary.title": "Název",
+    "vocabulary.primaryLanguage": "Hlavní jazyk slovníku",
     "vocabulary.create.title": "Nový slovník",
     "vocabulary.create.submit": "Vytvořit",
     "vocabulary.create.files": "Soubory",

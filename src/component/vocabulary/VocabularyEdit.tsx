@@ -26,6 +26,9 @@ import MultilingualString, {
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
 import { isValid } from "./VocabularyValidationUtils";
+import { getLanguageOptions } from "../../util/IntlUtil";
+import { Configuration } from "../../model/Configuration";
+import Select from "../misc/Select";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -34,6 +37,7 @@ interface VocabularyEditProps extends HasI18n {
   saveDocument: (document: Document) => void;
   language: string;
   selectLanguage: (lang: string) => void;
+  configuration: Configuration;
 }
 
 interface VocabularyEditState {
@@ -42,6 +46,11 @@ interface VocabularyEditState {
   importedVocabularies?: AssetData[];
   unmappedProperties: Map<string, string[]>;
   documentLabel: string;
+  /**
+   * Short locale code defined by iso-639-1
+   * @see import("../../util/IntlUtil").getLanguageOptions()
+   */
+  primaryLanguage?: string;
 }
 
 export class VocabularyEdit extends React.Component<
@@ -58,8 +67,10 @@ export class VocabularyEdit extends React.Component<
           : langString("", props.language),
       documentLabel: this.props.vocabulary.document?.label!,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
+      primaryLanguage: props.vocabulary.primaryLanguage,
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
+    console.debug(props.vocabulary);
   }
 
   public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +102,20 @@ export class VocabularyEdit extends React.Component<
     this.setState({ ...data });
   };
 
+  private onPrimaryLanguageChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const primaryLanguage = e.currentTarget.value;
+    // set the change in state
+    this.onChange({ primaryLanguage });
+    // check if this vocabulary has attributes in that language
+    // if no, create and switch to it
+    if (Vocabulary.getLanguages(this.state).indexOf(primaryLanguage) === -1) {
+      this.props.selectLanguage(primaryLanguage);
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+  };
+
   public onSave = () => {
     const modifiedDocument = Object.assign({}, this.props.vocabulary.document, {
       label: this.state.documentLabel?.trim(),
@@ -101,6 +126,7 @@ export class VocabularyEdit extends React.Component<
         label: this.state.label,
         comment: this.state.comment,
         importedVocabularies: this.state.importedVocabularies,
+        primaryLanguage: this.state.primaryLanguage,
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
@@ -192,6 +218,28 @@ export class VocabularyEdit extends React.Component<
                     }
                     hint={i18n("required")}
                   />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <Select
+                    key="edit-vocabulary-language-selector"
+                    label={i18n("vocabulary.primaryLanguage")}
+                    value={this.state.primaryLanguage}
+                    onChange={this.onPrimaryLanguageChange}
+                    hint={i18n("required")}
+                  >
+                    {getLanguageOptions().map((l) => (
+                      <option
+                        key={
+                          "edit-vocabulary-language-selector-option" + l.code
+                        }
+                        value={l.code}
+                      >
+                        {l.name}
+                      </option>
+                    ))}
+                  </Select>
                 </Col>
               </Row>
               <Row>
