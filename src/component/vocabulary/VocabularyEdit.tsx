@@ -26,6 +26,7 @@ import MultilingualString, {
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
 import { isValid } from "./VocabularyValidationUtils";
+import { PropertyValueType } from "../../model/WithUnmappedProperties";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -40,7 +41,7 @@ interface VocabularyEditState {
   label: MultilingualString;
   comment: MultilingualString;
   importedVocabularies?: AssetData[];
-  unmappedProperties: Map<string, string[]>;
+  unmappedProperties: Map<string, PropertyValueType[]>;
   documentLabel: string;
 }
 
@@ -78,7 +79,9 @@ export class VocabularyEdit extends React.Component<
     this.setState(change);
   };
 
-  private onPropertiesChange = (newProperties: Map<string, string[]>) => {
+  private onPropertiesChange = (
+    newProperties: Map<string, PropertyValueType[]>
+  ) => {
     this.setState({ unmappedProperties: newProperties });
   };
 

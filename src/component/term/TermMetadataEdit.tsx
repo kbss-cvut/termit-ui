@@ -49,6 +49,7 @@ import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
 import TermStateSelector from "./state/TermStateSelector";
 import Vocabulary from "../../model/Vocabulary";
+import { PropertyValueType } from "../../model/WithUnmappedProperties";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -65,7 +66,7 @@ interface TermMetadataEditProps extends HasI18n {
 
 interface TermMetadataEditState extends TermData {
   labelExist: LabelExists;
-  unmappedProperties: Map<string, string[]>;
+  unmappedProperties: Map<string, PropertyValueType[]>;
   definitionRelated: DefinitionRelatedChanges;
 }
 
@@ -214,7 +215,7 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ state: { iri: stateIri } });
   };
 
-  private onPropertiesChange = (update: Map<string, string[]>) => {
+  private onPropertiesChange = (update: Map<string, PropertyValueType[]>) => {
     this.setState({ unmappedProperties: update });
   };
 
