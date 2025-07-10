@@ -31,7 +31,10 @@ describe("Vocabulary Link links to correct internal asset", () => {
       </MemoryRouter>
     ).find(Link);
     expect((link.props() as any).to).toEqual(
-      "/vocabularies/" + fragment + "?namespace=" + namespace
+      "/vocabularies/" +
+        fragment +
+        "?namespace=" +
+        encodeURIComponent(namespace)
     );
   });
 
@@ -43,7 +46,10 @@ describe("Vocabulary Link links to correct internal asset", () => {
       </MemoryRouter>
     ).find(Link);
     expect((link.props() as any).to).toEqual(
-      "/public/vocabularies/" + fragment + "?namespace=" + namespace
+      "/public/vocabularies/" +
+        fragment +
+        "?namespace=" +
+        encodeURIComponent(namespace)
     );
   });
 });
