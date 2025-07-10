@@ -5,7 +5,10 @@ import Document, {
   CONTEXT as DOCUMENT_CONTEXT,
   DocumentData,
 } from "./Document";
-import WithUnmappedProperties from "./WithUnmappedProperties";
+import WithUnmappedProperties, {
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
 import { SupportsSnapshots } from "./Snapshot";
@@ -118,15 +121,19 @@ export default class Vocabulary
     return this.unmappedProperties.has(
       VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
     )
-      ? this.unmappedProperties.get(
-          VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
-        )![0]
+      ? stringifyPropertyValue(
+          this.unmappedProperties.get(
+            VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
+          )![0]
+        )
       : undefined;
   }
 
   public snapshotCreated(): string | undefined {
     return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
-      ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+      ? stringifyPropertyValue(
+          this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+        )
       : undefined;
   }
 
@@ -134,14 +141,14 @@ export default class Vocabulary
     return !this.isSnapshot() && !this.hasType(VocabularyUtils.IS_READ_ONLY);
   }
 
-  public get unmappedProperties(): Map<string, string[]> {
+  public get unmappedProperties(): Map<string, PropertyValueType[]> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,
       MAPPED_PROPERTIES
     );
   }
 
-  public set unmappedProperties(properties: Map<string, string[]>) {
+  public set unmappedProperties(properties: Map<string, PropertyValueType[]>) {
     WithUnmappedProperties.setUnmappedProperties(
       this,
       properties,

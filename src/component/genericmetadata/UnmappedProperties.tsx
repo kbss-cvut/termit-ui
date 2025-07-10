@@ -5,8 +5,10 @@ import OutgoingLink from "../misc/OutgoingLink";
 import Utils from "../../util/Utils";
 import { useI18n } from "../hook/useI18n";
 import "./UnmappedProperties.scss";
-
-declare type PropertyValueType = { iri: string } | string;
+import {
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "src/model/WithUnmappedProperties";
 
 interface UnmappedPropertiesProps {
   properties: Map<string, PropertyValueType[]>;
@@ -29,9 +31,7 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
     if (values.length === 0) {
       return;
     }
-    const sortedItems = values.map((v) =>
-      (v as { iri: string }).iri ? (v as { iri: string }).iri : (v as string)
-    );
+    const sortedItems = values.map((v) => stringifyPropertyValue(v));
     sortedItems.sort(Utils.localeComparator);
     const items = (
       <ul>
