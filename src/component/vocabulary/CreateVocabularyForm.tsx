@@ -21,6 +21,8 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Document from "../../model/Document";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
+import Select from "../misc/Select";
+import { getLanguageOptions } from "../../util/IntlUtil";
 
 interface CreateVocabularyFormProps {
   onSave: (
@@ -64,6 +66,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
   const [fileContents, setFileContents] = useState<File[]>([]);
   const [documentLabel, setDocumentLabel] = useState("");
   const [shouldGenerateIri, setShouldGenerateIri] = useState(true);
+  const [primaryLanguage, setPrimaryLanguage] = useState<string | undefined>();
 
   const onIriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.value.trim().length === 0) {
@@ -112,6 +115,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       iri,
       label,
       comment,
+      primaryLanguage,
     });
     vocabulary.addType(VocabularyUtils.DOCUMENT_VOCABULARY);
     const document = new Document({
@@ -133,6 +137,19 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     Vocabulary.removeTranslation(data, lang);
     setLabel(data.label);
     setComment(data.comment);
+  };
+
+  const onPrimaryLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPrimaryLanguage = e.currentTarget.value;
+    // set the change in state
+    setPrimaryLanguage(newPrimaryLanguage);
+    // check if this vocabulary has attributes in that language
+    // if no, create and switch to it
+    console.debug(newPrimaryLanguage);
+    if (label[newPrimaryLanguage] == null) {
+      selectLanguage(newPrimaryLanguage);
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -192,6 +209,28 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
                     value={documentLabel}
                     onChange={(e) => setDocumentLabel(e.currentTarget.value)}
                   />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <Select
+                    key="edit-vocabulary-language-selector"
+                    label={i18n("vocabulary.primaryLanguage")}
+                    value={primaryLanguage}
+                    onChange={onPrimaryLanguageChange}
+                    hint={i18n("required")}
+                  >
+                    {getLanguageOptions().map((l) => (
+                      <option
+                        key={
+                          "edit-vocabulary-language-selector-option" + l.code
+                        }
+                        value={l.code}
+                      >
+                        {l.name}
+                      </option>
+                    ))}
+                  </Select>
                 </Col>
               </Row>
               <Files
