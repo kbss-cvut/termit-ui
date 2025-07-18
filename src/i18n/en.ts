@@ -252,6 +252,8 @@ const en = {
     "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
+    "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
+      "Cannot remove translation in the vocabulary primary language!",
 
     "document.remove.tooltip.disabled":
       "In order to delete the document, delete the files first.",
@@ -275,6 +277,8 @@ const en = {
     "vocabulary.create.files": "Files",
     "vocabulary.create.files.help":
       "Optional. You can upload files (e.g. a texts of law) here.",
+    "vocabulary.modify.error.missingPrimaryLabel":
+      "The vocabulary is missing label in its primary language.",
     "vocabulary.comment": "Description",
     "vocabulary.summary.title": "{name} - Summary",
     "vocabulary.summary.gotodetail.label": "View terms in this vocabulary",

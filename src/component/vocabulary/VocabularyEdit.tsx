@@ -29,6 +29,11 @@ import { isValid } from "./VocabularyValidationUtils";
 import { getLanguageOptions } from "../../util/IntlUtil";
 import { Configuration } from "../../model/Configuration";
 import Select from "../misc/Select";
+import Message from "../../model/Message";
+import MessageType from "../../model/MessageType";
+import { ThunkDispatch } from "../../util/Types";
+import { connect } from "react-redux";
+import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -38,6 +43,7 @@ interface VocabularyEditProps extends HasI18n {
   language: string;
   selectLanguage: (lang: string) => void;
   configuration: Configuration;
+  publishMessage: (message: Message) => void;
 }
 
 interface VocabularyEditState {
@@ -50,7 +56,7 @@ interface VocabularyEditState {
    * Short locale code defined by iso-639-1
    * @see import("../../util/IntlUtil").getLanguageOptions()
    */
-  primaryLanguage?: string;
+  primaryLanguage: string;
 }
 
 export class VocabularyEdit extends React.Component<
@@ -67,7 +73,7 @@ export class VocabularyEdit extends React.Component<
           : langString("", props.language),
       documentLabel: this.props.vocabulary.document?.label!,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
-      primaryLanguage: props.vocabulary.primaryLanguage,
+      primaryLanguage: props.vocabulary.primaryLanguage || this.props.language,
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
     console.debug(props.vocabulary);
@@ -93,7 +99,23 @@ export class VocabularyEdit extends React.Component<
     this.setState({ unmappedProperties: newProperties });
   };
 
-  public removeTranslation = (lang: string) => {
+  public removeTranslation = (
+    lang: string,
+    currentPrimaryLanguage: string = this.state.primaryLanguage
+  ) => {
+    if (lang == currentPrimaryLanguage) {
+      this.props.publishMessage(
+        new Message(
+          {
+            messageId:
+              "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage",
+          },
+          MessageType.ERROR
+        )
+      );
+      this.props.selectLanguage(this.props.language);
+      return;
+    }
     const data = _.cloneDeep({
       label: this.state.label,
       comment: this.state.comment,
@@ -116,7 +138,26 @@ export class VocabularyEdit extends React.Component<
     }
   };
 
+  private isPrimaryLabelMissing = () => {
+    return (
+      this.state.label[this.state.primaryLanguage] == null ||
+      this.state.label[this.state.primaryLanguage].trim() === ""
+    );
+  };
+
   public onSave = () => {
+    if (this.isPrimaryLabelMissing()) {
+      this.props.publishMessage(
+        new Message(
+          {
+            messageId: "vocabulary.modify.error.missingPrimaryLabel",
+          },
+          MessageType.ERROR
+        )
+      );
+      return;
+    }
+
     const modifiedDocument = Object.assign({}, this.props.vocabulary.document, {
       label: this.state.documentLabel?.trim(),
     });
@@ -282,4 +323,9 @@ export class VocabularyEdit extends React.Component<
   }
 }
 
-export default injectIntl(withI18n(VocabularyEdit));
+export default connect(undefined, (dispatch: ThunkDispatch) => {
+  return {
+    publishMessage: (message: Message) =>
+      dispatch(publishMessageAction(message)),
+  };
+})(injectIntl(withI18n(VocabularyEdit)));

@@ -23,6 +23,11 @@ import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
 import Select from "../misc/Select";
 import { getLanguageOptions } from "../../util/IntlUtil";
+import { ThunkDispatch } from "../../util/Types";
+import { useDispatch } from "react-redux";
+import { publishMessage } from "../../action/SyncActions";
+import MessageType from "../../model/MessageType";
+import Message from "../../model/Message";
 
 interface CreateVocabularyFormProps {
   onSave: (
@@ -58,6 +63,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
   childrenBefore,
   childrenAfter,
 }) => {
+  const dispatch: ThunkDispatch = useDispatch();
   const { i18n, formatMessage } = useI18n();
   const [iri, setIri] = useState<string>("");
   const [label, setLabel] = useState(langString("", language));
@@ -111,6 +117,19 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     }
   };
   const onSubmit = () => {
+    if (isPrimaryLabelMissing()) {
+      dispatch(
+        publishMessage(
+          new Message(
+            {
+              messageId: "vocabulary.modify.error.missingPrimaryLabel",
+            },
+            MessageType.ERROR
+          )
+        )
+      );
+      return;
+    }
     const vocabulary = new Vocabulary({
       iri,
       label,
@@ -132,18 +151,46 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     vocabulary.document = document;
     onSave(vocabulary, files, fileContents);
   };
-  const removeTranslation = (lang: string) => {
+
+  const isPrimaryLabelMissing = () => {
+    return (
+      label[primaryLanguage] == null || label[primaryLanguage].trim() === ""
+    );
+  };
+
+  const removeTranslation = (
+    lang: string,
+    currentPrimaryLanguage: string = primaryLanguage
+  ) => {
+    if (lang == currentPrimaryLanguage) {
+      dispatch(
+        publishMessage(
+          new Message(
+            {
+              messageId:
+                "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage",
+            },
+            MessageType.ERROR
+          )
+        )
+      );
+      selectLanguage(language);
+      return;
+    }
     const data = _.cloneDeep({ label, comment });
     Vocabulary.removeTranslation(data, lang);
     setLabel(data.label);
     setComment(data.comment);
   };
 
-  const removeTranslationIfEmpty = (lang: string) => {
+  const removeTranslationIfEmpty = (
+    lang: string,
+    currentPrimaryLanguage: string = primaryLanguage
+  ) => {
     if (label[lang] || comment[lang]) {
       return;
     }
-    removeTranslation(lang);
+    removeTranslation(lang, currentPrimaryLanguage);
   };
 
   const onPrimaryLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,9 +199,8 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     setPrimaryLanguage(newPrimaryLanguage);
     // check if this vocabulary has attributes in that language
     // if no, create and switch to it
-    console.debug(newPrimaryLanguage);
     if (label[newPrimaryLanguage] == null) {
-      removeTranslationIfEmpty(language);
+      removeTranslationIfEmpty(language, newPrimaryLanguage);
       selectLanguage(newPrimaryLanguage);
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }
