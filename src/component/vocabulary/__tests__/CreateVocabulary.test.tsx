@@ -160,6 +160,7 @@ describe("Create vocabulary view", () => {
         comment: langString(comment),
         document,
         types,
+        primaryLanguage: Constants.DEFAULT_LANGUAGE,
       })
     );
   });

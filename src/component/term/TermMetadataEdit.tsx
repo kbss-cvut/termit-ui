@@ -66,7 +66,6 @@ interface TermMetadataEditProps extends HasI18n {
   publishMessage: (message: Message) => void;
   selectLanguage: (lang: string) => void;
   validationResults: ConsolidatedResults;
-  vocabulary: Vocabulary;
 }
 
 interface TermMetadataEditState extends TermData {

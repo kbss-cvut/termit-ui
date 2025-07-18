@@ -27,7 +27,6 @@ import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
 import { isValid } from "./VocabularyValidationUtils";
 import { getLanguageOptions } from "../../util/IntlUtil";
-import { Configuration } from "../../model/Configuration";
 import Select from "../misc/Select";
 import Message from "../../model/Message";
 import MessageType from "../../model/MessageType";
@@ -42,7 +41,6 @@ interface VocabularyEditProps extends HasI18n {
   saveDocument: (document: Document) => void;
   language: string;
   selectLanguage: (lang: string) => void;
-  configuration: Configuration;
   publishMessage: (message: Message) => void;
 }
 

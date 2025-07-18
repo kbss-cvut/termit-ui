@@ -320,7 +320,6 @@ export class VocabularySummary extends EditableComponent<
               vocabulary={vocabulary}
               language={this.state.language}
               selectLanguage={this.setLanguage}
-              configuration={this.props.configuration}
             />
           ) : (
             <VocabularyMetadata

@@ -23,6 +23,7 @@ describe("VocabularyEdit", () => {
     onDocumentSave = jest.fn();
     onCancel = jest.fn();
     vocabulary = new Vocabulary({
+      primaryLanguage: Constants.DEFAULT_LANGUAGE,
       iri: Generator.generateUri(),
       label: langString("Test vocabulary"),
     });
@@ -37,11 +38,14 @@ describe("VocabularyEdit", () => {
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={jest.fn()}
+        publishMessage={jest.fn()}
         {...intlFunctions()}
       />
     );
-    const newName = "Metropolitan plan";
-    const newDescription = "Vocabulary description text";
+    const newName = wrapper.instance().state.label;
+    newName[Constants.DEFAULT_LANGUAGE] = "Metropolitan plan";
+    const newDescription = wrapper.instance().state.label;
+    newDescription[Constants.DEFAULT_LANGUAGE] = "Vocabulary description text";
     wrapper.instance().onChange({ label: newName });
     wrapper.instance().onChange({ comment: newDescription });
     wrapper.instance().onSave();
@@ -61,6 +65,7 @@ describe("VocabularyEdit", () => {
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={jest.fn()}
+        publishMessage={jest.fn()}
         {...intlFunctions()}
       />
     );
@@ -79,6 +84,7 @@ describe("VocabularyEdit", () => {
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={jest.fn()}
+        publishMessage={jest.fn()}
         {...intlFunctions()}
       />
     );
@@ -100,6 +106,7 @@ describe("VocabularyEdit", () => {
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={jest.fn()}
+        publishMessage={jest.fn()}
         {...intlFunctions()}
       />
     );
@@ -122,6 +129,7 @@ describe("VocabularyEdit", () => {
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={jest.fn()}
+        publishMessage={jest.fn()}
         {...intlFunctions()}
       />
     );
@@ -150,6 +158,7 @@ describe("VocabularyEdit", () => {
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={jest.fn()}
+        publishMessage={jest.fn()}
         {...intlFunctions()}
       />
     );

@@ -60,6 +60,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -87,6 +89,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -119,6 +123,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -149,6 +155,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -176,6 +184,8 @@ describe("Term edit", () => {
         language="en"
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -204,6 +214,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -228,6 +240,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -259,6 +273,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -280,6 +296,8 @@ describe("Term edit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -303,6 +321,8 @@ describe("Term edit", () => {
         language={"en"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -326,6 +346,8 @@ describe("Term edit", () => {
         language={"cs"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -343,6 +365,8 @@ describe("Term edit", () => {
         language={"cs"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -361,6 +385,8 @@ describe("Term edit", () => {
         language={"de"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
+        publishMessage={jest.fn()}
+        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
@@ -382,6 +408,8 @@ describe("Term edit", () => {
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
+          publishMessage={jest.fn()}
+          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />
       );
@@ -403,6 +431,8 @@ describe("Term edit", () => {
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
+          publishMessage={jest.fn()}
+          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />
       );
@@ -423,6 +453,8 @@ describe("Term edit", () => {
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
+          publishMessage={jest.fn()}
+          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />
       );
@@ -449,6 +481,8 @@ describe("Term edit", () => {
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
+          publishMessage={jest.fn()}
+          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />
       );
