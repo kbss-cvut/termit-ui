@@ -74,7 +74,6 @@ export class VocabularyEdit extends React.Component<
       primaryLanguage: props.vocabulary.primaryLanguage || this.props.language,
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
-    console.debug(props.vocabulary);
   }
 
   public onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {

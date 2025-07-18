@@ -134,6 +134,7 @@ const constants = {
     VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE:
       "/vocabularies/text_analysis/finished/file",
     LONG_RUNNING_TASKS_UPDATE: "/long-running-tasks/update",
+    VOCABULARIES_TEXT_ANALYSIS_FAILED: "/vocabularies/text_analysis/failed",
   },
   // Number of milliseconds after which a websocket request should be retried
   WEBSOCKET_REQUEST_TIMEOUT: 60 * 1000 /* 1 minute */,

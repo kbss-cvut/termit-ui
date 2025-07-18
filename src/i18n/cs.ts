@@ -628,6 +628,7 @@ const cs = {
 
     "file.text-analysis.finished.message":
       "Textová analýza souboru úspěšně dokončena.",
+    "file.text-analysis.failed": "Textová analýza selhala: {message}",
     "file.metadata.startTextAnalysis": "Spustit textovou analýzu",
     "file.metadata.startTextAnalysis.text": "Analyzovat",
     "file.metadata.startTextAnalysis.vocabularySelect.title":

@@ -13,7 +13,7 @@ import { IMessage, withSubscription } from "react-stomp-hooks";
 import Constants from "../../util/Constants";
 import { publishMessage, publishNotification } from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
-import Message from "../../model/Message";
+import Message, { createFormattedMessage } from "../../model/Message";
 import MessageType from "../../model/MessageType";
 
 interface TextAnalysisInvocationButtonProps extends HasI18n {
@@ -22,6 +22,7 @@ interface TextAnalysisInvocationButtonProps extends HasI18n {
   defaultVocabularyIri?: string;
   executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) => Promise<any>;
   notifyAnalysisFinish: () => void;
+  notifyAnalysisFailed: (message: string) => void;
   className?: string;
 }
 
@@ -63,10 +64,20 @@ export class TextAnalysisInvocationButton extends React.Component<
       return;
     }
     if (
+      message.headers.destination ===
+        Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE &&
       message.body.substring(1, message.body.length - 1) ===
-      IRIImpl.toString(this.props.fileIri)
+        IRIImpl.toString(this.props.fileIri)
     ) {
       this.props.notifyAnalysisFinish();
+    }
+    if (
+      message.headers.destination ===
+      Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FAILED
+    ) {
+      // strips double quotes
+      const errorMessage = message.body.replace(/^"(.*)"$/, "$1");
+      this.props.notifyAnalysisFailed(errorMessage);
     }
   }
 
@@ -101,6 +112,17 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
   return {
     executeTextAnalysis: (fileIri: IRI, vocabularyIri: string) =>
       dispatch(executeFileTextAnalysis(fileIri, vocabularyIri)),
+    notifyAnalysisFailed: (message: string) => {
+      dispatch(
+        publishMessage(
+          createFormattedMessage(
+            "file.text-analysis.failed",
+            { message },
+            MessageType.ERROR
+          )
+        )
+      );
+    },
     notifyAnalysisFinish: () => {
       dispatch(
         publishMessage(
@@ -122,10 +144,10 @@ export default connect(undefined, (dispatch: ThunkDispatch) => {
 })(
   injectIntl(
     withI18n(
-      withSubscription(
-        TextAnalysisInvocationButton,
-        Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE
-      )
+      withSubscription(TextAnalysisInvocationButton, [
+        Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE,
+        Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_TEXT_ANALYSIS_FAILED,
+      ])
     )
   )
 );

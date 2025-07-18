@@ -619,6 +619,7 @@ const en = {
 
     "file.text-analysis.finished.message":
       "Text analysis successfully finished.",
+    "file.text-analysis.failed": "Text analysis failed: {message}",
     "file.metadata.startTextAnalysis": "Start text analysis",
     "file.metadata.startTextAnalysis.text": "Analyze",
     "file.metadata.startTextAnalysis.vocabularySelect.title":
