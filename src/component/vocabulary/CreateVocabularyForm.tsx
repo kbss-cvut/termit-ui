@@ -227,7 +227,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
                         }
                         value={l.code}
                       >
-                        {l.name}
+                        {l.nativeName}
                       </option>
                     ))}
                   </Select>

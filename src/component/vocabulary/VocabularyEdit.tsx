@@ -236,7 +236,7 @@ export class VocabularyEdit extends React.Component<
                         }
                         value={l.code}
                       >
-                        {l.name}
+                        {l.nativeName}
                       </option>
                     ))}
                   </Select>

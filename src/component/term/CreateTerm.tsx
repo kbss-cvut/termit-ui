@@ -90,7 +90,8 @@ export class CreateTerm extends React.Component<CreateTermProps> {
 export default connect(
   (state: TermItState) => {
     return {
-      language: state.configuration.language,
+      language:
+        state.vocabulary.primaryLanguage || state.configuration.language,
       vocabulary: state.vocabulary,
     };
   },

@@ -149,5 +149,5 @@ export class TermMetadataCreate extends React.Component<
 }
 
 export default connect((state: TermItState) => ({
-  language: state.configuration.language,
+  language: state.vocabulary.primaryLanguage || state.configuration.language,
 }))(withRouter(injectIntl(withI18n(TermMetadataCreate))));
