@@ -66,7 +66,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
   const [fileContents, setFileContents] = useState<File[]>([]);
   const [documentLabel, setDocumentLabel] = useState("");
   const [shouldGenerateIri, setShouldGenerateIri] = useState(true);
-  const [primaryLanguage, setPrimaryLanguage] = useState<string | undefined>();
+  const [primaryLanguage, setPrimaryLanguage] = useState<string>(language);
 
   const onIriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.value.trim().length === 0) {
@@ -139,6 +139,13 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     setComment(data.comment);
   };
 
+  const removeTranslationIfEmpty = (lang: string) => {
+    if (label[lang] || comment[lang]) {
+      return;
+    }
+    removeTranslation(lang);
+  };
+
   const onPrimaryLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPrimaryLanguage = e.currentTarget.value;
     // set the change in state
@@ -147,6 +154,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     // if no, create and switch to it
     console.debug(newPrimaryLanguage);
     if (label[newPrimaryLanguage] == null) {
+      removeTranslationIfEmpty(language);
       selectLanguage(newPrimaryLanguage);
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }
