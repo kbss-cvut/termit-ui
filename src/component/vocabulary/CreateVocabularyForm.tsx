@@ -162,7 +162,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     lang: string,
     currentPrimaryLanguage: string = primaryLanguage
   ) => {
-    if (lang == currentPrimaryLanguage) {
+    if (lang === currentPrimaryLanguage) {
       dispatch(
         publishMessage(
           new Message(

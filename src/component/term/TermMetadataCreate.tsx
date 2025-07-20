@@ -104,7 +104,7 @@ export class TermMetadataCreate extends React.Component<
   };
 
   public onRemoveTranslation = (language: string) => {
-    if (language == this.props.vocabularyPrimaryLanguage) {
+    if (language === this.props.vocabularyPrimaryLanguage) {
       this.props.publishMessage(
         new Message(
           {

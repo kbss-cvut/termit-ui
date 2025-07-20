@@ -250,7 +250,7 @@ export class TermMetadataEdit extends React.Component<
   };
 
   public removeTranslation = (lang: string) => {
-    if (lang == this.props.vocabularyPrimaryLanguage) {
+    if (lang === this.props.vocabularyPrimaryLanguage) {
       this.props.publishMessage(
         new Message(
           {

@@ -100,7 +100,7 @@ export class VocabularyEdit extends React.Component<
     lang: string,
     currentPrimaryLanguage: string = this.state.primaryLanguage
   ) => {
-    if (lang == currentPrimaryLanguage) {
+    if (lang === currentPrimaryLanguage) {
       this.props.publishMessage(
         new Message(
           {
