@@ -13,7 +13,11 @@ import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 
-jest.mock("../../../util/Routing");
+jest.mock("../../../util/Routing", () => ({
+  default: jest.fn(),
+  namespaceQueryParam: jest.requireActual("../../../util/Routing")
+    .namespaceQueryParam,
+}));
 
 describe("CreateTerm", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
@@ -59,6 +63,8 @@ describe("CreateTerm", () => {
       isExact: true,
       url: "http://localhost:3000/" + location.pathname,
     };
+    Routing.transitionTo = jest.fn();
+    Routing.reload = jest.fn();
   });
 
   it("invokes on create on create call", () => {
@@ -107,7 +113,9 @@ describe("CreateTerm", () => {
         "test-term"
       );
       expect((call[1].query as Map<string, string>).get("namespace")).toEqual(
-        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/"
+        encodeURIComponent(
+          "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/"
+        )
       );
     });
   });
@@ -135,7 +143,9 @@ describe("CreateTerm", () => {
         "test-vocabulary"
       );
       expect((call[1].query as Map<string, string>).get("namespace")).toEqual(
-        "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/"
+        encodeURIComponent(
+          "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/"
+        )
       );
     });
   });

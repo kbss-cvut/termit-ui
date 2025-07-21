@@ -219,6 +219,12 @@ const INSTANCE = new Routing();
 
 export default INSTANCE;
 
+export function namespaceQueryParam(namespace: string) {
+  return new Map<string, string>([
+    ["namespace", encodeURIComponent(namespace)],
+  ]);
+}
+
 export class Terms {
   public static getTermRoutingOptions(term: Term | TermData | TermInfo) {
     const loggedIn = isLoggedIn(TermItStore.getState().user);
@@ -240,7 +246,7 @@ export class Terms {
           ["termName", termName],
           ["timestamp", timestamp],
         ]),
-        query: new Map<string, string>([["namespace", namespace]]),
+        query: namespaceQueryParam(namespace),
       };
     } else {
       const iri = VocabularyUtils.create(term.iri!);
@@ -251,7 +257,7 @@ export class Terms {
           ["name", vocIri.fragment],
           ["termName", iri.fragment],
         ]),
-        query: new Map<string, string>([["namespace", vocIri.namespace!]]),
+        query: namespaceQueryParam(vocIri.namespace!),
       };
     }
   }
@@ -304,14 +310,14 @@ export class Vocabularies {
           ["name", name],
           ["timestamp", timestamp],
         ]),
-        query: new Map<string, string>([["namespace", namespace]]),
+        query: namespaceQueryParam(namespace),
       };
     } else {
       const iri = VocabularyUtils.create(vocabulary.iri);
       return {
         route,
         params: new Map<string, string>([["name", iri.fragment]]),
-        query: new Map<string, string>([["namespace", iri.namespace!]]),
+        query: namespaceQueryParam(iri.namespace!),
       };
     }
   }
@@ -348,7 +354,7 @@ export class Vocabularies {
       route,
       params: new Map<string, string>([["name", iri.fragment]]),
       query: new Map<string, string>([
-        ["namespace", iri.namespace!],
+        ["namespace", encodeURIComponent(iri.namespace!)],
         ["activeTab", TABS.document],
       ]),
     };

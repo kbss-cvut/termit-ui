@@ -52,8 +52,8 @@ const FileContentActions: React.FC<FileContentActionsProps> = ({
       ["fileName", fileIri.fragment],
     ]);
     const query = new Map<string, string>([
-      ["namespace", vocabularyIri.namespace!],
-      ["fileNamespace", fileIri.namespace!],
+      ["namespace", encodeURIComponent(vocabularyIri.namespace!)],
+      ["fileNamespace", encodeURIComponent(fileIri.namespace!)],
     ]);
     Routing.transitionTo(Routes.annotateFile, { params, query });
   };

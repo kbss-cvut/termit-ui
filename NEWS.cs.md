@@ -1,3 +1,7 @@
+#### Verze 4.0.1
+
+- Opravena chyba, při které mizely soubory po přidání nového souboru.
+
 #### Verze 4.0.0
 
 - Žádné nové funkce, došlo ke změnám v infrastruktuře - aplikaci již nelze nasadit jako WAR, validace byla oddělena do
