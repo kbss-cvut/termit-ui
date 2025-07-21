@@ -1,3 +1,7 @@
+#### Version 4.0.1
+
+- Fix an issue with document files disappearing after a new file is added.
+
 #### Version 4.0.0
 
 - No feature changes, there were changes to the infrastructure - WAR deployment is no longer supported, validation has
