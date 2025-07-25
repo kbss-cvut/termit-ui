@@ -613,6 +613,12 @@ const cs = {
       "Jsou zobrazeny též zrušené pojmy (pojmy v koncovém stavu). Takové pojmy by se již neměly používat.",
     "glossary.showNonTerminal.help":
       "Jsou zobrazeny pouze pojmy v aktivním stavu, tj. pojmy, které lze používat.",
+    "glossary.showTreeList": "Stromová struktura",
+    "glossary.showTreeList.help":
+      "Pojmy jsou zobrazeny ve stromové struktuře, která zobrazuje hierarchické vztahy mezi pojmy.",
+    "glossary.showFlatList": "Seznam",
+    "glossary.showFlatList.help":
+      "Pojmy jsou zobrazeny v plochém seznamu, který nezobrazuje hierarchické vztahy mezi pojmy.",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",

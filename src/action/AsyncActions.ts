@@ -538,6 +538,7 @@ export function loadTerms(
       searchString: fetchOptions.searchString,
       includeImported: fetchOptions.includeImported,
       includeTerms: fetchOptions.includeTerms,
+      flat: fetchOptions.flatList,
       namespace: vocabularyIri.namespace,
     },
     fetchOptions
@@ -558,7 +559,7 @@ export function genericLoadTerms(
       const parentIri = VocabularyUtils.create(fetchOptions.optionID);
       url = `${getApiPrefix(getState())}/terms/${parentIri.fragment}/subterms`;
       target.namespace = parentIri.namespace;
-    } else if (!fetchOptions.searchString) {
+    } else if (!fetchOptions.searchString && !fetchOptions.flatList) {
       url += "/roots";
     }
     return Ajax.get(
