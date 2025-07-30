@@ -286,8 +286,6 @@ const cs = {
     "vocabulary.create.files": "Soubory",
     "vocabulary.create.files.help":
       "Nepovinné. Můžete připojit soubory (např. texty zákonů), ze kterých bude slovník vycházet.",
-    "vocabulary.modify.error.missingPrimaryLabel":
-      "Slovníku chybí název v jeho hlavním jazyku!",
     "vocabulary.comment": "Popis",
     "vocabulary.summary.title": "{name} - přehled",
     "vocabulary.summary.gotodetail.label": "Zobrazit pojmy v tomto slovníku",

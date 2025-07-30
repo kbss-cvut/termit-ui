@@ -277,8 +277,6 @@ const en = {
     "vocabulary.create.files": "Files",
     "vocabulary.create.files.help":
       "Optional. You can upload files (e.g. a texts of law) here.",
-    "vocabulary.modify.error.missingPrimaryLabel":
-      "The vocabulary is missing label in its primary language.",
     "vocabulary.comment": "Description",
     "vocabulary.summary.title": "{name} - Summary",
     "vocabulary.summary.gotodetail.label": "View terms in this vocabulary",
