@@ -94,6 +94,8 @@ describe("Term edit", () => {
         {...intlFunctions()}
       />
     );
+    // mock answer to duplicated label check: 404 meaning label does not exist and so is unique
+    Ajax.head = jest.fn().mockRejectedValue({ status: 404 });
     const newLabel = "New label";
     wrapper
       .find(CustomInput)

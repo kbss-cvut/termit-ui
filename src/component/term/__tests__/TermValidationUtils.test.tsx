@@ -32,10 +32,14 @@ describe("TermValidationUtils", () => {
   });
 
   it("isTermValid returns true if all labels in languages are unique", () => {
-    const valid = isTermValid(term, {
-      cs: false,
-      en: false,
-    });
+    const valid = isTermValid(
+      term,
+      {
+        cs: false,
+        en: false,
+      },
+      Constants.DEFAULT_LANGUAGE
+    );
     expect(valid).toBeTruthy();
   });
 });

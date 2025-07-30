@@ -53,7 +53,7 @@ function insertEmptyTranslationIfNotExists(
   str: MultilingualString,
   language: string
 ) {
-  if (!hasNonBlankValue(str, language)) {
+  if (language && !hasNonBlankValue(str, language)) {
     str[language] = "";
   }
 }
