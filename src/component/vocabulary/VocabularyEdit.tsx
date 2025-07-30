@@ -221,6 +221,28 @@ export class VocabularyEdit extends React.Component<
                   />
                 </Col>
               </Row>
+              <Row>
+                <Col xs={12}>
+                  <Select
+                    key="edit-vocabulary-language-selector"
+                    label={i18n("vocabulary.primaryLanguage")}
+                    value={this.state.primaryLanguage}
+                    onChange={this.onPrimaryLanguageChange}
+                    hint={i18n("required")}
+                  >
+                    {getLanguageOptions().map((l) => (
+                      <option
+                        key={
+                          "edit-vocabulary-language-selector-option" + l.code
+                        }
+                        value={l.code}
+                      >
+                        {l.nativeName}
+                      </option>
+                    ))}
+                  </Select>
+                </Col>
+              </Row>
               <ImportedVocabulariesListEdit
                 vocabulary={this.props.vocabulary}
                 importedVocabularies={this.state.importedVocabularies}
@@ -248,28 +270,6 @@ export class VocabularyEdit extends React.Component<
                     }
                     hint={i18n("required")}
                   />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <Select
-                    key="edit-vocabulary-language-selector"
-                    label={i18n("vocabulary.primaryLanguage")}
-                    value={this.state.primaryLanguage}
-                    onChange={this.onPrimaryLanguageChange}
-                    hint={i18n("required")}
-                  >
-                    {getLanguageOptions().map((l) => (
-                      <option
-                        key={
-                          "edit-vocabulary-language-selector-option" + l.code
-                        }
-                        value={l.code}
-                      >
-                        {l.nativeName}
-                      </option>
-                    ))}
-                  </Select>
                 </Col>
               </Row>
               <Row>
