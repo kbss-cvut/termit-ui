@@ -92,7 +92,9 @@ export interface TermDetailState extends EditableComponentState {
 
 export function resolveInitialLanguage(props: CommonTermDetailProps) {
   const { term, configuredLanguage, locale } = props;
-  if (props.vocabulary.primaryLanguage) return props.vocabulary.primaryLanguage;
+  if (props.vocabulary.primaryLanguage) {
+    return props.vocabulary.primaryLanguage;
+  }
   const supported = term ? Term.getLanguages(term) : [];
   const langLocale = getShortLocale(locale);
   return supported.indexOf(langLocale) !== -1 ? langLocale : configuredLanguage;
