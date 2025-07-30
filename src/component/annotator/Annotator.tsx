@@ -688,6 +688,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               annotationElement={
                 this.state.existingTermDefinitionAnnotationElement
               }
+              language={
+                this.props.annotationLanguage || this.props.file.language
+              }
               onCancel={this.onCloseTermDefinitionDialog}
               onSave={this.onSaveTermDefinition}
             />
