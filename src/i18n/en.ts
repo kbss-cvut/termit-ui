@@ -234,6 +234,12 @@ const en = {
     "administration.groups.label.invalid":
       "User group label must not be empty.",
     "administration.groups.members": "Group members",
+    "administration.customization.title": "Customization",
+    "administration.customization.customProperties.title": "Custom attributes",
+    "administration.customization.customProperties.range": "Range",
+    "administration.customization.customProperties.add": "Create attribute",
+    "administration.customization.customProperties.labelExists":
+      "Attribute called {label} already exists",
 
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",

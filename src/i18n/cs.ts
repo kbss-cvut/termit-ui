@@ -245,6 +245,12 @@ const cs = {
     "administration.groups.update.success": "Skupina byla úspěšně upravena.",
     "administration.groups.label.invalid": "Název skupiny nesmí být prázdný.",
     "administration.groups.members": "Členové skupiny",
+    "administration.customization.title": "Přizpůsobení",
+    "administration.customization.customProperties.title": "Vlastní atributy",
+    "administration.customization.customProperties.range": "Obor hodnot",
+    "administration.customization.customProperties.add": "Nový atribut",
+    "administration.customization.customProperties.labelExists":
+      "Atribut s názvem {label} již existuje",
 
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",

@@ -40,6 +40,8 @@ import ActionType, {
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
+  RdfProperty,
+  RdfPropertyData,
   RdfsResourceData,
 } from "../model/RdfsResource";
 import TermItState from "../model/TermItState";
@@ -651,6 +653,7 @@ export function loadTermByIri(
       });
   };
 }
+
 export function loadTypes() {
   const action = {
     type: ActionType.LOAD_TYPES,
@@ -1058,25 +1061,34 @@ export function getProperties() {
   const action = {
     type: ActionType.GET_PROPERTIES,
   };
+  return getPropertiesImpl<RdfsResourceData, RdfsResource>(
+    action,
+    "/data/properties",
+    (d) => new RdfsResource(d),
+    (state) => state.properties
+  );
+}
+
+function getPropertiesImpl<T extends RdfsResourceData, E extends RdfsResource>(
+  action: Action,
+  endpoint: string,
+  mapper: (data: T) => E,
+  selector: (state: TermItState) => Array<E>
+) {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-    if (getState().properties.length > 0) {
+    if (selector(getState()).length > 0) {
       return;
     }
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(Constants.API_PREFIX + "/data/properties")
+    return Ajax.get(Constants.API_PREFIX + endpoint)
       .then((data: object[]) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
+        JsonLdUtils.compactAndResolveReferencesAsArray<T>(
           data,
           RDFS_RESOURCE_CONTEXT
         )
       )
-      .then((data: RdfsResourceData[]) =>
-        dispatch(
-          asyncActionSuccessWithPayload(
-            action,
-            data.map((d) => new RdfsResource(d))
-          )
-        )
+      .then((data: T[]) =>
+        dispatch(asyncActionSuccessWithPayload(action, data.map(mapper)))
       )
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
@@ -1095,6 +1107,15 @@ export function createProperty(property: RdfsResource) {
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
+}
+
+export function getCustomProperties() {
+  return getPropertiesImpl<RdfPropertyData, RdfProperty>(
+    { type: ActionType.GET_CUSTOM_PROPERTIES },
+    "/data/custom-properties",
+    (d) => new RdfProperty(d),
+    (state) => []
+  );
 }
 
 export function loadLatestTextAnalysisRecord(resourceIri: IRI) {

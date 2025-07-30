@@ -38,6 +38,10 @@ const Routes = {
     "/administration/groups/create"
   ),
   editUserGroup: new Route("editUserGroup", "/administration/groups/:name"),
+  createCustomAttribute: new Route(
+    "createCustomAttribute",
+    "/administration/attributes/create"
+  ),
   login: new Route("login", "/login"),
   profile: new Route("profile", "/profile"),
   changePassword: new Route("changePassword", "/profile/change-password"),
