@@ -223,16 +223,16 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ unmappedProperties: update });
   };
 
+  private isInvalid = (): boolean => {
+    return !isTermValid(
+      this.state,
+      this.state.labelExist,
+      this.props.vocabularyPrimaryLanguage
+    );
+  };
+
   public onSave = () => {
-    if (this.isPrimaryLabelMissing()) {
-      this.props.publishMessage(
-        new Message(
-          {
-            messageId: "vocabulary.modify.error.missingPrimaryLabel",
-          },
-          MessageType.ERROR
-        )
-      );
+    if (this.isInvalid()) {
       return;
     }
     const { labelExist, unmappedProperties, definitionRelated, ...data } =
@@ -240,13 +240,6 @@ export class TermMetadataEdit extends React.Component<
     const t = new Term(data);
     t.unmappedProperties = this.state.unmappedProperties;
     this.props.save(t, definitionRelated);
-  };
-
-  private isPrimaryLabelMissing = () => {
-    return (
-      this.state.label[this.props.vocabularyPrimaryLanguage] == null ||
-      this.state.label[this.props.vocabularyPrimaryLanguage].trim() === ""
-    );
   };
 
   public removeTranslation = (lang: string) => {
@@ -513,7 +506,7 @@ export class TermMetadataEdit extends React.Component<
                     <Button
                       id="edit-term-submit"
                       color="success"
-                      disabled={!isTermValid(this.state, this.state.labelExist)}
+                      disabled={this.isInvalid()}
                       size="sm"
                       onClick={this.onSave}
                     >

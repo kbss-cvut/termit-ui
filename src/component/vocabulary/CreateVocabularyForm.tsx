@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   getLocalized,
   getLocalizedOrDefault,
@@ -16,18 +16,18 @@ import AddFile from "../resource/document/AddFile";
 import RemoveFile from "../resource/document/RemoveFile";
 import { useI18n } from "../hook/useI18n";
 import { loadIdentifier } from "../asset/CreateAssetUtils";
-import { isValid } from "./VocabularyValidationUtils";
+import { isVocabularyValid } from "./VocabularyValidationUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Document from "../../model/Document";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
-import Select from "../misc/Select";
-import { getLanguageOptions } from "../../util/IntlUtil";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { publishMessage } from "../../action/SyncActions";
 import MessageType from "../../model/MessageType";
 import Message from "../../model/Message";
+import Select from "../misc/Select";
+import { getLanguageOptions } from "../../util/IntlUtil";
 
 interface CreateVocabularyFormProps {
   onSave: (
@@ -74,6 +74,15 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
   const [shouldGenerateIri, setShouldGenerateIri] = useState(true);
   const [primaryLanguage, setPrimaryLanguage] = useState<string>(language);
 
+  const isInvalid = useMemo(() => {
+    return !isVocabularyValid({
+      iri,
+      label,
+      comment,
+      primaryLanguage,
+    });
+  }, [iri, label, comment, primaryLanguage]);
+
   const onIriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.value.trim().length === 0) {
       return;
@@ -116,18 +125,9 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       selectLanguage(lang);
     }
   };
+
   const onSubmit = () => {
-    if (isPrimaryLabelMissing()) {
-      dispatch(
-        publishMessage(
-          new Message(
-            {
-              messageId: "vocabulary.modify.error.missingPrimaryLabel",
-            },
-            MessageType.ERROR
-          )
-        )
-      );
+    if (isInvalid) {
       return;
     }
     const vocabulary = new Vocabulary({
@@ -150,12 +150,6 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     document.addType(VocabularyUtils.DOCUMENT);
     vocabulary.document = document;
     onSave(vocabulary, files, fileContents);
-  };
-
-  const isPrimaryLabelMissing = () => {
-    return (
-      label[primaryLanguage] == null || label[primaryLanguage].trim() === ""
-    );
   };
 
   const removeTranslation = (
@@ -242,6 +236,28 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
                   />
                 </Col>
               </Row>
+              <Row>
+                <Col xs={12}>
+                  <Select
+                    key="edit-vocabulary-language-selector"
+                    label={i18n("vocabulary.primaryLanguage")}
+                    value={primaryLanguage}
+                    onChange={onPrimaryLanguageChange}
+                    hint={i18n("required")}
+                  >
+                    {getLanguageOptions().map((l) => (
+                      <option
+                        key={
+                          "edit-vocabulary-language-selector-option" + l.code
+                        }
+                        value={l.code}
+                      >
+                        {l.nativeName}
+                      </option>
+                    ))}
+                  </Select>
+                </Col>
+              </Row>
               <ShowAdvanceAssetFields>
                 <Row>
                   <Col xs={12}>
@@ -263,28 +279,6 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
                     value={documentLabel}
                     onChange={(e) => setDocumentLabel(e.currentTarget.value)}
                   />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <Select
-                    key="edit-vocabulary-language-selector"
-                    label={i18n("vocabulary.primaryLanguage")}
-                    value={primaryLanguage}
-                    onChange={onPrimaryLanguageChange}
-                    hint={i18n("required")}
-                  >
-                    {getLanguageOptions().map((l) => (
-                      <option
-                        key={
-                          "edit-vocabulary-language-selector-option" + l.code
-                        }
-                        value={l.code}
-                      >
-                        {l.nativeName}
-                      </option>
-                    ))}
-                  </Select>
                 </Col>
               </Row>
               <Files
@@ -310,7 +304,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
                       onClick={onSubmit}
                       color="success"
                       size="sm"
-                      disabled={!isValid(label)}
+                      disabled={isInvalid}
                     >
                       {i18n("vocabulary.create.submit")}
                     </Button>

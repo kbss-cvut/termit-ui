@@ -25,7 +25,6 @@ import MultilingualString, {
 } from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
-import { isValid } from "./VocabularyValidationUtils";
 import { getLanguageOptions } from "../../util/IntlUtil";
 import Select from "../misc/Select";
 import Message from "../../model/Message";
@@ -33,6 +32,7 @@ import MessageType from "../../model/MessageType";
 import { ThunkDispatch } from "../../util/Types";
 import { connect } from "react-redux";
 import { publishMessage as publishMessageAction } from "../../action/SyncActions";
+import { isVocabularyValid } from "./VocabularyValidationUtils";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -135,23 +135,15 @@ export class VocabularyEdit extends React.Component<
     }
   };
 
-  private isPrimaryLabelMissing = () => {
+  private isInvalid() {
     return (
-      this.state.label[this.state.primaryLanguage] == null ||
-      this.state.label[this.state.primaryLanguage].trim() === ""
+      !isVocabularyValid(this.state) ||
+      this.state.documentLabel?.trim().length === 0
     );
-  };
+  }
 
   public onSave = () => {
-    if (this.isPrimaryLabelMissing()) {
-      this.props.publishMessage(
-        new Message(
-          {
-            messageId: "vocabulary.modify.error.missingPrimaryLabel",
-          },
-          MessageType.ERROR
-        )
-      );
+    if (this.isInvalid()) {
       return;
     }
 
@@ -288,10 +280,7 @@ export class VocabularyEdit extends React.Component<
                       onClick={this.onSave}
                       color="success"
                       size="sm"
-                      disabled={
-                        !isValid(this.state.label) ||
-                        this.state.documentLabel?.trim().length === 0
-                      }
+                      disabled={this.isInvalid()}
                     >
                       {i18n("save")}
                     </Button>

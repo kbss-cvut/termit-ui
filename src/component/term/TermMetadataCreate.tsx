@@ -63,16 +63,16 @@ export class TermMetadataCreate extends React.Component<
     });
   };
 
+  private isInvalid = (): boolean => {
+    return !isTermValid(
+      this.state,
+      this.state.labelExist,
+      this.props.vocabularyPrimaryLanguage
+    );
+  };
+
   private onSave = () => {
-    if (this.isPrimaryLabelMissing()) {
-      this.props.publishMessage(
-        new Message(
-          {
-            messageId: "vocabulary.modify.error.missingPrimaryLabel",
-          },
-          MessageType.ERROR
-        )
-      );
+    if (this.isInvalid()) {
       return;
     }
     const t = new Term(this.state);
@@ -81,14 +81,10 @@ export class TermMetadataCreate extends React.Component<
     this.props.onCreate(t, false);
   };
 
-  private isPrimaryLabelMissing = () => {
-    return (
-      this.state.label[this.props.vocabularyPrimaryLanguage] == null ||
-      this.state.label[this.props.vocabularyPrimaryLanguage].trim() === ""
-    );
-  };
-
   private onSaveAndGoToNewTerm = () => {
+    if (this.isInvalid()) {
+      return;
+    }
     const t = new Term(this.state);
     // @ts-ignore
     delete t.language;
@@ -125,7 +121,7 @@ export class TermMetadataCreate extends React.Component<
 
   public render() {
     const i18n = this.props.i18n;
-    const invalid = !isTermValid(this.state, this.state.labelExist);
+    const invalid = this.isInvalid();
 
     return (
       <>
