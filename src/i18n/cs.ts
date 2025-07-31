@@ -506,8 +506,7 @@ const cs = {
     "term.source.help":
       "(Nepovinný) odkaz na původ definice pojmu. Odkazuje na konkrétní místo v textu dokumentu, " +
       "například na kapitolu knihy, či konkrétní odstavec v zákoně, např. 'Písmeno b) paragrafu 2 " +
-      "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
-      "je zdroj vyplňován automaticky.",
+      "zákona č. 256/2013 Sb., o katastru nemovitostí'.",
     "term.metadata.definition": "Definice",
     "term.metadata.definition.text": "Text",
     "term.metadata.definitionSource": "Dokument",
