@@ -29,14 +29,16 @@ export function getRangeLabel(range: any, i18n: (key: string) => string) {
 export const CustomAttributeRangeSelector: React.FC<{
   value?: string;
   onChange: (value: string) => void;
-}> = ({ value, onChange }) => {
+  disabled?: boolean;
+}> = ({ value, onChange, disabled }) => {
   const { i18n } = useI18n();
 
   return (
     <Select
-      label={i18n("administration.customization.customProperties.range")}
+      label={i18n("administration.customization.customAttributes.range")}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
     >
       {RANGE_OPTIONS.map((option) => (
         <option key={option.value} value={option.value}>

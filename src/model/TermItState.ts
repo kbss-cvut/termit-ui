@@ -44,7 +44,7 @@ export default class TermItState {
   // Identifiers of terminal states (a subset of all states)
   public terminalStates: string[];
   public properties: RdfsResource[];
-  public customProperties: RdfProperty[];
+  public customAttributes: RdfProperty[];
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
   // Pending asynchronous actions. Can be used to prevent repeated requests when some are already pending
@@ -92,7 +92,7 @@ export default class TermItState {
     this.states = {};
     this.terminalStates = [];
     this.properties = [];
-    this.customProperties = [];
+    this.customAttributes = [];
     this.notifications = [];
     this.pendingActions = {};
     this.errors = [];

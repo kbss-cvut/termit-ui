@@ -419,7 +419,7 @@ function properties(
   }
 }
 
-function customProperties(
+function customAttributes(
   state: RdfProperty[] = [],
   action: AsyncActionSuccess<RdfProperty[]> | Action
 ): RdfProperty[] {
@@ -779,7 +779,7 @@ const rootReducer = combineReducers<TermItState>({
   states,
   terminalStates,
   properties,
-  customProperties,
+  customAttributes,
   notifications,
   pendingActions,
   errors,

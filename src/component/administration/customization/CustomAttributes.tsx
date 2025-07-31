@@ -22,14 +22,16 @@ import { Button } from "reactstrap";
 import Table from "../../misc/table/Table";
 import { GoPlus } from "react-icons/go";
 import { Link } from "react-router-dom";
-import Routes from "src/util/Routes";
 import { getRangeLabel, RANGE_OPTIONS } from "./CustomAttributeRangeSelector";
+import Routing from "../../../util/Routing";
+import Routes from "../../../util/Routes";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 export const CustomAttributes: React.FC = () => {
   const { i18n, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const properties = useSelector(
-    (state: TermItState) => state.customProperties
+    (state: TermItState) => state.customAttributes
   );
 
   React.useEffect(() => {
@@ -37,8 +39,11 @@ export const CustomAttributes: React.FC = () => {
   }, [dispatch]);
 
   const onEditClick = React.useCallback((property: RdfProperty) => {
-    // TODO
-    window.alert("Not supported, yet.");
+    Routing.transitionTo(Routes.editCustomAttribute, {
+      params: new Map<string, string>([
+        ["name", VocabularyUtils.create(property.iri).fragment],
+      ]),
+    });
   }, []);
 
   const lang = getShortLocale(locale);
@@ -61,7 +66,7 @@ export const CustomAttributes: React.FC = () => {
         className: "align-middle",
       },
       {
-        Header: i18n("administration.customization.customProperties.range"),
+        Header: i18n("administration.customization.customAttributes.range"),
         accessor: "rangeIri",
         disableFilters: true,
         disableSortBy: true,
@@ -92,7 +97,7 @@ export const CustomAttributes: React.FC = () => {
             </Button>
           </>
         ),
-        className: "align-middle table-row-actions",
+        className: "align-middle table-row-actions text-center",
       },
     ],
     [i18n, lang, onEditClick]
@@ -123,7 +128,7 @@ export const CustomAttributes: React.FC = () => {
 
   return (
     <PanelWithActions
-      title={i18n("administration.customization.customProperties.title")}
+      title={i18n("administration.customization.customAttributes.title")}
       actions={
         <Link
           id="custom-attributes-create"
@@ -132,7 +137,7 @@ export const CustomAttributes: React.FC = () => {
         >
           <GoPlus />
           &nbsp;
-          {i18n("administration.customization.customProperties.add")}
+          {i18n("administration.customization.customAttributes.add")}
         </Link>
       }
     >

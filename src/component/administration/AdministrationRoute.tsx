@@ -44,7 +44,12 @@ const AdministrationRoute: React.FC = () => {
           component={EditUserGroup}
         />
         <BreadcrumbRoute
-          title={i18n("administration.customization.customProperties.title")}
+          title={i18n("administration.customization.customAttributes.update")}
+          path={Routes.editCustomAttribute.path}
+          component={CustomAttributeEdit}
+        />
+        <BreadcrumbRoute
+          title={i18n("administration.customization.customAttributes.title")}
           path={Routes.createCustomAttribute.path}
           component={CustomAttributeEdit}
         />

@@ -30,38 +30,55 @@ import Routes from "../../../util/Routes";
 import Routing from "../../../util/Routing";
 import { trackPromise } from "react-promise-tracker";
 import { ThunkDispatch } from "../../../util/Types";
-import { createCustomAttribute } from "../../../action/AsyncActions";
+import {
+  createCustomAttribute,
+  updateCustomAttribute,
+} from "../../../action/AsyncActions";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import { useParams } from "react-router-dom";
 
 function propertyWithLabelExists(
   label: string,
   language: string,
   properties: RdfsResource[],
-  customProperties: RdfProperty[]
+  customAttributes: RdfProperty[]
 ) {
   return (
-    customProperties.some((p) => (p.label || {})[language] === label) ||
+    customAttributes.some((p) => (p.label || {})[language] === label) ||
     properties.some((p) => (p.label || {})[language] === label)
   );
 }
 
-export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
-  attribute,
-}) => {
+export const CustomAttributeEdit: React.FC = () => {
   const { i18n, formatMessage, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  const [label, setLabel] = React.useState<MultilingualString>(
-    attribute?.label || {}
+  const { name } = useParams<{ name?: string }>();
+  const [label, setLabel] = React.useState<MultilingualString>({});
+  const [originalLabel, setOriginalLabel] = React.useState<MultilingualString>(
+    {}
   );
-  const [comment, setComment] = React.useState<MultilingualString>(
-    attribute?.comment || {}
-  );
-  const [range, setRange] = React.useState<string>(attribute?.rangeIri || "");
+  const [comment, setComment] = React.useState<MultilingualString>({});
+  const [range, setRange] = React.useState<string>("");
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const customAttributes = useSelector(
-    (state: TermItState) => state.customProperties
+    (state: TermItState) => state.customAttributes
   );
   const properties = useSelector((state: TermItState) => state.properties);
+  const editedAttribute = React.useMemo(
+    () => customAttributes.find((p) => p.iri.endsWith("/" + name)),
+    [customAttributes, name]
+  );
+  const editingMode = React.useMemo(() => name !== "create", [name]);
+  React.useEffect(() => {
+    if (editingMode) {
+      if (editedAttribute) {
+        setLabel(editedAttribute.label || {});
+        setOriginalLabel(editedAttribute.label || {});
+        setComment(editedAttribute.comment || {});
+        setRange(editedAttribute.rangeIri || "");
+      }
+    }
+  }, [editingMode, editedAttribute]);
 
   const onRemoveTranslation = (lang: string) => {
     const newLabel = { ...label };
@@ -76,21 +93,23 @@ export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
     newLabel[language] = e.target.value;
     setLabel(newLabel);
   };
-  const labelValidation = propertyWithLabelExists(
-    label[language],
-    language,
-    properties,
-    customAttributes
-  )
-    ? ValidationResult.blocker(
-        formatMessage(
-          "administration.customization.customProperties.labelExists",
-          {
-            label,
-          }
+  const labelValidation =
+    (!editingMode || label[language] !== originalLabel[language]) &&
+    propertyWithLabelExists(
+      label[language],
+      language,
+      properties,
+      customAttributes
+    )
+      ? ValidationResult.blocker(
+          formatMessage(
+            "administration.customization.customAttributes.labelExists",
+            {
+              label: label[language],
+            }
+          )
         )
-      )
-    : undefined;
+      : undefined;
   const onCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newComment = { ...comment };
     newComment[language] = e.target.value;
@@ -105,8 +124,17 @@ export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
   };
 
   const onSave = () => {
-    trackPromise(
-      dispatch(
+    let promise;
+    if (editingMode) {
+      const data = new RdfProperty({
+        ...editedAttribute!,
+        label,
+        comment,
+        range,
+      });
+      promise = dispatch(updateCustomAttribute(data));
+    } else {
+      promise = dispatch(
         createCustomAttribute(
           new CreateRdfPropertyData({
             label,
@@ -114,9 +142,9 @@ export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
             range,
           })
         )
-      ),
-      "custom-attribute-edit"
-    ).then(() => {
+      );
+    }
+    trackPromise(promise, "custom-attribute-edit").then(() => {
       goToAdministration();
     });
   };
@@ -127,7 +155,11 @@ export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
   return (
     <>
       <HeaderWithActions
-        title={i18n("administration.customization.customProperties.add")}
+        title={i18n(
+          `administration.customization.customAttributes.${
+            editingMode ? "update" : "add"
+          }`
+        )}
       />
       <PromiseTrackingMask area="custom-attribute-edit" />
       <EditLanguageSelector
@@ -180,6 +212,7 @@ export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
                 <CustomAttributeRangeSelector
                   onChange={setRange}
                   value={range}
+                  disabled={editingMode}
                 />
               </Col>
             </Row>

@@ -1,4 +1,4 @@
-import { createHashHistory, History } from "history";
+import { createHashHistory, History, LocationState } from "history";
 import Constants from "./Constants";
 import Routes, { Route } from "./Routes";
 import Asset from "../model/Asset";
@@ -99,9 +99,13 @@ export class Routing {
     options: {
       params?: Map<string, string>;
       query?: Map<string, string>;
+      state?: LocationState;
     } = {}
   ) => {
-    this.mHistory.push(Routing.getTransitionPath(route, options));
+    this.mHistory.push(
+      Routing.getTransitionPath(route, options),
+      options.state
+    );
   };
 
   /**

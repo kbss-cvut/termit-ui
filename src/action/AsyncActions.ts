@@ -1145,6 +1145,34 @@ export function createCustomAttribute(attribute: CreateRdfPropertyData) {
   );
 }
 
+export function updateCustomAttribute(attribute: RdfProperty) {
+  const action = { type: ActionType.UPDATE_CUSTOM_ATTRIBUTE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.put(
+      Constants.API_PREFIX +
+        "/data/custom-attributes/" +
+        VocabularyUtils.create(attribute.iri).fragment,
+      content(attribute.toJsonLd())
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId:
+                  "administration.customization.customAttributes.update.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
 export function loadLatestTextAnalysisRecord(resourceIri: IRI) {
   const action = {
     type: ActionType.LOAD_LATEST_TEXT_ANALYSIS_RECORD,
