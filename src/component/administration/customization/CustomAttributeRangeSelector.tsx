@@ -3,14 +3,14 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import { useI18n } from "../../hook/useI18n";
 import Select from "../../misc/Select";
 
-const RANGE_OPTIONS = [
+export const RANGE_OPTIONS = [
   {
     value: VocabularyUtils.NS_XSD + "boolean",
     label: "Boolean",
   },
   {
     value: VocabularyUtils.XSD_INT,
-    label: "Integer",
+    labelKey: "datatype.integer",
   },
   {
     value: VocabularyUtils.TERM,
@@ -18,9 +18,13 @@ const RANGE_OPTIONS = [
   },
   {
     value: VocabularyUtils.NS_XSD + "string",
-    label: "String",
+    labelKey: "datatype.string",
   },
 ];
+
+export function getRangeLabel(range: any, i18n: (key: string) => string) {
+  return range.labelKey ? i18n(range.labelKey) : range.label;
+}
 
 export const CustomAttributeRangeSelector: React.FC<{
   value?: string;
@@ -36,7 +40,7 @@ export const CustomAttributeRangeSelector: React.FC<{
     >
       {RANGE_OPTIONS.map((option) => (
         <option key={option.value} value={option.value}>
-          {option.labelKey ? i18n(option.labelKey) : option.label}
+          {getRangeLabel(option, i18n)}
         </option>
       ))}
     </Select>

@@ -40,6 +40,7 @@ import ActionType, {
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
+  CreateRdfPropertyData,
   RdfProperty,
   RdfPropertyData,
   RdfsResourceData,
@@ -1098,23 +1099,49 @@ export function createProperty(property: RdfsResource) {
   const action = {
     type: ActionType.CREATE_PROPERTY,
   };
+  return createPropertyImpl(property, action, "/data/properties");
+}
+
+function createPropertyImpl(
+  property: { toJsonLd: () => object },
+  action: Action,
+  endpoint: string
+) {
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.post(
-      Constants.API_PREFIX + "/data/properties",
+      Constants.API_PREFIX + endpoint,
       content(property.toJsonLd())
     )
-      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "properties.edit.new.success" },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }
 
-export function getCustomProperties() {
+export function getCustomAttributes() {
   return getPropertiesImpl<RdfPropertyData, RdfProperty>(
-    { type: ActionType.GET_CUSTOM_PROPERTIES },
-    "/data/custom-properties",
+    { type: ActionType.GET_CUSTOM_ATTRIBUTES },
+    "/data/custom-attributes",
     (d) => new RdfProperty(d),
-    (state) => []
+    () => []
+  );
+}
+
+export function createCustomAttribute(attribute: CreateRdfPropertyData) {
+  return createPropertyImpl(
+    attribute,
+    { type: ActionType.CREATE_CUSTOM_ATTRIBUTE },
+    "/data/custom-attributes"
   );
 }
 

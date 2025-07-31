@@ -24,7 +24,7 @@ export interface RdfsResourceData extends AssetData {
 
 export interface RdfPropertyData extends RdfsResourceData {
   domain?: string;
-  range?: string;
+  range?: string | { iri: string };
 }
 
 /**
@@ -57,11 +57,40 @@ export default class RdfsResource implements RdfsResourceData, HasLabel {
 
 export class RdfProperty extends RdfsResource {
   public readonly domain?: string;
-  public range?: string;
+  public range?: string | { iri: string };
 
   constructor(data: RdfPropertyData) {
     super(data);
     this.domain = data.domain;
     this.range = data.range;
+  }
+
+  public get rangeIri(): string {
+    if (typeof this.range === "string") {
+      return this.range;
+    }
+    return this.range?.iri || "";
+  }
+}
+
+export class CreateRdfPropertyData {
+  public label?: MultilingualString;
+  public comment?: MultilingualString;
+  public types: string[];
+  public range?: string;
+
+  constructor(data: {
+    label: MultilingualString;
+    comment?: MultilingualString;
+    range?: string;
+  }) {
+    this.label = data.label;
+    this.comment = data.comment;
+    this.range = data.range;
+    this.types = [VocabularyUtils.NS_TERMIT + "vlastní-atribut"];
+  }
+
+  public toJsonLd() {
+    return Object.assign({}, this, { "@context": CONTEXT });
   }
 }

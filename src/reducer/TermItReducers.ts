@@ -424,7 +424,7 @@ function customProperties(
   action: AsyncActionSuccess<RdfProperty[]> | Action
 ): RdfProperty[] {
   switch (action.type) {
-    case ActionType.GET_CUSTOM_PROPERTIES:
+    case ActionType.GET_CUSTOM_ATTRIBUTES:
       const asyncAction = action as AsyncActionSuccess<RdfProperty[]>;
       return isAsyncSuccess(asyncAction) ? asyncAction.payload : state;
     default:

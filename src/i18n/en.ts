@@ -240,7 +240,6 @@ const en = {
     "administration.customization.customProperties.add": "Create attribute",
     "administration.customization.customProperties.labelExists":
       "Attribute called {label} already exists",
-
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
@@ -791,6 +790,7 @@ const en = {
     "properties.edit.new.iri": "Identifier",
     "properties.edit.new.label": "Label",
     "properties.edit.new.comment": "Comment",
+    "properties.edit.new.success": "New attribute successfully created.",
 
     "type.asset": "Asset",
     "type.term": "Term",
@@ -803,6 +803,8 @@ const en = {
     "type.user": "User",
     "type.usergroup": "User group",
     "type.userrole": "User role",
+    "datatype.string": "String",
+    "datatype.integer": "Integer",
 
     "log-viewer.title": "Error log",
     "log-viewer.timestamp": "Timestamp",

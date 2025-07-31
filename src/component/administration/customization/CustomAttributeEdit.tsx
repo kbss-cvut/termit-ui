@@ -1,5 +1,8 @@
 import React from "react";
-import RdfsResource, { RdfProperty } from "../../../model/RdfsResource";
+import RdfsResource, {
+  CreateRdfPropertyData,
+  RdfProperty,
+} from "../../../model/RdfsResource";
 import { useI18n } from "../../hook/useI18n";
 import MultilingualString, {
   getLocalizedOrDefault,
@@ -19,10 +22,16 @@ import {
 import CustomInput from "../../misc/CustomInput";
 import MultilingualIcon from "../../misc/MultilingualIcon";
 import ValidationResult from "../../../model/form/ValidationResult";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { CustomAttributeRangeSelector } from "./CustomAttributeRangeSelector";
 import HeaderWithActions from "../../misc/HeaderWithActions";
+import Routes from "../../../util/Routes";
+import Routing from "../../../util/Routing";
+import { trackPromise } from "react-promise-tracker";
+import { ThunkDispatch } from "../../../util/Types";
+import { createCustomAttribute } from "../../../action/AsyncActions";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 
 function propertyWithLabelExists(
   label: string,
@@ -40,13 +49,14 @@ export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
   attribute,
 }) => {
   const { i18n, formatMessage, locale } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
   const [label, setLabel] = React.useState<MultilingualString>(
     attribute?.label || {}
   );
   const [comment, setComment] = React.useState<MultilingualString>(
     attribute?.comment || {}
   );
-  const [range, setRange] = React.useState(attribute?.range || "");
+  const [range, setRange] = React.useState<string>(attribute?.rangeIri || "");
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const customAttributes = useSelector(
     (state: TermItState) => state.customProperties
@@ -86,15 +96,40 @@ export const CustomAttributeEdit: React.FC<{ attribute?: RdfProperty }> = ({
     newComment[language] = e.target.value;
     setComment(newComment);
   };
+  const goToAdministration = () => {
+    Routing.transitionTo(Routes.administration, {
+      query: new Map<string, string>([
+        ["activeTab", "administration.customization.title"],
+      ]),
+    });
+  };
 
-  const onSave = () => {};
-  const onCancel = () => {};
+  const onSave = () => {
+    trackPromise(
+      dispatch(
+        createCustomAttribute(
+          new CreateRdfPropertyData({
+            label,
+            comment,
+            range,
+          })
+        )
+      ),
+      "custom-attribute-edit"
+    ).then(() => {
+      goToAdministration();
+    });
+  };
+  const onCancel = () => {
+    goToAdministration();
+  };
 
   return (
     <>
       <HeaderWithActions
         title={i18n("administration.customization.customProperties.add")}
       />
+      <PromiseTrackingMask area="custom-attribute-edit" />
       <EditLanguageSelector
         language={language}
         existingLanguages={getLanguages(["label", "comment"], {

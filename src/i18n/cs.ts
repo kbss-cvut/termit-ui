@@ -251,7 +251,6 @@ const cs = {
     "administration.customization.customProperties.add": "Nový atribut",
     "administration.customization.customProperties.labelExists":
       "Atribut s názvem {label} již existuje",
-
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -799,6 +798,7 @@ const cs = {
     "properties.edit.new.iri": "Identifikátor",
     "properties.edit.new.label": "Název",
     "properties.edit.new.comment": "Popis",
+    "properties.edit.new.success": "Nový atribut byl úspešně vytvořen.",
 
     "type.asset": "Záznam",
     "type.term": "Pojem",
@@ -811,6 +811,8 @@ const cs = {
     "type.user": "Uživatel",
     "type.usergroup": "Uživatelská skupina",
     "type.userrole": "Uživatelská role",
+    "datatype.string": "Textový řetězec",
+    "datatype.integer": "Celé číslo",
 
     "log-viewer.title": "Prohlížení chyb",
     "log-viewer.timestamp": "Čas",

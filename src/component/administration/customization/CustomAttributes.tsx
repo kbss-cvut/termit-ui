@@ -2,7 +2,7 @@ import React from "react";
 import { useI18n } from "../../hook/useI18n";
 import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
-import { getCustomProperties } from "../../../action/AsyncActions";
+import { getCustomAttributes } from "../../../action/AsyncActions";
 import PanelWithActions from "../../misc/PanelWithActions";
 import {
   Column,
@@ -23,6 +23,7 @@ import Table from "../../misc/table/Table";
 import { GoPlus } from "react-icons/go";
 import { Link } from "react-router-dom";
 import Routes from "src/util/Routes";
+import { getRangeLabel, RANGE_OPTIONS } from "./CustomAttributeRangeSelector";
 
 export const CustomAttributes: React.FC = () => {
   const { i18n, locale } = useI18n();
@@ -32,11 +33,12 @@ export const CustomAttributes: React.FC = () => {
   );
 
   React.useEffect(() => {
-    dispatch(getCustomProperties());
+    dispatch(getCustomAttributes());
   }, [dispatch]);
 
   const onEditClick = React.useCallback((property: RdfProperty) => {
     // TODO
+    window.alert("Not supported, yet.");
   }, []);
 
   const lang = getShortLocale(locale);
@@ -56,12 +58,20 @@ export const CustomAttributes: React.FC = () => {
         Filter: TextBasedFilter,
         filter: "text",
         Cell: ({ row }) => <>{getLocalized(row.original.comment, lang)}</>,
+        className: "align-middle",
       },
       {
         Header: i18n("administration.customization.customProperties.range"),
-        accessor: "range",
+        accessor: "rangeIri",
         disableFilters: true,
         disableSortBy: true,
+        className: "align-middle",
+        Cell: ({ row }) => {
+          const range = RANGE_OPTIONS.find(
+            (opt) => opt.value === row.original.rangeIri
+          );
+          return range ? getRangeLabel(range, i18n) : row.original.rangeIri;
+        },
       },
       {
         Header: i18n("actions"),
@@ -76,11 +86,13 @@ export const CustomAttributes: React.FC = () => {
               className="users-action-button"
               color="primary"
               onClick={() => onEditClick(row.original)}
+              size="sm"
             >
               {i18n("edit")}
             </Button>
           </>
         ),
+        className: "align-middle table-row-actions",
       },
     ],
     [i18n, lang, onEditClick]
