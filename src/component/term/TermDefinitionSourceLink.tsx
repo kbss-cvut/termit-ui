@@ -45,7 +45,9 @@ export const TermDefinitionSourceLink: React.FC<
         selector,
       })
     );
-    const ownerIri = VocabularyUtils.create(file.owner.iri!);
+    const ownerIri = VocabularyUtils.create(
+      file.owner.vocabulary?.iri || file.owner.iri
+    );
     Routing.transitionTo(Routes.annotateFile, {
       params: new Map([
         ["name", ownerIri.fragment],
