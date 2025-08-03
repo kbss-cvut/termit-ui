@@ -500,7 +500,7 @@ const en = {
       "or leave this field blank.",
     "term.source.help":
       "(Optional) reference to the origin of the term definition. It might refer to a particular " +
-      "law section, or paragraph. Whenever the definition is marked in the document text, the source is filled automatically.",
+      "law section, or paragraph.",
     "term.metadata.definition": "Definition",
     "term.metadata.definition.text": "Text",
     "term.metadata.definitionSource": "Document",
