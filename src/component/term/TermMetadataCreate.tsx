@@ -15,11 +15,16 @@ import TermItState from "../../model/TermItState";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
 import { isTermValid } from "./TermValidationUtils";
+import { publishMessage as publishMessageAction } from "../../action/SyncActions";
+import Message from "../../model/Message";
+import MessageType from "../../model/MessageType";
+import { ThunkDispatch } from "../../util/Types";
 
 interface TermMetadataCreateOwnProps {
   onCreate: (term: Term, newTerm: boolean) => void;
   vocabularyIri: string;
-  language: string;
+  vocabularyPrimaryLanguage: string;
+  publishMessage: (message: Message) => void;
 }
 
 declare type TermMetadataCreateProps = TermMetadataCreateOwnProps &
@@ -38,9 +43,9 @@ export class TermMetadataCreate extends React.Component<
   constructor(props: TermMetadataCreateProps) {
     super(props);
     this.state = Object.assign(
-      AssetFactory.createEmptyTermData(props.language),
+      AssetFactory.createEmptyTermData(props.vocabularyPrimaryLanguage),
       {
-        language: props.language,
+        language: props.vocabularyPrimaryLanguage,
         labelExist: {},
       }
     );
@@ -58,7 +63,18 @@ export class TermMetadataCreate extends React.Component<
     });
   };
 
+  private isInvalid = (): boolean => {
+    return !isTermValid(
+      this.state,
+      this.state.labelExist,
+      this.props.vocabularyPrimaryLanguage
+    );
+  };
+
   private onSave = () => {
+    if (this.isInvalid()) {
+      return;
+    }
     const t = new Term(this.state);
     // @ts-ignore
     delete t.language;
@@ -66,6 +82,9 @@ export class TermMetadataCreate extends React.Component<
   };
 
   private onSaveAndGoToNewTerm = () => {
+    if (this.isInvalid()) {
+      return;
+    }
     const t = new Term(this.state);
     // @ts-ignore
     delete t.language;
@@ -81,6 +100,19 @@ export class TermMetadataCreate extends React.Component<
   };
 
   public onRemoveTranslation = (language: string) => {
+    if (language === this.props.vocabularyPrimaryLanguage) {
+      this.props.publishMessage(
+        new Message(
+          {
+            messageId:
+              "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage",
+          },
+          MessageType.ERROR
+        )
+      );
+      this.setLanguage(this.state.language);
+      return;
+    }
     const copy = _.cloneDeep(this.state);
     Term.removeTranslation(copy, language);
     delete copy.labelExist[language];
@@ -89,7 +121,7 @@ export class TermMetadataCreate extends React.Component<
 
   public render() {
     const i18n = this.props.i18n;
-    const invalid = !isTermValid(this.state, this.state.labelExist);
+    const invalid = this.isInvalid();
 
     return (
       <>
@@ -148,6 +180,15 @@ export class TermMetadataCreate extends React.Component<
   }
 }
 
-export default connect((state: TermItState) => ({
-  language: state.configuration.language,
-}))(withRouter(injectIntl(withI18n(TermMetadataCreate))));
+export default connect(
+  (state: TermItState) => ({
+    vocabularyPrimaryLanguage:
+      state.vocabulary.primaryLanguage || state.configuration.language,
+  }),
+  (dispatch: ThunkDispatch) => {
+    return {
+      publishMessage: (message: Message) =>
+        dispatch(publishMessageAction(message)),
+    };
+  }
+)(withRouter(injectIntl(withI18n(TermMetadataCreate))));

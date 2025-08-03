@@ -124,3 +124,13 @@ const LANGUAGE_OPTIONS = prioritizeLanguages(
 export function getLanguageOptions(): Language[] {
   return LANGUAGE_OPTIONS;
 }
+
+/**
+ * Gets a language matching its code.
+ *
+ * The languages are retrieved using the iso-639-1 JS library.
+ * @param code The short code to match e.g.: "cs"
+ */
+export function getLanguageByShortCode(code: string): Language | undefined {
+  return LANGUAGE_OPTIONS.find((lang) => lang.code === code);
+}

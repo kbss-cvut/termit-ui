@@ -671,6 +671,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               onMinimize={this.onMinimizeTermCreation}
               onTermCreated={this.assignNewTerm}
               vocabularyIri={this.props.vocabularyIri}
+              fileLanguage={
+                this.props.annotationLanguage || this.props.file.language
+              }
             />
             <SelectionPurposeDialog
               target={this.generateVirtualPopperAnchor()}
@@ -684,6 +687,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               term={this.state.selectedTerm}
               annotationElement={
                 this.state.existingTermDefinitionAnnotationElement
+              }
+              language={
+                this.props.annotationLanguage || this.props.file.language
               }
               onCancel={this.onCloseTermDefinitionDialog}
               onSave={this.onSaveTermDefinition}
