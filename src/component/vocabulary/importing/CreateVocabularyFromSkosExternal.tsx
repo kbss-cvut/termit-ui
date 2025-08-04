@@ -38,7 +38,7 @@ const CreateVocabularyFromSkosExternal: React.FC = () => {
       dispatch(getAvailableVocabularies()),
       "import-vocabulary"
     ).then((value) => setAvailableVocabularies(value));
-  }, []);
+  }, [dispatch]);
 
   return (
     <Card id="vocabulary-import" className="mb-3">
