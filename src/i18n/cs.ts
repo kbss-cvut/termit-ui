@@ -358,10 +358,10 @@ const cs = {
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
     "vocabulary.import.dialog.external.message":
-      "Načti dostupné slovníky a vyber ty, které chceš importovat. ",
+      "Z dostupné slovníky vyberte ty, které chcete importovat. ",
     "vocabulary.import.dialog.external.errormessage":
       "Žádné slovníky k importu nejsou dostupné. ",
-    "vocabulary.import.dialog.external.button": "Importuj vybrané slovníky",
+    "vocabulary.import.dialog.external.button": "Importovat vybrané slovníky",
     "vocabulary.import.title": "Importovat slovník",
     "vocabulary.import.success": "Slovník úspěšně importován.",
     "vocabulary.import.allow-changing-identifiers":
