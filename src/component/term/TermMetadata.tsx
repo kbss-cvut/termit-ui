@@ -16,12 +16,16 @@ import Comments from "../comment/Comments";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import "./TermMetadata.scss";
 import TermSnapshots from "./snapshot/TermSnapshots";
+import { connect } from "react-redux";
+import TermItState from "../../model/TermItState";
+import { RdfProperty } from "../../model/RdfsResource";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
   term: Term;
   vocabulary: Vocabulary;
   language: string;
   selectLanguage: (lang: string) => void;
+  customAttributes: RdfProperty[];
 }
 
 interface TermMetadataState {
@@ -98,6 +102,7 @@ export class TermMetadata extends React.Component<
 
   public render() {
     const { term, language, selectLanguage } = this.props;
+    const unmappedPropertyCount = this.resolveUnmappedPropertyCount();
     return (
       <>
         <LanguageSelector
@@ -132,7 +137,7 @@ export class TermMetadata extends React.Component<
                       tabs={this.initTabs()}
                       tabBadges={{
                         "properties.edit.title":
-                          term.unmappedProperties.size.toFixed(),
+                          unmappedPropertyCount.toFixed(),
                         "comments.title":
                           this.state.commentsCount !== null
                             ? this.state.commentsCount.toFixed()
@@ -162,6 +167,16 @@ export class TermMetadata extends React.Component<
     );
   }
 
+  private resolveUnmappedPropertyCount() {
+    const allUnmappedProperties = Array.from(
+      this.props.term.unmappedProperties.keys()
+    );
+    const customAttributes = new Set(
+      this.props.customAttributes.map((p) => p.iri)
+    );
+    return allUnmappedProperties.filter((p) => !customAttributes.has(p)).length;
+  }
+
   private initTabs() {
     const { term } = this.props;
     const tabs = {};
@@ -188,4 +203,6 @@ export class TermMetadata extends React.Component<
   }
 }
 
-export default injectIntl(withI18n(withRouter(TermMetadata)));
+export default connect((state: TermItState) => ({
+  customAttributes: state.customAttributes,
+}))(injectIntl(withI18n(withRouter(TermMetadata))));

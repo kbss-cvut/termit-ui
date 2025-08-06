@@ -9,25 +9,35 @@ import {
   PropertyValueType,
   stringifyPropertyValue,
 } from "src/model/WithUnmappedProperties";
+import { useSelector } from "react-redux";
+import TermItState from "../../model/TermItState";
 
 interface UnmappedPropertiesProps {
   properties: Map<string, PropertyValueType[]>;
   showInfoOnEmpty?: boolean;
 }
 
-const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
-  props: UnmappedPropertiesProps
-) => {
+const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
+  properties,
+  showInfoOnEmpty,
+}) => {
   const { i18n } = useI18n();
-  if (props.properties.size === 0) {
-    return props.showInfoOnEmpty ? (
+  const customAttributes = useSelector(
+    (state: TermItState) => state.customAttributes
+  );
+  const actualProperties = Array.from(properties.keys()).filter(
+    (p) => customAttributes.findIndex((att) => att.iri === p) === -1
+  );
+  if (actualProperties.length === 0) {
+    return showInfoOnEmpty ? (
       <div className="additional-metadata-container italics">
         {i18n("properties.empty")}
       </div>
     ) : null;
   }
   const result: React.JSX.Element[] = [];
-  props.properties.forEach((values, k) => {
+  actualProperties.forEach((k) => {
+    const values = properties.get(k)!;
     if (values.length === 0) {
       return;
     }
