@@ -7,6 +7,7 @@ import {
 } from "./Asset";
 import Utils from "../util/Utils";
 import WithUnmappedProperties, {
+  HasUnmappedProperties,
   PropertyValueType,
   stringifyPropertyValue,
 } from "./WithUnmappedProperties";
@@ -134,7 +135,7 @@ declare type TermMap = { [key: string]: Term };
 
 export default class Term
   extends Asset
-  implements TermData, Editable, SupportsSnapshots
+  implements TermData, Editable, SupportsSnapshots, HasUnmappedProperties
 {
   public label: MultilingualString;
   public altLabels?: PluralMultilingualString;

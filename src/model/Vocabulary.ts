@@ -6,6 +6,7 @@ import Document, {
   DocumentData,
 } from "./Document";
 import WithUnmappedProperties, {
+  HasUnmappedProperties,
   PropertyValueType,
   stringifyPropertyValue,
 } from "./WithUnmappedProperties";
@@ -67,7 +68,7 @@ export interface VocabularyData extends AssetData {
 
 export default class Vocabulary
   extends Asset
-  implements Editable, VocabularyData, SupportsSnapshots
+  implements Editable, VocabularyData, SupportsSnapshots, HasUnmappedProperties
 {
   public label: MultilingualString;
   public comment?: MultilingualString;

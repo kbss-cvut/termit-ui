@@ -26,6 +26,7 @@ import { getRangeLabel, RANGE_OPTIONS } from "./CustomAttributeRangeSelector";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import CopyIriIcon from "../../misc/CopyIriIcon";
 
 export const CustomAttributes: React.FC = () => {
   const { i18n, locale } = useI18n();
@@ -54,7 +55,12 @@ export const CustomAttributes: React.FC = () => {
         accessor: "label",
         Filter: TextBasedFilter,
         filter: "text",
-        Cell: ({ row }) => <>{row.original.getLabel(lang)}</>,
+        Cell: ({ row }) => (
+          <>
+            {row.original.getLabel(lang)}
+            <CopyIriIcon url={row.original.iri} />
+          </>
+        ),
         className: "align-middle",
       },
       {

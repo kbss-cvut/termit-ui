@@ -426,7 +426,9 @@ function customAttributes(
   switch (action.type) {
     case ActionType.GET_CUSTOM_ATTRIBUTES:
       const asyncAction = action as AsyncActionSuccess<RdfProperty[]>;
-      return isAsyncSuccess(asyncAction) ? asyncAction.payload : state;
+      return isAsyncSuccess(action) ? asyncAction.payload : state;
+    case ActionType.CREATE_CUSTOM_ATTRIBUTE:
+      return isAsyncSuccess(action) ? [] : state;
     default:
       return state;
   }

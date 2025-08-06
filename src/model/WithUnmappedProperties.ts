@@ -13,6 +13,11 @@ export type PropertyValueType =
   | boolean
   | number;
 
+export interface HasUnmappedProperties {
+  get unmappedProperties(): Map<string, PropertyValueType[]>;
+  set unmappedProperties(properties: Map<string, PropertyValueType[]>);
+}
+
 /**
  * Converts an unmapped property value to a string.
  * @param value Unmapped property value
