@@ -49,6 +49,7 @@ export interface ExecuteQueryAction extends AsyncAction {
 }
 export interface SearchAction extends Action {
   searchString: string;
+  language?: string;
 }
 
 export interface SearchResultAction extends Action {
