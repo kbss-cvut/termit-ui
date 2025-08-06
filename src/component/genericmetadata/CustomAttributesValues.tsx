@@ -29,7 +29,7 @@ export const CustomAttributesValues: React.FC<{
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     dispatch(getCustomAttributes());
-  });
+  }, [dispatch]);
 
   return (
     <>
