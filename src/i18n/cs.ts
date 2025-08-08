@@ -234,6 +234,12 @@ const cs = {
       "Vyprázdnit frontu procesů čekajících na zpracování na pozadí",
     "administration.maintenance.clearLongRunningTasksQueue.success":
       "Fronta procesů na pozadí úspěšně vyprázdněna.",
+    "administration.maintenance.reloadFTS":
+      "Znovu načíst Full Text vyhledávání",
+    "administration.maintenance.reloadFTS.tooltip":
+      "Spustí novou inicializaci Lucene indexů, pokud jsou používány.",
+    "administration.maintenance.reloadFTS.success":
+      "Full Text vyhledávání načteno",
     "administration.groups": "Uživatelské skupiny",
     "administration.groups.create": "Vytvořit skupinu",
     "administration.groups.create.tooltip":

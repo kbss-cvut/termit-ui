@@ -1249,6 +1249,28 @@ export function clearLongRunningTasksQueue() {
   };
 }
 
+export function reloadFullTextSearch() {
+  const action = { type: ActionType.RELOAD_FTS };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post(`${Constants.API_PREFIX}/admin/reload-fts`)
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "administration.maintenance.reloadFTS.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
 export function loadConfiguration() {
   const action = { type: ActionType.LOAD_CONFIGURATION };
   return (dispatch: ThunkDispatch) => {
