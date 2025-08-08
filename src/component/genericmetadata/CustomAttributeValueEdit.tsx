@@ -6,7 +6,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
-import StringListEdit from "../misc/StringListEdit";
+import StringListEdit from "../misc/ValueListEdit";
 
 export const CustomAttributeValueEdit: React.FC<{
   attribute: RdfProperty;

@@ -13,7 +13,7 @@ import {
   pluralLangString,
 } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import StringListEdit from "../../misc/StringListEdit";
+import StringListEdit from "../../misc/ValueListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 

@@ -1,5 +1,5 @@
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { StringListEdit } from "../StringListEdit";
+import StringListEdit from "../ValueListEdit";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Button } from "reactstrap";
 import BadgeButton from "../BadgeButton";
@@ -63,7 +63,7 @@ describe("StringListEdit", () => {
     const value = "new item";
     (input.getDOMNode() as HTMLInputElement).value = value;
     input.simulate("change", input);
-    input.simulate("keyPress", { key: "Enter" });
+    input.simulate("keyDown", { key: "Enter" });
     expect(onChange).toHaveBeenCalledWith([value]);
   });
 

@@ -43,7 +43,7 @@ import MultilingualIcon from "../misc/MultilingualIcon";
 import RelatedTermsSelector from "./RelatedTermsSelector";
 import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
 import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
-import StringListEdit from "../misc/StringListEdit";
+import StringListEdit from "../misc/ValueListEdit";
 import "./TermMetadata.scss";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
