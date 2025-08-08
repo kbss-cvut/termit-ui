@@ -27,6 +27,7 @@ import {
   PropertyValueType,
   stringifyPropertyValue,
 } from "../../model/WithUnmappedProperties";
+import { CustomAttributesValuesEdit } from "./CustomAttributesValuesEdit";
 
 interface UnmappedPropertiesEditProps extends HasI18n {
   properties: Map<string, PropertyValueType[]>;
@@ -114,10 +115,23 @@ export class UnmappedPropertiesEdit extends React.Component<
     });
   };
 
+  public onCustomAttributeChange = (
+    attribute: string,
+    value: PropertyValueType[]
+  ) => {
+    const newProperties = new Map(this.props.properties);
+    newProperties.set(attribute, value);
+    this.props.onChange(newProperties);
+  };
+
   public render() {
     const i18n = this.props.i18n;
     return (
       <AttributeSectionContainer label={i18n("properties.edit.title")}>
+        <CustomAttributesValuesEdit
+          values={this.props.properties}
+          onChange={this.onCustomAttributeChange}
+        />
         <table className="mb-3">
           <tbody>{this.renderExisting()}</tbody>
         </table>

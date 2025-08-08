@@ -5,7 +5,7 @@ import Select from "../../misc/Select";
 
 export const RANGE_OPTIONS = [
   {
-    value: VocabularyUtils.NS_XSD + "boolean",
+    value: VocabularyUtils.XSD_BOOLEAN,
     label: "Boolean",
   },
   {
@@ -17,7 +17,7 @@ export const RANGE_OPTIONS = [
     labelKey: "type.term",
   },
   {
-    value: VocabularyUtils.NS_XSD + "string",
+    value: VocabularyUtils.XSD_STRING,
     labelKey: "datatype.string",
   },
 ];

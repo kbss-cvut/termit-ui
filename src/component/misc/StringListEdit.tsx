@@ -21,10 +21,12 @@ interface StringListEditProps extends HasI18n {
   list?: string[];
   multilingual?: boolean;
   onChange: (list: string[]) => void;
-  i18nPrefix: string;
+  i18nPrefix?: string;
+  label?: string;
+  helpText?: string;
   invalid?: boolean;
-  invalidMessage?: JSX.Element;
-  validationMessage?: string | JSX.Element;
+  invalidMessage?: React.ReactNode;
+  validationMessage?: string | React.ReactNode;
 }
 
 interface StringListEditState {
@@ -41,10 +43,6 @@ export class StringListEdit extends React.Component<
       inputValue: "",
     };
   }
-
-  private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ inputValue: e.currentTarget.value });
-  };
 
   private onKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -68,32 +66,31 @@ export class StringListEdit extends React.Component<
     this.props.onChange(newList);
   };
 
-  private getText = (keySuffix: string) => {
-    return this.props.i18n(this.props.i18nPrefix + "." + keySuffix);
-  };
-
   public render() {
+    const { i18n, i18nPrefix, label, helpText } = this.props;
     return (
       <div className="form-group">
         <Label className="attribute-label">
-          {this.getText("label")}
+          {label || i18n(`${i18nPrefix}.label`)}
           {this.props.multilingual && (
             <MultilingualIcon
-              id={"string-list-edit-multilingual" + Date.now()}
+              id={"string-list-edit-multilingual" + Utils.hashCode(i18nPrefix)}
             />
           )}
-          <HelpIcon
-            id={"string-list-edit" + Date.now()}
-            text={this.getText("help")}
-          />
+          {(helpText || i18nPrefix) && (
+            <HelpIcon
+              id={"string-list-edit-help" + Utils.hashCode(i18nPrefix)}
+              text={helpText || i18n(`${i18nPrefix}.help`)}
+            />
+          )}
         </Label>
         <InputGroup className="form-group mb-0">
           <Input
             name="add-string-input"
             value={this.state.inputValue}
-            onChange={this.onChange}
+            onChange={(e) => this.setState({ inputValue: e.target.value })}
             bsSize="sm"
-            onKeyPress={this.onKeyPress}
+            onKeyDown={this.onKeyPress}
             invalid={this.props.invalid}
           />
           <InputGroupAddon addonType="append">
@@ -104,10 +101,10 @@ export class StringListEdit extends React.Component<
               onClick={this.onAdd}
               className="string-list-add-button"
               disabled={this.state.inputValue.trim().length === 0}
-              title={this.props.i18n("stringlistedit.button.add.tooltip")}
+              title={i18n("stringlistedit.button.add.tooltip")}
             >
               <GoPlus />
-              &nbsp;{this.props.i18n("stringlistedit.button.add")}
+              &nbsp;{i18n("stringlistedit.button.add")}
             </Button>
           </InputGroupAddon>
           {this.props.invalid && (
