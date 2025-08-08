@@ -95,6 +95,7 @@ export const CustomAttributeEdit: React.FC = () => {
   };
   const labelValidation =
     (!editingMode || label[language] !== originalLabel[language]) &&
+    (label[language] || "").length > 0 &&
     propertyWithLabelExists(
       label[language],
       language,

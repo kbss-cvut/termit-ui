@@ -6,7 +6,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
-import StringListEdit from "../misc/ValueListEdit";
+import ValueListEdit from "../misc/ValueListEdit";
 
 export const CustomAttributeValueEdit: React.FC<{
   attribute: RdfProperty;
@@ -31,9 +31,22 @@ export const CustomAttributeValueEdit: React.FC<{
   if (attribute.rangeIri === VocabularyUtils.XSD_STRING) {
     return (
       <div className="form-group">
-        <StringListEdit
+        <ValueListEdit
           onChange={(newList) => onChange(attribute, newList)}
           list={values as string[]}
+          label={getLocalized(attribute.label, lang)}
+          helpText={getLocalized(attribute.comment, lang)}
+        />
+      </div>
+    );
+  }
+  if (attribute.rangeIri === VocabularyUtils.XSD_INT) {
+    return (
+      <div className="form-group">
+        <ValueListEdit<number>
+          type="number"
+          onChange={(newList) => onChange(attribute, newList)}
+          list={values as number[]}
           label={getLocalized(attribute.label, lang)}
           helpText={getLocalized(attribute.comment, lang)}
         />
