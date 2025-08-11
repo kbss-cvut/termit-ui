@@ -8,8 +8,6 @@ import {
   InputGroupAddon,
   InputGroupText,
 } from "reactstrap";
-// @ts-ignore
-import { IntelligentTreeSelect } from "intelligent-tree-select";
 import SearchResult from "../../../model/search/SearchResult";
 import { connect } from "react-redux";
 import { updateSearchFilter } from "../../../action/SearchActions";
