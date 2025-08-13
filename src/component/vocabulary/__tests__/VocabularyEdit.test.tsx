@@ -4,7 +4,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { shallow } from "enzyme";
-import { UnmappedPropertiesEdit } from "../../genericmetadata/UnmappedPropertiesEdit";
+import UnmappedPropertiesEdit from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Document from "../../../model/Document";
 import { langString } from "../../../model/MultilingualString";

@@ -11,15 +11,19 @@ import {
 } from "src/model/WithUnmappedProperties";
 import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
+import { FaTrashAlt } from "react-icons/fa";
+import BadgeButton from "../misc/BadgeButton";
 
 interface UnmappedPropertiesProps {
   properties: Map<string, PropertyValueType[]>;
   showInfoOnEmpty?: boolean;
+  onRemove?: (property: string, value: string) => void;
 }
 
 const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
   properties,
   showInfoOnEmpty,
+  onRemove,
 }) => {
   const { i18n } = useI18n();
   const customAttributes = useSelector(
@@ -48,6 +52,18 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
         {sortedItems.map((v: string) => (
           <li key={Utils.hashCode(v)}>
             {Utils.isLink(v) ? <OutgoingLink label={v} iri={v} /> : v}
+            {onRemove && (
+              <BadgeButton
+                color="danger"
+                outline={true}
+                title={i18n("properties.edit.remove")}
+                className="ml-3"
+                onClick={() => onRemove(k, v)}
+              >
+                <FaTrashAlt />
+                {i18n("properties.edit.remove.text")}
+              </BadgeButton>
+            )}
           </li>
         ))}
       </ul>

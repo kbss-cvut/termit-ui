@@ -1,27 +1,41 @@
 import Generator from "../../../__tests__/environment/Generator";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { UnmappedPropertiesEdit } from "../UnmappedPropertiesEdit";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import UnmappedPropertiesEdit from "../UnmappedPropertiesEdit";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import { GoPlus } from "react-icons/go";
-import { shallow } from "enzyme";
 import RdfsResource from "../../../model/RdfsResource";
 import BadgeButton from "../../misc/BadgeButton";
 import Utils from "../../../util/Utils";
 import { langString } from "../../../model/MultilingualString";
+import { PropertyValueType } from "../../../model/WithUnmappedProperties";
+import Constants from "../../../util/Constants";
+// @ts-ignore
+import { IntelligentTreeSelect } from "intelligent-tree-select";
+import * as Redux from "react-redux";
+import { act } from "react-dom/test-utils";
+import * as AsyncActions from "../../../action/AsyncActions";
 
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+  useSelector: jest.fn(),
+}));
 
 describe("UnmappedPropertiesEdit", () => {
-  let onChange: (update: Map<string, string[]>) => void;
-  let loadKnownProperties: () => void;
-  let createProperty: (property: RdfsResource) => Promise<any>;
-  let clearProperties: () => void;
+  let onChange: (update: Map<string, PropertyValueType[]>) => void;
 
   beforeEach(() => {
     onChange = jest.fn();
-    loadKnownProperties = jest.fn();
-    createProperty = jest.fn();
-    clearProperties = jest.fn();
+    jest.spyOn(Redux, "useSelector").mockReturnValue([
+      new RdfsResource({
+        iri: Generator.generateUri(),
+        label: langString("Known unmapped property"),
+      }),
+    ]);
+    const mockDispatch = jest.fn().mockResolvedValue({});
+    jest.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
+    mockUseI18n();
   });
 
   it("renders existing properties", () => {
@@ -33,19 +47,13 @@ describe("UnmappedPropertiesEdit", () => {
     expect(value.text()).toContain(existing.get(property)![0]);
   });
 
-  function render(
-    existing: Map<string, string[]>,
-    knownProperties: RdfsResource[] = []
-  ) {
+  function render(existing: Map<string, PropertyValueType[]>) {
     return mountWithIntl(
       <UnmappedPropertiesEdit
         properties={existing}
-        knownProperties={knownProperties}
         onChange={onChange}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
+        languages={["en", "cs"]}
+        language={Constants.DEFAULT_LANGUAGE}
       />
     );
   }
@@ -76,14 +84,14 @@ describe("UnmappedPropertiesEdit", () => {
     const wrapper = render(new Map());
     const property = Generator.generateUri();
     const value = "test";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
-      new RdfsResource({
-        iri: property,
-        label: langString("Property"),
-      })
-    );
+    act(() => {
+      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
+        new RdfsResource({
+          iri: property,
+          label: langString("Property"),
+        })
+      );
+    });
     const valueInput = wrapper.find('input[name="value"]');
     (valueInput.getDOMNode() as HTMLInputElement).value = value;
     valueInput.simulate("change", valueInput);
@@ -96,14 +104,14 @@ describe("UnmappedPropertiesEdit", () => {
     const existing = new Map([[property, ["test"]]]);
     const wrapper = render(existing);
     const value = "test2";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
-      new RdfsResource({
-        iri: property,
-        label: langString("Property"),
-      })
-    );
+    act(() => {
+      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
+        new RdfsResource({
+          iri: property,
+          label: langString("Property"),
+        })
+      );
+    });
     const valueInput = wrapper.find('input[name="value"]');
     (valueInput.getDOMNode() as HTMLInputElement).value = value;
     valueInput.simulate("change", valueInput);
@@ -117,14 +125,14 @@ describe("UnmappedPropertiesEdit", () => {
     const wrapper = render(new Map());
     const property = Generator.generateUri();
     const value = "test";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
-      new RdfsResource({
-        iri: property,
-        label: langString("Property"),
-      })
-    );
+    act(() => {
+      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
+        new RdfsResource({
+          iri: property,
+          label: langString("Property"),
+        })
+      );
+    });
     const valueInput = wrapper.find('input[name="value"]');
     (valueInput.getDOMNode() as HTMLInputElement).value = value;
     valueInput.simulate("change", valueInput);
@@ -139,14 +147,14 @@ describe("UnmappedPropertiesEdit", () => {
     const wrapper = render(new Map());
     let addButton = wrapper.find(GoPlus).parent();
     expect(addButton.prop("disabled")).toBeTruthy();
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
-      new RdfsResource({
-        iri: Generator.generateUri(),
-        label: langString("Property"),
-      })
-    );
+    act(() => {
+      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
+        new RdfsResource({
+          iri: Generator.generateUri(),
+          label: langString("Property"),
+        })
+      );
+    });
     addButton = wrapper.find(GoPlus).parent();
     expect(addButton.prop("disabled")).toBeTruthy();
     const valueInput = wrapper.find('input[name="value"]');
@@ -160,14 +168,14 @@ describe("UnmappedPropertiesEdit", () => {
     const wrapper = render(new Map());
     const property = Generator.generateUri();
     const value = "test";
-    (
-      wrapper.find(UnmappedPropertiesEdit).instance() as UnmappedPropertiesEdit
-    ).onPropertySelect(
-      new RdfsResource({
-        iri: property,
-        label: langString("Property"),
-      })
-    );
+    act(() => {
+      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
+        new RdfsResource({
+          iri: property,
+          label: langString("Property"),
+        })
+      );
+    });
     const valueInput = wrapper.find('input[name="value"]');
     (valueInput.getDOMNode() as HTMLInputElement).value = value;
     valueInput.simulate("change", valueInput);
@@ -176,41 +184,9 @@ describe("UnmappedPropertiesEdit", () => {
   });
 
   it("loads known properties on mount", () => {
-    shallow(
-      <UnmappedPropertiesEdit
-        properties={new Map()}
-        onChange={onChange}
-        knownProperties={[]}
-        loadKnownProperties={loadKnownProperties}
-        {...intlFunctions()}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-      />
-    );
-    expect(loadKnownProperties).toHaveBeenCalled();
-  });
-
-  it("invokes property creation action on created property", () => {
-    createProperty = jest.fn().mockResolvedValue({});
-    const wrapper = shallow(
-      <UnmappedPropertiesEdit
-        properties={new Map()}
-        onChange={onChange}
-        knownProperties={[]}
-        loadKnownProperties={loadKnownProperties}
-        createProperty={createProperty}
-        clearProperties={clearProperties}
-        {...intlFunctions()}
-      />
-    );
-    const propertyData = {
-      iri: Generator.generateUri(),
-      label: langString("Test"),
-    };
-    (wrapper.instance() as UnmappedPropertiesEdit).onCreateProperty(
-      propertyData
-    );
-    expect(createProperty).toHaveBeenCalledWith(new RdfsResource(propertyData));
+    jest.spyOn(AsyncActions, "getProperties");
+    render(new Map());
+    expect(AsyncActions.getProperties).toHaveBeenCalled();
   });
 
   it("renders existing property values sorted lexicographically", () => {

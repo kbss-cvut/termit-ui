@@ -17,7 +17,7 @@ export const CustomAttributesValuesEdit: React.FC<{
   return (
     <>
       {customAttributes.map((att) => (
-        <Row>
+        <Row key={Utils.hashCode(att.iri)}>
           <Col xs={12}>
             <CustomAttributeValueEdit
               key={Utils.hashCode(att.iri)}
