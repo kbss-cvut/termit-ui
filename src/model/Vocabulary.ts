@@ -15,7 +15,11 @@ import Constants from "../util/Constants";
 import { SupportsSnapshots } from "./Snapshot";
 import JsonLdUtils from "../util/JsonLdUtils";
 import AccessLevel, { strToAccessLevel } from "./acl/AccessLevel";
-import { getLanguages, removeTranslation } from "../util/IntlUtil";
+import {
+  getLanguageByShortCode,
+  getLanguages,
+  removeTranslation,
+} from "../util/IntlUtil";
 import {
   context,
   getLocalized,
@@ -35,6 +39,7 @@ const ctx = {
   model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
+  primaryLanguage: VocabularyUtils.DC_LANGUAGE,
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, ctx);
@@ -52,6 +57,7 @@ const MAPPED_PROPERTIES = [
   "allImportedVocabularies",
   "termCount",
   "accessLevel",
+  "primaryLanguage",
 ];
 
 export const VOCABULARY_MULTILINGUAL_ATTRIBUTES = ["label", "comment"];
@@ -64,6 +70,11 @@ export interface VocabularyData extends AssetData {
   model?: AssetData;
   importedVocabularies?: AssetData[];
   accessLevel?: AccessLevel;
+  /**
+   * Short locale code defined by iso-639-1
+   * @see import("../util/IntlUtil").getLanguageOptions()
+   */
+  primaryLanguage?: string;
 }
 
 export default class Vocabulary
@@ -78,6 +89,7 @@ export default class Vocabulary
   public importedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
   public accessLevel?: AccessLevel;
+  public primaryLanguage?: string;
 
   public termCount?: number;
 
@@ -95,6 +107,7 @@ export default class Vocabulary
     this.accessLevel = data.accessLevel
       ? strToAccessLevel(data.accessLevel)
       : undefined;
+    this.primaryLanguage = data.primaryLanguage;
   }
 
   getLabel(lang?: string): string {
@@ -169,4 +182,5 @@ export default class Vocabulary
 export const EMPTY_VOCABULARY = new Vocabulary({
   iri: Constants.EMPTY_ASSET_IRI,
   label: langString(""),
+  primaryLanguage: getLanguageByShortCode(Constants.DEFAULT_LANGUAGE)?.code,
 });

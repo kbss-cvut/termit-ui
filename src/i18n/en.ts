@@ -261,6 +261,8 @@ const en = {
     "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
+    "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
+      "Cannot remove translation in the vocabulary primary language!",
 
     "document.remove.tooltip.disabled":
       "In order to delete the document, delete the files first.",
@@ -278,6 +280,7 @@ const en = {
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
+    "vocabulary.primaryLanguage": "Primary vocabulary language",
     "vocabulary.create.title": "Create Vocabulary",
     "vocabulary.create.submit": "Create",
     "vocabulary.create.files": "Files",
@@ -506,7 +509,7 @@ const en = {
       "or leave this field blank.",
     "term.source.help":
       "(Optional) reference to the origin of the term definition. It might refer to a particular " +
-      "law section, or paragraph. Whenever the definition is marked in the document text, the source is filled automatically.",
+      "law section, or paragraph.",
     "term.metadata.definition": "Definition",
     "term.metadata.definition.text": "Text",
     "term.metadata.definitionSource": "Document",
@@ -623,6 +626,7 @@ const en = {
 
     "file.text-analysis.finished.message":
       "Text analysis successfully finished.",
+    "file.text-analysis.failed": "Text analysis failed: {message}",
     "file.metadata.startTextAnalysis": "Start text analysis",
     "file.metadata.startTextAnalysis.text": "Analyze",
     "file.metadata.startTextAnalysis.vocabularySelect.title":

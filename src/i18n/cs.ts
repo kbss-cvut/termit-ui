@@ -271,6 +271,8 @@ const cs = {
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
+    "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
+      "Nelze odebrat překlad pro hlavní jazyk slovníku!",
 
     "document.remove.tooltip.disabled":
       "Odstranit dokument je možné po odstranění všech jeho souborů.",
@@ -287,6 +289,7 @@ const cs = {
     "vocabulary.vocabularies.select.placeholder":
       "Začněte psát pro filtrování slovníků dle názvu",
     "vocabulary.title": "Název",
+    "vocabulary.primaryLanguage": "Hlavní jazyk slovníku",
     "vocabulary.create.title": "Nový slovník",
     "vocabulary.create.submit": "Vytvořit",
     "vocabulary.create.files": "Soubory",
@@ -515,8 +518,7 @@ const cs = {
     "term.source.help":
       "(Nepovinný) odkaz na původ definice pojmu. Odkazuje na konkrétní místo v textu dokumentu, " +
       "například na kapitolu knihy, či konkrétní odstavec v zákoně, např. 'Písmeno b) paragrafu 2 " +
-      "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
-      "je zdroj vyplňován automaticky.",
+      "zákona č. 256/2013 Sb., o katastru nemovitostí'.",
     "term.metadata.definition": "Definice",
     "term.metadata.definition.text": "Text",
     "term.metadata.definitionSource": "Dokument",
@@ -632,6 +634,7 @@ const cs = {
 
     "file.text-analysis.finished.message":
       "Textová analýza souboru úspěšně dokončena.",
+    "file.text-analysis.failed": "Textová analýza selhala: {message}",
     "file.metadata.startTextAnalysis": "Spustit textovou analýzu",
     "file.metadata.startTextAnalysis.text": "Analyzovat",
     "file.metadata.startTextAnalysis.vocabularySelect.title":

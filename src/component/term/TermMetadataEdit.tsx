@@ -50,6 +50,10 @@ import HelpIcon from "../misc/HelpIcon";
 import TermStateSelector from "./state/TermStateSelector";
 import Vocabulary from "../../model/Vocabulary";
 import { PropertyValueType } from "../../model/WithUnmappedProperties";
+import Message from "../../model/Message";
+import MessageType from "../../model/MessageType";
+import { ThunkDispatch } from "../../util/Types";
+import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 
 interface TermMetadataEditProps extends HasI18n {
   term: Term;
@@ -59,9 +63,10 @@ interface TermMetadataEditProps extends HasI18n {
   ) => void;
   cancel: () => void;
   language: string;
+  vocabularyPrimaryLanguage: string;
+  publishMessage: (message: Message) => void;
   selectLanguage: (lang: string) => void;
   validationResults: ConsolidatedResults;
-  vocabulary: Vocabulary;
 }
 
 interface TermMetadataEditState extends TermData {
@@ -219,7 +224,18 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ unmappedProperties: update });
   };
 
+  private isInvalid = (): boolean => {
+    return !isTermValid(
+      this.state,
+      this.state.labelExist,
+      this.props.vocabularyPrimaryLanguage
+    );
+  };
+
   public onSave = () => {
+    if (this.isInvalid()) {
+      return;
+    }
     const { labelExist, unmappedProperties, definitionRelated, ...data } =
       this.state;
     const t = new Term(data);
@@ -228,6 +244,19 @@ export class TermMetadataEdit extends React.Component<
   };
 
   public removeTranslation = (lang: string) => {
+    if (lang === this.props.vocabularyPrimaryLanguage) {
+      this.props.publishMessage(
+        new Message(
+          {
+            messageId:
+              "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage",
+          },
+          MessageType.ERROR
+        )
+      );
+      this.props.selectLanguage(this.props.language);
+      return;
+    }
     const copy = _.cloneDeep(this.state);
     Term.removeTranslation(copy, lang);
     this.setState(copy);
@@ -479,7 +508,7 @@ export class TermMetadataEdit extends React.Component<
                     <Button
                       id="edit-term-submit"
                       color="success"
-                      disabled={!isTermValid(this.state, this.state.labelExist)}
+                      disabled={this.isInvalid()}
                       size="sm"
                       onClick={this.onSave}
                     >
@@ -510,9 +539,19 @@ export class TermMetadataEdit extends React.Component<
   }
 }
 
-export default connect((state: TermItState) => {
-  return {
-    validationResults: state.validationResults[state.vocabulary.iri],
-    vocabulary: state.vocabulary,
-  };
-})(injectIntl(withI18n(TermMetadataEdit)));
+export default connect(
+  (state: TermItState) => {
+    return {
+      validationResults: state.validationResults[state.vocabulary.iri],
+      vocabulary: state.vocabulary,
+      vocabularyPrimaryLanguage:
+        state.vocabulary.primaryLanguage || state.configuration.language,
+    };
+  },
+  (dispatch: ThunkDispatch) => {
+    return {
+      publishMessage: (message: Message) =>
+        dispatch(publishMessageAction(message)),
+    };
+  }
+)(injectIntl(withI18n(TermMetadataEdit)));

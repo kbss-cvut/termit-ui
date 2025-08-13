@@ -24,6 +24,7 @@ import { useI18n } from "../hook/useI18n";
 interface TermDefinitionEditProps {
   term?: Term;
   annotationElement?: Element;
+  language?: string;
   onSave: (update: Term) => void;
   onCancel: () => void;
 }
@@ -37,9 +38,11 @@ export const TermDefinitionEdit: React.FC<TermDefinitionEditProps> = (
 ) => {
   const { term, annotationElement, onSave, onCancel } = props;
   const { i18n, formatMessage, locale } = useI18n();
-  const language = useSelector(
-    (state: TermItState) => state.configuration.language
+  const fallbackLanguage = useSelector(
+    (state: TermItState) =>
+      state.vocabulary.primaryLanguage || state.configuration.language
   );
+  const language = props.language || fallbackLanguage;
   const onChange = (change: Partial<TermData>) =>
     setData(new Term(Object.assign({}, data, change)));
   const [data, setData] = React.useState<Term>();
