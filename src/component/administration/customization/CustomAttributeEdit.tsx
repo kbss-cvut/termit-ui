@@ -36,6 +36,7 @@ import {
 } from "../../../action/AsyncActions";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { useParams } from "react-router-dom";
+import VocabularyUtils from "../../../util/VocabularyUtils";
 
 function propertyWithLabelExists(
   label: string,
@@ -58,7 +59,7 @@ export const CustomAttributeEdit: React.FC = () => {
     {}
   );
   const [comment, setComment] = React.useState<MultilingualString>({});
-  const [range, setRange] = React.useState<string>("");
+  const [range, setRange] = React.useState<string>(VocabularyUtils.XSD_STRING);
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes

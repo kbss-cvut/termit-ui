@@ -3,7 +3,7 @@ import { useI18n } from "../hook/useI18n";
 import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 // @ts-ignore
-import { Col, Label, List, Row } from "reactstrap";
+import { Badge, Col, Label, List, Row } from "reactstrap";
 import Utils from "../../util/Utils";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
@@ -55,7 +55,7 @@ export const CustomAttributesValues: React.FC<{
               ) : (
                 <List type="unstyled" className="mb-3">
                   {asset.unmappedProperties.get(att.iri)?.map((val) => (
-                    <li key={val.toString()}>
+                    <li key={stringifyPropertyValue(val)}>
                       <CustomAttributeValue attribute={att} value={val} />
                     </li>
                   ))}
@@ -75,6 +75,16 @@ const CustomAttributeValue: React.FC<{
   switch (attribute.rangeIri) {
     case VocabularyUtils.TERM:
       return <TermIriLink iri={value as string} />;
+    case VocabularyUtils.XSD_BOOLEAN:
+      return (
+        <Badge
+          color={value["@value"] ? "success" : "dark"}
+          pill={true}
+          className="align-text-top"
+        >
+          {stringifyPropertyValue(value)}
+        </Badge>
+      );
     default:
       return <>{stringifyPropertyValue(value)}</>;
   }

@@ -1,5 +1,5 @@
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import StringListEdit from "../ValueListEdit";
+import ValueListEdit from "../ValueListEdit";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Button } from "reactstrap";
 import BadgeButton from "../BadgeButton";
@@ -7,7 +7,7 @@ import BadgeButton from "../BadgeButton";
 jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
 jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
 
-describe("StringListEdit", () => {
+describe("ValueListEdit", () => {
   let onChange: (list: string[]) => void;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe("StringListEdit", () => {
 
   it("adds current input value to list and invokes onChange on add click", () => {
     const wrapper = mountWithIntl(
-      <StringListEdit
+      <ValueListEdit
         onChange={onChange}
         list={[]}
         i18nPrefix={""}
@@ -33,7 +33,7 @@ describe("StringListEdit", () => {
 
   it("clears input value after adding new item", () => {
     const wrapper = mountWithIntl(
-      <StringListEdit
+      <ValueListEdit
         onChange={onChange}
         list={[]}
         i18nPrefix={""}
@@ -52,7 +52,7 @@ describe("StringListEdit", () => {
 
   it("supports adding input value as item on enter", () => {
     const wrapper = mountWithIntl(
-      <StringListEdit
+      <ValueListEdit
         onChange={onChange}
         list={[]}
         i18nPrefix={""}
@@ -69,7 +69,7 @@ describe("StringListEdit", () => {
 
   it("does nothing on add when input is empty", () => {
     const wrapper = mountWithIntl(
-      <StringListEdit
+      <ValueListEdit
         onChange={onChange}
         list={[]}
         i18nPrefix={""}
@@ -86,7 +86,7 @@ describe("StringListEdit", () => {
   it("removes item and calls onChange with updated items when item remove button is clicked", () => {
     const items = ["first", "second"];
     const wrapper = mountWithIntl(
-      <StringListEdit
+      <ValueListEdit
         onChange={onChange}
         list={items}
         i18nPrefix={""}
@@ -99,7 +99,7 @@ describe("StringListEdit", () => {
 
   it("renders add button disabled when input is empty", () => {
     const wrapper = mountWithIntl(
-      <StringListEdit
+      <ValueListEdit
         onChange={onChange}
         list={[]}
         i18nPrefix={""}

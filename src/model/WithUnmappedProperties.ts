@@ -25,10 +25,22 @@ export interface HasUnmappedProperties {
 export function stringifyPropertyValue(value: PropertyValueType): string {
   if ((value as HasIdentifier).iri) {
     return (value as HasIdentifier).iri;
-  } else if ((value as TypedLiteral)["@value"]) {
+  } else if ((value as TypedLiteral)["@value"] !== undefined) {
     return (value as TypedLiteral)["@value"].toString();
   } else {
     return value.toString();
+  }
+}
+
+export function extractPropertyValue(
+  value: PropertyValueType
+): string | number | boolean {
+  if ((value as HasIdentifier).iri) {
+    return (value as HasIdentifier).iri;
+  } else if ((value as TypedLiteral)["@value"] !== undefined) {
+    return (value as TypedLiteral)["@value"] as any;
+  } else {
+    return value as string;
   }
 }
 
