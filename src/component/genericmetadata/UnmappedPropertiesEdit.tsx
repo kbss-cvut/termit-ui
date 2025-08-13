@@ -12,6 +12,7 @@ import UnmappedProperties from "./UnmappedProperties";
 import { useI18n } from "../hook/useI18n";
 
 interface UnmappedPropertiesEditProps {
+  assetType: "term" | "vocabulary";
   properties: Map<string, PropertyValueType[]>;
   ignoredProperties?: string[]; // Properties that should not be offered in the editor
   onChange: (properties: Map<string, PropertyValueType[]>) => void;
@@ -20,6 +21,7 @@ interface UnmappedPropertiesEditProps {
 }
 
 const UnmappedPropertiesEdit: React.FC<UnmappedPropertiesEditProps> = ({
+  assetType,
   properties,
   ignoredProperties,
   onChange,
@@ -62,6 +64,7 @@ const UnmappedPropertiesEdit: React.FC<UnmappedPropertiesEditProps> = ({
   return (
     <AttributeSectionContainer label={i18n("properties.edit.title")}>
       <CustomAttributesValuesEdit
+        assetType={assetType}
         values={properties}
         onChange={onPropertyValueChange}
       />

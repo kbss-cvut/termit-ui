@@ -464,6 +464,7 @@ export class TermMetadataEdit extends React.Component<
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit
+                    assetType="term"
                     properties={this.state.unmappedProperties}
                     ignoredProperties={TermMetadataEdit.mappedPropertiesToIgnore()}
                     onChange={this.onPropertiesChange}

@@ -176,6 +176,7 @@ export class VocabularyEdit extends React.Component<
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit
+                    assetType="vocabulary"
                     properties={this.state.unmappedProperties}
                     ignoredProperties={VocabularyEdit.mappedPropertiesToIgnore()}
                     onChange={this.onPropertiesChange}

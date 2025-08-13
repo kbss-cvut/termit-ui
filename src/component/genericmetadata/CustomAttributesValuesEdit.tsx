@@ -5,18 +5,26 @@ import TermItState from "../../model/TermItState";
 import { Col, Row } from "reactstrap";
 import { CustomAttributeValueEdit } from "./CustomAttributeValueEdit";
 import Utils from "src/util/Utils";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 export const CustomAttributesValuesEdit: React.FC<{
+  assetType: "term" | "vocabulary";
   values: Map<string, PropertyValueType[]>;
   onChange: (property: string, value: PropertyValueType[]) => void;
-}> = ({ values, onChange }) => {
+}> = ({ assetType, values, onChange }) => {
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
+  );
+  const filterDomain =
+    assetType === "term" ? VocabularyUtils.TERM : VocabularyUtils.VOCABULARY;
+  const actualAttributes = React.useMemo(
+    () => customAttributes.filter((att) => att.domainIri === filterDomain),
+    [customAttributes, filterDomain]
   );
 
   return (
     <>
-      {customAttributes.map((att) => (
+      {actualAttributes.map((att) => (
         <Row key={Utils.hashCode(att.iri)}>
           <Col xs={12}>
             <CustomAttributeValueEdit
