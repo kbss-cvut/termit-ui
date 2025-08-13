@@ -56,13 +56,20 @@ export default class RdfsResource implements RdfsResourceData, HasLabel {
 }
 
 export class RdfProperty extends RdfsResource {
-  public readonly domain?: string;
+  public domain?: string | { iri: string };
   public range?: string | { iri: string };
 
   constructor(data: RdfPropertyData) {
     super(data);
     this.domain = data.domain;
     this.range = data.range;
+  }
+
+  public get domainIri(): string {
+    if (typeof this.domain === "string") {
+      return this.domain;
+    }
+    return this.domain?.iri || "";
   }
 
   public get rangeIri(): string {
@@ -77,15 +84,18 @@ export class CreateRdfPropertyData {
   public label?: MultilingualString;
   public comment?: MultilingualString;
   public types: string[];
+  public domain?: string;
   public range?: string;
 
   constructor(data: {
     label: MultilingualString;
     comment?: MultilingualString;
+    domain?: string;
     range?: string;
   }) {
     this.label = data.label;
     this.comment = data.comment;
+    this.domain = data.domain;
     this.range = data.range;
     this.types = [VocabularyUtils.NS_TERMIT + "vlastní-atribut"];
   }

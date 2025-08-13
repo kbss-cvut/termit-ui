@@ -236,6 +236,7 @@ const en = {
     "administration.groups.members": "Group members",
     "administration.customization.title": "Customization",
     "administration.customization.customAttributes.title": "Custom attributes",
+    "administration.customization.customAttributes.domain": "Domain",
     "administration.customization.customAttributes.range": "Range",
     "administration.customization.customAttributes.add": "Create attribute",
     "administration.customization.customAttributes.labelExists":

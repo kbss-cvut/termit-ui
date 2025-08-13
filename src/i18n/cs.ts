@@ -247,6 +247,7 @@ const cs = {
     "administration.groups.members": "Členové skupiny",
     "administration.customization.title": "Přizpůsobení",
     "administration.customization.customAttributes.title": "Vlastní atributy",
+    "administration.customization.customAttributes.domain": "Doména",
     "administration.customization.customAttributes.range": "Obor hodnot",
     "administration.customization.customAttributes.add": "Nový atribut",
     "administration.customization.customAttributes.labelExists":

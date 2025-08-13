@@ -24,7 +24,11 @@ import MultilingualIcon from "../../misc/MultilingualIcon";
 import ValidationResult from "../../../model/form/ValidationResult";
 import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
-import { CustomAttributeRangeSelector } from "./CustomAttributeRangeSelector";
+import {
+  CustomAttributeSelector,
+  DOMAIN_OPTIONS,
+  RANGE_OPTIONS,
+} from "./CustomAttributeSelector";
 import HeaderWithActions from "../../misc/HeaderWithActions";
 import Routes from "../../../util/Routes";
 import Routing from "../../../util/Routing";
@@ -59,6 +63,7 @@ export const CustomAttributeEdit: React.FC = () => {
     {}
   );
   const [comment, setComment] = React.useState<MultilingualString>({});
+  const [domain, setDomain] = React.useState<string>(VocabularyUtils.TERM);
   const [range, setRange] = React.useState<string>(VocabularyUtils.XSD_STRING);
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const customAttributes = useSelector(
@@ -76,6 +81,7 @@ export const CustomAttributeEdit: React.FC = () => {
         setLabel(editedAttribute.label || {});
         setOriginalLabel(editedAttribute.label || {});
         setComment(editedAttribute.comment || {});
+        setDomain(editedAttribute.domainIri || "");
         setRange(editedAttribute.rangeIri || "");
       }
     }
@@ -132,6 +138,7 @@ export const CustomAttributeEdit: React.FC = () => {
         ...editedAttribute!,
         label,
         comment,
+        domain,
         range,
       });
       promise = dispatch(updateCustomAttribute(data));
@@ -141,6 +148,7 @@ export const CustomAttributeEdit: React.FC = () => {
           new CreateRdfPropertyData({
             label,
             comment,
+            domain,
             range,
           })
         )
@@ -211,9 +219,22 @@ export const CustomAttributeEdit: React.FC = () => {
             </Row>
             <Row>
               <Col xs={12}>
-                <CustomAttributeRangeSelector
+                <CustomAttributeSelector
+                  onChange={setDomain}
+                  value={domain}
+                  options={DOMAIN_OPTIONS}
+                  labelKey="administration.customization.customAttributes.domain"
+                  disabled={editingMode}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <CustomAttributeSelector
                   onChange={setRange}
                   value={range}
+                  options={RANGE_OPTIONS}
+                  labelKey="administration.customization.customAttributes.range"
                   disabled={editingMode}
                 />
               </Col>

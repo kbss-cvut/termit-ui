@@ -22,7 +22,11 @@ import { Button } from "reactstrap";
 import Table from "../../misc/table/Table";
 import { GoPlus } from "react-icons/go";
 import { Link } from "react-router-dom";
-import { getRangeLabel, RANGE_OPTIONS } from "./CustomAttributeRangeSelector";
+import {
+  DOMAIN_OPTIONS,
+  getSelectorOptionLabel,
+  RANGE_OPTIONS,
+} from "./CustomAttributeSelector";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -72,6 +76,21 @@ export const CustomAttributes: React.FC = () => {
         className: "align-middle",
       },
       {
+        Header: i18n("administration.customization.customAttributes.domain"),
+        accessor: "domainIri",
+        disableFilters: true,
+        disableSortBy: true,
+        className: "align-middle",
+        Cell: ({ row }) => {
+          const domain = DOMAIN_OPTIONS.find(
+            (opt) => opt.value === row.original.domainIri
+          );
+          return domain
+            ? getSelectorOptionLabel(domain, i18n)
+            : row.original.domainIri;
+        },
+      },
+      {
         Header: i18n("administration.customization.customAttributes.range"),
         accessor: "rangeIri",
         disableFilters: true,
@@ -81,7 +100,9 @@ export const CustomAttributes: React.FC = () => {
           const range = RANGE_OPTIONS.find(
             (opt) => opt.value === row.original.rangeIri
           );
-          return range ? getRangeLabel(range, i18n) : row.original.rangeIri;
+          return range
+            ? getSelectorOptionLabel(range, i18n)
+            : row.original.rangeIri;
         },
       },
       {
