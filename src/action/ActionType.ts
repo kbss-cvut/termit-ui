@@ -49,6 +49,7 @@ export interface ExecuteQueryAction extends AsyncAction {
 }
 export interface SearchAction extends Action {
   searchString: string;
+  language?: string;
 }
 
 export interface SearchResultAction extends Action {
@@ -258,6 +259,7 @@ enum ActionType {
   DOES_USERNAME_EXISTS = "DOES_USERNAME_EXISTS",
   LONG_RUNNING_TASKS_UPDATE = "LONG_RUNNING_TASKS_UPDATE",
   CLEAR_LONG_RUNNING_TASKS_QUEUE = "CLEAR_LONG_RUNNING_TASKS_QUEUE",
+  RELOAD_FTS = "RELOAD_FTS",
 }
 
 export default ActionType;

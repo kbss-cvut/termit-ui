@@ -189,8 +189,8 @@ describe("NavbarSearch", () => {
     expect(inputGroup.childAt(1).prop("id")).toEqual(
       "main-search-input-navbar"
     );
-    expect(inputGroup.childAt(2).prop("id")).toEqual("search-reset");
-    expect(inputGroup.children().length).toEqual(3);
+    expect(inputGroup.childAt(3).prop("id")).toEqual("search-reset");
+    expect(inputGroup.children().length).toEqual(4);
   });
 
   it("renders icon after input if search is not in navbar", () => {
@@ -207,9 +207,9 @@ describe("NavbarSearch", () => {
     );
     const inputGroup = wrapper.find(InputGroup);
     expect(inputGroup.childAt(0).prop("id")).toEqual("main-search-input");
-    expect(inputGroup.childAt(1).prop("id")).toEqual("search-icon");
-    expect(inputGroup.childAt(2).prop("id")).toEqual("search-reset");
-    expect(inputGroup.children().length).toEqual(3);
+    expect(inputGroup.childAt(2).prop("id")).toEqual("search-icon");
+    expect(inputGroup.childAt(3).prop("id")).toEqual("search-reset");
+    expect(inputGroup.children().length).toEqual(4);
   });
 
   it("does not render clear icon if search string is empty", () => {

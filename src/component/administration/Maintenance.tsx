@@ -6,6 +6,7 @@ import { useI18n } from "../hook/useI18n";
 import {
   clearLongRunningTasksQueue,
   invalidateCaches,
+  reloadFullTextSearch,
 } from "../../action/AsyncActions";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
@@ -13,6 +14,7 @@ import { useDispatch } from "react-redux";
 export const Maintenance: React.FC = () => {
   const dispatch: ThunkDispatch = useDispatch();
   const { i18n } = useI18n();
+
   return (
     <PanelWithActions title={i18n("administration.maintenance.title")}>
       <ButtonToolbar>
@@ -33,6 +35,14 @@ export const Maintenance: React.FC = () => {
           onClick={() => dispatch(clearLongRunningTasksQueue())}
         >
           {i18n("administration.maintenance.clearLongRunningTasksQueue")}
+        </Button>
+        <Button
+          color="primary"
+          size="sm"
+          title={i18n("administration.maintenance.reloadFTS.tooltip")}
+          onClick={() => dispatch(reloadFullTextSearch())}
+        >
+          {i18n("administration.maintenance.reloadFTS")}
         </Button>
       </ButtonToolbar>
     </PanelWithActions>

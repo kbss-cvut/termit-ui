@@ -223,6 +223,10 @@ const en = {
       "Clears the queue of processes that are waiting to be executed in the background",
     "administration.maintenance.clearLongRunningTasksQueue.success":
       "Background process queue successfully cleared.",
+    "administration.maintenance.reloadFTS": "Reload search indexes",
+    "administration.maintenance.reloadFTS.tooltip":
+      "Triggers re-initialization of full-text search indexes, if available.",
+    "administration.maintenance.reloadFTS.success": "Search indexes reloaded.",
     "administration.groups": "User groups",
     "administration.groups.create": "Create group",
     "administration.groups.create.tooltip": "Allows to create a new user group",

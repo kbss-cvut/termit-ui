@@ -60,11 +60,12 @@ let updateSearchTimer: ReturnType<typeof setTimeout> | null = null;
 /**
  * Change the search criteria and trigger a new search.
  */
-export function updateSearchFilter(searchString: string) {
+export function updateSearchFilter(searchString: string, language: string) {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
     dispatch({
       type: ActionType.UPDATE_SEARCH_FILTER,
       searchString,
+      language,
     });
 
     // Clear search results
@@ -99,7 +100,9 @@ export function searchEverything() {
     dispatch({ type: ActionType.SEARCH_START });
     const state: TermItState = getState();
     if (state.searchListenerCount > 0 && !state.searchQuery.isEmpty()) {
-      return dispatch(search(state.searchQuery.searchQuery, true));
+      return dispatch(
+        search(state.searchQuery.searchQuery, state.searchQuery.language, true)
+      );
     } else {
       dispatch({ type: ActionType.SEARCH_FINISH });
       return Promise.resolve();
@@ -114,15 +117,20 @@ export function searchEverything() {
  */
 let latestSearch: Promise<any>;
 
-export function search(searchString: string, disableLoading: boolean = true) {
+export function search(
+  searchString: string,
+  language: string,
+  disableLoading: boolean = true
+) {
   const action = {
     type: ActionType.SEARCH,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(SyncActions.asyncActionRequest(action, disableLoading));
+    console.debug(searchString, language, disableLoading);
     const promiseToReturn = Ajax.get(
       Constants.API_PREFIX + "/search/fts",
-      params({ searchString })
+      params({ searchString, language })
     )
       .then((data: object) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(

@@ -22,9 +22,10 @@ import User from "../../../model/User";
 import { FaTimes } from "react-icons/fa";
 import "./NavbarSearch.scss";
 import { isLoggedIn } from "../../../util/Authorization";
+import LanguageSelector from "../../resource/file/LanguageSelector";
 
 interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
-  updateSearchFilter: (searchString: string) => any;
+  updateSearchFilter: (searchString: string, language: string) => any;
   searchString: string;
   searchResults: SearchResult[] | null;
   navbar: boolean;
@@ -35,6 +36,7 @@ interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
 interface NavbarSearchState {
   showResults: boolean;
   searchOriginNavbar?: boolean;
+  selectedLanguage: string;
 }
 
 /**
@@ -58,6 +60,7 @@ export class NavbarSearch extends React.Component<
     super(props);
     this.state = {
       showResults: false,
+      selectedLanguage: "",
     };
   }
 
@@ -84,21 +87,7 @@ export class NavbarSearch extends React.Component<
   };
 
   public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    this.closeResults();
-    this.props.updateSearchFilter(value).then(() => {
-      const path = this.props.location.pathname;
-      if (
-        path.endsWith(Routes.publicFacetedSearch.path) ||
-        path.endsWith(Routes.facetedSearch.path)
-      ) {
-        this.openSearchView();
-      }
-      this.setState({
-        showResults: true,
-        searchOriginNavbar: this.props.navbar,
-      });
-    });
+    this.doSearch(e.target.value, this.state.selectedLanguage);
   };
 
   private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -140,6 +129,28 @@ export class NavbarSearch extends React.Component<
     );
   };
 
+  private onLanguageSelectChange = (langCode: string) => {
+    this.setState({ selectedLanguage: langCode });
+    this.doSearch(this.props.searchString, langCode);
+  };
+
+  private doSearch = (searchString: string, language: string) => {
+    this.closeResults();
+    this.props.updateSearchFilter(searchString, language).then(() => {
+      const path = this.props.location.pathname;
+      if (
+        path.endsWith(Routes.publicFacetedSearch.path) ||
+        path.endsWith(Routes.facetedSearch.path)
+      ) {
+        this.openSearchView();
+      }
+      this.setState({
+        showResults: true,
+        searchOriginNavbar: this.props.navbar,
+      });
+    });
+  };
+
   public render() {
     const { i18n, navbar } = this.props;
 
@@ -154,6 +165,17 @@ export class NavbarSearch extends React.Component<
         <InputGroupText>
           <span className="fas fa-search" />
         </InputGroupText>
+      </InputGroupAddon>
+    );
+
+    const languageSelect = (
+      <InputGroupAddon addonType={"append"}>
+        <LanguageSelector
+          className={"navbar-search-language-select"}
+          onChange={this.onLanguageSelectChange}
+          value={this.state.selectedLanguage}
+          isClearable={true}
+        />
       </InputGroupAddon>
     );
 
@@ -175,7 +197,15 @@ export class NavbarSearch extends React.Component<
     );
 
     return (
-      <div className={classNames({ search: navbar }, "flex-grow-1")}>
+      <div
+        className={classNames(
+          {
+            search: navbar,
+            "navbar-search-margin-right-4": !this.props.searchString,
+          },
+          "flex-grow-1"
+        )}
+      >
         <InputGroup className="input-group-rounded input-group-merge">
           {navbar && searchIcon}
           <Input
@@ -190,6 +220,7 @@ export class NavbarSearch extends React.Component<
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
           />
+          {languageSelect}
           {!navbar && searchIcon}
           {this.props.searchString && clearIcon}
         </InputGroup>
@@ -199,7 +230,8 @@ export class NavbarSearch extends React.Component<
   }
 
   protected resetSearch = () => {
-    this.props.updateSearchFilter("");
+    this.props.updateSearchFilter("", "");
+    this.setState({ selectedLanguage: "" });
   };
 
   private renderResultsOverlay() {
@@ -234,8 +266,8 @@ export default withRouter(
     },
     (dispatch: ThunkDispatch) => {
       return {
-        updateSearchFilter: (searchString: string) =>
-          dispatch(updateSearchFilter(searchString)),
+        updateSearchFilter: (searchString: string, language: string) =>
+          dispatch(updateSearchFilter(searchString, language)),
       };
     }
   )(injectIntl(withI18n(NavbarSearch)))

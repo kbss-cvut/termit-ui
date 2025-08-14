@@ -234,6 +234,11 @@ const cs = {
       "Vyprázdnit frontu procesů čekajících na zpracování na pozadí",
     "administration.maintenance.clearLongRunningTasksQueue.success":
       "Fronta procesů na pozadí úspěšně vyprázdněna.",
+    "administration.maintenance.reloadFTS": "Znovu načíst textové indexy",
+    "administration.maintenance.reloadFTS.tooltip":
+      "Spustí novou inicializaci textových indexů pro fulltextové vyhledávání, jsou-li k dispozici.",
+    "administration.maintenance.reloadFTS.success":
+      "Textové indexy byly znovu načteny.",
     "administration.groups": "Uživatelské skupiny",
     "administration.groups.create": "Vytvořit skupinu",
     "administration.groups.create.tooltip":
