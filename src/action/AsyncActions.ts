@@ -521,6 +521,7 @@ export function loadAllTerms(
     {
       searchString: fetchOptions.searchString,
       includeTerms: fetchOptions.includeTerms,
+      flat: fetchOptions.flatList,
       namespace,
     },
     fetchOptions

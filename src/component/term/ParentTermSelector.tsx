@@ -29,6 +29,7 @@ import {
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
+import ShowFlatListToggle from "./state/ShowFlatListToggle";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   if (currentTermIri) {
@@ -68,6 +69,7 @@ interface ParentTermSelectorState {
   includeImported: boolean;
   importedVocabularies?: string[];
   disableIncludeImportedToggle: boolean;
+  flatList: boolean;
 }
 
 export class ParentTermSelector extends React.Component<
@@ -85,6 +87,7 @@ export class ParentTermSelector extends React.Component<
         props.parentTerms
       ),
       disableIncludeImportedToggle: false,
+      flatList: false,
     };
   }
 
@@ -146,7 +149,11 @@ export class ParentTermSelector extends React.Component<
         )
       : [this.props.vocabularyIri];
     return loadAndPrepareTerms(
-      { ...fetchOptions, includeImported: this.state.includeImported },
+      {
+        ...fetchOptions,
+        includeImported: this.state.includeImported,
+        flatList: this.state.flatList,
+      },
       (options) =>
         this.props.loadTerms(
           options,
@@ -179,6 +186,12 @@ export class ParentTermSelector extends React.Component<
     );
   };
 
+  private onFlatListToggle = () => {
+    this.setState({ flatList: !this.state.flatList }, () =>
+      this.treeComponent.current.resetOptions()
+    );
+  };
+
   public render() {
     const i18n = this.props.i18n;
     return (
@@ -191,13 +204,22 @@ export class ParentTermSelector extends React.Component<
               text={i18n("term.parent.help")}
             />
           </Label>
-          <IncludeImportedTermsToggle
-            id={this.props.id + "-include-imported"}
-            onToggle={this.onIncludeImportedToggle}
-            includeImported={this.state.includeImported}
-            style={{ alignSelf: "flex-end" }}
-            disabled={this.state.disableIncludeImportedToggle}
-          />
+          <div className="d-flex">
+            <div className="mr-2">
+              <IncludeImportedTermsToggle
+                id={this.props.id + "-include-imported"}
+                onToggle={this.onIncludeImportedToggle}
+                includeImported={this.state.includeImported}
+                style={{ alignSelf: "flex-end" }}
+                disabled={this.state.disableIncludeImportedToggle}
+              />
+            </div>
+            <ShowFlatListToggle
+              id={this.props.id + "-show-flat-list"}
+              onToggle={this.onFlatListToggle}
+              value={this.state.flatList}
+            />
+          </div>
         </div>
         {this.renderSelector()}
       </FormGroup>
@@ -216,6 +238,10 @@ export class ParentTermSelector extends React.Component<
         />
       );
     } else {
+      const treeSelectProps = {
+        ...commonTermTreeSelectProps(this.props),
+        renderAsTree: !this.state.flatList,
+      };
       return (
         <>
           <IntelligentTreeSelect
@@ -230,7 +256,7 @@ export class ParentTermSelector extends React.Component<
               this.props.vocabularyIri
             )}
             valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
-            {...commonTermTreeSelectProps(this.props)}
+            {...treeSelectProps}
           />
           {this.props.validationMessage && (
             <FormFeedback
