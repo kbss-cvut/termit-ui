@@ -7,12 +7,15 @@ import { useI18n } from "../../hook/useI18n";
 const LanguageSelector: React.FC<{
   onChange: (lang: string) => void;
   value: string;
-}> = ({ onChange, value }) => {
+  className?: string;
+  isClearable?: boolean;
+}> = ({ onChange, value, className, isClearable = false }) => {
   const options = getLanguageOptions();
   const { i18n } = useI18n();
   return (
     <IntelligentTreeSelect
-      onChange={(item: Language) => onChange(item.code)}
+      className={className}
+      onChange={(item: Language) => onChange(item?.code || "")}
       options={options}
       maxHeight={200}
       multi={false}
@@ -22,7 +25,7 @@ const LanguageSelector: React.FC<{
       simpleTreeData={true}
       renderAsTree={false}
       showSettings={false}
-      isClearable={false}
+      isClearable={isClearable}
       placeholder=""
       noResultsText={i18n("search.no-results")}
       value={options.find((o) => o.code === value)}

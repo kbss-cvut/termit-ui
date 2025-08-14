@@ -301,6 +301,7 @@ function searchQuery(
     case ActionType.UPDATE_SEARCH_FILTER:
       const newState = new SearchQuery(state);
       newState.searchQuery = action.searchString;
+      newState.language = action.language || "";
       return newState;
     case ActionType.LOGOUT:
       return new SearchQuery();
