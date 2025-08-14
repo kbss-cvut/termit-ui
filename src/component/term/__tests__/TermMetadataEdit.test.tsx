@@ -13,9 +13,10 @@ import {
   pluralLangString,
 } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import StringListEdit from "../../misc/StringListEdit";
+import StringListEdit from "../../misc/ValueListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
+import Vocabulary from "../../../model/Vocabulary";
 
 jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
 jest.mock("../ExactMatchesSelector", () => () => (
@@ -29,6 +30,7 @@ jest.mock("../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
 
 describe("Term edit", () => {
   let term: Term;
+  let vocabulary: Vocabulary;
   let onSave: (
     t: Term,
     definitionRelatedChanges: DefinitionRelatedChanges
@@ -38,11 +40,12 @@ describe("Term edit", () => {
   let validationResults: ConsolidatedResults;
 
   beforeEach(() => {
+    vocabulary = Generator.generateVocabulary();
     term = new Term({
       iri: Generator.generateUri(),
       label: langString("Test"),
       scopeNote: langString("test"),
-      vocabulary: { iri: Generator.generateUri() },
+      vocabulary: { iri: vocabulary.iri },
     });
     validationResults = {};
     onSave = jest.fn();
@@ -56,6 +59,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
@@ -85,6 +89,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
@@ -121,6 +126,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
@@ -153,6 +159,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
@@ -182,6 +189,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language="en"
         selectLanguage={selectLanguage}
@@ -212,6 +220,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
@@ -238,6 +247,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
@@ -270,6 +280,7 @@ describe("Term edit", () => {
     const wrapper = shallow<TermMetadataEdit>(
       <TermMetadataEdit
         term={term}
+        vocabulary={vocabulary}
         save={onSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
@@ -294,6 +305,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
@@ -319,6 +331,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={"en"}
         selectLanguage={selectLanguage}
@@ -344,6 +357,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={"cs"}
         selectLanguage={selectLanguage}
@@ -363,6 +377,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={"cs"}
         selectLanguage={selectLanguage}
@@ -383,6 +398,7 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
+        vocabulary={vocabulary}
         cancel={onCancel}
         language={"de"}
         selectLanguage={selectLanguage}
@@ -406,6 +422,7 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
+          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}
@@ -429,6 +446,7 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
+          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}
@@ -451,6 +469,7 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
+          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}
@@ -479,6 +498,7 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
+          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}

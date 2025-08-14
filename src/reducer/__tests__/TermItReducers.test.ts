@@ -72,6 +72,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     states: state.states,
     terminalStates: state.terminalStates,
     properties: state.properties,
+    customAttributes: state.customAttributes,
     notifications: state.notifications,
     pendingActions: state.pendingActions,
     errors: state.errors,

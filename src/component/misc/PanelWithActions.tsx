@@ -3,29 +3,34 @@ import { Card, CardBody, CardHeader } from "reactstrap";
 import "./PanelWithActions.scss";
 
 interface PanelWithActionsProps {
-  title: JSX.Element | string;
-  actions?: JSX.Element[] | JSX.Element;
+  title: React.ReactNode | string;
+  actions?: React.ReactNode[] | React.ReactNode;
   className?: string;
   id?: string;
 }
 
-export default class PanelWithActions extends React.Component<PanelWithActionsProps> {
-  public render() {
-    const props = this.props;
-    return (
-      <Card id={this.props.id}>
-        <CardHeader
-          tag="h4"
-          color="primary"
-          className="d-flex align-items-center"
-        >
-          <div className="flex-grow-1">{props.title}</div>
-          <div className="float-right ml-2 flex-grow-0">
-            {props.actions ? props.actions : ""}
-          </div>
-        </CardHeader>
-        <CardBody className={props.className}>{props.children}</CardBody>
-      </Card>
-    );
-  }
-}
+const PanelWithActions: React.FC<PanelWithActionsProps> = ({
+  title,
+  actions,
+  className,
+  id,
+  children,
+}) => {
+  return (
+    <Card id={id}>
+      <CardHeader
+        tag="h4"
+        color="primary"
+        className="d-flex align-items-center"
+      >
+        <div className="flex-grow-1">{title}</div>
+        <div className="float-right ml-2 flex-grow-0">
+          {actions ? actions : ""}
+        </div>
+      </CardHeader>
+      <CardBody className={className}>{children}</CardBody>
+    </Card>
+  );
+};
+
+export default PanelWithActions;

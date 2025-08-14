@@ -43,12 +43,13 @@ import MultilingualIcon from "../misc/MultilingualIcon";
 import RelatedTermsSelector from "./RelatedTermsSelector";
 import { DefinitionRelatedChanges } from "./DefinitionRelatedTermsEdit";
 import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
-import StringListEdit from "../misc/StringListEdit";
+import StringListEdit from "../misc/ValueListEdit";
 import "./TermMetadata.scss";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
 import TermStateSelector from "./state/TermStateSelector";
 import Vocabulary from "../../model/Vocabulary";
+import { PropertyValueType } from "../../model/WithUnmappedProperties";
 import Message from "../../model/Message";
 import MessageType from "../../model/MessageType";
 import { ThunkDispatch } from "../../util/Types";
@@ -70,7 +71,7 @@ interface TermMetadataEditProps extends HasI18n {
 
 interface TermMetadataEditState extends TermData {
   labelExist: LabelExists;
-  unmappedProperties: Map<string, string[]>;
+  unmappedProperties: Map<string, PropertyValueType[]>;
   definitionRelated: DefinitionRelatedChanges;
 }
 
@@ -219,7 +220,7 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ state: { iri: stateIri } });
   };
 
-  private onPropertiesChange = (update: Map<string, string[]>) => {
+  private onPropertiesChange = (update: Map<string, PropertyValueType[]>) => {
     this.setState({ unmappedProperties: update });
   };
 
@@ -492,6 +493,7 @@ export class TermMetadataEdit extends React.Component<
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit
+                    assetType="term"
                     properties={this.state.unmappedProperties}
                     ignoredProperties={TermMetadataEdit.mappedPropertiesToIgnore()}
                     onChange={this.onPropertiesChange}

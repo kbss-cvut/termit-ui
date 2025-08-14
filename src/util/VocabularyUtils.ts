@@ -128,6 +128,8 @@ const VocabularyUtils = {
   RDFS_RESOURCE: _NS_RDFS + "Resource",
   RDFS_SUB_CLASS_OF: _NS_RDFS + "subClassOf",
   RDFS_SUB_PROPERTY_OF: _NS_RDFS + "subPropertyOf",
+  RDFS_DOMAIN: _NS_RDFS + "domain",
+  RDFS_RANGE: _NS_RDFS + "range",
   RDF_PROPERTY: _NS_RDF + "Property",
   RDF_STATEMENT: _NS_RDF + "Statement",
   RDF_OBJECT: _NS_RDF + "object",
@@ -144,9 +146,12 @@ const VocabularyUtils = {
   DC_IDENTIFIER: _NS_DC + "identifier",
   DC_SUBJECT: _NS_DC + "subject",
 
+  NS_XSD: _NS_XSD,
   XSD_DATETIME: _NS_XSD + "dateTime",
   XSD_DATE: _NS_XSD + "date",
   XSD_INT: _NS_XSD + "int",
+  XSD_BOOLEAN: _NS_XSD + "boolean",
+  XSD_STRING: _NS_XSD + "string",
 
   SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
   SH_SOURCE_SHAPE: _NS_SH + "sourceShape",

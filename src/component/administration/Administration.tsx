@@ -11,6 +11,7 @@ import { loadUsers } from "../../action/AsyncUserActions";
 import { useLocation } from "react-router-dom";
 import Utils from "../../util/Utils";
 import { trackPromise } from "react-promise-tracker";
+import Customization from "./customization/Customization";
 
 const Administration: React.FC = () => {
   const { i18n } = useI18n();
@@ -38,6 +39,7 @@ const Administration: React.FC = () => {
           "administration.users": <Users />,
           "administration.groups": <UserGroups />,
           "administration.maintenance.title": <Maintenance />,
+          "administration.customization.title": <Customization />,
         }}
         changeTab={setActiveTab}
       />

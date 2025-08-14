@@ -30,7 +30,7 @@ import AsyncActionStatus from "../action/AsyncActionStatus";
 import Vocabulary, { EMPTY_VOCABULARY } from "../model/Vocabulary";
 import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
 import Term, { TermInfo } from "../model/Term";
-import RdfsResource from "../model/RdfsResource";
+import RdfsResource, { RdfProperty } from "../model/RdfsResource";
 import AppNotification from "../model/AppNotification";
 import SearchResult from "../model/search/SearchResult";
 import SearchQuery from "../model/search/SearchQuery";
@@ -420,6 +420,21 @@ function properties(
   }
 }
 
+function customAttributes(
+  state: RdfProperty[] = [],
+  action: AsyncActionSuccess<RdfProperty[]> | Action
+): RdfProperty[] {
+  switch (action.type) {
+    case ActionType.GET_CUSTOM_ATTRIBUTES:
+      const asyncAction = action as AsyncActionSuccess<RdfProperty[]>;
+      return isAsyncSuccess(action) ? asyncAction.payload : state;
+    case ActionType.CREATE_CUSTOM_ATTRIBUTE:
+      return isAsyncSuccess(action) ? [] : state;
+    default:
+      return state;
+  }
+}
+
 function notifications(
   state: AppNotification[] = [],
   action: NotificationAction
@@ -767,6 +782,7 @@ const rootReducer = combineReducers<TermItState>({
   states,
   terminalStates,
   properties,
+  customAttributes,
   notifications,
   pendingActions,
   errors,

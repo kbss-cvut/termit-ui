@@ -250,7 +250,16 @@ const cs = {
     "administration.groups.update.success": "Skupina byla úspěšně upravena.",
     "administration.groups.label.invalid": "Název skupiny nesmí být prázdný.",
     "administration.groups.members": "Členové skupiny",
-
+    "administration.customization.title": "Přizpůsobení",
+    "administration.customization.customAttributes.title": "Vlastní atributy",
+    "administration.customization.customAttributes.domain": "Doména",
+    "administration.customization.customAttributes.range": "Obor hodnot",
+    "administration.customization.customAttributes.add": "Nový atribut",
+    "administration.customization.customAttributes.labelExists":
+      "Atribut s názvem {label} již existuje",
+    "administration.customization.customAttributes.update": "Upravit atribut",
+    "administration.customization.customAttributes.update.success":
+      "Atribut byl úspěšně upraven.",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -801,6 +810,7 @@ const cs = {
     "properties.edit.new.iri": "Identifikátor",
     "properties.edit.new.label": "Název",
     "properties.edit.new.comment": "Popis",
+    "properties.edit.new.success": "Nový atribut byl úspešně vytvořen.",
 
     "type.asset": "Záznam",
     "type.term": "Pojem",
@@ -813,6 +823,8 @@ const cs = {
     "type.user": "Uživatel",
     "type.usergroup": "Uživatelská skupina",
     "type.userrole": "Uživatelská role",
+    "datatype.string": "Textový řetězec",
+    "datatype.integer": "Celé číslo",
 
     "log-viewer.title": "Prohlížení chyb",
     "log-viewer.timestamp": "Čas",

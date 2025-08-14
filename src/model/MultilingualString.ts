@@ -149,4 +149,8 @@ export function hasNonBlankValue(
   return !!str && (str[getShortLocale(lang)] || "").trim().length > 0;
 }
 
+export function isBlank(str?: MultilingualString) {
+  return !str || Object.keys(str).every((lang) => !Utils.notBlank(str[lang]));
+}
+
 export default MultilingualString;

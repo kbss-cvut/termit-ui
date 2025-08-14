@@ -33,6 +33,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { connect } from "react-redux";
 import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 import { isVocabularyValid } from "./VocabularyValidationUtils";
+import { PropertyValueType } from "../../model/WithUnmappedProperties";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -48,7 +49,7 @@ interface VocabularyEditState {
   label: MultilingualString;
   comment: MultilingualString;
   importedVocabularies?: AssetData[];
-  unmappedProperties: Map<string, string[]>;
+  unmappedProperties: Map<string, PropertyValueType[]>;
   documentLabel: string;
   /**
    * Short locale code defined by iso-639-1
@@ -92,7 +93,9 @@ export class VocabularyEdit extends React.Component<
     this.setState(change);
   };
 
-  private onPropertiesChange = (newProperties: Map<string, string[]>) => {
+  private onPropertiesChange = (
+    newProperties: Map<string, PropertyValueType[]>
+  ) => {
     this.setState({ unmappedProperties: newProperties });
   };
 
@@ -251,6 +254,7 @@ export class VocabularyEdit extends React.Component<
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit
+                    assetType="vocabulary"
                     properties={this.state.unmappedProperties}
                     ignoredProperties={VocabularyEdit.mappedPropertiesToIgnore()}
                     onChange={this.onPropertiesChange}

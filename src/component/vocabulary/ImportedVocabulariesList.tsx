@@ -19,7 +19,7 @@ export const ImportedVocabulariesList: React.FC<
   return (
     <Row>
       <Col xl={2} md={4}>
-        <Label className="attribute-label">
+        <Label className="attribute-label mb-3">
           {i18n("vocabulary.detail.imports")}
         </Label>
       </Col>
