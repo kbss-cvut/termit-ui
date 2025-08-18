@@ -9,6 +9,7 @@ const ctx = {
   maxFileUploadSize: `${VocabularyUtils.NS_TERMIT}má-maximální-velikost-souboru`,
   versionSeparator: `${VocabularyUtils.NS_TERMIT}má-oddělovač-verze`,
   modelingToolUrl: `${VocabularyUtils.NS_TERMIT}má-adresu-modelovacího-nástroje`,
+  indexedLanguages: `${VocabularyUtils.NS_TERMIT}má-indexovaný-jazyk`,
 };
 
 export const CONTEXT = Object.assign({}, USERROLE_CONTEXT, ctx);
@@ -23,6 +24,7 @@ export interface Configuration {
   maxFileUploadSize: string;
   versionSeparator: string;
   modelingToolUrl?: string;
+  indexedLanguages: string[];
 }
 
 export const DEFAULT_CONFIGURATION: Configuration = {
@@ -31,4 +33,5 @@ export const DEFAULT_CONFIGURATION: Configuration = {
   roles: [],
   maxFileUploadSize: "",
   versionSeparator: "",
+  indexedLanguages: [],
 };
