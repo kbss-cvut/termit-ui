@@ -9,8 +9,9 @@ const LanguageSelector: React.FC<{
   value: string;
   className?: string;
   isClearable?: boolean;
-}> = ({ onChange, value, className, isClearable = false }) => {
-  const options = getLanguageOptions();
+  languageOptions?: Language[];
+}> = ({ onChange, value, className, isClearable = false, languageOptions }) => {
+  const options = languageOptions || getLanguageOptions();
   const { i18n } = useI18n();
   return (
     <IntelligentTreeSelect
