@@ -234,7 +234,9 @@ export class NavbarSearch extends React.Component<
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
           />
-          {languageSelect}
+          {!!this.props.indexedLanguages?.length &&
+            this.props.indexedLanguages.length > 1 &&
+            languageSelect}
           {!navbar && searchIcon}
           {this.props.searchString && clearIcon}
         </InputGroup>
