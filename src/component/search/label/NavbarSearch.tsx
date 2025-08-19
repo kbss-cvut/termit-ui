@@ -24,6 +24,7 @@ import "./NavbarSearch.scss";
 import { isLoggedIn } from "../../../util/Authorization";
 import LanguageSelector from "../../resource/file/LanguageSelector";
 import { getLanguageByShortCode, Language } from "../../../util/IntlUtil";
+import Utils from "../../../util/Utils";
 
 interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
   updateSearchFilter: (searchString: string, language: string) => any;
@@ -32,7 +33,7 @@ interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
   navbar: boolean;
   closeCollapse?: () => void;
   user: User;
-  indexedLanguages?: Language[];
+  indexedLanguages: Language[];
 }
 
 interface NavbarSearchState {
@@ -54,15 +55,10 @@ const ROUTES_WITHOUT_SEARCH_OVERLAY = [
   Routes.publicSearchVocabularies,
 ];
 
-function mapIndexedLanguages(languages?: string[]): Language[] | undefined {
-  const mapped = languages
-    ?.map(getLanguageByShortCode)
-    ?.filter((l): l is Language => !!l);
-  if (!mapped?.length || mapped?.length === 0) {
-    // treat null, undefined and empty array as undefined
-    return undefined;
-  }
-  return mapped;
+function mapIndexedLanguages(languages?: string[]): Language[] {
+  return Utils.sanitizeArray(languages)
+    .map(getLanguageByShortCode)
+    .filter((l): l is Language => !!l);
 }
 
 export class NavbarSearch extends React.Component<
@@ -234,9 +230,7 @@ export class NavbarSearch extends React.Component<
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
           />
-          {!!this.props.indexedLanguages?.length &&
-            this.props.indexedLanguages.length > 1 &&
-            languageSelect}
+          {this.props.indexedLanguages.length > 1 && languageSelect}
           {!navbar && searchIcon}
           {this.props.searchString && clearIcon}
         </InputGroup>
