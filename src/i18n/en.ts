@@ -606,6 +606,12 @@ const en = {
       "Displays also terms in a terminal state. Such terms should not be used anymore.",
     "glossary.showNonTerminal.help":
       "Displays only active terms (in non-terminal states).",
+    "glossary.showTreeList": "Tree structure",
+    "glossary.showTreeList.help":
+      "Terms are displayed in a tree structure that shows the hierarchical relationships between terms.",
+    "glossary.showFlatList": "Flat list",
+    "glossary.showFlatList.help":
+      "Terms are displayed in a flat list that does not show the hierarchical relationships between terms.",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",
     "glossary.createTerm.tooltip": "Create new vocabulary's term",

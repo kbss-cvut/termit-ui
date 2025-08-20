@@ -48,6 +48,7 @@ export interface TreeSelectFetchOptionsParams<T> {
 export interface TermFetchParams<T> extends TreeSelectFetchOptionsParams<T> {
   includeImported?: boolean;
   includeTerms?: string[];
+  flatList?: boolean;
 }
 
 /**

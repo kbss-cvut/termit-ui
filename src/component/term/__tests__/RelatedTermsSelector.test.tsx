@@ -76,7 +76,11 @@ describe("RelatedTermsSelector", () => {
       const wrapper = render();
       wrapper.instance().fetchOptions({ offset: 0 });
       expect(loadTerms).toHaveBeenCalledWith(
-        { includeTerms: selected.map((ti) => ti.iri), offset: 0 },
+        {
+          includeTerms: selected.map((ti) => ti.iri),
+          offset: 0,
+          flatList: false,
+        },
         undefined
       );
     });

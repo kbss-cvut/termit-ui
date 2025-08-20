@@ -31,6 +31,7 @@ import TermItState, {
   DefinitionallyRelatedTerms,
 } from "../../model/TermItState";
 import Constants from "../../util/Constants";
+import ShowFlatListToggle from "./state/ShowFlatListToggle";
 
 interface RelatedTermsSelectorProps extends HasI18n {
   id: string;
@@ -50,7 +51,24 @@ interface RelatedTermsSelectorProps extends HasI18n {
   onDefinitionRelatedChange: (change: DefinitionRelatedChanges) => void;
 }
 
-export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorProps> {
+interface RelatedTermsSelectorState {
+  flatList: boolean;
+}
+
+export class RelatedTermsSelector extends React.Component<
+  RelatedTermsSelectorProps,
+  RelatedTermsSelectorState
+> {
+  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
+
+  constructor(props: RelatedTermsSelectorProps) {
+    super(props);
+    this.treeComponent = React.createRef();
+    this.state = {
+      flatList: false,
+    };
+  }
+
   public onChange = (val: Term[] | Term | null) => {
     this.props.onChange(
       Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.term.iri)
@@ -61,7 +79,10 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
     fetchOptions: TreeSelectFetchOptionsParams<TermData>
   ) => {
     return loadAndPrepareTerms(
-      fetchOptions,
+      {
+        ...fetchOptions,
+        flatList: this.state.flatList,
+      },
       (options) =>
         this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
       {
@@ -71,19 +92,38 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
     );
   };
 
+  private onFlatListToggle = () => {
+    this.setState({ flatList: !this.state.flatList }, () =>
+      this.treeComponent.current.resetOptions()
+    );
+  };
+
   public render() {
+    const treeSelectProps = {
+      ...commonTermTreeSelectProps(this.props),
+      renderAsTree: !this.state.flatList,
+    };
+
     return (
       <FormGroup id={this.props.id}>
-        <Label className="attribute-label">
-          {this.props.i18n("term.metadata.related.title")}
-          <HelpIcon
-            id="related-term-select"
-            text={this.props.i18n("term.metadata.related.help")}
+        <div className="d-flex justify-content-between">
+          <Label className="attribute-label">
+            {this.props.i18n("term.metadata.related.title")}
+            <HelpIcon
+              id="related-term-select"
+              text={this.props.i18n("term.metadata.related.help")}
+            />
+          </Label>
+          <ShowFlatListToggle
+            id={this.props.id + "-show-flat-list"}
+            onToggle={this.onFlatListToggle}
+            value={this.state.flatList}
           />
-        </Label>
+        </div>
         <>
           <IntelligentTreeSelect
             onChange={this.onChange}
+            ref={this.treeComponent}
             value={resolveSelectedIris(this.props.selected)}
             fetchOptions={this.fetchOptions}
             fetchLimit={Constants.DEFAULT_PAGE_SIZE}
@@ -93,7 +133,7 @@ export class RelatedTermsSelector extends React.Component<RelatedTermsSelectorPr
               this.props.vocabularyIri
             )}
             valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
-            {...commonTermTreeSelectProps(this.props)}
+            {...treeSelectProps}
           />
         </>
         <DefinitionRelatedTermsEdit
