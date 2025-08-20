@@ -10,6 +10,7 @@ import Routes from "../../util/Routes";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import { useI18n } from "../hook/useI18n";
+import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
 
 interface TermLinkProps {
   term: Term | TermInfo;
@@ -17,6 +18,7 @@ interface TermLinkProps {
   className?: string;
   language?: string;
   activeTab?: string;
+  showVocabularyBadge?: boolean;
 }
 
 export function getTermPath(term: Term | TermInfo, user?: User | null) {
@@ -39,7 +41,7 @@ function getTermPathWithTab(
 }
 
 export const TermLink: React.FC<TermLinkProps> = (props) => {
-  const { term, id, language } = props;
+  const { term, id, language, showVocabularyBadge } = props;
   const user = useSelector((state: TermItState) => state.user);
   const { i18n, locale } = useI18n();
   const label = getLocalized(
@@ -47,7 +49,7 @@ export const TermLink: React.FC<TermLinkProps> = (props) => {
     language ? language : getShortLocale(locale)
   );
   if (!term.vocabulary) {
-    // This can happen e.g. when FTS returns a term in the predefined language used for term types
+    // This can happen, e.g., when FTS returns a term in the predefined language used for term types
     return <OutgoingLink label={label} iri={term.iri} />;
   }
   const path = getTermPathWithTab(term, user, props.activeTab);
@@ -55,13 +57,22 @@ export const TermLink: React.FC<TermLinkProps> = (props) => {
   const t = Object.assign({}, term, { label });
 
   return (
-    <AssetLink
-      id={id}
-      asset={t}
-      path={path}
-      tooltip={i18n("asset.link.tooltip")}
-      className={props.className}
-    />
+    <>
+      <AssetLink
+        id={id}
+        asset={t}
+        path={path}
+        tooltip={i18n("asset.link.tooltip")}
+        className={props.className}
+      />
+      {showVocabularyBadge && (
+        <VocabularyNameBadgeButton
+          vocabulary={term.vocabulary}
+          termIri={term.iri}
+          section={id}
+        />
+      )}
+    </>
   );
 };
 

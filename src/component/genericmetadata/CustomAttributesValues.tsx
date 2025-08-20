@@ -74,7 +74,12 @@ const CustomAttributeValue: React.FC<{
 }> = ({ attribute, value }) => {
   switch (attribute.rangeIri) {
     case VocabularyUtils.TERM:
-      return <TermIriLink iri={stringifyPropertyValue(value)} />;
+      return (
+        <TermIriLink
+          iri={stringifyPropertyValue(value)}
+          showVocabularyBadge={true}
+        />
+      );
     case VocabularyUtils.XSD_BOOLEAN:
       return (
         <Badge

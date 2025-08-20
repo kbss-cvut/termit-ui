@@ -9,7 +9,6 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import TermLink from "./TermLink";
 import DefinitionRelatedTerms from "./DefinitionRelatedTerms";
 import { ThunkDispatch } from "../../util/Types";
-import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
 import TermItState from "../../model/TermItState";
 import { createTermNonTerminalStateMatcher } from "./TermTreeSelectHelper";
 import { getShortLocale } from "../../util/IntlUtil";
@@ -51,14 +50,13 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
         <List type="unstyled" id="term-metadata-related" className="mb-3">
           {terms.map((item) => (
             <li key={`${item.iri}`}>
-              <TermLink term={item} language={language} />
-              {term.vocabulary?.iri !== item.vocabulary?.iri && (
-                <VocabularyNameBadgeButton
-                  vocabulary={item.vocabulary}
-                  termIri={item.iri}
-                  section={"related-terms-"}
-                />
-              )}
+              <TermLink
+                term={item}
+                language={language}
+                showVocabularyBadge={
+                  term.vocabulary?.iri !== item.vocabulary?.iri
+                }
+              />
             </li>
           ))}
           <DefinitionRelatedTerms
