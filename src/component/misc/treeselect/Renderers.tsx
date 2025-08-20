@@ -132,7 +132,6 @@ function createImportedTermRenderer(currentVocabularyIri?: string) {
 
 function createVocabularyBadgeRenderer(currentVocabularyIri?: string) {
   return (option: Term & TreeItem) =>
-    !currentVocabularyIri ||
     currentVocabularyIri === option.vocabulary!.iri ? null : (
       <VocabularyNameBadge
         key="vocabulary-name-addon"
@@ -151,7 +150,7 @@ function createTerminalStateIconRenderer(terminalStates: string[]) {
     ) : null;
 }
 
-export function createTermValueRenderer(vocabularyIri: string) {
+export function createTermValueRenderer(vocabularyIri?: string) {
   return (label: string, option: Term) => (
     <>
       <TermLink term={option} />
