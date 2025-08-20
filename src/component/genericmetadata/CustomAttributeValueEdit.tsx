@@ -10,6 +10,11 @@ import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import ValueListEdit from "../misc/ValueListEdit";
+import { TermSelector } from "../term/TermSelector";
+import Term from "src/model/Term";
+import { Label } from "reactstrap";
+import HelpIcon from "../misc/HelpIcon";
+import Utils from "../../util/Utils";
 
 export const CustomAttributeValueEdit: React.FC<{
   attribute: RdfProperty;
@@ -33,18 +38,6 @@ export const CustomAttributeValueEdit: React.FC<{
       </div>
     );
   }
-  if (attribute.rangeIri === VocabularyUtils.XSD_STRING) {
-    return (
-      <div className="form-group">
-        <ValueListEdit
-          onChange={(newList) => onChange(attribute, newList)}
-          list={values as string[]}
-          label={getLocalized(attribute.label, lang)}
-          helpText={getLocalized(attribute.comment, lang)}
-        />
-      </div>
-    );
-  }
   if (attribute.rangeIri === VocabularyUtils.XSD_INT) {
     return (
       <div className="form-group">
@@ -58,5 +51,36 @@ export const CustomAttributeValueEdit: React.FC<{
       </div>
     );
   }
-  return <div className="form-group">TODO</div>;
+  if (attribute.rangeIri === VocabularyUtils.TERM) {
+    return (
+      <TermSelector
+        value={values.map((v) => extractPropertyValue(v)) as string[]}
+        onChange={(sel: Term[]) =>
+          onChange(
+            attribute,
+            sel.map((t) => ({ iri: t.iri }))
+          )
+        }
+        label={
+          <Label className="attribute-label">
+            {getLocalized(attribute.label, lang)}
+            <HelpIcon
+              id={`term-selector-${Utils.hashCode(attribute.iri)}`}
+              text={getLocalized(attribute.comment, lang)}
+            />
+          </Label>
+        }
+      />
+    );
+  }
+  return (
+    <div className="form-group">
+      <ValueListEdit
+        onChange={(newList) => onChange(attribute, newList)}
+        list={values as string[]}
+        label={getLocalized(attribute.label, lang)}
+        helpText={getLocalized(attribute.comment, lang)}
+      />
+    </div>
+  );
 };

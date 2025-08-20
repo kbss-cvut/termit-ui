@@ -203,6 +203,7 @@ export function resolveAncestors(term: Term): string[] {
 
 export type TermFetchingPostProcessingOptions = {
   matchingVocabularies?: string[];
+  selectedIris?: string[];
   selectedTerms?: TermInfo[] | TermData[];
   terminalStates: string[];
 };
@@ -214,8 +215,10 @@ export function loadAndPrepareTerms(
   ) => Promise<Term[]>,
   postOptions: TermFetchingPostProcessingOptions
 ) {
-  const selectedIris = resolveSelectedIris(postOptions.selectedTerms);
-  // If the offset is > 0 or we are fetching subterms, the selected terms should have been already included
+  const selectedIris = postOptions.selectedIris
+    ? postOptions.selectedIris
+    : resolveSelectedIris(postOptions.selectedTerms);
+  // If the offset is > 0, or we are fetching subterms, the selected terms should have been already included
   const toInclude =
     !fetchOptions.offset && !fetchOptions.optionID ? selectedIris : [];
   return loadTerms({
