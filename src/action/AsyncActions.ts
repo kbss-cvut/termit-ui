@@ -1367,6 +1367,7 @@ export function loadConfiguration() {
         data.roles = Utils.sanitizeArray(data.roles).map(
           (d: UserRoleData) => new UserRole(d)
         );
+        data.indexedLanguages = Utils.sanitizeArray(data.indexedLanguages);
         return dispatch(asyncActionSuccessWithPayload(action, data));
       })
       .catch((error) => dispatch(asyncActionFailure(action, error)));
