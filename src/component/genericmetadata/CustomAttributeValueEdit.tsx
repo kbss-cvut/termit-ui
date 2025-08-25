@@ -73,6 +73,24 @@ export const CustomAttributeValueEdit: React.FC<{
       />
     );
   }
+  if (attribute.rangeIri === VocabularyUtils.RDFS_RESOURCE) {
+    return (
+      <div className="form-group">
+        <ValueListEdit
+          onChange={(newList) =>
+            onChange(
+              attribute,
+              newList.map((s) => ({ iri: s }))
+            )
+          }
+          list={values.map((v) => extractPropertyValue(v)) as string[]}
+          label={getLocalized(attribute.label, lang)}
+          helpText={getLocalized(attribute.comment, lang)}
+          validator={(s) => Utils.isUri(s)}
+        />
+      </div>
+    );
+  }
   return (
     <div className="form-group">
       <ValueListEdit
