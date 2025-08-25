@@ -17,6 +17,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import TermIriLink from "../term/TermIriLink";
 import { ThunkDispatch } from "../../util/Types";
 import { getCustomAttributes } from "../../action/AsyncActions";
+import OutgoingLink from "../misc/OutgoingLink";
 
 export const CustomAttributesValues: React.FC<{
   asset: HasUnmappedProperties;
@@ -72,14 +73,10 @@ const CustomAttributeValue: React.FC<{
   attribute: RdfProperty;
   value: PropertyValueType;
 }> = ({ attribute, value }) => {
+  const strValue = stringifyPropertyValue(value);
   switch (attribute.rangeIri) {
     case VocabularyUtils.TERM:
-      return (
-        <TermIriLink
-          iri={stringifyPropertyValue(value)}
-          showVocabularyBadge={true}
-        />
-      );
+      return <TermIriLink iri={strValue} showVocabularyBadge={true} />;
     case VocabularyUtils.XSD_BOOLEAN:
       return (
         <Badge
@@ -87,10 +84,18 @@ const CustomAttributeValue: React.FC<{
           pill={true}
           className="align-text-top"
         >
-          {stringifyPropertyValue(value)}
+          {strValue}
         </Badge>
       );
     default:
-      return <>{stringifyPropertyValue(value)}</>;
+      return (
+        <>
+          {Utils.isLink(strValue) ? (
+            <OutgoingLink label={strValue} iri={strValue} />
+          ) : (
+            strValue
+          )}
+        </>
+      );
   }
 };
