@@ -59,6 +59,7 @@
     "simple-xpath-position": "^2.0.2",
     "use-debounce": "^10.0.4",
     "uuid": "^10.0.0",
+    "validate.io-uri": "1.0.0",
     "whatwg-fetch": "3.6.2",
     "whatwg-mimetype": "3.0.0"
   },

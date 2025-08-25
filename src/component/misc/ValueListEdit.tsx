@@ -24,6 +24,7 @@ interface ValueListEditProps<T extends string | number> {
   i18nPrefix?: string;
   label?: string;
   helpText?: string;
+  validator?: (val: string) => boolean;
   invalid?: boolean;
   invalidMessage?: React.ReactNode;
   validationMessage?: string | React.ReactNode;
@@ -36,6 +37,7 @@ export const ValueListEdit = <T extends string | number = string>({
   i18nPrefix,
   label,
   helpText,
+  validator,
   invalid,
   invalidMessage,
   validationMessage,
@@ -44,8 +46,12 @@ export const ValueListEdit = <T extends string | number = string>({
   const { i18n } = useI18n();
   const [inputValue, setInputValue] = React.useState("");
 
+  const canAdd = validator
+    ? validator(inputValue)
+    : inputValue.trim().length > 0;
+
   const onAdd = () => {
-    if (inputValue.trim().length === 0) {
+    if (!canAdd) {
       return;
     }
     const newList = Utils.sanitizeArray(list).slice();
@@ -98,7 +104,7 @@ export const ValueListEdit = <T extends string | number = string>({
             size="sm"
             onClick={onAdd}
             className="value-list-add-button"
-            disabled={inputValue.trim().length === 0}
+            disabled={!canAdd}
             title={i18n("stringlistedit.button.add.tooltip")}
           >
             <GoPlus />

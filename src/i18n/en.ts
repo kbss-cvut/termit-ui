@@ -823,6 +823,7 @@ const en = {
     "type.userrole": "User role",
     "datatype.string": "String",
     "datatype.integer": "Integer",
+    "datatype.resource": "Resource (IRI/URI/URL)",
 
     "log-viewer.title": "Error log",
     "log-viewer.timestamp": "Timestamp",

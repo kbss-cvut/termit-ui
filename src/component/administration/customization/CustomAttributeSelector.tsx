@@ -26,6 +26,10 @@ export const RANGE_OPTIONS: SelectorOption[] = [
     value: VocabularyUtils.XSD_STRING,
     labelKey: "datatype.string",
   },
+  {
+    value: VocabularyUtils.RDFS_RESOURCE,
+    labelKey: "datatype.resource",
+  },
 ];
 
 export const DOMAIN_OPTIONS: SelectorOption[] = [

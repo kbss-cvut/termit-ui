@@ -831,6 +831,7 @@ const cs = {
     "type.userrole": "Uživatelská role",
     "datatype.string": "Textový řetězec",
     "datatype.integer": "Celé číslo",
+    "datatype.resource": "Obecný zdroj (IRI/URI/URL)",
 
     "log-viewer.title": "Prohlížení chyb",
     "log-viewer.timestamp": "Čas",
