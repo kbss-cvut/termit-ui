@@ -20,7 +20,19 @@ import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
 import { loadAllTerms } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
+import ShowFlatListToggle from "./state/ShowFlatListToggle";
 
+/**
+ * Selector of terms (using the intelligent-tree-select component).
+ *
+ * This selector is used for selecting terms across all vocabularies.
+ * @param id Component identifier
+ * @param label Label to render for the selector
+ * @param value Selected value
+ * @param fetchedTermsFilter Filter for terms fetched from the backend
+ * @param onChange Handler for selection
+ * @param vocabularyIri IRI of the vocabulary the current term belongs to
+ */
 export const TermSelector: React.FC<{
   id?: string;
   label?: React.ReactNode;
@@ -42,6 +54,7 @@ export const TermSelector: React.FC<{
   const terminalStates = useSelector(
     (state: TermItState) => state.terminalStates
   );
+  const [flatList, setFlatList] = React.useState(false);
 
   const selected =
     value.length > 0
@@ -55,7 +68,12 @@ export const TermSelector: React.FC<{
     const terms = await loadAndPrepareTerms(
       fetchOptions,
       (options) =>
-        dispatch(loadAllTerms(options, resolveNamespaceForLoadAll(options))),
+        dispatch(
+          loadAllTerms(
+            { ...options, flatList },
+            resolveNamespaceForLoadAll(options)
+          )
+        ),
       {
         selectedIris: selected,
         terminalStates: terminalStates,
@@ -64,9 +82,21 @@ export const TermSelector: React.FC<{
     return fetchedTermsFilter(terms);
   };
 
+  const treeSelectProps = {
+    ...commonTermTreeSelectProps(intl),
+    renderAsTree: !flatList,
+  };
+
   return (
     <FormGroup id={id}>
-      {label}
+      <div className="d-flex justify-content-between">
+        {label}
+        <ShowFlatListToggle
+          id={id + "-show-flat-list"}
+          onToggle={() => setFlatList(!flatList)}
+          value={flatList}
+        />
+      </div>
       <>
         <IntelligentTreeSelect
           onChange={(v: Term[] | Term | null) =>
@@ -79,7 +109,7 @@ export const TermSelector: React.FC<{
           multi={true}
           optionRenderer={createTermsWithImportsOptionRenderer(vocabularyIri)}
           valueRenderer={createTermValueRenderer(vocabularyIri)}
-          {...commonTermTreeSelectProps(intl)}
+          {...treeSelectProps}
         />
       </>
     </FormGroup>
