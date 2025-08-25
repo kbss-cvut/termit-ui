@@ -355,6 +355,9 @@ const en = {
     "vocabulary.import.dialog.external.button": "Import selected vocabularies",
     "vocabulary.import.title": "Import vocabulary",
     "vocabulary.import.success": "Vocabulary successfully imported.",
+    "vocabulary.import.success.message": "Vocabulary successfully imported.",
+    "vocabulary.import.error.message":
+      "Vocabulary was not successfully imported.",
     "vocabulary.import.allow-changing-identifiers":
       "Allow changing identifiers",
     "vocabulary.import.allow-changing-identifiers.tooltip":

@@ -14,6 +14,9 @@ import {
 import ImportExternalVocabularyDialog from "./ImportExternalVocabularyDialog";
 import RdfsResource from "../../../model/RdfsResource";
 import IdentifierResolver from "../../../util/IdentifierResolver";
+import * as SyncActions from "../../../action/SyncActions";
+import Message from "../../../model/Message";
+import MessageType from "../../../model/MessageType";
 
 const CreateVocabularyFromSkosExternal: React.FC = () => {
   const { i18n } = useI18n();
@@ -27,9 +30,26 @@ const CreateVocabularyFromSkosExternal: React.FC = () => {
       "import-vocabulary"
     ).then((location?: string) => {
       if (location) {
+        dispatch(
+          SyncActions.publishMessage(
+            new Message(
+              { messageId: "vocabulary.import.success.message" },
+              MessageType.SUCCESS
+            )
+          )
+        );
         Routing.transitionTo(
           Routes.vocabularySummary,
           IdentifierResolver.routingOptionsFromLocation(location)
+        );
+      } else {
+        dispatch(
+          SyncActions.publishMessage(
+            new Message(
+              { messageId: "vocabulary.import.error.message" },
+              MessageType.ERROR
+            )
+          )
         );
       }
     });

@@ -364,6 +364,8 @@ const cs = {
     "vocabulary.import.dialog.external.button": "Importovat vybrané slovníky",
     "vocabulary.import.title": "Importovat slovník",
     "vocabulary.import.success": "Slovník úspěšně importován.",
+    "vocabulary.import.success.message": "Slovník úspěšně importován.",
+    "vocabulary.import.error.message": "Slovník nebyl úspěšně importován.",
     "vocabulary.import.allow-changing-identifiers":
       "Povolit změnu identifikátorů",
     "vocabulary.import.allow-changing-identifiers.tooltip":
