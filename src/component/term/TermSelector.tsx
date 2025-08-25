@@ -31,6 +31,7 @@ import ShowFlatListToggle from "./state/ShowFlatListToggle";
  * @param value Selected value
  * @param fetchedTermsFilter Filter for terms fetched from the backend
  * @param onChange Handler for selection
+ * @param suffix Suffix to render after the selector (but within the form group)
  * @param vocabularyIri IRI of the vocabulary the current term belongs to
  */
 export const TermSelector: React.FC<{
@@ -38,6 +39,7 @@ export const TermSelector: React.FC<{
   label?: React.ReactNode;
   value: string[] | TermInfo[] | TermData[];
   vocabularyIri?: string;
+  suffix?: React.ReactNode;
 
   fetchedTermsFilter?: (terms: Term[]) => Term[];
   onChange: (selected: Term[]) => void;
@@ -47,6 +49,7 @@ export const TermSelector: React.FC<{
   value,
   fetchedTermsFilter = (terms) => terms,
   onChange,
+  suffix,
   vocabularyIri,
 }) => {
   const intl = useI18n();
@@ -55,6 +58,11 @@ export const TermSelector: React.FC<{
     (state: TermItState) => state.terminalStates
   );
   const [flatList, setFlatList] = React.useState(false);
+  const treeSelect = React.useRef<IntelligentTreeSelect>(null);
+  const handleFlatListToggle = () => {
+    setFlatList(!flatList);
+    treeSelect.current?.resetOptions();
+  };
 
   const selected =
     value.length > 0
@@ -93,25 +101,23 @@ export const TermSelector: React.FC<{
         {label}
         <ShowFlatListToggle
           id={id + "-show-flat-list"}
-          onToggle={() => setFlatList(!flatList)}
+          onToggle={handleFlatListToggle}
           value={flatList}
         />
       </div>
-      <>
-        <IntelligentTreeSelect
-          onChange={(v: Term[] | Term | null) =>
-            onChange(Utils.sanitizeArray(v))
-          }
-          value={selected}
-          fetchOptions={fetchOptions}
-          fetchLimit={Constants.DEFAULT_PAGE_SIZE}
-          maxHeight={200}
-          multi={true}
-          optionRenderer={createTermsWithImportsOptionRenderer(vocabularyIri)}
-          valueRenderer={createTermValueRenderer(vocabularyIri)}
-          {...treeSelectProps}
-        />
-      </>
+      <IntelligentTreeSelect
+        ref={treeSelect}
+        onChange={(v: Term[] | Term | null) => onChange(Utils.sanitizeArray(v))}
+        value={selected}
+        fetchOptions={fetchOptions}
+        fetchLimit={Constants.DEFAULT_PAGE_SIZE}
+        maxHeight={200}
+        multi={true}
+        optionRenderer={createTermsWithImportsOptionRenderer(vocabularyIri)}
+        valueRenderer={createTermValueRenderer(vocabularyIri)}
+        {...treeSelectProps}
+      />
+      {suffix}
     </FormGroup>
   );
 };
