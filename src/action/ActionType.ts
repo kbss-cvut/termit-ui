@@ -88,6 +88,10 @@ export interface UpdateAssetAction extends Action {
   iri: string;
 }
 
+export interface SetTermsFlatListAction extends Action {
+  flatList: boolean;
+}
+
 enum ActionType {
   FETCH_USER = "FETCH_USER",
   LOGIN = "LOGIN",
@@ -144,6 +148,7 @@ enum ActionType {
   LOAD_DEFINITION_RELATED_TERMS_OF = "LOAD_DEFINITION_RELATED_TERMS_OF",
   REMOVE_VOCABULARY_TERM = "REMOVE_VOCABULARY_TERM",
   SET_TERM_STATE = "SET_TERM_STATE",
+  SET_TERM_FLAT_LIST = "SET_TERM_FLAT_LIST",
 
   CREATE_TERM_OCCURRENCE = "CREATE_TERM_OCCURRENCE",
   UPDATE_TERM_OCCURRENCE = "UPDATE_TERM_OCCURRENCE",

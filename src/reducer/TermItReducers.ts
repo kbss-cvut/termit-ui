@@ -14,6 +14,7 @@ import ActionType, {
   SearchAction,
   SearchResultAction,
   SelectingTermsAction,
+  SetTermsFlatListAction,
   SwitchLanguageAction,
   UpdateAssetAction,
   UpdateLastModifiedAction,
@@ -44,6 +45,7 @@ import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
+import { loadTermsFlatListPreference } from "src/util/UISettingsUtil";
 
 function isAsyncSuccess(action: Action) {
   return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
@@ -762,6 +764,16 @@ function runningTasks(
   return state;
 }
 
+function showTermsFlatList(
+  state: boolean = loadTermsFlatListPreference(),
+  action: Action
+) {
+  if (action.type === ActionType.SET_TERM_FLAT_LIST) {
+    return (action as SetTermsFlatListAction).flatList;
+  }
+  return state;
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -801,6 +813,7 @@ const rootReducer = combineReducers<TermItState>({
   users,
   accessLevels,
   runningTasks,
+  showTermsFlatList,
 });
 
 export default rootReducer;

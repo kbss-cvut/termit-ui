@@ -12,6 +12,7 @@ import TermItState from "../../model/TermItState";
 import {
   consumeNotification,
   selectVocabularyTerm,
+  setTermsFlatList,
 } from "../../action/SyncActions";
 import Routing, { namespaceQueryParam } from "../../util/Routing";
 import Routes from "../../util/Routes";
@@ -66,6 +67,8 @@ interface GlossaryTermsProps extends HasI18n {
   isDetailView?: boolean;
   // Whether terms should be displayed with the quality badge
   showTermQualityBadge: boolean;
+  flatList: boolean;
+  setTermsFlatList: (flatList: boolean) => void;
 }
 
 interface TermsState {
@@ -73,7 +76,6 @@ interface TermsState {
   includeImported: boolean;
   disableIncludeImportedToggle: boolean;
   showTerminalTerms: boolean;
-  flatList: boolean;
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
@@ -87,15 +89,10 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       Utils.extractQueryParam(props.location.search, "includeImported") ===
       true.toString();
 
-    const flatList =
-      Utils.extractQueryParam(props.location.search, "flatList") ===
-      true.toString();
-
     this.state = {
       includeImported: includeImported || false,
       disableIncludeImportedToggle: props.isDetailView || false,
       showTerminalTerms: false,
-      flatList: flatList || false,
     };
   }
 
@@ -116,6 +113,10 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
     if (prevProps.locale !== this.props.locale) {
       this.treeComponent.current.forceUpdate();
+    }
+
+    if (prevProps.flatList !== this.props.flatList) {
+      this.treeComponent.current.resetOptions();
     }
   }
 
@@ -158,7 +159,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         {
           ...fetchOptions,
           includeImported: this.state.includeImported,
-          flatList: this.state.flatList,
+          flatList: this.props.flatList,
         },
         vocabularyIri
       )
@@ -173,7 +174,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         });
 
         // For flat list, just filter and return without tree processing
-        if (this.state.flatList) {
+        if (this.props.flatList) {
           const termFilters = [createVocabularyMatcher(matchingVocabularies)];
           if (!this.state.showTerminalTerms) {
             termFilters.push(
@@ -250,9 +251,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   };
 
   private onFlatListToggle = () => {
-    this.setState({ flatList: !this.state.flatList }, () =>
-      this.treeComponent.current.resetOptions()
-    );
+    this.props.setTermsFlatList(!this.props.flatList);
+    this.treeComponent.current.resetOptions();
   };
 
   private renderToggles(renderIncludeImported: boolean) {
@@ -281,7 +281,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           <div className="mr-2">
             <ShowFlatListToggle
               onToggle={this.onFlatListToggle}
-              value={this.state.flatList}
+              value={this.props.flatList}
               id="glossary-show-flat-list"
             />
           </div>
@@ -304,7 +304,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
     const treeSelectProps = {
       ...commonTermTreeSelectProps(this.props),
-      renderAsTree: !this.state.flatList,
+      renderAsTree: !this.props.flatList,
     };
 
     return (
@@ -398,6 +398,7 @@ export default connect(
       notifications: state.notifications,
       configuration: state.configuration,
       terminalStates: state.terminalStates,
+      flatList: state.showTermsFlatList,
     };
   },
   (dispatch: ThunkDispatch) => {
@@ -410,6 +411,7 @@ export default connect(
       ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
       consumeNotification: (notification: AppNotification) =>
         dispatch(consumeNotification(notification)),
+      setTermsFlatList: (value: boolean) => dispatch(setTermsFlatList(value)),
     };
   }
 )(injectIntl(withI18n(Terms)));

@@ -30,6 +30,7 @@ import {
 import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
 import ShowFlatListToggle from "./state/ShowFlatListToggle";
+import { setTermsFlatList } from "src/action/SyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   if (currentTermIri) {
@@ -63,13 +64,14 @@ export interface ParentTermSelectorProps extends HasI18n {
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   loadImportedVocabularies: (vocabularyIri: IRI) => Promise<string[]>;
+  flatList: boolean;
+  setTermsFlatList: (flatList: boolean) => void;
 }
 
 interface ParentTermSelectorState {
   includeImported: boolean;
   importedVocabularies?: string[];
   disableIncludeImportedToggle: boolean;
-  flatList: boolean;
 }
 
 export class ParentTermSelector extends React.Component<
@@ -87,7 +89,6 @@ export class ParentTermSelector extends React.Component<
         props.parentTerms
       ),
       disableIncludeImportedToggle: false,
-      flatList: false,
     };
   }
 
@@ -122,7 +123,7 @@ export class ParentTermSelector extends React.Component<
     }
   }
 
-  public componentDidUpdate(): void {
+  public componentDidUpdate(prevProps: ParentTermSelectorProps): void {
     if (!this.state.importedVocabularies) {
       // This can happen when the component is displayed while vocabulary is still being loaded
       this.props
@@ -130,6 +131,10 @@ export class ParentTermSelector extends React.Component<
           VocabularyUtils.create(this.props.vocabularyIri)
         )
         .then((data) => this.setState({ importedVocabularies: data }));
+    }
+
+    if (prevProps.flatList !== this.props.flatList) {
+      this.treeComponent.current.resetOptions();
     }
   }
 
@@ -152,7 +157,7 @@ export class ParentTermSelector extends React.Component<
       {
         ...fetchOptions,
         includeImported: this.state.includeImported,
-        flatList: this.state.flatList,
+        flatList: this.props.flatList,
       },
       (options) =>
         this.props.loadTerms(
@@ -187,9 +192,8 @@ export class ParentTermSelector extends React.Component<
   };
 
   private onFlatListToggle = () => {
-    this.setState({ flatList: !this.state.flatList }, () =>
-      this.treeComponent.current.resetOptions()
-    );
+    this.props.setTermsFlatList(!this.props.flatList);
+    this.treeComponent.current.resetOptions();
   };
 
   public render() {
@@ -217,7 +221,7 @@ export class ParentTermSelector extends React.Component<
             <ShowFlatListToggle
               id={this.props.id + "-show-flat-list"}
               onToggle={this.onFlatListToggle}
-              value={this.state.flatList}
+              value={this.props.flatList}
             />
           </div>
         </div>
@@ -240,7 +244,7 @@ export class ParentTermSelector extends React.Component<
     } else {
       const treeSelectProps = {
         ...commonTermTreeSelectProps(this.props),
-        renderAsTree: !this.state.flatList,
+        renderAsTree: !this.props.flatList,
       };
       return (
         <>
@@ -277,6 +281,7 @@ export default connect(
     return {
       currentVocabulary: state.vocabulary,
       terminalStates: state.terminalStates,
+      flatList: state.showTermsFlatList,
     };
   },
   (dispatch: ThunkDispatch) => {
@@ -287,6 +292,7 @@ export default connect(
       ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
       loadImportedVocabularies: (vocabularyIri: IRI) =>
         dispatch(loadImportedVocabularies(vocabularyIri)),
+      setTermsFlatList: (value: boolean) => dispatch(setTermsFlatList(value)),
     };
   }
 )(injectIntl(withI18n(ParentTermSelector)));

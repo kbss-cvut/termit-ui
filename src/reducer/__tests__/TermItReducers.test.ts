@@ -91,6 +91,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     accessLevels: state.accessLevels,
     annotatorLegendFilter: state.annotatorLegendFilter,
     runningTasks: state.runningTasks,
+    showTermsFlatList: state.showTermsFlatList,
   };
 }
 
@@ -1012,6 +1013,22 @@ describe("Reducers", () => {
           vocabularies: {},
         })
       );
+    });
+  });
+
+  describe("showTermsFlatList", () => {
+    it("sets the UI preference on SET_TERM_FLAT_LIST", () => {
+      const resultTrue = reducers(stateToPlainObject(initialState), {
+        type: ActionType.SET_TERM_FLAT_LIST,
+        flatList: true,
+      } as any);
+      expect(resultTrue.showTermsFlatList).toBe(true);
+
+      const resultFalse = reducers(stateToPlainObject(initialState), {
+        type: ActionType.SET_TERM_FLAT_LIST,
+        flatList: false,
+      } as any);
+      expect(resultFalse.showTermsFlatList).toBe(false);
     });
   });
 });

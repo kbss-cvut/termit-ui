@@ -65,6 +65,7 @@ export default class TermItState {
   public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
   public accessLevels: { [key: string]: RdfsResource };
   public breadcrumbs: Breadcrumb[];
+  public showTermsFlatList: boolean;
 
   public annotatorLegendFilter: AnnotatorLegendFilter;
   public runningTasks: { [key: string]: LongRunningTask };
@@ -107,6 +108,7 @@ export default class TermItState {
     this.validationResults = {};
     this.definitionallyRelatedTerms = { targeting: [], of: [] };
     this.breadcrumbs = [];
+    this.showTermsFlatList = false;
     this.users = [];
     this.accessLevels = {};
     this.annotatorLegendFilter = new AnnotatorLegendFilter();

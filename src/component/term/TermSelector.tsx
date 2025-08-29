@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadAllTerms } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
 import ShowFlatListToggle from "./state/ShowFlatListToggle";
+import { setTermsFlatList } from "src/action/SyncActions";
 
 /**
  * Selector of terms (using the intelligent-tree-select component).
@@ -57,12 +58,13 @@ export const TermSelector: React.FC<{
   const terminalStates = useSelector(
     (state: TermItState) => state.terminalStates
   );
-  const [flatList, setFlatList] = React.useState(false);
   const treeSelect = React.useRef<IntelligentTreeSelect>(null);
-  const handleFlatListToggle = () => {
-    setFlatList(!flatList);
+
+  const flatList = useSelector((state: TermItState) => state.showTermsFlatList);
+  const handleFlatListToggle = React.useCallback(() => {
+    dispatch(setTermsFlatList(!flatList));
     treeSelect.current?.resetOptions();
-  };
+  }, [dispatch, flatList]);
 
   const selected =
     value.length > 0

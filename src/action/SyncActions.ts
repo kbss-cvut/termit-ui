@@ -7,6 +7,7 @@ import ActionType, {
   MessageAction,
   NotificationAction,
   SelectingTermsAction,
+  SetTermsFlatListAction,
   SwitchLanguageAction,
   UpdateLastModifiedAction,
 } from "./ActionType";
@@ -23,6 +24,7 @@ import {
   AnnotationClass,
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
+import { saveTermsFlatListPreference } from "src/util/UISettingsUtil";
 
 export function asyncActionRequest(
   a: Action,
@@ -211,5 +213,13 @@ export function setAnnotatorLegendFilter(
     annotationClass,
     annotationOrigin,
     enabled,
+  };
+}
+
+export function setTermsFlatList(flatList: boolean): SetTermsFlatListAction {
+  saveTermsFlatListPreference(flatList);
+  return {
+    type: ActionType.SET_TERM_FLAT_LIST,
+    flatList,
   };
 }
