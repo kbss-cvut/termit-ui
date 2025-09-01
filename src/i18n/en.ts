@@ -349,15 +349,14 @@ const en = {
       "Imported file must be in the SKOS format. " +
       "The file must contain exactly one instance of skos:ConceptScheme.",
     "vocabulary.import.dialog.external.message":
-      "Load available vocabularies and select which one you want to import. ",
+      "Select vocabularies to import.",
     "vocabulary.import.dialog.external.errormessage":
       "There are no available vocabularies. ",
     "vocabulary.import.dialog.external.button": "Import selected vocabularies",
     "vocabulary.import.title": "Import vocabulary",
     "vocabulary.import.success": "Vocabulary successfully imported.",
     "vocabulary.import.success.message": "Vocabulary successfully imported.",
-    "vocabulary.import.error.message":
-      "Vocabulary was not successfully imported.",
+    "vocabulary.import.error.message": "Failed to import vocabulary.",
     "vocabulary.import.allow-changing-identifiers":
       "Allow changing identifiers",
     "vocabulary.import.allow-changing-identifiers.tooltip":
