@@ -7,11 +7,8 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { useState } from "react";
 
 interface ImportExternalVocabularyDialogProps {
-  propKeyPrefix: string;
-  getList: RdfsResource[];
-  onCreate: (selectedIris: string[], rename: boolean) => any;
-  onCancel: () => void;
-  allowRename?: boolean;
+  vocabularyList: RdfsResource[];
+  onCreate: (selectedIris: string[]) => any;
 }
 
 const ImportExternalVocabularyDialog = (
@@ -24,7 +21,7 @@ const ImportExternalVocabularyDialog = (
     { value: string; label: string }[]
   >([]);
 
-  const options = props.getList.map((item) => ({
+  const options = props.vocabularyList.map((item) => ({
     value: item.iri,
     label: getLocalized(item.label, locale),
   }));
@@ -32,7 +29,7 @@ const ImportExternalVocabularyDialog = (
   // Function for sending selected options
   const handleImport = () => {
     const selectedIris = selectedOptions.map((opt) => opt.value);
-    props.onCreate(selectedIris, true);
+    props.onCreate(selectedIris);
   };
   return (
     <Form id="vocabulary-import" className="m-import-vocabulary">

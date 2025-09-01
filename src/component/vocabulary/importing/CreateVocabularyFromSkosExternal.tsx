@@ -24,9 +24,9 @@ const CreateVocabularyFromSkosExternal: React.FC = () => {
     RdfsResource[]
   >([]);
   const dispatch: ThunkDispatch = useDispatch();
-  const importExternalSkos = (selectedItems: string[], rename: Boolean) =>
+  const importExternalSkos = (selectedItems: string[]) =>
     trackPromise(
-      dispatch(importExternalSkosAsNewVocabulary(selectedItems, rename)),
+      dispatch(importExternalSkosAsNewVocabulary(selectedItems, true)),
       "import-vocabulary"
     ).then((location?: string) => {
       if (location) {
@@ -68,11 +68,8 @@ const CreateVocabularyFromSkosExternal: React.FC = () => {
           {i18n("vocabulary.import.dialog.external.message")}
         </Label>
         <ImportExternalVocabularyDialog
-          propKeyPrefix="vocabulary.import"
-          getList={availableVocabularies}
+          vocabularyList={availableVocabularies}
           onCreate={importExternalSkos}
-          onCancel={() => Routing.transitionTo(Routes.vocabularies)}
-          allowRename={true}
         />
       </CardBody>
     </Card>
