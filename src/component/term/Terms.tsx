@@ -252,7 +252,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
   private onFlatListToggle = () => {
     this.props.setTermsFlatList(!this.props.flatList);
-    this.treeComponent.current.resetOptions();
   };
 
   private renderToggles(renderIncludeImported: boolean) {

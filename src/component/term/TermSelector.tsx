@@ -61,10 +61,10 @@ export const TermSelector: React.FC<{
   const treeSelect = React.useRef<IntelligentTreeSelect>(null);
 
   const flatList = useSelector((state: TermItState) => state.showTermsFlatList);
-  const handleFlatListToggle = React.useCallback(() => {
+  const handleFlatListToggle = () => {
     dispatch(setTermsFlatList(!flatList));
     treeSelect.current?.resetOptions();
-  }, [dispatch, flatList]);
+  };
 
   const selected =
     value.length > 0

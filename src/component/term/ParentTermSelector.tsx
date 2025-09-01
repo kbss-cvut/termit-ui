@@ -193,7 +193,6 @@ export class ParentTermSelector extends React.Component<
 
   private onFlatListToggle = () => {
     this.props.setTermsFlatList(!this.props.flatList);
-    this.treeComponent.current.resetOptions();
   };
 
   public render() {
