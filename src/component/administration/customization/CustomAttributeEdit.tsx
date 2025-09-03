@@ -8,7 +8,10 @@ import MultilingualString, {
   getLocalizedOrDefault,
   isBlank,
 } from "../../../model/MultilingualString";
-import { getLanguages, getShortLocale } from "../../../util/IntlUtil";
+import {
+  getLanguagesWithRequired,
+  getShortLocale,
+} from "../../../util/IntlUtil";
 import EditLanguageSelector from "../../multilingual/EditLanguageSelector";
 import {
   Button,
@@ -66,8 +69,14 @@ export const CustomAttributeEdit: React.FC = () => {
   const [domain, setDomain] = React.useState<string>(VocabularyUtils.TERM);
   const [range, setRange] = React.useState<string>(VocabularyUtils.XSD_STRING);
   const [language, setLanguage] = React.useState(getShortLocale(locale));
+  const [iri, setIri] = React.useState("");
+  // @ts-ignore
+  const [shouldGenerateIri, setShouldGenerateIri] = React.useState(true);
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
+  );
+  const primaryLanguage = useSelector(
+    (state: TermItState) => state.configuration.language
   );
   const properties = useSelector((state: TermItState) => state.properties);
   const editedAttribute = React.useMemo(
@@ -84,6 +93,7 @@ export const CustomAttributeEdit: React.FC = () => {
         setDomain(editedAttribute.domainIri || "");
         setRange(editedAttribute.rangeIri || "");
       }
+      setShouldGenerateIri(false);
     }
   }, [editingMode, editedAttribute]);
 
@@ -98,6 +108,7 @@ export const CustomAttributeEdit: React.FC = () => {
   const onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newLabel = { ...label };
     newLabel[language] = e.target.value;
+
     setLabel(newLabel);
   };
   const labelValidation =
@@ -129,6 +140,10 @@ export const CustomAttributeEdit: React.FC = () => {
         ["activeTab", "administration.customization.title"],
       ]),
     });
+  };
+  const onIriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIri(e.target.value);
+    setShouldGenerateIri(false);
   };
 
   const onSave = () => {
@@ -174,10 +189,15 @@ export const CustomAttributeEdit: React.FC = () => {
       <PromiseTrackingMask area="custom-attribute-edit" />
       <EditLanguageSelector
         language={language}
-        existingLanguages={getLanguages(["label", "comment"], {
-          label,
-          comment,
-        })}
+        requiredLanguage={primaryLanguage}
+        existingLanguages={getLanguagesWithRequired(
+          primaryLanguage,
+          ["label", "comment"],
+          {
+            label,
+            comment,
+          }
+        )}
         onSelect={setLanguage}
         onRemove={onRemoveTranslation}
       />
@@ -235,6 +255,17 @@ export const CustomAttributeEdit: React.FC = () => {
                   value={range}
                   options={RANGE_OPTIONS}
                   labelKey="administration.customization.customAttributes.range"
+                  disabled={editingMode}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <CustomInput
+                  name="custom-attribute-edit-iri"
+                  label={i18n("asset.iri")}
+                  onChange={onIriChange}
+                  value={iri}
                   disabled={editingMode}
                 />
               </Col>
