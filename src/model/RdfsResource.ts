@@ -79,28 +79,3 @@ export class RdfProperty extends RdfsResource {
     return this.range?.iri || "";
   }
 }
-
-export class CreateRdfPropertyData {
-  public label?: MultilingualString;
-  public comment?: MultilingualString;
-  public types: string[];
-  public domain?: string;
-  public range?: string;
-
-  constructor(data: {
-    label: MultilingualString;
-    comment?: MultilingualString;
-    domain?: string;
-    range?: string;
-  }) {
-    this.label = data.label;
-    this.comment = data.comment;
-    this.domain = data.domain;
-    this.range = data.range;
-    this.types = [VocabularyUtils.NS_TERMIT + "vlastní-atribut"];
-  }
-
-  public toJsonLd() {
-    return Object.assign({}, this, { "@context": CONTEXT });
-  }
-}

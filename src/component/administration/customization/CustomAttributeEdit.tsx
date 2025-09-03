@@ -1,8 +1,5 @@
 import React from "react";
-import RdfsResource, {
-  CreateRdfPropertyData,
-  RdfProperty,
-} from "../../../model/RdfsResource";
+import RdfsResource, { RdfProperty } from "../../../model/RdfsResource";
 import { useI18n } from "../../hook/useI18n";
 import MultilingualString, {
   getLocalizedOrDefault,
@@ -44,6 +41,7 @@ import {
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { useParams } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import { loadIdentifier } from "../../asset/CreateAssetUtils";
 
 function propertyWithLabelExists(
   label: string,
@@ -70,7 +68,6 @@ export const CustomAttributeEdit: React.FC = () => {
   const [range, setRange] = React.useState<string>(VocabularyUtils.XSD_STRING);
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const [iri, setIri] = React.useState("");
-  // @ts-ignore
   const [shouldGenerateIri, setShouldGenerateIri] = React.useState(true);
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
@@ -87,6 +84,7 @@ export const CustomAttributeEdit: React.FC = () => {
   React.useEffect(() => {
     if (editingMode) {
       if (editedAttribute) {
+        setIri(editedAttribute.iri);
         setLabel(editedAttribute.label || {});
         setOriginalLabel(editedAttribute.label || {});
         setComment(editedAttribute.comment || {});
@@ -110,6 +108,16 @@ export const CustomAttributeEdit: React.FC = () => {
     newLabel[language] = e.target.value;
 
     setLabel(newLabel);
+    if (
+      shouldGenerateIri &&
+      language === primaryLanguage &&
+      e.target.value.trim().length > 0
+    ) {
+      loadIdentifier({
+        name: e.target.value.trim(),
+        assetType: "CUSTOM_ATTRIBUTE",
+      }).then((resp) => setIri(resp.data));
+    }
   };
   const labelValidation =
     (!editingMode || label[language] !== originalLabel[language]) &&
@@ -160,11 +168,13 @@ export const CustomAttributeEdit: React.FC = () => {
     } else {
       promise = dispatch(
         createCustomAttribute(
-          new CreateRdfPropertyData({
+          new RdfProperty({
+            iri,
             label,
             comment,
             domain,
             range,
+            types: [VocabularyUtils.NS_TERMIT + "vlastní-atribut"],
           })
         )
       );
