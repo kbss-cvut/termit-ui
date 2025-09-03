@@ -12,12 +12,18 @@ import "./LanguageSelector.scss";
 interface EditLanguageSelectorProps {
   language: string;
   existingLanguages: string[];
+  requiredLanguage?: string;
   onSelect: (lang: string) => void;
   onRemove: (lang: string) => void;
 }
 
-const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
-  const { language, existingLanguages, onSelect, onRemove } = props;
+const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = ({
+  language,
+  existingLanguages,
+  requiredLanguage,
+  onSelect,
+  onRemove,
+}) => {
   const { i18n, formatMessage } = useI18n();
   const [adding, setAdding] = React.useState(false);
   React.useEffect(() => {
@@ -39,13 +45,14 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
         tabs={true}
         className="language-selector-nav"
       >
-        {renderLanguages(
-          existingLanguages,
-          language,
+        {renderLanguages({
+          languages: existingLanguages,
+          selectedLanguage: language,
+          requiredLanguage,
           formatMessage,
           onSelect,
-          onRemove
-        )}
+          onRemove,
+        })}
         <NavItem
           key="add-language"
           className={classNames({ "edit-language-selector": adding })}
