@@ -153,4 +153,8 @@ export function isBlank(str?: MultilingualString) {
   return !str || Object.keys(str).every((lang) => !Utils.notBlank(str[lang]));
 }
 
+export function isLanguageBlank(language: string, str?: MultilingualString) {
+  return !str || !Utils.notBlank(str[language]);
+}
+
 export default MultilingualString;

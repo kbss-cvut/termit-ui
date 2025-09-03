@@ -3,7 +3,7 @@ import RdfsResource, { RdfProperty } from "../../../model/RdfsResource";
 import { useI18n } from "../../hook/useI18n";
 import MultilingualString, {
   getLocalizedOrDefault,
-  isBlank,
+  isLanguageBlank,
 } from "../../../model/MultilingualString";
 import {
   getLanguagesWithRequired,
@@ -151,7 +151,7 @@ export const CustomAttributeEdit: React.FC = () => {
   };
   const onIriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIri(e.target.value);
-    setShouldGenerateIri(false);
+    setShouldGenerateIri(e.target.value.trim().length === 0);
   };
 
   const onSave = () => {
@@ -288,7 +288,7 @@ export const CustomAttributeEdit: React.FC = () => {
                     color="success"
                     onClick={onSave}
                     size="sm"
-                    disabled={isBlank(label)}
+                    disabled={isLanguageBlank(primaryLanguage, label)}
                   >
                     {i18n("save")}
                   </Button>
