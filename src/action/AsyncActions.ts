@@ -40,7 +40,6 @@ import ActionType, {
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
-  CreateRdfPropertyData,
   RdfProperty,
   RdfPropertyData,
   RdfsResourceData,
@@ -1139,7 +1138,7 @@ export function getCustomAttributes() {
   );
 }
 
-export function createCustomAttribute(attribute: CreateRdfPropertyData) {
+export function createCustomAttribute(attribute: RdfProperty) {
   return createPropertyImpl(
     attribute,
     { type: ActionType.CREATE_CUSTOM_ATTRIBUTE },
