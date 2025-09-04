@@ -2,26 +2,29 @@ import * as React from "react";
 import { useState } from "react";
 import { Button, Collapse } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
-import classNames from "classnames";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 /**
  * "Show Advanced" component.
  *
  * It wraps components that are shown in advanced regime only.
  */
-export const ShowAdvancedAssetFields: React.FC = (props) => {
+export const ShowAdvancedAssetFields: React.FC = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
-  const { children } = props;
   const { i18n } = useI18n();
+  const Icon = isOpen ? FaChevronUp : FaChevronDown;
+
   return (
     <>
       <Button
-        color="link"
         id="toggle-advanced"
         onClick={toggle}
-        className={classNames({ "mb-3": !isOpen })}
+        className="mb-3"
+        active={isOpen}
+        size="sm"
       >
+        <Icon className="mr-1 mb-1" />
         {i18n(
           isOpen
             ? "asset.create.hideAdvancedSection"
