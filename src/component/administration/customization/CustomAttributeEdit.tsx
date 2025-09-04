@@ -42,6 +42,7 @@ import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { useParams } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { loadIdentifier } from "../../asset/CreateAssetUtils";
+import ShowAdvancedAssetFields from "src/component/asset/ShowAdvancedAssetFields";
 
 function propertyWithLabelExists(
   label: string,
@@ -269,17 +270,20 @@ export const CustomAttributeEdit: React.FC = () => {
                 />
               </Col>
             </Row>
-            <Row>
-              <Col xs={12}>
-                <CustomInput
-                  name="custom-attribute-edit-iri"
-                  label={i18n("asset.iri")}
-                  onChange={onIriChange}
-                  value={iri}
-                  disabled={editingMode}
-                />
-              </Col>
-            </Row>
+            <ShowAdvancedAssetFields>
+              <Row>
+                <Col xs={12}>
+                  <CustomInput
+                    name="custom-attribute-edit-iri"
+                    label={i18n("asset.iri")}
+                    onChange={onIriChange}
+                    value={iri}
+                    help={i18n("asset.create.iri.help")}
+                    disabled={editingMode}
+                  />
+                </Col>
+              </Row>
+            </ShowAdvancedAssetFields>
             <Row>
               <Col md={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">
