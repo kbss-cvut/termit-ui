@@ -61,7 +61,7 @@ const CreateVocabularyFromSkosExternal: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <Card id="vocabulary-import" className="mb-3">
+    <Card id="external-vocabulary-import" className="mb-3">
       <CardBody>
         <PromiseTrackingMask area="import-vocabulary" />
         <Label className="attribute-label mb-2">

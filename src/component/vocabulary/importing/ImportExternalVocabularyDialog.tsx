@@ -32,7 +32,7 @@ const ImportExternalVocabularyDialog = (
     props.onCreate(selectedIris);
   };
   return (
-    <Form id="vocabulary-import" className="m-import-vocabulary">
+    <Form id="import-external-vocabulary-form" className="m-import-vocabulary">
       <Row>
         <Col xs={12}>
           {options.length === 0 && (
@@ -42,7 +42,7 @@ const ImportExternalVocabularyDialog = (
           )}
           <FormGroup>
             <Select
-              id="SelectVocabulariesReact"
+              id="import-external-vocabulary-select"
               isMulti
               options={options}
               value={selectedOptions}
@@ -55,7 +55,7 @@ const ImportExternalVocabularyDialog = (
           </FormGroup>
 
           <Button
-            id="importVocabulariesButton"
+            id="import-external-vocabularies-submit"
             disabled={options.length === 0}
             onClick={handleImport}
           >
