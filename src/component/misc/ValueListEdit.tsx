@@ -70,6 +70,7 @@ export const ValueListEdit = <T extends string | number = string>({
       onAdd();
     }
   };
+  const existingValues = Utils.sanitizeArray(list);
 
   return (
     <div className="form-group">
@@ -121,10 +122,10 @@ export const ValueListEdit = <T extends string | number = string>({
           </FormFeedback>
         )}
       </InputGroup>
-      {Utils.sanitizeArray(list).length > 0 && (
+      {existingValues.length > 0 && (
         <table>
           <tbody>
-            {list!.map((s) => (
+            {existingValues.map((s) => (
               <tr key={s}>
                 <td className="align-middle">
                   <ul className="mt-0 mb-0">
