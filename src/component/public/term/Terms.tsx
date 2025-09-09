@@ -1,7 +1,6 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import { Badge } from "reactstrap";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import Term, { TermData } from "../../../model/Term";
@@ -40,7 +39,7 @@ interface GlossaryTermsProps extends HasI18n {
   terminalStates: string[];
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
   fetchTerms: (
-    fetchOptions: TermFetchParams<TermData>,
+    fetchOptions: TermFetchParams<Term>,
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   isDetailView?: boolean;
@@ -55,7 +54,13 @@ interface TermsState {
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
-  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
+  private readonly treeComponent: React.RefObject<
+    IntelligentTreeSelect<Term, false, false>
+  >;
+
+  static defaultProps = {
+    isDetailView: false,
+  };
 
   constructor(props: GlossaryTermsProps) {
     super(props);
@@ -86,9 +91,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
   }
 
-  public fetchOptions = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
+  public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<Term>) => {
     this.setState({ disableIncludeImportedToggle: true });
     const namespace = Utils.extractQueryParam(
       this.props.location.search,
@@ -128,7 +131,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       });
   };
 
-  public onTermSelect = (term: TermData | null) => {
+  public onTermSelect = (term: Term | null) => {
     if (term === null) {
       this.props.selectVocabularyTerm(term);
     } else {
@@ -152,7 +155,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
   private onIncludeImportedToggle = () => {
     this.setState({ includeImported: !this.state.includeImported }, () =>
-      this.treeComponent.current.resetOptions()
+      this.treeComponent.current?.resetOptions()
     );
   };
 
@@ -218,16 +221,17 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             }
             fetchOptions={this.fetchOptions}
             isMenuOpen={true}
-            scrollMenuIntoView={false}
             multi={false}
             menuIsFloating={false}
             maxHeight={Utils.calculateAssetListHeight()}
             optionRenderer={createTermsWithImportsOptionRenderer(
               vocabulary.iri
             )}
-            valueRenderer={(option: Term) =>
-              getLocalized(option.label, getShortLocale(this.props.locale))
-            }
+            valueRenderer={(_: any, option: Term) => (
+              <>
+                {getLocalized(option.label, getShortLocale(this.props.locale))}
+              </>
+            )}
             {...commonTermTreeSelectProps(this.props)}
           />
         </div>

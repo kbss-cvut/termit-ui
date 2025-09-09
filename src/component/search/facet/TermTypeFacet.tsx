@@ -26,7 +26,7 @@ const TermTypeFacet: React.FC<TermTypeFacetProps> = ({ value, onChange }) => {
       mapTypeOptions(types).map((r) => ({
         value: r.iri,
         label: getLocalized(r.label, locale),
-        children: r.subTerms,
+        children: r.plainSubTerms,
         parent: r.parent,
       })),
     [types, locale]

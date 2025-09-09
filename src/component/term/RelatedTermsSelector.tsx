@@ -1,6 +1,5 @@
 import * as React from "react";
 import Term, { TermInfo } from "../../model/Term";
-import Utils from "../../util/Utils";
 import { Label } from "reactstrap";
 import HelpIcon from "../misc/HelpIcon";
 import DefinitionRelatedTermsEdit, {
@@ -31,8 +30,8 @@ const RelatedTermsSelector: React.FC<{
 }) => {
   const { i18n } = useI18n();
 
-  const handleChange = (terms: Term[]) => {
-    onChange(Utils.sanitizeArray(terms).filter((v) => v.iri !== term.iri));
+  const handleChange = (terms: readonly Term[]) => {
+    onChange(terms.filter((v) => v.iri !== term.iri));
   };
 
   return (

@@ -556,7 +556,7 @@ export function genericLoadTerms(
     dispatch(asyncActionRequest(action, true));
     let url = `${getApiPrefix(getState())}${prefix}/terms`;
     if (fetchOptions.optionID) {
-      const parentIri = VocabularyUtils.create(fetchOptions.optionID);
+      const parentIri = VocabularyUtils.create(fetchOptions.optionID as string);
       url = `${getApiPrefix(getState())}/terms/${parentIri.fragment}/subterms`;
       target.namespace = parentIri.namespace;
     } else if (!fetchOptions.searchString && !fetchOptions.flatList) {

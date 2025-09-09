@@ -6,7 +6,7 @@ import Utils from "../../util/Utils";
 import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchResult from "../../model/search/SearchResult";
-import * as _ from "lodash";
+import _ from "lodash";
 
 /**
  * Common properties for a tree selector containing terms
@@ -269,6 +269,6 @@ export function loadAndPrepareTerms(
  */
 export function resolveNamespaceForLoadAll(options: TermFetchParams<any>) {
   return options.optionID
-    ? VocabularyUtils.create(options.optionID).namespace
+    ? VocabularyUtils.create(options.optionID as string).namespace
     : undefined;
 }

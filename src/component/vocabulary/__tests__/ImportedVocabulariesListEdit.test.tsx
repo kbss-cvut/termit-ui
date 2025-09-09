@@ -4,7 +4,6 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import { shallow } from "enzyme";
 import ImportedVocabulariesListEdit from "../ImportedVocabulariesListEdit";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { langString } from "../../../model/MultilingualString";
 import * as Redux from "react-redux";

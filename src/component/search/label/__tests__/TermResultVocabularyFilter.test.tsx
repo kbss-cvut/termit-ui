@@ -1,5 +1,4 @@
 import { ReactWrapper } from "enzyme";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import TermResultVocabularyFilter from "../TermResultVocabularyFilter";
 import Generator from "../../../../__tests__/environment/Generator";

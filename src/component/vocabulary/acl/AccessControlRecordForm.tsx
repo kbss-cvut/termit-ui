@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Button, ButtonGroup, FormGroup, FormText, Label } from "reactstrap";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import {
   AccessControlRecord,
@@ -192,9 +191,7 @@ const AccessControlRecordForm: React.FC<AccessControlRecordFormProps> = ({
             )
           }
           valueRenderer={Utils.simpleValueRenderer}
-          showSettings={false}
           multi={false}
-          displayInfoOnHover={false}
           expanded={false}
           placeholder=""
           isClearable={false}

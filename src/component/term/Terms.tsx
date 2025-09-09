@@ -4,7 +4,6 @@ import { Button } from "reactstrap";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import { connect } from "react-redux";
@@ -79,7 +78,9 @@ interface TermsState {
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
-  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
+  private readonly treeComponent: React.RefObject<
+    IntelligentTreeSelect<Term, false>
+  >;
 
   constructor(props: GlossaryTermsProps) {
     super(props);
@@ -109,14 +110,14 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       this.treeComponent.current.resetOptions();
       this.props.consumeNotification(matchingNotification);
     } else if (this.shouldReloadTerms(prevProps)) {
-      this.treeComponent.current.resetOptions();
+      this.treeComponent.current?.resetOptions();
     }
     if (prevProps.locale !== this.props.locale) {
-      this.treeComponent.current.forceUpdate();
+      this.treeComponent.current?.forceUpdate();
     }
 
     if (prevProps.flatList !== this.props.flatList) {
-      this.treeComponent.current.resetOptions();
+      this.treeComponent.current?.resetOptions();
     }
   }
 
@@ -143,9 +144,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
   }
 
-  public fetchOptions = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
+  public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<Term>) => {
     this.setState({ disableIncludeImportedToggle: true });
     const vocabularyIri = fetchOptions.option
       ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!)
@@ -208,7 +207,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     });
   };
 
-  public onTermSelect = (term: TermData | null) => {
+  public onTermSelect = (term: Term | null) => {
     if (term === null) {
       if (this.props.isDetailView) {
         return;
@@ -240,13 +239,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
   private onIncludeImportedToggle = () => {
     this.setState({ includeImported: !this.state.includeImported }, () =>
-      this.treeComponent.current.resetOptions()
+      this.treeComponent.current?.resetOptions()
     );
   };
 
   private onShowTerminalTermsToggle = () => {
     this.setState({ showTerminalTerms: !this.state.showTerminalTerms }, () =>
-      this.treeComponent.current.resetOptions()
+      this.treeComponent.current?.resetOptions()
     );
   };
 
@@ -369,7 +368,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             }
             fetchOptions={this.fetchOptions}
             isMenuOpen={true}
-            scrollMenuIntoView={false}
             multi={false}
             autoFocus={!isDetailView}
             menuIsFloating={false}
@@ -378,7 +376,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
               this.props.vocabulary.iri,
               this.props.showTermQualityBadge
             )}
-            valueRenderer={(option: Term) =>
+            valueRenderer={(_: any, option: Term) =>
               getLocalized(option.label, getShortLocale(this.props.locale))
             }
             {...treeSelectProps}

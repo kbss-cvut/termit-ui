@@ -1,6 +1,5 @@
 import * as React from "react";
 import classNames from "classnames";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { getLanguageOptions, Language } from "../../util/IntlUtil";
 import { renderLanguages } from "./LanguageSelector";
@@ -75,7 +74,6 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = ({
               classNamePrefix="react-select"
               simpleTreeData={true}
               renderAsTree={false}
-              showSettings={false}
               isClearable={false}
               placeholder={i18n("term.language.add.placeholder")}
               noResultsText={i18n("search.no-results")}

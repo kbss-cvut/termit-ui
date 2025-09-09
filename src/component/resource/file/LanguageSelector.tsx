@@ -1,5 +1,4 @@
 import React from "react";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { getLanguageOptions, Language } from "../../../util/IntlUtil";
 import { useI18n } from "../../hook/useI18n";
@@ -16,7 +15,7 @@ const LanguageSelector: React.FC<{
   return (
     <IntelligentTreeSelect
       className={className}
-      onChange={(item: Language) => onChange(item?.code || "")}
+      onChange={(item: Language | null) => onChange(item?.code || "")}
       options={options}
       maxHeight={200}
       multi={false}
@@ -25,7 +24,6 @@ const LanguageSelector: React.FC<{
       classNamePrefix="react-select"
       simpleTreeData={true}
       renderAsTree={false}
-      showSettings={false}
       isClearable={isClearable}
       placeholder=""
       noResultsText={i18n("search.no-results")}

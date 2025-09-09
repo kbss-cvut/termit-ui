@@ -7,11 +7,11 @@ import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Term, { TermData } from "../../../model/Term";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
+import { noop } from "lodash";
 
 describe("ParentTermSelector", () => {
   const vocabularyIri = Generator.generateUri();
@@ -36,7 +36,7 @@ describe("ParentTermSelector", () => {
   it("passes selected parent as value to tree component", () => {
     const vocabulary = new Vocabulary({
       iri: vocabularyIri,
-      label: "Test vocabulary",
+      label: langString("Test vocabulary"),
     });
     vocabulary.allImportedVocabularies = [];
     const parentTerms = [Generator.generateTerm(vocabularyIri)];
@@ -54,14 +54,17 @@ describe("ParentTermSelector", () => {
   function render(
     props: Partial<ParentTermSelectorProps> & { vocabularyIri: string }
   ) {
+    const { terminalStates, ...rest } = props;
     return shallow<ParentTermSelector>(
       <ParentTermSelector
         id="test"
         onChange={onChange}
         loadTerms={loadTerms}
         loadImportedVocabularies={loadImports}
-        states={{}}
-        {...props}
+        terminalStates={terminalStates || []}
+        flatList={false}
+        setTermsFlatList={noop}
+        {...rest}
         {...intlFunctions()}
       />
     );
@@ -70,7 +73,7 @@ describe("ParentTermSelector", () => {
   it("passes selected parents as value to tree component when there are multiple", () => {
     const vocabulary = new Vocabulary({
       iri: vocabularyIri,
-      label: "Test vocabulary",
+      label: langString("Test vocabulary"),
     });
     vocabulary.allImportedVocabularies = [];
     const parentTerms = [
@@ -106,16 +109,6 @@ describe("ParentTermSelector", () => {
     const term = Generator.generateTerm(vocabularyIri);
     const wrapper = render({ termIri: term.iri, vocabularyIri });
     wrapper.instance().onChange([term]);
-    expect(onChange).toHaveBeenCalledWith([]);
-  });
-
-  it("handles selection reset by passing empty array to onChange handler", () => {
-    const term = Generator.generateTerm(vocabularyIri);
-    const wrapper = render({
-      termIri: term.iri,
-      vocabularyIri: Generator.generateUri(),
-    });
-    wrapper.instance().onChange(null);
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
@@ -226,7 +219,7 @@ describe("ParentTermSelector", () => {
       loadTerms = jest.fn().mockResolvedValue(terms);
       const vocabulary = new Vocabulary({
         iri: vocabularyIri,
-        label: "test",
+        label: langString("test"),
       });
       vocabulary.allImportedVocabularies = [parent.vocabulary!.iri!];
       const wrapper = render({
@@ -280,7 +273,7 @@ describe("ParentTermSelector", () => {
   it("does not load imported vocabularies when current state vocabulary matches specified vocabulary IRI", () => {
     const vocabulary = new Vocabulary({
       iri: vocabularyIri,
-      label: "Test vocabulary",
+      label: langString("Test vocabulary"),
     });
     vocabulary.allImportedVocabularies = [];
     const termIri = Generator.generateUri();

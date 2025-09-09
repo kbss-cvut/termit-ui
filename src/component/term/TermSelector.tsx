@@ -1,6 +1,5 @@
 import React from "react";
 import { FormGroup } from "reactstrap";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Term, { TermData, TermInfo } from "src/model/Term";
 import {
@@ -15,7 +14,6 @@ import {
   createTermValueRenderer,
 } from "../misc/treeselect/Renderers";
 import { useI18n } from "../hook/useI18n";
-import Utils from "src/util/Utils";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
 import { loadAllTerms } from "../../action/AsyncActions";
@@ -43,7 +41,7 @@ export const TermSelector: React.FC<{
   suffix?: React.ReactNode;
 
   fetchedTermsFilter?: (terms: Term[]) => Term[];
-  onChange: (selected: Term[]) => void;
+  onChange: (selected: readonly Term[]) => void;
 }> = ({
   id,
   label,
@@ -58,7 +56,7 @@ export const TermSelector: React.FC<{
   const terminalStates = useSelector(
     (state: TermItState) => state.terminalStates
   );
-  const treeSelect = React.useRef<IntelligentTreeSelect>(null);
+  const treeSelect = React.useRef<IntelligentTreeSelect<Term>>(null);
 
   const flatList = useSelector((state: TermItState) => state.showTermsFlatList);
   const handleFlatListToggle = () => {
@@ -109,7 +107,7 @@ export const TermSelector: React.FC<{
       </div>
       <IntelligentTreeSelect
         ref={treeSelect}
-        onChange={(v: Term[] | Term | null) => onChange(Utils.sanitizeArray(v))}
+        onChange={(v: readonly Term[]) => onChange(v)}
         value={selected}
         fetchOptions={fetchOptions}
         fetchLimit={Constants.DEFAULT_PAGE_SIZE}

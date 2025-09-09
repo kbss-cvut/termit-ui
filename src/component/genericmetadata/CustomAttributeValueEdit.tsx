@@ -55,7 +55,7 @@ export const CustomAttributeValueEdit: React.FC<{
     return (
       <TermSelector
         value={values.map((v) => extractPropertyValue(v)) as string[]}
-        onChange={(sel: Term[]) =>
+        onChange={(sel: readonly Term[]) =>
           onChange(
             attribute,
             sel.map((t) => ({ iri: t.iri }))

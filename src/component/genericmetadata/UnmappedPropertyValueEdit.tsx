@@ -3,7 +3,6 @@ import { useI18n } from "../hook/useI18n";
 import { Button, Col, FormGroup, Label, Row } from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import { GoPlus } from "react-icons/go";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import RdfsResource, { RdfsResourceData } from "../../model/RdfsResource";
 import CreatePropertyForm from "./CreatePropertyForm";
@@ -104,7 +103,6 @@ export const UnmappedPropertyValueEdit: React.FC<{
               getOptionLabel={(opt: RdfsResourceData) =>
                 getLocalized(opt.label, getShortLocale(locale))
               }
-              showSettings={true}
               maxHeight={150}
               multi={false}
               renderAsTree={false}

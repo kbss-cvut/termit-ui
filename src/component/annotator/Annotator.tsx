@@ -2,7 +2,7 @@ import * as React from "react";
 import { Element, Node as DomHandlerNode } from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
 import AnnotationDomHelper, { AnnotationType } from "./AnnotationDomHelper";
-import Term, { TermData } from "../../model/Term";
+import Term from "../../model/Term";
 import HtmlDomUtils, { getTermOccurrences } from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
 import { DomUtils } from "htmlparser2";
@@ -97,7 +97,7 @@ interface AnnotatorState {
 
   existingTermDefinitionAnnotationElement?: Element;
   selectedTerm?: Term;
-  highlightedTerm: TermData | null;
+  highlightedTerm: Term | null;
   highlightedOccurrenceIndex: number;
 }
 

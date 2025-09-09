@@ -1,5 +1,4 @@
 import * as React from "react";
-// @ts-ignore
 import { ToggleMinusIcon, TogglePlusIcon } from "intelligent-tree-select";
 import Utils from "../../../util/Utils";
 import { ValueMapper } from "../../../util/Types";

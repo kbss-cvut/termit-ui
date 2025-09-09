@@ -7,6 +7,7 @@ import TermItState from "../model/TermItState";
 import { Action } from "redux";
 import { match } from "react-router";
 import { Location } from "history";
+import { FetchParams } from "intelligent-tree-select";
 
 /**
  * Simple name for Thunk Dispatch, providing the required generic type arguments.
@@ -32,20 +33,15 @@ export type ValueMapper<T> = (data: T) => JSX.Element | null;
 /**
  * Represents parameters passed to the fetchOptions handler of the tree select component.
  */
-export interface TreeSelectFetchOptionsParams<T> {
-  searchString?: string;
-  optionID?: string;
-  limit?: number;
-  offset?: number;
-  option?: T;
-}
+export type TreeSelectFetchOptionsParams<T extends object> = FetchParams<T>;
 
 /**
  * Term fetching options.
  *
  * Extends options passed from the tree select component with additional configuration.
  */
-export interface TermFetchParams<T> extends TreeSelectFetchOptionsParams<T> {
+export interface TermFetchParams<T extends object>
+  extends TreeSelectFetchOptionsParams<T> {
   includeImported?: boolean;
   includeTerms?: string[];
   flatList?: boolean;

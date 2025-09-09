@@ -33,7 +33,7 @@ const ExactMatchesSelector: React.FC<{
 }> = ({ id, termIri, selected, vocabularyIri, onChange }) => {
   const { i18n } = useI18n();
 
-  const handleChange = (terms: Term[]) => {
+  const handleChange = (terms: readonly Term[]) => {
     onChange(terms.filter((t) => t.iri !== termIri));
   };
 

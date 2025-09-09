@@ -9,7 +9,6 @@ import Utils from "../../../util/Utils";
 import { langString } from "../../../model/MultilingualString";
 import { PropertyValueType } from "../../../model/WithUnmappedProperties";
 import Constants from "../../../util/Constants";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import * as Redux from "react-redux";
 import { act } from "react-dom/test-utils";
@@ -50,6 +49,7 @@ describe("UnmappedPropertiesEdit", () => {
   function render(existing: Map<string, PropertyValueType[]>) {
     return mountWithIntl(
       <UnmappedPropertiesEdit
+        assetType="term"
         properties={existing}
         onChange={onChange}
         languages={["en", "cs"]}
