@@ -126,14 +126,14 @@ function createQualityBadgeRenderer() {
 function createImportedTermRenderer(currentVocabularyIri?: string) {
   return (option: Term & TreeItem) =>
     !currentVocabularyIri ||
-    currentVocabularyIri === option.vocabulary!.iri ? null : (
+    currentVocabularyIri === option.vocabulary?.iri ? null : (
       <ImportedTermInfo key="imported-term-addon" term={option} />
     );
 }
 
 function createVocabularyBadgeRenderer(currentVocabularyIri?: string) {
   return (option: Term & TreeItem) =>
-    currentVocabularyIri === option.vocabulary!.iri ? null : (
+    currentVocabularyIri === option.vocabulary?.iri ? null : (
       <VocabularyNameBadge
         key="vocabulary-name-addon"
         vocabulary={option.vocabulary}

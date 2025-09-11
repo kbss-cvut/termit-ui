@@ -71,10 +71,10 @@ export const TermSelector: React.FC<{
         : resolveSelectedIris(value as TermInfo[])
       : (value as string[]);
   const fetchOptions = async (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
+    fetchParams: TreeSelectFetchOptionsParams<TermData>
   ) => {
     const terms = await loadAndPrepareTerms(
-      fetchOptions,
+      { ...fetchParams, flatList },
       (options) =>
         dispatch(
           loadAllTerms(

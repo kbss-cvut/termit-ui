@@ -20,7 +20,6 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     childrenKey: "plainSubTerms",
     renderAsTree: true,
     simpleTreeData: true,
-    showSettings: false,
     noResultsText: intl.i18n("search.no-results"),
     loadingText: intl.i18n("select.loading"),
     placeholder: "",
@@ -34,6 +33,7 @@ export type TermTreeSelectProcessingOptions = {
   selectedIris?: string[];
   loadingSubTerms?: boolean;
   flattenAncestors?: boolean;
+  flatList?: boolean;
 };
 
 /**
@@ -64,6 +64,7 @@ export function processTermsForTreeSelect(
       t.syncPlainSubTerms();
     }
     if (
+      !options.flatList &&
       (options.searchString || options.flattenAncestors) &&
       t.parentTerms &&
       t.parentTerms.length > 0
@@ -226,7 +227,7 @@ export function loadAndPrepareTerms(
     includeTerms: toInclude,
   })
     .then((terms) => {
-      if (toInclude.length === 0) {
+      if (toInclude.length === 0 || fetchOptions.flatList) {
         return terms;
       }
       let parentsToExpand = terms
@@ -255,6 +256,7 @@ export function loadAndPrepareTerms(
           searchString: fetchOptions.searchString,
           selectedIris,
           loadingSubTerms: !!fetchOptions.optionID,
+          flatList: fetchOptions.flatList,
         }
       )
     );
