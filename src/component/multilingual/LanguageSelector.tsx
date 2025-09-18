@@ -4,6 +4,7 @@ import { Nav, NavItem, NavLink } from "reactstrap";
 import { FaTimesCircle } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
 import "./LanguageSelector.scss";
+import { getShortLocale } from "src/util/IntlUtil";
 
 interface LanguageSelectorProps {
   languages: string[];
@@ -63,10 +64,16 @@ export function renderLanguages({
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = (props) => {
   const { language, requiredLanguage, languages, onSelect } = props;
-  const { formatMessage } = useI18n();
+  const { formatMessage, locale } = useI18n();
   if (languages.length <= 1) {
     return null;
   }
+
+  const appLocale: string = getShortLocale(locale);
+  const displayLanguages: string[] = languages.includes(appLocale)
+    ? [appLocale, ...languages.filter((l) => l !== appLocale)]
+    : languages;
+
   return (
     <div>
       <Nav
@@ -75,7 +82,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = (props) => {
         className="language-selector-nav"
       >
         {renderLanguages({
-          languages,
+          languages: displayLanguages,
           selectedLanguage: language,
           requiredLanguage,
           formatMessage,
