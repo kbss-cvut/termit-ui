@@ -21,7 +21,7 @@ import { loadIdentifier } from "../asset/CreateAssetUtils";
 import MultilingualIcon from "../misc/MultilingualIcon";
 import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import AttributeSectionContainer from "./../layout/AttributeSectionContainer";
-import StringListEdit from "../misc/StringListEdit";
+import StringListEdit from "../misc/ValueListEdit";
 
 interface TermMetadataCreateFormProps extends HasI18n {
   onChange: (change: object, callback?: () => void) => void;

@@ -9,6 +9,7 @@ import AppNotification, {
 import NotificationType from "../model/NotificationType";
 import { BasicRouteProps } from "./Types";
 import _ from "lodash";
+import validateUri from "validate.io-uri";
 import { Configuration } from "../model/Configuration";
 
 const EMAIL_REGEX =
@@ -55,6 +56,14 @@ const Utils = {
         str.startsWith("ftp://") ||
         str.startsWith("sftp://"))
     );
+  },
+
+  /**
+   * Checks if the specified string is a valid URI.
+   * @param str String to validate
+   */
+  isUri(str?: string): boolean {
+    return validateUri(str);
   },
 
   /**
@@ -223,8 +232,11 @@ const Utils = {
    * Calculates a hash of the specified string.
    * @param str String to get hash for
    */
-  hashCode(str: string) {
+  hashCode(str?: string) {
     let h = 0;
+    if (!str) {
+      return h;
+    }
     for (let i = 0; i < str.length; i++) {
       h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
     }

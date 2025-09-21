@@ -35,12 +35,12 @@ describe("Routing", () => {
       const name = "test-vocabulary";
       const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/";
       const path = Routing.getTransitionPath(Routes.vocabularies, {
-        query: new Map([["namespace", namespace]]),
+        query: new Map([["namespace", encodeURIComponent(namespace)]]),
       });
       const expectedPath =
         Routes.vocabularies.path.replace(":name", name) +
         "?namespace=" +
-        namespace;
+        encodeURIComponent(namespace);
       expect(path).toEqual(expectedPath);
     });
   });
@@ -48,7 +48,10 @@ describe("Routing", () => {
   describe("transition to", () => {
     it("transitions to route without any parameter", () => {
       RoutingInstance.transitionTo(Routes.vocabularies);
-      expect(historyMock.push).toHaveBeenCalledWith(Routes.vocabularies.path);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routes.vocabularies.path,
+        undefined
+      );
     });
   });
 
@@ -58,15 +61,16 @@ describe("Routing", () => {
     const iri = namespace + label;
 
     it("transitions to vocabulary summary for a vocabulary", () => {
-      const vocabulary = new Vocabulary({ iri, label });
+      const vocabulary = new Vocabulary({ iri, label: langString(label) });
       TermItStore.getState().user = Generator.generateUser();
 
       RoutingInstance.transitionToAsset(vocabulary);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.vocabularySummary, {
           params: new Map([["name", label]]),
-          query: new Map([["namespace", namespace]]),
-        })
+          query: new Map([["namespace", encodeURIComponent(namespace)]]),
+        }),
+        undefined
       );
     });
 
@@ -87,8 +91,9 @@ describe("Routing", () => {
             ["name", label],
             ["timestamp", timestamp],
           ]),
-          query: new Map([["namespace", namespace]]),
-        })
+          query: new Map([["namespace", encodeURIComponent(namespace)]]),
+        }),
+        undefined
       );
     });
 
@@ -105,8 +110,9 @@ describe("Routing", () => {
             ["name", label],
             ["termName", termName],
           ]),
-          query: new Map([["namespace", namespace]]),
-        })
+          query: new Map([["namespace", encodeURIComponent(namespace)]]),
+        }),
+        undefined
       );
     });
 
@@ -129,8 +135,9 @@ describe("Routing", () => {
             ["termName", termName],
             ["timestamp", timestamp],
           ]),
-          query: new Map([["namespace", namespace]]),
-        })
+          query: new Map([["namespace", encodeURIComponent(namespace)]]),
+        }),
+        undefined
       );
     });
   });
@@ -142,13 +149,14 @@ describe("Routing", () => {
 
     it("transitions to public vocabulary summary for a vocabulary", () => {
       TermItStore.getState().user = EMPTY_USER;
-      const vocabulary = new Vocabulary({ iri, label });
+      const vocabulary = new Vocabulary({ iri, label: langString(label) });
       RoutingInstance.transitionToPublicAsset(vocabulary);
       expect(historyMock.push).toHaveBeenCalledWith(
         Routing.getTransitionPath(Routes.publicVocabularySummary, {
           params: new Map([["name", label]]),
-          query: new Map([["namespace", namespace]]),
-        })
+          query: new Map([["namespace", encodeURIComponent(namespace)]]),
+        }),
+        undefined
       );
     });
 
@@ -164,8 +172,9 @@ describe("Routing", () => {
             ["name", label],
             ["termName", term.label[Constants.DEFAULT_LANGUAGE]],
           ]),
-          query: new Map([["namespace", namespace]]),
-        })
+          query: new Map([["namespace", encodeURIComponent(namespace)]]),
+        }),
+        undefined
       );
     });
   });
@@ -204,7 +213,8 @@ describe("Routing", () => {
     it("transitions to dashboard when no original target is available", () => {
       RoutingInstance.transitionToOriginalTarget();
       expect(historyMock.push).toHaveBeenCalledWith(
-        Routing.getTransitionPath(Routes.dashboard)
+        Routing.getTransitionPath(Routes.dashboard),
+        undefined
       );
     });
 

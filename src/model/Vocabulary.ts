@@ -5,13 +5,21 @@ import Document, {
   CONTEXT as DOCUMENT_CONTEXT,
   DocumentData,
 } from "./Document";
-import WithUnmappedProperties from "./WithUnmappedProperties";
+import WithUnmappedProperties, {
+  HasUnmappedProperties,
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
 import Constants from "../util/Constants";
 import { SupportsSnapshots } from "./Snapshot";
 import JsonLdUtils from "../util/JsonLdUtils";
 import AccessLevel, { strToAccessLevel } from "./acl/AccessLevel";
-import { getLanguages, removeTranslation } from "../util/IntlUtil";
+import {
+  getLanguageByShortCode,
+  getLanguages,
+  removeTranslation,
+} from "../util/IntlUtil";
 import {
   context,
   getLocalized,
@@ -31,6 +39,7 @@ const ctx = {
   model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
+  primaryLanguage: VocabularyUtils.DC_LANGUAGE,
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, ctx);
@@ -48,6 +57,7 @@ const MAPPED_PROPERTIES = [
   "allImportedVocabularies",
   "termCount",
   "accessLevel",
+  "primaryLanguage",
 ];
 
 export const VOCABULARY_MULTILINGUAL_ATTRIBUTES = ["label", "comment"];
@@ -60,11 +70,16 @@ export interface VocabularyData extends AssetData {
   model?: AssetData;
   importedVocabularies?: AssetData[];
   accessLevel?: AccessLevel;
+  /**
+   * Short locale code defined by iso-639-1
+   * @see import("../util/IntlUtil").getLanguageOptions()
+   */
+  primaryLanguage?: string;
 }
 
 export default class Vocabulary
   extends Asset
-  implements Editable, VocabularyData, SupportsSnapshots
+  implements Editable, VocabularyData, SupportsSnapshots, HasUnmappedProperties
 {
   public label: MultilingualString;
   public comment?: MultilingualString;
@@ -74,6 +89,7 @@ export default class Vocabulary
   public importedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
   public accessLevel?: AccessLevel;
+  public primaryLanguage?: string;
 
   public termCount?: number;
 
@@ -91,6 +107,7 @@ export default class Vocabulary
     this.accessLevel = data.accessLevel
       ? strToAccessLevel(data.accessLevel)
       : undefined;
+    this.primaryLanguage = data.primaryLanguage;
   }
 
   getLabel(lang?: string): string {
@@ -118,15 +135,19 @@ export default class Vocabulary
     return this.unmappedProperties.has(
       VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
     )
-      ? this.unmappedProperties.get(
-          VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
-        )![0]
+      ? stringifyPropertyValue(
+          this.unmappedProperties.get(
+            VocabularyUtils.IS_SNAPSHOT_OF_VOCABULARY
+          )![0]
+        )
       : undefined;
   }
 
   public snapshotCreated(): string | undefined {
     return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
-      ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+      ? stringifyPropertyValue(
+          this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+        )
       : undefined;
   }
 
@@ -134,14 +155,14 @@ export default class Vocabulary
     return !this.isSnapshot() && !this.hasType(VocabularyUtils.IS_READ_ONLY);
   }
 
-  public get unmappedProperties(): Map<string, string[]> {
+  public get unmappedProperties(): Map<string, PropertyValueType[]> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,
       MAPPED_PROPERTIES
     );
   }
 
-  public set unmappedProperties(properties: Map<string, string[]>) {
+  public set unmappedProperties(properties: Map<string, PropertyValueType[]>) {
     WithUnmappedProperties.setUnmappedProperties(
       this,
       properties,
@@ -161,4 +182,5 @@ export default class Vocabulary
 export const EMPTY_VOCABULARY = new Vocabulary({
   iri: Constants.EMPTY_ASSET_IRI,
   label: langString(""),
+  primaryLanguage: getLanguageByShortCode(Constants.DEFAULT_LANGUAGE)?.code,
 });

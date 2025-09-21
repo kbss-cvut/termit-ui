@@ -6,9 +6,13 @@ import {
   HasIdentifier,
 } from "./Asset";
 import Utils from "../util/Utils";
-import WithUnmappedProperties from "./WithUnmappedProperties";
+import WithUnmappedProperties, {
+  HasUnmappedProperties,
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
-import * as _ from "lodash";
+import _ from "lodash";
 import {
   BASE_CONTEXT as BASE_OCCURRENCE_CONTEXT,
   TermOccurrenceData,
@@ -131,7 +135,7 @@ declare type TermMap = { [key: string]: Term };
 
 export default class Term
   extends Asset
-  implements TermData, Editable, SupportsSnapshots
+  implements TermData, Editable, SupportsSnapshots, HasUnmappedProperties
 {
   public label: MultilingualString;
   public altLabels?: PluralMultilingualString;
@@ -247,14 +251,14 @@ export default class Term
     };
   }
 
-  public get unmappedProperties(): Map<string, string[]> {
+  public get unmappedProperties(): Map<string, PropertyValueType[]> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,
       MAPPED_PROPERTIES
     );
   }
 
-  public set unmappedProperties(properties: Map<string, string[]>) {
+  public set unmappedProperties(properties: Map<string, PropertyValueType[]>) {
     WithUnmappedProperties.setUnmappedProperties(
       this,
       properties,
@@ -278,13 +282,17 @@ export default class Term
 
   public snapshotOf(): string | undefined {
     return this.unmappedProperties.has(VocabularyUtils.IS_SNAPSHOT_OF_TERM)
-      ? this.unmappedProperties.get(VocabularyUtils.IS_SNAPSHOT_OF_TERM)![0]
+      ? stringifyPropertyValue(
+          this.unmappedProperties.get(VocabularyUtils.IS_SNAPSHOT_OF_TERM)![0]
+        )
       : undefined;
   }
 
   public snapshotCreated(): string | undefined {
     return this.unmappedProperties.has(VocabularyUtils.SNAPSHOT_CREATED)
-      ? this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+      ? stringifyPropertyValue(
+          this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
+        )
       : undefined;
   }
 

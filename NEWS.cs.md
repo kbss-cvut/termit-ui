@@ -1,3 +1,14 @@
+#### Version 4.1.0
+
+- Přidána podpora pro specifikaci primárního jazyka slovníku.
+- Přidána podpora pro vlastní (uživateli definované) atributy.
+- Přidána možnost zobrazit pojmy v selektorech jako prostý list.
+- Přidána možnost vybrat jazyk při fulltextovém vyhledávání.
+
+#### Verze 4.0.1
+
+- Opravena chyba, při které mizely soubory po přidání nového souboru.
+
 #### Verze 4.0.0
 
 - Žádné nové funkce, došlo ke změnám v infrastruktuře - aplikaci již nelze nasadit jako WAR, validace byla oddělena do

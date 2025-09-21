@@ -1,6 +1,5 @@
 import * as React from "react";
 import classNames from "classnames";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { getLanguageOptions, Language } from "../../util/IntlUtil";
 import { renderLanguages } from "./LanguageSelector";
@@ -12,12 +11,18 @@ import "./LanguageSelector.scss";
 interface EditLanguageSelectorProps {
   language: string;
   existingLanguages: string[];
+  requiredLanguage?: string;
   onSelect: (lang: string) => void;
   onRemove: (lang: string) => void;
 }
 
-const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
-  const { language, existingLanguages, onSelect, onRemove } = props;
+const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = ({
+  language,
+  existingLanguages,
+  requiredLanguage,
+  onSelect,
+  onRemove,
+}) => {
   const { i18n, formatMessage } = useI18n();
   const [adding, setAdding] = React.useState(false);
   React.useEffect(() => {
@@ -39,13 +44,14 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
         tabs={true}
         className="language-selector-nav"
       >
-        {renderLanguages(
-          existingLanguages,
-          language,
+        {renderLanguages({
+          languages: existingLanguages,
+          selectedLanguage: language,
+          requiredLanguage,
           formatMessage,
           onSelect,
-          onRemove
-        )}
+          onRemove,
+        })}
         <NavItem
           key="add-language"
           className={classNames({ "edit-language-selector": adding })}
@@ -68,7 +74,6 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = (props) => {
               classNamePrefix="react-select"
               simpleTreeData={true}
               renderAsTree={false}
-              showSettings={false}
               isClearable={false}
               placeholder={i18n("term.language.add.placeholder")}
               noResultsText={i18n("search.no-results")}

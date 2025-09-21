@@ -49,6 +49,7 @@ export interface ExecuteQueryAction extends AsyncAction {
 }
 export interface SearchAction extends Action {
   searchString: string;
+  language?: string;
 }
 
 export interface SearchResultAction extends Action {
@@ -85,6 +86,10 @@ export interface RemoveAssetAction extends Action {
 
 export interface UpdateAssetAction extends Action {
   iri: string;
+}
+
+export interface SetTermsFlatListAction extends Action {
+  flatList: boolean;
 }
 
 enum ActionType {
@@ -143,6 +148,7 @@ enum ActionType {
   LOAD_DEFINITION_RELATED_TERMS_OF = "LOAD_DEFINITION_RELATED_TERMS_OF",
   REMOVE_VOCABULARY_TERM = "REMOVE_VOCABULARY_TERM",
   SET_TERM_STATE = "SET_TERM_STATE",
+  SET_TERM_FLAT_LIST = "SET_TERM_FLAT_LIST",
 
   CREATE_TERM_OCCURRENCE = "CREATE_TERM_OCCURRENCE",
   UPDATE_TERM_OCCURRENCE = "UPDATE_TERM_OCCURRENCE",
@@ -198,6 +204,9 @@ enum ActionType {
   GET_PROPERTIES = "GET_PROPERTIES",
   CREATE_PROPERTY = "CREATE_PROPERTY",
   CLEAR_PROPERTIES = "CLEAR_PROPERTIES",
+  GET_CUSTOM_ATTRIBUTES = "GET_CUSTOM_ATTRIBUTES",
+  CREATE_CUSTOM_ATTRIBUTE = "CREATE_CUSTOM_ATTRIBUTE",
+  UPDATE_CUSTOM_ATTRIBUTE = "UPDATE_CUSTOM_ATTRIBUTE",
 
   EXPORT_GLOSSARY = "EXPORT_GLOSSARY",
 
@@ -258,6 +267,7 @@ enum ActionType {
   DOES_USERNAME_EXISTS = "DOES_USERNAME_EXISTS",
   LONG_RUNNING_TASKS_UPDATE = "LONG_RUNNING_TASKS_UPDATE",
   CLEAR_LONG_RUNNING_TASKS_QUEUE = "CLEAR_LONG_RUNNING_TASKS_QUEUE",
+  RELOAD_FTS = "RELOAD_FTS",
 }
 
 export default ActionType;

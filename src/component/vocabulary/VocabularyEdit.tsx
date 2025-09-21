@@ -25,7 +25,15 @@ import MultilingualString, {
 } from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
 import _ from "lodash";
-import { isValid } from "./VocabularyValidationUtils";
+import { getLanguageOptions } from "../../util/IntlUtil";
+import Select from "../misc/Select";
+import Message from "../../model/Message";
+import MessageType from "../../model/MessageType";
+import { ThunkDispatch } from "../../util/Types";
+import { connect } from "react-redux";
+import { publishMessage as publishMessageAction } from "../../action/SyncActions";
+import { isVocabularyValid } from "./VocabularyValidationUtils";
+import { PropertyValueType } from "../../model/WithUnmappedProperties";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -34,14 +42,20 @@ interface VocabularyEditProps extends HasI18n {
   saveDocument: (document: Document) => void;
   language: string;
   selectLanguage: (lang: string) => void;
+  publishMessage: (message: Message) => void;
 }
 
 interface VocabularyEditState {
   label: MultilingualString;
   comment: MultilingualString;
   importedVocabularies?: AssetData[];
-  unmappedProperties: Map<string, string[]>;
+  unmappedProperties: Map<string, PropertyValueType[]>;
   documentLabel: string;
+  /**
+   * Short locale code defined by iso-639-1
+   * @see import("../../util/IntlUtil").getLanguageOptions()
+   */
+  primaryLanguage: string;
 }
 
 export class VocabularyEdit extends React.Component<
@@ -58,6 +72,7 @@ export class VocabularyEdit extends React.Component<
           : langString("", props.language),
       documentLabel: this.props.vocabulary.document?.label!,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
+      primaryLanguage: props.vocabulary.primaryLanguage || this.props.language,
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
   }
@@ -78,11 +93,29 @@ export class VocabularyEdit extends React.Component<
     this.setState(change);
   };
 
-  private onPropertiesChange = (newProperties: Map<string, string[]>) => {
+  private onPropertiesChange = (
+    newProperties: Map<string, PropertyValueType[]>
+  ) => {
     this.setState({ unmappedProperties: newProperties });
   };
 
-  public removeTranslation = (lang: string) => {
+  public removeTranslation = (
+    lang: string,
+    currentPrimaryLanguage: string = this.state.primaryLanguage
+  ) => {
+    if (lang === currentPrimaryLanguage) {
+      this.props.publishMessage(
+        new Message(
+          {
+            messageId:
+              "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage",
+          },
+          MessageType.ERROR
+        )
+      );
+      this.props.selectLanguage(this.props.language);
+      return;
+    }
     const data = _.cloneDeep({
       label: this.state.label,
       comment: this.state.comment,
@@ -91,7 +124,32 @@ export class VocabularyEdit extends React.Component<
     this.setState({ ...data });
   };
 
+  private onPrimaryLanguageChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const primaryLanguage = e.currentTarget.value;
+    // set the change in state
+    this.onChange({ primaryLanguage });
+    // check if this vocabulary has attributes in that language
+    // if no, create and switch to it
+    if (Vocabulary.getLanguages(this.state).indexOf(primaryLanguage) === -1) {
+      this.props.selectLanguage(primaryLanguage);
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+  };
+
+  private isInvalid() {
+    return (
+      !isVocabularyValid(this.state) ||
+      this.state.documentLabel?.trim().length === 0
+    );
+  }
+
   public onSave = () => {
+    if (this.isInvalid()) {
+      return;
+    }
+
     const modifiedDocument = Object.assign({}, this.props.vocabulary.document, {
       label: this.state.documentLabel?.trim(),
     });
@@ -101,6 +159,7 @@ export class VocabularyEdit extends React.Component<
         label: this.state.label,
         comment: this.state.comment,
         importedVocabularies: this.state.importedVocabularies,
+        primaryLanguage: this.state.primaryLanguage,
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
@@ -165,6 +224,28 @@ export class VocabularyEdit extends React.Component<
                   />
                 </Col>
               </Row>
+              <Row>
+                <Col xs={12}>
+                  <Select
+                    key="edit-vocabulary-language-selector"
+                    label={i18n("vocabulary.primaryLanguage")}
+                    value={this.state.primaryLanguage}
+                    onChange={this.onPrimaryLanguageChange}
+                    hint={i18n("required")}
+                  >
+                    {getLanguageOptions().map((l) => (
+                      <option
+                        key={
+                          "edit-vocabulary-language-selector-option" + l.code
+                        }
+                        value={l.code}
+                      >
+                        {l.nativeName}
+                      </option>
+                    ))}
+                  </Select>
+                </Col>
+              </Row>
               <ImportedVocabulariesListEdit
                 vocabulary={this.props.vocabulary}
                 importedVocabularies={this.state.importedVocabularies}
@@ -173,6 +254,7 @@ export class VocabularyEdit extends React.Component<
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit
+                    assetType="vocabulary"
                     properties={this.state.unmappedProperties}
                     ignoredProperties={VocabularyEdit.mappedPropertiesToIgnore()}
                     onChange={this.onPropertiesChange}
@@ -202,10 +284,7 @@ export class VocabularyEdit extends React.Component<
                       onClick={this.onSave}
                       color="success"
                       size="sm"
-                      disabled={
-                        !isValid(this.state.label) ||
-                        this.state.documentLabel?.trim().length === 0
-                      }
+                      disabled={this.isInvalid()}
                     >
                       {i18n("save")}
                     </Button>
@@ -234,4 +313,9 @@ export class VocabularyEdit extends React.Component<
   }
 }
 
-export default injectIntl(withI18n(VocabularyEdit));
+export default connect(undefined, (dispatch: ThunkDispatch) => {
+  return {
+    publishMessage: (message: Message) =>
+      dispatch(publishMessageAction(message)),
+  };
+})(injectIntl(withI18n(VocabularyEdit)));

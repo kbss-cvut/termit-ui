@@ -4,7 +4,6 @@ import { Button } from "reactstrap";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import { connect } from "react-redux";
@@ -12,8 +11,9 @@ import TermItState from "../../model/TermItState";
 import {
   consumeNotification,
   selectVocabularyTerm,
+  setTermsFlatList,
 } from "../../action/SyncActions";
-import Routing from "../../util/Routing";
+import Routing, { namespaceQueryParam } from "../../util/Routing";
 import Routes from "../../util/Routes";
 import Term, { TermData } from "../../model/Term";
 import { loadTerms } from "../../action/AsyncActions";
@@ -46,6 +46,7 @@ import { Configuration } from "../../model/Configuration";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
 import ShowTerminalTermsToggle from "./state/ShowTerminalTermsToggle";
+import ShowFlatListToggle from "./state/ShowFlatListToggle";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -65,6 +66,8 @@ interface GlossaryTermsProps extends HasI18n {
   isDetailView?: boolean;
   // Whether terms should be displayed with the quality badge
   showTermQualityBadge: boolean;
+  flatList: boolean;
+  setTermsFlatList: (flatList: boolean) => void;
 }
 
 interface TermsState {
@@ -75,7 +78,9 @@ interface TermsState {
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
-  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
+  private readonly treeComponent: React.RefObject<
+    IntelligentTreeSelect<Term, false>
+  >;
 
   constructor(props: GlossaryTermsProps) {
     super(props);
@@ -105,10 +110,14 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       this.treeComponent.current.resetOptions();
       this.props.consumeNotification(matchingNotification);
     } else if (this.shouldReloadTerms(prevProps)) {
-      this.treeComponent.current.resetOptions();
+      this.treeComponent.current?.resetOptions();
     }
     if (prevProps.locale !== this.props.locale) {
-      this.treeComponent.current.forceUpdate();
+      this.treeComponent.current?.forceUpdate();
+    }
+
+    if (prevProps.flatList !== this.props.flatList) {
+      this.treeComponent.current?.resetOptions();
     }
   }
 
@@ -135,9 +144,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
   }
 
-  public fetchOptions = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
+  public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<Term>) => {
     this.setState({ disableIncludeImportedToggle: true });
     const vocabularyIri = fetchOptions.option
       ? VocabularyUtils.create(fetchOptions.option.vocabulary!.iri!)
@@ -151,6 +158,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         {
           ...fetchOptions,
           includeImported: this.state.includeImported,
+          flatList: this.props.flatList,
         },
         vocabularyIri
       )
@@ -163,6 +171,20 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         this.setState({
           disableIncludeImportedToggle: this.props.isDetailView || false,
         });
+
+        // For flat list, just filter and return without tree processing
+        if (this.props.flatList) {
+          const termFilters = [createVocabularyMatcher(matchingVocabularies)];
+          if (!this.state.showTerminalTerms) {
+            termFilters.push(
+              createTermNonTerminalStateMatcher(this.props.terminalStates)
+            );
+          }
+          return terms.filter((term) =>
+            termFilters.every((filter) => filter(term))
+          );
+        }
+
         const termFilters = [createVocabularyMatcher(matchingVocabularies)];
         if (!this.state.showTerminalTerms) {
           termFilters.push(
@@ -180,12 +202,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     Routing.transitionTo(Routes.createVocabularyTerm, {
       params: new Map([["name", vocabularyIri.fragment]]),
       query: vocabularyIri.namespace
-        ? new Map([["namespace", vocabularyIri.namespace]])
+        ? namespaceQueryParam(vocabularyIri.namespace)
         : undefined,
     });
   };
 
-  public onTermSelect = (term: TermData | null) => {
+  public onTermSelect = (term: Term | null) => {
     if (term === null) {
       if (this.props.isDetailView) {
         return;
@@ -217,36 +239,50 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
   private onIncludeImportedToggle = () => {
     this.setState({ includeImported: !this.state.includeImported }, () =>
-      this.treeComponent.current.resetOptions()
+      this.treeComponent.current?.resetOptions()
     );
   };
 
   private onShowTerminalTermsToggle = () => {
     this.setState({ showTerminalTerms: !this.state.showTerminalTerms }, () =>
-      this.treeComponent.current.resetOptions()
+      this.treeComponent.current?.resetOptions()
     );
+  };
+
+  private onFlatListToggle = () => {
+    this.props.setTermsFlatList(!this.props.flatList);
   };
 
   private renderToggles(renderIncludeImported: boolean) {
     return (
       !this.props.isDetailView && (
-        <div className="mb-3">
+        <div className="d-flex mb-3">
           {renderIncludeImported && (
             <>
-              <IncludeImportedTermsToggle
-                id="glossary-include-imported"
-                onToggle={this.onIncludeImportedToggle}
-                includeImported={this.state.includeImported}
-                disabled={this.state.disableIncludeImportedToggle}
-              />
-              &nbsp;
+              <div className="mr-2">
+                <IncludeImportedTermsToggle
+                  id="glossary-include-imported"
+                  onToggle={this.onIncludeImportedToggle}
+                  includeImported={this.state.includeImported}
+                  disabled={this.state.disableIncludeImportedToggle}
+                />
+              </div>
             </>
           )}
-          <ShowTerminalTermsToggle
-            onToggle={this.onShowTerminalTermsToggle}
-            value={this.state.showTerminalTerms}
-            id="glossary-show-terminal-terms"
-          />
+          <div className="mr-2">
+            <ShowTerminalTermsToggle
+              onToggle={this.onShowTerminalTermsToggle}
+              value={this.state.showTerminalTerms}
+              id="glossary-show-terminal-terms"
+            />
+          </div>
+          <div className="mr-2">
+            <ShowFlatListToggle
+              onToggle={this.onFlatListToggle}
+              value={this.props.flatList}
+              id="glossary-show-flat-list"
+            />
+          </div>
         </div>
       )
     );
@@ -263,6 +299,11 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       this.props.vocabulary &&
       Utils.sanitizeArray(this.props.vocabulary.importedVocabularies).length >
         0;
+
+    const treeSelectProps = {
+      ...commonTermTreeSelectProps(this.props),
+      renderAsTree: !this.props.flatList,
+    };
 
     return (
       <div id="vocabulary-terms">
@@ -327,7 +368,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             }
             fetchOptions={this.fetchOptions}
             isMenuOpen={true}
-            scrollMenuIntoView={false}
             multi={false}
             autoFocus={!isDetailView}
             menuIsFloating={false}
@@ -336,10 +376,10 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
               this.props.vocabulary.iri,
               this.props.showTermQualityBadge
             )}
-            valueRenderer={(option: Term) =>
+            valueRenderer={(_: any, option: Term) =>
               getLocalized(option.label, getShortLocale(this.props.locale))
             }
-            {...commonTermTreeSelectProps(this.props)}
+            {...treeSelectProps}
           />
         </div>
       </div>
@@ -355,6 +395,7 @@ export default connect(
       notifications: state.notifications,
       configuration: state.configuration,
       terminalStates: state.terminalStates,
+      flatList: state.showTermsFlatList,
     };
   },
   (dispatch: ThunkDispatch) => {
@@ -367,6 +408,7 @@ export default connect(
       ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
       consumeNotification: (notification: AppNotification) =>
         dispatch(consumeNotification(notification)),
+      setTermsFlatList: (value: boolean) => dispatch(setTermsFlatList(value)),
     };
   }
 )(injectIntl(withI18n(Terms)));

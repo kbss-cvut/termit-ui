@@ -54,7 +54,9 @@ describe("TermLink", () => {
       </MemoryRouter>
     ).find(Link);
     expect((link.props() as any).to).toEqual(
-      `/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`
+      `/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${encodeURIComponent(
+        vocNamespace
+      )}`
     );
   });
 
@@ -93,7 +95,9 @@ describe("TermLink", () => {
       </MemoryRouter>
     ).find(Link);
     expect((link.props() as any).to).toEqual(
-      `/public/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${vocNamespace}`
+      `/public/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${encodeURIComponent(
+        vocNamespace
+      )}`
     );
   });
 

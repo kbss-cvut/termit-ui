@@ -2,7 +2,7 @@ import * as React from "react";
 import { Element, Node as DomHandlerNode } from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
 import AnnotationDomHelper, { AnnotationType } from "./AnnotationDomHelper";
-import Term, { TermData } from "../../model/Term";
+import Term from "../../model/Term";
 import HtmlDomUtils, { getTermOccurrences } from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
 import { DomUtils } from "htmlparser2";
@@ -97,7 +97,7 @@ interface AnnotatorState {
 
   existingTermDefinitionAnnotationElement?: Element;
   selectedTerm?: Term;
-  highlightedTerm: TermData | null;
+  highlightedTerm: Term | null;
   highlightedOccurrenceIndex: number;
 }
 
@@ -671,6 +671,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               onMinimize={this.onMinimizeTermCreation}
               onTermCreated={this.assignNewTerm}
               vocabularyIri={this.props.vocabularyIri}
+              fileLanguage={
+                this.props.annotationLanguage || this.props.file.language
+              }
             />
             <SelectionPurposeDialog
               target={this.generateVirtualPopperAnchor()}
@@ -684,6 +687,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
               term={this.state.selectedTerm}
               annotationElement={
                 this.state.existingTermDefinitionAnnotationElement
+              }
+              language={
+                this.props.annotationLanguage || this.props.file.language
               }
               onCancel={this.onCloseTermDefinitionDialog}
               onSave={this.onSaveTermDefinition}

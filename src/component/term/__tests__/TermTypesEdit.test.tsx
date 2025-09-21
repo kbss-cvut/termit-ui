@@ -2,7 +2,6 @@ import Term from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import TermTypesEdit from "../TermTypesEdit";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Generator from "../../../__tests__/environment/Generator";
 import { langString } from "../../../model/MultilingualString";

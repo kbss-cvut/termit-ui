@@ -10,15 +10,15 @@ import {
   PopoverHeader,
 } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
-import { TermData } from "../../model/Term";
+import Term from "../../model/Term";
 import AnnotatorTermsSelector from "./AnnotatorTermsSelector";
 import { getLocalized } from "../../model/MultilingualString";
 import { getTermOccurrences } from "./HtmlDomUtils";
 
 interface HighlightTermOccurrencesButtonProps {
-  term: TermData | null;
+  term: Term | null;
   highlightIndex: number;
-  onChange: (t: TermData | null) => void;
+  onChange: (t: Term | null) => void;
   onHighlightIndexChange: (change: number) => void;
 }
 
@@ -27,7 +27,7 @@ const HighlightTermOccurrencesButton: React.FC<
 > = ({ term, highlightIndex, onChange, onHighlightIndexChange }) => {
   const { i18n, formatMessage, locale } = useI18n();
   const [showPopup, setShowPopup] = React.useState(false);
-  const onSelect = (t: TermData | null) => {
+  const onSelect = (t: Term | null) => {
     onChange(t);
   };
   const count = term !== null ? getTermOccurrences(term.iri!).length : -1;

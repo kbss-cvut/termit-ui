@@ -1,31 +1,10 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
 import Term, { TermData } from "../../model/Term";
-import { connect } from "react-redux";
-import {
-  TermFetchParams,
-  ThunkDispatch,
-  TreeSelectFetchOptionsParams,
-} from "../../util/Types";
-import { loadAllTerms } from "../../action/AsyncActions";
-import { FormGroup, Label } from "reactstrap";
+import { Label } from "reactstrap";
 import Utils from "../../util/Utils";
-// @ts-ignore
-import { IntelligentTreeSelect } from "intelligent-tree-select";
-import {
-  createTermsWithImportsOptionRenderer,
-  createTermValueRenderer,
-} from "../misc/treeselect/Renderers";
-import TermItState from "../../model/TermItState";
-import {
-  commonTermTreeSelectProps,
-  loadAndPrepareTerms,
-  resolveNamespaceForLoadAll,
-  resolveSelectedIris,
-} from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
-import Constants from "../../util/Constants";
+import { TermSelector } from "./TermSelector";
+import { useI18n } from "../hook/useI18n";
 
 function filterOutTermsFromCurrentVocabulary(
   terms: Term[],
@@ -45,80 +24,39 @@ function filterOutTermsFromCurrentVocabulary(
   return result;
 }
 
-export interface ExactMatchesSelectorProps extends HasI18n {
+const ExactMatchesSelector: React.FC<{
   id: string;
   termIri?: string;
   selected?: TermData[];
   vocabularyIri: string;
-  terminalStates: string[];
   onChange: (exactMatches: Term[]) => void;
-  loadTerms: (
-    fetchOptions: TermFetchParams<TermData>,
-    namespace?: string
-  ) => Promise<Term[]>;
-}
+}> = ({ id, termIri, selected, vocabularyIri, onChange }) => {
+  const { i18n } = useI18n();
 
-export class ExactMatchesSelector extends React.Component<ExactMatchesSelectorProps> {
-  public onChange = (val: Term[] | Term | null) => {
-    this.props.onChange(
-      Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
-    );
+  const handleChange = (terms: readonly Term[]) => {
+    onChange(terms.filter((t) => t.iri !== termIri));
   };
 
-  public fetchOptions = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
-    // Use option vocabulary when present, it may differ from the current vocabulary (when option is from imported
-    // vocabulary)
-    return loadAndPrepareTerms(
-      fetchOptions,
-      (options) =>
-        this.props.loadTerms(options, resolveNamespaceForLoadAll(options)),
-      {
-        selectedTerms: this.props.selected,
-        terminalStates: this.props.terminalStates,
-      }
-    ).then((terms) =>
-      filterOutTermsFromCurrentVocabulary(terms, this.props.vocabularyIri)
-    );
-  };
-
-  public render() {
-    return (
-      <FormGroup id={this.props.id}>
+  return (
+    <TermSelector
+      id={id}
+      label={
         <Label className="attribute-label">
-          {this.props.i18n("term.metadata.exactMatches")}
+          {i18n("term.metadata.exactMatches")}
           <HelpIcon
             id="exact-match-select"
-            text={this.props.i18n("term.exactMatches.help")}
+            text={i18n("term.exactMatches.help")}
           />
         </Label>
-        <>
-          <IntelligentTreeSelect
-            onChange={this.onChange}
-            value={resolveSelectedIris(this.props.selected)}
-            fetchOptions={this.fetchOptions}
-            fetchLimit={Constants.DEFAULT_PAGE_SIZE}
-            maxHeight={200}
-            multi={true}
-            optionRenderer={createTermsWithImportsOptionRenderer(
-              this.props.vocabularyIri
-            )}
-            valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
-            {...commonTermTreeSelectProps(this.props)}
-          />
-        </>
-      </FormGroup>
-    );
-  }
-}
+      }
+      value={Utils.sanitizeArray(selected)}
+      vocabularyIri={vocabularyIri}
+      onChange={handleChange}
+      fetchedTermsFilter={(terms) =>
+        filterOutTermsFromCurrentVocabulary(terms, vocabularyIri)
+      }
+    />
+  );
+};
 
-export default connect(
-  (state: TermItState) => ({
-    terminalStates: state.terminalStates,
-  }),
-  (dispatch: ThunkDispatch) => ({
-    loadTerms: (fetchOptions: TermFetchParams<TermData>, namespace?: string) =>
-      dispatch(loadAllTerms(fetchOptions, namespace)),
-  })
-)(injectIntl(withI18n(ExactMatchesSelector)));
+export default ExactMatchesSelector;

@@ -1,7 +1,6 @@
 import * as React from "react";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import Vocabulary from "../../model/Vocabulary";
+import Vocabulary, { VocabularyData } from "../../model/Vocabulary";
 import { AssetData } from "../../model/Asset";
 import { Col, FormGroup, Label, Row } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +10,6 @@ import { createVocabularyValueRenderer } from "../misc/treeselect/Renderers";
 import { ThunkDispatch } from "../../util/Types";
 import { loadVocabularies } from "../../action/AsyncActions";
 import { useI18n } from "../hook/useI18n";
-import Term, { TermData } from "../../model/Term";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 
@@ -33,7 +31,7 @@ const ImportedVocabulariesListEdit: React.FC<
     }
   }, [dispatch, vocabularies]);
 
-  const onSelect = (selected: Vocabulary[]) => {
+  const onSelect = (selected: readonly Vocabulary[]) => {
     const selectedVocabs = selected.map((v) => ({ iri: v.iri }));
     onChange({ importedVocabularies: selectedVocabs });
   };
@@ -55,7 +53,7 @@ const ImportedVocabulariesListEdit: React.FC<
             value={selected}
             options={options}
             valueKey="iri"
-            getOptionLabel={(option: Term | TermData) =>
+            getOptionLabel={(option: VocabularyData) =>
               getLocalized(option.label, getShortLocale(locale))
             }
             childrenKey="children"
@@ -63,8 +61,6 @@ const ImportedVocabulariesListEdit: React.FC<
             classNamePrefix="react-select"
             isMenuOpen={false}
             multi={true}
-            showSettings={false}
-            displayInfoOnHover={false}
             renderAsTree={false}
             simpleTreeData={true}
             valueRenderer={createVocabularyValueRenderer()}

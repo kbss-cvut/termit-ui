@@ -85,6 +85,7 @@ const constants = {
   },
   STORAGE_JWT_KEY: "",
   STORAGE_LANG_KEY: "",
+  STORAGE_TERMS_FLAT_LIST_KEY: "",
   STORAGE_TABLE_PAGE_SIZE_KEY: "",
   STORAGE_ANNOTATOR_LEGEND_OPEN_KEY: "",
   // How many messages should be displayed at one moment
@@ -134,6 +135,7 @@ const constants = {
     VOCABULARIES_TEXT_ANALYSIS_FINISHED_FILE:
       "/vocabularies/text_analysis/finished/file",
     LONG_RUNNING_TASKS_UPDATE: "/long-running-tasks/update",
+    VOCABULARIES_TEXT_ANALYSIS_FAILED: "/vocabularies/text_analysis/failed",
   },
   // Number of milliseconds after which a websocket request should be retried
   WEBSOCKET_REQUEST_TIMEOUT: 60 * 1000 /* 1 minute */,
@@ -148,6 +150,7 @@ const deployment =
   constants.DEPLOYMENT_NAME.length > 0 ? constants.DEPLOYMENT_NAME + "-" : "";
 constants.STORAGE_JWT_KEY = `${constants.APP_NAME}-${deployment}${constants.Headers.AUTHORIZATION}`;
 constants.STORAGE_LANG_KEY = `${constants.APP_NAME}-${deployment}LANG`;
+constants.STORAGE_TERMS_FLAT_LIST_KEY = `${constants.APP_NAME}-${deployment}TERMS_FLAT_LIST`;
 constants.STORAGE_TABLE_PAGE_SIZE_KEY = `${constants.APP_NAME}-${deployment}TABLE_PAGE_SIZE`;
 constants.STORAGE_ANNOTATOR_LEGEND_OPEN_KEY = `${constants.APP_NAME}-${deployment}ANNOTATOR_LEGEND_OPEN`;
 

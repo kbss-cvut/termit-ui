@@ -5,39 +5,65 @@ import OutgoingLink from "../misc/OutgoingLink";
 import Utils from "../../util/Utils";
 import { useI18n } from "../hook/useI18n";
 import "./UnmappedProperties.scss";
-
-declare type PropertyValueType = { iri: string } | string;
+import {
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "src/model/WithUnmappedProperties";
+import { useSelector } from "react-redux";
+import TermItState from "../../model/TermItState";
+import { FaTrashAlt } from "react-icons/fa";
+import BadgeButton from "../misc/BadgeButton";
 
 interface UnmappedPropertiesProps {
   properties: Map<string, PropertyValueType[]>;
   showInfoOnEmpty?: boolean;
+  onRemove?: (property: string, value: string) => void;
 }
 
-const UnmappedProperties: React.FC<UnmappedPropertiesProps> = (
-  props: UnmappedPropertiesProps
-) => {
+const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
+  properties,
+  showInfoOnEmpty,
+  onRemove,
+}) => {
   const { i18n } = useI18n();
-  if (props.properties.size === 0) {
-    return props.showInfoOnEmpty ? (
+  const customAttributes = useSelector(
+    (state: TermItState) => state.customAttributes
+  );
+  const actualProperties = Array.from(properties.keys()).filter(
+    (p) => customAttributes.findIndex((att) => att.iri === p) === -1
+  );
+  if (actualProperties.length === 0) {
+    return showInfoOnEmpty ? (
       <div className="additional-metadata-container italics">
         {i18n("properties.empty")}
       </div>
     ) : null;
   }
   const result: React.JSX.Element[] = [];
-  props.properties.forEach((values, k) => {
+  actualProperties.forEach((k) => {
+    const values = properties.get(k)!;
     if (values.length === 0) {
       return;
     }
-    const sortedItems = values.map((v) =>
-      (v as { iri: string }).iri ? (v as { iri: string }).iri : (v as string)
-    );
+    const sortedItems = values.map((v) => stringifyPropertyValue(v));
     sortedItems.sort(Utils.localeComparator);
     const items = (
       <ul>
         {sortedItems.map((v: string) => (
           <li key={Utils.hashCode(v)}>
             {Utils.isLink(v) ? <OutgoingLink label={v} iri={v} /> : v}
+            {onRemove && (
+              <BadgeButton
+                color="danger"
+                outline={true}
+                title={i18n("properties.edit.remove")}
+                className="ml-3"
+                onClick={() => onRemove(k, v)}
+              >
+                <FaTrashAlt />
+                {i18n("properties.edit.remove.text")}
+              </BadgeButton>
+            )}
           </li>
         ))}
       </ul>

@@ -55,9 +55,16 @@ export function createStringMessage(text: string) {
   return new Message({ message: text });
 }
 
-export function createFormattedMessage(mId: string, values?: {}) {
-  return new Message({
-    messageId: mId,
-    values,
-  });
+export function createFormattedMessage(
+  mId: string,
+  values?: {},
+  type: MessageType = MType.INFO
+) {
+  return new Message(
+    {
+      messageId: mId,
+      values,
+    },
+    type
+  );
 }

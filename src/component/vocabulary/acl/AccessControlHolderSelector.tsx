@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import UserGroup from "../../../model/UserGroup";
 import { AccessHolderType } from "../../../model/acl/AccessControlList";
@@ -92,9 +91,7 @@ const AccessControlHolderSelector: React.FC<
         onChange={onSelect}
         value={holder ? options.find((o) => o.value === holder.iri) : undefined}
         renderAsTree={false}
-        showSettings={false}
         multi={false}
-        displayInfoOnHover={false}
         expanded={false}
         placeholder=""
         isClearable={false}

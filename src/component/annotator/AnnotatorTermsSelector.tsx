@@ -1,7 +1,6 @@
 import React, { useMemo, useRef } from "react";
-import { TermData } from "../../model/Term";
+import Term from "../../model/Term";
 import { useSelector } from "react-redux";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import TermItState from "../../model/TermItState";
@@ -18,8 +17,8 @@ import {
 import { useI18n } from "../hook/useI18n";
 
 interface AnnotatorTermsSelectorProps {
-  term: TermData | null;
-  onChange: (Term: TermData | null) => void;
+  term: Term | null;
+  onChange: (term: Term | null) => void;
   autoFocus?: boolean;
 }
 
@@ -29,7 +28,7 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
   autoFocus = false,
 }) => {
   const intl = useI18n();
-  const treeSelect = useRef<IntelligentTreeSelect>(null);
+  const treeSelect = useRef<IntelligentTreeSelect<Term, false, false>>(null);
   const { annotatorTerms, vocabulary, terminalStates } = useSelector(
     (state: TermItState) => state
   );
@@ -55,7 +54,7 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
   }, [autoFocus, treeSelect]);
 
   React.useEffect(() => {
-    treeSelect.current.forceUpdate();
+    treeSelect.current?.forceUpdate();
   }, [treeSelect, intl.locale]);
 
   return (
@@ -67,6 +66,7 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
       options={options}
       isMenuOpen={false}
       multi={false}
+      isClearable={false}
       optionRenderer={createTermsWithImportsOptionRenderer(vocabulary!.iri)}
       valueRenderer={createTermValueRenderer(vocabulary!.iri)}
       {...commonTermTreeSelectProps(intl)}

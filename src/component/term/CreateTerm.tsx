@@ -6,7 +6,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { createTerm } from "../../action/AsyncTermActions";
 import { loadVocabulary } from "../../action/AsyncActions";
 import TermMetadataCreate from "./TermMetadataCreate";
-import Routing from "../../util/Routing";
+import Routing, { namespaceQueryParam } from "../../util/Routing";
 import Routes from "../../util/Routes";
 import IdentifierResolver from "../../util/IdentifierResolver";
 import TermItState from "../../model/TermItState";
@@ -54,7 +54,7 @@ export class CreateTerm extends React.Component<CreateTermProps> {
       }
       const termName = IdentifierResolver.extractNameFromLocation(location);
       const params = new Map([["name", vocabularyIri.fragment]]);
-      const query = new Map([["namespace", vocabularyIri.namespace!]]);
+      const query = namespaceQueryParam(vocabularyIri.namespace!);
       if (newTerm) {
         Routing.transitionTo(Routes.createVocabularyTerm, { params, query });
         Routing.reload();
@@ -90,7 +90,8 @@ export class CreateTerm extends React.Component<CreateTermProps> {
 export default connect(
   (state: TermItState) => {
     return {
-      language: state.configuration.language,
+      language:
+        state.vocabulary.primaryLanguage || state.configuration.language,
       vocabulary: state.vocabulary,
     };
   },

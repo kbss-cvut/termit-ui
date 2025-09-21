@@ -94,7 +94,8 @@ export function resolveInitialLanguage(
 ) {
   const supported = vocabulary ? Vocabulary.getLanguages(vocabulary) : [];
   const langLocale = getShortLocale(locale);
-  return supported.indexOf(langLocale) !== -1 ? langLocale : configuredLanguage;
+  const fallbackLanguage = vocabulary?.primaryLanguage || configuredLanguage;
+  return supported.indexOf(langLocale) !== -1 ? langLocale : fallbackLanguage;
 }
 
 export class VocabularySummary extends EditableComponent<
