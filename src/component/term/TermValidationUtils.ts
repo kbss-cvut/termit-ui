@@ -27,9 +27,9 @@ export function checkLabelUniqueness(
 
 function labelInEachLanguageValid<T extends TermData>(
   data: T,
-  labelExists: LabelExists
+  labelExists: LabelExists,
+  languages: string[]
 ): boolean {
-  const languages = Object.keys(data.label);
   for (const lang of languages) {
     if (!hasNonBlankValue(data.label, lang) || labelExists[lang]) {
       return false;
@@ -40,12 +40,15 @@ function labelInEachLanguageValid<T extends TermData>(
 
 export function isTermValid<T extends TermData>(
   data: T,
-  labelExists: LabelExists
+  labelExists: LabelExists,
+  vocabularyPrimaryLanguage: string
 ) {
+  const languages = Object.keys(data.label);
   return (
     data.iri !== undefined &&
     data.iri.trim().length > 0 &&
-    labelInEachLanguageValid(data, labelExists)
+    labelInEachLanguageValid(data, labelExists, languages) &&
+    languages.includes(vocabularyPrimaryLanguage)
   );
 }
 export type LabelExists = { [language: string]: boolean };

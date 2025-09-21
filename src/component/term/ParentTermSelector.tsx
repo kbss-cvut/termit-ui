@@ -12,7 +12,6 @@ import {
 import { loadImportedVocabularies, loadTerms } from "../../action/AsyncActions";
 import { FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
 import {
@@ -29,6 +28,8 @@ import {
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
+import ShowFlatListToggle from "./state/ShowFlatListToggle";
+import { setTermsFlatList } from "src/action/SyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   if (currentTermIri) {
@@ -62,6 +63,8 @@ export interface ParentTermSelectorProps extends HasI18n {
     vocabularyIri: IRI
   ) => Promise<Term[]>;
   loadImportedVocabularies: (vocabularyIri: IRI) => Promise<string[]>;
+  flatList: boolean;
+  setTermsFlatList: (flatList: boolean) => void;
 }
 
 interface ParentTermSelectorState {
@@ -74,7 +77,7 @@ export class ParentTermSelector extends React.Component<
   ParentTermSelectorProps,
   ParentTermSelectorState
 > {
-  private readonly treeComponent: React.RefObject<IntelligentTreeSelect>;
+  private readonly treeComponent: React.RefObject<IntelligentTreeSelect<Term>>;
 
   constructor(props: ParentTermSelectorProps) {
     super(props);
@@ -119,7 +122,7 @@ export class ParentTermSelector extends React.Component<
     }
   }
 
-  public componentDidUpdate(): void {
+  public componentDidUpdate(prevProps: ParentTermSelectorProps): void {
     if (!this.state.importedVocabularies) {
       // This can happen when the component is displayed while vocabulary is still being loaded
       this.props
@@ -128,17 +131,17 @@ export class ParentTermSelector extends React.Component<
         )
         .then((data) => this.setState({ importedVocabularies: data }));
     }
+
+    if (prevProps.flatList !== this.props.flatList) {
+      this.treeComponent.current?.resetOptions();
+    }
   }
 
-  public onChange = (val: Term[] | Term | null) => {
-    this.props.onChange(
-      Utils.sanitizeArray(val).filter((v) => v.iri !== this.props.termIri)
-    );
+  public onChange = (val: readonly Term[]) => {
+    this.props.onChange(val.filter((v) => v.iri !== this.props.termIri));
   };
 
-  public fetchOptions = (
-    fetchOptions: TreeSelectFetchOptionsParams<TermData>
-  ) => {
+  public fetchOptions = (fetchOptions: TreeSelectFetchOptionsParams<Term>) => {
     this.toggleIncludeImportedDisabled();
     const matchingVocabularies = this.state.includeImported
       ? Utils.sanitizeArray(this.state.importedVocabularies).concat(
@@ -146,7 +149,11 @@ export class ParentTermSelector extends React.Component<
         )
       : [this.props.vocabularyIri];
     return loadAndPrepareTerms(
-      { ...fetchOptions, includeImported: this.state.includeImported },
+      {
+        ...fetchOptions,
+        includeImported: this.state.includeImported,
+        flatList: this.props.flatList,
+      },
       (options) =>
         this.props.loadTerms(
           options,
@@ -175,8 +182,12 @@ export class ParentTermSelector extends React.Component<
 
   private onIncludeImportedToggle = () => {
     this.setState({ includeImported: !this.state.includeImported }, () =>
-      this.treeComponent.current.resetOptions()
+      this.treeComponent.current?.resetOptions()
     );
+  };
+
+  private onFlatListToggle = () => {
+    this.props.setTermsFlatList(!this.props.flatList);
   };
 
   public render() {
@@ -191,13 +202,22 @@ export class ParentTermSelector extends React.Component<
               text={i18n("term.parent.help")}
             />
           </Label>
-          <IncludeImportedTermsToggle
-            id={this.props.id + "-include-imported"}
-            onToggle={this.onIncludeImportedToggle}
-            includeImported={this.state.includeImported}
-            style={{ alignSelf: "flex-end" }}
-            disabled={this.state.disableIncludeImportedToggle}
-          />
+          <div className="d-flex">
+            <div className="mr-2">
+              <IncludeImportedTermsToggle
+                id={this.props.id + "-include-imported"}
+                onToggle={this.onIncludeImportedToggle}
+                includeImported={this.state.includeImported}
+                style={{ alignSelf: "flex-end" }}
+                disabled={this.state.disableIncludeImportedToggle}
+              />
+            </div>
+            <ShowFlatListToggle
+              id={this.props.id + "-show-flat-list"}
+              onToggle={this.onFlatListToggle}
+              value={this.props.flatList}
+            />
+          </div>
         </div>
         {this.renderSelector()}
       </FormGroup>
@@ -216,6 +236,10 @@ export class ParentTermSelector extends React.Component<
         />
       );
     } else {
+      const treeSelectProps = {
+        ...commonTermTreeSelectProps(this.props),
+        renderAsTree: !this.props.flatList,
+      };
       return (
         <>
           <IntelligentTreeSelect
@@ -230,7 +254,7 @@ export class ParentTermSelector extends React.Component<
               this.props.vocabularyIri
             )}
             valueRenderer={createTermValueRenderer(this.props.vocabularyIri)}
-            {...commonTermTreeSelectProps(this.props)}
+            {...treeSelectProps}
           />
           {this.props.validationMessage && (
             <FormFeedback
@@ -251,6 +275,7 @@ export default connect(
     return {
       currentVocabulary: state.vocabulary,
       terminalStates: state.terminalStates,
+      flatList: state.showTermsFlatList,
     };
   },
   (dispatch: ThunkDispatch) => {
@@ -261,6 +286,7 @@ export default connect(
       ) => dispatch(loadTerms(fetchOptions, vocabularyIri)),
       loadImportedVocabularies: (vocabularyIri: IRI) =>
         dispatch(loadImportedVocabularies(vocabularyIri)),
+      setTermsFlatList: (value: boolean) => dispatch(setTermsFlatList(value)),
     };
   }
 )(injectIntl(withI18n(ParentTermSelector)));

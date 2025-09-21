@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import { useI18n } from "../../hook/useI18n";
 import { Col, Row } from "reactstrap";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { getLabel } from "../../../action/AsyncActions";
 
@@ -54,14 +53,14 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
       setOptions(res);
     });
   }, [searchResults, dispatch, setOptions]);
-  const onSelect = (selection: Option[] | null) => {
-    onChange(Utils.sanitizeArray(selection).map((s) => s.value));
+  const onSelect = (selection: readonly Option[]) => {
+    onChange(selection.map((s) => s.value));
   };
 
   return (
     <Row>
       <Col>
-        <IntelligentTreeSelect
+        <IntelligentTreeSelect<Option>
           value={selectedVocabularies}
           onChange={onSelect}
           valueKey="value"
@@ -73,7 +72,6 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
           simpleTreeData={true}
           options={options}
           placeholder={i18n("search.tab.terms.filter.allVocabularies")}
-          showSettings={false}
           noResultsText={i18n("search.no-results")}
         />
       </Col>

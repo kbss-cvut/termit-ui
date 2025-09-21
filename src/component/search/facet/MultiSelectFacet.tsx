@@ -1,7 +1,6 @@
 import React from "react";
 import SearchParam from "../../../model/search/SearchParam";
 import { FormGroup, Label } from "reactstrap";
-/* @ts-ignore */
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 
 type SelectOption = {
@@ -28,7 +27,7 @@ const MultiSelectFacet: React.FC<MultiSelectFacetProps> = ({
   options,
   renderAsTree = false,
 }) => {
-  const onSelect = (values: SelectOption[]) => {
+  const onSelect = (values: readonly SelectOption[]) => {
     const newValue = Object.assign({}, value);
     newValue.value = values.map((v) => v.value);
     onChange(newValue);
@@ -51,7 +50,6 @@ const MultiSelectFacet: React.FC<MultiSelectFacetProps> = ({
         renderAsTree={renderAsTree}
         multi={true}
         simpleTreeData={true}
-        showSettings={false}
         onChange={onSelect}
         classNamePrefix="react-select"
         placeholder=""

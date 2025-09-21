@@ -1,4 +1,4 @@
-import Term from "../../../model/Term";
+import Term, { TermData } from "../../../model/Term";
 import classNames from "classnames";
 import ResultItem from "./ResultItem";
 import ImportedTermInfo from "../../term/ImportedTermInfo";
@@ -9,6 +9,7 @@ import VocabularyLink from "../../vocabulary/VocabularyLink";
 import VocabularyNameBadge from "../../vocabulary/VocabularyNameBadge";
 import TerminalTermStateIcon from "../../term/state/TerminalTermStateIcon";
 import Utils from "../../../util/Utils";
+import React from "react";
 
 interface TreeItem {
   depth: number;
@@ -61,11 +62,11 @@ export function createFullTermRenderer(
   ]);
 }
 
-export function createTermRenderer(
-  addonBeforeRenderers: Array<(t: Term & TreeItem) => JSX.Element | null>,
-  addonAfterRenderers: Array<(t: Term & TreeItem) => JSX.Element | null>
+export function createTermRenderer<T extends TermData>(
+  addonBeforeRenderers: Array<(t: T & TreeItem) => React.ReactElement | null>,
+  addonAfterRenderers: Array<(t: T & TreeItem) => React.ReactElement | null>
 ) {
-  return (params: OptionRendererParams<Term>) => {
+  return (params: OptionRendererParams<T>) => {
     //Conversion between old and new API
     let option = params.data;
     let optionStyle = {
@@ -125,15 +126,14 @@ function createQualityBadgeRenderer() {
 function createImportedTermRenderer(currentVocabularyIri?: string) {
   return (option: Term & TreeItem) =>
     !currentVocabularyIri ||
-    currentVocabularyIri === option.vocabulary!.iri ? null : (
+    currentVocabularyIri === option.vocabulary?.iri ? null : (
       <ImportedTermInfo key="imported-term-addon" term={option} />
     );
 }
 
 function createVocabularyBadgeRenderer(currentVocabularyIri?: string) {
   return (option: Term & TreeItem) =>
-    !currentVocabularyIri ||
-    currentVocabularyIri === option.vocabulary!.iri ? null : (
+    currentVocabularyIri === option.vocabulary?.iri ? null : (
       <VocabularyNameBadge
         key="vocabulary-name-addon"
         vocabulary={option.vocabulary}
@@ -151,8 +151,8 @@ function createTerminalStateIconRenderer(terminalStates: string[]) {
     ) : null;
 }
 
-export function createTermValueRenderer(vocabularyIri: string) {
-  return (label: string, option: Term) => (
+export function createTermValueRenderer(vocabularyIri?: string) {
+  return (_: any, option: Term) => (
     <>
       <TermLink term={option} />
       {vocabularyIri !== option.vocabulary?.iri ? (
@@ -163,7 +163,5 @@ export function createTermValueRenderer(vocabularyIri: string) {
 }
 
 export function createVocabularyValueRenderer() {
-  return (label: string, option: Vocabulary) => (
-    <VocabularyLink vocabulary={option} />
-  );
+  return (_: any, option: Vocabulary) => <VocabularyLink vocabulary={option} />;
 }

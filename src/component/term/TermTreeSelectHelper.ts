@@ -6,7 +6,7 @@ import Utils from "../../util/Utils";
 import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchResult from "../../model/search/SearchResult";
-import * as _ from "lodash";
+import _ from "lodash";
 
 /**
  * Common properties for a tree selector containing terms
@@ -20,7 +20,6 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     childrenKey: "plainSubTerms",
     renderAsTree: true,
     simpleTreeData: true,
-    showSettings: false,
     noResultsText: intl.i18n("search.no-results"),
     loadingText: intl.i18n("select.loading"),
     placeholder: "",
@@ -34,6 +33,7 @@ export type TermTreeSelectProcessingOptions = {
   selectedIris?: string[];
   loadingSubTerms?: boolean;
   flattenAncestors?: boolean;
+  flatList?: boolean;
 };
 
 /**
@@ -64,6 +64,7 @@ export function processTermsForTreeSelect(
       t.syncPlainSubTerms();
     }
     if (
+      !options.flatList &&
       (options.searchString || options.flattenAncestors) &&
       t.parentTerms &&
       t.parentTerms.length > 0
@@ -203,6 +204,7 @@ export function resolveAncestors(term: Term): string[] {
 
 export type TermFetchingPostProcessingOptions = {
   matchingVocabularies?: string[];
+  selectedIris?: string[];
   selectedTerms?: TermInfo[] | TermData[];
   terminalStates: string[];
 };
@@ -214,8 +216,10 @@ export function loadAndPrepareTerms(
   ) => Promise<Term[]>,
   postOptions: TermFetchingPostProcessingOptions
 ) {
-  const selectedIris = resolveSelectedIris(postOptions.selectedTerms);
-  // If the offset is > 0 or we are fetching subterms, the selected terms should have been already included
+  const selectedIris = postOptions.selectedIris
+    ? postOptions.selectedIris
+    : resolveSelectedIris(postOptions.selectedTerms);
+  // If the offset is > 0, or we are fetching subterms, the selected terms should have been already included
   const toInclude =
     !fetchOptions.offset && !fetchOptions.optionID ? selectedIris : [];
   return loadTerms({
@@ -223,7 +227,7 @@ export function loadAndPrepareTerms(
     includeTerms: toInclude,
   })
     .then((terms) => {
-      if (toInclude.length === 0) {
+      if (toInclude.length === 0 || fetchOptions.flatList) {
         return terms;
       }
       let parentsToExpand = terms
@@ -252,6 +256,7 @@ export function loadAndPrepareTerms(
           searchString: fetchOptions.searchString,
           selectedIris,
           loadingSubTerms: !!fetchOptions.optionID,
+          flatList: fetchOptions.flatList,
         }
       )
     );
@@ -266,6 +271,6 @@ export function loadAndPrepareTerms(
  */
 export function resolveNamespaceForLoadAll(options: TermFetchParams<any>) {
   return options.optionID
-    ? VocabularyUtils.create(options.optionID).namespace
+    ? VocabularyUtils.create(options.optionID as string).namespace
     : undefined;
 }

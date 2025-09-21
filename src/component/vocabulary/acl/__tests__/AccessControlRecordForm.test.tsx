@@ -6,7 +6,6 @@ import {
 } from "../../../../model/acl/AccessControlList";
 import * as Redux from "react-redux";
 import { shallow } from "enzyme";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import AccessControlRecordForm from "../AccessControlRecordForm";
 import User from "../../../../model/User";

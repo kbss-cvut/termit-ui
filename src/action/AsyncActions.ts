@@ -40,6 +40,8 @@ import ActionType, {
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
+  RdfProperty,
+  RdfPropertyData,
   RdfsResourceData,
 } from "../model/RdfsResource";
 import TermItState from "../model/TermItState";
@@ -518,6 +520,7 @@ export function loadAllTerms(
     {
       searchString: fetchOptions.searchString,
       includeTerms: fetchOptions.includeTerms,
+      flat: fetchOptions.flatList,
       namespace,
     },
     fetchOptions
@@ -535,6 +538,7 @@ export function loadTerms(
       searchString: fetchOptions.searchString,
       includeImported: fetchOptions.includeImported,
       includeTerms: fetchOptions.includeTerms,
+      flat: fetchOptions.flatList,
       namespace: vocabularyIri.namespace,
     },
     fetchOptions
@@ -552,10 +556,10 @@ export function genericLoadTerms(
     dispatch(asyncActionRequest(action, true));
     let url = `${getApiPrefix(getState())}${prefix}/terms`;
     if (fetchOptions.optionID) {
-      const parentIri = VocabularyUtils.create(fetchOptions.optionID);
+      const parentIri = VocabularyUtils.create(fetchOptions.optionID as string);
       url = `${getApiPrefix(getState())}/terms/${parentIri.fragment}/subterms`;
       target.namespace = parentIri.namespace;
-    } else if (!fetchOptions.searchString) {
+    } else if (!fetchOptions.searchString && !fetchOptions.flatList) {
       url += "/roots";
     }
     return Ajax.get(
@@ -651,6 +655,7 @@ export function loadTermByIri(
       });
   };
 }
+
 export function loadTypes() {
   const action = {
     type: ActionType.LOAD_TYPES,
@@ -1058,25 +1063,34 @@ export function getProperties() {
   const action = {
     type: ActionType.GET_PROPERTIES,
   };
+  return getPropertiesImpl<RdfsResourceData, RdfsResource>(
+    action,
+    "/data/properties",
+    (d) => new RdfsResource(d),
+    (state) => state.properties
+  );
+}
+
+function getPropertiesImpl<T extends RdfsResourceData, E extends RdfsResource>(
+  action: Action,
+  endpoint: string,
+  mapper: (data: T) => E,
+  selector: (state: TermItState) => Array<E>
+) {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-    if (getState().properties.length > 0) {
+    if (selector(getState()).length > 0) {
       return;
     }
     dispatch(asyncActionRequest(action, true));
-    return Ajax.get(Constants.API_PREFIX + "/data/properties")
+    return Ajax.get(Constants.API_PREFIX + endpoint)
       .then((data: object[]) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
+        JsonLdUtils.compactAndResolveReferencesAsArray<T>(
           data,
           RDFS_RESOURCE_CONTEXT
         )
       )
-      .then((data: RdfsResourceData[]) =>
-        dispatch(
-          asyncActionSuccessWithPayload(
-            action,
-            data.map((d) => new RdfsResource(d))
-          )
-        )
+      .then((data: T[]) =>
+        dispatch(asyncActionSuccessWithPayload(action, data.map(mapper)))
       )
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
@@ -1086,13 +1100,76 @@ export function createProperty(property: RdfsResource) {
   const action = {
     type: ActionType.CREATE_PROPERTY,
   };
+  return createPropertyImpl(property, action, "/data/properties");
+}
+
+function createPropertyImpl(
+  property: { toJsonLd: () => object },
+  action: Action,
+  endpoint: string
+) {
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.post(
-      Constants.API_PREFIX + "/data/properties",
+      Constants.API_PREFIX + endpoint,
       content(property.toJsonLd())
     )
-      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "properties.edit.new.success" },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function getCustomAttributes() {
+  return getPropertiesImpl<RdfPropertyData, RdfProperty>(
+    { type: ActionType.GET_CUSTOM_ATTRIBUTES },
+    "/data/custom-attributes",
+    (d) => new RdfProperty(d),
+    () => []
+  );
+}
+
+export function createCustomAttribute(attribute: RdfProperty) {
+  return createPropertyImpl(
+    attribute,
+    { type: ActionType.CREATE_CUSTOM_ATTRIBUTE },
+    "/data/custom-attributes"
+  );
+}
+
+export function updateCustomAttribute(attribute: RdfProperty) {
+  const action = { type: ActionType.UPDATE_CUSTOM_ATTRIBUTE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.put(
+      Constants.API_PREFIX +
+        "/data/custom-attributes/" +
+        VocabularyUtils.create(attribute.iri).fragment,
+      content(attribute.toJsonLd())
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId:
+                  "administration.customization.customAttributes.update.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }
@@ -1249,6 +1326,28 @@ export function clearLongRunningTasksQueue() {
   };
 }
 
+export function reloadFullTextSearch() {
+  const action = { type: ActionType.RELOAD_FTS };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post(`${Constants.API_PREFIX}/admin/reload-fts`)
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .then(() =>
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId: "administration.maintenance.reloadFTS.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        )
+      )
+      .catch((error) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
 export function loadConfiguration() {
   const action = { type: ActionType.LOAD_CONFIGURATION };
   return (dispatch: ThunkDispatch) => {
@@ -1267,6 +1366,7 @@ export function loadConfiguration() {
         data.roles = Utils.sanitizeArray(data.roles).map(
           (d: UserRoleData) => new UserRole(d)
         );
+        data.indexedLanguages = Utils.sanitizeArray(data.indexedLanguages);
         return dispatch(asyncActionSuccessWithPayload(action, data));
       })
       .catch((error) => dispatch(asyncActionFailure(action, error)));

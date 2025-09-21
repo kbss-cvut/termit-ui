@@ -13,6 +13,7 @@ import { useI18n } from "../hook/useI18n";
 import Vocabulary from "../../model/Vocabulary";
 import TermTypes from "./TermTypes";
 import TermState from "./state/TermState";
+import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 
 interface BasicTermMetadataProps {
   term: Term;
@@ -131,6 +132,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           )}
         </Col>
       </Row>
+      <CustomAttributesValues asset={term} />
       <Row>
         <Col xl={2} md={4}>
           <Label

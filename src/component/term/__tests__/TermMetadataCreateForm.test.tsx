@@ -16,7 +16,7 @@ import {
   pluralLangString,
 } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import StringListEdit from "../../misc/StringListEdit";
+import StringListEdit from "../../misc/ValueListEdit";
 
 jest.mock("../ParentTermSelector", () => () => <div>Parent term selector</div>);
 jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);

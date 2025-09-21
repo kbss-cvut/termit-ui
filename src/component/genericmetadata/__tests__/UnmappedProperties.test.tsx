@@ -19,7 +19,7 @@ describe("UnmappedProperties", () => {
     );
     const items = wrapper.find("li");
     expect(items.length).toEqual(1);
-    expect(items.get(0).props.children).toEqual("test");
+    expect(items.get(0).props.children[0]).toEqual("test");
     expect(items.exists(OutgoingLink)).toBeFalsy();
   });
 
@@ -30,8 +30,8 @@ describe("UnmappedProperties", () => {
     );
     const items = wrapper.find("li");
     expect(items.length).toEqual(2);
-    expect(items.get(0).props.children).toEqual("test");
-    expect(items.get(1).props.children).toEqual("test2");
+    expect(items.get(0).props.children[0]).toEqual("test");
+    expect(items.get(1).props.children[0]).toEqual("test2");
     expect(items.exists(OutgoingLink)).toBeFalsy();
   });
 
@@ -44,7 +44,7 @@ describe("UnmappedProperties", () => {
     const items = wrapper.find("li");
     expect(items.length).toEqual(1);
     expect(items.exists(OutgoingLink)).toBeTruthy();
-    expect(items.get(0).props.children.props.label).toEqual(v);
+    expect(items.get(0).props.children[0].props.label).toEqual(v);
   });
 
   it("renders multiple property values sorted lexicographically", () => {
@@ -59,7 +59,7 @@ describe("UnmappedProperties", () => {
     expect(items.exists(OutgoingLink)).toBeFalsy();
     expect(items.length).toEqual(values.length);
     for (let i = 0; i < sortedValues.length; i++) {
-      expect(items.get(i).props.children).toEqual(sortedValues[i]);
+      expect(items.get(i).props.children[0]).toEqual(sortedValues[i]);
     }
   });
 });

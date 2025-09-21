@@ -33,7 +33,7 @@ describe("NavbarSearch", () => {
   ];
 
   const navbarConnections = () => {
-    return { updateSearchFilter, ...routingProps() };
+    return { updateSearchFilter, ...routingProps(), indexedLanguages: [] };
   };
 
   beforeEach(() => {

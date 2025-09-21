@@ -1,5 +1,4 @@
 import React from "react";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { AssetData } from "../../../model/Asset";
 import { useSelector } from "react-redux";
@@ -37,10 +36,8 @@ const TermStateSelector: React.FC<TermStateSelectorProps> = ({
         getLocalized(option.label, getShortLocale(locale))
       }
       valueRenderer={Utils.simpleValueRenderer}
-      showSettings={false}
       maxHeight={150}
       multi={false}
-      displayInfoOnHover={true}
       expanded={true}
       renderAsTree={false}
       placeholder=""

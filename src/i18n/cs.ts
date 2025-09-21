@@ -234,6 +234,11 @@ const cs = {
       "Vyprázdnit frontu procesů čekajících na zpracování na pozadí",
     "administration.maintenance.clearLongRunningTasksQueue.success":
       "Fronta procesů na pozadí úspěšně vyprázdněna.",
+    "administration.maintenance.reloadFTS": "Znovu načíst textové indexy",
+    "administration.maintenance.reloadFTS.tooltip":
+      "Spustí novou inicializaci textových indexů pro fulltextové vyhledávání, jsou-li k dispozici.",
+    "administration.maintenance.reloadFTS.success":
+      "Textové indexy byly znovu načteny.",
     "administration.groups": "Uživatelské skupiny",
     "administration.groups.create": "Vytvořit skupinu",
     "administration.groups.create.tooltip":
@@ -245,7 +250,16 @@ const cs = {
     "administration.groups.update.success": "Skupina byla úspěšně upravena.",
     "administration.groups.label.invalid": "Název skupiny nesmí být prázdný.",
     "administration.groups.members": "Členové skupiny",
-
+    "administration.customization.title": "Přizpůsobení",
+    "administration.customization.customAttributes.title": "Vlastní atributy",
+    "administration.customization.customAttributes.domain": "Doména",
+    "administration.customization.customAttributes.range": "Obor hodnot",
+    "administration.customization.customAttributes.add": "Nový atribut",
+    "administration.customization.customAttributes.labelExists":
+      "Atribut s názvem {label} již existuje",
+    "administration.customization.customAttributes.update": "Upravit atribut",
+    "administration.customization.customAttributes.update.success":
+      "Atribut byl úspěšně upraven.",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -262,6 +276,8 @@ const cs = {
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
+    "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
+      "Nelze odebrat překlad pro hlavní jazyk slovníku!",
 
     "document.remove.tooltip.disabled":
       "Odstranit dokument je možné po odstranění všech jeho souborů.",
@@ -278,6 +294,7 @@ const cs = {
     "vocabulary.vocabularies.select.placeholder":
       "Začněte psát pro filtrování slovníků dle názvu",
     "vocabulary.title": "Název",
+    "vocabulary.primaryLanguage": "Hlavní jazyk slovníku",
     "vocabulary.create.title": "Nový slovník",
     "vocabulary.create.submit": "Vytvořit",
     "vocabulary.create.files": "Soubory",
@@ -506,8 +523,7 @@ const cs = {
     "term.source.help":
       "(Nepovinný) odkaz na původ definice pojmu. Odkazuje na konkrétní místo v textu dokumentu, " +
       "například na kapitolu knihy, či konkrétní odstavec v zákoně, např. 'Písmeno b) paragrafu 2 " +
-      "zákona č. 256/2013 Sb., o katastru nemovitostí'. V případě označení definice v textu dokumentu " +
-      "je zdroj vyplňován automaticky.",
+      "zákona č. 256/2013 Sb., o katastru nemovitostí'.",
     "term.metadata.definition": "Definice",
     "term.metadata.definition.text": "Text",
     "term.metadata.definitionSource": "Dokument",
@@ -597,6 +613,12 @@ const cs = {
       "Jsou zobrazeny též zrušené pojmy (pojmy v koncovém stavu). Takové pojmy by se již neměly používat.",
     "glossary.showNonTerminal.help":
       "Jsou zobrazeny pouze pojmy v aktivním stavu, tj. pojmy, které lze používat.",
+    "glossary.showTreeList": "Stromová struktura",
+    "glossary.showTreeList.help":
+      "Pojmy jsou zobrazeny ve stromové struktuře, která zobrazuje hierarchické vztahy mezi pojmy.",
+    "glossary.showFlatList": "Seznam",
+    "glossary.showFlatList.help":
+      "Pojmy jsou zobrazeny v plochém seznamu, který nezobrazuje hierarchické vztahy mezi pojmy.",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",
@@ -623,6 +645,7 @@ const cs = {
 
     "file.text-analysis.finished.message":
       "Textová analýza souboru úspěšně dokončena.",
+    "file.text-analysis.failed": "Textová analýza selhala: {message}",
     "file.metadata.startTextAnalysis": "Spustit textovou analýzu",
     "file.metadata.startTextAnalysis.text": "Analyzovat",
     "file.metadata.startTextAnalysis.vocabularySelect.title":
@@ -793,6 +816,7 @@ const cs = {
     "properties.edit.new.iri": "Identifikátor",
     "properties.edit.new.label": "Název",
     "properties.edit.new.comment": "Popis",
+    "properties.edit.new.success": "Nový atribut byl úspešně vytvořen.",
 
     "type.asset": "Záznam",
     "type.term": "Pojem",
@@ -805,6 +829,9 @@ const cs = {
     "type.user": "Uživatel",
     "type.usergroup": "Uživatelská skupina",
     "type.userrole": "Uživatelská role",
+    "datatype.string": "Textový řetězec",
+    "datatype.integer": "Celé číslo",
+    "datatype.resource": "Obecný zdroj (IRI/URI/URL)",
 
     "log-viewer.title": "Prohlížení chyb",
     "log-viewer.timestamp": "Čas",

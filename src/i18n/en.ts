@@ -223,6 +223,10 @@ const en = {
       "Clears the queue of processes that are waiting to be executed in the background",
     "administration.maintenance.clearLongRunningTasksQueue.success":
       "Background process queue successfully cleared.",
+    "administration.maintenance.reloadFTS": "Reload search indexes",
+    "administration.maintenance.reloadFTS.tooltip":
+      "Triggers re-initialization of full-text search indexes, if available.",
+    "administration.maintenance.reloadFTS.success": "Search indexes reloaded.",
     "administration.groups": "User groups",
     "administration.groups.create": "Create group",
     "administration.groups.create.tooltip": "Allows to create a new user group",
@@ -234,7 +238,16 @@ const en = {
     "administration.groups.label.invalid":
       "User group label must not be empty.",
     "administration.groups.members": "Group members",
-
+    "administration.customization.title": "Customization",
+    "administration.customization.customAttributes.title": "Custom attributes",
+    "administration.customization.customAttributes.domain": "Domain",
+    "administration.customization.customAttributes.range": "Range",
+    "administration.customization.customAttributes.add": "Create attribute",
+    "administration.customization.customAttributes.labelExists":
+      "Attribute called {label} already exists",
+    "administration.customization.customAttributes.update": "Update attribute",
+    "administration.customization.customAttributes.update.success":
+      "Attribute successfully updated.",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
@@ -252,6 +265,8 @@ const en = {
     "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
+    "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
+      "Cannot remove translation in the vocabulary primary language!",
 
     "document.remove.tooltip.disabled":
       "In order to delete the document, delete the files first.",
@@ -269,6 +284,7 @@ const en = {
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
+    "vocabulary.primaryLanguage": "Primary vocabulary language",
     "vocabulary.create.title": "Create Vocabulary",
     "vocabulary.create.submit": "Create",
     "vocabulary.create.files": "Files",
@@ -497,7 +513,7 @@ const en = {
       "or leave this field blank.",
     "term.source.help":
       "(Optional) reference to the origin of the term definition. It might refer to a particular " +
-      "law section, or paragraph. Whenever the definition is marked in the document text, the source is filled automatically.",
+      "law section, or paragraph.",
     "term.metadata.definition": "Definition",
     "term.metadata.definition.text": "Text",
     "term.metadata.definitionSource": "Document",
@@ -590,6 +606,12 @@ const en = {
       "Displays also terms in a terminal state. Such terms should not be used anymore.",
     "glossary.showNonTerminal.help":
       "Displays only active terms (in non-terminal states).",
+    "glossary.showTreeList": "Tree structure",
+    "glossary.showTreeList.help":
+      "Terms are displayed in a tree structure that shows the hierarchical relationships between terms.",
+    "glossary.showFlatList": "Flat list",
+    "glossary.showFlatList.help":
+      "Terms are displayed in a flat list that does not show the hierarchical relationships between terms.",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",
     "glossary.createTerm.tooltip": "Create new vocabulary's term",
@@ -614,6 +636,7 @@ const en = {
 
     "file.text-analysis.finished.message":
       "Text analysis successfully finished.",
+    "file.text-analysis.failed": "Text analysis failed: {message}",
     "file.metadata.startTextAnalysis": "Start text analysis",
     "file.metadata.startTextAnalysis.text": "Analyze",
     "file.metadata.startTextAnalysis.vocabularySelect.title":
@@ -785,6 +808,7 @@ const en = {
     "properties.edit.new.iri": "Identifier",
     "properties.edit.new.label": "Label",
     "properties.edit.new.comment": "Comment",
+    "properties.edit.new.success": "New attribute successfully created.",
 
     "type.asset": "Asset",
     "type.term": "Term",
@@ -797,6 +821,9 @@ const en = {
     "type.user": "User",
     "type.usergroup": "User group",
     "type.userrole": "User role",
+    "datatype.string": "String",
+    "datatype.integer": "Integer",
+    "datatype.resource": "Resource (IRI/URI/URL)",
 
     "log-viewer.title": "Error log",
     "log-viewer.timestamp": "Timestamp",

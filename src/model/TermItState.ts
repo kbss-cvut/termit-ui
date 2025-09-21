@@ -5,7 +5,7 @@ import IntlData from "./IntlData";
 import Vocabulary, { EMPTY_VOCABULARY } from "./Vocabulary";
 import { QueryResultIF } from "./QueryResult";
 import Term, { TermInfo } from "./Term";
-import RdfsResource from "./RdfsResource";
+import RdfsResource, { RdfProperty } from "./RdfsResource";
 import AppNotification from "./AppNotification";
 import SearchResult from "./search/SearchResult";
 import SearchQuery from "./search/SearchQuery";
@@ -44,6 +44,7 @@ export default class TermItState {
   // Identifiers of terminal states (a subset of all states)
   public terminalStates: string[];
   public properties: RdfsResource[];
+  public customAttributes: RdfProperty[];
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
   // Pending asynchronous actions. Can be used to prevent repeated requests when some are already pending
@@ -64,6 +65,7 @@ export default class TermItState {
   public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
   public accessLevels: { [key: string]: RdfsResource };
   public breadcrumbs: Breadcrumb[];
+  public showTermsFlatList: boolean;
 
   public annotatorLegendFilter: AnnotatorLegendFilter;
   public runningTasks: { [key: string]: LongRunningTask };
@@ -91,6 +93,7 @@ export default class TermItState {
     this.states = {};
     this.terminalStates = [];
     this.properties = [];
+    this.customAttributes = [];
     this.notifications = [];
     this.pendingActions = {};
     this.errors = [];
@@ -105,6 +108,7 @@ export default class TermItState {
     this.validationResults = {};
     this.definitionallyRelatedTerms = { targeting: [], of: [] };
     this.breadcrumbs = [];
+    this.showTermsFlatList = false;
     this.users = [];
     this.accessLevels = {};
     this.annotatorLegendFilter = new AnnotatorLegendFilter();

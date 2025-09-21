@@ -14,10 +14,11 @@ interface TermIriLinkProps {
   id?: string;
   activeTab?: string;
   shrinkFullIri?: boolean;
+  showVocabularyBadge?: boolean;
 }
 
 const TermIriLink: React.FC<TermIriLinkProps> = (props) => {
-  const { iri, id, activeTab } = props;
+  const { iri, id, activeTab, showVocabularyBadge } = props;
   const [term, setTerm] = useState<TermInfo | null>(null);
   const dispatch: ThunkDispatch = useDispatch();
   const [label, setLabel] = useState<string>();
@@ -35,7 +36,12 @@ const TermIriLink: React.FC<TermIriLinkProps> = (props) => {
   return (
     <>
       {term !== null ? (
-        <TermLink id={id} term={term} activeTab={activeTab} />
+        <TermLink
+          id={id}
+          term={term}
+          activeTab={activeTab}
+          showVocabularyBadge={showVocabularyBadge}
+        />
       ) : (
         <OutgoingLink
           label={

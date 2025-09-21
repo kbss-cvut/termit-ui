@@ -4,7 +4,7 @@ import Term from "../../../model/Term";
  * Maps types to tree select options.
  * @param types types to map
  */
-export function mapTypeOptions(types: { [key: string]: Term }) {
+export function mapTypeOptions(types: { [key: string]: Term }): Term[] {
   if (!types) {
     return [];
   }

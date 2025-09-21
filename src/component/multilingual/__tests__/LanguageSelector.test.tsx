@@ -64,13 +64,13 @@ describe("LanguageSelector", () => {
     it("does not allow language removal when there is only one language", () => {
       const wrapper = mountWithIntl(
         <>
-          {renderLanguages(
-            ["en"],
-            "en",
-            intlFunctions().formatMessage,
+          {renderLanguages({
+            languages: ["en"],
+            selectedLanguage: "en",
+            formatMessage: intlFunctions().formatMessage,
             onSelect,
-            onRemove
-          )}
+            onRemove,
+          })}
         </>
       );
       expect(wrapper.exists(".m-remove-lang")).toBeFalsy();
@@ -79,13 +79,13 @@ describe("LanguageSelector", () => {
     it("selects the next language when first one is removed", () => {
       const wrapper = mountWithIntl(
         <>
-          {renderLanguages(
-            ["en", "cs"],
-            "en",
-            intlFunctions().formatMessage,
+          {renderLanguages({
+            languages: ["en", "cs"],
+            selectedLanguage: "en",
+            formatMessage: intlFunctions().formatMessage,
             onSelect,
-            onRemove
-          )}
+            onRemove,
+          })}
         </>
       );
       wrapper.find(".m-remove-lang").first().simulate("click");
@@ -96,13 +96,13 @@ describe("LanguageSelector", () => {
     it("selects the preceding language when the language with non-zero index is removed", () => {
       const wrapper = mountWithIntl(
         <>
-          {renderLanguages(
-            ["en", "cs"],
-            "en",
-            intlFunctions().formatMessage,
+          {renderLanguages({
+            languages: ["en", "cs"],
+            selectedLanguage: "en",
+            formatMessage: intlFunctions().formatMessage,
             onSelect,
-            onRemove
-          )}
+            onRemove,
+          })}
         </>
       );
       wrapper.find(".m-remove-lang").last().simulate("click");

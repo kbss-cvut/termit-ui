@@ -48,7 +48,10 @@ describe("Routing", () => {
   describe("transition to", () => {
     it("transitions to route without any parameter", () => {
       RoutingInstance.transitionTo(Routes.vocabularies);
-      expect(historyMock.push).toHaveBeenCalledWith(Routes.vocabularies.path);
+      expect(historyMock.push).toHaveBeenCalledWith(
+        Routes.vocabularies.path,
+        undefined
+      );
     });
   });
 
@@ -66,7 +69,8 @@ describe("Routing", () => {
         Routing.getTransitionPath(Routes.vocabularySummary, {
           params: new Map([["name", label]]),
           query: new Map([["namespace", encodeURIComponent(namespace)]]),
-        })
+        }),
+        undefined
       );
     });
 
@@ -88,7 +92,8 @@ describe("Routing", () => {
             ["timestamp", timestamp],
           ]),
           query: new Map([["namespace", encodeURIComponent(namespace)]]),
-        })
+        }),
+        undefined
       );
     });
 
@@ -106,7 +111,8 @@ describe("Routing", () => {
             ["termName", termName],
           ]),
           query: new Map([["namespace", encodeURIComponent(namespace)]]),
-        })
+        }),
+        undefined
       );
     });
 
@@ -130,7 +136,8 @@ describe("Routing", () => {
             ["timestamp", timestamp],
           ]),
           query: new Map([["namespace", encodeURIComponent(namespace)]]),
-        })
+        }),
+        undefined
       );
     });
   });
@@ -148,7 +155,8 @@ describe("Routing", () => {
         Routing.getTransitionPath(Routes.publicVocabularySummary, {
           params: new Map([["name", label]]),
           query: new Map([["namespace", encodeURIComponent(namespace)]]),
-        })
+        }),
+        undefined
       );
     });
 
@@ -165,7 +173,8 @@ describe("Routing", () => {
             ["termName", term.label[Constants.DEFAULT_LANGUAGE]],
           ]),
           query: new Map([["namespace", encodeURIComponent(namespace)]]),
-        })
+        }),
+        undefined
       );
     });
   });
@@ -204,7 +213,8 @@ describe("Routing", () => {
     it("transitions to dashboard when no original target is available", () => {
       RoutingInstance.transitionToOriginalTarget();
       expect(historyMock.push).toHaveBeenCalledWith(
-        Routing.getTransitionPath(Routes.dashboard)
+        Routing.getTransitionPath(Routes.dashboard),
+        undefined
       );
     });
 

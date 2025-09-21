@@ -1,5 +1,4 @@
 import * as React from "react";
-// @ts-ignore
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import Term, { TermData } from "../../model/Term";
@@ -62,10 +61,8 @@ const TermTypesEdit: React.FC<TermTypesEditProps> = ({
           getLocalized(option.label, getShortLocale(locale))
         }
         childrenKey="subTerms"
-        showSettings={false}
         maxHeight={150}
         multi={false}
-        displayInfoOnHover={true}
         expanded={true}
         renderAsTree={true}
         placeholder=""

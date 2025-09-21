@@ -73,6 +73,29 @@ export function getLanguages(
 }
 
 /**
+ * Resolves unique languages in which the specified object has a value and includes the
+ * specified required language in the first place.
+ *
+ * The languages are resolved from the specified attributes.
+ *
+ * @param requiredLanguage The required language to include
+ * @param multilingualAttributes Attributes to check
+ * @param object Object to examine
+ */
+export function getLanguagesWithRequired(
+  requiredLanguage: string,
+  multilingualAttributes: string[],
+  object?: any | null
+) {
+  const languages = getLanguages(multilingualAttributes, object);
+  languages.unshift(requiredLanguage);
+  if (languages.indexOf(requiredLanguage, 1) !== -1) {
+    languages.splice(languages.indexOf(requiredLanguage, 1), 1);
+  }
+  return languages;
+}
+
+/**
  * Removes attribute values in the specified language.
  * @param multilingualAttributes Attributes whose values will be affected
  * @param object Object to process
@@ -123,4 +146,14 @@ const LANGUAGE_OPTIONS = prioritizeLanguages(
  */
 export function getLanguageOptions(): Language[] {
   return LANGUAGE_OPTIONS;
+}
+
+/**
+ * Gets a language matching its code.
+ *
+ * The languages are retrieved using the iso-639-1 JS library.
+ * @param code The short code to match e.g.: "cs"
+ */
+export function getLanguageByShortCode(code: string): Language | undefined {
+  return LANGUAGE_OPTIONS.find((lang) => lang.code === code);
 }

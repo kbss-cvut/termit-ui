@@ -14,6 +14,7 @@ import ActionType, {
   SearchAction,
   SearchResultAction,
   SelectingTermsAction,
+  SetTermsFlatListAction,
   SwitchLanguageAction,
   UpdateAssetAction,
   UpdateLastModifiedAction,
@@ -30,7 +31,7 @@ import AsyncActionStatus from "../action/AsyncActionStatus";
 import Vocabulary, { EMPTY_VOCABULARY } from "../model/Vocabulary";
 import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
 import Term, { TermInfo } from "../model/Term";
-import RdfsResource from "../model/RdfsResource";
+import RdfsResource, { RdfProperty } from "../model/RdfsResource";
 import AppNotification from "../model/AppNotification";
 import SearchResult from "../model/search/SearchResult";
 import SearchQuery from "../model/search/SearchQuery";
@@ -44,6 +45,7 @@ import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
+import { loadTermsFlatListPreference } from "src/util/UISettingsUtil";
 
 function isAsyncSuccess(action: Action) {
   return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
@@ -301,6 +303,7 @@ function searchQuery(
     case ActionType.UPDATE_SEARCH_FILTER:
       const newState = new SearchQuery(state);
       newState.searchQuery = action.searchString;
+      newState.language = action.language || "";
       return newState;
     case ActionType.LOGOUT:
       return new SearchQuery();
@@ -414,6 +417,21 @@ function properties(
       return isAsyncSuccess(asyncAction) ? asyncAction.payload : state;
     case ActionType.CLEAR_PROPERTIES:
       return [];
+    default:
+      return state;
+  }
+}
+
+function customAttributes(
+  state: RdfProperty[] = [],
+  action: AsyncActionSuccess<RdfProperty[]> | Action
+): RdfProperty[] {
+  switch (action.type) {
+    case ActionType.GET_CUSTOM_ATTRIBUTES:
+      const asyncAction = action as AsyncActionSuccess<RdfProperty[]>;
+      return isAsyncSuccess(action) ? asyncAction.payload : state;
+    case ActionType.CREATE_CUSTOM_ATTRIBUTE:
+      return isAsyncSuccess(action) ? [] : state;
     default:
       return state;
   }
@@ -746,6 +764,16 @@ function runningTasks(
   return state;
 }
 
+function showTermsFlatList(
+  state: boolean = loadTermsFlatListPreference(),
+  action: Action
+) {
+  if (action.type === ActionType.SET_TERM_FLAT_LIST) {
+    return (action as SetTermsFlatListAction).flatList;
+  }
+  return state;
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -766,6 +794,7 @@ const rootReducer = combineReducers<TermItState>({
   states,
   terminalStates,
   properties,
+  customAttributes,
   notifications,
   pendingActions,
   errors,
@@ -784,6 +813,7 @@ const rootReducer = combineReducers<TermItState>({
   users,
   accessLevels,
   runningTasks,
+  showTermsFlatList,
 });
 
 export default rootReducer;

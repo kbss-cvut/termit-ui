@@ -8,6 +8,7 @@ import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
 import { Badge, Label } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
+import { stringifyPropertyValue } from "../../model/WithUnmappedProperties";
 
 export interface UpdateRowProps {
   record: UpdateRecord;
@@ -40,7 +41,7 @@ export const UpdateRow: React.FC<UpdateRowProps> = (props) => {
 };
 
 function renderValue(value?: UpdateValueType) {
-  if (!value) {
+  if (value === undefined) {
     return null;
   }
   if (Array.isArray(value)) {
@@ -77,7 +78,7 @@ function renderSingleValue(value: any) {
       </Label>
     );
   }
-  return <Label>{`${value}`}</Label>;
+  return <Label>{stringifyPropertyValue(value)}</Label>;
 }
 
 export default UpdateRow;
