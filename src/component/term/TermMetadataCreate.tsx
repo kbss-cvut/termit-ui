@@ -129,6 +129,7 @@ export class TermMetadataCreate extends React.Component<
         <EditLanguageSelector
           language={this.state.language}
           existingLanguages={Term.getLanguages(this.state)}
+          requiredLanguage={this.props.vocabularyPrimaryLanguage}
           onSelect={this.setLanguage}
           onRemove={this.onRemoveTranslation}
         />

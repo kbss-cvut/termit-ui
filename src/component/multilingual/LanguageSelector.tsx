@@ -15,6 +15,40 @@ interface LanguageSelectorProps {
 export function renderLanguages({
   languages,
   selectedLanguage,
+  formatMessage,
+  onSelect,
+}: {
+  languages: string[];
+  selectedLanguage: string;
+  formatMessage: (msgId: string, values: {} | undefined) => string;
+  onSelect: (lang: string) => void;
+}) {
+  return languages.map((lang, i) => (
+    <NavItem
+      key={lang}
+      title={formatMessage("term.language.selector.item", {
+        lang: ISO6391.getName(lang),
+        nativeLang: ISO6391.getNativeName(lang),
+      })}
+      active={selectedLanguage === lang}
+    >
+      <NavLink
+        onClick={() => onSelect(lang)}
+        className={
+          selectedLanguage === lang
+            ? "active bg-white"
+            : "language-selector-item"
+        }
+      >
+        {ISO6391.getNativeName(lang)}
+      </NavLink>
+    </NavItem>
+  ));
+}
+
+export function renderRemovableLanguages({
+  languages,
+  selectedLanguage,
   requiredLanguage,
   formatMessage,
   onSelect,
@@ -25,7 +59,7 @@ export function renderLanguages({
   requiredLanguage?: string;
   formatMessage: (msgId: string, values: {} | undefined) => string;
   onSelect: (lang: string) => void;
-  onRemove?: (lang: string) => void;
+  onRemove: (lang: string) => void;
 }) {
   const count = languages.length;
   return languages.map((lang, i) => (
@@ -46,7 +80,7 @@ export function renderLanguages({
         }
       >
         {ISO6391.getNativeName(lang)}
-        {count > 1 && onRemove && requiredLanguage !== lang && (
+        {count > 1 && requiredLanguage !== lang && (
           <FaTimesCircle
             className="m-remove-lang ml-1 align-baseline"
             onClick={(e) => {
@@ -68,10 +102,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = (props) => {
     return null;
   }
 
-  const displayLanguages: string[] = [
-    language,
-    ...languages.filter((l) => l !== language),
-  ];
+  const displayLanguages: string[] = requiredLanguage
+    ? [requiredLanguage, ...languages.filter((l) => l !== requiredLanguage)]
+    : languages;
 
   return (
     <div>
@@ -83,7 +116,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = (props) => {
         {renderLanguages({
           languages: displayLanguages,
           selectedLanguage: language,
-          requiredLanguage,
           formatMessage,
           onSelect,
         })}
