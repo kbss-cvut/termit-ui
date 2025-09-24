@@ -341,7 +341,7 @@ const en = {
     "vocabulary.summary.import.translations.help":
       "Existing data will not be changed.",
     "vocabulary.import.type.skos": "SKOS",
-    "vocabulary.import.type.skos-external": "SKOS External",
+    "vocabulary.import.type.skos-external": "SKOS - external",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",
     "vocabulary.import.dialog.title": "Import vocabulary",

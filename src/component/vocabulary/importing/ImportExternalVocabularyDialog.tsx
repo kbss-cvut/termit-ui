@@ -51,13 +51,19 @@ const ImportExternalVocabularyDialog = (
                   selected as { value: string; label: string }[]
                 )
               }
+              placeholder={i18n("select.placeholder")}
+              classNamePrefix="react-select"
             />
           </FormGroup>
-
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12} className="d-flex justify-content-center mt-4">
           <Button
             id="import-external-vocabularies-submit"
             disabled={options.length === 0}
             onClick={handleImport}
+            size="sm"
           >
             {i18n("vocabulary.import.dialog.external.button")}
           </Button>
