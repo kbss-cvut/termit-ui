@@ -15,6 +15,11 @@ import ActionType from "./ActionType";
 import { Action } from "redux";
 import { loadVocabulary } from "./AsyncActions";
 import Utils from "../util/Utils";
+import JsonLdUtils from "../util/JsonLdUtils";
+import RdfsResource, {
+  CONTEXT as RDFS_RESOURCE_CONTEXT,
+  RdfsResourceData,
+} from "../model/RdfsResource";
 
 export function importIntoExistingVocabulary(
   vocabularyIri: IRI,
@@ -39,6 +44,24 @@ export function importIntoExistingVocabulary(
       .catch(processError(dispatch, action));
   };
 }
+export function getAvailableVocabularies() {
+  const action = { type: ActionType.GET_AVAILABLE_VOCABULARIES };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(`${Constants.API_PREFIX}/vocabularies/imports/available`)
+      .then((data: object[]) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
+          data,
+          RDFS_RESOURCE_CONTEXT
+        )
+      )
+      .then((data: RdfsResourceData[]) => data.map((d) => new RdfsResource(d)))
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return [];
+      });
+  };
+}
 
 export function importSkosAsNewVocabulary(data: File, rename: Boolean) {
   const action = { type: ActionType.IMPORT_VOCABULARY };
@@ -53,6 +76,36 @@ export function importSkosAsNewVocabulary(data: File, rename: Boolean) {
     )
       .then((response) => {
         processSuccess(dispatch, action, data);
+        return response.headers[Constants.Headers.LOCATION];
+      })
+      .catch((error) => {
+        processError(dispatch, action)(error);
+        return undefined;
+      });
+  };
+}
+
+export function importExternalSkosAsNewVocabulary(
+  vocabularyIris: string[],
+  rename: Boolean
+) {
+  const action = { type: ActionType.IMPORT_EXTERNAL_VOCABULARIES };
+  const formData = new FormData();
+
+  // Adds all IRIs into the formData as list
+  vocabularyIris.forEach((iri) => {
+    formData.append("vocabularyIris", iri);
+  });
+
+  formData.append("rename", rename.toString());
+
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/vocabularies/import`,
+      contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
+    )
+      .then((response) => {
         return response.headers[Constants.Headers.LOCATION];
       })
       .catch((error) => {

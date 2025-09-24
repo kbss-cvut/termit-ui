@@ -350,14 +350,22 @@ const cs = {
     "vocabulary.summary.import.translations.help":
       "Stávající data nebudou přepsána.",
     "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.skos-external": "SKOS Externí",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",
     "vocabulary.import.dialog.title": "Importovat slovník",
     "vocabulary.import.dialog.message":
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
+    "vocabulary.import.dialog.external.message":
+      "Vyberte slovníky, které chcete importovat.",
+    "vocabulary.import.dialog.external.errormessage":
+      "Žádné slovníky nenalezeny.",
+    "vocabulary.import.dialog.external.button": "Importovat vybrané slovníky",
     "vocabulary.import.title": "Importovat slovník",
     "vocabulary.import.success": "Slovník úspěšně importován.",
+    "vocabulary.import.success.message": "Slovník úspěšně importován.",
+    "vocabulary.import.error.message": "Slovník se nepodařilo naimportovat.",
     "vocabulary.import.allow-changing-identifiers":
       "Povolit změnu identifikátorů",
     "vocabulary.import.allow-changing-identifiers.tooltip":
