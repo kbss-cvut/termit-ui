@@ -8,7 +8,7 @@ import "./LanguageSelector.scss";
 interface LanguageSelectorProps {
   languages: string[];
   language: string;
-  requiredLanguage?: string;
+  primaryLanguage?: string;
   onSelect: (lang: string) => void;
 }
 
@@ -23,27 +23,17 @@ export function renderLanguages({
   formatMessage: (msgId: string, values: {} | undefined) => string;
   onSelect: (lang: string) => void;
 }) {
-  return languages.map((lang, i) => (
-    <NavItem
-      key={lang}
-      title={formatMessage("term.language.selector.item", {
-        lang: ISO6391.getName(lang),
-        nativeLang: ISO6391.getNativeName(lang),
-      })}
-      active={selectedLanguage === lang}
-    >
-      <NavLink
-        onClick={() => onSelect(lang)}
-        className={
-          selectedLanguage === lang
-            ? "active bg-white"
-            : "language-selector-item"
-        }
-      >
-        {ISO6391.getNativeName(lang)}
-      </NavLink>
-    </NavItem>
-  ));
+  return languages.map((lang, i) =>
+    renderLanguageItem({
+      lang,
+      index: i,
+      languages,
+      selectedLanguage,
+      formatMessage,
+      onSelect,
+      removable: false,
+    })
+  );
 }
 
 export function renderRemovableLanguages({
@@ -61,8 +51,45 @@ export function renderRemovableLanguages({
   onSelect: (lang: string) => void;
   onRemove: (lang: string) => void;
 }) {
+  return languages.map((lang, i) =>
+    renderLanguageItem({
+      lang,
+      index: i,
+      languages,
+      selectedLanguage,
+      requiredLanguage,
+      formatMessage,
+      onSelect,
+      onRemove,
+      removable: true,
+    })
+  );
+}
+
+function renderLanguageItem({
+  lang,
+  index,
+  languages,
+  selectedLanguage,
+  requiredLanguage,
+  formatMessage,
+  onSelect,
+  onRemove,
+  removable,
+}: {
+  lang: string;
+  index: number;
+  languages: string[];
+  selectedLanguage: string;
+  requiredLanguage?: string;
+  formatMessage: (msgId: string, values: {} | undefined) => string;
+  onSelect: (lang: string) => void;
+  onRemove?: (lang: string) => void;
+  removable: boolean;
+}) {
   const count = languages.length;
-  return languages.map((lang, i) => (
+  const showRemove = removable && count > 1 && requiredLanguage !== lang;
+  return (
     <NavItem
       key={lang}
       title={formatMessage("term.language.selector.item", {
@@ -80,30 +107,30 @@ export function renderRemovableLanguages({
         }
       >
         {ISO6391.getNativeName(lang)}
-        {count > 1 && requiredLanguage !== lang && (
+        {showRemove && (
           <FaTimesCircle
             className="m-remove-lang ml-1 align-baseline"
             onClick={(e) => {
               e.stopPropagation();
-              onSelect(languages[i > 0 ? i - 1 : 1]);
-              onRemove(lang);
+              onSelect(languages[index > 0 ? index - 1 : 1]);
+              onRemove?.(lang);
             }}
           />
         )}
       </NavLink>
     </NavItem>
-  ));
+  );
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = (props) => {
-  const { language, requiredLanguage, languages, onSelect } = props;
+  const { language, primaryLanguage, languages, onSelect } = props;
   const { formatMessage } = useI18n();
   if (languages.length <= 1) {
     return null;
   }
 
-  const displayLanguages: string[] = requiredLanguage
-    ? [requiredLanguage, ...languages.filter((l) => l !== requiredLanguage)]
+  const displayLanguages: string[] = primaryLanguage
+    ? [primaryLanguage, ...languages.filter((l) => l !== primaryLanguage)]
     : languages;
 
   return (
