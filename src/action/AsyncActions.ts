@@ -678,8 +678,7 @@ export function loadTypes() {
       .then((data: TermData[]) => {
         return data.map((term: TermData) => {
           if (term.subTerms) {
-            // @ts-ignore
-            term.subTerms = Utils.sanitizeArray(term.subTerms).map(
+            term.plainSubTerms = Utils.sanitizeArray(term.subTerms).map(
               (subTerm) => subTerm.iri
             );
           }

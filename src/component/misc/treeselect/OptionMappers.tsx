@@ -13,10 +13,9 @@ export function mapTypeOptions(types: { [key: string]: Term }): Term[] {
   Object.keys(types).forEach((t) => (typesMap[t] = new Term(types[t])));
   const options = Object.keys(typesMap).map((k) => typesMap[k]);
   options.forEach((t) => {
-    if (t.subTerms) {
+    if (t.plainSubTerms) {
       // The tree-select needs parent for proper function
-      // @ts-ignore
-      t.subTerms.forEach((st) => (typesMap[st].parent = t.iri));
+      t.plainSubTerms.forEach((st: string) => (typesMap[st].parent = t.iri));
     }
   });
   return options;
