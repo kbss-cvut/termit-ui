@@ -1,5 +1,7 @@
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import LanguageSelector, { renderLanguages } from "../LanguageSelector";
+import LanguageSelector, {
+  renderRemovableLanguages,
+} from "../LanguageSelector";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Constants from "../../../util/Constants";
 import { NavItem } from "reactstrap";
@@ -64,7 +66,7 @@ describe("LanguageSelector", () => {
     it("does not allow language removal when there is only one language", () => {
       const wrapper = mountWithIntl(
         <>
-          {renderLanguages({
+          {renderRemovableLanguages({
             languages: ["en"],
             selectedLanguage: "en",
             formatMessage: intlFunctions().formatMessage,
@@ -79,7 +81,7 @@ describe("LanguageSelector", () => {
     it("selects the next language when first one is removed", () => {
       const wrapper = mountWithIntl(
         <>
-          {renderLanguages({
+          {renderRemovableLanguages({
             languages: ["en", "cs"],
             selectedLanguage: "en",
             formatMessage: intlFunctions().formatMessage,
@@ -96,7 +98,7 @@ describe("LanguageSelector", () => {
     it("selects the preceding language when the language with non-zero index is removed", () => {
       const wrapper = mountWithIntl(
         <>
-          {renderLanguages({
+          {renderRemovableLanguages({
             languages: ["en", "cs"],
             selectedLanguage: "en",
             formatMessage: intlFunctions().formatMessage,

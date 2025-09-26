@@ -110,6 +110,7 @@ export class TermMetadata extends React.Component<
           language={language}
           languages={Term.getLanguages(term)}
           onSelect={selectLanguage}
+          primaryLanguage={this.props.vocabulary.primaryLanguage}
         />
         <Row>
           <Col lg={this.state.displayTerms ? 9 : 12}>

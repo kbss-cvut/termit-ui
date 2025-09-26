@@ -315,6 +315,7 @@ export class TermMetadataEdit extends React.Component<
           key="term-edit-language-selector"
           language={language}
           existingLanguages={Term.getLanguages(this.state)}
+          requiredLanguage={this.props.vocabularyPrimaryLanguage}
           onSelect={this.props.selectLanguage}
           onRemove={this.removeTranslation}
         />

@@ -26,6 +26,7 @@ const TermMetadata: React.FC<TermMetadataProps> = (props) => {
         language={language}
         languages={Term.getLanguages(term)}
         onSelect={setLanguage}
+        primaryLanguage={props.vocabulary.primaryLanguage}
       />
       <Row>
         <Col xl={9} lg={12}>
