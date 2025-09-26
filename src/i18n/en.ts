@@ -341,14 +341,22 @@ const en = {
     "vocabulary.summary.import.translations.help":
       "Existing data will not be changed.",
     "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.skos-external": "SKOS - external",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",
     "vocabulary.import.dialog.title": "Import vocabulary",
     "vocabulary.import.dialog.message":
       "Imported file must be in the SKOS format. " +
       "The file must contain exactly one instance of skos:ConceptScheme.",
+    "vocabulary.import.dialog.external.message":
+      "Select vocabularies to import.",
+    "vocabulary.import.dialog.external.errormessage":
+      "There are no available vocabularies. ",
+    "vocabulary.import.dialog.external.button": "Import selected vocabularies",
     "vocabulary.import.title": "Import vocabulary",
     "vocabulary.import.success": "Vocabulary successfully imported.",
+    "vocabulary.import.success.message": "Vocabulary successfully imported.",
+    "vocabulary.import.error.message": "Failed to import vocabulary.",
     "vocabulary.import.allow-changing-identifiers":
       "Allow changing identifiers",
     "vocabulary.import.allow-changing-identifiers.tooltip":
