@@ -21,6 +21,7 @@ import DeleteRecord from "../../model/changetracking/DeleteRecord";
 import DeleteRow from "./DeleteRow";
 import { debounce } from "lodash";
 import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
+import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
 
 interface AssetHistoryProps {
   asset: Asset;
@@ -33,6 +34,10 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   const [filterAuthor, setFilterAuthor] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterAttribute, setFilterAttribute] = useState("");
+
+  const [page, setPage] = useState(0);
+  const pageSize = Constants.VOCABULARY_CONTENT_HISTORY_LIMIT;
+
   const loadHistoryActionDebounced = useRef(
     debounce(
       (
@@ -93,9 +98,30 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
     filterAttribute,
     loadHistoryActionDebounced,
   ]);
+
+  React.useEffect(() => {
+    setPage(0);
+  }, [asset, filterAuthor, filterType, filterAttribute]);
+
+  React.useEffect(() => {
+    if (!records) return;
+
+    const maxPageIndex =
+      records.length === 0 ? 0 : Math.floor((records.length - 1) / pageSize);
+
+    // Current page is out of range after filtering
+    if (page > maxPageIndex) {
+      setPage(maxPageIndex);
+    }
+  }, [records, page, pageSize]);
+
   if (!records) {
     return <ContainerMask text={i18n("history.loading")} />;
   }
+
+  const start = page * pageSize;
+  const end = start + pageSize;
+  const pageRecords = records.slice(start, end);
 
   return (
     <div className="additional-metadata-container">
@@ -146,7 +172,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
           </tr>
         </thead>
         <tbody>
-          {records.map((r) => {
+          {pageRecords.map((r) => {
             if (r instanceof PersistRecord) {
               return <PersistRow key={r.iri} record={r} />;
             }
@@ -160,6 +186,14 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
           })}
         </tbody>
       </Table>
+      {records.length > pageSize || page > 0 ? (
+        <SimplePagination
+          page={page}
+          setPage={setPage}
+          pageSize={pageSize}
+          itemCount={pageRecords.length}
+        />
+      ) : null}
     </div>
   );
 };
