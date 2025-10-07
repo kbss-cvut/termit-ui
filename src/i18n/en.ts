@@ -850,6 +850,8 @@ const en = {
       "The Excel file contains multiple terms with the same label.",
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Vocabulary already contains a term with label "{label}" with a different identifier than the imported one. Existing identifier: {existingUri}',
+    "error.vocabulary.import.excel.externalParentUnrelatedVocabulary":
+      "Term {label} references a broader term with IRI <{referencedIri}> which belongs to a vocabulary unrelated to the imported one.",
     "error.term.remove.annotationsExist":
       "Cannot delete the term. It is used for annotating resources or terms:  {resources}",
     "error.term.remove.hasSubTerms":

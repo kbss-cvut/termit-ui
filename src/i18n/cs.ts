@@ -858,6 +858,8 @@ const cs = {
       "Excel obsahuje více pojmů se stejným názvem.",
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
+    "error.vocabulary.import.excel.externalParentUnrelatedVocabulary":
+      "Pojem {label} odkazuje na nadřazený pojem s IRI <{referencedIri}>, který patří do slovníku nesouvisejícího s importovaným.",
     "error.term.remove.annotationsExist":
       "Pojem nelze odstranit, protože se je použit k anotaci jiných pojmů či zdrojů: {resources}",
     "error.term.remove.hasSubTerms":
