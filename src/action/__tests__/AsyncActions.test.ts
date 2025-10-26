@@ -68,6 +68,7 @@ import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import NotificationType from "../../model/NotificationType";
 import { langString } from "../../model/MultilingualString";
 import UserRole from "../../model/UserRole";
+import ResourceSaveReason from "../../component/annotator/ResourceSaveReason";
 
 jest.mock("../../util/Routing");
 jest.mock("../../util/Ajax", () => {
@@ -1345,7 +1346,8 @@ describe("Async actions", () => {
         (store.dispatch as ThunkDispatch)(
           uploadFileContent(
             VocabularyUtils.create(fileIri),
-            Generator.generateFile(fileName)
+            Generator.generateFile(fileName),
+            ResourceSaveReason.UNKNOWN
           )
         )
       ).then(() => {
@@ -1365,7 +1367,8 @@ describe("Async actions", () => {
         (store.dispatch as ThunkDispatch)(
           uploadFileContent(
             VocabularyUtils.create(iri),
-            Generator.generateFile(fileName)
+            Generator.generateFile(fileName),
+            ResourceSaveReason.UNKNOWN
           )
         )
       ).then(() => {
@@ -1384,7 +1387,11 @@ describe("Async actions", () => {
       Ajax.put = jest.fn().mockResolvedValue(undefined);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          saveFileContent(VocabularyUtils.create(iri), "test")
+          saveFileContent(
+            VocabularyUtils.create(iri),
+            "test",
+            ResourceSaveReason.UNKNOWN
+          )
         )
       ).then(() => {
         const args = (Ajax.put as jest.Mock).mock.calls[0];

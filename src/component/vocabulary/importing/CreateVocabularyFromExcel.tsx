@@ -27,6 +27,7 @@ import {
 } from "../../../action/AsyncImportActions";
 import { FormattedMessage } from "react-intl";
 import { useI18n } from "../../hook/useI18n";
+import ResourceSaveReason from "../../annotator/ResourceSaveReason";
 
 const CreateVocabularyFromExcel: React.FC = () => {
   const { i18n } = useI18n();
@@ -61,7 +62,8 @@ const CreateVocabularyFromExcel: React.FC = () => {
                 dispatch(
                   uploadFileContent(
                     VocabularyUtils.create(f.iri),
-                    fileContents[fIndex]
+                    fileContents[fIndex],
+                    ResourceSaveReason.CREATE_FILE
                   )
                 )
               )

@@ -22,6 +22,7 @@ import NotificationType from "../../model/NotificationType";
 import { loadAllTerms } from "../../action/AsyncAnnotatorActions";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
+import ResourceSaveReason from "../annotator/ResourceSaveReason";
 
 interface FileDetailProvidedProps {
   iri: IRI;
@@ -35,7 +36,11 @@ interface FileDetailOwnProps extends HasI18n {
   consumeNotification: (notification: AppNotification) => void;
   notifications: AppNotification[];
   loadFileContent: (fileIri: IRI) => Promise<any>;
-  saveFileContent: (fileIri: IRI, fileContent: string) => Promise<any>;
+  saveFileContent: (
+    fileIri: IRI,
+    fileContent: string,
+    reason: ResourceSaveReason
+  ) => Promise<any>;
   clearFileContent: () => void;
   loadVocabulary: (vocabularyIri: IRI) => void;
   fetchTerms: (vocabularyIri: IRI) => Promise<any>;
@@ -103,14 +108,15 @@ export class FileContentDetail extends React.Component<
     this.props.clearFileContent();
   }
 
-  private onUpdate = (newFileContent: string) => {
+  private onUpdate = (newFileContent: string, reason: ResourceSaveReason) => {
     return trackPromise(
       this.props.saveFileContent(
         {
           fragment: this.props.iri.fragment,
           namespace: this.props.iri.namespace,
         },
-        newFileContent
+        newFileContent,
+        reason
       ),
       "annotator"
     );
@@ -155,8 +161,11 @@ export default connect(
   (dispatch: ThunkDispatch) => {
     return {
       loadFileContent: (fileIri: IRI) => dispatch(loadFileContent(fileIri)),
-      saveFileContent: (fileIri: IRI, fileContent: string) =>
-        dispatch(saveFileContent(fileIri, fileContent)),
+      saveFileContent: (
+        fileIri: IRI,
+        fileContent: string,
+        reason: ResourceSaveReason
+      ) => dispatch(saveFileContent(fileIri, fileContent, reason)),
       clearFileContent: () => dispatch(clearFileContent()),
       loadVocabulary: (vocabularyIri: IRI) =>
         dispatch(loadVocabulary(vocabularyIri)),

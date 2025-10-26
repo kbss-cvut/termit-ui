@@ -233,7 +233,7 @@ export class Annotation extends React.Component<
     return AnnotationClass.INVALID;
   };
 
-  private getTermCreatorState = () => {
+  public getTermCreatorState = () => {
     if (this.props.score) {
       return AnnotationOrigin.PROPOSED;
     }
