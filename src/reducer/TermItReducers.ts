@@ -46,6 +46,7 @@ import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
 import { loadTermsFlatListPreference } from "src/util/UISettingsUtil";
+import RelationshipAnnotation from "../model/meta/RelationshipAnnotation";
 
 function isAsyncSuccess(action: Action) {
   return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
@@ -678,6 +679,24 @@ function definitionallyRelatedTerms(
   }
 }
 
+function relationshipAnnotations(
+  state: RelationshipAnnotation[] = [],
+  action: AsyncActionSuccess<RelationshipAnnotation[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_TERM_RELATIONSHIP_ANNOTATIONS:
+      if (isAsyncSuccess(action)) {
+        return action.payload;
+      }
+      return state;
+    case ActionType.LOGOUT: // Intentional fall-through
+    case ActionType.LOAD_TERM:
+      return [];
+    default:
+      return state;
+  }
+}
+
 function breadcrumbs(state: Breadcrumb[] = [], action: BreadcrumbAction) {
   switch (action.type) {
     case ActionType.ADD_CRUMB:
@@ -808,6 +827,7 @@ const rootReducer = combineReducers<TermItState>({
   configuration,
   validationResults,
   definitionallyRelatedTerms,
+  relationshipAnnotations,
   breadcrumbs,
   annotatorLegendFilter,
   users,

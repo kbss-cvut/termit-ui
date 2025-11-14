@@ -112,7 +112,7 @@ export interface TermData extends AssetData {
   examples?: PluralMultilingualString;
 }
 
-export interface TermInfo {
+export interface TermInfo extends HasIdentifier {
   iri: string;
   label: MultilingualString; // Multilingual string due to the same context item (see ctx above)
   vocabulary: HasIdentifier;

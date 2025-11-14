@@ -559,6 +559,8 @@ const de = {
     "term.metadata.validation.empty": "Der Begriff ist unproblematisch.",
     "term.metadata.relationshipAnnotation.button.tooltip":
       "Beziehung annotieren",
+    "term.metadata.relationshipAnnotation.dialog.title":
+      "Annotationen von: {relationship}",
     "term.removed.message": "Begriff erfolgreich entfernt.",
     "term.badge.score.tooltip": "Der Wert dieses Begriffs beträgt {score} %. ",
     "term.badge.no-score.tooltip": "Für diesen Begriff ist kein Wert verfügbar",

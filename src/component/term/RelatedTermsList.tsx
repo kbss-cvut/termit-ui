@@ -65,6 +65,7 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
                     VocabularyUtils.SKOS_RELATED,
                     VocabularyUtils.SKOS_RELATED_MATCH,
                   ],
+                  predicateLabel: i18n("term.metadata.related.title"),
                   object: item,
                 }}
               />

@@ -6,11 +6,14 @@ import BadgeButton from "../../misc/BadgeButton";
 import { useI18n } from "../../hook/useI18n";
 import Utils from "../../../util/Utils";
 import { HasIdentifier } from "../../../model/Asset";
+import MultilingualString from "../../../model/MultilingualString";
+import { RelationshipAnnotationDialog } from "./RelationshipAnnotationDialog";
 
 export interface ResourceRelationship {
-  subject: HasIdentifier;
-  predicate: string | string[];
-  object: HasIdentifier;
+  subject: HasIdentifier & { label: MultilingualString };
+  predicate: string | string[]; // Multiple predicates can be represented by one relationship, the backend then sorts them out
+  predicateLabel: string;
+  object: HasIdentifier & { label: string | MultilingualString };
 }
 
 interface RelationshipAnnotationButtonProps {
@@ -35,14 +38,21 @@ export const RelationshipAnnotationButton: React.FC<
     return null;
   }
   return (
-    <BadgeButton
-      color="outline-dark"
-      onClick={() => setShowDialog(!showDialog)}
-      className="ml-1 align-top"
-      title={i18n("term.metadata.relationshipAnnotation.button.tooltip")}
-      style={{ padding: "8px" }}
-    >
-      <RelationshipIcon />
-    </BadgeButton>
+    <>
+      <BadgeButton
+        color="outline-dark"
+        onClick={() => setShowDialog(!showDialog)}
+        className="ml-1 align-top"
+        title={i18n("term.metadata.relationshipAnnotation.button.tooltip")}
+        style={{ padding: "8px" }}
+      >
+        <RelationshipIcon />
+      </BadgeButton>
+      <RelationshipAnnotationDialog
+        relationship={relationship}
+        show={showDialog}
+        onClose={() => setShowDialog(false)}
+      />
+    </>
   );
 };

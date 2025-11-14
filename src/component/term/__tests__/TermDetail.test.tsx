@@ -42,6 +42,7 @@ describe("TermDetail", () => {
   let onPublishNotification: (notification: AppNotification) => void;
   let requestVocabularyValidation: (iri: IRI, stompClient: StompClient) => void;
   let loadCustomAttributes: () => void;
+  let loadTermRelationshipAnnotations: (termIri: IRI) => void;
 
   let handlers: any;
 
@@ -74,6 +75,7 @@ describe("TermDetail", () => {
     onPublishNotification = jest.fn();
     requestVocabularyValidation = jest.fn();
     loadCustomAttributes = jest.fn();
+    loadTermRelationshipAnnotations = jest.fn();
     handlers = {
       loadTerm: onLoad,
       loadVocabulary,
@@ -84,6 +86,7 @@ describe("TermDetail", () => {
       approveOccurrence,
       removeOccurrence,
       loadCustomAttributes,
+      loadTermRelationshipAnnotations,
     };
     vocabulary = Generator.generateVocabulary();
     term = new Term({

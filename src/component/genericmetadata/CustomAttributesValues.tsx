@@ -5,7 +5,10 @@ import TermItState from "../../model/TermItState";
 // @ts-ignore
 import { Badge, Col, Label, List, Row } from "reactstrap";
 import Utils from "../../util/Utils";
-import { getLocalized } from "../../model/MultilingualString";
+import {
+  getLocalized,
+  MultilingualString,
+} from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import { RdfProperty } from "../../model/RdfsResource";
 import {
@@ -22,7 +25,7 @@ import { RelationshipAnnotationButton } from "../term/relationship-annotation/Re
 import { HasIdentifier } from "../../model/Asset";
 
 export const CustomAttributesValues: React.FC<{
-  asset: HasUnmappedProperties & HasIdentifier;
+  asset: HasUnmappedProperties & HasIdentifier & { label: MultilingualString };
 }> = ({ asset }) => {
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
@@ -65,7 +68,10 @@ export const CustomAttributesValues: React.FC<{
                           relationship={{
                             subject: asset,
                             predicate: att.iri,
-                            object: val as HasIdentifier,
+                            predicateLabel: getLocalized(att.label, lang),
+                            object: val as HasIdentifier & {
+                              label: MultilingualString;
+                            },
                           }}
                         />
                       )}

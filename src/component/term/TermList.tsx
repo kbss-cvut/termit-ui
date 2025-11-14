@@ -59,7 +59,12 @@ const TermList: React.FC<TermListProps> = ({
                 />
               )}
               <RelationshipAnnotationButton
-                relationship={{ subject, predicate: property, object: item }}
+                relationship={{
+                  subject,
+                  predicate: property,
+                  predicateLabel: label,
+                  object: item,
+                }}
               />
             </li>
           ))}

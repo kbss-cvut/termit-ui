@@ -594,7 +594,9 @@ const en = {
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",
     "term.metadata.relationshipAnnotation.button.tooltip":
-      "Annotate relationship",
+      "Relationship annotations",
+    "term.metadata.relationshipAnnotation.dialog.title":
+      "Annotations of: {relationship}",
     "term.removed.message": "Term successfully removed.",
     "term.badge.score.tooltip":
       "The score of this term is {score}%. Click to see the validation results",
