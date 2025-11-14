@@ -1,20 +1,20 @@
 import React from "react";
-import Term, { TermInfo } from "../../../model/Term";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { ReactComponent as RelationshipIcon } from "../../../asset/icon/term-relationship-icon.svg";
 import BadgeButton from "../../misc/BadgeButton";
 import { useI18n } from "../../hook/useI18n";
 import Utils from "../../../util/Utils";
+import { HasIdentifier } from "../../../model/Asset";
 
-export interface TermRelationship {
-  subject: Term;
+export interface ResourceRelationship {
+  subject: HasIdentifier;
   predicate: string | string[];
-  object: TermInfo | Term;
+  object: HasIdentifier;
 }
 
 interface RelationshipAnnotationButtonProps {
-  relationship: TermRelationship;
+  relationship: ResourceRelationship;
 }
 
 export const RelationshipAnnotationButton: React.FC<

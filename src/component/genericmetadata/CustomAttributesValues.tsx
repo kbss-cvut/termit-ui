@@ -18,9 +18,11 @@ import TermIriLink from "../term/TermIriLink";
 import { ThunkDispatch } from "../../util/Types";
 import { getCustomAttributes } from "../../action/AsyncActions";
 import OutgoingLink from "../misc/OutgoingLink";
+import { RelationshipAnnotationButton } from "../term/relationship-annotation/RelationshipAnnotationButton";
+import { HasIdentifier } from "../../model/Asset";
 
 export const CustomAttributesValues: React.FC<{
-  asset: HasUnmappedProperties;
+  asset: HasUnmappedProperties & HasIdentifier;
 }> = ({ asset }) => {
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
@@ -58,6 +60,15 @@ export const CustomAttributesValues: React.FC<{
                   {asset.unmappedProperties.get(att.iri)?.map((val) => (
                     <li key={stringifyPropertyValue(val)}>
                       <CustomAttributeValue attribute={att} value={val} />
+                      {(val as any).iri && (
+                        <RelationshipAnnotationButton
+                          relationship={{
+                            subject: asset,
+                            predicate: att.iri,
+                            object: val as HasIdentifier,
+                          }}
+                        />
+                      )}
                     </li>
                   ))}
                 </List>
