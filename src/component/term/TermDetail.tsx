@@ -4,6 +4,7 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
+  getCustomAttributes,
   loadVocabulary,
   removeTerm,
   updateTerm,
@@ -24,7 +25,7 @@ import AppNotification from "../../model/AppNotification";
 import { publishNotification } from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-import * as _ from "lodash";
+import _ from "lodash";
 import Vocabulary from "../../model/Vocabulary";
 import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
@@ -84,6 +85,7 @@ interface TermDetailProps
   approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   publishNotification: (notification: AppNotification) => void;
+  loadCustomAttributes: () => void;
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -115,6 +117,7 @@ export class TermDetail extends EditableComponent<
 
   public componentDidMount(): void {
     this.load();
+    this.props.loadCustomAttributes();
   }
 
   private load(): void {
@@ -372,6 +375,7 @@ export default connect(
         dispatch(removeOccurrence(occurrence)),
       publishNotification: (notification: AppNotification) =>
         dispatch(publishNotification(notification)),
+      loadCustomAttributes: () => dispatch(getCustomAttributes()),
     };
   }
 )(

@@ -8,22 +8,32 @@ import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
 import { createTermNonTerminalStateMatcher } from "./TermTreeSelectHelper";
 import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
+import { RelationshipAnnotationButton } from "./relationship-annotation/RelationshipAnnotationButton";
 
 interface TermListProps {
+  subject: Term;
   terms?: (Term | TermInfo)[];
   label: string;
   id: string;
   vocabularyIri?: string;
   language: string;
+  property: string;
 
   addonBeforeRenderer?: (
     t: Term | TermInfo
   ) => React.JSX.Element | undefined | null; // An element to render before the term link
 }
 
-const TermList: React.FC<TermListProps> = (props) => {
-  const { terms, label, id, language, vocabularyIri, addonBeforeRenderer } =
-    props;
+const TermList: React.FC<TermListProps> = ({
+  subject,
+  terms,
+  label,
+  id,
+  language,
+  vocabularyIri,
+  property,
+  addonBeforeRenderer,
+}) => {
   const terminalStates = useSelector(
     (state: TermItState) => state.terminalStates
   );
@@ -48,6 +58,9 @@ const TermList: React.FC<TermListProps> = (props) => {
                   section={"terms-"}
                 />
               )}
+              <RelationshipAnnotationButton
+                relationship={{ subject, predicate: property, object: item }}
+              />
             </li>
           ))}
         </List>

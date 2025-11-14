@@ -557,9 +557,12 @@ const de = {
     "term.metadata.types.select.placeholder": "Typ auswählen",
     "term.metadata.validation.title": "Validierung",
     "term.metadata.validation.empty": "Der Begriff ist unproblematisch.",
+    "term.metadata.relationshipAnnotation.button.tooltip":
+      "Beziehung annotieren",
     "term.removed.message": "Begriff erfolgreich entfernt.",
     "term.badge.score.tooltip": "Der Wert dieses Begriffs beträgt {score} %. ",
     "term.badge.no-score.tooltip": "Für diesen Begriff ist kein Wert verfügbar",
+
     "glossary.title": "Bedingungen",
     "glossary.termCount.tooltip":
       "Anzahl der Begriffe im Vokabular (ohne importierte Vokabeln)",

@@ -12,6 +12,7 @@ import { ThunkDispatch } from "../../util/Types";
 import TermItState from "../../model/TermItState";
 import { createTermNonTerminalStateMatcher } from "./TermTreeSelectHelper";
 import { getShortLocale } from "../../util/IntlUtil";
+import { RelationshipAnnotationButton } from "./relationship-annotation/RelationshipAnnotationButton";
 
 interface RelatedTermsListProps {
   term: Term;
@@ -56,6 +57,16 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
                 showVocabularyBadge={
                   term.vocabulary?.iri !== item.vocabulary?.iri
                 }
+              />
+              <RelationshipAnnotationButton
+                relationship={{
+                  subject: term,
+                  predicate: [
+                    VocabularyUtils.SKOS_RELATED,
+                    VocabularyUtils.SKOS_RELATED_MATCH,
+                  ],
+                  object: item,
+                }}
               />
             </li>
           ))}
