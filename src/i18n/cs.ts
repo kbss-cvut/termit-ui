@@ -600,9 +600,7 @@ const cs = {
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",
-    "term.metadata.relationshipAnnotation.button.tooltip": "Anotace vztahu",
-    "term.metadata.relationshipAnnotation.dialog.title":
-      "Anotace vztahu: {relationship}",
+    "term.metadata.relationshipAnnotation": "Anotace vztahu",
     "term.removed.message": "Pojem byl odstraněn.",
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",

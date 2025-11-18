@@ -43,7 +43,7 @@ export const RelationshipAnnotationButton: React.FC<
         color="outline-dark"
         onClick={() => setShowDialog(!showDialog)}
         className="ml-1 align-top"
-        title={i18n("term.metadata.relationshipAnnotation.button.tooltip")}
+        title={i18n("term.metadata.relationshipAnnotation")}
         style={{ padding: "8px" }}
       >
         <RelationshipIcon />

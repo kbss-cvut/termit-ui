@@ -4,8 +4,8 @@ import classNames from "classnames";
 import { ButtonToolbar } from "reactstrap";
 
 interface HeaderWithActionsProps {
-  title: JSX.Element | string;
-  actions?: JSX.Element[] | JSX.Element | null;
+  title: React.ReactNode | string;
+  actions?: React.ReactNode[] | React.ReactNode | null;
   className?: string;
   id?: string;
 }

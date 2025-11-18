@@ -9,15 +9,20 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { stringifyPropertyValue } from "../../../model/WithUnmappedProperties";
 import { CustomAttributeValue } from "../../genericmetadata/CustomAttributesValues";
 import RelationshipAnnotation from "../../../model/meta/RelationshipAnnotation";
+import { ResourceRelationship } from "./RelationshipAnnotationButton";
 
 export const RelationshipAnnotationView: React.FC<{
   relationshipAnnotations: RelationshipAnnotation[];
-}> = ({ relationshipAnnotations }) => {
+  relationship: ResourceRelationship;
+}> = ({ relationshipAnnotations, relationship }) => {
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
   const customAttributes = useAppSelector((state) => state.customAttributes);
+  const predicate = Utils.sanitizeArray(relationship.predicate);
   const annotationAtts = customAttributes.filter((att) =>
-    relationshipAnnotations.some((ann) => ann.attribute.iri === att.iri)
+    Utils.sanitizeArray(att.annotatedRelationships).some((rel) =>
+      predicate.includes(rel.iri)
+    )
   );
 
   return (
