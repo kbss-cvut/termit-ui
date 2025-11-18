@@ -1,14 +1,17 @@
 import { RDFStatement, RDFSTATEMENT_CONTEXT } from "../RDFStatement";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import { HasIdentifier } from "../Asset";
+import { ASSET_CONTEXT, HasIdentifier } from "../Asset";
 
 const ctx = {
-  relationship: VocabularyUtils.RDF_SUBJECT,
+  relationship: {
+    "@id": VocabularyUtils.RDF_SUBJECT,
+    "@context": RDFSTATEMENT_CONTEXT,
+  },
   attribute: VocabularyUtils.RDF_PREDICATE,
   value: VocabularyUtils.RDF_OBJECT,
 } as const;
 
-export const CONTEXT = Object.assign({}, ctx, RDFSTATEMENT_CONTEXT);
+export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT);
 
 export default interface RelationshipAnnotation {
   relationship: RDFStatement;

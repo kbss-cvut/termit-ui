@@ -86,7 +86,7 @@ export const CustomAttributesValues: React.FC<{
   );
 };
 
-const CustomAttributeValue: React.FC<{
+export const CustomAttributeValue: React.FC<{
   attribute: RdfProperty;
   value: PropertyValueType;
 }> = ({ attribute, value }) => {

@@ -12,6 +12,7 @@ import JsonLdUtils from "../util/JsonLdUtils";
 import RelationshipAnnotation, {
   CONTEXT,
 } from "../model/meta/RelationshipAnnotation";
+import { ErrorData } from "../model/ErrorInfo";
 
 export function loadTermRelationshipAnnotations(termIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_RELATIONSHIP_ANNOTATIONS };
@@ -30,7 +31,7 @@ export function loadTermRelationshipAnnotations(termIri: IRI) {
       .then((annotations) =>
         dispatch(asyncActionSuccessWithPayload(action, annotations))
       )
-      .catch((error) => {
+      .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
         throw error;
       });

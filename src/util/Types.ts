@@ -8,17 +8,20 @@ import { Action } from "redux";
 import { match } from "react-router";
 import { Location } from "history";
 import { FetchParams } from "intelligent-tree-select";
+import React from "react";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 /**
  * Simple name for Thunk Dispatch, providing the required generic type arguments.
  *
  * Action can be specified.
  */
-export type ThunkDispatch<A extends Action = Action> = TDispatch<
-  TermItState,
-  null,
-  Action
->;
+export type ThunkDispatch = TDispatch<TermItState, null, Action>;
+
+/**
+ * useSelector with TermItState as the state type.
+ */
+export const useAppSelector: TypedUseSelectorHook<TermItState> = useSelector;
 
 /**
  * Simple name for a function retrieving state from the store.
@@ -28,7 +31,7 @@ export type GetStoreState = () => TermItState;
 /**
  * Mapper of values to JSX elements.
  */
-export type ValueMapper<T> = (data: T) => JSX.Element | null;
+export type ValueMapper<T> = (data: T) => React.ReactNode | null;
 
 /**
  * Represents parameters passed to the fetchOptions handler of the tree select component.
@@ -46,11 +49,6 @@ export interface TermFetchParams<T extends object>
   includeTerms?: string[];
   flatList?: boolean;
 }
-
-/**
- * Type representing literal values.
- */
-export type Literal = number | string | boolean;
 
 export interface BasicRouteProps {
   match: match<any>;

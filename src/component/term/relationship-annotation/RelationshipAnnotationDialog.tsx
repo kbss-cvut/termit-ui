@@ -5,6 +5,9 @@ import { useI18n } from "../../hook/useI18n";
 import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { FormattedMessage } from "react-intl";
+import { RelationshipAnnotationView } from "./RelationshipAnnotationView";
+import { useAppSelector } from "../../../util/Types";
+import Utils from "../../../util/Utils";
 
 interface RelationshipAnnotationDialogProps {
   relationship: ResourceRelationship;
@@ -17,6 +20,14 @@ export const RelationshipAnnotationDialog: React.FC<
 > = ({ relationship, show, onClose }) => {
   const { locale } = useI18n();
   const shortLocale = getShortLocale(locale);
+  const annotations = useAppSelector((state) => state.relationshipAnnotations);
+  const predicate = Utils.sanitizeArray(relationship.predicate);
+  const value = relationship.object;
+  const relevantAnnotations = annotations.filter(
+    (ann) =>
+      predicate.includes(ann.relationship.relation.iri) &&
+      ann.relationship.value.iri === value.iri
+  );
   return (
     <Modal isOpen={show} size="lg" toggle={onClose}>
       <ModalHeader toggle={onClose}>
@@ -33,7 +44,11 @@ export const RelationshipAnnotationDialog: React.FC<
           }}
         />
       </ModalHeader>
-      <ModalBody></ModalBody>
+      <ModalBody>
+        <RelationshipAnnotationView
+          relationshipAnnotations={relevantAnnotations}
+        />
+      </ModalBody>
     </Modal>
   );
 };
