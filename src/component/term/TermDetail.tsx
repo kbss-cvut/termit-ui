@@ -68,7 +68,11 @@ export interface CommonTermDetailProps extends HasI18n {
   term: Term | null;
   vocabulary: Vocabulary;
   loadVocabulary: (iri: IRI, timestamp?: string) => void;
-  loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) => void;
+  loadTerm: (
+    termName: string,
+    vocabularyIri: IRI,
+    timestamp?: string
+  ) => Promise<any>;
 }
 
 interface TermDetailProps
@@ -144,7 +148,15 @@ export class TermDetail extends EditableComponent<
       this.props.location.search,
       "namespace"
     );
-    this.props.loadTerm(termName, { fragment: name, namespace }, timestamp);
+    this.props
+      .loadTerm(termName, { fragment: name, namespace }, timestamp)
+      .then(() => {
+        if (this.props.term) {
+          this.props.loadTermRelationshipAnnotations(
+            VocabularyUtils.create(this.props.term.iri!)
+          );
+        }
+      });
   }
 
   public componentDidUpdate(prevProps: TermDetailProps) {
@@ -154,9 +166,6 @@ export class TermDetail extends EditableComponent<
     }
     if (prevProps.term?.iri !== this.props.term?.iri) {
       this.setState({ language: resolveInitialLanguage(this.props) });
-      this.props.loadTermRelationshipAnnotations(
-        VocabularyUtils.create(this.props.term?.iri!)
-      );
     }
   }
 
