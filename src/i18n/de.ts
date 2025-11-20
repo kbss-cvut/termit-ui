@@ -17,6 +17,7 @@ const de = {
     description: "Beschreibung",
     submit: "Absenden",
     approve: "Genehmigen",
+    backups: "Sicherungen",
     "basic-information": "Grundlegende Informationen",
     "created-info": "Erstellt von {author} am {date}",
     "select.placeholder": "Wählen...",
@@ -476,6 +477,14 @@ const de = {
     "resource.metadata.document.files.actions.add.dialog.title": "Neue Datei",
     "resource.metadata.document.files.empty": "Keine Dateien gefunden. ",
     "resource.file.vocabulary.create": "Datei hinzufügen",
+    "resource.file.backup.reason.reupload": "Erneuter Upload",
+    "resource.file.backup.reason.text_analysis": "Textanalyse",
+    "resource.file.backup.reason.new_occurrence": "Neues Vorkommen",
+    "resource.file.backup.reason.remove_occurrence": "Vorkommen entfernt",
+    "resource.file.backup.reason.scheduled": "Geplant",
+    "resource.file.backup.reason.backup_restore": "Backup wiederhergestellt",
+    "resource.file.backup.reason.unknown": "Unbekannt",
+
     "term.language.selector.item":
       "Begriffsdaten in der Sprache anzeigen: {nativeLang} ({lang})",
     "term.language.add.placeholder": "Wählen...",

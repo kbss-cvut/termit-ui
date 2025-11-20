@@ -200,6 +200,8 @@ const VocabularyUtils = {
   IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
   IS_FORBIDDEN: `${_NS_TERMIT}zak\u00e1zan\u00fd`,
 
+  HAS_BACKUP_REASON: `${_NS_TERMIT}m\u00e1-d\u016fvod-z\u00e1lohy`,
+
   getFragment(iri: string): string {
     return this.create(iri).fragment;
   },

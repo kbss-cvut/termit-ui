@@ -1,0 +1,9 @@
+table.file-backup-list {
+  td {
+    width: min-content;
+    white-space: nowrap;
+  }
+  td:last-child {
+    width: 100%;
+  }
+}

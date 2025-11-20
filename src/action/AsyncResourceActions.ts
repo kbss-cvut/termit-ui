@@ -14,6 +14,9 @@ import { CONTEXT as DOCUMENT_CONTEXT } from "../model/Document";
 import { ErrorData } from "../model/ErrorInfo";
 import { AxiosResponse } from "axios";
 import Utils from "../util/Utils";
+import FileBackupDto, {
+  CONTEXT as FILE_BACKUP_CONTEXT,
+} from "../model/FileBackupDto";
 
 export function loadFileMetadata(fileIri: IRI) {
   const action = { type: ActionType.LOAD_FILE_METADATA };
@@ -77,5 +80,36 @@ export function exportFileContent(
         return dispatch(asyncActionSuccess(action));
       })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+/**
+ * Loads all available backups for the specified file.
+ * @param fileIri File identifier
+ */
+export function loadFileBackups(fileIri: IRI) {
+  const action = {
+    type: ActionType.LOAD_FILE_BACKUPS,
+  };
+  return (dispatch: ThunkDispatch): Promise<FileBackupDto[] | null> => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.get(
+      `${Constants.API_PREFIX}/resources/${fileIri.fragment}/backups`,
+      param("namespace", fileIri.namespace)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<FileBackupDto>(
+          data,
+          FILE_BACKUP_CONTEXT
+        )
+      )
+      .then((data: FileBackupDto[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        return null;
+      });
   };
 }

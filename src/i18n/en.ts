@@ -17,6 +17,7 @@ const en = {
     description: "Description",
     submit: "Submit",
     approve: "Approve",
+    backups: "Backups",
     "basic-information": "Basic Information",
     "created-info": "Created by {author} on {date}",
     "select.placeholder": "Select...",
@@ -479,6 +480,13 @@ const en = {
     "resource.metadata.document.files.empty":
       "No files found. Start by adding some.",
     "resource.file.vocabulary.create": "Add File",
+    "resource.file.backup.reason.reupload": "Reupload",
+    "resource.file.backup.reason.text_analysis": "Text analysis",
+    "resource.file.backup.reason.new_occurrence": "New occurrence",
+    "resource.file.backup.reason.remove_occurrence": "Occurrence removal",
+    "resource.file.backup.reason.scheduled": "Scheduled",
+    "resource.file.backup.reason.backup_restore": "Backup restored",
+    "resource.file.backup.reason.unknown": "Unknown",
 
     "term.language.selector.item":
       "View term data in language: {nativeLang} ({lang})",
