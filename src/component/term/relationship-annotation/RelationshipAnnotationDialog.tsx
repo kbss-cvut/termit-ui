@@ -69,6 +69,7 @@ export const RelationshipAnnotationDialog: React.FC<
             relationship={relationship}
             relationshipAnnotations={relevantAnnotations}
             onCancel={() => setEdit(false)}
+            onClose={onClose}
           />
         ) : (
           <RelationshipAnnotationView

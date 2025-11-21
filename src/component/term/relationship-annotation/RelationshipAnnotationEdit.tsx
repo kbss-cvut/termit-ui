@@ -20,7 +20,8 @@ export const RelationshipAnnotationEdit: React.FC<{
   relationship: ResourceRelationship;
   relationshipAnnotations: RelationshipAnnotation[];
   onCancel: () => void;
-}> = ({ relationship, relationshipAnnotations, onCancel }) => {
+  onClose: () => void;
+}> = ({ relationship, relationshipAnnotations, onCancel, onClose }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [state, setState] = React.useState<{
@@ -67,6 +68,7 @@ export const RelationshipAnnotationEdit: React.FC<{
           messageId: "term.metadata.relationshipAnnotation.save.success",
         })
       );
+      onClose();
     });
   };
 
