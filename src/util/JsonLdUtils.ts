@@ -175,4 +175,16 @@ export default class JsonLdUtils {
       "@type": "@id",
     };
   }
+
+  /**
+   * Converts the specified data to a JSON-LD document with the specified context.
+   * @param data
+   * @param context
+   */
+  public static toJsonLd(data: any, context: object) {
+    return {
+      "@context": context,
+      "@graph": data,
+    };
+  }
 }

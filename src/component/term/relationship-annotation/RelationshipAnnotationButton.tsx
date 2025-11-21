@@ -11,7 +11,7 @@ import { RelationshipAnnotationDialog } from "./RelationshipAnnotationDialog";
 
 export interface ResourceRelationship {
   subject: HasIdentifier & { label: MultilingualString };
-  predicate: string | string[]; // Multiple predicates can be represented by one relationship, the backend then sorts them out
+  predicate: string;
   predicateLabel: string;
   object: HasIdentifier & { label: string | MultilingualString };
 }
@@ -28,11 +28,10 @@ export const RelationshipAnnotationButton: React.FC<
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
   );
-  const predicate = Utils.sanitizeArray(relationship.predicate);
   const relevantAttributes = customAttributes.filter((attr) =>
-    Utils.sanitizeArray(attr.annotatedRelationships).some((pred) =>
-      predicate.includes(pred.iri)
-    )
+    Utils.sanitizeArray(attr.annotatedRelationships)
+      .map((ar) => ar.iri)
+      .includes(relationship.predicate)
   );
   if (relevantAttributes.length === 0) {
     return null;

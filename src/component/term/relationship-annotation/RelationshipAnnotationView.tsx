@@ -18,11 +18,10 @@ export const RelationshipAnnotationView: React.FC<{
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
   const customAttributes = useAppSelector((state) => state.customAttributes);
-  const predicate = Utils.sanitizeArray(relationship.predicate);
   const annotationAtts = customAttributes.filter((att) =>
-    Utils.sanitizeArray(att.annotatedRelationships).some((rel) =>
-      predicate.includes(rel.iri)
-    )
+    Utils.sanitizeArray(att.annotatedRelationships)
+      .map((ar) => ar.iri)
+      .includes(relationship.predicate)
   );
 
   return (

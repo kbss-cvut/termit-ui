@@ -6,11 +6,11 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { RelationshipAnnotationView } from "./RelationshipAnnotationView";
 import { useAppSelector } from "../../../util/Types";
-import Utils from "../../../util/Utils";
 import HeaderWithActions from "../../misc/HeaderWithActions";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import IfVocabularyActionAuthorized from "../../vocabulary/authorization/IfVocabularyActionAuthorized";
 import { RelationshipAnnotationEdit } from "./RelationshipAnnotationEdit";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 
 interface RelationshipAnnotationDialogProps {
   relationship: ResourceRelationship;
@@ -29,11 +29,10 @@ export const RelationshipAnnotationDialog: React.FC<
   const shortLocale = getShortLocale(locale);
   const annotations = useAppSelector((state) => state.relationshipAnnotations);
   const vocabulary = useAppSelector((state) => state.vocabulary);
-  const predicate = Utils.sanitizeArray(relationship.predicate);
   const value = relationship.object;
   const relevantAnnotations = annotations.filter(
     (ann) =>
-      predicate.includes(ann.relationship.relation.iri) &&
+      relationship.predicate === ann.relationship.relation.iri &&
       ann.relationship.value.iri === value.iri
   );
   return (
@@ -42,6 +41,7 @@ export const RelationshipAnnotationDialog: React.FC<
         {i18n("term.metadata.relationshipAnnotation")}
       </ModalHeader>
       <ModalBody>
+        <PromiseTrackingMask area="relationship-annotations" />
         <HeaderWithActions
           title={`${getLocalized(relationship.subject.label, shortLocale)} - ${
             relationship.predicateLabel

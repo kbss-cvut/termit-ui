@@ -1,12 +1,20 @@
 import React from "react";
 import { ResourceRelationship } from "./RelationshipAnnotationButton";
 import RelationshipAnnotation from "../../../model/meta/RelationshipAnnotation";
-import { useAppSelector } from "../../../util/Types";
+import { ThunkDispatch, useAppSelector } from "../../../util/Types";
 import Utils from "../../../util/Utils";
 import { Button, ButtonToolbar, Col, Row } from "reactstrap";
 import { CustomAttributeValueEdit } from "../../genericmetadata/CustomAttributeValueEdit";
 import { PropertyValueType } from "../../../model/WithUnmappedProperties";
 import { useI18n } from "../../hook/useI18n";
+import { useDispatch } from "react-redux";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import {
+  loadTermRelationshipAnnotations,
+  updateTermRelationshipAnnotation,
+} from "../../../action/AsyncTermRelationshipAnnotationActions";
+import { trackPromise } from "react-promise-tracker";
+import { publishSuccessMessage } from "../../../action/SyncActions";
 
 export const RelationshipAnnotationEdit: React.FC<{
   relationship: ResourceRelationship;
@@ -14,6 +22,7 @@ export const RelationshipAnnotationEdit: React.FC<{
   onCancel: () => void;
 }> = ({ relationship, relationshipAnnotations, onCancel }) => {
   const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
   const [state, setState] = React.useState<{
     [key: string]: PropertyValueType[];
   }>({});
@@ -25,17 +34,40 @@ export const RelationshipAnnotationEdit: React.FC<{
     setState(initState);
   }, [relationshipAnnotations, setState]);
   const customAttributes = useAppSelector((state) => state.customAttributes);
-  const predicate = Utils.sanitizeArray(relationship.predicate);
   const annotationAtts = customAttributes.filter((att) =>
-    Utils.sanitizeArray(att.annotatedRelationships).some((rel) =>
-      predicate.includes(rel.iri)
-    )
+    Utils.sanitizeArray(att.annotatedRelationships)
+      .map((ar) => ar.iri)
+      .includes(relationship.predicate)
   );
   const onChange = (annotationProp: string, value: PropertyValueType[]) => {
     setState(Object.assign({}, state, { [annotationProp]: value }));
   };
   const onSave = () => {
-    // TODO
+    const termIri = VocabularyUtils.create(relationship.subject.iri);
+    trackPromise(
+      Promise.all(
+        Object.keys(state).map((annotationIri) => {
+          const data: RelationshipAnnotation = {
+            relationship: {
+              subject: relationship.subject,
+              relation: { iri: relationship.predicate },
+              value: relationship.object,
+            },
+            attribute: { iri: annotationIri },
+            value: state[annotationIri],
+          };
+          return dispatch(updateTermRelationshipAnnotation(termIri, data));
+        })
+      ),
+      "relationship-annotations"
+    ).then(() => {
+      dispatch(loadTermRelationshipAnnotations(termIri));
+      dispatch(
+        publishSuccessMessage({
+          messageId: "term.metadata.relationshipAnnotation.save.success",
+        })
+      );
+    });
   };
 
   return (
