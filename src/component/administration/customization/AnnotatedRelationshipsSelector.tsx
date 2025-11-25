@@ -8,6 +8,7 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { SelectorOption } from "./CustomAttributeSelector";
+import { HasIdentifier } from "../../../model/Asset";
 
 const SKOS_TERM_RELATIONSHIP_PROPERTIES = [
   {
@@ -66,15 +67,9 @@ function getTermRelationshipProperties(
  * grouping related SKOS properties under a single option.
  */
 export function groupAnnotatedRelationships(
-  relationships: any[] | undefined
+  relationships: HasIdentifier[]
 ): string[] {
-  if (!relationships || !Array.isArray(relationships)) {
-    return [];
-  }
-
-  const iris = relationships.map((r) =>
-    typeof r === "string" ? r : r.iri || (r as any)["@id"] || ""
-  );
+  const iris = relationships.map((r) => r.iri);
 
   const groupedIris: string[] = [];
   const processedIris = new Set<string>();

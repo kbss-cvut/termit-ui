@@ -49,6 +49,7 @@ import {
   groupAnnotatedRelationships,
   ungroupAnnotatedRelationships,
 } from "./AnnotatedRelationshipsSelector";
+import Utils from "../../../util/Utils";
 
 function propertyWithLabelExists(
   label: string,
@@ -109,7 +110,7 @@ export const CustomAttributeEdit: React.FC = () => {
         setRange(editedAttribute.rangeIri || "");
 
         const grouped = groupAnnotatedRelationships(
-          editedAttribute.annotatedRelationships
+          Utils.sanitizeArray(editedAttribute.annotatedRelationships)
         );
         setAnnotatedRelationships(grouped);
         setInitialAnnotatedRelationships(grouped);
