@@ -1,77 +1,104 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useI18n } from "../hook/useI18n";
-import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import TermItFile from "../../model/File";
-import { FormGroup, Label } from "reactstrap";
-import { ThunkDispatch } from "../../util/Types";
+import { PageRequest, ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { trackPromise } from "react-promise-tracker";
-import { loadFileBackups } from "../../action/AsyncResourceActions";
+import {
+  loadFileBackups,
+  loadFileBackupsCount,
+  restoreFileBackup,
+} from "../../action/AsyncResourceActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import FileBackupList from "./FileBackupList";
 import FileBackupDto from "../../model/FileBackupDto";
+import SingleActionDialog from "../misc/SingleActionDialog";
+import { useI18n } from "../hook/useI18n";
+import Pagination from "../misc/table/Pagination";
+import Constants from "../../util/Constants";
 
 interface RestoreFileBackupDialogProps {
   show: boolean;
-  // onSubmit: (label: string, file?: File) => void;
-  onCancel: () => void;
+  onClose: () => void;
   file: TermItFile;
 }
+
+const ITEMS_PER_PAGE = Constants.DEFAULT_PAGE_SIZE;
 
 const FILE_BACKUP_LIST_PROMISE_AREA = "file-backup-list";
 
 const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
   props
 ) => {
-  const [backups, setBackups] = useState<FileBackupDto[]>([]);
   const { i18n } = useI18n();
+  const [backups, setBackups] = useState<FileBackupDto[]>([]);
+  const [page, setPage] = useState(0);
+  const [totalBackupsCount, setTotalBackupsCount] = useState(0);
   const dispatch: ThunkDispatch = useDispatch();
-  /*
-  const typeLabelId = Utils.getAssetTypeLabelId(props.asset);
-  const typeLabel = i18n(
-    typeLabelId ? typeLabelId : "type.asset"
-  ).toLowerCase();
+  const pageCount = Math.ceil(totalBackupsCount / ITEMS_PER_PAGE);
 
-  const [label, setLabel] = useState(props.asset.getLabel());
-*/
   useEffect(() => {
+    if (!props.show) return;
     const iri = VocabularyUtils.create(props.file.iri);
-    trackPromise(
-      dispatch(loadFileBackups(iri)),
-      FILE_BACKUP_LIST_PROMISE_AREA
-    ).then((array) => {
-      if (array) {
-        setBackups(array);
+    const pageRequest: PageRequest = {
+      page,
+      size: ITEMS_PER_PAGE,
+    };
+
+    const loadBackupList = dispatch(loadFileBackups(iri, pageRequest)).then(
+      (array) => {
+        if (array) {
+          setBackups(array);
+        } else {
+          setBackups([]);
+        }
       }
-    });
-  }, [props.file]);
+    );
+
+    const loadBackupCount = dispatch(loadFileBackupsCount(iri)).then(
+      setTotalBackupsCount
+    );
+
+    trackPromise(
+      Promise.all([loadBackupList, loadBackupCount]),
+      FILE_BACKUP_LIST_PROMISE_AREA
+    );
+  }, [props.file, props.show, page]);
+
+  const restoreBackup = (backup: FileBackupDto) => {
+    const iri = VocabularyUtils.create(props.file.iri);
+    dispatch(restoreFileBackup(iri, backup));
+    props.onClose();
+  };
 
   return (
-    <ConfirmCancelDialog
+    <SingleActionDialog
       show={props.show}
-      id="rename-asset"
-      onClose={props.onCancel}
-      onConfirm={() => {}}
-      title={"TODO: placeholder"} // TODO: replace
-      /*
-      onConfirm={() => props.onSubmit(label, file)}
-      title={formatMessage("asset.modify.dialog.title", {
-        type: typeLabel,
-        label: props.asset.getLabel(),
-      })}*/
-      confirmKey="save"
+      id="restore-file-backup-dialog"
+      actionButtonText={i18n("close")}
+      onClose={props.onClose}
+      onAction={props.onClose}
+      title={i18n("backups")}
     >
       <PromiseTrackingMask area={FILE_BACKUP_LIST_PROMISE_AREA} />
-      <FormGroup>
-        <Label className={"attribute-label"}>
-          {i18n("resource.reupload.file.select.label")}
-        </Label>
-
-        <FileBackupList backups={backups} />
-      </FormGroup>
-    </ConfirmCancelDialog>
+      <FileBackupList backups={backups} restoreBackup={restoreBackup} />
+      <Pagination
+        pagingProps={{
+          page: [],
+          pageCount: pageCount,
+          pageOptions: [],
+          canPreviousPage: page > 0,
+          canNextPage: page < pageCount - 1,
+          gotoPage: setPage,
+          previousPage: () => setPage(page - 1),
+          nextPage: () => setPage(page + 1),
+          setPageSize: () => null,
+        }}
+        pagingState={{ pageIndex: page, pageSize: ITEMS_PER_PAGE }}
+        allowSizeChange={false}
+      />
+    </SingleActionDialog>
   );
 };
 

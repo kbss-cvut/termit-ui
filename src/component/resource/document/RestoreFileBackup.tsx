@@ -11,29 +11,14 @@ interface RestoreFileBackupProps {
 
 export const RestoreFileBackup = (props: RestoreFileBackupProps) => {
   const { i18n } = useI18n();
-  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const toggle = () => setConfirmationDialogOpen(!confirmationDialogOpen);
-  /*
-  const performAction = (label: string, file?: File) => {
-    const modifiedFile = Object.assign({}, props.file, { label: label.trim() });
-    props
-      .performRename(modifiedFile)
-      .then(() => {
-        if (file) {
-          return props.performFileUpdate(props.file, file);
-        } else {
-          return Promise.resolve();
-        }
-      })
-      .then(toggle);
-  };
- */
+  const [showDialog, setShowDialog] = useState(false);
+  const toggle = () => setShowDialog(!showDialog);
+
   return (
     <>
       <RestoreFileBackupDialog
-        onCancel={toggle}
-        // onSubmit={}
-        show={confirmationDialogOpen}
+        onClose={toggle}
+        show={showDialog}
         file={props.file}
       />
       <Button

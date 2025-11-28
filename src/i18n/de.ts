@@ -18,6 +18,9 @@ const de = {
     submit: "Absenden",
     approve: "Genehmigen",
     backups: "Sicherungen",
+    date: "Datum",
+    time: "Uhrzeit",
+    close: "Schließen",
     "basic-information": "Grundlegende Informationen",
     "created-info": "Erstellt von {author} am {date}",
     "select.placeholder": "Wählen...",
@@ -477,6 +480,7 @@ const de = {
     "resource.metadata.document.files.actions.add.dialog.title": "Neue Datei",
     "resource.metadata.document.files.empty": "Keine Dateien gefunden. ",
     "resource.file.vocabulary.create": "Datei hinzufügen",
+    "resource.file.backup.reason": "Entstehungsgrund",
     "resource.file.backup.reason.reupload": "Erneuter Upload",
     "resource.file.backup.reason.text_analysis": "Textanalyse",
     "resource.file.backup.reason.new_occurrence": "Neues Vorkommen",
@@ -484,6 +488,10 @@ const de = {
     "resource.file.backup.reason.scheduled": "Geplant",
     "resource.file.backup.reason.backup_restore": "Backup wiederhergestellt",
     "resource.file.backup.reason.unknown": "Unbekannt",
+    "resource.file.backup.restore": "Sicherung wiederherstellen",
+    "resource.file.backup.restore.failure":
+      "Die Wiederherstellung der Sicherung ist fehlgeschlagen.",
+    "resource.file.backup.restore.success": "Sicherung wiederhergestellt",
 
     "term.language.selector.item":
       "Begriffsdaten in der Sprache anzeigen: {nativeLang} ({lang})",

@@ -18,6 +18,9 @@ const cs = {
     submit: "Předložit",
     approve: "Schválit",
     backups: "Zálohy",
+    date: "Datum",
+    time: "Čas",
+    close: "Zavřít",
     "basic-information": "Základní informace",
     "created-info": "Vytvořeno uživatelem {author} dne {date}",
     "select.placeholder": "Vyberte...",
@@ -486,6 +489,7 @@ const cs = {
     "resource.metadata.document.files.empty":
       "Žádné soubory nenalezeny. Přidejte nějaký...",
     "resource.file.vocabulary.create": "Přidat soubor",
+    "resource.file.backup.reason": "Důvod vytvoření",
     "resource.file.backup.reason.reupload": "Reupload",
     "resource.file.backup.reason.text_analysis": "Textová analýza",
     "resource.file.backup.reason.new_occurrence": "Nový výskyt",
@@ -493,6 +497,9 @@ const cs = {
     "resource.file.backup.reason.scheduled": "Pravidelná záloha",
     "resource.file.backup.reason.backup_restore": "Obnova zálohy",
     "resource.file.backup.reason.unknown": "Neznámý",
+    "resource.file.backup.restore": "Obnovit zálohu",
+    "resource.file.backup.restore.failure": "Zálohu se nepodařilo obnovit",
+    "resource.file.backup.restore.success": "Záloha obnovena",
 
     "term.language.selector.item":
       "Zobrazit data pojmu v jazyce: {nativeLang} ({lang})",
