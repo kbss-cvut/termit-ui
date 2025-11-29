@@ -64,7 +64,7 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
       Promise.all([loadBackupList, loadBackupCount]),
       FILE_BACKUP_LIST_PROMISE_AREA
     );
-  }, [props.file, props.show, page]);
+  }, [props.file, props.show, page, dispatch]);
 
   const restoreBackup = (backup: FileBackupDto) => {
     const iri = VocabularyUtils.create(props.file.iri);
