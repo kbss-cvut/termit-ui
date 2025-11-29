@@ -35,7 +35,7 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
                 <FormattedDate value={date} />
               </td>
               <td>
-                <FormattedTime value={date} />
+                <FormattedTime value={date} timeStyle={"medium"} />
               </td>
               <td>
                 {i18n(
