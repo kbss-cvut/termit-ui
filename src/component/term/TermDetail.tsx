@@ -4,6 +4,7 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
+  getCustomAttributes,
   loadVocabulary,
   removeTerm,
   updateTerm,
@@ -24,7 +25,7 @@ import AppNotification from "../../model/AppNotification";
 import { publishNotification } from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-import * as _ from "lodash";
+import _ from "lodash";
 import Vocabulary from "../../model/Vocabulary";
 import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
@@ -56,6 +57,7 @@ import { HasStompClient, StompClient } from "../hoc/withStompClient";
 import Constants from "../../util/Constants";
 import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
 import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
+import { loadTermRelationshipAnnotations } from "../../action/AsyncTermRelationshipAnnotationActions";
 
 const USER_VOCABULARIES_VALIDATION_ENDPOINT =
   "/user" + Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_VALIDATION;
@@ -66,7 +68,11 @@ export interface CommonTermDetailProps extends HasI18n {
   term: Term | null;
   vocabulary: Vocabulary;
   loadVocabulary: (iri: IRI, timestamp?: string) => void;
-  loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) => void;
+  loadTerm: (
+    termName: string,
+    vocabularyIri: IRI,
+    timestamp?: string
+  ) => Promise<any>;
 }
 
 interface TermDetailProps
@@ -84,6 +90,8 @@ interface TermDetailProps
   approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   publishNotification: (notification: AppNotification) => void;
+  loadCustomAttributes: () => void;
+  loadTermRelationshipAnnotations: (termIri: IRI) => void;
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -115,6 +123,7 @@ export class TermDetail extends EditableComponent<
 
   public componentDidMount(): void {
     this.load();
+    this.props.loadCustomAttributes();
   }
 
   private load(): void {
@@ -139,7 +148,15 @@ export class TermDetail extends EditableComponent<
       this.props.location.search,
       "namespace"
     );
-    this.props.loadTerm(termName, { fragment: name, namespace }, timestamp);
+    this.props
+      .loadTerm(termName, { fragment: name, namespace }, timestamp)
+      .then(() => {
+        if (this.props.term) {
+          this.props.loadTermRelationshipAnnotations(
+            VocabularyUtils.create(this.props.term.iri!)
+          );
+        }
+      });
   }
 
   public componentDidUpdate(prevProps: TermDetailProps) {
@@ -372,6 +389,9 @@ export default connect(
         dispatch(removeOccurrence(occurrence)),
       publishNotification: (notification: AppNotification) =>
         dispatch(publishNotification(notification)),
+      loadCustomAttributes: () => dispatch(getCustomAttributes()),
+      loadTermRelationshipAnnotations: (termIri: IRI) =>
+        dispatch(loadTermRelationshipAnnotations(termIri)),
     };
   }
 )(

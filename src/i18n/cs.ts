@@ -264,6 +264,10 @@ const cs = {
     "administration.customization.customAttributes.update": "Upravit atribut",
     "administration.customization.customAttributes.update.success":
       "Atribut byl úspěšně upraven.",
+    "administration.customization.customAttributes.annotatedRelationships":
+      "Vztahuje se na vlastnosti vztahů",
+    "administration.customization.customAttributes.annotatedRelationships.help":
+      "Vyberte, které vlastnosti vztahů mezi pojmy může tento vlastní atribut anotovat. Platí pouze když doména je 'Vztah mezi pojmy'.",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -611,6 +615,9 @@ const cs = {
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",
+    "term.metadata.relationshipAnnotation": "Anotace vztahu",
+    "term.metadata.relationshipAnnotation.save.success":
+      "Anotace vztahu pojmu úspěšně uložena",
     "term.removed.message": "Pojem byl odstraněn.",
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
@@ -843,6 +850,7 @@ const cs = {
 
     "type.asset": "Záznam",
     "type.term": "Pojem",
+    "type.term.relationship": "Vztah mezi pojmy",
     "type.vocabulary": "Slovník",
     "type.resource": "Zdroj",
     "type.document": "Dokument",

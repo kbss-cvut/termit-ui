@@ -6,13 +6,13 @@ export const RDFSTATEMENT_CONTEXT = {
   types: "@type",
   subject: VocabularyUtils.RDF_SUBJECT,
   relation: VocabularyUtils.RDF_PREDICATE,
-  object: VocabularyUtils.RDF_OBJECT,
+  value: VocabularyUtils.RDF_OBJECT,
 };
 
 export type RDFStatement = {
   subject: HasIdentifier;
   relation: HasIdentifier;
-  object: HasIdentifier;
+  value: HasIdentifier;
 };
 
 export default RDFStatement;

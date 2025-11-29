@@ -306,7 +306,7 @@ export class TermMetadataEdit extends React.Component<
       VocabularyUtils.SKOS_SCOPE_NOTE
     );
     const validationBroader = this.getValidationResults(
-      VocabularyUtils.BROADER
+      VocabularyUtils.SKOS_BROADER
     );
     const validationType = this.getValidationResults(VocabularyUtils.RDF_TYPE);
     return (

@@ -252,6 +252,10 @@ const en = {
     "administration.customization.customAttributes.update": "Update attribute",
     "administration.customization.customAttributes.update.success":
       "Attribute successfully updated.",
+    "administration.customization.customAttributes.annotatedRelationships":
+      "Applicable to relationship properties",
+    "administration.customization.customAttributes.annotatedRelationships.help":
+      "Select which term relationship properties this custom attribute can annotate. Only applicable when domain is 'Term relationship'.",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
@@ -604,6 +608,9 @@ const en = {
     "term.metadata.types.select.placeholder": "Select type",
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",
+    "term.metadata.relationshipAnnotation": "Relationship annotations",
+    "term.metadata.relationshipAnnotation.save.success":
+      "Term relationship annotation successfully saved",
     "term.removed.message": "Term successfully removed.",
     "term.badge.score.tooltip":
       "The score of this term is {score}%. Click to see the validation results",
@@ -835,6 +842,7 @@ const en = {
 
     "type.asset": "Asset",
     "type.term": "Term",
+    "type.term.relationship": "Term relationship",
     "type.vocabulary": "Vocabulary",
     "type.resource": "Resource",
     "type.document": "Document",

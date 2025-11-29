@@ -11,7 +11,7 @@ import ActionType, {
   UpdateLastModifiedAction,
 } from "./ActionType";
 import ErrorInfo, { ErrorData } from "../model/ErrorInfo";
-import Message from "../model/Message";
+import Message, { MessageData } from "../model/Message";
 import AsyncActionStatus from "./AsyncActionStatus";
 import { saveLanguagePreference, setHtmlLanguage } from "../util/IntlUtil";
 import Term, { TermData } from "../model/Term";
@@ -25,6 +25,7 @@ import {
 } from "../model/AnnotatorLegendFilter";
 import { saveTermsFlatListPreference } from "src/util/UISettingsUtil";
 import { Language } from "../util/Constants";
+import MessageType from "../model/MessageType";
 
 export function asyncActionRequest(
   a: Action,
@@ -66,6 +67,10 @@ export function publishMessage(message: Message): MessageAction {
     type: ActionType.PUBLISH_MESSAGE,
     message,
   };
+}
+
+export function publishSuccessMessage(data: MessageData): MessageAction {
+  return publishMessage(new Message(data, MessageType.SUCCESS));
 }
 
 export function dismissMessage(message: Message): MessageAction {

@@ -110,8 +110,8 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
           </Col>
           <Col md={4} xs={12}>
             <span id={keyBase + index + "object"}>
-              <AssetLabel iri={statement.object.iri} shrinkFullIri={true} />
-              <CopyIriIcon url={statement.object.iri} />
+              <AssetLabel iri={statement.value.iri} shrinkFullIri={true} />
+              <CopyIriIcon url={statement.value.iri} />
             </span>
           </Col>
         </Row>

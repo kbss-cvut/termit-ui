@@ -25,6 +25,9 @@ jest.mock("react-redux", () => ({
 jest.mock("../../vocabulary/VocabularyNameBadgeButton", () => () => (
   <span>vocabulary-name</span>
 ));
+jest.mock("../relationship-annotation/RelationshipAnnotationButton", () => ({
+  RelationshipAnnotationButton: () => null,
+}));
 
 describe("RelatedTermsList", () => {
   let term: Term;

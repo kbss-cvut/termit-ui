@@ -42,7 +42,7 @@ describe("RemoveVocabularyDialog", () => {
   const rdfStatement: RDFStatement = {
     subject: { iri: Generator.generateUri() },
     relation: { iri: Generator.generateUri() },
-    object: { iri: Generator.generateUri() },
+    value: { iri: Generator.generateUri() },
   };
 
   let onCancel: () => void;

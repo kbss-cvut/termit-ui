@@ -14,6 +14,7 @@ import Vocabulary from "../../model/Vocabulary";
 import TermTypes from "./TermTypes";
 import TermState from "./state/TermState";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface BasicTermMetadataProps {
   term: Term;
@@ -24,7 +25,7 @@ interface BasicTermMetadataProps {
 
 function renderItemList(
   listId: string,
-  renderItem: (item: string) => JSX.Element,
+  renderItem: (item: string) => React.ReactNode,
   items?: string[]
 ) {
   items = Utils.sanitizeArray(items);
@@ -68,24 +69,30 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
       </Row>
       <TermList
         id="term-metadata-exactmatches"
+        subject={term}
         label={i18n("term.metadata.exactMatches")}
         language={language}
         vocabularyIri={term.vocabulary?.iri}
         terms={term.exactMatchTerms}
+        property={VocabularyUtils.SKOS_EXACT_MATCH}
       />
       <TermList
         id="term-metadata-parentterms"
+        subject={term}
         label={i18n("term.metadata.parent")}
         language={language}
         vocabularyIri={term.vocabulary?.iri}
         terms={term.parentTerms}
+        property={VocabularyUtils.SKOS_BROADER}
       />
       <TermList
         id="term-metadata-subterms"
+        subject={term}
         label={i18n("term.metadata.subTerms")}
         language={language}
         vocabularyIri={term.vocabulary?.iri}
         terms={term.subTerms}
+        property={VocabularyUtils.SKOS_NARROWER}
       />
       <RelatedTermsList term={term} language={language} />
       <Row>

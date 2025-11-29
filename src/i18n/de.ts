@@ -260,6 +260,10 @@ const de = {
       "Attribut aktualisieren",
     "administration.customization.customAttributes.update.success":
       "Attribut erfolgreich aktualisiert.",
+    "administration.customization.customAttributes.annotatedRelationships":
+      "Anwendbar auf Beziehungseigenschaften",
+    "administration.customization.customAttributes.annotatedRelationships.help":
+      "Wählen Sie aus, welche Term-Beziehungseigenschaften dieses benutzerdefinierte Attribut annotieren kann. Gilt nur, wenn die Domäne 'Term-Beziehung' ist.",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":
@@ -570,9 +574,13 @@ const de = {
     "term.metadata.types.select.placeholder": "Typ auswählen",
     "term.metadata.validation.title": "Validierung",
     "term.metadata.validation.empty": "Der Begriff ist unproblematisch.",
+    "term.metadata.relationshipAnnotation": "Beziehung annotieren",
+    "term.metadata.relationshipAnnotation.save.success":
+      "Beziehungsannotation des Terms wurde erfolgreich gespeichert",
     "term.removed.message": "Begriff erfolgreich entfernt.",
     "term.badge.score.tooltip": "Der Wert dieses Begriffs beträgt {score} %. ",
     "term.badge.no-score.tooltip": "Für diesen Begriff ist kein Wert verfügbar",
+
     "glossary.title": "Bedingungen",
     "glossary.termCount.tooltip":
       "Anzahl der Begriffe im Vokabular (ohne importierte Vokabeln)",
@@ -794,6 +802,7 @@ const de = {
     "properties.edit.new.success": "Neues Attribut erfolgreich erstellt.",
     "type.asset": "Asset",
     "type.term": "Begriff",
+    "type.term.relationship": "Term-Beziehung",
     "type.vocabulary": "Vokabular",
     "type.resource": "Ressource",
     "type.document": "Dokument",
