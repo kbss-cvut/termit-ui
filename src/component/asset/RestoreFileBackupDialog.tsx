@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { trackPromise } from "react-promise-tracker";
 import {
   loadFileBackups,
-  loadFileBackupsCount,
   restoreFileBackup,
 } from "../../action/AsyncResourceActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -22,6 +21,7 @@ interface RestoreFileBackupDialogProps {
   show: boolean;
   onClose: () => void;
   file: TermItFile;
+  totalBackupsCount: number;
 }
 
 const ITEMS_PER_PAGE = Constants.DEFAULT_PAGE_SIZE;
@@ -34,9 +34,8 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
   const { i18n } = useI18n();
   const [backups, setBackups] = useState<FileBackupDto[]>([]);
   const [page, setPage] = useState(0);
-  const [totalBackupsCount, setTotalBackupsCount] = useState(0);
   const dispatch: ThunkDispatch = useDispatch();
-  const pageCount = Math.ceil(totalBackupsCount / ITEMS_PER_PAGE);
+  const pageCount = Math.ceil(props.totalBackupsCount / ITEMS_PER_PAGE);
 
   useEffect(() => {
     if (!props.show) return;
@@ -46,24 +45,16 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
       size: ITEMS_PER_PAGE,
     };
 
-    const loadBackupList = dispatch(loadFileBackups(iri, pageRequest)).then(
-      (array) => {
-        if (array) {
-          setBackups(array);
-        } else {
-          setBackups([]);
-        }
-      }
-    );
-
-    const loadBackupCount = dispatch(loadFileBackupsCount(iri)).then(
-      setTotalBackupsCount
-    );
-
     trackPromise(
-      Promise.all([loadBackupList, loadBackupCount]),
+      dispatch(loadFileBackups(iri, pageRequest)),
       FILE_BACKUP_LIST_PROMISE_AREA
-    );
+    ).then((array) => {
+      if (array) {
+        setBackups(array);
+      } else {
+        setBackups([]);
+      }
+    });
   }, [props.file, props.show, page, dispatch]);
 
   const restoreBackup = (backup: FileBackupDto) => {
