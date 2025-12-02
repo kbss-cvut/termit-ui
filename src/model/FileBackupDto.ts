@@ -5,7 +5,7 @@ export const CONTEXT = {
     "@id": VocabularyUtils.CREATED,
     "@type": VocabularyUtils.XSD_DATETIME,
   },
-  backupReason: VocabularyUtils.HAS_BACKUP_REASON,
+  backupReason: VocabularyUtils.DC_DESCRIPTION,
 };
 
 /**
