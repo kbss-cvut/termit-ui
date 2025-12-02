@@ -20,6 +20,7 @@ import RemoveSnapshotDialog from "./RemoveSnapshotDialog";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 import IfUserIsAdmin from "../../authorization/IfUserIsAdmin";
+import User from "../../../model/User";
 
 interface VocabularySnapshotsProps {
   asset: Vocabulary;
@@ -79,11 +80,28 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
         className: "align-middle",
         Cell: ({ row }) => {
           const created = new Date(row.original.created);
+          const authorData = row.original.author;
+          let authorName = null;
+
+          if (authorData) {
+            if (authorData.firstName && authorData.lastName) {
+              const author = new User(authorData);
+              authorName = author.fullName;
+            }
+          }
+
           return (
             <>
-              <FormattedDate value={created} />
-              &nbsp;
-              <FormattedTime value={created} />
+              <div>
+                <FormattedDate value={created} />
+                &nbsp;
+                <FormattedTime value={created} />
+              </div>
+              {authorName && (
+                <div className="italics last-edited-message ml-2">
+                  {authorName}
+                </div>
+              )}
             </>
           );
         },

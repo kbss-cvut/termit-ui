@@ -1,7 +1,7 @@
 export default interface SearchParam {
   property: string;
 
-  value: string[];
+  value: any[];
 
   matchType: MatchType;
 }

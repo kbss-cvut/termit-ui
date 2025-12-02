@@ -60,7 +60,7 @@ const TermTypesEdit: React.FC<TermTypesEditProps> = ({
         getOptionLabel={(option: TermData) =>
           getLocalized(option.label, getShortLocale(locale))
         }
-        childrenKey="subTerms"
+        childrenKey="plainSubTerms"
         maxHeight={150}
         multi={false}
         expanded={true}

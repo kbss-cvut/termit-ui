@@ -41,6 +41,9 @@ describe("TermDetail", () => {
   let removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   let onPublishNotification: (notification: AppNotification) => void;
   let requestVocabularyValidation: (iri: IRI, stompClient: StompClient) => void;
+  let loadCustomAttributes: () => void;
+  let loadTermRelationshipAnnotations: (termIri: IRI) => void;
+  let loadTermRelationshipsAnnotatedBy: (termIri: IRI) => void;
 
   let handlers: any;
 
@@ -72,6 +75,9 @@ describe("TermDetail", () => {
     removeOccurrence = jest.fn().mockResolvedValue({});
     onPublishNotification = jest.fn();
     requestVocabularyValidation = jest.fn();
+    loadCustomAttributes = jest.fn();
+    loadTermRelationshipAnnotations = jest.fn();
+    loadTermRelationshipsAnnotatedBy = jest.fn();
     handlers = {
       loadTerm: onLoad,
       loadVocabulary,
@@ -81,6 +87,9 @@ describe("TermDetail", () => {
       requestVocabularyValidation,
       approveOccurrence,
       removeOccurrence,
+      loadCustomAttributes,
+      loadTermRelationshipAnnotations,
+      loadTermRelationshipsAnnotatedBy,
     };
     vocabulary = Generator.generateVocabulary();
     term = new Term({

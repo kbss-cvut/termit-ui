@@ -41,6 +41,10 @@ export const DOMAIN_OPTIONS: SelectorOption[] = [
     value: VocabularyUtils.VOCABULARY,
     labelKey: "type.vocabulary",
   },
+  {
+    value: VocabularyUtils.RDF_STATEMENT,
+    labelKey: "type.term.relationship",
+  },
 ];
 
 export function getSelectorOptionLabel(

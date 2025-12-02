@@ -23,6 +23,7 @@ import CreateVocabularyForm from "./CreateVocabularyForm";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { useI18n } from "../hook/useI18n";
+import ResourceSaveReason from "../annotator/ResourceSaveReason";
 
 const CreateVocabulary: React.FC = () => {
   const { i18n } = useI18n();
@@ -54,7 +55,8 @@ const CreateVocabulary: React.FC = () => {
                 dispatch(
                   uploadFileContent(
                     VocabularyUtils.create(f.iri),
-                    fileContents[fIndex]
+                    fileContents[fIndex],
+                    ResourceSaveReason.CREATE_FILE
                   )
                 )
               )

@@ -2,7 +2,7 @@ import * as React from "react";
 import classNames from "classnames";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { getLanguageOptions, Language } from "../../util/IntlUtil";
-import { renderLanguages } from "./LanguageSelector";
+import { renderRemovableLanguages } from "./LanguageSelector";
 import { Nav, NavItem, NavLink } from "reactstrap";
 import { FaPlusCircle } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
@@ -37,6 +37,13 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = ({
     options.splice(toRemove, 1);
   }
 
+  const displayLanguages: string[] = requiredLanguage
+    ? [
+        requiredLanguage,
+        ...existingLanguages.filter((l) => l !== requiredLanguage),
+      ]
+    : existingLanguages;
+
   return (
     <div>
       <Nav
@@ -44,8 +51,8 @@ const EditLanguageSelector: React.FC<EditLanguageSelectorProps> = ({
         tabs={true}
         className="language-selector-nav"
       >
-        {renderLanguages({
-          languages: existingLanguages,
+        {renderRemovableLanguages({
+          languages: displayLanguages,
           selectedLanguage: language,
           requiredLanguage,
           formatMessage,

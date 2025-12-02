@@ -21,6 +21,7 @@ import { DateTime } from "luxon";
 import Constants from "../../../util/Constants";
 import AccessLevel, { hasAccess } from "../../../model/acl/AccessLevel";
 import { IfAuthorized } from "react-authorization";
+import ResourceSaveReason from "../../annotator/ResourceSaveReason";
 
 interface DocumentFilesProps {
   document: Document;
@@ -48,7 +49,11 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
     )
       .then(() =>
         dispatch(
-          uploadFileContent(VocabularyUtils.create(termitFile.iri), file)
+          uploadFileContent(
+            VocabularyUtils.create(termitFile.iri),
+            file,
+            ResourceSaveReason.CREATE_FILE
+          )
         ).then(() =>
           dispatch(
             publishNotification({
@@ -78,7 +83,13 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
   };
 
   const reuploadFile = (termitFile: TermItFile, file: File): Promise<void> =>
-    dispatch(uploadFileContent(VocabularyUtils.create(termitFile.iri), file))
+    dispatch(
+      uploadFileContent(
+        VocabularyUtils.create(termitFile.iri),
+        file,
+        ResourceSaveReason.REUPLOAD
+      )
+    )
       .then(() =>
         dispatch(
           publishNotification({

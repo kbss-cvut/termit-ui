@@ -11,7 +11,7 @@ import {
   useSortBy,
   useTable,
 } from "react-table";
-import { RdfProperty } from "../../../model/RdfsResource";
+import { CustomAttribute } from "../../../model/RdfsResource";
 import TermItState from "../../../model/TermItState";
 import TextBasedFilter, {
   multilingualTextContainsFilterFactory,
@@ -43,7 +43,7 @@ export const CustomAttributes: React.FC = () => {
     dispatch(getCustomAttributes());
   }, [dispatch]);
 
-  const onEditClick = React.useCallback((property: RdfProperty) => {
+  const onEditClick = React.useCallback((property: CustomAttribute) => {
     Routing.transitionTo(Routes.editCustomAttribute, {
       params: new Map<string, string>([
         ["name", VocabularyUtils.create(property.iri).fragment],
@@ -52,7 +52,7 @@ export const CustomAttributes: React.FC = () => {
   }, []);
 
   const lang = getShortLocale(locale);
-  const columns: Column<RdfProperty>[] = React.useMemo(
+  const columns: Column<CustomAttribute>[] = React.useMemo(
     () => [
       {
         Header: i18n("properties.edit.new.label"),
@@ -134,7 +134,7 @@ export const CustomAttributes: React.FC = () => {
     () => ({ text: multilingualTextContainsFilterFactory(lang) }),
     [lang]
   );
-  const tableInstance = useTable<RdfProperty>(
+  const tableInstance = useTable<CustomAttribute>(
     {
       columns,
       data: properties,

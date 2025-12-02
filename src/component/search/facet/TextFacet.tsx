@@ -1,15 +1,17 @@
 import React from "react";
 import SearchParam, { MatchType } from "../../../model/search/SearchParam";
-import { FormGroup, Input, Label } from "reactstrap";
+import { FormGroup, Label } from "reactstrap";
 import Toggle from "react-bootstrap-toggle";
 import { useI18n } from "../../hook/useI18n";
 import "../../misc/CustomToggle.scss";
+import CustomInput from "../../misc/CustomInput";
 
 interface TextFacetProps {
   id: string;
   label: string;
   value: SearchParam;
   onChange: (newValue: SearchParam) => void;
+  disableMatchTypeToggle?: boolean;
 }
 
 const TextFacet: React.FC<TextFacetProps> = ({
@@ -17,6 +19,7 @@ const TextFacet: React.FC<TextFacetProps> = ({
   label,
   value,
   onChange,
+  disableMatchTypeToggle,
 }) => {
   const onMatchTypeToggle = () => {
     const result: SearchParam = { ...value };
@@ -33,17 +36,19 @@ const TextFacet: React.FC<TextFacetProps> = ({
   };
   return (
     <>
-      <FormGroup className="mb-0">
+      <FormGroup>
         <div className="d-flex justify-content-between">
-          <Label className="attribute-label">{label}</Label>
-          <ExactMatchToggle
-            active={value.matchType === MatchType.EXACT_MATCH}
-            id={`${id}-matchType-toggle`}
-            onToggle={onMatchTypeToggle}
-          />
+          <Label className="attribute-label mb-3">{label}</Label>
+          {value.matchType !== MatchType.IRI && !disableMatchTypeToggle && (
+            <ExactMatchToggle
+              active={value.matchType === MatchType.EXACT_MATCH}
+              id={`${id}-matchType-toggle`}
+              onToggle={onMatchTypeToggle}
+            />
+          )}
         </div>
-        <Input
-          bsSize="sm"
+        <CustomInput
+          id={id}
           onChange={onInputChange}
           value={value.value.length > 0 ? value.value[0] : ""}
         />

@@ -1,5 +1,5 @@
 import React from "react";
-import RdfsResource, { RdfProperty } from "../../../model/RdfsResource";
+import RdfsResource, { CustomAttribute } from "../../../model/RdfsResource";
 import { useI18n } from "../../hook/useI18n";
 import MultilingualString, {
   getLocalizedOrDefault,
@@ -36,6 +36,7 @@ import { trackPromise } from "react-promise-tracker";
 import { ThunkDispatch } from "../../../util/Types";
 import {
   createCustomAttribute,
+  getCustomAttributes,
   updateCustomAttribute,
 } from "../../../action/AsyncActions";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
@@ -43,12 +44,18 @@ import { useParams } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { loadIdentifier } from "../../asset/CreateAssetUtils";
 import ShowAdvancedAssetFields from "src/component/asset/ShowAdvancedAssetFields";
+import {
+  AnnotatedRelationshipsSelector,
+  groupAnnotatedRelationships,
+  ungroupAnnotatedRelationships,
+} from "./AnnotatedRelationshipsSelector";
+import Utils from "../../../util/Utils";
 
 function propertyWithLabelExists(
   label: string,
   language: string,
   properties: RdfsResource[],
-  customAttributes: RdfProperty[]
+  customAttributes: CustomAttribute[]
 ) {
   return (
     customAttributes.some((p) => (p.label || {})[language] === label) ||
@@ -70,6 +77,11 @@ export const CustomAttributeEdit: React.FC = () => {
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const [iri, setIri] = React.useState("");
   const [shouldGenerateIri, setShouldGenerateIri] = React.useState(true);
+  const [annotatedRelationships, setAnnotatedRelationships] = React.useState<
+    string[]
+  >([]);
+  const [initialAnnotatedRelationships, setInitialAnnotatedRelationships] =
+    React.useState<string[]>([]);
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
   );
@@ -82,6 +94,11 @@ export const CustomAttributeEdit: React.FC = () => {
     [customAttributes, name]
   );
   const editingMode = React.useMemo(() => name !== "create", [name]);
+
+  React.useEffect(() => {
+    dispatch(getCustomAttributes());
+  }, [dispatch]);
+
   React.useEffect(() => {
     if (editingMode) {
       if (editedAttribute) {
@@ -91,6 +108,12 @@ export const CustomAttributeEdit: React.FC = () => {
         setComment(editedAttribute.comment || {});
         setDomain(editedAttribute.domainIri || "");
         setRange(editedAttribute.rangeIri || "");
+
+        const grouped = groupAnnotatedRelationships(
+          Utils.sanitizeArray(editedAttribute.annotatedRelationships)
+        );
+        setAnnotatedRelationships(grouped);
+        setInitialAnnotatedRelationships(grouped);
       }
       setShouldGenerateIri(false);
     }
@@ -157,24 +180,31 @@ export const CustomAttributeEdit: React.FC = () => {
 
   const onSave = () => {
     let promise;
+    const annotatedRelationshipsData =
+      domain === VocabularyUtils.RDF_STATEMENT
+        ? ungroupAnnotatedRelationships(annotatedRelationships)
+        : undefined;
+
     if (editingMode) {
-      const data = new RdfProperty({
+      const data = new CustomAttribute({
         ...editedAttribute!,
         label,
         comment,
         domain,
         range,
+        annotatedRelationships: annotatedRelationshipsData,
       });
       promise = dispatch(updateCustomAttribute(data));
     } else {
       promise = dispatch(
         createCustomAttribute(
-          new RdfProperty({
+          new CustomAttribute({
             iri,
             label,
             comment,
             domain,
             range,
+            annotatedRelationships: annotatedRelationshipsData,
             types: [VocabularyUtils.NS_TERMIT + "vlastní-atribut"],
           })
         )
@@ -270,6 +300,19 @@ export const CustomAttributeEdit: React.FC = () => {
                 />
               </Col>
             </Row>
+            {domain === VocabularyUtils.RDF_STATEMENT && (
+              <Row>
+                <Col xs={12}>
+                  <AnnotatedRelationshipsSelector
+                    value={annotatedRelationships}
+                    onChange={setAnnotatedRelationships}
+                    customAttributes={customAttributes}
+                    disabled={false}
+                    initialValues={initialAnnotatedRelationships}
+                  />
+                </Col>
+              </Row>
+            )}
             <ShowAdvancedAssetFields>
               <Row>
                 <Col xs={12}>

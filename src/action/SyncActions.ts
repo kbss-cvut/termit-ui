@@ -3,7 +3,6 @@ import ActionType, {
   AsyncAction,
   AsyncActionSuccess,
   AsyncFailureAction,
-  ExecuteQueryAction,
   MessageAction,
   NotificationAction,
   SelectingTermsAction,
@@ -12,7 +11,7 @@ import ActionType, {
   UpdateLastModifiedAction,
 } from "./ActionType";
 import ErrorInfo, { ErrorData } from "../model/ErrorInfo";
-import Message from "../model/Message";
+import Message, { MessageData } from "../model/Message";
 import AsyncActionStatus from "./AsyncActionStatus";
 import { saveLanguagePreference, setHtmlLanguage } from "../util/IntlUtil";
 import Term, { TermData } from "../model/Term";
@@ -25,6 +24,8 @@ import {
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
 import { saveTermsFlatListPreference } from "src/util/UISettingsUtil";
+import { Language } from "../util/Constants";
+import MessageType from "../model/MessageType";
 
 export function asyncActionRequest(
   a: Action,
@@ -68,6 +69,10 @@ export function publishMessage(message: Message): MessageAction {
   };
 }
 
+export function publishSuccessMessage(data: MessageData): MessageAction {
+  return publishMessage(new Message(data, MessageType.SUCCESS));
+}
+
 export function dismissMessage(message: Message): MessageAction {
   return {
     type: ActionType.DISMISS_MESSAGE,
@@ -75,9 +80,9 @@ export function dismissMessage(message: Message): MessageAction {
   };
 }
 
-export function switchLanguage(language: string): SwitchLanguageAction {
-  saveLanguagePreference(language);
-  setHtmlLanguage(language);
+export function switchLanguage(language: Language): SwitchLanguageAction {
+  saveLanguagePreference(language.locale);
+  setHtmlLanguage(language.locale);
   return {
     type: ActionType.SWITCH_LANGUAGE,
     language,
@@ -87,18 +92,6 @@ export function switchLanguage(language: string): SwitchLanguageAction {
 export function userLogout(): Action {
   return {
     type: ActionType.LOGOUT,
-  };
-}
-
-export function executeQuerySuccess(
-  queryString: string,
-  result: object
-): ExecuteQueryAction {
-  return {
-    type: ActionType.EXECUTE_QUERY,
-    status: AsyncActionStatus.SUCCESS,
-    queryResult: result,
-    queryString,
   };
 }
 

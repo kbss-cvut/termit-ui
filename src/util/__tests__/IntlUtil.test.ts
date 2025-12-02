@@ -19,17 +19,12 @@ describe("IntlUtil", () => {
   });
 
   it("loads Czech localization data for Czech language", () => {
-    const result = loadLocalizationData(Constants.LANG.CS.locale);
+    const result = loadLocalizationData(Constants.LANG.CS.isoCode[0]);
     expect(result.locale).toEqual(Constants.LANG.CS.locale);
   });
 
   it("loads English localization data for English language", () => {
-    const result = loadLocalizationData(Constants.LANG.EN.locale);
-    expect(result.locale).toEqual(Constants.LANG.EN.locale);
-  });
-
-  it("loads English localization data by default", () => {
-    const result = loadLocalizationData("de");
+    const result = loadLocalizationData(Constants.LANG.EN.isoCode[0]);
     expect(result.locale).toEqual(Constants.LANG.EN.locale);
   });
 

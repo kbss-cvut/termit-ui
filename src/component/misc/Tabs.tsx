@@ -2,6 +2,7 @@ import * as React from "react";
 import { Badge, Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 import classNames from "classnames";
 import { useI18n } from "../hook/useI18n";
+import HelpIcon from "./HelpIcon";
 
 interface TabsProps {
   /**
@@ -11,11 +12,15 @@ interface TabsProps {
   /**
    * Map of IDs to the actual components
    */
-  tabs: { [activeTabLabelKey: string]: React.JSX.Element };
+  tabs: { [activeTabLabelKey: string]: React.ReactNode };
   /**
    * Map of IDs to the tab badge (no badge shown if the key is missing)
    */
   tabBadges?: { [activeTabLabelKey: string]: string | null };
+  /**
+   * Help text to show in tab headers using the HelpIcon.
+   */
+  tabHelp?: { [activeTabLabelKey: string]: string };
   /**
    * Tab change function.
    */
@@ -52,9 +57,18 @@ const Tabs: React.FC<TabsProps> = (props) => {
     const badge =
       props.tabBadges && id in props.tabBadges && props.tabBadges[id] ? (
         <>
-          {" "}
-          <Badge className="align-text-bottom">{props.tabBadges[id]}</Badge>
+          <Badge className="ml-1 align-text-bottom">
+            {props.tabBadges[id]}
+          </Badge>
         </>
+      ) : null;
+    const helpIcon =
+      props.tabHelp && props.tabHelp[id] ? (
+        <HelpIcon
+          id={id.replaceAll(".", "_")}
+          text={props.tabHelp[id]}
+          className="ml-1"
+        />
       ) : null;
 
     const className = classNames(
@@ -67,6 +81,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
         <NavLink className={className} onClick={changeTab}>
           {formatMessage(id, {})}
           {badge}
+          {helpIcon}
         </NavLink>
       </NavItem>
     );

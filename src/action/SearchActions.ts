@@ -127,7 +127,6 @@ export function search(
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(SyncActions.asyncActionRequest(action, disableLoading));
-    console.debug(searchString, language, disableLoading);
     const promiseToReturn = Ajax.get(
       Constants.API_PREFIX + "/search/fts",
       params({ searchString, language })

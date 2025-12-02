@@ -28,6 +28,13 @@ export function getEnv(name: string, defaultValue?: string): string {
 const API_PREFIX = "/rest";
 const DEFAULT_LANGUAGE = "en";
 
+export type Language = {
+  locale: string;
+  label: string;
+  flag: string;
+  isoCode: string[];
+};
+
 const constants = {
   // Will be replaced with actual server url during build
   SERVER_URL: getEnv("SERVER_URL"),
@@ -46,12 +53,20 @@ const constants = {
       locale: "cs-CZ",
       label: "Čestina",
       flag: "flags/cz.svg",
-    },
+      isoCode: ["cs", "sk"],
+    } as Language,
+    DE: {
+      locale: "de-DE",
+      label: "Deutsch",
+      flag: "flags/de.svg",
+      isoCode: ["de"],
+    } as Language,
     EN: {
       locale: DEFAULT_LANGUAGE,
       label: "English",
       flag: "flags/gb.svg",
-    },
+      isoCode: ["en"],
+    } as Language,
   },
   DEFAULT_LANGUAGE,
   // Error origin caused by the inability to connect to the backend server

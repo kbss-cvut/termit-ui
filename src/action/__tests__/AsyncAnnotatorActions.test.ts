@@ -122,7 +122,7 @@ describe("AsyncAnnotatorActions", () => {
     // subterms. Therefore, we will just keep them as a flat list with no hierarchical structure
     it("removes child term references of loaded term", () => {
       const term = require("../../rest-mock/terms")[0];
-      term[VocabularyUtils.NARROWER] = [
+      term[VocabularyUtils.SKOS_NARROWER] = [
         {
           "@id": Generator.generateUri(),
           label: "Child one",

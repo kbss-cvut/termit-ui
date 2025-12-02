@@ -10,7 +10,6 @@ import Generator from "../../../../__tests__/environment/Generator";
 import { langString } from "../../../../model/MultilingualString";
 import { ThunkDispatch } from "../../../../util/Types";
 import { act } from "react-dom/test-utils";
-import Constants from "../../../../util/Constants";
 import TermTypeFacet from "../TermTypeFacet";
 import FacetedSearchResults from "../FacetedSearchResults";
 
@@ -99,7 +98,7 @@ describe("FacetedSearch", () => {
       expect.anything(),
       {
         page: 2,
-        size: Constants.DEFAULT_PAGE_SIZE,
+        size: 10,
       }
     );
   });
@@ -127,7 +126,7 @@ describe("FacetedSearch", () => {
       [typeParamValue],
       {
         page: 0,
-        size: Constants.DEFAULT_PAGE_SIZE,
+        size: 10,
       }
     );
   });

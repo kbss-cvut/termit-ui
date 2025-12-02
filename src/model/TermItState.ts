@@ -5,7 +5,7 @@ import IntlData from "./IntlData";
 import Vocabulary, { EMPTY_VOCABULARY } from "./Vocabulary";
 import { QueryResultIF } from "./QueryResult";
 import Term, { TermInfo } from "./Term";
-import RdfsResource, { RdfProperty } from "./RdfsResource";
+import RdfsResource, { CustomAttribute } from "./RdfsResource";
 import AppNotification from "./AppNotification";
 import SearchResult from "./search/SearchResult";
 import SearchQuery from "./search/SearchQuery";
@@ -19,6 +19,8 @@ import { Breadcrumb } from "./Breadcrumb";
 import AnnotatorLegendFilter from "./AnnotatorLegendFilter";
 import ActionType, { PendingAsyncAction } from "../action/ActionType";
 import { LongRunningTask } from "./LongRunningTask";
+import RelationshipAnnotation from "./meta/RelationshipAnnotation";
+import AnnotatedTermRelationship from "./meta/AnnotatedTermRelationship";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -44,7 +46,7 @@ export default class TermItState {
   // Identifiers of terminal states (a subset of all states)
   public terminalStates: string[];
   public properties: RdfsResource[];
-  public customAttributes: RdfProperty[];
+  public customAttributes: CustomAttribute[];
   // Represents a queue of inter-component notifications
   public notifications: AppNotification[];
   // Pending asynchronous actions. Can be used to prevent repeated requests when some are already pending
@@ -63,6 +65,8 @@ export default class TermItState {
   public configuration: Configuration;
   public validationResults: { [vocabularyIri: string]: ConsolidatedResults };
   public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
+  public relationshipAnnotations: RelationshipAnnotation[];
+  public annotatedRelationships: AnnotatedTermRelationship[];
   public accessLevels: { [key: string]: RdfsResource };
   public breadcrumbs: Breadcrumb[];
   public showTermsFlatList: boolean;
@@ -107,6 +111,8 @@ export default class TermItState {
     this.configuration = DEFAULT_CONFIGURATION;
     this.validationResults = {};
     this.definitionallyRelatedTerms = { targeting: [], of: [] };
+    this.relationshipAnnotations = [];
+    this.annotatedRelationships = [];
     this.breadcrumbs = [];
     this.showTermsFlatList = false;
     this.users = [];

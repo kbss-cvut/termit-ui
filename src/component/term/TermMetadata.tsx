@@ -19,6 +19,8 @@ import TermSnapshots from "./snapshot/TermSnapshots";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { RdfProperty } from "../../model/RdfsResource";
+import AnnotatedTermRelationship from "../../model/meta/AnnotatedTermRelationship";
+import { AnnotatedRelationships } from "./relationship-annotation/AnnotatedRelationships";
 
 interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
   term: Term;
@@ -26,6 +28,7 @@ interface TermMetadataProps extends HasI18n, RouteComponentProps<any> {
   language: string;
   selectLanguage: (lang: string) => void;
   customAttributes: RdfProperty[];
+  annotatedRelationships: AnnotatedTermRelationship[];
 }
 
 interface TermMetadataState {
@@ -55,7 +58,7 @@ export class TermMetadata extends React.Component<
   }
 
   public componentDidUpdate(
-    prevProps: TermMetadataProps,
+    _: TermMetadataProps,
     prevState: TermMetadataState
   ) {
     const activeTabFromUrl = Utils.extractQueryParam(
@@ -110,6 +113,7 @@ export class TermMetadata extends React.Component<
           language={language}
           languages={Term.getLanguages(term)}
           onSelect={selectLanguage}
+          primaryLanguage={this.props.vocabulary.primaryLanguage}
         />
         <Row>
           <Col lg={this.state.displayTerms ? 9 : 12}>
@@ -142,6 +146,13 @@ export class TermMetadata extends React.Component<
                           this.state.commentsCount !== null
                             ? this.state.commentsCount.toFixed()
                             : null,
+                        "term.metadata.annotatedRelationships":
+                          this.props.annotatedRelationships.length.toFixed(),
+                      }}
+                      tabHelp={{
+                        "term.metadata.annotatedRelationships": this.props.i18n(
+                          "term.metadata.annotatedRelationships.help"
+                        ),
                       }}
                     />
                   </CardBody>
@@ -199,10 +210,12 @@ export class TermMetadata extends React.Component<
     if (!term.isSnapshot()) {
       tabs["snapshots.title"] = <TermSnapshots asset={term} />;
     }
+    tabs["term.metadata.annotatedRelationships"] = <AnnotatedRelationships />;
     return tabs;
   }
 }
 
 export default connect((state: TermItState) => ({
   customAttributes: state.customAttributes,
+  annotatedRelationships: state.annotatedRelationships,
 }))(injectIntl(withI18n(withRouter(TermMetadata))));

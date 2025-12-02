@@ -9,7 +9,7 @@ import AppNotification, {
 import NotificationType from "../model/NotificationType";
 import { BasicRouteProps } from "./Types";
 import _ from "lodash";
-import validateUri from "validate.io-uri";
+import { parse } from "uri-js";
 import { Configuration } from "../model/Configuration";
 
 const EMAIL_REGEX =
@@ -59,11 +59,22 @@ const Utils = {
   },
 
   /**
-   * Checks if the specified string is a valid URI.
+   * Checks if the specified string is a valid (absolute) URI or URN.
+   *
+   * It does not allow URIs of the form "http://", because Java URI does not allow them.
    * @param str String to validate
    */
-  isUri(str?: string): boolean {
-    return validateUri(str);
+  isUri(str: string = ""): boolean {
+    try {
+      const uri = parse(str, { iri: true, tolerant: false });
+      return (
+        uri.error === undefined &&
+        uri.scheme !== undefined &&
+        (Utils.notBlank(uri.host) || uri.scheme === "urn")
+      );
+    } catch (e) {
+      return false;
+    }
   },
 
   /**

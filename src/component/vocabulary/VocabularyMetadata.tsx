@@ -89,6 +89,7 @@ export class VocabularyMetadata extends React.Component<
           language={language}
           languages={Vocabulary.getLanguages(vocabulary)}
           onSelect={selectLanguage}
+          primaryLanguage={vocabulary.primaryLanguage}
         />
         <Card className="mb-3">
           <CardBody className="card-body-basic-info">

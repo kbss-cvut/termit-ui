@@ -259,4 +259,27 @@ describe("Utils", () => {
       ).toEqual("peknoucky retezec s mnoha hacky a carkami");
     });
   });
+
+  describe("isUri", () => {
+    it("returns true for valid URI/URN", () => {
+      expect(Utils.isUri("http://example.com")).toBeTruthy();
+      expect(Utils.isUri("urn:kbss:termit")).toBeTruthy();
+    });
+
+    it("returns false for invalid URI", () => {
+      expect(Utils.isUri("thisisnoturi")).toBeFalsy();
+    });
+
+    it("returns false for HTTP without hostname", () => {
+      expect(Utils.isUri("http://")).toBeFalsy();
+    });
+
+    it("returns true for URI with Czech characters", () => {
+      expect(
+        Utils.isUri(
+          "https://slovník.gov.cz/datový/dtm/pojem/bezpečnostní-pásmo-plynovodní-sítě"
+        )
+      ).toBeTruthy();
+    });
+  });
 });

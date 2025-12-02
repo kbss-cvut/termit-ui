@@ -14,6 +14,7 @@ import { loadTermSnapshots } from "../../../action/AsyncTermActions";
 import NotificationType from "../../../model/NotificationType";
 import { consumeNotification } from "../../../action/SyncActions";
 import SnapshotsTable from "../../snapshot/SnapshotsTable";
+import User from "src/model/User";
 
 interface TermSnapshotsProps {
   asset: Term;
@@ -64,11 +65,27 @@ const TermSnapshots: React.FC<TermSnapshotsProps> = ({ asset }) => {
         className: "align-middle",
         Cell: ({ row }) => {
           const created = new Date(row.original.created);
+          const authorData = row.original.author;
+          let authorName = null;
+          if (authorData) {
+            if (authorData.firstName && authorData.lastName) {
+              const author = new User(authorData);
+              authorName = author.fullName;
+            }
+          }
+
           return (
             <>
-              <FormattedDate value={created} />
-              &nbsp;
-              <FormattedTime value={created} />
+              <div>
+                <FormattedDate value={created} />
+                &nbsp;
+                <FormattedTime value={created} />
+              </div>
+              {authorName && (
+                <div className="italics last-edited-message ml-2">
+                  {authorName}
+                </div>
+              )}
             </>
           );
         },

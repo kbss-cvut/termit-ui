@@ -2,9 +2,16 @@ import React from "react";
 import { SupportsSnapshots } from "../../model/Snapshot";
 import { FormattedDate, FormattedTime } from "react-intl";
 import { useI18n } from "../hook/useI18n";
+import User from "../../model/User";
 
-const SnapshotCreationInfo: React.FC<{ asset: SupportsSnapshots }> = ({
+interface SnapshotCreationInfoProps {
+  asset: SupportsSnapshots;
+  vocabulary?: SupportsSnapshots;
+}
+
+const SnapshotCreationInfo: React.FC<SnapshotCreationInfoProps> = ({
   asset,
+  vocabulary,
 }) => {
   const { i18n } = useI18n();
   if (!asset.isSnapshot()) {
@@ -14,6 +21,11 @@ const SnapshotCreationInfo: React.FC<{ asset: SupportsSnapshots }> = ({
     return null;
   }
   const createdDate = new Date(Date.parse(asset.snapshotCreated()!));
+  const authorSource =
+    vocabulary && vocabulary.isSnapshot() ? vocabulary : asset;
+  const authorData = authorSource.snapshotAuthor();
+  const author = authorData ? new User(authorData) : null;
+
   return (
     <>
       <span
@@ -24,7 +36,8 @@ const SnapshotCreationInfo: React.FC<{ asset: SupportsSnapshots }> = ({
         ({i18n("snapshot.label.short")}
         &nbsp;
         <FormattedDate value={createdDate} />{" "}
-        <FormattedTime value={createdDate} />)
+        <FormattedTime value={createdDate} />
+        {author && <> - {author.fullName}</>})
       </span>
     </>
   );

@@ -205,6 +205,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       <EditLanguageSelector
         language={language}
         existingLanguages={Vocabulary.getLanguages({ label, comment })}
+        requiredLanguage={primaryLanguage}
         onSelect={onLanguageSwitch}
         onRemove={removeTranslation}
       />

@@ -177,6 +177,7 @@ export class VocabularyEdit extends React.Component<
           key="vocabulary-edit-language-selector"
           language={language}
           existingLanguages={Vocabulary.getLanguages(this.state)}
+          requiredLanguage={this.state.primaryLanguage}
           onSelect={this.props.selectLanguage}
           onRemove={this.removeTranslation}
         />

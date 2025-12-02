@@ -32,6 +32,7 @@ import { setTermsFlatList } from "src/action/SyncActions";
  * @param onChange Handler for selection
  * @param suffix Suffix to render after the selector (but within the form group)
  * @param vocabularyIri IRI of the vocabulary the current term belongs to
+ * @param forceFlatList Whether to force the selector to render in flat list mode
  */
 export const TermSelector: React.FC<{
   id?: string;
@@ -39,6 +40,7 @@ export const TermSelector: React.FC<{
   value: string[] | TermInfo[] | TermData[];
   vocabularyIri?: string;
   suffix?: React.ReactNode;
+  forceFlatList?: boolean;
 
   fetchedTermsFilter?: (terms: Term[]) => Term[];
   onChange: (selected: readonly Term[]) => void;
@@ -46,6 +48,7 @@ export const TermSelector: React.FC<{
   id,
   label,
   value,
+  forceFlatList,
   fetchedTermsFilter = (terms) => terms,
   onChange,
   suffix,
@@ -58,7 +61,10 @@ export const TermSelector: React.FC<{
   );
   const treeSelect = React.useRef<IntelligentTreeSelect<Term>>(null);
 
-  const flatList = useSelector((state: TermItState) => state.showTermsFlatList);
+  let flatList = useSelector((state: TermItState) => state.showTermsFlatList);
+  if (forceFlatList) {
+    flatList = true;
+  }
   const handleFlatListToggle = () => {
     dispatch(setTermsFlatList(!flatList));
     treeSelect.current?.resetOptions();
@@ -99,11 +105,13 @@ export const TermSelector: React.FC<{
     <FormGroup id={id}>
       <div className="d-flex justify-content-between">
         {label}
-        <ShowFlatListToggle
-          id={id + "-show-flat-list"}
-          onToggle={handleFlatListToggle}
-          value={flatList}
-        />
+        {!forceFlatList && (
+          <ShowFlatListToggle
+            id={id + "-show-flat-list"}
+            onToggle={handleFlatListToggle}
+            value={flatList}
+          />
+        )}
       </div>
       <IntelligentTreeSelect
         ref={treeSelect}

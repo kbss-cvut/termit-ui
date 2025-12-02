@@ -37,9 +37,7 @@ const MultiSelectFacet: React.FC<MultiSelectFacetProps> = ({
   );
   return (
     <FormGroup>
-      <Label className="attribute-label" style={{ marginBottom: "11px" }}>
-        {label}
-      </Label>
+      <Label className="attribute-label mb-3">{label}</Label>
       <IntelligentTreeSelect
         id={id}
         options={options}

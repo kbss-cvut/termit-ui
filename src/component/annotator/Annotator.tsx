@@ -57,6 +57,7 @@ import {
   AnnotationOrigin,
 } from "../../model/AnnotatorLegendFilter";
 import AnnotatorDownloadActions from "./AnnotatorDownloadActions";
+import ResourceSaveReason from "./ResourceSaveReason";
 
 interface AnnotatorProps extends HasI18n {
   fileIri: IRI;
@@ -68,7 +69,7 @@ interface AnnotatorProps extends HasI18n {
   vocabulary: Vocabulary;
   annotationLanguage?: string;
 
-  onUpdate: (newHtml: string) => Promise<void>;
+  onUpdate: (newHtml: string, reason: ResourceSaveReason) => Promise<void>;
   setAnnotatorLegendFilter: (
     annotationClass: AnnotationClass,
     annotationOrigin: AnnotationOrigin,
@@ -220,7 +221,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
     }
     if (removed) {
       this.setState({ stickyAnnotationId: "" });
-      this.updateInternalHtml(dom);
+      this.updateInternalHtml(dom, ResourceSaveReason.REMOVE_OCCURRENCE);
     }
   };
 
@@ -262,9 +263,17 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         shouldUpdate = this.createOccurrence(annotationSpan, ann, term);
         this.approveOccurrence(annotationSpan);
       }
+
+      const isProposed =
+        !!ann.attribs.class?.includes(AnnotationOrigin.PROPOSED) ||
+        ann.attribs.score != null;
+      let saveReason = isProposed
+        ? ResourceSaveReason.OCCURRENCE_STATE_CHANGE
+        : ResourceSaveReason.NEW_OCCURRENCE;
+
       delete ann.attribs.score;
       if (shouldUpdate) {
-        this.updateInternalHtml(dom);
+        this.updateInternalHtml(dom, saveReason);
       }
     }
   };
@@ -352,7 +361,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       this.props.fileIri
     );
     defSource.types = [VocabularyUtils.TERM_DEFINITION_SOURCE];
-    return this.updateInternalHtml(dom)
+    return this.updateInternalHtml(dom, ResourceSaveReason.NEW_OCCURRENCE)
       .then(() => this.props.setTermDefinitionSource(defSource, term))
       .catch(() => {
         this.onRemove(annotationElement.attribs!.about!);
@@ -444,15 +453,18 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       newTermLabelAnnotation: undefined,
       newTermDefinitionAnnotation: undefined,
     });
-    this.updateInternalHtml(dom);
+    this.updateInternalHtml(dom, ResourceSaveReason.NEW_OCCURRENCE);
   };
 
-  private updateInternalHtml = (dom: DomHandlerNode[]) => {
+  private updateInternalHtml = (
+    dom: DomHandlerNode[],
+    reason: ResourceSaveReason
+  ) => {
     this.setState({ internalHtml: dom });
     const htmlSplit = HtmlDomUtils.splitHtml(this.props.initialHtml);
     const html =
       htmlSplit.prefix + HtmlParserUtils.dom2html(dom) + htmlSplit.suffix;
-    return this.props.onUpdate(html);
+    return this.props.onUpdate(html, reason);
   };
 
   private handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

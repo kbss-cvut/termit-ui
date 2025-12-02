@@ -86,6 +86,8 @@ function stateToPlainObject(state: TermItState): TermItState {
     configuration: state.configuration,
     validationResults: state.validationResults,
     definitionallyRelatedTerms: state.definitionallyRelatedTerms,
+    relationshipAnnotations: state.relationshipAnnotations,
+    annotatedRelationships: state.annotatedRelationships,
     breadcrumbs: state.breadcrumbs,
     users: state.users,
     accessLevels: state.accessLevels,
@@ -246,7 +248,7 @@ describe("Reducers", () => {
 
   describe("intl", () => {
     it("loads localization data on action", () => {
-      const action = switchLanguage(Constants.LANG.CS.locale);
+      const action = switchLanguage(Constants.LANG.CS);
       expect(reducers(stateToPlainObject(initialState), action)).toEqual(
         Object.assign({}, initialState, {
           intl: require("../../i18n/cs").default,
@@ -887,6 +889,7 @@ describe("Reducers", () => {
         maxFileUploadSize: "25MB",
         roles: [],
         versionSeparator: "/version",
+        indexedLanguages: [],
       };
       const result = reducers(
         stateToPlainObject(initialState),

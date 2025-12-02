@@ -30,7 +30,7 @@ export const CustomAttributesValuesEdit: React.FC<{
             <CustomAttributeValueEdit
               key={Utils.hashCode(att.iri)}
               attribute={att}
-              values={values.get(att.iri) || []}
+              values={Utils.sanitizeArray(values.get(att.iri)) || []}
               onChange={(attribute, values) => onChange(attribute.iri, values)}
             />
           </Col>

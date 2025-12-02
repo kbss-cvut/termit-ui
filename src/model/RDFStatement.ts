@@ -4,15 +4,15 @@ import { HasIdentifier } from "./Asset";
 export const RDFSTATEMENT_CONTEXT = {
   iri: "@id",
   types: "@type",
-  object: VocabularyUtils.RDF_OBJECT,
-  relation: VocabularyUtils.RDF_PREDICATE,
   subject: VocabularyUtils.RDF_SUBJECT,
+  relation: VocabularyUtils.RDF_PREDICATE,
+  value: VocabularyUtils.RDF_OBJECT,
 };
 
 export type RDFStatement = {
-  object: HasIdentifier;
-  relation: HasIdentifier;
   subject: HasIdentifier;
+  relation: HasIdentifier;
+  value: HasIdentifier;
 };
 
 export default RDFStatement;

@@ -1,9 +1,18 @@
+#### Version 4.2.0
+
+- Added support for using a SPARQL endpoint to import vocabularies (read-only).
+- Allow referencing parent terms from imported vocabularies in imported Excel.
+- Support mapping multiple columns to one attribute in imported Excel.
+- Improve spatial efficiency of file backups.
+- Improve faceted search layout, allow using custom attributes in faceted search.
+- Added German translation of the UI.
+
 #### Version 4.1.0
 
 - Added support for setting primary language on vocabulary level.
 - Added support for custom user-defined attributes.
 - Support displaying terms in selectors as a flat list instead of a tree.
-- Support selecting language in fulltext search.
+- Support for selecting language in fulltext search.
 
 #### Version 4.0.1
 

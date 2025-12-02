@@ -260,6 +260,10 @@ const cs = {
     "administration.customization.customAttributes.update": "Upravit atribut",
     "administration.customization.customAttributes.update.success":
       "Atribut byl úspěšně upraven.",
+    "administration.customization.customAttributes.annotatedRelationships":
+      "Vztahuje se na vlastnosti vztahů",
+    "administration.customization.customAttributes.annotatedRelationships.help":
+      "Vyberte, které vlastnosti vztahů mezi pojmy může tento vlastní atribut anotovat. Platí pouze když doména je 'Vztah mezi pojmy'.",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -350,14 +354,22 @@ const cs = {
     "vocabulary.summary.import.translations.help":
       "Stávající data nebudou přepsána.",
     "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.skos-external": "SKOS - externí",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Importovat",
     "vocabulary.import.dialog.title": "Importovat slovník",
     "vocabulary.import.dialog.message":
       "Importovaný soubor musí být formátu SKOS. " +
       "Soubor musí obsahovat jediný skos:ConceptScheme.",
+    "vocabulary.import.dialog.external.message":
+      "Vyberte slovníky, které chcete importovat.",
+    "vocabulary.import.dialog.external.errormessage":
+      "Žádné slovníky nenalezeny.",
+    "vocabulary.import.dialog.external.button": "Importovat vybrané slovníky",
     "vocabulary.import.title": "Importovat slovník",
     "vocabulary.import.success": "Slovník úspěšně importován.",
+    "vocabulary.import.success.message": "Slovník úspěšně importován.",
+    "vocabulary.import.error.message": "Slovník se nepodařilo naimportovat.",
     "vocabulary.import.allow-changing-identifiers":
       "Povolit změnu identifikátorů",
     "vocabulary.import.allow-changing-identifiers.tooltip":
@@ -588,6 +600,14 @@ const cs = {
     "term.metadata.types.select.placeholder": "Vyberte typ",
     "term.metadata.validation.title": "Kontrola",
     "term.metadata.validation.empty": "Pojem je bez chyb.",
+    "term.metadata.relationshipAnnotation": "Anotace vztahu",
+    "term.metadata.relationshipAnnotation.save.success":
+      "Anotace vztahu pojmu úspěšně uložena",
+    "term.metadata.annotatedRelationships": "Anotované vztahy",
+    "term.metadata.annotatedRelationships.help":
+      "Vztahy mezi pojmy anotované tímto pojmem",
+    "term.metadata.annotatedRelationships.empty":
+      "Tímto pojmem nejsou anotovány žádné vztahy mezi pojmy.",
     "term.removed.message": "Pojem byl odstraněn.",
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
@@ -700,6 +720,7 @@ const cs = {
     "search.faceted.matchType.substring": "Částečná shoda",
     "search.faceted.no-results":
       "Zadaným parametrů neodpovídají již žádná další data.",
+    "search.faceted.relationshipAnnotation": "Vztah anotovaný pojmem",
 
     "profile.first.name": "Křestní jméno",
     "profile.last.name": "Příjmení",
@@ -820,6 +841,7 @@ const cs = {
 
     "type.asset": "Záznam",
     "type.term": "Pojem",
+    "type.term.relationship": "Vztah mezi pojmy",
     "type.vocabulary": "Slovník",
     "type.resource": "Zdroj",
     "type.document": "Dokument",
@@ -844,12 +866,18 @@ const cs = {
       "Soubor nemohl být nahrán, protože jeho velikost přesahuje nastavený limit.",
     "error.term.state.terminal.liveChildren":
       "Pojmu nelze nastavit koncový stav, dokud má alespoň jednoho potomka v jiném než koncovém stavu.",
+    "error.vocabulary.import.skos.missingLabel":
+      "Slovník se nepodařilo naimportovat, protože pojem {term} nemá název.",
+    "error.vocabulary.import.skos.missingLanguageTag":
+      "Slovník se nepodařilo naimportovat, protože hodnota property {property} pojmu {term} nemá specifikován jazyk.",
     "error.vocabulary.import.excel.duplicateIdentifier":
       "Excel obsahuje více pojmů se stejným identifikátorem.",
     "error.vocabulary.import.excel.duplicateLabel":
-      "Excel obsahuje více pojmů se stejným názvem.",
+      "Excel obsahuje více pojmů se stejným názvem: {label}",
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Slovník již obsahuje pojem s názvem "{label}" s rozdílným identifikátorem než s jakým byl importován. Existující identifikátor: {existingUri}',
+    "error.vocabulary.import.excel.externalParentUnrelatedVocabulary":
+      "Pojem {label} odkazuje na nadřazený pojem s IRI <{referencedIri}>, který patří do slovníku nesouvisejícího s importovaným.",
     "error.term.remove.annotationsExist":
       "Pojem nelze odstranit, protože se je použit k anotaci jiných pojmů či zdrojů: {resources}",
     "error.term.remove.hasSubTerms":

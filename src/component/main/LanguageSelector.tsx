@@ -1,10 +1,9 @@
 import * as React from "react";
-import Constants from "../../util/Constants";
+import Constants, { Language } from "../../util/Constants";
 import "./LanguageSelector.scss";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { switchLanguage } from "../../action/SyncActions";
-import { ThunkDispatch } from "../../util/Types";
 import {
   DropdownItem,
   DropdownMenu,
@@ -12,105 +11,72 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import classNames from "classnames";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
+import { useI18n } from "../hook/useI18n";
 
-interface LanguageSelectorProps extends HasI18n {
-  language: string;
+const LanguageSelector: React.FC<{
   fixed: boolean;
   authenticated: boolean;
-  switchLanguage: (lang: string) => void;
-}
+}> = ({ fixed, authenticated }) => {
+  const { i18n } = useI18n();
+  const language = useSelector((state: TermItState) => state.intl.locale);
+  const dispatch = useDispatch();
 
-export class LanguageSelector extends React.Component<LanguageSelectorProps> {
-  public onSelect = (lang: string) => {
-    if (this.props.language === lang) {
+  const onSelect = (lang: Language) => {
+    if (language === lang.locale) {
       return;
     }
-    this.props.switchLanguage(lang);
+    dispatch(switchLanguage(lang));
   };
 
-  private resolveSelectedLanguage(): React.ReactFragment {
-    const selected = Object.getOwnPropertyNames(Constants.LANG).find(
-      (p) => Constants.LANG[p].locale === this.props.language
-    );
-    const lang = Constants.LANG[selected!];
+  const selectedLanguage = Object.values(Constants.LANG).find(
+    (p) => p.locale === language
+  )!;
 
-    return (
-      <React.Fragment>
-        <img src={lang.flag} className="flag" alt={lang.label} />
-        &nbsp;
-        <span className="d-none d-sm-block">&nbsp;{lang.label}</span>
-      </React.Fragment>
-    );
-  }
-
-  public render() {
-    const { authenticated, fixed } = this.props;
-
-    return (
-      <UncontrolledDropdown
-        className={classNames({
-          "p-3": !authenticated,
-        })}
+  return (
+    <UncontrolledDropdown
+      className={classNames({
+        "p-3": !authenticated,
+      })}
+    >
+      <DropdownToggle
+        name="language-selector"
+        className={classNames(
+          "d-flex",
+          "align-items-center",
+          "language-selector",
+          {
+            "language-selector-fixed": fixed,
+            "language-selector-public": !authenticated,
+          }
+        )}
+        caret={true}
+        nav={authenticated}
+        title={i18n("main.lang-selector.tooltip")}
       >
-        <DropdownToggle
-          name="language-selector"
-          className={classNames(
-            "d-flex",
-            "align-items-center",
-            "language-selector",
-            {
-              "language-selector-fixed": fixed,
-              "language-selector-public": !authenticated,
-            }
-          )}
-          caret={true}
-          nav={authenticated}
-          title={this.props.i18n("main.lang-selector.tooltip")}
-        >
-          {this.resolveSelectedLanguage()}
-        </DropdownToggle>
-        <DropdownMenu right={true}>
+        <img
+          src={selectedLanguage.flag}
+          className="flag"
+          alt={selectedLanguage.label}
+        />
+        &nbsp;
+        <span className="d-none d-sm-block">
+          &nbsp;{selectedLanguage.label}
+        </span>
+      </DropdownToggle>
+      <DropdownMenu right={true}>
+        {Object.values(Constants.LANG).map((lang) => (
           <DropdownItem
-            name="language-selector.cs"
-            onClick={this.onSelect.bind(null, Constants.LANG.CS.locale)}
+            key={lang.isoCode[0]}
+            name={`language-selector.${lang.isoCode[0]}`}
+            onClick={() => onSelect(lang)}
           >
-            <img
-              src={Constants.LANG.CS.flag}
-              className="flag"
-              alt={Constants.LANG.CS.label}
-            />
-            &nbsp;&nbsp;{Constants.LANG.CS.label}
+            <img src={lang.flag} className="flag" alt={lang.label} />
+            &nbsp;&nbsp;{lang.label}
           </DropdownItem>
-          <DropdownItem divider={true} />
+        ))}
+      </DropdownMenu>
+    </UncontrolledDropdown>
+  );
+};
 
-          <DropdownItem
-            nane="language-selector.en"
-            onClick={this.onSelect.bind(null, Constants.LANG.EN.locale)}
-          >
-            <img
-              src={Constants.LANG.EN.flag}
-              className="flag"
-              alt={Constants.LANG.EN.label}
-            />
-            &nbsp;&nbsp;{Constants.LANG.EN.label}
-          </DropdownItem>
-        </DropdownMenu>
-      </UncontrolledDropdown>
-    );
-  }
-}
-
-export default connect(
-  (state: TermItState) => {
-    return {
-      language: state.intl.locale,
-    };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      switchLanguage: (lang: string) => dispatch(switchLanguage(lang)),
-    };
-  }
-)(injectIntl(withI18n(LanguageSelector)));
+export default LanguageSelector;

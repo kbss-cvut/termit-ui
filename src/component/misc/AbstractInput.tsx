@@ -11,8 +11,9 @@ import Utils from "../../util/Utils";
 import InputValidationMessage from "./validation/InputValidationMessage";
 
 export interface AbstractInputProps {
+  id?: string;
   name?: string;
-  label?: string | JSX.Element;
+  label?: string | React.ReactNode;
   labelClass?: string;
   placeholder?: string;
   title?: string;
@@ -42,7 +43,7 @@ export function renderHelp(id: string, help?: string) {
   return help && <HelpIcon id={`${id}-help`} text={help} />;
 }
 
-export function renderHint(hint?: string | JSX.Element) {
+export function renderHint(hint?: string | React.ReactNode) {
   return hint && <FormText>{hint}</FormText>;
 }
 

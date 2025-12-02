@@ -1,4 +1,13 @@
-#### Version 4.1.0
+#### Verze 4.2.0
+
+- Přidána podpora pro definici externího SPARQL endpointu, ze kterého lze importovat slovníky (pouze pro čtení).
+- Přidána možnost odkazovat na rodičovské pojmy z importovaných slovníků v importovaném Excelu.
+- Přidána možnost mapování více sloupců na jeden atribut v importovaném Excelu.
+- Efektivnější zálohy souborů.
+- Vylepšení rozvržení fasetového vyhledávání, možnost vyhledávat pomocí hodnot vlastních atributů.
+- Překlad uživatelského rozhraní do němčiny.
+
+#### Verze 4.1.0
 
 - Přidána podpora pro specifikaci primárního jazyka slovníku.
 - Přidána podpora pro vlastní (uživateli definované) atributy.

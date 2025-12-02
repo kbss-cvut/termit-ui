@@ -3,7 +3,7 @@ import {
   mockStore,
   mountWithIntl,
 } from "../../../__tests__/environment/Environment";
-import { LanguageSelector } from "../../main/LanguageSelector";
+import LanguageSelector from "../../main/LanguageSelector";
 
 describe("FooterMenu", () => {
   it("renders component correctly", () => {

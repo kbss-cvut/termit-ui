@@ -7,21 +7,19 @@ import ISO6391 from "iso-639-1";
 export function loadInitialLocalizationData(): IntlData {
   const prefLang = BrowserStorage.get(Constants.STORAGE_LANG_KEY);
   const lang = prefLang ? prefLang : navigator.language;
-  if (lang && (lang.startsWith("cs") || lang.startsWith("sk"))) {
-    setHtmlLanguage(Constants.LANG.CS.locale);
-    return loadLocalizationData(Constants.LANG.CS.locale);
+  const langObj = Object.values(Constants.LANG).find((loc) =>
+    loc.isoCode.some((v) => lang.startsWith(v))
+  );
+  if (langObj) {
+    setHtmlLanguage(langObj.locale);
+    return loadLocalizationData(langObj.isoCode[0]);
   } else {
     return loadLocalizationData(Constants.LANG.EN.locale);
   }
 }
 
-export function loadLocalizationData(language: string): IntlData {
-  switch (language) {
-    case Constants.LANG.CS.locale:
-      return require("../i18n/cs").default;
-    default:
-      return require("../i18n/en").default;
-  }
+export function loadLocalizationData(code: string): IntlData {
+  return require(`../i18n/${code}`).default;
 }
 
 export function saveLanguagePreference(language: string): void {

@@ -98,8 +98,8 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
       return (
         <Row key={keyBase + index + "row"}>
           <Col md={4} xs={12}>
-            <span id={keyBase + index + "object"}>
-              <LinkComponent iri={statement.object.iri} />
+            <span id={keyBase + index + "subject"}>
+              <LinkComponent iri={statement.subject.iri} />
             </span>
           </Col>
           <Col md={4} xs={12}>
@@ -109,9 +109,9 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
             </span>
           </Col>
           <Col md={4} xs={12}>
-            <span id={keyBase + index + "subject"}>
-              <AssetLabel iri={statement.subject.iri} shrinkFullIri={true} />
-              <CopyIriIcon url={statement.subject.iri} />
+            <span id={keyBase + index + "object"}>
+              <AssetLabel iri={statement.value.iri} shrinkFullIri={true} />
+              <CopyIriIcon url={statement.value.iri} />
             </span>
           </Col>
         </Row>

@@ -40,8 +40,8 @@ import ActionType, {
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
-  RdfProperty,
-  RdfPropertyData,
+  CustomAttribute,
+  CustomAttributeData,
   RdfsResourceData,
 } from "../model/RdfsResource";
 import TermItState from "../model/TermItState";
@@ -74,6 +74,7 @@ import {
   getChangeTypeUri,
   VocabularyContentChangeFilterData,
 } from "../model/filter/VocabularyContentChangeFilterData";
+import ResourceSaveReason from "../component/annotator/ResourceSaveReason";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -366,13 +367,17 @@ export function removeFileFromDocument(file: TermItFile, documentIri: IRI) {
   };
 }
 
-export function uploadFileContent(fileIri: IRI, data: File) {
+export function uploadFileContent(
+  fileIri: IRI,
+  data: File,
+  reason: ResourceSaveReason
+) {
   const action = {
     type: ActionType.SAVE_FILE_CONTENT,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return uploadFile(fileIri, data)
+    return uploadFile(fileIri, data, reason)
       .then(() => {
         dispatch(asyncActionSuccess(action));
         return dispatch(
@@ -396,9 +401,10 @@ export function uploadFileContent(fileIri: IRI, data: File) {
   };
 }
 
-function uploadFile(fileIri: IRI, data: Blob) {
+function uploadFile(fileIri: IRI, data: Blob, reason: ResourceSaveReason) {
   const formData = new FormData();
   formData.append("file", data, fileIri.fragment);
+  formData.append("reason", reason);
   return Ajax.put(
     Constants.API_PREFIX + "/resources/" + fileIri.fragment + "/content",
     contentType(Constants.MULTIPART_FORM_DATA)
@@ -678,8 +684,7 @@ export function loadTypes() {
       .then((data: TermData[]) => {
         return data.map((term: TermData) => {
           if (term.subTerms) {
-            // @ts-ignore
-            term.subTerms = Utils.sanitizeArray(term.subTerms).map(
+            term.plainSubTerms = Utils.sanitizeArray(term.subTerms).map(
               (subTerm) => subTerm.iri
             );
           }
@@ -869,14 +874,18 @@ export function hasFileContent(fileIri: IRI) {
   };
 }
 
-export function saveFileContent(fileIri: IRI, fileContent: string) {
+export function saveFileContent(
+  fileIri: IRI,
+  fileContent: string,
+  reason: ResourceSaveReason
+) {
   const action = {
     type: ActionType.SAVE_FILE_CONTENT,
   };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     const fileBlob = new Blob([fileContent], { type: "text/html" });
-    return uploadFile(fileIri, fileBlob)
+    return uploadFile(fileIri, fileBlob, reason)
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
@@ -1130,15 +1139,15 @@ function createPropertyImpl(
 }
 
 export function getCustomAttributes() {
-  return getPropertiesImpl<RdfPropertyData, RdfProperty>(
+  return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
     { type: ActionType.GET_CUSTOM_ATTRIBUTES },
     "/data/custom-attributes",
-    (d) => new RdfProperty(d),
+    (d) => new CustomAttribute(d),
     () => []
   );
 }
 
-export function createCustomAttribute(attribute: RdfProperty) {
+export function createCustomAttribute(attribute: CustomAttribute) {
   return createPropertyImpl(
     attribute,
     { type: ActionType.CREATE_CUSTOM_ATTRIBUTE },
@@ -1146,7 +1155,7 @@ export function createCustomAttribute(attribute: RdfProperty) {
   );
 }
 
-export function updateCustomAttribute(attribute: RdfProperty) {
+export function updateCustomAttribute(attribute: CustomAttribute) {
   const action = { type: ActionType.UPDATE_CUSTOM_ATTRIBUTE };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));

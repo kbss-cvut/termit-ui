@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
+     viewBox="0 0 32 32" role="img" aria-labelledby="title desc">
+
+    <!-- main association line -->
+    <line x1="6" y1="6" x2="26" y2="26"
+          stroke="#111" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- perpendicular annotation line -->
+    <line x1="16" y1="16" x2="26" y2="6"
+          stroke="#111" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- annotation box -->
+    <rect x="22" y="3" width="8" height="6" rx="1" ry="1"
+          fill="#fff" stroke="#111" stroke-width="3"/>
+
+    <!-- nodes -->
+    <circle cx="6" cy="6" r="4" fill="#fff" stroke="#111" stroke-width="3"/>
+    <circle cx="26" cy="26" r="4" fill="#fff" stroke="#111" stroke-width="3"/>
+</svg>

@@ -248,6 +248,10 @@ const en = {
     "administration.customization.customAttributes.update": "Update attribute",
     "administration.customization.customAttributes.update.success":
       "Attribute successfully updated.",
+    "administration.customization.customAttributes.annotatedRelationships":
+      "Applicable to relationship properties",
+    "administration.customization.customAttributes.annotatedRelationships.help":
+      "Select which term relationship properties this custom attribute can annotate. Only applicable when domain is 'Term relationship'.",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
@@ -341,14 +345,22 @@ const en = {
     "vocabulary.summary.import.translations.help":
       "Existing data will not be changed.",
     "vocabulary.import.type.skos": "SKOS",
+    "vocabulary.import.type.skos-external": "SKOS - external",
     "vocabulary.import.type.excel": "MS Excel",
     "vocabulary.import.action": "Import",
     "vocabulary.import.dialog.title": "Import vocabulary",
     "vocabulary.import.dialog.message":
       "Imported file must be in the SKOS format. " +
       "The file must contain exactly one instance of skos:ConceptScheme.",
+    "vocabulary.import.dialog.external.message":
+      "Select vocabularies to import.",
+    "vocabulary.import.dialog.external.errormessage":
+      "There are no available vocabularies. ",
+    "vocabulary.import.dialog.external.button": "Import selected vocabularies",
     "vocabulary.import.title": "Import vocabulary",
     "vocabulary.import.success": "Vocabulary successfully imported.",
+    "vocabulary.import.success.message": "Vocabulary successfully imported.",
+    "vocabulary.import.error.message": "Failed to import vocabulary.",
     "vocabulary.import.allow-changing-identifiers":
       "Allow changing identifiers",
     "vocabulary.import.allow-changing-identifiers.tooltip":
@@ -581,6 +593,14 @@ const en = {
     "term.metadata.types.select.placeholder": "Select type",
     "term.metadata.validation.title": "Validation",
     "term.metadata.validation.empty": "The term does not have any issues.",
+    "term.metadata.relationshipAnnotation": "Relationship annotations",
+    "term.metadata.relationshipAnnotation.save.success":
+      "Term relationship annotation successfully saved",
+    "term.metadata.annotatedRelationships": "Annotated relationships",
+    "term.metadata.annotatedRelationships.help":
+      "Term relationships annotated by this term",
+    "term.metadata.annotatedRelationships.empty":
+      "Term is not used to annotated any term relationships.",
     "term.removed.message": "Term successfully removed.",
     "term.badge.score.tooltip":
       "The score of this term is {score}%. Click to see the validation results",
@@ -690,6 +710,7 @@ const en = {
     "search.faceted.matchType.substring": "Substring",
     "search.faceted.no-results":
       "No more results found for the specified parameters.",
+    "search.faceted.relationshipAnnotation": "Relationship annotated by term",
 
     "profile.first.name": "First name",
     "profile.last.name": "Last name",
@@ -812,6 +833,7 @@ const en = {
 
     "type.asset": "Asset",
     "type.term": "Term",
+    "type.term.relationship": "Term relationship",
     "type.vocabulary": "Vocabulary",
     "type.resource": "Resource",
     "type.document": "Document",
@@ -836,12 +858,18 @@ const en = {
       "The file could not be uploaded because it exceeds the configured maximum file size limit.",
     "error.term.state.terminal.liveChildren":
       "Cannot set term state to a terminal when it has at least one sub term in non-terminal state.",
+    "error.vocabulary.import.skos.missingLabel":
+      "Unable to import vocabulary, term {term} does not have a label.",
+    "error.vocabulary.import.skos.missingLanguageTag":
+      "Unable to import vocabulary, property {property} of term {term} does not have a language tag.",
     "error.vocabulary.import.excel.duplicateIdentifier":
       "The Excel file contains multiple terms with the same identifier.",
     "error.vocabulary.import.excel.duplicateLabel":
-      "The Excel file contains multiple terms with the same label.",
+      "The Excel file contains multiple terms with the same label: {label}",
     "error.vocabulary.import.excel.labelWithDifferentIdentifierExists":
       'Vocabulary already contains a term with label "{label}" with a different identifier than the imported one. Existing identifier: {existingUri}',
+    "error.vocabulary.import.excel.externalParentUnrelatedVocabulary":
+      "Term {label} references a broader term with IRI <{referencedIri}> which belongs to a vocabulary unrelated to the imported one.",
     "error.term.remove.annotationsExist":
       "Cannot delete the term. It is used for annotating resources or terms:  {resources}",
     "error.term.remove.hasSubTerms":

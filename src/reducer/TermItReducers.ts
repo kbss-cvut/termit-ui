@@ -31,7 +31,7 @@ import AsyncActionStatus from "../action/AsyncActionStatus";
 import Vocabulary, { EMPTY_VOCABULARY } from "../model/Vocabulary";
 import { default as QueryResult, QueryResultIF } from "../model/QueryResult";
 import Term, { TermInfo } from "../model/Term";
-import RdfsResource, { RdfProperty } from "../model/RdfsResource";
+import RdfsResource, { CustomAttribute } from "../model/RdfsResource";
 import AppNotification from "../model/AppNotification";
 import SearchResult from "../model/search/SearchResult";
 import SearchQuery from "../model/search/SearchQuery";
@@ -46,6 +46,8 @@ import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
 import { loadTermsFlatListPreference } from "src/util/UISettingsUtil";
+import RelationshipAnnotation from "../model/meta/RelationshipAnnotation";
+import AnnotatedTermRelationship from "../model/meta/AnnotatedTermRelationship";
 
 function isAsyncSuccess(action: Action) {
   return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
@@ -117,7 +119,7 @@ function intl(
 ): IntlData {
   switch (action.type) {
     case ActionType.SWITCH_LANGUAGE:
-      return loadLocalizationData(action.language);
+      return loadLocalizationData(action.language.isoCode[0]);
     default:
       return state;
   }
@@ -423,12 +425,12 @@ function properties(
 }
 
 function customAttributes(
-  state: RdfProperty[] = [],
-  action: AsyncActionSuccess<RdfProperty[]> | Action
-): RdfProperty[] {
+  state: CustomAttribute[] = [],
+  action: AsyncActionSuccess<CustomAttribute[]> | Action
+): CustomAttribute[] {
   switch (action.type) {
     case ActionType.GET_CUSTOM_ATTRIBUTES:
-      const asyncAction = action as AsyncActionSuccess<RdfProperty[]>;
+      const asyncAction = action as AsyncActionSuccess<CustomAttribute[]>;
       return isAsyncSuccess(action) ? asyncAction.payload : state;
     case ActionType.CREATE_CUSTOM_ATTRIBUTE:
       return isAsyncSuccess(action) ? [] : state;
@@ -678,6 +680,42 @@ function definitionallyRelatedTerms(
   }
 }
 
+function relationshipAnnotations(
+  state: RelationshipAnnotation[] = [],
+  action: AsyncActionSuccess<RelationshipAnnotation[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_TERM_RELATIONSHIP_ANNOTATIONS:
+      if (isAsyncSuccess(action)) {
+        return action.payload;
+      }
+      return state;
+    case ActionType.LOGOUT: // Intentional fall-through
+    case ActionType.LOAD_TERM:
+      return [];
+    default:
+      return state;
+  }
+}
+
+function annotatedRelationships(
+  state: AnnotatedTermRelationship[] = [],
+  action: AsyncActionSuccess<AnnotatedTermRelationship[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_ANNOTATED_TERM_RELATIONSHIPS:
+      if (isAsyncSuccess(action)) {
+        return action.payload;
+      }
+      return state;
+    case ActionType.LOGOUT: // Intentional fall-through
+    case ActionType.LOAD_TERM:
+      return [];
+    default:
+      return state;
+  }
+}
+
 function breadcrumbs(state: Breadcrumb[] = [], action: BreadcrumbAction) {
   switch (action.type) {
     case ActionType.ADD_CRUMB:
@@ -808,6 +846,8 @@ const rootReducer = combineReducers<TermItState>({
   configuration,
   validationResults,
   definitionallyRelatedTerms,
+  relationshipAnnotations,
+  annotatedRelationships,
   breadcrumbs,
   annotatorLegendFilter,
   users,

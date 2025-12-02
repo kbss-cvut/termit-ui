@@ -164,6 +164,7 @@ export class CreateTermFromAnnotation extends React.Component<
           <EditLanguageSelector
             language={this.state.selectedLanguage}
             existingLanguages={Term.getLanguages(this.state)}
+            requiredLanguage={this.props.vocabularyPrimaryLanguage}
             onSelect={this.setLanguage}
             onRemove={this.onRemoveTranslation}
           />

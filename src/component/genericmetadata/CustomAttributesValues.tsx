@@ -5,7 +5,10 @@ import TermItState from "../../model/TermItState";
 // @ts-ignore
 import { Badge, Col, Label, List, Row } from "reactstrap";
 import Utils from "../../util/Utils";
-import { getLocalized } from "../../model/MultilingualString";
+import {
+  getLocalized,
+  MultilingualString,
+} from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import { RdfProperty } from "../../model/RdfsResource";
 import {
@@ -18,9 +21,11 @@ import TermIriLink from "../term/TermIriLink";
 import { ThunkDispatch } from "../../util/Types";
 import { getCustomAttributes } from "../../action/AsyncActions";
 import OutgoingLink from "../misc/OutgoingLink";
+import { RelationshipAnnotationButton } from "../term/relationship-annotation/RelationshipAnnotationButton";
+import { HasIdentifier } from "../../model/Asset";
 
 export const CustomAttributesValues: React.FC<{
-  asset: HasUnmappedProperties;
+  asset: HasUnmappedProperties & HasIdentifier & { label: MultilingualString };
 }> = ({ asset }) => {
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
@@ -58,6 +63,18 @@ export const CustomAttributesValues: React.FC<{
                   {asset.unmappedProperties.get(att.iri)?.map((val) => (
                     <li key={stringifyPropertyValue(val)}>
                       <CustomAttributeValue attribute={att} value={val} />
+                      {(val as any).iri && (
+                        <RelationshipAnnotationButton
+                          relationship={{
+                            subject: asset,
+                            predicate: att.iri,
+                            predicateLabel: getLocalized(att.label, lang),
+                            object: val as HasIdentifier & {
+                              label: MultilingualString;
+                            },
+                          }}
+                        />
+                      )}
                     </li>
                   ))}
                 </List>
@@ -69,7 +86,7 @@ export const CustomAttributesValues: React.FC<{
   );
 };
 
-const CustomAttributeValue: React.FC<{
+export const CustomAttributeValue: React.FC<{
   attribute: RdfProperty;
   value: PropertyValueType;
 }> = ({ attribute, value }) => {

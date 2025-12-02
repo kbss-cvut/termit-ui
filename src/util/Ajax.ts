@@ -373,6 +373,16 @@ export class Ajax {
     return this.axiosInstance.put(path, config.getContent(), conf);
   }
 
+  public patch(path: string, config: RequestConfigBuilder) {
+    const conf = {
+      params: config.getParams(),
+      headers: config.getHeaders(),
+      signal: config.getAbortSignal(),
+      paramsSerializer,
+    };
+    return this.axiosInstance.patch(path, config.getContent(), conf);
+  }
+
   public delete(path: string, config?: RequestConfigBuilder) {
     let conf: any;
     if (config) {

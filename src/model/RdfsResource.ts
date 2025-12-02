@@ -12,6 +12,7 @@ export const CONTEXT = {
   comment: context(VocabularyUtils.RDFS_COMMENT),
   domain: VocabularyUtils.RDFS_DOMAIN,
   range: VocabularyUtils.RDFS_RANGE,
+  annotatedRelationships: VocabularyUtils.AS_RELATIONSHIP,
   types: "@type",
 };
 
@@ -25,6 +26,10 @@ export interface RdfsResourceData extends AssetData {
 export interface RdfPropertyData extends RdfsResourceData {
   domain?: string;
   range?: string | { iri: string };
+}
+
+export interface CustomAttributeData extends RdfPropertyData {
+  annotatedRelationships?: { iri: string }[];
 }
 
 /**
@@ -77,5 +82,14 @@ export class RdfProperty extends RdfsResource {
       return this.range;
     }
     return this.range?.iri || "";
+  }
+}
+
+export class CustomAttribute extends RdfProperty {
+  public annotatedRelationships?: { iri: string }[];
+
+  constructor(data: CustomAttributeData) {
+    super(data);
+    this.annotatedRelationships = data.annotatedRelationships;
   }
 }

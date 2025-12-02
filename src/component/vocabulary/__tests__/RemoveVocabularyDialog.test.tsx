@@ -40,9 +40,9 @@ describe("RemoveVocabularyDialog", () => {
   const locale = intlFunctions().locale;
 
   const rdfStatement: RDFStatement = {
-    object: { iri: Generator.generateUri() },
     subject: { iri: Generator.generateUri() },
     relation: { iri: Generator.generateUri() },
+    value: { iri: Generator.generateUri() },
   };
 
   let onCancel: () => void;

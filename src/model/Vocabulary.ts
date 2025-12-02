@@ -5,6 +5,7 @@ import Document, {
   CONTEXT as DOCUMENT_CONTEXT,
   DocumentData,
 } from "./Document";
+import { CONTEXT as USER_CONTEXT, UserData } from "./User";
 import WithUnmappedProperties, {
   HasUnmappedProperties,
   PropertyValueType,
@@ -42,7 +43,7 @@ const ctx = {
   primaryLanguage: VocabularyUtils.DC_LANGUAGE,
 };
 
-export const CONTEXT = Object.assign({}, ASSET_CONTEXT, ctx);
+export const CONTEXT = Object.assign({}, ASSET_CONTEXT, USER_CONTEXT, ctx);
 
 const MAPPED_PROPERTIES = [
   "@context",
@@ -148,6 +149,19 @@ export default class Vocabulary
       ? stringifyPropertyValue(
           this.unmappedProperties.get(VocabularyUtils.SNAPSHOT_CREATED)![0]
         )
+      : undefined;
+  }
+
+  public snapshotAuthor(): UserData | undefined {
+    const authorValues = this.unmappedProperties.get(
+      VocabularyUtils.SNAPSHOT_AUTHOR
+    );
+    if (!authorValues || authorValues.length === 0) {
+      return undefined;
+    }
+    const authorValue = authorValues[0];
+    return typeof authorValue === "object" && authorValue !== null
+      ? (authorValue as UserData)
       : undefined;
   }
 
