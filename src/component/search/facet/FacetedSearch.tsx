@@ -30,6 +30,7 @@ import { getLocalized } from "../../../model/MultilingualString";
 import { getShortLocale } from "../../../util/IntlUtil";
 import Utils from "../../../util/Utils";
 import FacetToggle from "./FacetToggle";
+import { TermSelectorFacet } from "./TermSelectorFacet";
 
 const RESULT_PAGE_SIZE = 10;
 
@@ -39,6 +40,7 @@ const FACET_KEYS = [
   "state",
   "notation",
   "example",
+  "relationshipAnnotation",
 ] as const;
 type FacetKey = (typeof FACET_KEYS)[number];
 type VisibleFacets = Record<FacetKey, boolean>;
@@ -48,6 +50,7 @@ const FACET_PARAM_MAP: Record<FacetKey, string> = {
   state: VocabularyUtils.HAS_TERM_STATE,
   notation: VocabularyUtils.SKOS_NOTATION,
   example: VocabularyUtils.SKOS_EXAMPLE,
+  relationshipAnnotation: VocabularyUtils.AS_RELATIONSHIP,
 };
 
 const FacetedSearch: React.FC = () => {
@@ -79,6 +82,7 @@ const FacetedSearch: React.FC = () => {
     state: true,
     notation: true,
     example: true,
+    relationshipAnnotation: true,
   });
   const toggleFacet = (key: FacetKey) => {
     setVisibleFacets((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -218,6 +222,11 @@ const FacetedSearch: React.FC = () => {
                 label={i18n("term.metadata.example.label")}
                 onClick={() => toggleFacet("example")}
               />
+              <FacetToggle
+                active={visibleFacets.relationshipAnnotation}
+                label={i18n("search.faceted.relationshipAnnotation")}
+                onClick={() => toggleFacet("relationshipAnnotation")}
+              />
               <div className="w-100" />
               {termAttributes.map((att) => {
                 const active = !!params[att.iri];
@@ -313,6 +322,24 @@ const FacetedSearch: React.FC = () => {
                       new RdfProperty({
                         iri: VocabularyUtils.SKOS_EXAMPLE,
                         range: { iri: VocabularyUtils.XSD_STRING },
+                      })
+                    )
+                  }
+                  onChange={onChange}
+                />
+              </Col>
+            )}
+            {visibleFacets.relationshipAnnotation && (
+              <Col xl={4} md={6} xs={12} className="mb-3">
+                <TermSelectorFacet
+                  id="faceted-search-relationship-annotation"
+                  label={i18n("search.faceted.relationshipAnnotation")}
+                  value={
+                    params[VocabularyUtils.AS_RELATIONSHIP] ||
+                    createSearchParam(
+                      new RdfProperty({
+                        iri: VocabularyUtils.AS_RELATIONSHIP,
+                        range: { iri: VocabularyUtils.TERM },
                       })
                     )
                   }

@@ -87,6 +87,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     validationResults: state.validationResults,
     definitionallyRelatedTerms: state.definitionallyRelatedTerms,
     relationshipAnnotations: state.relationshipAnnotations,
+    annotatedRelationships: state.annotatedRelationships,
     breadcrumbs: state.breadcrumbs,
     users: state.users,
     accessLevels: state.accessLevels,

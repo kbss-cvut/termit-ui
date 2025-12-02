@@ -577,6 +577,11 @@ const de = {
     "term.metadata.relationshipAnnotation": "Beziehung annotieren",
     "term.metadata.relationshipAnnotation.save.success":
       "Beziehungsannotation des Terms wurde erfolgreich gespeichert",
+    "term.metadata.annotatedRelationships": "Annotierte Beziehungen",
+    "term.metadata.annotatedRelationships.help":
+      "Beziehungen, die an diesem Begriff annotiert wurden",
+    "term.metadata.annotatedRelationships.empty":
+      "Keine Beziehungen annotiert.",
     "term.removed.message": "Begriff erfolgreich entfernt.",
     "term.badge.score.tooltip": "Der Wert dieses Begriffs beträgt {score} %. ",
     "term.badge.no-score.tooltip": "Für diesen Begriff ist kein Wert verfügbar",
@@ -682,6 +687,8 @@ const de = {
     "search.faceted.matchType.substring": "Teilzeichenfolge",
     "search.faceted.no-results":
       "Für die angegebenen Parameter wurden keine weiteren Ergebnisse gefunden.",
+    "search.faceted.relationshipAnnotation":
+      "Beziehung annotiert durch Begriff",
     "profile.first.name": "Vorname",
     "profile.last.name": "Nachname",
     "profile.legend.invalid.name":

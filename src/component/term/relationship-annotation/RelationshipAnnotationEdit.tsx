@@ -26,14 +26,13 @@ export const RelationshipAnnotationEdit: React.FC<{
   const dispatch: ThunkDispatch = useDispatch();
   const [state, setState] = React.useState<{
     [key: string]: PropertyValueType[];
-  }>({});
-  React.useEffect(() => {
+  }>(() => {
     const initState = {};
     relationshipAnnotations.forEach((ann) => {
-      initState[ann.attribute.iri] = ann.value;
+      initState[ann.attribute.iri] = Utils.sanitizeArray(ann.value);
     });
-    setState(initState);
-  }, [relationshipAnnotations, setState]);
+    return initState;
+  });
   const customAttributes = useAppSelector((state) => state.customAttributes);
   const annotationAtts = customAttributes.filter((att) =>
     Utils.sanitizeArray(att.annotatedRelationships)

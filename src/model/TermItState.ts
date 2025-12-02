@@ -20,6 +20,7 @@ import AnnotatorLegendFilter from "./AnnotatorLegendFilter";
 import ActionType, { PendingAsyncAction } from "../action/ActionType";
 import { LongRunningTask } from "./LongRunningTask";
 import RelationshipAnnotation from "./meta/RelationshipAnnotation";
+import AnnotatedTermRelationship from "./meta/AnnotatedTermRelationship";
 
 /**
  * This is the basic shape of the application"s state managed by Redux.
@@ -65,6 +66,7 @@ export default class TermItState {
   public validationResults: { [vocabularyIri: string]: ConsolidatedResults };
   public definitionallyRelatedTerms: DefinitionallyRelatedTerms;
   public relationshipAnnotations: RelationshipAnnotation[];
+  public annotatedRelationships: AnnotatedTermRelationship[];
   public accessLevels: { [key: string]: RdfsResource };
   public breadcrumbs: Breadcrumb[];
   public showTermsFlatList: boolean;
@@ -110,6 +112,7 @@ export default class TermItState {
     this.validationResults = {};
     this.definitionallyRelatedTerms = { targeting: [], of: [] };
     this.relationshipAnnotations = [];
+    this.annotatedRelationships = [];
     this.breadcrumbs = [];
     this.showTermsFlatList = false;
     this.users = [];

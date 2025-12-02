@@ -43,6 +43,7 @@ describe("TermDetail", () => {
   let requestVocabularyValidation: (iri: IRI, stompClient: StompClient) => void;
   let loadCustomAttributes: () => void;
   let loadTermRelationshipAnnotations: (termIri: IRI) => void;
+  let loadTermRelationshipsAnnotatedBy: (termIri: IRI) => void;
 
   let handlers: any;
 
@@ -76,6 +77,7 @@ describe("TermDetail", () => {
     requestVocabularyValidation = jest.fn();
     loadCustomAttributes = jest.fn();
     loadTermRelationshipAnnotations = jest.fn();
+    loadTermRelationshipsAnnotatedBy = jest.fn();
     handlers = {
       loadTerm: onLoad,
       loadVocabulary,
@@ -87,6 +89,7 @@ describe("TermDetail", () => {
       removeOccurrence,
       loadCustomAttributes,
       loadTermRelationshipAnnotations,
+      loadTermRelationshipsAnnotatedBy,
     };
     vocabulary = Generator.generateVocabulary();
     term = new Term({

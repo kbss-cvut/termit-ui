@@ -57,7 +57,10 @@ import { HasStompClient, StompClient } from "../hoc/withStompClient";
 import Constants from "../../util/Constants";
 import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
 import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
-import { loadTermRelationshipAnnotations } from "../../action/AsyncTermRelationshipAnnotationActions";
+import {
+  loadTermRelationshipAnnotations,
+  loadTermRelationshipsAnnotatedBy,
+} from "../../action/AsyncTermRelationshipAnnotationActions";
 
 const USER_VOCABULARIES_VALIDATION_ENDPOINT =
   "/user" + Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_VALIDATION;
@@ -92,6 +95,7 @@ interface TermDetailProps
   publishNotification: (notification: AppNotification) => void;
   loadCustomAttributes: () => void;
   loadTermRelationshipAnnotations: (termIri: IRI) => void;
+  loadTermRelationshipsAnnotatedBy: (termIri: IRI) => void;
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -152,9 +156,9 @@ export class TermDetail extends EditableComponent<
       .loadTerm(termName, { fragment: name, namespace }, timestamp)
       .then(() => {
         if (this.props.term) {
-          this.props.loadTermRelationshipAnnotations(
-            VocabularyUtils.create(this.props.term.iri!)
-          );
+          const termIri = VocabularyUtils.create(this.props.term.iri!);
+          this.props.loadTermRelationshipAnnotations(termIri);
+          this.props.loadTermRelationshipsAnnotatedBy(termIri);
         }
       });
   }
@@ -392,6 +396,8 @@ export default connect(
       loadCustomAttributes: () => dispatch(getCustomAttributes()),
       loadTermRelationshipAnnotations: (termIri: IRI) =>
         dispatch(loadTermRelationshipAnnotations(termIri)),
+      loadTermRelationshipsAnnotatedBy: (termIri: IRI) =>
+        dispatch(loadTermRelationshipsAnnotatedBy(termIri)),
     };
   }
 )(
