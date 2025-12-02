@@ -58,7 +58,7 @@ export class TermMetadata extends React.Component<
   }
 
   public componentDidUpdate(
-    prevProps: TermMetadataProps,
+    _: TermMetadataProps,
     prevState: TermMetadataState
   ) {
     const activeTabFromUrl = Utils.extractQueryParam(
@@ -148,6 +148,11 @@ export class TermMetadata extends React.Component<
                             : null,
                         "term.metadata.annotatedRelationships":
                           this.props.annotatedRelationships.length.toFixed(),
+                      }}
+                      tabHelp={{
+                        "term.metadata.annotatedRelationships": this.props.i18n(
+                          "term.metadata.annotatedRelationships.help"
+                        ),
                       }}
                     />
                   </CardBody>
