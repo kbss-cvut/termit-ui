@@ -596,6 +596,11 @@ const en = {
     "term.metadata.relationshipAnnotation": "Relationship annotations",
     "term.metadata.relationshipAnnotation.save.success":
       "Term relationship annotation successfully saved",
+    "term.metadata.annotatedRelationships": "Annotated relationships",
+    "term.metadata.annotatedRelationships.help":
+      "Term relationships annotated by this term",
+    "term.metadata.annotatedRelationships.empty":
+      "Term is not used to annotated any term relationships.",
     "term.removed.message": "Term successfully removed.",
     "term.badge.score.tooltip":
       "The score of this term is {score}%. Click to see the validation results",

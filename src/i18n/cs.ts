@@ -603,6 +603,11 @@ const cs = {
     "term.metadata.relationshipAnnotation": "Anotace vztahu",
     "term.metadata.relationshipAnnotation.save.success":
       "Anotace vztahu pojmu úspěšně uložena",
+    "term.metadata.annotatedRelationships": "Anotované vztahy",
+    "term.metadata.annotatedRelationships.help":
+      "Vztahy mezi pojmy anotované tímto pojmem",
+    "term.metadata.annotatedRelationships.empty":
+      "Tímto pojmem nejsou anotovány žádné vztahy mezi pojmy.",
     "term.removed.message": "Pojem byl odstraněn.",
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",

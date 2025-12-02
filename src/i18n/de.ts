@@ -560,6 +560,11 @@ const de = {
     "term.metadata.relationshipAnnotation": "Beziehung annotieren",
     "term.metadata.relationshipAnnotation.save.success":
       "Beziehungsannotation des Terms wurde erfolgreich gespeichert",
+    "term.metadata.annotatedRelationships": "Annotierte Beziehungen",
+    "term.metadata.annotatedRelationships.help":
+      "Beziehungen, die an diesem Begriff annotiert wurden",
+    "term.metadata.annotatedRelationships.empty":
+      "Keine Beziehungen annotiert.",
     "term.removed.message": "Begriff erfolgreich entfernt.",
     "term.badge.score.tooltip": "Der Wert dieses Begriffs beträgt {score} %. ",
     "term.badge.no-score.tooltip": "Für diesen Begriff ist kein Wert verfügbar",
