@@ -495,7 +495,7 @@ const de = {
     "resource.file.backup.restore": "Sicherung wiederherstellen",
     "resource.file.backup.restore.failure":
       "Die Wiederherstellung der Sicherung ist fehlgeschlagen.",
-    "resource.file.backup.restore.success": "Sicherung wiederhergestellt",
+    "resource.file.backup.restore.success": "Die Sicherung wird erneuert",
 
     "term.language.selector.item":
       "Begriffsdaten in der Sprache anzeigen: {nativeLang} ({lang})",
@@ -931,6 +931,7 @@ const de = {
     "longrunningtasks.name.vocabularyValidation": "Vokabularüberprüfung",
     "longrunningtasks.name.documentAnnotationGeneration":
       "Erstellung einer Dateianmerkung",
+    "longrunningtasks.name.restoreBackup": "Wiederherstellung von Sicherung",
   },
 };
 

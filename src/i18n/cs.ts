@@ -503,7 +503,7 @@ const cs = {
     "resource.file.backup.reason.unknown": "Neznámý",
     "resource.file.backup.restore": "Obnovit zálohu",
     "resource.file.backup.restore.failure": "Zálohu se nepodařilo obnovit",
-    "resource.file.backup.restore.success": "Záloha obnovena",
+    "resource.file.backup.restore.success": "Záloha se obnovuje",
 
     "term.language.selector.item":
       "Zobrazit data pojmu v jazyce: {nativeLang} ({lang})",
@@ -996,6 +996,7 @@ const cs = {
     "longrunningtasks.name.vocabularyValidation": "Validace slovníku",
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generování anotací dokumentu",
+    "longrunningtasks.name.restoreBackup": "Obnovení zálohy",
   },
 };
 

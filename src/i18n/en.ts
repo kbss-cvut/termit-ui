@@ -497,7 +497,7 @@ const en = {
     "resource.file.backup.reason.unknown": "Unknown",
     "resource.file.backup.restore": "Restore backup",
     "resource.file.backup.restore.failure": "Failed to restore the backup",
-    "resource.file.backup.restore.success": "Backup restored",
+    "resource.file.backup.restore.success": "The backup is being restored",
 
     "term.language.selector.item":
       "View term data in language: {nativeLang} ({lang})",
@@ -987,6 +987,7 @@ const en = {
     "longrunningtasks.name.vocabularyValidation": "Vocabulary validation",
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generation of a file annotations",
+    "longrunningtasks.name.restoreBackup": "Backup restoration",
   },
 };
 
