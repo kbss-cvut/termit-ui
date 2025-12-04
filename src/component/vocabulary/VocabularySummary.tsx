@@ -249,8 +249,8 @@ export class VocabularySummary extends EditableComponent<
             title={i18n("edit")}
             onClick={this.onEdit}
           >
-            <GoPencil />
-            &nbsp;{i18n("edit")}
+            <GoPencil className="mr-1" />
+            {i18n("edit")}
           </Button>
         </IfVocabularyActionAuthorized>
       );
@@ -269,8 +269,8 @@ export class VocabularySummary extends EditableComponent<
           title={i18n("asset.remove.tooltip")}
           onClick={this.onRemoveClick}
         >
-          <FaTrashAlt />
-          &nbsp;{i18n("remove")}
+          <FaTrashAlt className="mr-1" />
+          {i18n("remove")}
         </Button>
       </IfVocabularyActionAuthorized>
     );

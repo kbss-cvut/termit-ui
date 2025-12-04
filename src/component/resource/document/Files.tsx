@@ -1,3 +1,4 @@
+import React from "react";
 import TermItFile from "../../../model/File";
 import File from "../../../model/File";
 import Utils from "../../../util/Utils";
@@ -6,8 +7,8 @@ import { useI18n } from "../../hook/useI18n";
 
 interface FilesProps {
   files: TermItFile[];
-  actions: JSX.Element[];
-  itemActions: (file: TermItFile) => JSX.Element[];
+  actions: React.ReactNode[];
+  itemActions: (file: TermItFile) => React.ReactNode[];
 }
 
 const Files = (props: FilesProps) => {

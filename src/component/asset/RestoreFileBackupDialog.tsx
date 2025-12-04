@@ -15,7 +15,6 @@ import FileBackupDto from "../../model/FileBackupDto";
 import SingleActionDialog from "../misc/SingleActionDialog";
 import { useI18n } from "../hook/useI18n";
 import Pagination from "../misc/table/Pagination";
-import Constants from "../../util/Constants";
 
 interface RestoreFileBackupDialogProps {
   show: boolean;
@@ -24,7 +23,7 @@ interface RestoreFileBackupDialogProps {
   totalBackupsCount: number;
 }
 
-const ITEMS_PER_PAGE = Constants.DEFAULT_PAGE_SIZE;
+const ITEMS_PER_PAGE = 10;
 
 const FILE_BACKUP_LIST_PROMISE_AREA = "file-backup-list";
 

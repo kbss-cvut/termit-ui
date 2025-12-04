@@ -34,7 +34,7 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
                 <FormattedDate value={date} />
               </td>
               <td>
-                <FormattedTime value={date} timeStyle={"medium"} />
+                <FormattedTime value={date} timeStyle="medium" />
               </td>
               <td>
                 {i18n(
@@ -43,12 +43,13 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
               </td>
               <td>
                 <Button
-                  color="outline-dark"
-                  size={"sm"}
+                  color="primary"
+                  size="sm"
                   onClick={() => props.restoreBackup(backup)}
                   title={i18n("resource.file.backup.restore")}
                 >
-                  <GoHistory />
+                  <GoHistory className="mr-1" />
+                  {i18n("resource.file.backup.restore")}
                 </Button>
               </td>
             </tr>
