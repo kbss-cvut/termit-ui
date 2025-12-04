@@ -487,7 +487,7 @@ const en = {
     "resource.metadata.document.files.empty":
       "No files found. Start by adding some.",
     "resource.file.vocabulary.create": "Add File",
-    "resource.file.backup.reason": "Reason for creation",
+    "resource.file.backup.reason": "Backup reason",
     "resource.file.backup.reason.reupload": "Reupload",
     "resource.file.backup.reason.text_analysis": "Text analysis",
     "resource.file.backup.reason.new_occurrence": "New occurrence",

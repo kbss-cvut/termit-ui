@@ -14,7 +14,6 @@ export interface FileBackupListProps {
 
 const FileBackupList: React.FC<FileBackupListProps> = (props) => {
   const { i18n } = useI18n();
-  let backupIndex = 0;
 
   return (
     <Table className={"file-backup-list"}>
@@ -27,10 +26,10 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
         </tr>
       </thead>
       <tbody>
-        {props.backups.map((backup) => {
+        {props.backups.map((backup, backupIndex) => {
           const date = Date.parse(backup.timestamp);
           return (
-            <tr key={`backup-dto-${backupIndex++}`}>
+            <tr key={`backup-dto-${backupIndex}`}>
               <td>
                 <FormattedDate value={date} />
               </td>
