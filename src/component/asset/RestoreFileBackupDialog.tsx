@@ -70,6 +70,7 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
       onClose={props.onClose}
       onAction={props.onClose}
       title={i18n("backups")}
+      size="lg"
     >
       <PromiseTrackingMask area={FILE_BACKUP_LIST_PROMISE_AREA} />
       <FileBackupList backups={backups} restoreBackup={restoreBackup} />

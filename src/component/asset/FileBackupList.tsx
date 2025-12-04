@@ -1,11 +1,12 @@
 import * as React from "react";
 import FileBackupDto from "../../model/FileBackupDto";
-import { Button, Table } from "reactstrap";
+import { Button, ButtonToolbar, Table } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 
 import { FormattedDate, FormattedTime } from "react-intl";
 import "./FileBackupList.scss";
 import { GoHistory } from "react-icons/go";
+import { FaDownload } from "react-icons/fa";
 
 export interface FileBackupListProps {
   backups: FileBackupDto[];
@@ -22,7 +23,7 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
           <th>{i18n("date")}</th>
           <th>{i18n("time")}</th>
           <th>{i18n("resource.file.backup.reason")}</th>
-          <th></th>
+          <th className="text-center">{i18n("actions")}</th>
         </tr>
       </thead>
       <tbody>
@@ -42,15 +43,25 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
                 )}
               </td>
               <td>
-                <Button
-                  color="primary"
-                  size="sm"
-                  onClick={() => props.restoreBackup(backup)}
-                  title={i18n("resource.file.backup.restore")}
-                >
-                  <GoHistory className="mr-1" />
-                  {i18n("resource.file.backup.restore")}
-                </Button>
+                <ButtonToolbar className="justify-content-end">
+                  <Button
+                    color="primary"
+                    size="sm"
+                    onClick={() => props.restoreBackup(backup)}
+                    title={i18n("resource.file.backup.restore")}
+                  >
+                    <GoHistory className="mr-1" />
+                    {i18n("resource.file.backup.restore")}
+                  </Button>
+                  <Button
+                    color="primary"
+                    size="sm"
+                    title={i18n("resource.metadata.file.content.download")}
+                  >
+                    <FaDownload className="mr-1" />
+                    {i18n("resource.metadata.file.content.download")}
+                  </Button>
+                </ButtonToolbar>
               </td>
             </tr>
           );
