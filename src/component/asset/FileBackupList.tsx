@@ -11,9 +11,14 @@ import { FaDownload } from "react-icons/fa";
 export interface FileBackupListProps {
   backups: FileBackupDto[];
   restoreBackup: (backup: FileBackupDto) => void;
+  downloadBackup: (backup: FileBackupDto) => void;
 }
 
-const FileBackupList: React.FC<FileBackupListProps> = (props) => {
+const FileBackupList: React.FC<FileBackupListProps> = ({
+  backups,
+  restoreBackup,
+  downloadBackup,
+}) => {
   const { i18n } = useI18n();
 
   return (
@@ -27,7 +32,7 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
         </tr>
       </thead>
       <tbody>
-        {props.backups.map((backup, backupIndex) => {
+        {backups.map((backup, backupIndex) => {
           const date = Date.parse(backup.timestamp);
           return (
             <tr key={`backup-dto-${backupIndex}`}>
@@ -47,7 +52,7 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
                   <Button
                     color="primary"
                     size="sm"
-                    onClick={() => props.restoreBackup(backup)}
+                    onClick={() => restoreBackup(backup)}
                     title={i18n("resource.file.backup.restore")}
                   >
                     <GoHistory className="mr-1" />
@@ -56,6 +61,7 @@ const FileBackupList: React.FC<FileBackupListProps> = (props) => {
                   <Button
                     color="primary"
                     size="sm"
+                    onClick={() => downloadBackup(backup)}
                     title={i18n("resource.metadata.file.content.download")}
                   >
                     <FaDownload className="mr-1" />

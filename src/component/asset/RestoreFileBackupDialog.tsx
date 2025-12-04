@@ -5,6 +5,7 @@ import { PageRequest, ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { trackPromise } from "react-promise-tracker";
 import {
+  exportFileContent,
   loadFileBackups,
   restoreFileBackup,
 } from "../../action/AsyncResourceActions";
@@ -62,6 +63,14 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
     props.onClose();
   };
 
+  const downloadBackup = (backup: FileBackupDto) => {
+    const iri = VocabularyUtils.create(props.file.iri);
+    trackPromise(
+      dispatch(exportFileContent(iri, { at: backup.timestamp })),
+      FILE_BACKUP_LIST_PROMISE_AREA
+    );
+  };
+
   return (
     <SingleActionDialog
       show={props.show}
@@ -73,7 +82,11 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
       size="lg"
     >
       <PromiseTrackingMask area={FILE_BACKUP_LIST_PROMISE_AREA} />
-      <FileBackupList backups={backups} restoreBackup={restoreBackup} />
+      <FileBackupList
+        backups={backups}
+        restoreBackup={restoreBackup}
+        downloadBackup={downloadBackup}
+      />
       <Pagination
         pagingProps={{
           page: [],
