@@ -258,9 +258,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       } else {
         delete ann.attribs.resource;
       }
-      let shouldUpdate = true;
+      let newOccurrence: TermOccurrence | undefined;
       if (term !== null) {
-        shouldUpdate = this.createOccurrence(annotationSpan, ann, term);
+        newOccurrence = this.createOccurrence(annotationSpan, ann, term);
         this.approveOccurrence(annotationSpan);
       }
 
@@ -272,11 +272,47 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         : ResourceSaveReason.NEW_OCCURRENCE;
 
       delete ann.attribs.score;
-      if (shouldUpdate) {
-        this.updateInternalHtml(dom, saveReason);
+      if (annotationSpan.typeof === AnnotationType.OCCURRENCE) {
+        this.updateInternalHtml(dom, saveReason).then(() => {
+          if (newOccurrence) {
+            this.props.saveTermOccurrence(newOccurrence);
+          }
+        });
       }
     }
   };
+
+  /**
+   * Creates occurrence based on the specified annotation and term.
+   * @param annotationNode Representation of the annotation
+   * @param annotationElem The DOM element representing the annotation
+   * @param term Term whose occurrence this should be
+   * @private
+   * @return The occurrence created or undefined if no occurrence was created
+   */
+  private createOccurrence(
+    annotationNode: AnnotationSpanProps,
+    annotationElem: Element,
+    term: Term
+  ): TermOccurrence | undefined {
+    if (annotationNode.typeof === AnnotationType.DEFINITION) {
+      this.setState({
+        selectedTerm: term,
+        existingTermDefinitionAnnotationElement:
+          AnnotationDomHelper.findAnnotation(
+            this.state.internalHtml,
+            annotationNode.about!,
+            this.state.prefixMap
+          ) as Element,
+      });
+    } else if (!annotationNode.score) {
+      // Create occurrence only if we are not just approving an existing one
+      const to = createTermOccurrence(term, annotationElem, this.props.fileIri);
+      to.types = [VocabularyUtils.TERM_FILE_OCCURRENCE];
+      return to;
+    }
+    return undefined;
+  }
 
   private approveOccurrence(annotationSpan: AnnotationSpanProps) {
     if (
@@ -297,45 +333,6 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
       AnnotationOrigin.SELECTED,
       true
     );
-  }
-
-  /**
-   * Creates occurrence based on the specified annotation and term.
-   * @param annotationNode Representation of the annotation
-   * @param annotationElem The DOM element representing the annotation
-   * @param term Term whose occurrence this should be
-   * @private
-   * @return Whether the HTML content of the annotator should be updated
-   */
-  private createOccurrence(
-    annotationNode: AnnotationSpanProps,
-    annotationElem: Element,
-    term: Term
-  ): boolean {
-    if (annotationNode.typeof === AnnotationType.DEFINITION) {
-      this.setState({
-        selectedTerm: term,
-        existingTermDefinitionAnnotationElement:
-          AnnotationDomHelper.findAnnotation(
-            this.state.internalHtml,
-            annotationNode.about!,
-            this.state.prefixMap
-          ) as Element,
-      });
-      return false;
-    } else {
-      if (!annotationNode.score) {
-        // Create occurrence only if we are not just approving an existing one
-        const to = createTermOccurrence(
-          term,
-          annotationElem,
-          this.props.fileIri
-        );
-        to.types = [VocabularyUtils.TERM_FILE_OCCURRENCE];
-        this.props.saveTermOccurrence(to);
-      }
-      return true;
-    }
   }
 
   public onSaveTermDefinition = (term: Term) => {
