@@ -61,7 +61,6 @@ const VocabularyUtils = {
   HAS_DOCUMENT_VOCABULARY: _NS_POPIS_DAT + "má-dokumentový-slovník",
   DESCRIBES_DOCUMENT: _NS_POPIS_DAT + "popisuje-dokument",
   HAS_GLOSSARY: _NS_POPIS_DAT + "má-glosář",
-  HAS_MODEL: _NS_POPIS_DAT + "má-model",
   TERM: _NS_SKOS + "Concept",
   FILE: _NS_POPIS_DAT + "soubor",
   CONTENT: _NS_POPIS_DAT + "soubor/content",
