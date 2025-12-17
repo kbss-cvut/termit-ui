@@ -14,7 +14,7 @@
     "classnames": "^2.5.1",
     "dom-serializer": "2.0.0",
     "domhandler": "5.0.3",
-    "easymde": "2.18.0",
+    "easymde": "2.20.0",
     "fast-uri": "3.1.0",
     "html-to-react": "1.7.0",
     "htmlparser2": "10.0.0",
