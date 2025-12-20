@@ -46,7 +46,7 @@ const PersonalAccessTokensList: React.FC<PersonalAccessTokensListProps> = ({
         setTokens([]);
       }
     });
-  }, [user, refreshSignalValue]);
+  }, [user, refreshSignalValue, dispatch]);
 
   const doRefresh = () => {
     setRefreshSignalValue(!refreshSignalValue);

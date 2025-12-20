@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useCallback } from "react";
 import { useI18n } from "../hook/useI18n";
 import SingleActionDialog from "../misc/SingleActionDialog";
 import CustomInput from "../misc/CustomInput";
@@ -23,17 +23,18 @@ const PersonalAccessTokenCreationResultDialog: React.FC<
   PersonalAccessTokenCreationResultDialogProps
 > = ({ token, onClose }) => {
   const { i18n } = useI18n();
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const isTokenPresent = token != null && token.trim().length > 0;
   const dispatch: ThunkDispatch = useDispatch();
 
-  useEffect(() => {
-    if (!inputRef.current) return;
-    const areaElement = inputRef.current as HTMLTextAreaElement;
-    if (areaElement) {
-      autoSizeTextArea(areaElement);
-    }
-  }, [inputRef.current, token]);
+  const areaRefConsumer = useCallback(
+    (areaElement: HTMLTextAreaElement) => {
+      if (!areaElement || !token) return;
+      if (areaElement) {
+        autoSizeTextArea(areaElement);
+      }
+    },
+    [token] // react to token changes
+  );
 
   const copyToken = () => {
     if (isTokenPresent) {
@@ -57,7 +58,7 @@ const PersonalAccessTokenCreationResultDialog: React.FC<
       actionButtonText={i18n("close")}
     >
       <CustomInput
-        innerRef={inputRef}
+        innerRef={areaRefConsumer}
         type={"textarea"}
         value={token || "Internal error occurred"}
         readOnly={true}
