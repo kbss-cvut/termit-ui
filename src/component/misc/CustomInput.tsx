@@ -9,11 +9,7 @@ export interface InputProps extends AbstractInputProps {
 }
 
 export default class CustomInput extends AbstractInput<InputProps> {
-  protected input: Input | null = null;
-
-  public getInternalInput(): Input | null {
-    return this.input;
-  }
+  protected input: any;
 
   public render() {
     const required = this.props.required ? this.props.required : false;
