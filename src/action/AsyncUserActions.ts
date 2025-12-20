@@ -37,6 +37,11 @@ import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
 } from "../model/RdfsResource";
 import ChangePasswordDto from "../model/ChangePasswordDto";
+import {
+  CONTEXT as PAT_CONTEXT,
+  PersonalAccessToken,
+} from "../model/PersonalAccessToken";
+import { DateTime } from "luxon";
 
 const USERS_ENDPOINT = "/users";
 
@@ -474,5 +479,66 @@ export function doesUsernameExists(username: string) {
         return data === true;
       })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function loadPersonalAccessTokens() {
+  const action = { type: ActionType.LOAD_PERSONAL_ACCESS_TOKENS };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.get(`${Constants.API_PREFIX}/users/current/tokens`)
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<PersonalAccessToken>(
+          data,
+          PAT_CONTEXT
+        )
+      )
+      .then((data: PersonalAccessToken[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+        return dispatch(asyncActionFailure(action, error));
+      });
+  };
+}
+
+export function createNewPersonalAccessToken(expiration?: DateTime) {
+  const action = { type: ActionType.CREATE_PERSONAL_ACCESS_TOKEN };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/users/current/tokens`,
+      param("expiration", expiration?.toISODate() || "")
+    )
+      .then((data) => {
+        dispatch(asyncActionSuccess(action));
+        return data.data as string;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+        dispatch(asyncActionFailure(action, error));
+        return null;
+      });
+  };
+}
+
+export function deletePersonalAccessToken(tokenIri: string) {
+  const action = { type: ActionType.DELETE_PERSONAL_ACCESS_TOKEN };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    const iri = VocabularyUtils.create(tokenIri);
+    return Ajax.delete(
+      `${Constants.API_PREFIX}/users/current/tokens/${iri.fragment}`
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        return null;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+        return dispatch(asyncActionFailure(action, error));
+      });
   };
 }

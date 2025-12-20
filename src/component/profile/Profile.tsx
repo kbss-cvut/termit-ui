@@ -22,6 +22,7 @@ import { getEnv } from "../../util/Constants";
 import ConfigParam from "../../util/ConfigParam";
 import IfOidcAuth from "../misc/oidc/IfOidcAuth";
 import OutgoingLink from "../misc/OutgoingLink";
+import PersonalAccessTokensList from "./PersonalAccessTokensList";
 
 interface ProfileProps extends HasI18n {
   user: User;
@@ -136,6 +137,8 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
             )}
           </CardBody>
         </Card>
+
+        <PersonalAccessTokensList user={user} />
       </>
     );
   }

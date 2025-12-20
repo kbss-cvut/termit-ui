@@ -5,10 +5,15 @@ import AbstractInput, { AbstractInputProps } from "./AbstractInput";
 export interface InputProps extends AbstractInputProps {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   required?: boolean;
+  innerRef?: React.Ref<HTMLInputElement | HTMLTextAreaElement>;
 }
 
 export default class CustomInput extends AbstractInput<InputProps> {
-  protected input: any;
+  protected input: Input | null = null;
+
+  public getInternalInput(): Input | null {
+    return this.input;
+  }
 
   public render() {
     const required = this.props.required ? this.props.required : false;
@@ -18,6 +23,7 @@ export default class CustomInput extends AbstractInput<InputProps> {
         <Input
           type={this.props.type ? this.props.type : "text"}
           ref={(c: any) => (this.input = c)}
+          innerRef={this.props.innerRef}
           required={required}
           bsSize="sm"
           valid={this.isValid()}
