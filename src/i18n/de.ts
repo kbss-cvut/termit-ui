@@ -21,6 +21,8 @@ const de = {
     date: "Datum",
     time: "Uhrzeit",
     close: "Schließen",
+    copy: "Kopieren",
+    "copy.success": "Kopiert!",
     "basic-information": "Grundlegende Informationen",
     "created-info": "Erstellt von {author} am {date}",
     "select.placeholder": "Wählen...",
@@ -689,12 +691,34 @@ const de = {
       "Für die angegebenen Parameter wurden keine weiteren Ergebnisse gefunden.",
     "search.faceted.relationshipAnnotation":
       "Beziehung annotiert durch Begriff",
+
     "profile.first.name": "Vorname",
     "profile.last.name": "Nachname",
     "profile.legend.invalid.name":
       "Die Eingabe muss mindestens 1 Zeichen lang sein",
     "profile.updated.message": "Profil erfolgreich aktualisiert",
     "profile.change-password": "Kennwort ändern",
+
+    "profile.pat.title": "Persönliche Zugriffstoken",
+    "profile.pat.created": "Erstellt",
+    "profile.pat.lastUsed": "Zuletzt verwendet",
+    "profile.pat.expiration": "Gültig bis",
+    "profile.pat.noTokens":
+      "Es wurde noch kein persönlicher Zugriffstoken erstellt.",
+    "profile.pat.action.create.title":
+      "Neuen persönlichen Zugriffstoken erstellen",
+    "profile.pat.action.remove.title":
+      "Löscht und ungültig macht das persönliche Zugriffstoken.",
+    "profile.pat.action.noExpiration": "Entfernen Sie das Ablaufdatum",
+    "profile.pat.error.invalidDate": "Ungültiges Datum!",
+    "profile.pat.error.notFuture":
+      "Das Ablaufdatum muss in der Zukunft liegen!",
+    "profile.pat.success.created": "Persönlicher Zugriffstoken erstellt",
+    "profile.pat.delete.confirm":
+      "Möchten Sie den persönlichen Zugriffstoken wirklich entfernen?",
+    "profile.pat.delete.confirm.description":
+      "Der Token wird ungültig und kann nicht mehr verwendet werden. Diese Aktion kann nicht rückgängig gemacht werden!",
+
     "change-password.current.password": "Aktuelles Passwort",
     "change-password.new.password": "Neues Passwort",
     "change-password.confirm.password": "Passwort bestätigen",

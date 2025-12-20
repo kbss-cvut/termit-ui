@@ -21,6 +21,8 @@ const en = {
     date: "Date",
     time: "Time",
     close: "Close",
+    copy: "Copy",
+    "copy.success": "Copied!",
     "basic-information": "Basic Information",
     "created-info": "Created by {author} on {date}",
     "select.placeholder": "Select...",
@@ -732,6 +734,23 @@ const en = {
     "profile.legend.invalid.name": "Field must be at least 1 character",
     "profile.updated.message": "Profile successfully updated",
     "profile.change-password": "Change Password",
+
+    "profile.pat.title": "Personal access tokens",
+    "profile.pat.created": "Created",
+    "profile.pat.lastUsed": "Last used",
+    "profile.pat.expiration": "Valid until",
+    "profile.pat.noTokens": "No personal access token has been created yet.",
+    "profile.pat.action.create.title": "Create new personal access token",
+    "profile.pat.action.remove.title":
+      "Deletes and invalidates the personal access token",
+    "profile.pat.action.noExpiration": "Remove the expiration",
+    "profile.pat.error.invalidDate": "Invalid date!",
+    "profile.pat.error.notFuture": "The expiration date must be in the future!",
+    "profile.pat.success.created": "Personal access token created",
+    "profile.pat.delete.confirm":
+      "Are you sure you want to remove the personal access token?",
+    "profile.pat.delete.confirm.description":
+      "The token will be invalidated and can no longer be used. This action is irreversible!",
 
     "change-password.current.password": "Current password",
     "change-password.new.password": "New password",
