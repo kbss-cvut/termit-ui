@@ -33,8 +33,10 @@ const PersonalAccessTokenTable: React.FC<PersonalAccessTokenTableProps> = ({
               <FormattedTime value={token.created} />
             </td>
             <td>
-              <FormattedDate value={token.lastUsed} />{" "}
-              <FormattedTime value={token.lastUsed} />
+              <If expression={Utils.notBlank(token.lastUsed)}>
+                <FormattedDate value={token.lastUsed} />{" "}
+                <FormattedTime value={token.lastUsed} />
+              </If>
             </td>
             <td>
               <If expression={!token.expirationDate}>
