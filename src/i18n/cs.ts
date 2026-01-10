@@ -663,7 +663,7 @@ const cs = {
     "glossary.createTerm.breadcrumb": "Vytvořit pojem",
     "glossary.form.header": "Vytvořit nový pojem",
     "glossary.form.tooltipLabel":
-      "Nanašli jste pojem, který jste hledali? Vytvořte nový.",
+      "Nenašli jste pojem, který jste hledali? Vytvořte nový.",
     "glossary.form.field.parent": "Nadřazený pojem",
     "glossary.form.field.source": "Zdroj pojmu",
     "glossary.form.field.type": "Typ pojmu",
@@ -758,7 +758,7 @@ const cs = {
     "profile.pat.success.created": "Přístupový klíč vytvořen",
     "profile.pat.delete.confirm": "Opravdu chcete odstranit přístupový token?",
     "profile.pat.delete.confirm.description":
-      "Token bude okažmitě zneplatněn a nebude možné jej nadále používat. Tato akce je nevratná!",
+      "Token bude okamžitě zneplatněn a nebude možné jej nadále používat. Tato akce je nevratná!",
 
     "change-password.current.password": "Současné heslo",
     "change-password.new.password": "Nové heslo",
@@ -807,7 +807,7 @@ const cs = {
       "Některá zvýraznění výskytů pojmů jsou skrytá.",
 
     "annotation.form.suggested-occurrence.message":
-      "Fráze není přiřazena žádnemu pojmu.",
+      "Fráze není přiřazena žádnému pojmu.",
     "annotation.form.invalid-occurrence.message":
       'Pojem "{term}" nebyl nalezen v slovníku.',
     "annotation.form.assigned-occurrence.termInfoLabel": "Informace o pojmu:",
@@ -869,7 +869,7 @@ const cs = {
     "properties.edit.new.iri": "Identifikátor",
     "properties.edit.new.label": "Název",
     "properties.edit.new.comment": "Popis",
-    "properties.edit.new.success": "Nový atribut byl úspešně vytvořen.",
+    "properties.edit.new.success": "Nový atribut byl úspěšně vytvořen.",
 
     "type.asset": "Záznam",
     "type.term": "Pojem",
