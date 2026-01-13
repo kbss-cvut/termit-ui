@@ -1,8 +1,13 @@
-#profile-pat-card table td:last-child * {
-  float: right;
-}
+#profile-pat-card table {
+  td {
+    vertical-align: middle;
+  }
 
-#profile-pat-card {
-  width: fit-content;
-  margin: auto;
+  td:last-child * {
+    float: right;
+  }
+
+  thead td {
+    border-top: none;
+  }
 }
