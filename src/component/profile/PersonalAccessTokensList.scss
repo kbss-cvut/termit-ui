@@ -1,13 +1,20 @@
-#profile-pat-card table {
-  td {
-    vertical-align: middle;
+#profile-pat-card {
+  .card-header {
+    button {
+      margin-right: 1.25rem;
+    }
   }
+  table {
+    td {
+      vertical-align: middle;
+    }
 
-  td:last-child * {
-    float: right;
-  }
+    td:last-child * {
+      float: right;
+    }
 
-  thead td {
-    border-top: none;
+    thead td {
+      border-top: none;
+    }
   }
 }
