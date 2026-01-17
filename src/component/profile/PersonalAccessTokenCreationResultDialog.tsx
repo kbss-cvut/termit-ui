@@ -16,7 +16,8 @@ interface PersonalAccessTokenCreationResultDialogProps {
 
 function autoSizeTextArea(element: HTMLTextAreaElement) {
   element.style.height = "5px";
-  element.style.height = element.scrollHeight + "px";
+  const newHeight = element.scrollHeight + 10;
+  element.style.height = newHeight + "px";
 }
 
 const PersonalAccessTokenCreationResultDialog: React.FC<
