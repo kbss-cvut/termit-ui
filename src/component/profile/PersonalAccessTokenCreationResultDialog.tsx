@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useCallback } from "react";
 import { useI18n } from "../hook/useI18n";
 import SingleActionDialog from "../misc/SingleActionDialog";
 import CustomInput from "../misc/CustomInput";
@@ -8,16 +7,11 @@ import If from "../misc/If";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { publishSuccessMessage } from "../../action/SyncActions";
+import "./PersonalAccessTokenCreationResultDialog.scss";
 
 interface PersonalAccessTokenCreationResultDialogProps {
   token: string | null;
   onClose: () => void;
-}
-
-function autoSizeTextArea(element: HTMLTextAreaElement) {
-  element.style.height = "5px";
-  const newHeight = element.scrollHeight + 10;
-  element.style.height = newHeight + "px";
 }
 
 const PersonalAccessTokenCreationResultDialog: React.FC<
@@ -27,24 +21,15 @@ const PersonalAccessTokenCreationResultDialog: React.FC<
   const isTokenPresent = token != null && token.trim().length > 0;
   const dispatch: ThunkDispatch = useDispatch();
 
-  const areaRefConsumer = useCallback(
-    (areaElement: HTMLTextAreaElement) => {
-      if (!areaElement || !token) return;
-      if (areaElement) {
-        autoSizeTextArea(areaElement);
-      }
-    },
-    [token] // react to token changes
-  );
-
   const copyToken = () => {
     if (isTokenPresent) {
-      navigator.clipboard.writeText(token);
-      dispatch(
-        publishSuccessMessage({
-          messageId: "copy.success",
-        })
-      );
+      navigator.clipboard.writeText(token).then(() => {
+        dispatch(
+          publishSuccessMessage({
+            messageId: "copy.success",
+          })
+        );
+      });
     }
   };
 
@@ -59,10 +44,10 @@ const PersonalAccessTokenCreationResultDialog: React.FC<
       actionButtonText={i18n("close")}
     >
       <CustomInput
-        innerRef={areaRefConsumer}
         type={"textarea"}
         value={token || "Internal error occurred"}
         readOnly={true}
+        className="token-textarea"
       />
       <If expression={!!navigator.clipboard}>
         <Button size={"sm"} color={"primary"} onClick={copyToken}>
