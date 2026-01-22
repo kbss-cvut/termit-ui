@@ -260,6 +260,7 @@ export class VocabularySummary extends EditableComponent<
         requiredAccessLevel={AccessLevel.SECURITY}
         key="vocabulary-summary-remove"
         vocabulary={vocabulary}
+        mode="remove"
       >
         <Button
           id="vocabulary-summary-remove"
