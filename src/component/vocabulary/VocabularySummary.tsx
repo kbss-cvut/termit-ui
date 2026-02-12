@@ -71,7 +71,7 @@ interface VocabularySummaryProps
   ) => Promise<boolean>;
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
-  importSkos: (
+  importVocabularyContent: (
     iri: IRI,
     file: File,
     translationsOnly?: boolean
@@ -219,7 +219,7 @@ export class VocabularySummary extends EditableComponent<
   };
 
   private onImport = (file: File, translationsOnly: boolean) =>
-    this.props.importSkos(
+    this.props.importVocabularyContent(
       VocabularyUtils.create(this.props.vocabulary.iri),
       file,
       translationsOnly
@@ -376,8 +376,11 @@ export default connect(
         dispatch(updateVocabulary(vocabulary)),
       removeVocabulary: (vocabulary: Vocabulary) =>
         dispatch(removeVocabulary(vocabulary)),
-      importSkos: (iri: IRI, file: File, translationsOnly?: boolean) =>
-        dispatch(importIntoExistingVocabulary(iri, file, translationsOnly)),
+      importVocabularyContent: (
+        iri: IRI,
+        file: File,
+        translationsOnly?: boolean
+      ) => dispatch(importIntoExistingVocabulary(iri, file, translationsOnly)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
       createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),
