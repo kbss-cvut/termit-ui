@@ -36,7 +36,6 @@ export default class TermItState {
   public intl: IntlData;
   public selectedTerm: Term | null;
   public queryResults: { [key: string]: QueryResultIF };
-  public createdTermsCounter: number;
   public searchListenerCount: number;
   public searchInProgress: boolean;
   public searchQuery: SearchQuery;
@@ -88,7 +87,6 @@ export default class TermItState {
     this.intl = en;
     this.selectedTerm = null;
     this.queryResults = {};
-    this.createdTermsCounter = 0;
     this.searchListenerCount = 0;
     this.searchInProgress = false;
     this.searchQuery = new SearchQuery();

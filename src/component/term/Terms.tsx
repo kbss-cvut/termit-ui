@@ -50,7 +50,6 @@ import ShowFlatListToggle from "./state/ShowFlatListToggle";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
-  counter: number;
   selectedTerms: Term | null;
   notifications: AppNotification[];
   configuration: Configuration;
@@ -103,9 +102,6 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   }
 
   public componentDidUpdate(prevProps: GlossaryTermsProps) {
-    if (prevProps.counter < this.props.counter) {
-      this.forceUpdate();
-    }
     const matchingNotification = this.props.notifications.find(
       (n) =>
         Terms.isNotificationRelevant(n) ||
@@ -126,7 +122,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     }
   }
 
-  private static isNotificationRelevant(n: AppNotification) {
+  public static isNotificationRelevant(n: AppNotification) {
     return (
       (RELEVANT_ACTION_TYPES.includes(n.source.type) &&
         n.source.status === AsyncActionStatus.SUCCESS) ||
@@ -395,7 +391,6 @@ export default connect(
   (state: TermItState) => {
     return {
       selectedTerms: state.selectedTerm,
-      counter: state.createdTermsCounter,
       notifications: state.notifications,
       configuration: state.configuration,
       terminalStates: state.terminalStates,

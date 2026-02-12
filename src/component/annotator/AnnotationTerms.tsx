@@ -17,7 +17,6 @@ import AnnotatorTermsSelector from "./AnnotatorTermsSelector";
 
 interface GlossaryTermsProps extends HasI18n, RouteComponentProps<any> {
   vocabulary: Vocabulary;
-  counter: number;
   selectVocabularyTerm: (selectedTerms: Term | null) => void;
 }
 
@@ -32,12 +31,6 @@ export class AnnotationTerms extends React.Component<AnnotationTermsProps> {
   public static defaultProps: Partial<AnnotationTermsProps> = {
     canCreateTerm: true,
   };
-
-  public componentDidUpdate(prevProps: AnnotationTermsProps) {
-    if (prevProps.counter < this.props.counter) {
-      this.forceUpdate();
-    }
-  }
 
   public componentWillUnmount() {
     this.props.selectVocabularyTerm(null);
@@ -108,7 +101,6 @@ export default connect(
   (state: TermItState) => {
     return {
       vocabulary: state.vocabulary,
-      counter: state.createdTermsCounter,
     };
   },
   (dispatch: ThunkDispatch) => {
