@@ -3,6 +3,7 @@ import {
   asyncActionFailure,
   asyncActionRequest,
   asyncActionSuccess,
+  publishNotification,
 } from "./SyncActions";
 import Ajax, { contentType, responseType } from "../util/Ajax";
 import { ThunkDispatch } from "../util/Types";
@@ -39,7 +40,7 @@ export function importIntoExistingVocabulary(
       `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/import`,
       contentType(Constants.MULTIPART_FORM_DATA).formData(formData)
     )
-      .then(() => processSuccess(dispatch, action, data))
+      .then(() => processSuccess(dispatch, action, data, false))
       .then(() => dispatch(loadVocabulary(vocabularyIri)))
       .catch(processError(dispatch, action));
   };
@@ -118,9 +119,14 @@ export function importExternalSkosAsNewVocabulary(
 const processSuccess = (
   dispatch: ThunkDispatch,
   action: Action,
-  data: File
+  data: File,
+  newVocabulary: boolean = true
 ) => {
-  dispatch(asyncActionSuccess(action));
+  const asyncAction = asyncActionSuccess(action);
+  dispatch(asyncAction);
+  if (!newVocabulary) {
+    dispatch(publishNotification({ source: asyncAction }));
+  }
   return dispatch(
     SyncActions.publishMessage(
       new Message(

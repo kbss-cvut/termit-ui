@@ -77,6 +77,11 @@ interface TermsState {
   showTerminalTerms: boolean;
 }
 
+const RELEVANT_ACTION_TYPES = [
+  ActionType.CREATE_VOCABULARY_TERM,
+  ActionType.IMPORT_VOCABULARY,
+];
+
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   private readonly treeComponent: React.RefObject<
     IntelligentTreeSelect<Term, false>
@@ -123,7 +128,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
   private static isNotificationRelevant(n: AppNotification) {
     return (
-      (n.source.type === ActionType.CREATE_VOCABULARY_TERM &&
+      (RELEVANT_ACTION_TYPES.includes(n.source.type) &&
         n.source.status === AsyncActionStatus.SUCCESS) ||
       n.source.type === NotificationType.TERM_HIERARCHY_UPDATED
     );
