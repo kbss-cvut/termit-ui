@@ -1,3 +1,10 @@
+#### Verze 4.4.1
+
+- Opravena chyba s aktualizací stromu pojmů po importu.
+- Opravena chyba se zobrazením pojmů s více rodiči v stromu pojmů.
+- Zvýšena robustnost import z MS Excel a SKOS.
+- Přidán Software Bill of Materials (SBOM).
+
 #### Verze 4.4.0
 
 - Přidána podpora pro osobní přístupové tokeny (Personal Access Token - PAT).

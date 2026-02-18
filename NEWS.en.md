@@ -1,3 +1,10 @@
+#### Version 4.4.1
+
+- Fixed an issue with refreshing term tree after vocabulary content import.
+- Fix an issue with displaying terms with multiple parents in the term tree.
+- Improve the robustness of MS Excel and SKOS import.
+- Added Software Bill of Materials (SBOM) - link in Administration.
+
 #### Version 4.4.0
 
 - Added support for Personal Access Tokens - PATs.
