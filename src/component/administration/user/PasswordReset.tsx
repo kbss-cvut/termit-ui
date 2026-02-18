@@ -43,7 +43,6 @@ export const PasswordReset: React.FC<PasswordResetProps> = (
             label={i18n("administration.users.unlock.password")}
             value={password}
             onChange={(e) => updatePassword(e.target.value)}
-            autoFocus={true}
             labelWidth={4}
             inputWidth={8}
           />

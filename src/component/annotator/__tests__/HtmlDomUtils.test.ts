@@ -3,7 +3,7 @@ import { mockWindowSelection } from "../../../__tests__/environment/Environment"
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { TextQuoteSelector } from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
-import { NodeWithChildren, Text as DomHandlerText } from "domhandler";
+import { Element, Text as DomHandlerText } from "domhandler";
 import { ElementType } from "domelementtype";
 // @ts-ignore
 import { fromNode, toNode } from "simple-xpath-position";
@@ -289,7 +289,7 @@ describe("Html dom utils", () => {
       const textOne = "aaaa";
       const textTwo = "bbbb";
       const nodeOne = new DomHandlerText(textOne);
-      const nodeTwo = new NodeWithChildren(ElementType.Tag, [
+      const nodeTwo = new Element(ElementType.Tag, {}, [
         new DomHandlerText(textTwo),
       ]);
       const result = HtmlDomUtils.getTextContent([nodeOne, nodeTwo]);

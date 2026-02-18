@@ -1,0 +1,14 @@
+table.file-backup-list {
+  width: 100%;
+  td {
+    width: min-content;
+    white-space: nowrap;
+  }
+  td:nth-last-child(2) {
+    width: 100%;
+  }
+}
+
+.file-backup-list .btn-toolbar {
+  flex-wrap: nowrap;
+}

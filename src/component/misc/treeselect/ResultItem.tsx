@@ -77,6 +77,9 @@ class ResultItem extends React.Component<ResultItemProps> {
           id={`result-item-${Utils.hashCode(value)}`}
           className="result-item"
           onClick={this.onClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={Utils.handleKeyActivate(this.onClick)}
         >
           {this.props.addonBefore}
           <Highlighter
@@ -100,9 +103,19 @@ class ResultItem extends React.Component<ResultItemProps> {
 
   private getCollapseButton() {
     return (
-      <span onClick={this.onToggle} className="toggleButton">
+      <button
+        type="button"
+        onClick={this.onToggle}
+        className="toggleButton"
+        style={{
+          background: "none",
+          border: "none",
+          padding: 0,
+          cursor: "pointer",
+        }}
+      >
         {this.props.option.expanded ? <ToggleMinusIcon /> : <TogglePlusIcon />}
-      </span>
+      </button>
     );
   }
 }

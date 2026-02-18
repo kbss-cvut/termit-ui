@@ -18,101 +18,117 @@ const Legend: React.FC = () => {
 
   return (
     <ul className="legend-list">
-      <li
-        onClick={() =>
-          dispatch(
-            toggleAnnotatorLegendFilter(AnnotationClass.SUGGESTED_OCCURRENCE)
-          )
-        }
-        className={classNames("suggested-term-occurrence legend-list-item", {
-          "hidden-occurrence": !filter.get(
-            AnnotationClass.SUGGESTED_OCCURRENCE
-          ),
-        })}
-        title={i18n("annotator.legend.confirmed.unknown.term.tooltip")}
-      >
-        {i18n("annotator.legend.confirmed.unknown.term")}
-      </li>
-      <li
-        onClick={() =>
-          dispatch(
-            toggleAnnotatorLegendFilter(AnnotationClass.ASSIGNED_OCCURRENCE)
-          )
-        }
-        className={classNames("assigned-term-occurrence legend-list-item", {
-          "hidden-occurrence": !filter.get(AnnotationClass.ASSIGNED_OCCURRENCE),
-        })}
-        title={i18n("annotator.legend.confirmed.existing.term.tooltip")}
-      >
-        {i18n("annotator.legend.confirmed.existing.term")}
-      </li>
-      <li
-        onClick={() => {
-          dispatch(toggleAnnotatorLegendFilter(AnnotationClass.DEFINITION));
-        }}
-        className={classNames("term-definition legend-list-item", {
-          "hidden-occurrence": !filter.get(AnnotationClass.DEFINITION),
-        })}
-        title={i18n("annotator.legend.definition.tooltip")}
-      >
-        {i18n("annotator.legend.definition")}
-      </li>
-      <li
-        onClick={() => {
-          dispatch(
-            toggleAnnotatorLegendFilter(AnnotationClass.PENDING_DEFINITION)
-          );
-        }}
-        className={classNames("pending-term-definition legend-list-item", {
-          "hidden-occurrence": !filter.get(AnnotationClass.PENDING_DEFINITION),
-        })}
-        title={i18n("annotator.legend.definition.pending.tooltip")}
-      >
-        {i18n("annotator.legend.definition.pending")}
-      </li>
-      <li
-        onClick={() => {
-          dispatch(
-            toggleAnnotatorLegendFilter(
-              AnnotationClass.SUGGESTED_OCCURRENCE,
-              AnnotationOrigin.PROPOSED
+      <li className="legend-list-item">
+        <button
+          onClick={() =>
+            dispatch(
+              toggleAnnotatorLegendFilter(AnnotationClass.SUGGESTED_OCCURRENCE)
             )
-          );
-        }}
-        className={classNames(
-          "proposed-occurrence suggested-term-occurrence legend-list-item",
-          {
-            "hidden-occurrence": !filter.get(
-              AnnotationClass.SUGGESTED_OCCURRENCE,
-              AnnotationOrigin.PROPOSED
-            ),
           }
-        )}
-        title={i18n("annotator.legend.proposed.unknown.term.tooltip")}
-      >
-        {i18n("annotator.legend.proposed.unknown.term")}
+          className={classNames("suggested-term-occurrence", {
+            "hidden-occurrence": !filter.get(
+              AnnotationClass.SUGGESTED_OCCURRENCE
+            ),
+          })}
+          title={i18n("annotator.legend.confirmed.unknown.term.tooltip")}
+        >
+          {i18n("annotator.legend.confirmed.unknown.term")}
+        </button>
       </li>
-      <li
-        onClick={() => {
-          dispatch(
-            toggleAnnotatorLegendFilter(
-              AnnotationClass.ASSIGNED_OCCURRENCE,
-              AnnotationOrigin.PROPOSED
+      <li className="legend-list-item">
+        <button
+          onClick={() =>
+            dispatch(
+              toggleAnnotatorLegendFilter(AnnotationClass.ASSIGNED_OCCURRENCE)
             )
-          );
-        }}
-        className={classNames(
-          "proposed-occurrence assigned-term-occurrence legend-list-item",
-          {
-            "hidden-occurrence": !filter.get(
-              AnnotationClass.ASSIGNED_OCCURRENCE,
-              AnnotationOrigin.PROPOSED
-            ),
           }
-        )}
-        title={i18n("annotator.legend.proposed.existing.term.tooltip")}
-      >
-        {i18n("annotator.legend.proposed.existing.term")}
+          className={classNames("assigned-term-occurrence", {
+            "hidden-occurrence": !filter.get(
+              AnnotationClass.ASSIGNED_OCCURRENCE
+            ),
+          })}
+          title={i18n("annotator.legend.confirmed.existing.term.tooltip")}
+        >
+          {i18n("annotator.legend.confirmed.existing.term")}
+        </button>
+      </li>
+      <li className="legend-list-item">
+        <button
+          onClick={() => {
+            dispatch(toggleAnnotatorLegendFilter(AnnotationClass.DEFINITION));
+          }}
+          className={classNames("term-definition", {
+            "hidden-occurrence": !filter.get(AnnotationClass.DEFINITION),
+          })}
+          title={i18n("annotator.legend.definition.tooltip")}
+        >
+          {i18n("annotator.legend.definition")}
+        </button>
+      </li>
+      <li className="legend-list-item">
+        <button
+          onClick={() => {
+            dispatch(
+              toggleAnnotatorLegendFilter(AnnotationClass.PENDING_DEFINITION)
+            );
+          }}
+          className={classNames("pending-term-definition", {
+            "hidden-occurrence": !filter.get(
+              AnnotationClass.PENDING_DEFINITION
+            ),
+          })}
+          title={i18n("annotator.legend.definition.pending.tooltip")}
+        >
+          {i18n("annotator.legend.definition.pending")}
+        </button>
+      </li>
+      <li className="legend-list-item">
+        <button
+          onClick={() => {
+            dispatch(
+              toggleAnnotatorLegendFilter(
+                AnnotationClass.SUGGESTED_OCCURRENCE,
+                AnnotationOrigin.PROPOSED
+              )
+            );
+          }}
+          className={classNames(
+            "proposed-occurrence suggested-term-occurrence",
+            {
+              "hidden-occurrence": !filter.get(
+                AnnotationClass.SUGGESTED_OCCURRENCE,
+                AnnotationOrigin.PROPOSED
+              ),
+            }
+          )}
+          title={i18n("annotator.legend.proposed.unknown.term.tooltip")}
+        >
+          {i18n("annotator.legend.proposed.unknown.term")}
+        </button>
+      </li>
+      <li className="legend-list-item">
+        <button
+          onClick={() => {
+            dispatch(
+              toggleAnnotatorLegendFilter(
+                AnnotationClass.ASSIGNED_OCCURRENCE,
+                AnnotationOrigin.PROPOSED
+              )
+            );
+          }}
+          className={classNames(
+            "proposed-occurrence assigned-term-occurrence",
+            {
+              "hidden-occurrence": !filter.get(
+                AnnotationClass.ASSIGNED_OCCURRENCE,
+                AnnotationOrigin.PROPOSED
+              ),
+            }
+          )}
+          title={i18n("annotator.legend.proposed.existing.term.tooltip")}
+        >
+          {i18n("annotator.legend.proposed.existing.term")}
+        </button>
       </li>
     </ul>
   );

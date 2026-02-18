@@ -224,7 +224,6 @@ export class NavbarSearch extends React.Component<
             placeholder={i18n("main.search.placeholder")}
             type="search"
             id={`main-search-input${navbar ? "-navbar" : ""}`}
-            autoFocus={true}
             autoComplete="off"
             value={this.props.searchString}
             onChange={this.onChange}

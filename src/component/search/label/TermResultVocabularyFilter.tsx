@@ -45,11 +45,13 @@ const TermResultVocabularyFilter: React.FC<TermResultVocabularyFilterProps> = ({
       unique.map((iri) =>
         dispatch(getLabel(iri)).then((label) => ({
           value: iri,
-          label,
+          label: label ? label : iri,
         }))
       )
     ).then((res) => {
-      res.sort((a, b) => a.label.localeCompare(b.label));
+      res.sort((a, b) =>
+        (a.label || a.value).localeCompare(b.label || b.value)
+      );
       setOptions(res);
     });
   }, [searchResults, dispatch, setOptions]);

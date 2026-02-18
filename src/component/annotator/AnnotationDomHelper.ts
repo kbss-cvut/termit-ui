@@ -2,7 +2,7 @@ import { DomUtils } from "htmlparser2";
 import {
   DataNode,
   Element as DomHandlerElement,
-  Node as DomHandlerNode,
+  ChildNode as DomHandlerNode,
   NodeWithChildren,
 } from "domhandler";
 import VocabularyUtils from "../../util/VocabularyUtils";

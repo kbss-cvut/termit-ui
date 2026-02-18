@@ -4,7 +4,7 @@ import "./OutgoingLink.scss";
 import { useI18n } from "../hook/useI18n";
 
 interface OutgoingLinkProps {
-  label: string | JSX.Element;
+  label: string | React.ReactNode;
   iri: string;
   showLink?: boolean;
   className?: string;

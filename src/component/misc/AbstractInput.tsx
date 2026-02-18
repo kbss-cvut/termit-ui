@@ -10,7 +10,8 @@ import ValidationResult, {
 import Utils from "../../util/Utils";
 import InputValidationMessage from "./validation/InputValidationMessage";
 
-export interface AbstractInputProps {
+export interface AbstractInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   id?: string;
   name?: string;
   label?: string | React.ReactNode;

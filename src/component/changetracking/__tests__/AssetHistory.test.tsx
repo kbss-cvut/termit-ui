@@ -13,7 +13,7 @@ import * as Redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
 
-jest.mock("../../misc/AssetLabel", () => () => <label>Asset</label>);
+jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
   useDispatch: jest.fn(),

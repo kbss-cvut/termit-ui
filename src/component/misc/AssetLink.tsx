@@ -29,6 +29,8 @@ const AssetLink: React.FC<AssetLinkProps<AssetType>> = ({
       className="m-asset-link-wrapper"
       onMouseOut={() => setShowLink(false)}
       onMouseOver={() => setShowLink(true)}
+      onFocus={() => setShowLink(true)}
+      onBlur={() => setShowLink(false)}
     >
       <OutgoingLink
         label={

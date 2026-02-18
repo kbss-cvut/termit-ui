@@ -151,7 +151,6 @@ export class RegistrationForm extends React.Component<
                 value={this.state.firstName}
                 onChange={this.onChange}
                 validation={this.validateFirstName()}
-                autoFocus={true}
               />
             </Col>
             <Col md={6}>

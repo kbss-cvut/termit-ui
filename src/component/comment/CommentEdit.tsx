@@ -40,7 +40,6 @@ const CommentEdit: React.FC<CommentEditProps> = (props) => {
       <div className="content">
         <TextArea
           value={content}
-          autoFocus={true}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={onKeyDown}
         />

@@ -57,11 +57,7 @@ const HighlightTermOccurrencesButton: React.FC<
                 </Label>
               </div>
             </div>
-            <AnnotatorTermsSelector
-              onChange={onSelect}
-              term={term}
-              autoFocus={true}
-            />
+            <AnnotatorTermsSelector onChange={onSelect} term={term} />
           </FormGroup>
           {term !== null && (
             <>

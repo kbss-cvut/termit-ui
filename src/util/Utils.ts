@@ -392,6 +392,20 @@ const Utils = {
       )
     );
   },
+
+  /**
+   * Creates a keyboard event handler that triggers an action when Enter or Space key is pressed.
+   * Used for making non-button elements keyboard-accessible.
+   * @param action The action to execute on Enter or Space key press
+   */
+  handleKeyActivate(action: () => void): (event: React.KeyboardEvent) => void {
+    return (event: React.KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        action();
+      }
+    };
+  },
 };
 
 export default Utils;

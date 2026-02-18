@@ -23,13 +23,15 @@ const CopyIriIcon: React.FC<CopyIriIconProps> = ({ url }) => {
 
   return (
     <>
-      <i
-        id="link-icon"
-        className="fas fa-link text-primary link-icon"
+      <button
+        type="button"
+        className="border-0 bg-transparent p-0 align-baseline"
         onClick={copyToClipboard}
       >
-        <sub className="sub">IRI</sub>
-      </i>
+        <i id="link-icon" className="fas fa-link text-primary link-icon">
+          <sub className="sub">IRI</sub>
+        </i>
+      </button>
       <UncontrolledTooltip
         id="tooltip-link-icon"
         placement="right"

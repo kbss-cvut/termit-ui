@@ -67,14 +67,15 @@ class Footer extends React.Component<FooterProps, FooterState> {
           </a>
         </Col>
         <div>
-          <span
+          <button
+            type="button"
             onClick={this.toggleLogViewer}
             className="log-viewer-toggle pl-xs-1 px-sm-3 px-2"
             title={i18n("log-viewer.title")}
             id="log-viewer-toggler"
           >
             <GoZap />
-          </span>
+          </button>
           <FooterModalViewer
             title="log-viewer.title"
             show={this.state.showLog}
@@ -94,7 +95,8 @@ class Footer extends React.Component<FooterProps, FooterState> {
           </a>
         </div>
         <div className="news-viewer-toggle px-sm-2 px-sm-3 px-1 text-right">
-          <span
+          <button
+            type="button"
             onClick={this.toggleNewsViewer}
             id="news-toggler"
             title={i18n("footer.version.tooltip")}
@@ -103,7 +105,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
               {i18n("footer.version")}&nbsp;
             </span>
             {Constants.VERSION}
-          </span>
+          </button>
           <FooterModalViewer
             title="news-viewer.title"
             show={this.state.showNews}

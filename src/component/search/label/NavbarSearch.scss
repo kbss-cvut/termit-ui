@@ -19,44 +19,48 @@
 
 .search-results-overlay {
   min-width: 30rem !important;
-}
 
-.search-results-overlay .popover-body {
-  background-color: #ffffff;
-}
+  .popover-body {
+    background-color: #ffffff;
+  }
 
-.search-results-overlay ul {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 0;
-}
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
 
-.search-results-overlay ul li {
-  padding-top: 0.125rem;
-}
+  li {
+    padding-top: 0.125rem;
 
-.search-results-overlay ul li:first-child {
-  padding-top: 0;
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+
+  button.btn-link {
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-style: italic;
+  }
 }
 
 .search-result-link {
-  cursor: pointer;
-}
-
-.search-result-link .badge {
-  margin-right: 0.125rem;
+  .badge {
+    margin-right: 0.125rem;
+  }
 }
 
 .search-result-info {
-  @extend .search-result-link;
   margin-top: 0.125rem;
-  font-weight: bold;
-  font-style: italic;
 }
 
 .search-result-no-results {
   @extend .search-result-info;
-  border-top: none !important;
 }
 
 .navbar-collapse {

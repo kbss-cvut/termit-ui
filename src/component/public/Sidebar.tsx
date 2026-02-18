@@ -127,7 +127,8 @@ export class Sidebar extends DefaultSidebar {
 
             {/* Toggler desktop */}
             {desktopView && (
-              <div
+              <button
+                type="button"
                 className="menu-collapse d-inline-flex align-items-center"
                 onClick={this.props.toggleSidebar}
                 id="toggler"
@@ -137,7 +138,7 @@ export class Sidebar extends DefaultSidebar {
                 {!sidebarExpanded && (
                   <i className="fas fa-chevron-right fa-xs" />
                 )}
-              </div>
+              </button>
             )}
           </div>
 

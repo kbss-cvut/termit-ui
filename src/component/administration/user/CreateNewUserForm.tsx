@@ -162,7 +162,6 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
               value={firstName}
               onChange={onChange.bind(this, setFirstName)}
               validation={validateNonEmpty(firstName)}
-              autoFocus={true}
             />
           </Col>
           <Col md={6}>

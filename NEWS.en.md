@@ -1,3 +1,23 @@
+#### Version 4.4.1
+
+- Fixed an issue with refreshing term tree after vocabulary content import.
+- Fix an issue with displaying terms with multiple parents in the term tree.
+- Improve the robustness of MS Excel and SKOS import.
+- Added Software Bill of Materials (SBOM) - link in Administration.
+
+#### Version 4.4.0
+
+- Added support for Personal Access Tokens - PATs.
+- Added support for Prometheus metrics and monitoring using Prometheus + Grafana. Removed Java Melody monitoring.
+- Improved accessibility of user interface (a11y).
+- Support removal of read-only vocabularies (with sufficient rights).
+
+#### Version 4.3.0
+
+- Provide access to document backups, support their download and restoration.
+- Support annotating relationships between terms (using custom attributes). Data are stored as RDF-star.
+- Extend faceted search with support for term relationships annotations.
+
 #### Version 4.2.0
 
 - Added support for using a SPARQL endpoint to import vocabularies (read-only).

@@ -7,7 +7,7 @@ import {
 } from "html-to-react";
 import {
   Element as DomHandlerElement,
-  Node as DomHandlerNode,
+  ChildNode as DomHandlerNode,
 } from "domhandler";
 import AnnotationDomHelper from "./AnnotationDomHelper";
 import HtmlParserUtils from "./HtmlParserUtils";

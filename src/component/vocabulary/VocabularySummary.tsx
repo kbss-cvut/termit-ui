@@ -71,7 +71,7 @@ interface VocabularySummaryProps
   ) => Promise<boolean>;
   updateVocabulary: (vocabulary: Vocabulary) => Promise<any>;
   removeVocabulary: (vocabulary: Vocabulary) => Promise<any>;
-  importSkos: (
+  importVocabularyContent: (
     iri: IRI,
     file: File,
     translationsOnly?: boolean
@@ -219,7 +219,7 @@ export class VocabularySummary extends EditableComponent<
   };
 
   private onImport = (file: File, translationsOnly: boolean) =>
-    this.props.importSkos(
+    this.props.importVocabularyContent(
       VocabularyUtils.create(this.props.vocabulary.iri),
       file,
       translationsOnly
@@ -249,8 +249,8 @@ export class VocabularySummary extends EditableComponent<
             title={i18n("edit")}
             onClick={this.onEdit}
           >
-            <GoPencil />
-            &nbsp;{i18n("edit")}
+            <GoPencil className="mr-1" />
+            {i18n("edit")}
           </Button>
         </IfVocabularyActionAuthorized>
       );
@@ -260,6 +260,7 @@ export class VocabularySummary extends EditableComponent<
         requiredAccessLevel={AccessLevel.SECURITY}
         key="vocabulary-summary-remove"
         vocabulary={vocabulary}
+        mode="remove"
       >
         <Button
           id="vocabulary-summary-remove"
@@ -269,8 +270,8 @@ export class VocabularySummary extends EditableComponent<
           title={i18n("asset.remove.tooltip")}
           onClick={this.onRemoveClick}
         >
-          <FaTrashAlt />
-          &nbsp;{i18n("remove")}
+          <FaTrashAlt className="mr-1" />
+          {i18n("remove")}
         </Button>
       </IfVocabularyActionAuthorized>
     );
@@ -375,8 +376,11 @@ export default connect(
         dispatch(updateVocabulary(vocabulary)),
       removeVocabulary: (vocabulary: Vocabulary) =>
         dispatch(removeVocabulary(vocabulary)),
-      importSkos: (iri: IRI, file: File, translationsOnly?: boolean) =>
-        dispatch(importIntoExistingVocabulary(iri, file, translationsOnly)),
+      importVocabularyContent: (
+        iri: IRI,
+        file: File,
+        translationsOnly?: boolean
+      ) => dispatch(importIntoExistingVocabulary(iri, file, translationsOnly)),
       executeTextAnalysisOnAllTerms: (iri: IRI) =>
         dispatch(executeTextAnalysisOnAllTerms(iri)),
       createSnapshot: (iri: IRI) => dispatch(createVocabularySnapshot(iri)),

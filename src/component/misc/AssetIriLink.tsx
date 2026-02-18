@@ -42,7 +42,12 @@ export default class AssetIriLink extends React.Component<
     const setVisible = this.setVisible.bind(this);
 
     return (
-      <span onMouseOut={setInvisible} onMouseOver={setVisible}>
+      <span
+        onMouseOut={setInvisible}
+        onMouseOver={setVisible}
+        onFocus={setVisible}
+        onBlur={setInvisible}
+      >
         <OutgoingLink
           label={
             <Link

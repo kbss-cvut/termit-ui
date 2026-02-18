@@ -1,6 +1,30 @@
 .legend-list-item {
   margin-bottom: 2px;
+}
+
+.legend-list-item button {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  text-align: left;
   cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.legend-list-item button:hover {
+  opacity: 0.7;
+}
+
+.legend-list-item button:active {
+  opacity: 0.5;
+}
+
+.legend-list-item button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
 }
 
 .assigned-term-occurrence {
@@ -91,7 +115,7 @@
   background-color: orange !important;
 }
 
-.legend-list-item.hidden-occurrence {
+.legend-list-item button.hidden-occurrence {
   border-color: rgb(184, 184, 184);
   background: rgba(184, 184, 184, 0.5);
 }

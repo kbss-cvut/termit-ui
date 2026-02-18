@@ -78,7 +78,6 @@ export class Login extends React.Component<LoginProps, LoginState> {
                 value={this.state.username}
                 onKeyPress={this.onKeyPress}
                 onChange={this.onChange}
-                autoFocus={true}
                 placeholder={i18n("login.username.placeholder")}
               />
               <EnhancedInput

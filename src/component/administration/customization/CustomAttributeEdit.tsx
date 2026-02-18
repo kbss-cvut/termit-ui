@@ -257,7 +257,6 @@ export const CustomAttributeEdit: React.FC = () => {
                   }
                   hint={i18n("required")}
                   onChange={onLabelChange}
-                  autoFocus={true}
                   validation={labelValidation}
                   value={getLocalizedOrDefault(label, "", language)}
                 />

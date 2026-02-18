@@ -11,6 +11,7 @@ import { downloadExcelTemplate } from "../../../action/AsyncImportActions";
 import TermItState from "../../../model/TermItState";
 import Tabs from "../../misc/Tabs";
 import { ImportTranslationsDialog } from "./ImportTranslationsDialog";
+import Utils from "../../../util/Utils";
 
 interface LoadVocabularyFromFileProps {
   showDialog: boolean;
@@ -76,6 +77,10 @@ export const LoadVocabularyFromFile: React.FC<LoadVocabularyFromFileProps> = ({
                               role="button"
                               className="bold btn-link link-like"
                               onClick={downloadTemplate}
+                              tabIndex={0}
+                              onKeyDown={Utils.handleKeyActivate(
+                                downloadTemplate
+                              )}
                               title={i18n(
                                 "vocabulary.summary.import.excel.template.tooltip"
                               )}

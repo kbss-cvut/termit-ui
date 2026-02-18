@@ -1,5 +1,5 @@
 import { DomHandler, Parser as HtmlParser } from "htmlparser2";
-import { Element, Node } from "domhandler";
+import { Element, Node, ChildNode, AnyNode } from "domhandler";
 import render from "dom-serializer";
 
 const RDF_ATTRIBUTE_NAMES = ["about", "property", "resource", "typeof"];
@@ -25,7 +25,7 @@ function removeAddedAttributes(elem: Element) {
 }
 
 const HtmlParserUtils = {
-  html2dom(html: string): Node[] {
+  html2dom(html: string): ChildNode[] {
     // Do not decode HTML entities (e.g., &lt;) when parsing content for object representation, it caused issues
     // with rendering
     const options = { decodeEntities: false };
@@ -33,10 +33,10 @@ const HtmlParserUtils = {
     const handler = new DomHandler(null, null, removeAddedAttributes);
     const parser = new HtmlParser(handler, options);
     parser.parseComplete(html);
-    return handler.dom as Node[];
+    return handler.dom as ChildNode[];
   },
 
-  dom2html(dom: Node[]): string {
+  dom2html(dom: AnyNode[]): string {
     return render(dom, { decodeEntities: false });
   },
   /**

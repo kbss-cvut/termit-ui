@@ -88,7 +88,6 @@ export const ForgotPassword: React.FC<{}> = () => {
                 value={username}
                 onKeyPress={onKeyPress}
                 onChange={onChange}
-                autoFocus={true}
                 placeholder={i18n("forgotPassword.username.placeholder")}
                 validation={validateUsername()}
               />

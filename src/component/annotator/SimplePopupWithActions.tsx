@@ -29,7 +29,7 @@ const SimplePopupWithActions: React.FC<PopupWithActionsProps> = (props) => {
       fade={false}
       delay={0}
     >
-      <div onClick={handler}>
+      <div role="presentation" onClick={handler} onKeyDown={handler}>
         <PopoverHeader className="d-flex align-items-center">
           <div className="pwa-popup-title flex-grow-1">{props.title}</div>
           <ButtonToolbar className="float-sm-right">

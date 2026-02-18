@@ -118,6 +118,8 @@ const CreateVocabularyFromExcel: React.FC = () => {
                         role="button"
                         className="bold btn-link link-like"
                         onClick={downloadTemplate}
+                        tabIndex={0}
+                        onKeyDown={Utils.handleKeyActivate(downloadTemplate)}
                         title={i18n(
                           "vocabulary.summary.import.excel.template.tooltip"
                         )}

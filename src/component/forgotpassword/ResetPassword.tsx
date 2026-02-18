@@ -116,7 +116,6 @@ export const ResetPassword: React.FC = () => {
                 value={password}
                 onKeyPress={onKeyPress}
                 onChange={onPasswordChange}
-                autoFocus={true}
                 placeholder={i18n(id("password.placeholder"))}
                 disabled={passwordChanged}
               />

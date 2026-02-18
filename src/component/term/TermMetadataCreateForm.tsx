@@ -175,7 +175,6 @@ export class TermMetadataCreateForm extends React.Component<
               help={i18n("term.label.help")}
               hint={i18n("required")}
               onChange={this.onLabelChange}
-              autoFocus={true}
               validation={labelValidation}
               value={label}
             />

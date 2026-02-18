@@ -36,8 +36,8 @@ export const VocabularyManagement: React.FC = () => {
         title={i18n("vocabulary.vocabularies.create.tooltip")}
         to={Routes.createVocabulary.path}
       >
-        <GoPlus />
-        &nbsp;{i18n("vocabulary.management.new")}
+        <GoPlus className="mr-1" />
+        {i18n("vocabulary.management.new")}
       </Link>
       <Link
         id="vocabularies-import"
@@ -45,8 +45,8 @@ export const VocabularyManagement: React.FC = () => {
         title={i18n("vocabulary.vocabularies.import.tooltip")}
         to={Routes.importVocabulary.path}
       >
-        <FaFileImport />
-        &nbsp;{i18n("main.nav.import-vocabulary")}
+        <FaFileImport className="mr-1" />
+        {i18n("main.nav.import-vocabulary")}
       </Link>
     </IfUserIsEditor>,
     <IfUserIsAdmin key="analyze-vocabularies">
@@ -58,8 +58,8 @@ export const VocabularyManagement: React.FC = () => {
         title={i18n("vocabulary.management.startTextAnalysis.title")}
         onClick={onAnalyzeAllVocabularies}
       >
-        <GoClippy />
-        &nbsp;{i18n("file.metadata.startTextAnalysis.text")}
+        <GoClippy className="mr-1" />
+        {i18n("file.metadata.startTextAnalysis.text")}
       </Button>
     </IfUserIsAdmin>,
   ];

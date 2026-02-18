@@ -38,14 +38,15 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
   const items = [];
   if (mergedResults.length === 0) {
     items.push(
-      <li
-        id="search-results-link"
-        key="full-info"
-        className="btn-link search-result-no-results"
-        onClick={props.onOpenFacetedSearch}
-        title={i18n("main.search.tooltip")}
-      >
-        {i18n("main.search.no-results")}
+      <li id="search-results-link" key="full-info">
+        <button
+          type="button"
+          className="btn-link search-result-no-results"
+          onClick={props.onOpenFacetedSearch}
+          title={i18n("main.search.tooltip")}
+        >
+          {i18n("main.search.no-results")}
+        </button>
       </li>
     );
   } else {
@@ -64,18 +65,16 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
             <TermBadge />
           )}
           &nbsp;
-          <span onClick={props.onClose}>
-            {AssetLinkFactory.createAssetLink(AssetFactory.createAsset(item))}
-            <br />
-            {item.vocabulary ? (
-              <span className="small text-muted" style={{ marginLeft: "1em" }}>
-                {i18n("search.results.vocabulary.from")}{" "}
-                <AssetLabel iri={item.vocabulary.iri} />
-              </span>
-            ) : (
-              <span />
-            )}
-          </span>
+          {AssetLinkFactory.createAssetLink(AssetFactory.createAsset(item))}
+          <br />
+          {item.vocabulary ? (
+            <span className="small text-muted" style={{ marginLeft: "1em" }}>
+              {i18n("search.results.vocabulary.from")}{" "}
+              <AssetLabel iri={item.vocabulary.iri} />
+            </span>
+          ) : (
+            <span />
+          )}
         </li>
       );
 
@@ -83,16 +82,17 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
     }
     if (i < mergedResults.length) {
       items.push(
-        <li
-          id="search-results-link"
-          key="full-info"
-          className="btn-link search-result-info"
-          onClick={props.onOpenSearch}
-        >
-          {formatMessage("main.search.count-info-and-link", {
-            displayed: MAX_RENDERED_RESULTS,
-            count: mergedResults.length,
-          })}
+        <li id="search-results-link" key="full-info">
+          <button
+            type="button"
+            className="btn-link search-result-info"
+            onClick={props.onOpenSearch}
+          >
+            {formatMessage("main.search.count-info-and-link", {
+              displayed: MAX_RENDERED_RESULTS,
+              count: mergedResults.length,
+            })}
+          </button>
         </li>
       );
     }

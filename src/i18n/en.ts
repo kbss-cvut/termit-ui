@@ -17,6 +17,12 @@ const en = {
     description: "Description",
     submit: "Submit",
     approve: "Approve",
+    backups: "Backups",
+    date: "Date",
+    time: "Time",
+    close: "Close",
+    copy: "Copy",
+    "copy.success": "Copied!",
     "basic-information": "Basic Information",
     "created-info": "Created by {author} on {date}",
     "select.placeholder": "Select...",
@@ -483,6 +489,17 @@ const en = {
     "resource.metadata.document.files.empty":
       "No files found. Start by adding some.",
     "resource.file.vocabulary.create": "Add File",
+    "resource.file.backup.reason": "Backup reason",
+    "resource.file.backup.reason.reupload": "Reupload",
+    "resource.file.backup.reason.text_analysis": "Text analysis",
+    "resource.file.backup.reason.new_occurrence": "New occurrence",
+    "resource.file.backup.reason.remove_occurrence": "Occurrence removal",
+    "resource.file.backup.reason.scheduled": "Scheduled",
+    "resource.file.backup.reason.backup_restore": "Backup restored",
+    "resource.file.backup.reason.unknown": "Unknown",
+    "resource.file.backup.restore": "Restore backup",
+    "resource.file.backup.restore.failure": "Failed to restore the backup",
+    "resource.file.backup.restore.success": "The backup is being restored",
 
     "term.language.selector.item":
       "View term data in language: {nativeLang} ({lang})",
@@ -717,6 +734,23 @@ const en = {
     "profile.legend.invalid.name": "Field must be at least 1 character",
     "profile.updated.message": "Profile successfully updated",
     "profile.change-password": "Change Password",
+
+    "profile.pat.title": "Personal access tokens",
+    "profile.pat.created": "Created",
+    "profile.pat.lastUsed": "Last used",
+    "profile.pat.expiration": "Valid until",
+    "profile.pat.noTokens": "No personal access token has been created yet.",
+    "profile.pat.action.create.title": "Create new personal access token",
+    "profile.pat.action.remove.title":
+      "Deletes and invalidates the personal access token",
+    "profile.pat.action.noExpiration": "Remove the expiration",
+    "profile.pat.error.invalidDate": "Invalid date!",
+    "profile.pat.error.notFuture": "The expiration date must be in the future!",
+    "profile.pat.success.created": "Personal access token created",
+    "profile.pat.delete.confirm":
+      "Are you sure you want to remove the personal access token?",
+    "profile.pat.delete.confirm.description":
+      "The token will be invalidated and can no longer be used. This action is irreversible!",
 
     "change-password.current.password": "Current password",
     "change-password.new.password": "New password",
@@ -972,6 +1006,7 @@ const en = {
     "longrunningtasks.name.vocabularyValidation": "Vocabulary validation",
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generation of a file annotations",
+    "longrunningtasks.name.restoreBackup": "Backup restoration",
 
     "demo.notice":
       "This is a demo deployment. Use <b>demo</b>/<b>demo</b> to log in or register a new account. " +

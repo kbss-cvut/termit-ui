@@ -10,12 +10,19 @@ const IfVocabularyActionAuthorized: React.FC<{
   vocabulary: Vocabulary;
   requiredAccessLevel: AccessLevel;
   unauthorized?: React.ReactNode | null;
-}> = ({ vocabulary, requiredAccessLevel, unauthorized, children }) => {
+  mode?: "edit" | "remove";
+}> = ({
+  vocabulary,
+  requiredAccessLevel,
+  unauthorized,
+  mode = "edit",
+  children,
+}) => {
   return (
     <IfAuthorized
       isAuthorized={
         hasAccess(requiredAccessLevel, vocabulary.accessLevel) &&
-        vocabulary.isEditable()
+        (mode !== "edit" || vocabulary.isEditable())
       }
       unauthorized={unauthorized}
     >

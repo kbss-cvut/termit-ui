@@ -1,0 +1,4 @@
+.token-textarea {
+  field-sizing: content;
+  min-height: 190px; // Workaround for Firefox not supporting the "field-sizing: content" CSS (https://bugzilla.mozilla.org/show_bug.cgi?id=1832409)
+}

@@ -1,3 +1,23 @@
+#### Verze 4.4.1
+
+- Opravena chyba s aktualizací stromu pojmů po importu.
+- Opravena chyba se zobrazením pojmů s více rodiči v stromu pojmů.
+- Zvýšena robustnost import z MS Excel a SKOS.
+- Přidán Software Bill of Materials (SBOM).
+
+#### Verze 4.4.0
+
+- Přidána podpora pro osobní přístupové tokeny (Personal Access Token - PAT).
+- Přidána podpora Prometheus metrik a možnost monitoringu pomocí Prometheus + Grafana. Odebrán monitoring pomocí Java Melody.
+- Zlepšena accessibility (a11y) uživatelského rozhraní.
+- Přidána možnost smazat slovníky pouze pro čtení (při dostatečných právech).
+
+#### Verze 4.3.0
+
+- Byly zpřístupněny zálohy dokumentů a přidána možnost tyto zálohy stáhnout či jimi nahradit současný obsah.
+- Přidána podpora anotace vztahů mezi pojmy (pomocí vlastních atributů). Tyto anotace jsou ukládány pomocí RDF-star.
+- Fasetové vyhledávání rozšířeno o podporu anotací vztahů mezi pojmy.
+
 #### Verze 4.2.0
 
 - Přidána podpora pro definici externího SPARQL endpointu, ze kterého lze importovat slovníky (pouze pro čtení).

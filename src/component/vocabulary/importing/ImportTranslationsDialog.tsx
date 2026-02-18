@@ -3,6 +3,7 @@ import UploadFile from "../../resource/file/UploadFile";
 import { Alert, Button, ButtonToolbar, Col, Form, Row } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
 import { FormattedMessage } from "react-intl";
+import Utils from "../../../util/Utils";
 
 export const ImportTranslationsDialog: React.FC<{
   onSubmit: (file: File) => void;
@@ -24,6 +25,8 @@ export const ImportTranslationsDialog: React.FC<{
                   role="button"
                   className="bold btn-link link-like"
                   onClick={onDownloadTemplate}
+                  tabIndex={0}
+                  onKeyDown={Utils.handleKeyActivate(onDownloadTemplate)}
                   title={i18n(
                     "vocabulary.summary.import.excel.template.tooltip"
                   )}

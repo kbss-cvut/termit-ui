@@ -22,6 +22,7 @@ import Constants from "../../../util/Constants";
 import AccessLevel, { hasAccess } from "../../../model/acl/AccessLevel";
 import { IfAuthorized } from "react-authorization";
 import ResourceSaveReason from "../../annotator/ResourceSaveReason";
+import RestoreFileBackup from "./RestoreFileBackup";
 
 interface DocumentFilesProps {
   document: Document;
@@ -130,6 +131,7 @@ export const DocumentFiles = (props: DocumentFilesProps) => {
             performRename={renameFile}
             performFileUpdate={reuploadFile}
           />
+          <RestoreFileBackup file={file} />
         </IfAuthorized>,
         <IfAuthorized
           isAuthorized={hasAccess(AccessLevel.SECURITY, accessLevel)}

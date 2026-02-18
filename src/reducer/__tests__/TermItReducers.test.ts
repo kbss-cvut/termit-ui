@@ -61,7 +61,6 @@ function stateToPlainObject(state: TermItState): TermItState {
     messages: state.messages,
     intl: state.intl,
     selectedTerm: state.selectedTerm,
-    createdTermsCounter: state.createdTermsCounter,
     fileContent: state.fileContent,
     searchListenerCount: state.searchListenerCount,
     searchInProgress: state.searchInProgress,
@@ -286,17 +285,6 @@ describe("Reducers", () => {
       expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
         Object.assign({}, initialState, {
           fileContent: null,
-        })
-      );
-    });
-
-    it("resets selected term and terms counter", () => {
-      initialState.selectedTerm = Generator.generateTerm();
-      initialState.createdTermsCounter = 2;
-      expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
-        Object.assign({}, initialState, {
-          selectedTerm: null,
-          createdTermsCounter: 0,
         })
       );
     });

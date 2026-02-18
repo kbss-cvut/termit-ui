@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from "react";
 import Term from "../../model/Term";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import "intelligent-tree-select/lib/styles.css";
 import TermItState from "../../model/TermItState";
@@ -15,6 +15,9 @@ import {
   createTermValueRenderer,
 } from "../misc/treeselect/Renderers";
 import { useI18n } from "../hook/useI18n";
+import { Terms } from "../term/Terms";
+import { ThunkDispatch } from "../../util/Types";
+import { consumeNotification } from "../../action/SyncActions";
 
 interface AnnotatorTermsSelectorProps {
   term: Term | null;
@@ -28,10 +31,10 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
   autoFocus = false,
 }) => {
   const intl = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
   const treeSelect = useRef<IntelligentTreeSelect<Term, false, false>>(null);
-  const { annotatorTerms, vocabulary, terminalStates } = useSelector(
-    (state: TermItState) => state
-  );
+  const { annotatorTerms, vocabulary, terminalStates, notifications } =
+    useSelector((state: TermItState) => state);
 
   const options = useMemo(
     () =>
@@ -42,6 +45,16 @@ const AnnotatorTermsSelector: React.FC<AnnotatorTermsSelectorProps> = ({
       ),
     [annotatorTerms, terminalStates]
   );
+
+  React.useEffect(() => {
+    const notification = notifications.find((n) =>
+      Terms.isNotificationRelevant(n)
+    );
+    if (notification) {
+      treeSelect.current?.resetOptions();
+      dispatch(consumeNotification(notification));
+    }
+  }, [notifications, treeSelect, dispatch]);
 
   React.useEffect(() => {
     if (autoFocus) {

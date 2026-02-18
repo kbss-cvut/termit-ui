@@ -1,5 +1,18 @@
 export const PUNCTUATION_CHARS = [".", ",", "!", "?", ":", ";"];
 const PUNCTUATION_REGEX = PUNCTUATION_CHARS.map(escapeRegExp).join("");
+const BLOCK_NODES = new Set([
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "p",
+  "header",
+  "footer",
+  "section",
+  "li",
+]);
 
 /**
  * Allows manipulation with the first {@link Range} in the {@link Selection}.<br>
@@ -127,6 +140,9 @@ export default class TextSelection {
     let node;
     do {
       node = it.nextNode();
+      if (node && BLOCK_NODES.has(node.nodeName.toLowerCase())) {
+        return false;
+      }
     } while (node && node.nodeType !== Node.TEXT_NODE);
     if (node?.nodeType === Node.TEXT_NODE) {
       this.range.setEnd(node, 0);
@@ -145,6 +161,9 @@ export default class TextSelection {
     let node;
     do {
       node = it.previousNode();
+      if (node && BLOCK_NODES.has(node.nodeName.toLowerCase())) {
+        return false;
+      }
     } while (node && node.nodeType !== Node.TEXT_NODE);
     if (node?.nodeType === Node.TEXT_NODE) {
       const offset = node.textContent?.length || 0;
@@ -250,7 +269,10 @@ export default class TextSelection {
       oldOffset = this.range.endOffset;
       const { endContainer, endOffset } = this.range;
       const newOffset = endOffset + 1;
-      if (newOffset >= this.getEndText().length) {
+      // This should theoretically throw an exception, because endOffset is equal
+      // to the node end, but it works in Chrome and Firefox and correctly extends
+      // the range to the end of the text node
+      if (newOffset > this.getEndText().length) {
         if (this.moveEndToNextTextNode()) {
           continue;
         } else {

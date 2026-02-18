@@ -240,17 +240,6 @@ function selectedTerm(
   }
 }
 
-function createdTermsCounter(state: number = 0, action: AsyncAction) {
-  switch (action.type) {
-    case ActionType.CREATE_VOCABULARY_TERM:
-      return isAsyncSuccess(action) ? state + 1 : state;
-    case ActionType.LOGOUT:
-      return 0;
-    default:
-      return state;
-  }
-}
-
 function queryResults(
   state: { [key: string]: QueryResultIF } = {},
   action: ExecuteQueryAction
@@ -822,7 +811,6 @@ const rootReducer = combineReducers<TermItState>({
   intl,
   selectedTerm,
   queryResults,
-  createdTermsCounter,
   fileContent,
   searchQuery,
   searchResults,
