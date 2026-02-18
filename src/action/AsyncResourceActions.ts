@@ -100,7 +100,7 @@ export function loadFileBackupsCount(fileIri: IRI) {
         const countHeader = Number.parseInt(
           resp.headers[Constants.Headers.X_TOTAL_COUNT]
         );
-        if (!countHeader || Number.isNaN(countHeader)) {
+        if (Number.isNaN(countHeader)) {
           dispatch(
             asyncActionFailure(action, {
               message: `'${Constants.Headers.X_TOTAL_COUNT}' header missing in server response.`,

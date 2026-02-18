@@ -1,7 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import "./MarkdownView.scss";
-import { ReactMarkdownProps } from "react-markdown/src/ast-to-react";
+import { ReactMarkdownProps } from "react-markdown/lib/ast-to-react";
 import classNames from "classnames";
 
 const MarkdownImage = (

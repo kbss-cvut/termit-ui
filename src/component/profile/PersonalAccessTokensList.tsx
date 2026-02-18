@@ -20,7 +20,7 @@ interface PersonalAccessTokensListProps {
   user: User;
 }
 
-const PERSONAL_ACCESS_TOKENS_PROMISE_AREA =
+export const PERSONAL_ACCESS_TOKENS_PROMISE_AREA =
   "PERSONAL_ACCESS_TOKENS_PROMISE_AREA";
 
 const PersonalAccessTokensList: React.FC<PersonalAccessTokensListProps> = ({
@@ -123,4 +123,3 @@ const PersonalAccessTokensList: React.FC<PersonalAccessTokensListProps> = ({
 };
 
 export default PersonalAccessTokensList;
-export { PERSONAL_ACCESS_TOKENS_PROMISE_AREA };
