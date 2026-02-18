@@ -10,6 +10,7 @@ import {
 } from "../../action/AsyncActions";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
+import Constants from "../../util/Constants";
 
 export const Maintenance: React.FC = () => {
   const dispatch: ThunkDispatch = useDispatch();
@@ -44,6 +45,13 @@ export const Maintenance: React.FC = () => {
         >
           {i18n("administration.maintenance.reloadFTS")}
         </Button>
+        <a
+          href={`${Constants.SERVER_URL}/actuator/sbom/application`}
+          target="_blank noopener noreferrer"
+          className="align-self-center btn btn-primary btn-sm"
+        >
+          Software Bill of Materials (SBOM)
+        </a>
       </ButtonToolbar>
     </PanelWithActions>
   );
