@@ -956,6 +956,10 @@ const de = {
     "longrunningtasks.name.documentAnnotationGeneration":
       "Erstellung einer Dateianmerkung",
     "longrunningtasks.name.restoreBackup": "Wiederherstellung von Sicherung",
+
+    "demo.notice":
+      "Dies ist eine Demo-Bereitstellung. Verwenden Sie <b>demo</b>/<b>demo</b>, um sich anzumelden, oder registrieren Sie ein neues Konto. " +
+      "Bitte beachten Sie, dass von Benutzern erstellte Daten in dieser Bereitstellung ohne vorherige Ankündigung gelöscht werden können.",
   },
 };
 
