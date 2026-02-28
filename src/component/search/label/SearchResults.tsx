@@ -1,15 +1,12 @@
 import * as React from "react";
 import SearchResult from "../../../model/search/SearchResult";
 import { Card, CardBody, Label, Table } from "reactstrap";
-import { Link } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import TermResultItem from "./TermResultItem";
 import VocabularyResultItem from "./VocabularyResultItem";
 import { useI18n } from "../../hook/useI18n";
-import Routes from "../../../util/Routes";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
-import { EMPTY_USER } from "../../../model/User";
 import { createTermNonTerminalStateMatcher } from "../../term/TermTreeSelectHelper";
 
 export class SearchResultItem extends SearchResult {
@@ -69,12 +66,8 @@ export function mergeDuplicates(
 
 const SearchResults: React.FC<{
   results: SearchResult[] | null;
-  withFacetedSearchLink?: boolean;
-}> = ({ results, withFacetedSearchLink = false }) => {
+}> = ({ results }) => {
   const { i18n, formatMessage } = useI18n();
-  const isLoggedIn = useSelector(
-    (state: TermItState) => state.user !== EMPTY_USER
-  );
   const terminalStates = useSelector(
     (state: TermItState) => state.terminalStates
   );
@@ -91,26 +84,6 @@ const SearchResults: React.FC<{
         <CardBody>
           <Label className="italics small text-gray">
             {i18n("search.no-results")}
-            {withFacetedSearchLink && (
-              <>
-                &nbsp;
-                {formatMessage("search.results.facetedLink", {
-                  link: (
-                    <Link
-                      id="search-results-faceted-link"
-                      to={
-                        isLoggedIn
-                          ? Routes.facetedSearch.path
-                          : Routes.publicFacetedSearch.path
-                      }
-                      className="font-weight-bold"
-                    >
-                      {i18n("search.tab.facets").toLowerCase()}
-                    </Link>
-                  ),
-                })}
-              </>
-            )}
           </Label>
         </CardBody>
       </Card>
