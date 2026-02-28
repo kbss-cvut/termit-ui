@@ -113,9 +113,6 @@ const de = {
     "main.nav.vocabularies": "Vokabulare",
     "main.nav.statistics": "Statistiken",
     "main.nav.search": "Suche",
-    "main.nav.searchTerms": "Suchbegriffe",
-    "main.nav.searchVocabularies": "Vokabeln durchsuchen",
-    "main.nav.facetedSearch": "Facettensuche",
     "main.nav.admin": "Administration",
     "main.nav.create-vocabulary": "Neues Vokabular",
     "main.nav.import-vocabulary": "Vokabular importieren",
@@ -125,7 +122,8 @@ const de = {
     "main.search.tooltip": "Gehen Sie zum Suchbildschirm",
     "main.search.count-info-and-link":
       "Es werden {displayed} von {count} Ergebnissen angezeigt. ",
-    "main.search.no-results": "Keine Ergebnisse gefunden. ",
+    "main.search.no-results":
+      "Keine Ergebnisse gefunden. Klicken Sie, um die erweiterte Suche zu versuchen.",
     "main.lang-selector.tooltip":
       "Wählen Sie die Sprache der Benutzeroberfläche aus",
     "dashboard.widget.assetList.empty":
@@ -669,11 +667,6 @@ const de = {
     "fullscreen.enter": "Geben Sie den Vollbildmodus ein",
     "search.title": "Suchen",
     "search.tab.dashboard": "Dashboard",
-    "search.tab.everything": "Suche in allen Assets",
-    "search.tab.terms": "Bedingungen",
-    "search.tab.terms.filter.allVocabularies": "Alle Vokabulare",
-    "search.tab.vocabularies": "Vokabulare",
-    "search.tab.facets": "Facettierte Begriffssuche",
     "search.reset": "Suche zurücksetzen",
     "search.results.title": 'Ergebnisse für "{searchString}"',
     "search.no-results": "Keine Ergebnisse gefunden.",
@@ -688,13 +681,19 @@ const de = {
     "search.results.field.comment": "Kommentar",
     "search.results.field.definition": "Definition",
     "search.results.vocabulary.from": "aus",
-    "search.results.facetedLink": "Versuchen Sie es mit {link}.",
     "search.faceted.matchType.exact": "Genaue Übereinstimmung",
     "search.faceted.matchType.substring": "Teilzeichenfolge",
     "search.faceted.no-results":
       "Für die angegebenen Parameter wurden keine weiteren Ergebnisse gefunden.",
     "search.faceted.relationshipAnnotation":
       "Beziehung annotiert durch Begriff",
+    "search.target.both": "Alle",
+    "search.target.terms": "Begriffe",
+    "search.target.vocabularies": "Vokabulare",
+    "search.advanced.show": "Erweiterte Filter anzeigen",
+    "search.advanced.hide": "Erweiterte Filter ausblenden",
+    "search.help":
+      "Geben Sie oben einen Suchbegriff ein, um die Suche zu starten.",
 
     "profile.first.name": "Vorname",
     "profile.last.name": "Nachname",

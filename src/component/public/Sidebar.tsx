@@ -43,9 +43,9 @@ const mainNavRoutes: NavLinkRoute[] = [
     icon: "fas fa-book",
   },
   {
-    path: Routes.publicFacetedSearch.path,
-    name: "main.nav.facetedSearch",
-    icon: "fas fa-search-plus",
+    path: Routes.publicSearch.path,
+    name: "main.nav.search",
+    icon: "fas fa-search",
   },
 ];
 
