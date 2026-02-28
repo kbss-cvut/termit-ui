@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "./hoc/withI18n";
 import withLoading from "./hoc/withLoading";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import TermItState from "../model/TermItState";
 import { Container, Jumbotron, Nav, Navbar } from "reactstrap";
 import User, { EMPTY_USER } from "../model/User";
@@ -13,7 +13,6 @@ import { Route, RouteComponentProps, Switch, withRouter } from "react-router";
 import Messages from "./message/Messages";
 import NavbarSearch from "./search/label/NavbarSearch";
 import { ThunkDispatch } from "../util/Types";
-import SearchTypeTabs from "./search/SearchTypeTabs";
 import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
 import { loadUser } from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
@@ -30,6 +29,10 @@ import Routing from "src/util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import Breadcrumbs from "./breadcrumb/Breadcrumbs";
 import { loadTermStates } from "../action/AsyncActions";
+import {
+  addSearchListener,
+  removeSearchListener,
+} from "../action/SearchActions";
 import { LongRunningTasksStatus } from "./main/LongRunningTasksStatus";
 
 const AdministrationRoute = React.lazy(
@@ -39,12 +42,22 @@ const VocabularyManagementRoute = React.lazy(
   () => import("./vocabulary/VocabularyManagementRoute")
 );
 const Statistics = React.lazy(() => import("./statistics/Statistics"));
-const Search = React.lazy(() => import("./search/label/Search"));
-const SearchVocabularies = React.lazy(
-  () => import("./search/SearchVocabularies")
-);
-const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
-const FacetedSearch = React.lazy(() => import("./search/facet/FacetedSearch"));
+const AdvancedSearch = React.lazy(() => import("./search/AdvancedSearch"));
+
+/**
+ * Registers a search listener so the navbar FTS overlay works on all pages.
+ * Replaces the old SearchTypeTabs behavior.
+ */
+function SearchListenerHelper() {
+  const dispatch: ThunkDispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(addSearchListener());
+    return () => {
+      dispatch(removeSearchListener());
+    };
+  }, [dispatch]);
+  return null;
+}
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
@@ -121,6 +134,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     return (
       <div className="main-container">
+        <SearchListenerHelper />
         <Sidebar />
         <div
           className={classNames(
@@ -156,7 +170,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
               <Breadcrumbs className="breadcrumb-bar" separator="/" />
             )}
           </header>
-          <SearchTypeTabs />
           <Messages />
           <Container
             id="content-container"
@@ -183,24 +196,9 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                   component={Statistics}
                 />
                 <BreadcrumbRoute
-                  title={i18n("main.nav.searchTerms")}
-                  path={Routes.searchTerms.path}
-                  component={SearchTerms}
-                />
-                <BreadcrumbRoute
-                  title={i18n("main.nav.searchVocabularies")}
-                  path={Routes.searchVocabularies.path}
-                  component={SearchVocabularies}
-                />
-                <BreadcrumbRoute
-                  title={i18n("main.nav.facetedSearch")}
-                  path={Routes.facetedSearch.path}
-                  component={FacetedSearch}
-                />
-                <BreadcrumbRoute
                   title={i18n("main.nav.search")}
                   path={Routes.search.path}
-                  component={Search}
+                  component={AdvancedSearch}
                 />
                 <BreadcrumbRoute
                   title={i18n("main.user-profile")}

@@ -123,9 +123,6 @@ const cs = {
     "main.nav.vocabularies": "Slovníky",
     "main.nav.statistics": "Statistiky",
     "main.nav.search": "Vyhledávání",
-    "main.nav.searchTerms": "Vyhledávání pojmů",
-    "main.nav.searchVocabularies": "Vyhledávání slovníků",
-    "main.nav.facetedSearch": "Fasetové vyhledávání",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
     "main.nav.import-vocabulary": "Importovat slovník",
@@ -136,7 +133,7 @@ const cs = {
     "main.search.count-info-and-link":
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
     "main.search.no-results":
-      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte fasetové hledání.",
+      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte pokročilé hledání.",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":
@@ -713,11 +710,6 @@ const cs = {
 
     "search.title": "Vyhledávání",
     "search.tab.dashboard": "Nástěnka",
-    "search.tab.everything": "Hledat ve všech záznamech",
-    "search.tab.terms": "Pojmy",
-    "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
-    "search.tab.vocabularies": "Slovníky",
-    "search.tab.facets": "Fasetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
     "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
@@ -732,12 +724,17 @@ const cs = {
     "search.results.field.comment": "Popis",
     "search.results.field.definition": "Definice",
     "search.results.vocabulary.from": "z",
-    "search.results.facetedLink": "Zkuste {link}.",
     "search.faceted.matchType.exact": "Přesná shoda",
     "search.faceted.matchType.substring": "Částečná shoda",
     "search.faceted.no-results":
       "Zadaným parametrů neodpovídají již žádná další data.",
     "search.faceted.relationshipAnnotation": "Vztah anotovaný pojmem",
+    "search.target.both": "Vše",
+    "search.target.terms": "Pojmy",
+    "search.target.vocabularies": "Slovníky",
+    "search.advanced.show": "Zobrazit pokročilé filtry",
+    "search.advanced.hide": "Skrýt pokročilé filtry",
+    "search.help": "Zadejte hledaný výraz do pole výše.",
 
     "profile.first.name": "Křestní jméno",
     "profile.last.name": "Příjmení",

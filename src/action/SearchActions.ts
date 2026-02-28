@@ -18,10 +18,6 @@ import SearchResult, {
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
 import SearchParam from "../model/search/SearchParam";
-import {
-  CONTEXT as FACETED_SEARCH_RESULT_CONTEXT,
-  FacetedSearchResult,
-} from "../model/search/FacetedSearchResult";
 
 /**
  * Add a search listener using a simple reference counting.
@@ -162,37 +158,56 @@ export function searchResult(searchResults: SearchResult[]) {
   };
 }
 
-export function executeFacetedTermSearch(
-  params: SearchParam[],
+/**
+ * Runs advanced search combining full-text search with faceted filtering.
+ * Uses the /search/advanced endpoint.
+ */
+export function executeAdvancedSearch(
+  searchString: string,
+  language: string,
+  searchParams: SearchParam[],
   pageSpec: PageRequest = {
     page: 0,
     size: Constants.DEFAULT_PAGE_SIZE,
   }
 ) {
-  const action = { type: ActionType.FACETED_SEARCH };
+  const action = { type: ActionType.SEARCH };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
+    const queryParams: Record<string, string | number> = {
+      size: pageSpec.size,
+      page: pageSpec.page,
+    };
+    if (searchString) {
+      queryParams.searchString = searchString;
+    }
+    if (language) {
+      queryParams.language = language;
+    }
     return Ajax.post(
-      Constants.API_PREFIX + "/search/faceted/terms",
-      content(params)
-        .params(pageSpec)
+      Constants.API_PREFIX + "/search/advanced",
+      content(searchParams)
+        .params(queryParams)
         .contentType(Constants.JSON_MIME_TYPE)
         .accept(Constants.JSON_LD_MIME_TYPE)
         .preserveAcceptHeaderInPost()
     )
-      .then((resp) => {
-        dispatch(asyncActionSuccess(action));
-        return JsonLdUtils.compactAndResolveReferencesAsArray<FacetedSearchResult>(
+      .then((resp) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
           resp.data,
-          FACETED_SEARCH_RESULT_CONTEXT
-        );
+          SEARCH_RESULT_CONTEXT
+        )
+      )
+      .then((data: SearchResultData[]) => {
+        dispatch(asyncActionSuccess(action));
+        return data.map((d) => new SearchResult(d));
       })
       .catch((error: ErrorData) => {
         dispatch(SyncActions.asyncActionFailure(action, error));
         dispatch(
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
-        return Promise.resolve([]);
+        return Promise.resolve([] as SearchResult[]);
       });
   };
 }
