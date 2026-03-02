@@ -226,11 +226,12 @@ export default class Term
     }
   }
 
-  public toTermData(): TermData {
+  public toTermData(visited: Set<string> = new Set()): TermData {
     const result: any = Object.assign({}, this);
+    this.sanitizeUnmappedPropertyReferenceCycles(visited, result);
     if (result.parentTerms) {
       result.parentTerms = result.parentTerms.map((pt: Term) => {
-        const res = pt.toTermData();
+        const res = pt.toTermData(visited);
         // No need to track ancestors, they are not updated on the backend anyway
         delete res.parentTerms;
         return res;
@@ -243,6 +244,27 @@ export default class Term
     delete result.plainSubTerms;
     delete result.parent;
     return result;
+  }
+
+  private sanitizeUnmappedPropertyReferenceCycles(
+    visited: Set<string>,
+    result: TermData
+  ) {
+    visited.add(this.iri);
+    WithUnmappedProperties.getUnmappedProperties(
+      result,
+      MAPPED_PROPERTIES
+    ).forEach((val) => {
+      for (let i = 0; i < val.length; i++) {
+        if (
+          (val[i] as HasIdentifier).iri &&
+          visited.has((val[i] as HasIdentifier).iri) &&
+          Object.keys(val[i]).length > 1
+        ) {
+          val[i] = { iri: (val[i] as HasIdentifier).iri };
+        }
+      }
+    });
   }
 
   public static toTermInfo(t: Term | TermData): TermInfo {
