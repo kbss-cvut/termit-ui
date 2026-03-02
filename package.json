@@ -22,7 +22,7 @@
     "iso-639-1": "^2.1.15",
     "javascript-time-ago": "2.5.11",
     "js-cookie": "^3.0.5",
-    "jsonld": "8.3.2",
+    "jsonld": "9.0.0",
     "last": "^1.1.0",
     "ld-query": "^2.6.1",
     "lodash": "^4.17.23",
