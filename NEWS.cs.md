@@ -1,3 +1,7 @@
+#### Verze 4.4.2
+
+- Opravena chyba ukládání pojmu způsobená cyklickou referencí mezi pojmy.
+
 #### Verze 4.4.1
 
 - Opravena chyba s aktualizací stromu pojmů po importu.

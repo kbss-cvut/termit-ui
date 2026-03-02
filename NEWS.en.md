@@ -1,3 +1,7 @@
+#### Version 4.4.2
+
+- Fixed a term saving issue caused by a reference cycle between terms.
+
 #### Version 4.4.1
 
 - Fixed an issue with refreshing term tree after vocabulary content import.

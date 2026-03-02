@@ -254,6 +254,19 @@ describe("Term tests", () => {
       expect(result.definitionSource!.term).not.toEqual(result);
       expect(result.definitionSource!.term).toEqual({ iri: sut.iri });
     });
+
+    it("breaks reference cycle over unmapped property in parent term", () => {
+      const sut = Generator.generateTerm();
+      const parent = Generator.generateTerm();
+      const unmappedProp = Generator.generateUri();
+      parent[unmappedProp] = [sut];
+      sut.parentTerms = [parent];
+
+      const result = sut.toTermData();
+      expect(() => {
+        JSON.stringify(result);
+      }).not.toThrow();
+    });
   });
 
   describe("removeTranslation", () => {
