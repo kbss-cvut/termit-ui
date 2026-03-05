@@ -6,7 +6,7 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "@formatjs/intl-pluralrules": "5.4.6",
-    "@formatjs/intl-relativetimeformat": "11.4.13",
+    "@formatjs/intl-relativetimeformat": "12.2.2",
     "@fortawesome/fontawesome-free": "7.1.0",
     "@opendata-mvcr/assembly-line-shared": "^0.3.2",
     "apexcharts": "5.3.6",
