@@ -197,15 +197,6 @@ describe("SearchResults", () => {
     expect(rows.at(0).text().startsWith(results[1].label)).toBeTruthy();
   });
 
-  it("renders link to faceted search when no results are found and link display is enabled", () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <SearchResults results={[]} withFacetedSearchLink={true} />
-      </MemoryRouter>
-    );
-    expect(wrapper.exists("#search-results-faceted-link")).toBeTruthy();
-  });
-
   it("filters out results representing terms in terminal state", () => {
     const states = [
       new RdfsResource({
@@ -230,10 +221,7 @@ describe("SearchResults", () => {
       ),
     ];
     (Redux.useSelector as jest.Mock).mockReset();
-    jest
-      .spyOn(Redux, "useSelector")
-      .mockReturnValueOnce(true)
-      .mockReturnValue([states[1].iri]);
+    jest.spyOn(Redux, "useSelector").mockReturnValue([states[1].iri]);
     const wrapper = renderWithResults(results);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();

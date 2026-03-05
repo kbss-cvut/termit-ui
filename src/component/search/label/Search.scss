@@ -1,3 +1,6 @@
+@import "../../../styles/custom/colors";
+@import "../../../styles/variables";
+
 .search-input-container {
   flex-grow: 1 !important;
 }
@@ -33,4 +36,42 @@ table.search-results td {
 .search-result-title {
   font-weight: bold;
   font-size: large;
+}
+
+.unified-search-language-select {
+  min-width: 7rem;
+  height: 100%;
+  border: 1px solid #adb5bd;
+  border-left: 0;
+  border-radius: 0.25rem;
+  margin-left: -1px;
+  margin-right: -1px;
+  outline: none !important;
+
+  .react-select__control,
+  .react-select__control * {
+    height: 100%;
+    border: none !important;
+    border-radius: 0;
+    outline: none !important;
+    margin: auto;
+  }
+
+  .react-select__control {
+    box-shadow: none !important;
+  }
+
+  .react-select__indicator-separator {
+    height: auto;
+  }
+}
+
+.search-icon {
+  cursor: pointer;
+}
+
+#unified-search-input {
+  border: 1px solid $gray-500 !important;
+  border-left: none !important;
+  z-index: 3;
 }
