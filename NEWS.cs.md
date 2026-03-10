@@ -1,3 +1,7 @@
+#### Verze 4.4.3
+
+- Opravena chyba mazání hodnot dalších atributů.
+
 #### Verze 4.4.2
 
 - Opravena chyba ukládání pojmu způsobená cyklickou referencí mezi pojmy.

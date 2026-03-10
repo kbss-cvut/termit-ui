@@ -69,6 +69,24 @@ describe("UnmappedPropertiesEdit", () => {
     expect(onChange).toHaveBeenCalledWith(new Map([[property, ["test2"]]]));
   });
 
+  it("removes prop value on delete button click when it is an object with identifier", () => {
+    const property = Generator.generateUri();
+    const existing = new Map([
+      [
+        property,
+        [{ iri: "http://example.com/one" }, { iri: "http://example.com/two" }],
+      ],
+    ]);
+    const wrapper = render(existing);
+
+    const removeButtons = wrapper.find(BadgeButton);
+    expect(removeButtons.length).toEqual(2);
+    removeButtons.at(1).simulate("click");
+    expect(onChange).toHaveBeenCalledWith(
+      new Map([[property, [{ iri: "http://example.com/one" }]]])
+    );
+  });
+
   it("removes property completely when only value is deleted", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test1"]]]);
