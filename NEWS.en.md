@@ -1,3 +1,7 @@
+#### Version 4.4.3
+
+- Fixed an issue with removal of additional property values.
+
 #### Version 4.4.2
 
 - Fixed a term saving issue caused by a reference cycle between terms.
