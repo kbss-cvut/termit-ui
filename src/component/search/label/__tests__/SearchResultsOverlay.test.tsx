@@ -50,7 +50,6 @@ function generateResults(type: string, count: number = 5): SearchResult[] {
 describe("SearchResultsOverlay", () => {
   let onClose: () => void;
   let onOpenSearch: () => void;
-  let onOpenFacetedSearch: () => void;
 
   let element: HTMLDivElement;
   let wrapper: ReactWrapper;
@@ -58,7 +57,6 @@ describe("SearchResultsOverlay", () => {
   beforeEach(() => {
     onClose = jest.fn();
     onOpenSearch = jest.fn();
-    onOpenFacetedSearch = jest.fn();
     element = document.createElement("div");
     element.id = "root";
     document.body.appendChild(element);
@@ -89,7 +87,6 @@ describe("SearchResultsOverlay", () => {
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
-          onOpenFacetedSearch={onOpenFacetedSearch}
         />
       </MemoryRouter>,
       { attachTo: element }
@@ -129,7 +126,7 @@ describe("SearchResultsOverlay", () => {
       "search-result-no-results"
     )[0];
     Simulate.click(noResultsInfo);
-    expect(onOpenFacetedSearch).toHaveBeenCalled();
+    expect(onOpenSearch).toHaveBeenCalled();
   });
 
   it("invokes search open when count info link is clicked", () => {
