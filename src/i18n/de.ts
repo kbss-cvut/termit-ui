@@ -587,6 +587,10 @@ const de = {
     "term.removed.message": "Begriff erfolgreich entfernt.",
     "term.badge.score.tooltip": "Der Wert dieses Begriffs beträgt {score} %. ",
     "term.badge.no-score.tooltip": "Für diesen Begriff ist kein Wert verfügbar",
+    "term.largeValueList.closed":
+      "Das Attribut hat mehr als {threshold} Werte. Klicken Sie hier, um sie anzuzeigen.",
+    "term.largeValueList.open":
+      "Das Attribut hat mehr als {threshold} Werte. Klicken Sie hier, um sie auszublenden.",
 
     "glossary.title": "Bedingungen",
     "glossary.termCount.tooltip":
