@@ -20,6 +20,9 @@ import { loadAllTerms } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
 import ShowFlatListToggle from "./state/ShowFlatListToggle";
 import { setTermsFlatList } from "src/action/SyncActions";
+import { LargeTermValueList } from "./LargeTermValueList";
+
+export const MAX_SELECT_THRESHOLD = 20;
 
 /**
  * Selector of terms (using the intelligent-tree-select component).
@@ -89,7 +92,7 @@ export const TermSelector: React.FC<{
           )
         ),
       {
-        selectedIris: selected,
+        selectedIris: selected.length > MAX_SELECT_THRESHOLD ? [] : selected,
         terminalStates: terminalStates,
       }
     );
@@ -99,6 +102,7 @@ export const TermSelector: React.FC<{
   const treeSelectProps = {
     ...commonTermTreeSelectProps(intl),
     renderAsTree: !flatList,
+    controlShouldRenderValue: selected.length <= MAX_SELECT_THRESHOLD,
   };
 
   return (
@@ -126,6 +130,9 @@ export const TermSelector: React.FC<{
         {...treeSelectProps}
       />
       {suffix}
+      {selected.length > MAX_SELECT_THRESHOLD && (
+        <LargeTermValueList value={value} onChange={onChange} />
+      )}
     </FormGroup>
   );
 };
