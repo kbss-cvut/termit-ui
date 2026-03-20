@@ -629,6 +629,10 @@ const cs = {
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
     "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
+    "term.largeValueList.closed":
+      "Atribut má více než {threshold} hodnot. Klikněte pro jejich zobrazení.",
+    "term.largeValueList.open":
+      "Atribut má více než {threshold} hodnot. Klikněte pro jejich skrytí.",
 
     "glossary.title": "Pojmy",
     "glossary.termCount.tooltip":

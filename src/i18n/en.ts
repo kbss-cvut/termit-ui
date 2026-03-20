@@ -622,6 +622,10 @@ const en = {
     "term.badge.score.tooltip":
       "The score of this term is {score}%. Click to see the validation results",
     "term.badge.no-score.tooltip": "There is no available score for this term",
+    "term.largeValueList.closed":
+      "Attribute has more than {threshold} values. Click here to show them.",
+    "term.largeValueList.open":
+      "Attribute has more than {threshold} values. Click here to hide them.",
 
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":
