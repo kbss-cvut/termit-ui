@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "./hoc/withI18n";
 import withLoading from "./hoc/withLoading";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../model/TermItState";
 import { Container, Jumbotron, Nav, Navbar } from "reactstrap";
 import User, { EMPTY_USER } from "../model/User";
@@ -29,11 +29,8 @@ import Routing from "src/util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import Breadcrumbs from "./breadcrumb/Breadcrumbs";
 import { loadTermStates } from "../action/AsyncActions";
-import {
-  addSearchListener,
-  removeSearchListener,
-} from "../action/SearchActions";
 import { LongRunningTasksStatus } from "./main/LongRunningTasksStatus";
+import SearchListenerHelper from "./search/SearchListenerHelper";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -43,21 +40,6 @@ const VocabularyManagementRoute = React.lazy(
 );
 const Statistics = React.lazy(() => import("./statistics/Statistics"));
 const AdvancedSearch = React.lazy(() => import("./search/AdvancedSearch"));
-
-/**
- * Registers a search listener so the navbar FTS overlay works on all pages.
- * Replaces the old SearchTypeTabs behavior.
- */
-function SearchListenerHelper() {
-  const dispatch: ThunkDispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(addSearchListener());
-    return () => {
-      dispatch(removeSearchListener());
-    };
-  }, [dispatch]);
-  return null;
-}
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
