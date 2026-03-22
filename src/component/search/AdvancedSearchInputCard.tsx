@@ -54,7 +54,7 @@ const AdvancedSearchInputCard: React.FC<AdvancedSearchInputCardProps> = ({
           xs={12}
           className="d-flex justify-content-center align-items-center"
         >
-          <ButtonGroup>
+          <ButtonGroup size="sm">
             <Button
               color={
                 searchTarget === SearchTarget.BOTH ? "primary" : "secondary"
@@ -62,6 +62,7 @@ const AdvancedSearchInputCard: React.FC<AdvancedSearchInputCardProps> = ({
               outline={searchTarget !== SearchTarget.BOTH}
               onClick={() => onTargetChange(SearchTarget.BOTH)}
               id="search-target-both"
+              size="sm"
             >
               {i18n("search.target.both")}
             </Button>
@@ -72,6 +73,7 @@ const AdvancedSearchInputCard: React.FC<AdvancedSearchInputCardProps> = ({
               outline={searchTarget !== SearchTarget.TERMS}
               onClick={() => onTargetChange(SearchTarget.TERMS)}
               id="search-target-terms"
+              size="sm"
             >
               {i18n("search.target.terms")}
             </Button>
@@ -84,6 +86,7 @@ const AdvancedSearchInputCard: React.FC<AdvancedSearchInputCardProps> = ({
               outline={searchTarget !== SearchTarget.VOCABULARIES}
               onClick={() => onTargetChange(SearchTarget.VOCABULARIES)}
               id="search-target-vocabularies"
+              size="sm"
             >
               {i18n("search.target.vocabularies")}
             </Button>
