@@ -8,7 +8,7 @@ import Messages from "../message/Messages";
 import BreadcrumbRoute from "../breadcrumb/BreadcrumbRoute";
 import Routes from "../../util/Routes";
 import Footer from "../footer/Footer";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { ThunkDispatch } from "../../util/Types";
 import { changeView } from "../../action/SyncActions";
@@ -23,25 +23,11 @@ import NavbarSearch from "../search/label/NavbarSearch";
 import AdvancedSearch from "../search/AdvancedSearch";
 import "../MainView.scss";
 import { loadConfiguration, loadTermStates } from "../../action/AsyncActions";
-import {
-  addSearchListener,
-  removeSearchListener,
-} from "../../action/SearchActions";
+import SearchListenerHelper from "../search/SearchListenerHelper";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
 import Routing, { PUBLIC_LOGIN_ROUTE } from "../../util/Routing";
 import { getEnv } from "../../util/Constants";
 import ConfigParam from "../../util/ConfigParam";
-
-function SearchListenerHelper() {
-  const dispatch: ThunkDispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(addSearchListener());
-    return () => {
-      dispatch(removeSearchListener());
-    };
-  }, [dispatch]);
-  return null;
-}
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   sidebarExpanded: boolean;
