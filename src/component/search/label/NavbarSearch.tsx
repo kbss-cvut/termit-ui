@@ -48,11 +48,6 @@ interface NavbarSearchState {
  */
 const ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN = [Routes.search, Routes.publicSearch];
 
-/**
- * Routes for which the results preview popup should not be displayed.
- */
-const ROUTES_WITHOUT_SEARCH_OVERLAY = [Routes.search, Routes.publicSearch];
-
 function mapIndexedLanguages(languages?: string[]): Language[] {
   return Utils.sanitizeArray(languages)
     .map(getLanguageByShortCode)
@@ -118,7 +113,7 @@ export class NavbarSearch extends React.Component<
     const path = this.props.location.pathname;
     return (
       this.state.showResults &&
-      !ROUTES_WITHOUT_SEARCH_OVERLAY.find((r) => r.path === path)
+      !ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN.find((r) => r.path === path)
     );
   }
 
