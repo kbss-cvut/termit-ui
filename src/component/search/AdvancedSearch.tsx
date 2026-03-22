@@ -167,7 +167,7 @@ const AdvancedSearch: React.FC = () => {
         setResults(res);
       });
     },
-    [dispatch, advancedOpen]
+    [dispatch, advancedOpen, pageSize]
   );
 
   const debouncedSearch = useDebouncedCallback(
