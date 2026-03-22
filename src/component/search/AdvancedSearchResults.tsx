@@ -8,12 +8,11 @@ import TermResultItem from "./label/TermResultItem";
 import VocabularyResultItem from "./label/VocabularyResultItem";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
 
-export const RESULT_PAGE_SIZE = 20;
-
 interface AdvancedSearchResultsProps {
   results: SearchResult[] | null;
   finalResults: SearchResultItem[] | null;
   page: number;
+  pageSize: number;
   onPageChange: (page: number) => void;
 }
 
@@ -21,6 +20,7 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
   results,
   finalResults,
   page,
+  pageSize,
   onPageChange,
 }) => {
   const { i18n, formatMessage } = useI18n();
@@ -74,7 +74,7 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
           <SimplePagination
             page={page}
             setPage={onPageChange}
-            pageSize={RESULT_PAGE_SIZE}
+            pageSize={pageSize}
             itemCount={results.length}
             className="mt-3"
           />

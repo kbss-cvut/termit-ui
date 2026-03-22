@@ -32,11 +32,10 @@ import AdvancedSearchFacets, {
   FacetKey,
   VisibleFacets,
 } from "./AdvancedSearchFacets";
-import AdvancedSearchResults, {
-  RESULT_PAGE_SIZE,
-} from "./AdvancedSearchResults";
+import AdvancedSearchResults from "./AdvancedSearchResults";
 
 import type { Language } from "../../util/IntlUtil";
+import BrowserStorage from "../../util/BrowserStorage";
 
 export enum SearchTarget {
   TERMS = "TERMS",
@@ -106,6 +105,12 @@ const AdvancedSearch: React.FC = () => {
     [customAttributes]
   );
 
+  const pageSize = useMemo(() => {
+    return (
+      Number(BrowserStorage.get(Constants.STORAGE_TABLE_PAGE_SIZE_KEY)) || 20
+    );
+  }, []);
+
   const toggleFacet = (key: FacetKey) => {
     setVisibleFacets((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -154,7 +159,7 @@ const AdvancedSearch: React.FC = () => {
         dispatch(
           executeAdvancedSearch(query, lang, searchParams, {
             page: pageNo,
-            size: RESULT_PAGE_SIZE,
+            size: pageSize,
           })
         ),
         "unified-search"
@@ -381,6 +386,7 @@ const AdvancedSearch: React.FC = () => {
         results={results}
         finalResults={finalResults}
         page={page}
+        pageSize={pageSize}
         onPageChange={onPageChange}
       />
     </div>
