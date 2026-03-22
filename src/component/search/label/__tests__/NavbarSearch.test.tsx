@@ -99,18 +99,6 @@ describe("NavbarSearch", () => {
     expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
   }
 
-  it("does not display search results when current route is term search", () => {
-    verifyResultsNotDisplayed(Routes.searchTerms);
-  });
-
-  it("does not display search results when current route is vocabulary search", () => {
-    verifyResultsNotDisplayed(Routes.searchVocabularies);
-  });
-
-  it("does not display search results when current route is faceted search", () => {
-    verifyResultsNotDisplayed(Routes.facetedSearch);
-  });
-
   it("renders results when they are available", () => {
     const isInNavbar = false;
     const wrapper = shallow<NavbarSearch>(
@@ -247,14 +235,6 @@ describe("NavbarSearch", () => {
     verifyResultsNotDisplayed(Routes.publicSearch);
   });
 
-  it("does not display search results when current route is public term search results", () => {
-    verifyResultsNotDisplayed(Routes.publicSearchTerms);
-  });
-
-  it("does not display search results when current route is public term search results", () => {
-    verifyResultsNotDisplayed(Routes.publicSearchVocabularies);
-  });
-
   it("transitions to search view on search icon click", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
@@ -283,26 +263,5 @@ describe("NavbarSearch", () => {
     );
     wrapper.find("#search-icon").simulate("click");
     expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
-  });
-
-  it("transitions to search view on search input when view is faceted search", () => {
-    const props = navbarConnections();
-    props.location.pathname = Routes.facetedSearch.path;
-    props.match.path = Routes.facetedSearch.path;
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchString=""
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...props}
-        {...intlFunctions()}
-      />
-    );
-    const input = wrapper.find("#main-search-input");
-    input.simulate("change", { target: { value: "abc" } });
-    return Promise.resolve().then(() => {
-      expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
-    });
   });
 });

@@ -8,7 +8,7 @@ import FTSMatch from "./FTSMatch";
  */
 const HIDDEN_FIELDS = ["altLabel", "hiddenLabel"];
 
-const FIELD_NAME_MAPPING = {
+const FIELD_NAME_MAPPING: Record<string, string> = {
   prefLabel: "asset.label",
   altLabel: "term.metadata.altLabels.label",
   hiddenLabel: "term.metadata.hiddenLabels.label",
@@ -20,10 +20,16 @@ const FIELD_NAME_MAPPING = {
 
 const MatchInfo: React.FC<{ result: SearchResult }> = ({ result }) => {
   const { i18n } = useI18n();
+  const fieldTranslationKey = FIELD_NAME_MAPPING[result.snippetField];
+
+  // Do not render anything if the field is not recognized
+  if (!result.snippetField || !fieldTranslationKey) {
+    return null;
+  }
+
   return (
     <span className="italics">
-      {i18n("search.results.field")}{" "}
-      <b>{i18n(FIELD_NAME_MAPPING[result.snippetField])}</b>
+      {i18n("search.results.field")} <b>{i18n(fieldTranslationKey)}</b>
       {HIDDEN_FIELDS.includes(result.snippetField) ? (
         <>
           &nbsp;(

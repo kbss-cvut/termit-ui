@@ -43,17 +43,10 @@ interface NavbarSearchState {
 }
 
 /**
- * Routes for which the results preview popup should not be displayed.
+ * Routes where the navbar search bar should be completely hidden
+ * (because the search page has its own search input).
  */
-const ROUTES_WITHOUT_SEARCH_OVERLAY = [
-  Routes.search,
-  Routes.searchTerms,
-  Routes.searchVocabularies,
-  Routes.facetedSearch,
-  Routes.publicSearch,
-  Routes.publicSearchTerms,
-  Routes.publicSearchVocabularies,
-];
+const ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN = [Routes.search, Routes.publicSearch];
 
 function mapIndexedLanguages(languages?: string[]): Language[] {
   return Utils.sanitizeArray(languages)
@@ -120,21 +113,13 @@ export class NavbarSearch extends React.Component<
     const path = this.props.location.pathname;
     return (
       this.state.showResults &&
-      !ROUTES_WITHOUT_SEARCH_OVERLAY.find((r) => r.path === path)
+      !ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN.find((r) => r.path === path)
     );
   }
 
   public onOpenSearch = () => {
     Routing.transitionTo(
       isLoggedIn(this.props.user) ? Routes.search : Routes.publicSearch
-    );
-  };
-
-  public onOpenFacetedSearch = () => {
-    Routing.transitionTo(
-      isLoggedIn(this.props.user)
-        ? Routes.facetedSearch
-        : Routes.publicFacetedSearch
     );
   };
 
@@ -146,13 +131,6 @@ export class NavbarSearch extends React.Component<
   private doSearch = (searchString: string, language: string) => {
     this.closeResults();
     this.props.updateSearchFilter(searchString, language).then(() => {
-      const path = this.props.location.pathname;
-      if (
-        path.endsWith(Routes.publicFacetedSearch.path) ||
-        path.endsWith(Routes.facetedSearch.path)
-      ) {
-        this.openSearchView();
-      }
       this.setState({
         showResults: true,
         searchOriginNavbar: this.props.navbar,
@@ -160,8 +138,20 @@ export class NavbarSearch extends React.Component<
     });
   };
 
+  private isOnSearchPage(): boolean {
+    const path = this.props.location.pathname;
+    return ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN.some(
+      (r) => path === r.path || path.startsWith(r.path + "/")
+    );
+  }
+
   public render() {
     const { i18n, navbar } = this.props;
+
+    // Hide the navbar search bar when on the search page
+    if (navbar && this.isOnSearchPage()) {
+      return null;
+    }
 
     const searchIcon = (
       <InputGroupAddon
@@ -254,7 +244,6 @@ export class NavbarSearch extends React.Component<
           onClose={this.closeResults}
           targetId={`main-search-input${navbar ? "-navbar" : ""}`}
           onOpenSearch={this.openSearchView}
-          onOpenFacetedSearch={this.onOpenFacetedSearch}
         />
       );
     }

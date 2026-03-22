@@ -19,15 +19,12 @@ import Dashboard from "./Dashboard";
 import { FaUserSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import VocabularyManagementRoute from "./vocabulary/VocabularyManagementRoute";
-import SearchTypeTabs from "../search/SearchTypeTabs";
 import NavbarSearch from "../search/label/NavbarSearch";
-import SearchTerms from "../search/SearchTerms";
-import SearchVocabularies from "../search/SearchVocabularies";
-import Search from "../search/label/Search";
+import AdvancedSearch from "../search/AdvancedSearch";
 import "../MainView.scss";
 import { loadConfiguration, loadTermStates } from "../../action/AsyncActions";
+import SearchListenerHelper from "../search/SearchListenerHelper";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
-import FacetedSearch from "../search/facet/FacetedSearch";
 import Routing, { PUBLIC_LOGIN_ROUTE } from "../../util/Routing";
 import { getEnv } from "../../util/Constants";
 import ConfigParam from "../../util/ConfigParam";
@@ -86,6 +83,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     return (
       <div className="main-container">
+        <SearchListenerHelper />
         <Sidebar />
         <div
           className={classNames(
@@ -125,7 +123,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
               <Breadcrumbs className="breadcrumb-bar" separator="/" />
             )}
           </header>
-          <SearchTypeTabs />
           <Messages />
           <Container
             id="content-container"
@@ -141,24 +138,9 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                 component={VocabularyManagementRoute}
               />
               <BreadcrumbRoute
-                title={i18n("main.nav.searchTerms")}
-                path={Routes.publicSearchTerms.path}
-                component={SearchTerms}
-              />
-              <BreadcrumbRoute
-                title={i18n("main.nav.searchVocabularies")}
-                path={Routes.publicSearchVocabularies.path}
-                component={SearchVocabularies}
-              />
-              <BreadcrumbRoute
-                title={i18n("main.nav.facetedSearch")}
-                path={Routes.publicFacetedSearch.path}
-                component={FacetedSearch}
-              />
-              <BreadcrumbRoute
                 title={i18n("main.nav.search")}
                 path={Routes.publicSearch.path}
-                component={Search}
+                component={AdvancedSearch}
               />
               <Route component={Dashboard} />
             </Switch>

@@ -13,7 +13,6 @@ import { Route, RouteComponentProps, Switch, withRouter } from "react-router";
 import Messages from "./message/Messages";
 import NavbarSearch from "./search/label/NavbarSearch";
 import { ThunkDispatch } from "../util/Types";
-import SearchTypeTabs from "./search/SearchTypeTabs";
 import BreadcrumbRoute from "./breadcrumb/BreadcrumbRoute";
 import { loadUser } from "../action/AsyncUserActions";
 import Sidebar from "./sidebar/Sidebar";
@@ -31,6 +30,7 @@ import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import Breadcrumbs from "./breadcrumb/Breadcrumbs";
 import { loadTermStates } from "../action/AsyncActions";
 import { LongRunningTasksStatus } from "./main/LongRunningTasksStatus";
+import SearchListenerHelper from "./search/SearchListenerHelper";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -39,12 +39,7 @@ const VocabularyManagementRoute = React.lazy(
   () => import("./vocabulary/VocabularyManagementRoute")
 );
 const Statistics = React.lazy(() => import("./statistics/Statistics"));
-const Search = React.lazy(() => import("./search/label/Search"));
-const SearchVocabularies = React.lazy(
-  () => import("./search/SearchVocabularies")
-);
-const SearchTerms = React.lazy(() => import("./search/SearchTerms"));
-const FacetedSearch = React.lazy(() => import("./search/facet/FacetedSearch"));
+const AdvancedSearch = React.lazy(() => import("./search/AdvancedSearch"));
 
 interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
@@ -121,6 +116,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     return (
       <div className="main-container">
+        <SearchListenerHelper />
         <Sidebar />
         <div
           className={classNames(
@@ -156,7 +152,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
               <Breadcrumbs className="breadcrumb-bar" separator="/" />
             )}
           </header>
-          <SearchTypeTabs />
           <Messages />
           <Container
             id="content-container"
@@ -183,24 +178,9 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                   component={Statistics}
                 />
                 <BreadcrumbRoute
-                  title={i18n("main.nav.searchTerms")}
-                  path={Routes.searchTerms.path}
-                  component={SearchTerms}
-                />
-                <BreadcrumbRoute
-                  title={i18n("main.nav.searchVocabularies")}
-                  path={Routes.searchVocabularies.path}
-                  component={SearchVocabularies}
-                />
-                <BreadcrumbRoute
-                  title={i18n("main.nav.facetedSearch")}
-                  path={Routes.facetedSearch.path}
-                  component={FacetedSearch}
-                />
-                <BreadcrumbRoute
                   title={i18n("main.nav.search")}
                   path={Routes.search.path}
-                  component={Search}
+                  component={AdvancedSearch}
                 />
                 <BreadcrumbRoute
                   title={i18n("main.user-profile")}
