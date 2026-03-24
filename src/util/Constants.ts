@@ -140,6 +140,7 @@ const constants = {
 
   // Size of page fetched from server
   DEFAULT_PAGE_SIZE: 100,
+  MAX_PAGE_SIZE: 0x7fffffff, // This corresponds to Java Integer.MAX_VALUE
   // size of the page for change records in vocabulary activity tab
   VOCABULARY_CONTENT_HISTORY_LIMIT: 15,
 

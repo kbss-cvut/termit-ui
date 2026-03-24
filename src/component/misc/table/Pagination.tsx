@@ -19,7 +19,6 @@ interface PaginationProps {
 }
 
 const PAGE_SIZES = [10, 20, 30, 50];
-const INFINITE_PAGE = Number.MAX_SAFE_INTEGER;
 
 export const Pagination: React.FC<PaginationProps> = (props) => {
   const { i18n, formatMessage } = useI18n();
@@ -99,7 +98,10 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
                 {formatMessage("table.paging.pageSize.select", { pageSize: s })}
               </option>
             ))}
-            <option key={INFINITE_PAGE} value={INFINITE_PAGE}>
+            <option
+              key={Constants.MAX_PAGE_SIZE}
+              value={Constants.MAX_PAGE_SIZE}
+            >
               {i18n("table.paging.pageSize.select.all")}
             </option>
           </Select>
