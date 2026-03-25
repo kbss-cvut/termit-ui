@@ -4,9 +4,9 @@ import Routes from "./Routes";
  * Aggregated object of process.env and window.__config__ to allow dynamic configuration
  */
 const ENV = {
-  ...Object.keys(process.env).reduce<Record<string, string>>((acc, key) => {
-    const strippedKey = key.replace("REACT_APP_", "");
-    acc[strippedKey] = process.env[key]!;
+  ...Object.keys(import.meta.env).reduce<Record<string, string>>((acc, key) => {
+    const strippedKey = key.replace("VITE_", "");
+    acc[strippedKey] = import.meta.env[key]!;
     return acc;
   }, {}),
   ...(window as any).__config__,
@@ -14,7 +14,7 @@ const ENV = {
 
 /**
  * Helper to make sure that all envs are defined properly
- * @param name env variable name (without the REACT_APP prefix)
+ * @param name env variable name (without the VITE prefix)
  * @param defaultValue Default variable name
  */
 export function getEnv(name: string, defaultValue?: string): string {

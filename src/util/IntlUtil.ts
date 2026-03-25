@@ -4,26 +4,37 @@ import BrowserStorage from "./BrowserStorage";
 import Utils from "./Utils";
 import ISO6391 from "iso-639-1";
 
+import enMessages from "../i18n/en";
+import csMessages from "../i18n/cs";
+import deMessages from "../i18n/de";
+
+const messagesMap: Record<string, { locale: string, messages: Record<string, string> }> = {
+    en: enMessages,
+    cs: csMessages,
+    de: deMessages
+};
+
+
 export function loadInitialLocalizationData(): IntlData {
-  const prefLang = BrowserStorage.get(Constants.STORAGE_LANG_KEY);
-  const lang = prefLang ? prefLang : navigator.language;
-  const langObj = Object.values(Constants.LANG).find((loc) =>
-    loc.isoCode.some((v) => lang.startsWith(v))
-  );
-  if (langObj) {
-    setHtmlLanguage(langObj.locale);
-    return loadLocalizationData(langObj.isoCode[0]);
-  } else {
-    return loadLocalizationData(Constants.LANG.EN.locale);
-  }
+    const prefLang = BrowserStorage.get(Constants.STORAGE_LANG_KEY);
+    const lang = prefLang ? prefLang : navigator.language;
+    const langObj = Object.values(Constants.LANG).find((loc) =>
+        loc.isoCode.some((v) => lang.startsWith(v))
+    );
+    if (langObj) {
+        setHtmlLanguage(langObj.locale);
+        return loadLocalizationData(langObj.isoCode[0]);
+    } else {
+        return loadLocalizationData(Constants.LANG.EN.locale);
+    }
 }
 
 export function loadLocalizationData(code: string): IntlData {
-  return require(`../i18n/${code}`).default;
+    return messagesMap[code];
 }
 
 export function saveLanguagePreference(language: string): void {
-  BrowserStorage.set(Constants.STORAGE_LANG_KEY, language);
+    BrowserStorage.set(Constants.STORAGE_LANG_KEY, language);
 }
 
 /**
@@ -31,16 +42,16 @@ export function saveLanguagePreference(language: string): void {
  * @param language The language to set
  */
 export function setHtmlLanguage(language: string): void {
-  document.documentElement.lang = language;
+    document.documentElement.lang = language;
 }
 
 export function getShortLocale(language: string): string {
-  const i = language.indexOf("-");
-  if (i > 0) {
-    return language.substring(0, language.indexOf("-"));
-  } else {
-    return language;
-  }
+    const i = language.indexOf("-");
+    if (i > 0) {
+        return language.substring(0, language.indexOf("-"));
+    } else {
+        return language;
+    }
 }
 
 /**
@@ -51,23 +62,23 @@ export function getShortLocale(language: string): string {
  * @param object Object to examine
  */
 export function getLanguages(
-  multilingualAttributes: string[],
-  object?: any | null
+    multilingualAttributes: string[],
+    object?: any | null
 ) {
-  if (!object) {
-    return [];
-  }
-  const languages: Set<string> = new Set();
-  multilingualAttributes
-    .filter((att) => object[att])
-    .forEach((att) => {
-      Utils.sanitizeArray(object[att]).forEach((attValue) =>
-        Object.getOwnPropertyNames(attValue).forEach((n) => languages.add(n))
-      );
-    });
-  const langArr = Array.from(languages);
-  langArr.sort();
-  return langArr;
+    if (!object) {
+        return [];
+    }
+    const languages: Set<string> = new Set();
+    multilingualAttributes
+        .filter((att) => object[att])
+        .forEach((att) => {
+            Utils.sanitizeArray(object[att]).forEach((attValue) =>
+                Object.getOwnPropertyNames(attValue).forEach((n) => languages.add(n))
+            );
+        });
+    const langArr = Array.from(languages);
+    langArr.sort();
+    return langArr;
 }
 
 /**
@@ -81,16 +92,16 @@ export function getLanguages(
  * @param object Object to examine
  */
 export function getLanguagesWithRequired(
-  requiredLanguage: string,
-  multilingualAttributes: string[],
-  object?: any | null
+    requiredLanguage: string,
+    multilingualAttributes: string[],
+    object?: any | null
 ) {
-  const languages = getLanguages(multilingualAttributes, object);
-  languages.unshift(requiredLanguage);
-  if (languages.indexOf(requiredLanguage, 1) !== -1) {
-    languages.splice(languages.indexOf(requiredLanguage, 1), 1);
-  }
-  return languages;
+    const languages = getLanguages(multilingualAttributes, object);
+    languages.unshift(requiredLanguage);
+    if (languages.indexOf(requiredLanguage, 1) !== -1) {
+        languages.splice(languages.indexOf(requiredLanguage, 1), 1);
+    }
+    return languages;
 }
 
 /**
@@ -100,41 +111,41 @@ export function getLanguagesWithRequired(
  * @param language Language whose values to remove
  */
 export function removeTranslation(
-  multilingualAttributes: string[],
-  object: any,
-  language: string
+    multilingualAttributes: string[],
+    object: any,
+    language: string
 ) {
-  multilingualAttributes.forEach((att) => {
-    if (object[att]) {
-      delete object[att][language];
-    }
-  });
+    multilingualAttributes.forEach((att) => {
+        if (object[att]) {
+            delete object[att][language];
+        }
+    });
 }
 
 /**
  * Type representing language data in an asset language selector.
  */
 export interface Language {
-  code: string;
-  name: string;
-  nativeName: string;
+    code: string;
+    name: string;
+    nativeName: string;
 }
 
 function prioritizeLanguages(options: Language[], languages: string[]) {
-  languages.forEach((lang) => {
-    const ind = options.findIndex((v) => v.code === lang);
-    const option = options[ind];
-    options.splice(ind, 1);
-    options.unshift(option);
-  });
-  return options;
+    languages.forEach((lang) => {
+        const ind = options.findIndex((v) => v.code === lang);
+        const option = options[ind];
+        options.splice(ind, 1);
+        options.unshift(option);
+    });
+    return options;
 }
 
 const LANGUAGE_OPTIONS = prioritizeLanguages(
-  ISO6391.getLanguages(ISO6391.getAllCodes()),
-  Object.getOwnPropertyNames(Constants.LANG).map((lang) =>
-    getShortLocale(Constants.LANG[lang].locale)
-  )
+    ISO6391.getLanguages(ISO6391.getAllCodes()),
+    Object.getOwnPropertyNames(Constants.LANG).map((lang) =>
+        getShortLocale(Constants.LANG[lang].locale)
+    )
 );
 
 /**
@@ -143,7 +154,7 @@ const LANGUAGE_OPTIONS = prioritizeLanguages(
  * The languages are retrieved using the iso-639-1 JS library.
  */
 export function getLanguageOptions(): Language[] {
-  return LANGUAGE_OPTIONS;
+    return LANGUAGE_OPTIONS;
 }
 
 /**
@@ -153,5 +164,5 @@ export function getLanguageOptions(): Language[] {
  * @param code The short code to match e.g.: "cs"
  */
 export function getLanguageByShortCode(code: string): Language | undefined {
-  return LANGUAGE_OPTIONS.find((lang) => lang.code === code);
+    return LANGUAGE_OPTIONS.find((lang) => lang.code === code);
 }

@@ -14,7 +14,7 @@ import { loadTermSnapshots } from "../../../action/AsyncTermActions";
 import NotificationType from "../../../model/NotificationType";
 import { consumeNotification } from "../../../action/SyncActions";
 import SnapshotsTable from "../../snapshot/SnapshotsTable";
-import User from "src/model/User";
+import User from "../../../model/User";
 
 interface TermSnapshotsProps {
   asset: Term;

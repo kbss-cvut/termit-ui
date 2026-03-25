@@ -4,6 +4,7 @@
   "private": true,
   "homepage": ".",
   "license": "GPL-3.0-only",
+  "type": "module",
   "dependencies": {
     "@formatjs/intl-pluralrules": "5.4.6",
     "@formatjs/intl-relativetimeformat": "11.4.13",
@@ -47,7 +48,6 @@
     "react-redux": "^8.0.7",
     "react-router-dom": "^5.3.0",
     "react-router-redux": "^4.0.8",
-    "react-scripts": "5.0.1",
     "react-select": "5.10.2",
     "react-simplemde-editor": "^5.2.0",
     "react-spinners": "^0.17.0",
@@ -66,9 +66,9 @@
     "whatwg-mimetype": "3.0.0"
   },
   "scripts": {
-    "start": "craco start",
-    "start-mock-rest": "cross-env REACT_APP_MOCK_REST_API=true react-scripts start",
-    "build": "craco build",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "craco test --env=jsdom --testPathPattern='.*\\.test\\.tsx?'",
     "test-ci": "cross-env -CI=true react-scripts test -w 8 --env=jsdom --testPathPattern='.*\\.test\\.tsx?' --testResultsProcessor='jest-junit'",
     "eject": "react-scripts eject",
@@ -99,6 +99,7 @@
     "@types/redux-mock-store": "^1.0.3",
     "@types/uuid": "^10.0.0",
     "@types/whatwg-mimetype": "^2.1.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "axios-mock-adapter": "^2.1.0",
     "babel-plugin-macros": "2.8.0",
@@ -116,7 +117,9 @@
     "redux-mock-store": "^1.5.4",
     "sass": "^1.63.3",
     "source-map-explorer": "^2.5.3",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "vite": "^6.4.1",
+    "vite-plugin-svgr": "^4.5.0"
   },
   "eslintConfig": {
     "extends": [
