@@ -8,7 +8,7 @@ import {
 import RDFStatement from "../../../model/RDFStatement";
 import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import CustomInput from "../../misc/CustomInput";
 import React from "react";
 import Ajax from "../../../util/Ajax";
@@ -17,23 +17,34 @@ import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Input } from "reactstrap";
 import { ReactWrapper } from "enzyme";
+import {Mock, vi} from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn(),
+        useDispatch: vi.fn(),
+    };
+});
 
-jest.mock("../../../action/AsyncVocabularyActions", () => ({
-  ...jest.requireActual("../../../action/AsyncVocabularyActions"),
-  getVocabularyRelations: jest.fn(),
-  getVocabularyTermsRelations: jest.fn(),
-}));
+vi.mock("../../../action/AsyncVocabularyActions", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        getVocabularyRelations: vi.fn(),
+        getVocabularyTermsRelations: vi.fn(),
+    };
+});
 
-jest.mock("../../../action/AsyncActions", () => ({
-  ...jest.requireActual("../../../action/AsyncActions"),
-  loadTermInfoByIri: () => () => Promise.resolve(null),
-  getLabel: () => () => Promise.resolve(null),
-}));
+vi.mock("../../../action/AsyncActions", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        loadTermInfoByIri: () => () => Promise.resolve(null),
+        getLabel: () => () => Promise.resolve(null),
+    };
+});
 
 describe("RemoveVocabularyDialog", () => {
   const vocabulary = Generator.generateVocabulary();
@@ -50,12 +61,12 @@ describe("RemoveVocabularyDialog", () => {
 
   beforeEach(() => {
     vocabulary.termCount = 5;
-    onCancel = jest.fn();
-    onSubmit = jest.fn();
-    (getVocabularyRelations as jest.Mock).mockResolvedValue([]);
-    (getVocabularyTermsRelations as jest.Mock).mockResolvedValue([]);
+    onCancel = vi.fn();
+    onSubmit = vi.fn();
+    (getVocabularyRelations as Mock).mockResolvedValue([]);
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([]);
 
-    (useDispatch as jest.Mock).mockReturnValue((arg: any) => {
+    (useDispatch as Mock).mockReturnValue((arg: any) => {
       if (arg instanceof Promise) {
         return arg;
       }
@@ -64,14 +75,15 @@ describe("RemoveVocabularyDialog", () => {
       }
       return arg;
     });
+    (useSelector as Mock).mockReturnValue({vocabulary});
 
-    Ajax.get = jest.fn().mockResolvedValue(null);
+    Ajax.get = vi.fn().mockResolvedValue(null);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("Disables Remove button when a vocabulary relation exists", async () => {
-    (getVocabularyRelations as jest.Mock).mockResolvedValue([rdfStatement]);
+    (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
     let wrapper = await mount();
 
     const cancelDialog = wrapper.find(ConfirmCancelDialog);
@@ -79,7 +91,7 @@ describe("RemoveVocabularyDialog", () => {
   });
 
   it("Disables Remove button when a vocabulary term relation exists", async () => {
-    (getVocabularyTermsRelations as jest.Mock).mockResolvedValue([
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([
       rdfStatement,
     ]);
     let wrapper = await mount();
@@ -89,8 +101,8 @@ describe("RemoveVocabularyDialog", () => {
   });
 
   it("Disables Remove button when a vocabulary and a term relation exists", async () => {
-    (getVocabularyRelations as jest.Mock).mockResolvedValue([rdfStatement]);
-    (getVocabularyTermsRelations as jest.Mock).mockResolvedValue([
+    (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([
       rdfStatement,
     ]);
     let wrapper = await mount();
@@ -115,7 +127,7 @@ describe("RemoveVocabularyDialog", () => {
   });
 
   it("Hides input for vocabulary name when a vocabulary relation exists", async () => {
-    (getVocabularyRelations as jest.Mock).mockResolvedValue([rdfStatement]);
+    (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
     let wrapper = await mount();
 
     const input = wrapper.find(CustomInput);
@@ -123,7 +135,7 @@ describe("RemoveVocabularyDialog", () => {
   });
 
   it("Hides input for vocabulary name when a term relation exists", async () => {
-    (getVocabularyTermsRelations as jest.Mock).mockResolvedValue([
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([
       rdfStatement,
     ]);
     let wrapper = await mount();
@@ -132,8 +144,8 @@ describe("RemoveVocabularyDialog", () => {
     expect(input.exists()).toBeFalsy();
   });
   it("Hides input for vocabulary name when a vocabulary and a term relation exists", async () => {
-    (getVocabularyRelations as jest.Mock).mockResolvedValue([rdfStatement]);
-    (getVocabularyTermsRelations as jest.Mock).mockResolvedValue([
+    (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([
       rdfStatement,
     ]);
     let wrapper = await mount();

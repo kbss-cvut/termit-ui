@@ -4,14 +4,14 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Button } from "reactstrap";
 import BadgeButton from "../BadgeButton";
 
-jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
-jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
+vi.mock("../../misc/HelpIcon", () => ({default: () => <span>Help</span>}));
+vi.mock("../../misc/MultilingualIcon", () => ({default: () => <span>Multilingual</span>}));
 
 describe("ValueListEdit", () => {
   let onChange: (list: string[]) => void;
 
   beforeEach(() => {
-    onChange = jest.fn();
+    onChange = vi.fn();
   });
 
   it("adds current input value to list and invokes onChange on add click", () => {

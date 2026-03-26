@@ -8,12 +8,12 @@ import { ResetPassword } from "../ResetPassword";
 import { resetPassword } from "../../../action/AsyncUserActions";
 import Message from "../../../model/Message";
 
-jest.mock("../../../action/AsyncUserActions", () => ({
-  ...jest.requireActual("../../../action/AsyncUserActions"),
-  resetPassword: jest.fn(),
+vi.mock("../../../action/AsyncUserActions", () => ({
+  ...vi.importActual("../../../action/AsyncUserActions"),
+  resetPassword: vi.fn(),
 }));
 
-const mockedResetPassword = jest.mocked(resetPassword, true);
+const mockedResetPassword = vi.mocked(resetPassword, true);
 
 describe("ResetPassword", () => {
   beforeEach(() => {
@@ -40,11 +40,11 @@ describe("ResetPassword", () => {
     const passwordConfirmationInput = () =>
       wrapper.find('input[name="newPassword-confirm"]');
     const isAnyEmpty = () =>
-      passwordInput().props().value == EMPTY_STRING ||
-      passwordConfirmationInput().props().value == EMPTY_STRING;
+      passwordInput().props().value === EMPTY_STRING ||
+      passwordConfirmationInput().props().value === EMPTY_STRING;
     expect(isAnyEmpty()).toBeTruthy();
-    expect(passwordInput().props().value == EMPTY_STRING);
-    expect(passwordConfirmationInput().props().value == EMPTY_STRING);
+    expect(passwordInput().props().value === EMPTY_STRING);
+    expect(passwordConfirmationInput().props().value === EMPTY_STRING);
     expect(button().props().disabled).toBeTruthy();
 
     changeInputValue(passwordInput(), PASSWORD);

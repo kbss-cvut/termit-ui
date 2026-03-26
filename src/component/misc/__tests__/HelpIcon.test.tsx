@@ -2,7 +2,7 @@ import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil"
 import HelpIcon from "../HelpIcon";
 import { Popover } from "reactstrap";
 
-jest.mock("popper.js");
+vi.mock("popper.js");
 
 describe("HelpIcon", () => {
   it("shows help popover on mouse over help icon", () => {

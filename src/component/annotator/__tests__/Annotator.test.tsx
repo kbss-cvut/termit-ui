@@ -36,11 +36,12 @@ import {
   AnnotationOrigin,
 } from "../../../model/AnnotatorLegendFilter";
 import { AnnotatorLegendFilterAction } from "../../../action/ActionType";
+import type {Mock} from "vitest";
 
-jest.mock("../../misc/AssetIriLink", () => () => <span>AssetIriLink</span>);
-jest.mock("../HighlightTermOccurrencesButton", () => () => (
+vi.mock("../../misc/AssetIriLink", () => ({default: () => <span>AssetIriLink</span>}));
+vi.mock("../HighlightTermOccurrencesButton", () => ({default:  () => (
   <button>Highlight terms</button>
-));
+)}));
 
 describe("Annotator", () => {
   const fileIri = VocabularyUtils.create(Generator.generateUri());
@@ -77,14 +78,14 @@ describe("Annotator", () => {
 
   beforeEach(() => {
     mockedCallbackProps = {
-      onUpdate: jest.fn().mockResolvedValue(undefined),
-      publishMessage: jest.fn(),
-      setTermDefinitionSource: jest.fn().mockResolvedValue(null),
-      updateTerm: jest.fn().mockResolvedValue({}),
-      approveTermOccurrence: jest.fn().mockResolvedValue({}),
-      removeTermOccurrence: jest.fn().mockResolvedValue({}),
-      saveTermOccurrence: jest.fn().mockResolvedValue({}),
-      setAnnotatorLegendFilter: jest.fn().mockResolvedValue({}),
+      onUpdate: vi.fn().mockResolvedValue(undefined),
+      publishMessage: vi.fn(),
+      setTermDefinitionSource: vi.fn().mockResolvedValue(null),
+      updateTerm: vi.fn().mockResolvedValue({}),
+      approveTermOccurrence: vi.fn().mockResolvedValue({}),
+      removeTermOccurrence: vi.fn().mockResolvedValue({}),
+      saveTermOccurrence: vi.fn().mockResolvedValue({}),
+      setAnnotatorLegendFilter: vi.fn().mockResolvedValue({}),
     };
     user = Generator.generateUser();
     file = new File({
@@ -231,12 +232,12 @@ describe("Annotator", () => {
 
     it("scrolls to and highlights annotation identified by specified selector", () => {
       const element = document.createElement("div");
-      HtmlDomUtils.findAnnotationElementBySelector = jest
+      HtmlDomUtils.findAnnotationElementBySelector = vi
         .fn()
         .mockReturnValue(element);
-      HtmlDomUtils.addClassToElement = jest.fn();
-      HtmlDomUtils.removeClassFromElement = jest.fn();
-      element.scrollIntoView = jest.fn();
+      HtmlDomUtils.addClassToElement = vi.fn();
+      HtmlDomUtils.removeClassFromElement = vi.fn();
+      element.scrollIntoView = vi.fn();
       shallow<Annotator>(
         <Annotator
           fileIri={fileIri}
@@ -261,13 +262,13 @@ describe("Annotator", () => {
 
     it("removes highlight from highlighted annotation after specified timeout", () => {
       const element = document.createElement("div");
-      HtmlDomUtils.findAnnotationElementBySelector = jest
+      HtmlDomUtils.findAnnotationElementBySelector = vi
         .fn()
         .mockReturnValue(element);
-      HtmlDomUtils.addClassToElement = jest.fn();
-      HtmlDomUtils.removeClassFromElement = jest.fn();
-      element.scrollIntoView = jest.fn();
-      jest.useFakeTimers();
+      HtmlDomUtils.addClassToElement = vi.fn();
+      HtmlDomUtils.removeClassFromElement = vi.fn();
+      element.scrollIntoView = vi.fn();
+      vi.useFakeTimers();
       shallow<Annotator>(
         <Annotator
           fileIri={fileIri}
@@ -279,7 +280,7 @@ describe("Annotator", () => {
           {...intlFunctions()}
         />
       );
-      jest.runAllTimers();
+      vi.runAllTimers();
       expect(HtmlDomUtils.removeClassFromElement).toHaveBeenCalledWith(
         element,
         "annotator-highlighted-annotation"
@@ -287,12 +288,12 @@ describe("Annotator", () => {
     });
 
     it("shows error message when annotation for highlighting cannot be found", () => {
-      HtmlDomUtils.findAnnotationElementBySelector = jest
+      HtmlDomUtils.findAnnotationElementBySelector = vi
         .fn()
         .mockImplementation(() => {
           throw new Error("Unable to find annotation.");
         });
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       shallow<Annotator>(
         <Annotator
           fileIri={fileIri}
@@ -304,19 +305,19 @@ describe("Annotator", () => {
           {...intlFunctions()}
         />
       );
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
 
     it("sets sticky annotation id to highlighted annotation", () => {
       const about = "_:117";
       const element = document.createElement("div");
       element.setAttribute("about", about);
-      HtmlDomUtils.findAnnotationElementBySelector = jest
+      HtmlDomUtils.findAnnotationElementBySelector = vi
         .fn()
         .mockReturnValue(element);
-      HtmlDomUtils.addClassToElement = jest.fn();
-      HtmlDomUtils.removeClassFromElement = jest.fn();
-      element.scrollIntoView = jest.fn();
+      HtmlDomUtils.addClassToElement = vi.fn();
+      HtmlDomUtils.removeClassFromElement = vi.fn();
+      element.scrollIntoView = vi.fn();
       const wrapper = shallow<Annotator>(
         <Annotator
           fileIri={fileIri}
@@ -334,7 +335,7 @@ describe("Annotator", () => {
   });
 
   // todo rewrite it with xpath-range functions
-  xit("renders annotation over selected text on mouseup event", () => {
+  it.skip("renders annotation over selected text on mouseup event", () => {
     const div = document.createElement("div");
     document.body.appendChild(div);
     const wrapper = mountWithIntl(
@@ -370,7 +371,7 @@ describe("Annotator", () => {
         property: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
         typeof: VocabularyUtils.TERM_OCCURRENCE,
       };
-      HtmlDomUtils.generateVirtualElement = jest.fn();
+      HtmlDomUtils.generateVirtualElement = vi.fn();
     });
 
     it("stores annotation from which the new term is being created for later reference", () => {
@@ -401,10 +402,10 @@ describe("Annotator", () => {
         />
       );
       wrapper.instance().setState({ newTermLabelAnnotation: annotation });
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue({ attribs: { ...annotation } });
-      AnnotationDomHelper.removeAnnotation = jest.fn();
+      AnnotationDomHelper.removeAnnotation = vi.fn();
 
       wrapper.instance().onCloseCreate();
       expect(wrapper.state().newTermLabelAnnotation).not.toBeDefined();
@@ -428,10 +429,10 @@ describe("Annotator", () => {
       );
       annotation.score = "1.0";
       wrapper.instance().setState({ newTermLabelAnnotation: annotation });
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotation);
-      AnnotationDomHelper.removeAnnotation = jest.fn();
+      AnnotationDomHelper.removeAnnotation = vi.fn();
 
       wrapper.instance().onCloseCreate();
       // Workaround for not.toHaveBeenCalled throwing an error
@@ -451,10 +452,10 @@ describe("Annotator", () => {
       );
       annotation.resource = Generator.generateUri();
       wrapper.instance().setState({ newTermLabelAnnotation: annotation });
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotation);
-      AnnotationDomHelper.removeAnnotation = jest.fn();
+      AnnotationDomHelper.removeAnnotation = vi.fn();
 
       wrapper.instance().onCloseCreate();
       // Workaround for not.toHaveBeenCalled throwing an error
@@ -484,14 +485,14 @@ describe("Annotator", () => {
         newTermLabelAnnotation: labelAnnotation,
         newTermDefinitionAnnotation: definitionAnnotation,
       });
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockImplementation((dom: any, annotationId: string) => {
           return annotationId === labelAnnotation.about
             ? { attribs: { ...labelAnnotation } }
             : { attribs: { ...definitionAnnotation } };
         });
-      AnnotationDomHelper.removeAnnotation = jest.fn();
+      AnnotationDomHelper.removeAnnotation = vi.fn();
 
       wrapper.instance().onCloseCreate();
       expect(wrapper.state().newTermDefinitionAnnotation).not.toBeDefined();
@@ -520,7 +521,7 @@ describe("Annotator", () => {
       };
       wrapper.instance().setState({ newTermLabelAnnotation: annotation });
       const originalContent = wrapper.find(AnnotatorContent).prop("content");
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
       const newTerm = Generator.generateTerm(vocabularyIri.toString());
@@ -561,7 +562,7 @@ describe("Annotator", () => {
         },
       };
 
-      HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
+      HtmlDomUtils.getSelectionRange = vi.fn().mockReturnValue(range);
     });
 
     it("displays selection purpose dialog at an anchor at the beginning of the selection", () => {
@@ -572,10 +573,10 @@ describe("Annotator", () => {
         removeAllRanges: () => null,
         addRange: (r: Range) => (range = r),
       });
-      window.getComputedStyle = jest.fn().mockReturnValue({
+      window.getComputedStyle = vi.fn().mockReturnValue({
         getPropertyValue: () => "16px",
       });
-      HtmlDomUtils.isInPopup = jest.fn().mockReturnValue(false);
+      HtmlDomUtils.isInPopup = vi.fn().mockReturnValue(false);
       const wrapper = mountWithIntl(
         withWebSocket(
           <MemoryRouter>
@@ -596,7 +597,7 @@ describe("Annotator", () => {
     });
 
     it("closes selection purpose dialog when no selection is made", () => {
-      window.getComputedStyle = jest.fn().mockReturnValue({
+      window.getComputedStyle = vi.fn().mockReturnValue({
         getPropertyValue: () => "16px",
       });
       const wrapper = mountWithIntl(
@@ -615,7 +616,7 @@ describe("Annotator", () => {
       );
       wrapper.find("#annotator").simulate("mouseUp");
       expect(wrapper.find(SelectionPurposeDialog).props().show).toBeTruthy();
-      HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(null);
+      HtmlDomUtils.getSelectionRange = vi.fn().mockReturnValue(null);
       wrapper.find("#annotator").simulate("mouseUp");
       expect(wrapper.find(SelectionPurposeDialog).props().show).toBeFalsy();
     });
@@ -627,7 +628,7 @@ describe("Annotator", () => {
         rangeCount: 1,
         getRangeAt: () => range,
       });
-      window.getComputedStyle = jest.fn().mockReturnValue({
+      window.getComputedStyle = vi.fn().mockReturnValue({
         getPropertyValue: () => "16px",
       });
       const wrapper = mountWithIntl(
@@ -681,13 +682,13 @@ describe("Annotator", () => {
           {...intlFunctions()}
         />
       );
-      HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
+      HtmlDomUtils.getSelectionRange = vi.fn().mockReturnValue(range);
       const text = "12345 54321";
-      HtmlDomUtils.getRangeContent = jest.fn().mockReturnValue({
+      HtmlDomUtils.getRangeContent = vi.fn().mockReturnValue({
         length: 1,
         item: () => ({ nodeType: Node.TEXT_NODE, textContent: text }),
       });
-      HtmlDomUtils.replaceRange = jest.fn().mockReturnValue(generalHtmlContent);
+      HtmlDomUtils.replaceRange = vi.fn().mockReturnValue(generalHtmlContent);
       wrapper.instance().createTermFromSelection();
       wrapper.update();
       expect(wrapper.instance().state.stickyAnnotationId).toEqual("");
@@ -732,13 +733,13 @@ describe("Annotator", () => {
         />
       );
       wrapper.setState({ newTermLabelAnnotation: annotation });
-      HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
+      HtmlDomUtils.getSelectionRange = vi.fn().mockReturnValue(range);
       const text = "12345 54321";
-      HtmlDomUtils.getRangeContent = jest.fn().mockReturnValue({
+      HtmlDomUtils.getRangeContent = vi.fn().mockReturnValue({
         length: 1,
         item: () => ({ nodeType: Node.TEXT_NODE, textContent: text }),
       });
-      HtmlDomUtils.replaceRange = jest.fn().mockReturnValue(generalHtmlContent);
+      HtmlDomUtils.replaceRange = vi.fn().mockReturnValue(generalHtmlContent);
       wrapper.instance().markTermDefinition();
       wrapper.update();
       expect(wrapper.find(CreateTermFromAnnotation).prop("show")).toBeTruthy();
@@ -757,13 +758,13 @@ describe("Annotator", () => {
         />
       );
       wrapper.setState({ newTermLabelAnnotation: annotation });
-      HtmlDomUtils.getSelectionRange = jest.fn().mockReturnValue(range);
+      HtmlDomUtils.getSelectionRange = vi.fn().mockReturnValue(range);
       const text = "12345 54321";
-      HtmlDomUtils.getRangeContent = jest.fn().mockReturnValue({
+      HtmlDomUtils.getRangeContent = vi.fn().mockReturnValue({
         length: 1,
         item: () => ({ nodeType: Node.TEXT_NODE, textContent: text }),
       });
-      HtmlDomUtils.replaceRange = jest.fn().mockReturnValue(generalHtmlContent);
+      HtmlDomUtils.replaceRange = vi.fn().mockReturnValue(generalHtmlContent);
       wrapper.instance().markTermDefinition();
       wrapper.update();
       expect(wrapper.instance().state.stickyAnnotationId).toEqual("");
@@ -798,7 +799,7 @@ describe("Annotator", () => {
     };
 
     beforeEach(() => {
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockImplementation((dom, about) =>
           about === labelAnnotation.about ? labelNode : defNode
@@ -864,7 +865,7 @@ describe("Annotator", () => {
       wrapper.instance().assignNewTerm(term);
       return Promise.resolve().then(() => {
         expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
-        const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)
+        const src = (mockedCallbackProps.setTermDefinitionSource as Mock)
           .mock.calls[0][0];
         expect(src.term).toEqual(term);
         expect(src.target.source.iri).toEqual(fileIri.toString());
@@ -904,7 +905,7 @@ describe("Annotator", () => {
           {...intlFunctions()}
         />
       );
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
       wrapper.setState({
@@ -913,7 +914,7 @@ describe("Annotator", () => {
       await wrapper.instance().onSaveTermDefinition(term);
 
       expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
-      const src = (mockedCallbackProps.setTermDefinitionSource as jest.Mock)
+      const src = (mockedCallbackProps.setTermDefinitionSource as Mock)
         .mock.calls[0][0];
       expect(src).toBeInstanceOf(TermOccurrence);
       expect(src.term).toEqual(term);
@@ -936,7 +937,7 @@ describe("Annotator", () => {
         />
       );
       const originalContent = wrapper.find(AnnotatorContent).prop("content");
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
       wrapper.setState({
@@ -952,13 +953,13 @@ describe("Annotator", () => {
     });
 
     it("removes previously created annotation when term definition assignment fails", async () => {
-      mockedCallbackProps.setTermDefinitionSource = jest
+      mockedCallbackProps.setTermDefinitionSource = vi
         .fn()
         .mockRejectedValue({});
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
-      AnnotationDomHelper.removeAnnotation = jest.fn();
+      AnnotationDomHelper.removeAnnotation = vi.fn();
       const wrapper = shallow<Annotator>(
         <Annotator
           fileIri={fileIri}
@@ -992,7 +993,7 @@ describe("Annotator", () => {
           {...intlFunctions()}
         />
       );
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
       wrapper.setState({
@@ -1030,7 +1031,7 @@ describe("Annotator", () => {
           typeof: annotation.typeof,
         },
       };
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
       wrapper.instance().onRemove(annotation.about);
@@ -1065,7 +1066,7 @@ describe("Annotator", () => {
           typeof: annotation.typeof,
         },
       };
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
       wrapper.instance().onRemove(annotation.about);
@@ -1091,7 +1092,7 @@ describe("Annotator", () => {
           typeof: annotation.typeof,
         },
       };
-      AnnotationDomHelper.findAnnotation = jest
+      AnnotationDomHelper.findAnnotation = vi
         .fn()
         .mockReturnValue(annotationNode);
     });

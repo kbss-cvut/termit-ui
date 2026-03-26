@@ -77,7 +77,7 @@ Testing functional components that use [React Hooks](https://reactjs.org/docs/ho
 of shallow rendering. Even then, there are some quirks regarding Promise-based methods. See `VocabularyManagement.test.tsx` for example working setup.
 
 Getting shallow rendering to work with hooks is even more complicated, because the `useEffect` hook is not called by default by the shallow renderer. There is a library
-that fixes this issue ([jest-react-hooks-shallow](https://github.com/mikeborozdin/jest-react-hooks-shallow), however, it introduces another problem with mount-based tests.
+that fixes this issue ([vitest-react-hooks-shallow](https://github.com/ecmarsh/vitest-react-hooks-shallow), however, it introduces another problem with mount-based tests.
 To fix this, the library is disabled by default (see its setup in `setupShallowHooks.ts`) and has to be enabled per test/suite. See `TermOccurrenceAnnotation.test.tsx` for
 example setup.
 

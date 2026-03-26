@@ -11,10 +11,13 @@ import {
 } from "../../../../__tests__/environment/Environment";
 import { act } from "react-dom/test-utils";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useDispatch: vi.fn(),
+    };
+});
 
 describe("FileContentActions", () => {
   let file: TermItFile;
@@ -27,14 +30,14 @@ describe("FileContentActions", () => {
       iri: Generator.generateUri(),
       label: "test.html",
     });
-    onDownload = jest.fn();
-    onDownloadOriginal = jest.fn();
+    onDownload = vi.fn();
+    onDownloadOriginal = vi.fn();
   });
 
   it("does not display actions dropdown when file has no content", async () => {
-    jest
+    vi
       .spyOn(Redux, "useDispatch")
-      .mockReturnValue(jest.fn().mockResolvedValue(null));
+      .mockReturnValue(vi.fn().mockResolvedValue(null));
     const wrapper = mountWithIntl(
       <FileContentActions
         file={file}
@@ -50,9 +53,9 @@ describe("FileContentActions", () => {
   });
 
   it("displays actions dropdown for file with content type", async () => {
-    jest
+    vi
       .spyOn(Redux, "useDispatch")
-      .mockReturnValue(jest.fn().mockResolvedValue(Constants.HTML_MIME_TYPE));
+      .mockReturnValue(vi.fn().mockResolvedValue(Constants.HTML_MIME_TYPE));
     const wrapper = mountWithIntl(
       <FileContentActions
         file={file}

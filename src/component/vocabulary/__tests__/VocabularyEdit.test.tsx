@@ -9,8 +9,9 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import Document from "../../../model/Document";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import type {Mock} from "vitest";
 
-jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
+vi.mock("../../misc/MarkdownEditor", () => ({default: () => <div>Editor</div>}));
 
 describe("VocabularyEdit", () => {
   let onSave: (vocabulary: Vocabulary) => void;
@@ -19,9 +20,9 @@ describe("VocabularyEdit", () => {
   let vocabulary: Vocabulary;
 
   beforeEach(() => {
-    onSave = jest.fn();
-    onDocumentSave = jest.fn();
-    onCancel = jest.fn();
+    onSave = vi.fn();
+    onDocumentSave = vi.fn();
+    onCancel = vi.fn();
     vocabulary = new Vocabulary({
       primaryLanguage: Constants.DEFAULT_LANGUAGE,
       iri: Generator.generateUri(),
@@ -37,8 +38,8 @@ describe("VocabularyEdit", () => {
         saveDocument={onDocumentSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
-        publishMessage={jest.fn()}
+        selectLanguage={vi.fn()}
+        publishMessage={vi.fn()}
         {...intlFunctions()}
       />
     );
@@ -50,7 +51,7 @@ describe("VocabularyEdit", () => {
     wrapper.instance().onChange({ comment: newDescription });
     wrapper.instance().onSave();
     expect(onSave).toHaveBeenCalled();
-    const arg = (onSave as jest.Mock).mock.calls[0][0];
+    const arg = (onSave as Mock).mock.calls[0][0];
     expect(arg).not.toEqual(vocabulary);
     expect(arg.iri).toEqual(vocabulary.iri);
     expect(arg.label).toEqual(newName);
@@ -64,8 +65,8 @@ describe("VocabularyEdit", () => {
         saveDocument={onDocumentSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
-        publishMessage={jest.fn()}
+        selectLanguage={vi.fn()}
+        publishMessage={vi.fn()}
         {...intlFunctions()}
       />
     );
@@ -83,15 +84,15 @@ describe("VocabularyEdit", () => {
         saveDocument={onDocumentSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
-        publishMessage={jest.fn()}
+        selectLanguage={vi.fn()}
+        publishMessage={vi.fn()}
         {...intlFunctions()}
       />
     );
     const updatedProperties = new Map([[property, ["test1", "test2"]]]);
     wrapper.instance().setState({ unmappedProperties: updatedProperties });
     wrapper.instance().onSave();
-    const result: Vocabulary = (onSave as jest.Mock).mock.calls[0][0];
+    const result: Vocabulary = (onSave as Mock).mock.calls[0][0];
     expect(result.unmappedProperties).toEqual(updatedProperties);
     expect(result[property]).toBeDefined();
     expect(result[property]).toEqual(updatedProperties.get(property));
@@ -105,8 +106,8 @@ describe("VocabularyEdit", () => {
         saveDocument={onDocumentSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
-        publishMessage={jest.fn()}
+        selectLanguage={vi.fn()}
+        publishMessage={vi.fn()}
         {...intlFunctions()}
       />
     );
@@ -128,8 +129,8 @@ describe("VocabularyEdit", () => {
         saveDocument={onDocumentSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
-        publishMessage={jest.fn()}
+        selectLanguage={vi.fn()}
+        publishMessage={vi.fn()}
         {...intlFunctions()}
       />
     );
@@ -157,8 +158,8 @@ describe("VocabularyEdit", () => {
         saveDocument={onDocumentSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
-        publishMessage={jest.fn()}
+        selectLanguage={vi.fn()}
+        publishMessage={vi.fn()}
         {...intlFunctions()}
       />
     );

@@ -12,6 +12,7 @@ import { mock as stompMock, StompSessionProvider } from "react-stomp-hooks";
 import TimeAgo from "javascript-time-ago";
 import IntlData from "../../model/IntlData";
 import { WebSocketWrapper } from "../../WebSocketApp";
+import {vi} from "vitest";
 
 export const mockStore = configureMockStore<TermItState>([thunk])(
   new TermItState()
@@ -68,7 +69,7 @@ export function flushPromises(): Promise<void> {
  * @param selection The selection object to return
  */
 export function mockWindowSelection(selection: object) {
-  window.getSelection = jest.fn().mockImplementation(() => {
+  window.getSelection = vi.fn().mockImplementation(() => {
     return Object.assign({}, selection);
   });
 }

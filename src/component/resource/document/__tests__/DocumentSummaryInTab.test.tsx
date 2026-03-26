@@ -1,17 +1,22 @@
 import Generator from "../../../../__tests__/environment/Generator";
 import Document from "../../../../model/Document";
-import { shallow } from "enzyme";
+import {shallow} from "enzyme";
 import DocumentSummary from "../DocumentSummary";
 import * as redux from "react-redux";
-import { ThunkDispatch } from "../../../../util/Types";
+import {ThunkDispatch} from "../../../../util/Types";
 import * as Actions from "../../../../action/AsyncActions";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import DocumentFiles from "../DocumentFiles";
+import type {Mock} from "vitest";
+import AccessLevel from "../../../../model/acl/AccessLevel";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useDispatch: vi.fn(),
+    };
+});
 
 describe("DocumentSummaryInTab", () => {
   let document: Document;
@@ -23,15 +28,15 @@ describe("DocumentSummaryInTab", () => {
     document = new Document(
       Object.assign(Generator.generateAssetData("Test document"), { files: [] })
     );
-    onChange = jest.fn();
-    fakeDispatch = jest.fn().mockResolvedValue({});
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    onChange = vi.fn();
+    fakeDispatch = vi.fn().mockResolvedValue({});
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
   });
 
   it("reloads document when file was added to it", () => {
-    jest.spyOn(Actions, "loadResource");
+    vi.spyOn(Actions, "loadResource");
     const wrapper = shallow(
-      <DocumentSummary onChange={onChange} document={document} />
+      <DocumentSummary onChange={onChange} document={document} accessLevel={AccessLevel.WRITE} />
     );
     const files = wrapper.find(DocumentFiles);
     (files.props() as any).onFileAdded();
@@ -41,9 +46,9 @@ describe("DocumentSummaryInTab", () => {
   });
 
   it("reloads document when file was removed from it", () => {
-    jest.spyOn(Actions, "loadResource");
+    vi.spyOn(Actions, "loadResource");
     const wrapper = shallow(
-      <DocumentSummary onChange={onChange} document={document} />
+      <DocumentSummary onChange={onChange} document={document} accessLevel={AccessLevel.WRITE} />
     );
     const files = wrapper.find(DocumentFiles);
     (files.props() as any).onFileRemoved();

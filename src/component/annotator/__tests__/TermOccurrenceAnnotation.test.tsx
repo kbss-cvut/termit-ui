@@ -1,17 +1,12 @@
 import Term from "../../../model/Term";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
-import { TermOccurrenceAnnotation } from "../TermOccurrenceAnnotation";
-import { shallow } from "enzyme";
+import {intlFunctions, mockUseI18n,} from "../../../__tests__/environment/IntlUtil";
+import {TermOccurrenceAnnotation} from "../TermOccurrenceAnnotation";
+import {shallow} from "enzyme";
 import SimplePopupWithActions from "../SimplePopupWithActions";
-import {
-  AnnotationClass,
-  AnnotationOrigin,
-} from "../../../model/AnnotatorLegendFilter";
+import {AnnotationClass, AnnotationOrigin,} from "../../../model/AnnotatorLegendFilter";
 import Generator from "../../../__tests__/environment/Generator";
-import { withHooks } from "jest-react-hooks-shallow";
+import {withHooks} from "vitest-react-hooks-shallow";
+import AccessLevel from "../../../model/acl/AccessLevel";
 
 describe("TermOccurrenceAnnotation", () => {
   const text = "mesta";
@@ -33,11 +28,11 @@ describe("TermOccurrenceAnnotation", () => {
 
   beforeEach(() => {
     actions = {
-      onRemove: jest.fn(),
-      onSelectTerm: jest.fn(),
-      onToggleDetailOpen: jest.fn(),
-      onCreateTerm: jest.fn(),
-      onClose: jest.fn(),
+      onRemove: vi.fn(),
+      onSelectTerm: vi.fn(),
+      onToggleDetailOpen: vi.fn(),
+      onCreateTerm: vi.fn(),
+      onClose: vi.fn(),
     };
     mockUseI18n();
   });
@@ -52,6 +47,7 @@ describe("TermOccurrenceAnnotation", () => {
         annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
         annotationOrigin={AnnotationOrigin.PROPOSED}
         isOpen={true}
+        accessLevel={AccessLevel.WRITE}
       />
     );
     const buttons = wrapper.find(SimplePopupWithActions).prop("actions");
@@ -71,6 +67,7 @@ describe("TermOccurrenceAnnotation", () => {
           annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
           annotationOrigin={AnnotationOrigin.PROPOSED}
           isOpen={true}
+          accessLevel={AccessLevel.WRITE}
         />
       );
       const term = Generator.generateTerm();

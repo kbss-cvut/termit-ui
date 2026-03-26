@@ -15,21 +15,22 @@ import {
   mockStore,
   mountWithIntl,
 } from "../../../__tests__/environment/Environment";
+import type {Mock} from "vitest";
 
-jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
+vi.mock("../../misc/MarkdownEditor", () => ({default: () => <div>Editor</div>}));
 
 describe("TermDefinitionEdit", () => {
   let onSave: (update: Term) => void;
   let onCancel: () => void;
 
   beforeEach(() => {
-    onSave = jest.fn();
-    onCancel = jest.fn();
+    onSave = vi.fn();
+    onCancel = vi.fn();
     mockStore.getState().configuration.language = Constants.DEFAULT_LANGUAGE;
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("returns null when no element and term are provided", () => {
@@ -147,7 +148,7 @@ describe("TermDefinitionEdit", () => {
       );
       wrapper.find("button#annotator-set-definition-save").simulate("click");
       expect(onSave).toHaveBeenCalled();
-      expect((onSave as jest.Mock).mock.calls[0][0].definition).toEqual({
+      expect((onSave as Mock).mock.calls[0][0].definition).toEqual({
         en: annotatedElement.data,
       });
     });

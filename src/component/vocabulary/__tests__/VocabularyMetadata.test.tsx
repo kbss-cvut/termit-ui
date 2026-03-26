@@ -22,8 +22,8 @@ describe("VocabularyMetadata", () => {
   let match: Match<any>;
 
   beforeEach(() => {
-    onChange = jest.fn();
-    resetSelectedTerm = jest.fn();
+    onChange = vi.fn();
+    resetSelectedTerm = vi.fn();
     vocabulary = vocabulary = new Vocabulary({
       iri: Generator.generateUri(),
       label: langString("Test vocabulary"),
@@ -60,7 +60,7 @@ describe("VocabularyMetadata", () => {
         location={location}
         match={match}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
+        selectLanguage={vi.fn()}
         onChange={onChange}
         {...intlFunctions()}
       />
@@ -82,7 +82,7 @@ describe("VocabularyMetadata", () => {
         location={location}
         match={match}
         language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={jest.fn()}
+        selectLanguage={vi.fn()}
         onChange={onChange}
         {...intlFunctions()}
       />

@@ -10,12 +10,13 @@ import BrowserStorage from "../BrowserStorage";
 import Generator from "../../__tests__/environment/Generator";
 import { TERM_MULTILINGUAL_ATTRIBUTES } from "../../model/Term";
 import { VOCABULARY_MULTILINGUAL_ATTRIBUTES } from "../../model/Vocabulary";
+import type {Mock} from "vitest";
 
-jest.mock("../BrowserStorage");
+vi.mock("../BrowserStorage");
 
 describe("IntlUtil", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("loads Czech localization data for Czech language", () => {
@@ -29,7 +30,7 @@ describe("IntlUtil", () => {
   });
 
   it("loads localization data based on language preference stored in browser storage", () => {
-    (BrowserStorage.get as jest.Mock).mockReturnValue(Constants.LANG.CS.locale);
+    (BrowserStorage.get as Mock).mockReturnValue(Constants.LANG.CS.locale);
     const result = loadInitialLocalizationData();
     expect(result.locale).toEqual(Constants.LANG.CS.locale);
   });

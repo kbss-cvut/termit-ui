@@ -12,6 +12,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 import { noop } from "lodash";
+import type {Mock} from "vitest";
 
 describe("ParentTermSelector", () => {
   const vocabularyIri = Generator.generateUri();
@@ -24,13 +25,13 @@ describe("ParentTermSelector", () => {
   let loadImports: (vocabularyIri: IRI) => Promise<string[]>;
 
   beforeEach(() => {
-    onChange = jest.fn();
-    loadTerms = jest.fn().mockResolvedValue([]);
-    loadImports = jest.fn().mockResolvedValue([]);
+    onChange = vi.fn();
+    loadTerms = vi.fn().mockResolvedValue([]);
+    loadImports = vi.fn().mockResolvedValue([]);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("passes selected parent as value to tree component", () => {
@@ -122,7 +123,7 @@ describe("ParentTermSelector", () => {
       wrapper.update();
       wrapper.instance().fetchOptions({});
       expect(
-        (loadTerms as jest.Mock).mock.calls[0][0].includeImported
+        (loadTerms as Mock).mock.calls[0][0].includeImported
       ).toBeTruthy();
     });
 
@@ -139,7 +140,7 @@ describe("ParentTermSelector", () => {
       wrapper.setState({ includeImported: true });
       wrapper.update();
       wrapper.instance().fetchOptions({ optionID: parent.iri, option: parent });
-      expect((loadTerms as jest.Mock).mock.calls[0][1]).toEqual(
+      expect((loadTerms as Mock).mock.calls[0][1]).toEqual(
         VocabularyUtils.create(parent.vocabulary!.iri!)
       );
     });
@@ -151,7 +152,7 @@ describe("ParentTermSelector", () => {
         options.push(t);
       }
       const currentTerm = options[Generator.randomInt(0, options.length)];
-      loadTerms = jest.fn().mockResolvedValue(options);
+      loadTerms = vi.fn().mockResolvedValue(options);
       const wrapper = render({ termIri: currentTerm.iri, vocabularyIri });
       return wrapper
         .instance()
@@ -163,7 +164,7 @@ describe("ParentTermSelector", () => {
 
     it("filters out options outside vocabulary import chain", () => {
       const vocabularyImports = [Generator.generateUri()];
-      loadImports = jest
+      loadImports = vi
         .fn()
         .mockImplementation(() => Promise.resolve(vocabularyImports));
       const options: Term[] = [];
@@ -175,7 +176,7 @@ describe("ParentTermSelector", () => {
         );
         options.push(t);
       }
-      loadTerms = jest.fn().mockResolvedValue(options);
+      loadTerms = vi.fn().mockResolvedValue(options);
       const wrapper = render({
         termIri: Generator.generateUri(),
         vocabularyIri,
@@ -197,7 +198,7 @@ describe("ParentTermSelector", () => {
       ];
       const currentTerm = options[1];
       options[0].plainSubTerms = [currentTerm.iri];
-      loadTerms = jest.fn().mockResolvedValue(options);
+      loadTerms = vi.fn().mockResolvedValue(options);
       const wrapper = render({ termIri: currentTerm.iri, vocabularyIri });
       return wrapper
         .instance()
@@ -216,7 +217,7 @@ describe("ParentTermSelector", () => {
       ];
       const parent = Generator.generateTerm(Generator.generateUri());
       terms[0].parentTerms = [parent];
-      loadTerms = jest.fn().mockResolvedValue(terms);
+      loadTerms = vi.fn().mockResolvedValue(terms);
       const vocabulary = new Vocabulary({
         iri: vocabularyIri,
         label: langString("test"),
@@ -247,9 +248,9 @@ describe("ParentTermSelector", () => {
       });
       wrapper.instance().fetchOptions({});
       expect(
-        (loadTerms as jest.Mock).mock.calls[0][0].includeTerms
+        (loadTerms as Mock).mock.calls[0][0].includeTerms
       ).toBeDefined();
-      expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
+      expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
         existingParents.map((p) => p.iri)
       );
     });
@@ -302,7 +303,7 @@ describe("ParentTermSelector", () => {
       parentTerms: [],
     });
     expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
-    loadTerms = jest.fn().mockImplementation(() => {
+    loadTerms = vi.fn().mockImplementation(() => {
       wrapper.update();
       expect(wrapper.state().disableIncludeImportedToggle).toBeTruthy();
       return Promise.resolve([]);

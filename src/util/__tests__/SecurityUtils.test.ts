@@ -1,14 +1,15 @@
 import SecurityUtils from "../SecurityUtils";
 import Constants from "../Constants";
 import BrowserStorage from "../BrowserStorage";
+import type {Mock} from "vitest";
 
-jest.mock("../BrowserStorage");
+vi.mock("../BrowserStorage");
 
 describe("SecurityUtils", () => {
   const jwt = "jwt12345";
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("saves JWT into browser storage on saveJwt", () => {
@@ -20,12 +21,12 @@ describe("SecurityUtils", () => {
   });
 
   it("loads JWT from local storage", () => {
-    (BrowserStorage.get as jest.Mock).mockReturnValue(jwt);
+    (BrowserStorage.get as Mock).mockReturnValue(jwt);
     expect(SecurityUtils.loadToken()).toEqual(jwt);
   });
 
   it("returns empty string when JWT is not present in local storage", () => {
-    (BrowserStorage.get as jest.Mock).mockReturnValue("");
+    (BrowserStorage.get as Mock).mockReturnValue("");
     expect(SecurityUtils.loadToken()).toEqual("");
   });
 

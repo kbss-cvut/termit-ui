@@ -12,11 +12,14 @@ import * as AsyncActions from "../../../action/AsyncActions";
 import { loadVocabularies } from "../../../action/AsyncActions";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn(),
+        useDispatch: vi.fn(),
+    };
+});
 
 describe("ImportedVocabulariesListEdit", () => {
   let vocabularies: { [key: string]: Vocabulary };
@@ -45,15 +48,15 @@ describe("ImportedVocabulariesListEdit", () => {
       label: langString("Edited vocabulary"),
     });
     vocabularies[vocabulary.iri] = vocabulary;
-    onChange = jest.fn();
-    fakeDispatch = jest.fn();
-    jest.spyOn(Redux, "useDispatch").mockReturnValue(fakeDispatch);
-    jest.spyOn(AsyncActions, "loadVocabularies");
+    onChange = vi.fn();
+    fakeDispatch = vi.fn();
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(fakeDispatch);
+    vi.spyOn(AsyncActions, "loadVocabularies");
     mockUseI18n();
   });
 
   it("loads vocabularies after mount when they are not loaded yet", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue({});
+    vi.spyOn(Redux, "useSelector").mockReturnValue({});
     mountWithIntl(
       <ImportedVocabulariesListEdit
         vocabulary={vocabulary}
@@ -74,7 +77,7 @@ describe("ImportedVocabulariesListEdit", () => {
   });
 
   it("calls onChange with selected vocabularies IRIs on vocabulary selection", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue(vocabularies);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(vocabularies);
     const vocabularyArray = Object.keys(vocabularies).map(
       (v) => vocabularies[v]
     );

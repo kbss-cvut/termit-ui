@@ -28,7 +28,7 @@ describe("Vocabulary validation request", () => {
     (stompMock.getSentMockMessages(destination) as IPublishParams[]) || [];
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     stompMock.reset();
     store = mockStore(new TermItState());
     dispatch = store.dispatch;
@@ -36,7 +36,7 @@ describe("Vocabulary validation request", () => {
 
     return import("../WebSocketVocabularyActions").then((module) => {
       sut = module;
-      jest.resetModules();
+      vi.resetModules();
     });
   });
 

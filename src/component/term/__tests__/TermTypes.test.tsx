@@ -6,17 +6,20 @@ import * as Redux from "react-redux";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { OWL, SKOS } from "../../../util/Namespaces";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn()
+    };
+});
 
 describe("TermTypes", () => {
   it("skips implicit term type when rendering types", () => {
     const type = Generator.generateTerm();
     const typesOptions = {};
     typesOptions[type.iri] = type;
-    jest.spyOn(Redux, "useSelector").mockReturnValue(typesOptions);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(typesOptions);
     const types = [VocabularyUtils.TERM, type.iri];
     const wrapper = mountWithIntl(<TermTypes types={types} />);
     const renderedTypes = wrapper.find(OutgoingLink);
@@ -28,7 +31,7 @@ describe("TermTypes", () => {
     const type = Generator.generateTerm();
     const typesOptions = {};
     typesOptions[type.iri] = type;
-    jest.spyOn(Redux, "useSelector").mockReturnValue(typesOptions);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(typesOptions);
     const types = [
       `${SKOS.namespace}Concept`,
       `${OWL.namespace}Thing`,

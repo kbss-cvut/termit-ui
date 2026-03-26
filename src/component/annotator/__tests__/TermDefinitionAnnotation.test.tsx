@@ -1,23 +1,25 @@
 import Generator from "../../../__tests__/environment/Generator";
 import Term from "../../../model/Term";
-import { shallow } from "enzyme";
-import { TermDefinitionAnnotation } from "../TermDefinitionAnnotation";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
+import {shallow} from "enzyme";
+import {TermDefinitionAnnotation} from "../TermDefinitionAnnotation";
+import {mockUseI18n,} from "../../../__tests__/environment/IntlUtil";
 import SimplePopupWithActions from "../SimplePopupWithActions";
 import AnnotationTerms from "../AnnotationTerms";
 import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
-import { withHooks } from "jest-react-hooks-shallow";
+import {withHooks} from "vitest-react-hooks-shallow";
 import * as Actions from "../../../action/AsyncTermActions";
 import * as redux from "react-redux";
-import { ThunkDispatch } from "../../../util/Types";
+import {ThunkDispatch} from "../../../util/Types";
+import type {Mock} from "vitest";
+import AccessLevel from "../../../model/acl/AccessLevel";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useDispatch: vi.fn(),
+    };
+});
 
 describe("TermDefinitionAnnotation", () => {
   const annotationProps = {
@@ -37,14 +39,14 @@ describe("TermDefinitionAnnotation", () => {
 
   beforeEach(() => {
     actions = {
-      onRemove: jest.fn(),
-      onSelectTerm: jest.fn(),
-      onToggleDetailOpen: jest.fn(),
-      onClose: jest.fn(),
+      onRemove: vi.fn(),
+      onSelectTerm: vi.fn(),
+      onToggleDetailOpen: vi.fn(),
+      onClose: vi.fn(),
     };
     mockUseI18n();
-    fakeDispatch = jest.fn();
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    fakeDispatch = vi.fn();
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
   });
 
   it("renders term definition view by default", () => {
@@ -54,7 +56,7 @@ describe("TermDefinitionAnnotation", () => {
         term={Generator.generateTerm()}
         {...annotationProps}
         {...actions}
-        {...intlFunctions()}
+          accessLevel={AccessLevel.WRITE}
       />
     );
     expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(
@@ -69,7 +71,7 @@ describe("TermDefinitionAnnotation", () => {
         term={null}
         {...annotationProps}
         {...actions}
-        {...intlFunctions()}
+        accessLevel={AccessLevel.WRITE}
       />
     );
     expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(
@@ -85,7 +87,7 @@ describe("TermDefinitionAnnotation", () => {
           term={null}
           {...annotationProps}
           {...actions}
-          {...intlFunctions()}
+            accessLevel={AccessLevel.WRITE}
         />
       );
       expect(
@@ -103,14 +105,14 @@ describe("TermDefinitionAnnotation", () => {
   describe("onRemove", () => {
     it("removes term definition source via action as well as invoking annotation removal", () => {
       const term = Generator.generateTerm();
-      jest.spyOn(Actions, "removeTermDefinitionSource");
+      vi.spyOn(Actions, "removeTermDefinitionSource");
       const wrapper = shallow(
         <TermDefinitionAnnotation
           isOpen={true}
           term={term}
           {...annotationProps}
           {...actions}
-          {...intlFunctions()}
+            accessLevel={AccessLevel.WRITE}
         />
       );
       const popup = wrapper.find(SimplePopupWithActions);

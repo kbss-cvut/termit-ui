@@ -10,6 +10,7 @@ import Term, { TermData } from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import RdfsResource from "../../../model/RdfsResource";
 import { langString } from "../../../model/MultilingualString";
+import type {Mock} from "vitest";
 
 describe("TermTreeSelectHelper", () => {
   describe("processTermsForTreeSelect", () => {
@@ -144,7 +145,7 @@ describe("TermTreeSelectHelper", () => {
     ) => Promise<Term[]>;
 
     it("adds selected terms for inclusion when loading the first page (offset 0)", () => {
-      loadTerms = jest.fn().mockResolvedValue([]);
+      loadTerms = vi.fn().mockResolvedValue([]);
       const selected = [
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
@@ -153,14 +154,14 @@ describe("TermTreeSelectHelper", () => {
         selectedTerms: selected,
         terminalStates: [],
       }).then(() => {
-        expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
+        expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
           selected.map((t) => t.iri)
         );
       });
     });
 
     it("does not add selected terms for inclusion when loading non-first page (offset > 0)", () => {
-      loadTerms = jest.fn().mockResolvedValue([]);
+      loadTerms = vi.fn().mockResolvedValue([]);
       const selected = [
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
@@ -169,14 +170,14 @@ describe("TermTreeSelectHelper", () => {
         selectedTerms: selected,
         terminalStates: [],
       }).then(() => {
-        expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
+        expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
           []
         );
       });
     });
 
     it("does not add selected terms for inclusion when loading parent subterms (optionID is specified)", () => {
-      loadTerms = jest.fn().mockResolvedValue([]);
+      loadTerms = vi.fn().mockResolvedValue([]);
       const selected = [
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
@@ -189,7 +190,7 @@ describe("TermTreeSelectHelper", () => {
           terminalStates: [],
         }
       ).then(() => {
-        expect((loadTerms as jest.Mock).mock.calls[0][0].includeTerms).toEqual(
+        expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
           []
         );
       });
@@ -215,7 +216,7 @@ describe("TermTreeSelectHelper", () => {
           vocabulary: { iri: vocabularyIri },
         },
       ];
-      loadTerms = jest
+      loadTerms = vi
         .fn()
         .mockResolvedValueOnce([
           Generator.generateTerm(vocabularyIri),
@@ -258,7 +259,7 @@ describe("TermTreeSelectHelper", () => {
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
       ];
-      loadTerms = jest
+      loadTerms = vi
         .fn()
         .mockResolvedValueOnce([...regularOptions, grandParent, selected])
         .mockResolvedValueOnce([parent])
@@ -281,7 +282,7 @@ describe("TermTreeSelectHelper", () => {
         Generator.generateTerm(Generator.generateUri()),
         Generator.generateTerm(Generator.generateUri()),
       ];
-      loadTerms = jest.fn().mockResolvedValue(terms);
+      loadTerms = vi.fn().mockResolvedValue(terms);
 
       return loadAndPrepareTerms({}, loadTerms, {
         matchingVocabularies: [vocabularyIri],

@@ -8,6 +8,7 @@ import User from "../../../../model/User";
 import Utils from "../../../../util/Utils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import UserActionsButtons, { UserActions } from "../UserActionsButtons";
+import {vi} from "vitest";
 
 describe("UserRow", () => {
   let user: User;
@@ -16,10 +17,10 @@ describe("UserRow", () => {
   beforeEach(() => {
     user = Generator.generateUser();
     actions = {
-      disable: jest.fn(),
-      enable: jest.fn(),
-      unlock: jest.fn(),
-      changeRole: jest.fn(),
+      disable: vi.fn(),
+      enable: vi.fn(),
+      unlock: vi.fn(),
+      changeRole: vi.fn(),
     };
     mockUseI18n();
   });

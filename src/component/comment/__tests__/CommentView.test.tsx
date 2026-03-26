@@ -6,20 +6,23 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import CommentView from "../CommentView";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn()
+    };
+});
 
 describe("CommentView", () => {
   let user: User;
   let comment: Comment;
 
   const addReaction: (comment: Comment, reactionType: string) => void =
-    jest.fn();
-  const removeReaction: (comment: Comment) => void = jest.fn();
-  const onEdit: (comment: Comment) => void = jest.fn();
-  const onRemove: (comment: Comment) => void = jest.fn();
+    vi.fn();
+  const removeReaction: (comment: Comment) => void = vi.fn();
+  const onEdit: (comment: Comment) => void = vi.fn();
+  const onRemove: (comment: Comment) => void = vi.fn();
 
   beforeEach(() => {
     user = Generator.generateUser();
@@ -41,14 +44,14 @@ describe("CommentView", () => {
   }
 
   it("displays edit and remove button when current user is comment author", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = render();
     expect(wrapper.exists("button.m-comment-edit")).toBeTruthy();
     expect(wrapper.exists("button.m-comment-remove")).toBeTruthy();
   });
 
   it("does not display either edit or remove button when current user is not comment author", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     comment.author = Generator.generateUser();
     const wrapper = render();
     expect(wrapper.exists("button.m-comment-edit")).toBeFalsy();
@@ -57,7 +60,7 @@ describe("CommentView", () => {
 
   it("displays remove button when current user is admin", () => {
     user.types.push(VocabularyUtils.USER_ADMIN);
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     comment.author = Generator.generateUser();
     const wrapper = render();
     expect(wrapper.exists("button.m-comment-edit")).toBeFalsy();

@@ -18,23 +18,22 @@ import * as AsyncActions from "../../../action/AsyncActions";
 import { langString } from "../../../model/MultilingualString";
 import MarkdownEditor from "../../misc/MarkdownEditor";
 import { act } from "react-dom/test-utils";
+import type {Mock} from "vitest";
+import {mockAjax} from "../../../__tests__/environment/TestUtil";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
-}));
-jest.mock("../../../util/Routing");
-jest.mock("../../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../../util/Ajax");
-  return {
-    ...originalModule,
-    default: jest.fn(),
-  };
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn(),
+        useDispatch: vi.fn(),
+    };
 });
-jest.mock("../../misc/HelpIcon", () => () => <div>Help</div>);
-jest.mock("../../misc/MarkdownEditor", () => () => <div>Editor</div>);
-jest.mock("../../misc/PromiseTrackingMask", () => () => <span>Mask</span>);
+vi.mock("../../../util/Routing");
+mockAjax();
+vi.mock("../../misc/HelpIcon", () => ({default: () => <div>Help</div>}));
+vi.mock("../../misc/MarkdownEditor", () => ({default: () => <div>Editor</div>}));
+vi.mock("../../misc/PromiseTrackingMask", () => ({default: () => <span>Mask</span>}));
 
 describe("Create vocabulary view", () => {
   const iri = "http://onto.fel.cvut.cz/ontologies/termit/vocabulary/test";
@@ -42,14 +41,14 @@ describe("Create vocabulary view", () => {
   beforeEach(() => {
     mockUseI18n();
     // @ts-ignore
-    jest
+    vi
       .spyOn(Redux, "useDispatch")
-      .mockReturnValue(jest.fn().mockResolvedValue(iri));
-    jest.spyOn(AsyncActions, "createVocabulary");
-    Ajax.post = jest.fn().mockResolvedValue({ data: iri });
-    jest.spyOn(AsyncActions, "createFileInDocument");
-    jest.spyOn(AsyncActions, "uploadFileContent");
-    jest
+      .mockReturnValue(vi.fn().mockResolvedValue(iri));
+    vi.spyOn(AsyncActions, "createVocabulary");
+    Ajax.post = vi.fn().mockResolvedValue({ data: iri });
+    vi.spyOn(AsyncActions, "createFileInDocument");
+    vi.spyOn(AsyncActions, "uploadFileContent");
+    vi
       .spyOn(Redux, "useSelector")
       .mockReturnValue(Constants.DEFAULT_LANGUAGE);
   });
@@ -116,7 +115,7 @@ describe("Create vocabulary view", () => {
     await flushPromises();
     expect(AsyncActions.createVocabulary).toHaveBeenCalled();
     expect(Routing.transitionTo).toHaveBeenCalled();
-    const calls = (Routing.transitionTo as jest.Mock).mock.calls;
+    const calls = (Routing.transitionTo as Mock).mock.calls;
     const args = calls[calls.length - 1];
     expect(args[0]).toEqual(Routes.vocabularySummary);
     expect(args[1]).toEqual({

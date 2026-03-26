@@ -9,12 +9,16 @@ import Utils from "../../../../util/Utils";
 import TermState, { TermStateDisplay } from "../TermState";
 import { getLocalized } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
+import type {Mock} from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn(),
+        useDispatch: vi.fn(),
+    };
+});
 
 describe("TermState", () => {
   it("does not render edit button when user has no editing authority", async () => {
@@ -24,11 +28,11 @@ describe("TermState", () => {
         CONTEXT
       );
     const storeState = Utils.mapArray(states);
-    (redux.useSelector as jest.Mock).mockReturnValue(storeState);
+    (redux.useSelector as Mock).mockReturnValue(storeState);
     const vocabulary = Generator.generateVocabulary();
     vocabulary.accessLevel = AccessLevel.READ;
-    const fakeDispatch = jest.fn().mockResolvedValue({});
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    const fakeDispatch = vi.fn().mockResolvedValue({});
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
     const term = Generator.generateTerm(vocabulary.iri);
     term.state = { iri: states[0].iri };
     const wrapper = mountWithIntl(
@@ -44,14 +48,14 @@ describe("TermState", () => {
         CONTEXT
       );
     const storeState = Utils.mapArray(states);
-    (redux.useSelector as jest.Mock).mockReturnValue(storeState);
+    (redux.useSelector as Mock).mockReturnValue(storeState);
     const vocabulary = Generator.generateVocabulary();
     vocabulary.accessLevel = AccessLevel.WRITE;
-    const fakeDispatch = jest.fn().mockResolvedValue({});
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    const fakeDispatch = vi.fn().mockResolvedValue({});
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
     const term = Generator.generateTerm(vocabulary.iri);
     term.state = { iri: states[1].iri };
-    const wrapper = await mountWithIntl(
+    const wrapper = mountWithIntl(
       <TermState term={term} vocabulary={vocabulary} />
     );
     return Promise.resolve().then(() => {

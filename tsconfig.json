@@ -25,7 +25,7 @@
     "skipLibCheck": true,
     "strict": true,
     "typeRoots": ["node_modules/@types", "src/@types"],
-    "types": ["node", "jest", "vite/client"],
+    "types": ["node", "jest", "vite/client", "vitest/globals"],
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
@@ -35,7 +35,6 @@
     "scripts",
     "acceptance-tests",
     "webpack",
-    "jest",
     "**/__tests__",
     "**/__mocks__"
   ]

@@ -11,10 +11,13 @@ import RecentlyModifiedAsset from "../../../../../model/RecentlyModifiedAsset";
 import * as Redux from "react-redux";
 import TermLink from "../../../../term/TermLink";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn()
+    };
+});
 
 describe("AssetList", () => {
   let user: User;
@@ -24,7 +27,7 @@ describe("AssetList", () => {
   });
 
   it("does not render info message during loading", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <AssetList assets={null} {...intlFunctions()} />
@@ -35,7 +38,7 @@ describe("AssetList", () => {
   });
 
   it("renders info message when no assets were found", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <AssetList assets={[]} {...intlFunctions()} />
@@ -66,7 +69,7 @@ describe("AssetList", () => {
         modified: new Date().toISOString(),
       }),
     ];
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <AssetList assets={assets} {...intlFunctions()} />
@@ -92,7 +95,7 @@ describe("AssetList", () => {
         modified: new Date().toISOString(),
       }),
     ];
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <AssetList assets={assets} />
@@ -135,7 +138,7 @@ describe("AssetList", () => {
         modified: new Date().toISOString(),
       }),
     ];
-    jest.spyOn(Redux, "useSelector").mockReturnValue(user);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <AssetList assets={assets} />

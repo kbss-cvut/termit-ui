@@ -12,11 +12,15 @@ import {
   withWebSocket,
 } from "../../../__tests__/environment/Environment";
 import * as actions from "../../../action/ComplexActions";
+import type {Mock} from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useSelector: vi.fn()
+    };
+});
 
 describe("UserDropdown", () => {
   const user = new User({
@@ -27,8 +31,8 @@ describe("UserDropdown", () => {
   });
 
   beforeEach(() => {
-    (Redux.useSelector as jest.Mock).mockReturnValue(user);
-    jest.spyOn(actions, "logout");
+    (Redux.useSelector as Mock).mockReturnValue(user);
+    vi.spyOn(actions, "logout");
   });
 
   it("renders correct structure of component", () => {

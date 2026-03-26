@@ -96,6 +96,15 @@ function stateToPlainObject(state: TermItState): TermItState {
   };
 }
 
+async function importVocabularies() {
+    const data = await import("../../rest-mock/vocabularies.json").then((module) => module.default);
+    const result: {[key: string]: Vocabulary} = {};
+    data.forEach((vocabulary) => {
+        result[vocabulary["@id"]] = new Vocabulary(vocabulary as any);
+    });
+    return result;
+}
+
 describe("Reducers", () => {
   let initialState = new TermItState();
 
@@ -246,11 +255,11 @@ describe("Reducers", () => {
   });
 
   describe("intl", () => {
-    it("loads localization data on action", () => {
+    it("loads localization data on action", async () => {
       const action = switchLanguage(Constants.LANG.CS);
       expect(reducers(stateToPlainObject(initialState), action)).toEqual(
         Object.assign({}, initialState, {
-          intl: require("../../i18n/cs").default,
+          intl: await import("../../i18n/cs").then((module) => module.default),
         })
       );
     });
@@ -269,8 +278,8 @@ describe("Reducers", () => {
       );
     });
 
-    it("resets vocabularies and current vocabulary", () => {
-      initialState.vocabularies = require("../../rest-mock/vocabularies.json");
+    it("resets vocabularies and current vocabulary", async () => {
+      initialState.vocabularies = await importVocabularies();
       initialState.vocabulary = initialState.vocabularies[0];
       expect(reducers(stateToPlainObject(initialState), userLogout())).toEqual(
         Object.assign({}, initialState, {
@@ -289,8 +298,8 @@ describe("Reducers", () => {
       );
     });
 
-    it("resets search-related state", () => {
-      initialState.searchResults = require("../../rest-mock/searchResults.json");
+    it("resets search-related state", async () => {
+      initialState.searchResults = await import("../../rest-mock/searchResults.json") as any[];
       initialState.searchQuery = new SearchQuery();
       initialState.searchQuery.searchQuery = "hello";
       initialState.searchInProgress = true;
@@ -977,7 +986,7 @@ describe("Reducers", () => {
     it("sets states and terminal states on the same action success", async () => {
       const payload: RdfsResource[] =
         await JsonLdUtils.compactAndResolveReferencesAsArray<RdfsResourceData>(
-          require("../../rest-mock/states"),
+          require("../../rest-mock/states.json"),
           RDFS_RESOURCE_CONTEXT
         ).then((data) => data.map((d) => new RdfsResource(d)));
       const result = reducers(
@@ -992,8 +1001,8 @@ describe("Reducers", () => {
   });
 
   describe("vocabularies", () => {
-    it("are reset on successful SKOS import action", () => {
-      initialState.vocabularies = require("../../rest-mock/vocabularies.json");
+    it("are reset on successful SKOS import action", async () => {
+      initialState.vocabularies = await importVocabularies();
       expect(
         reducers(
           stateToPlainObject(initialState),

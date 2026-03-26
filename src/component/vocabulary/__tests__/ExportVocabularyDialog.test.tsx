@@ -8,11 +8,15 @@ import ExportConfig, {
   ExportFormat,
   ExportType,
 } from "../../../model/local/ExportConfig";
+import type {Mock} from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useDispatch: vi.fn(),
+    };
+});
 
 describe("ExportVocabularyDialog", () => {
   const vocabulary = Generator.generateVocabulary();
@@ -20,8 +24,8 @@ describe("ExportVocabularyDialog", () => {
   let onClose: () => void;
 
   beforeEach(() => {
-    onClose = jest.fn();
-    jest.clearAllMocks();
+    onClose = vi.fn();
+    vi.clearAllMocks();
   });
 
   it.each([
@@ -45,9 +49,9 @@ describe("ExportVocabularyDialog", () => {
   );
 
   function mockActionAndRender() {
-    const fakeDispatch = jest.fn().mockResolvedValue({});
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
-    jest.spyOn(AsyncVocabularyActions, "exportGlossary");
+    const fakeDispatch = vi.fn().mockResolvedValue({});
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
+    vi.spyOn(AsyncVocabularyActions, "exportGlossary");
 
     return mountWithIntl(
       <ExportVocabularyDialog
@@ -91,7 +95,7 @@ describe("ExportVocabularyDialog", () => {
       wrapper.find("input").find({ name: type }).simulate("change");
       wrapper.find("button#vocabulary-export-submit").simulate("click");
       expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalled();
-      const exportConf = (AsyncVocabularyActions.exportGlossary as jest.Mock)
+      const exportConf = (AsyncVocabularyActions.exportGlossary as Mock)
         .mock.calls[0][1];
       expect((exportConf as ExportConfig).format).toEqual(ExportFormat.Turtle);
       expect((exportConf as ExportConfig).type).toEqual(type);

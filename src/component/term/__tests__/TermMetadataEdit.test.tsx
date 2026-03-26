@@ -17,16 +17,17 @@ import StringListEdit from "../../misc/ValueListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 import Vocabulary from "../../../model/Vocabulary";
+import type {Mock} from "vitest";
 
-jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
-jest.mock("../ExactMatchesSelector", () => () => (
+vi.mock("../ParentTermSelector", () => ({default: () => <div>Parent selector</div>}));
+vi.mock("../ExactMatchesSelector", () => ({default: () => (
   <div>Exact match selector</div>
-));
-jest.mock("../RelatedTermsSelector", () => () => (
+)}));
+vi.mock("../RelatedTermsSelector", () => ({default: () => (
   <div>Related terms selector</div>
-));
-jest.mock("../TermTypesEdit", () => () => <div>Term types edit</div>);
-jest.mock("../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
+)}));
+vi.mock("../TermTypesEdit", () => ({default: () => <div>Term types edit</div>}));
+vi.mock("../../misc/AssetLabel", () => ({default: () => <span>AssetLabel</span>}));
 
 describe("Term edit", () => {
   let term: Term;
@@ -48,10 +49,10 @@ describe("Term edit", () => {
       vocabulary: { iri: vocabulary.iri },
     });
     validationResults = {};
-    onSave = jest.fn();
-    onCancel = jest.fn();
-    selectLanguage = jest.fn();
-    Ajax.head = jest.fn().mockResolvedValue({});
+    onSave = vi.fn();
+    onCancel = vi.fn();
+    selectLanguage = vi.fn();
+    Ajax.head = vi.fn().mockResolvedValue({});
   });
 
   it("disables save button when label field is empty", () => {
@@ -59,12 +60,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -89,18 +89,17 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
     // mock answer to duplicated label check: 404 meaning label does not exist and so is unique
-    Ajax.head = jest.fn().mockRejectedValue({ status: 404 });
+    Ajax.head = vi.fn().mockRejectedValue({ status: 404 });
     const newLabel = "New label";
     wrapper
       .find(CustomInput)
@@ -114,7 +113,7 @@ describe("Term edit", () => {
     return Promise.resolve().then(() => {
       wrapper.find("#edit-term-submit").simulate("click");
       expect(onSave).toHaveBeenCalled();
-      const arg = (onSave as jest.Mock).mock.calls[0][0];
+      const arg = (onSave as Mock).mock.calls[0][0];
       expect(arg.iri).toEqual(term.iri);
       expect(arg.label).toEqual(langString(newLabel));
       expect(arg.scopeNote).toEqual(term.scopeNote);
@@ -126,12 +125,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -149,7 +147,7 @@ describe("Term edit", () => {
     return Promise.resolve().then(() => {
       expect(Ajax.head).toHaveBeenCalled();
       expect(
-        (Ajax.head as jest.Mock).mock.calls[0][1].getParams().prefLabel
+        (Ajax.head as Mock).mock.calls[0][1].getParams().prefLabel
       ).toEqual(newLabel);
     });
   });
@@ -159,12 +157,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -189,12 +186,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language="en"
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -220,12 +216,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -247,17 +242,16 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
     );
-    Ajax.head = jest.fn().mockResolvedValue({ status: 200 });
+    Ajax.head = vi.fn().mockResolvedValue({ status: 200 });
     wrapper
       .find(CustomInput)
       .findWhere((ci) => ci.prop("name") === "edit-term-label")
@@ -280,13 +274,12 @@ describe("Term edit", () => {
     const wrapper = shallow<TermMetadataEdit>(
       <TermMetadataEdit
         term={term}
-        vocabulary={vocabulary}
         save={onSave}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -294,7 +287,7 @@ describe("Term edit", () => {
     const updatedProperties = new Map([[property, ["test1", "test2"]]]);
     wrapper.instance().setState({ unmappedProperties: updatedProperties });
     wrapper.instance().onSave();
-    const result: Term = (onSave as jest.Mock).mock.calls[0][0];
+    const result: Term = (onSave as Mock).mock.calls[0][0];
     expect(result.unmappedProperties).toEqual(updatedProperties);
     expect(result[property]).toBeDefined();
     expect(result[property]).toEqual(updatedProperties.get(property));
@@ -305,12 +298,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -331,12 +323,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={"en"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -357,12 +348,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={"cs"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -377,12 +367,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={"cs"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -398,12 +387,11 @@ describe("Term edit", () => {
       <TermMetadataEdit
         save={onSave}
         term={term}
-        vocabulary={vocabulary}
         cancel={onCancel}
         language={"de"}
         selectLanguage={selectLanguage}
         validationResults={validationResults}
-        publishMessage={jest.fn()}
+        publishMessage={vi.fn()}
         vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
         {...intlFunctions()}
       />
@@ -422,12 +410,11 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
-          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
-          publishMessage={jest.fn()}
+          publishMessage={vi.fn()}
           vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />
@@ -446,12 +433,11 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
-          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
-          publishMessage={jest.fn()}
+          publishMessage={vi.fn()}
           vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />
@@ -469,12 +455,11 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
-          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
-          publishMessage={jest.fn()}
+          publishMessage={vi.fn()}
           vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />
@@ -498,12 +483,11 @@ describe("Term edit", () => {
         <TermMetadataEdit
           save={onSave}
           term={term}
-          vocabulary={vocabulary}
           cancel={onCancel}
           language="en"
           selectLanguage={selectLanguage}
           validationResults={validationResults}
-          publishMessage={jest.fn()}
+          publishMessage={vi.fn()}
           vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
           {...intlFunctions()}
         />

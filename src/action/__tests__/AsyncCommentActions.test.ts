@@ -14,15 +14,13 @@ import {
 import ActionType from "../ActionType";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Comment from "../../model/Comment";
+import {vi} from "vitest";
+import type {Mock} from "vitest";
+import {mockAjax} from "../../__tests__/environment/TestUtil";
 
-jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../util/Ajax");
-  return {
-    ...originalModule,
-    default: jest.fn(),
-  };
-});
+vi.mock("../../util/Routing");
+mockAjax();
+
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
@@ -30,7 +28,7 @@ describe("AsyncCommentActions", () => {
   let store: MockStoreEnhanced<TermItState>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store = mockStore(new TermItState());
   });
 
@@ -38,12 +36,12 @@ describe("AsyncCommentActions", () => {
     it("sends term loading request for specified term identifier", () => {
       const termIri = VocabularyUtils.create(Generator.generateUri());
       const comments = generateComments(termIri);
-      Ajax.get = jest.fn().mockResolvedValue(comments);
+      Ajax.get = vi.fn().mockResolvedValue(comments);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTermComments(termIri))
       ).then(() => {
         expect(Ajax.get).toHaveBeenCalled();
-        const args = (Ajax.get as jest.Mock).mock.calls[0];
+        const args = (Ajax.get as Mock).mock.calls[0];
         expect(args[0]).toContain(`${termIri.fragment}/comments`);
         expect(args[1].getParams().namespace).toEqual(termIri.namespace);
         expect(
@@ -77,7 +75,7 @@ describe("AsyncCommentActions", () => {
     it("returns comments extracted from response JSON-LD", () => {
       const termIri = VocabularyUtils.create(Generator.generateUri());
       const comments = generateComments(termIri);
-      Ajax.get = jest.fn().mockResolvedValue(comments);
+      Ajax.get = vi.fn().mockResolvedValue(comments);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTermComments(termIri))
       ).then((result: Comment[]) => {
@@ -90,7 +88,7 @@ describe("AsyncCommentActions", () => {
 
     it("returns empty array on request failure", () => {
       const termIri = VocabularyUtils.create(Generator.generateUri());
-      Ajax.get = jest.fn().mockRejectedValue({
+      Ajax.get = vi.fn().mockRejectedValue({
         status: 404,
         error: { message: "Term not found" },
       });
@@ -110,12 +108,12 @@ describe("AsyncCommentActions", () => {
       const comment = new Comment({
         content: "Test comment",
       });
-      Ajax.post = jest.fn().mockResolvedValue({});
+      Ajax.post = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createTermComment(comment, termIri))
       ).then(() => {
         expect(Ajax.post).toHaveBeenCalled();
-        const args = (Ajax.post as jest.Mock).mock.calls[0];
+        const args = (Ajax.post as Mock).mock.calls[0];
         expect(args[0]).toContain(`${termIri.fragment}/comments`);
         expect(args[1].getParams().namespace).toEqual(termIri.namespace);
         expect(args[1].getContent()).toEqual(comment.toJsonLd());
@@ -139,14 +137,14 @@ describe("AsyncCommentActions", () => {
         content: "Test comment",
       });
       const reactionType = "https://www.w3.org/ns/activitystreams#Dislike";
-      Ajax.post = jest.fn().mockResolvedValue({});
+      Ajax.post = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           reactToComment(VocabularyUtils.create(comment.iri!), reactionType)
         )
       ).then(() => {
         expect(Ajax.post).toHaveBeenCalled();
-        const args = (Ajax.post as jest.Mock).mock.calls[0];
+        const args = (Ajax.post as Mock).mock.calls[0];
         expect(args[1].getParams().type).toEqual(reactionType);
       });
     });
@@ -158,12 +156,12 @@ describe("AsyncCommentActions", () => {
         iri: Generator.generateUri(),
         content: "Test comment update",
       });
-      Ajax.put = jest.fn().mockResolvedValue({});
+      Ajax.put = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(updateComment(comment))
       ).then(() => {
         expect(Ajax.put).toHaveBeenCalled();
-        const args = (Ajax.put as jest.Mock).mock.calls[0];
+        const args = (Ajax.put as Mock).mock.calls[0];
         expect(args[1].getContent()).toEqual(comment.toJsonLd());
       });
     });

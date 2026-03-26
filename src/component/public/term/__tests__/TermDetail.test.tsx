@@ -9,20 +9,23 @@ import TermMetadata from "../TermMetadata";
 import Constants from "../../../../util/Constants";
 import * as router from "react-router-dom";
 
-jest.mock("../TermMetadata", () => () => <div>Term metadata</div>);
-jest.mock("../../../misc/HeaderWithActions", () => () => <div>Header</div>);
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useParams: jest.fn(),
-  useLocation: jest.fn(),
-}));
+vi.mock("../TermMetadata", () => ({default: () => <div>Term metadata</div>}));
+vi.mock("../../../misc/HeaderWithActions", () => ({default:  () => <div>Header</div>}));
+vi.mock("react-router-dom", async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual,
+        useParams: vi.fn(),
+        useLocation: vi.fn(),
+    };
+});
 
 describe("TermDetail", () => {
   const normalizedTermName = "test-term";
   const normalizedVocabName = "test-vocabulary";
 
   let loadVocabulary: (iri: IRI) => void;
-  let loadTerm: (termName: string, vocabularyIri: IRI) => void;
+  let loadTerm: (termName: string, vocabularyIri: IRI) => Promise<any>;
 
   let location: Location;
   let params: any;
@@ -30,8 +33,8 @@ describe("TermDetail", () => {
   let vocabulary: Vocabulary;
 
   beforeEach(() => {
-    loadVocabulary = jest.fn();
-    loadTerm = jest.fn();
+    loadVocabulary = vi.fn();
+    loadTerm = vi.fn();
     vocabulary = Generator.generateVocabulary();
     location = {
       pathname:
@@ -48,8 +51,8 @@ describe("TermDetail", () => {
 
   it("resolves language when provided term changes", () => {
     const lang = "cs";
-    jest.spyOn(router, "useParams").mockReturnValue(params);
-    jest.spyOn(router, "useLocation").mockReturnValue(location);
+    vi.spyOn(router, "useParams").mockReturnValue(params);
+    vi.spyOn(router, "useLocation").mockReturnValue(location);
     const wrapper = mountWithIntl(
       <TermDetail
         configuredLanguage={lang}

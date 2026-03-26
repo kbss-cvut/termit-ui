@@ -7,10 +7,11 @@ import { Element, Text as DomHandlerText } from "domhandler";
 import { ElementType } from "domelementtype";
 // @ts-ignore
 import { fromNode, toNode } from "simple-xpath-position";
+import type {Mock} from "vitest";
 
-jest.mock("simple-xpath-position", () => ({
-  toNode: jest.fn(),
-  fromNode: jest.fn(),
+vi.mock("simple-xpath-position", () => ({
+  toNode: vi.fn(),
+  fromNode: vi.fn(),
 }));
 
 describe("Html dom utils", () => {
@@ -32,27 +33,27 @@ describe("Html dom utils", () => {
   let cloneContents: () => DocumentFragment;
   let textPointerRange: any;
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
 
     // // @ts-ignore
-    window.getSelection = jest.fn().mockImplementation(() => {
+    window.getSelection = vi.fn().mockImplementation(() => {
       return {
         isCollapsed: true,
         rangeCount: 1,
       };
     });
-    cloneContents = jest.fn().mockImplementation(() => {
+    cloneContents = vi.fn().mockImplementation(() => {
       return { childNodes: [sampleTextNode] };
     });
-    getRangeAt = jest.fn().mockImplementation(() => {
+    getRangeAt = vi.fn().mockImplementation(() => {
       return { cloneContents };
     });
     textPointerRange = {
-      extractContents: jest.fn(),
-      surroundContents: jest.fn(),
-      insertNode: jest.fn(),
-      setEnd: jest.fn(),
-      setStart: jest.fn(),
+      extractContents: vi.fn(),
+      surroundContents: vi.fn(),
+      insertNode: vi.fn(),
+      setEnd: vi.fn(),
+      setStart: vi.fn(),
     };
 
     const parser = new DOMParser();
@@ -122,9 +123,9 @@ describe("Html dom utils", () => {
     it("returns clone of input element", () => {
       let ret: HTMLElement | null;
       // start and end element is the same span node
-      (fromNode as jest.Mock).mockReturnValue(xpathTextPointerRange.start);
+      (fromNode as Mock).mockReturnValue(xpathTextPointerRange.start);
 
-      (toNode as jest.Mock).mockImplementation((path: string, root: Node) => {
+      (toNode as Mock).mockImplementation((path: string, root: Node) => {
         return root.childNodes[1].childNodes[1].childNodes[0]; // span
       });
 
@@ -160,8 +161,8 @@ describe("Html dom utils", () => {
     });
 
     it("detects when a node has childrens and uses the offset correctly", () => {
-      (fromNode as jest.Mock).mockReturnValue(xpathTextPointerRange.start);
-      (toNode as jest.Mock).mockImplementation((path: string, root: Node) => {
+      (fromNode as Mock).mockReturnValue(xpathTextPointerRange.start);
+      (toNode as Mock).mockImplementation((path: string, root: Node) => {
         return root.childNodes[1]; // div
       });
 
