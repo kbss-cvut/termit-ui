@@ -5,7 +5,7 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
 export function surroundWithHtml(partialHtmlContent: string): string {
   return (
-    '<html prefix="ddo: http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/">\n' +
+    '<html lang="en" prefix="ddo: http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/">\n' +
     "<head><title>Test document</title></head>\n" +
     "<body>\n" +
     partialHtmlContent +

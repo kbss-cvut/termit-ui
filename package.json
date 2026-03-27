@@ -72,7 +72,6 @@
     "test": "vitest watch",
     "test-ci": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "eject": "react-scripts eject",
     "build-prod": "npm run test-ci && npm run build",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "prettier:check": "prettier --check ./src",
@@ -81,7 +80,6 @@
     "version": "echo $npm_package_version"
   },
   "devDependencies": {
-    "@craco/craco": "^7.1.0",
     "@redux-devtools/extension": "^3.2.5",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/enzyme": "^3.10.13",
@@ -104,7 +102,6 @@
     "axios-mock-adapter": "^2.1.0",
     "babel-plugin-macros": "2.8.0",
     "c8": "^11.0.0",
-    "cross-env": "^7.0.3",
     "enzyme": "^3.11.0",
     "eslint": "^8.57.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
