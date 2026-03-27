@@ -6,8 +6,8 @@ This guide provides information on how to build and deploy TermIt UI.
 
 ### System Requirements
 
-- NodeJS 20.x or later
-- npm 10.x or later
+- NodeJS 24.x or later
+- npm 11.x or later
 
 ### Setup
 
@@ -15,8 +15,8 @@ To build TermIt for **non**-development deployment, use the `build-prod` npm scr
 
 The following parameters can be configured for the build:
 
-| Parameter                                    | Type      | Default | Description                                                                                                                                                                       |
-| :------------------------------------------- | :-------- | :------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter                               | Type      | Default | Description                                                                                                                                                                       |
+| :-------------------------------------- | :-------- | :------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `VITE_SERVER_URL`                       | `string`  | -       | Specifies the URL where the TermIt backend is running                                                                                                                             |
 | `VITE_DEPLOYMENT_NAME`                  | `string`  | `''`    | Is used to disambiguate cookies and items in the local storage in case the client accesses multiple TermIt instances                                                              |
 | `VITE_ADMIN_REGISTRATION_ONLY`          | `boolean` | `false` | Configures whether the login page should contain a link to registration or not. If the parameter is true, only administrators can add new users and there is no registration link |
@@ -30,6 +30,8 @@ The following parameters can be configured for the build:
 
 1. `npm install --legacy-peer-deps`
 2. `VITE_SERVER_URL=https://kbss.felk.cvut.cz/termit-server-dev VITE_DEPLOYMENT_NAME=dev VITE_ADMIN_REGISTRATION_ONLY=true npm run build-prod`
+
+(it is easier to set the variables in `.env` file)
 
 ## Deployment
 
