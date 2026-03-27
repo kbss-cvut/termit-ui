@@ -5,7 +5,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { changeInputValue } from "../../../__tests__/environment/TestUtil";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 describe("CreatePropertyForm", () => {
   let onCreate: (data: RdfsResourceData) => void;

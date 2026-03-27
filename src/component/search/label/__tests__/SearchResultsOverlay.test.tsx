@@ -16,17 +16,19 @@ import RdfsResource from "../../../../model/RdfsResource";
 import { langString } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
 import * as Redux from "react-redux";
-import {Mock, vi} from "vitest";
+import { Mock, vi } from "vitest";
 
 vi.mock("popper.js");
-vi.mock("../../../misc/AssetLabel", () => ({default: () => <span>Asset</span>}));
+vi.mock("../../../misc/AssetLabel", () => ({
+  default: () => <span>Asset</span>,
+}));
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 function generateResults(type: string, count: number = 5): SearchResult[] {

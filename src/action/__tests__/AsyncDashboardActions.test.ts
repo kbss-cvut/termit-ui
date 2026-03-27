@@ -1,31 +1,31 @@
-import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
+import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import Constants from "../../util/Constants";
-import Ajax, {param} from "../../util/Ajax";
+import Ajax, { param } from "../../util/Ajax";
 import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
-import {ThunkDispatch} from "../../util/Types";
+import { ThunkDispatch } from "../../util/Types";
 import TermItState from "../../model/TermItState";
 import {
-    loadLastCommentedAssets,
-    loadLastCommentedInReactionToMine,
-    loadLastEditedAssets,
-    loadMyAssets,
-    loadMyLastCommented,
+  loadLastCommentedAssets,
+  loadLastCommentedInReactionToMine,
+  loadLastEditedAssets,
+  loadMyAssets,
+  loadMyLastCommented,
 } from "../AsyncDashboardActions";
 import RecentlyCommentedAsset from "../../model/RecentlyCommentedAsset";
 import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 vi.mock("../../util/Routing");
 vi.mock(import("../../util/Ajax"), async (importOriginal) => {
-    const actual = await importOriginal();
-    return {
-        ...actual,
-        default: {
-            get: vi.fn(),
-        } as any
-    };
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    default: {
+      get: vi.fn(),
+    } as any,
+  };
 });
 
 const mockStore = configureMockStore<TermItState>([thunk]);

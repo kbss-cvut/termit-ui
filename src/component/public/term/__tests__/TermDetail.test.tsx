@@ -9,15 +9,17 @@ import TermMetadata from "../TermMetadata";
 import Constants from "../../../../util/Constants";
 import * as router from "react-router-dom";
 
-vi.mock("../TermMetadata", () => ({default: () => <div>Term metadata</div>}));
-vi.mock("../../../misc/HeaderWithActions", () => ({default:  () => <div>Header</div>}));
+vi.mock("../TermMetadata", () => ({ default: () => <div>Term metadata</div> }));
+vi.mock("../../../misc/HeaderWithActions", () => ({
+  default: () => <div>Header</div>,
+}));
 vi.mock("react-router-dom", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useParams: vi.fn(),
-        useLocation: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useParams: vi.fn(),
+    useLocation: vi.fn(),
+  };
 });
 
 describe("TermDetail", () => {

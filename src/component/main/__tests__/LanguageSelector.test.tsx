@@ -4,15 +4,15 @@ import * as Redux from "react-redux";
 import * as SyncActions from "../../../action/SyncActions";
 import { DropdownItem } from "reactstrap";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 vi.mock("../../../action/SyncActions", () => ({

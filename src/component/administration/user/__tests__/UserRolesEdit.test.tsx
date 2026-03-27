@@ -12,12 +12,12 @@ import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 describe("UserRolesEdit", () => {
   const roles: UserRole[] = [

@@ -1,14 +1,18 @@
-import {TextQuoteSelector} from "../../../model/TermOccurrence";
+import { TextQuoteSelector } from "../../../model/TermOccurrence";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Term from "../../../model/Term";
 import Routes from "../../../util/Routes";
 import Vocabulary from "../../../model/Vocabulary";
-import {TermDefinitionSourceLink} from "../TermDefinitionSourceLink";
-import {flushPromises, mockStore, mountWithIntl,} from "../../../__tests__/environment/Environment";
-import {act} from "react-dom/test-utils";
-import {MemoryRouter} from "react-router";
-import {langString} from "../../../model/MultilingualString";
+import { TermDefinitionSourceLink } from "../TermDefinitionSourceLink";
+import {
+  flushPromises,
+  mockStore,
+  mountWithIntl,
+} from "../../../__tests__/environment/Environment";
+import { act } from "react-dom/test-utils";
+import { MemoryRouter } from "react-router";
+import { langString } from "../../../model/MultilingualString";
 import ActionType from "../../../action/ActionType";
 import * as Actions from "../../../action/AsyncResourceActions";
 import File from "../../../model/File";

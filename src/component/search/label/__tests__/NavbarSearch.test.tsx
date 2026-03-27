@@ -37,9 +37,7 @@ describe("NavbarSearch", () => {
   };
 
   beforeEach(() => {
-    updateSearchFilter = vi
-      .fn()
-      .mockImplementation(() => Promise.resolve([]));
+    updateSearchFilter = vi.fn().mockImplementation(() => Promise.resolve([]));
   });
 
   it("does not render results component for initial state", () => {

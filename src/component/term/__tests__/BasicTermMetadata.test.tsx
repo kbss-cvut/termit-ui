@@ -12,11 +12,14 @@ import Constants from "../../../util/Constants";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router";
 
-vi.mock("../TermLink", () => ({default: () => <span>Term link</span>}));
-vi.mock("../../misc/OutgoingLink", () => ({default: () =>  <span>Outgoing link</span>}));
-vi.mock("../TermTypes", () => ({default: () =>  <div>Term types</div>}));
-vi.mock("../../vocabulary/VocabularyNameBadgeButton", () => ({default: () => <span>Vocabulary name</span>}));
-
+vi.mock("../TermLink", () => ({ default: () => <span>Term link</span> }));
+vi.mock("../../misc/OutgoingLink", () => ({
+  default: () => <span>Outgoing link</span>,
+}));
+vi.mock("../TermTypes", () => ({ default: () => <div>Term types</div> }));
+vi.mock("../../vocabulary/VocabularyNameBadgeButton", () => ({
+  default: () => <span>Vocabulary name</span>,
+}));
 
 describe("BasicTermMetadata", () => {
   const vocabulary: Vocabulary = new Vocabulary({

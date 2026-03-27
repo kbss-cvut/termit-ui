@@ -7,19 +7,18 @@ import CommentView from "../CommentView";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn()
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
 });
 
 describe("CommentView", () => {
   let user: User;
   let comment: Comment;
 
-  const addReaction: (comment: Comment, reactionType: string) => void =
-    vi.fn();
+  const addReaction: (comment: Comment, reactionType: string) => void = vi.fn();
   const removeReaction: (comment: Comment) => void = vi.fn();
   const onEdit: (comment: Comment) => void = vi.fn();
   const onRemove: (comment: Comment) => void = vi.fn();

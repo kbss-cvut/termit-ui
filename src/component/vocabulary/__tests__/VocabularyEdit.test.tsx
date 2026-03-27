@@ -9,9 +9,11 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import Document from "../../../model/Document";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
-vi.mock("../../misc/MarkdownEditor", () => ({default: () => <div>Editor</div>}));
+vi.mock("../../misc/MarkdownEditor", () => ({
+  default: () => <div>Editor</div>,
+}));
 
 describe("VocabularyEdit", () => {
   let onSave: (vocabulary: Vocabulary) => void;

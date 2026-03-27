@@ -12,14 +12,14 @@ import {
   withWebSocket,
 } from "../../../__tests__/environment/Environment";
 import * as actions from "../../../action/ComplexActions";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn()
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
 });
 
 describe("UserDropdown", () => {

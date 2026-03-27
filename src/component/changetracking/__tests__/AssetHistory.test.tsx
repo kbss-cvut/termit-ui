@@ -12,15 +12,15 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import * as Redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
-vi.mock("../../misc/AssetLabel", () => ({default: () => <span>Asset</span>}));
+vi.mock("../../misc/AssetLabel", () => ({ default: () => <span>Asset</span> }));
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("AssetHistory", () => {

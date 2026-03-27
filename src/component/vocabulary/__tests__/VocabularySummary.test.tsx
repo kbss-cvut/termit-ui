@@ -16,20 +16,22 @@ import AccessLevel from "../../../model/acl/AccessLevel";
 import { langString } from "../../../model/MultilingualString";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 import { StompClient } from "../../hoc/withStompClient";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
 });
-vi.mock("../../changetracking/AssetHistory", () => ({default: () => (
-  <div>Asset history</div>
-)}));
-vi.mock("../../term/Terms", () => ({default: () => <div>Terms</div>}));
-vi.mock("../TermChangeFrequency", () => ({default: () => <div>Term frequency</div>}));
+vi.mock("../../changetracking/AssetHistory", () => ({
+  default: () => <div>Asset history</div>,
+}));
+vi.mock("../../term/Terms", () => ({ default: () => <div>Terms</div> }));
+vi.mock("../TermChangeFrequency", () => ({
+  default: () => <div>Term frequency</div>,
+}));
 
 describe("VocabularySummary", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";

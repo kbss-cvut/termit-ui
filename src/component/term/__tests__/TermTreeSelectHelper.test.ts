@@ -10,7 +10,7 @@ import Term, { TermData } from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import RdfsResource from "../../../model/RdfsResource";
 import { langString } from "../../../model/MultilingualString";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 describe("TermTreeSelectHelper", () => {
   describe("processTermsForTreeSelect", () => {
@@ -170,9 +170,7 @@ describe("TermTreeSelectHelper", () => {
         selectedTerms: selected,
         terminalStates: [],
       }).then(() => {
-        expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
-          []
-        );
+        expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual([]);
       });
     });
 
@@ -190,9 +188,7 @@ describe("TermTreeSelectHelper", () => {
           terminalStates: [],
         }
       ).then(() => {
-        expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
-          []
-        );
+        expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual([]);
       });
     });
 

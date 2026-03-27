@@ -3,16 +3,19 @@ import * as AsyncVocabularyActions from "../../../action/AsyncVocabularyActions"
 import ExportVocabularyDialog from "../ExportVocabularyDialog";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import ExportConfig, {ExportFormat, ExportType,} from "../../../model/local/ExportConfig";
-import type {Mock} from "vitest";
-import {mountWithIntlAttached} from "../../annotator/__tests__/AnnotationUtil";
+import ExportConfig, {
+  ExportFormat,
+  ExportType,
+} from "../../../model/local/ExportConfig";
+import type { Mock } from "vitest";
+import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("ExportVocabularyDialog", () => {
@@ -92,8 +95,8 @@ describe("ExportVocabularyDialog", () => {
       wrapper.find("input").find({ name: type }).simulate("change");
       wrapper.find("button#vocabulary-export-submit").simulate("click");
       expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalled();
-      const exportConf = (AsyncVocabularyActions.exportGlossary as Mock)
-        .mock.calls[0][1];
+      const exportConf = (AsyncVocabularyActions.exportGlossary as Mock).mock
+        .calls[0][1];
       expect((exportConf as ExportConfig).format).toEqual(ExportFormat.Turtle);
       expect((exportConf as ExportConfig).type).toEqual(type);
     }

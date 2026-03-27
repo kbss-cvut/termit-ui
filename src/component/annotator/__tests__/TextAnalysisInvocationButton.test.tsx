@@ -13,14 +13,14 @@ import {
   webSocketProviderWrappingComponentOptions,
 } from "../../../__tests__/environment/Environment";
 import { act } from "react-dom/test-utils";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
 });
 
 const mount = (

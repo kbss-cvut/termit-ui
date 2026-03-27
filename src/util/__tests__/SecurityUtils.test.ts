@@ -1,7 +1,7 @@
 import SecurityUtils from "../SecurityUtils";
 import Constants from "../Constants";
 import BrowserStorage from "../BrowserStorage";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("../BrowserStorage");
 

@@ -1,81 +1,92 @@
-import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
+import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
 import {
-    abortPendingActionRequest,
-    createFileInDocument,
-    createProperty,
-    createVocabulary,
-    executeFileTextAnalysis,
-    getContentType,
-    getLabel,
-    getProperties,
-    hasFileContent,
-    isActionRequestPending,
-    loadAllTerms,
-    loadConfiguration,
-    loadFileContent,
-    loadHistory,
-    loadImportedVocabularies,
-    loadLatestTextAnalysisRecord,
-    loadNews,
-    loadResource,
-    loadTerms,
-    loadTermStates,
-    loadTypes,
-    loadVocabularies,
-    loadVocabulary,
-    removeTerm,
-    removeVocabulary,
-    saveFileContent,
-    updateResource,
-    updateTerm,
-    updateVocabulary,
-    uploadFileContent,
+  abortPendingActionRequest,
+  createFileInDocument,
+  createProperty,
+  createVocabulary,
+  executeFileTextAnalysis,
+  getContentType,
+  getLabel,
+  getProperties,
+  hasFileContent,
+  isActionRequestPending,
+  loadAllTerms,
+  loadConfiguration,
+  loadFileContent,
+  loadHistory,
+  loadImportedVocabularies,
+  loadLatestTextAnalysisRecord,
+  loadNews,
+  loadResource,
+  loadTerms,
+  loadTermStates,
+  loadTypes,
+  loadVocabularies,
+  loadVocabulary,
+  removeTerm,
+  removeVocabulary,
+  saveFileContent,
+  updateResource,
+  updateTerm,
+  updateVocabulary,
+  uploadFileContent,
 } from "../AsyncActions";
 import Constants from "../../util/Constants";
-import Ajax, {param} from "../../util/Ajax";
+import Ajax, { param } from "../../util/Ajax";
 import thunk from "redux-thunk";
-import {Action} from "redux";
+import { Action } from "redux";
 import Routing from "../../util/Routing";
-import Vocabulary, {CONTEXT as VOCABULARY_CONTEXT,} from "../../model/Vocabulary";
+import Vocabulary, {
+  CONTEXT as VOCABULARY_CONTEXT,
+} from "../../model/Vocabulary";
 import Vocabulary2 from "../../util/VocabularyUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Routes from "../../util/Routes";
-import ActionType, {AsyncAction, AsyncActionSuccess, MessageAction,} from "../ActionType";
+import ActionType, {
+  AsyncAction,
+  AsyncActionSuccess,
+  MessageAction,
+} from "../ActionType";
 import Term from "../../model/Term";
 import Generator from "../../__tests__/environment/Generator";
-import {TermFetchParams, ThunkDispatch} from "../../util/Types";
-import RdfsResource, {CONTEXT as RDFS_RESOURCE_CONTEXT,} from "../../model/RdfsResource";
+import { TermFetchParams, ThunkDispatch } from "../../util/Types";
+import RdfsResource, {
+  CONTEXT as RDFS_RESOURCE_CONTEXT,
+} from "../../model/RdfsResource";
 import TermItState from "../../model/TermItState";
 import Resource from "../../model/Resource";
 import AsyncActionStatus from "../AsyncActionStatus";
 import fileContent from "../../rest-mock/file";
 import TermItFile from "../../model/File";
 import MessageType from "../../model/MessageType";
-import {CONTEXT as TA_RECORD_CONTEXT, TextAnalysisRecord,} from "../../model/TextAnalysisRecord";
-import {verifyExpectedAssets} from "../../__tests__/environment/TestUtil";
+import {
+  CONTEXT as TA_RECORD_CONTEXT,
+  TextAnalysisRecord,
+} from "../../model/TextAnalysisRecord";
+import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
 import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import NotificationType from "../../model/NotificationType";
-import {langString} from "../../model/MultilingualString";
+import { langString } from "../../model/MultilingualString";
 import UserRole from "../../model/UserRole";
 import ResourceSaveReason from "../../component/annotator/ResourceSaveReason";
-import {Mock, vi} from "vitest";
+import { Mock, vi } from "vitest";
 
 vi.mock("../../util/Routing");
 vi.mock(import("../../util/Ajax"), async (importOriginal) => {
-    const actual = await importOriginal();
-    return {
-        ...actual,
-        default: {
-            head: vi.fn(),
-            get: vi.fn(),
-            getResponse: vi.fn(),
-            getRaw: vi.fn(),
-            post: vi.fn(),
-            put: vi.fn(),
-            patch: vi.fn(),
-            delete: vi.fn()
-        } as any
-    };
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    default: {
+      head: vi.fn(),
+      get: vi.fn(),
+      getResponse: vi.fn(),
+      getRaw: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+      patch: vi.fn(),
+      delete: vi.fn(),
+    } as any,
+  };
 });
 
 const mockStore = configureMockStore<TermItState>([thunk]);
@@ -420,9 +431,7 @@ describe("Async actions", () => {
           .getActions()
           .find((a) => a.type === ActionType.LOAD_VOCABULARY_IMPORTS);
         expect(loadImportsAction).toBeDefined();
-        expect(
-          (Ajax.get as Mock).mock.calls.length
-        ).toBeGreaterThanOrEqual(2);
+        expect((Ajax.get as Mock).mock.calls.length).toBeGreaterThanOrEqual(2);
         const url = (Ajax.get as Mock).mock.calls[1][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
       });
@@ -533,7 +542,9 @@ describe("Async actions", () => {
     });
 
     it("uses public API endpoint to load vocabularies into state", async () => {
-      const vocabularies = await import("../../rest-mock/vocabularies.json").then(module => module.default);
+      const vocabularies = await import(
+        "../../rest-mock/vocabularies.json"
+      ).then((module) => module.default);
       Ajax.get = vi
         .fn()
         .mockImplementation(() => Promise.resolve(vocabularies));
@@ -552,9 +563,7 @@ describe("Async actions", () => {
 
   describe("load file content", () => {
     it("extracts file content from incoming html data", () => {
-      Ajax.get = vi
-        .fn()
-        .mockImplementation(() => Promise.resolve(fileContent));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(fileContent));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadFileContent({ fragment: "metropolitan-plan" })

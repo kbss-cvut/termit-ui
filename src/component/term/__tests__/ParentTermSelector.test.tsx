@@ -12,7 +12,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 import { noop } from "lodash";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 describe("ParentTermSelector", () => {
   const vocabularyIri = Generator.generateUri();
@@ -122,9 +122,7 @@ describe("ParentTermSelector", () => {
       wrapper.setState({ includeImported: true });
       wrapper.update();
       wrapper.instance().fetchOptions({});
-      expect(
-        (loadTerms as Mock).mock.calls[0][0].includeImported
-      ).toBeTruthy();
+      expect((loadTerms as Mock).mock.calls[0][0].includeImported).toBeTruthy();
     });
 
     it("uses vocabulary of term being toggled when loading it subterms", () => {
@@ -247,9 +245,7 @@ describe("ParentTermSelector", () => {
         parentTerms: existingParents,
       });
       wrapper.instance().fetchOptions({});
-      expect(
-        (loadTerms as Mock).mock.calls[0][0].includeTerms
-      ).toBeDefined();
+      expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toBeDefined();
       expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
         existingParents.map((p) => p.iri)
       );

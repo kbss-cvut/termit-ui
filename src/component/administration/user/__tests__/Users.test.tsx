@@ -10,12 +10,12 @@ import * as OidcUtils from "../../../../util/OidcUtils";
 import * as Constats from "../../../../util/Constants";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("Users", () => {
@@ -28,14 +28,13 @@ describe("Users", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi
-      .spyOn(Redux, "useDispatch")
-      .mockReturnValue(vi.fn().mockResolvedValue({}));
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(
+      vi.fn().mockResolvedValue({})
+    );
   });
 
   function render() {
-    vi
-      .spyOn(Redux, "useSelector")
+    vi.spyOn(Redux, "useSelector")
       .mockReturnValueOnce(users)
       .mockReturnValueOnce(currentUser);
     mockUseI18n();

@@ -10,17 +10,19 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import * as redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
-vi.mock("../VocabularyList", () => ({default: () => <div>Vocabularies</div>}));
+vi.mock("../VocabularyList", () => ({
+  default: () => <div>Vocabularies</div>,
+}));
 
 describe("VocabularyList", () => {
   let fakeDispatch: ThunkDispatch;

@@ -6,15 +6,15 @@ import ErrorLogViewer from "../ErrorLogViewer";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import en from "../../../i18n/en";
 import * as SyncActions from "../../../action/SyncActions";
-import {Mock, vi} from "vitest";
+import { Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("ErrorLogViewer", () => {

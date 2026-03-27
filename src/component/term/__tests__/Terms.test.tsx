@@ -13,7 +13,7 @@ import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("../../../util/Routing");
 
@@ -116,9 +116,7 @@ describe("Terms", () => {
     wrapper.setState({ includeImported: true });
     wrapper.update();
     wrapper.instance().fetchOptions({});
-    expect(
-      (fetchTerms as Mock).mock.calls[0][0].includeImported
-    ).toBeTruthy();
+    expect((fetchTerms as Mock).mock.calls[0][0].includeImported).toBeTruthy();
   });
 
   it("uses term vocabulary when fetching its subterms", () => {

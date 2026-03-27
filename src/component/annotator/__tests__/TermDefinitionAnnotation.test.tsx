@@ -1,24 +1,24 @@
 import Generator from "../../../__tests__/environment/Generator";
 import Term from "../../../model/Term";
-import {shallow} from "enzyme";
-import {TermDefinitionAnnotation} from "../TermDefinitionAnnotation";
-import {mockUseI18n,} from "../../../__tests__/environment/IntlUtil";
+import { shallow } from "enzyme";
+import { TermDefinitionAnnotation } from "../TermDefinitionAnnotation";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import SimplePopupWithActions from "../SimplePopupWithActions";
 import AnnotationTerms from "../AnnotationTerms";
 import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
-import {withHooks} from "vitest-react-hooks-shallow";
+import { withHooks } from "vitest-react-hooks-shallow";
 import * as Actions from "../../../action/AsyncTermActions";
 import * as redux from "react-redux";
-import {ThunkDispatch} from "../../../util/Types";
-import type {Mock} from "vitest";
+import { ThunkDispatch } from "../../../util/Types";
+import type { Mock } from "vitest";
 import AccessLevel from "../../../model/acl/AccessLevel";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("TermDefinitionAnnotation", () => {
@@ -56,7 +56,7 @@ describe("TermDefinitionAnnotation", () => {
         term={Generator.generateTerm()}
         {...annotationProps}
         {...actions}
-          accessLevel={AccessLevel.WRITE}
+        accessLevel={AccessLevel.WRITE}
       />
     );
     expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(
@@ -87,7 +87,7 @@ describe("TermDefinitionAnnotation", () => {
           term={null}
           {...annotationProps}
           {...actions}
-            accessLevel={AccessLevel.WRITE}
+          accessLevel={AccessLevel.WRITE}
         />
       );
       expect(
@@ -112,7 +112,7 @@ describe("TermDefinitionAnnotation", () => {
           term={term}
           {...annotationProps}
           {...actions}
-            accessLevel={AccessLevel.WRITE}
+          accessLevel={AccessLevel.WRITE}
         />
       );
       const popup = wrapper.find(SimplePopupWithActions);

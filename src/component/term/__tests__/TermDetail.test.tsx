@@ -16,10 +16,18 @@ import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
 import { StompClient } from "../../hoc/withStompClient";
 
-vi.mock("../ParentTermSelector", () => ({default: () => <div>Parent selector</div>}));
-vi.mock("../RelatedTermsSelector", () => ({default: () => <div>Related terms selector</div>}));
-vi.mock("../../misc/AssetLabel", () => ({default: () => <span>Asset label</span>}));
-vi.mock("../../changetracking/AssetHistory", () => ({default: () => <div>Asset history</div>}));
+vi.mock("../ParentTermSelector", () => ({
+  default: () => <div>Parent selector</div>,
+}));
+vi.mock("../RelatedTermsSelector", () => ({
+  default: () => <div>Related terms selector</div>,
+}));
+vi.mock("../../misc/AssetLabel", () => ({
+  default: () => <span>Asset label</span>,
+}));
+vi.mock("../../changetracking/AssetHistory", () => ({
+  default: () => <div>Asset history</div>,
+}));
 
 describe("TermDetail", () => {
   const normalizedTermName = "test-term";

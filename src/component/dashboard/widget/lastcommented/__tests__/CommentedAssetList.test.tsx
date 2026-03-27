@@ -15,11 +15,11 @@ import * as Redux from "react-redux";
 import TermLink from "../../../../term/TermLink";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn()
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
 });
 
 describe("CommentedAssetList", () => {

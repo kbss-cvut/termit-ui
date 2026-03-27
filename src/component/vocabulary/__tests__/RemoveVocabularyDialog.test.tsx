@@ -8,7 +8,7 @@ import {
 import RDFStatement from "../../../model/RDFStatement";
 import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomInput from "../../misc/CustomInput";
 import React from "react";
 import Ajax from "../../../util/Ajax";
@@ -17,33 +17,33 @@ import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Input } from "reactstrap";
 import { ReactWrapper } from "enzyme";
-import {Mock, vi} from "vitest";
+import { Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 vi.mock("../../../action/AsyncVocabularyActions", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        getVocabularyRelations: vi.fn(),
-        getVocabularyTermsRelations: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    getVocabularyRelations: vi.fn(),
+    getVocabularyTermsRelations: vi.fn(),
+  };
 });
 
 vi.mock("../../../action/AsyncActions", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        loadTermInfoByIri: () => () => Promise.resolve(null),
-        getLabel: () => () => Promise.resolve(null),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    loadTermInfoByIri: () => () => Promise.resolve(null),
+    getLabel: () => () => Promise.resolve(null),
+  };
 });
 
 describe("RemoveVocabularyDialog", () => {
@@ -75,7 +75,7 @@ describe("RemoveVocabularyDialog", () => {
       }
       return arg;
     });
-    (useSelector as Mock).mockReturnValue({vocabulary});
+    (useSelector as Mock).mockReturnValue({ vocabulary });
 
     Ajax.get = vi.fn().mockResolvedValue(null);
 
@@ -91,9 +91,7 @@ describe("RemoveVocabularyDialog", () => {
   });
 
   it("Disables Remove button when a vocabulary term relation exists", async () => {
-    (getVocabularyTermsRelations as Mock).mockResolvedValue([
-      rdfStatement,
-    ]);
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
     let wrapper = await mount();
 
     const cancelDialog = wrapper.find(ConfirmCancelDialog);
@@ -102,9 +100,7 @@ describe("RemoveVocabularyDialog", () => {
 
   it("Disables Remove button when a vocabulary and a term relation exists", async () => {
     (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
-    (getVocabularyTermsRelations as Mock).mockResolvedValue([
-      rdfStatement,
-    ]);
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
     let wrapper = await mount();
 
     const cancelDialog = wrapper.find(ConfirmCancelDialog);
@@ -135,9 +131,7 @@ describe("RemoveVocabularyDialog", () => {
   });
 
   it("Hides input for vocabulary name when a term relation exists", async () => {
-    (getVocabularyTermsRelations as Mock).mockResolvedValue([
-      rdfStatement,
-    ]);
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
     let wrapper = await mount();
 
     const input = wrapper.find(CustomInput);
@@ -145,9 +139,7 @@ describe("RemoveVocabularyDialog", () => {
   });
   it("Hides input for vocabulary name when a vocabulary and a term relation exists", async () => {
     (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
-    (getVocabularyTermsRelations as Mock).mockResolvedValue([
-      rdfStatement,
-    ]);
+    (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
     let wrapper = await mount();
 
     const input = wrapper.find(CustomInput);

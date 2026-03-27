@@ -16,14 +16,14 @@ import TermItState from "../../../model/TermItState";
 import cs from "../../../i18n/cs";
 import * as redux from "react-redux";
 import TermItStore from "../../../store/TermItStore";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn()
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
 });
 
 describe("TermLink", () => {

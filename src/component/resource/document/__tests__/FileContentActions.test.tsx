@@ -12,11 +12,11 @@ import {
 import { act } from "react-dom/test-utils";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("FileContentActions", () => {
@@ -35,9 +35,9 @@ describe("FileContentActions", () => {
   });
 
   it("does not display actions dropdown when file has no content", async () => {
-    vi
-      .spyOn(Redux, "useDispatch")
-      .mockReturnValue(vi.fn().mockResolvedValue(null));
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(
+      vi.fn().mockResolvedValue(null)
+    );
     const wrapper = mountWithIntl(
       <FileContentActions
         file={file}
@@ -53,9 +53,9 @@ describe("FileContentActions", () => {
   });
 
   it("displays actions dropdown for file with content type", async () => {
-    vi
-      .spyOn(Redux, "useDispatch")
-      .mockReturnValue(vi.fn().mockResolvedValue(Constants.HTML_MIME_TYPE));
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(
+      vi.fn().mockResolvedValue(Constants.HTML_MIME_TYPE)
+    );
     const wrapper = mountWithIntl(
       <FileContentActions
         file={file}

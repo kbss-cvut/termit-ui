@@ -5,11 +5,15 @@ import { TermData } from "../../../model/Term";
 import Constants from "../../../util/Constants";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import MarkdownEditor from "../../misc/MarkdownEditor";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
-vi.mock("../../misc/HelpIcon", () => ({default: () => <span>Help</span>}));
-vi.mock("../../misc/MultilingualIcon", () => ({default: () => <span>Multilingual</span>}));
-vi.mock("../../misc/MarkdownEditor", () => ({default: () => <div>Editor</div>}));
+vi.mock("../../misc/HelpIcon", () => ({ default: () => <span>Help</span> }));
+vi.mock("../../misc/MultilingualIcon", () => ({
+  default: () => <span>Multilingual</span>,
+}));
+vi.mock("../../misc/MarkdownEditor", () => ({
+  default: () => <div>Editor</div>,
+}));
 
 describe("TermDefinitionBlockEdit", () => {
   let onChange: (change: Partial<TermData>) => void;

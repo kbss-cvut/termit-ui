@@ -7,7 +7,7 @@ import { Element, Text as DomHandlerText } from "domhandler";
 import { ElementType } from "domelementtype";
 // @ts-ignore
 import { fromNode, toNode } from "simple-xpath-position";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("simple-xpath-position", () => ({
   toNode: vi.fn(),

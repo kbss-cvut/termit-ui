@@ -15,9 +15,11 @@ import {
   mockStore,
   mountWithIntl,
 } from "../../../__tests__/environment/Environment";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
-vi.mock("../../misc/MarkdownEditor", () => ({default: () => <div>Editor</div>}));
+vi.mock("../../misc/MarkdownEditor", () => ({
+  default: () => <div>Editor</div>,
+}));
 
 describe("TermDefinitionEdit", () => {
   let onSave: (update: Term) => void;

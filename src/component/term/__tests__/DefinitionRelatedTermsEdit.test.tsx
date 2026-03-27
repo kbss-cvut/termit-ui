@@ -1,4 +1,4 @@
-import Term, {TermInfo} from "../../../model/Term";
+import Term, { TermInfo } from "../../../model/Term";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Generator from "../../../__tests__/environment/Generator";
 import {
@@ -10,7 +10,7 @@ import { shallow } from "enzyme";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import TermOccurrence from "../../../model/TermOccurrence";
 import Constants from "../../../util/Constants";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 describe("DefinitionRelatedTermsEdit", () => {
   let term: Term;
@@ -72,9 +72,7 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t2),
     ];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
-    (loadTermByIri as Mock)
-      .mockResolvedValueOnce(t1)
-      .mockResolvedValueOnce(t2);
+    (loadTermByIri as Mock).mockResolvedValueOnce(t1).mockResolvedValueOnce(t2);
     const wrapper = render(occurrences);
 
     return Promise.resolve().then(() => {
@@ -91,9 +89,7 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t2),
     ];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
-    (loadTermByIri as Mock)
-      .mockResolvedValueOnce(t1)
-      .mockResolvedValueOnce(t2);
+    (loadTermByIri as Mock).mockResolvedValueOnce(t1).mockResolvedValueOnce(t2);
     const wrapper = render(occurrences);
 
     return Promise.resolve().then(() => {

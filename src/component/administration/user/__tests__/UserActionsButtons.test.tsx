@@ -8,7 +8,7 @@ import User from "../../../../model/User";
 import Utils from "../../../../util/Utils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import UserActionsButtons, { UserActions } from "../UserActionsButtons";
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 describe("UserRow", () => {
   let user: User;

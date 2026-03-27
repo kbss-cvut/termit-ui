@@ -10,7 +10,7 @@ import BrowserStorage from "../BrowserStorage";
 import Generator from "../../__tests__/environment/Generator";
 import { TERM_MULTILINGUAL_ATTRIBUTES } from "../../model/Term";
 import { VOCABULARY_MULTILINGUAL_ATTRIBUTES } from "../../model/Vocabulary";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("../BrowserStorage");
 

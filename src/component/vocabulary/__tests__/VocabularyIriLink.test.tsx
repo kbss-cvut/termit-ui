@@ -8,7 +8,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import VocabularyIriLink from "../VocabularyIriLink";
 import TermItState from "../../../model/TermItState";
 
-vi.mock("../../misc/AssetLabel", () => ({default: () => <span>Asset</span>}));
+vi.mock("../../misc/AssetLabel", () => ({ default: () => <span>Asset</span> }));
 
 describe("Vocabulary IRI Link links to correct internal asset", () => {
   const fragment = "localVocabularyFragment";

@@ -16,19 +16,19 @@ import { ReactWrapper } from "enzyme";
 import { i18n } from "../../../__tests__/environment/IntlUtil";
 import { act } from "react-dom/test-utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
-vi.mock("../../vocabulary/VocabularyNameBadgeButton", () => ({default: () => (
-  <span>vocabulary-name</span>
-)}));
+vi.mock("../../vocabulary/VocabularyNameBadgeButton", () => ({
+  default: () => <span>vocabulary-name</span>,
+}));
 vi.mock("../relationship-annotation/RelationshipAnnotationButton", () => ({
   RelationshipAnnotationButton: () => null,
 }));

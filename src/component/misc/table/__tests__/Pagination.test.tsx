@@ -4,7 +4,7 @@ import { Pagination } from "../Pagination";
 import { UsePaginationInstanceProps } from "react-table";
 import Constants from "../../../../util/Constants";
 import BrowserStorage from "../../../../util/BrowserStorage";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("../../../../util/BrowserStorage");
 

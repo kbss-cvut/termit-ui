@@ -7,18 +7,18 @@ import Generator from "../../../__tests__/environment/Generator";
 import { langString } from "../../../model/MultilingualString";
 import * as Redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
-vi.mock("../../misc/HelpIcon", () => ({default: () => <div>Help</div>}));
+vi.mock("../../misc/HelpIcon", () => ({ default: () => <div>Help</div> }));
 
 describe("TermTypesEdit", () => {
   let onChange: (types: string[]) => void;

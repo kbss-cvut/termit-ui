@@ -15,11 +15,11 @@ import { act } from "react-dom/test-utils";
 import { ReactWrapper } from "enzyme";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("Profile", () => {
@@ -29,9 +29,9 @@ describe("Profile", () => {
   beforeEach(() => {
     updateProfile = vi.fn().mockImplementation(() => Promise.resolve({}));
     user = Generator.generateUser();
-    vi
-      .spyOn(Redux, "useDispatch")
-      .mockReturnValue(vi.fn().mockResolvedValue({}));
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(
+      vi.fn().mockResolvedValue({})
+    );
   });
 
   it("correctly renders component if !this.state.edit", async () => {

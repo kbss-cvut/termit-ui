@@ -16,11 +16,11 @@ import UserRole from "../../../../model/UserRole";
 import { langString } from "../../../../model/MultilingualString";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn()
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
 });
 
 const ACCESS_LEVELS = [

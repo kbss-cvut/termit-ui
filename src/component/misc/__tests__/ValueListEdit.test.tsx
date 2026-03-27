@@ -4,8 +4,10 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Button } from "reactstrap";
 import BadgeButton from "../BadgeButton";
 
-vi.mock("../../misc/HelpIcon", () => ({default: () => <span>Help</span>}));
-vi.mock("../../misc/MultilingualIcon", () => ({default: () => <span>Multilingual</span>}));
+vi.mock("../../misc/HelpIcon", () => ({ default: () => <span>Help</span> }));
+vi.mock("../../misc/MultilingualIcon", () => ({
+  default: () => <span>Multilingual</span>,
+}));
 
 describe("ValueListEdit", () => {
   let onChange: (list: string[]) => void;

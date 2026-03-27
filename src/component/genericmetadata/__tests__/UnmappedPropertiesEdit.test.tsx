@@ -14,14 +14,14 @@ import * as Redux from "react-redux";
 import { act } from "react-dom/test-utils";
 import * as AsyncActions from "../../../action/AsyncActions";
 
-vi.mock("../../misc/AssetLabel", () => ({default: () => <span>Asset</span>}));
+vi.mock("../../misc/AssetLabel", () => ({ default: () => <span>Asset</span> }));
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("UnmappedPropertiesEdit", () => {

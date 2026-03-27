@@ -36,12 +36,14 @@ import {
   AnnotationOrigin,
 } from "../../../model/AnnotatorLegendFilter";
 import { AnnotatorLegendFilterAction } from "../../../action/ActionType";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
-vi.mock("../../misc/AssetIriLink", () => ({default: () => <span>AssetIriLink</span>}));
-vi.mock("../HighlightTermOccurrencesButton", () => ({default:  () => (
-  <button>Highlight terms</button>
-)}));
+vi.mock("../../misc/AssetIriLink", () => ({
+  default: () => <span>AssetIriLink</span>,
+}));
+vi.mock("../HighlightTermOccurrencesButton", () => ({
+  default: () => <button>Highlight terms</button>,
+}));
 
 describe("Annotator", () => {
   const fileIri = VocabularyUtils.create(Generator.generateUri());
@@ -429,9 +431,7 @@ describe("Annotator", () => {
       );
       annotation.score = "1.0";
       wrapper.instance().setState({ newTermLabelAnnotation: annotation });
-      AnnotationDomHelper.findAnnotation = vi
-        .fn()
-        .mockReturnValue(annotation);
+      AnnotationDomHelper.findAnnotation = vi.fn().mockReturnValue(annotation);
       AnnotationDomHelper.removeAnnotation = vi.fn();
 
       wrapper.instance().onCloseCreate();
@@ -452,9 +452,7 @@ describe("Annotator", () => {
       );
       annotation.resource = Generator.generateUri();
       wrapper.instance().setState({ newTermLabelAnnotation: annotation });
-      AnnotationDomHelper.findAnnotation = vi
-        .fn()
-        .mockReturnValue(annotation);
+      AnnotationDomHelper.findAnnotation = vi.fn().mockReturnValue(annotation);
       AnnotationDomHelper.removeAnnotation = vi.fn();
 
       wrapper.instance().onCloseCreate();
@@ -865,8 +863,8 @@ describe("Annotator", () => {
       wrapper.instance().assignNewTerm(term);
       return Promise.resolve().then(() => {
         expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
-        const src = (mockedCallbackProps.setTermDefinitionSource as Mock)
-          .mock.calls[0][0];
+        const src = (mockedCallbackProps.setTermDefinitionSource as Mock).mock
+          .calls[0][0];
         expect(src.term).toEqual(term);
         expect(src.target.source.iri).toEqual(fileIri.toString());
       });
@@ -914,8 +912,8 @@ describe("Annotator", () => {
       await wrapper.instance().onSaveTermDefinition(term);
 
       expect(mockedCallbackProps.setTermDefinitionSource).toHaveBeenCalled();
-      const src = (mockedCallbackProps.setTermDefinitionSource as Mock)
-        .mock.calls[0][0];
+      const src = (mockedCallbackProps.setTermDefinitionSource as Mock).mock
+        .calls[0][0];
       expect(src).toBeInstanceOf(TermOccurrence);
       expect(src.term).toEqual(term);
       expect(src.target.source.iri).toEqual(fileIri.toString());

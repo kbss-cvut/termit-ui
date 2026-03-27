@@ -13,7 +13,7 @@ import { MemoryRouter } from "react-router-dom";
 import Generator from "../../../__tests__/environment/Generator";
 import { langString } from "../../../model/MultilingualString";
 import AnnotatorLegendFilter from "../../../model/AnnotatorLegendFilter";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 function assumeProps(
   wrapper: ReactWrapper,
@@ -34,7 +34,9 @@ function showOccurrenceViewForm(
   assumeProps(wrapper, popupComponent, { isOpen: true });
 }
 
-vi.mock("../AnnotationTerms", () => ({default:  () => <div>Annotation terms</div>}));
+vi.mock("../AnnotationTerms", () => ({
+  default: () => <div>Annotation terms</div>,
+}));
 
 describe("Annotation", () => {
   const term = new Term({
@@ -137,9 +139,7 @@ describe("Annotation", () => {
   });
 
   it("recognizes invalid occurrence", () => {
-    mockedFunctions.onFetchTerm = vi
-      .fn()
-      .mockRejectedValue("Term not found.");
+    mockedFunctions.onFetchTerm = vi.fn().mockRejectedValue("Term not found.");
     const wrapper = shallow(
       <Annotation
         {...intlFunctions()}
@@ -188,7 +188,7 @@ describe("Annotation", () => {
   });
 
   /* --- pinning --- */
-    // TODO Re-enable after migration to RTL
+  // TODO Re-enable after migration to RTL
   it.skip("renders occurrence view form on mouse leave if pinned", () => {
     const wrapper = mountWithIntlAttached(
       <MemoryRouter>
@@ -254,7 +254,7 @@ describe("Annotation", () => {
   });
 
   /* --- registers actions --- */
-    // TODO Re-enable after migration to RTL
+  // TODO Re-enable after migration to RTL
   it.skip("registers remove action if onRemove is bound", () => {
     const wrapper = mountWithIntlAttached(
       <MemoryRouter>
@@ -276,7 +276,7 @@ describe("Annotation", () => {
     ).toEqual(true);
   });
 
-    // TODO Re-enable after migration to RTL
+  // TODO Re-enable after migration to RTL
   it.skip("registers close action for occurrence form", () => {
     const wrapper = mountWithIntlAttached(
       <MemoryRouter>
@@ -319,9 +319,9 @@ describe("Annotation", () => {
       );
       wrapper.instance().onCreateTerm();
       expect(mockedFunctions.onCreateTerm).toHaveBeenCalled();
-      expect(
-        (mockedFunctions.onCreateTerm as Mock).mock.calls[0][0]
-      ).toEqual(props.content);
+      expect((mockedFunctions.onCreateTerm as Mock).mock.calls[0][0]).toEqual(
+        props.content
+      );
     });
 
     it("passes the text of the annotation to term creation handler when content is not available", () => {
@@ -334,9 +334,9 @@ describe("Annotation", () => {
       );
       wrapper.instance().onCreateTerm();
       expect(mockedFunctions.onCreateTerm).toHaveBeenCalled();
-      expect(
-        (mockedFunctions.onCreateTerm as Mock).mock.calls[0][0]
-      ).toEqual(assignedOccProps.text);
+      expect((mockedFunctions.onCreateTerm as Mock).mock.calls[0][0]).toEqual(
+        assignedOccProps.text
+      );
     });
 
     it("passes current annotation as the second argument to term creation handler", () => {
@@ -347,9 +347,7 @@ describe("Annotation", () => {
       );
       wrapper.instance().onCreateTerm();
       expect(mockedFunctions.onCreateTerm).toHaveBeenCalled();
-      expect(
-        (mockedFunctions.onCreateTerm as Mock).mock.calls[0][1]
-      ).toEqual({
+      expect((mockedFunctions.onCreateTerm as Mock).mock.calls[0][1]).toEqual({
         about: assignedOccProps.about,
         property: assignedOccProps.property,
         typeof: assignedOccProps.typeof,

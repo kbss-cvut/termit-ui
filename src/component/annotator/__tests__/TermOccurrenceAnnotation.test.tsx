@@ -1,11 +1,17 @@
 import Term from "../../../model/Term";
-import {intlFunctions, mockUseI18n,} from "../../../__tests__/environment/IntlUtil";
-import {TermOccurrenceAnnotation} from "../TermOccurrenceAnnotation";
-import {shallow} from "enzyme";
+import {
+  intlFunctions,
+  mockUseI18n,
+} from "../../../__tests__/environment/IntlUtil";
+import { TermOccurrenceAnnotation } from "../TermOccurrenceAnnotation";
+import { shallow } from "enzyme";
 import SimplePopupWithActions from "../SimplePopupWithActions";
-import {AnnotationClass, AnnotationOrigin,} from "../../../model/AnnotatorLegendFilter";
+import {
+  AnnotationClass,
+  AnnotationOrigin,
+} from "../../../model/AnnotatorLegendFilter";
 import Generator from "../../../__tests__/environment/Generator";
-import {withHooks} from "vitest-react-hooks-shallow";
+import { withHooks } from "vitest-react-hooks-shallow";
 import AccessLevel from "../../../model/acl/AccessLevel";
 
 describe("TermOccurrenceAnnotation", () => {

@@ -7,11 +7,11 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { OWL, SKOS } from "../../../util/Namespaces";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn()
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
 });
 
 describe("TermTypes", () => {

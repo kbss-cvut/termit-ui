@@ -97,12 +97,14 @@ function stateToPlainObject(state: TermItState): TermItState {
 }
 
 async function importVocabularies() {
-    const data = await import("../../rest-mock/vocabularies.json").then((module) => module.default);
-    const result: {[key: string]: Vocabulary} = {};
-    data.forEach((vocabulary) => {
-        result[vocabulary["@id"]] = new Vocabulary(vocabulary as any);
-    });
-    return result;
+  const data = await import("../../rest-mock/vocabularies.json").then(
+    (module) => module.default
+  );
+  const result: { [key: string]: Vocabulary } = {};
+  data.forEach((vocabulary) => {
+    result[vocabulary["@id"]] = new Vocabulary(vocabulary as any);
+  });
+  return result;
 }
 
 describe("Reducers", () => {
@@ -299,7 +301,9 @@ describe("Reducers", () => {
     });
 
     it("resets search-related state", async () => {
-      initialState.searchResults = await import("../../rest-mock/searchResults.json") as any[];
+      initialState.searchResults = (await import(
+        "../../rest-mock/searchResults.json"
+      )) as any[];
       initialState.searchQuery = new SearchQuery();
       initialState.searchQuery.searchQuery = "hello";
       initialState.searchInProgress = true;

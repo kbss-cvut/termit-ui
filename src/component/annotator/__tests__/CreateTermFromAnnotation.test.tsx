@@ -5,7 +5,7 @@ import { CreateTermFromAnnotation } from "../CreateTermFromAnnotation";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 describe("CreateTermFromAnnotation", () => {
   const vocabularyIri = VocabularyUtils.create(

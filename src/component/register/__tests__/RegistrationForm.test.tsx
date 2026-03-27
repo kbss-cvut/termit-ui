@@ -14,11 +14,11 @@ import { MemoryRouter } from "react-router";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("RegistrationForm", () => {

@@ -12,7 +12,7 @@ import { mock as stompMock, StompSessionProvider } from "react-stomp-hooks";
 import TimeAgo from "javascript-time-ago";
 import IntlData from "../../model/IntlData";
 import { WebSocketWrapper } from "../../WebSocketApp";
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 export const mockStore = configureMockStore<TermItState>([thunk])(
   new TermItState()

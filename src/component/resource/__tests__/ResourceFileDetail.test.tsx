@@ -11,7 +11,7 @@ import Resource, { EMPTY_RESOURCE } from "../../../model/Resource";
 import FileDetail from "../../file/FileContentDetail";
 import Routes from "../../../util/Routes";
 import VocabularySelect from "../../vocabulary/VocabularySelect";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 describe("ResourceFileDetail", () => {
   const resourceName = "test-resource";

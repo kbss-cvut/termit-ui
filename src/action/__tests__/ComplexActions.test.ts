@@ -7,9 +7,8 @@ import Routes from "../../util/Routes";
 import { ThunkDispatch } from "../../util/Types";
 import ActionType from "../ActionType";
 import Ajax from "../../util/Ajax";
-import {vi} from "vitest";
-import type {Mock} from "vitest";
-
+import { vi } from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("../../util/SecurityUtils");
 vi.mock("../../util/Routing");

@@ -5,15 +5,15 @@ import * as redux from "react-redux";
 import Unauthorized from "../Unauthorized";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import {Mock, vi} from "vitest";
+import { Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("IfUserIsEditor", () => {

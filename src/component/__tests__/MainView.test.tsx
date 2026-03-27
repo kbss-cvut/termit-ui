@@ -11,8 +11,8 @@ import { match, routingProps } from "../../__tests__/environment/TestUtil";
 import Generator from "../../__tests__/environment/Generator";
 import Constants from "../../util/Constants";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
-import {vi} from "vitest";
-import {flushPromises} from "../../__tests__/environment/Environment";
+import { vi } from "vitest";
+import { flushPromises } from "../../__tests__/environment/Environment";
 
 describe("MainView", () => {
   let loadUser: () => Promise<any>;
@@ -33,7 +33,7 @@ describe("MainView", () => {
     roles: [],
     maxFileUploadSize: "10MB",
     versionSeparator: "/version",
-      indexedLanguages: []
+    indexedLanguages: [],
   };
 
   let actions: {

@@ -17,17 +17,23 @@ import StringListEdit from "../../misc/ValueListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 import Vocabulary from "../../../model/Vocabulary";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
-vi.mock("../ParentTermSelector", () => ({default: () => <div>Parent selector</div>}));
-vi.mock("../ExactMatchesSelector", () => ({default: () => (
-  <div>Exact match selector</div>
-)}));
-vi.mock("../RelatedTermsSelector", () => ({default: () => (
-  <div>Related terms selector</div>
-)}));
-vi.mock("../TermTypesEdit", () => ({default: () => <div>Term types edit</div>}));
-vi.mock("../../misc/AssetLabel", () => ({default: () => <span>AssetLabel</span>}));
+vi.mock("../ParentTermSelector", () => ({
+  default: () => <div>Parent selector</div>,
+}));
+vi.mock("../ExactMatchesSelector", () => ({
+  default: () => <div>Exact match selector</div>,
+}));
+vi.mock("../RelatedTermsSelector", () => ({
+  default: () => <div>Related terms selector</div>,
+}));
+vi.mock("../TermTypesEdit", () => ({
+  default: () => <div>Term types edit</div>,
+}));
+vi.mock("../../misc/AssetLabel", () => ({
+  default: () => <span>AssetLabel</span>,
+}));
 
 describe("Term edit", () => {
   let term: Term;

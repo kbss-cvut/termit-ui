@@ -9,15 +9,15 @@ import Utils from "../../../../util/Utils";
 import TermState, { TermStateDisplay } from "../TermState";
 import { getLocalized } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("TermState", () => {

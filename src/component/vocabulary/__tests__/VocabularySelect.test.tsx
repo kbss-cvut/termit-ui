@@ -10,15 +10,15 @@ import * as redux from "react-redux";
 import { withHooks } from "vitest-react-hooks-shallow";
 import { shallow } from "enzyme";
 import * as Actions from "../../../action/AsyncActions";
-import type {Mock} from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual,
-        useSelector: vi.fn(),
-        useDispatch: vi.fn(),
-    };
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
 });
 
 describe("VocabularySelect", () => {
