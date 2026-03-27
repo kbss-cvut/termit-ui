@@ -1,41 +1,47 @@
-import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
+import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
 import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import Constants from "../../util/Constants";
 import Ajax from "../../util/Ajax";
-import { ThunkDispatch } from "../../util/Types";
-import User, { UserAccountData } from "../../model/User";
+import {ThunkDispatch} from "../../util/Types";
+import User, {UserAccountData} from "../../model/User";
 import {
-  changePassword,
-  createNewUser,
-  disableUser,
-  enableUser,
-  loadUser,
-  loadUsers,
-  login,
-  register,
-  unlockUser,
-  updateProfile,
+    changePassword,
+    createNewUser,
+    disableUser,
+    enableUser,
+    loadUser,
+    loadUsers,
+    login,
+    register,
+    unlockUser,
+    updateProfile,
 } from "../AsyncUserActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
-import ActionType, {
-  AsyncAction,
-  AsyncFailureAction,
-  MessageAction,
-} from "../ActionType";
+import ActionType, {AsyncAction, AsyncFailureAction, MessageAction,} from "../ActionType";
 import MessageType from "../../model/MessageType";
 import AsyncActionStatus from "../AsyncActionStatus";
-import { ErrorData } from "../../model/ErrorInfo";
-import { Action } from "redux";
+import {ErrorData} from "../../model/ErrorInfo";
+import {Action} from "redux";
 import Routing from "../../util/Routing";
-import { DEFAULT_CONFIGURATION } from "../../model/Configuration";
-import {vi} from "vitest";
+import {DEFAULT_CONFIGURATION} from "../../model/Configuration";
 import type {Mock} from "vitest";
-import {mockAjax} from "../../__tests__/environment/TestUtil";
+import {vi} from "vitest";
 
 vi.mock("../../util/Routing");
-mockAjax();
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        default: {
+            get: vi.fn(),
+            post: vi.fn(),
+            put: vi.fn(),
+            delete: vi.fn()
+        } as any
+    };
+});
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 

@@ -16,10 +16,17 @@ import {
 import RecentlyCommentedAsset from "../../model/RecentlyCommentedAsset";
 import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
 import {vi} from "vitest";
-import {mockAjax} from "../../__tests__/environment/TestUtil";
 
 vi.mock("../../util/Routing");
-mockAjax();
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        default: {
+            get: vi.fn(),
+        } as any
+    };
+});
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 

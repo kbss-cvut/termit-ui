@@ -1,32 +1,38 @@
-import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
+import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
 import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
 import Constants from "../../util/Constants";
 import Generator from "../../__tests__/environment/Generator";
-import { ThunkDispatch } from "../../util/Types";
+import {ThunkDispatch} from "../../util/Types";
 import ActionType from "../ActionType";
 import {
-  exportGlossary,
-  getVocabularyRelations,
-  getVocabularyTermsRelations,
-  loadTermCount,
-  loadVocabularyContentChanges,
-  loadVocabularySnapshots,
+    exportGlossary,
+    getVocabularyRelations,
+    getVocabularyTermsRelations,
+    loadTermCount,
+    loadVocabularyContentChanges,
+    loadVocabularySnapshots,
 } from "../AsyncVocabularyActions";
 import AsyncActionStatus from "../AsyncActionStatus";
 import Utils from "../../util/Utils";
-import ExportConfig, {
-  ExportFormat,
-  ExportType,
-} from "../../model/local/ExportConfig";
-import {vi} from "vitest";
+import ExportConfig, {ExportFormat, ExportType,} from "../../model/local/ExportConfig";
 import type {Mock} from "vitest";
-import {mockAjax} from "../../__tests__/environment/TestUtil";
+import {vi} from "vitest";
 
 vi.mock("../../util/Routing");
-mockAjax();
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        default: {
+            head: vi.fn(),
+            get: vi.fn(),
+            getRaw: vi.fn(),
+        } as any
+    };
+});
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 

@@ -28,7 +28,7 @@ export function createAnnotation(
  * Same as mountWithIntl function but attaches node component to a newly created div node so functions that access
  * document can access it.
  *
- * This is particularly usefull for reactstrap Popover component due to issue
+ * This is particularly useful for reactstrap Popover component due to issue
  * "https://github.com/reactstrap/reactstrap/issues/773", which is often manifested by message
  * "The target '$id' could not be identified in the dom, tip: check spelling"
  *

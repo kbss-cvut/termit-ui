@@ -1,14 +1,11 @@
 import * as redux from "react-redux";
 import * as AsyncVocabularyActions from "../../../action/AsyncVocabularyActions";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import ExportVocabularyDialog from "../ExportVocabularyDialog";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import ExportConfig, {
-  ExportFormat,
-  ExportType,
-} from "../../../model/local/ExportConfig";
+import ExportConfig, {ExportFormat, ExportType,} from "../../../model/local/ExportConfig";
 import type {Mock} from "vitest";
+import {mountWithIntlAttached} from "../../annotator/__tests__/AnnotationUtil";
 
 vi.mock("react-redux", async (importOriginal) => {
     const actual = await importOriginal() as any;
@@ -53,7 +50,7 @@ describe("ExportVocabularyDialog", () => {
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
     vi.spyOn(AsyncVocabularyActions, "exportGlossary");
 
-    return mountWithIntl(
+    return mountWithIntlAttached(
       <ExportVocabularyDialog
         show={true}
         onClose={onClose}

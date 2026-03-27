@@ -9,12 +9,19 @@ import AsyncActionStatus from "../AsyncActionStatus";
 import Term from "../../model/Term";
 import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import {vi} from "vitest";
 import type {Mock} from "vitest";
-import {mockAjax} from "../../__tests__/environment/TestUtil";
+import {vi} from "vitest";
 
 vi.mock("../../util/Routing");
-mockAjax();
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        default: {
+            get: vi.fn(),
+        } as any
+    };
+});
 
 // Mock implementation for throwIfAborted which is missing in jsdom < 22.1.0
 AbortSignal.prototype.throwIfAborted = function () {

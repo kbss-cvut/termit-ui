@@ -1,30 +1,40 @@
-import configureMockStore, { MockStoreEnhanced } from "redux-mock-store";
+import configureMockStore, {MockStoreEnhanced} from "redux-mock-store";
 import TermItState from "../../model/TermItState";
 import thunk from "redux-thunk";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Ajax from "../../util/Ajax";
-import { ThunkDispatch } from "../../util/Types";
+import {ThunkDispatch} from "../../util/Types";
 import {
-  createTerm,
-  loadDefinitionRelatedTermsTargeting,
-  loadTerm,
-  setTermDefinitionSource,
-  setTermState,
+    createTerm,
+    loadDefinitionRelatedTermsTargeting,
+    loadTerm,
+    setTermDefinitionSource,
+    setTermState,
 } from "../AsyncTermActions";
 import TermOccurrence from "../../model/TermOccurrence";
 import Generator from "../../__tests__/environment/Generator";
-import Term, { CONTEXT as TERM_CONTEXT } from "../../model/Term";
-import ActionType, { AsyncActionSuccess, MessageAction } from "../ActionType";
+import Term, {CONTEXT as TERM_CONTEXT} from "../../model/Term";
+import ActionType, {AsyncActionSuccess, MessageAction} from "../ActionType";
 import MessageType from "../../model/MessageType";
-import { langString } from "../../model/MultilingualString";
+import {langString} from "../../model/MultilingualString";
 import Constants from "../../util/Constants";
 import AsyncActionStatus from "../AsyncActionStatus";
-import {mockAjax, verifyExpectedAssets} from "../../__tests__/environment/TestUtil";
-import {vi} from "vitest";
+import {verifyExpectedAssets} from "../../__tests__/environment/TestUtil";
 import type {Mock} from "vitest";
+import {vi} from "vitest";
 
 vi.mock("../../util/Routing");
-mockAjax();
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        default: {
+            get: vi.fn(),
+            post: vi.fn(),
+            put: vi.fn(),
+        } as any
+    };
+});
 
 const mockStore = configureMockStore<TermItState>([thunk]);
 
