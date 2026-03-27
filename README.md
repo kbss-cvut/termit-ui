@@ -17,8 +17,8 @@ Documentation for developers and system administrators is in the [doc folder](do
 
 ## Running TermIt UI in Development
 
-NodeJS 20 and npm 10 are required to build and run TermIt UI in development. To run the TermIt UI, it is necessary to provide a value for
-`REACT_APP_SERVER_URL` representing the URL of the backend to connect to. Typically, this is done at build time.
+NodeJS 24 and npm 11 are required to build and run TermIt UI in development. To run the TermIt UI, it is necessary to provide a value for
+`VITE_SERVER_URL` representing the URL of the backend to connect to. Typically, this is done at build time.
 See the documentation for more details and other configuration options.
 
 ### Dockerization

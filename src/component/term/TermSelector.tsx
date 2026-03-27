@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadAllTerms } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
 import ShowFlatListToggle from "./state/ShowFlatListToggle";
-import { setTermsFlatList } from "src/action/SyncActions";
+import { setTermsFlatList } from "../../action/SyncActions";
 import { LargeTermValueList } from "./LargeTermValueList";
 
 export const MAX_SELECT_THRESHOLD = 20;

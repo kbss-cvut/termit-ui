@@ -15,13 +15,16 @@ import {
 } from "../AsyncDashboardActions";
 import RecentlyCommentedAsset from "../../model/RecentlyCommentedAsset";
 import RecentlyModifiedAsset from "../../model/RecentlyModifiedAsset";
+import { vi } from "vitest";
 
-jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../util/Ajax");
+vi.mock("../../util/Routing");
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+  const actual = await importOriginal();
   return {
-    ...originalModule,
-    default: jest.fn(),
+    ...actual,
+    default: {
+      get: vi.fn(),
+    } as any,
   };
 });
 
@@ -31,7 +34,7 @@ describe("AsyncDashboardActions", () => {
   let store: MockStoreEnhanced<TermItState>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store = mockStore(new TermItState());
   });
 
@@ -66,7 +69,7 @@ describe("AsyncDashboardActions", () => {
       ];
       const page = Generator.randomInt(0, 5);
       const pageSize = 10;
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadLastEditedAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
@@ -119,7 +122,7 @@ describe("AsyncDashboardActions", () => {
       ];
       const page = Generator.randomInt(0, 5);
       const pageSize = 10;
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadLastEditedAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
@@ -163,7 +166,7 @@ describe("AsyncDashboardActions", () => {
       ];
       const page = Generator.randomInt(0, 5);
       const pageSize = 10;
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadMyAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
@@ -203,7 +206,7 @@ describe("AsyncDashboardActions", () => {
       ];
       const page = Generator.randomInt(0, 5);
       const pageSize = 10;
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(data));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadMyAssets(page, pageSize))
       ).then((result: RecentlyModifiedAsset[]) => {
@@ -252,7 +255,7 @@ describe("AsyncDashboardActions", () => {
       it("returns correct instances of received last commented asset data", () => {
         const page = Generator.randomInt(0, 5);
         const size = 5;
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+        Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(data));
         return Promise.resolve(
           (store.dispatch as ThunkDispatch)(loadLastCommentedAssets(page, size))
         ).then((result: RecentlyCommentedAsset[]) => {
@@ -272,7 +275,7 @@ describe("AsyncDashboardActions", () => {
       it("returns correct instances of received my last commented asset data", () => {
         const page = Generator.randomInt(0, 5);
         const size = 5;
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+        Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(data));
         return Promise.resolve(
           (store.dispatch as ThunkDispatch)(loadMyLastCommented(page, size))
         ).then((result: RecentlyCommentedAsset[]) => {
@@ -292,7 +295,7 @@ describe("AsyncDashboardActions", () => {
       it("returns correct instances of received last commented assets in reaction to mine", () => {
         const page = Generator.randomInt(0, 5);
         const size = 5;
-        Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(data));
+        Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(data));
         return Promise.resolve(
           (store.dispatch as ThunkDispatch)(
             loadLastCommentedInReactionToMine(page, size)

@@ -6,12 +6,16 @@ import ErrorLogViewer from "../ErrorLogViewer";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import en from "../../../i18n/en";
 import * as SyncActions from "../../../action/SyncActions";
+import { Mock, vi } from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
 
 describe("ErrorLogViewer", () => {
   beforeEach(() => {
@@ -31,7 +35,7 @@ describe("ErrorLogViewer", () => {
         error: new ErrorInfo(ActionType.LOGIN, { message: "Login error" }),
       },
     ];
-    (Redux.useSelector as jest.Mock).mockReturnValue(errors);
+    (Redux.useSelector as Mock).mockReturnValue(errors);
     const wrapper = mountWithIntl(<ErrorLogViewer />);
     expect(wrapper.find("tr").length).toEqual(errors.length + 1); // + header
     const timestamps = wrapper.find(".error-log-timestamp");
@@ -59,7 +63,7 @@ describe("ErrorLogViewer", () => {
         }),
       },
     ];
-    (Redux.useSelector as jest.Mock).mockReturnValue(errors);
+    (Redux.useSelector as Mock).mockReturnValue(errors);
     const wrapper = mountWithIntl(<ErrorLogViewer />);
     const valueText = wrapper.find(".error-log-value").text();
     expect(valueText).toContain(en.messages["connection.error"]);
@@ -74,10 +78,10 @@ describe("ErrorLogViewer", () => {
         }),
       },
     ];
-    (Redux.useSelector as jest.Mock).mockReturnValue(errors);
-    const fakeDispatch = jest.fn().mockResolvedValue({});
-    (Redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
-    jest.spyOn(SyncActions, "clearErrors");
+    (Redux.useSelector as Mock).mockReturnValue(errors);
+    const fakeDispatch = vi.fn().mockResolvedValue({});
+    (Redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
+    vi.spyOn(SyncActions, "clearErrors");
     const wrapper = mountWithIntl(<ErrorLogViewer />);
     wrapper.find("button#log-viewer-clear").simulate("click");
     expect(SyncActions.clearErrors).toHaveBeenCalled();

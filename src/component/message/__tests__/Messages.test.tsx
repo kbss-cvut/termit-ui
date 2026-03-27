@@ -4,11 +4,16 @@ import { mountWithIntl } from "../../../__tests__/environment/Environment";
 import { Message } from "../Message";
 import Constants from "../../../util/Constants";
 import * as redux from "react-redux";
+import { Mock, vi } from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
 
 describe("Messages", () => {
   let messages: MessageModel[];
@@ -23,7 +28,7 @@ describe("Messages", () => {
   });
 
   it("renders configured number of messages", () => {
-    (redux.useSelector as jest.Mock).mockReturnValue(messages);
+    (redux.useSelector as Mock).mockReturnValue(messages);
     const wrapper = mountWithIntl(<Messages />);
     const messagesDisplayed = wrapper.find(Message);
     expect(messagesDisplayed.length).toEqual(Constants.MESSAGE_DISPLAY_COUNT);
@@ -31,7 +36,7 @@ describe("Messages", () => {
 
   it("renders all messages when their number is less than configured max", () => {
     const toRender = messages.slice(0, Constants.MESSAGE_DISPLAY_COUNT - 1);
-    (redux.useSelector as jest.Mock).mockReturnValue(toRender);
+    (redux.useSelector as Mock).mockReturnValue(toRender);
     const wrapper = mountWithIntl(<Messages />);
     const messagesDisplayed = wrapper.find(Message);
     expect(messagesDisplayed.length).toEqual(toRender.length);

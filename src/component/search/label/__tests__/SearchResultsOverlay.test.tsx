@@ -16,13 +16,20 @@ import RdfsResource from "../../../../model/RdfsResource";
 import { langString } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
 import * as Redux from "react-redux";
+import { Mock, vi } from "vitest";
 
-jest.mock("popper.js");
-jest.mock("../../../misc/AssetLabel", () => () => <span>Asset</span>);
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
+vi.mock("popper.js");
+vi.mock("../../../misc/AssetLabel", () => ({
+  default: () => <span>Asset</span>,
 }));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
 
 function generateResults(type: string, count: number = 5): SearchResult[] {
   const results: SearchResult[] = [];
@@ -55,19 +62,19 @@ describe("SearchResultsOverlay", () => {
   let wrapper: ReactWrapper;
 
   beforeEach(() => {
-    onClose = jest.fn();
-    onOpenSearch = jest.fn();
+    onClose = vi.fn();
+    onOpenSearch = vi.fn();
     element = document.createElement("div");
     element.id = "root";
     document.body.appendChild(element);
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     mockUseI18n();
-    jest.spyOn(Redux, "useSelector").mockReturnValue([]);
+    vi.spyOn(Redux, "useSelector").mockReturnValue([]);
   });
 
   afterEach(() => {
     wrapper.unmount();
-    jest.clearAllTimers();
+    vi.clearAllTimers();
     document.body.removeChild(element);
   });
 
@@ -223,8 +230,8 @@ describe("SearchResultsOverlay", () => {
         })
       ),
     ];
-    (Redux.useSelector as jest.Mock).mockReset();
-    jest.spyOn(Redux, "useSelector").mockReturnValue([states[1].iri]);
+    (Redux.useSelector as Mock).mockReset();
+    vi.spyOn(Redux, "useSelector").mockReturnValue([states[1].iri]);
     renderWithResults(results);
     const items = document.getElementsByClassName("search-result-link");
     expect(items.length).toEqual(0);

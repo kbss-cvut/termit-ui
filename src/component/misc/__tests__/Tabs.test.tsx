@@ -11,7 +11,7 @@ describe("Tabs Test", () => {
   let tabs: ReactElement;
 
   beforeEach(() => {
-    change = jest.fn();
+    change = vi.fn();
     tabs = (
       <Tabs
         activeTabLabelKey="edit"

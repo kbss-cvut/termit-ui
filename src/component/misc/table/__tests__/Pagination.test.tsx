@@ -4,8 +4,9 @@ import { Pagination } from "../Pagination";
 import { UsePaginationInstanceProps } from "react-table";
 import Constants from "../../../../util/Constants";
 import BrowserStorage from "../../../../util/BrowserStorage";
+import type { Mock } from "vitest";
 
-jest.mock("../../../../util/BrowserStorage");
+vi.mock("../../../../util/BrowserStorage");
 
 describe("Pagination", () => {
   let pagingProps: UsePaginationInstanceProps<any>;
@@ -15,12 +16,12 @@ describe("Pagination", () => {
       canNextPage: true,
       page: [],
       canPreviousPage: false,
-      gotoPage: jest.fn(),
-      nextPage: jest.fn(),
+      gotoPage: vi.fn(),
+      nextPage: vi.fn(),
       pageCount: 1,
       pageOptions: [],
-      previousPage: jest.fn(),
-      setPageSize: jest.fn(),
+      previousPage: vi.fn(),
+      setPageSize: vi.fn(),
     };
   });
 
@@ -44,7 +45,7 @@ describe("Pagination", () => {
 
   it("loads stored page size on mount", () => {
     const size = 20;
-    (BrowserStorage.get as jest.Mock).mockReturnValue(size.toString());
+    (BrowserStorage.get as Mock).mockReturnValue(size.toString());
     mountWithIntl(
       <Pagination
         pagingState={{ pageSize: 10, pageIndex: 0 }}
@@ -59,7 +60,7 @@ describe("Pagination", () => {
     const size = 20;
     pagingProps.canPreviousPage = false;
     pagingProps.canNextPage = false;
-    (BrowserStorage.get as jest.Mock).mockReturnValue(size.toString());
+    (BrowserStorage.get as Mock).mockReturnValue(size.toString());
     const wrapper = mountWithIntl(
       <Pagination
         pagingState={{ pageSize: 10, pageIndex: 0 }}

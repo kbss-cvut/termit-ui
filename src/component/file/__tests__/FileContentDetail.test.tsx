@@ -29,12 +29,12 @@ describe("FileDetail", () => {
   beforeEach(() => {
     fileContent = "<html lang='en'><body>Test content</body></html>";
     mockedFunctionLikeProps = {
-      consumeNotification: jest.fn(),
-      loadFileContent: jest.fn(),
-      saveFileContent: jest.fn(),
-      clearFileContent: jest.fn(),
-      fetchTerms: jest.fn().mockResolvedValue({}),
-      loadVocabulary: jest.fn(),
+      consumeNotification: vi.fn(),
+      loadFileContent: vi.fn(),
+      saveFileContent: vi.fn(),
+      clearFileContent: vi.fn(),
+      fetchTerms: vi.fn().mockResolvedValue({}),
+      loadVocabulary: vi.fn(),
     };
     mockDataProps = {
       defaultTerms: [],
@@ -93,7 +93,7 @@ describe("FileDetail", () => {
   });
 
   it("fetches all terms within initialization", () => {
-    mockedFunctionLikeProps.fetchTerms = jest.fn(() => Promise.resolve([]));
+    mockedFunctionLikeProps.fetchTerms = vi.fn(() => Promise.resolve([]));
 
     shallow(
       <FileContentDetail

@@ -25,7 +25,7 @@ import Mask from "./misc/Mask";
 import "./MainView.scss";
 import { openForEditing } from "../action/AsyncWorkspaceActions";
 import Constants from "../util/Constants";
-import Routing from "src/util/Routing";
+import Routing from "../util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import Breadcrumbs from "./breadcrumb/Breadcrumbs";
 import { loadTermStates } from "../action/AsyncActions";

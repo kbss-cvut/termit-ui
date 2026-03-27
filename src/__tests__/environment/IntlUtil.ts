@@ -48,5 +48,5 @@ export function intlFunctions(): HasI18n {
  * Mocks the useI18n hook.
  */
 export function mockUseI18n() {
-  jest.spyOn(useI18n, "useI18n").mockReturnValue({ ...intlFunctions() });
+  vi.spyOn(useI18n, "useI18n").mockReturnValue({ ...intlFunctions() });
 }

@@ -1,6 +1,6 @@
 import OntologicalVocabulary from "../util/VocabularyUtils";
 import Resource, { ResourceData } from "./Resource";
-import Document, { DocumentData } from "./Document";
+import Document, { DocumentData, CONTEXT } from "./Document";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
@@ -43,8 +43,7 @@ export default class File extends Resource implements FileData {
 
   public toJsonLd(): {} {
     const jsonLd: any = Object.assign({}, this, {
-      // Import lazily to evade circular dependency in context definition between File and Document
-      "@context": require("./Document").CONTEXT,
+      "@context": CONTEXT,
       types: [OntologicalVocabulary.RESOURCE, OntologicalVocabulary.FILE],
     });
     if (jsonLd.owner) {

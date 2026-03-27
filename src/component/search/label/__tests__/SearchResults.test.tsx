@@ -16,19 +16,25 @@ import RdfsResource from "../../../../model/RdfsResource";
 import { langString } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
 import * as Redux from "react-redux";
+import { Mock, vi } from "vitest";
 
-jest.mock("../../../misc/AssetLabel", () => () => <span>AssetLabel</span>);
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
+vi.mock("../../../misc/AssetLabel", () => ({
+  default: () => <span>AssetLabel</span>,
 }));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
 
 describe("SearchResults", () => {
   beforeEach(() => {
-    Ajax.get = jest.fn().mockResolvedValue({});
+    Ajax.get = vi.fn().mockResolvedValue({});
     mockUseI18n();
-    jest
-      .spyOn(Redux, "useSelector")
+    vi.spyOn(Redux, "useSelector")
       .mockReturnValueOnce(true)
       .mockReturnValue([]);
   });
@@ -220,8 +226,8 @@ describe("SearchResults", () => {
         })
       ),
     ];
-    (Redux.useSelector as jest.Mock).mockReset();
-    jest.spyOn(Redux, "useSelector").mockReturnValue([states[1].iri]);
+    (Redux.useSelector as Mock).mockReset();
+    vi.spyOn(Redux, "useSelector").mockReturnValue([states[1].iri]);
     const wrapper = renderWithResults(results);
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();

@@ -13,10 +13,13 @@ import Constants from "../../../util/Constants";
 import { MemoryRouter } from "react-router";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
+});
 
 describe("RegistrationForm", () => {
   const userInfo = {
@@ -30,9 +33,9 @@ describe("RegistrationForm", () => {
   let cancel: () => void;
 
   beforeEach(() => {
-    register = jest.fn().mockResolvedValue({});
-    cancel = jest.fn();
-    Ajax.get = jest.fn().mockImplementation(() =>
+    register = vi.fn().mockResolvedValue({});
+    cancel = vi.fn();
+    Ajax.get = vi.fn().mockImplementation(() =>
       Promise.resolve({
         data: false,
       })
@@ -201,7 +204,7 @@ describe("RegistrationForm", () => {
     const error = new ErrorInfo(ActionType.REGISTER, {
       message: "Error",
     });
-    register = jest
+    register = vi
       .fn()
       .mockResolvedValue({ status: AsyncActionStatus.FAILURE, error });
     const wrapper = shallow<RegistrationForm>(

@@ -16,7 +16,7 @@ describe("Sidebar", () => {
   });
 
   beforeEach(() => {
-    toggleSidebar = jest.fn();
+    toggleSidebar = vi.fn();
   });
 
   it("renders correct structure of component on desktop with sidebar expanded", () => {

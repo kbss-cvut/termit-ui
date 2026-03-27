@@ -13,8 +13,8 @@ describe("ProfileActionButtons", () => {
   let edit: boolean;
 
   beforeEach(() => {
-    showProfileEdit = jest.fn();
-    navigateToChangePasswordRoute = jest.fn();
+    showProfileEdit = vi.fn();
+    navigateToChangePasswordRoute = vi.fn();
     edit = false;
     mockUseI18n();
   });

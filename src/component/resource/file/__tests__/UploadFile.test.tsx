@@ -5,22 +5,22 @@ import * as Redux from "react-redux";
 import Dropzone from "react-dropzone";
 import Generator from "../../../../__tests__/environment/Generator";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+vi.mock("react-redux", () => ({
+  ...vi.importActual("react-redux"),
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
 }));
 
 describe("UploadFile", () => {
   let setFile: (file: File) => void;
 
   beforeEach(() => {
-    setFile = jest.fn();
+    setFile = vi.fn();
     mockUseI18n();
   });
 
   it("passes dropped file to parent", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue({
+    vi.spyOn(Redux, "useSelector").mockReturnValue({
       maxFileUploadSize: "1KB",
     });
     const wrapper = shallow(<UploadFile setFile={setFile} />);
@@ -30,7 +30,7 @@ describe("UploadFile", () => {
   });
 
   it("does not provide dropped file to parent when file size exceeds limit", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue({
+    vi.spyOn(Redux, "useSelector").mockReturnValue({
       maxFileUploadSize: "1KB",
     });
     const wrapper = shallow(<UploadFile setFile={setFile} />);

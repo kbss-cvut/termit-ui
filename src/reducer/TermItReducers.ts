@@ -45,7 +45,7 @@ import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
-import { loadTermsFlatListPreference } from "src/util/UISettingsUtil";
+import { loadTermsFlatListPreference } from "../util/UISettingsUtil";
 import RelationshipAnnotation from "../model/meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "../model/meta/AnnotatedTermRelationship";
 
