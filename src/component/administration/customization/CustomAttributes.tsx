@@ -5,17 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCustomAttributes } from "../../../action/AsyncActions";
 import PanelWithActions from "../../misc/PanelWithActions";
 import {
-  Column,
-  useFilters,
-  usePagination,
-  useSortBy,
-  useTable,
-} from "react-table";
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { CustomAttribute } from "../../../model/RdfsResource";
 import TermItState from "../../../model/TermItState";
-import TextBasedFilter, {
-  multilingualTextContainsFilterFactory,
-} from "../../misc/table/TextBasedFilter";
+import { multilingualTextContainsFilterFactory } from "../../misc/table/TextBasedFilter";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { getLocalized } from "../../../model/MultilingualString";
 import { Button } from "reactstrap";
@@ -52,36 +51,34 @@ export const CustomAttributes: React.FC = () => {
   }, []);
 
   const lang = getShortLocale(locale);
-  const columns: Column<CustomAttribute>[] = React.useMemo(
+  const columns: ColumnDef<CustomAttribute>[] = React.useMemo(
     () => [
       {
-        Header: i18n("properties.edit.new.label"),
-        accessor: "label",
-        Filter: TextBasedFilter,
-        filter: "text",
-        Cell: ({ row }) => (
+        header: i18n("properties.edit.new.label"),
+        accessorKey: "label",
+        filterFn: multilingualTextContainsFilterFactory(lang),
+        cell: ({ row }) => (
           <>
             {row.original.getLabel(lang)}
             <CopyIriIcon url={row.original.iri} />
           </>
         ),
-        className: "align-middle",
+        meta: { className: "align-middle" },
       },
       {
-        Header: i18n("properties.edit.new.comment"),
-        accessor: "comment",
-        Filter: TextBasedFilter,
-        filter: "text",
-        Cell: ({ row }) => <>{getLocalized(row.original.comment, lang)}</>,
-        className: "align-middle",
+        header: i18n("properties.edit.new.comment"),
+        accessorKey: "comment",
+        filterFn: multilingualTextContainsFilterFactory(lang),
+        cell: ({ row }) => <>{getLocalized(row.original.comment, lang)}</>,
+        meta: { className: "align-middle" },
       },
       {
-        Header: i18n("administration.customization.customAttributes.domain"),
-        accessor: "domainIri",
-        disableFilters: true,
-        disableSortBy: true,
-        className: "align-middle",
-        Cell: ({ row }) => {
+        header: i18n("administration.customization.customAttributes.domain"),
+        accessorKey: "domainIri",
+        enableColumnFilter: false,
+        enableSorting: false,
+        meta: { className: "align-middle" },
+        cell: ({ row }) => {
           const domain = DOMAIN_OPTIONS.find(
             (opt) => opt.value === row.original.domainIri
           );
@@ -91,12 +88,12 @@ export const CustomAttributes: React.FC = () => {
         },
       },
       {
-        Header: i18n("administration.customization.customAttributes.range"),
-        accessor: "rangeIri",
-        disableFilters: true,
-        disableSortBy: true,
-        className: "align-middle",
-        Cell: ({ row }) => {
+        header: i18n("administration.customization.customAttributes.range"),
+        accessorKey: "rangeIri",
+        enableColumnFilter: false,
+        enableSorting: false,
+        meta: { className: "align-middle" },
+        cell: ({ row }) => {
           const range = RANGE_OPTIONS.find(
             (opt) => opt.value === row.original.rangeIri
           );
@@ -106,13 +103,11 @@ export const CustomAttributes: React.FC = () => {
         },
       },
       {
-        Header: i18n("actions"),
+        header: i18n("actions"),
         id: "actions",
-        headerClassName: "text-center align-top",
-        disableFilters: true,
-        disableSortBy: true,
-        // @ts-ignore
-        Cell: ({ row }) => (
+        enableColumnFilter: false,
+        enableSorting: false,
+        cell: ({ row }) => (
           <>
             <Button
               className="users-action-button"
@@ -124,34 +119,31 @@ export const CustomAttributes: React.FC = () => {
             </Button>
           </>
         ),
-        className: "align-middle table-row-actions text-center",
+        meta: {
+          headerClassName: "text-center align-top",
+          className: "align-middle table-row-actions text-center",
+        },
       },
     ],
     [i18n, lang, onEditClick]
   );
 
-  const filterTypes = React.useMemo(
-    () => ({ text: multilingualTextContainsFilterFactory(lang) }),
-    [lang]
-  );
-  const tableInstance = useTable<CustomAttribute>(
-    {
-      columns,
-      data: properties,
-      filterTypes,
-      initialState: {
-        sortBy: [
-          {
-            id: "iri",
-            desc: false,
-          },
-        ],
-      },
-    } as any,
-    useFilters,
-    useSortBy,
-    usePagination
-  );
+  const tableInstance = useReactTable<CustomAttribute>({
+    columns,
+    data: properties,
+    initialState: {
+      sorting: [
+        {
+          id: "label",
+          desc: false,
+        },
+      ],
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   return (
     <PanelWithActions

@@ -10,7 +10,7 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import NotificationType from "../../../model/NotificationType";
 import { consumeNotification } from "../../../action/SyncActions";
 import { removeSnapshot } from "../../../action/AsyncActions";
-import { CellProps, Column } from "react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { FormattedDate, FormattedTime } from "react-intl";
 import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
@@ -72,16 +72,16 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
     ).then(() => setToRemove(null));
   };
 
-  const columns: Column<SnapshotData>[] = React.useMemo(
+  const columns: ColumnDef<SnapshotData>[] = React.useMemo(
     () => [
       {
-        Header: i18n("snapshots.created"),
-        accessor: "created",
-        className: "align-middle",
-        Cell: ({ row }) => {
+        header: i18n("snapshots.created"),
+        accessorKey: "created",
+        meta: { className: "align-middle" },
+        cell: ({ row }) => {
           const created = new Date(row.original.created);
           const authorData = row.original.author;
-          let authorName = null;
+          let authorName: string | null = null;
 
           if (authorData) {
             if (authorData.firstName && authorData.lastName) {
@@ -107,14 +107,15 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
         },
       },
       {
-        Header: i18n("actions"),
-        className: "text-center align-middle snapshot-actions",
-        Cell: (props: CellProps<SnapshotData>) => {
+        header: i18n("actions"),
+        id: "actions",
+        meta: { className: "text-center align-middle snapshot-actions" },
+        cell: ({ row }) => {
           return (
             <>
               <Link
                 className="btn btn-primary btn-sm"
-                to={resolvePath(props.row.original, asset)}
+                to={resolvePath(row.original, asset)}
               >
                 {i18n("snapshots.show")}
               </Link>
@@ -123,7 +124,7 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
                   <Button
                     size="sm"
                     color="outline-danger"
-                    onClick={() => onRemoveClick(props.row.original)}
+                    onClick={() => onRemoveClick(row.original)}
                   >
                     {i18n("remove")}
                   </Button>

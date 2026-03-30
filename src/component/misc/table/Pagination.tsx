@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ChangeEvent } from "react";
-import { UsePaginationInstanceProps, UsePaginationState } from "react-table";
 import {
   Pagination as BootstrapPagination,
   PaginationItem,
@@ -11,46 +10,65 @@ import Constants from "../../../util/Constants";
 import { useI18n } from "../../hook/useI18n";
 import BrowserStorage from "../../../util/BrowserStorage";
 import "./Pagination.scss";
+interface PaginationTableState {
+  pagination: {
+    pageIndex: number;
+    pageSize: number;
+  };
+}
+
+export interface PaginationApi {
+  getState: () => PaginationTableState;
+  getPageCount: () => number;
+  getCanPreviousPage: () => boolean;
+  getCanNextPage: () => boolean;
+  setPageIndex: (index: number) => void;
+  previousPage: () => void;
+  nextPage: () => void;
+  setPageSize: (size: number) => void;
+}
 
 interface PaginationProps {
-  pagingProps: UsePaginationInstanceProps<any>;
-  pagingState: UsePaginationState<any>;
+  table: PaginationApi;
   allowSizeChange?: boolean;
 }
 
 const PAGE_SIZES = [10, 20, 30, 50];
 
-export const Pagination: React.FC<PaginationProps> = (props) => {
+export const Pagination: React.FC<PaginationProps> = ({
+  table,
+  allowSizeChange = false,
+}) => {
   const { i18n, formatMessage } = useI18n();
-  const {
-    canPreviousPage,
-    canNextPage,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-  } = props.pagingProps;
-  const { pageIndex, pageSize } = props.pagingState;
+
+  const pageIndex: number = table.getState().pagination.pageIndex;
+  const pageSize: number = table.getState().pagination.pageSize;
+  const pageCount: number = table.getPageCount();
+  const canPreviousPage: boolean = table.getCanPreviousPage();
+  const canNextPage: boolean = table.getCanNextPage();
+
   React.useEffect(() => {
     const savedPageSize = BrowserStorage.get(
       Constants.STORAGE_TABLE_PAGE_SIZE_KEY
     );
     if (savedPageSize) {
-      setPageSize(Number(savedPageSize));
+      table.setPageSize(Number(savedPageSize));
     }
-  }, [setPageSize]);
+  }, [table]);
+
   const onPageSizeSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     BrowserStorage.set(Constants.STORAGE_TABLE_PAGE_SIZE_KEY, value);
-    setPageSize(Number(value));
+    table.setPageSize(Number(value));
   };
 
-  const items = [];
+  const items: React.ReactElement[] = [];
   for (let i = 0; i < pageCount; i++) {
     items.push(
       <PaginationItem key={i} active={i === pageIndex}>
-        <PaginationLink onClick={() => gotoPage(i)}>{i + 1}</PaginationLink>
+        <PaginationLink onClick={() => table.setPageIndex(i)}>
+          {i + 1}
+        </PaginationLink>
       </PaginationItem>
     );
   }
@@ -62,14 +80,14 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
           <PaginationItem disabled={!canPreviousPage}>
             <PaginationLink
               first={true}
-              onClick={() => gotoPage(0)}
+              onClick={() => table.setPageIndex(0)}
               title={i18n("table.paging.first.tooltip")}
             />
           </PaginationItem>
           <PaginationItem disabled={!canPreviousPage}>
             <PaginationLink
               previous={true}
-              onClick={() => previousPage()}
+              onClick={() => table.previousPage()}
               title={i18n("table.paging.previous.tooltip")}
             />
           </PaginationItem>
@@ -77,20 +95,20 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
           <PaginationItem disabled={!canNextPage}>
             <PaginationLink
               next={true}
-              onClick={() => nextPage()}
+              onClick={() => table.nextPage()}
               title={i18n("table.paging.next.tooltip")}
             />
           </PaginationItem>
           <PaginationItem disabled={!canNextPage}>
             <PaginationLink
               last={true}
-              onClick={() => gotoPage(pageCount - 1)}
+              onClick={() => table.setPageIndex(Math.max(pageCount - 1, 0))}
               title={i18n("table.paging.last.tooltip")}
             />
           </PaginationItem>
         </BootstrapPagination>
       )}
-      {props.allowSizeChange && (
+      {allowSizeChange && (
         <div className="page-size-select">
           <Select value={pageSize.toString()} onChange={onPageSizeSelect}>
             {PAGE_SIZES.map((s) => (
@@ -109,10 +127,6 @@ export const Pagination: React.FC<PaginationProps> = (props) => {
       )}
     </>
   );
-};
-
-Pagination.defaultProps = {
-  allowSizeChange: false,
 };
 
 export default Pagination;
