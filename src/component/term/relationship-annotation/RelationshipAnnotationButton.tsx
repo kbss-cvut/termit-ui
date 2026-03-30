@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
-import { ReactComponent as RelationshipIcon } from "../../../asset/icon/term-relationship-icon.svg";
+import RelationshipIcon from "../../../asset/icon/term-relationship-icon.svg?react";
 import BadgeButton from "../../misc/BadgeButton";
 import { useI18n } from "../../hook/useI18n";
 import Utils from "../../../util/Utils";

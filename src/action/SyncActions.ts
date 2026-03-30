@@ -23,7 +23,7 @@ import {
   AnnotationClass,
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
-import { saveTermsFlatListPreference } from "src/util/UISettingsUtil";
+import { saveTermsFlatListPreference } from "../util/UISettingsUtil";
 import { Language } from "../util/Constants";
 import MessageType from "../model/MessageType";
 

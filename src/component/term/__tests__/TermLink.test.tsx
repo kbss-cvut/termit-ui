@@ -16,11 +16,15 @@ import TermItState from "../../../model/TermItState";
 import cs from "../../../i18n/cs";
 import * as redux from "react-redux";
 import TermItStore from "../../../store/TermItStore";
+import type { Mock } from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
+});
 
 describe("TermLink", () => {
   const vocFragment = "localVocabularyFragment";
@@ -32,7 +36,7 @@ describe("TermLink", () => {
       label: langString("Test vocabulary"),
       iri: vocNamespace + vocFragment,
     });
-    (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
+    (redux.useSelector as Mock).mockReturnValue(Generator.generateUser());
   });
 
   afterEach(() => {
@@ -87,7 +91,7 @@ describe("TermLink", () => {
       iri: `${testVocabulary.iri}/pojem/${termFragment}`,
       vocabulary: testVocabulary,
     });
-    jest.spyOn(redux, "useSelector").mockReturnValue(EMPTY_USER);
+    vi.spyOn(redux, "useSelector").mockReturnValue(EMPTY_USER);
 
     const link = mountWithIntl(
       <MemoryRouter>

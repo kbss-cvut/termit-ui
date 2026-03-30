@@ -15,7 +15,7 @@ import {
   routingProps,
 } from "../../../../__tests__/environment/TestUtil";
 
-jest.mock("../../../../util/Routing");
+vi.mock("../../../../util/Routing");
 
 describe("NavbarSearch", () => {
   let updateSearchFilter: () => Promise<object>;
@@ -37,9 +37,7 @@ describe("NavbarSearch", () => {
   };
 
   beforeEach(() => {
-    updateSearchFilter = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve([]));
+    updateSearchFilter = vi.fn().mockImplementation(() => Promise.resolve([]));
   });
 
   it("does not render results component for initial state", () => {

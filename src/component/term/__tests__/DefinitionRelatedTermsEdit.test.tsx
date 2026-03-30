@@ -1,4 +1,4 @@
-import Term from "../../../model/Term";
+import Term, { TermInfo } from "../../../model/Term";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Generator from "../../../__tests__/environment/Generator";
 import {
@@ -10,19 +10,20 @@ import { shallow } from "enzyme";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import TermOccurrence from "../../../model/TermOccurrence";
 import Constants from "../../../util/Constants";
+import type { Mock } from "vitest";
 
 describe("DefinitionRelatedTermsEdit", () => {
   let term: Term;
   let pending: DefinitionRelatedChanges;
   let onChange: (change: DefinitionRelatedChanges) => void;
 
-  let loadTermByIri: (iri: IRI) => Promise<Term | null>;
+  let loadTermByIri: (iri: IRI) => Promise<TermInfo | null>;
 
   beforeEach(() => {
     term = Generator.generateTerm();
     pending = { pendingApproval: [], pendingRemoval: [] };
-    onChange = jest.fn();
-    loadTermByIri = jest.fn();
+    onChange = vi.fn();
+    loadTermByIri = vi.fn();
   });
 
   it("renders only unique terms which occurred in the term's definition", () => {
@@ -35,7 +36,7 @@ describe("DefinitionRelatedTermsEdit", () => {
     occurrences.forEach((o) =>
       o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
     );
-    (loadTermByIri as jest.Mock).mockResolvedValue(t);
+    (loadTermByIri as Mock).mockResolvedValue(t);
     const wrapper = render(occurrences);
 
     expect(wrapper.find(DefinitionalTermOccurrence).length).toEqual(1);
@@ -71,9 +72,7 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t2),
     ];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
-    (loadTermByIri as jest.Mock)
-      .mockResolvedValueOnce(t1)
-      .mockResolvedValueOnce(t2);
+    (loadTermByIri as Mock).mockResolvedValueOnce(t1).mockResolvedValueOnce(t2);
     const wrapper = render(occurrences);
 
     return Promise.resolve().then(() => {
@@ -90,9 +89,7 @@ describe("DefinitionRelatedTermsEdit", () => {
       Generator.generateOccurrenceOf(t2),
     ];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
-    (loadTermByIri as jest.Mock)
-      .mockResolvedValueOnce(t1)
-      .mockResolvedValueOnce(t2);
+    (loadTermByIri as Mock).mockResolvedValueOnce(t1).mockResolvedValueOnce(t2);
     const wrapper = render(occurrences);
 
     return Promise.resolve().then(() => {
@@ -108,7 +105,7 @@ describe("DefinitionRelatedTermsEdit", () => {
     const occurrences = [Generator.generateOccurrenceOf(t1)];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
     pending.pendingRemoval = [occurrences[0]];
-    (loadTermByIri as jest.Mock).mockResolvedValueOnce(t1);
+    (loadTermByIri as Mock).mockResolvedValueOnce(t1);
     const wrapper = render(occurrences);
 
     return Promise.resolve().then(() => {
@@ -124,12 +121,12 @@ describe("DefinitionRelatedTermsEdit", () => {
         Generator.generateOccurrenceOf(t),
         Generator.generateOccurrenceOf(t),
       ];
-      (loadTermByIri as jest.Mock).mockResolvedValue(t);
+      (loadTermByIri as Mock).mockResolvedValue(t);
       const wrapper = render(occurrences);
 
       wrapper.instance().onApprove(occurrences[0]);
       expect(onChange).toHaveBeenCalled();
-      expect((onChange as jest.Mock).mock.calls[0][0].pendingApproval).toEqual(
+      expect((onChange as Mock).mock.calls[0][0].pendingApproval).toEqual(
         occurrences
       );
     });
@@ -143,12 +140,12 @@ describe("DefinitionRelatedTermsEdit", () => {
         Generator.generateOccurrenceOf(t),
         Generator.generateOccurrenceOf(t),
       ];
-      (loadTermByIri as jest.Mock).mockResolvedValue(t);
+      (loadTermByIri as Mock).mockResolvedValue(t);
       const wrapper = render(occurrences);
 
       wrapper.instance().onRemove(occurrences[0]);
       expect(onChange).toHaveBeenCalled();
-      expect((onChange as jest.Mock).mock.calls[0][0].pendingRemoval).toEqual(
+      expect((onChange as Mock).mock.calls[0][0].pendingRemoval).toEqual(
         occurrences
       );
     });

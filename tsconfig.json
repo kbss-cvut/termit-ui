@@ -2,8 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "build/dist",
-    "module": "esnext",
-    "target": "es5",
+    "module": "ESNext",
+    "target": "ESNext",
     "lib": ["esnext", "dom", "dom.iterable"],
     "sourceMap": true,
     "allowJs": true,
@@ -24,7 +24,7 @@
     "skipLibCheck": true,
     "strict": true,
     "typeRoots": ["node_modules/@types", "src/@types"],
-    "types": ["node", "jest"],
+    "types": ["node", "jest", "vite/client", "vitest/globals"],
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
@@ -34,7 +34,6 @@
     "scripts",
     "acceptance-tests",
     "webpack",
-    "jest",
     "**/__tests__",
     "**/__mocks__"
   ]

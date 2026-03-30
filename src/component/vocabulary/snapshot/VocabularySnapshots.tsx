@@ -47,6 +47,9 @@ const VocabularySnapshots: React.FC<VocabularySnapshotsProps> = ({ asset }) => {
     dispatch(loadVocabularySnapshots(VocabularyUtils.create(asset.iri))).then(
       (data) => setSnapshots(data)
     );
+    return () => {
+      setSnapshots([]);
+    };
   }, [asset.iri, dispatch, setSnapshots]);
   useEffect(() => {
     const event = notifications.find(

@@ -11,7 +11,7 @@ describe("LanguageSelector", () => {
   let onSelect: (lang: string) => void;
 
   beforeEach(() => {
-    onSelect = jest.fn();
+    onSelect = vi.fn();
   });
 
   it("renders list of languages extracted from multilingual attributes of specified term", () => {
@@ -60,7 +60,7 @@ describe("LanguageSelector", () => {
     let onRemove: (lang: string) => void;
 
     beforeEach(() => {
-      onRemove = jest.fn();
+      onRemove = vi.fn();
     });
 
     it("does not allow language removal when there is only one language", () => {
