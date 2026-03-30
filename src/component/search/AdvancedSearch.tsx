@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardBody } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
@@ -13,6 +13,7 @@ import { executeAdvancedSearch } from "../../action/SearchActions";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { useDebouncedCallback } from "use-debounce";
+import type { Language } from "../../util/IntlUtil";
 import { getLanguageByShortCode, getShortLocale } from "../../util/IntlUtil";
 import Utils from "../../util/Utils";
 import {
@@ -33,8 +34,6 @@ import AdvancedSearchFacets, {
   VisibleFacets,
 } from "./AdvancedSearchFacets";
 import AdvancedSearchResults from "./AdvancedSearchResults";
-
-import type { Language } from "../../util/IntlUtil";
 import BrowserStorage from "../../util/BrowserStorage";
 
 export enum SearchTarget {
@@ -106,8 +105,9 @@ const AdvancedSearch: React.FC = () => {
   );
 
   const pageSize = useMemo(() => {
-    return (
-      Number(BrowserStorage.get(Constants.STORAGE_TABLE_PAGE_SIZE_KEY)) || 20
+    return Math.min(
+      Number(BrowserStorage.get(Constants.STORAGE_TABLE_PAGE_SIZE_KEY)) || 20,
+      Constants.MAX_PAGE_SIZE
     );
   }, []);
 

@@ -40,7 +40,7 @@ function createActionButtons(
   handlers: ButtonHandlers,
   accessLevel: AccessLevel
 ) {
-  const actions = [];
+  const actions: React.ReactElement[] = [];
   if (!editing) {
     actions.push(
       <IfAuthorized

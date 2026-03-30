@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CellProps, Column } from "react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 import { FormattedDate, FormattedTime } from "react-intl";
 import { useI18n } from "../../hook/useI18n";
@@ -57,16 +57,16 @@ const TermSnapshots: React.FC<TermSnapshotsProps> = ({ asset }) => {
     }
   }, [asset.iri, dispatch, notifications, setSnapshots]);
 
-  const columns: Column<SnapshotData>[] = React.useMemo(
+  const columns: ColumnDef<SnapshotData>[] = React.useMemo(
     () => [
       {
-        Header: i18n("snapshots.created"),
-        accessor: "created",
-        className: "align-middle",
-        Cell: ({ row }) => {
+        header: i18n("snapshots.created"),
+        accessorKey: "created",
+        meta: { className: "align-middle" },
+        cell: ({ row }) => {
           const created = new Date(row.original.created);
           const authorData = row.original.author;
-          let authorName = null;
+          let authorName: string | null = null;
           if (authorData) {
             if (authorData.firstName && authorData.lastName) {
               const author = new User(authorData);
@@ -91,14 +91,15 @@ const TermSnapshots: React.FC<TermSnapshotsProps> = ({ asset }) => {
         },
       },
       {
-        Header: i18n("actions"),
-        className: "text-center align-middle snapshot-actions",
-        Cell: (props: CellProps<SnapshotData>) => {
+        header: i18n("actions"),
+        id: "actions",
+        meta: { className: "text-center align-middle snapshot-actions" },
+        cell: ({ row }) => {
           return (
             <>
               <Link
                 className="btn btn-primary btn-sm"
-                to={resolvePath(props.row.original, asset)}
+                to={resolvePath(row.original, asset)}
               >
                 {i18n("snapshots.show")}
               </Link>

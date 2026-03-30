@@ -33,7 +33,7 @@ import { setTermsFlatList } from "../../action/SyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   if (currentTermIri) {
-    const result = [];
+    const result: Term[] = [];
     for (const t of terms) {
       if (t.iri === currentTermIri) {
         continue;
