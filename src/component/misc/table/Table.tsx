@@ -1,59 +1,70 @@
 import React from "react";
-import {
-  Row,
-  RowPropGetter,
-  TableInstance,
-  UseFiltersColumnProps,
-  UseSortByColumnProps,
-} from "react-table";
 import { Table as ReactstrapTable } from "reactstrap";
 import AlphaNumSortToggle from "./AlphaNumSortToggle";
 import Pagination from "./Pagination";
 import "./Table.scss";
+import {
+  flexRender,
+  Row,
+  RowData,
+  Table as TanStackTable,
+} from "@tanstack/react-table";
+import TextBasedFilter from "./TextBasedFilter";
 
-interface TableProps<T extends Object> {
-  instance: TableInstance<T>;
+type RowOverride<TData extends RowData> = (
+  row: Row<TData>
+) => React.HTMLAttributes<HTMLTableRowElement>;
+
+interface TableProps<TData extends RowData> {
+  instance: TanStackTable<TData>;
   // Allows overriding row props. Do not forget to include the provided row props
-  overrideRowProps?: RowPropGetter<T>;
+  overrideRowProps?: RowOverride<TData>;
 }
 
-const Table: React.FC<TableProps<any>> = ({ instance, overrideRowProps }) => {
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow } =
-    instance;
-  const page: Row<any>[] = (instance as any).page;
+const Table = <TData extends RowData>({
+  instance,
+  overrideRowProps,
+}: TableProps<TData>) => {
+  const headerGroups = instance.getHeaderGroups();
+  const rows = instance.getRowModel().rows;
 
   return (
     <>
-      <ReactstrapTable {...getTableProps()} striped={true} responsive={true}>
+      <ReactstrapTable striped={true} responsive={true}>
         <thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => {
-                const col: UseSortByColumnProps<any> &
-                  UseFiltersColumnProps<any> = column as any;
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                const column = header.column;
+
                 return (
                   <th
-                    {...column.getHeaderProps([
-                      {
-                        className: (column as any).headerClassName
-                          ? (column as any).headerClassName
-                          : "align-top",
-                      },
-                    ])}
+                    key={header.id}
+                    className={
+                      column.columnDef.meta?.headerClassName ?? "align-top"
+                    }
                   >
-                    {column.render("Header")}
-                    {col.canSort && (
-                      <AlphaNumSortToggle
-                        sortProps={column.getHeaderProps(
-                          col.getSortByToggleProps()
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          column.columnDef.header,
+                          header.getContext()
                         )}
-                        desc={col.isSortedDesc}
-                        isSorted={col.isSorted}
+
+                    {column.getCanSort() && (
+                      <AlphaNumSortToggle
+                        onClick={column.getToggleSortingHandler()}
+                        isSorted={column.getIsSorted() !== false}
+                        desc={column.getIsSorted() === "desc"}
                       />
                     )}
-                    {col.canFilter && (
+
+                    {column.getCanFilter() && (
                       <div className="filter-wrapper">
-                        {column.render("Filter")}
+                        <TextBasedFilter
+                          value={(column.getFilterValue() as string) ?? ""}
+                          onChange={(value) => column.setFilterValue(value)}
+                        />
                       </div>
                     )}
                   </th>
@@ -62,18 +73,18 @@ const Table: React.FC<TableProps<any>> = ({ instance, overrideRowProps }) => {
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
+
+        <tbody>
+          {rows.map((row) => {
+            const rowProps = overrideRowProps ? overrideRowProps(row) : {};
             return (
-              <tr {...row.getRowProps(overrideRowProps)}>
-                {row.cells.map((cell) => (
+              <tr key={row.id} {...rowProps}>
+                {row.getVisibleCells().map((cell) => (
                   <td
-                    {...cell.getCellProps([
-                      { className: (cell.column as any).className },
-                    ])}
+                    key={cell.id}
+                    className={cell.column.columnDef.meta?.className}
                   >
-                    {cell.render("Cell")}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
@@ -81,11 +92,7 @@ const Table: React.FC<TableProps<any>> = ({ instance, overrideRowProps }) => {
           })}
         </tbody>
       </ReactstrapTable>
-      <Pagination
-        pagingProps={instance as any}
-        pagingState={instance.state as any}
-        allowSizeChange={true}
-      />
+      <Pagination table={instance} allowSizeChange={true} />
     </>
   );
 };

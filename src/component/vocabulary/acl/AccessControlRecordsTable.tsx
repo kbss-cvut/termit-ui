@@ -5,13 +5,13 @@ import {
 } from "../../../model/acl/AccessControlList";
 import { useI18n } from "../../hook/useI18n";
 import {
-  Column,
-  useFilters,
-  usePagination,
-  useSortBy,
-  useTable,
-} from "react-table";
-import UserGroup from "../../../model/UserGroup";
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { textContainsFilter } from "../../misc/table/TextBasedFilter";
 import { Button } from "reactstrap";
 import Table from "../../misc/table/Table";
@@ -51,34 +51,32 @@ const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
   const { i18n } = useI18n();
   const currentUser = useSelector((state: TermItState) => state.user);
   const data = React.useMemo(() => acl.records, [acl]);
-  const columns: Column<AccessControlRecordData>[] = React.useMemo(
+  const columns: ColumnDef<AccessControlRecordData>[] = React.useMemo(
     () => [
       {
-        Header: i18n("vocabulary.acl.record.holder"),
-        accessor: "holder",
-        className: "align-middle",
-        disableFilters: true,
-        disableSortBy: true,
-        Cell: ({ row }) => <AccessHolder record={row.original} />,
+        header: i18n("vocabulary.acl.record.holder"),
+        accessorKey: "holder",
+        enableColumnFilter: false,
+        enableSorting: false,
+        cell: ({ row }) => <AccessHolder record={row.original} />,
+        meta: { className: "align-middle" },
       },
       {
-        Header: i18n("vocabulary.acl.record.level"),
-        accessor: "accessLevel",
-        className: "align-middle",
-        disableFilters: true,
-        disableSortBy: true,
-        Cell: ({ row }) => (
+        header: i18n("vocabulary.acl.record.level"),
+        accessorKey: "accessLevel",
+        enableColumnFilter: false,
+        enableSorting: false,
+        cell: ({ row }) => (
           <AccessLevelBadge level={row.original.accessLevel} />
         ),
+        meta: { className: "align-middle" },
       },
       {
-        Header: i18n("actions"),
+        header: i18n("actions"),
         id: "actions",
-        headerClassName: "text-center align-top",
-        disableFilters: true,
-        disableSortBy: true,
-        // @ts-ignore
-        Cell: ({ row }) => (
+        enableColumnFilter: false,
+        enableSorting: false,
+        cell: ({ row }) => (
           <IfAuthorized isAuthorized={() => !isMine(row.original, currentUser)}>
             <Button
               key="record-delete"
@@ -100,33 +98,35 @@ const AccessControlRecordsTable: React.FC<AccessRecordsTableProps> = ({
             )}
           </IfAuthorized>
         ),
-        className: "table-row-actions text-left",
+        meta: {
+          headerClassName: "text-center align-top",
+          className: "table-row-actions text-left",
+        },
       },
     ],
     [currentUser, i18n, onEdit, onRemove]
   );
-  const filterTypes = React.useMemo(() => ({ text: textContainsFilter }), []);
-  const tableInstance = useTable<UserGroup>(
-    {
-      columns,
-      data,
-      filterTypes,
-    } as any,
-    useFilters,
-    useSortBy,
-    usePagination
-  );
+
+  const tableInstance = useReactTable<AccessControlRecordData>({
+    columns,
+    data,
+    filterFns: { text: textContainsFilter },
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
   return (
     <Table
       instance={tableInstance}
-      overrideRowProps={(props, meta) => ({
+      overrideRowProps={(row) => ({
         className: classNames({
-          bold: isMine(meta.row.original, currentUser),
+          bold: isMine(row.original, currentUser),
         }),
-        title: isMine(meta.row.original, currentUser)
+        title: isMine(row.original, currentUser)
           ? i18n("administration.users.you")
           : undefined,
-        ...props,
       })}
     />
   );
