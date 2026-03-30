@@ -34,7 +34,7 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
     props.searchResults,
     createTermNonTerminalStateMatcher(terminalStates)
   );
-  const items = [];
+  const items: React.ReactElement[] = [];
   if (mergedResults.length === 0) {
     items.push(
       <li id="search-results-link" key="full-info">

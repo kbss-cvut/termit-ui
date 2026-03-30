@@ -244,7 +244,7 @@ export class TermDetail extends EditableComponent<
   };
 
   public getActions = () => {
-    const actions = [];
+    const actions: React.ReactElement[] = [];
     if (!this.state.edit) {
       actions.push(
         <IfNotInTerminalState

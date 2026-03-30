@@ -38,7 +38,7 @@ const UserGroupMemberSelector: React.FC<{
   };
 
   const rowCount = Math.ceil(allUsers.length / COLUMN_COUNT);
-  const rows = [];
+  const rows: React.ReactElement[] = [];
   for (let i = 0; i < rowCount; i++) {
     rows.push(
       <Row key={i} className="mb-2">
