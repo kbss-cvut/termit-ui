@@ -3,7 +3,6 @@ import { createMemoryHistory, Location } from "history";
 import { match as MatchType, RouteComponentProps } from "react-router";
 import { ReactWrapper } from "enzyme";
 import { HTMLAttributes } from "react";
-import { vi } from "vitest";
 
 /**
  * Verifies that the actual assets are correspond to the expected JSON-LD data.
@@ -74,23 +73,4 @@ export function changeInputValue<T>(
 ) {
   (inputElement.getDOMNode() as HTMLInputElement).value = value;
   inputElement.simulate("change", inputElement);
-}
-
-export function mockAjax() {
-  vi.mock(import("../../util/Ajax"), async (importOriginal) => {
-    const actual = await importOriginal();
-    return {
-      ...actual,
-      default: {
-        head: vi.fn(),
-        get: vi.fn(),
-        getResponse: vi.fn(),
-        getRaw: vi.fn(),
-        post: vi.fn(),
-        put: vi.fn(),
-        patch: vi.fn(),
-        delete: vi.fn(),
-      } as any,
-    };
-  });
 }

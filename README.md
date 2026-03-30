@@ -9,8 +9,6 @@ More info about TermIt can be found at its Web - [http://kbss-cvut.github.io/ter
 
 TermIt UI is written in [TypeScript](https://www.typescriptlang.org/) using [React](https://reactjs.org/).
 
-This project was bootstrapped with [Create React App](https://github.com/wmonk/create-react-app-typescript), TypeScript version.
-
 ## Documentation
 
 Documentation for developers and system administrators is in the [doc folder](doc/index.md).

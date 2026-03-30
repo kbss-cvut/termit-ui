@@ -146,15 +146,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "jest": {
-    "resetMocks": false,
-    "transformIgnorePatterns": [
-      "node_modules/(?!axios)/"
-    ]
-  },
-  "overrides": {
-    "nth-check": "^2.0.1",
-    "resolve-url-loader": "^5.0.0"
   }
 }
