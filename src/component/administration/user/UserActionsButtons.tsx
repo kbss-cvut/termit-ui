@@ -19,7 +19,7 @@ const UserActionsButtons: React.FC<
   if (user.iri === currentUser.iri) {
     return null;
   }
-  const buttons = [];
+  const buttons: React.ReactElement[] = [];
   if (user.isDisabled()) {
     const btnId = `user-${Utils.hashCode(user.iri)}-enable`;
     buttons.push(
