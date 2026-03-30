@@ -13,13 +13,13 @@ describe("Pagination", () => {
   beforeEach(() => {
     table = {
       getState: () => ({ pagination: { pageSize: 10, pageIndex: 0 } }),
-      getCanNextPage: jest.fn(() => true),
-      getCanPreviousPage: jest.fn(() => false),
-      setPageIndex: jest.fn(),
-      nextPage: jest.fn(),
-      getPageCount: jest.fn(() => 1),
-      previousPage: jest.fn(),
-      setPageSize: jest.fn(),
+      getCanNextPage: vi.fn(() => true),
+      getCanPreviousPage: vi.fn(() => false),
+      setPageIndex: vi.fn(),
+      nextPage: vi.fn(),
+      getPageCount: vi.fn(() => 1),
+      previousPage: vi.fn(),
+      setPageSize: vi.fn(),
     };
   });
 
@@ -48,7 +48,7 @@ describe("Pagination", () => {
     const size = 20;
     (table.getCanPreviousPage as Mock).mockReturnValue(false);
     (table.getCanNextPage as Mock).mockReturnValue(false);
-    (BrowserStorage.get as jest.Mock).mockReturnValue(size.toString());
+    (BrowserStorage.get as Mock).mockReturnValue(size.toString());
     const wrapper = mountWithIntl(
       <Pagination table={table} allowSizeChange={true} />
     );
