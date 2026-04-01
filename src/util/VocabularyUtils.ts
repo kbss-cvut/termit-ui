@@ -136,6 +136,7 @@ const VocabularyUtils = {
   RDF_OBJECT: _NS_RDF + "object",
   RDF_SUBJECT: _NS_RDF + "subject",
   RDF_PREDICATE: _NS_RDF + "predicate",
+  RDF_NIL: _NS_RDF + "nil",
   PREFIX_DC: _NS_DC,
   DC_TITLE: _NS_DC + "title",
   DC_DESCRIPTION: _NS_DC + "description",

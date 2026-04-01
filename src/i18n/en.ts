@@ -729,6 +729,9 @@ const en = {
     "search.advanced.show": "Show advanced filters",
     "search.advanced.hide": "Hide advanced filters",
     "search.help": "Enter a search query above to start searching.",
+    "search.no-value": "No value",
+    "search.no-value.checkbox.hint":
+      "Unchecked - false; Checked - true; Indeterminate - no value",
 
     "profile.first.name": "First name",
     "profile.last.name": "Last name",

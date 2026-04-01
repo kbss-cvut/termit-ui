@@ -7,6 +7,7 @@ import TermItState from "../../../model/TermItState";
 import { useI18n } from "../../hook/useI18n";
 import { getLocalized } from "../../../model/MultilingualString";
 import MultiSelectFacet from "./MultiSelectFacet";
+import { noValueOption } from "./FacetedSearchUtil";
 
 interface TermStateFacetProps {
   value: SearchParam;
@@ -21,11 +22,13 @@ const TermStateFacet: React.FC<TermStateFacetProps> = ({ value, onChange }) => {
   const states = useSelector((state: TermItState) => state.states);
   const { i18n, locale } = useI18n();
   const typeOptions = React.useMemo(
-    () =>
-      Object.entries(states).map((e) => ({
+    () => [
+      noValueOption(i18n),
+      ...Object.entries(states).map((e) => ({
         value: e[1].iri,
         label: getLocalized(e[1].label, locale),
       })),
+    ],
     [states, locale]
   );
   return (

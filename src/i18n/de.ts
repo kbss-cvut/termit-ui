@@ -694,6 +694,9 @@ const de = {
     "search.advanced.hide": "Erweiterte Filter ausblenden",
     "search.help":
       "Geben Sie oben einen Suchbegriff ein, um die Suche zu starten.",
+    "search.no-value": "Kein Wert",
+    "search.no-value.checkbox.hint":
+      "Nicht ausgewählt – false; Ausgewählt – true; Unbestimmt – kein Wert",
 
     "profile.first.name": "Vorname",
     "profile.last.name": "Nachname",

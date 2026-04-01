@@ -739,6 +739,9 @@ const cs = {
     "search.advanced.show": "Zobrazit pokročilé filtry",
     "search.advanced.hide": "Skrýt pokročilé filtry",
     "search.help": "Zadejte hledaný výraz do pole výše.",
+    "search.no-value": "Bez hodnoty",
+    "search.no-value.checkbox.hint":
+      "Odškrtnuto - nepravda; Zaškrtnuto - pravda; Neurčitý - bez hodnoty",
 
     "profile.first.name": "Křestní jméno",
     "profile.last.name": "Příjmení",
