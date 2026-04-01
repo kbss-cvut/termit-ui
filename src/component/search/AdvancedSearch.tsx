@@ -19,6 +19,7 @@ import Utils from "../../util/Utils";
 import {
   aggregateSearchParams,
   createSearchParam,
+  sanitizeNoValue,
 } from "./facet/FacetedSearchUtil";
 import { RdfProperty } from "../../model/RdfsResource";
 import { getCustomAttributes } from "../../action/AsyncActions";
@@ -251,7 +252,10 @@ const AdvancedSearch: React.FC = () => {
   // Facet change handler for advanced mode
   const onFacetChange = (value: SearchParam, debounce: boolean = false) => {
     const change: { [key: string]: SearchParam } = {};
-    change[value.property as string] = value;
+    change[value.property] = sanitizeNoValue(
+      value,
+      facetParams[value.property]
+    );
     const newParams = { ...facetParams, ...change };
     setFacetParams(newParams);
     setPage(0);

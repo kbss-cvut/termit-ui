@@ -74,7 +74,7 @@ export function updateSearchFilter(searchString: string, language: string) {
 
     const state = getState();
     if (state.searchQuery.isEmpty()) {
-      // Don"t delay empty query as it will just reset searches without bothering the server
+      // Do not delay empty query as it will just reset searches without bothering the server
       return dispatch(searchEverything());
     } else {
       // Delay the search while user types the query
