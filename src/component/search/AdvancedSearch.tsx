@@ -216,13 +216,15 @@ const AdvancedSearch: React.FC = () => {
   const onTargetChange = (target: SearchTarget) => {
     setSearchTarget(target);
     setPage(0);
+    let fp = facetParams;
     // Clear facet params when switching - facets only apply to terms
     if (target === SearchTarget.VOCABULARIES) {
       setFacetParams({});
       setAdvancedOpen(false);
+      fp = {};
     }
     debouncedSearch.cancel();
-    runSearch(searchString, selectedLanguage, target, {}, 0);
+    runSearch(searchString, selectedLanguage, target, fp, 0);
   };
 
   const resetSearch = () => {
