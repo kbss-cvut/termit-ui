@@ -12,8 +12,8 @@ import {
 import { FaTimes } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
 import LanguageSelector from "../resource/file/LanguageSelector";
-import { SearchTarget } from "./AdvancedSearch";
 import type { Language } from "../../util/IntlUtil";
+import { SearchTarget } from "../../model/search/SearchTarget";
 
 interface AdvancedSearchInputCardProps {
   searchString: string;

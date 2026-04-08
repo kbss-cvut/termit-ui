@@ -11,6 +11,7 @@ import {
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
 import { Language } from "../util/Constants";
+import SearchQuery from "../model/search/SearchQuery";
 
 export interface PendingAsyncAction {
   status: AsyncActionStatus;
@@ -48,10 +49,8 @@ export interface ExecuteQueryAction extends AsyncAction {
   queryString: string;
   queryResult: object;
 }
-export interface SearchAction extends Action {
-  searchString: string;
-  language?: string;
-}
+
+export interface SearchAction extends Action, Partial<SearchQuery> {}
 
 export interface SearchResultAction extends Action {
   searchResults: SearchResult[];

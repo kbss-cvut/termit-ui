@@ -11,6 +11,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Constants from "../../util/Constants";
 import {
   executeAdvancedSearch,
+  resetSearchFilter,
   updateSearchFilter,
 } from "../../action/SearchActions";
 import { trackPromise } from "react-promise-tracker";
@@ -39,12 +40,7 @@ import AdvancedSearchFacets, {
 } from "./AdvancedSearchFacets";
 import AdvancedSearchResults from "./AdvancedSearchResults";
 import BrowserStorage from "../../util/BrowserStorage";
-
-export enum SearchTarget {
-  TERMS = "TERMS",
-  VOCABULARIES = "VOCABULARIES",
-  BOTH = "BOTH",
-}
+import { SearchTarget } from "../../model/search/SearchTarget";
 
 function mapIndexedLanguages(languages?: string[]): Language[] {
   return Utils.sanitizeArray(languages)
@@ -68,13 +64,10 @@ const AdvancedSearch: React.FC = () => {
   );
 
   // Read search query from Redux
-  const { searchString, language } = useSelector(
+  const { searchString, language, target } = useSelector(
     (state: TermItState) => state.searchQuery
   );
 
-  const [searchTarget, setSearchTarget] = useState<SearchTarget>(
-    SearchTarget.BOTH
-  );
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [results, setResults] = useState<SearchResult[] | null>(null);
@@ -183,35 +176,35 @@ const AdvancedSearch: React.FC = () => {
   // On mount, run search if a query was passed from the navbar
   React.useEffect(() => {
     if (searchString.trim().length > 0) {
-      runSearch(searchString, language, searchTarget, facetParams, 0);
+      runSearch(searchString, language, target, facetParams, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    dispatch(updateSearchFilter(val, language));
+    dispatch(updateSearchFilter({ searchString: val }));
     setPage(0);
-    debouncedSearch(val, language, searchTarget, facetParams, 0);
+    debouncedSearch(val, language, target, facetParams, 0);
   };
 
   const onSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       debouncedSearch.cancel();
       setPage(0);
-      runSearch(searchString, language, searchTarget, facetParams, 0);
+      runSearch(searchString, language, target, facetParams, 0);
     }
   };
 
   const onLanguageChange = (langCode: string) => {
-    dispatch(updateSearchFilter(searchString, langCode));
+    dispatch(updateSearchFilter({ language: langCode }));
     setPage(0);
     debouncedSearch.cancel();
-    runSearch(searchString, langCode, searchTarget, facetParams, 0);
+    runSearch(searchString, langCode, target, facetParams, 0);
   };
 
   const onTargetChange = (target: SearchTarget) => {
-    setSearchTarget(target);
+    dispatch(updateSearchFilter({ target }));
     setPage(0);
     let fp = facetParams;
     // Clear facet params when switching - facets only apply to terms
@@ -225,7 +218,7 @@ const AdvancedSearch: React.FC = () => {
   };
 
   const resetSearch = () => {
-    dispatch(updateSearchFilter("", ""));
+    dispatch(resetSearchFilter());
     setPage(0);
     setResults(null);
     setFacetParams({});
@@ -235,7 +228,7 @@ const AdvancedSearch: React.FC = () => {
   const onPageChange = (newPage: number) => {
     setPage(newPage);
     debouncedSearch.cancel();
-    runSearch(searchString, language, searchTarget, facetParams, newPage);
+    runSearch(searchString, language, target, facetParams, newPage);
   };
 
   // Facet change handler for advanced mode
@@ -253,9 +246,9 @@ const AdvancedSearch: React.FC = () => {
         (value.value.length > 0 && value.value[0].length === 0)) &&
       !debounce
     ) {
-      runSearch(searchString, language, searchTarget, newParams, 0);
+      runSearch(searchString, language, target, newParams, 0);
     } else {
-      debouncedSearch(searchString, language, searchTarget, newParams, 0);
+      debouncedSearch(searchString, language, target, newParams, 0);
     }
   };
 
@@ -276,7 +269,7 @@ const AdvancedSearch: React.FC = () => {
       if (changed) {
         setPage(0);
         debouncedSearch.cancel();
-        runSearch(searchString, language, searchTarget, nextParams, 0);
+        runSearch(searchString, language, target, nextParams, 0);
         return nextParams;
       }
       return currentParams;
@@ -287,7 +280,7 @@ const AdvancedSearch: React.FC = () => {
     runSearch,
     searchString,
     language,
-    searchTarget,
+    target,
   ]);
 
   const onCustomAttributeToggle = (att: RdfProperty) => {
@@ -299,7 +292,7 @@ const AdvancedSearch: React.FC = () => {
       setFacetParams(next);
       setPage(0);
       debouncedSearch.cancel();
-      runSearch(searchString, language, searchTarget, next, 0);
+      runSearch(searchString, language, target, next, 0);
     } else {
       const next = {
         ...facetParams,
@@ -318,7 +311,7 @@ const AdvancedSearch: React.FC = () => {
       setFacetParams({});
       setPage(0);
       debouncedSearch.cancel();
-      runSearch(searchString, language, searchTarget, {}, 0);
+      runSearch(searchString, language, target, {}, 0);
     }
   };
 
@@ -332,7 +325,7 @@ const AdvancedSearch: React.FC = () => {
   }, [results, terminalStates]);
 
   // Can show advanced only for terms or both
-  const canShowAdvanced = searchTarget !== SearchTarget.VOCABULARIES;
+  const canShowAdvanced = target !== SearchTarget.VOCABULARIES;
 
   return (
     <div id="unified-search" className="relative">
@@ -344,7 +337,7 @@ const AdvancedSearch: React.FC = () => {
           <AdvancedSearchInputCard
             searchString={searchString}
             selectedLanguage={language}
-            searchTarget={searchTarget}
+            searchTarget={target}
             advancedOpen={advancedOpen}
             canShowAdvanced={canShowAdvanced}
             indexedLanguages={indexedLanguages}
