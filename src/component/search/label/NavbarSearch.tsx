@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 import SearchResult from "../../../model/search/SearchResult";
 import { connect } from "react-redux";
-import { updateSearchFilter } from "../../../action/SearchActions";
+import { updateSearchFilterAndRunSearch } from "../../../action/SearchActions";
 import SearchResultsOverlay from "./SearchResultsOverlay";
 import Routes from "../../../util/Routes";
 import { ThunkDispatch } from "../../../util/Types";
@@ -29,6 +29,7 @@ import Utils from "../../../util/Utils";
 interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
   updateSearchFilter: (searchString: string, language: string) => any;
   searchString: string;
+  searchLanguage: string;
   searchResults: SearchResult[] | null;
   navbar: boolean;
   closeCollapse?: () => void;
@@ -39,7 +40,6 @@ interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
 interface NavbarSearchState {
   showResults: boolean;
   searchOriginNavbar?: boolean;
-  selectedLanguage: string;
 }
 
 /**
@@ -62,7 +62,6 @@ export class NavbarSearch extends React.Component<
     super(props);
     this.state = {
       showResults: false,
-      selectedLanguage: "",
     };
   }
 
@@ -89,7 +88,7 @@ export class NavbarSearch extends React.Component<
   };
 
   public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.doSearch(e.target.value, this.state.selectedLanguage);
+    this.doSearch(e.target.value, this.props.searchLanguage);
   };
 
   private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -124,7 +123,6 @@ export class NavbarSearch extends React.Component<
   };
 
   private onLanguageSelectChange = (langCode: string) => {
-    this.setState({ selectedLanguage: langCode });
     this.doSearch(this.props.searchString, langCode);
   };
 
@@ -172,7 +170,7 @@ export class NavbarSearch extends React.Component<
         <LanguageSelector
           className={"navbar-search-language-select"}
           onChange={this.onLanguageSelectChange}
-          value={this.state.selectedLanguage}
+          value={this.props.searchLanguage}
           isClearable={true}
           languageOptions={this.props.indexedLanguages}
         />
@@ -230,7 +228,6 @@ export class NavbarSearch extends React.Component<
 
   protected resetSearch = () => {
     this.props.updateSearchFilter("", "");
-    this.setState({ selectedLanguage: "" });
   };
 
   private renderResultsOverlay() {
@@ -256,7 +253,8 @@ export default withRouter(
   connect(
     (state: TermItState) => {
       return {
-        searchString: state.searchQuery.searchQuery,
+        searchString: state.searchQuery.searchString,
+        searchLanguage: state.searchQuery.language,
         searchResults: state.searchResults,
         intl: state.intl, // Pass intl in props to force UI re-render on language switch
         user: state.user,
@@ -268,7 +266,7 @@ export default withRouter(
     (dispatch: ThunkDispatch) => {
       return {
         updateSearchFilter: (searchString: string, language: string) =>
-          dispatch(updateSearchFilter(searchString, language)),
+          dispatch(updateSearchFilterAndRunSearch(searchString, language)),
       };
     }
   )(injectIntl(withI18n(NavbarSearch)))

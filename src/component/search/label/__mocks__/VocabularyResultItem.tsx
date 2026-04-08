@@ -1,7 +1,7 @@
 import * as React from "react";
 import { injectIntl } from "react-intl";
 import withI18n, { HasI18n } from "../../../hoc/withI18n";
-import { SearchResultItem } from "../SearchResults";
+import { SearchResultItem } from "../SearchUtil";
 import FTSMatch from "./../FTSMatch";
 import Vocabulary from "../../../../model/Vocabulary";
 import VocabularyLink from "../../../vocabulary/VocabularyLink";

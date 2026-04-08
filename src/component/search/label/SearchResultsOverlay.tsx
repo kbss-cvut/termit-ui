@@ -2,7 +2,7 @@ import * as React from "react";
 import SearchResult from "../../../model/search/SearchResult";
 import { Popover, PopoverBody } from "reactstrap";
 import TermBadge from "../../badge/TermBadge";
-import { mergeDuplicates } from "./SearchResults";
+import { mergeDuplicates } from "./SearchUtil";
 import AssetLinkFactory from "../../factory/AssetLinkFactory";
 import AssetFactory from "../../../util/AssetFactory";
 import AssetLabel from "../../misc/AssetLabel";

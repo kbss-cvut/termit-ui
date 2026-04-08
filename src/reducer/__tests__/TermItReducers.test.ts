@@ -305,7 +305,7 @@ describe("Reducers", () => {
         "../../rest-mock/searchResults.json"
       )) as any[];
       initialState.searchQuery = new SearchQuery();
-      initialState.searchQuery.searchQuery = "hello";
+      initialState.searchQuery.searchString = "hello";
       initialState.searchInProgress = true;
       initialState.queryResults = { test: new QueryResult("test", {}) };
       initialState.searchListenerCount = 2;

@@ -53,16 +53,23 @@ export function removeSearchListener() {
  */
 let updateSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
+export function updateSearchFilter(searchString: string, language: string) {
+  return {
+    type: ActionType.UPDATE_SEARCH_FILTER,
+    searchString,
+    language,
+  };
+}
+
 /**
  * Change the search criteria and trigger a new search.
  */
-export function updateSearchFilter(searchString: string, language: string) {
+export function updateSearchFilterAndRunSearch(
+  searchString: string,
+  language: string
+) {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-    dispatch({
-      type: ActionType.UPDATE_SEARCH_FILTER,
-      searchString,
-      language,
-    });
+    dispatch(updateSearchFilter(searchString, language));
 
     // Clear search results
     dispatch({ type: ActionType.SEARCH_RESULT, searchResults: null });
@@ -97,7 +104,7 @@ export function searchEverything() {
     const state: TermItState = getState();
     if (state.searchListenerCount > 0 && !state.searchQuery.isEmpty()) {
       return dispatch(
-        search(state.searchQuery.searchQuery, state.searchQuery.language, true)
+        search(state.searchQuery.searchString, state.searchQuery.language, true)
       );
     } else {
       dispatch({ type: ActionType.SEARCH_FINISH });
