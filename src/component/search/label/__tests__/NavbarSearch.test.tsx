@@ -14,6 +14,7 @@ import {
   match,
   routingProps,
 } from "../../../../__tests__/environment/TestUtil";
+import SearchQuery from "../../../../model/search/SearchQuery";
 
 vi.mock("../../../../util/Routing");
 
@@ -43,7 +44,7 @@ describe("NavbarSearch", () => {
   it("does not render results component for initial state", () => {
     const wrapper = shallow(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -58,7 +59,7 @@ describe("NavbarSearch", () => {
   it("invokes search on change", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -84,7 +85,7 @@ describe("NavbarSearch", () => {
     props.match.path = route.path;
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={searchResults}
@@ -101,7 +102,7 @@ describe("NavbarSearch", () => {
     const isInNavbar = false;
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={isInNavbar}
         user={user}
         searchResults={searchResults}
@@ -121,7 +122,7 @@ describe("NavbarSearch", () => {
     const isInNavbar = false;
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={isInNavbar}
         user={user}
         searchResults={searchResults}
@@ -142,10 +143,9 @@ describe("NavbarSearch", () => {
   });
 
   it("transitions to search view on enter", () => {
-    const searchString = "";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -162,7 +162,7 @@ describe("NavbarSearch", () => {
     const searchString = "test";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery({ searchString })}
         navbar={true}
         user={user}
         searchResults={null}
@@ -183,7 +183,7 @@ describe("NavbarSearch", () => {
     const searchString = "test";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery({ searchString })}
         navbar={false}
         user={user}
         searchResults={null}
@@ -199,10 +199,9 @@ describe("NavbarSearch", () => {
   });
 
   it("does not render clear icon if search string is empty", () => {
-    const searchString = "";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -216,7 +215,7 @@ describe("NavbarSearch", () => {
   it("transitions to public search view on enter when user is not logged in", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={EMPTY_USER}
         searchResults={null}
@@ -236,7 +235,7 @@ describe("NavbarSearch", () => {
   it("transitions to search view on search icon click", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -251,7 +250,7 @@ describe("NavbarSearch", () => {
   it("transitions to search view on search icon click when user is not logged in", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={EMPTY_USER}
         searchResults={null}

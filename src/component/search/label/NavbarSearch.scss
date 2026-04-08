@@ -103,3 +103,16 @@
     height: auto;
   }
 }
+
+.active-filters-addon {
+  position: relative;
+  border-left: none;
+  padding-left: 0;
+}
+
+.active-filters-count {
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  font-size: 0.8rem;
+}

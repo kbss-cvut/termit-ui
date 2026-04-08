@@ -124,6 +124,8 @@ const de = {
       "Es werden {displayed} von {count} Ergebnissen angezeigt. ",
     "main.search.no-results":
       "Keine Ergebnisse gefunden. Klicken Sie, um die erweiterte Suche zu versuchen.",
+    "main.search.facetsActive":
+      "{count, plural one {# aktiver Filter} other {# aktive Filter}}",
     "main.lang-selector.tooltip":
       "Wählen Sie die Sprache der Benutzeroberfläche aus",
     "dashboard.widget.assetList.empty":
@@ -132,7 +134,7 @@ const de = {
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Edited} other {Created}} von {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":
-      "{operation, select, edit {Edited} other {Created}} ​​von Ihnen {when}.",
+      "{operation, select, edit {Edited} other {Created}} von Ihnen {when}.",
     "dashboard.widget.lastEditedAssets.title": "Zuletzt bearbeitete Assets",
     "dashboard.widget.lastEditedAssets.all.title": "Alle",
     "dashboard.widget.lastEditedAssets.mine.title": "Meine",

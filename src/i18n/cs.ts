@@ -134,6 +134,8 @@ const cs = {
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
     "main.search.no-results":
       "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte pokročilé hledání.",
+    "main.search.facetsActive":
+      "{count, plural, one {# aktivní faset} few {# aktivní fasety} other {# aktivních fasetů}}",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":

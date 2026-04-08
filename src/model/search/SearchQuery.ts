@@ -14,7 +14,15 @@ export default class SearchQuery {
     this.facetParams = oldState.facetParams || {};
   }
 
+  public isSearchStringBlank(): boolean {
+    return this.searchString.trim().length === 0;
+  }
+
+  public hasFacetParams(): boolean {
+    return Object.keys(this.facetParams).length > 0;
+  }
+
   public isEmpty(): boolean {
-    return !this.searchString;
+    return this.isSearchStringBlank() && !this.hasFacetParams();
   }
 }

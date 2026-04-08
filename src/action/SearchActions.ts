@@ -87,7 +87,7 @@ export function updateSearchFilterAndRunSearch(
     }
 
     const state = getState();
-    if (state.searchQuery.isEmpty()) {
+    if (state.searchQuery.isSearchStringBlank()) {
       // Do not delay empty query as it will just reset searches without bothering the server
       return dispatch(searchEverything());
     } else {
@@ -109,7 +109,10 @@ export function searchEverything() {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
     dispatch({ type: ActionType.SEARCH_START });
     const state: TermItState = getState();
-    if (state.searchListenerCount > 0 && !state.searchQuery.isEmpty()) {
+    if (
+      state.searchListenerCount > 0 &&
+      !state.searchQuery.isSearchStringBlank()
+    ) {
       return dispatch(
         search(state.searchQuery.searchString, state.searchQuery.language, true)
       );
