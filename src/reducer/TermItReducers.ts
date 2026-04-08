@@ -293,7 +293,7 @@ function searchQuery(
   switch (action.type) {
     case ActionType.UPDATE_SEARCH_FILTER:
       const newState = new SearchQuery(state);
-      newState.searchQuery = action.searchString;
+      newState.searchString = action.searchString;
       newState.language = action.language || "";
       return newState;
     case ActionType.LOGOUT:

@@ -6,7 +6,7 @@ import { ThunkDispatch } from "../../util/Types";
 import ActionType, { AsyncAction } from "../ActionType";
 import SearchResult from "../../model/search/SearchResult";
 import Vocabulary2 from "../../util/VocabularyUtils";
-import { search, updateSearchFilter } from "../SearchActions";
+import { search, updateSearchFilterAndRunSearch } from "../SearchActions";
 import { vi } from "vitest";
 
 vi.mock("../../util/Routing");
@@ -81,7 +81,7 @@ describe("SearchActions", () => {
     });
   });
 
-  describe("updateSearchFilter", () => {
+  describe("updateSearchFilterAndRunSearch", () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(global, "setTimeout");
@@ -94,7 +94,7 @@ describe("SearchActions", () => {
     it("clears search results", () => {
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          updateSearchFilter("test", "")
+          updateSearchFilterAndRunSearch("test", "")
         ) as Promise<any>
       ).then(() => {
         const actions = store.getActions();
@@ -108,11 +108,11 @@ describe("SearchActions", () => {
 
     it("delays search by predefined timeout", () => {
       const initialState = new TermItState();
-      initialState.searchQuery.searchQuery = "tes";
+      initialState.searchQuery.searchString = "tes";
       store = mockStore(initialState);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          updateSearchFilter("test", "")
+          updateSearchFilterAndRunSearch("test", "")
         ) as Promise<any>
       ).then(() => {
         expect(setTimeout).toHaveBeenCalled();
@@ -121,11 +121,11 @@ describe("SearchActions", () => {
 
     it("runs search after delay timeout expires", () => {
       const initialState = new TermItState();
-      initialState.searchQuery.searchQuery = "tes";
+      initialState.searchQuery.searchString = "tes";
       store = mockStore(initialState);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          updateSearchFilter("test", "")
+          updateSearchFilterAndRunSearch("test", "")
         ) as Promise<any>
       ).then(() => {
         expect(setTimeout).toHaveBeenCalled();
@@ -138,12 +138,14 @@ describe("SearchActions", () => {
 
     it("runs search only once when filter is updated multiple times during interval", () => {
       const initialState = new TermItState();
-      initialState.searchQuery.searchQuery = "tes";
+      initialState.searchQuery.searchString = "tes";
       store = mockStore(initialState);
-      (store.dispatch as ThunkDispatch)(updateSearchFilter("test", ""));
+      (store.dispatch as ThunkDispatch)(
+        updateSearchFilterAndRunSearch("test", "")
+      );
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          updateSearchFilter("tests", "")
+          updateSearchFilterAndRunSearch("tests", "")
         ) as Promise<any>
       ).then(() => {
         vi.runAllTimers();
@@ -157,7 +159,7 @@ describe("SearchActions", () => {
     it("runs search immediately to clear results when search string is empty", () => {
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
-          updateSearchFilter("test", "")
+          updateSearchFilterAndRunSearch("test", "")
         ) as Promise<any>
       ).then(() => {
         const actions = store.getActions();

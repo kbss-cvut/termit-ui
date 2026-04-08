@@ -2,7 +2,7 @@ import * as React from "react";
 import AssetLink from "../../misc/AssetLink";
 import Term from "../../../model/Term";
 import { useSelector } from "react-redux";
-import { SearchResultItem } from "./SearchResults";
+import { SearchResultItem } from "./SearchUtil";
 import AssetLabel from "../../misc/AssetLabel";
 import AssetFactory from "../../../util/AssetFactory";
 import TermItState from "../../../model/TermItState";

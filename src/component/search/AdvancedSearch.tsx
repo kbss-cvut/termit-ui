@@ -9,7 +9,10 @@ import SearchResult from "../../model/search/SearchResult";
 import SearchParam, { MatchType } from "../../model/search/SearchParam";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Constants from "../../util/Constants";
-import { executeAdvancedSearch } from "../../action/SearchActions";
+import {
+  executeAdvancedSearch,
+  updateSearchFilter,
+} from "../../action/SearchActions";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { useDebouncedCallback } from "use-debounce";
@@ -23,7 +26,7 @@ import {
 } from "./facet/FacetedSearchUtil";
 import { RdfProperty } from "../../model/RdfsResource";
 import { getCustomAttributes } from "../../action/AsyncActions";
-import { mergeDuplicates } from "./label/SearchResults";
+import { mergeDuplicates } from "./label/SearchUtil";
 import { createTermNonTerminalStateMatcher } from "../term/TermTreeSelectHelper";
 import "./label/Search.scss";
 import "../misc/CustomToggle.scss";
@@ -64,18 +67,11 @@ const AdvancedSearch: React.FC = () => {
     (state: TermItState) => state.terminalStates
   );
 
-  // Read initial search query from Redux (populated by NavbarSearch)
-  const reduxSearchQuery = useSelector(
+  // Read search query from Redux
+  const { searchString, language } = useSelector(
     (state: TermItState) => state.searchQuery
   );
 
-  // Search state - initialized from Redux if navigated from navbar
-  const [searchString, setSearchString] = useState(
-    reduxSearchQuery.searchQuery
-  );
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    reduxSearchQuery.language || ""
-  );
   const [searchTarget, setSearchTarget] = useState<SearchTarget>(
     SearchTarget.BOTH
   );
@@ -187,28 +183,28 @@ const AdvancedSearch: React.FC = () => {
   // On mount, run search if a query was passed from the navbar
   React.useEffect(() => {
     if (searchString.trim().length > 0) {
-      runSearch(searchString, selectedLanguage, searchTarget, facetParams, 0);
+      runSearch(searchString, language, searchTarget, facetParams, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setSearchString(val);
+    dispatch(updateSearchFilter(val, language));
     setPage(0);
-    debouncedSearch(val, selectedLanguage, searchTarget, facetParams, 0);
+    debouncedSearch(val, language, searchTarget, facetParams, 0);
   };
 
   const onSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       debouncedSearch.cancel();
       setPage(0);
-      runSearch(searchString, selectedLanguage, searchTarget, facetParams, 0);
+      runSearch(searchString, language, searchTarget, facetParams, 0);
     }
   };
 
   const onLanguageChange = (langCode: string) => {
-    setSelectedLanguage(langCode);
+    dispatch(updateSearchFilter(searchString, langCode));
     setPage(0);
     debouncedSearch.cancel();
     runSearch(searchString, langCode, searchTarget, facetParams, 0);
@@ -225,12 +221,11 @@ const AdvancedSearch: React.FC = () => {
       fp = {};
     }
     debouncedSearch.cancel();
-    runSearch(searchString, selectedLanguage, target, fp, 0);
+    runSearch(searchString, language, target, fp, 0);
   };
 
   const resetSearch = () => {
-    setSearchString("");
-    setSelectedLanguage("");
+    dispatch(updateSearchFilter("", ""));
     setPage(0);
     setResults(null);
     setFacetParams({});
@@ -240,13 +235,7 @@ const AdvancedSearch: React.FC = () => {
   const onPageChange = (newPage: number) => {
     setPage(newPage);
     debouncedSearch.cancel();
-    runSearch(
-      searchString,
-      selectedLanguage,
-      searchTarget,
-      facetParams,
-      newPage
-    );
+    runSearch(searchString, language, searchTarget, facetParams, newPage);
   };
 
   // Facet change handler for advanced mode
@@ -264,15 +253,9 @@ const AdvancedSearch: React.FC = () => {
         (value.value.length > 0 && value.value[0].length === 0)) &&
       !debounce
     ) {
-      runSearch(searchString, selectedLanguage, searchTarget, newParams, 0);
+      runSearch(searchString, language, searchTarget, newParams, 0);
     } else {
-      debouncedSearch(
-        searchString,
-        selectedLanguage,
-        searchTarget,
-        newParams,
-        0
-      );
+      debouncedSearch(searchString, language, searchTarget, newParams, 0);
     }
   };
 
@@ -293,7 +276,7 @@ const AdvancedSearch: React.FC = () => {
       if (changed) {
         setPage(0);
         debouncedSearch.cancel();
-        runSearch(searchString, selectedLanguage, searchTarget, nextParams, 0);
+        runSearch(searchString, language, searchTarget, nextParams, 0);
         return nextParams;
       }
       return currentParams;
@@ -303,7 +286,7 @@ const AdvancedSearch: React.FC = () => {
     debouncedSearch,
     runSearch,
     searchString,
-    selectedLanguage,
+    language,
     searchTarget,
   ]);
 
@@ -316,7 +299,7 @@ const AdvancedSearch: React.FC = () => {
       setFacetParams(next);
       setPage(0);
       debouncedSearch.cancel();
-      runSearch(searchString, selectedLanguage, searchTarget, next, 0);
+      runSearch(searchString, language, searchTarget, next, 0);
     } else {
       const next = {
         ...facetParams,
@@ -335,7 +318,7 @@ const AdvancedSearch: React.FC = () => {
       setFacetParams({});
       setPage(0);
       debouncedSearch.cancel();
-      runSearch(searchString, selectedLanguage, searchTarget, {}, 0);
+      runSearch(searchString, language, searchTarget, {}, 0);
     }
   };
 
@@ -360,7 +343,7 @@ const AdvancedSearch: React.FC = () => {
         <CardBody>
           <AdvancedSearchInputCard
             searchString={searchString}
-            selectedLanguage={selectedLanguage}
+            selectedLanguage={language}
             searchTarget={searchTarget}
             advancedOpen={advancedOpen}
             canShowAdvanced={canShowAdvanced}

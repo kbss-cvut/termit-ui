@@ -1,13 +1,13 @@
 export default class SearchQuery {
-  public searchQuery: string;
+  public searchString: string;
   public language: string;
 
   constructor(oldState: SearchQuery | null = null) {
-    this.searchQuery = oldState ? oldState.searchQuery : "";
+    this.searchString = oldState ? oldState.searchString : "";
     this.language = oldState ? oldState.language : "";
   }
 
   public isEmpty(): boolean {
-    return !this.searchQuery;
+    return !this.searchString;
   }
 }

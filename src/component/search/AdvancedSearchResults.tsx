@@ -3,7 +3,7 @@ import { Card, CardBody } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchResult from "../../model/search/SearchResult";
-import { SearchResultItem } from "./label/SearchResults";
+import { SearchResultItem } from "./label/SearchUtil";
 import TermResultItem from "./label/TermResultItem";
 import VocabularyResultItem from "./label/VocabularyResultItem";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
