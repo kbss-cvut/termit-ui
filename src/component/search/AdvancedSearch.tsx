@@ -64,18 +64,16 @@ const AdvancedSearch: React.FC = () => {
   );
 
   // Read search query from Redux
-  const { searchString, language, target } = useSelector(
+  const { searchString, language, target, facetParams } = useSelector(
     (state: TermItState) => state.searchQuery
   );
 
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(
+    Object.keys(facetParams).length > 0
+  );
   const [page, setPage] = useState(0);
   const [results, setResults] = useState<SearchResult[] | null>(null);
 
-  // Faceted search params (for advanced mode)
-  const [facetParams, setFacetParams] = useState<{
-    [key: string]: SearchParam;
-  }>({});
   const [visibleFacets, setVisibleFacets] = useState<VisibleFacets>({
     vocabulary: true,
     type: true,
@@ -173,9 +171,9 @@ const AdvancedSearch: React.FC = () => {
     Constants.SEARCH_DEBOUNCE_DELAY
   );
 
-  // On mount, run search if a query was passed from the navbar
+  // On mount, run search if a query was passed from the navbar or was in store
   React.useEffect(() => {
-    if (searchString.trim().length > 0) {
+    if (searchString.trim().length > 0 || Object.keys(facetParams).length > 0) {
       runSearch(searchString, language, target, facetParams, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -209,7 +207,7 @@ const AdvancedSearch: React.FC = () => {
     let fp = facetParams;
     // Clear facet params when switching - facets only apply to terms
     if (target === SearchTarget.VOCABULARIES) {
-      setFacetParams({});
+      dispatch(updateSearchFilter({ facetParams: {} }));
       setAdvancedOpen(false);
       fp = {};
     }
@@ -221,7 +219,6 @@ const AdvancedSearch: React.FC = () => {
     dispatch(resetSearchFilter());
     setPage(0);
     setResults(null);
-    setFacetParams({});
     debouncedSearch.cancel();
   };
 
@@ -239,7 +236,7 @@ const AdvancedSearch: React.FC = () => {
       facetParams[value.property]
     );
     const newParams = { ...facetParams, ...change };
-    setFacetParams(newParams);
+    dispatch(updateSearchFilter({ facetParams: newParams }));
     setPage(0);
     if (
       (value.matchType === MatchType.IRI ||
@@ -254,26 +251,23 @@ const AdvancedSearch: React.FC = () => {
 
   // Clear facet params when facets are toggled off
   React.useEffect(() => {
-    setFacetParams((currentParams) => {
-      let changed = false;
-      const nextParams = { ...currentParams };
-      FACET_KEYS.forEach((k) => {
-        if (!visibleFacets[k]) {
-          const iri = FACET_PARAM_MAP[k];
-          if (nextParams[iri]) {
-            delete nextParams[iri];
-            changed = true;
-          }
+    let changed = false;
+    const nextParams = { ...facetParams };
+    FACET_KEYS.forEach((k) => {
+      if (!visibleFacets[k]) {
+        const iri = FACET_PARAM_MAP[k];
+        if (nextParams[iri]) {
+          delete nextParams[iri];
+          changed = true;
         }
-      });
-      if (changed) {
-        setPage(0);
-        debouncedSearch.cancel();
-        runSearch(searchString, language, target, nextParams, 0);
-        return nextParams;
       }
-      return currentParams;
     });
+    if (changed) {
+      setPage(0);
+      debouncedSearch.cancel();
+      runSearch(searchString, language, target, nextParams, 0);
+      dispatch(updateSearchFilter({ facetParams: nextParams }));
+    }
   }, [
     visibleFacets,
     debouncedSearch,
@@ -289,7 +283,7 @@ const AdvancedSearch: React.FC = () => {
     if (isOn) {
       const next = { ...facetParams };
       delete next[att.iri];
-      setFacetParams(next);
+      dispatch(updateSearchFilter({ facetParams: next }));
       setPage(0);
       debouncedSearch.cancel();
       runSearch(searchString, language, target, next, 0);
@@ -298,7 +292,7 @@ const AdvancedSearch: React.FC = () => {
         ...facetParams,
         [att.iri]: createSearchParam(att),
       };
-      setFacetParams(next);
+      dispatch(updateSearchFilter({ facetParams: next }));
       setPage(0);
     }
   };
@@ -308,7 +302,7 @@ const AdvancedSearch: React.FC = () => {
     setAdvancedOpen(willBeOpen);
     if (!willBeOpen) {
       // Closing advanced: clear facet params and re-run
-      setFacetParams({});
+      dispatch(updateSearchFilter({ facetParams: {} }));
       setPage(0);
       debouncedSearch.cancel();
       runSearch(searchString, language, target, {}, 0);
