@@ -18,6 +18,7 @@ import SearchResult, {
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
 import SearchParam from "../model/search/SearchParam";
+import SearchQuery from "../model/search/SearchQuery";
 
 /**
  * Add a search listener using a simple reference counting.
@@ -53,11 +54,17 @@ export function removeSearchListener() {
  */
 let updateSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
-export function updateSearchFilter(searchString: string, language: string) {
+export function updateSearchFilter(change: Partial<SearchQuery>) {
   return {
     type: ActionType.UPDATE_SEARCH_FILTER,
-    searchString,
-    language,
+    ...change,
+  };
+}
+
+export function resetSearchFilter() {
+  return {
+    type: ActionType.UPDATE_SEARCH_FILTER,
+    ...new SearchQuery(),
   };
 }
 
@@ -69,7 +76,7 @@ export function updateSearchFilterAndRunSearch(
   language: string
 ) {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-    dispatch(updateSearchFilter(searchString, language));
+    dispatch(updateSearchFilter({ searchString, language }));
 
     // Clear search results
     dispatch({ type: ActionType.SEARCH_RESULT, searchResults: null });

@@ -292,10 +292,7 @@ function searchQuery(
 ): SearchQuery {
   switch (action.type) {
     case ActionType.UPDATE_SEARCH_FILTER:
-      const newState = new SearchQuery(state);
-      newState.searchString = action.searchString;
-      newState.language = action.language || "";
-      return newState;
+      return new SearchQuery(Object.assign({}, state, action));
     case ActionType.LOGOUT:
       return new SearchQuery();
     default:
