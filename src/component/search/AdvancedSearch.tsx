@@ -361,6 +361,7 @@ const AdvancedSearch: React.FC = () => {
       <AdvancedSearchResults
         results={results}
         finalResults={finalResults}
+        language={language}
         page={page}
         pageSize={pageSize}
         onPageChange={onPageChange}

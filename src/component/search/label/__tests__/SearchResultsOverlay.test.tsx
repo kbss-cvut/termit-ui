@@ -36,7 +36,7 @@ function generateResults(type: string, count: number = 5): SearchResult[] {
   for (let i = 0; i < count; i++) {
     const resData: SearchResultData = {
       iri: Generator.generateUri(),
-      label: "Result " + i,
+      label: langString("Result " + i),
       score: Generator.randomInt(0, 1),
       types: [type],
       snippetText: "<em>Match</em>",
@@ -150,7 +150,7 @@ describe("SearchResultsOverlay", () => {
     const results = [
       new SearchResult({
         iri,
-        label: "Result",
+        label: langString("Result"),
         snippetText: "<em>Match</em> multiple times. <em>Match</em> again",
         snippetField: "comment",
         vocabulary: { iri: vocabularyIri },
@@ -158,7 +158,7 @@ describe("SearchResultsOverlay", () => {
       }),
       new SearchResult({
         iri,
-        label: "Result",
+        label: langString("Result"),
         snippetText: "<em>Match</em> multiple times. <em>Match</em> again",
         snippetField: "comment",
         vocabulary: { iri: vocabularyIri },

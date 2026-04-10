@@ -132,7 +132,7 @@ const en = {
       "Showing {displayed} of {count} results. See all results.",
     "main.search.no-results": "No results found. Click to try advanced search.",
     "main.search.facetsActive":
-      "{count, plural one {# active facet} other {# active facets}}",
+      "{count, plural, one {# active facet} other {# active facets}}",
     "main.lang-selector.tooltip": "Select user interface language",
 
     "dashboard.widget.assetList.empty": "Found no assets to show here.",

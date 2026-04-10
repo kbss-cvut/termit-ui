@@ -7,9 +7,11 @@ import AssetFactory from "../../../util/AssetFactory";
 import VocabularyBadge from "../../badge/VocabularyBadge";
 import Constants from "../../../util/Constants";
 import MatchInfo from "./MatchInfo";
+import { getLocalized } from "../../../model/MultilingualString";
 
 interface VocabularyResultItemProps {
   result: SearchResultItem;
+  language?: string;
 }
 
 export function getSnippetFieldIndex(
@@ -21,7 +23,8 @@ export function getSnippetFieldIndex(
 
 export function getResultDescription(
   result: SearchResultItem,
-  fieldNames: string[]
+  fieldNames: string[],
+  language?: string
 ) {
   let snippetFieldIndex = -1;
   for (let i = 0; i < fieldNames.length; i++) {
@@ -30,11 +33,11 @@ export function getResultDescription(
       break;
     }
   }
-  let text;
+  let text: string;
   if (snippetFieldIndex >= 0) {
     text = result.snippets[snippetFieldIndex];
   } else {
-    text = result.description;
+    text = getLocalized(result.description, language);
   }
 
   if (text && text!.length > Constants.FTS_SNIPPET_TEXT_SIZE) {
@@ -45,8 +48,9 @@ export function getResultDescription(
 
 const VocabularyResultItem: React.FC<VocabularyResultItemProps> = ({
   result,
+  language,
 }) => {
-  const description = getResultDescription(result, ["description"]);
+  const description = getResultDescription(result, ["description"], language);
 
   return (
     <>

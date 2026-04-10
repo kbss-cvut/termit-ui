@@ -125,7 +125,7 @@ const de = {
     "main.search.no-results":
       "Keine Ergebnisse gefunden. Klicken Sie, um die erweiterte Suche zu versuchen.",
     "main.search.facetsActive":
-      "{count, plural one {# aktiver Filter} other {# aktive Filter}}",
+      "{count, plural, one {# aktiver Filter} other {# aktive Filter}}",
     "main.lang-selector.tooltip":
       "Wählen Sie die Sprache der Benutzeroberfläche aus",
     "dashboard.widget.assetList.empty":

@@ -7,10 +7,12 @@ import { SearchResultItem } from "./label/SearchUtil";
 import TermResultItem from "./label/TermResultItem";
 import VocabularyResultItem from "./label/VocabularyResultItem";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
+import { getShortLocale } from "../../util/IntlUtil";
 
 interface AdvancedSearchResultsProps {
   results: SearchResult[] | null;
   finalResults: SearchResultItem[] | null;
+  language?: string;
   page: number;
   pageSize: number;
   onPageChange: (page: number) => void;
@@ -22,8 +24,9 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
   page,
   pageSize,
   onPageChange,
+  language,
 }) => {
-  const { i18n, formatMessage } = useI18n();
+  const { i18n, formatMessage, locale } = useI18n();
 
   const renderContent = () => {
     if (results === null) {
@@ -38,14 +41,15 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
         </div>
       );
     }
+    const actualLanguage = language || getShortLocale(locale);
 
     const rows = finalResults.map((r) => (
       <tr key={r.iri} className="search-result-match-row">
         <td className="align-middle">
           {r.hasType(VocabularyUtils.VOCABULARY) ? (
-            <VocabularyResultItem result={r} />
+            <VocabularyResultItem result={r} language={actualLanguage} />
           ) : (
-            <TermResultItem result={r} />
+            <TermResultItem result={r} language={actualLanguage} />
           )}
         </td>
       </tr>
