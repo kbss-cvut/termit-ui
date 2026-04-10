@@ -15,18 +15,20 @@ import {
   routingProps,
 } from "../../../../__tests__/environment/TestUtil";
 import SearchQuery from "../../../../model/search/SearchQuery";
+import { langString } from "../../../../model/MultilingualString";
 
 vi.mock("../../../../util/Routing");
 
 describe("NavbarSearch", () => {
   let updateSearchFilter: () => Promise<object>;
+  let resetSearchFilter: () => void;
 
   const user = Generator.generateUser();
 
   const searchResults = [
     new SearchResult({
       iri: Generator.generateUri(),
-      label: "test",
+      label: langString("test"),
       snippetField: "label",
       snippetText: "<em>label</em>",
       types: [VocabularyUtils.VOCABULARY],
@@ -34,7 +36,12 @@ describe("NavbarSearch", () => {
   ];
 
   const navbarConnections = () => {
-    return { updateSearchFilter, ...routingProps(), indexedLanguages: [] };
+    return {
+      updateSearchFilter,
+      resetSearchFilter,
+      ...routingProps(),
+      indexedLanguages: [],
+    };
   };
 
   beforeEach(() => {

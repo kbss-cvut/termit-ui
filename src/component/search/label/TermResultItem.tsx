@@ -13,20 +13,26 @@ import TermStateBadge from "../../term/state/TermStateBadge";
 import { useI18n } from "../../hook/useI18n";
 import { getResultDescription } from "./VocabularyResultItem";
 import MatchInfo from "./MatchInfo";
+import { getLocalized } from "../../../model/MultilingualString";
 
 interface TermResultItemProps {
   result: SearchResultItem;
+  language?: string;
 }
 
-const TermResultItem: React.FC<TermResultItemProps> = ({ result }) => {
+const TermResultItem: React.FC<TermResultItemProps> = ({
+  result,
+  language,
+}) => {
   const { i18n } = useI18n();
   const user = useSelector((state: TermItState) => state.user);
+  const label = getLocalized(result.label, language);
 
   const t = {
     iri: result.iri,
     label: (
       <>
-        <span className="search-result-title">{result.label}</span>
+        <span className="search-result-title">{label}</span>
         &nbsp;
         {result.vocabulary ? (
           <>
@@ -41,7 +47,7 @@ const TermResultItem: React.FC<TermResultItemProps> = ({ result }) => {
   };
   const fields = ["definition", "scopeNote"];
 
-  const description = getResultDescription(result, fields);
+  const description = getResultDescription(result, fields, language);
 
   const asset = AssetFactory.createAsset(result);
   return (
