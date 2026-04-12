@@ -10,7 +10,7 @@
     "@fortawesome/fontawesome-free": "7.1.0",
     "@opendata-mvcr/assembly-line-shared": "^0.3.2",
     "apexcharts": "5.3.6",
-    "axios": "^1.13.5",
+    "axios": "^1.15.0",
     "classnames": "^2.5.1",
     "dom-serializer": "2.0.0",
     "domhandler": "5.0.3",
