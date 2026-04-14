@@ -16,6 +16,7 @@ interface AdvancedSearchResultsProps {
   page: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  isFts: boolean;
 }
 
 const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
@@ -25,6 +26,7 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
   pageSize,
   onPageChange,
   language,
+  isFts,
 }) => {
   const { i18n, formatMessage, locale } = useI18n();
 
@@ -37,7 +39,7 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
     if (!finalResults || finalResults.length === 0) {
       return (
         <div className="italics small text-gray">
-          {i18n("search.no-results")}
+          {i18n(page > 0 ? "search.noMoreResults" : "search.no-results")}
         </div>
       );
     }
@@ -58,10 +60,15 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
     return (
       <>
         <div className="italics small text-gray mb-3">
-          {formatMessage("search.results.countInfo", {
-            matches: results.length,
-            assets: rows.length,
-          })}
+          {formatMessage(
+            isFts
+              ? "search.results.pagedCountInfo"
+              : "search.results.pagedCountInfo.noFts",
+            {
+              matches: results.length,
+              assets: rows.length,
+            }
+          )}
         </div>
         <table className="table-borderless search-results table">
           <tbody>{rows}</tbody>
