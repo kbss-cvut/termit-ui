@@ -77,6 +77,10 @@ const Routes = {
     "createVocabularyTerm",
     "/vocabularies/:name/terms/create"
   ),
+  vocabularySheetView: new Route(
+    "vocabularySheetView",
+    "/vocabularies/:name/table/terms"
+  ),
   vocabularyTermDetail: new Route(
     "vocabularyTermDetail",
     "/vocabularies/:name/terms/:termName"
