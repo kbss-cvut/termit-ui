@@ -208,6 +208,16 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     });
   };
 
+  public onOpenTermsWorkspace = () => {
+    const vocabularyIri = VocabularyUtils.create(this.props.vocabulary!.iri!);
+    Routing.transitionTo(Routes.vocabularySheetView, {
+      params: new Map([["name", vocabularyIri.fragment]]),
+      query: vocabularyIri.namespace
+        ? namespaceQueryParam(vocabularyIri.namespace)
+        : undefined,
+    });
+  };
+
   public onTermSelect = (term: Term | null) => {
     if (term === null) {
       if (this.props.isDetailView) {
@@ -338,21 +348,34 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             )}
           </h4>
           {!isDetailView && (
-            <IfVocabularyActionAuthorized
-              vocabulary={this.props.vocabulary}
-              requiredAccessLevel={AccessLevel.WRITE}
-            >
+            <div className="d-flex align-items-center">
               <Button
-                id="terms-create"
-                color="primary"
+                id="terms-open-workspace"
+                color="secondary"
+                outline={true}
                 size="sm"
-                title={i18n("glossary.createTerm.tooltip")}
-                onClick={this.onCreateClick}
+                className="mr-2"
+                title={i18n("glossary.table.workspace.open.help")}
+                onClick={this.onOpenTermsWorkspace}
               >
-                <GoPlus />
-                &nbsp;{i18n("glossary.new")}
+                {i18n("glossary.table.workspace.open")}
               </Button>
-            </IfVocabularyActionAuthorized>
+              <IfVocabularyActionAuthorized
+                vocabulary={this.props.vocabulary}
+                requiredAccessLevel={AccessLevel.WRITE}
+              >
+                <Button
+                  id="terms-create"
+                  color="primary"
+                  size="sm"
+                  title={i18n("glossary.createTerm.tooltip")}
+                  onClick={this.onCreateClick}
+                >
+                  <GoPlus />
+                  &nbsp;{i18n("glossary.new")}
+                </Button>
+              </IfVocabularyActionAuthorized>
+            </div>
           )}
         </div>
         <div
