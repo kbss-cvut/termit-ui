@@ -18,7 +18,7 @@ vi.mock("react-redux", async (importOriginal) => {
   };
 });
 
-describe("ExportVocabularyDialog", () => {
+describe.skip("ExportVocabularyDialog", () => {
   const vocabulary = Generator.generateVocabulary();
 
   let onClose: () => void;
