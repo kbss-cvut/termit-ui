@@ -672,8 +672,13 @@ const de = {
     "search.reset": "Suche zurücksetzen",
     "search.results.title": 'Ergebnisse für "{searchString}"',
     "search.no-results": "Keine Ergebnisse gefunden.",
+    "search.noMoreResults": "Keine weiteren Ergebnisse verfügbar.",
     "search.results.countInfo":
       "Es wurden {matches} Übereinstimmungen in {assets}-Assets gefunden.",
+    "search.results.pagedCountInfo":
+      "Zeige {assets, plural, one {# Element} other {# Elemente}} mit {matches, plural, one {# Treffer} other {# Treffern}} auf dieser Seite.",
+    "search.results.pagedCountInfo.noFts":
+      "Zeige {assets, plural, one {# Element} other {# Elemente}}, die den Kriterien auf dieser Seite entsprechen.",
     "search.results.table.label": "Label",
     "search.results.table.label.tooltip": "Öffnen Sie die Asset-Details",
     "search.results.table.match": "Übereinstimmung",

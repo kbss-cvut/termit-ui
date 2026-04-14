@@ -365,6 +365,7 @@ const AdvancedSearch: React.FC = () => {
         page={page}
         pageSize={pageSize}
         onPageChange={onPageChange}
+        isFts={searchString !== ""}
       />
     </div>
   );
