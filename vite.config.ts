@@ -27,11 +27,7 @@ export default defineConfig({
     },
     server: {
       deps: {
-        inline: [
-          "@opendata-mvcr/assembly-line-shared",
-          "react-stomp-hooks",
-          "popper.js",
-        ],
+        inline: ["react-stomp-hooks", "popper.js"],
       },
     },
   },

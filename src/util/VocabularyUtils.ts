@@ -1,7 +1,6 @@
 /**
  * Vocabulary used by the application ontological model.
  */
-import { getVocabularyShortLabel } from "@opendata-mvcr/assembly-line-shared";
 import en from "../i18n/en";
 import cs from "../i18n/cs";
 
@@ -226,7 +225,7 @@ const VocabularyUtils = {
  */
 export function getShortVocabularyLabel(iri: string): string {
   // Try matching pattern for SGoV-based vocabularies
-  let result = getVocabularyShortLabel(iri);
+  let result = getVocabularyShortSGoVLabel(iri);
   if (result) {
     return result;
   }
@@ -260,6 +259,48 @@ export function getShortVocabularyLabel(iri: string): string {
   result = split.join(VOCABULARY_SHORT_LABEL_SEPARATOR);
   return result;
 }
+
+// SGoV-based vocabulary short label resolution - taken from https://github.com/datagov-cz/assembly-line-shared/
+function getVocabularyShortSGoVLabel(vocabularyIri: string) {
+  const vocabularies = sgovVocabularyTypes
+    .map((v) => {
+      const match = vocabularyIri.match(v.regex);
+      return !match
+        ? null
+        : match.length == 1
+        ? v.shortName
+        : v.shortName.replace("{id}", match[1]);
+    })
+    .filter((v) => v);
+  return !vocabularies || vocabularies.length > 1 ? null : vocabularies[0];
+}
+
+const sgovVocabularyTypes = [
+  {
+    regex: "^https://slovník.gov.cz/datový/([ěščřžýáíéóúůďťňa-z0-9-.]+)$",
+    shortName: "D-SGoV-{id}",
+  },
+  {
+    regex: "^https://slovník.gov.cz/agendový/([a-z0-9-]+)$",
+    shortName: "A-SGoV-{id}",
+  },
+  {
+    regex: "^https://slovník.gov.cz/legislativní/sbírka/([0-9]+/[0-9]+)$",
+    shortName: "L-SGoV-{id}",
+  },
+  {
+    regex: "^https://slovník.gov.cz/generický/([ěščřžýáíéóúůďťňa-z0-9-.]+$)",
+    shortName: "G-SGoV-{id}",
+  },
+  {
+    regex: "^https://slovník.gov.cz/veřejný-sektor",
+    shortName: "V-SGoV",
+  },
+  {
+    regex: "^https://slovník.gov.cz/základní",
+    shortName: "Z-SGoV",
+  },
+];
 
 const VOCABULARY_SHORT_LABEL_MAX_LENGTH = 15;
 const VOCABULARY_SHORT_LABEL_SEPARATOR = "-";
