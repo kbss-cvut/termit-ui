@@ -28,7 +28,7 @@
     "ld-query": "2.6.1",
     "lodash": "4.18.1",
     "luxon": "3.7.2",
-    "marked": "9.1.6",
+    "marked": "18.0.0",
     "object-assign": "4.1.1",
     "oidc-client": "1.11.5",
     "promise": "8.3.0",
