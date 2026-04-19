@@ -21,7 +21,6 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import VocabularySheetViewTable from "./VocabularySheetViewTable";
-import IncludeImportedTermsToggle from "../term/IncludeImportedTermsToggle";
 import Routing, { namespaceQueryParam } from "../../util/Routing";
 import Routes from "../../util/Routes";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
@@ -126,10 +125,6 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
     (state: TermItState) => state.notifications
   );
 
-  const includeImported =
-    Utils.extractQueryParam(location.search, "includeImported") ===
-    true.toString();
-
   const vocabularyIri = useLoadVocabularyFromRoute({
     matchParams: match.params,
     locationSearch: location.search,
@@ -141,21 +136,8 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
 
   useRefreshVocabularySheetViewOnNotifications(notifications, dispatch);
 
-  const onIncludeImportedToggle = () => {
-    const query = vocabularyIri.namespace
-      ? namespaceQueryParam(vocabularyIri.namespace)
-      : new Map<string, string>();
-    query.set("includeImported", (!includeImported).toString());
-    Routing.transitionTo(Routes.vocabularySheetView, {
-      params: new Map([["name", vocabularyIri.fragment]]),
-      query,
-    });
-  };
-
   const onTermSelect = (term: Term) => {
-    Routing.transitionToAsset(term, {
-      query: new Map([["includeImported", includeImported.toString()]]),
-    });
+    Routing.transitionToAsset(term);
   };
 
   const onOpenVocabularyDetail = () => {
@@ -180,9 +162,6 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
     vocabulary !== EMPTY_VOCABULARY
       ? getLocalized(vocabulary.label, getShortLocale(locale))
       : vocabularyIri.fragment;
-  const hasImportedVocabularies =
-    vocabulary !== EMPTY_VOCABULARY &&
-    Utils.sanitizeArray(vocabulary.importedVocabularies).length > 0;
 
   return (
     <div id="vocabulary-sheet-view">
@@ -224,21 +203,9 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
       />
       <Card>
         <CardBody>
-          {hasImportedVocabularies && (
-            <div className="d-flex mb-3">
-              <div className="mr-2">
-                <IncludeImportedTermsToggle
-                  id="sheet-view-include-imported"
-                  onToggle={onIncludeImportedToggle}
-                  includeImported={includeImported}
-                />
-              </div>
-            </div>
-          )}
           {vocabulary !== EMPTY_VOCABULARY && (
             <VocabularySheetViewTable
               vocabulary={vocabulary}
-              includeImported={includeImported}
               selectedTermIri={selectedTerm ? selectedTerm.iri : null}
               onTermSelect={onTermSelect}
             />

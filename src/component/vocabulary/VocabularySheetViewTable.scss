@@ -92,6 +92,22 @@
   .term-table-link {
     text-align: left;
     max-width: 100%;
+    /* Override block width so it naturally wraps instead of forcing full width inside flex */
+    width: auto;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .term-table-inline-link {
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .term-badge-wrapper {
+    max-width: 100%;
+    vertical-align: bottom;
   }
 
   .term-table-definition {

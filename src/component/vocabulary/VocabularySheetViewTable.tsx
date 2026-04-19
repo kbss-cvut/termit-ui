@@ -26,6 +26,7 @@ import { useI18n } from "../hook/useI18n";
 import { getShortLocale } from "../../util/IntlUtil";
 import {
   getLocalized,
+  getLocalizedPlural,
   MultilingualString,
 } from "../../model/MultilingualString";
 import Utils from "../../util/Utils";
@@ -39,13 +40,12 @@ import TermStateBadge from "../term/state/TermStateBadge";
 import { getTermPath } from "../term/TermLink";
 import classNames from "classnames";
 import { OWL, SKOS } from "../../util/Namespaces";
-import { getLocalizedPlural } from "../../model/MultilingualString";
 import { Link } from "react-router-dom";
+import VocabularyNameBadgeButton from "./VocabularyNameBadgeButton";
 import "./VocabularySheetViewTable.scss";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
-  includeImported: boolean;
   selectedTermIri: string | null;
   onTermSelect: (term: Term) => void;
 }
@@ -154,7 +154,8 @@ function resolveLocalizedTermLabel(
 
 function previewTermList(
   items: Array<Term | TermInfo> | undefined,
-  locale: string
+  locale: string,
+  baseVocabularyIri?: string
 ): React.ReactNode {
   const sanitized = Utils.sanitizeArray(items) as Array<Term | TermInfo>;
 
@@ -169,29 +170,41 @@ function previewTermList(
           resolveLocalizedTermLabel(item, locale) ||
           resolveVocabularyFragment(item.iri);
         const vocabulary = item.vocabulary;
-        const label =
-          item.label && Object.keys(item.label).length > 0
-            ? item.label
-            : ({ [locale]: fallbackLabel } as MultilingualString);
         const hasNavigableVocabulary = !!vocabulary?.iri;
+        const showBadge =
+          vocabulary?.iri &&
+          baseVocabularyIri &&
+          vocabulary.iri !== baseVocabularyIri;
 
         return (
           <React.Fragment key={item.iri || `${index}`}>
             {index > 0 && ", "}
             {item.iri && hasNavigableVocabulary ? (
-              <Link
-                to={getTermPath({
-                  iri: item.iri,
-                  label,
-                  vocabulary,
-                  state: item.state,
-                  types: item.types,
-                } as TermInfo)}
-                className="term-table-inline-link"
-                title={fallbackLabel}
-              >
-                {fallbackLabel}
-              </Link>
+              <span className="d-inline-flex align-items-center flex-nowrap term-badge-wrapper">
+                <Link
+                  to={getTermPath({
+                    iri: item.iri,
+                    label:
+                      item.label && Object.keys(item.label).length > 0
+                        ? item.label
+                        : ({ [locale]: fallbackLabel } as MultilingualString),
+                    vocabulary,
+                    state: item.state,
+                    types: item.types,
+                  } as TermInfo)}
+                  className="term-table-inline-link"
+                  title={fallbackLabel}
+                >
+                  {fallbackLabel}
+                </Link>
+                {showBadge && (
+                  <VocabularyNameBadgeButton
+                    vocabulary={vocabulary}
+                    termIri={item.iri}
+                    className="ml-2 flex-shrink-0"
+                  />
+                )}
+              </span>
             ) : (
               <span>{fallbackLabel}</span>
             )}
@@ -227,7 +240,7 @@ function resolveGridColumnWidth(column: TermsTableColumn): string {
 
 export const VocabularySheetViewTable: React.FC<
   VocabularySheetViewTableProps
-> = ({ vocabulary, includeImported, selectedTermIri, onTermSelect }) => {
+> = ({ vocabulary, selectedTermIri, onTermSelect }) => {
   const { i18n, formatMessage, locale } = useI18n();
   const shortLocale = getShortLocale(locale);
   const apiPrefix = useSelector((state: TermItState) => getApiPrefix(state));
@@ -286,13 +299,11 @@ export const VocabularySheetViewTable: React.FC<
       "vocabulary-sheet-view",
       apiPrefix,
       vocabulary.iri,
-      includeImported,
       searchString,
       shortLocale,
     ],
     queryFn: async ({ pageParam = 0, signal }) => {
       const requestParams: {
-        includeImported: boolean;
         full?: boolean;
         flat: boolean;
         namespace?: string;
@@ -301,7 +312,6 @@ export const VocabularySheetViewTable: React.FC<
         page: number;
         size: number;
       } = {
-        includeImported,
         full: true,
         flat: true,
         language: shortLocale,
@@ -338,14 +348,12 @@ export const VocabularySheetViewTable: React.FC<
 
       if (totalCount === undefined && Number(pageParam) === 0) {
         const countParams: {
-          includeImported: boolean;
           full?: boolean;
           flat?: boolean;
           namespace?: string;
           searchString?: string;
           language?: string;
         } = {
-          includeImported,
           full: true,
           flat: true,
           language: shortLocale,
@@ -401,14 +409,18 @@ export const VocabularySheetViewTable: React.FC<
         growFr: 2,
         hideable: false,
         render: (term) => (
-          <button
-            type="button"
-            className="btn btn-link p-0 term-table-link"
-            onClick={() => onTermSelect(term)}
-            title={i18n("glossary.table.openTerm")}
-          >
-            {getLocalized(term.label, shortLocale)}
-          </button>
+          <div className="d-flex align-items-center">
+            <span className="d-inline-flex align-items-center flex-nowrap term-badge-wrapper">
+              <button
+                type="button"
+                className="btn btn-link p-0 text-left term-table-link"
+                onClick={() => onTermSelect(term)}
+                title={i18n("glossary.table.openTerm")}
+              >
+                {getLocalized(term.label, shortLocale)}
+              </button>
+            </span>
+          </div>
         ),
       },
       {
@@ -425,7 +437,8 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 14,
         growFr: 2,
         hideable: true,
-        render: (term) => previewTermList(term.exactMatchTerms, shortLocale),
+        render: (term) =>
+          previewTermList(term.exactMatchTerms, shortLocale, vocabulary.iri),
       },
       {
         id: "parentTerms",
@@ -436,7 +449,7 @@ export const VocabularySheetViewTable: React.FC<
         render: (term) => {
           const directParents = Utils.sanitizeArray(term.parentTerms);
           if (directParents.length > 0) {
-            return previewTermList(directParents, shortLocale);
+            return previewTermList(directParents, shortLocale, vocabulary.iri);
           }
           return "";
         },
@@ -450,7 +463,8 @@ export const VocabularySheetViewTable: React.FC<
         render: (term) => {
           return previewTermList(
             Utils.sanitizeArray(term.subTerms),
-            shortLocale
+            shortLocale,
+            vocabulary.iri
           );
         },
       },
@@ -463,7 +477,8 @@ export const VocabularySheetViewTable: React.FC<
         render: (term) =>
           previewTermList(
             Term.consolidateRelatedAndRelatedMatch(term, shortLocale),
-            shortLocale
+            shortLocale,
+            vocabulary.iri
           ),
       },
       {
@@ -569,7 +584,7 @@ export const VocabularySheetViewTable: React.FC<
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, left: 0 });
     }
-  }, [includeImported, searchString, vocabulary.iri, shortLocale]);
+  }, [searchString, vocabulary.iri, shortLocale]);
 
   const updateColumnVisibility = (
     columnId: TermsTableColumn["id"],
