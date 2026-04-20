@@ -665,6 +665,8 @@ const en = {
     "glossary.table.total": "{count, number} terms",
     "glossary.table.loaded": "Loaded: {count, number}",
     "glossary.table.loadingMore": "Loading more terms...",
+    "glossary.table.cell.expand": "Expand cell",
+    "glossary.table.cell.collapse": "Collapse cell",
     "glossary.table.endReached": "All terms loaded.",
     "glossary.table.workspace.title": "Sheet view",
     "glossary.table.workspace.breadcrumb": "Sheet view",
