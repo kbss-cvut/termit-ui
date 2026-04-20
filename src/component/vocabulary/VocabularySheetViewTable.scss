@@ -11,6 +11,16 @@
     margin-bottom: 0.75rem;
   }
 
+  .vocabulary-sheet-view-language-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .vocabulary-sheet-view-language-button {
+    min-width: 3rem;
+  }
+
   .vocabulary-sheet-view-summary {
     gap: 0.75rem;
     margin-bottom: 0.5rem;
@@ -92,6 +102,10 @@
   .term-table-link {
     text-align: left;
     max-width: 100%;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
     /* Override block width so it naturally wraps instead of forcing full width inside flex */
     width: auto;
     flex: 0 1 auto;
