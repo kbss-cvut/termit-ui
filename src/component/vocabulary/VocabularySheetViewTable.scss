@@ -89,6 +89,7 @@
 
   .vocabulary-sheet-view-cell {
     border-right: 1px solid #edf0f2;
+    position: relative;
   }
 
   .vocabulary-sheet-view-cell,
@@ -97,6 +98,17 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* When expanded, allow text to wrap natively */
+  .vocabulary-sheet-view-cell-expanded {
+    &,
+    .term-table-list-preview,
+    .term-table-inline-link,
+    .term-table-definition {
+      white-space: normal;
+      text-overflow: clip;
+    }
   }
 
   .term-table-link {
@@ -119,9 +131,75 @@
     white-space: nowrap;
   }
 
+  .term-table-list-preview-expanded {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+
+  .term-table-list-wrapper {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .term-table-list-preview-collapsed {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  .term-table-expandable-cell {
+    position: relative;
+    width: 100%;
+    align-items: flex-start;
+
+    &:not(.term-table-expandable-cell-expanded) {
+      align-items: center;
+    }
+  }
+
+  .vocabulary-sheet-view-cell-expand-toggle {
+    margin: 0 0 0 0.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none !important;
+    cursor: pointer;
+    line-height: inherit;
+    text-decoration: none;
+    font-weight: bold;
+    color: #495057;
+
+    &:hover,
+    &:focus {
+      color: var(--primary);
+      text-decoration: none;
+      outline: none;
+    }
+  }
+
+  .vocabulary-sheet-view-cell-expand-icon {
+    display: inline-block;
+  }
+
   .term-badge-wrapper {
     max-width: 100%;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: nowrap;
     vertical-align: bottom;
+  }
+
+  .term-table-list-preview-expanded .term-badge-wrapper {
+    display: inline;
+    vertical-align: baseline;
+
+    .ml-2 {
+      display: inline-block;
+      vertical-align: middle;
+    }
   }
 
   .term-table-definition {

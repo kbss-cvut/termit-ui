@@ -672,6 +672,8 @@ const cs = {
     "glossary.table.total": "{count, number} pojmů",
     "glossary.table.loaded": "Načteno: {count, number}",
     "glossary.table.loadingMore": "Načítají se další pojmy...",
+    "glossary.table.cell.expand": "Rozbalit buňku",
+    "glossary.table.cell.collapse": "Sbalit buňku",
     "glossary.table.endReached": "Všechny pojmy jsou načtené.",
     "glossary.table.workspace.title": "Tabulkové zobrazení",
     "glossary.table.workspace.breadcrumb": "Tabulkové zobrazení",
