@@ -12,7 +12,7 @@ import {
   Spinner,
   UncontrolledDropdown,
 } from "reactstrap";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useDebouncedCallback } from "use-debounce";
 import { useSelector } from "react-redux";
 import Term, {
@@ -75,7 +75,7 @@ interface TermsTableColumn {
   minWidthRem: number;
   growFr?: number;
   hideable: boolean;
-  render: (term: Term) => React.ReactNode;
+  render: (term: Term, rowIndex: number) => React.ReactNode;
 }
 
 const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
@@ -156,7 +156,8 @@ function resolveLocalizedTermLabel(
 function previewTermList(
   items: Array<Term | TermInfo> | undefined,
   locale: string,
-  baseVocabularyIri?: string
+  baseVocabularyIri?: string,
+  expanded: boolean = false
 ): React.ReactNode {
   const sanitized = Utils.sanitizeArray(items) as Array<Term | TermInfo>;
 
@@ -165,7 +166,12 @@ function previewTermList(
   }
 
   return (
-    <span className="term-table-list-preview text-truncate d-block w-100">
+    <span
+      className={classNames("term-table-list-preview d-block w-100", {
+        "term-table-list-preview-expanded": expanded,
+        "term-table-list-preview-collapsed": !expanded,
+      })}
+    >
       {sanitized.map((item, index) => {
         const fallbackLabel =
           resolveLocalizedTermLabel(item, locale) ||
@@ -176,12 +182,12 @@ function previewTermList(
           vocabulary?.iri &&
           baseVocabularyIri &&
           vocabulary.iri !== baseVocabularyIri;
+        const isLast = index === sanitized.length - 1;
 
         return (
           <React.Fragment key={item.iri || `${index}`}>
-            {index > 0 && ", "}
             {item.iri && hasNavigableVocabulary ? (
-              <span className="d-inline-flex align-items-center flex-nowrap term-badge-wrapper">
+              <span className="term-badge-wrapper">
                 <Link
                   to={getTermPath({
                     iri: item.iri,
@@ -209,6 +215,7 @@ function previewTermList(
             ) : (
               <span>{fallbackLabel}</span>
             )}
+            {!isLast && <>, </>}
           </React.Fragment>
         );
       })}
@@ -340,6 +347,9 @@ export const VocabularySheetViewTable: React.FC<
   const [searchInput, setSearchInput] = React.useState("");
   const [searchString, setSearchString] = React.useState("");
   const [tableLanguage, setTableLanguage] = React.useState(shortLocale);
+  const [expandedCellKey, setExpandedCellKey] = React.useState<string | null>(
+    null
+  );
   const [columnVisibility, setColumnVisibility] = React.useState<
     Record<TermsTableColumn["id"], boolean>
   >(() => {
@@ -523,6 +533,86 @@ export const VocabularySheetViewTable: React.FC<
   )?.totalCount;
   const totalCount = resolvedTotalCount ?? loadedTerms.length;
 
+  const getCellKey = React.useCallback(
+    (rowIndex: number, columnId: TermsTableColumn["id"]) =>
+      `${rowIndex}:${columnId}`,
+    []
+  );
+
+  const renderExpandableTermListCell = React.useCallback(
+    (
+      items: Array<Term | TermInfo> | undefined,
+      rowIndex: number,
+      columnId: TermsTableColumn["id"]
+    ) => {
+      const sanitized = Utils.sanitizeArray(items) as Array<Term | TermInfo>;
+      if (sanitized.length === 0) {
+        return "";
+      }
+
+      const cellKey = getCellKey(rowIndex, columnId);
+      const isExpanded = expandedCellKey === cellKey;
+      const canToggle = sanitized.length > 1;
+
+      return (
+        <div
+          className={classNames("d-flex", "term-table-expandable-cell", {
+            "term-table-expandable-cell-expanded": isExpanded,
+          })}
+        >
+          <div
+            className={classNames("term-table-list-wrapper", {
+              "overflow-hidden": !isExpanded,
+            })}
+          >
+            {previewTermList(
+              sanitized,
+              displayLanguage,
+              vocabulary.iri,
+              isExpanded
+            )}
+          </div>
+          {canToggle && (
+            <button
+              type="button"
+              className={classNames(
+                "vocabulary-sheet-view-cell-expand-toggle",
+                {
+                  "is-expanded": isExpanded,
+                }
+              )}
+              onClick={(event) => {
+                event.stopPropagation();
+                setExpandedCellKey((previous) =>
+                  previous === cellKey ? null : cellKey
+                );
+              }}
+              title={
+                isExpanded
+                  ? i18n("glossary.table.cell.collapse")
+                  : i18n("glossary.table.cell.expand")
+              }
+              aria-label={
+                isExpanded
+                  ? i18n("glossary.table.cell.collapse")
+                  : i18n("glossary.table.cell.expand")
+              }
+              aria-expanded={isExpanded}
+            >
+              <span
+                aria-hidden="true"
+                className="vocabulary-sheet-view-cell-expand-icon"
+              >
+                {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+              </span>
+            </button>
+          )}
+        </div>
+      );
+    },
+    [displayLanguage, expandedCellKey, getCellKey, i18n, vocabulary.iri]
+  );
+
   const columns = React.useMemo<TermsTableColumn[]>(
     () => [
       {
@@ -560,11 +650,11 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 14,
         growFr: 2,
         hideable: true,
-        render: (term) =>
-          previewTermList(
+        render: (term, rowIndex) =>
+          renderExpandableTermListCell(
             term.exactMatchTerms,
-            displayLanguage,
-            vocabulary.iri
+            rowIndex,
+            "exactMatches"
           ),
       },
       {
@@ -573,13 +663,13 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 14,
         growFr: 2,
         hideable: true,
-        render: (term) => {
+        render: (term, rowIndex) => {
           const directParents = Utils.sanitizeArray(term.parentTerms);
           if (directParents.length > 0) {
-            return previewTermList(
+            return renderExpandableTermListCell(
               directParents,
-              displayLanguage,
-              vocabulary.iri
+              rowIndex,
+              "parentTerms"
             );
           }
           return "";
@@ -591,11 +681,11 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 14,
         growFr: 2,
         hideable: true,
-        render: (term) =>
-          previewTermList(
+        render: (term, rowIndex) =>
+          renderExpandableTermListCell(
             Utils.sanitizeArray(term.subTerms),
-            displayLanguage,
-            vocabulary.iri
+            rowIndex,
+            "subTerms"
           ),
       },
       {
@@ -604,11 +694,11 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 14,
         growFr: 2,
         hideable: true,
-        render: (term) =>
-          previewTermList(
+        render: (term, rowIndex) =>
+          renderExpandableTermListCell(
             Term.consolidateRelatedAndRelatedMatch(term, displayLanguage),
-            displayLanguage,
-            vocabulary.iri
+            rowIndex,
+            "relatedTerms"
           ),
       },
       {
@@ -659,7 +749,7 @@ export const VocabularySheetViewTable: React.FC<
         ),
       },
     ],
-    [displayLanguage, i18n, onTermSelect]
+    [displayLanguage, i18n, onTermSelect, renderExpandableTermListCell]
   );
 
   const visibleColumns = React.useMemo(
@@ -874,13 +964,14 @@ export const VocabularySheetViewTable: React.FC<
             return (
               <div
                 key={String(virtualRow.key)}
+                data-index={virtualRow.index}
+                ref={rowVirtualizer.measureElement}
                 className={classNames("vocabulary-sheet-view-row", {
                   "vocabulary-sheet-view-row-selected":
                     term && term.iri === selectedTermIri,
                 })}
                 style={{
                   gridTemplateColumns,
-                  height: virtualRow.size,
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
               >
@@ -890,14 +981,21 @@ export const VocabularySheetViewTable: React.FC<
                     <span>{i18n("glossary.table.loadingMore")}</span>
                   </div>
                 ) : (
-                  visibleColumns.map((column) => (
-                    <div
-                      key={`${virtualRow.index}-${column.id}`}
-                      className="vocabulary-sheet-view-cell"
-                    >
-                      {column.render(term)}
-                    </div>
-                  ))
+                  visibleColumns.map((column) => {
+                    const cellKey = getCellKey(virtualRow.index, column.id);
+                    const isExpandedCell = expandedCellKey === cellKey;
+
+                    return (
+                      <div
+                        key={`${virtualRow.index}-${column.id}`}
+                        className={classNames("vocabulary-sheet-view-cell", {
+                          "vocabulary-sheet-view-cell-expanded": isExpandedCell,
+                        })}
+                      >
+                        {column.render(term, virtualRow.index)}
+                      </div>
+                    );
+                  })
                 )}
               </div>
             );

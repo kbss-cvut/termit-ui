@@ -630,6 +630,8 @@ const de = {
     "glossary.table.total": "{count, number} Begriffe",
     "glossary.table.loaded": "Geladen: {count, number}",
     "glossary.table.loadingMore": "Weitere Begriffe werden geladen...",
+    "glossary.table.cell.expand": "Zelle erweitern",
+    "glossary.table.cell.collapse": "Zelle einklappen",
     "glossary.table.endReached": "Alle Begriffe sind geladen.",
     "glossary.table.workspace.title": "Tabellenansicht",
     "glossary.table.workspace.breadcrumb": "Tabellenansicht",
