@@ -28,6 +28,7 @@ import {
   getLocalized,
   getLocalizedPlural,
   MultilingualString,
+  PluralMultilingualString,
 } from "../../model/MultilingualString";
 import Utils from "../../util/Utils";
 import Constants from "../../util/Constants";
@@ -238,6 +239,97 @@ function resolveGridColumnWidth(column: TermsTableColumn): string {
     : `${column.minWidthRem}rem`;
 }
 
+function normalizeLanguageTag(language: string): string {
+  const trimmed = (language || "").trim();
+  if (!trimmed || trimmed === "@none") {
+    return "";
+  }
+  return getShortLocale(trimmed).toLowerCase();
+}
+
+function getLocalizedInLanguage(
+  value: MultilingualString | undefined,
+  language: string
+): string {
+  if (!value) {
+    return "";
+  }
+
+  const normalizedTarget = normalizeLanguageTag(language);
+  if (!normalizedTarget) {
+    return "";
+  }
+
+  for (const [valueLanguage, localizedValue] of Object.entries(value)) {
+    if (normalizeLanguageTag(valueLanguage) !== normalizedTarget) {
+      continue;
+    }
+    if ((localizedValue || "").trim().length > 0) {
+      return localizedValue;
+    }
+  }
+
+  return "";
+}
+
+function getLocalizedPluralInLanguage(
+  value: PluralMultilingualString | undefined,
+  language: string
+): string[] {
+  if (!value) {
+    return [];
+  }
+
+  const normalizedTarget = normalizeLanguageTag(language);
+  if (!normalizedTarget) {
+    return [];
+  }
+
+  return Object.entries(value)
+    .filter(
+      ([valueLanguage]) =>
+        normalizeLanguageTag(valueLanguage) === normalizedTarget
+    )
+    .flatMap(([, localizedValues]) => Utils.sanitizeArray(localizedValues))
+    .map((localizedValue) => (localizedValue || "").trim())
+    .filter((localizedValue) => localizedValue.length > 0);
+}
+
+function hasLabelInLanguage(
+  label: MultilingualString | undefined,
+  language: string
+): boolean {
+  return getLocalizedInLanguage(label, language).length > 0;
+}
+
+function resolveAvailableTermLanguages(
+  terms: Term[],
+  preferredLanguage: string
+): string[] {
+  const seen = new Set<string>();
+
+  terms.forEach((term) => {
+    Term.getLanguages(term).forEach((language) => {
+      const normalized = normalizeLanguageTag(language);
+      if (normalized.length > 0) {
+        seen.add(normalized);
+      }
+    });
+  });
+
+  const sorted = Array.from(seen).sort((a, b) => a.localeCompare(b));
+  const normalizedPreferred = normalizeLanguageTag(preferredLanguage);
+
+  if (normalizedPreferred && seen.has(normalizedPreferred)) {
+    return [
+      normalizedPreferred,
+      ...sorted.filter((language) => language !== normalizedPreferred),
+    ];
+  }
+
+  return sorted;
+}
+
 export const VocabularySheetViewTable: React.FC<
   VocabularySheetViewTableProps
 > = ({ vocabulary, selectedTermIri, onTermSelect }) => {
@@ -247,6 +339,7 @@ export const VocabularySheetViewTable: React.FC<
 
   const [searchInput, setSearchInput] = React.useState("");
   const [searchString, setSearchString] = React.useState("");
+  const [tableLanguage, setTableLanguage] = React.useState(shortLocale);
   const [columnVisibility, setColumnVisibility] = React.useState<
     Record<TermsTableColumn["id"], boolean>
   >(() => {
@@ -395,6 +488,36 @@ export const VocabularySheetViewTable: React.FC<
     [termsQuery.data]
   );
 
+  const availableTermLanguages = React.useMemo(
+    () => resolveAvailableTermLanguages(loadedTerms, shortLocale),
+    [loadedTerms, shortLocale]
+  );
+
+  const displayLanguage = React.useMemo(() => {
+    const normalizedCurrent = normalizeLanguageTag(tableLanguage);
+    if (availableTermLanguages.includes(normalizedCurrent)) {
+      return normalizedCurrent;
+    }
+    if (availableTermLanguages.length > 0) {
+      return availableTermLanguages[0];
+    }
+    return shortLocale;
+  }, [availableTermLanguages, shortLocale, tableLanguage]);
+
+  React.useEffect(() => {
+    if (tableLanguage !== displayLanguage) {
+      setTableLanguage(displayLanguage);
+    }
+  }, [displayLanguage, tableLanguage]);
+
+  const displayedTerms = React.useMemo(
+    () =>
+      loadedTerms.filter((term) =>
+        hasLabelInLanguage(term.label, displayLanguage)
+      ),
+    [displayLanguage, loadedTerms]
+  );
+
   const resolvedTotalCount = termsQuery.data?.pages.find(
     (page) => page.totalCount !== undefined
   )?.totalCount;
@@ -417,7 +540,7 @@ export const VocabularySheetViewTable: React.FC<
                 onClick={() => onTermSelect(term)}
                 title={i18n("glossary.table.openTerm")}
               >
-                {getLocalized(term.label, shortLocale)}
+                {getLocalizedInLanguage(term.label, displayLanguage)}
               </button>
             </span>
           </div>
@@ -438,7 +561,11 @@ export const VocabularySheetViewTable: React.FC<
         growFr: 2,
         hideable: true,
         render: (term) =>
-          previewTermList(term.exactMatchTerms, shortLocale, vocabulary.iri),
+          previewTermList(
+            term.exactMatchTerms,
+            displayLanguage,
+            vocabulary.iri
+          ),
       },
       {
         id: "parentTerms",
@@ -449,7 +576,11 @@ export const VocabularySheetViewTable: React.FC<
         render: (term) => {
           const directParents = Utils.sanitizeArray(term.parentTerms);
           if (directParents.length > 0) {
-            return previewTermList(directParents, shortLocale, vocabulary.iri);
+            return previewTermList(
+              directParents,
+              displayLanguage,
+              vocabulary.iri
+            );
           }
           return "";
         },
@@ -460,13 +591,12 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 14,
         growFr: 2,
         hideable: true,
-        render: (term) => {
-          return previewTermList(
+        render: (term) =>
+          previewTermList(
             Utils.sanitizeArray(term.subTerms),
-            shortLocale,
+            displayLanguage,
             vocabulary.iri
-          );
-        },
+          ),
       },
       {
         id: "relatedTerms",
@@ -476,8 +606,8 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term) =>
           previewTermList(
-            Term.consolidateRelatedAndRelatedMatch(term, shortLocale),
-            shortLocale,
+            Term.consolidateRelatedAndRelatedMatch(term, displayLanguage),
+            displayLanguage,
             vocabulary.iri
           ),
       },
@@ -495,7 +625,8 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 18,
         growFr: 2,
         hideable: true,
-        render: (term) => getLocalized(term.scopeNote, shortLocale) || "",
+        render: (term) =>
+          getLocalizedInLanguage(term.scopeNote, displayLanguage) || "",
       },
       {
         id: "example",
@@ -503,9 +634,10 @@ export const VocabularySheetViewTable: React.FC<
         minWidthRem: 14,
         growFr: 2,
         hideable: true,
-        render: (term) => {
-          return previewValues(getLocalizedPlural(term.examples, shortLocale));
-        },
+        render: (term) =>
+          previewValues(
+            getLocalizedPluralInLanguage(term.examples, displayLanguage)
+          ),
       },
       {
         id: "status",
@@ -522,12 +654,12 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term) => (
           <span className="term-table-definition">
-            {getLocalized(term.definition, shortLocale) || ""}
+            {getLocalizedInLanguage(term.definition, displayLanguage) || ""}
           </span>
         ),
       },
     ],
-    [i18n, onTermSelect, shortLocale]
+    [displayLanguage, i18n, onTermSelect]
   );
 
   const visibleColumns = React.useMemo(
@@ -550,7 +682,9 @@ export const VocabularySheetViewTable: React.FC<
   }, [visibleColumns]);
 
   const rowVirtualizer = useVirtualizer({
-    count: termsQuery.hasNextPage ? loadedTerms.length + 1 : loadedTerms.length,
+    count: termsQuery.hasNextPage
+      ? displayedTerms.length + 1
+      : displayedTerms.length,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => VIRTUALIZED_ROW_ESTIMATE_SIZE,
     overscan: VIRTUALIZED_OVERSCAN_ROWS,
@@ -566,13 +700,14 @@ export const VocabularySheetViewTable: React.FC<
     }
 
     if (
-      lastVirtualRow.index >= loadedTerms.length - LOAD_MORE_THRESHOLD &&
+      lastVirtualRow.index >= displayedTerms.length - LOAD_MORE_THRESHOLD &&
       termsQuery.hasNextPage &&
       !termsQuery.isFetchingNextPage
     ) {
       termsQuery.fetchNextPage();
     }
   }, [
+    displayedTerms.length,
     loadedTerms.length,
     termsQuery.fetchNextPage,
     termsQuery.hasNextPage,
@@ -607,6 +742,31 @@ export const VocabularySheetViewTable: React.FC<
   return (
     <div className="vocabulary-sheet-view-table">
       <div className="vocabulary-sheet-view-controls">
+        {availableTermLanguages.length > 1 && (
+          <div
+            className="vocabulary-sheet-view-language-switcher"
+            role="group"
+            aria-label="Table term language switcher"
+          >
+            {availableTermLanguages.map((language) => (
+              <button
+                key={language}
+                type="button"
+                className={classNames(
+                  "btn btn-sm vocabulary-sheet-view-language-button",
+                  {
+                    "btn-primary": displayLanguage === language,
+                    "btn-outline-secondary": displayLanguage !== language,
+                  }
+                )}
+                aria-pressed={displayLanguage === language}
+                onClick={() => setTableLanguage(language)}
+              >
+                {language.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        )}
         <InputGroup
           size="sm"
           style={{ width: "24rem" }}
@@ -678,7 +838,7 @@ export const VocabularySheetViewTable: React.FC<
         </span>
         <span>
           {formatMessage("glossary.table.loaded", {
-            count: loadedTerms.length,
+            count: displayedTerms.length,
           })}
         </span>
         {termsQuery.isFetching && <Spinner size="sm" color="primary" />}
@@ -708,8 +868,8 @@ export const VocabularySheetViewTable: React.FC<
           }}
         >
           {virtualRows.map((virtualRow) => {
-            const isLoadingRow = virtualRow.index >= loadedTerms.length;
-            const term = loadedTerms[virtualRow.index];
+            const isLoadingRow = virtualRow.index >= displayedTerms.length;
+            const term = displayedTerms[virtualRow.index];
 
             return (
               <div
@@ -749,7 +909,8 @@ export const VocabularySheetViewTable: React.FC<
           )}
           {!termsQuery.isLoading &&
             !termsQuery.isError &&
-            loadedTerms.length === 0 && (
+            !termsQuery.hasNextPage &&
+            displayedTerms.length === 0 && (
               <div className="vocabulary-sheet-view-empty">
                 {i18n("glossary.table.empty")}
               </div>
