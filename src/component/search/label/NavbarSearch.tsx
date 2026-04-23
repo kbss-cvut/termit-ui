@@ -180,6 +180,7 @@ export class NavbarSearch extends React.Component<
         title={formatMessage("main.search.facetsActive", {
           count: Object.keys(searchQuery.facetParams).length,
         })}
+        onClick={this.onOpenSearch}
       >
         <InputGroupText className="active-filters-addon">
           <span className="fas fa-filter" />
