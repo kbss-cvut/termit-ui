@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   DropdownItem,
@@ -15,26 +14,19 @@ import {
 import { FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useDebouncedCallback } from "use-debounce";
 import { useSelector } from "react-redux";
-import Term, {
-  CONTEXT as TERM_CONTEXT,
-  TermData,
-  TermInfo,
-} from "../../model/Term";
+import Term, { TermInfo } from "../../model/Term";
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import { useI18n } from "../hook/useI18n";
 import { getShortLocale } from "../../util/IntlUtil";
 import {
   getLocalized,
-  getLocalizedPlural,
   MultilingualString,
   PluralMultilingualString,
 } from "../../model/MultilingualString";
 import Utils from "../../util/Utils";
 import Constants from "../../util/Constants";
-import Ajax, { params } from "../../util/Ajax";
 import BrowserStorage from "../../util/BrowserStorage";
-import JsonLdUtils from "../../util/JsonLdUtils";
 import { getApiPrefix } from "../../action/ActionUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermStateBadge from "../term/state/TermStateBadge";
@@ -43,19 +35,13 @@ import classNames from "classnames";
 import { OWL, SKOS } from "../../util/Namespaces";
 import { Link } from "react-router-dom";
 import VocabularyNameBadgeButton from "./VocabularyNameBadgeButton";
+import { useVocabularyTerms } from "./api/useVocabularyTerms";
 import "./VocabularySheetViewTable.scss";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
   selectedTermIri: string | null;
   onTermSelect: (term: Term) => void;
-}
-
-interface TermsTablePage {
-  pageIndex: number;
-  terms: Term[];
-  totalCount?: number;
-  hasMore: boolean;
 }
 
 interface TermsTableColumn {
@@ -92,7 +78,6 @@ const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
   definition: true,
 };
 
-const LOAD_PAGE_SIZE = 100;
 const LOAD_MORE_THRESHOLD = 12;
 const VIRTUALIZED_ROW_ESTIMATE_SIZE = 46;
 const VIRTUALIZED_OVERSCAN_ROWS = 10;
@@ -106,30 +91,6 @@ function resolveVocabularyFragment(vocabularyIri?: string): string {
   } catch {
     return vocabularyIri;
   }
-}
-
-function resolveTotalCount(headers: unknown): number | undefined {
-  if (!headers || typeof headers !== "object") {
-    return undefined;
-  }
-
-  const xTotalCountHeader =
-    // Axios can expose headers either as plain object keys or via get(name)
-    (headers as Record<string, string | string[] | undefined>)[
-      Constants.Headers.X_TOTAL_COUNT
-    ] ??
-    (typeof (headers as { get?: (name: string) => string | undefined }).get ===
-    "function"
-      ? (headers as { get: (name: string) => string | undefined }).get(
-          Constants.Headers.X_TOTAL_COUNT
-        )
-      : undefined);
-  const value = Array.isArray(xTotalCountHeader)
-    ? xTotalCountHeader[0]
-    : xTotalCountHeader;
-  const numericValue = Number(value);
-
-  return Number.isFinite(numericValue) ? numericValue : undefined;
 }
 
 function previewValues(values: string[]): React.ReactNode {
@@ -397,100 +358,11 @@ export const VocabularySheetViewTable: React.FC<
     [vocabulary.iri]
   );
 
-  const termsQuery = useInfiniteQuery({
-    queryKey: [
-      "vocabulary-sheet-view",
-      apiPrefix,
-      vocabulary.iri,
-      searchString,
-      shortLocale,
-    ],
-    queryFn: async ({ pageParam = 0, signal }) => {
-      const requestParams: {
-        full?: boolean;
-        flat: boolean;
-        namespace?: string;
-        searchString?: string;
-        language?: string;
-        page: number;
-        size: number;
-      } = {
-        full: true,
-        flat: true,
-        language: shortLocale,
-        page: Number(pageParam),
-        size: LOAD_PAGE_SIZE,
-      };
-
-      if (searchString.length > 0) {
-        requestParams.searchString = searchString;
-      }
-      if (vocabularyIri.namespace) {
-        requestParams.namespace = vocabularyIri.namespace;
-      }
-
-      const requestConfig = params(requestParams);
-      const endpoint = `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms`;
-
-      if (signal) {
-        const abortController = new AbortController();
-        signal.addEventListener("abort", () => abortController.abort(), {
-          once: true,
-        });
-        requestConfig.signal(abortController);
-      }
-
-      const response = await Ajax.getResponse(endpoint, requestConfig);
-      const compacted =
-        await JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(
-          response.data,
-          TERM_CONTEXT
-        );
-      const terms = compacted.map((data) => new Term(data));
-      let totalCount = resolveTotalCount(response.headers);
-
-      if (totalCount === undefined && Number(pageParam) === 0) {
-        const countParams: {
-          full?: boolean;
-          flat?: boolean;
-          namespace?: string;
-          searchString?: string;
-          language?: string;
-        } = {
-          full: true,
-          flat: true,
-          language: shortLocale,
-        };
-
-        if (searchString.length > 0) {
-          countParams.searchString = searchString;
-        }
-        if (vocabularyIri.namespace) {
-          countParams.namespace = vocabularyIri.namespace;
-        }
-
-        try {
-          const countResponse = await Ajax.head(endpoint, params(countParams));
-          totalCount = resolveTotalCount(countResponse.headers);
-        } catch {
-          // Ignore fallback count errors and keep unknown total behavior.
-        }
-      }
-
-      const hasMore =
-        totalCount !== undefined
-          ? (Number(pageParam) + 1) * LOAD_PAGE_SIZE < totalCount
-          : terms.length === LOAD_PAGE_SIZE;
-
-      return {
-        pageIndex: Number(pageParam),
-        terms,
-        totalCount,
-        hasMore,
-      } as TermsTablePage;
-    },
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? lastPage.pageIndex + 1 : undefined,
+  const termsQuery = useVocabularyTerms({
+    apiPrefix,
+    vocabularyIri,
+    searchString,
+    language: shortLocale,
   });
 
   const loadedTerms = React.useMemo(
