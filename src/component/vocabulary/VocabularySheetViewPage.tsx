@@ -29,6 +29,7 @@ import { loadVocabulary } from "../../action/AsyncActions";
 import { consumeNotification } from "../../action/SyncActions";
 import ActionType from "../../action/ActionType";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
+import { queryKeys } from "../../query/queryKeys";
 
 const RELEVANT_ACTION_TYPES = [
   ActionType.CREATE_VOCABULARY_TERM,
@@ -62,7 +63,7 @@ function useRefreshVocabularySheetViewOnNotifications(
     }
 
     dispatch(consumeNotification(matchingNotification));
-    queryClient.invalidateQueries({ queryKey: ["vocabulary-sheet-view"] });
+    queryClient.invalidateQueries({ queryKey: queryKeys.terms.all });
   }, [dispatch, notifications, queryClient]);
 }
 
@@ -97,11 +98,12 @@ function useLoadVocabularyFromRoute({
 
   React.useEffect(() => {
     const loadedIri = VocabularyUtils.create(loadedVocabularyIri);
+    const loadedNamespace = loadedIri.namespace || "";
+    const requestedNamespace = vocabularyIri.namespace || "";
 
     if (
       loadedIri.fragment !== vocabularyIri.fragment ||
-      (vocabularyIri.namespace &&
-        loadedIri.namespace !== vocabularyIri.namespace)
+      loadedNamespace !== requestedNamespace
     ) {
       trackPromise(dispatch(loadVocabulary(vocabularyIri)), trackingArea);
     }
