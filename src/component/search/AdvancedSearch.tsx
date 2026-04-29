@@ -41,6 +41,7 @@ import AdvancedSearchFacets, {
 import AdvancedSearchResults from "./AdvancedSearchResults";
 import BrowserStorage from "../../util/BrowserStorage";
 import { SearchTarget } from "../../model/search/SearchTarget";
+import { ResultPage } from "../../model/ResultPage";
 
 function mapIndexedLanguages(languages?: string[]): Language[] {
   return Utils.sanitizeArray(languages)
@@ -72,7 +73,7 @@ const AdvancedSearch: React.FC = () => {
     Object.keys(facetParams).length > 0
   );
   const [page, setPage] = useState(0);
-  const [results, setResults] = useState<SearchResult[] | null>(null);
+  const [results, setResults] = useState<ResultPage<SearchResult> | null>(null);
 
   const [visibleFacets, setVisibleFacets] = useState<VisibleFacets>({
     vocabulary: true,
@@ -313,7 +314,7 @@ const AdvancedSearch: React.FC = () => {
   const finalResults = useMemo(() => {
     if (!results) return null;
     return mergeDuplicates(
-      results,
+      results.pageContent,
       createTermNonTerminalStateMatcher(terminalStates)
     );
   }, [results, terminalStates]);
@@ -365,7 +366,7 @@ const AdvancedSearch: React.FC = () => {
         page={page}
         pageSize={pageSize}
         onPageChange={onPageChange}
-        isFts={searchString !== ""}
+        noFts={searchString.trim().length === 0}
       />
     </div>
   );

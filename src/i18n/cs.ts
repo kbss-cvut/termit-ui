@@ -721,11 +721,9 @@ const cs = {
     "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
     "search.noMoreResults": "Žádné další výsledky nenalezeny.",
     "search.results.countInfo":
-      "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}}.",
-    "search.results.pagedCountInfo":
-      "Tato stránka zobrazuje {assets, plural, one {# záznam} few {# záznamy} other {# záznamů}} obsahující {matches, plural, one {# výskyt} few {# výskyty} other {# výskytů}} hledaného textu.",
-    "search.results.pagedCountInfo.noFts":
-      "Tato stránka zobrazuje {assets, plural, one {# záznam odpovídající hledaným kritériím} few {# záznamy odpovídající hledaným kriteriím} other {# záznamů odpovídajících hledaným kriteriím}}.",
+      "{count, plural, one {Nalezen # výskyt odpovídající} few {Nalezeny # výskyty odpovídající} other {Nalezeno celkem # výskytů odpovídajících}} hledaným kriteriím.",
+    "search.results.countInfo.noFts":
+      "{count, plural, one {Nalezen # záznam odpovídající} few {Nalezeny # záznamy odpovídající} other {Nalezeno celkem # záznamů odpovídajících}} hledaným kriteriím.",
     "search.results.table.label": "Název",
     "search.results.table.label.tooltip": "Zobrazit detail objektu",
     "search.results.table.match": "Nalezená shoda",

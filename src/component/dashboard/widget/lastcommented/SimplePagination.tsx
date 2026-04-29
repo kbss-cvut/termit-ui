@@ -7,6 +7,7 @@ interface SimplePaginationProps {
   setPage: (pageNo: number) => void;
   pageSize: number;
   itemCount?: number;
+  totalItemCount?: number;
   className?: string;
 }
 
@@ -14,6 +15,7 @@ const SimplePagination: React.FC<SimplePaginationProps> = ({
   page,
   setPage,
   itemCount = 0,
+  totalItemCount = -1,
   pageSize,
   className,
 }) => {
@@ -42,7 +44,12 @@ const SimplePagination: React.FC<SimplePaginationProps> = ({
         <PaginationItem active={true}>
           <PaginationLink disabled={true}>{page + 1}</PaginationLink>
         </PaginationItem>
-        <PaginationItem disabled={itemCount < pageSize}>
+        <PaginationItem
+          disabled={
+            itemCount < pageSize ||
+            (totalItemCount >= 0 && totalItemCount < pageSize * page)
+          }
+        >
           <PaginationLink
             next={true}
             onClick={() => setPage(page + 1)}

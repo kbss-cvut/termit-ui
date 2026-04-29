@@ -711,11 +711,10 @@ const en = {
     "search.results.title": 'Results for "{searchString}"',
     "search.no-results": "No results found.",
     "search.noMoreResults": "No more results available.",
-    "search.results.countInfo": "Found {matches} matches in {assets} assets.",
-    "search.results.pagedCountInfo":
-      "Showing {assets, plural, one {# asset} other {# assets}} containing {matches, plural, one {# match} other {# matches}} on this page.",
-    "search.results.pagedCountInfo.noFts":
-      "Showing {assets, plural, one {# asset} other {# assets}} matching the criteria on this page.",
+    "search.results.countInfo":
+      "Found {count, plural, one {# match} other {# matches}} matching the specified criteria.",
+    "search.results.countInfo.noFts":
+      "Found {count, plural, one {# asset} other {# assets}} matching the specified criteria.",
     "search.results.table.label": "Label",
     "search.results.table.label.tooltip": "Open asset detail",
     "search.results.table.match": "Match",

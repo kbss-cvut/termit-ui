@@ -8,15 +8,16 @@ import TermResultItem from "./label/TermResultItem";
 import VocabularyResultItem from "./label/VocabularyResultItem";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
 import { getShortLocale } from "../../util/IntlUtil";
+import { ResultPage } from "../../model/ResultPage";
 
 interface AdvancedSearchResultsProps {
-  results: SearchResult[] | null;
+  results: ResultPage<SearchResult> | null;
   finalResults: SearchResultItem[] | null;
   language?: string;
   page: number;
   pageSize: number;
   onPageChange: (page: number) => void;
-  isFts: boolean;
+  noFts: boolean;
 }
 
 const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
@@ -26,7 +27,7 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
   pageSize,
   onPageChange,
   language,
-  isFts,
+  noFts,
 }) => {
   const { i18n, formatMessage, locale } = useI18n();
 
@@ -61,12 +62,11 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
       <>
         <div className="italics small text-gray mb-3">
           {formatMessage(
-            isFts
-              ? "search.results.pagedCountInfo"
-              : "search.results.pagedCountInfo.noFts",
+            noFts
+              ? "search.results.countInfo.noFts"
+              : "search.results.countInfo",
             {
-              matches: results.length,
-              assets: rows.length,
+              count: results.totalCount,
             }
           )}
         </div>
@@ -81,12 +81,13 @@ const AdvancedSearchResults: React.FC<AdvancedSearchResultsProps> = ({
     <Card>
       <CardBody>
         {renderContent()}
-        {results !== null && (page > 0 || results.length > 0) && (
+        {results !== null && (page > 0 || results.totalCount > 0) && (
           <SimplePagination
             page={page}
             setPage={onPageChange}
             pageSize={pageSize}
-            itemCount={results.length}
+            itemCount={results.pageContent.length}
+            totalItemCount={results.totalCount}
             className="mt-3"
           />
         )}

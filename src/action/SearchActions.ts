@@ -19,6 +19,7 @@ import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
 import SearchParam from "../model/search/SearchParam";
 import SearchQuery from "../model/search/SearchQuery";
+import { ResultPage } from "../model/ResultPage";
 
 /**
  * Add a search listener using a simple reference counting.
@@ -209,22 +210,31 @@ export function executeAdvancedSearch(
         .accept(Constants.JSON_LD_MIME_TYPE)
         .preserveAcceptHeaderInPost()
     )
-      .then((resp) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
+      .then(async (resp) => {
+        const totalCount = Number(
+          resp.headers[Constants.Headers.X_TOTAL_COUNT]
+        );
+        return JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
           resp.data,
           SEARCH_RESULT_CONTEXT
-        )
-      )
-      .then((data: SearchResultData[]) => {
+        ).then((pageContent) => ({ totalCount, pageContent }));
+      })
+      .then((data: ResultPage<SearchResultData>) => {
         dispatch(asyncActionSuccess(action));
-        return data.map((d) => new SearchResult(d));
+        return {
+          totalCount: data.totalCount,
+          pageContent: data.pageContent.map((d) => new SearchResult(d)),
+        };
       })
       .catch((error: ErrorData) => {
         dispatch(SyncActions.asyncActionFailure(action, error));
         dispatch(
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
-        return Promise.resolve([] as SearchResult[]);
+        return Promise.resolve({
+          totalCount: 0,
+          pageContent: [] as SearchResult[],
+        });
       });
   };
 }
