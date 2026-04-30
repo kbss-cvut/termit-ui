@@ -6,12 +6,12 @@ import {
   DropdownToggle,
   UncontrolledButtonDropdown,
 } from "reactstrap";
+import { GoRepoForked } from "react-icons/go";
 import {
-  GoClippy,
-  GoCloudDownload,
-  GoCloudUpload,
-  GoRepoForked,
-} from "react-icons/go";
+  FaClipboard,
+  FaCloudDownloadAlt,
+  FaCloudUploadAlt,
+} from "react-icons/fa";
 import LoadVocabularyFromFile from "./importing/LoadVocabularyFromFile";
 import { FaCamera } from "react-icons/fa";
 import Vocabulary from "../../model/Vocabulary";
@@ -73,7 +73,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
             onClick={onExport}
             title={i18n("vocabulary.summary.export.title")}
           >
-            <GoCloudDownload className="mr-1" />
+            <FaCloudDownloadAlt className="mr-1" />
             {i18n("vocabulary.summary.export.text")}
           </DropdownItem>
           <IfVocabularyActionAuthorized
@@ -86,7 +86,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               onClick={() => setShowImportDialog(true)}
               title={i18n("vocabulary.summary.import.action.tooltip")}
             >
-              <GoCloudUpload className="mr-1" />
+              <FaCloudUploadAlt className="mr-1" />
               {i18n("vocabulary.summary.import.action")}
             </DropdownItem>
           </IfVocabularyActionAuthorized>
@@ -101,7 +101,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               onClick={onAnalyze}
               title={i18n("vocabulary.summary.startTextAnalysis.title")}
             >
-              <GoClippy className="mr-1 align-text-top" />
+              <FaClipboard className="mr-1 align-text-top" />
               {i18n("file.metadata.startTextAnalysis.text")}
             </DropdownItem>
           </IfVocabularyActionAuthorized>
