@@ -9,7 +9,7 @@ import VocabularySummary from "./VocabularySummary";
 import { useI18n } from "../hook/useI18n";
 import Route from "../misc/Route";
 import ResourceFileDetail from "../resource/ResourceFileDetail";
-import VocabularySheetViewPage from "./VocabularySheetViewPage";
+import VocabularySheetViewPage from "./sheet/VocabularySheetViewPage";
 
 const VocabularyRoute: React.FC = () => {
   const { i18n } = useI18n();

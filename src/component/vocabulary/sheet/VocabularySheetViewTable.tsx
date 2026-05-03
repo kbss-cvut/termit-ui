@@ -14,54 +14,38 @@ import {
 import { FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useDebouncedCallback } from "use-debounce";
 import { useSelector } from "react-redux";
-import Term, { TermInfo } from "../../model/Term";
-import Vocabulary from "../../model/Vocabulary";
-import TermItState from "../../model/TermItState";
-import { useI18n } from "../hook/useI18n";
-import { getShortLocale } from "../../util/IntlUtil";
-import {
-  getLocalized,
-  MultilingualString,
-  PluralMultilingualString,
-} from "../../model/MultilingualString";
-import Utils from "../../util/Utils";
-import Constants from "../../util/Constants";
-import BrowserStorage from "../../util/BrowserStorage";
-import { getApiPrefix } from "../../action/ActionUtils";
-import VocabularyUtils from "../../util/VocabularyUtils";
-import TermStateBadge from "../term/state/TermStateBadge";
-import { getTermPath } from "../term/TermLink";
+import Term, { TermInfo } from "../../../model/Term";
+import Vocabulary from "../../../model/Vocabulary";
+import TermItState from "../../../model/TermItState";
+import { useI18n } from "../../hook/useI18n";
+import { getShortLocale, normalizeLanguageTag } from "../../../util/IntlUtil";
+import Utils from "../../../util/Utils";
+import Constants from "../../../util/Constants";
+import BrowserStorage from "../../../util/BrowserStorage";
+import { getApiPrefix } from "../../../action/ActionUtils";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import TermStateBadge from "../../term/state/TermStateBadge";
 import classNames from "classnames";
-import { OWL, SKOS } from "../../util/Namespaces";
-import { Link } from "react-router-dom";
-import VocabularyNameBadgeButton from "./VocabularyNameBadgeButton";
-import { useVocabularyTerms } from "./api/useVocabularyTerms";
+import { useVocabularyTerms } from "../../../query/hook/useVocabularyTerms";
 import "./VocabularySheetViewTable.scss";
+import {
+  previewValues,
+  resolveTypeLabels,
+  resolveGridColumnWidth,
+  resolveAvailableTermLanguages,
+  TermsTableColumn,
+} from "./VocabularySheetViewTableUtils";
+import { TermListPreview } from "../../term/TermListPreview";
+import {
+  getLocalizedInLanguage,
+  getLocalizedPluralInLanguage,
+  hasLabelInLanguage,
+} from "../../../model/MultilingualString";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
   selectedTermIri: string | null;
   onTermSelect: (term: Term) => void;
-}
-
-interface TermsTableColumn {
-  id:
-    | "label"
-    | "type"
-    | "exactMatches"
-    | "parentTerms"
-    | "subTerms"
-    | "relatedTerms"
-    | "notation"
-    | "scopeNote"
-    | "example"
-    | "status"
-    | "definition";
-  title: string;
-  minWidthRem: number;
-  growFr?: number;
-  hideable: boolean;
-  render: (term: Term, rowIndex: number) => React.ReactNode;
 }
 
 const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
@@ -81,222 +65,6 @@ const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
 const LOAD_MORE_THRESHOLD = 12;
 const VIRTUALIZED_ROW_ESTIMATE_SIZE = 46;
 const VIRTUALIZED_OVERSCAN_ROWS = 10;
-
-function resolveVocabularyFragment(vocabularyIri?: string): string {
-  if (!vocabularyIri) {
-    return "";
-  }
-  try {
-    return VocabularyUtils.create(vocabularyIri).fragment;
-  } catch {
-    return vocabularyIri;
-  }
-}
-
-function previewValues(values: string[]): React.ReactNode {
-  const sanitized = Utils.sanitizeArray(values)
-    .map((value) => value.trim())
-    .filter((value) => value.length > 0);
-
-  if (sanitized.length === 0) {
-    return "";
-  }
-
-  return (
-    <span className="text-truncate d-block w-100">{sanitized.join(", ")}</span>
-  );
-}
-
-function resolveLocalizedTermLabel(
-  item: { iri?: string; label?: MultilingualString },
-  locale: string
-): string {
-  return (item.label ? getLocalized(item.label, locale) : "") || item.iri || "";
-}
-
-function previewTermList(
-  items: Array<Term | TermInfo> | undefined,
-  locale: string,
-  baseVocabularyIri?: string,
-  expanded: boolean = false
-): React.ReactNode {
-  const sanitized = Utils.sanitizeArray(items) as Array<Term | TermInfo>;
-
-  if (sanitized.length === 0) {
-    return "";
-  }
-
-  return (
-    <span
-      className={classNames("term-table-list-preview d-block w-100", {
-        "term-table-list-preview-expanded": expanded,
-        "term-table-list-preview-collapsed": !expanded,
-      })}
-    >
-      {sanitized.map((item, index) => {
-        const fallbackLabel =
-          resolveLocalizedTermLabel(item, locale) ||
-          resolveVocabularyFragment(item.iri);
-        const vocabulary = item.vocabulary;
-        const hasNavigableVocabulary = !!vocabulary?.iri;
-        const showBadge =
-          vocabulary?.iri &&
-          baseVocabularyIri &&
-          vocabulary.iri !== baseVocabularyIri;
-        const isLast = index === sanitized.length - 1;
-
-        return (
-          <React.Fragment key={item.iri || `${index}`}>
-            {item.iri && hasNavigableVocabulary ? (
-              <span className="term-badge-wrapper">
-                <Link
-                  to={getTermPath({
-                    iri: item.iri,
-                    label:
-                      item.label && Object.keys(item.label).length > 0
-                        ? item.label
-                        : ({ [locale]: fallbackLabel } as MultilingualString),
-                    vocabulary,
-                    state: item.state,
-                    types: item.types,
-                  } as TermInfo)}
-                  className="term-table-inline-link"
-                  title={fallbackLabel}
-                >
-                  {fallbackLabel}
-                </Link>
-                {showBadge && (
-                  <VocabularyNameBadgeButton
-                    vocabulary={vocabulary}
-                    termIri={item.iri}
-                    className="ml-2 flex-shrink-0"
-                  />
-                )}
-              </span>
-            ) : (
-              <span>{fallbackLabel}</span>
-            )}
-            {!isLast && <>, </>}
-          </React.Fragment>
-        );
-      })}
-    </span>
-  );
-}
-
-function resolveTypeLabels(types?: string[]): string[] {
-  return Utils.sanitizeArray(types)
-    .filter(
-      (typeIri) =>
-        typeIri !== VocabularyUtils.TERM &&
-        !typeIri.startsWith(OWL.namespace) &&
-        !typeIri.startsWith(SKOS.namespace)
-    )
-    .map((typeIri) => {
-      try {
-        return VocabularyUtils.create(typeIri).fragment;
-      } catch {
-        return typeIri;
-      }
-    });
-}
-
-function resolveGridColumnWidth(column: TermsTableColumn): string {
-  return column.growFr
-    ? `minmax(${column.minWidthRem}rem, ${column.growFr}fr)`
-    : `${column.minWidthRem}rem`;
-}
-
-function normalizeLanguageTag(language: string): string {
-  const trimmed = (language || "").trim();
-  if (!trimmed || trimmed === "@none") {
-    return "";
-  }
-  return getShortLocale(trimmed).toLowerCase();
-}
-
-function getLocalizedInLanguage(
-  value: MultilingualString | undefined,
-  language: string
-): string {
-  if (!value) {
-    return "";
-  }
-
-  const normalizedTarget = normalizeLanguageTag(language);
-  if (!normalizedTarget) {
-    return "";
-  }
-
-  for (const [valueLanguage, localizedValue] of Object.entries(value)) {
-    if (normalizeLanguageTag(valueLanguage) !== normalizedTarget) {
-      continue;
-    }
-    if ((localizedValue || "").trim().length > 0) {
-      return localizedValue;
-    }
-  }
-
-  return "";
-}
-
-function getLocalizedPluralInLanguage(
-  value: PluralMultilingualString | undefined,
-  language: string
-): string[] {
-  if (!value) {
-    return [];
-  }
-
-  const normalizedTarget = normalizeLanguageTag(language);
-  if (!normalizedTarget) {
-    return [];
-  }
-
-  return Object.entries(value)
-    .filter(
-      ([valueLanguage]) =>
-        normalizeLanguageTag(valueLanguage) === normalizedTarget
-    )
-    .flatMap(([, localizedValues]) => Utils.sanitizeArray(localizedValues))
-    .map((localizedValue) => (localizedValue || "").trim())
-    .filter((localizedValue) => localizedValue.length > 0);
-}
-
-function hasLabelInLanguage(
-  label: MultilingualString | undefined,
-  language: string
-): boolean {
-  return getLocalizedInLanguage(label, language).length > 0;
-}
-
-function resolveAvailableTermLanguages(
-  terms: Term[],
-  preferredLanguage: string
-): string[] {
-  const seen = new Set<string>();
-
-  terms.forEach((term) => {
-    Term.getLanguages(term).forEach((language) => {
-      const normalized = normalizeLanguageTag(language);
-      if (normalized.length > 0) {
-        seen.add(normalized);
-      }
-    });
-  });
-
-  const sorted = Array.from(seen).sort((a, b) => a.localeCompare(b));
-  const normalizedPreferred = normalizeLanguageTag(preferredLanguage);
-
-  if (normalizedPreferred && seen.has(normalizedPreferred)) {
-    return [
-      normalizedPreferred,
-      ...sorted.filter((language) => language !== normalizedPreferred),
-    ];
-  }
-
-  return sorted;
-}
 
 export const VocabularySheetViewTable: React.FC<
   VocabularySheetViewTableProps
@@ -437,12 +205,12 @@ export const VocabularySheetViewTable: React.FC<
               "overflow-hidden": !isExpanded,
             })}
           >
-            {previewTermList(
-              sanitized,
-              displayLanguage,
-              vocabulary.iri,
-              isExpanded
-            )}
+            <TermListPreview
+              items={sanitized}
+              locale={displayLanguage}
+              baseVocabularyIri={vocabulary.iri}
+              expanded={isExpanded}
+            />
           </div>
           {canToggle && (
             <button
