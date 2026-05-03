@@ -5,31 +5,31 @@ import { useQueryClient } from "@tanstack/react-query";
 import { trackPromise } from "react-promise-tracker";
 import { Button, Card, CardBody } from "reactstrap";
 import { GoPlus } from "react-icons/go";
-import Term from "../../model/Term";
-import TermItState from "../../model/TermItState";
-import Vocabulary, { EMPTY_VOCABULARY } from "../../model/Vocabulary";
-import AppNotification from "../../model/AppNotification";
-import NotificationType from "../../model/NotificationType";
-import { Configuration } from "../../model/Configuration";
-import { useI18n } from "../hook/useI18n";
-import { ThunkDispatch } from "../../util/Types";
-import Utils from "../../util/Utils";
-import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-import { getLocalized } from "../../model/MultilingualString";
-import { getShortLocale } from "../../util/IntlUtil";
-import HeaderWithActions from "../misc/HeaderWithActions";
-import WindowTitle from "../misc/WindowTitle";
-import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import Term from "../../../model/Term";
+import TermItState from "../../../model/TermItState";
+import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
+import AppNotification from "../../../model/AppNotification";
+import NotificationType from "../../../model/NotificationType";
+import { Configuration } from "../../../model/Configuration";
+import { useI18n } from "../../hook/useI18n";
+import { ThunkDispatch } from "../../../util/Types";
+import Utils from "../../../util/Utils";
+import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
+import { getLocalized } from "../../../model/MultilingualString";
+import { getShortLocale } from "../../../util/IntlUtil";
+import HeaderWithActions from "../../misc/HeaderWithActions";
+import WindowTitle from "../../misc/WindowTitle";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import VocabularySheetViewTable from "./VocabularySheetViewTable";
-import Routing, { namespaceQueryParam } from "../../util/Routing";
-import Routes from "../../util/Routes";
-import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
-import AccessLevel from "../../model/acl/AccessLevel";
-import { loadVocabulary } from "../../action/AsyncActions";
-import { consumeNotification } from "../../action/SyncActions";
-import ActionType from "../../action/ActionType";
-import AsyncActionStatus from "../../action/AsyncActionStatus";
-import { queryKeys } from "../../query/queryKeys";
+import Routing, { namespaceQueryParam } from "../../../util/Routing";
+import Routes from "../../../util/Routes";
+import IfVocabularyActionAuthorized from "../../vocabulary/authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../../model/acl/AccessLevel";
+import { loadVocabulary } from "../../../action/AsyncActions";
+import { consumeNotification } from "../../../action/SyncActions";
+import ActionType from "../../../action/ActionType";
+import AsyncActionStatus from "../../../action/AsyncActionStatus";
+import { queryKeys } from "../../../query/queryKeys";
 
 const RELEVANT_ACTION_TYPES = [
   ActionType.CREATE_VOCABULARY_TERM,
@@ -197,8 +197,8 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
               title={i18n("glossary.createTerm.tooltip")}
               onClick={onCreateClick}
             >
-              <GoPlus />
-              &nbsp;{i18n("glossary.new")}
+              <GoPlus className="mr-1" />
+              {i18n("glossary.new")}
             </Button>
           </IfVocabularyActionAuthorized>,
         ]}

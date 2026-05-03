@@ -168,3 +168,17 @@ export function getLanguageOptions(): Language[] {
 export function getLanguageByShortCode(code: string): Language | undefined {
   return LANGUAGE_OPTIONS.find((lang) => lang.code === code);
 }
+
+/**
+ * Normalizes a language tag by trimming it, converting to lowercase and
+ * removing any region subtags.
+ *
+ * @param language The language tag to normalize
+ */
+export function normalizeLanguageTag(language: string): string {
+  const trimmed = (language || "").trim();
+  if (!trimmed || trimmed === "@none") {
+    return "";
+  }
+  return getShortLocale(trimmed).toLowerCase();
+}

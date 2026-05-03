@@ -275,6 +275,17 @@ function getVocabularyShortSGoVLabel(vocabularyIri: string) {
   return !vocabularies || vocabularies.length > 1 ? null : vocabularies[0];
 }
 
+export function resolveVocabularyFragment(vocabularyIri?: string): string {
+  if (!vocabularyIri) {
+    return "";
+  }
+  try {
+    return VocabularyUtils.create(vocabularyIri).fragment;
+  } catch {
+    return vocabularyIri;
+  }
+}
+
 const sgovVocabularyTypes = [
   {
     regex: "^https://slovník.gov.cz/datový/([ěščřžýáíéóúůďťňa-z0-9-.]+)$",

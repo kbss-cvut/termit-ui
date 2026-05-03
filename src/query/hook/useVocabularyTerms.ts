@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../../../model/Term";
-import Constants from "../../../util/Constants";
-import Ajax, { params } from "../../../util/Ajax";
-import JsonLdUtils from "../../../util/JsonLdUtils";
-import { IRI } from "../../../util/VocabularyUtils";
-import { queryKeys } from "../../../query/queryKeys";
+import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../../model/Term";
+import Constants from "../../util/Constants";
+import Ajax, { params } from "../../util/Ajax";
+import JsonLdUtils from "../../util/JsonLdUtils";
+import { IRI } from "../../util/VocabularyUtils";
+import { queryKeys } from "../queryKeys";
 
 export const VOCABULARY_TERMS_PAGE_SIZE = 100;
 
