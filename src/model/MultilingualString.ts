@@ -1,6 +1,6 @@
 import Constants from "../util/Constants";
 import Utils from "../util/Utils";
-import { getShortLocale } from "../util/IntlUtil";
+import { getShortLocale, normalizeLanguageTag } from "../util/IntlUtil";
 
 export function context(propertyIri: string) {
   return {
@@ -155,6 +155,86 @@ export function isBlank(str?: MultilingualString) {
 
 export function isLanguageBlank(language: string, str?: MultilingualString) {
   return !str || !Utils.notBlank(str[language]);
+}
+
+/**
+ * Gets values in the specified language from the specified plural string.
+ *
+ * @param value The plural multilingual string to search in
+ * @param language The language to get the value in
+ * @returns An array of localized values in the specified language, or an empty
+ * array if no such value is available
+ */
+export function getLocalizedPluralInLanguage(
+  value: PluralMultilingualString | undefined,
+  language: string
+): string[] {
+  if (!value) {
+    return [];
+  }
+
+  const normalizedTarget = normalizeLanguageTag(language);
+  if (!normalizedTarget) {
+    return [];
+  }
+
+  return Object.entries(value)
+    .filter(
+      ([valueLanguage]) =>
+        normalizeLanguageTag(valueLanguage) === normalizedTarget
+    )
+    .flatMap(([, localizedValues]) => Utils.sanitizeArray(localizedValues))
+    .map((localizedValue) => (localizedValue || "").trim())
+    .filter((localizedValue) => localizedValue.length > 0);
+}
+
+/**
+ * Gets value in the specified language from the specified string.
+ *
+ * @param value The multilingual string to search in
+ * @param language The language to get the value in
+ * @returns The localized value in the specified language, or an empty string
+ * if no such value is available
+ */
+export function getLocalizedInLanguage(
+  value: MultilingualString | undefined,
+  language: string
+): string {
+  if (!value) {
+    return "";
+  }
+
+  const normalizedTarget = normalizeLanguageTag(language);
+  if (!normalizedTarget) {
+    return "";
+  }
+
+  for (const [valueLanguage, localizedValue] of Object.entries(value)) {
+    if (normalizeLanguageTag(valueLanguage) !== normalizedTarget) {
+      continue;
+    }
+    if ((localizedValue || "").trim().length > 0) {
+      return localizedValue;
+    }
+  }
+
+  return "";
+}
+
+/**
+ * Checks if the specified multilingual string has a non-blank value in the
+ * specified language.
+ *
+ * @param label The multilingual string to check
+ * @param language The language to check for
+ * @returns True if the multilingual string has a non-blank value in the
+ * specified language, false otherwise
+ */
+export function hasLabelInLanguage(
+  label: MultilingualString | undefined,
+  language: string
+): boolean {
+  return getLocalizedInLanguage(label, language).length > 0;
 }
 
 export default MultilingualString;

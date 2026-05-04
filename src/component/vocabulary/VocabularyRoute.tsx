@@ -9,6 +9,7 @@ import VocabularySummary from "./VocabularySummary";
 import { useI18n } from "../hook/useI18n";
 import Route from "../misc/Route";
 import ResourceFileDetail from "../resource/ResourceFileDetail";
+import VocabularySheetViewPage from "./sheet/VocabularySheetViewPage";
 
 const VocabularyRoute: React.FC = () => {
   const { i18n } = useI18n();
@@ -18,6 +19,12 @@ const VocabularyRoute: React.FC = () => {
         title={i18n("glossary.createTerm.breadcrumb")}
         path={Routes.createVocabularyTerm.path}
         component={CreateTerm}
+        includeSearch={true}
+      />
+      <BreadcrumbRoute
+        title={i18n("glossary.table.workspace.breadcrumb")}
+        path={Routes.vocabularySheetView.path}
+        component={VocabularySheetViewPage}
         includeSearch={true}
       />
       <DynamicBreadcrumbRoute

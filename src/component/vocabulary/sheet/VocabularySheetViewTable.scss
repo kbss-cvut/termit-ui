@@ -1,0 +1,211 @@
+@import "../../../styles/custom/colors";
+
+.vocabulary-sheet-view-table {
+  .vocabulary-sheet-view-controls,
+  .vocabulary-sheet-view-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .vocabulary-sheet-view-controls {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .vocabulary-sheet-view-language-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .vocabulary-sheet-view-language-button {
+    min-width: 3rem;
+  }
+
+  .vocabulary-sheet-view-summary {
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .vocabulary-sheet-view-column-dropdown .dropdown-menu {
+    max-height: 16rem;
+    overflow-y: auto;
+  }
+
+  .vocabulary-sheet-view-column-option {
+    min-width: 12rem;
+  }
+
+  input.column-checkbox {
+    position: relative;
+    margin: 0 0.5rem 0 0;
+  }
+
+  .vocabulary-sheet-view-grid-header {
+    display: grid;
+    background-color: $gray-100;
+    font-weight: 600;
+    border-bottom: 1px solid $gray-300;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .vocabulary-sheet-view-header-cell,
+  .vocabulary-sheet-view-cell {
+    padding: 0.5rem 0.75rem;
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  .vocabulary-sheet-view-header-cell {
+    border-right: 1px solid $gray-300;
+  }
+
+  .vocabulary-sheet-view-grid-scroll {
+    position: relative;
+    overflow: auto;
+    border: 1px solid $gray-300;
+  }
+
+  .vocabulary-sheet-view-grid-inner {
+    position: relative;
+    width: 100%;
+  }
+
+  .vocabulary-sheet-view-row {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: grid;
+    border-bottom: 1px solid $gray-200;
+    background-color: $white;
+  }
+
+  .vocabulary-sheet-view-row-selected {
+    background-color: rgba($blue, 0.08);
+  }
+
+  .vocabulary-sheet-view-cell {
+    border-right: 1px solid $gray-200;
+    position: relative;
+  }
+
+  .vocabulary-sheet-view-cell,
+  .term-table-link,
+  .term-table-definition {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* When expanded, allow text to wrap natively */
+  .term-table-expandable-cell-expanded {
+    &,
+    .term-table-list-preview,
+    .term-table-inline-link,
+    .term-table-link,
+    .term-table-definition {
+      white-space: normal;
+      text-overflow: clip;
+    }
+  }
+
+  .term-table-link {
+    text-align: left;
+    max-width: 100%;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    /* Override block width so it naturally wraps instead of forcing full width inside flex */
+    width: auto;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .term-table-inline-link {
+    display: inline;
+  }
+
+  .term-table-list-preview-expanded {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+
+  .term-table-list-wrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .term-table-list-preview-collapsed {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .term-table-expandable-cell {
+    position: relative;
+    width: 100%;
+    align-items: flex-start;
+
+    &:not(.term-table-expandable-cell-expanded) {
+      align-items: center;
+    }
+  }
+
+  .vocabulary-sheet-view-cell-expand-toggle {
+    margin-left: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    line-height: inherit;
+    text-decoration: none;
+    font-weight: bold;
+    color: $dark;
+
+    &:hover,
+    &:focus {
+      color: $primary;
+      text-decoration: none;
+      outline: none;
+    }
+  }
+
+  .vocabulary-sheet-view-cell-expand-icon {
+    display: inline-block;
+  }
+
+  .term-badge-wrapper {
+    display: inline;
+    vertical-align: baseline;
+
+    .ml-2 {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  .term-table-definition {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .vocabulary-sheet-view-loading-row,
+  .vocabulary-sheet-view-empty,
+  .vocabulary-sheet-view-error {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+}
