@@ -167,13 +167,11 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
 
   return (
     <div id="vocabulary-sheet-view">
-      <WindowTitle
-        title={`${vocabularyLabel} | ${i18n("glossary.table.workspace.title")}`}
-      />
+      <WindowTitle title={vocabularyLabel} />
       <PromiseTrackingMask area="vocabulary-sheet-view" />
       <HeaderWithActions
         id="vocabulary-sheet-view-header"
-        title={`${vocabularyLabel} - ${i18n("glossary.table.workspace.title")}`}
+        title={vocabularyLabel}
         actions={[
           <Button
             key="sheet-view-back"

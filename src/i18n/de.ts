@@ -628,7 +628,7 @@ const de = {
     "glossary.table.empty": "Keine Begriffe gefunden.",
     "glossary.table.loadError": "Begriffe konnten nicht geladen werden.",
     "glossary.table.total": "{count, number} Begriffe",
-    "glossary.table.loaded": "Geladen: {count, number}",
+    "glossary.table.loaded": "Angezeigt: {count, number}",
     "glossary.table.loadingMore": "Weitere Begriffe werden geladen...",
     "glossary.table.cell.expand": "Zelle erweitern",
     "glossary.table.cell.collapse": "Zelle einklappen",

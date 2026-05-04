@@ -29,7 +29,7 @@ export interface TermsTableColumn {
   render: (term: Term, rowIndex: number) => React.ReactNode;
 }
 
-export function previewValues(values: string[]): React.ReactNode {
+export function previewValues(values: string[]): string {
   const sanitized = Utils.sanitizeArray(values)
     .map((value) => value.trim())
     .filter((value) => value.length > 0);
@@ -38,9 +38,7 @@ export function previewValues(values: string[]): React.ReactNode {
     return "";
   }
 
-  return (
-    <span className="text-truncate d-block w-100">{sanitized.join(", ")}</span>
-  );
+  return sanitized.join(", ");
 }
 
 export function resolveGridColumnWidth(column: TermsTableColumn): string {
@@ -56,7 +54,11 @@ export function resolveLocalizedTermLabel(
   return (item.label ? getLocalized(item.label, locale) : "") || item.iri || "";
 }
 
-export function resolveTypeLabels(types?: string[]): string[] {
+export function resolveTypeLabels(
+  types: string[] | undefined,
+  typeOptions: Record<string, Term>,
+  locale: string
+): string[] {
   return Utils.sanitizeArray(types)
     .filter(
       (typeIri) =>
@@ -65,6 +67,10 @@ export function resolveTypeLabels(types?: string[]): string[] {
         !typeIri.startsWith(SKOS.namespace)
     )
     .map((typeIri) => {
+      const typeTerm = typeOptions[typeIri];
+      if (typeTerm && typeTerm.label) {
+        return getLocalized(typeTerm.label, locale);
+      }
       try {
         return VocabularyUtils.create(typeIri).fragment;
       } catch {

@@ -66,6 +66,7 @@
   }
 
   .vocabulary-sheet-view-grid-scroll {
+    position: relative;
     overflow: auto;
     border: 1px solid $gray-300;
   }
@@ -103,10 +104,11 @@
   }
 
   /* When expanded, allow text to wrap natively */
-  .vocabulary-sheet-view-cell-expanded {
+  .term-table-expandable-cell-expanded {
     &,
     .term-table-list-preview,
     .term-table-inline-link,
+    .term-table-link,
     .term-table-definition {
       white-space: normal;
       text-overflow: clip;
@@ -127,10 +129,7 @@
   }
 
   .term-table-inline-link {
-    flex: 0 1 auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: inline;
   }
 
   .term-table-list-preview-expanded {
@@ -148,7 +147,7 @@
   .term-table-list-preview-collapsed {
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
+    text-overflow: ellipsis;
   }
 
   .term-table-expandable-cell {
@@ -185,14 +184,6 @@
   }
 
   .term-badge-wrapper {
-    max-width: 100%;
-    display: inline-flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    vertical-align: bottom;
-  }
-
-  .term-table-list-preview-expanded .term-badge-wrapper {
     display: inline;
     vertical-align: baseline;
 
