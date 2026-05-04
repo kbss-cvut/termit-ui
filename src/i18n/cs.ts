@@ -670,7 +670,7 @@ const cs = {
     "glossary.table.empty": "Nebyly nalezeny žádné pojmy.",
     "glossary.table.loadError": "Pojmy se nepodařilo načíst.",
     "glossary.table.total": "{count, number} pojmů",
-    "glossary.table.loaded": "Načteno: {count, number}",
+    "glossary.table.loaded": "Zobrazeno: {count, number}",
     "glossary.table.loadingMore": "Načítají se další pojmy...",
     "glossary.table.cell.expand": "Rozbalit buňku",
     "glossary.table.cell.collapse": "Sbalit buňku",

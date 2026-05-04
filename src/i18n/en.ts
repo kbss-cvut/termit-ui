@@ -663,7 +663,7 @@ const en = {
     "glossary.table.empty": "No terms found.",
     "glossary.table.loadError": "Unable to load terms.",
     "glossary.table.total": "{count, number} terms",
-    "glossary.table.loaded": "Loaded: {count, number}",
+    "glossary.table.loaded": "Displayed: {count, number}",
     "glossary.table.loadingMore": "Loading more terms...",
     "glossary.table.cell.expand": "Expand cell",
     "glossary.table.cell.collapse": "Collapse cell",
