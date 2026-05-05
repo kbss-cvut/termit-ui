@@ -27,7 +27,7 @@ describe("TermAssignment", () => {
         },
         types: [VocabularyUtils.TERM_ASSIGNMENT],
       });
-      jest.spyOn(sut.term, "toTermData");
+      vi.spyOn(sut.term, "toTermData");
 
       const result = sut.toJsonLd();
       expect(result.term).toEqual(sut.term.toTermData());

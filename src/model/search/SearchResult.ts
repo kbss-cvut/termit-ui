@@ -2,11 +2,12 @@ import Vocabulary from "../../util/VocabularyUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { AssetData, HasIdentifier } from "../Asset";
 import Utils from "../../util/Utils";
+import MultilingualString, { context } from "../MultilingualString";
 
 export const CONTEXT = {
   iri: "@id",
-  label: VocabularyUtils.RDFS_LABEL,
-  description: VocabularyUtils.DC_DESCRIPTION,
+  label: context(VocabularyUtils.RDFS_LABEL),
+  description: context(VocabularyUtils.DC_DESCRIPTION),
   vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
   state: VocabularyUtils.HAS_TERM_STATE,
   snippetText:
@@ -19,8 +20,8 @@ export const CONTEXT = {
 
 export interface SearchResultData extends AssetData {
   iri: string;
-  label: string;
-  description?: string;
+  label: MultilingualString;
+  description?: MultilingualString;
   snippetText: string;
   snippetField: string;
   score?: number;
@@ -31,8 +32,8 @@ export interface SearchResultData extends AssetData {
 
 export default class SearchResult implements AssetData {
   public readonly iri: string;
-  public readonly label: string;
-  public readonly description?: string;
+  public readonly label: MultilingualString;
+  public readonly description?: MultilingualString;
   public readonly snippetText: string;
   public readonly snippetField: string;
   public readonly score?: number;

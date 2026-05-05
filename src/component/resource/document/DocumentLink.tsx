@@ -1,7 +1,8 @@
-import Document from "./Document";
-import { useI18n } from "../component/hook/useI18n";
-import { Routing, Vocabularies } from "../util/Routing";
-import AssetLink from "../component/misc/AssetLink";
+import React from "react";
+import Document from "../../../model/Document";
+import { useI18n } from "../../hook/useI18n";
+import { Routing, Vocabularies } from "../../../util/Routing";
+import AssetLink from "../../misc/AssetLink";
 import { Label } from "reactstrap";
 
 interface DocumentLinkProps {

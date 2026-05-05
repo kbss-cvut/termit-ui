@@ -1,6 +1,6 @@
 import * as React from "react";
 import AssetLink from "../misc/AssetLink";
-import Term, { TermInfo } from "../../model/Term";
+import Term, { TermData, TermInfo } from "../../model/Term";
 import OutgoingLink from "../misc/OutgoingLink";
 import User from "../../model/User";
 import { useSelector } from "react-redux";
@@ -26,7 +26,7 @@ export function getTermPath(term: Term | TermInfo, user?: User | null) {
 }
 
 function getTermPathWithTab(
-  term: Term | TermInfo,
+  term: Term | TermData | TermInfo,
   user?: User | null,
   activeTab?: string
 ) {

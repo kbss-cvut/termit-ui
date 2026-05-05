@@ -23,7 +23,7 @@ import RelationshipAnnotation from "./meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "./meta/AnnotatedTermRelationship";
 
 /**
- * This is the basic shape of the application"s state managed by Redux.
+ * This is the basic shape of the application's state managed by Redux.
  */
 export default class TermItState {
   public loading: boolean;

@@ -113,9 +113,6 @@ const de = {
     "main.nav.vocabularies": "Vokabulare",
     "main.nav.statistics": "Statistiken",
     "main.nav.search": "Suche",
-    "main.nav.searchTerms": "Suchbegriffe",
-    "main.nav.searchVocabularies": "Vokabeln durchsuchen",
-    "main.nav.facetedSearch": "Facettensuche",
     "main.nav.admin": "Administration",
     "main.nav.create-vocabulary": "Neues Vokabular",
     "main.nav.import-vocabulary": "Vokabular importieren",
@@ -125,7 +122,10 @@ const de = {
     "main.search.tooltip": "Gehen Sie zum Suchbildschirm",
     "main.search.count-info-and-link":
       "Es werden {displayed} von {count} Ergebnissen angezeigt. ",
-    "main.search.no-results": "Keine Ergebnisse gefunden. ",
+    "main.search.no-results":
+      "Keine Ergebnisse gefunden. Klicken Sie, um die erweiterte Suche zu versuchen.",
+    "main.search.facetsActive":
+      "{count, plural, one {# aktiver Filter} other {# aktive Filter}}",
     "main.lang-selector.tooltip":
       "Wählen Sie die Sprache der Benutzeroberfläche aus",
     "dashboard.widget.assetList.empty":
@@ -134,7 +134,7 @@ const de = {
     "dashboard.widget.assetList.lastEditMessage":
       "{operation, select, edit {Edited} other {Created}} von {user} {when}.",
     "dashboard.widget.assetList.lastEditMessageByYou":
-      "{operation, select, edit {Edited} other {Created}} ​​von Ihnen {when}.",
+      "{operation, select, edit {Edited} other {Created}} von Ihnen {when}.",
     "dashboard.widget.lastEditedAssets.title": "Zuletzt bearbeitete Assets",
     "dashboard.widget.lastEditedAssets.all.title": "Alle",
     "dashboard.widget.lastEditedAssets.mine.title": "Meine",
@@ -587,6 +587,10 @@ const de = {
     "term.removed.message": "Begriff erfolgreich entfernt.",
     "term.badge.score.tooltip": "Der Wert dieses Begriffs beträgt {score} %. ",
     "term.badge.no-score.tooltip": "Für diesen Begriff ist kein Wert verfügbar",
+    "term.largeValueList.closed":
+      "Das Attribut hat mehr als {threshold} Werte. Klicken Sie hier, um sie anzuzeigen.",
+    "term.largeValueList.open":
+      "Das Attribut hat mehr als {threshold} Werte. Klicken Sie hier, um sie auszublenden.",
 
     "glossary.title": "Bedingungen",
     "glossary.termCount.tooltip":
@@ -665,16 +669,14 @@ const de = {
     "fullscreen.enter": "Geben Sie den Vollbildmodus ein",
     "search.title": "Suchen",
     "search.tab.dashboard": "Dashboard",
-    "search.tab.everything": "Suche in allen Assets",
-    "search.tab.terms": "Bedingungen",
-    "search.tab.terms.filter.allVocabularies": "Alle Vokabulare",
-    "search.tab.vocabularies": "Vokabulare",
-    "search.tab.facets": "Facettierte Begriffssuche",
     "search.reset": "Suche zurücksetzen",
     "search.results.title": 'Ergebnisse für "{searchString}"',
     "search.no-results": "Keine Ergebnisse gefunden.",
+    "search.noMoreResults": "Keine weiteren Ergebnisse verfügbar.",
     "search.results.countInfo":
-      "Es wurden {matches} Übereinstimmungen in {assets}-Assets gefunden.",
+      "{count, plural, one {# Übereinstimmung wurde} other {# Übereinstimmungen wurden}} gefunden, die den angegebenen Kriterien entsprechen.",
+    "search.results.countInfo.noFts":
+      "{count, plural, one {# Asset wurde} other {# Assets wurden}} gefunden, die den angegebenen Kriterien entsprechen.",
     "search.results.table.label": "Label",
     "search.results.table.label.tooltip": "Öffnen Sie die Asset-Details",
     "search.results.table.match": "Übereinstimmung",
@@ -684,13 +686,22 @@ const de = {
     "search.results.field.comment": "Kommentar",
     "search.results.field.definition": "Definition",
     "search.results.vocabulary.from": "aus",
-    "search.results.facetedLink": "Versuchen Sie es mit {link}.",
     "search.faceted.matchType.exact": "Genaue Übereinstimmung",
     "search.faceted.matchType.substring": "Teilzeichenfolge",
     "search.faceted.no-results":
       "Für die angegebenen Parameter wurden keine weiteren Ergebnisse gefunden.",
     "search.faceted.relationshipAnnotation":
       "Beziehung annotiert durch Begriff",
+    "search.target.both": "Alle",
+    "search.target.terms": "Begriffe",
+    "search.target.vocabularies": "Vokabulare",
+    "search.advanced.show": "Erweiterte Filter anzeigen",
+    "search.advanced.hide": "Erweiterte Filter ausblenden",
+    "search.help":
+      "Geben Sie oben einen Suchbegriff ein, um die Suche zu starten.",
+    "search.no-value": "Kein Wert",
+    "search.no-value.checkbox.hint":
+      "Nicht ausgewählt – false; Ausgewählt – true; Unbestimmt – kein Wert",
 
     "profile.first.name": "Vorname",
     "profile.last.name": "Nachname",

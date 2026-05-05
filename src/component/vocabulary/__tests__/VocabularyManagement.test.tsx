@@ -10,25 +10,31 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import * as redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
+import type { Mock } from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
+vi.mock("../VocabularyList", () => ({
+  default: () => <div>Vocabularies</div>,
 }));
-jest.mock("../VocabularyList", () => () => <div>Vocabularies</div>);
 
 describe("VocabularyList", () => {
   let fakeDispatch: ThunkDispatch;
 
   beforeEach(() => {
-    fakeDispatch = jest.fn().mockResolvedValue({});
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    fakeDispatch = vi.fn().mockResolvedValue({});
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
   });
 
   it("loads vocabularies on mount", async () => {
-    jest.spyOn(AsyncActions, "loadVocabularies");
-    (redux.useSelector as jest.Mock).mockReturnValue(Generator.generateUser());
+    vi.spyOn(AsyncActions, "loadVocabularies");
+    (redux.useSelector as Mock).mockReturnValue(Generator.generateUser());
     mountWithIntl(
       <MemoryRouter>
         <VocabularyManagement />
@@ -41,10 +47,10 @@ describe("VocabularyList", () => {
   });
 
   it("does not display create vocabulary button when current user has restricted access", async () => {
-    jest.spyOn(AsyncActions, "loadVocabularies");
+    vi.spyOn(AsyncActions, "loadVocabularies");
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_RESTRICTED);
-    (redux.useSelector as jest.Mock).mockReturnValue(user);
+    (redux.useSelector as Mock).mockReturnValue(user);
     const wrapper = mountWithIntl(
       <MemoryRouter>
         <VocabularyManagement />

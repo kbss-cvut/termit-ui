@@ -30,13 +30,20 @@ import { ErrorData } from "../../model/ErrorInfo";
 import { Action } from "redux";
 import Routing from "../../util/Routing";
 import { DEFAULT_CONFIGURATION } from "../../model/Configuration";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 
-jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../util/Ajax");
+vi.mock("../../util/Routing");
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+  const actual = await importOriginal();
   return {
-    ...originalModule,
-    default: jest.fn(),
+    ...actual,
+    default: {
+      get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+      delete: vi.fn(),
+    } as any,
   };
 });
 
@@ -49,7 +56,7 @@ describe("AsyncUserActions", () => {
   let store: MockStoreEnhanced<TermItState>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store = mockStore(new TermItState());
   });
 
@@ -59,7 +66,7 @@ describe("AsyncUserActions", () => {
         message: "Unauthorized",
         status: Constants.STATUS_UNAUTHORIZED,
       };
-      Ajax.get = jest.fn().mockRejectedValue(error);
+      Ajax.get = vi.fn().mockRejectedValue(error);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadUser())
       ).then(() => {
@@ -73,7 +80,7 @@ describe("AsyncUserActions", () => {
 
     it("loads configuration after successful user fetch", () => {
       const user = Generator.generateUser();
-      Ajax.get = jest
+      Ajax.get = vi
         .fn()
         .mockResolvedValueOnce(user)
         .mockResolvedValueOnce(DEFAULT_CONFIGURATION);
@@ -97,7 +104,7 @@ describe("AsyncUserActions", () => {
         headers: {},
       };
       resp.headers[Constants.Headers.AUTHORIZATION] = "Bearer jwt12345";
-      Ajax.post = jest.fn().mockImplementation(() => Promise.resolve(resp));
+      Ajax.post = vi.fn().mockImplementation(() => Promise.resolve(resp));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(login("test", "test"))
       ).then(() => {
@@ -115,7 +122,7 @@ describe("AsyncUserActions", () => {
     };
 
     it("invokes login on registration success", () => {
-      Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.post = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(register(userInfo))
       ).then(() => {
@@ -127,7 +134,7 @@ describe("AsyncUserActions", () => {
 
     it("returns error info on error", () => {
       const message = "User already exists";
-      Ajax.post = jest.fn().mockImplementation(() =>
+      Ajax.post = vi.fn().mockImplementation(() =>
         Promise.reject({
           status: 409,
           message,
@@ -145,7 +152,7 @@ describe("AsyncUserActions", () => {
 
   describe("loadUsers", () => {
     it("sends GET request to server REST API", () => {
-      Ajax.get = jest
+      Ajax.get = vi
         .fn()
         .mockImplementation(() =>
           Promise.resolve(require("../../rest-mock/users.json"))
@@ -154,14 +161,14 @@ describe("AsyncUserActions", () => {
         (store.dispatch as ThunkDispatch)(loadUsers())
       ).then(() => {
         expect(Ajax.get).toHaveBeenCalled();
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.get as Mock).mock.calls[0][0];
         expect(url).toEqual(Constants.API_PREFIX + "/users");
       });
     });
 
     it("returns loaded users on success", () => {
       const users = require("../../rest-mock/users.json");
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(users));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(users));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadUsers())
       ).then(() => {
@@ -184,21 +191,21 @@ describe("AsyncUserActions", () => {
   describe("disableUser", () => {
     it("sends DELETE request with provided user identifier to server REST API", () => {
       const user = Generator.generateUser(namespace + name);
-      Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.delete = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(disableUser(user))
       ).then(() => {
         expect(Ajax.delete).toHaveBeenCalled();
-        const url = (Ajax.delete as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.delete as Mock).mock.calls[0][0];
         expect(url).toEqual(`${Constants.API_PREFIX}/users/${name}/status`);
-        const config = (Ajax.delete as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.delete as Mock).mock.calls[0][1];
         expect(config.getParams().namespace).toEqual(namespace);
       });
     });
 
     it("publishes message on success", () => {
       const user = Generator.generateUser(namespace + name);
-      Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.delete = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(disableUser(user))
       ).then(() => {
@@ -213,21 +220,21 @@ describe("AsyncUserActions", () => {
   describe("enableUser", () => {
     it("sends POST request with provided user identifier to server REST API", () => {
       const user = Generator.generateUser(namespace + name);
-      Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.post = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(enableUser(user))
       ).then(() => {
         expect(Ajax.post).toHaveBeenCalled();
-        const url = (Ajax.post as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.post as Mock).mock.calls[0][0];
         expect(url).toEqual(`${Constants.API_PREFIX}/users/${name}/status`);
-        const config = (Ajax.post as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.post as Mock).mock.calls[0][1];
         expect(config.getParams().namespace).toEqual(namespace);
       });
     });
 
     it("publishes message on success", () => {
       const user = Generator.generateUser(namespace + name);
-      Ajax.post = jest.fn().mockImplementation(() => Promise.resolve({}));
+      Ajax.post = vi.fn().mockImplementation(() => Promise.resolve({}));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(enableUser(user))
       ).then(() => {
@@ -243,14 +250,14 @@ describe("AsyncUserActions", () => {
     it("sends request with new user password to corresponding REST endpoint", () => {
       const user = Generator.generateUser(namespace + name);
       const newPassword = "new_password";
-      Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.delete = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(unlockUser(user, newPassword))
       ).then(() => {
         expect(Ajax.delete).toHaveBeenCalled();
-        const url = (Ajax.delete as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.delete as Mock).mock.calls[0][0];
         expect(url).toEqual(`${Constants.API_PREFIX}/users/${name}/lock`);
-        const config = (Ajax.delete as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.delete as Mock).mock.calls[0][1];
         expect(config.getContent()).toEqual(newPassword);
         expect(config.getParams().namespace).toEqual(namespace);
         expect(config.getContentType()).toEqual(Constants.TEXT_MIME_TYPE);
@@ -260,7 +267,7 @@ describe("AsyncUserActions", () => {
     it("publishes message on success", () => {
       const user = Generator.generateUser(namespace + name);
       const newPassword = "new_password";
-      Ajax.delete = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.delete = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(unlockUser(user, newPassword))
       ).then(() => {
@@ -280,7 +287,7 @@ describe("AsyncUserActions", () => {
         firstName: "test",
         lastName: "test",
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(updateProfile(user))
@@ -298,7 +305,7 @@ describe("AsyncUserActions", () => {
         firstName: "test",
         lastName: "test",
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(updateProfile(user))
@@ -316,8 +323,8 @@ describe("AsyncUserActions", () => {
         firstName: "test",
         lastName: "test",
       });
-      Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.put = vi.fn().mockImplementation(() => Promise.resolve());
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(updateProfile(user))
       ).then(() => {
@@ -335,8 +342,8 @@ describe("AsyncUserActions", () => {
         firstName: "test",
         lastName: "test",
       });
-      Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.put = vi.fn().mockImplementation(() => Promise.resolve());
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(updateProfile(user))
       ).then(() => {
@@ -351,7 +358,7 @@ describe("AsyncUserActions", () => {
 
   describe("change password", () => {
     beforeEach(() => {
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve({}));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve({}));
     });
 
     it("sends put request to correct endpoint using user IRI", () => {
@@ -363,7 +370,7 @@ describe("AsyncUserActions", () => {
         password: "test",
         originalPassword: "test-original",
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(changePassword(userWithPassword))
@@ -383,7 +390,7 @@ describe("AsyncUserActions", () => {
         password: "test",
         originalPassword: "test-original",
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.put = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(changePassword(userWithPassword))
@@ -403,7 +410,7 @@ describe("AsyncUserActions", () => {
         password: "test",
         originalPassword: "test-original",
       });
-      Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.put = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(changePassword(userWithPassword))
       ).then(() => {
@@ -427,7 +434,7 @@ describe("AsyncUserActions", () => {
         password: "test",
         originalPassword: "test-original",
       });
-      Ajax.put = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.put = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(changePassword(userWithPassword))
       ).then(() => {
@@ -451,19 +458,19 @@ describe("AsyncUserActions", () => {
     };
 
     it("sends user data to server for registration", () => {
-      Ajax.post = jest.fn().mockResolvedValue({});
+      Ajax.post = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createNewUser(userInfo))
       ).then(() => {
         expect(Ajax.post).toHaveBeenCalled();
-        const args = (Ajax.post as jest.Mock).mock.calls[0];
+        const args = (Ajax.post as Mock).mock.calls[0];
         expect(args[0]).toEqual(`${Constants.API_PREFIX}/admin/users`);
         expect(args[1].getContent()).toEqual(userInfo);
       });
     });
 
     it("emits correct actions and publishes success message on success", () => {
-      Ajax.post = jest.fn().mockResolvedValue({});
+      Ajax.post = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createNewUser(userInfo))
       ).then(() => {
@@ -486,7 +493,7 @@ describe("AsyncUserActions", () => {
 
     it("returns dispatched error action on error", () => {
       const error = { status: 409, message: "This does not work" };
-      Ajax.post = jest.fn().mockRejectedValue(error);
+      Ajax.post = vi.fn().mockRejectedValue(error);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createNewUser(userInfo))
       ).then((result) => {

@@ -17,18 +17,30 @@ import {
 } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import StringListEdit from "../../misc/ValueListEdit";
+import { Mock, vi } from "vitest";
 
-jest.mock("../ParentTermSelector", () => () => <div>Parent term selector</div>);
-jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
-jest.mock("../TermTypesEdit", () => () => <div>Term types edit</div>);
-jest.mock("../../misc/HelpIcon", () => () => <span>Help</span>);
-jest.mock("../../misc/MultilingualIcon", () => () => <span>Multilingual</span>);
-
-jest.mock("../../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../../util/Ajax");
+vi.mock("../ParentTermSelector", () => ({
+  default: () => <div>Parent term selector</div>,
+}));
+vi.mock("../../misc/AssetLabel", () => ({
+  default: () => <span>Asset label</span>,
+}));
+vi.mock("../TermTypesEdit", () => ({
+  default: () => <div>Term types edit</div>,
+}));
+vi.mock("../../misc/HelpIcon", () => ({ default: () => <span>Help</span> }));
+vi.mock("../../misc/MultilingualIcon", () => ({
+  default: () => <span>Multilingual</span>,
+}));
+vi.mock(import("../../../util/Ajax"), async (importOriginal) => {
+  const actual = await importOriginal();
   return {
-    ...originalModule,
-    default: jest.fn(),
+    ...actual,
+    default: {
+      head: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+    } as any,
   };
 });
 
@@ -38,17 +50,17 @@ describe("TermMetadataCreateForm", () => {
   let onChange: (change: object, callback?: () => void) => void;
 
   beforeEach(() => {
-    onChange = jest.fn();
-    Ajax.head = jest.fn().mockResolvedValue({});
-    jest.useFakeTimers();
+    onChange = vi.fn();
+    Ajax.head = vi.fn().mockResolvedValue({});
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("generates identifier on mount if a valid label is provided", () => {
-    Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
+    Ajax.post = vi.fn().mockResolvedValue(Generator.generateUri());
     const termData = { label: langString("test label") };
     shallow<TermMetadataCreateForm>(
       <TermMetadataCreateForm
@@ -61,7 +73,7 @@ describe("TermMetadataCreateForm", () => {
       />
     );
     expect(Ajax.post).toHaveBeenCalled();
-    const config = (Ajax.post as jest.Mock).mock.calls[0][1];
+    const config = (Ajax.post as Mock).mock.calls[0][1];
     expect(config.getParams().name).toEqual(getLocalized(termData.label));
     expect(config.getParams().contextIri).toEqual(
       VocabularyUtils.create(vocabularyIri)
@@ -70,7 +82,7 @@ describe("TermMetadataCreateForm", () => {
   });
 
   it("generates identifier on label change for non-empty label", () => {
-    Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
+    Ajax.post = vi.fn().mockResolvedValue(Generator.generateUri());
     const wrapper = mountWithIntl(
       <TermMetadataCreateForm
         onChange={onChange}
@@ -85,17 +97,17 @@ describe("TermMetadataCreateForm", () => {
     (labelInput.getDOMNode() as HTMLInputElement).value = "a";
     labelInput.simulate("change", labelInput);
     expect(Ajax.post).toHaveBeenCalled();
-    const idCall = (Ajax.post as jest.Mock).mock.calls.find((c: any[]) =>
+    const idCall = (Ajax.post as Mock).mock.calls.find((c: any[]) =>
       c[0].endsWith("/identifiers")
     );
     expect(idCall).toBeDefined();
-    expect(idCall[1].getParams().name).toEqual("a");
+    expect(idCall![1].getParams().name).toEqual("a");
   });
 
   it("handles possible race condition when generating identifier multiple times", () => {
     const firstIri = Generator.generateUri();
     const secondIri = Generator.generateUri();
-    Ajax.post = jest
+    Ajax.post = vi
       .fn()
       .mockImplementationOnce(() => {
         return promiseDelay(200, { data: firstIri });
@@ -114,14 +126,14 @@ describe("TermMetadataCreateForm", () => {
     const labelInput = wrapper.find('input[name="create-term-label"]');
     (labelInput.getDOMNode() as HTMLInputElement).value = "a";
     labelInput.simulate("change", labelInput);
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     (labelInput.getDOMNode() as HTMLInputElement).value = "ab";
     labelInput.simulate("change", labelInput);
-    jest.advanceTimersByTime(200);
+    vi.advanceTimersByTime(200);
     return Promise.resolve().then(() => {
       wrapper.update();
       expect(Ajax.post).toHaveBeenCalledTimes(2);
-      const changesCalls = (onChange as jest.Mock).mock.calls;
+      const changesCalls = (onChange as Mock).mock.calls;
       changesCalls.forEach((call) => {
         expect(call[0].iri).not.toEqual(firstIri);
       });
@@ -157,7 +169,7 @@ describe("TermMetadataCreateForm", () => {
         {...intlFunctions()}
       />
     );
-    const mock = jest
+    const mock = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ data: "" }));
     Ajax.post = mock;
@@ -191,7 +203,7 @@ describe("TermMetadataCreateForm", () => {
         {...intlFunctions()}
       />
     );
-    Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(true));
+    Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(true));
     wrapper
       .find(CustomInput)
       .findWhere((ci) => ci.prop("name") === "create-term-label")
@@ -208,7 +220,7 @@ describe("TermMetadataCreateForm", () => {
   });
 
   it("passes existing label value in selected language to label edit input", () => {
-    Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
+    Ajax.post = vi.fn().mockResolvedValue(Generator.generateUri());
     const termData = AssetFactory.createEmptyTermData();
     termData.label = { en: "Building", cs: "Budova" };
     const wrapper = shallow<TermMetadataCreateForm>(
@@ -288,7 +300,7 @@ describe("TermMetadataCreateForm", () => {
   });
 
   it("merges existing label value in different language with newly set value in selected language", () => {
-    Ajax.post = jest.fn().mockResolvedValue(Generator.generateUri());
+    Ajax.post = vi.fn().mockResolvedValue(Generator.generateUri());
     const termData = AssetFactory.createEmptyTermData();
     const enLabel = "Building";
     const csLabel = "Budova";

@@ -9,9 +9,9 @@ import Constants from "../Constants";
 import TermItStore from "../../store/TermItStore";
 import { EMPTY_USER } from "../../model/User";
 
-jest.mock("history", () => ({
-  createHashHistory: jest.fn().mockReturnValue({
-    push: jest.fn(),
+vi.mock("history", () => ({
+  createHashHistory: vi.fn().mockReturnValue({
+    push: vi.fn(),
   }),
 }));
 
@@ -19,7 +19,7 @@ describe("Routing", () => {
   const historyMock = createHashHistory();
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("get transition path", () => {

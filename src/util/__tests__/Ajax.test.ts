@@ -23,9 +23,9 @@ import SecurityUtils from "../SecurityUtils";
 import VocabularyUtils from "../VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 
-jest.mock("../Routing");
-jest.mock("../SecurityUtils");
-jest.mock("../BrowserStorage");
+vi.mock("../Routing");
+vi.mock("../SecurityUtils");
+vi.mock("../BrowserStorage");
 
 export class MockableAjax extends Ajax {
   get axios(): AxiosInstance {
@@ -47,11 +47,11 @@ describe("Ajax", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("loads JWT and sets it on request", () => {
-    SecurityUtils.loadToken = jest.fn().mockReturnValue(jwt);
+    SecurityUtils.loadToken = vi.fn().mockReturnValue(jwt);
     mock.onGet("/users/current").reply((config: AxiosRequestConfig) => {
       expect((config.headers as AxiosHeaders).getAuthorization()).toContain(
         jwt
@@ -63,7 +63,7 @@ describe("Ajax", () => {
 
   it("extracts current JWT from response and saves it using Authentication", () => {
     headers.setAuthorization(jwt);
-    SecurityUtils.saveToken = jest.fn();
+    SecurityUtils.saveToken = vi.fn();
     mock
       .onGet("/users/current")
       .reply(200, require("../../rest-mock/current"), headers);
@@ -73,7 +73,7 @@ describe("Ajax", () => {
   });
 
   it("does not extract JWT when there is none in response", () => {
-    SecurityUtils.saveToken = jest.fn();
+    SecurityUtils.saveToken = vi.fn();
     mock.onGet("/users/username").reply(200, false);
     return sut.get("/users/username").then(() => {
       expect(SecurityUtils.saveToken).not.toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe("Ajax", () => {
     const oldEnv = process.env;
 
     beforeEach(() => {
-      jest.resetModules();
+      vi.resetModules();
       process.env = { ...oldEnv }; // make a copy
     });
 
@@ -93,7 +93,7 @@ describe("Ajax", () => {
     });
 
     it("directly transitions to login route when 401 Unauthorized is received", () => {
-      jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
+      vi.spyOn(Const, "getEnv").mockReturnValue(false.toString());
       mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
       return sut.get("/users/current").catch(() => {
         return expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.login);
@@ -101,8 +101,8 @@ describe("Ajax", () => {
     });
 
     it("directly transitions to login route when 401 Unauthorized is received", () => {
-      SecurityUtils.clearToken = jest.fn();
-      jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
+      SecurityUtils.clearToken = vi.fn();
+      vi.spyOn(Const, "getEnv").mockReturnValue(false.toString());
       mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
       return sut.get("/users/current").catch(() => {
         return expect(SecurityUtils.clearToken).toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe("Ajax", () => {
     });
 
     it("transitions to public dashboard route when 401 Unauthorized is received and public view is preferred over login", () => {
-      jest.spyOn(Const, "getEnv").mockReturnValue(true.toString());
+      vi.spyOn(Const, "getEnv").mockReturnValue(true.toString());
       mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
       return sut.get("/users/current").catch(() => {
         return expect(Routing.transitionTo).toHaveBeenCalledWith(
@@ -120,7 +120,7 @@ describe("Ajax", () => {
     });
 
     it("saves original navigation target when transitioning to login route after receiving 401 Unauthorized", () => {
-      jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
+      vi.spyOn(Const, "getEnv").mockReturnValue(false.toString());
       mock.onGet("/users/current").reply(Constants.STATUS_UNAUTHORIZED);
       return sut.get("/users/current").catch(() => {
         expect(Routing.saveOriginalTarget).toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe("Ajax", () => {
     });
 
     it("inserts default forbidden message id into error data after receiving status 403 Forbidden", () => {
-      jest.spyOn(Const, "getEnv").mockReturnValue(false.toString());
+      vi.spyOn(Const, "getEnv").mockReturnValue(false.toString());
       mock.onGet("/users/current").reply(Constants.STATUS_FORBIDDEN);
       return sut.get("/users/current").catch((data: ErrorData) => {
         expect(data.status).toEqual(Constants.STATUS_FORBIDDEN);
@@ -200,7 +200,7 @@ describe("Ajax", () => {
         size: "100",
       };
       mock.onAny().reply(200, {}, headers);
-      const spy = jest.spyOn(sut.axios, "get");
+      const spy = vi.spyOn(sut.axios, "get");
       spy.mockClear(); // Safeguard because the spy tends to leak into subsequent test specs
       return sut.get("/terms", params(qParams)).then(() => {
         const reqConfig = spy.mock.calls[0][1];
@@ -210,7 +210,7 @@ describe("Ajax", () => {
 
     it("it adds JSON-LD Accept header by default", () => {
       mock.onAny().reply(200, {}, headers);
-      const spy = jest.spyOn(sut.axios, "get");
+      const spy = vi.spyOn(sut.axios, "get");
       spy.mockClear();
       return sut.get("/terms/count").then(() => {
         const reqConfig = spy.mock.calls[0][1];
@@ -223,7 +223,7 @@ describe("Ajax", () => {
     it("adds accept header into GET request", () => {
       const acceptType = "text/plain";
       mock.onAny().reply(200, {}, headers);
-      const spy = jest.spyOn(sut.axios, "get");
+      const spy = vi.spyOn(sut.axios, "get");
       spy.mockClear();
       return sut.get("/terms/count", accept(acceptType)).then(() => {
         const reqConfig = spy.mock.calls[0][1];
@@ -237,7 +237,7 @@ describe("Ajax", () => {
       const data = EMPTY_USER;
       const mimeType = "application/json";
       mock.onPost().reply(201, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "post");
+      const spy = vi.spyOn(sut.axios, "post");
       spy.mockClear();
       return sut
         .post("/users", content(data).contentType(mimeType))
@@ -257,7 +257,7 @@ describe("Ajax", () => {
         password: "117",
       };
       mock.onPost().reply(201, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "post");
+      const spy = vi.spyOn(sut.axios, "post");
       spy.mockClear();
       return sut
         .post(
@@ -280,7 +280,7 @@ describe("Ajax", () => {
       const data = EMPTY_USER;
       const mimeType = "application/json";
       mock.onPut().reply(204, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "put");
+      const spy = vi.spyOn(sut.axios, "put");
       spy.mockClear();
       return sut
         .put("/users/current", content(data).contentType(mimeType))
@@ -297,7 +297,7 @@ describe("Ajax", () => {
     it("adds accept header in PUT", () => {
       const mimeType = "text/plain";
       mock.onPut().reply(204, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "put");
+      const spy = vi.spyOn(sut.axios, "put");
       spy.mockClear();
       return sut.put("/users/status", accept(mimeType)).then(() => {
         const reqConfig = spy.mock.calls[0][2];
@@ -313,7 +313,7 @@ describe("Ajax", () => {
       };
       const data = EMPTY_USER;
       mock.onPut().reply(204, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "put");
+      const spy = vi.spyOn(sut.axios, "put");
       spy.mockClear();
       return sut
         .put("/users/current", content(data).params(qParams))
@@ -333,7 +333,7 @@ describe("Ajax", () => {
         key: "http://kbss.felk.cvut.cz/termit/users/Catherine+Halsey",
       };
       mock.onDelete().reply(204, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "delete");
+      const spy = vi.spyOn(sut.axios, "delete");
       spy.mockClear();
       return sut.delete("/users", params(qParams)).then(() => {
         const reqConfig = spy.mock.calls[0][1];
@@ -343,7 +343,7 @@ describe("Ajax", () => {
 
     it("supports adding params one by one", () => {
       mock.onAny().reply(200, {}, headers);
-      const spy = jest.spyOn(sut.axios, "get");
+      const spy = vi.spyOn(sut.axios, "get");
       spy.mockClear();
       const pOne = "searchString";
       const vOne = "test";
@@ -361,7 +361,7 @@ describe("Ajax", () => {
     it("adds content as request body in DELETE", () => {
       const data = "new-password";
       mock.onDelete().reply(204, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "delete");
+      const spy = vi.spyOn(sut.axios, "delete");
       spy.mockClear();
       return sut.delete("/users", content(data)).then(() => {
         const reqConfig = spy.mock.calls[0][1];
@@ -371,7 +371,7 @@ describe("Ajax", () => {
 
     it("supports adding If-Modified-Since HTTP header", () => {
       mock.onAny().reply(200, {}, headers);
-      const spy = jest.spyOn(sut.axios, "get");
+      const spy = vi.spyOn(sut.axios, "get");
       spy.mockClear();
       const ifModSince = new Date().toString();
       return sut
@@ -410,7 +410,7 @@ describe("Ajax", () => {
   describe("getResponse", () => {
     it("returns response object", () => {
       mock.onAny().reply(200, {}, headers);
-      const spy = jest.spyOn(sut.axios, "get");
+      const spy = vi.spyOn(sut.axios, "get");
       spy.mockClear();
       return sut.getResponse("/vocabularies").then((resp: AxiosResponse) => {
         expect(resp.status).toEqual(200);
@@ -420,7 +420,7 @@ describe("Ajax", () => {
 
     it("treats 304 status NOT as an error", () => {
       mock.onAny().reply(304, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "get");
+      const spy = vi.spyOn(sut.axios, "get");
       spy.mockClear();
       return sut
         .getResponse("/vocabularies")
@@ -437,7 +437,7 @@ describe("Ajax", () => {
   describe("head", () => {
     it("performs head request with specified params", () => {
       mock.onHead().reply(204, undefined, headers);
-      const spy = jest.spyOn(sut.axios, "head");
+      const spy = vi.spyOn(sut.axios, "head");
       const resourceName = "test.html";
       const namespace = VocabularyUtils.FILE + "/";
       return sut

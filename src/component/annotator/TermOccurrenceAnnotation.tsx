@@ -38,7 +38,7 @@ function createActionButtons(
   onEdit: () => void,
   accessLevel: AccessLevel
 ) {
-  const actions = [];
+  const actions: React.ReactElement[] = [];
   const t = props.term ? props.term : null;
   if (props.annotationOrigin === AnnotationOrigin.PROPOSED && t !== null) {
     actions.push(

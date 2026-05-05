@@ -11,6 +11,8 @@ import { match, routingProps } from "../../__tests__/environment/TestUtil";
 import Generator from "../../__tests__/environment/Generator";
 import Constants from "../../util/Constants";
 import Breadcrumbs from "../breadcrumb/Breadcrumbs";
+import { vi } from "vitest";
+import { flushPromises } from "../../__tests__/environment/Environment";
 
 describe("MainView", () => {
   let loadUser: () => Promise<any>;
@@ -31,6 +33,7 @@ describe("MainView", () => {
     roles: [],
     maxFileUploadSize: "10MB",
     versionSeparator: "/version",
+    indexedLanguages: [],
   };
 
   let actions: {
@@ -42,11 +45,11 @@ describe("MainView", () => {
   };
 
   beforeEach(() => {
-    loadUser = jest.fn().mockResolvedValue({});
-    logout = jest.fn();
-    changeView = jest.fn();
-    openContextsForEditing = jest.fn().mockResolvedValue({});
-    loadTermStates = jest.fn();
+    loadUser = vi.fn().mockResolvedValue({});
+    logout = vi.fn();
+    changeView = vi.fn();
+    openContextsForEditing = vi.fn().mockResolvedValue({});
+    loadTermStates = vi.fn();
     actions = {
       loadUser,
       logout,
@@ -78,7 +81,7 @@ describe("MainView", () => {
       routing.location.search = contextsToEdit
         .map((c) => `edit-context=${encodeURIComponent(c)}`)
         .join("&");
-      await shallow(
+      shallow(
         <MainView
           user={EMPTY_USER}
           sidebarExpanded={true}
@@ -89,6 +92,7 @@ describe("MainView", () => {
           {...routing}
         />
       );
+      await flushPromises();
       expect(openContextsForEditing).toHaveBeenCalledWith(contextsToEdit);
     });
 
@@ -109,6 +113,7 @@ describe("MainView", () => {
           {...routing}
         />
       );
+
       expect(openContextsForEditing).toHaveBeenCalledWith(contextsToEdit);
     });
 

@@ -11,7 +11,7 @@ describe("AbstractInput", () => {
   let onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
   beforeEach(() => {
-    onChange = jest.fn();
+    onChange = vi.fn();
   });
 
   it("renders validation messages sorted by severity from most severe to warning", () => {

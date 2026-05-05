@@ -13,20 +13,26 @@ import * as router from "react-router-dom";
 import * as SyncActions from "../../../../action/SyncActions";
 import * as AsyncActions from "../../../../action/AsyncActions";
 
-jest.mock("react-redux", () => ({
-  ...(jest.requireActual("react-redux") as {}),
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
+vi.mock("react-router-dom", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useLocation: vi.fn(),
+    useRouteMatch: vi.fn(),
+  };
+});
+vi.mock("../../../vocabulary/ImportedVocabulariesList", () => ({
+  default: () => <div>Imported vocabularies</div>,
 }));
-jest.mock("react-router-dom", () => ({
-  ...(jest.requireActual("react-router-dom") as {}),
-  useLocation: jest.fn(),
-  useRouteMatch: jest.fn(),
-}));
-jest.mock("../../../vocabulary/ImportedVocabulariesList", () => () => (
-  <div>Imported vocabularies</div>
-));
-jest.mock("../../term/Terms", () => () => <div>Terms</div>);
+vi.mock("../../term/Terms", () => ({ default: () => <div>Terms</div> }));
 
 describe("Public VocabularySummary", () => {
   const normalizedName = "test-vocabulary";
@@ -53,17 +59,16 @@ describe("Public VocabularySummary", () => {
   });
 
   it("resets selected term on mount", async () => {
-    jest
-      .spyOn(redux, "useSelector")
+    vi.spyOn(redux, "useSelector")
       .mockReturnValueOnce(EMPTY_VOCABULARY)
       .mockReturnValueOnce(DEFAULT_CONFIGURATION);
-    jest
-      .spyOn(Redux, "useDispatch")
-      .mockReturnValue(jest.fn().mockResolvedValue({}));
-    jest.spyOn(router, "useLocation").mockReturnValue(location);
-    jest.spyOn(router, "useRouteMatch").mockReturnValue(match);
-    jest.spyOn(SyncActions, "selectVocabularyTerm");
-    jest.spyOn(AsyncActions, "loadVocabulary");
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(
+      vi.fn().mockResolvedValue({})
+    );
+    vi.spyOn(router, "useLocation").mockReturnValue(location);
+    vi.spyOn(router, "useRouteMatch").mockReturnValue(match);
+    vi.spyOn(SyncActions, "selectVocabularyTerm");
+    vi.spyOn(AsyncActions, "loadVocabulary");
     mountWithIntlAttached(<VocabularySummary />);
     await act(async () => {
       await flushPromises();

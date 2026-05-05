@@ -1,3 +1,7 @@
+#### Version 4.5.0
+
+- Integrated fulltext search with faceted search.
+
 #### Version 4.4.3
 
 - Fixed an issue with removal of additional property values.

@@ -1,3 +1,7 @@
+#### Verze 4.5.0
+
+- Fulltextové vyhledávání integrováno s fasetovým vyhledáváním.
+
 #### Verze 4.4.3
 
 - Opravena chyba mazání hodnot dalších atributů.

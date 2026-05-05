@@ -8,7 +8,7 @@ import "./UnmappedProperties.scss";
 import {
   PropertyValueType,
   stringifyPropertyValue,
-} from "src/model/WithUnmappedProperties";
+} from "../../model/WithUnmappedProperties";
 import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { FaTrashAlt } from "react-icons/fa";

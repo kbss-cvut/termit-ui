@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { GoClippy } from "react-icons/go";
+import { FaClipboard } from "react-icons/fa";
 import { Button } from "reactstrap";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
@@ -138,7 +138,7 @@ export default function TextAnalysisInvocationButton(
         title={i18n("file.metadata.startTextAnalysis")}
         onClick={openVocabularySelector}
       >
-        <GoClippy className="mr-1" />
+        <FaClipboard className="mr-1" />
         {i18n("file.metadata.startTextAnalysis.text")}
       </Button>
     </>

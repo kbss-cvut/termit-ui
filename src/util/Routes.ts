@@ -60,9 +60,6 @@ const Routes = {
     "/create-password/:token/:token_uri"
   ),
   search: new Route("search", "/search"),
-  searchTerms: new Route("searchTerms", "/search/terms"),
-  searchVocabularies: new Route("searchVocabularies", "/search/vocabularies"),
-  facetedSearch: new Route("facetedSearch", "/search/facets"),
   statistics: new Route("statistics", "/statistics"),
   vocabularies: new Route("vocabulary", "/vocabularies"),
   createVocabulary: new Route("createVocabulary", "/vocabularies/create"),
@@ -109,15 +106,6 @@ const Routes = {
     "/public/vocabularies/:name/terms/:termName/versions/:timestamp"
   ),
   publicSearch: new Route("publicSearch", "/public/search"),
-  publicSearchTerms: new Route("publicSearchTerms", "/public/search/terms"),
-  publicSearchVocabularies: new Route(
-    "publicSearchVocabularies",
-    "/public/search/vocabularies"
-  ),
-  publicFacetedSearch: new Route(
-    "publicFacetedSearch",
-    "/public/search/facets"
-  ),
 };
 
 export default Routes;

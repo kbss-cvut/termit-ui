@@ -78,9 +78,9 @@ const OpenModelingToolDialog: React.FC<OpenModelingToolDialogProps> = ({
   };
 
   const rowCount = Math.ceil(vocabularyIris.length / COLUMN_COUNT);
-  const rows = [];
+  const rows: React.ReactElement[] = [];
   for (let i = 0; i < rowCount; i++) {
-    const cols = [];
+    const cols: React.ReactElement[] = [];
     for (let j = 0; j < COLUMN_COUNT; j++) {
       const index = i * COLUMN_COUNT + j;
       if (index >= vocabularyIris.length) {

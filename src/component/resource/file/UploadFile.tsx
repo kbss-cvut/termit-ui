@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Col, FormGroup, FormText, Label, Row } from "reactstrap";
 import Dropzone from "react-dropzone";
-import { GoCloudUpload } from "react-icons/go";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import classNames from "classnames";
 import { useI18n } from "../../hook/useI18n";
 import { useSelector } from "react-redux";
@@ -89,7 +89,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
                     </Label>
                   </div>
                   <div className="w-100 icon-container text-center">
-                    <GoCloudUpload />
+                    <FaCloudUploadAlt />
                   </div>
                   {currentFile && (
                     <div className="w-100 text-center">

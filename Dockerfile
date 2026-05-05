@@ -1,6 +1,6 @@
 # BASE STAGE
 # Prepare node, copy package.json
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 FROM base AS dependencies
 # install node packages
 #RUN npm set progress=false && npm config set depth 0
-RUN npm ci --legacy-peer-deps
+RUN npm ci --ignore-scripts
 
 # BUILD STAGE
 # run NPM build

@@ -1,8 +1,8 @@
 import { TextDecoder, TextEncoder } from "util";
-import "jest-localstorage-mock";
+import "vitest-localstorage-mock";
 import { configure } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
-import enableHooks from "jest-react-hooks-shallow";
+import enableHooks from "vitest-react-hooks-shallow";
 
 configure({ adapter: new Adapter() });
 
@@ -23,9 +23,9 @@ configure({ adapter: new Adapter() });
   },
 });
 
-enableHooks(jest, { dontMockByDefault: true });
+enableHooks(vi, { dontMockByDefault: true });
 
-process.env.REACT_APP_VERSION = "0.0.1";
-process.env.REACT_APP_SERVER_URL = "http://localhost:8080/termit";
-process.env.REACT_APP_DEPLOYMENT_NAME = "";
-process.env.REACT_APP_AUTHENTICATION = "";
+import.meta.env.VITE_VERSION = "0.0.1";
+import.meta.env.VITE_SERVER_URL = "http://localhost:8080/termit";
+import.meta.env.VITE_DEPLOYMENT_NAME = "";
+import.meta.env.VITE_AUTHENTICATION = "";

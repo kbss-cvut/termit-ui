@@ -15,7 +15,7 @@ import FileBackupList from "./FileBackupList";
 import FileBackupDto from "../../model/FileBackupDto";
 import SingleActionDialog from "../misc/SingleActionDialog";
 import { useI18n } from "../hook/useI18n";
-import Pagination from "../misc/table/Pagination";
+import Pagination, { PaginationApi } from "../misc/table/Pagination";
 
 interface RestoreFileBackupDialogProps {
   show: boolean;
@@ -36,6 +36,26 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
   const [page, setPage] = useState(0);
   const dispatch: ThunkDispatch = useDispatch();
   const pageCount = Math.ceil(props.totalBackupsCount / ITEMS_PER_PAGE);
+
+  const paginationTable = React.useMemo<PaginationApi>(
+    () => ({
+      getState: () => ({
+        pagination: {
+          pageIndex: page,
+          pageSize: ITEMS_PER_PAGE,
+        },
+      }),
+      getPageCount: () => pageCount,
+      getCanPreviousPage: () => page > 0,
+      getCanNextPage: () => page < pageCount - 1,
+      setPageIndex: (index: number) => setPage(index),
+      previousPage: () => setPage((p) => Math.max(p - 1, 0)),
+      nextPage: () =>
+        setPage((p) => Math.min(p + 1, Math.max(pageCount - 1, 0))),
+      setPageSize: () => undefined,
+    }),
+    [page, pageCount]
+  );
 
   useEffect(() => {
     if (!props.show) return;
@@ -87,21 +107,7 @@ const RestoreFileBackupDialog: React.FC<RestoreFileBackupDialogProps> = (
         restoreBackup={restoreBackup}
         downloadBackup={downloadBackup}
       />
-      <Pagination
-        pagingProps={{
-          page: [],
-          pageCount: pageCount,
-          pageOptions: [],
-          canPreviousPage: page > 0,
-          canNextPage: page < pageCount - 1,
-          gotoPage: setPage,
-          previousPage: () => setPage(page - 1),
-          nextPage: () => setPage(page + 1),
-          setPageSize: () => null,
-        }}
-        pagingState={{ pageIndex: page, pageSize: ITEMS_PER_PAGE }}
-        allowSizeChange={false}
-      />
+      <Pagination table={paginationTable} allowSizeChange={false} />
     </SingleActionDialog>
   );
 };

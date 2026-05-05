@@ -233,7 +233,7 @@ export class VocabularySummary extends EditableComponent<
 
   public render() {
     const { i18n, vocabulary } = this.props;
-    const buttons = [];
+    const buttons: React.ReactElement[] = [];
     if (!this.state.edit) {
       buttons.push(
         <IfVocabularyActionAuthorized

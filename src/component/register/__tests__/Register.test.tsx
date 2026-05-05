@@ -9,15 +9,15 @@ import {
 import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
 
-jest.mock("../../../util/Routing");
-jest.mock("../../../util/Ajax");
-jest.mock("../../../util/SecurityUtils");
+vi.mock("../../../util/Routing");
+vi.mock("../../../util/Ajax");
+vi.mock("../../../util/SecurityUtils");
 
 describe("Registration", () => {
-  let register: ({}) => Promise<AsyncFailureAction>;
+  let register: () => Promise<AsyncFailureAction>;
 
   beforeEach(() => {
-    register = jest
+    register = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ type: ActionType.LOGIN }));
   });

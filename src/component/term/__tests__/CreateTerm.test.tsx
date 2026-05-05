@@ -12,12 +12,15 @@ import { match as Match } from "react-router";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import type { Mock } from "vitest";
 
-jest.mock("../../../util/Routing", () => ({
-  default: jest.fn(),
-  namespaceQueryParam: jest.requireActual("../../../util/Routing")
-    .namespaceQueryParam,
-}));
+vi.mock(import("../../../util/Routing"), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    default: vi.fn(),
+  } as any;
+});
 
 describe("CreateTerm", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
@@ -37,8 +40,8 @@ describe("CreateTerm", () => {
   let match: Match<any>;
 
   beforeEach(() => {
-    onCreate = jest.fn().mockImplementation(() => Promise.resolve(iri));
-    loadVocabulary = jest.fn();
+    onCreate = vi.fn().mockImplementation(() => Promise.resolve(iri));
+    loadVocabulary = vi.fn();
     vocabulary = new Vocabulary({
       iri:
         "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/" +
@@ -63,8 +66,8 @@ describe("CreateTerm", () => {
       isExact: true,
       url: "http://localhost:3000/" + location.pathname,
     };
-    Routing.transitionTo = jest.fn();
-    Routing.reload = jest.fn();
+    Routing.transitionTo = vi.fn();
+    Routing.reload = vi.fn();
   });
 
   it("invokes on create on create call", () => {
@@ -103,7 +106,7 @@ describe("CreateTerm", () => {
     (wrapper.instance() as CreateTerm).onCreate(term, false);
     return Promise.resolve().then(() => {
       expect(Routing.transitionTo).toHaveBeenCalled();
-      const mock = (Routing.transitionTo as jest.Mock).mock;
+      const mock = (Routing.transitionTo as Mock).mock;
       const call = mock.calls[mock.calls.length - 1];
       expect(call[0]).toEqual(Routes.vocabularyTermDetail);
       expect((call[1].params as Map<string, string>).get("name")).toEqual(
@@ -136,7 +139,7 @@ describe("CreateTerm", () => {
     (wrapper.instance() as CreateTerm).onCreate(term, true);
     return Promise.resolve().then(() => {
       expect(Routing.transitionTo).toHaveBeenCalled();
-      const mock = (Routing.transitionTo as jest.Mock).mock;
+      const mock = (Routing.transitionTo as Mock).mock;
       const call = mock.calls[mock.calls.length - 1];
       expect(call[0]).toEqual(Routes.createVocabularyTerm);
       expect((call[1].params as Map<string, string>).get("name")).toEqual(

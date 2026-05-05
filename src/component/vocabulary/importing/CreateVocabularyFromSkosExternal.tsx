@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, CardBody, Label } from "reactstrap";
-import { useI18n } from "src/component/hook/useI18n";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
@@ -17,6 +16,7 @@ import IdentifierResolver from "../../../util/IdentifierResolver";
 import * as SyncActions from "../../../action/SyncActions";
 import Message from "../../../model/Message";
 import MessageType from "../../../model/MessageType";
+import { useI18n } from "../../hook/useI18n";
 
 const CreateVocabularyFromSkosExternal: React.FC = () => {
   const { i18n } = useI18n();

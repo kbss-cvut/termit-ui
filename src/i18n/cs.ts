@@ -123,9 +123,6 @@ const cs = {
     "main.nav.vocabularies": "Slovníky",
     "main.nav.statistics": "Statistiky",
     "main.nav.search": "Vyhledávání",
-    "main.nav.searchTerms": "Vyhledávání pojmů",
-    "main.nav.searchVocabularies": "Vyhledávání slovníků",
-    "main.nav.facetedSearch": "Fasetové vyhledávání",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
     "main.nav.import-vocabulary": "Importovat slovník",
@@ -136,7 +133,9 @@ const cs = {
     "main.search.count-info-and-link":
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
     "main.search.no-results":
-      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte fasetové hledání.",
+      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte pokročilé hledání.",
+    "main.search.facetsActive":
+      "{count, plural, one {# aktivní faset} few {# aktivní fasety} other {# aktivních fasetů}}",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":
@@ -629,6 +628,10 @@ const cs = {
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
     "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
+    "term.largeValueList.closed":
+      "Atribut má více než {threshold} hodnot. Klikněte pro jejich zobrazení.",
+    "term.largeValueList.open":
+      "Atribut má více než {threshold} hodnot. Klikněte pro jejich skrytí.",
 
     "glossary.title": "Pojmy",
     "glossary.termCount.tooltip":
@@ -713,16 +716,14 @@ const cs = {
 
     "search.title": "Vyhledávání",
     "search.tab.dashboard": "Nástěnka",
-    "search.tab.everything": "Hledat ve všech záznamech",
-    "search.tab.terms": "Pojmy",
-    "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
-    "search.tab.vocabularies": "Slovníky",
-    "search.tab.facets": "Fasetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
     "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
+    "search.noMoreResults": "Žádné další výsledky nenalezeny.",
     "search.results.countInfo":
-      "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}}.",
+      "{count, plural, one {Nalezen # výskyt odpovídající} few {Nalezeny # výskyty odpovídající} other {Nalezeno celkem # výskytů odpovídajících}} hledaným kriteriím.",
+    "search.results.countInfo.noFts":
+      "{count, plural, one {Nalezen # záznam odpovídající} few {Nalezeny # záznamy odpovídající} other {Nalezeno celkem # záznamů odpovídajících}} hledaným kriteriím.",
     "search.results.table.label": "Název",
     "search.results.table.label.tooltip": "Zobrazit detail objektu",
     "search.results.table.match": "Nalezená shoda",
@@ -732,12 +733,20 @@ const cs = {
     "search.results.field.comment": "Popis",
     "search.results.field.definition": "Definice",
     "search.results.vocabulary.from": "z",
-    "search.results.facetedLink": "Zkuste {link}.",
     "search.faceted.matchType.exact": "Přesná shoda",
     "search.faceted.matchType.substring": "Částečná shoda",
     "search.faceted.no-results":
       "Zadaným parametrů neodpovídají již žádná další data.",
     "search.faceted.relationshipAnnotation": "Vztah anotovaný pojmem",
+    "search.target.both": "Vše",
+    "search.target.terms": "Pojmy",
+    "search.target.vocabularies": "Slovníky",
+    "search.advanced.show": "Zobrazit pokročilé filtry",
+    "search.advanced.hide": "Skrýt pokročilé filtry",
+    "search.help": "Zadejte hledaný výraz do pole výše.",
+    "search.no-value": "Bez hodnoty",
+    "search.no-value.checkbox.hint":
+      "Odškrtnuto - nepravda; Zaškrtnuto - pravda; Neurčitý - bez hodnoty",
 
     "profile.first.name": "Křestní jméno",
     "profile.last.name": "Příjmení",

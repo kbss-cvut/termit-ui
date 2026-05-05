@@ -16,14 +16,14 @@ import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import { ReactWrapper, shallow } from "enzyme";
 
-jest.mock("../../../util/Routing");
+vi.mock("../../../util/Routing");
 
 describe("ChangePassword", () => {
   let user: User;
   let changePassword: (user: User) => Promise<AsyncAction>;
 
   beforeEach(() => {
-    changePassword = jest.fn().mockImplementation(() => Promise.resolve({}));
+    changePassword = vi.fn().mockImplementation(() => Promise.resolve({}));
     user = Generator.generateUser();
   });
 

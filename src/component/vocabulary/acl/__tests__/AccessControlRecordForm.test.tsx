@@ -15,10 +15,13 @@ import AccessControlHolderSelector from "../AccessControlHolderSelector";
 import UserRole from "../../../../model/UserRole";
 import { langString } from "../../../../model/MultilingualString";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
+});
 
 const ACCESS_LEVELS = [
   {
@@ -52,8 +55,8 @@ describe("AccessControlRecordForm", () => {
 
   beforeEach(() => {
     mockUseI18n();
-    onChange = jest.fn();
-    jest.spyOn(Redux, "useSelector").mockReturnValue(ACCESS_LEVELS);
+    onChange = vi.fn();
+    vi.spyOn(Redux, "useSelector").mockReturnValue(ACCESS_LEVELS);
   });
 
   it("offers Security access level for regular full user", () => {

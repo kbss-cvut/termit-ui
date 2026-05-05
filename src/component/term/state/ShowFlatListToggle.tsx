@@ -1,5 +1,5 @@
 import React from "react";
-import { useI18n } from "src/component/hook/useI18n";
+import { useI18n } from "../../hook/useI18n";
 import Toggle from "react-bootstrap-toggle";
 import { TOGGLE_STYLE } from "../IncludeImportedTermsToggle";
 import { UncontrolledTooltip } from "reactstrap";

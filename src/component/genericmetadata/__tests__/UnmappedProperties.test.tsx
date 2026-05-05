@@ -5,7 +5,7 @@ import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import Utils from "../../../util/Utils";
 import OutgoingLink from "../../misc/OutgoingLink";
 
-jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
+vi.mock("../../misc/AssetLabel", () => ({ default: () => <span>Asset</span> }));
 
 describe("UnmappedProperties", () => {
   beforeEach(() => {

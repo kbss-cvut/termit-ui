@@ -14,21 +14,24 @@ import * as Redux from "react-redux";
 import { act } from "react-dom/test-utils";
 import { ReactWrapper } from "enzyme";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
+});
 
 describe("Profile", () => {
   let updateProfile: (user: User) => Promise<AsyncAction>;
   let user: User;
 
   beforeEach(() => {
-    updateProfile = jest.fn().mockImplementation(() => Promise.resolve({}));
+    updateProfile = vi.fn().mockImplementation(() => Promise.resolve({}));
     user = Generator.generateUser();
-    jest
-      .spyOn(Redux, "useDispatch")
-      .mockReturnValue(jest.fn().mockResolvedValue({}));
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(
+      vi.fn().mockResolvedValue({})
+    );
   });
 
   it("correctly renders component if !this.state.edit", async () => {
@@ -77,7 +80,7 @@ describe("Profile", () => {
   });
 
   it("does not render edit buttons when using OIDC authentication", async () => {
-    jest.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
+    vi.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
     await act(async () => {
       const wrapper = mountWithIntl(
         <Profile
@@ -92,8 +95,8 @@ describe("Profile", () => {
 
   it("renders link to user profile in auth service when using OIDC authentication", async () => {
     const link = "http://localhost/services/auth/profile";
-    jest.spyOn(Constats, "getEnv").mockReturnValue(link);
-    jest.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
+    vi.spyOn(Constats, "getEnv").mockReturnValue(link);
+    vi.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
     await act(async () => {
       const wrapper = mountWithIntl(
         <Profile

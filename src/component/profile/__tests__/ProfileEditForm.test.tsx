@@ -21,15 +21,15 @@ describe("ProfileEditForm", () => {
   beforeEach(() => {
     firstName = "FirstName";
     lastName = "LastName";
-    onChange = jest.fn();
-    onSubmit = jest.fn();
-    onKeyPress = jest.fn();
-    showProfileView = jest.fn();
+    onChange = vi.fn();
+    onSubmit = vi.fn();
+    onKeyPress = vi.fn();
+    showProfileView = vi.fn();
     isValid = true;
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("correctly renders component with firstName and lastName set", () => {

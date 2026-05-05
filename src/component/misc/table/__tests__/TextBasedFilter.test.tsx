@@ -5,91 +5,57 @@ describe("TextBasedFilter", () => {
   describe("textContainsFilter", () => {
     const filterAtt = "label";
 
-    it("returns all rows when filter value is empty", () => {
-      const rows = [
-        {
-          values: { label: "Random value" + Generator.randomInt() },
-        },
-        {
-          values: { label: "Random value" + Generator.randomInt() },
-        },
-        {
-          values: { label: "Random value" + Generator.randomInt() },
-        },
-      ];
-      expect(textContainsFilter(rows, filterAtt, "")).toEqual(rows);
-    });
+    const makeRow = (value: unknown) =>
+      ({
+        getValue: (columnId: string) =>
+          columnId === filterAtt ? value : undefined,
+      } as any);
 
-    it("returns rows whose label contains filter value", () => {
-      const filterValue = "matching";
-      const rows = [
-        {
-          values: { label: "Random value" + Generator.randomInt() },
-        },
-        {
-          values: { label: filterValue },
-        },
-        {
-          values: { label: filterValue },
-        },
-      ];
-      expect(textContainsFilter(rows, filterAtt, filterValue)).toEqual(
-        rows.slice(1)
+    it("returns true when filter value is empty", () => {
+      const row = makeRow("Random value" + Generator.randomInt());
+      expect(textContainsFilter(row, filterAtt, "", () => undefined)).toBe(
+        true
       );
     });
 
-    it("returns rows whose label contains filter value", () => {
+    it("returns true when label contains filter value", () => {
       const filterValue = "matching";
-      const rows = [
-        {
-          values: { label: "Random value" + Generator.randomInt() },
-        },
-        {
-          values: { label: `${filterValue} is substring` },
-        },
-        {
-          values: { label: `Contains ${filterValue}` },
-        },
-      ];
-      expect(textContainsFilter(rows, filterAtt, filterValue)).toEqual(
-        rows.slice(1)
-      );
+      const row = makeRow(filterValue);
+      expect(
+        textContainsFilter(row, filterAtt, filterValue, () => undefined)
+      ).toBe(true);
     });
 
-    it("returns rows whose label contains filter value when ignoring case", () => {
+    it("returns true when label contains filter value as substring", () => {
+      const filterValue = "matching";
+      const row = makeRow(`Contains ${filterValue}`);
+      expect(
+        textContainsFilter(row, filterAtt, filterValue, () => undefined)
+      ).toBe(true);
+    });
+
+    it("returns true when ignoring case", () => {
       const filterValue = "Matching";
-      const rows = [
-        {
-          values: { label: "MATCHING all caps also works" },
-        },
-        {
-          values: { label: "Matching work when ignoring case" },
-        },
-        {
-          values: { label: "Random value" + Generator.randomInt() },
-        },
-      ];
-      expect(textContainsFilter(rows, filterAtt, filterValue)).toEqual(
-        rows.slice(0, 2)
-      );
+      const row = makeRow("MATCHING all caps also works");
+      expect(
+        textContainsFilter(row, filterAtt, filterValue, () => undefined)
+      ).toBe(true);
     });
 
-    it("returns rows whose label contains filter value when ignoring accents", () => {
+    it("returns true when ignoring accents", () => {
       const filterValue = "mesto";
-      const rows = [
-        {
-          values: { label: "Město matches" },
-        },
-        {
-          values: { label: "město matches as well" },
-        },
-        {
-          values: { label: "But místo does not" },
-        },
-      ];
-      expect(textContainsFilter(rows, filterAtt, filterValue)).toEqual(
-        rows.slice(0, 2)
-      );
+      const row = makeRow("Město matches");
+      expect(
+        textContainsFilter(row, filterAtt, filterValue, () => undefined)
+      ).toBe(true);
+    });
+
+    it("returns false when label does not contain filter value", () => {
+      const filterValue = "matching";
+      const row = makeRow("Random value" + Generator.randomInt());
+      expect(
+        textContainsFilter(row, filterAtt, filterValue, () => undefined)
+      ).toBe(false);
     });
   });
 });

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { Col, Row } from "reactstrap";
 import { CustomAttributeValueEdit } from "./CustomAttributeValueEdit";
-import Utils from "src/util/Utils";
+import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
 export const CustomAttributesValuesEdit: React.FC<{

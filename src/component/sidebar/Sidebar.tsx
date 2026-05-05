@@ -82,9 +82,9 @@ const mainNavRoutes: NavLinkRoute[] = [
     icon: "fas fa-chart-pie",
   },
   {
-    path: Routes.facetedSearch.path,
-    name: "main.nav.facetedSearch",
-    icon: "fas fa-search-plus",
+    path: Routes.search.path,
+    name: "main.nav.search",
+    icon: "fas fa-search",
   },
   {
     path: Routes.administration.path,

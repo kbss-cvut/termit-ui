@@ -9,17 +9,19 @@ import AsyncActionStatus from "../AsyncActionStatus";
 import Term from "../../model/Term";
 import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 
-jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => ({
-  default: jest.fn(),
-  content: jest.requireActual("../../util/Ajax").content,
-  params: jest.requireActual("../../util/Ajax").params,
-  param: jest.requireActual("../../util/Ajax").param,
-  accept: jest.requireActual("../../util/Ajax").accept,
-  contentType: jest.requireActual("../../util/Ajax").contentType,
-  formData: jest.requireActual("../../util/Ajax").formData,
-}));
+vi.mock("../../util/Routing");
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    default: {
+      get: vi.fn(),
+    } as any,
+  };
+});
 
 // Mock implementation for throwIfAborted which is missing in jsdom < 22.1.0
 AbortSignal.prototype.throwIfAborted = function () {
@@ -36,20 +38,20 @@ describe("AsyncAnnotatorActions", () => {
   let store: MockStoreEnhanced<TermItState>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store = mockStore(new TermItState());
   });
 
   describe("loadTermTerms", () => {
     it("provides includeImported with request when specified", () => {
       const terms = require("../../rest-mock/terms");
-      Ajax.get = jest.fn().mockResolvedValue(terms);
+      Ajax.get = vi.fn().mockResolvedValue(terms);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadAllTerms({ fragment: vocabularyName }, true)
         )
       ).then(() => {
-        const callConfig = (Ajax.get as jest.Mock).mock.calls[0][1];
+        const callConfig = (Ajax.get as Mock).mock.calls[0][1];
         expect(callConfig.getParams().includeImported).toBeTruthy();
       });
     });
@@ -59,7 +61,7 @@ describe("AsyncAnnotatorActions", () => {
         status: AsyncActionStatus.REQUEST,
       };
       const terms = require("../../rest-mock/terms");
-      Ajax.get = jest.fn().mockResolvedValue(terms);
+      Ajax.get = vi.fn().mockResolvedValue(terms);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadAllTerms({ fragment: vocabularyName }, true)
@@ -73,7 +75,7 @@ describe("AsyncAnnotatorActions", () => {
   describe("loadTermByIri", () => {
     it("loads required term and returns it", () => {
       const term = require("../../rest-mock/terms")[0];
-      Ajax.get = jest.fn().mockResolvedValue(term);
+      Ajax.get = vi.fn().mockResolvedValue(term);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTermByIri(term["@id"]))
       ).then((result: Term | null) => {
@@ -87,7 +89,7 @@ describe("AsyncAnnotatorActions", () => {
     it("returns cached term when it is available", () => {
       const term = Generator.generateTerm();
       store.getState().annotatorTerms[term.iri] = term;
-      Ajax.get = jest.fn().mockResolvedValue({});
+      Ajax.get = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTermByIri(term.iri))
       ).then((result: Term | null) => {
@@ -99,7 +101,7 @@ describe("AsyncAnnotatorActions", () => {
     });
 
     it("does not trigger success action when result is null", () => {
-      Ajax.get = jest.fn().mockRejectedValue({ status: 404 });
+      Ajax.get = vi.fn().mockRejectedValue({ status: 404 });
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadTermByIri(Generator.generateUri())
@@ -128,7 +130,7 @@ describe("AsyncAnnotatorActions", () => {
           label: "Child one",
         },
       ];
-      Ajax.get = jest.fn().mockResolvedValue(term);
+      Ajax.get = vi.fn().mockResolvedValue(term);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(loadTermByIri(term["@id"]))
       ).then((result: Term | null) => {

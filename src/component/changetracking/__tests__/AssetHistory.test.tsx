@@ -12,30 +12,34 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import * as Redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
+import type { Mock } from "vitest";
 
-jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-}));
+vi.mock("../../misc/AssetLabel", () => ({ default: () => <span>Asset</span> }));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
+});
 
 describe("AssetHistory", () => {
   let mockDispatch: ThunkDispatch;
 
   beforeEach(() => {
-    mockDispatch = jest.fn();
-    jest.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
-    jest.spyOn(AsyncActions, "loadHistory");
-    jest.useFakeTimers();
+    mockDispatch = vi.fn();
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
+    vi.spyOn(AsyncActions, "loadHistory");
+    vi.useFakeTimers();
   });
 
   it("loads asset history on mount", async () => {
     const asset = Generator.generateTerm();
-    (mockDispatch as jest.Mock).mockResolvedValue([]);
+    (mockDispatch as Mock).mockResolvedValue([]);
     mountWithIntl(<AssetHistory asset={asset} {...intlFunctions()} />);
     await act(async () => {
       await flushPromises();
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(AsyncActions.loadHistory).toHaveBeenCalledWith(
       asset,
@@ -45,7 +49,7 @@ describe("AssetHistory", () => {
 
   it("renders table with history records when they are available", async () => {
     const asset = Generator.generateTerm();
-    (mockDispatch as jest.Mock).mockResolvedValue([
+    (mockDispatch as Mock).mockResolvedValue([
       new PersistRecord({
         iri: Generator.generateUri(),
         timestamp: new Date().toISOString(),
@@ -59,7 +63,7 @@ describe("AssetHistory", () => {
     );
     await act(async () => {
       await flushPromises();
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     wrapper.update();
     expect(wrapper.exists(Table)).toBeTruthy();

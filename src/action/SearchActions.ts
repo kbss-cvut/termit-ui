@@ -18,10 +18,8 @@ import SearchResult, {
 import TermItState from "../model/TermItState";
 import JsonLdUtils from "../util/JsonLdUtils";
 import SearchParam from "../model/search/SearchParam";
-import {
-  CONTEXT as FACETED_SEARCH_RESULT_CONTEXT,
-  FacetedSearchResult,
-} from "../model/search/FacetedSearchResult";
+import SearchQuery from "../model/search/SearchQuery";
+import { ResultPage } from "../model/ResultPage";
 
 /**
  * Add a search listener using a simple reference counting.
@@ -57,16 +55,29 @@ export function removeSearchListener() {
  */
 let updateSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
+export function updateSearchFilter(change: Partial<SearchQuery>) {
+  return {
+    type: ActionType.UPDATE_SEARCH_FILTER,
+    ...change,
+  };
+}
+
+export function resetSearchFilter() {
+  return {
+    type: ActionType.UPDATE_SEARCH_FILTER,
+    ...new SearchQuery(),
+  };
+}
+
 /**
  * Change the search criteria and trigger a new search.
  */
-export function updateSearchFilter(searchString: string, language: string) {
+export function updateSearchFilterAndRunSearch(
+  searchString: string,
+  language: string
+) {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
-    dispatch({
-      type: ActionType.UPDATE_SEARCH_FILTER,
-      searchString,
-      language,
-    });
+    dispatch(updateSearchFilter({ searchString, language }));
 
     // Clear search results
     dispatch({ type: ActionType.SEARCH_RESULT, searchResults: null });
@@ -77,8 +88,8 @@ export function updateSearchFilter(searchString: string, language: string) {
     }
 
     const state = getState();
-    if (state.searchQuery.isEmpty()) {
-      // Don"t delay empty query as it will just reset searches without bothering the server
+    if (state.searchQuery.isSearchStringBlank()) {
+      // Do not delay empty query as it will just reset searches without bothering the server
       return dispatch(searchEverything());
     } else {
       // Delay the search while user types the query
@@ -99,9 +110,12 @@ export function searchEverything() {
   return (dispatch: ThunkDispatch, getState: () => TermItState) => {
     dispatch({ type: ActionType.SEARCH_START });
     const state: TermItState = getState();
-    if (state.searchListenerCount > 0 && !state.searchQuery.isEmpty()) {
+    if (
+      state.searchListenerCount > 0 &&
+      !state.searchQuery.isSearchStringBlank()
+    ) {
       return dispatch(
-        search(state.searchQuery.searchQuery, state.searchQuery.language, true)
+        search(state.searchQuery.searchString, state.searchQuery.language, true)
       );
     } else {
       dispatch({ type: ActionType.SEARCH_FINISH });
@@ -162,37 +176,65 @@ export function searchResult(searchResults: SearchResult[]) {
   };
 }
 
-export function executeFacetedTermSearch(
-  params: SearchParam[],
+/**
+ * Runs advanced search combining full-text search with faceted filtering.
+ * Uses the /search/advanced endpoint.
+ */
+export function executeAdvancedSearch(
+  searchString: string,
+  language: string,
+  searchParams: SearchParam[],
   pageSpec: PageRequest = {
     page: 0,
     size: Constants.DEFAULT_PAGE_SIZE,
   }
 ) {
-  const action = { type: ActionType.FACETED_SEARCH };
+  const action = { type: ActionType.SEARCH };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
+    const queryParams: Record<string, string | number> = {
+      size: pageSpec.size,
+      page: pageSpec.page,
+    };
+    if (searchString) {
+      queryParams.searchString = searchString;
+    }
+    if (language) {
+      queryParams.language = language;
+    }
     return Ajax.post(
-      Constants.API_PREFIX + "/search/faceted/terms",
-      content(params)
-        .params(pageSpec)
+      Constants.API_PREFIX + "/search/advanced",
+      content(searchParams)
+        .params(queryParams)
         .contentType(Constants.JSON_MIME_TYPE)
         .accept(Constants.JSON_LD_MIME_TYPE)
         .preserveAcceptHeaderInPost()
     )
-      .then((resp) => {
-        dispatch(asyncActionSuccess(action));
-        return JsonLdUtils.compactAndResolveReferencesAsArray<FacetedSearchResult>(
-          resp.data,
-          FACETED_SEARCH_RESULT_CONTEXT
+      .then(async (resp) => {
+        const totalCount = Number(
+          resp.headers[Constants.Headers.X_TOTAL_COUNT]
         );
+        return JsonLdUtils.compactAndResolveReferencesAsArray<SearchResultData>(
+          resp.data,
+          SEARCH_RESULT_CONTEXT
+        ).then((pageContent) => ({ totalCount, pageContent }));
+      })
+      .then((data: ResultPage<SearchResultData>) => {
+        dispatch(asyncActionSuccess(action));
+        return {
+          totalCount: data.totalCount,
+          pageContent: data.pageContent.map((d) => new SearchResult(d)),
+        };
       })
       .catch((error: ErrorData) => {
         dispatch(SyncActions.asyncActionFailure(action, error));
         dispatch(
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
-        return Promise.resolve([]);
+        return Promise.resolve({
+          totalCount: 0,
+          pageContent: [] as SearchResult[],
+        });
       });
   };
 }
