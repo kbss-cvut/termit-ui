@@ -10,6 +10,7 @@ import {
   Table as TanStackTable,
 } from "@tanstack/react-table";
 import TextBasedFilter from "./TextBasedFilter";
+import SelectBasedFilter from "./SelectBasedFilter";
 
 type RowOverride<TData extends RowData> = (
   row: Row<TData>
@@ -61,10 +62,18 @@ const Table = <TData extends RowData>({
 
                     {column.getCanFilter() && (
                       <div className="filter-wrapper">
-                        <TextBasedFilter
-                          value={(column.getFilterValue() as string) ?? ""}
-                          onChange={(value) => column.setFilterValue(value)}
-                        />
+                        {column.columnDef.meta?.filter?.type === "select" ? (
+                          <SelectBasedFilter
+                            value={(column.getFilterValue() as string) ?? ""}
+                            options={column.columnDef.meta.filter.options}
+                            onChange={(value) => column.setFilterValue(value)}
+                          />
+                        ) : (
+                          <TextBasedFilter
+                            value={(column.getFilterValue() as string) ?? ""}
+                            onChange={(value) => column.setFilterValue(value)}
+                          />
+                        )}
                       </div>
                     )}
                   </th>

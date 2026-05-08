@@ -1,11 +1,19 @@
 import * as React from "react";
+import { useSelector } from "react-redux";
 import User from "../../../model/User";
+import TermItState from "../../../model/TermItState";
+import { getLocalized } from "../../../model/MultilingualString";
 import { useI18n } from "../../hook/useI18n";
 import { textContainsFilter } from "../../misc/table/TextBasedFilter";
+import { selectFilter } from "../../misc/table/SelectBasedFilter";
 import Table from "../../misc/table/Table";
 import UserRoles from "./UserRoles";
 import UserActionsButtons, { UserActions } from "./UserActionsButtons";
-import UserStatusInfo, { resolveStatus } from "./UserStatusInfo";
+import UserStatusInfo, {
+  resolveStatus,
+  resolveStatusKey,
+  STATUS_MAP,
+} from "./UserStatusInfo";
 import classNames from "classnames";
 import {
   ColumnDef,
@@ -25,7 +33,10 @@ interface UsersTableProps extends UserActions {
 const UsersTable: React.FC<UsersTableProps> = (props) => {
   const { users, currentUser, disable, enable, unlock, changeRole, readOnly } =
     props;
-  const { i18n } = useI18n();
+  const { i18n, locale } = useI18n();
+  const availableRoles = useSelector(
+    (state: TermItState) => state.configuration.roles
+  );
   const data = React.useMemo(() => users, [users]);
   const columns: ColumnDef<User>[] = React.useMemo<ColumnDef<User>[]>(
     () => [
@@ -55,19 +66,38 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
       },
       {
         header: i18n("administration.users.status"),
-        accessorKey: "isActive",
-        enableColumnFilter: false,
+        id: "status",
+        accessorFn: (user) => resolveStatusKey(user),
         enableSorting: false,
+        filterFn: selectFilter,
         cell: ({ row }) => <UserStatusInfo user={row.original} />,
-        meta: { className: "align-middle" },
+        meta: {
+          className: "align-middle",
+          filter: {
+            type: "select" as const,
+            options: (["ACTIVE", "DISABLED", "LOCKED"] as const).map((key) => ({
+              value: key,
+              label: i18n(STATUS_MAP[key].statusLabel),
+            })),
+          },
+        },
       },
       {
         header: i18n("administration.users.role"),
         accessorKey: "types",
-        enableColumnFilter: false,
         enableSorting: false,
+        filterFn: selectFilter,
         cell: ({ row }) => <UserRoles user={row.original} />,
-        meta: { className: "align-middle" },
+        meta: {
+          className: "align-middle text-center",
+          filter: {
+            type: "select" as const,
+            options: (availableRoles ?? []).map((r) => ({
+              value: r.iri,
+              label: getLocalized(r.label, locale),
+            })),
+          },
+        },
       },
       {
         header: i18n("actions"),
@@ -91,7 +121,17 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
         },
       },
     ],
-    [i18n, disable, enable, unlock, changeRole, currentUser, readOnly]
+    [
+      i18n,
+      locale,
+      availableRoles,
+      disable,
+      enable,
+      unlock,
+      changeRole,
+      currentUser,
+      readOnly,
+    ]
   );
 
   const tableInstance = useReactTable<User>({

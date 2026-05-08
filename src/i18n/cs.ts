@@ -216,7 +216,6 @@ const cs = {
     "administration.users.create.created":
       'Uživatel "{name}" úspěšně vytvořen.',
     "administration.users.you": "Toto je Váš účet",
-    "administration.users.types.admin": "Tento uživatel je administrátor",
     "administration.users.oidc":
       "Pro správu uživatelů je využívána externí autentizační služba.",
     "administration.users.create.password-toggle.user":

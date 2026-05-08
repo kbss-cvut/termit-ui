@@ -207,7 +207,6 @@ const de = {
     "administration.users.create.created":
       'Benutzer "{name}" erfolgreich erstellt.',
     "administration.users.you": "Das bist du",
-    "administration.users.types.admin": "Dieser Benutzer ist ein Administrator",
     "administration.users.oidc":
       "Zur Verwaltung der Benutzer wird ein externer Authentifizierungsdienst verwendet.",
     "administration.users.create.password-toggle.user":
