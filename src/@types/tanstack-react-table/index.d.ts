@@ -6,5 +6,9 @@ declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
     headerClassName?: string;
     className?: string;
+    filter?: {
+      type: "select";
+      options: { value: string; label: string }[];
+    };
   }
 }

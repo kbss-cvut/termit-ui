@@ -206,7 +206,6 @@ const en = {
     "administration.users.create.created":
       'User "{name}" successfully created.',
     "administration.users.you": "This is you",
-    "administration.users.types.admin": "This user is an administrator",
     "administration.users.oidc":
       "An external authentication service is used to manage users.",
     "administration.users.create.password-toggle.user": "Send activation email",

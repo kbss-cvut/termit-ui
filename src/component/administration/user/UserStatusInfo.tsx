@@ -3,8 +3,6 @@ import User from "../../../model/User";
 import { useI18n } from "../../hook/useI18n";
 import InfoIcon from "../../misc/InfoIcon";
 import Utils from "../../../util/Utils";
-import VocabularyUtils from "../../../util/VocabularyUtils";
-import { Badge } from "reactstrap";
 import { GoCheck, GoCircleSlash, GoIssueOpened } from "react-icons/go";
 
 export const STATUS_MAP = {
@@ -31,40 +29,20 @@ export const STATUS_MAP = {
   },
 };
 
-export function resolveStatus(user: User) {
+export type UserStatus = "ACTIVE" | "DISABLED" | "LOCKED";
+
+export function resolveStatusKey(user: User): UserStatus {
   if (user.isLocked()) {
-    return STATUS_MAP.LOCKED;
+    return "LOCKED";
   } else if (user.isDisabled()) {
-    return STATUS_MAP.DISABLED;
+    return "DISABLED";
   } else {
-    return STATUS_MAP.ACTIVE;
+    return "ACTIVE";
   }
 }
 
-const BADGE_TYPES = {};
-BADGE_TYPES[VocabularyUtils.USER_ADMIN] = {
-  className: "m-user-admin",
-  text: "ADMIN",
-  title: "administration.users.types.admin",
-};
-
-function renderUserTypeBadges(user: User, i18n: (id: string) => string) {
-  return user.types
-    .filter((t) => BADGE_TYPES.hasOwnProperty(t))
-    .map((t) => {
-      const badgeInfo = BADGE_TYPES[t];
-      return (
-        <Badge
-          key={t}
-          color="primary"
-          className={`ml-2 mb-1 align-middle ${badgeInfo.className}`}
-          pill={true}
-          title={i18n(badgeInfo.title)}
-        >
-          {badgeInfo.text}
-        </Badge>
-      );
-    });
+export function resolveStatus(user: User) {
+  return STATUS_MAP[resolveStatusKey(user)];
 }
 
 const UserStatusInfo: React.FC<{ user: User }> = ({ user }) => {
@@ -78,7 +56,6 @@ const UserStatusInfo: React.FC<{ user: User }> = ({ user }) => {
         text={i18n(status.help)}
         className="ml-1"
       />
-      {renderUserTypeBadges(user, i18n)}
     </>
   );
 };
