@@ -89,6 +89,7 @@ function stateToPlainObject(state: TermItState): TermItState {
     annotatedRelationships: state.annotatedRelationships,
     breadcrumbs: state.breadcrumbs,
     users: state.users,
+    userGroups: state.userGroups,
     accessLevels: state.accessLevels,
     annotatorLegendFilter: state.annotatorLegendFilter,
     runningTasks: state.runningTasks,

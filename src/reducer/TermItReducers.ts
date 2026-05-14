@@ -21,6 +21,7 @@ import ActionType, {
 } from "../action/ActionType";
 import TermItState, { DefinitionallyRelatedTerms } from "../model/TermItState";
 import User, { EMPTY_USER } from "../model/User";
+import UserGroup from "../model/UserGroup";
 import Message from "../model/Message";
 import IntlData from "../model/IntlData";
 import {
@@ -763,6 +764,23 @@ function users(state: User[] = [], action: AsyncActionSuccess<User[]>) {
   }
 }
 
+function userGroups(
+  state: UserGroup[] = [],
+  action: AsyncActionSuccess<UserGroup[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_USER_GROUPS:
+      if (isAsyncSuccess(action)) {
+        return action.payload;
+      }
+      return state;
+    case ActionType.LOGOUT:
+      return [];
+    default:
+      return state;
+  }
+}
+
 function accessLevels(
   state: { [key: string]: RdfsResource } = {},
   action: AsyncActionSuccess<RdfsResource[]>
@@ -836,6 +854,7 @@ const rootReducer = combineReducers<TermItState>({
   breadcrumbs,
   annotatorLegendFilter,
   users,
+  userGroups,
   accessLevels,
   runningTasks,
   showTermsFlatList,

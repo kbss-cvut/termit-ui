@@ -21,6 +21,7 @@ import ActionType, { PendingAsyncAction } from "../action/ActionType";
 import { LongRunningTask } from "./LongRunningTask";
 import RelationshipAnnotation from "./meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "./meta/AnnotatedTermRelationship";
+import UserGroup from "./UserGroup";
 
 /**
  * This is the basic shape of the application's state managed by Redux.
@@ -75,6 +76,7 @@ export default class TermItState {
 
   // Administration
   public users: User[];
+  public userGroups: UserGroup[];
 
   constructor() {
     this.loading = false;
@@ -114,6 +116,7 @@ export default class TermItState {
     this.breadcrumbs = [];
     this.showTermsFlatList = false;
     this.users = [];
+    this.userGroups = [];
     this.accessLevels = {};
     this.annotatorLegendFilter = new AnnotatorLegendFilter();
     this.runningTasks = {};

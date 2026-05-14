@@ -23,6 +23,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { UserGroups } from "./UserGroups";
 
 interface UsersTableProps extends UserActions {
   users: User[];
@@ -37,6 +38,7 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
   const availableRoles = useSelector(
     (state: TermItState) => state.configuration.roles
   );
+  const userGroups = useSelector((state: TermItState) => state.userGroups);
   const data = React.useMemo(() => users, [users]);
   const columns: ColumnDef<User>[] = React.useMemo<ColumnDef<User>[]>(
     () => [
@@ -98,6 +100,16 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
             })),
           },
         },
+      },
+      {
+        header: i18n("administration.groups"),
+        accessorKey: "groups",
+        enableSorting: false,
+        enableColumnFilter: false,
+        meta: { className: "align-middle" },
+        cell: ({ row }) => (
+          <UserGroups user={row.original} groups={userGroups} />
+        ),
       },
       {
         header: i18n("actions"),

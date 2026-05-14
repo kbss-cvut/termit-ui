@@ -4,6 +4,7 @@ import {
   asyncActionFailure,
   asyncActionRequest,
   asyncActionSuccess,
+  asyncActionSuccessWithPayload,
   publishMessage,
 } from "./SyncActions";
 import Ajax, { content } from "../util/Ajax";
@@ -29,13 +30,12 @@ export function loadUserGroups() {
         )
       )
       .then((data: UserGroupData[]) => {
-        dispatch(asyncActionSuccess(action));
-        return Promise.resolve(data.map((d) => new UserGroup(d)));
+        const groups = data.map((d) => new UserGroup(d));
+        return dispatch(asyncActionSuccessWithPayload(action, groups));
       })
       .catch((error: ErrorData) => {
         dispatch(asyncActionFailure(action, error));
-        dispatch(publishMessage(new Message(error, MessageType.ERROR)));
-        return Promise.resolve([]);
+        return dispatch(publishMessage(new Message(error, MessageType.ERROR)));
       });
   };
 }
