@@ -37,16 +37,9 @@ interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   loadTermStates: () => void;
 }
 
-interface MainViewState {
-  isMainMenuOpen: boolean;
-}
-
-export class MainView extends React.Component<MainViewProps, MainViewState> {
+export class MainView extends React.Component<MainViewProps> {
   constructor(props: MainViewProps) {
     super(props);
-    this.state = {
-      isMainMenuOpen: false,
-    };
   }
 
   public componentDidMount(): void {
@@ -66,12 +59,6 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
     if (Utils.isDesktopView() !== this.props.desktopView) {
       this.props.changeView();
     }
-  };
-
-  public toggle = () => {
-    this.setState({
-      isMainMenuOpen: !this.state.isMainMenuOpen,
-    });
   };
 
   private isDashboardRoute() {
