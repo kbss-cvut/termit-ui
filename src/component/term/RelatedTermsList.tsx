@@ -61,9 +61,11 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
               <RelationshipAnnotationButton
                 relationship={{
                   subject: term,
-                  predicate: term.relatedTerms?.includes(item)
-                    ? VocabularyUtils.SKOS_RELATED
-                    : VocabularyUtils.SKOS_RELATED_MATCH,
+                  predicate: term.relatedMatchTerms?.some(
+                    (ti) => ti.iri === item.iri
+                  ) // Related match is more specific than related
+                    ? VocabularyUtils.SKOS_RELATED_MATCH
+                    : VocabularyUtils.SKOS_RELATED,
                   predicateLabel: i18n("term.metadata.related.title"),
                   object: item,
                 }}
