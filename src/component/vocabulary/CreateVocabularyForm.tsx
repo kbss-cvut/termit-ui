@@ -136,7 +136,6 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       comment,
       primaryLanguage,
     });
-    vocabulary.addType(VocabularyUtils.DOCUMENT_VOCABULARY);
     const document = new Document({
       label:
         documentLabel.trim() === ""

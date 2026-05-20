@@ -55,11 +55,9 @@ const _NS_XSD = "http://www.w3.org/2001/XMLSchema#";
 
 const VocabularyUtils = {
   PREFIX: _NS_POPIS_DAT,
-  VOCABULARY: _NS_POPIS_DAT + "slovník",
-  DOCUMENT_VOCABULARY: _NS_POPIS_DAT + "dokumentový-slovník",
+  VOCABULARY: _NS_SKOS + "ConceptScheme",
   HAS_DOCUMENT_VOCABULARY: _NS_POPIS_DAT + "má-dokumentový-slovník",
   DESCRIBES_DOCUMENT: _NS_POPIS_DAT + "popisuje-dokument",
-  HAS_GLOSSARY: _NS_POPIS_DAT + "má-glosář",
   TERM: _NS_SKOS + "Concept",
   FILE: _NS_POPIS_DAT + "soubor",
   CONTENT: _NS_POPIS_DAT + "soubor/content",
@@ -80,7 +78,6 @@ const VocabularyUtils = {
   SKOS_RELATED_MATCH: _NS_SKOS + "relatedMatch",
   SKOS_NOTATION: _NS_SKOS + "notation",
   SKOS_EXAMPLE: _NS_SKOS + "example",
-  IS_TERM_FROM_VOCABULARY: _NS_POPIS_DAT + "je-pojmem-ze-slovníku",
   IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "je-výskytem-termu",
   IS_DEFINITION_OF_TERM: _NS_TERMIT + "je-výskytem-definice-termu",
   HAS_TERM_STATE: _NS_POPIS_DAT + "má-stav-pojmu",

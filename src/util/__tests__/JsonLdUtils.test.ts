@@ -87,9 +87,7 @@ describe("JsonLdUtils", () => {
           },
           uri: "@id",
           subTerms: "http://www.w3.org/2004/02/skos/core#narrower",
-          glossary: "http://www.w3.org/2004/02/skos/core#inScheme",
-          vocabulary:
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovníku",
+          vocabulary: "http://www.w3.org/2004/02/skos/core#inScheme",
           hiddenLabels: "http://www.w3.org/2004/02/skos/core#hiddenLabel",
           examples: "http://www.w3.org/2004/02/skos/core#example",
           related: "http://www.w3.org/2004/02/skos/core#related",
@@ -128,9 +126,6 @@ describe("JsonLdUtils", () => {
         examples: [],
         vocabulary: {
           uri: "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test",
-        },
-        glossary: {
-          uri: "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test/glosář",
         },
         state: {
           uri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/publikovaný-pojem",
