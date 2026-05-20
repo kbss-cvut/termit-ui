@@ -10,7 +10,7 @@ const ctx = {
   },
   label: VocabularyUtils.RDFS_LABEL,
   editor: VocabularyUtils.PREFIX + "má-editora",
-  vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+  vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
   lastComment: VocabularyUtils.JE_TEMATEM,
   myLastComment: VocabularyUtils.MA_MUJ_POSLEDNI_KOMENTAR,
 };

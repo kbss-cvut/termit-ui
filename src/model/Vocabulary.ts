@@ -36,7 +36,6 @@ const ctx = {
     "@id": VocabularyUtils.DESCRIBES_DOCUMENT,
     "@context": DOCUMENT_CONTEXT,
   },
-  glossary: VocabularyUtils.HAS_GLOSSARY,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
   relatedVocabularies: VocabularyUtils.HAS_RELATED_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
@@ -52,7 +51,6 @@ const MAPPED_PROPERTIES = [
   "comment",
   "document",
   "types",
-  "glossary",
   "importedVocabularies",
   "relatedVocabularies",
   "allImportedVocabularies",
@@ -67,7 +65,6 @@ export interface VocabularyData extends AssetData {
   label: MultilingualString;
   comment?: MultilingualString;
   document?: DocumentData;
-  glossary?: AssetData;
   importedVocabularies?: AssetData[];
   relatedVocabularies?: AssetData[];
   accessLevel?: AccessLevel;
@@ -85,7 +82,6 @@ export default class Vocabulary
   public label: MultilingualString;
   public comment?: MultilingualString;
   public document?: Document;
-  public glossary?: AssetData;
   public importedVocabularies?: AssetData[];
   public relatedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
