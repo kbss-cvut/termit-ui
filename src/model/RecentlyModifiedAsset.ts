@@ -10,7 +10,7 @@ const ctx = {
     "@type": VocabularyUtils.XSD_DATETIME,
   },
   editor: VocabularyUtils.PREFIX + "má-editora",
-  vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+  vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
 };
 
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, USER_CONTEXT);

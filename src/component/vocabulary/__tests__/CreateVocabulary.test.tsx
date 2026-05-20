@@ -137,10 +137,7 @@ describe("Create vocabulary view", () => {
     const wrapper = mountWithIntl(<CreateVocabulary />);
     const label = "Test vocabulary";
     const comment = "Test vocabulary comment";
-    const types = [
-      VocabularyUtils.VOCABULARY,
-      VocabularyUtils.DOCUMENT_VOCABULARY,
-    ];
+    const types = [VocabularyUtils.VOCABULARY];
     await act(async () => {
       wrapper.find(MarkdownEditor).props().onChange!(comment);
       const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
