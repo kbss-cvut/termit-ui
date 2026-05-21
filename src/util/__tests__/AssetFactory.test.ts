@@ -127,20 +127,16 @@ describe("AssetFactory", () => {
     const data = {
       iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
       types: [
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/term-occurrence",
       ],
       term: {
         iri: "http://onto.fel.cvut.cz/ontologies/slovnik/sb-z-2006-183/pojem/nezastavene-uzemi",
-        types: [
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term",
-        ],
+        types: ["http://www.w3.org/2004/02/skos/core#Concept"],
         label: "Nezastavene uzemi",
       },
       target: {
         iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
-        types: [
-          "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl",
-        ],
+        types: ["http://onto.fel.cvut.cz/ontologies/application/termit/target"],
         source: {
           iri: "http://onto.fel.cvut.cz/ontologies/zdroj/ml-test",
           types: [

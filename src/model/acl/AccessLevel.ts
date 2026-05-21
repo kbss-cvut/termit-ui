@@ -1,8 +1,8 @@
 enum AccessLevel {
-  NONE = "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/\u017e\u00e1dn\u00e1",
-  READ = "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/\u010dten\u00ed",
-  WRITE = "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/z\u00e1pis",
-  SECURITY = "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/spr\u00e1va",
+  NONE = "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/none",
+  READ = "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/read",
+  WRITE = "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/write",
+  SECURITY = "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/security",
 }
 
 /**

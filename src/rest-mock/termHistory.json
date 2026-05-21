@@ -15,8 +15,8 @@
     "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": {
       "@id": "http://onto.fel.cvut.cz/ontologies/uzivatel/catherine-halsey",
       "@type": [
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu",
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatel-termitu"
+        "http://onto.fel.cvut.cz/ontologies/application/termit/administrator",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/user"
       ],
       "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
       "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",

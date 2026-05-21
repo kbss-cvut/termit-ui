@@ -1733,27 +1733,26 @@ describe("Async actions", () => {
     it("maps returned role data to UserRole instances", () => {
       const data = {
         "@id":
-          "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/konfigurace/default",
+          "http://onto.fel.cvut.cz/ontologies/application/termit/configuration/default",
         "@type": [
-          "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/konfigurace",
+          "http://onto.fel.cvut.cz/ontologies/application/termit/configuration",
         ],
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/má-uživatelskou-roli":
-          [
-            {
-              "@id":
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/plný-uživatel-termitu",
-              "@type": [
-                "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/uživatelská-role",
-              ],
-              "http://www.w3.org/2004/02/skos/core#prefLabel": [
-                {
-                  "@language": "cs",
-                  "@value": "Editor",
-                },
-                { "@language": "en", "@value": "Editor" },
-              ],
-            },
-          ],
+        "http://onto.fel.cvut.cz/ontologies/application/termit/has-user-role": [
+          {
+            "@id":
+              "http://onto.fel.cvut.cz/ontologies/application/termit/editor",
+            "@type": [
+              "http://onto.fel.cvut.cz/ontologies/application/termit/user-role",
+            ],
+            "http://www.w3.org/2004/02/skos/core#prefLabel": [
+              {
+                "@language": "cs",
+                "@value": "Editor",
+              },
+              { "@language": "en", "@value": "Editor" },
+            ],
+          },
+        ],
         "http://purl.org/dc/terms/language": "cs",
       };
       Ajax.get = vi.fn().mockResolvedValue(data);
