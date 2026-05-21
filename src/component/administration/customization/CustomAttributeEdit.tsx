@@ -205,7 +205,7 @@ export const CustomAttributeEdit: React.FC = () => {
             domain,
             range,
             annotatedRelationships: annotatedRelationshipsData,
-            types: [VocabularyUtils.NS_TERMIT + "vlastní-atribut"],
+            types: [VocabularyUtils.NS_TERMIT + "custom-attribute"],
           })
         )
       );

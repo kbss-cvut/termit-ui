@@ -1,9 +1,9 @@
 [
   {
-    "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/nový-pojem",
+    "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/nový-pojem",
     "@type": [
       "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/stav-pojmu",
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/úvodní-stav-pojmu"
+      "http://onto.fel.cvut.cz/ontologies/application/termit/initial-term-state"
     ],
     "http://www.w3.org/2000/01/rdf-schema#label": [
       {
@@ -56,7 +56,7 @@
     "@id": "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/zrušený-pojem",
     "@type": [
       "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/stav-pojmu",
-      "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/koncový-stav-pojmu"
+      "http://onto.fel.cvut.cz/ontologies/application/termit/terminal-term-state"
     ],
     "http://www.w3.org/2000/01/rdf-schema#label": [
       {

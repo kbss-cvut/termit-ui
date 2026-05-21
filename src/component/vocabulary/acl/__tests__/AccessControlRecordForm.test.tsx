@@ -25,25 +25,25 @@ vi.mock("react-redux", async (importOriginal) => {
 
 const ACCESS_LEVELS = [
   {
-    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/úroveň-přístupových-oprávnění/žádná",
+    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/none",
     label: {
       en: "Access level - None",
     },
   },
   {
-    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/úroveň-přístupových-oprávnění/čtení",
+    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/read",
     label: {
       en: "Access level - Read",
     },
   },
   {
-    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/úroveň-přístupových-oprávnění/zápis",
+    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/write",
     label: {
       en: "Access level - Write",
     },
   },
   {
-    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/úroveň-přístupových-oprávnění/správa",
+    iri: "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/security",
     label: {
       en: "Access level - Security",
     },
@@ -89,7 +89,7 @@ describe("AccessControlRecordForm", () => {
     [Generator.generateUserGroup(), VocabularyUtils.USERGROUP_ACCESS_RECORD],
     [
       new UserRole({
-        iri: VocabularyUtils.NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
+        iri: VocabularyUtils.USER_RESTRICTED,
         label: langString("Reader"),
         types: [VocabularyUtils.USER_ROLE],
       }),

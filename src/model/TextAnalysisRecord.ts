@@ -4,8 +4,8 @@ import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
-  vocabularies: `${VocabularyUtils.NS_TERMIT}m\u00e1-slovn\u00edk-pro-anal\u00fdzu`,
-  analyzedResource: `${VocabularyUtils.NS_TERMIT}m\u00e1-analyzovan\u00fd-zdroj`,
+  vocabularies: `${VocabularyUtils.NS_TERMIT}has-analysis-vocabulary`,
+  analyzedResource: `${VocabularyUtils.NS_TERMIT}has-analyzed-resource`,
   language: VocabularyUtils.DC_LANGUAGE,
 };
 

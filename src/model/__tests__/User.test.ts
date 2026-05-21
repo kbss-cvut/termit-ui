@@ -50,7 +50,7 @@ describe("User", () => {
       const sut = Generator.generateUser();
       expect(sut.isAdmin()).toBeFalsy();
       sut.types.push(
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/omezený-uživatel-termitu"
+        "http://onto.fel.cvut.cz/ontologies/application/termit/reader"
       );
       expect(sut.isAdmin()).toBeFalsy();
     });
