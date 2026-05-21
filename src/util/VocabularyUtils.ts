@@ -42,8 +42,7 @@ export class IRIImpl implements IRI {
 
 const _NS_POPIS_DAT =
   "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/";
-const _NS_TERMIT =
-  "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/";
+const _NS_TERMIT = "http://onto.fel.cvut.cz/ontologies/application/termit/";
 const _NS_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 const _NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
@@ -78,25 +77,24 @@ const VocabularyUtils = {
   SKOS_RELATED_MATCH: _NS_SKOS + "relatedMatch",
   SKOS_NOTATION: _NS_SKOS + "notation",
   SKOS_EXAMPLE: _NS_SKOS + "example",
-  IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "je-výskytem-termu",
-  IS_DEFINITION_OF_TERM: _NS_TERMIT + "je-výskytem-definice-termu",
+  IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "is-assignment-of-term",
+  IS_DEFINITION_OF_TERM: _NS_TERMIT + "is-term-definition-occurrence",
   HAS_TERM_STATE: _NS_POPIS_DAT + "má-stav-pojmu",
   TERM_STATE: _NS_POPIS_DAT + "stav-pojmu",
-  TERM_STATE_TERMINAL: _NS_TERMIT + "koncový-stav-pojmu",
+  TERM_STATE_TERMINAL: _NS_TERMIT + "terminal-term-state",
   RESOURCE: _NS_POPIS_DAT + "zdroj",
-  TERM_ASSIGNMENT: _NS_TERMIT + "přiřazení-termu",
-  TERM_OCCURRENCE: _NS_TERMIT + "výskyt-termu",
-  TERM_DEFINITION_SOURCE: _NS_TERMIT + "zdroj-definice-termu",
-  TERM_FILE_OCCURRENCE: _NS_TERMIT + "souborov\u00fd-v\u00fdskyt-termu",
-  JE_TEMATEM: _NS_TERMIT + "je-tématem",
-  MA_MUJ_POSLEDNI_KOMENTAR: _NS_TERMIT + "má-můj-poslední-komentář",
-  SUGGESTED_TERM_OCCURRENCE: _NS_TERMIT + "navržený-výskyt-termu",
-  ASSIGNMENT_TARGET: _NS_TERMIT + "c\u00edl",
-  FILE_OCCURRENCE_TARGET: _NS_TERMIT + "c\u00edl-souborov\u00e9ho-v\u00fdskytu",
-  DEFINITION_OCCURRENCE_TARGET:
-    _NS_TERMIT + "c\u00edl-defini\u010dn\u00edho-v\u00fdskytu",
-  TEXT_QUOTE_SELECTOR: _NS_TERMIT + "selektor-text-quote",
-  HAS_DEFINITION_SOURCE: _NS_TERMIT + "m\u00e1-zdroj-definice-termu",
+  TERM_ASSIGNMENT: _NS_TERMIT + "term-assignment",
+  TERM_OCCURRENCE: _NS_TERMIT + "term-occurrence",
+  TERM_DEFINITION_SOURCE: _NS_TERMIT + "term-definition-source",
+  TERM_FILE_OCCURRENCE: _NS_TERMIT + "file-term-occurrence",
+  JE_TEMATEM: _NS_TERMIT + "is-topic-of",
+  MA_MUJ_POSLEDNI_KOMENTAR: _NS_TERMIT + "has-my-last-comment",
+  SUGGESTED_TERM_OCCURRENCE: _NS_TERMIT + "suggested-term-occurrence",
+  ASSIGNMENT_TARGET: _NS_TERMIT + "target",
+  FILE_OCCURRENCE_TARGET: _NS_TERMIT + "file-occurrence-target",
+  DEFINITION_OCCURRENCE_TARGET: _NS_TERMIT + "definition-occurrence-target",
+  TEXT_QUOTE_SELECTOR: _NS_TERMIT + "selector-text-quote",
+  HAS_DEFINITION_SOURCE: _NS_TERMIT + "has-term-definition-source",
   HAS_FILE: _NS_POPIS_DAT + "má-soubor",
   HAS_AUTHOR: _NS_POPIS_DAT + "má-autora",
   CREATED: _NS_POPIS_DAT + "má-datum-a-čas-vytvoření",
@@ -107,15 +105,15 @@ const VocabularyUtils = {
   IMPORTS_VOCABULARY: _NS_POPIS_DAT + "importuje-slovník",
   HAS_PASSWORD: _NS_POPIS_DAT + "m\u00e1-heslo",
   NS_TERMIT: _NS_TERMIT,
-  USER: _NS_TERMIT + "uživatel-termitu",
-  USER_ADMIN: _NS_TERMIT + "administrátor-termitu",
-  USER_LOCKED: _NS_TERMIT + "uzam\u010den\u00fd-u\u017eivatel-termitu",
-  USER_DISABLED: _NS_TERMIT + "zablokovan\u00fd-u\u017eivatel-termitu",
-  USER_ANONYMOUS: _NS_TERMIT + "anonymn\u00ed-u\u017eivatel-termitu",
-  USER_RESTRICTED: _NS_TERMIT + "omezen\u00fd-u\u017eivatel-termitu",
-  USER_EDITOR: _NS_TERMIT + "pln\u00fd-u\u017eivatel-termitu",
+  USER: _NS_TERMIT + "user",
+  USER_ADMIN: _NS_TERMIT + "administrator",
+  USER_LOCKED: _NS_TERMIT + "locked-user",
+  USER_DISABLED: _NS_TERMIT + "blocked-user",
+  USER_ANONYMOUS: _NS_TERMIT + "anonymous",
+  USER_RESTRICTED: _NS_TERMIT + "reader",
+  USER_EDITOR: _NS_TERMIT + "editor",
   USER_GROUP: _NS_SIOC + "Usergroup",
-  USER_ROLE: _NS_TERMIT + "u\u017eivatelsk\u00e1-role",
+  USER_ROLE: _NS_TERMIT + "user-role",
   HAS_COUNT: _NS_TERMIT + "has-count",
   PREFIX_RDFS: _NS_RDFS,
   RDF_TYPE: _NS_RDF + "type",
@@ -174,28 +172,16 @@ const VocabularyUtils = {
   IS_SNAPSHOT_OF_TERM: _NS_POPIS_DAT + "je-verz\u00ed-pojmu",
   IS_SNAPSHOT_OF_VOCABULARY: _NS_POPIS_DAT + "je-verz\u00ed-slovn\u00edku",
 
-  ACCESS_CONTROL_LIST:
-    _NS_TERMIT + "seznam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu",
-  HAS_ACCESS_CONTROL_RECORD:
-    _NS_TERMIT + "m\u00e1-z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu",
-  HAS_ACCESS_LEVEL:
-    _NS_TERMIT +
-    "m\u00e1-\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed",
-  HAS_ACCESS_LEVEL_HOLDER:
-    _NS_TERMIT +
-    "m\u00e1-dr\u017eitele-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed",
-  USER_ACCESS_RECORD:
-    _NS_TERMIT +
-    "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatele",
-  USERGROUP_ACCESS_RECORD:
-    _NS_TERMIT +
-    "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatelsk\u00e9-skupiny",
-  USERROLE_ACCESS_RECORD:
-    _NS_TERMIT +
-    "z\u00e1znam-\u0159\u00edzen\u00ed-p\u0159\u00edstupu-u\u017eivatelsk\u00e9-role",
+  ACCESS_CONTROL_LIST: _NS_TERMIT + "access-control-list",
+  HAS_ACCESS_CONTROL_RECORD: _NS_TERMIT + "has-access-control-record",
+  HAS_ACCESS_LEVEL: _NS_TERMIT + "has-access-level",
+  HAS_ACCESS_LEVEL_HOLDER: _NS_TERMIT + "has-access-level-holder",
+  USER_ACCESS_RECORD: _NS_TERMIT + "user-access-control-record",
+  USERGROUP_ACCESS_RECORD: _NS_TERMIT + "user-group-access-control-record",
+  USERROLE_ACCESS_RECORD: _NS_TERMIT + "user-role-access-control-record",
 
-  IS_READ_ONLY: `${_NS_TERMIT}pouze-pro-\u010dten\u00ed`,
-  IS_FORBIDDEN: `${_NS_TERMIT}zak\u00e1zan\u00fd`,
+  IS_READ_ONLY: _NS_TERMIT + "read-only",
+  IS_FORBIDDEN: _NS_TERMIT + "forbidden",
 
   getFragment(iri: string): string {
     return this.create(iri).fragment;

@@ -15,7 +15,7 @@ const ctx = {
     "@id": VocabularyUtils.LAST_MODIFIED,
     "@type": VocabularyUtils.XSD_DATETIME,
   },
-  reactions: VocabularyUtils.NS_TERMIT + "má-reakci",
+  reactions: VocabularyUtils.NS_TERMIT + "has-reaction",
   actor: VocabularyUtils.NS_ACTIVITY_STREAMS + "actor",
   object: VocabularyUtils.NS_ACTIVITY_STREAMS + "object",
 };

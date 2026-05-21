@@ -8,13 +8,13 @@ import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
 
 const ctx = {
-  selectors: VocabularyUtils.NS_TERMIT + "má-selektor",
+  selectors: VocabularyUtils.NS_TERMIT + "has-selector",
 };
 
 const textQuoteSelectorCtx = {
-  exactMatch: VocabularyUtils.NS_TERMIT + "má-přesný-text-quote",
-  prefix: VocabularyUtils.NS_TERMIT + "má-prefix-text-quote",
-  suffix: VocabularyUtils.NS_TERMIT + "má-suffix-text-quote",
+  exactMatch: VocabularyUtils.NS_TERMIT + "has-exact-text-quote",
+  prefix: VocabularyUtils.NS_TERMIT + "has-text-quote-prefix",
+  suffix: VocabularyUtils.NS_TERMIT + "has-text-quote-suffix",
   elementAbout: VocabularyUtils.DC_IDENTIFIER,
 };
 

@@ -11,6 +11,6 @@
   "lastName": "Halsey",
   "username": "halsey@unsc.org",
   "types": [
-    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu"
+    "http://onto.fel.cvut.cz/ontologies/application/termit/administrator"
   ]
 }

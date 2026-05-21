@@ -1,6 +1,6 @@
 // TODO content of "file.html" should be manually set here, see comments in "file.html"
 
-export default '<html prefix="ddo: http://onto.fel.cvut.cz/ontologies/application/termit/pojem/">\n' +
+export default '<html prefix="ddo: http://onto.fel.cvut.cz/ontologies/application/termit/">\n' +
   "<head></head>\n" +
   "<body>\n" +
   '<div class="cast" id="tcz_cast_prvni">\n' +
