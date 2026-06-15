@@ -10,7 +10,7 @@ export interface TermEditSidebarProps {
   column: TermsTableColumn | null;
   language: string;
   onClose: () => void;
-  onSave: (updatedTerm: Partial<Term>) => void;
+  onSave: (updatedTerm: Partial<Term>) => Promise<void>;
 }
 
 export const TermEditSidebar: React.FC<TermEditSidebarProps> = ({

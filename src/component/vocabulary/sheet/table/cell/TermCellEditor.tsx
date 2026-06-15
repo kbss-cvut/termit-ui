@@ -10,12 +10,14 @@ import { getLocalizedPlural } from "../../../../../model/MultilingualString";
 import ExactMatchesSelector from "../../../../term/ExactMatchesSelector";
 import ParentTermSelector from "../../../../term/ParentTermSelector";
 import RelatedTermsSelector from "../../../../term/RelatedTermsSelector";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../../../../misc/PromiseTrackingMask";
 
 export interface TermCellEditorProps {
   term: Term;
   column: TermsTableColumn;
   language: string;
-  onSave: (updatedTerm: Partial<Term>) => void;
+  onSave: (updatedTerm: Partial<Term>) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -84,8 +86,6 @@ export const TermCellEditor: React.FC<TermCellEditorProps> = ({
   onSave,
   onCancel,
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const config = COLUMN_CONFIG[column.id];
 
   const [localString, setLocalString] = useState<string>(() => {
@@ -130,8 +130,9 @@ export const TermCellEditor: React.FC<TermCellEditorProps> = ({
   });
 
   const handleSave = () => {
-    if (!config) return;
-    setIsSubmitting(true);
+    if (!config) {
+      return;
+    }
 
     const updatedProperties: Record<string, any> = {};
 
@@ -177,8 +178,10 @@ export const TermCellEditor: React.FC<TermCellEditorProps> = ({
       };
     }
 
-    onSave(updatedProperties as Partial<Term>);
-    setIsSubmitting(false);
+    trackPromise(
+      onSave(updatedProperties as Partial<Term>),
+      "term-cell-editor"
+    );
   };
 
   const renderEditor = () => {
@@ -289,6 +292,7 @@ export const TermCellEditor: React.FC<TermCellEditorProps> = ({
 
   return (
     <div className="term-cell-editor d-flex flex-column h-100">
+      <PromiseTrackingMask area="term-cell-editor" />
       <div className="editor-header p-3 border-bottom d-flex justify-content-between align-items-center">
         <h5 className="mb-0">
           <FormattedMessage
@@ -312,15 +316,10 @@ export const TermCellEditor: React.FC<TermCellEditorProps> = ({
       </div>
 
       <div className="editor-footer p-3 border-top d-flex justify-content-end">
-        <Button
-          color="secondary"
-          className="mr-2"
-          onClick={onCancel}
-          disabled={isSubmitting}
-        >
+        <Button color="secondary" size="sm" className="mr-2" onClick={onCancel}>
           <FormattedMessage id="cancel" defaultMessage="Cancel" />
         </Button>
-        <Button color="primary" onClick={handleSave} disabled={isSubmitting}>
+        <Button color="primary" size="sm" onClick={handleSave}>
           <FormattedMessage id="save" defaultMessage="Save" />
         </Button>
       </div>

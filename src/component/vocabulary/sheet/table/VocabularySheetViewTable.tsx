@@ -51,7 +51,7 @@ import {
   hasLabelInLanguage,
 } from "../../../../model/MultilingualString";
 import TermLink from "../../../term/TermLink";
-import { HoverEditWrapper } from "./cell/HowerEditWrapper";
+import { HoverEditWrapper } from "./cell/HoverEditWrapper";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
