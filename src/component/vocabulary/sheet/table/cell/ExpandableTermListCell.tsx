@@ -1,38 +1,41 @@
 import React from "react";
 import classNames from "classnames";
 import { FaChevronDown, FaChevronUp, FaPen } from "react-icons/fa";
-import { useI18n } from "../../hook/useI18n";
+import { useI18n } from "../../../../hook/useI18n";
+import Term, { TermInfo } from "../../../../../model/Term";
+import { TermListPreview } from "../../../../term/TermListPreview";
 
-interface ExpandableTextCellProps {
-  text?: string;
-  children?: React.ReactNode;
+interface ExpandableTermListCellProps {
+  items: Array<Term | TermInfo>;
+  locale: string;
+  baseVocabularyIri?: string;
   isExpanded: boolean;
   onToggle: () => void;
   onEdit?: () => void;
 }
 
-export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
-  text,
-  children,
+export const ExpandableTermListCell: React.FC<ExpandableTermListCellProps> = ({
+  items,
+  locale,
+  baseVocabularyIri,
   isExpanded,
   onToggle,
   onEdit,
 }) => {
   const { i18n } = useI18n();
-  const textRef = React.useRef<HTMLSpanElement>(null);
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const [isTruncated, setIsTruncated] = React.useState(false);
 
   React.useLayoutEffect(() => {
-    const el = textRef.current;
+    const el = wrapperRef.current;
     if (!el) return;
+
+    const previewSpan = el.firstElementChild as HTMLElement;
+    const targetElement = previewSpan || el;
 
     const checkTruncation = () => {
       if (!isExpanded) {
-        const targetElement = el.firstElementChild || el;
-        setIsTruncated(
-          targetElement.scrollWidth > targetElement.clientWidth ||
-            el.scrollWidth > el.clientWidth
-        );
+        setIsTruncated(targetElement.scrollWidth > targetElement.clientWidth);
       }
     };
 
@@ -42,17 +45,14 @@ export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
       checkTruncation();
     });
 
-    resizeObserver.observe(el);
-    if (el.firstElementChild) {
-      resizeObserver.observe(el.firstElementChild);
-    }
+    resizeObserver.observe(targetElement);
 
-    return () => resizeObserver.disconnect();
-  }, []);
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [items, isExpanded]);
 
-  if (!text && !children) {
-    return null;
-  }
+  if (items.length === 0) return null;
 
   return (
     <div
@@ -61,13 +61,17 @@ export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
       })}
     >
       <div
+        ref={wrapperRef}
         className={classNames("term-table-list-wrapper", {
           "overflow-hidden": !isExpanded,
         })}
       >
-        <span ref={textRef} className="term-table-definition d-block">
-          {children || text}
-        </span>
+        <TermListPreview
+          items={items}
+          locale={locale}
+          baseVocabularyIri={baseVocabularyIri}
+          expanded={isExpanded}
+        />
       </div>
       {(isTruncated || isExpanded) && (
         <button
@@ -97,17 +101,14 @@ export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
       {onEdit && (
         <button
           type="button"
-          className="vocabulary-sheet-view-cell-edit-toggle"
+          className="vocabulary-sheet-view-cell-edit-button"
+          title={i18n("button.edit")}
           onClick={(e) => {
             e.stopPropagation();
             onEdit();
           }}
-          title={i18n("edit")}
-          aria-label={i18n("edit")}
         >
-          <span className="vocabulary-sheet-view-cell-edit-icon">
-            <FaPen />
-          </span>
+          <FaPen />
         </button>
       )}
     </div>

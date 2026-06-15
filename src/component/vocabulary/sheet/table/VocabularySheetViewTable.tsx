@@ -14,22 +14,25 @@ import {
 import { FaTimes } from "react-icons/fa";
 import { useDebouncedCallback } from "use-debounce";
 import { useSelector, useDispatch } from "react-redux";
-import Term, { TermInfo } from "../../../model/Term";
-import Vocabulary from "../../../model/Vocabulary";
-import TermItState from "../../../model/TermItState";
-import { ThunkDispatch } from "../../../util/Types";
-import { loadTypes } from "../../../action/AsyncActions";
-import { useI18n } from "../../hook/useI18n";
-import { getShortLocale, normalizeLanguageTag } from "../../../util/IntlUtil";
-import Utils from "../../../util/Utils";
-import Constants from "../../../util/Constants";
-import BrowserStorage from "../../../util/BrowserStorage";
-import { getApiPrefix } from "../../../action/ActionUtils";
-import VocabularyUtils from "../../../util/VocabularyUtils";
-import TermStateBadge from "../../term/state/TermStateBadge";
+import Term, { TermInfo } from "../../../../model/Term";
+import Vocabulary from "../../../../model/Vocabulary";
+import TermItState from "../../../../model/TermItState";
+import { ThunkDispatch } from "../../../../util/Types";
+import { loadTypes } from "../../../../action/AsyncActions";
+import { useI18n } from "../../../hook/useI18n";
+import {
+  getShortLocale,
+  normalizeLanguageTag,
+} from "../../../../util/IntlUtil";
+import Utils from "../../../../util/Utils";
+import Constants from "../../../../util/Constants";
+import BrowserStorage from "../../../../util/BrowserStorage";
+import { getApiPrefix } from "../../../../action/ActionUtils";
+import VocabularyUtils from "../../../../util/VocabularyUtils";
+import TermStateBadge from "../../../term/state/TermStateBadge";
 import classNames from "classnames";
-import { useVocabularyTerms } from "../../../query/hook/useVocabularyTerms";
-import { useUpdateTerm } from "../../../query/hook/useUpdateTerm";
+import { useVocabularyTerms } from "../../../../query/hook/useVocabularyTerms";
+import { useUpdateTerm } from "../../../../query/hook/useUpdateTerm";
 import "./VocabularySheetViewTable.scss";
 import {
   previewValues,
@@ -38,17 +41,17 @@ import {
   resolveAvailableTermLanguages,
   TermsTableColumn,
 } from "./VocabularySheetViewTableUtils";
-import { ExpandableTextCell } from "./ExpandableTextCell";
-import { ExpandableTermListCell } from "./ExpandableTermListCell";
-import { TermEditSidebar } from "./TermEditSidebar";
-import ContainerMask from "../../misc/ContainerMask";
+import { ExpandableTextCell } from "./cell/ExpandableTextCell";
+import { ExpandableTermListCell } from "./cell/ExpandableTermListCell";
+import { TermEditSidebar } from "../sidebar/TermEditSidebar";
+import ContainerMask from "../../../misc/ContainerMask";
 import {
   getLocalizedInLanguage,
   getLocalizedPluralInLanguage,
   hasLabelInLanguage,
-} from "../../../model/MultilingualString";
-import TermLink from "../../term/TermLink";
-import { HoverEditWrapper } from "./HowerEditWrapper";
+} from "../../../../model/MultilingualString";
+import TermLink from "../../../term/TermLink";
+import { HoverEditWrapper } from "./cell/HowerEditWrapper";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;

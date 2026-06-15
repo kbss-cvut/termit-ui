@@ -1,7 +1,7 @@
 import React from "react";
-import Term from "../../../model/Term";
-import { TermsTableColumn } from "./VocabularySheetViewTableUtils";
-import { TermCellEditor } from "./TermCellEditor";
+import Term from "../../../../model/Term";
+import { TermsTableColumn } from "../table/VocabularySheetViewTableUtils";
+import { TermCellEditor } from "../table/cell/TermCellEditor";
 import "./TermEditSidebar.scss";
 
 export interface TermEditSidebarProps {

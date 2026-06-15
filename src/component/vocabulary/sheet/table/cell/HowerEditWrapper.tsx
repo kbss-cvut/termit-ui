@@ -1,6 +1,6 @@
 import React from "react";
 import { FaPen } from "react-icons/fa";
-import { useI18n } from "../../hook/useI18n";
+import { useI18n } from "../../../../hook/useI18n";
 
 interface HoverEditWrapperProps {
   children: React.ReactNode;

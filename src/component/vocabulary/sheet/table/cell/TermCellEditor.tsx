@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Button, FormGroup, Label, Input } from "reactstrap";
-import Term from "../../../model/Term";
-import { TermsTableColumn } from "./VocabularySheetViewTableUtils";
+import Term from "../../../../../model/Term";
+import { TermsTableColumn } from "../VocabularySheetViewTableUtils";
 import { FormattedMessage } from "react-intl";
 
-import TermTypesEdit from "../../term/TermTypesEdit";
-import ValueListEdit from "../../misc/ValueListEdit";
-import { getLocalizedPlural } from "../../../model/MultilingualString";
-import ExactMatchesSelector from "../../term/ExactMatchesSelector";
-import ParentTermSelector from "../../term/ParentTermSelector";
-import RelatedTermsSelector from "../../term/RelatedTermsSelector";
+import TermTypesEdit from "../../../../term/TermTypesEdit";
+import ValueListEdit from "../../../../misc/ValueListEdit";
+import { getLocalizedPlural } from "../../../../../model/MultilingualString";
+import ExactMatchesSelector from "../../../../term/ExactMatchesSelector";
+import ParentTermSelector from "../../../../term/ParentTermSelector";
+import RelatedTermsSelector from "../../../../term/RelatedTermsSelector";
 
 export interface TermCellEditorProps {
   term: Term;

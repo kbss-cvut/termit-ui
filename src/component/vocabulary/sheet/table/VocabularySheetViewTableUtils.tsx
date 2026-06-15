@@ -1,13 +1,13 @@
 import React from "react";
-import Term from "../../../model/Term";
+import Term from "../../../../model/Term";
 import {
   MultilingualString,
   getLocalized,
-} from "../../../model/MultilingualString";
-import VocabularyUtils from "../../../util/VocabularyUtils";
-import Utils from "../../../util/Utils";
-import { OWL, SKOS } from "../../../util/Namespaces";
-import { normalizeLanguageTag } from "../../../util/IntlUtil";
+} from "../../../../model/MultilingualString";
+import VocabularyUtils from "../../../../util/VocabularyUtils";
+import Utils from "../../../../util/Utils";
+import { OWL, SKOS } from "../../../../util/Namespaces";
+import { normalizeLanguageTag } from "../../../../util/IntlUtil";
 
 export interface TermsTableColumn {
   id:
