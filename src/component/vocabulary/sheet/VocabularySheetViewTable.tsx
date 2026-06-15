@@ -29,6 +29,7 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import TermStateBadge from "../../term/state/TermStateBadge";
 import classNames from "classnames";
 import { useVocabularyTerms } from "../../../query/hook/useVocabularyTerms";
+import { useUpdateTerm } from "../../../query/hook/useUpdateTerm";
 import "./VocabularySheetViewTable.scss";
 import {
   previewValues,
@@ -39,6 +40,7 @@ import {
 } from "./VocabularySheetViewTableUtils";
 import { ExpandableTextCell } from "./ExpandableTextCell";
 import { ExpandableTermListCell } from "./ExpandableTermListCell";
+import { TermEditSidebar } from "./TermEditSidebar";
 import ContainerMask from "../../misc/ContainerMask";
 import {
   getLocalizedInLanguage,
@@ -46,6 +48,7 @@ import {
   hasLabelInLanguage,
 } from "../../../model/MultilingualString";
 import TermLink from "../../term/TermLink";
+import { HoverEditWrapper } from "./HowerEditWrapper";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
@@ -90,6 +93,14 @@ export const VocabularySheetViewTable: React.FC<
   const [expandedCellKey, setExpandedCellKey] = React.useState<string | null>(
     null
   );
+
+  const [editingTermUri, setEditingTermUri] = React.useState<string | null>(
+    null
+  );
+  const [editingColumnId, setEditingColumnId] = React.useState<
+    TermsTableColumn["id"] | null
+  >(null);
+
   const [columnVisibility, setColumnVisibility] = React.useState<
     Record<TermsTableColumn["id"], boolean>
   >(() => {
@@ -149,6 +160,38 @@ export const VocabularySheetViewTable: React.FC<
     [termsQuery.data]
   );
 
+  const editingTermData = React.useMemo(() => {
+    if (!editingTermUri) return null;
+    return loadedTerms.find((t) => t.iri === editingTermUri) || null;
+  }, [editingTermUri, loadedTerms]);
+
+  const updateTermMutation = useUpdateTerm();
+
+  const handleSaveEditedTerm = React.useCallback(
+    async (updatedProperties: Partial<Term>) => {
+      const baseTermData = loadedTerms.find((t) => t.iri === editingTermUri);
+      if (!baseTermData) return;
+
+      try {
+        const termToUpdate = new Term({
+          ...baseTermData,
+          ...updatedProperties,
+        } as any);
+
+        await updateTermMutation.mutateAsync({
+          apiPrefix,
+          term: termToUpdate,
+        });
+
+        setEditingTermUri(null);
+        setEditingColumnId(null);
+      } catch (e) {
+        console.error("Failed to update term", e);
+      }
+    },
+    [editingTermUri, loadedTerms, updateTermMutation, apiPrefix]
+  );
+
   const availableTermLanguages = React.useMemo(
     () => resolveAvailableTermLanguages(loadedTerms, shortLocale),
     [loadedTerms, shortLocale]
@@ -190,21 +233,27 @@ export const VocabularySheetViewTable: React.FC<
     []
   );
 
+  const handleEditClick = React.useCallback(
+    (termIri: string, columnId: TermsTableColumn["id"]) => {
+      setEditingTermUri(termIri);
+      setEditingColumnId(columnId);
+    },
+    []
+  );
+
   const renderExpandableTermListCell = React.useCallback(
     (
+      term: Term,
       items: Array<Term | TermInfo> | undefined,
       rowIndex: number,
-      columnId: TermsTableColumn["id"]
+      columnId: TermsTableColumn["id"],
+      isEditable: boolean = true
     ) => {
       const sanitized = Utils.sanitizeArray(items) as Array<Term | TermInfo>;
-      if (sanitized.length === 0) {
-        return "";
-      }
-
       const cellKey = getCellKey(rowIndex, columnId);
       const isExpanded = expandedCellKey === cellKey;
 
-      return (
+      const content = sanitized.length > 0 && (
         <ExpandableTermListCell
           items={sanitized}
           locale={displayLanguage}
@@ -217,8 +266,28 @@ export const VocabularySheetViewTable: React.FC<
           }
         />
       );
+
+      if (isEditable) {
+        return (
+          <HoverEditWrapper onEdit={() => handleEditClick(term.iri, columnId)}>
+            {content}
+          </HoverEditWrapper>
+        );
+      }
+      return (
+        <div className="d-flex w-100 align-items-start term-cell-editor-wrapper">
+          {content}
+        </div>
+      );
     },
-    [displayLanguage, expandedCellKey, getCellKey, vocabulary.iri]
+    [
+      displayLanguage,
+      expandedCellKey,
+      getCellKey,
+      vocabulary.iri,
+      handleEditClick,
+      i18n,
+    ]
   );
 
   const columns = React.useMemo<TermsTableColumn[]>(
@@ -232,22 +301,24 @@ export const VocabularySheetViewTable: React.FC<
         render: (term, rowIndex) => {
           const text = getLocalizedInLanguage(term.label, displayLanguage);
           return (
-            <ExpandableTextCell
-              isExpanded={expandedCellKey === getCellKey(rowIndex, "label")}
-              onToggle={() => {
-                const cellKey = getCellKey(rowIndex, "label");
-                setExpandedCellKey((prev) =>
-                  prev === cellKey ? null : cellKey
-                );
-              }}
-            >
-              <TermLink
-                term={term}
-                language={displayLanguage}
-                className="term-table-link"
-                tooltip={text}
-              />
-            </ExpandableTextCell>
+            <HoverEditWrapper onEdit={() => handleEditClick(term.iri, "label")}>
+              <ExpandableTextCell
+                isExpanded={expandedCellKey === getCellKey(rowIndex, "label")}
+                onToggle={() => {
+                  const cellKey = getCellKey(rowIndex, "label");
+                  setExpandedCellKey((prev) =>
+                    prev === cellKey ? null : cellKey
+                  );
+                }}
+              >
+                <TermLink
+                  term={term}
+                  language={displayLanguage}
+                  className="term-table-link"
+                  tooltip={text}
+                />
+              </ExpandableTextCell>
+            </HoverEditWrapper>
           );
         },
       },
@@ -259,21 +330,25 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term, rowIndex) => {
           const text = getLocalizedInLanguage(term.definition, displayLanguage);
-          return text ? (
-            <ExpandableTextCell
-              text={text}
-              isExpanded={
-                expandedCellKey === getCellKey(rowIndex, "definition")
-              }
-              onToggle={() => {
-                const cellKey = getCellKey(rowIndex, "definition");
-                setExpandedCellKey((prev) =>
-                  prev === cellKey ? null : cellKey
-                );
-              }}
-            />
-          ) : (
-            ""
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "definition")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "definition")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "definition");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
           );
         },
       },
@@ -287,19 +362,21 @@ export const VocabularySheetViewTable: React.FC<
           const text = previewValues(
             resolveTypeLabels(term.types, typeOptions, displayLanguage)
           );
-          return text ? (
-            <ExpandableTextCell
-              text={text}
-              isExpanded={expandedCellKey === getCellKey(rowIndex, "type")}
-              onToggle={() => {
-                const cellKey = getCellKey(rowIndex, "type");
-                setExpandedCellKey((prev) =>
-                  prev === cellKey ? null : cellKey
-                );
-              }}
-            />
-          ) : (
-            ""
+          return (
+            <HoverEditWrapper onEdit={() => handleEditClick(term.iri, "type")}>
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={expandedCellKey === getCellKey(rowIndex, "type")}
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "type");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
           );
         },
       },
@@ -311,6 +388,7 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term, rowIndex) =>
           renderExpandableTermListCell(
+            term,
             term.exactMatchTerms,
             rowIndex,
             "exactMatches"
@@ -325,6 +403,7 @@ export const VocabularySheetViewTable: React.FC<
         render: (term, rowIndex) => {
           const directParents = Utils.sanitizeArray(term.parentTerms);
           return renderExpandableTermListCell(
+            term,
             directParents,
             rowIndex,
             "parentTerms"
@@ -339,9 +418,11 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term, rowIndex) =>
           renderExpandableTermListCell(
+            term,
             Utils.sanitizeArray(term.subTerms),
             rowIndex,
-            "subTerms"
+            "subTerms",
+            false
           ),
       },
       {
@@ -352,6 +433,7 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term, rowIndex) =>
           renderExpandableTermListCell(
+            term,
             Term.consolidateRelatedAndRelatedMatch(term, displayLanguage),
             rowIndex,
             "relatedTerms"
@@ -365,19 +447,25 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term, rowIndex) => {
           const text = previewValues(Utils.sanitizeArray(term.notations));
-          return text ? (
-            <ExpandableTextCell
-              text={text}
-              isExpanded={expandedCellKey === getCellKey(rowIndex, "notation")}
-              onToggle={() => {
-                const cellKey = getCellKey(rowIndex, "notation");
-                setExpandedCellKey((prev) =>
-                  prev === cellKey ? null : cellKey
-                );
-              }}
-            />
-          ) : (
-            ""
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "notation")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "notation")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "notation");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
           );
         },
       },
@@ -389,19 +477,25 @@ export const VocabularySheetViewTable: React.FC<
         hideable: true,
         render: (term, rowIndex) => {
           const text = getLocalizedInLanguage(term.scopeNote, displayLanguage);
-          return text ? (
-            <ExpandableTextCell
-              text={text}
-              isExpanded={expandedCellKey === getCellKey(rowIndex, "scopeNote")}
-              onToggle={() => {
-                const cellKey = getCellKey(rowIndex, "scopeNote");
-                setExpandedCellKey((prev) =>
-                  prev === cellKey ? null : cellKey
-                );
-              }}
-            />
-          ) : (
-            ""
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "scopeNote")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "scopeNote")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "scopeNote");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
           );
         },
       },
@@ -415,19 +509,25 @@ export const VocabularySheetViewTable: React.FC<
           const text = previewValues(
             getLocalizedPluralInLanguage(term.examples, displayLanguage)
           );
-          return text ? (
-            <ExpandableTextCell
-              text={text}
-              isExpanded={expandedCellKey === getCellKey(rowIndex, "example")}
-              onToggle={() => {
-                const cellKey = getCellKey(rowIndex, "example");
-                setExpandedCellKey((prev) =>
-                  prev === cellKey ? null : cellKey
-                );
-              }}
-            />
-          ) : (
-            ""
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "example")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "example")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "example");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
           );
         },
       },
@@ -458,6 +558,10 @@ export const VocabularySheetViewTable: React.FC<
       visibleColumns.map((column) => resolveGridColumnWidth(column)).join(" "),
     [visibleColumns]
   );
+
+  const editingColumn = React.useMemo(() => {
+    return columns.find((c) => c.id === editingColumnId) || null;
+  }, [columns, editingColumnId]);
 
   const minGridWidth = React.useMemo(() => {
     const totalMinWidthRem = visibleColumns.reduce(
@@ -716,6 +820,17 @@ export const VocabularySheetViewTable: React.FC<
             )}
         </div>
       </div>
+      <TermEditSidebar
+        isOpen={!!editingTermUri}
+        term={editingTermData || null}
+        column={editingColumn}
+        language={displayLanguage}
+        onClose={() => {
+          setEditingTermUri(null);
+          setEditingColumnId(null);
+        }}
+        onSave={handleSaveEditedTerm}
+      />
     </div>
   );
 };

@@ -183,6 +183,33 @@
     display: inline-block;
   }
 
+  .term-cell-editor-wrapper {
+    .cell-edit-button {
+      opacity: 0;
+      transition: opacity 0.2s ease, color 0.2s ease;
+      background: transparent;
+      border: none;
+      color: $gray-500;
+      padding: 0.1rem 0.4rem;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      line-height: 1;
+
+      &:hover {
+        color: $primary;
+      }
+
+      &:focus {
+        outline: none;
+        opacity: 1;
+      }
+    }
+
+    &:hover .cell-edit-button {
+      opacity: 1;
+    }
+  }
+
   .term-badge-wrapper {
     display: inline;
     vertical-align: baseline;

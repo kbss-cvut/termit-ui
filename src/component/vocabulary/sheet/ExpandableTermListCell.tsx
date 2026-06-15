@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaPen } from "react-icons/fa";
 import { useI18n } from "../../hook/useI18n";
 import Term, { TermInfo } from "../../../model/Term";
 import { TermListPreview } from "../../term/TermListPreview";
@@ -11,6 +11,7 @@ interface ExpandableTermListCellProps {
   baseVocabularyIri?: string;
   isExpanded: boolean;
   onToggle: () => void;
+  onEdit?: () => void;
 }
 
 export const ExpandableTermListCell: React.FC<ExpandableTermListCellProps> = ({
@@ -19,6 +20,7 @@ export const ExpandableTermListCell: React.FC<ExpandableTermListCellProps> = ({
   baseVocabularyIri,
   isExpanded,
   onToggle,
+  onEdit,
 }) => {
   const { i18n } = useI18n();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -94,6 +96,19 @@ export const ExpandableTermListCell: React.FC<ExpandableTermListCellProps> = ({
           <span className="vocabulary-sheet-view-cell-expand-icon">
             {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
           </span>
+        </button>
+      )}
+      {onEdit && (
+        <button
+          type="button"
+          className="vocabulary-sheet-view-cell-edit-button"
+          title={i18n("button.edit")}
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+        >
+          <FaPen />
         </button>
       )}
     </div>

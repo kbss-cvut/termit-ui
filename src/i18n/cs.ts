@@ -525,6 +525,7 @@ const cs = {
       "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
       "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
       "z více zdrojů.",
+    "term.edit.property": "Upravit {property}",
     "term.exactMatches.help":
       "(Nepovinný) pojem se stejným významem. Slouží k mapování na pojmy z jiných slovníků.",
     "term.comment.help":

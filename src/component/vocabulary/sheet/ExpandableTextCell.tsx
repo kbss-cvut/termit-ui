@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaPen } from "react-icons/fa";
 import { useI18n } from "../../hook/useI18n";
 
 interface ExpandableTextCellProps {
@@ -8,6 +8,7 @@ interface ExpandableTextCellProps {
   children?: React.ReactNode;
   isExpanded: boolean;
   onToggle: () => void;
+  onEdit?: () => void;
 }
 
 export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
@@ -15,6 +16,7 @@ export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
   children,
   isExpanded,
   onToggle,
+  onEdit,
 }) => {
   const { i18n } = useI18n();
   const textRef = React.useRef<HTMLSpanElement>(null);
@@ -89,6 +91,22 @@ export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
         >
           <span className="vocabulary-sheet-view-cell-expand-icon">
             {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </span>
+        </button>
+      )}
+      {onEdit && (
+        <button
+          type="button"
+          className="vocabulary-sheet-view-cell-edit-toggle"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+          title={i18n("edit")}
+          aria-label={i18n("edit")}
+        >
+          <span className="vocabulary-sheet-view-cell-edit-icon">
+            <FaPen />
           </span>
         </button>
       )}
