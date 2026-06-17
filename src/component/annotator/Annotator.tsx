@@ -1,7 +1,10 @@
 import * as React from "react";
 import { Element, ChildNode as DomHandlerNode } from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
-import AnnotationDomHelper, { AnnotationType } from "./AnnotationDomHelper";
+import AnnotationDomHelper, {
+  AnnotationType,
+  isTermOccurrence,
+} from "./AnnotationDomHelper";
 import Term from "../../model/Term";
 import HtmlDomUtils, { getTermOccurrences } from "./HtmlDomUtils";
 import LegendToggle from "./LegendToggle";
@@ -227,10 +230,9 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   private removeOccurrence(annotationId: string, element: Element) {
     if (
-      HtmlParserUtils.resolveIri(
-        element.attribs.typeof,
-        this.state.prefixMap
-      ) === AnnotationType.OCCURRENCE
+      isTermOccurrence(
+        HtmlParserUtils.resolveIri(element.attribs.typeof, this.state.prefixMap)
+      )
     ) {
       const iri = annotationIdToTermOccurrenceIri(
         annotationId,
@@ -272,7 +274,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
         : ResourceSaveReason.NEW_OCCURRENCE;
 
       delete ann.attribs.score;
-      if (annotationSpan.typeof === AnnotationType.OCCURRENCE) {
+      if (isTermOccurrence(annotationSpan.typeof)) {
         this.updateInternalHtml(dom, saveReason).then(() => {
           if (newOccurrence) {
             this.props.saveTermOccurrence(newOccurrence);
@@ -315,10 +317,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
   }
 
   private approveOccurrence(annotationSpan: AnnotationSpanProps) {
-    if (
-      annotationSpan.typeof !== AnnotationType.OCCURRENCE ||
-      !annotationSpan.score
-    ) {
+    if (!isTermOccurrence(annotationSpan.typeof) || !annotationSpan.score) {
       return;
     }
     const iri = annotationIdToTermOccurrenceIri(

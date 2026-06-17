@@ -1,4 +1,4 @@
-import { Annotation, isDefinitionAnnotation } from "../Annotation";
+import { Annotation } from "../Annotation";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Term from "../../../model/Term";
 import { ComponentClass, ReactWrapper, shallow } from "enzyme";
@@ -464,15 +464,5 @@ describe("Annotation", () => {
         expect(args[0].resource).not.toBeDefined();
       });
     });
-  });
-});
-
-describe("isDefinitionAnnotation", () => {
-  it("returns true for definition annotation", () => {
-    expect(isDefinitionAnnotation(AnnotationType.DEFINITION)).toBeTruthy();
-  });
-
-  it("returns false for occurrence annotation", () => {
-    expect(isDefinitionAnnotation(AnnotationType.OCCURRENCE)).toBeFalsy();
   });
 });
