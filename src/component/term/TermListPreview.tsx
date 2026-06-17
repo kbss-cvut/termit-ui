@@ -5,7 +5,7 @@ import Term, { TermInfo } from "../../model/Term";
 import { MultilingualString } from "../../model/MultilingualString";
 import Utils from "../../util/Utils";
 import VocabularyNameBadgeButton from "../vocabulary/VocabularyNameBadgeButton";
-import { resolveLocalizedTermLabel } from "../vocabulary/sheet/VocabularySheetViewTableUtils";
+import { resolveLocalizedTermLabel } from "../vocabulary/sheet/table/VocabularySheetViewTableUtils";
 import { getTermPath } from "./TermLink";
 import { resolveVocabularyFragment } from "../../util/VocabularyUtils";
 

@@ -20,7 +20,7 @@ import { getShortLocale } from "../../../util/IntlUtil";
 import HeaderWithActions from "../../misc/HeaderWithActions";
 import WindowTitle from "../../misc/WindowTitle";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
-import VocabularySheetViewTable from "./VocabularySheetViewTable";
+import VocabularySheetViewTable from "./table/VocabularySheetViewTable";
 import Routing, { namespaceQueryParam } from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import IfVocabularyActionAuthorized from "../../vocabulary/authorization/IfVocabularyActionAuthorized";

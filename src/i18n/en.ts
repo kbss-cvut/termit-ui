@@ -518,6 +518,7 @@ const en = {
       "Definition is always unique and cannot be combined from multiple sources.",
     "term.comment.help":
       "(Optional) non-definitorial text clarifying the meaning of the term.",
+    "term.edit.property": "Edit {property}",
     "term.exactMatches.help":
       "(Optional) term exactly matching the meaning of the current term. It serves to map the term to another one from a different vocabulary.",
     "term.parent.help":

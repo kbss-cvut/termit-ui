@@ -508,6 +508,7 @@ const de = {
       "(Optionaler) Text, der die Konzeptbedeutung beschreibt. ",
     "term.comment.help":
       "(Optional) nicht-definitorialer Text, der die Bedeutung des Begriffs verdeutlicht.",
+    "term.edit.property": "Eigenschaft {property} bearbeiten",
     "term.exactMatches.help":
       "(Optional) Begriff, der genau der Bedeutung des aktuellen Begriffs entspricht. ",
     "term.parent.help": "(Optional) weiter gefasster Begriff. ",
