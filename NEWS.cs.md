@@ -1,7 +1,11 @@
+#### Verze 4.5.2
+
+- Aktualizace závislostí z důvodu bezpečnosti.
+
 #### Verze 4.5.1
 
 - Přidán tabulkový pohled na slovník.
-- Bezpečnostní aktualizace závislostí.
+- Aktualizace závislostí z důvodu bezpečnosti.
 
 #### Verze 4.5.0
 

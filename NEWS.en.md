@@ -1,3 +1,7 @@
+#### Version 4.5.2
+
+- Dependency security updates.
+
 #### Version 4.5.1
 
 - Add sheet-like view of a vocabulary.
