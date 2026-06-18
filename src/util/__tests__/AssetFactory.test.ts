@@ -125,7 +125,7 @@ describe("AssetFactory", () => {
 
   describe("createTermAssignment", () => {
     const data = {
-      iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
+      iri: "http://onto.fel.cvut.cz/ontologies/data-description/term-assignment/instance1741423723",
       types: [
         "http://onto.fel.cvut.cz/ontologies/application/termit/term-occurrence",
       ],
@@ -135,12 +135,14 @@ describe("AssetFactory", () => {
         label: "Nezastavene uzemi",
       },
       target: {
-        iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
-        types: ["http://onto.fel.cvut.cz/ontologies/application/termit/target"],
+        iri: "http://onto.fel.cvut.cz/ontologies/application/termit/occurrence-target/instance-873441519",
+        types: [
+          "http://onto.fel.cvut.cz/ontologies/application/termit/occurrence-target",
+        ],
         source: {
           iri: "http://onto.fel.cvut.cz/ontologies/zdroj/ml-test",
           types: [
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj",
+            "http://onto.fel.cvut.cz/ontologies/data-description/resource",
           ],
           label: "ML test",
           author: {
