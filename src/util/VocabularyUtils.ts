@@ -40,8 +40,8 @@ export class IRIImpl implements IRI {
   }
 }
 
-const _NS_POPIS_DAT =
-  "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/";
+const _NS_DATA_DESCRIPTION =
+  "http://onto.fel.cvut.cz/ontologies/data-description/";
 const _NS_TERMIT = "http://onto.fel.cvut.cz/ontologies/application/termit/";
 const _NS_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 const _NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
@@ -53,15 +53,15 @@ const _NS_ACTIVITY_STREAMS = "https://www.w3.org/ns/activitystreams#";
 const _NS_XSD = "http://www.w3.org/2001/XMLSchema#";
 
 const VocabularyUtils = {
-  PREFIX: _NS_POPIS_DAT,
+  PREFIX: _NS_DATA_DESCRIPTION,
   VOCABULARY: _NS_SKOS + "ConceptScheme",
-  HAS_DOCUMENT_VOCABULARY: _NS_POPIS_DAT + "má-dokumentový-slovník",
-  DESCRIBES_DOCUMENT: _NS_POPIS_DAT + "popisuje-dokument",
+  HAS_DOCUMENT_VOCABULARY: _NS_DATA_DESCRIPTION + "has-document-vocabulary",
+  DESCRIBES_DOCUMENT: _NS_DATA_DESCRIPTION + "describes-document",
   TERM: _NS_SKOS + "Concept",
-  FILE: _NS_POPIS_DAT + "soubor",
-  CONTENT: _NS_POPIS_DAT + "soubor/content",
-  IS_PART_OF_DOCUMENT: _NS_POPIS_DAT + "je-částí-dokumentu",
-  DOCUMENT: _NS_POPIS_DAT + "dokument",
+  FILE: _NS_DATA_DESCRIPTION + "file",
+  CONTENT: _NS_DATA_DESCRIPTION + "file/content",
+  IS_PART_OF_DOCUMENT: _NS_DATA_DESCRIPTION + "is-part-of-document",
+  DOCUMENT: _NS_DATA_DESCRIPTION + "document",
   DEFINITION: _NS_SKOS + "definition",
   SKOS_BROADER: _NS_SKOS + "broader",
   SKOS_NARROWER: _NS_SKOS + "narrower",
@@ -79,31 +79,30 @@ const VocabularyUtils = {
   SKOS_EXAMPLE: _NS_SKOS + "example",
   IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "is-assignment-of-term",
   IS_DEFINITION_OF_TERM: _NS_TERMIT + "is-term-definition-occurrence",
-  HAS_TERM_STATE: _NS_POPIS_DAT + "má-stav-pojmu",
-  TERM_STATE: _NS_POPIS_DAT + "stav-pojmu",
+  HAS_TERM_STATE: _NS_DATA_DESCRIPTION + "has-term-state",
+  TERM_STATE: _NS_DATA_DESCRIPTION + "term-state",
   TERM_STATE_TERMINAL: _NS_TERMIT + "terminal-term-state",
-  RESOURCE: _NS_POPIS_DAT + "zdroj",
+  RESOURCE: _NS_DATA_DESCRIPTION + "resource",
   TERM_ASSIGNMENT: _NS_TERMIT + "term-assignment",
   TERM_OCCURRENCE: _NS_TERMIT + "term-occurrence",
   TERM_DEFINITION_SOURCE: _NS_TERMIT + "term-definition-source",
   TERM_FILE_OCCURRENCE: _NS_TERMIT + "file-term-occurrence",
-  JE_TEMATEM: _NS_TERMIT + "is-topic-of",
-  MA_MUJ_POSLEDNI_KOMENTAR: _NS_TERMIT + "has-my-last-comment",
+  IS_TOPIC_OF: _NS_TERMIT + "is-topic-of",
+  HAS_MY_LAST_COMMENT: _NS_TERMIT + "has-my-last-comment",
   SUGGESTED_TERM_OCCURRENCE: _NS_TERMIT + "suggested-term-occurrence",
   ASSIGNMENT_TARGET: _NS_TERMIT + "target",
   FILE_OCCURRENCE_TARGET: _NS_TERMIT + "file-occurrence-target",
   DEFINITION_OCCURRENCE_TARGET: _NS_TERMIT + "definition-occurrence-target",
   TEXT_QUOTE_SELECTOR: _NS_TERMIT + "selector-text-quote",
   HAS_DEFINITION_SOURCE: _NS_TERMIT + "has-term-definition-source",
-  HAS_FILE: _NS_POPIS_DAT + "má-soubor",
-  HAS_AUTHOR: _NS_POPIS_DAT + "má-autora",
-  CREATED: _NS_POPIS_DAT + "má-datum-a-čas-vytvoření",
-  SNAPSHOT_CREATED: _NS_POPIS_DAT + "má-datum-a-čas-vytvoření-verze",
+  HAS_FILE: _NS_DATA_DESCRIPTION + "has-file",
+  CREATED: _NS_DC + "created",
+  SNAPSHOT_CREATED:
+    _NS_DATA_DESCRIPTION + "has-date-and-time-of-creation-of-version",
   SNAPSHOT_AUTHOR: _NS_DC + "creator",
-  HAS_LAST_EDITOR: _NS_POPIS_DAT + "má-posledního-editora",
-  LAST_MODIFIED: _NS_POPIS_DAT + "má-datum-a-čas-poslední-modifikace",
-  IMPORTS_VOCABULARY: _NS_POPIS_DAT + "importuje-slovník",
-  HAS_PASSWORD: _NS_POPIS_DAT + "m\u00e1-heslo",
+  LAST_MODIFIED: _NS_DC + "modified",
+  IMPORTS_VOCABULARY: _NS_DATA_DESCRIPTION + "imports-vocabulary",
+  HAS_PASSWORD: _NS_DATA_DESCRIPTION + "has-password",
   NS_TERMIT: _NS_TERMIT,
   USER: _NS_TERMIT + "user",
   USER_ADMIN: _NS_TERMIT + "administrator",
@@ -163,14 +162,14 @@ const VocabularyUtils = {
 
   NS_ACTIVITY_STREAMS: _NS_ACTIVITY_STREAMS,
 
-  PERSIST_EVENT: `${_NS_POPIS_DAT}vytvo\u0159en\u00ed-entity`,
-  UPDATE_EVENT: `${_NS_POPIS_DAT}\u00faprava-entity`,
-  DELETE_EVENT: `${_NS_POPIS_DAT}smaz\u00e1n\u00ed-entity`,
+  PERSIST_EVENT: _NS_DATA_DESCRIPTION + "creation-of-entity",
+  UPDATE_EVENT: _NS_DATA_DESCRIPTION + "update-of-entity",
+  DELETE_EVENT: _NS_DATA_DESCRIPTION + "deletion-of-entity",
 
-  TERM_SNAPSHOT: _NS_POPIS_DAT + "verze-pojmu",
-  VOCABULARY_SNAPSHOT: _NS_POPIS_DAT + "verze-slovníku",
-  IS_SNAPSHOT_OF_TERM: _NS_POPIS_DAT + "je-verz\u00ed-pojmu",
-  IS_SNAPSHOT_OF_VOCABULARY: _NS_POPIS_DAT + "je-verz\u00ed-slovn\u00edku",
+  TERM_SNAPSHOT: _NS_DATA_DESCRIPTION + "term-version",
+  VOCABULARY_SNAPSHOT: _NS_DATA_DESCRIPTION + "vocabulary-version",
+  IS_SNAPSHOT_OF_TERM: _NS_DATA_DESCRIPTION + "is-term-version",
+  IS_SNAPSHOT_OF_VOCABULARY: _NS_DATA_DESCRIPTION + "is-vocabulary-version",
 
   ACCESS_CONTROL_LIST: _NS_TERMIT + "access-control-list",
   HAS_ACCESS_CONTROL_RECORD: _NS_TERMIT + "has-access-control-record",
