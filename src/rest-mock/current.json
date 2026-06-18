@@ -1,9 +1,9 @@
 {
   "@context": {
     "iri": "@id",
-    "firstName": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno",
-    "lastName": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení",
-    "username": "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno",
+    "firstName": "http://onto.fel.cvut.cz/ontologies/data-description/has-name",
+    "lastName": "http://onto.fel.cvut.cz/ontologies/data-description/has-surname",
+    "username": "http://onto.fel.cvut.cz/ontologies/data-description/has-username",
     "types": "@type"
   },
   "iri": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
