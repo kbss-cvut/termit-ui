@@ -8,7 +8,7 @@ const ctx = {
   term: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
   description: VocabularyUtils.DC_DESCRIPTION,
   target: VocabularyUtils.NS_TERMIT + "has-target",
-  source: VocabularyUtils.PREFIX + "má-zdroj",
+  source: VocabularyUtils.PREFIX + "has-resource",
 };
 
 /**

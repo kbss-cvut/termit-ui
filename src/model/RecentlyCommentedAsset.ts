@@ -9,10 +9,10 @@ const ctx = {
     "@type": VocabularyUtils.XSD_DATETIME,
   },
   label: VocabularyUtils.RDFS_LABEL,
-  editor: VocabularyUtils.PREFIX + "má-editora",
+  editor: VocabularyUtils.PREFIX + "has-editor",
   vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
-  lastComment: VocabularyUtils.JE_TEMATEM,
-  myLastComment: VocabularyUtils.MA_MUJ_POSLEDNI_KOMENTAR,
+  lastComment: VocabularyUtils.IS_TOPIC_OF,
+  myLastComment: VocabularyUtils.HAS_MY_LAST_COMMENT,
 };
 
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, COMMENT_CONTEXT);

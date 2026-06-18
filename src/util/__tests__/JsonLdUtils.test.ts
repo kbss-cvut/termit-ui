@@ -61,8 +61,8 @@ describe("JsonLdUtils", () => {
   describe("compactAndResolveReferences", () => {
     it("compacts input JSON-LD using the context and resolves references", () => {
       const input = require("../../rest-mock/vocabulary");
-      input[VocabularyUtils.PREFIX + "popisuje-dokument"][
-        VocabularyUtils.PREFIX + "má-dokumentový-slovník"
+      input[VocabularyUtils.PREFIX + "describes-document"][
+        VocabularyUtils.PREFIX + "has-document-vocabulary"
       ] = {
         "@id": input["@id"],
       };
@@ -97,7 +97,7 @@ describe("JsonLdUtils", () => {
             "@container": "@language",
           },
           state:
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-stav-pojmu",
+            "http://onto.fel.cvut.cz/ontologies/data-description/has-term-state",
           parentTerms: "http://www.w3.org/2004/02/skos/core#broader",
           altLabels: {
             "@id": "http://www.w3.org/2004/02/skos/core#altLabel",
@@ -128,7 +128,7 @@ describe("JsonLdUtils", () => {
           uri: "http://onto.fel.cvut.cz/ontologies/slovnik/ml-test",
         },
         state: {
-          uri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/publikovaný-pojem",
+          uri: "http://onto.fel.cvut.cz/ontologies/application/termit/published-term",
         },
       };
       return JsonLdUtils.compactAndResolveReferences(input, TERM_CONTEXT).then(
@@ -147,8 +147,8 @@ describe("JsonLdUtils", () => {
         require("../../rest-mock/vocabulary"),
         require("../../rest-mock/vocabulary"),
       ];
-      input[0][VocabularyUtils.PREFIX + "popisuje-dokument"][
-        VocabularyUtils.PREFIX + "má-dokumentový-slovník"
+      input[0][VocabularyUtils.PREFIX + "describes-document"][
+        VocabularyUtils.PREFIX + "has-document-vocabulary"
       ] = {
         "@id": input[0]["@id"],
       };
@@ -164,8 +164,8 @@ describe("JsonLdUtils", () => {
 
     it("returns array with single item compacted from specified JSON-LD", () => {
       const input = require("../../rest-mock/vocabulary");
-      input[VocabularyUtils.PREFIX + "popisuje-dokument"][
-        VocabularyUtils.PREFIX + "má-dokumentový-slovník"
+      input[VocabularyUtils.PREFIX + "describes-document"][
+        VocabularyUtils.PREFIX + "has-document-vocabulary"
       ] = {
         "@id": input["@id"],
       };
