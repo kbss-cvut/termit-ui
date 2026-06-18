@@ -181,7 +181,7 @@ describe("AssetFactory", () => {
   });
 
   describe("createChangeRecord", () => {
-    const changeClass = `${VocabularyUtils.PREFIX}zm\u011bna`;
+    const changeClass = `${VocabularyUtils.PREFIX}change`;
 
     it("creates a persist record for persist event data", () => {
       const persistRecord: ChangeRecordData = {
