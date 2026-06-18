@@ -44,25 +44,24 @@ describe("AsyncDashboardActions", () => {
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2000/01/rdf-schema#label": "Test file",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
           "@type": [VocabularyUtils.FILE, VocabularyUtils.RESOURCE],
         },
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2000/01/rdf-schema#label": "Test vocabulary",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
           "@type": [VocabularyUtils.VOCABULARY],
         },
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2004/02/skos/core#prefLabel": "Test term",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://www.w3.org/2004/02/skos/core#inScheme": {
+            "@id": Generator.generateUri(),
+          },
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
           "@type": [VocabularyUtils.TERM],
         },
@@ -87,20 +86,18 @@ describe("AsyncDashboardActions", () => {
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2004/02/skos/core#prefLabel": "Test term",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
+          "http://www.w3.org/2004/02/skos/core#inScheme": {
+            "@id": Generator.generateUri(),
+          },
           "http://www.w3.org/2004/02/skos/core#broader": [
             {
               "@id": Generator.generateUri(),
               "http://www.w3.org/2004/02/skos/core#prefLabel":
                 "Test parent one",
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-                {
-                  "@id": Generator.generateUri(),
-                },
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+              "http://www.w3.org/2004/02/skos/core#inScheme": {
+                "@id": Generator.generateUri(),
+              },
+              "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
               "http://purl.org/dc/terms/modified": Date.now(),
               "@type": [VocabularyUtils.TERM],
             },
@@ -108,11 +105,10 @@ describe("AsyncDashboardActions", () => {
               "@id": Generator.generateUri(),
               "http://www.w3.org/2004/02/skos/core#prefLabel":
                 "Test parent two",
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-                {
-                  "@id": Generator.generateUri(),
-                },
-              "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+              "http://www.w3.org/2004/02/skos/core#inScheme": {
+                "@id": Generator.generateUri(),
+              },
+              "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
               "http://purl.org/dc/terms/modified": Date.now(),
               "@type": [VocabularyUtils.TERM],
             },
@@ -141,26 +137,25 @@ describe("AsyncDashboardActions", () => {
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2000/01/rdf-schema#label": "Test file",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
           "@type": [VocabularyUtils.FILE, VocabularyUtils.RESOURCE],
         },
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2000/01/rdf-schema#label": "Test vocabulary",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
           "@type": [VocabularyUtils.VOCABULARY],
         },
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2000/01/rdf-schema#label": "Test term",
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
+          "http://www.w3.org/2004/02/skos/core#inScheme": {
+            "@id": Generator.generateUri(),
+          },
           "@type": [VocabularyUtils.TERM],
         },
       ];
@@ -188,19 +183,18 @@ describe("AsyncDashboardActions", () => {
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2000/01/rdf-schema#label": vocLabel,
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
           "@type": [VocabularyUtils.VOCABULARY],
         },
         {
           "@id": Generator.generateUri(),
           "http://www.w3.org/2000/01/rdf-schema#label": termLabel,
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-editora": require("../../rest-mock/current"),
+          "http://onto.fel.cvut.cz/ontologies/data-description/has-editor": require("../../rest-mock/current"),
           "http://purl.org/dc/terms/modified": Date.now(),
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/je-pojmem-ze-slovniku":
-            {
-              "@id": Generator.generateUri(),
-            },
+          "http://www.w3.org/2004/02/skos/core#inScheme": {
+            "@id": Generator.generateUri(),
+          },
           "@type": [VocabularyUtils.TERM],
         },
       ];

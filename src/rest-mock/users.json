@@ -1,25 +1,25 @@
 [
   {
     "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/catherine-halsey",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Catherine",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Halsey",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "halsey@unsc.org",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-name": "Catherine",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-surname": "Halsey",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-username": "halsey@unsc.org",
     "@type": [
       "http://onto.fel.cvut.cz/ontologies/application/termit/administrator"
     ]
   },
   {
     "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/thomas-lasky",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Thomas",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Lasky",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "lasky@unsc.org",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-name": "Thomas",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-surname": "Lasky",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-username": "lasky@unsc.org",
     "@type": ["http://onto.fel.cvut.cz/ontologies/application/termit/user"]
   },
   {
     "@id": "http://onto.fel.cvut.cz/ontologies/termit/user/sarah-palmer",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-křestní-jméno": "Sarah",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-příjmení": "Palmer",
-    "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/má-uživatelské-jméno": "palmer@unsc.org",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-name": "Sarah",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-surname": "Palmer",
+    "http://onto.fel.cvut.cz/ontologies/data-description/has-username": "palmer@unsc.org",
     "@type": ["http://onto.fel.cvut.cz/ontologies/application/termit/user"]
   }
 ]
