@@ -3,10 +3,10 @@ import VocabularyUtils from "../util/VocabularyUtils";
 
 export const CONTEXT = {
   iri: "@id",
-  firstName: VocabularyUtils.PREFIX + "má-křestní-jméno",
-  lastName: VocabularyUtils.PREFIX + "má-příjmení",
-  username: VocabularyUtils.PREFIX + "má-uživatelské-jméno",
-  password: VocabularyUtils.PREFIX + "má-heslo",
+  firstName: VocabularyUtils.PREFIX + "has-name",
+  lastName: VocabularyUtils.PREFIX + "has-surname",
+  username: VocabularyUtils.PREFIX + "has-username",
+  password: VocabularyUtils.PREFIX + "has-password",
   originalPassword:
     "http://onto.fel.cvut.cz/ontologies/application/termit/original-password",
   lastSeen: "http://rdfs.org/sioc/ns#last_activity_date",

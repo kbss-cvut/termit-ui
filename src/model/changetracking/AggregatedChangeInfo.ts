@@ -2,7 +2,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 
 export const CONTEXT = {
   date: {
-    "@id": `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-modifikace`,
+    "@id": VocabularyUtils.DC_MODIFIED,
     "@type": VocabularyUtils.XSD_DATE,
   },
   count: {

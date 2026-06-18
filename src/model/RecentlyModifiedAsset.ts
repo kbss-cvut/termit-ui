@@ -9,7 +9,7 @@ const ctx = {
     "@id": VocabularyUtils.DC_MODIFIED,
     "@type": VocabularyUtils.XSD_DATETIME,
   },
-  editor: VocabularyUtils.PREFIX + "má-editora",
+  editor: VocabularyUtils.PREFIX + "has-editor",
   vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
 };
 
