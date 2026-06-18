@@ -1000,7 +1000,7 @@ describe("Reducers", () => {
       );
       expect(Object.keys(result.states)).toEqual(payload.map((r) => r.iri));
       expect(result.terminalStates).toEqual([
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/zrušený-pojem",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/cancelled-term",
       ]);
     });
   });
