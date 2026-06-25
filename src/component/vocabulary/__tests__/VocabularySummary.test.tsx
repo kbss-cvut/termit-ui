@@ -16,17 +16,22 @@ import AccessLevel from "../../../model/acl/AccessLevel";
 import { langString } from "../../../model/MultilingualString";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 import { StompClient } from "../../hoc/withStompClient";
+import type { Mock } from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+  };
+});
+vi.mock("../../changetracking/AssetHistory", () => ({
+  default: () => <div>Asset history</div>,
 }));
-jest.mock("../../changetracking/AssetHistory", () => () => (
-  <div>Asset history</div>
-));
-jest.mock("../../term/Terms", () => () => <div>Terms</div>);
-jest.mock("../TermChangeFrequency", () => () => <div>Term frequency</div>);
-jest.mock("../../misc/PromiseTrackingMask", () => () => <div>Mask</div>);
+vi.mock("../../term/Terms", () => ({ default: () => <div>Terms</div> }));
+vi.mock("../TermChangeFrequency", () => ({
+  default: () => <div>Term frequency</div>,
+}));
 
 describe("VocabularySummary", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
@@ -51,14 +56,14 @@ describe("VocabularySummary", () => {
   let state: TermItState;
 
   beforeEach(() => {
-    onLoad = jest.fn().mockResolvedValue({});
-    onUpdate = jest.fn().mockResolvedValue(undefined);
-    removeVocabulary = jest.fn().mockImplementation(() => Promise.resolve());
-    exportToCsv = jest.fn();
-    exportToExcel = jest.fn();
-    exportToTurtle = jest.fn();
-    exportWithReferences = jest.fn();
-    requestVocabularyValidation = jest.fn();
+    onLoad = vi.fn().mockResolvedValue({});
+    onUpdate = vi.fn().mockResolvedValue(undefined);
+    removeVocabulary = vi.fn().mockImplementation(() => Promise.resolve());
+    exportToCsv = vi.fn();
+    exportToExcel = vi.fn();
+    exportToTurtle = vi.fn();
+    exportWithReferences = vi.fn();
+    requestVocabularyValidation = vi.fn();
     exportFunctions = {
       exportToCsv,
       exportToExcel,
@@ -88,7 +93,7 @@ describe("VocabularySummary", () => {
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_EDITOR);
     state.user = user;
-    (redux.useSelector as jest.Mock).mockImplementation((selector) =>
+    (redux.useSelector as Mock).mockImplementation((selector) =>
       selector(state)
     );
   });

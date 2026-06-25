@@ -24,7 +24,7 @@ import MultilingualString, {
   langString,
 } from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import { getLanguageOptions } from "../../util/IntlUtil";
 import Select from "../misc/Select";
 import Message from "../../model/Message";
@@ -116,7 +116,7 @@ export class VocabularyEdit extends React.Component<
       this.props.selectLanguage(this.props.language);
       return;
     }
-    const data = _.cloneDeep({
+    const data = cloneDeep({
       label: this.state.label,
       comment: this.state.comment,
     });

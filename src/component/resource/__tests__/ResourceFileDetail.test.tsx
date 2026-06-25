@@ -11,6 +11,7 @@ import Resource, { EMPTY_RESOURCE } from "../../../model/Resource";
 import FileDetail from "../../file/FileContentDetail";
 import Routes from "../../../util/Routes";
 import VocabularySelect from "../../vocabulary/VocabularySelect";
+import type { Mock } from "vitest";
 
 describe("ResourceFileDetail", () => {
   const resourceName = "test-resource";
@@ -30,11 +31,11 @@ describe("ResourceFileDetail", () => {
   let resource: File;
 
   beforeEach(() => {
-    loadResource = jest.fn();
-    loadLatestTextAnalysisRecord = jest
+    loadResource = vi.fn();
+    loadLatestTextAnalysisRecord = vi
       .fn()
       .mockImplementation(() => Promise.resolve(null));
-    popRoutingPayload = jest.fn();
+    popRoutingPayload = vi.fn();
 
     location = {
       pathname: "/resource/" + resourceName + "/annotate/",
@@ -66,6 +67,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -90,6 +92,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -117,6 +120,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -138,7 +142,7 @@ describe("ResourceFileDetail", () => {
       created: new Date().toISOString(),
       vocabularies: [{ iri: vocabularyIri }],
     });
-    (loadLatestTextAnalysisRecord as jest.Mock).mockImplementation(() =>
+    (loadLatestTextAnalysisRecord as Mock).mockImplementation(() =>
       Promise.resolve(record)
     );
     const wrapper = shallow<ResourceFileDetail>(
@@ -148,6 +152,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -172,7 +177,7 @@ describe("ResourceFileDetail", () => {
       created: new Date().toISOString(),
       vocabularies: [{ iri: vocabularyIri }],
     });
-    (loadLatestTextAnalysisRecord as jest.Mock).mockImplementation(() =>
+    (loadLatestTextAnalysisRecord as Mock).mockImplementation(() =>
       Promise.resolve(record)
     );
     const wrapper = shallow<ResourceFileDetail>(
@@ -182,6 +187,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -208,6 +214,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -238,6 +245,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -269,11 +277,12 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
     );
-    jest.resetAllMocks();
+    vi.resetAllMocks();
     wrapper.setProps({ resource: EMPTY_RESOURCE });
     wrapper.update();
     expect(loadLatestTextAnalysisRecord).not.toHaveBeenCalled();
@@ -292,6 +301,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -316,6 +326,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -331,6 +342,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -346,6 +358,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -370,6 +383,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -402,6 +416,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />
@@ -432,6 +447,7 @@ describe("ResourceFileDetail", () => {
         loadResource={loadResource}
         popRoutingPayload={popRoutingPayload}
         loadLatestTextAnalysisRecord={loadLatestTextAnalysisRecord}
+        clearResource={vi.fn()}
         {...routeProps}
         {...intlFunctions()}
       />

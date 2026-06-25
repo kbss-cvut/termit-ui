@@ -9,9 +9,9 @@ describe("Public MainView", () => {
   let loadTermTypes: () => void;
 
   beforeEach(() => {
-    changeView = jest.fn();
-    loadConfiguration = jest.fn();
-    loadTermTypes = jest.fn();
+    changeView = vi.fn();
+    loadConfiguration = vi.fn();
+    loadTermTypes = vi.fn();
   });
 
   it("loads configuration on mount", () => {

@@ -51,7 +51,9 @@ export function createFullTermRenderer(
   currentVocabularyIri?: string,
   qualityBadge?: boolean
 ) {
-  const addonBeforeRenderers = [];
+  const addonBeforeRenderers: Array<
+    (option: Term & TreeItem) => React.ReactElement | null
+  > = [];
   if (qualityBadge) {
     addonBeforeRenderers.push(createQualityBadgeRenderer());
   }

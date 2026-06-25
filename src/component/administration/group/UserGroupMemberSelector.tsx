@@ -7,6 +7,7 @@ import { useI18n } from "../../hook/useI18n";
 import "./UserGroupSelector.scss";
 import { ThunkDispatch } from "../../../util/Types";
 import { loadUsers } from "../../../action/AsyncUserActions";
+import UserRoles from "../user/UserRoles";
 
 const COLUMN_COUNT = 3;
 const COLUMN_WIDTH = 12 / COLUMN_COUNT;
@@ -38,7 +39,7 @@ const UserGroupMemberSelector: React.FC<{
   };
 
   const rowCount = Math.ceil(allUsers.length / COLUMN_COUNT);
-  const rows = [];
+  const rows: React.ReactElement[] = [];
   for (let i = 0; i < rowCount; i++) {
     rows.push(
       <Row key={i} className="mb-2">
@@ -92,6 +93,7 @@ const UserCheckbox: React.FC<{
         className="user-checkbox"
       />
       {`${user.fullName} (${user.username})`}
+      <UserRoles user={user} />
     </>
   );
 };

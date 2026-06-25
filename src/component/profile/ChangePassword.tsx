@@ -25,6 +25,7 @@ import Routes from "../../util/Routes";
 import { changePassword } from "../../action/AsyncUserActions";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import ValidationResult, { Severity } from "../../model/form/ValidationResult";
+import SecurityUtils from "../../util/SecurityUtils";
 
 interface ChangePasswordProps extends HasI18n {
   user: User;
@@ -82,16 +83,17 @@ export class ChangePassword extends React.Component<
       });
   };
 
-  private passwordsMatch(): boolean {
+  private passwordConfirmMatches(): boolean {
     return this.state.newPassword === this.state.confirmPassword;
   }
 
-  private passwordsDiffer(): boolean {
+  private oldAndNewPasswordDiffer(): boolean {
     return this.state.currentPassword !== this.state.newPassword;
   }
 
   private validateNewPassword() {
-    return this.state.newPassword.trim().length > 0 && !this.passwordsDiffer()
+    return this.state.newPassword.trim().length > 0 &&
+      !this.oldAndNewPasswordDiffer()
       ? new ValidationResult(
           Severity.BLOCKER,
           this.props.i18n("change-password.passwords.differ.tooltip")
@@ -100,7 +102,8 @@ export class ChangePassword extends React.Component<
   }
 
   private validatePasswordConfirmation() {
-    return this.state.newPassword.trim().length > 0 && !this.passwordsMatch()
+    return this.state.newPassword.trim().length > 0 &&
+      !this.passwordConfirmMatches()
       ? new ValidationResult(
           Severity.BLOCKER,
           this.props.i18n("register.passwords-not-matching.tooltip")
@@ -113,15 +116,16 @@ export class ChangePassword extends React.Component<
       this.state.currentPassword.trim().length > 0 &&
       this.state.newPassword.trim().length > 0 &&
       this.state.confirmPassword.trim().length > 0 &&
-      this.passwordsMatch() &&
-      this.passwordsDiffer()
+      SecurityUtils.isPasswordValid(this.state.newPassword) &&
+      this.passwordConfirmMatches() &&
+      this.oldAndNewPasswordDiffer()
     );
   }
 
   private navigateToProfileRoute = () => Routing.transitionTo(Routes.profile);
 
   public render() {
-    const { i18n } = this.props;
+    const { i18n, formatMessage } = this.props;
 
     return (
       <>
@@ -151,6 +155,9 @@ export class ChangePassword extends React.Component<
                     validation={this.validateNewPassword()}
                     onChange={this.onInputChange}
                     autoComplete="new-password"
+                    hint={formatMessage("createPassword.requirements", {
+                      minLength: SecurityUtils.PASSWORD_MIN_LENGTH,
+                    })}
                   />
                 </Col>
                 <Col xl={6} md={12}>

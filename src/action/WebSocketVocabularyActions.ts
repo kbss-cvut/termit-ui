@@ -2,7 +2,8 @@ import { IRI, IRIImpl } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { ThunkDispatch } from "../util/Types";
 import { asyncActionRequest } from "./SyncActions";
-import { isString, pickBy } from "lodash";
+import isString from "lodash/isString";
+import pickBy from "lodash/pickBy";
 import Constants from "../util/Constants";
 import { StompClient } from "../component/hoc/withStompClient";
 

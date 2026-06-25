@@ -16,16 +16,20 @@ import { ReactWrapper } from "enzyme";
 import { i18n } from "../../../__tests__/environment/IntlUtil";
 import { act } from "react-dom/test-utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import type { Mock } from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
+vi.mock("../../vocabulary/VocabularyNameBadgeButton", () => ({
+  default: () => <span>vocabulary-name</span>,
 }));
-jest.mock("../../vocabulary/VocabularyNameBadgeButton", () => () => (
-  <span>vocabulary-name</span>
-));
-jest.mock("../relationship-annotation/RelationshipAnnotationButton", () => ({
+vi.mock("../relationship-annotation/RelationshipAnnotationButton", () => ({
   RelationshipAnnotationButton: () => null,
 }));
 
@@ -48,9 +52,9 @@ describe("RelatedTermsList", () => {
       of: [],
     };
     defRelatedTerms.targeting[0].target.source.iri = term.iri;
-    (redux.useSelector as jest.Mock).mockReturnValue(defRelatedTerms);
-    const fakeDispatch = jest.fn().mockResolvedValue(relatedTerm);
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    (redux.useSelector as Mock).mockReturnValue(defRelatedTerms);
+    const fakeDispatch = vi.fn().mockResolvedValue(relatedTerm);
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
 
     const wrapper = mountWithIntl(
       <MemoryRouter>
@@ -75,9 +79,9 @@ describe("RelatedTermsList", () => {
       of: [],
     };
     defRelatedTerms.targeting[0].target.source.iri = term.iri;
-    (redux.useSelector as jest.Mock).mockReturnValue(defRelatedTerms);
-    const fakeDispatch = jest.fn().mockResolvedValue(defRelatedTerm);
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    (redux.useSelector as Mock).mockReturnValue(defRelatedTerms);
+    const fakeDispatch = vi.fn().mockResolvedValue(defRelatedTerm);
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
 
     const wrapper = mountWithIntl(
       <MemoryRouter>
@@ -107,9 +111,9 @@ describe("RelatedTermsList", () => {
     defRelatedTerms.targeting[0].types = [
       VocabularyUtils.SUGGESTED_TERM_OCCURRENCE,
     ];
-    (redux.useSelector as jest.Mock).mockReturnValue(defRelatedTerms);
-    const fakeDispatch = jest.fn().mockResolvedValue(defRelatedTerm);
-    (redux.useDispatch as jest.Mock).mockReturnValue(fakeDispatch);
+    (redux.useSelector as Mock).mockReturnValue(defRelatedTerms);
+    const fakeDispatch = vi.fn().mockResolvedValue(defRelatedTerm);
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
 
     const wrapper = mountWithIntl(
       <MemoryRouter>

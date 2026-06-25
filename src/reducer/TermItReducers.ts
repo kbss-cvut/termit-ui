@@ -21,6 +21,7 @@ import ActionType, {
 } from "../action/ActionType";
 import TermItState, { DefinitionallyRelatedTerms } from "../model/TermItState";
 import User, { EMPTY_USER } from "../model/User";
+import UserGroup from "../model/UserGroup";
 import Message from "../model/Message";
 import IntlData from "../model/IntlData";
 import {
@@ -45,7 +46,7 @@ import TermOccurrence from "../model/TermOccurrence";
 import { Breadcrumb } from "../model/Breadcrumb";
 import AnnotatorLegendFilter from "../model/AnnotatorLegendFilter";
 import { LongRunningTask } from "../model/LongRunningTask";
-import { loadTermsFlatListPreference } from "src/util/UISettingsUtil";
+import { loadTermsFlatListPreference } from "../util/UISettingsUtil";
 import RelationshipAnnotation from "../model/meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "../model/meta/AnnotatedTermRelationship";
 
@@ -292,10 +293,7 @@ function searchQuery(
 ): SearchQuery {
   switch (action.type) {
     case ActionType.UPDATE_SEARCH_FILTER:
-      const newState = new SearchQuery(state);
-      newState.searchQuery = action.searchString;
-      newState.language = action.language || "";
-      return newState;
+      return new SearchQuery(Object.assign({}, state, action));
     case ActionType.LOGOUT:
       return new SearchQuery();
     default:
@@ -766,6 +764,23 @@ function users(state: User[] = [], action: AsyncActionSuccess<User[]>) {
   }
 }
 
+function userGroups(
+  state: UserGroup[] = [],
+  action: AsyncActionSuccess<UserGroup[]>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_USER_GROUPS:
+      if (isAsyncSuccess(action)) {
+        return action.payload;
+      }
+      return state;
+    case ActionType.LOGOUT:
+      return [];
+    default:
+      return state;
+  }
+}
+
 function accessLevels(
   state: { [key: string]: RdfsResource } = {},
   action: AsyncActionSuccess<RdfsResource[]>
@@ -839,6 +854,7 @@ const rootReducer = combineReducers<TermItState>({
   breadcrumbs,
   annotatorLegendFilter,
   users,
+  userGroups,
   accessLevels,
   runningTasks,
   showTermsFlatList,

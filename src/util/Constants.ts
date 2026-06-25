@@ -4,9 +4,9 @@ import Routes from "./Routes";
  * Aggregated object of process.env and window.__config__ to allow dynamic configuration
  */
 const ENV = {
-  ...Object.keys(process.env).reduce<Record<string, string>>((acc, key) => {
-    const strippedKey = key.replace("REACT_APP_", "");
-    acc[strippedKey] = process.env[key]!;
+  ...Object.keys(import.meta.env).reduce<Record<string, string>>((acc, key) => {
+    const strippedKey = key.replace("VITE_", "");
+    acc[strippedKey] = import.meta.env[key]!;
     return acc;
   }, {}),
   ...(window as any).__config__,
@@ -14,7 +14,7 @@ const ENV = {
 
 /**
  * Helper to make sure that all envs are defined properly
- * @param name env variable name (without the REACT_APP prefix)
+ * @param name env variable name (without the VITE prefix)
  * @param defaultValue Default variable name
  */
 export function getEnv(name: string, defaultValue?: string): string {
@@ -101,6 +101,7 @@ const constants = {
   STORAGE_JWT_KEY: "",
   STORAGE_LANG_KEY: "",
   STORAGE_TERMS_FLAT_LIST_KEY: "",
+  STORAGE_TERMS_TABLE_COLUMNS_KEY: "",
   STORAGE_TABLE_PAGE_SIZE_KEY: "",
   STORAGE_ANNOTATOR_LEGEND_OPEN_KEY: "",
   // How many messages should be displayed at one moment
@@ -140,6 +141,7 @@ const constants = {
 
   // Size of page fetched from server
   DEFAULT_PAGE_SIZE: 100,
+  MAX_PAGE_SIZE: 0x7fffffff, // This corresponds to Java Integer.MAX_VALUE
   // size of the page for change records in vocabulary activity tab
   VOCABULARY_CONTENT_HISTORY_LIMIT: 15,
 
@@ -166,6 +168,7 @@ const deployment =
 constants.STORAGE_JWT_KEY = `${constants.APP_NAME}-${deployment}${constants.Headers.AUTHORIZATION}`;
 constants.STORAGE_LANG_KEY = `${constants.APP_NAME}-${deployment}LANG`;
 constants.STORAGE_TERMS_FLAT_LIST_KEY = `${constants.APP_NAME}-${deployment}TERMS_FLAT_LIST`;
+constants.STORAGE_TERMS_TABLE_COLUMNS_KEY = `${constants.APP_NAME}-${deployment}TERMS_TABLE_COLUMNS`;
 constants.STORAGE_TABLE_PAGE_SIZE_KEY = `${constants.APP_NAME}-${deployment}TABLE_PAGE_SIZE`;
 constants.STORAGE_ANNOTATOR_LEGEND_OPEN_KEY = `${constants.APP_NAME}-${deployment}ANNOTATOR_LEGEND_OPEN`;
 

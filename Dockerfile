@@ -1,15 +1,14 @@
 # BASE STAGE
 # Prepare node, copy package.json
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
 # DEPENDENCIES STAGE
 # Install production and dev dependencies
 FROM base AS dependencies
-# install node packages
-#RUN npm set progress=false && npm config set depth 0
-RUN npm ci --legacy-peer-deps
+# install node packages with scripts disabled to neutralise malicious postinstall hooks
+RUN npm ci --ignore-scripts
 
 # BUILD STAGE
 # run NPM build
@@ -22,11 +21,35 @@ RUN set -ex; \
 
 # RELEASE STAGE
 # Only include the static files in the final image
-FROM nginx:1.25
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+FROM nginx:1.31.1-alpine
+
 # Make env var substitution happen on *.template files in the html dir
-ENV NGINX_ENVSUBST_TEMPLATE_DIR=/usr/share/nginx/html
-ENV NGINX_ENVSUBST_OUTPUT_DIR=/usr/share/nginx/html
-RUN chmod a+r -R /usr/share/nginx/html
-RUN chmod ag+x /usr/share/nginx/html/flags
-RUN chmod ag+x /usr/share/nginx/html/background
+ENV NGINX_ENVSUBST_TEMPLATE_DIR=/usr/share/nginx/html \
+    NGINX_ENVSUBST_OUTPUT_DIR=/usr/share/nginx/html
+
+COPY --from=build --chown=nginx:nginx --chmod=755 /usr/src/app/build /usr/share/nginx/html
+
+# Hardening:
+#  - allow the unprivileged nginx user to bind port 80 via file capability
+#  - make every path nginx (master + workers + entrypoint scripts) writes to owned by the nginx user
+#  - strip all setuid/setgid bits from the filesystem to eliminate local privilege escalation vectors
+#  - remove package manager metadata and the libcap toolchain after use
+RUN set -eux; \
+    apk add --no-cache --virtual .setcap libcap; \
+    setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx; \
+    apk del .setcap; \
+    # Writable runtime dirs/files for a non-root master process
+    install -d -o nginx -g nginx -m 0755 /var/cache/nginx /var/run; \
+    install -o nginx -g nginx -m 0644 /dev/null /var/run/nginx.pid; \
+    chown -R nginx:nginx /etc/nginx/conf.d /usr/share/nginx/html; \
+    # Drop suid/sgid bits everywhere
+    find / -xdev -type f \( -perm -4000 -o -perm -2000 \) -exec chmod a-s {} +; \
+    # Trim package metadata
+    rm -rf /var/cache/apk/* /tmp/* /root/.cache
+
+EXPOSE 80
+STOPSIGNAL SIGQUIT
+USER nginx
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -q --spider http://127.0.0.1:80/ || exit 1

@@ -1,13 +1,28 @@
-export default class SearchQuery {
-  public searchQuery: string;
-  public language: string;
+import { SearchTarget } from "./SearchTarget";
+import SearchParam from "./SearchParam";
 
-  constructor(oldState: SearchQuery | null = null) {
-    this.searchQuery = oldState ? oldState.searchQuery : "";
-    this.language = oldState ? oldState.language : "";
+export default class SearchQuery {
+  public searchString: string;
+  public language: string;
+  public target: SearchTarget;
+  public facetParams: Record<string, SearchParam>;
+
+  constructor(oldState: Partial<SearchQuery> = {}) {
+    this.searchString = oldState.searchString || "";
+    this.language = oldState.language || "";
+    this.target = oldState.target || SearchTarget.BOTH;
+    this.facetParams = oldState.facetParams || {};
+  }
+
+  public isSearchStringBlank(): boolean {
+    return this.searchString.trim().length === 0;
+  }
+
+  public hasFacetParams(): boolean {
+    return Object.keys(this.facetParams).length > 0;
   }
 
   public isEmpty(): boolean {
-    return !this.searchQuery;
+    return this.isSearchStringBlank() && !this.hasFacetParams();
   }
 }

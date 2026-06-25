@@ -6,6 +6,7 @@ import { UserRoleData } from "../../../model/UserRole";
 import User from "../../../model/User";
 import TermItState from "../../../model/TermItState";
 import { useI18n } from "../../hook/useI18n";
+import { Badge } from "reactstrap";
 
 export function filterActualRoles(types: string[], roles: UserRoleData[]) {
   return Utils.sanitizeArray(roles).filter((r) => types.indexOf(r.iri) >= 0);
@@ -21,9 +22,13 @@ const UserRoles: React.FC<{ user: User }> = ({ user }) => {
     return null;
   }
   return (
-    <div>
-      {actualRoles.map((r) => getLocalized(r.label, locale)).join(", ")}
-    </div>
+    <>
+      {actualRoles.map((r) => (
+        <Badge key={r.iri} color="info" className="user-role-badge">
+          {getLocalized(r.label, locale)}
+        </Badge>
+      ))}
+    </>
   );
 };
 

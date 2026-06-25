@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { doesUsernameExists } from "../../../action/AsyncUserActions";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
-import * as _ from "lodash";
+import debounce from "lodash/debounce";
+import isBoolean from "lodash/isBoolean";
 import ValidationResult, {
   Severity,
 } from "../../../model/form/ValidationResult";
@@ -44,9 +45,9 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
 
   // ref is required to keep the same debounced function between renders
   const fetchUsernameExists = useRef(
-    _.debounce((username) => {
+    debounce((username) => {
       dispatch(doesUsernameExists(username)).then((action) => {
-        if (_.isBoolean(action)) {
+        if (isBoolean(action)) {
           setUsernameExists(action);
         }
       });

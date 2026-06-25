@@ -3,19 +3,19 @@ import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import Vocabulary from "../../model/Vocabulary";
 import {
-  Column,
-  useFilters,
-  usePagination,
-  useSortBy,
-  useTable,
-} from "react-table";
-import TextBasedFilter, {
-  multilingualTextContainsFilterFactory,
-} from "../misc/table/TextBasedFilter";
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { multilingualTextContainsFilterFactory } from "../misc/table/TextBasedFilter";
 import VocabularyLink from "./VocabularyLink";
 import { useI18n } from "../hook/useI18n";
 import Table from "../misc/table/Table";
 import { getShortLocale } from "../../util/IntlUtil";
+import { getLocalized } from "../../model/MultilingualString";
 
 export const VocabularyList: React.FC = () => {
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
@@ -24,42 +24,27 @@ export const VocabularyList: React.FC = () => {
     () => Object.keys(vocabularies).map((v) => vocabularies[v]),
     [vocabularies]
   );
-  const columns: Column<Vocabulary>[] = React.useMemo(
+  const columns: ColumnDef<Vocabulary>[] = React.useMemo(
     () => [
       {
-        Header: i18n("vocabulary.title"),
-        accessor: "label",
-        Filter: TextBasedFilter,
-        filter: "text",
-        Cell: ({ row }) => <VocabularyLink vocabulary={row.original} />,
+        header: i18n("vocabulary.title"),
+        id: "label",
+        accessorFn: (row) => getLocalized(row.label, getShortLocale(locale)),
+        filterFn: multilingualTextContainsFilterFactory(getShortLocale(locale)),
+        cell: ({ row }) => <VocabularyLink vocabulary={row.original} />,
       },
     ],
-    [i18n]
+    [i18n, locale]
   );
-  const filterTypes = React.useMemo(
-    () => ({
-      text: multilingualTextContainsFilterFactory(getShortLocale(locale)),
-    }),
-    [locale]
-  );
-  const tableInstance = useTable<Vocabulary>(
-    {
-      columns,
-      data,
-      filterTypes,
-      initialState: {
-        sortBy: [
-          {
-            id: "label",
-            desc: false,
-          },
-        ],
-      },
-    } as any,
-    useFilters,
-    useSortBy,
-    usePagination
-  );
+
+  const tableInstance = useReactTable<Vocabulary>({
+    columns,
+    data,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   return (
     <div id="vocabulary-list" className="asset-list">

@@ -107,6 +107,8 @@ const en = {
       "Invalid or expired password change link. Please request a password change again.",
 
     "createPassword.passwordsNotEqual": "Passwords don't match",
+    "createPassword.requirements":
+      "Password must be at least {minLength} characters long and contain at least one lowercase and uppercase letter and a number",
     "createPassword.mask": "Creating password...",
     "createPassword.title": "Create password",
     "createPassword.password": "New password",
@@ -121,9 +123,6 @@ const en = {
     "main.nav.vocabularies": "Vocabularies",
     "main.nav.statistics": "Statistics",
     "main.nav.search": "Search",
-    "main.nav.searchTerms": "Search terms",
-    "main.nav.searchVocabularies": "Search vocabularies",
-    "main.nav.facetedSearch": "Faceted search",
     "main.nav.admin": "Administration",
     "main.nav.create-vocabulary": "New Vocabulary",
     "main.nav.import-vocabulary": "Import Vocabulary",
@@ -133,7 +132,9 @@ const en = {
     "main.search.tooltip": "Go to the search screen",
     "main.search.count-info-and-link":
       "Showing {displayed} of {count} results. See all results.",
-    "main.search.no-results": "No results found. Click to try faceted search.",
+    "main.search.no-results": "No results found. Click to try advanced search.",
+    "main.search.facetsActive":
+      "{count, plural, one {# active facet} other {# active facets}}",
     "main.lang-selector.tooltip": "Select user interface language",
 
     "dashboard.widget.assetList.empty": "Found no assets to show here.",
@@ -191,9 +192,6 @@ const en = {
       "User {name} successfully unlocked.",
     "administration.users.status.action.changeRole.success":
       "The role was changed.",
-    "administration.users.unlock.title": "Unlock user {name}",
-    "administration.users.unlock.password": "New password",
-    "administration.users.unlock.passwordConfirm": "Confirm new password",
     "administration.users.action.changerole.tooltip":
       "Change role of the selected user",
     "administration.users.action.changerole": "Change role",
@@ -207,7 +205,6 @@ const en = {
     "administration.users.create.created":
       'User "{name}" successfully created.',
     "administration.users.you": "This is you",
-    "administration.users.types.admin": "This user is an administrator",
     "administration.users.oidc":
       "An external authentication service is used to manage users.",
     "administration.users.create.password-toggle.user": "Send activation email",
@@ -521,6 +518,7 @@ const en = {
       "Definition is always unique and cannot be combined from multiple sources.",
     "term.comment.help":
       "(Optional) non-definitorial text clarifying the meaning of the term.",
+    "term.edit.property": "Edit {property}",
     "term.exactMatches.help":
       "(Optional) term exactly matching the meaning of the current term. It serves to map the term to another one from a different vocabulary.",
     "term.parent.help":
@@ -622,6 +620,10 @@ const en = {
     "term.badge.score.tooltip":
       "The score of this term is {score}%. Click to see the validation results",
     "term.badge.no-score.tooltip": "There is no available score for this term",
+    "term.largeValueList.closed":
+      "Attribute has more than {threshold} values. Click here to show them.",
+    "term.largeValueList.open":
+      "Attribute has more than {threshold} values. Click here to hide them.",
 
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":
@@ -649,6 +651,29 @@ const en = {
     "glossary.showFlatList": "Flat list",
     "glossary.showFlatList.help":
       "Terms are displayed in a flat list that does not show the hierarchical relationships between terms.",
+    "glossary.table.filter.placeholder": "Filter terms",
+    "glossary.table.columns.button": "Columns",
+    "glossary.table.column.label": "Label",
+    "glossary.table.column.status": "State",
+    "glossary.table.column.vocabulary": "Vocabulary",
+    "glossary.table.column.notation": "Notation",
+    "glossary.table.column.definition": "Definition",
+    "glossary.table.openTerm": "Open term detail",
+    "glossary.table.empty": "No terms found.",
+    "glossary.table.loadError": "Unable to load terms.",
+    "glossary.table.total": "{count, number} terms",
+    "glossary.table.loaded": "Displayed: {count, number}",
+    "glossary.table.loadingMore": "Loading more terms...",
+    "glossary.table.cell.expand": "Expand cell",
+    "glossary.table.cell.collapse": "Collapse cell",
+    "glossary.table.endReached": "All terms loaded.",
+    "glossary.table.workspace.title": "Sheet view",
+    "glossary.table.workspace.breadcrumb": "Sheet view",
+    "glossary.table.workspace.open": "Open sheet view",
+    "glossary.table.workspace.open.help":
+      "Open the dedicated sheet view for bulk updates and metadata overview.",
+    "glossary.table.workspace.back": "Back to vocabulary",
+    "glossary.table.workspace.back.help": "Return to vocabulary detail view.",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",
     "glossary.createTerm.tooltip": "Create new vocabulary's term",
@@ -704,15 +729,14 @@ const en = {
 
     "search.title": "Search",
     "search.tab.dashboard": "Dashboard",
-    "search.tab.everything": "Search in all assets",
-    "search.tab.terms": "Terms",
-    "search.tab.terms.filter.allVocabularies": "All vocabularies",
-    "search.tab.vocabularies": "Vocabularies",
-    "search.tab.facets": "Faceted term search",
     "search.reset": "Reset search",
     "search.results.title": 'Results for "{searchString}"',
     "search.no-results": "No results found.",
-    "search.results.countInfo": "Found {matches} matches in {assets} assets.",
+    "search.noMoreResults": "No more results available.",
+    "search.results.countInfo":
+      "Found {count, plural, one {# match} other {# matches}} matching the specified criteria.",
+    "search.results.countInfo.noFts":
+      "Found {count, plural, one {# asset} other {# assets}} matching the specified criteria.",
     "search.results.table.label": "Label",
     "search.results.table.label.tooltip": "Open asset detail",
     "search.results.table.match": "Match",
@@ -722,12 +746,20 @@ const en = {
     "search.results.field.comment": "Comment",
     "search.results.field.definition": "Definition",
     "search.results.vocabulary.from": "from",
-    "search.results.facetedLink": "Try using {link}.",
     "search.faceted.matchType.exact": "Exact match",
     "search.faceted.matchType.substring": "Substring",
     "search.faceted.no-results":
       "No more results found for the specified parameters.",
     "search.faceted.relationshipAnnotation": "Relationship annotated by term",
+    "search.target.both": "All",
+    "search.target.terms": "Terms",
+    "search.target.vocabularies": "Vocabularies",
+    "search.advanced.show": "Show advanced filters",
+    "search.advanced.hide": "Hide advanced filters",
+    "search.help": "Enter a search query above to start searching.",
+    "search.no-value": "No value",
+    "search.no-value.checkbox.hint":
+      "Unchecked - false; Checked - true; Indeterminate - no value",
 
     "profile.first.name": "First name",
     "profile.last.name": "Last name",

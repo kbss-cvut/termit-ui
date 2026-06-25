@@ -8,6 +8,7 @@ import User from "../../../../model/User";
 import Utils from "../../../../util/Utils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import UserActionsButtons, { UserActions } from "../UserActionsButtons";
+import { vi } from "vitest";
 
 describe("UserRow", () => {
   let user: User;
@@ -16,10 +17,9 @@ describe("UserRow", () => {
   beforeEach(() => {
     user = Generator.generateUser();
     actions = {
-      disable: jest.fn(),
-      enable: jest.fn(),
-      unlock: jest.fn(),
-      changeRole: jest.fn(),
+      disable: vi.fn(),
+      enable: vi.fn(),
+      changeRole: vi.fn(),
     };
     mockUseI18n();
   });
@@ -97,36 +97,5 @@ describe("UserRow", () => {
       />
     );
     expect(wrapper.exists("Button")).toBeFalsy();
-  });
-
-  it("renders unlock button for locked user", () => {
-    user.types.push(VocabularyUtils.USER_LOCKED);
-    const wrapper = shallow(
-      <UserActionsButtons
-        user={user}
-        currentUser={Generator.generateUser()}
-        {...actions}
-        {...intlFunctions()}
-      />
-    );
-    expect(
-      wrapper.exists(`#user-${Utils.hashCode(user.iri)}-unlock`)
-    ).toBeTruthy();
-  });
-
-  it("invokes unlock action when unlock button is clicked", () => {
-    user.types.push(VocabularyUtils.USER_LOCKED);
-    const wrapper = shallow(
-      <UserActionsButtons
-        user={user}
-        currentUser={Generator.generateUser()}
-        {...actions}
-        {...intlFunctions()}
-      />
-    );
-    const button = wrapper.find(`#user-${Utils.hashCode(user.iri)}-unlock`);
-    expect(button.exists()).toBeTruthy();
-    button.simulate("click");
-    expect(actions.unlock).toHaveBeenCalledWith(user);
   });
 });

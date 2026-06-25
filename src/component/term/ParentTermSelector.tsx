@@ -29,11 +29,11 @@ import {
 import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
 import ShowFlatListToggle from "./state/ShowFlatListToggle";
-import { setTermsFlatList } from "src/action/SyncActions";
+import { setTermsFlatList } from "../../action/SyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
   if (currentTermIri) {
-    const result = [];
+    const result: Term[] = [];
     for (const t of terms) {
       if (t.iri === currentTermIri) {
         continue;

@@ -9,12 +9,12 @@ import ActionType from "../../../action/ActionType";
 
 describe("Message", () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.spyOn(global, "setTimeout");
+    vi.useFakeTimers();
+    vi.spyOn(global, "setTimeout");
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("displays alert with specified message text", () => {
@@ -62,7 +62,7 @@ describe("Message", () => {
       message: "Error message",
     });
     mountWithIntl(<Message message={message} />);
-    jest.runAllTimers();
+    vi.runAllTimers();
     expect(
       mockStore.getActions().find((a) => a.type === ActionType.DISMISS_MESSAGE)
     ).toBeDefined();

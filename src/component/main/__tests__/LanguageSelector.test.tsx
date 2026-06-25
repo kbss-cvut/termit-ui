@@ -4,26 +4,30 @@ import * as Redux from "react-redux";
 import * as SyncActions from "../../../action/SyncActions";
 import { DropdownItem } from "reactstrap";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { vi } from "vitest";
 
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
-}));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
 
-jest.mock("../../../action/SyncActions", () => ({
-  ...jest.requireActual("../../../action/SyncActions"),
-  switchLanguage: jest.fn(),
+vi.mock("../../../action/SyncActions", () => ({
+  ...vi.importActual("../../../action/SyncActions"),
+  switchLanguage: vi.fn(),
 }));
 
 describe("Language selector", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("renders selected language with flag", () => {
     const selectedLanguage = Constants.LANG.EN.locale;
-    jest.spyOn(Redux, "useSelector").mockReturnValue(selectedLanguage);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(selectedLanguage);
     const wrapper = mountWithIntl(
       <LanguageSelector fixed={true} authenticated={true} />
     );
@@ -35,7 +39,7 @@ describe("Language selector", () => {
 
   it("renders dropdown with classes *-public and *-fixed if !authenticated && fixed", () => {
     const selectedLanguage = Constants.LANG.EN.locale;
-    jest.spyOn(Redux, "useSelector").mockReturnValue(selectedLanguage);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(selectedLanguage);
     const wrapper = mountWithIntl(
       <LanguageSelector fixed={true} authenticated={false} />
     );
@@ -47,7 +51,7 @@ describe("Language selector", () => {
 
   it("renders dropdown without classes *-public and *-fixed if authenticated && !fixed", () => {
     const selectedLanguage = Constants.LANG.EN.locale;
-    jest.spyOn(Redux, "useSelector").mockReturnValue(selectedLanguage);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(selectedLanguage);
     const wrapper = mountWithIntl(
       <LanguageSelector fixed={false} authenticated={true} />
     );
@@ -56,8 +60,8 @@ describe("Language selector", () => {
   });
 
   it("changes active language to specified value when language is selected", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue(Constants.LANG.EN.locale);
-    jest.spyOn(Redux, "useDispatch").mockReturnValue(jest.fn());
+    vi.spyOn(Redux, "useSelector").mockReturnValue(Constants.LANG.EN.locale);
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(vi.fn());
     const wrapper = mountWithIntl(
       <LanguageSelector fixed={true} authenticated={true} />
     );
@@ -71,7 +75,7 @@ describe("Language selector", () => {
   });
 
   it("does not emit action when already active language selector is clicked - Czech", () => {
-    jest.spyOn(Redux, "useSelector").mockReturnValue(Constants.LANG.EN.locale);
+    vi.spyOn(Redux, "useSelector").mockReturnValue(Constants.LANG.EN.locale);
     const wrapper = mountWithIntl(
       <LanguageSelector fixed={true} authenticated={true} />
     );

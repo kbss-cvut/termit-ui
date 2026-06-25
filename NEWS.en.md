@@ -1,3 +1,24 @@
+#### Version 4.5.2
+
+- Dependency security updates.
+
+#### Version 4.5.1
+
+- Add sheet-like view of a vocabulary.
+- Dependency security updates.
+
+#### Version 4.5.0
+
+- Integrated fulltext search with faceted search.
+
+#### Version 4.4.3
+
+- Fixed an issue with removal of additional property values.
+
+#### Version 4.4.2
+
+- Fixed a term saving issue caused by a reference cycle between terms.
+
 #### Version 4.4.1
 
 - Fixed an issue with refreshing term tree after vocabulary content import.

@@ -16,7 +16,8 @@ import {
   LongRunningTask,
   LongRunningTaskState,
 } from "../../model/LongRunningTask";
-import { isEqual, padStart } from "lodash";
+import isEqual from "lodash/isEqual";
+import padStart from "lodash/padStart";
 import If from "../misc/If";
 
 function icon(task: LongRunningTask, i18n: (id?: string) => string) {

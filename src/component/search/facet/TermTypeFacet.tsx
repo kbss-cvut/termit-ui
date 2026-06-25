@@ -8,6 +8,7 @@ import MultiSelectFacet from "./MultiSelectFacet";
 import { useI18n } from "../../hook/useI18n";
 import { getLocalized } from "../../../model/MultilingualString";
 import { mapTypeOptions } from "../../misc/treeselect/OptionMappers";
+import { noValueOption } from "./FacetedSearchUtil";
 
 interface TermTypeFacetProps {
   value: SearchParam;
@@ -22,13 +23,15 @@ const TermTypeFacet: React.FC<TermTypeFacetProps> = ({ value, onChange }) => {
   const types = useSelector((state: TermItState) => state.types);
   const { i18n, locale } = useI18n();
   const typeOptions = React.useMemo(
-    () =>
-      mapTypeOptions(types).map((r) => ({
+    () => [
+      noValueOption(i18n),
+      ...mapTypeOptions(types).map((r) => ({
         value: r.iri,
         label: getLocalized(r.label, locale),
         children: r.plainSubTerms,
         parent: r.parent,
       })),
+    ],
     [types, locale]
   );
   return (

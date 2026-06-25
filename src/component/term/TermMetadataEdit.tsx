@@ -27,7 +27,7 @@ import {
   hasNonBlankValue,
 } from "../../model/MultilingualString";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import {
   checkLabelUniqueness,
   isTermValid,
@@ -257,7 +257,7 @@ export class TermMetadataEdit extends React.Component<
       this.props.selectLanguage(this.props.language);
       return;
     }
-    const copy = _.cloneDeep(this.state);
+    const copy = cloneDeep(this.state);
     Term.removeTranslation(copy, lang);
     this.setState(copy);
   };

@@ -43,7 +43,7 @@ import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { useParams } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { loadIdentifier } from "../../asset/CreateAssetUtils";
-import ShowAdvancedAssetFields from "src/component/asset/ShowAdvancedAssetFields";
+import ShowAdvancedAssetFields from "../../asset/ShowAdvancedAssetFields";
 import {
   AnnotatedRelationshipsSelector,
   groupAnnotatedRelationships,

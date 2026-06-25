@@ -4,7 +4,7 @@ import TermItState from "../../model/TermItState";
 import { Button, Table } from "reactstrap";
 import { ThunkDispatch } from "../../util/Types";
 import { clearErrors } from "../../action/SyncActions";
-import { GoTrashcan } from "react-icons/go";
+import { FaTrash } from "react-icons/fa";
 import { useI18n } from "../hook/useI18n";
 
 const ErrorLogViewer: React.FC = () => {
@@ -32,7 +32,7 @@ const ErrorLogViewer: React.FC = () => {
                   outline={true}
                   onClick={clear}
                 >
-                  <GoTrashcan />
+                  <FaTrash />
                   {i18n("log-viewer.clear")}
                 </Button>
               </div>

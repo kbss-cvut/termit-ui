@@ -5,7 +5,7 @@ import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 
 describe("Button Fullscreen", () => {
   it("button in fullscreen", () => {
-    const toggleFullScreen = jest.fn();
+    const toggleFullScreen = vi.fn();
     const wrapper = mountWithIntl(
       <FullscreenButton
         toggleFullscreen={toggleFullScreen}
@@ -16,7 +16,7 @@ describe("Button Fullscreen", () => {
     expect(wrapper.find(GoScreenNormal).exists()).toBeTruthy();
   });
   it("button in window", () => {
-    const toggleFullScreen = jest.fn();
+    const toggleFullScreen = vi.fn();
     const wrapper = mountWithIntl(
       <FullscreenButton
         toggleFullscreen={toggleFullScreen}

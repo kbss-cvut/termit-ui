@@ -1,11 +1,12 @@
 import Constants from "./Constants";
 import BrowserStorage from "./BrowserStorage";
-import VocabularyUtils from "./VocabularyUtils";
-import Utils from "./Utils";
 import User, { EMPTY_USER } from "../model/User";
 import { getOidcIdentityStorageKey, isUsingOidcAuth } from "./OidcUtils";
 
 export default class SecurityUtils {
+  public static readonly PASSWORD_MIN_LENGTH = 8;
+  public static readonly PASSWORD_MAX_LENGTH = 64;
+
   public static saveToken(jwt: string): void {
     BrowserStorage.set(Constants.STORAGE_JWT_KEY, jwt);
     BrowserStorage.dispatchTokenChangeEvent();
@@ -47,12 +48,13 @@ export default class SecurityUtils {
     return !!currentUser && currentUser !== EMPTY_USER;
   }
 
-  public static isEditor(currentUser?: User | null): boolean {
+  public static isPasswordValid(password: string) {
     return (
-      SecurityUtils.isLoggedIn(currentUser) &&
-      Utils.sanitizeArray(currentUser!.types).indexOf(
-        VocabularyUtils.USER_RESTRICTED
-      ) === -1
+      password.length >= SecurityUtils.PASSWORD_MIN_LENGTH &&
+      password.length < SecurityUtils.PASSWORD_MAX_LENGTH &&
+      /[a-z]/.test(password) &&
+      /[A-Z]/.test(password) &&
+      /\d/.test(password)
     );
   }
 }

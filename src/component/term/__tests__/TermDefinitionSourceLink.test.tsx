@@ -3,7 +3,7 @@ import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Term from "../../../model/Term";
 import Routes from "../../../util/Routes";
-import { VocabularyData } from "../../../model/Vocabulary";
+import Vocabulary from "../../../model/Vocabulary";
 import { TermDefinitionSourceLink } from "../TermDefinitionSourceLink";
 import {
   flushPromises,
@@ -26,10 +26,10 @@ describe("TermDefinitionSourceLink", () => {
   let term: Term;
 
   beforeEach(() => {
-    const vocabulary: VocabularyData = {
+    const vocabulary: Vocabulary = new Vocabulary({
       iri: Generator.generateUri(),
-      label: "Test vocabulary",
-    };
+      label: langString("Test vocabulary"),
+    });
     term = new Term({
       iri: Generator.generateUri(),
       label: langString("Test"),
@@ -49,8 +49,8 @@ describe("TermDefinitionSourceLink", () => {
   });
 
   it("pushes definition source selector to transition payload store when transition to definition source is triggered", async () => {
-    const loadFileMetadata = jest.fn().mockResolvedValue(file);
-    jest.spyOn(Actions, "loadFileMetadata").mockReturnValue(loadFileMetadata);
+    const loadFileMetadata = vi.fn().mockResolvedValue(file);
+    vi.spyOn(Actions, "loadFileMetadata").mockReturnValue(loadFileMetadata);
     const selector: TextQuoteSelector = {
       iri: Generator.generateUri(),
       exactMatch: "test",
@@ -77,7 +77,7 @@ describe("TermDefinitionSourceLink", () => {
   });
 
   it("loads file metadata on mount", async () => {
-    jest.spyOn(Actions, "loadFileMetadata");
+    vi.spyOn(Actions, "loadFileMetadata");
     mountWithIntl(
       <MemoryRouter>
         <TermDefinitionSourceLink term={term} />

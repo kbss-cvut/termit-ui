@@ -8,7 +8,9 @@ import TermDefinitionSource from "../TermDefinitionSource";
 import Constants from "../../../util/Constants";
 import TermDefinitionSourceLink from "../TermDefinitionSourceLink";
 
-jest.mock("../TermDefinitionSourceLink", () => () => <span>Go to source</span>);
+vi.mock("../TermDefinitionSourceLink", () => ({
+  default: () => <span>Go to source</span>,
+}));
 
 describe("TermDefinitionSource", () => {
   const termData: TermData = {

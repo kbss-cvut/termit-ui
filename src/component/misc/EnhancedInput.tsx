@@ -14,7 +14,7 @@ export interface EnhancedInputProps extends AbstractInputProps {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export default class EnhancedInputPropsInput extends AbstractInput<EnhancedInputProps> {
+export default class EnhancedInput extends AbstractInput<EnhancedInputProps> {
   protected input: any;
 
   public render() {

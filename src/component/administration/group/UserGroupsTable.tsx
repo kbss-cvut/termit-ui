@@ -1,22 +1,21 @@
 import React from "react";
 import UserGroup from "../../../model/UserGroup";
 import { useI18n } from "../../hook/useI18n";
-import {
-  Column,
-  useFilters,
-  usePagination,
-  useSortBy,
-  useTable,
-} from "react-table";
 import User from "../../../model/User";
-import TextBasedFilter, {
-  textContainsFilter,
-} from "../../misc/table/TextBasedFilter";
+import { textContainsFilter } from "../../misc/table/TextBasedFilter";
 import Table from "../../misc/table/Table";
 import { Button } from "reactstrap";
 import Routes from "../../../util/Routes";
 import { Link } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";
+import {
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 interface UserGroupsTableProps {
   groups: UserGroup[];
@@ -29,20 +28,19 @@ const UserGroupsTable: React.FC<UserGroupsTableProps> = ({
 }) => {
   const { i18n } = useI18n();
   const data = React.useMemo(() => groups, [groups]);
-  const columns: Column<UserGroup>[] = React.useMemo(
+  const columns: ColumnDef<UserGroup>[] = React.useMemo<ColumnDef<UserGroup>[]>(
     () => [
       {
-        Header: i18n("asset.label"),
-        accessor: "label",
-        Filter: TextBasedFilter,
-        filter: "text",
+        header: i18n("asset.label"),
+        accessorKey: "label",
+        filterFn: textContainsFilter,
       },
       {
-        Header: i18n("administration.groups.members"),
-        accessor: "members",
-        disableFilters: true,
-        disableSortBy: true,
-        Cell: ({ row }) => (
+        header: i18n("administration.groups.members"),
+        accessorKey: "members",
+        enableColumnFilter: false,
+        enableSorting: false,
+        cell: ({ row }) => (
           <ul>
             {row.original.members.map((m) => (
               <li key={m.iri}>{new User(m).fullName}</li>
@@ -51,56 +49,54 @@ const UserGroupsTable: React.FC<UserGroupsTableProps> = ({
         ),
       },
       {
-        Header: i18n("actions"),
+        header: i18n("actions"),
         id: "actions",
-        headerClassName: "text-center align-top",
-        disableFilters: true,
-        disableSortBy: true,
-        // @ts-ignore
-        Cell: ({ row }) => (
-          <>
-            <Link
-              to={Routes.editUserGroup.link({
-                name: VocabularyUtils.create(row.original.iri).fragment,
-              })}
-              className="btn btn-primary btn-sm"
-            >
-              {i18n("edit")}
-            </Link>
-            <Button
-              key="group-delete"
-              size="sm"
-              onClick={() => onDelete(row.original)}
-              color="outline-danger"
-            >
-              {i18n("remove")}
-            </Button>
-          </>
-        ),
-        className: "table-row-actions",
+        enableColumnFilter: false,
+        enableSorting: false,
+        cell: ({ row }) => {
+          const iri = row.original.iri;
+          return (
+            <>
+              {iri && (
+                <Link
+                  to={Routes.editUserGroup.link({
+                    name: VocabularyUtils.create(iri).fragment,
+                  })}
+                  className="btn btn-primary btn-sm"
+                >
+                  {i18n("edit")}
+                </Link>
+              )}
+              <Button
+                key="group-delete"
+                size="sm"
+                onClick={() => onDelete(row.original)}
+                color="outline-danger"
+              >
+                {i18n("remove")}
+              </Button>
+            </>
+          );
+        },
+        meta: {
+          headerClassName: "text-center align-top",
+          className: "table-row-actions",
+        },
       },
     ],
     [i18n, onDelete]
   );
-  const filterTypes = React.useMemo(() => ({ text: textContainsFilter }), []);
-  const tableInstance = useTable<UserGroup>(
-    {
-      columns,
-      data,
-      filterTypes,
-      initialState: {
-        sortBy: [
-          {
-            id: "label",
-            desc: false,
-          },
-        ],
-      },
-    } as any,
-    useFilters,
-    useSortBy,
-    usePagination
-  );
+  const tableInstance = useReactTable<UserGroup>({
+    columns,
+    data,
+    initialState: {
+      sorting: [{ id: "label", desc: false }],
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
   return <Table instance={tableInstance} />;
 };
 

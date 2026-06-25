@@ -6,11 +6,11 @@ import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import UploadFile from "../UploadFile";
 import { act } from "react-dom/test-utils";
 
-jest.mock("../../../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../../../util/Ajax");
+vi.mock("../../../../util/Ajax", () => {
+  const originalModule = vi.importActual("../../../../util/Ajax");
   return {
     ...originalModule,
-    default: jest.fn(),
+    default: vi.fn(),
   };
 });
 
@@ -24,11 +24,11 @@ describe("CreateFileMetadata", () => {
   let onCancel: () => void;
 
   beforeEach(() => {
-    Ajax.post = jest
+    Ajax.post = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ data: iri }));
-    onCreate = jest.fn().mockImplementation(() => Promise.resolve(iri));
-    onCancel = jest.fn();
+    onCreate = vi.fn().mockImplementation(() => Promise.resolve(iri));
+    onCancel = vi.fn();
     file = new Blob([""], { type: "text/html" });
     // @ts-ignore
     file.name = fileName;

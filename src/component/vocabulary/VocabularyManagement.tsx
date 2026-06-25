@@ -9,7 +9,7 @@ import {
 } from "../../action/AsyncActions";
 import VocabularyList from "./VocabularyList";
 import { Link } from "react-router-dom";
-import { GoClippy, GoPlus } from "react-icons/go";
+import { FaClipboard, FaPlus } from "react-icons/fa";
 import HeaderWithActions from "../misc/HeaderWithActions";
 import WindowTitle from "../misc/WindowTitle";
 import IfUserIsEditor from "../authorization/IfUserIsEditor";
@@ -36,7 +36,7 @@ export const VocabularyManagement: React.FC = () => {
         title={i18n("vocabulary.vocabularies.create.tooltip")}
         to={Routes.createVocabulary.path}
       >
-        <GoPlus className="mr-1" />
+        <FaPlus className="mr-1" />
         {i18n("vocabulary.management.new")}
       </Link>
       <Link
@@ -58,7 +58,7 @@ export const VocabularyManagement: React.FC = () => {
         title={i18n("vocabulary.management.startTextAnalysis.title")}
         onClick={onAnalyzeAllVocabularies}
       >
-        <GoClippy className="mr-1" />
+        <FaClipboard className="mr-1" />
         {i18n("file.metadata.startTextAnalysis.text")}
       </Button>
     </IfUserIsAdmin>,

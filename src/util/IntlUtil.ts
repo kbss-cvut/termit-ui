@@ -4,6 +4,19 @@ import BrowserStorage from "./BrowserStorage";
 import Utils from "./Utils";
 import ISO6391 from "iso-639-1";
 
+import enMessages from "../i18n/en";
+import csMessages from "../i18n/cs";
+import deMessages from "../i18n/de";
+
+const messagesMap: Record<
+  string,
+  { locale: string; messages: Record<string, string> }
+> = {
+  en: enMessages,
+  cs: csMessages,
+  de: deMessages,
+};
+
 export function loadInitialLocalizationData(): IntlData {
   const prefLang = BrowserStorage.get(Constants.STORAGE_LANG_KEY);
   const lang = prefLang ? prefLang : navigator.language;
@@ -19,7 +32,7 @@ export function loadInitialLocalizationData(): IntlData {
 }
 
 export function loadLocalizationData(code: string): IntlData {
-  return require(`../i18n/${code}`).default;
+  return messagesMap[code];
 }
 
 export function saveLanguagePreference(language: string): void {
@@ -154,4 +167,18 @@ export function getLanguageOptions(): Language[] {
  */
 export function getLanguageByShortCode(code: string): Language | undefined {
   return LANGUAGE_OPTIONS.find((lang) => lang.code === code);
+}
+
+/**
+ * Normalizes a language tag by trimming it, converting to lowercase and
+ * removing any region subtags.
+ *
+ * @param language The language tag to normalize
+ */
+export function normalizeLanguageTag(language: string): string {
+  const trimmed = (language || "").trim();
+  if (!trimmed || trimmed === "@none") {
+    return "";
+  }
+  return getShortLocale(trimmed).toLowerCase();
 }

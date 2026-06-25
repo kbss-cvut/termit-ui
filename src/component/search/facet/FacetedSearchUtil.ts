@@ -65,3 +65,28 @@ export function createSearchParam(
       };
   }
 }
+
+export function noValueOption(i18n: (id: string) => string) {
+  return {
+    value: VocabularyUtils.RDF_NIL,
+    label: i18n("search.no-value"),
+  };
+}
+
+export function sanitizeNoValue(value: SearchParam, oldValue?: SearchParam) {
+  if (value.matchType !== MatchType.IRI) {
+    return value;
+  }
+  if (
+    value.value.includes(VocabularyUtils.RDF_NIL) &&
+    !oldValue?.value.includes(VocabularyUtils.RDF_NIL)
+  ) {
+    value.value = [VocabularyUtils.RDF_NIL];
+  } else if (
+    !value.value.includes(VocabularyUtils.RDF_NIL) &&
+    oldValue?.value.includes(VocabularyUtils.RDF_NIL)
+  ) {
+    value.value = value.value.filter((v) => v !== VocabularyUtils.RDF_NIL);
+  }
+  return value;
+}

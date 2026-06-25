@@ -6,7 +6,7 @@ import Utils from "../../util/Utils";
 import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchResult from "../../model/search/SearchResult";
-import _ from "lodash";
+import unionBy from "lodash/unionBy";
 
 /**
  * Common properties for a tree selector containing terms
@@ -69,7 +69,7 @@ export function processTermsForTreeSelect(
       t.parentTerms &&
       t.parentTerms.length > 0
     ) {
-      result = _.unionBy(
+      result = unionBy(
         result,
         flattenAncestors(t.parentTerms).filter((pt) =>
           filters.reduce((v, f) => f(pt) && v, true)

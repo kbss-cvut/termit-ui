@@ -3,37 +3,28 @@ import { useI18n } from "../../hook/useI18n";
 import { GoPlus } from "react-icons/go";
 import PanelWithActions from "../../misc/PanelWithActions";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import UserGroup from "../../../model/UserGroup";
-import {
-  loadUserGroups,
-  removeUserGroup,
-} from "../../../action/AsyncUserGroupActions";
+import { removeUserGroup } from "../../../action/AsyncUserGroupActions";
 import { trackPromise } from "react-promise-tracker";
 import { Link } from "react-router-dom";
 import Routes from "../../../util/Routes";
 import UserGroupsTable from "./UserGroupsTable";
 import RemoveAssetDialog from "../../asset/RemoveAssetDialog";
+import TermItState from "../../../model/TermItState";
 
 const UserGroups: React.FC = () => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  const [groups, setGroups] = React.useState<UserGroup[]>([]);
   const [groupToDelete, setGroupToDelete] = React.useState<UserGroup | null>(
     null
   );
-  React.useEffect(() => {
-    trackPromise(dispatch(loadUserGroups()), "groups").then((data) =>
-      setGroups(data)
-    );
-  }, [dispatch, setGroups]);
+  const groups = useSelector((state: TermItState) => state.userGroups);
   const onDelete = () => {
     const g = groupToDelete;
     setGroupToDelete(null);
-    trackPromise(dispatch(removeUserGroup(g!)), "groups").then(
-      (data: UserGroup[]) => setGroups(data)
-    );
+    trackPromise(dispatch(removeUserGroup(g!)), "groups");
   };
 
   return (

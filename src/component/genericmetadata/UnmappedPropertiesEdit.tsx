@@ -5,7 +5,10 @@ import { getProperties } from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 import AttributeSectionContainer from "../layout/AttributeSectionContainer";
 import "./UnmappedProperties.scss";
-import { PropertyValueType } from "../../model/WithUnmappedProperties";
+import {
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "../../model/WithUnmappedProperties";
 import { CustomAttributesValuesEdit } from "./CustomAttributesValuesEdit";
 import { UnmappedPropertyValueEdit } from "./UnmappedPropertyValueEdit";
 import UnmappedProperties from "./UnmappedProperties";
@@ -35,13 +38,18 @@ const UnmappedPropertiesEdit: React.FC<UnmappedPropertiesEditProps> = ({
     dispatch(getProperties());
   }, [dispatch]);
 
-  const onRemove = (property: string, value: PropertyValueType) => {
+  const onRemove = (property: string, valueToRemove: string) => {
     const newProperties = new Map(properties);
     const propValues = newProperties.get(property)!;
     if (propValues.length === 1) {
       newProperties.delete(property);
     } else {
-      propValues.splice(propValues.indexOf(value), 1);
+      const indexToRemove = propValues.findIndex(
+        (v) => stringifyPropertyValue(v) === valueToRemove
+      );
+      if (indexToRemove >= 0) {
+        propValues.splice(indexToRemove, 1);
+      }
     }
     onChange(newProperties);
   };

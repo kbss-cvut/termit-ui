@@ -12,8 +12,9 @@ import Generator from "../../../../__tests__/environment/Generator";
 import * as TermTreeSelectHelper from "../../../term/TermTreeSelectHelper";
 import { langString } from "../../../../model/MultilingualString";
 import { TermFetchParams } from "../../../../util/Types";
+import type { Mock } from "vitest";
 
-jest.mock("../../../../util/Routing");
+vi.mock("../../../../util/Routing");
 
 describe("Terms", () => {
   const vocabularyName = "test-vocabulary";
@@ -43,10 +44,10 @@ describe("Terms", () => {
   let match: Match<any>;
 
   beforeEach(() => {
-    jest.resetAllMocks(); // Prevent Routing mock state leaking into subsequent tests
-    Utils.calculateAssetListHeight = jest.fn().mockImplementation(() => 100);
-    selectVocabularyTerm = jest.fn();
-    fetchTerms = jest.fn().mockImplementation(() => Promise.resolve([]));
+    vi.resetAllMocks(); // Prevent Routing mock state leaking into subsequent tests
+    Utils.calculateAssetListHeight = vi.fn().mockImplementation(() => 100);
+    selectVocabularyTerm = vi.fn();
+    fetchTerms = vi.fn().mockImplementation(() => Promise.resolve([]));
 
     location = {
       pathname: "/vocabulary/" + vocabularyName + "/term/",
@@ -71,7 +72,7 @@ describe("Terms", () => {
   it("transitions to term detail on term select", () => {
     const wrapper = renderShallow();
     wrapper.instance().onTermSelect(term);
-    const call = (Routing.transitionToPublicAsset as jest.Mock).mock.calls[0];
+    const call = (Routing.transitionToPublicAsset as Mock).mock.calls[0];
     expect(call[0].iri).toEqual(term.iri);
     expect(call[0].vocabulary).toEqual(term.vocabulary);
     expect(call[0].types).toEqual(term.types);
@@ -95,7 +96,7 @@ describe("Terms", () => {
   it("transitions to selected term detail", () => {
     const wrapper = renderShallow();
     wrapper.instance().onTermSelect(term);
-    const call = (Routing.transitionToPublicAsset as jest.Mock).mock.calls[0];
+    const call = (Routing.transitionToPublicAsset as Mock).mock.calls[0];
     expect(call[0].iri).toEqual(term.iri);
     expect(call[0].vocabulary).toEqual(term.vocabulary);
     expect(call[0].types).toEqual(term.types);
@@ -106,9 +107,7 @@ describe("Terms", () => {
     wrapper.setState({ includeImported: true });
     wrapper.update();
     wrapper.instance().fetchOptions({});
-    expect(
-      (fetchTerms as jest.Mock).mock.calls[0][0].includeImported
-    ).toBeTruthy();
+    expect((fetchTerms as Mock).mock.calls[0][0].includeImported).toBeTruthy();
   });
 
   it("uses term vocabulary when fetching its subterms", () => {
@@ -121,7 +120,7 @@ describe("Terms", () => {
       vocabulary: { iri: Generator.generateUri() },
     });
     wrapper.instance().fetchOptions({ optionID: option.iri, option });
-    expect((fetchTerms as jest.Mock).mock.calls[0][1]).toEqual(
+    expect((fetchTerms as Mock).mock.calls[0][1]).toEqual(
       VocabularyUtils.create(option.vocabulary!.iri!)
     );
   });
@@ -129,7 +128,7 @@ describe("Terms", () => {
   it("disables include imported terms toggle when fetching terms", () => {
     const wrapper = renderShallow();
     expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
-    fetchTerms = jest.fn().mockImplementation(() => {
+    fetchTerms = vi.fn().mockImplementation(() => {
       wrapper.update();
       expect(wrapper.state().disableIncludeImportedToggle).toBeTruthy();
       return Promise.resolve([]);
@@ -168,7 +167,7 @@ describe("Terms", () => {
           matching.push(t);
         }
       }
-      fetchTerms = jest.fn().mockResolvedValue(terms);
+      fetchTerms = vi.fn().mockResolvedValue(terms);
       const wrapper = renderShallow();
       wrapper.setState({ includeImported: true });
       return wrapper
@@ -192,7 +191,7 @@ describe("Terms", () => {
           matching.push(t);
         }
       }
-      fetchTerms = jest.fn().mockResolvedValue(terms);
+      fetchTerms = vi.fn().mockResolvedValue(terms);
       const wrapper = renderShallow();
       return wrapper
         .instance()
@@ -218,7 +217,7 @@ describe("Terms", () => {
       ];
       terms[0].subTerms = subTerms;
       terms[0].syncPlainSubTerms();
-      fetchTerms = jest.fn().mockResolvedValue(terms);
+      fetchTerms = vi.fn().mockResolvedValue(terms);
       const wrapper = renderShallow();
       return wrapper
         .instance()
@@ -244,7 +243,7 @@ describe("Terms", () => {
       ];
       parent.syncPlainSubTerms();
       grandParent.syncPlainSubTerms();
-      fetchTerms = jest.fn().mockResolvedValue([child]);
+      fetchTerms = vi.fn().mockResolvedValue([child]);
       const wrapper = renderShallow();
       return wrapper
         .instance()
@@ -262,8 +261,8 @@ describe("Terms", () => {
       const parent = Generator.generateTerm(Generator.generateUri());
       vocabulary.allImportedVocabularies = [parent.vocabulary!.iri!];
       terms[0].parentTerms = [parent];
-      fetchTerms = jest.fn().mockResolvedValue(terms);
-      const spy = jest.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
+      fetchTerms = vi.fn().mockResolvedValue(terms);
+      const spy = vi.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
       const wrapper = renderShallow();
       return wrapper
         .instance()

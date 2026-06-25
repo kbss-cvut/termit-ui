@@ -10,7 +10,10 @@ import {
 } from "reactstrap";
 import SearchResult from "../../../model/search/SearchResult";
 import { connect } from "react-redux";
-import { updateSearchFilter } from "../../../action/SearchActions";
+import {
+  resetSearchFilter,
+  updateSearchFilterAndRunSearch,
+} from "../../../action/SearchActions";
 import SearchResultsOverlay from "./SearchResultsOverlay";
 import Routes from "../../../util/Routes";
 import { ThunkDispatch } from "../../../util/Types";
@@ -25,10 +28,12 @@ import { isLoggedIn } from "../../../util/Authorization";
 import LanguageSelector from "../../resource/file/LanguageSelector";
 import { getLanguageByShortCode, Language } from "../../../util/IntlUtil";
 import Utils from "../../../util/Utils";
+import SearchQuery from "../../../model/search/SearchQuery";
 
 interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
   updateSearchFilter: (searchString: string, language: string) => any;
-  searchString: string;
+  resetSearchFilter: () => void;
+  searchQuery: SearchQuery;
   searchResults: SearchResult[] | null;
   navbar: boolean;
   closeCollapse?: () => void;
@@ -39,21 +44,13 @@ interface NavbarSearchProps extends HasI18n, RouteComponentProps<any> {
 interface NavbarSearchState {
   showResults: boolean;
   searchOriginNavbar?: boolean;
-  selectedLanguage: string;
 }
 
 /**
- * Routes for which the results preview popup should not be displayed.
+ * Routes where the navbar search bar should be completely hidden
+ * (because the search page has its own search input).
  */
-const ROUTES_WITHOUT_SEARCH_OVERLAY = [
-  Routes.search,
-  Routes.searchTerms,
-  Routes.searchVocabularies,
-  Routes.facetedSearch,
-  Routes.publicSearch,
-  Routes.publicSearchTerms,
-  Routes.publicSearchVocabularies,
-];
+const ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN = [Routes.search, Routes.publicSearch];
 
 function mapIndexedLanguages(languages?: string[]): Language[] {
   return Utils.sanitizeArray(languages)
@@ -69,7 +66,6 @@ export class NavbarSearch extends React.Component<
     super(props);
     this.state = {
       showResults: false,
-      selectedLanguage: "",
     };
   }
 
@@ -88,6 +84,10 @@ export class NavbarSearch extends React.Component<
     document.removeEventListener("keydown", this.onKeyDownActions, false);
   }
 
+  protected resetSearch = () => {
+    this.props.resetSearchFilter();
+  };
+
   private onKeyDownActions = (e: KeyboardEvent): void => {
     if (e.key === "Escape" || e.key === "Esc") {
       // escape
@@ -96,7 +96,7 @@ export class NavbarSearch extends React.Component<
   };
 
   public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.doSearch(e.target.value, this.state.selectedLanguage);
+    this.doSearch(e.target.value, this.props.searchQuery.language);
   };
 
   private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -120,7 +120,7 @@ export class NavbarSearch extends React.Component<
     const path = this.props.location.pathname;
     return (
       this.state.showResults &&
-      !ROUTES_WITHOUT_SEARCH_OVERLAY.find((r) => r.path === path)
+      !ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN.find((r) => r.path === path)
     );
   }
 
@@ -130,29 +130,13 @@ export class NavbarSearch extends React.Component<
     );
   };
 
-  public onOpenFacetedSearch = () => {
-    Routing.transitionTo(
-      isLoggedIn(this.props.user)
-        ? Routes.facetedSearch
-        : Routes.publicFacetedSearch
-    );
-  };
-
   private onLanguageSelectChange = (langCode: string) => {
-    this.setState({ selectedLanguage: langCode });
-    this.doSearch(this.props.searchString, langCode);
+    this.doSearch(this.props.searchQuery.searchString, langCode);
   };
 
   private doSearch = (searchString: string, language: string) => {
     this.closeResults();
     this.props.updateSearchFilter(searchString, language).then(() => {
-      const path = this.props.location.pathname;
-      if (
-        path.endsWith(Routes.publicFacetedSearch.path) ||
-        path.endsWith(Routes.facetedSearch.path)
-      ) {
-        this.openSearchView();
-      }
       this.setState({
         showResults: true,
         searchOriginNavbar: this.props.navbar,
@@ -160,8 +144,20 @@ export class NavbarSearch extends React.Component<
     });
   };
 
+  private isOnSearchPage(): boolean {
+    const path = this.props.location.pathname;
+    return ROUTES_WHERE_NAVBAR_SEARCH_HIDDEN.some(
+      (r) => path === r.path || path.startsWith(r.path + "/")
+    );
+  }
+
   public render() {
-    const { i18n, navbar } = this.props;
+    const { i18n, formatMessage, navbar, searchQuery } = this.props;
+
+    // Hide the navbar search bar when on the search page
+    if (navbar && this.isOnSearchPage()) {
+      return null;
+    }
 
     const searchIcon = (
       <InputGroupAddon
@@ -177,12 +173,30 @@ export class NavbarSearch extends React.Component<
       </InputGroupAddon>
     );
 
+    const filtersActiveIcon = searchQuery.hasFacetParams() ? (
+      <InputGroupAddon
+        addonType="prepend"
+        id="facets-active"
+        title={formatMessage("main.search.facetsActive", {
+          count: Object.keys(searchQuery.facetParams).length,
+        })}
+        onClick={this.onOpenSearch}
+      >
+        <InputGroupText className="active-filters-addon">
+          <span className="fas fa-filter" />
+          <span className="active-filters-count">
+            {Object.keys(searchQuery.facetParams).length}
+          </span>
+        </InputGroupText>
+      </InputGroupAddon>
+    ) : null;
+
     const languageSelect = (
       <InputGroupAddon addonType={"append"}>
         <LanguageSelector
           className={"navbar-search-language-select"}
           onChange={this.onLanguageSelectChange}
-          value={this.state.selectedLanguage}
+          value={searchQuery.language}
           isClearable={true}
           languageOptions={this.props.indexedLanguages}
         />
@@ -211,13 +225,14 @@ export class NavbarSearch extends React.Component<
         className={classNames(
           {
             search: navbar,
-            "navbar-search-margin-right-4": !this.props.searchString,
+            "navbar-search-margin-right-4": !searchQuery.searchString,
           },
           "flex-grow-1"
         )}
       >
         <InputGroup className="input-group-rounded input-group-merge">
           {navbar && searchIcon}
+          {filtersActiveIcon}
           <Input
             aria-label="Search"
             className="form-control-rounded form-control-prepended"
@@ -225,23 +240,18 @@ export class NavbarSearch extends React.Component<
             type="search"
             id={`main-search-input${navbar ? "-navbar" : ""}`}
             autoComplete="off"
-            value={this.props.searchString}
+            value={searchQuery.searchString}
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
           />
           {this.props.indexedLanguages.length > 1 && languageSelect}
           {!navbar && searchIcon}
-          {this.props.searchString && clearIcon}
+          {!searchQuery.isEmpty() && clearIcon}
         </InputGroup>
         {this.renderResultsOverlay()}
       </div>
     );
   }
-
-  protected resetSearch = () => {
-    this.props.updateSearchFilter("", "");
-    this.setState({ selectedLanguage: "" });
-  };
 
   private renderResultsOverlay() {
     const { searchResults, navbar } = this.props;
@@ -254,7 +264,6 @@ export class NavbarSearch extends React.Component<
           onClose={this.closeResults}
           targetId={`main-search-input${navbar ? "-navbar" : ""}`}
           onOpenSearch={this.openSearchView}
-          onOpenFacetedSearch={this.onOpenFacetedSearch}
         />
       );
     }
@@ -267,7 +276,7 @@ export default withRouter(
   connect(
     (state: TermItState) => {
       return {
-        searchString: state.searchQuery.searchQuery,
+        searchQuery: state.searchQuery,
         searchResults: state.searchResults,
         intl: state.intl, // Pass intl in props to force UI re-render on language switch
         user: state.user,
@@ -278,8 +287,9 @@ export default withRouter(
     },
     (dispatch: ThunkDispatch) => {
       return {
+        resetSearchFilter: () => dispatch(resetSearchFilter()),
         updateSearchFilter: (searchString: string, language: string) =>
-          dispatch(updateSearchFilter(searchString, language)),
+          dispatch(updateSearchFilterAndRunSearch(searchString, language)),
       };
     }
   )(injectIntl(withI18n(NavbarSearch)))

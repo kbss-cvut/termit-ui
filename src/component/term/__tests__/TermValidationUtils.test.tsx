@@ -16,13 +16,13 @@ describe("TermValidationUtils", () => {
       scopeNote: langString("test"),
       vocabulary: { iri: Generator.generateUri() },
     });
-    Ajax.head = jest.fn().mockResolvedValue({});
+    Ajax.head = vi.fn().mockResolvedValue({});
   });
 
   describe("checkLabelUniqueness", () => {
     it("handles unique label when no callback is provided", async () => {
-      Ajax.head = jest.fn().mockRejectedValue({ status: 404, data: "" });
-      await checkLabelUniqueness(
+      Ajax.head = vi.fn().mockRejectedValue({ status: 404, data: "" });
+      checkLabelUniqueness(
         VocabularyUtils.create(Generator.generateUri()),
         "test",
         Constants.DEFAULT_LANGUAGE,

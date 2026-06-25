@@ -8,7 +8,7 @@ import AppNotification, {
 } from "../model/AppNotification";
 import NotificationType from "../model/NotificationType";
 import { BasicRouteProps } from "./Types";
-import _ from "lodash";
+import _isEqual from "lodash/isEqual";
 import { parse } from "uri-js";
 import { Configuration } from "../model/Configuration";
 
@@ -295,7 +295,7 @@ const Utils = {
     }
     const prevParams = Object.getOwnPropertyNames(prevProps.match.params);
     const currentParams = Object.getOwnPropertyNames(currentProps.match.params);
-    if (!_.isEqual(prevParams.sort(), currentParams.sort())) {
+    if (!_isEqual(prevParams.sort(), currentParams.sort())) {
       return true;
     }
     for (const p of prevParams) {

@@ -20,13 +20,19 @@ import { langString } from "../../model/MultilingualString";
 import Constants from "../../util/Constants";
 import AsyncActionStatus from "../AsyncActionStatus";
 import { verifyExpectedAssets } from "../../__tests__/environment/TestUtil";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 
-jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../util/Ajax");
+vi.mock("../../util/Routing");
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+  const actual = await importOriginal();
   return {
-    ...originalModule,
-    default: jest.fn(),
+    ...actual,
+    default: {
+      get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+    } as any,
   };
 });
 
@@ -43,7 +49,7 @@ describe("AsyncTermActions", () => {
   let store: MockStoreEnhanced<TermItState>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store = mockStore(new TermItState());
   });
 
@@ -57,7 +63,7 @@ describe("AsyncTermActions", () => {
         label: langString("Test term 1"),
         iri: vocabularyIri.toString() + "term/test-term-1",
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.post = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createTerm(term, vocabularyIri))
@@ -89,7 +95,7 @@ describe("AsyncTermActions", () => {
         iri: vocabularyIri.toString() + "term/test-term-2",
         parentTerms: [parentTerm],
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.post = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createTerm(childTerm, vocabularyIri))
@@ -116,7 +122,7 @@ describe("AsyncTermActions", () => {
         label: langString("Test term 1"),
         iri: vocabularyIri.toString() + "term/test-term-1",
       });
-      Ajax.post = jest.fn().mockImplementation(() =>
+      Ajax.post = vi.fn().mockImplementation(() =>
         Promise.resolve({
           headers: {
             location: "http://test",
@@ -143,7 +149,7 @@ describe("AsyncTermActions", () => {
         label: langString("Test term 1"),
         iri: vocabularyIri.toString() + "term/test-term-1",
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.post = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createTerm(term, vocabularyIri))
@@ -158,11 +164,11 @@ describe("AsyncTermActions", () => {
         label: langString("Test term 1"),
         iri: vocabularyIri.toString() + "term/test-term-1",
       });
-      Ajax.post = jest.fn().mockImplementation(() => Promise.resolve());
+      Ajax.post = vi.fn().mockImplementation(() => Promise.resolve());
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createTerm(term, vocabularyIri))
       ).then(() => {
-        const config = (Ajax.post as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.post as Mock).mock.calls[0][1];
         const data = config.getContent();
         expect(data.vocabulary).toBeDefined();
         expect(data.vocabulary.iri).toEqual(vocabularyIri.toString());
@@ -183,7 +189,7 @@ describe("AsyncTermActions", () => {
           },
         ],
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.post = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createTerm(term, vocabularyIri))
@@ -217,7 +223,7 @@ describe("AsyncTermActions", () => {
           },
         ],
       });
-      const mock = jest.fn().mockImplementation(() => Promise.resolve());
+      const mock = vi.fn().mockImplementation(() => Promise.resolve());
       Ajax.post = mock;
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(createTerm(term, vocabularyIri))
@@ -251,14 +257,14 @@ describe("AsyncTermActions", () => {
     });
 
     it("sends PUT request with term definition source data to REST endpoint", () => {
-      Ajax.put = jest.fn().mockResolvedValue(null);
+      Ajax.put = vi.fn().mockResolvedValue(null);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           setTermDefinitionSource(definitionSource, term)
         )
       ).then(() => {
         expect(Ajax.put).toHaveBeenCalled();
-        const call = (Ajax.put as jest.Mock).mock.calls[0];
+        const call = (Ajax.put as Mock).mock.calls[0];
         const url = call[0];
         const config = call[1];
         expect(url).toMatch(new RegExp(`terms/${termName}/definition-source$`));
@@ -267,7 +273,7 @@ describe("AsyncTermActions", () => {
     });
 
     it("publishes success message after successful request", () => {
-      Ajax.put = jest.fn().mockResolvedValue(null);
+      Ajax.put = vi.fn().mockResolvedValue(null);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           setTermDefinitionSource(definitionSource, term)
@@ -284,7 +290,7 @@ describe("AsyncTermActions", () => {
 
     // Bug #1449
     it("handles multilingual term label by showing localized label when publishing success message", () => {
-      Ajax.put = jest.fn().mockResolvedValue(null);
+      Ajax.put = vi.fn().mockResolvedValue(null);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           setTermDefinitionSource(definitionSource, term)
@@ -302,7 +308,7 @@ describe("AsyncTermActions", () => {
     });
 
     it("publishes error message when server responds with CONFLICT", () => {
-      Ajax.put = jest.fn().mockRejectedValue({ status: 409 });
+      Ajax.put = vi.fn().mockRejectedValue({ status: 409 });
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           setTermDefinitionSource(definitionSource, term)
@@ -319,7 +325,7 @@ describe("AsyncTermActions", () => {
 
     // Bug #1449
     it("handles multilingual term label by showing localized label when publishing error message", () => {
-      Ajax.put = jest.fn().mockRejectedValue({ status: 409 });
+      Ajax.put = vi.fn().mockRejectedValue({ status: 409 });
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           setTermDefinitionSource(definitionSource, term)
@@ -342,14 +348,14 @@ describe("AsyncTermActions", () => {
       const occurrences = [
         Generator.generateOccurrenceOf(Generator.generateTerm()),
       ];
-      Ajax.get = jest.fn().mockResolvedValue(occurrences);
+      Ajax.get = vi.fn().mockResolvedValue(occurrences);
       store.getState().user = Generator.generateUser();
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadDefinitionRelatedTermsTargeting(termIri)
         )
       ).then(() => {
-        expect((Ajax.get as jest.Mock).mock.calls[0][0]).toMatch(
+        expect((Ajax.get as Mock).mock.calls[0][0]).toMatch(
           new RegExp(`^${Constants.API_PREFIX}`)
         );
       });
@@ -359,13 +365,13 @@ describe("AsyncTermActions", () => {
       const occurrences = [
         Generator.generateOccurrenceOf(Generator.generateTerm()),
       ];
-      Ajax.get = jest.fn().mockResolvedValue(occurrences);
+      Ajax.get = vi.fn().mockResolvedValue(occurrences);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadDefinitionRelatedTermsTargeting(termIri)
         )
       ).then(() => {
-        expect((Ajax.get as jest.Mock).mock.calls[0][0]).toMatch(
+        expect((Ajax.get as Mock).mock.calls[0][0]).toMatch(
           new RegExp(`^${Constants.PUBLIC_API_PREFIX}`)
         );
       });
@@ -375,11 +381,11 @@ describe("AsyncTermActions", () => {
   describe("setTermState", () => {
     it("sends provided state as plain text to server", () => {
       const state = Generator.generateUri();
-      Ajax.put = jest.fn().mockResolvedValue({});
+      Ajax.put = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(setTermState(termIri, state))
       ).then(() => {
-        const reqConfig = (Ajax.put as jest.Mock).mock.calls[0][1];
+        const reqConfig = (Ajax.put as Mock).mock.calls[0][1];
         expect(Ajax.put).toHaveBeenCalled();
         expect(reqConfig.getContent()).toEqual(state);
         expect(reqConfig.getHeaders()[Constants.Headers.CONTENT_TYPE]).toEqual(
@@ -390,7 +396,7 @@ describe("AsyncTermActions", () => {
 
     it("returns set state as action success payload", () => {
       const state = Generator.generateUri();
-      Ajax.put = jest.fn().mockResolvedValue({});
+      Ajax.put = vi.fn().mockResolvedValue({});
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(setTermState(termIri, state))
       ).then(() => {
@@ -412,7 +418,7 @@ describe("AsyncTermActions", () => {
       store.getState().user = Generator.generateUser();
       const vocabName = "test-vocabulary";
       const termName = "test-term";
-      Ajax.get = jest
+      Ajax.get = vi
         .fn()
         .mockImplementation(() =>
           Promise.resolve(require("../../rest-mock/terms")[0])
@@ -422,7 +428,7 @@ describe("AsyncTermActions", () => {
           loadTerm(termName, { fragment: vocabName })
         )
       ).then(() => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.get as Mock).mock.calls[0][0];
         expect(url).toEqual(
           Constants.API_PREFIX +
             "/vocabularies/" +
@@ -439,7 +445,7 @@ describe("AsyncTermActions", () => {
       const termName = "test-term";
       const namespace =
         "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
-      Ajax.get = jest
+      Ajax.get = vi
         .fn()
         .mockImplementation(() =>
           Promise.resolve(require("../../rest-mock/terms")[0])
@@ -452,7 +458,7 @@ describe("AsyncTermActions", () => {
           })
         )
       ).then(() => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.get as Mock).mock.calls[0][0];
         expect(url).toEqual(
           Constants.API_PREFIX +
             "/vocabularies/" +
@@ -460,7 +466,7 @@ describe("AsyncTermActions", () => {
             "/terms/" +
             termName
         );
-        const config = (Ajax.get as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.get as Mock).mock.calls[0][1];
         expect(config).toBeDefined();
         expect(config.getParams().namespace).toEqual(namespace);
       });
@@ -468,13 +474,13 @@ describe("AsyncTermActions", () => {
 
     it("uses public API endpoint to fetch single vocabulary term when user is not authenticated", () => {
       const term = require("../../rest-mock/terms")[0];
-      Ajax.get = jest.fn().mockImplementation(() => Promise.resolve(term));
+      Ajax.get = vi.fn().mockImplementation(() => Promise.resolve(term));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadTerm("test-term", { fragment: "test-vocabulary" })
         )
       ).then((data: AsyncActionSuccess<Term> | MessageAction) => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.get as Mock).mock.calls[0][0];
         expect(url).toContain(Constants.PUBLIC_API_PREFIX);
         verifyExpectedAssets(
           [term],
@@ -490,7 +496,7 @@ describe("AsyncTermActions", () => {
       const namespace =
         "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
       const timestamp = "20220731T100000Z";
-      Ajax.get = jest
+      Ajax.get = vi
         .fn()
         .mockImplementation(() =>
           Promise.resolve(require("../../rest-mock/terms")[0])
@@ -507,11 +513,11 @@ describe("AsyncTermActions", () => {
           )
         )
       ).then(() => {
-        const url = (Ajax.get as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.get as Mock).mock.calls[0][0];
         expect(url).toEqual(
           `${Constants.API_PREFIX}/vocabularies/${vocabName}/terms/${termName}/versions`
         );
-        const config = (Ajax.get as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.get as Mock).mock.calls[0][1];
         expect(config).toBeDefined();
         expect(config.getParams().namespace).toEqual(namespace);
         expect(config.getParams().at).toEqual(timestamp);

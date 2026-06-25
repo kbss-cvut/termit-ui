@@ -3,30 +3,27 @@ import { Input } from "reactstrap";
 import { useI18n } from "../../hook/useI18n";
 import { getLocalized } from "../../../model/MultilingualString";
 import Utils from "../../../util/Utils";
+import { FilterFn, Row, RowData } from "@tanstack/react-table";
 
 interface TextBasedFilterProps {
-  column: {
-    filterValue?: string;
-    setFilter: (value?: string) => void;
-    preFilteredRows: any[];
-  };
+  value: string;
+  onChange: (value: string | undefined) => void;
 }
 
-export function textContainsFilter(
-  rows: any[],
-  id: string,
-  filterValue: string
-) {
+export const textContainsFilter: FilterFn<any> = (
+  row,
+  columnId,
+  filterValue
+) => {
   const normalizedFilterValue = Utils.normalizeString(
     String(filterValue)
   ).toLowerCase();
-  return rows.filter((row) => {
-    const rowValue = row.values[id];
-    return rowValue !== undefined
-      ? textContains(rowValue, normalizedFilterValue)
-      : true;
-  });
-}
+  const rowValue = row.getValue<unknown>(columnId);
+
+  return rowValue !== undefined
+    ? textContains(String(rowValue), normalizedFilterValue)
+    : true;
+};
 
 function textContains(text: string, toContain: string) {
   return (
@@ -34,38 +31,43 @@ function textContains(text: string, toContain: string) {
   );
 }
 
-export function multilingualTextContainsFilterFactory(lang: string) {
-  return (rows: any[], id: string, filterValue: string) => {
+const isLocalizableValue = (
+  value: unknown
+): value is Parameters<typeof getLocalized>[0] =>
+  typeof value === "object" && value !== null;
+
+export function multilingualTextContainsFilterFactory<
+  TData extends RowData = RowData
+>(lang: string): FilterFn<TData> {
+  return (row: Row<TData>, columnId: string, filterValue: unknown) => {
     const normalizedFilterValue = Utils.normalizeString(
       String(filterValue)
     ).toLowerCase();
-    return rows.filter((row) => {
-      const rowValue = row.values[id];
-      if (rowValue === undefined) {
-        return true;
-      }
-      let toMatch = rowValue;
-      if (typeof rowValue === "object") {
-        toMatch = getLocalized(rowValue, lang);
-      }
-      return textContains(toMatch, normalizedFilterValue);
-    });
+    const rowValue = row.getValue<unknown>(columnId);
+
+    if (rowValue === undefined) {
+      return true;
+    }
+
+    const toMatch = isLocalizableValue(rowValue)
+      ? getLocalized(rowValue, lang)
+      : String(rowValue);
+    return textContains(String(toMatch), normalizedFilterValue);
   };
 }
 
-const TextBasedFilter: React.FC<TextBasedFilterProps> = (props) => {
-  const { filterValue, setFilter, preFilteredRows } = props.column;
+const TextBasedFilter: React.FC<TextBasedFilterProps> = ({
+  value,
+  onChange,
+}) => {
   const { formatMessage } = useI18n();
-  const count = preFilteredRows.length;
   return (
     <Input
       bsSize="sm"
       className="mt-1"
-      value={filterValue || ""}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-      }}
-      placeholder={formatMessage("table.filter.text.placeholder", { count })}
+      value={value}
+      onChange={(e) => onChange(e.target.value || undefined)}
+      placeholder={formatMessage("table.filter.text.placeholder", { count: 0 })}
     />
   );
 };

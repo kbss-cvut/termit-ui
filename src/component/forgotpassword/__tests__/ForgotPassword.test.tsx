@@ -8,12 +8,12 @@ import { changeInputValue } from "../../../__tests__/environment/TestUtil";
 import { requestPasswordReset } from "../../../action/AsyncUserActions";
 import Message from "../../../model/Message";
 
-jest.mock("../../../action/AsyncUserActions", () => ({
-  ...jest.requireActual("../../../action/AsyncUserActions"),
-  requestPasswordReset: jest.fn(),
+vi.mock("../../../action/AsyncUserActions", () => ({
+  ...vi.importActual("../../../action/AsyncUserActions"),
+  requestPasswordReset: vi.fn(),
 }));
 
-const mockedRequestPasswordReset = jest.mocked(requestPasswordReset, true);
+const mockedRequestPasswordReset = vi.mocked(requestPasswordReset, true);
 
 describe("ForgotPassword", () => {
   const INVALID_EMAIL = "invalid@email";

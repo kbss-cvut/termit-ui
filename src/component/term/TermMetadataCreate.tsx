@@ -13,7 +13,7 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import { isTermValid } from "./TermValidationUtils";
 import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 import Message from "../../model/Message";
@@ -113,7 +113,7 @@ export class TermMetadataCreate extends React.Component<
       this.setLanguage(this.state.language);
       return;
     }
-    const copy = _.cloneDeep(this.state);
+    const copy = cloneDeep(this.state);
     Term.removeTranslation(copy, language);
     delete copy.labelExist[language];
     this.setState(copy);

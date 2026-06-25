@@ -1,3 +1,24 @@
+#### Verze 4.5.2
+
+- Aktualizace závislostí z důvodu bezpečnosti.
+
+#### Verze 4.5.1
+
+- Přidán tabulkový pohled na slovník.
+- Aktualizace závislostí z důvodu bezpečnosti.
+
+#### Verze 4.5.0
+
+- Fulltextové vyhledávání integrováno s fasetovým vyhledáváním.
+
+#### Verze 4.4.3
+
+- Opravena chyba mazání hodnot dalších atributů.
+
+#### Verze 4.4.2
+
+- Opravena chyba ukládání pojmu způsobená cyklickou referencí mezi pojmy.
+
 #### Verze 4.4.1
 
 - Opravena chyba s aktualizací stromu pojmů po importu.

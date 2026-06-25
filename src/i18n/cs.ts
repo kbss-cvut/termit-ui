@@ -109,6 +109,8 @@ const cs = {
       "Neplatný nebo expirovaný odkaz pro změnu hesla. Zažádejte o změnu hesla znovu.",
 
     "createPassword.passwordsNotEqual": "Heslo a jeho potvrzení se neshodují.",
+    "createPassword.requirements":
+      "Heslo musí být alespoň {minLength} znaků dlouhé a obsahovat alespoň jedno malé a velké písmeno a číslici",
     "createPassword.mask": "Vytvářím heslo...",
     "createPassword.title": "Vytvoření hesla",
     "createPassword.password": "Nové heslo",
@@ -123,9 +125,6 @@ const cs = {
     "main.nav.vocabularies": "Slovníky",
     "main.nav.statistics": "Statistiky",
     "main.nav.search": "Vyhledávání",
-    "main.nav.searchTerms": "Vyhledávání pojmů",
-    "main.nav.searchVocabularies": "Vyhledávání slovníků",
-    "main.nav.facetedSearch": "Fasetové vyhledávání",
     "main.nav.admin": "Administrace",
     "main.nav.create-vocabulary": "Nový slovník",
     "main.nav.import-vocabulary": "Importovat slovník",
@@ -136,7 +135,9 @@ const cs = {
     "main.search.count-info-and-link":
       "Zobrazeno {displayed} z {count} výsledků. Zobrazit všechny.",
     "main.search.no-results":
-      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte fasetové hledání.",
+      "Zadanému výrazu neodpovídá žádný výsledek. Kliknutím vyzkoušíte pokročilé hledání.",
+    "main.search.facetsActive":
+      "{count, plural, one {# aktivní faset} few {# aktivní fasety} other {# aktivních fasetů}}",
     "main.lang-selector.tooltip": "Vyberte jazyk uživatelského rozhraní",
 
     "dashboard.widget.assetList.empty":
@@ -200,9 +201,6 @@ const cs = {
       "Uživatel {name} odblokován.",
     "administration.users.status.action.changeRole.success":
       "Role byla změněna.",
-    "administration.users.unlock.title": "Odblokovat uživatele {name}",
-    "administration.users.unlock.password": "Nové heslo",
-    "administration.users.unlock.passwordConfirm": "Potvrzení nového hesla",
     "administration.users.action.changerole.tooltip":
       "Změnit roli vybraného uživatele",
     "administration.users.action.changerole": "Změnit roli",
@@ -217,7 +215,6 @@ const cs = {
     "administration.users.create.created":
       'Uživatel "{name}" úspěšně vytvořen.',
     "administration.users.you": "Toto je Váš účet",
-    "administration.users.types.admin": "Tento uživatel je administrátor",
     "administration.users.oidc":
       "Pro správu uživatelů je využívána externí autentizační služba.",
     "administration.users.create.password-toggle.user":
@@ -528,6 +525,7 @@ const cs = {
       "'nadzemní stavba spojená se zemí pevným základem, která je prostorově soustředěna a navenek převážně " +
       "uzavřena obvodovými stěnami a střešní konstrukcí.'). Definice je vždy pouze jedna, nelze ji kombinovat " +
       "z více zdrojů.",
+    "term.edit.property": "Upravit atribut {property}",
     "term.exactMatches.help":
       "(Nepovinný) pojem se stejným významem. Slouží k mapování na pojmy z jiných slovníků.",
     "term.comment.help":
@@ -629,6 +627,10 @@ const cs = {
     "term.badge.score.tooltip":
       "Skóre tohoto pojmu je {score}%. Klikněte pro zobrazení výsledků kontroly",
     "term.badge.no-score.tooltip": "Pro tento pojem není skóre k dispozici",
+    "term.largeValueList.closed":
+      "Atribut má více než {threshold} hodnot. Klikněte pro jejich zobrazení.",
+    "term.largeValueList.open":
+      "Atribut má více než {threshold} hodnot. Klikněte pro jejich skrytí.",
 
     "glossary.title": "Pojmy",
     "glossary.termCount.tooltip":
@@ -656,6 +658,29 @@ const cs = {
     "glossary.showFlatList": "Seznam",
     "glossary.showFlatList.help":
       "Pojmy jsou zobrazeny v plochém seznamu, který nezobrazuje hierarchické vztahy mezi pojmy.",
+    "glossary.table.filter.placeholder": "Filtrovat pojmy",
+    "glossary.table.columns.button": "Sloupce",
+    "glossary.table.column.label": "Název",
+    "glossary.table.column.status": "Stav",
+    "glossary.table.column.vocabulary": "Slovník",
+    "glossary.table.column.notation": "Notace",
+    "glossary.table.column.definition": "Definice",
+    "glossary.table.openTerm": "Otevřít detail pojmu",
+    "glossary.table.empty": "Nebyly nalezeny žádné pojmy.",
+    "glossary.table.loadError": "Pojmy se nepodařilo načíst.",
+    "glossary.table.total": "{count, number} pojmů",
+    "glossary.table.loaded": "Zobrazeno: {count, number}",
+    "glossary.table.loadingMore": "Načítají se další pojmy...",
+    "glossary.table.cell.expand": "Rozbalit buňku",
+    "glossary.table.cell.collapse": "Sbalit buňku",
+    "glossary.table.endReached": "Všechny pojmy jsou načtené.",
+    "glossary.table.workspace.title": "Tabulkové zobrazení",
+    "glossary.table.workspace.breadcrumb": "Tabulkové zobrazení",
+    "glossary.table.workspace.open": "Otevřít tabulkové zobrazení",
+    "glossary.table.workspace.open.help":
+      "Otevře oddělené tabulkové zobrazení pojmů pro hromadné úpravy a zobrazení metadat.",
+    "glossary.table.workspace.back": "Zpět na detail slovníku",
+    "glossary.table.workspace.back.help": "Vrátí vás na detail slovníku.",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",
@@ -713,16 +738,14 @@ const cs = {
 
     "search.title": "Vyhledávání",
     "search.tab.dashboard": "Nástěnka",
-    "search.tab.everything": "Hledat ve všech záznamech",
-    "search.tab.terms": "Pojmy",
-    "search.tab.terms.filter.allVocabularies": "Všechny slovníky",
-    "search.tab.vocabularies": "Slovníky",
-    "search.tab.facets": "Fasetové vyhledávání pojmů",
     "search.reset": "Vymazat vyhledávání",
     "search.results.title": "Výsledky vyhledávání „{searchString}“",
     "search.no-results": "Zadanému výrazu neodpovídá žádný výsledek.",
+    "search.noMoreResults": "Žádné další výsledky nenalezeny.",
     "search.results.countInfo":
-      "{matches, plural, one {Nalezen # výskyt} few {Nalezeny celkem # výskyty} other {Nalezeno celkem # výskytů}} {assets, plural, one {v # záznamu} other {v # záznamech}}.",
+      "{count, plural, one {Nalezen # výskyt odpovídající} few {Nalezeny # výskyty odpovídající} other {Nalezeno celkem # výskytů odpovídajících}} hledaným kriteriím.",
+    "search.results.countInfo.noFts":
+      "{count, plural, one {Nalezen # záznam odpovídající} few {Nalezeny # záznamy odpovídající} other {Nalezeno celkem # záznamů odpovídajících}} hledaným kriteriím.",
     "search.results.table.label": "Název",
     "search.results.table.label.tooltip": "Zobrazit detail objektu",
     "search.results.table.match": "Nalezená shoda",
@@ -732,12 +755,20 @@ const cs = {
     "search.results.field.comment": "Popis",
     "search.results.field.definition": "Definice",
     "search.results.vocabulary.from": "z",
-    "search.results.facetedLink": "Zkuste {link}.",
     "search.faceted.matchType.exact": "Přesná shoda",
     "search.faceted.matchType.substring": "Částečná shoda",
     "search.faceted.no-results":
       "Zadaným parametrů neodpovídají již žádná další data.",
     "search.faceted.relationshipAnnotation": "Vztah anotovaný pojmem",
+    "search.target.both": "Vše",
+    "search.target.terms": "Pojmy",
+    "search.target.vocabularies": "Slovníky",
+    "search.advanced.show": "Zobrazit pokročilé filtry",
+    "search.advanced.hide": "Skrýt pokročilé filtry",
+    "search.help": "Zadejte hledaný výraz do pole výše.",
+    "search.no-value": "Bez hodnoty",
+    "search.no-value.checkbox.hint":
+      "Odškrtnuto - nepravda; Zaškrtnuto - pravda; Neurčitý - bez hodnoty",
 
     "profile.first.name": "Křestní jméno",
     "profile.last.name": "Příjmení",

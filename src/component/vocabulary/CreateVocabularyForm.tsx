@@ -20,7 +20,7 @@ import { isVocabularyValid } from "./VocabularyValidationUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Document from "../../model/Document";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { publishMessage } from "../../action/SyncActions";
@@ -171,7 +171,7 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       selectLanguage(language);
       return;
     }
-    const data = _.cloneDeep({ label, comment });
+    const data = cloneDeep({ label, comment });
     Vocabulary.removeTranslation(data, lang);
     setLabel(data.label);
     setComment(data.comment);

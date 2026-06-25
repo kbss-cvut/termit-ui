@@ -6,8 +6,8 @@ describe("ImportVocabularyDialog", () => {
   let onCancel: () => void;
 
   beforeEach(() => {
-    onCreate = jest.fn();
-    onCancel = jest.fn();
+    onCreate = vi.fn();
+    onCancel = vi.fn();
   });
 
   describe("allowRename", () => {

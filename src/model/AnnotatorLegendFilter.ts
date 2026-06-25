@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 
 export enum AnnotationClass {
   INVALID = "invalid-term-occurrence",
@@ -72,6 +72,6 @@ export default class AnnotatorLegendFilter {
    * Creates deep clone of this filter
    */
   public clone() {
-    return _.cloneDeep(this);
+    return cloneDeep(this);
   }
 }

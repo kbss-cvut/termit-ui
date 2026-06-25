@@ -14,26 +14,29 @@ import * as Redux from "react-redux";
 import { act } from "react-dom/test-utils";
 import * as AsyncActions from "../../../action/AsyncActions";
 
-jest.mock("../../misc/AssetLabel", () => () => <span>Asset</span>);
-jest.mock("react-redux", () => ({
-  ...jest.requireActual("react-redux"),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
-}));
+vi.mock("../../misc/AssetLabel", () => ({ default: () => <span>Asset</span> }));
+vi.mock("react-redux", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useSelector: vi.fn(),
+    useDispatch: vi.fn(),
+  };
+});
 
 describe("UnmappedPropertiesEdit", () => {
   let onChange: (update: Map<string, PropertyValueType[]>) => void;
 
   beforeEach(() => {
-    onChange = jest.fn();
-    jest.spyOn(Redux, "useSelector").mockReturnValue([
+    onChange = vi.fn();
+    vi.spyOn(Redux, "useSelector").mockReturnValue([
       new RdfsResource({
         iri: Generator.generateUri(),
         label: langString("Known unmapped property"),
       }),
     ]);
-    const mockDispatch = jest.fn().mockResolvedValue({});
-    jest.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
+    const mockDispatch = vi.fn().mockResolvedValue({});
+    vi.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
     mockUseI18n();
   });
 
@@ -67,6 +70,24 @@ describe("UnmappedPropertiesEdit", () => {
     expect(removeButtons.length).toEqual(2);
     removeButtons.at(0).simulate("click");
     expect(onChange).toHaveBeenCalledWith(new Map([[property, ["test2"]]]));
+  });
+
+  it("removes prop value on delete button click when it is an object with identifier", () => {
+    const property = Generator.generateUri();
+    const existing = new Map([
+      [
+        property,
+        [{ iri: "http://example.com/one" }, { iri: "http://example.com/two" }],
+      ],
+    ]);
+    const wrapper = render(existing);
+
+    const removeButtons = wrapper.find(BadgeButton);
+    expect(removeButtons.length).toEqual(2);
+    removeButtons.at(1).simulate("click");
+    expect(onChange).toHaveBeenCalledWith(
+      new Map([[property, [{ iri: "http://example.com/one" }]]])
+    );
   });
 
   it("removes property completely when only value is deleted", () => {
@@ -184,7 +205,7 @@ describe("UnmappedPropertiesEdit", () => {
   });
 
   it("loads known properties on mount", () => {
-    jest.spyOn(AsyncActions, "getProperties");
+    vi.spyOn(AsyncActions, "getProperties");
     render(new Map());
     expect(AsyncActions.getProperties).toHaveBeenCalled();
   });

@@ -33,7 +33,7 @@ describe("Vocabulary Validation", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     stompMock.reset();
     store = mockStore(new TermItState());
     dispatch = store.dispatch;

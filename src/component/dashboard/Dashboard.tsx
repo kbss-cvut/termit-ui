@@ -1,12 +1,17 @@
 import * as React from "react";
+import { Suspense } from "react";
 import { Col, Row } from "reactstrap";
 import LastEditedAssets from "./widget/lastedited/LastEditedAssets";
 import NewsAlert from "./widget/NewsAlert";
 import Constants from "../../util/Constants";
 import WindowTitle from "../misc/WindowTitle";
 import LastCommentedAssets from "./widget/lastcommented/LastCommentedAssets";
-import TermDistributionWidget from "./widget/TermDistributionWidget";
 import "./Dashboard.scss";
+import ContainerMask from "../misc/ContainerMask";
+
+const TermDistributionWidget = React.lazy(
+  () => import("./widget/TermDistributionWidget")
+);
 
 const Dashboard: React.FC = () => {
   return (
@@ -21,7 +26,9 @@ const Dashboard: React.FC = () => {
           <LastCommentedAssets />
         </Col>
         <Col xl={4} lg={6} md={12}>
-          <TermDistributionWidget />
+          <Suspense fallback={<ContainerMask />}>
+            <TermDistributionWidget />
+          </Suspense>
         </Col>
       </Row>
     </>

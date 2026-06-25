@@ -11,8 +11,8 @@ describe("CommentEdit", () => {
   let onCancel: () => void;
 
   beforeEach(() => {
-    onSubmit = jest.fn();
-    onCancel = jest.fn();
+    onSubmit = vi.fn();
+    onCancel = vi.fn();
     mockUseI18n();
   });
 

@@ -8,7 +8,6 @@ import { STATUS_MAP } from "./UserStatusInfo";
 export interface UserActions {
   disable: (user: User) => void;
   enable: (user: User) => void;
-  unlock: (user: User) => void;
   changeRole: (user: User) => void;
 }
 
@@ -19,7 +18,7 @@ const UserActionsButtons: React.FC<
   if (user.iri === currentUser.iri) {
     return null;
   }
-  const buttons = [];
+  const buttons: React.ReactElement[] = [];
   if (user.isDisabled()) {
     const btnId = `user-${Utils.hashCode(user.iri)}-enable`;
     buttons.push(
@@ -48,22 +47,6 @@ const UserActionsButtons: React.FC<
         color="warning"
       >
         {i18n(STATUS_MAP.ACTIVE.buttonLabel)}
-      </Button>
-    );
-  }
-  if (user.isLocked()) {
-    const btnId = `user-${Utils.hashCode(user.iri)}-unlock`;
-    buttons.push(
-      <Button
-        id={btnId}
-        key={btnId}
-        size="sm"
-        onClick={() => actions.unlock(user)}
-        title={i18n(STATUS_MAP.LOCKED.buttonTitle)}
-        className="users-action-button"
-        color="primary"
-      >
-        {i18n(STATUS_MAP.LOCKED.buttonLabel)}
       </Button>
     );
   }

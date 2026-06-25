@@ -7,13 +7,17 @@ import { ThunkDispatch } from "../../util/Types";
 import Constants from "../../util/Constants";
 import Ajax from "../../util/Ajax";
 import { exportFileContent } from "../AsyncResourceActions";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 
-jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../util/Ajax");
+vi.mock("../../util/Routing");
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+  const actual = await importOriginal();
   return {
-    ...originalModule,
-    default: jest.fn(),
+    ...actual,
+    default: {
+      getRaw: vi.fn(),
+    } as any,
   };
 });
 
@@ -23,7 +27,7 @@ describe("AsyncResourceActions", () => {
   let store: MockStoreEnhanced<TermItState>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store = mockStore(new TermItState());
   });
 
@@ -34,7 +38,7 @@ describe("AsyncResourceActions", () => {
     );
 
     it("sends request asking for content as attachment", () => {
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
+      Ajax.getRaw = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: "test",
           headers: {
@@ -43,16 +47,16 @@ describe("AsyncResourceActions", () => {
           },
         })
       );
-      Utils.fileDownload = jest.fn();
+      Utils.fileDownload = vi.fn();
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(exportFileContent(fileIri))
       ).then(() => {
         expect(Ajax.getRaw).toHaveBeenCalled();
-        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.getRaw as Mock).mock.calls[0][0];
         expect(url).toEqual(
           Constants.API_PREFIX + "/resources/" + fileName + "/content"
         );
-        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.getRaw as Mock).mock.calls[0][1];
         expect(config.getParams().attachment).toEqual("true");
         expect(config.getParams().namespace).toEqual(fileIri.namespace);
       });
@@ -60,7 +64,7 @@ describe("AsyncResourceActions", () => {
 
     it("stores response attachment", () => {
       const data = '<html lang="en">test</html>';
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
+      Ajax.getRaw = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data,
           headers: {
@@ -69,12 +73,12 @@ describe("AsyncResourceActions", () => {
           },
         })
       );
-      Utils.fileDownload = jest.fn();
+      Utils.fileDownload = vi.fn();
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(exportFileContent(fileIri))
       ).then(() => {
         expect(Utils.fileDownload).toHaveBeenCalled();
-        const args = (Utils.fileDownload as jest.Mock).mock.calls[0];
+        const args = (Utils.fileDownload as Mock).mock.calls[0];
         expect(args[0]).toEqual(data);
         expect(args[1]).toEqual(fileName);
         expect(args[2]).toEqual("text/html");

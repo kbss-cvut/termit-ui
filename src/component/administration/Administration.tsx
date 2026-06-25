@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import Utils from "../../util/Utils";
 import { trackPromise } from "react-promise-tracker";
 import Customization from "./customization/Customization";
+import { loadUserGroups } from "../../action/AsyncUserGroupActions";
 
 const Administration: React.FC = () => {
   const { i18n } = useI18n();
@@ -19,6 +20,7 @@ const Administration: React.FC = () => {
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
     trackPromise(dispatch(loadUsers()), "users");
+    trackPromise(dispatch(loadUserGroups()), "groups");
   }, [dispatch]);
   const location = useLocation();
   React.useEffect(() => {

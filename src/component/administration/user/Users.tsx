@@ -7,11 +7,9 @@ import {
   disableUser,
   enableUser,
   loadUsers,
-  unlockUser,
 } from "../../../action/AsyncUserActions";
 import "./Users.scss";
 import TermItState from "../../../model/TermItState";
-import PasswordReset from "./PasswordReset";
 import { Link } from "react-router-dom";
 import Routes from "../../../util/Routes";
 import { GoPlus } from "react-icons/go";
@@ -31,7 +29,6 @@ import OutgoingLink from "../../misc/OutgoingLink";
 
 const Users: React.FC = () => {
   const { i18n } = useI18n();
-  const [userToUnlock, setUserToUnlock] = React.useState(EMPTY_USER);
   const [editedUser, setEditedUser] = React.useState(EMPTY_USER);
   const users = useSelector((state: TermItState) => state.users);
   const currentUser = useSelector((state: TermItState) => state.user);
@@ -44,14 +41,6 @@ const Users: React.FC = () => {
   const onEnableUser = (user: User) => {
     trackPromise(dispatch(enableUser(user)), "users").then(() =>
       dispatch(loadUsers())
-    );
-  };
-  const onUnlockUserSubmit = (newPassword: string) => {
-    trackPromise(dispatch(unlockUser(userToUnlock, newPassword)), "users").then(
-      () => {
-        setUserToUnlock(EMPTY_USER);
-        dispatch(loadUsers());
-      }
     );
   };
   const onUserRoleSubmit = (role: UserRoleData) => {
@@ -81,12 +70,6 @@ const Users: React.FC = () => {
         }
       >
         <PromiseTrackingMask area="users" />
-        <PasswordReset
-          open={userToUnlock !== EMPTY_USER}
-          user={userToUnlock}
-          onSubmit={onUnlockUserSubmit}
-          onCancel={() => setUserToUnlock(EMPTY_USER)}
-        />
         <UserRolesEdit
           open={editedUser !== EMPTY_USER}
           user={editedUser}
@@ -107,7 +90,6 @@ const Users: React.FC = () => {
           currentUser={currentUser}
           disable={onDisableUser}
           enable={onEnableUser}
-          unlock={(user) => setUserToUnlock(user)}
           changeRole={(user) => setEditedUser(user)}
           readOnly={isUsingOidcAuth()}
         />

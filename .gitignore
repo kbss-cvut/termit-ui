@@ -5,3 +5,4 @@ build
 coverage
 junit.xml
 .DS_store
+stats.html

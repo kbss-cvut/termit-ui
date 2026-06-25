@@ -32,7 +32,7 @@ export const ResetPassword: React.FC = () => {
   }, []);
 
   const dispatch: ThunkDispatch = useDispatch();
-  const { i18n } = useI18n();
+  const { i18n, formatMessage } = useI18n();
 
   const { token, token_uri } = useParams<ResetPasswordGetParams>();
   const isNewMatch = useRouteMatch(Routes.createPassword.path);
@@ -52,6 +52,7 @@ export const ResetPassword: React.FC = () => {
 
   const arePasswordsEqualAndNotEmpty = () =>
     password === passwordConfirm && password !== "";
+
   const validatePasswords = () => {
     if (arePasswordsEqualAndNotEmpty()) {
       return ValidationResult.VALID;
@@ -69,7 +70,11 @@ export const ResetPassword: React.FC = () => {
 
   // Listen to keys and check if enter was pressed, validate the form and send request
   const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && arePasswordsEqualAndNotEmpty()) {
+    if (
+      e.key === "Enter" &&
+      arePasswordsEqualAndNotEmpty() &&
+      SecurityUtils.isPasswordValid(password)
+    ) {
       sendRequest();
     }
   };
@@ -114,10 +119,13 @@ export const ResetPassword: React.FC = () => {
                 autoComplete="new-password"
                 labelDirection={LabelDirection.vertical}
                 value={password}
-                onKeyPress={onKeyPress}
+                onKeyDown={onKeyPress}
                 onChange={onPasswordChange}
                 placeholder={i18n(id("password.placeholder"))}
                 disabled={passwordChanged}
+                hint={formatMessage("createPassword.requirements", {
+                  minLength: SecurityUtils.PASSWORD_MIN_LENGTH,
+                })}
               />
               <EnhancedInput
                 type="password"
@@ -126,7 +134,7 @@ export const ResetPassword: React.FC = () => {
                 autoComplete="new-password"
                 labelDirection={LabelDirection.vertical}
                 value={passwordConfirm}
-                onKeyPress={onKeyPress}
+                onKeyDown={onKeyPress}
                 onChange={onPasswordConfirmChange}
                 validation={validatePasswords()}
                 disabled={passwordChanged}
@@ -136,7 +144,11 @@ export const ResetPassword: React.FC = () => {
                 color="success"
                 onClick={sendRequest}
                 className="btn-block"
-                disabled={!arePasswordsEqualAndNotEmpty() || passwordChanged}
+                disabled={
+                  !arePasswordsEqualAndNotEmpty() ||
+                  !SecurityUtils.isPasswordValid(password) ||
+                  passwordChanged
+                }
               >
                 {i18n(id("submit"))}
               </Button>

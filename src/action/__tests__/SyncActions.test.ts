@@ -2,7 +2,7 @@ import { saveLanguagePreference, setHtmlLanguage } from "../../util/IntlUtil";
 import { switchLanguage } from "../SyncActions";
 import Constants from "../../util/Constants";
 
-jest.mock("../../util/IntlUtil");
+vi.mock("../../util/IntlUtil");
 
 describe("Synchronous actions", () => {
   describe("switch language", () => {

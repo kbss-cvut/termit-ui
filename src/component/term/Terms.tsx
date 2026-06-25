@@ -74,6 +74,7 @@ interface TermsState {
   includeImported: boolean;
   disableIncludeImportedToggle: boolean;
   showTerminalTerms: boolean;
+  selectedTermLoaded: boolean;
 }
 
 const RELEVANT_ACTION_TYPES = [
@@ -98,6 +99,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       includeImported: includeImported || false,
       disableIncludeImportedToggle: props.isDetailView || false,
       showTerminalTerms: false,
+      selectedTermLoaded: false,
     };
   }
 
@@ -111,6 +113,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       this.treeComponent.current.resetOptions();
       this.props.consumeNotification(matchingNotification);
     } else if (this.shouldReloadTerms(prevProps)) {
+      this.setState({ selectedTermLoaded: false });
       this.treeComponent.current?.resetOptions();
     }
     if (prevProps.locale !== this.props.locale) {
@@ -160,6 +163,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           ...fetchOptions,
           includeImported: this.state.includeImported,
           flatList: this.props.flatList,
+          includeTerms:
+            !this.state.selectedTermLoaded &&
+            this.props.isDetailView &&
+            this.props.selectedTerms
+              ? [this.props.selectedTerms.iri]
+              : undefined,
         },
         vocabularyIri
       )
@@ -201,6 +210,16 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   public onCreateClick = () => {
     const vocabularyIri = VocabularyUtils.create(this.props.vocabulary!.iri!);
     Routing.transitionTo(Routes.createVocabularyTerm, {
+      params: new Map([["name", vocabularyIri.fragment]]),
+      query: vocabularyIri.namespace
+        ? namespaceQueryParam(vocabularyIri.namespace)
+        : undefined,
+    });
+  };
+
+  public onOpenTermsWorkspace = () => {
+    const vocabularyIri = VocabularyUtils.create(this.props.vocabulary!.iri!);
+    Routing.transitionTo(Routes.vocabularySheetView, {
       params: new Map([["name", vocabularyIri.fragment]]),
       query: vocabularyIri.namespace
         ? namespaceQueryParam(vocabularyIri.namespace)
@@ -338,21 +357,34 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             )}
           </h4>
           {!isDetailView && (
-            <IfVocabularyActionAuthorized
-              vocabulary={this.props.vocabulary}
-              requiredAccessLevel={AccessLevel.WRITE}
-            >
+            <div className="d-flex align-items-center">
               <Button
-                id="terms-create"
-                color="primary"
+                id="terms-open-workspace"
+                color="secondary"
+                outline={true}
                 size="sm"
-                title={i18n("glossary.createTerm.tooltip")}
-                onClick={this.onCreateClick}
+                className="mr-2"
+                title={i18n("glossary.table.workspace.open.help")}
+                onClick={this.onOpenTermsWorkspace}
               >
-                <GoPlus />
-                &nbsp;{i18n("glossary.new")}
+                {i18n("glossary.table.workspace.open")}
               </Button>
-            </IfVocabularyActionAuthorized>
+              <IfVocabularyActionAuthorized
+                vocabulary={this.props.vocabulary}
+                requiredAccessLevel={AccessLevel.WRITE}
+              >
+                <Button
+                  id="terms-create"
+                  color="primary"
+                  size="sm"
+                  title={i18n("glossary.createTerm.tooltip")}
+                  onClick={this.onCreateClick}
+                >
+                  <GoPlus />
+                  &nbsp;{i18n("glossary.new")}
+                </Button>
+              </IfVocabularyActionAuthorized>
+            </div>
           )}
         </div>
         <div
@@ -364,9 +396,8 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             ref={this.treeComponent}
             isClearable={!isDetailView}
             onChange={this.onTermSelect}
-            value={
-              this.props.selectedTerms ? this.props.selectedTerms.iri : null
-            }
+            value={this.props.selectedTerms}
+            valueIsControlled={false}
             fetchOptions={this.fetchOptions}
             isMenuOpen={true}
             multi={false}

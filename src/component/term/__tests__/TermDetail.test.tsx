@@ -16,14 +16,18 @@ import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
 import { StompClient } from "../../hoc/withStompClient";
 
-jest.mock("../ParentTermSelector", () => () => <div>Parent selector</div>);
-jest.mock("../RelatedTermsSelector", () => () => (
-  <div>Related terms selector</div>
-));
-jest.mock("../../misc/AssetLabel", () => () => <span>Asset label</span>);
-jest.mock("../../changetracking/AssetHistory", () => () => (
-  <div>Asset history</div>
-));
+vi.mock("../ParentTermSelector", () => ({
+  default: () => <div>Parent selector</div>,
+}));
+vi.mock("../RelatedTermsSelector", () => ({
+  default: () => <div>Related terms selector</div>,
+}));
+vi.mock("../../misc/AssetLabel", () => ({
+  default: () => <span>Asset label</span>,
+}));
+vi.mock("../../changetracking/AssetHistory", () => ({
+  default: () => <div>Asset history</div>,
+}));
 
 describe("TermDetail", () => {
   const normalizedTermName = "test-term";
@@ -67,17 +71,17 @@ describe("TermDetail", () => {
       isExact: true,
       url: "http://localhost:3000/" + location.pathname,
     };
-    onLoad = jest.fn().mockResolvedValue({});
-    loadVocabulary = jest.fn();
-    onUpdate = jest.fn().mockResolvedValue({});
-    removeTerm = jest.fn().mockResolvedValue({});
-    approveOccurrence = jest.fn().mockResolvedValue({});
-    removeOccurrence = jest.fn().mockResolvedValue({});
-    onPublishNotification = jest.fn();
-    requestVocabularyValidation = jest.fn();
-    loadCustomAttributes = jest.fn();
-    loadTermRelationshipAnnotations = jest.fn();
-    loadTermRelationshipsAnnotatedBy = jest.fn();
+    onLoad = vi.fn().mockResolvedValue({});
+    loadVocabulary = vi.fn();
+    onUpdate = vi.fn().mockResolvedValue({});
+    removeTerm = vi.fn().mockResolvedValue({});
+    approveOccurrence = vi.fn().mockResolvedValue({});
+    removeOccurrence = vi.fn().mockResolvedValue({});
+    onPublishNotification = vi.fn();
+    requestVocabularyValidation = vi.fn();
+    loadCustomAttributes = vi.fn();
+    loadTermRelationshipAnnotations = vi.fn();
+    loadTermRelationshipsAnnotatedBy = vi.fn();
     handlers = {
       loadTerm: onLoad,
       loadVocabulary,
@@ -438,7 +442,7 @@ describe("TermDetail", () => {
         {...intlFunctions()}
       />
     );
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     const newLocation = Object.assign({}, location);
     newLocation.search = `&namespace=${VocabularyUtils.NS_TERMIT}`;
     wrapper.setProps({ location: newLocation });

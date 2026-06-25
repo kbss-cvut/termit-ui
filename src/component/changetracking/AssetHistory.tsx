@@ -19,7 +19,7 @@ import CustomInput from "../misc/CustomInput";
 import Select from "../misc/Select";
 import DeleteRecord from "../../model/changetracking/DeleteRecord";
 import DeleteRow from "./DeleteRow";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
 

@@ -25,7 +25,7 @@ import AppNotification from "../../model/AppNotification";
 import { publishNotification } from "../../action/SyncActions";
 import NotificationType from "../../model/NotificationType";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
-import _ from "lodash";
+import xorBy from "lodash/xorBy";
 import Vocabulary from "../../model/Vocabulary";
 import { FaTrashAlt } from "react-icons/fa";
 import RemoveAssetDialog from "../asset/RemoveAssetDialog";
@@ -225,7 +225,7 @@ export class TermDetail extends EditableComponent<
 
   private publishNotificationIfRelevant(newTerm: Term, oldTerm: Term) {
     if (
-      _.xorBy(
+      xorBy(
         oldTerm.parentTerms,
         Utils.sanitizeArray(newTerm.parentTerms),
         (t) => t.iri
@@ -244,7 +244,7 @@ export class TermDetail extends EditableComponent<
   };
 
   public getActions = () => {
-    const actions = [];
+    const actions: React.ReactElement[] = [];
     if (!this.state.edit) {
       actions.push(
         <IfNotInTerminalState

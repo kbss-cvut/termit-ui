@@ -5,6 +5,7 @@ import { CreateTermFromAnnotation } from "../CreateTermFromAnnotation";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import type { Mock } from "vitest";
 
 describe("CreateTermFromAnnotation", () => {
   const vocabularyIri = VocabularyUtils.create(
@@ -19,10 +20,10 @@ describe("CreateTermFromAnnotation", () => {
   let propsFunctions: any;
 
   beforeEach(() => {
-    onClose = jest.fn();
-    onMinimize = jest.fn();
-    createTerm = jest.fn().mockResolvedValue({});
-    onTermCreated = jest.fn();
+    onClose = vi.fn();
+    onMinimize = vi.fn();
+    createTerm = vi.fn().mockResolvedValue({});
+    onTermCreated = vi.fn();
     propsFunctions = { onClose, onMinimize, createTerm, onTermCreated };
   });
 
@@ -139,13 +140,13 @@ describe("CreateTermFromAnnotation", () => {
     wrapper.setState({ iri, label, sources });
     wrapper.instance().onSave();
     expect(createTerm).toHaveBeenCalled();
-    const term = (createTerm as jest.Mock).mock.calls[0][0];
+    const term = (createTerm as Mock).mock.calls[0][0];
     expect(term).toBeInstanceOf(Term);
     expect(term.iri).toEqual(iri);
     expect(term.label).toEqual(label);
     expect(term.sources).toEqual(sources);
     expect(term.types).toContain(VocabularyUtils.TERM);
-    expect((createTerm as jest.Mock).mock.calls[0][1]).toEqual(vocabularyIri);
+    expect((createTerm as Mock).mock.calls[0][1]).toEqual(vocabularyIri);
   });
 
   it("invokes close and clears state after successful term creation", async () => {
@@ -206,7 +207,7 @@ describe("CreateTermFromAnnotation", () => {
     wrapper.setState({ iri: termIri, label: termLabel });
     await wrapper.instance().onSave();
     expect(onTermCreated).toHaveBeenCalled();
-    const newTerm = (onTermCreated as jest.Mock).mock.calls[0][0];
+    const newTerm = (onTermCreated as Mock).mock.calls[0][0];
     expect(newTerm.iri).toEqual(termIri);
     expect(newTerm.label).toEqual(termLabel);
   });

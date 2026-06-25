@@ -21,13 +21,19 @@ import ExportConfig, {
   ExportFormat,
   ExportType,
 } from "../../model/local/ExportConfig";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 
-jest.mock("../../util/Routing");
-jest.mock("../../util/Ajax", () => {
-  const originalModule = jest.requireActual("../../util/Ajax");
+vi.mock("../../util/Routing");
+vi.mock(import("../../util/Ajax"), async (importOriginal) => {
+  const actual = await importOriginal();
   return {
-    ...originalModule,
-    default: jest.fn(),
+    ...actual,
+    default: {
+      head: vi.fn(),
+      get: vi.fn(),
+      getRaw: vi.fn(),
+    } as any,
   };
 });
 
@@ -40,7 +46,7 @@ describe("AsyncTermActions", () => {
   let store: MockStoreEnhanced<TermItState>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store = mockStore(new TermItState());
   });
 
@@ -49,7 +55,7 @@ describe("AsyncTermActions", () => {
       const count = Generator.randomInt(0, 100);
       const countHeader = {};
       countHeader[Constants.Headers.X_TOTAL_COUNT] = count.toString();
-      Ajax.head = jest.fn().mockResolvedValue({
+      Ajax.head = vi.fn().mockResolvedValue({
         data: {},
         headers: countHeader,
       });
@@ -72,7 +78,7 @@ describe("AsyncTermActions", () => {
     });
 
     it("handles situations when response does not contain corresponding header", () => {
-      Ajax.head = jest.fn().mockResolvedValue({
+      Ajax.head = vi.fn().mockResolvedValue({
         headers: {},
       });
       return Promise.resolve(
@@ -102,7 +108,7 @@ describe("AsyncTermActions", () => {
       const namespace =
         "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
       const name = "test-vocabulary";
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
+      Ajax.getRaw = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: "test",
           headers: { "Content-type": ExportFormat.Excel.mimeType },
@@ -120,18 +126,18 @@ describe("AsyncTermActions", () => {
         )
       ).then(() => {
         expect(Ajax.getRaw).toHaveBeenCalled();
-        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.getRaw as Mock).mock.calls[0][0];
         expect(url).toEqual(
           Constants.API_PREFIX + "/vocabularies/" + name + "/terms"
         );
-        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.getRaw as Mock).mock.calls[0][1];
         expect(config.getParams().namespace).toEqual(namespace);
       });
     });
 
     it("passes additional parameters as query parameters when specified", () => {
       const name = "test-vocabulary";
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
+      Ajax.getRaw = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: "test",
           headers: { "Content-type": ExportFormat.Turtle.mimeType },
@@ -157,11 +163,11 @@ describe("AsyncTermActions", () => {
         )
       ).then(() => {
         expect(Ajax.getRaw).toHaveBeenCalled();
-        const url = (Ajax.getRaw as jest.Mock).mock.calls[0][0];
+        const url = (Ajax.getRaw as Mock).mock.calls[0][0];
         expect(url).toEqual(
           Constants.API_PREFIX + "/vocabularies/" + name + "/terms"
         );
-        const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+        const config = (Ajax.getRaw as Mock).mock.calls[0][1];
         expect(config.getParams().namespace).toEqual(namespace);
         expect(config.getParams().exportType).toEqual(exportConfig.type);
         expect(config.getParams().property).toEqual(
@@ -174,7 +180,7 @@ describe("AsyncTermActions", () => {
       "sets accept type based on specified export type",
       (format: ExportFormat) => {
         const iri = VocabularyUtils.create(Generator.generateUri());
-        Ajax.getRaw = jest.fn().mockImplementation(() =>
+        Ajax.getRaw = vi.fn().mockImplementation(() =>
           Promise.resolve({
             data: "test",
             headers: { "Content-type": format.mimeType },
@@ -186,7 +192,7 @@ describe("AsyncTermActions", () => {
           )
         ).then(() => {
           expect(Ajax.getRaw).toHaveBeenCalled();
-          const config = (Ajax.getRaw as jest.Mock).mock.calls[0][1];
+          const config = (Ajax.getRaw as Mock).mock.calls[0][1];
           expect(config.getHeaders()[Constants.Headers.ACCEPT]).toEqual(
             format.mimeType
           );
@@ -198,7 +204,7 @@ describe("AsyncTermActions", () => {
       const iri = VocabularyUtils.create(Generator.generateUri());
       const data = "test";
       const fileName = "test.xlsx";
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
+      Ajax.getRaw = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data,
           headers: {
@@ -207,7 +213,7 @@ describe("AsyncTermActions", () => {
           },
         })
       );
-      Utils.fileDownload = jest.fn();
+      Utils.fileDownload = vi.fn();
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           exportGlossary(
@@ -228,7 +234,7 @@ describe("AsyncTermActions", () => {
       const iri = VocabularyUtils.create(Generator.generateUri());
       const data = "test";
       const fileName = "test.xlsx";
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
+      Ajax.getRaw = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data,
           headers: {
@@ -237,7 +243,7 @@ describe("AsyncTermActions", () => {
           },
         })
       );
-      Utils.fileDownload = jest.fn();
+      Utils.fileDownload = vi.fn();
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           exportGlossary(
@@ -256,7 +262,7 @@ describe("AsyncTermActions", () => {
     it("dispatches failure when response does not contain correct data", () => {
       const iri = VocabularyUtils.create(Generator.generateUri());
       const data = "test";
-      Ajax.getRaw = jest.fn().mockImplementation(() =>
+      Ajax.getRaw = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data,
           headers: {
@@ -264,7 +270,7 @@ describe("AsyncTermActions", () => {
           },
         })
       );
-      Utils.fileDownload = jest.fn();
+      Utils.fileDownload = vi.fn();
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           exportGlossary(
@@ -283,7 +289,7 @@ describe("AsyncTermActions", () => {
 
   describe("loadVocabularyContentChanges", () => {
     it("loads term changes for vocabulary", () => {
-      Ajax.get = jest.fn().mockResolvedValue({});
+      Ajax.get = vi.fn().mockResolvedValue({});
       const vocabulary = Generator.generateVocabulary();
       vocabulary.iri = namespace + vocabularyName;
       return Promise.resolve(
@@ -292,7 +298,7 @@ describe("AsyncTermActions", () => {
         )
       ).then(() => {
         expect(Ajax.get).toHaveBeenCalled();
-        const args = (Ajax.get as jest.Mock).mock.calls[0];
+        const args = (Ajax.get as Mock).mock.calls[0];
         expect(args[0]).toEqual(
           `${Constants.API_PREFIX}/vocabularies/${vocabularyName}/history-of-content`
         );
@@ -303,7 +309,7 @@ describe("AsyncTermActions", () => {
 
   describe("loadVocabularySnapshots", () => {
     it("immediately returns empty array when vocabulary IRI is empty", () => {
-      Ajax.get = jest.fn().mockResolvedValue([]);
+      Ajax.get = vi.fn().mockResolvedValue([]);
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(
           loadVocabularySnapshots(
@@ -319,7 +325,7 @@ describe("AsyncTermActions", () => {
 
   describe("getVocabularyRelations", () => {
     it("returns vocabulary relations", () => {
-      Ajax.get = jest.fn().mockResolvedValue({});
+      Ajax.get = vi.fn().mockResolvedValue({});
       const vocabulary = Generator.generateVocabulary();
       vocabulary.iri = namespace + vocabularyName;
       return Promise.resolve(
@@ -331,7 +337,7 @@ describe("AsyncTermActions", () => {
         )
       ).then(() => {
         expect(Ajax.get).toHaveBeenCalled();
-        const args = (Ajax.get as jest.Mock).mock.calls[0];
+        const args = (Ajax.get as Mock).mock.calls[0];
         expect(args[0]).toEqual(
           `${Constants.API_PREFIX}/vocabularies/${vocabularyName}/relations`
         );
@@ -342,7 +348,7 @@ describe("AsyncTermActions", () => {
 
   describe("getVocabularyTermsRelations", () => {
     it("returns vocabulary terms relations", () => {
-      Ajax.get = jest.fn().mockResolvedValue({});
+      Ajax.get = vi.fn().mockResolvedValue({});
       const vocabulary = Generator.generateVocabulary();
       vocabulary.iri = namespace + vocabularyName;
       return Promise.resolve(
@@ -354,7 +360,7 @@ describe("AsyncTermActions", () => {
         )
       ).then(() => {
         expect(Ajax.get).toHaveBeenCalled();
-        const args = (Ajax.get as jest.Mock).mock.calls[0];
+        const args = (Ajax.get as Mock).mock.calls[0];
         expect(args[0]).toEqual(
           `${Constants.API_PREFIX}/vocabularies/${vocabularyName}/terms/relations`
         );

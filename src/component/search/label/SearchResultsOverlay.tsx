@@ -2,7 +2,7 @@ import * as React from "react";
 import SearchResult from "../../../model/search/SearchResult";
 import { Popover, PopoverBody } from "reactstrap";
 import TermBadge from "../../badge/TermBadge";
-import { mergeDuplicates } from "./SearchResults";
+import { mergeDuplicates } from "./SearchUtil";
 import AssetLinkFactory from "../../factory/AssetLinkFactory";
 import AssetFactory from "../../../util/AssetFactory";
 import AssetLabel from "../../misc/AssetLabel";
@@ -19,7 +19,6 @@ interface SearchResultsOverlayProps {
   targetId: string;
   onClose: () => void;
   onOpenSearch: () => void;
-  onOpenFacetedSearch: () => void;
 }
 
 export const MAX_RENDERED_RESULTS = 10;
@@ -35,14 +34,14 @@ const SearchResultsOverlay: React.FC<SearchResultsOverlayProps> = (
     props.searchResults,
     createTermNonTerminalStateMatcher(terminalStates)
   );
-  const items = [];
+  const items: React.ReactElement[] = [];
   if (mergedResults.length === 0) {
     items.push(
       <li id="search-results-link" key="full-info">
         <button
           type="button"
           className="btn-link search-result-no-results"
-          onClick={props.onOpenFacetedSearch}
+          onClick={props.onOpenSearch}
           title={i18n("main.search.tooltip")}
         >
           {i18n("main.search.no-results")}

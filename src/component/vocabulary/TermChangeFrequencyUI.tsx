@@ -16,7 +16,7 @@ import "./TermChangeFrequencyUI.scss";
 import PersistRecord from "../../model/changetracking/PersistRecord";
 import DeleteRecord from "../../model/changetracking/DeleteRecord";
 import VocabularyContentDeleteRow from "../changetracking/VocabularyContentDeleteRow";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 import Constants from "../../util/Constants";
 import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 

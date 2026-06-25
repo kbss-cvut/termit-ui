@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardBody, Label } from "reactstrap";
-import { useI18n } from "src/component/hook/useI18n";
+import { useI18n } from "../../hook/useI18n";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import ImportVocabularyDialog from "./ImportVocabularyDialog";
 import Routing from "../../../util/Routing";

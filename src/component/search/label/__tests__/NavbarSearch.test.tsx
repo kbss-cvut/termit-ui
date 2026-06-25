@@ -14,18 +14,21 @@ import {
   match,
   routingProps,
 } from "../../../../__tests__/environment/TestUtil";
+import SearchQuery from "../../../../model/search/SearchQuery";
+import { langString } from "../../../../model/MultilingualString";
 
-jest.mock("../../../../util/Routing");
+vi.mock("../../../../util/Routing");
 
 describe("NavbarSearch", () => {
   let updateSearchFilter: () => Promise<object>;
+  let resetSearchFilter: () => void;
 
   const user = Generator.generateUser();
 
   const searchResults = [
     new SearchResult({
       iri: Generator.generateUri(),
-      label: "test",
+      label: langString("test"),
       snippetField: "label",
       snippetText: "<em>label</em>",
       types: [VocabularyUtils.VOCABULARY],
@@ -33,19 +36,22 @@ describe("NavbarSearch", () => {
   ];
 
   const navbarConnections = () => {
-    return { updateSearchFilter, ...routingProps(), indexedLanguages: [] };
+    return {
+      updateSearchFilter,
+      resetSearchFilter,
+      ...routingProps(),
+      indexedLanguages: [],
+    };
   };
 
   beforeEach(() => {
-    updateSearchFilter = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve([]));
+    updateSearchFilter = vi.fn().mockImplementation(() => Promise.resolve([]));
   });
 
   it("does not render results component for initial state", () => {
     const wrapper = shallow(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -60,7 +66,7 @@ describe("NavbarSearch", () => {
   it("invokes search on change", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -86,7 +92,7 @@ describe("NavbarSearch", () => {
     props.match.path = route.path;
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={searchResults}
@@ -99,23 +105,11 @@ describe("NavbarSearch", () => {
     expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
   }
 
-  it("does not display search results when current route is term search", () => {
-    verifyResultsNotDisplayed(Routes.searchTerms);
-  });
-
-  it("does not display search results when current route is vocabulary search", () => {
-    verifyResultsNotDisplayed(Routes.searchVocabularies);
-  });
-
-  it("does not display search results when current route is faceted search", () => {
-    verifyResultsNotDisplayed(Routes.facetedSearch);
-  });
-
   it("renders results when they are available", () => {
     const isInNavbar = false;
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={isInNavbar}
         user={user}
         searchResults={searchResults}
@@ -135,7 +129,7 @@ describe("NavbarSearch", () => {
     const isInNavbar = false;
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={isInNavbar}
         user={user}
         searchResults={searchResults}
@@ -156,10 +150,9 @@ describe("NavbarSearch", () => {
   });
 
   it("transitions to search view on enter", () => {
-    const searchString = "";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -176,7 +169,7 @@ describe("NavbarSearch", () => {
     const searchString = "test";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery({ searchString })}
         navbar={true}
         user={user}
         searchResults={null}
@@ -197,7 +190,7 @@ describe("NavbarSearch", () => {
     const searchString = "test";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery({ searchString })}
         navbar={false}
         user={user}
         searchResults={null}
@@ -213,10 +206,9 @@ describe("NavbarSearch", () => {
   });
 
   it("does not render clear icon if search string is empty", () => {
-    const searchString = "";
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString={searchString}
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -230,7 +222,7 @@ describe("NavbarSearch", () => {
   it("transitions to public search view on enter when user is not logged in", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={EMPTY_USER}
         searchResults={null}
@@ -247,18 +239,10 @@ describe("NavbarSearch", () => {
     verifyResultsNotDisplayed(Routes.publicSearch);
   });
 
-  it("does not display search results when current route is public term search results", () => {
-    verifyResultsNotDisplayed(Routes.publicSearchTerms);
-  });
-
-  it("does not display search results when current route is public term search results", () => {
-    verifyResultsNotDisplayed(Routes.publicSearchVocabularies);
-  });
-
   it("transitions to search view on search icon click", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={user}
         searchResults={null}
@@ -273,7 +257,7 @@ describe("NavbarSearch", () => {
   it("transitions to search view on search icon click when user is not logged in", () => {
     const wrapper = shallow<NavbarSearch>(
       <NavbarSearch
-        searchString=""
+        searchQuery={new SearchQuery()}
         navbar={false}
         user={EMPTY_USER}
         searchResults={null}
@@ -283,26 +267,5 @@ describe("NavbarSearch", () => {
     );
     wrapper.find("#search-icon").simulate("click");
     expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
-  });
-
-  it("transitions to search view on search input when view is faceted search", () => {
-    const props = navbarConnections();
-    props.location.pathname = Routes.facetedSearch.path;
-    props.match.path = Routes.facetedSearch.path;
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchString=""
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...props}
-        {...intlFunctions()}
-      />
-    );
-    const input = wrapper.find("#main-search-input");
-    input.simulate("change", { target: { value: "abc" } });
-    return Promise.resolve().then(() => {
-      expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
-    });
   });
 });
