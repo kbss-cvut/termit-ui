@@ -3,7 +3,7 @@ import VocabularyUtils from "../util/VocabularyUtils";
 
 export const CONTEXT = {
   iri: "@id",
-  firstName: VocabularyUtils.PREFIX + "has-name",
+  firstName: VocabularyUtils.PREFIX + "has-first-name",
   lastName: VocabularyUtils.PREFIX + "has-surname",
   username: VocabularyUtils.PREFIX + "has-username",
   password: VocabularyUtils.PREFIX + "has-password",
