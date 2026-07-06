@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Term from "../../model/Term";
+import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../../model/Term";
 import Ajax, { content } from "../../util/Ajax";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import JsonLdUtils from "../../util/JsonLdUtils";
+import { queryKeys } from "../queryKeys";
 
 interface UpdateTermVariables {
   apiPrefix: string;
@@ -24,14 +26,34 @@ export function useUpdateTerm() {
         })
       );
 
-      return response.data;
+      const compacted =
+        await JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(
+          response.data,
+          TERM_CONTEXT
+        );
+
+      return compacted.map((data) => new Term(data));
     },
-    onSuccess: (_) => {
-      queryClient.invalidateQueries({
-        predicate: (query) => {
-          return query.queryKey[0] === "terms" && query.queryKey[1] === "list";
-        },
-      });
+    onSuccess: (updatedTerms) => {
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.terms.lists() },
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              terms: page.terms.map((term: Term) => {
+                const matchingUpdatedTerm = updatedTerms.find(
+                  (t) => t.iri === term.iri
+                );
+                return matchingUpdatedTerm ? matchingUpdatedTerm : term;
+              }),
+            })),
+          };
+        }
+      );
     },
   });
 }
