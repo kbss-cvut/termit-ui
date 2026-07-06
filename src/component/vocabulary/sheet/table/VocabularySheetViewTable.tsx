@@ -175,22 +175,23 @@ export const VocabularySheetViewTable: React.FC<
       const baseTermData = loadedTerms.find((t) => t.iri === editingTermUri);
       if (!baseTermData) return;
 
-      try {
-        const termToUpdate = new Term({
-          ...baseTermData,
-          ...updatedProperties,
-        } as any);
+      const termToUpdate = new Term({
+        ...baseTermData,
+        ...updatedProperties,
+      } as any);
 
-        await updateTermMutation.mutateAsync({
+      updateTermMutation.mutate(
+        {
           apiPrefix,
           term: termToUpdate,
-        });
-
-        setEditingTermUri(null);
-        setEditingColumnId(null);
-      } catch (e) {
-        console.error("Failed to update term", e);
-      }
+        },
+        {
+          onSuccess: () => {
+            setEditingTermUri(null);
+            setEditingColumnId(null);
+          },
+        }
+      );
     },
     [editingTermUri, loadedTerms, updateTermMutation, apiPrefix]
   );
