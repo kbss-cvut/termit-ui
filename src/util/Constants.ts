@@ -133,7 +133,6 @@ const constants = {
   EMPTY_ASSET_IRI: "http://empty",
   LAST_COMMENTED_ASSET_LIMIT: 5,
   ANNOTATOR_TUTORIAL: {},
-  WORKSPACE_EDITABLE_CONTEXT_PARAM: "edit-context",
   TIMESTAMP_PARAM_FORMAT: "yyyyMMdd'T'HHmmss'Z'",
   FTS_SNIPPET_TEXT_SIZE: 250,
   // Search debounce delay in milliseconds
