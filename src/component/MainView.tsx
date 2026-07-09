@@ -23,8 +23,6 @@ import { changeView } from "../action/SyncActions";
 import Utils from "../util/Utils";
 import Mask from "./misc/Mask";
 import "./MainView.scss";
-import { openForEditing } from "../action/AsyncWorkspaceActions";
-import Constants from "../util/Constants";
 import Routing from "../util/Routing";
 import { Configuration, DEFAULT_CONFIGURATION } from "../model/Configuration";
 import Breadcrumbs from "./breadcrumb/Breadcrumbs";
@@ -45,48 +43,25 @@ interface MainViewProps extends HasI18n, RouteComponentProps<any> {
   user: User;
   configuration: Configuration;
   loadUser: () => Promise<any>;
-  openContextsForEditing: (contexts: string[]) => Promise<any>;
   loadTermStates: () => void;
   sidebarExpanded: boolean;
   desktopView: boolean;
   changeView: () => void;
 }
 
-interface MainViewState {
-  loadingWorkspace: boolean;
-}
-
-export class MainView extends React.Component<MainViewProps, MainViewState> {
+export class MainView extends React.Component<MainViewProps> {
   constructor(props: MainViewProps) {
     super(props);
-    this.state = { loadingWorkspace: false };
   }
 
   public componentDidMount(): void {
     this.props.loadTermStates();
     if (this.props.user === EMPTY_USER) {
       Routing.saveOriginalTarget();
-      this.props.loadUser().then(() => {
-        this.loadWorkspace();
-      });
-    } else {
-      this.loadWorkspace();
+      this.props.loadUser();
     }
 
     window.addEventListener("resize", this.handleResize, false);
-  }
-
-  private loadWorkspace() {
-    let contexts = Utils.extractQueryParams(
-      this.props.location.search,
-      Constants.WORKSPACE_EDITABLE_CONTEXT_PARAM
-    );
-    if (contexts.length > 0) {
-      this.setState({ loadingWorkspace: true });
-      this.props
-        .openContextsForEditing(contexts)
-        .then(() => this.setState({ loadingWorkspace: false }));
-    }
   }
 
   public componentWillUnmount(): void {
@@ -108,8 +83,7 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
 
     if (
       user === EMPTY_USER ||
-      this.props.configuration === DEFAULT_CONFIGURATION ||
-      this.state.loadingWorkspace
+      this.props.configuration === DEFAULT_CONFIGURATION
     ) {
       return this.renderPlaceholder();
     }
@@ -224,8 +198,6 @@ export default connect(
       loadUser: () => dispatch(loadUser()),
       changeView: () => dispatch(changeView()),
       loadTermStates: () => dispatch(loadTermStates()),
-      openContextsForEditing: (contexts: string[]) =>
-        dispatch(openForEditing(contexts)),
     };
   }
 )(
