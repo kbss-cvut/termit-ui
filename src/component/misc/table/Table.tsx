@@ -72,6 +72,7 @@ const Table = <TData extends RowData>({
                           <TextBasedFilter
                             value={(column.getFilterValue() as string) ?? ""}
                             onChange={(value) => column.setFilterValue(value)}
+                            count={rows.length}
                           />
                         )}
                       </div>
