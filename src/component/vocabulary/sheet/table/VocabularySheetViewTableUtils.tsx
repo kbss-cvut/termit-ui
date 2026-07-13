@@ -20,6 +20,8 @@ export interface TermsTableColumn {
     | "notation"
     | "scopeNote"
     | "example"
+    | "altLabels"
+    | "hiddenLabels"
     | "status"
     | "definition";
   title: string;

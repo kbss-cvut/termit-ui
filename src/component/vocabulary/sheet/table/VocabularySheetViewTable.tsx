@@ -69,6 +69,8 @@ const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
   notation: false,
   scopeNote: false,
   example: false,
+  altLabels: false,
+  hiddenLabels: false,
   status: false,
   definition: true,
 };
@@ -525,6 +527,70 @@ export const VocabularySheetViewTable: React.FC<
                   }
                   onToggle={() => {
                     const cellKey = getCellKey(rowIndex, "example");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
+          );
+        },
+      },
+      {
+        id: "altLabels",
+        title: i18n("term.metadata.altLabels.label"),
+        minWidthRem: 14,
+        growFr: 2,
+        hideable: true,
+        render: (term, rowIndex) => {
+          const text = previewValues(
+            getLocalizedPluralInLanguage(term.altLabels, displayLanguage)
+          );
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "altLabels")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "altLabels")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "altLabels");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
+          );
+        },
+      },
+      {
+        id: "hiddenLabels",
+        title: i18n("term.metadata.hiddenLabels.label"),
+        minWidthRem: 14,
+        growFr: 2,
+        hideable: true,
+        render: (term, rowIndex) => {
+          const text = previewValues(
+            getLocalizedPluralInLanguage(term.hiddenLabels, displayLanguage)
+          );
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "hiddenLabels")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "hiddenLabels")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "hiddenLabels");
                     setExpandedCellKey((prev) =>
                       prev === cellKey ? null : cellKey
                     );
