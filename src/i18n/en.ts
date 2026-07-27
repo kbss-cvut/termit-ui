@@ -380,6 +380,9 @@ const en = {
       "Select vocabularies you want to open for modeling. Vocabularies related to the one being open are pre-selected as they are required by the modeling tool.",
     "vocabulary.updated.message": "Vocabulary successfully updated.",
     "vocabulary.created.message": "Vocabulary successfully created.",
+    "vocabulary.sync.started.message":
+      "Vocabulary sync started in the background.",
+    "vocabulary.sync.finished.message": "Vocabulary sync finished.",
     "vocabulary.detail.subtitle": "Created by {author} on ",
     "vocabulary.detail.tabs.metadata": "Metadata",
     "vocabulary.detail.tabs.termdetail": "Term Detail",
@@ -568,6 +571,7 @@ const en = {
       "a term with label 'potato' can have search string 'spud'. ",
     "term.metadata.status": "State",
     "term.updated.message": "Term successfully updated.",
+    "term.updated.error.message": "Failed to update term.",
     "term.metadata.labelExists.message":
       'Term with label "{label}" already exists in this vocabulary',
     "term.metadata.multipleSources.message":

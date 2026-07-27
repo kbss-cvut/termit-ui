@@ -379,6 +379,10 @@ const de = {
       "Wählen Sie Vokabulare aus, die Sie zur Modellierung öffnen möchten. ",
     "vocabulary.updated.message": "Vokabular erfolgreich aktualisiert.",
     "vocabulary.created.message": "Vokabular erfolgreich erstellt.",
+    "vocabulary.sync.started.message":
+      "Die Synchronisierung des Vokabulars wurde im Hintergrund gestartet.",
+    "vocabulary.sync.finished.message":
+      "Die Synchronisierung des Vokabulars wurde abgeschlossen.",
     "vocabulary.detail.subtitle": "Erstellt von {author} am",
     "vocabulary.detail.tabs.metadata": "Metadaten",
     "vocabulary.detail.tabs.termdetail": "Begriffsdetails",
@@ -537,6 +541,7 @@ const de = {
       "(Optionale) Suchbegriffe, die nicht zur visuellen Darstellung von Begriffen gedacht sind und hauptsächlich für Suchmaschinen dienen. ",
     "term.metadata.status": "Status",
     "term.updated.message": "Begriff erfolgreich aktualisiert.",
+    "term.updated.error.message": "Begriff konnte nicht aktualisiert werden.",
     "term.metadata.labelExists.message":
       'Der Begriff mit der Bezeichnung "{label}" existiert bereits in diesem Vokabular',
     "term.metadata.multipleSources.message":

@@ -1,9 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../../model/Term";
+import { useDispatch } from "react-redux";
+import Term from "../../model/Term";
 import Ajax, { content } from "../../util/Ajax";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import JsonLdUtils from "../../util/JsonLdUtils";
 import { queryKeys } from "../queryKeys";
+import { publishMessage } from "../../action/SyncActions";
+import { createFormattedMessage } from "../../model/Message";
+import MessageType from "../../model/MessageType";
 
 interface UpdateTermVariables {
   apiPrefix: string;
@@ -12,6 +15,7 @@ interface UpdateTermVariables {
 
 export function useUpdateTerm() {
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   return useMutation({
     mutationFn: async ({ apiPrefix, term }: UpdateTermVariables) => {
@@ -19,22 +23,17 @@ export function useUpdateTerm() {
       const vocabularyIri = VocabularyUtils.create(term.vocabulary!.iri!);
       const reqUrl = `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms/${termIri.fragment}`;
 
-      const response = await Ajax.put(
+      await Ajax.put(
         reqUrl,
         content(term.toJsonLd()).params({
           namespace: vocabularyIri.namespace,
         })
       );
-
-      const compacted =
-        await JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(
-          response.data,
-          TERM_CONTEXT
-        );
-
-      return compacted.map((data) => new Term(data));
     },
-    onSuccess: (updatedTerms) => {
+
+    onSuccess: async (_, variables) => {
+      const updatedTerm = variables.term;
+
       queryClient.setQueriesData(
         { queryKey: queryKeys.terms.lists() },
         (oldData: any) => {
@@ -45,14 +44,48 @@ export function useUpdateTerm() {
             pages: oldData.pages.map((page: any) => ({
               ...page,
               terms: page.terms.map((term: Term) => {
-                const matchingUpdatedTerm = updatedTerms.find(
-                  (t) => t.iri === term.iri
-                );
-                return matchingUpdatedTerm ? matchingUpdatedTerm : term;
+                return term.iri === updatedTerm.iri ? updatedTerm : term;
               }),
             })),
           };
         }
+      );
+
+      dispatch(
+        publishMessage(
+          createFormattedMessage(
+            "vocabulary.sync.started.message",
+            undefined,
+            MessageType.INFO
+          )
+        )
+      );
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.terms.lists(),
+        refetchType: "active",
+      });
+
+      dispatch(
+        publishMessage(
+          createFormattedMessage(
+            "vocabulary.sync.finished.message",
+            undefined,
+            MessageType.SUCCESS
+          )
+        )
+      );
+    },
+
+    onError: () => {
+      dispatch(
+        publishMessage(
+          createFormattedMessage(
+            "term.updated.error.message",
+            undefined,
+            MessageType.ERROR
+          )
+        )
       );
     },
   });
