@@ -389,6 +389,10 @@ const cs = {
       "Vyberte slovníky, které chcete pro modelování otevřít. Předvybrány jsou slovníky, které s otevíraným slovníkem souvisí a musí být v seznamy zahrnuty.",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
     "vocabulary.created.message": "Slovník úspěšně vytvořen.",
+    "vocabulary.sync.started.message":
+      "Synchronizace slovníku byla spuštěna na pozadí.",
+    "vocabulary.sync.finished.message":
+      "Synchronizace slovníku byla dokončena.",
     "vocabulary.detail.subtitle": "Vytvořen autorem {author} ",
     "vocabulary.detail.tabs.metadata": "Metadata",
     "vocabulary.detail.tabs.termdetail": "Detail pojmu",
@@ -577,6 +581,7 @@ const cs = {
       " slouží zejména pro vyhledávání. Nemusí se jednat (ani kontextuální) synonyma k názvu pojmu. Např. " +
       "pojem s názvem 'Kopaná' může mít vyhledávací text 'fočus'. ",
     "term.updated.message": "Pojem úspěšně aktualizován.",
+    "term.updated.error.message": "Pojem se nepodařilo aktualizovat.",
     "term.metadata.labelExists.message":
       'Pojem s názvem "{label}" již v tomto slovníku existuje',
     "term.metadata.multipleSources.message":
