@@ -31,7 +31,7 @@ export function useUpdateTerm() {
       );
     },
 
-    onSuccess: async (_, variables) => {
+    onSuccess: (_, variables) => {
       const updatedTerm = variables.term;
 
       queryClient.setQueriesData(
@@ -61,20 +61,22 @@ export function useUpdateTerm() {
         )
       );
 
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.terms.lists(),
-        refetchType: "active",
-      });
-
-      dispatch(
-        publishMessage(
-          createFormattedMessage(
-            "vocabulary.sync.finished.message",
-            undefined,
-            MessageType.SUCCESS
-          )
-        )
-      );
+      queryClient
+        .invalidateQueries({
+          queryKey: queryKeys.terms.lists(),
+          refetchType: "active",
+        })
+        .then(() => {
+          dispatch(
+            publishMessage(
+              createFormattedMessage(
+                "vocabulary.sync.finished.message",
+                undefined,
+                MessageType.SUCCESS
+              )
+            )
+          );
+        });
     },
 
     onError: () => {
