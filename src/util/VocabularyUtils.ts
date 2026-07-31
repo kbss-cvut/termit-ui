@@ -109,6 +109,7 @@ const VocabularyUtils = {
   HAS_LAST_EDITOR: _NS_POPIS_DAT + "má-posledního-editora",
   LAST_MODIFIED: _NS_POPIS_DAT + "má-datum-a-čas-poslední-modifikace",
   IMPORTS_VOCABULARY: _NS_POPIS_DAT + "importuje-slovník",
+  HAS_RELATED_VOCABULARY: _NS_TERMIT + "má-související-slovník",
   HAS_PASSWORD: _NS_POPIS_DAT + "m\u00e1-heslo",
   NS_TERMIT: _NS_TERMIT,
   USER: _NS_TERMIT + "uživatel-termitu",

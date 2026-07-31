@@ -39,6 +39,7 @@ const ctx = {
   glossary: VocabularyUtils.HAS_GLOSSARY,
   model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
+  relatedVocabularies: VocabularyUtils.HAS_RELATED_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
   primaryLanguage: VocabularyUtils.DC_LANGUAGE,
 };
@@ -55,6 +56,7 @@ const MAPPED_PROPERTIES = [
   "glossary",
   "model",
   "importedVocabularies",
+  "relatedVocabularies",
   "allImportedVocabularies",
   "termCount",
   "accessLevel",
@@ -70,6 +72,7 @@ export interface VocabularyData extends AssetData {
   glossary?: AssetData;
   model?: AssetData;
   importedVocabularies?: AssetData[];
+  relatedVocabularies?: AssetData[];
   accessLevel?: AccessLevel;
   /**
    * Short locale code defined by iso-639-1
@@ -88,6 +91,7 @@ export default class Vocabulary
   public glossary?: AssetData;
   public model?: AssetData;
   public importedVocabularies?: AssetData[];
+  public relatedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
   public accessLevel?: AccessLevel;
   public primaryLanguage?: string;

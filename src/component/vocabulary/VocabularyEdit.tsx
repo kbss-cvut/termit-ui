@@ -34,6 +34,7 @@ import { connect } from "react-redux";
 import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 import { isVocabularyValid } from "./VocabularyValidationUtils";
 import { PropertyValueType } from "../../model/WithUnmappedProperties";
+import RelatedVocabulariesListEdit from "./RelatedVocabulariesListEdit";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -49,6 +50,7 @@ interface VocabularyEditState {
   label: MultilingualString;
   comment: MultilingualString;
   importedVocabularies?: AssetData[];
+  relatedVocabularies?: AssetData[];
   unmappedProperties: Map<string, PropertyValueType[]>;
   documentLabel: string;
   /**
@@ -72,6 +74,7 @@ export class VocabularyEdit extends React.Component<
           : langString("", props.language),
       documentLabel: this.props.vocabulary.document?.label!,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
+      relatedVocabularies: this.props.vocabulary.relatedVocabularies,
       primaryLanguage: props.vocabulary.primaryLanguage || this.props.language,
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
@@ -159,6 +162,7 @@ export class VocabularyEdit extends React.Component<
         label: this.state.label,
         comment: this.state.comment,
         importedVocabularies: this.state.importedVocabularies,
+        relatedVocabularies: this.state.relatedVocabularies,
         primaryLanguage: this.state.primaryLanguage,
       })
     );
@@ -250,6 +254,11 @@ export class VocabularyEdit extends React.Component<
               <ImportedVocabulariesListEdit
                 vocabulary={this.props.vocabulary}
                 importedVocabularies={this.state.importedVocabularies}
+                onChange={this.onChange}
+              />
+              <RelatedVocabulariesListEdit
+                vocabulary={this.props.vocabulary}
+                relatedVocabularies={this.state.relatedVocabularies}
                 onChange={this.onChange}
               />
               <Row>
