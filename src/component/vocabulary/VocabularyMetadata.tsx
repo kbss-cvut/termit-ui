@@ -23,6 +23,7 @@ import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
+import RelatedVocabulariesList from "./RelatedVocabulariesList";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -111,6 +112,9 @@ export class VocabularyMetadata extends React.Component<
             </Row>
             <ImportedVocabulariesList
               vocabularies={vocabulary.importedVocabularies}
+            />
+            <RelatedVocabulariesList
+              vocabularies={vocabulary.relatedVocabularies}
             />
             <CustomAttributesValues asset={vocabulary} />
           </CardBody>

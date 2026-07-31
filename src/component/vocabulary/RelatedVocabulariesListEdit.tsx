@@ -1,0 +1,74 @@
+import * as React from "react";
+import { IntelligentTreeSelect } from "intelligent-tree-select";
+import Vocabulary, { VocabularyData } from "../../model/Vocabulary";
+import { AssetData } from "../../model/Asset";
+import { Col, FormGroup, Label, Row } from "reactstrap";
+import { useDispatch, useSelector } from "react-redux";
+import TermItState from "../../model/TermItState";
+import Utils from "../../util/Utils";
+import { createVocabularyValueRenderer } from "../misc/treeselect/Renderers";
+import { ThunkDispatch } from "../../util/Types";
+import { loadVocabularies } from "../../action/AsyncActions";
+import { useI18n } from "../hook/useI18n";
+import { getLocalized } from "../../model/MultilingualString";
+import { getShortLocale } from "../../util/IntlUtil";
+
+interface RelatedVocabulariesListEditProps {
+  vocabulary: Vocabulary;
+  relatedVocabularies?: AssetData[];
+  onChange: (change: object) => void;
+}
+
+const RelatedVocabulariesListEdit: React.FC<
+  RelatedVocabulariesListEditProps
+> = ({ vocabulary, relatedVocabularies, onChange }) => {
+  const { i18n, locale } = useI18n();
+  const vocabularies = useSelector((state: TermItState) => state.vocabularies);
+  const dispatch: ThunkDispatch = useDispatch();
+  React.useEffect(() => {
+    if (Object.getOwnPropertyNames(vocabularies).length === 0) {
+      dispatch(loadVocabularies());
+    }
+  }, [dispatch, vocabularies]);
+
+  const onSelect = (selected: readonly Vocabulary[]) => {
+    const selectedVocabs = selected.map((v) => ({ iri: v.iri }));
+    onChange({ relatedVocabularies: selectedVocabs });
+  };
+
+  const options = Object.keys(vocabularies)
+    .map((v) => vocabularies[v])
+    .filter((v) => v.iri !== vocabulary.iri);
+  const selected = Utils.sanitizeArray(relatedVocabularies).map((v) => v.iri!);
+  return (
+    <Row>
+      <Col xs={12}>
+        <FormGroup>
+          <Label className="attribute-label">
+            {i18n("vocabulary.detail.related.edit")}
+          </Label>
+          <IntelligentTreeSelect
+            className="p-0"
+            onChange={onSelect}
+            value={selected}
+            options={options}
+            valueKey="iri"
+            getOptionLabel={(option: VocabularyData) =>
+              getLocalized(option.label, getShortLocale(locale))
+            }
+            childrenKey="children"
+            placeholder={i18n("select.placeholder")}
+            classNamePrefix="react-select"
+            isMenuOpen={false}
+            multi={true}
+            renderAsTree={false}
+            simpleTreeData={true}
+            valueRenderer={createVocabularyValueRenderer()}
+          />
+        </FormGroup>
+      </Col>
+    </Row>
+  );
+};
+
+export default RelatedVocabulariesListEdit;
