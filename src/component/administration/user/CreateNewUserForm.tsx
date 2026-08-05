@@ -21,7 +21,7 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 import Toggle from "react-bootstrap-toggle";
-import { TOGGLE_STYLE } from "../../term/IncludeImportedTermsToggle";
+import { TOGGLE_STYLE } from "../../term/TermListToggle";
 import { UserAccountData } from "../../../model/User";
 import Constants from "../../../util/Constants";
 import CustomInput from "../../misc/CustomInput";

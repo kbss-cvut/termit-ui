@@ -28,7 +28,7 @@ import AppNotification from "../../model/AppNotification";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import ActionType from "../../action/ActionType";
 import NotificationType from "../../model/NotificationType";
-import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
+import TermListToggle from "./TermListToggle";
 import { createFullTermRenderer } from "../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
@@ -45,8 +45,6 @@ import "./Terms.scss";
 import { Configuration } from "../../model/Configuration";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
-import ShowTerminalTermsToggle from "./state/ShowTerminalTermsToggle";
-import ShowFlatListToggle from "./state/ShowFlatListToggle";
 
 interface GlossaryTermsProps extends HasI18n {
   vocabulary?: Vocabulary;
@@ -280,27 +278,39 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           {renderIncludeImported && (
             <>
               <div className="mr-2">
-                <IncludeImportedTermsToggle
-                  id="glossary-include-imported"
+                <TermListToggle
+                  id="glossary-include-imported-toggle"
+                  value={this.state.includeImported}
                   onToggle={this.onIncludeImportedToggle}
-                  includeImported={this.state.includeImported}
                   disabled={this.state.disableIncludeImportedToggle}
+                  labelOnKey="glossary.includeImported"
+                  labelOffKey="glossary.excludeImported"
+                  tooltipOnKey="glossary.includeImported.help"
+                  tooltipOffKey="glossary.excludeImported.help"
                 />
               </div>
             </>
           )}
           <div className="mr-2">
-            <ShowTerminalTermsToggle
-              onToggle={this.onShowTerminalTermsToggle}
+            <TermListToggle
+              id="glossary-show-terminal-terms-toggle"
               value={this.state.showTerminalTerms}
-              id="glossary-show-terminal-terms"
+              onToggle={this.onShowTerminalTermsToggle}
+              labelOnKey="glossary.showTerminal"
+              labelOffKey="glossary.showNonTerminal"
+              tooltipOnKey="glossary.showTerminal.help"
+              tooltipOffKey="glossary.showNonTerminal.help"
             />
           </div>
           <div className="mr-2">
-            <ShowFlatListToggle
-              onToggle={this.onFlatListToggle}
+            <TermListToggle
+              id="glossary-show-flat-list-toggle"
               value={this.props.flatList}
-              id="glossary-show-flat-list"
+              onToggle={this.onFlatListToggle}
+              labelOnKey="glossary.showFlatList"
+              labelOffKey="glossary.showTreeList"
+              tooltipOnKey="glossary.showFlatList.help"
+              tooltipOffKey="glossary.showTreeList.help"
             />
           </div>
         </div>
