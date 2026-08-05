@@ -13,7 +13,7 @@ import { loadImportedVocabularies, loadTerms } from "../../action/AsyncActions";
 import { FormFeedback, FormGroup, Label } from "reactstrap";
 import Utils from "../../util/Utils";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import IncludeImportedTermsToggle from "./IncludeImportedTermsToggle";
+import TermListToggle from "./TermListToggle";
 import {
   createTermsWithImportsOptionRenderer,
   createTermValueRenderer,
@@ -28,7 +28,6 @@ import {
 } from "./TermTreeSelectHelper";
 import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
-import ShowFlatListToggle from "./state/ShowFlatListToggle";
 import { setTermsFlatList } from "../../action/SyncActions";
 
 function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
@@ -204,18 +203,26 @@ export class ParentTermSelector extends React.Component<
           </Label>
           <div className="d-flex">
             <div className="mr-2">
-              <IncludeImportedTermsToggle
+              <TermListToggle
                 id={this.props.id + "-include-imported"}
+                value={this.state.includeImported}
                 onToggle={this.onIncludeImportedToggle}
-                includeImported={this.state.includeImported}
-                style={{ alignSelf: "flex-end" }}
                 disabled={this.state.disableIncludeImportedToggle}
+                labelOnKey="glossary.includeImported"
+                labelOffKey="glossary.excludeImported"
+                tooltipOnKey="glossary.includeImported.help"
+                tooltipOffKey="glossary.excludeImported.help"
+                style={{ alignSelf: "flex-end" }}
               />
             </div>
-            <ShowFlatListToggle
+            <TermListToggle
               id={this.props.id + "-show-flat-list"}
-              onToggle={this.onFlatListToggle}
               value={this.props.flatList}
+              onToggle={this.onFlatListToggle}
+              labelOnKey="glossary.showFlatList"
+              labelOffKey="glossary.showTreeList"
+              tooltipOnKey="glossary.showFlatList.help"
+              tooltipOffKey="glossary.showTreeList.help"
             />
           </div>
         </div>

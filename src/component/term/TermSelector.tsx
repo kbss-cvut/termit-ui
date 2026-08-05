@@ -18,8 +18,7 @@ import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
 import { loadAllTerms, loadTerms } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
-import ShowFlatListToggle from "./state/ShowFlatListToggle";
-import LimitToRelatedToggle from "./LimitToRelatedToggle";
+import TermListToggle from "./TermListToggle";
 import { setTermsFlatList } from "../../action/SyncActions";
 import { LargeTermValueList } from "./LargeTermValueList";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -134,17 +133,25 @@ export const TermSelector: React.FC<{
       <div className="d-flex justify-content-between">
         {label}
         {vocabularyIri && (
-          <LimitToRelatedToggle
+          <TermListToggle
             id={id + "-limit-to-related"}
             onToggle={handleLimitToRelatedToggle}
             value={limitToRelated}
+            labelOnKey="glossary.limitToRelated"
+            labelOffKey="glossary.showAll"
+            tooltipOnKey="glossary.limitToRelated.help"
+            tooltipOffKey="glossary.showAll.help"
           />
         )}
         {!forceFlatList && (
-          <ShowFlatListToggle
+          <TermListToggle
             id={id + "-show-flat-list"}
             onToggle={handleFlatListToggle}
             value={flatList}
+            labelOnKey="glossary.showFlatList"
+            labelOffKey="glossary.showTreeList"
+            tooltipOnKey="glossary.showFlatList.help"
+            tooltipOffKey="glossary.showTreeList.help"
           />
         )}
       </div>
