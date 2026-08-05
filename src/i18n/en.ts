@@ -391,6 +391,7 @@ const en = {
     "vocabulary.detail.imports": "Imports",
     "vocabulary.detail.imports.edit": "Imports vocabularies",
     "vocabulary.detail.document": "Document",
+    "vocabulary.detail.related": "Related vocabularies",
     "vocabulary.text-analysis.invoke.message":
       "Text analysis of terms' definitions in this vocabulary invoked.",
     "vocabulary.all.text-analysis.invoke.message":
@@ -643,6 +644,11 @@ const en = {
     "glossary.importedIncluded": "with imported",
     "glossary.importedExcluded": "without imported",
     "glossary.importedTerm.tooltip": "Imported from vocabulary",
+    "glossary.showAll": "Show all",
+    "glossary.limitToRelated": "Limit to related",
+    "glossary.limitToRelated.help":
+      "Show only terms that are from related vocabularies",
+    "glossary.showAll.help": "Show all terms",
     "glossary.showTerminal": "Include terminal",
     "glossary.showNonTerminal": "Only active",
     "glossary.showTerminal.help":

@@ -400,6 +400,7 @@ const cs = {
     "vocabulary.detail.imports": "Importuje",
     "vocabulary.detail.imports.edit": "Importuje slovníky",
     "vocabulary.detail.document": "Dokument",
+    "vocabulary.detail.related": "Související slovníky",
     "vocabulary.text-analysis.invoke.message":
       "Textová analýza definic pojmů v tomto slovníku spuštěna.",
     "vocabulary.all.text-analysis.invoke.message":
@@ -651,6 +652,11 @@ const cs = {
     "glossary.importedIncluded": "včetně importovaných",
     "glossary.importedExcluded": "bez importovaných",
     "glossary.importedTerm.tooltip": "Importován ze slovníku",
+    "glossary.showAll": "Zobrazit vše",
+    "glossary.limitToRelated": "Omezit na související",
+    "glossary.limitToRelated.help":
+      "Zobrazit pouze pojmy, které jsou ze souvisejících slovníků",
+    "glossary.showAll.help": "Zobrazit všechny pojmy",
     "glossary.showTerminal": "Včetně zrušených",
     "glossary.showNonTerminal": "Pouze aktivní",
     "glossary.showTerminal.help":
