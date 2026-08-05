@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from "react";
 import Term from "../../model/Term";
 import { useDispatch, useSelector } from "react-redux";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import "intelligent-tree-select/lib/styles.css";
+import "intelligent-tree-select/styles.css";
 import TermItState from "../../model/TermItState";
 import {
   commonTermTreeSelectProps,

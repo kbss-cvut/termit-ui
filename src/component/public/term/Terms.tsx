@@ -2,7 +2,7 @@ import * as React from "react";
 import { injectIntl } from "react-intl";
 import { Badge } from "reactstrap";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import "intelligent-tree-select/lib/styles.css";
+import "intelligent-tree-select/styles.css";
 import Term, { TermData } from "../../../model/Term";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import withI18n, { HasI18n } from "../../hoc/withI18n";

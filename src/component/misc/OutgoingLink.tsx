@@ -1,5 +1,5 @@
 import * as React from "react";
-import "intelligent-tree-select/lib/styles.css";
+import "intelligent-tree-select/styles.css";
 import "./OutgoingLink.scss";
 import { useI18n } from "../hook/useI18n";
 

@@ -5,7 +5,7 @@ import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import "intelligent-tree-select/lib/styles.css";
+import "intelligent-tree-select/styles.css";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import {
