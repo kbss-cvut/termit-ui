@@ -3,7 +3,6 @@ import VocabularyUtils from "../../../util/VocabularyUtils";
 import { Card, CardBody, Col, Label, Row } from "reactstrap";
 import HeaderWithActions from "../../misc/HeaderWithActions";
 import CopyIriIcon from "../../misc/CopyIriIcon";
-import ImportedVocabulariesList from "../../vocabulary/ImportedVocabulariesList";
 import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import { ThunkDispatch } from "../../../util/Types";
@@ -22,6 +21,7 @@ import {
   getLocalizedOrDefault,
 } from "../../../model/MultilingualString";
 import { resolveInitialLanguage } from "../../vocabulary/VocabularySummary";
+import VocabulariesReferenceList from "../../../component/vocabulary/VocabulariesReferenceList";
 
 export const VocabularySummary: React.FC = () => {
   const { i18n, locale } = useI18n();
@@ -93,8 +93,10 @@ export const VocabularySummary: React.FC = () => {
               </MarkdownView>
             </Col>
           </Row>
-          <ImportedVocabulariesList
+          <VocabulariesReferenceList
             vocabularies={vocabulary.importedVocabularies}
+            labelKey="vocabulary.detail.imports"
+            htmlId="vocabulary-imported-vocabularies"
           />
         </CardBody>
       </Card>

@@ -4,7 +4,6 @@ import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import { Card, CardBody, Col, Label, Row } from "reactstrap";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
-import ImportedVocabulariesList from "./ImportedVocabulariesList";
 import Tabs from "../misc/Tabs";
 import AssetHistory from "../changetracking/AssetHistory";
 import TermChangeFrequency from "./TermChangeFrequency";
@@ -23,7 +22,7 @@ import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
-import RelatedVocabulariesList from "./RelatedVocabulariesList";
+import VocabulariesReferenceList from "./VocabulariesReferenceList";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -110,11 +109,15 @@ export class VocabularyMetadata extends React.Component<
                 </MarkdownView>
               </Col>
             </Row>
-            <ImportedVocabulariesList
+            <VocabulariesReferenceList
               vocabularies={vocabulary.importedVocabularies}
+              labelKey="vocabulary.detail.imports"
+              htmlId="vocabulary-imported-vocabularies"
             />
-            <RelatedVocabulariesList
+            <VocabulariesReferenceList
               vocabularies={vocabulary.relatedVocabularies}
+              labelKey="vocabulary.detail.related"
+              htmlId="vocabulary-related-vocabularies"
             />
             <CustomAttributesValues asset={vocabulary} />
           </CardBody>

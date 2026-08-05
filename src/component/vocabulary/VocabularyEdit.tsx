@@ -14,7 +14,6 @@ import {
 import CustomInput from "../misc/CustomInput";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import ImportedVocabulariesListEdit from "./ImportedVocabulariesListEdit";
 import { AssetData } from "../../model/Asset";
 import MarkdownEditor from "../misc/MarkdownEditor";
 import Constants from "../../util/Constants";
@@ -34,7 +33,7 @@ import { connect } from "react-redux";
 import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 import { isVocabularyValid } from "./VocabularyValidationUtils";
 import { PropertyValueType } from "../../model/WithUnmappedProperties";
-import RelatedVocabulariesListEdit from "./RelatedVocabulariesListEdit";
+import VocabulariesReferenceListEdit from "./VocabulariesReferenceListEdit";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -251,14 +250,18 @@ export class VocabularyEdit extends React.Component<
                   </Select>
                 </Col>
               </Row>
-              <ImportedVocabulariesListEdit
+              <VocabulariesReferenceListEdit
                 vocabulary={this.props.vocabulary}
-                importedVocabularies={this.state.importedVocabularies}
+                selectedVocabularies={this.state.importedVocabularies}
+                fieldKey="importedVocabularies"
+                labelKey="vocabulary.detail.imports.edit"
                 onChange={this.onChange}
               />
-              <RelatedVocabulariesListEdit
+              <VocabulariesReferenceListEdit
                 vocabulary={this.props.vocabulary}
-                relatedVocabularies={this.state.relatedVocabularies}
+                selectedVocabularies={this.state.relatedVocabularies}
+                fieldKey="relatedVocabularies"
+                labelKey="vocabulary.detail.related"
                 onChange={this.onChange}
               />
               <Row>

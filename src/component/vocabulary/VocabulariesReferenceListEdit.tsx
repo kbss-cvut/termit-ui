@@ -13,18 +13,21 @@ import { useI18n } from "../hook/useI18n";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 
-interface RelatedVocabulariesListEditProps {
+interface VocabulariesReferenceListEditProps {
   vocabulary: Vocabulary;
-  relatedVocabularies?: AssetData[];
+  selectedVocabularies?: AssetData[];
+  fieldKey: string;
+  labelKey: string;
   onChange: (change: object) => void;
 }
 
-const RelatedVocabulariesListEdit: React.FC<
-  RelatedVocabulariesListEditProps
-> = ({ vocabulary, relatedVocabularies, onChange }) => {
+const VocabulariesReferenceListEdit: React.FC<
+  VocabulariesReferenceListEditProps
+> = ({ vocabulary, selectedVocabularies, fieldKey, labelKey, onChange }) => {
   const { i18n, locale } = useI18n();
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const dispatch: ThunkDispatch = useDispatch();
+
   React.useEffect(() => {
     if (Object.getOwnPropertyNames(vocabularies).length === 0) {
       dispatch(loadVocabularies());
@@ -33,20 +36,19 @@ const RelatedVocabulariesListEdit: React.FC<
 
   const onSelect = (selected: readonly Vocabulary[]) => {
     const selectedVocabs = selected.map((v) => ({ iri: v.iri }));
-    onChange({ relatedVocabularies: selectedVocabs });
+    onChange({ [fieldKey]: selectedVocabs });
   };
 
   const options = Object.keys(vocabularies)
     .map((v) => vocabularies[v])
     .filter((v) => v.iri !== vocabulary.iri);
-  const selected = Utils.sanitizeArray(relatedVocabularies).map((v) => v.iri!);
+  const selected = Utils.sanitizeArray(selectedVocabularies).map((v) => v.iri!);
+
   return (
     <Row>
       <Col xs={12}>
         <FormGroup>
-          <Label className="attribute-label">
-            {i18n("vocabulary.detail.related")}
-          </Label>
+          <Label className="attribute-label">{i18n(labelKey as any)}</Label>
           <IntelligentTreeSelect
             className="p-0"
             onChange={onSelect}
@@ -71,4 +73,4 @@ const RelatedVocabulariesListEdit: React.FC<
   );
 };
 
-export default RelatedVocabulariesListEdit;
+export default VocabulariesReferenceListEdit;
