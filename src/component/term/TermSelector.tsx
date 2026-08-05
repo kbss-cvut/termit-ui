@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FormGroup } from "reactstrap";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Term, { TermData, TermInfo } from "src/model/Term";
@@ -16,11 +16,13 @@ import {
 import { useI18n } from "../hook/useI18n";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
-import { loadAllTerms } from "../../action/AsyncActions";
+import { loadAllTerms, loadTerms } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
 import ShowFlatListToggle from "./state/ShowFlatListToggle";
+import LimitToRelatedToggle from "./LimitToRelatedToggle";
 import { setTermsFlatList } from "../../action/SyncActions";
 import { LargeTermValueList } from "./LargeTermValueList";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 export const MAX_SELECT_THRESHOLD = 20;
 
@@ -73,24 +75,46 @@ export const TermSelector: React.FC<{
     treeSelect.current?.resetOptions();
   };
 
+  const [limitToRelated, setLimitToRelated] = useState(!!vocabularyIri);
+
+  const handleLimitToRelatedToggle = () => {
+    setLimitToRelated(!limitToRelated);
+    treeSelect.current?.resetOptions();
+  };
+
   const selected =
     value.length > 0
       ? typeof value[0] === "string"
         ? (value as string[])
         : resolveSelectedIris(value as TermInfo[])
       : (value as string[]);
+
   const fetchOptions = async (
     fetchParams: TreeSelectFetchOptionsParams<TermData>
   ) => {
     const terms = await loadAndPrepareTerms(
       { ...fetchParams, flatList },
-      (options) =>
-        dispatch(
+      (options) => {
+        if (limitToRelated && vocabularyIri) {
+          return dispatch(
+            loadTerms(
+              {
+                ...options,
+                flatList,
+                includeImported: true,
+                includeRelated: true,
+              },
+              VocabularyUtils.create(vocabularyIri)
+            )
+          );
+        }
+        return dispatch(
           loadAllTerms(
             { ...options, flatList },
             resolveNamespaceForLoadAll(options)
           )
-        ),
+        );
+      },
       {
         selectedIris: selected.length > MAX_SELECT_THRESHOLD ? [] : selected,
         terminalStates: terminalStates,
@@ -109,6 +133,13 @@ export const TermSelector: React.FC<{
     <FormGroup id={id}>
       <div className="d-flex justify-content-between">
         {label}
+        {vocabularyIri && (
+          <LimitToRelatedToggle
+            id={id + "-limit-to-related"}
+            onToggle={handleLimitToRelatedToggle}
+            value={limitToRelated}
+          />
+        )}
         {!forceFlatList && (
           <ShowFlatListToggle
             id={id + "-show-flat-list"}

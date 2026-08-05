@@ -391,6 +391,7 @@ const de = {
     "vocabulary.detail.imports": "Importe",
     "vocabulary.detail.imports.edit": "Importiert Vokabulare",
     "vocabulary.detail.document": "Dokument",
+    "vocabulary.detail.related": "Verwandte Vokabulare",
     "vocabulary.text-analysis.invoke.message":
       "Textanalyse der Begriffsdefinitionen in diesem Vokabular.",
     "vocabulary.all.text-analysis.invoke.message":
@@ -611,6 +612,11 @@ const de = {
     "glossary.importedIncluded": "mit importierten",
     "glossary.importedExcluded": "ohne importierte",
     "glossary.importedTerm.tooltip": "Aus dem Vokabular importiert",
+    "glossary.showAll": "Alle anzeigen",
+    "glossary.limitToRelated": "Auf verwandte beschränken",
+    "glossary.limitToRelated.help":
+      "Nur Begriffe aus verwandten Vokabularen anzeigen",
+    "glossary.showAll.help": "Alle Begriffe anzeigen",
     "glossary.showTerminal": "Deaktivierte Begriffe einschließen",
     "glossary.showNonTerminal": "Nur aktive",
     "glossary.showTerminal.help": "Zeigt auch deaktivierte Begriffe an. ",

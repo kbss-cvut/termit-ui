@@ -45,7 +45,7 @@ const RelatedVocabulariesListEdit: React.FC<
       <Col xs={12}>
         <FormGroup>
           <Label className="attribute-label">
-            {i18n("vocabulary.detail.related.edit")}
+            {i18n("vocabulary.detail.related")}
           </Label>
           <IntelligentTreeSelect
             className="p-0"
