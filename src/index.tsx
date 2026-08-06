@@ -8,20 +8,6 @@ import timeagoCs from "javascript-time-ago/locale/cs";
 import timeagoDe from "javascript-time-ago/locale/de";
 import { setUseWhatChange } from "@simbathesailor/use-what-changed";
 
-if (!Intl.PluralRules) {
-  import("@formatjs/intl-pluralrules/polyfill");
-  import("@formatjs/intl-pluralrules/locale-data/en");
-  import("@formatjs/intl-pluralrules/locale-data/cs");
-  import("@formatjs/intl-pluralrules/locale-data/de");
-}
-
-if (!Intl.RelativeTimeFormat) {
-  import("@formatjs/intl-relativetimeformat/polyfill");
-  import("@formatjs/intl-relativetimeformat/locale-data/en");
-  import("@formatjs/intl-relativetimeformat/locale-data/cs");
-  import("@formatjs/intl-relativetimeformat/locale-data/de");
-}
-
 // Load locales for the TimeAgo library
 TimeAgo.addLocale(timeagoEn);
 TimeAgo.addLocale(timeagoCs);
