@@ -73,7 +73,7 @@
     "version": "echo $npm_package_version"
   },
   "devDependencies": {
-    "@redux-devtools/extension": "^3.2.5",
+    "@redux-devtools/extension": "^4.0.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/enzyme": "^3.10.13",
     "@types/js-cookie": "^3.0.6",
