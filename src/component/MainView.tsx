@@ -31,6 +31,7 @@ import Breadcrumbs from "./breadcrumb/Breadcrumbs";
 import { loadTermStates } from "../action/AsyncActions";
 import { LongRunningTasksStatus } from "./main/LongRunningTasksStatus";
 import SearchListenerHelper from "./search/SearchListenerHelper";
+import { Banner } from "./main/Banner";
 
 const AdministrationRoute = React.lazy(
   () => import("./administration/AdministrationRoute")
@@ -138,6 +139,8 @@ export class MainView extends React.Component<MainViewProps, MainViewState> {
                 <Nav navbar={true} className="nav-search">
                   <NavbarSearch navbar={true} />
                 </Nav>
+
+                <Banner />
 
                 <Nav>
                   <LongRunningTasksStatus />
