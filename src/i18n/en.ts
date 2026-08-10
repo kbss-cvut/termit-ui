@@ -390,8 +390,12 @@ const en = {
     "vocabulary.detail.files.file": "Filename",
     "vocabulary.detail.imports": "Imports",
     "vocabulary.detail.imports.edit": "Imports vocabularies",
+    "vocabulary.detail.imports.help":
+      "Imported vocabularies are used to create a hierarchy among terms. In particular, terms from imported vocabularies can be used as parent terms for terms in this dictionary.",
     "vocabulary.detail.document": "Document",
     "vocabulary.detail.related": "Related vocabularies",
+    "vocabulary.detail.related.help":
+      "Related vocabularies are used to pre-filter the selection of related terms and synonyms to include only those from related vocabularies. This pre-filtering can be turned off.",
     "vocabulary.text-analysis.invoke.message":
       "Text analysis of terms' definitions in this vocabulary invoked.",
     "vocabulary.all.text-analysis.invoke.message":

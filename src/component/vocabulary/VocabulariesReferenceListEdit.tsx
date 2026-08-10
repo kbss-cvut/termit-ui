@@ -12,18 +12,27 @@ import { loadVocabularies } from "../../action/AsyncActions";
 import { useI18n } from "../hook/useI18n";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
+import HelpIcon from "../misc/HelpIcon";
 
 interface VocabulariesReferenceListEditProps {
   vocabulary: Vocabulary;
   selectedVocabularies?: AssetData[];
   fieldKey: string;
   labelKey: string;
+  helpKey: string;
   onChange: (change: object) => void;
 }
 
 const VocabulariesReferenceListEdit: React.FC<
   VocabulariesReferenceListEditProps
-> = ({ vocabulary, selectedVocabularies, fieldKey, labelKey, onChange }) => {
+> = ({
+  vocabulary,
+  selectedVocabularies,
+  fieldKey,
+  labelKey,
+  helpKey,
+  onChange,
+}) => {
   const { i18n, locale } = useI18n();
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const dispatch: ThunkDispatch = useDispatch();
@@ -48,7 +57,10 @@ const VocabulariesReferenceListEdit: React.FC<
     <Row>
       <Col xs={12}>
         <FormGroup>
-          <Label className="attribute-label">{i18n(labelKey as any)}</Label>
+          <Label className="attribute-label">
+            {i18n(labelKey as any)}
+            <HelpIcon id={`${fieldKey}-help`} text={i18n(helpKey as any)} />
+          </Label>
           <IntelligentTreeSelect
             className="p-0"
             onChange={onSelect}

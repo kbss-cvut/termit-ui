@@ -255,6 +255,7 @@ export class VocabularyEdit extends React.Component<
                 selectedVocabularies={this.state.importedVocabularies}
                 fieldKey="importedVocabularies"
                 labelKey="vocabulary.detail.imports.edit"
+                helpKey="vocabulary.detail.imports.help"
                 onChange={this.onChange}
               />
               <VocabulariesReferenceListEdit
@@ -262,6 +263,7 @@ export class VocabularyEdit extends React.Component<
                 selectedVocabularies={this.state.relatedVocabularies}
                 fieldKey="relatedVocabularies"
                 labelKey="vocabulary.detail.related"
+                helpKey="vocabulary.detail.related.help"
                 onChange={this.onChange}
               />
               <Row>

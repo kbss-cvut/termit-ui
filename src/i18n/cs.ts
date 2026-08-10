@@ -399,8 +399,12 @@ const cs = {
     "vocabulary.detail.files": "Soubory",
     "vocabulary.detail.imports": "Importuje",
     "vocabulary.detail.imports.edit": "Importuje slovníky",
+    "vocabulary.detail.imports.help":
+      "Importované slovníky slouží k tvorbě hierarchie mezi pojmy. Konkrétné, pojmy z importovaných slovníků mohou být použity jako nadřazené pojmy pojmů z tohoto slovníku.",
     "vocabulary.detail.document": "Dokument",
     "vocabulary.detail.related": "Související slovníky",
+    "vocabulary.detail.related.help":
+      "Související slovníky slouží k předfiltrování výběru souvisejících pojmů a pojmů se stejným významem pouze na související slovníky. Toto předfiltrování lze vypnout.",
     "vocabulary.text-analysis.invoke.message":
       "Textová analýza definic pojmů v tomto slovníku spuštěna.",
     "vocabulary.all.text-analysis.invoke.message":
