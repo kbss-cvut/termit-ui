@@ -21,7 +21,7 @@ import {
   getLocalizedOrDefault,
 } from "../../../model/MultilingualString";
 import { resolveInitialLanguage } from "../../vocabulary/VocabularySummary";
-import VocabulariesReferenceList from "../../../component/vocabulary/VocabulariesReferenceList";
+import VocabulariesReferenceList from "../../vocabulary/VocabulariesReferenceList";
 
 export const VocabularySummary: React.FC = () => {
   const { i18n, locale } = useI18n();

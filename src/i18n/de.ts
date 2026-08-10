@@ -390,8 +390,12 @@ const de = {
     "vocabulary.detail.files.file": "Dateiname",
     "vocabulary.detail.imports": "Importe",
     "vocabulary.detail.imports.edit": "Importiert Vokabulare",
+    "vocabulary.detail.imports.help":
+      "Importierte Vokabulare dienen dazu, eine Hierarchie zwischen Begriffen zu erstellen. Konkret können Begriffe aus importierten Vokabularen als übergeordnete Begriffe für Begriffe aus diesem Vokabular verwendet werden.",
     "vocabulary.detail.document": "Dokument",
     "vocabulary.detail.related": "Verwandte Vokabulare",
+    "vocabulary.detail.related.help":
+      "Die zugehörigen Vokabulare dienen dazu, die Auswahl der verwandten Begriffe und Begriffe mit derselben Bedeutung auf die zugehörigen Vokabulare zu beschränken. Diese Vorfilterung kann deaktiviert werden.",
     "vocabulary.text-analysis.invoke.message":
       "Textanalyse der Begriffsdefinitionen in diesem Vokabular.",
     "vocabulary.all.text-analysis.invoke.message":

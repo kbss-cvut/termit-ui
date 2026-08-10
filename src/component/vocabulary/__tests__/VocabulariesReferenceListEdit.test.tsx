@@ -12,6 +12,10 @@ import * as AsyncActions from "../../../action/AsyncActions";
 import { loadVocabularies } from "../../../action/AsyncActions";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
 
+vi.mock("../../misc/HelpIcon", () => ({
+  default: () => <span>Help</span>,
+}));
+
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
@@ -63,6 +67,7 @@ describe("VocabulariesReferenceListEdit", () => {
         onChange={onChange}
         fieldKey="importedVocabularies"
         labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     expect(loadVocabularies).toHaveBeenCalled();
@@ -75,6 +80,7 @@ describe("VocabulariesReferenceListEdit", () => {
         onChange={onChange}
         fieldKey="importedVocabularies"
         labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([]);
@@ -91,6 +97,7 @@ describe("VocabulariesReferenceListEdit", () => {
         onChange={onChange}
         fieldKey="importedVocabularies"
         labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
@@ -110,6 +117,7 @@ describe("VocabulariesReferenceListEdit", () => {
         onChange={onChange}
         fieldKey="importedVocabularies"
         labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)([]);
@@ -123,6 +131,7 @@ describe("VocabulariesReferenceListEdit", () => {
         onChange={onChange}
         fieldKey="importedVocabularies"
         labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     const options: Vocabulary[] = wrapper

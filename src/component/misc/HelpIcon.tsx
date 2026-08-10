@@ -33,7 +33,7 @@ const HelpIcon: React.FC<InfoIconProps> = (props) => {
       />
       <Popover
         target={props.id}
-        placement={props.placement}
+        placement={props.placement || "bottom"}
         isOpen={open}
         popperClassName="help-icon-popover"
       >

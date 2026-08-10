@@ -15,6 +15,10 @@ vi.mock("../../misc/MarkdownEditor", () => ({
   default: () => <div>Editor</div>,
 }));
 
+vi.mock("../../misc/HelpIcon", () => ({
+  default: () => <span>Help</span>,
+}));
+
 describe("VocabularyEdit", () => {
   let onSave: (vocabulary: Vocabulary) => void;
   let onDocumentSave: (document: Document) => void;
