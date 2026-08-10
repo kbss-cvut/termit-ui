@@ -11,7 +11,7 @@ function filterOutTermsFromCurrentVocabulary(
   currentVocabularyIri: string
 ) {
   const result = terms.filter(
-    (t) => t.vocabulary!.iri !== currentVocabularyIri
+    (t) => t.vocabulary?.iri !== currentVocabularyIri
   );
   result
     .filter((t) => t.plainSubTerms)
