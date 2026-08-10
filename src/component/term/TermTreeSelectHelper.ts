@@ -78,7 +78,7 @@ export function processTermsForTreeSelect(
       );
     }
   }
-  if (!options.loadingSubTerms) {
+  if (!options.loadingSubTerms && !options.flatList) {
     addAncestorsOfSelected(Utils.sanitizeArray(options.selectedIris), result);
   }
   return result;
