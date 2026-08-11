@@ -27,6 +27,19 @@ FROM nginx:1.31.1-alpine
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=/usr/share/nginx/html \
     NGINX_ENVSUBST_OUTPUT_DIR=/usr/share/nginx/html
 
+# Define selected dynamic configuration variables so envsubst replaces them
+# even when they are not provided at runtime (with an empty value by default).
+ENV ADMIN_REGISTRATION_ONLY="true" \
+    SHOW_PUBLIC_VIEW_ON_UNAUTHORIZED="true" \
+    DISABLE_PUBLIC_VIEW="false" \
+    AUTHENTICATION="" \
+    AUTH_SERVER_URL="" \
+    AUTH_CLIENT_ID="" \
+    AUTH_SERVER_MANAGEMENT="" \
+    AUTH_SERVER_USER_PROFILE="" \
+    BANNER="" \
+    BANNER_TOOLTIP=""
+
 COPY --from=build --chown=nginx:nginx --chmod=755 /usr/src/app/build /usr/share/nginx/html
 
 # Hardening:
