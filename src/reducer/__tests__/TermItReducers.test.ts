@@ -329,14 +329,18 @@ describe("Reducers", () => {
         label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
       };
+      const loadedVocab = new Vocabulary(vocabularyData);
       expect(
         reducers(
           stateToPlainObject(initialState),
-          asyncActionSuccessWithPayload(action, new Vocabulary(vocabularyData))
+          asyncActionSuccessWithPayload(action, loadedVocab)
         )
       ).toEqual(
         Object.assign({}, initialState, {
-          vocabulary: new Vocabulary(vocabularyData),
+          vocabulary: loadedVocab,
+          vocabularies: {
+            [loadedVocab.iri]: loadedVocab,
+          },
         })
       );
     });

@@ -26,6 +26,8 @@ const VocabulariesInfoIcon: React.FC<VocabulariesInfoIconProps> = ({
   const [open, setOpen] = useState(false);
   const [pinned, setPinned] = useState(false);
 
+  const shortLocale = getShortLocale(locale);
+
   const show = () => setOpen(true);
   const mouseOut = () => {
     if (!pinned) {
@@ -63,9 +65,7 @@ const VocabulariesInfoIcon: React.FC<VocabulariesInfoIconProps> = ({
         <PopoverBody>
           <ul className="text-left mb-0 pl-3">
             {vocabularies.map((v) => (
-              <li key={v.iri}>
-                {getLocalized(v.label, getShortLocale(locale))}
-              </li>
+              <li key={v.iri}>{getLocalized(v.label, shortLocale)}</li>
             ))}
           </ul>
         </PopoverBody>

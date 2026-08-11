@@ -192,17 +192,26 @@ function selectedFile(
 
 function vocabularies(
   state: { [key: string]: Vocabulary } | any = {},
-  action: AsyncActionSuccess<Vocabulary[]>
+  action: AsyncActionSuccess<Vocabulary[] | Vocabulary>
 ): { [key: string]: Vocabulary } {
   switch (action.type) {
     case ActionType.LOAD_VOCABULARIES:
       if (isAsyncSuccess(action)) {
         const map = {};
-        action.payload.forEach((v) => (map[v.iri] = v));
+        (action.payload as Vocabulary[]).forEach((v) => (map[v.iri] = v));
         return map;
       } else {
         return state;
       }
+    case ActionType.LOAD_VOCABULARY:
+      const singleVocab = action.payload as Vocabulary;
+      if (singleVocab && singleVocab.iri) {
+        return {
+          ...state,
+          [singleVocab.iri]: singleVocab,
+        };
+      }
+      return state;
     case ActionType.LOGOUT:
       return {};
     case ActionType.IMPORT_VOCABULARY:
