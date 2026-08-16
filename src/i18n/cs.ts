@@ -696,6 +696,7 @@ const cs = {
       "Otevře oddělené tabulkové zobrazení pojmů pro hromadné úpravy a zobrazení metadat.",
     "glossary.table.workspace.back": "Zpět na detail slovníku",
     "glossary.table.workspace.back.help": "Vrátí vás na detail slovníku.",
+    "glossary.table.fontSize": "Velikost písma",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",
