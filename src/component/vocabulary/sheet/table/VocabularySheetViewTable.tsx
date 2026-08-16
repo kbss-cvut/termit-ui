@@ -12,6 +12,7 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import { FaTimes } from "react-icons/fa";
+import { MdFormatSize } from "react-icons/md";
 import { useDebouncedCallback } from "use-debounce";
 import { useSelector, useDispatch } from "react-redux";
 import Term, { TermInfo } from "../../../../model/Term";
@@ -79,6 +80,9 @@ const LOAD_MORE_THRESHOLD = 12;
 const VIRTUALIZED_ROW_ESTIMATE_SIZE = 46;
 const VIRTUALIZED_OVERSCAN_ROWS = 10;
 
+const FONT_SIZE_OPTIONS = [11, 12, 14, 16] as const;
+type TableFontSize = (typeof FONT_SIZE_OPTIONS)[number];
+
 export const VocabularySheetViewTable: React.FC<
   VocabularySheetViewTableProps
 > = ({ vocabulary, selectedTermIri, onTermSelect }) => {
@@ -105,6 +109,20 @@ export const VocabularySheetViewTable: React.FC<
   const [editingColumnId, setEditingColumnId] = React.useState<
     TermsTableColumn["id"] | null
   >(null);
+
+  const [fontSize, setFontSize] = React.useState<TableFontSize | null>(() => {
+    const stored = BrowserStorage.get("TERMS_TABLE_FONT_SIZE");
+    const parsed = stored ? parseInt(stored, 10) : null;
+
+    if (
+      parsed !== null &&
+      FONT_SIZE_OPTIONS.some((option) => option === parsed)
+    ) {
+      return parsed as TableFontSize;
+    }
+
+    return null;
+  });
 
   const [columnVisibility, setColumnVisibility] = React.useState<
     Record<TermsTableColumn["id"], boolean>
@@ -246,6 +264,11 @@ export const VocabularySheetViewTable: React.FC<
     },
     []
   );
+
+  const updateFontSize = (size: TableFontSize) => {
+    setFontSize(size);
+    BrowserStorage.set("TERMS_TABLE_FONT_SIZE", size.toString());
+  };
 
   const renderExpandableTermListCell = React.useCallback(
     (
@@ -757,37 +780,62 @@ export const VocabularySheetViewTable: React.FC<
             </InputGroupAddon>
           )}
         </InputGroup>
-        <UncontrolledDropdown className="vocabulary-sheet-view-column-dropdown">
-          <DropdownToggle size="sm" color="secondary" caret={true}>
-            {i18n("glossary.table.columns.button")}
-          </DropdownToggle>
-          <DropdownMenu right={true}>
-            {columns.map((column) => (
-              <DropdownItem
-                key={column.id}
-                toggle={false}
-                disabled={!column.hideable}
-                onClick={() =>
-                  updateColumnVisibility(
-                    column.id,
-                    !columnVisibility[column.id]
-                  )
-                }
-              >
-                <div className="mb-0 d-flex align-items-center vocabulary-sheet-view-column-option">
-                  <Input
-                    type="checkbox"
-                    checked={columnVisibility[column.id]}
-                    onChange={() => {}}
-                    style={{ pointerEvents: "none" }}
-                    className="column-checkbox"
-                  />
-                  <span>{column.title}</span>
-                </div>
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </UncontrolledDropdown>
+
+        <div className="d-flex">
+          <UncontrolledDropdown className="mr-2">
+            <DropdownToggle
+              size="sm"
+              color="secondary"
+              caret={true}
+              title={i18n("glossary.table.fontSize")}
+            >
+              <MdFormatSize size={16} />
+            </DropdownToggle>
+            <DropdownMenu right={true}>
+              {FONT_SIZE_OPTIONS.map((size) => (
+                <DropdownItem
+                  key={size}
+                  active={fontSize === size}
+                  onClick={() => updateFontSize(size)}
+                >
+                  {`${size}px`}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </UncontrolledDropdown>
+
+          <UncontrolledDropdown className="vocabulary-sheet-view-column-dropdown">
+            <DropdownToggle size="sm" color="secondary" caret={true}>
+              {i18n("glossary.table.columns.button")}
+            </DropdownToggle>
+            <DropdownMenu right={true}>
+              {columns.map((column) => (
+                <DropdownItem
+                  key={column.id}
+                  toggle={false}
+                  disabled={!column.hideable}
+                  onClick={() =>
+                    updateColumnVisibility(
+                      column.id,
+                      !columnVisibility[column.id]
+                    )
+                  }
+                >
+                  <div className="mb-0 d-flex align-items-center vocabulary-sheet-view-column-option">
+                    <Input
+                      type="checkbox"
+                      checked={columnVisibility[column.id]}
+                      onChange={() => {}}
+                      style={{ pointerEvents: "none" }}
+                      className="column-checkbox"
+                    />
+                    <span>{column.title}</span>
+                  </div>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        </div>
       </div>
 
       <div className="vocabulary-sheet-view-summary">
@@ -807,7 +855,10 @@ export const VocabularySheetViewTable: React.FC<
       <div
         className="vocabulary-sheet-view-grid-scroll"
         ref={scrollRef}
-        style={{ maxHeight: Utils.calculateAssetListHeight() }}
+        style={{
+          maxHeight: Utils.calculateAssetListHeight(),
+          fontSize: fontSize ? `${fontSize}px` : undefined,
+        }}
       >
         <div
           className="vocabulary-sheet-view-grid-header"

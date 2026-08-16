@@ -654,6 +654,7 @@ const de = {
       "Öffnet eine dedizierte Tabellenansicht für Massenbearbeitung und Metadaten-Übersicht.",
     "glossary.table.workspace.back": "Zurück zum Vokabular",
     "glossary.table.workspace.back.help": "Zurück zur Vokabular-Detailansicht.",
+    "glossary.table.fontSize": "Schriftgröße",
     "glossary.unusedTerm.tooltip":
       "Begriff, der in einem Dokument nicht vorkommt",
     "glossary.createTerm": "Neuen Begriff erstellen",

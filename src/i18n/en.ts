@@ -688,6 +688,7 @@ const en = {
       "Open the dedicated sheet view for bulk updates and metadata overview.",
     "glossary.table.workspace.back": "Back to vocabulary",
     "glossary.table.workspace.back.help": "Return to vocabulary detail view.",
+    "glossary.table.fontSize": "Font size",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",
     "glossary.createTerm.tooltip": "Create new vocabulary's term",
