@@ -166,14 +166,12 @@ function traverseToAncestor(
   child: Term & TreeSelectOption,
   options: Term[]
 ): void {
+  if (!options.find((t) => t.iri === child.iri)) {
+    child.syncPlainSubTerms();
+    options.unshift(child);
+  }
   if (Utils.sanitizeArray(child.parentTerms).length > 0) {
     child.parentTerms!.forEach((pt) => traverseToAncestor(pt, options));
-  } else {
-    if (!options.find((t) => t.iri === child.iri)) {
-      // Expand the ancestor of a selected item by default
-      child.expanded = true;
-      options.unshift(child);
-    }
   }
 }
 
