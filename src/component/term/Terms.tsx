@@ -155,18 +155,19 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           this.props.location.search,
           this.props.configuration
         );
+    const selectedTermIris =
+      !this.state.selectedTermLoaded &&
+      this.props.isDetailView &&
+      this.props.selectedTerms
+        ? [this.props.selectedTerms.iri]
+        : undefined;
     return this.props
       .fetchTerms(
         {
           ...fetchOptions,
           includeImported: this.state.includeImported,
           flatList: this.props.flatList,
-          includeTerms:
-            !this.state.selectedTermLoaded &&
-            this.props.isDetailView &&
-            this.props.selectedTerms
-              ? [this.props.selectedTerms.iri]
-              : undefined,
+          includeTerms: selectedTermIris,
         },
         vocabularyIri
       )
@@ -201,6 +202,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         }
         return processTermsForTreeSelect(terms, termFilters, {
           searchString: fetchOptions.searchString,
+          selectedIris: selectedTermIris,
+          loadingSubTerms: !!fetchOptions.optionID,
+          flatList: this.props.flatList,
         });
       });
   };
