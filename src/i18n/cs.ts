@@ -271,7 +271,7 @@ const cs = {
     "administration.customization.customAttributes.removal.description":
       'Opravdu chcete nenávratně odstranit atribut "{label}"?',
     "administration.customization.customAttributes.removal.confirm":
-      "Odstranit atribut a všechna jeho použití",
+      "Pro potvrzení odstranění vlastního atributu a všech jeho použití, zadejte název atributu",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":

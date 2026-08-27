@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CustomAttribute } from "../../../model/RdfsResource";
 import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
 import { useI18n } from "../../hook/useI18n";
@@ -28,8 +28,6 @@ import CustomAttributeRdf4jValueNode, {
   getIriType,
   IriType,
 } from "./CustomAttributeRdf4jValueNode";
-import CustomCheckBoxInput from "../../misc/CustomCheckboxInput";
-import "./CustomAttributeRemoveDialog.scss";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { getInitialPageSize } from "../../../action/SyncActions";
 import { FormattedMessage } from "react-intl";
@@ -38,6 +36,9 @@ import {
   getSelectorOptionLabel,
   RANGE_OPTIONS,
 } from "./CustomAttributeSelector";
+import CustomInput from "../../misc/CustomInput";
+import ValidationResult from "../../../model/form/ValidationResult";
+import { getLocalized } from "../../../model/MultilingualString";
 
 export interface CustomAttributeRemoveDialogProps {
   /**
@@ -153,7 +154,8 @@ const CustomAttributeRemoveDialog: React.FC<
   const [totalStatements, setTotalStatements] = useState<number>(0);
   const [pagination, setPagination] =
     useState<PaginationState>(INITIAL_PAGINATION);
-  const [forceRemoveConfirmed, setForceRemoveConfirmed] = useState(false);
+  const [confirmationAttributeName, setConfirmationAttributeName] =
+    useState("");
 
   const attributeIri = useMemo(
     () =>
@@ -161,25 +163,27 @@ const CustomAttributeRemoveDialog: React.FC<
     [customAttribute]
   );
 
-  const label = customAttribute?.label?.[lang] ?? attributeIri?.fragment;
+  const label =
+    getLocalized(customAttribute?.label, lang) ?? attributeIri?.fragment;
 
-  const onRemoveConfirmed = useCallback(() => {
+  const removalConfirmed =
+    usageStatements.length === 0 || confirmationAttributeName === label;
+  const isConfirmDisabled = !removalConfirmed;
+  const isVisible = customAttribute != null && attributeIri != null;
+
+  const onRemoveConfirmed = () => {
     if (customAttribute == null || attributeIri == null) {
       return;
     }
 
-    dispatch(removeCustomAttribute(attributeIri, forceRemoveConfirmed)).then(
-      () => onDelete(customAttribute)
+    dispatch(removeCustomAttribute(attributeIri, removalConfirmed)).then(() =>
+      onDelete(customAttribute)
     );
-  }, [customAttribute, onDelete, attributeIri, dispatch, forceRemoveConfirmed]);
-
-  const hasUsage = usageStatements.length > 0;
-  const confirmDisabled = hasUsage && !forceRemoveConfirmed;
-  const isVisible = customAttribute != null && attributeIri != null;
+  };
 
   // When attribute changes, reset force removal confirmation and pagination
   useEffect(() => {
-    setForceRemoveConfirmed(false);
+    setConfirmationAttributeName("");
     setPagination(INITIAL_PAGINATION);
   }, [customAttribute, attributeIri]);
 
@@ -247,7 +251,7 @@ const CustomAttributeRemoveDialog: React.FC<
       })}
       confirmColor={"outline-danger"}
       confirmKey={"remove"}
-      confirmDisabled={confirmDisabled}
+      confirmDisabled={isConfirmDisabled}
       size="lg"
     >
       <PromiseTrackingMask area={CUSTOM_ATTRIBUTE_USAGE_PROMISE_AREA} />
@@ -256,17 +260,21 @@ const CustomAttributeRemoveDialog: React.FC<
         values={{ label }}
         tagName={"label"}
       />
-      {hasUsage && (
+      {usageStatements.length > 0 && (
         <>
           <Table instance={tableInstance} />
-          <CustomCheckBoxInput
-            id={"force-remove-checkbox"}
+          <CustomInput
             label={i18n(
               "administration.customization.customAttributes.removal.confirm"
             )}
-            checked={forceRemoveConfirmed}
-            onChange={(change) =>
-              setForceRemoveConfirmed(change.target.checked)
+            value={confirmationAttributeName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setConfirmationAttributeName(e.currentTarget.value)
+            }
+            validation={
+              isConfirmDisabled
+                ? ValidationResult.BLOCKER
+                : ValidationResult.VALID
             }
           />
         </>
