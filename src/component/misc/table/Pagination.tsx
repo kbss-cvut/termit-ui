@@ -10,6 +10,7 @@ import Constants from "../../../util/Constants";
 import { useI18n } from "../../hook/useI18n";
 import BrowserStorage from "../../../util/BrowserStorage";
 import "./Pagination.scss";
+
 interface PaginationTableState {
   pagination: {
     pageIndex: number;
@@ -33,7 +34,9 @@ interface PaginationProps {
   allowSizeChange?: boolean;
 }
 
-const PAGE_SIZES = [10, 20, 30, 50];
+const PAGE_SIZES = [10, 20, 30, 50, Constants.DEFAULT_PAGE_SIZE].sort(
+  (a, b) => a - b // Sort by number value
+);
 
 export const Pagination: React.FC<PaginationProps> = ({
   table,
