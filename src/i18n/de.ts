@@ -249,6 +249,8 @@ const de = {
       "Die Bezeichnung der Benutzergruppe darf nicht leer sein.",
     "administration.groups.members": "Gruppenmitglieder",
     "administration.customization.title": "Anpassung",
+    "administration.customization.customAttribute":
+      "Benutzerdefinierte Attribut",
     "administration.customization.customAttributes.title":
       "Benutzerdefinierte Attribute",
     "administration.customization.customAttributes.domain": "Domain",
@@ -264,6 +266,10 @@ const de = {
       "Anwendbar auf Beziehungseigenschaften",
     "administration.customization.customAttributes.annotatedRelationships.help":
       "Wählen Sie aus, welche Term-Beziehungseigenschaften dieses benutzerdefinierte Attribut annotieren kann. Gilt nur, wenn die Domäne 'Term-Beziehung' ist.",
+    "administration.customization.customAttributes.removal.description":
+      'Sind Sie sicher, dass Sie das benutzerdefinierte Attribut "{label}" dauerhaft entfernen möchten?',
+    "administration.customization.customAttributes.removal.confirm":
+      "Attribut und alle seine Verwendungen entfernen",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":

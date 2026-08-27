@@ -9,6 +9,9 @@ export type SelectorOption = {
   label?: string;
 };
 
+// When extending RANGE_OPTIONS or DOMAIN_OPTIONS, make sure that
+// CustomAttributeRdf4jValueNode.tsx is able to render the new type
+
 export const RANGE_OPTIONS: SelectorOption[] = [
   {
     value: VocabularyUtils.XSD_BOOLEAN,

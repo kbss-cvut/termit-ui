@@ -254,6 +254,7 @@ const cs = {
     "administration.groups.label.invalid": "Název skupiny nesmí být prázdný.",
     "administration.groups.members": "Členové skupiny",
     "administration.customization.title": "Přizpůsobení",
+    "administration.customization.customAttribute": "Vlastní atribut",
     "administration.customization.customAttributes.title": "Vlastní atributy",
     "administration.customization.customAttributes.domain": "Doména",
     "administration.customization.customAttributes.range": "Obor hodnot",
@@ -267,6 +268,10 @@ const cs = {
       "Vztahuje se na vlastnosti vztahů",
     "administration.customization.customAttributes.annotatedRelationships.help":
       "Vyberte, které vlastnosti vztahů mezi pojmy může tento vlastní atribut anotovat. Platí pouze když doména je 'Vztah mezi pojmy'.",
+    "administration.customization.customAttributes.removal.description":
+      'Opravdu chcete nenávratně odstranit atribut "{label}"?',
+    "administration.customization.customAttributes.removal.confirm":
+      "Odstranit atribut a všechna jeho použití",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":

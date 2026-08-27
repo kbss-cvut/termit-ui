@@ -1,0 +1,278 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { CustomAttribute } from "../../../model/RdfsResource";
+import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
+import { useI18n } from "../../hook/useI18n";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import { ThunkDispatch } from "../../../util/Types";
+import { useDispatch } from "react-redux";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
+import {
+  loadCustomAttributeUsage,
+  removeCustomAttribute,
+} from "../../../action/AsyncCustomizationActions";
+import { trackPromise } from "react-promise-tracker";
+import {
+  Rdf4jIRI,
+  Rdf4jResource,
+  Rdf4jStatement,
+  Rdf4jValue,
+} from "../../../model/Rdf4jStatement";
+import Table from "../../misc/table/Table";
+import {
+  ColumnDef,
+  getCoreRowModel,
+  PaginationState,
+  useReactTable,
+} from "@tanstack/react-table";
+import CustomAttributeRdf4jValueNode, {
+  getIriType,
+  IriType,
+} from "./CustomAttributeRdf4jValueNode";
+import CustomCheckBoxInput from "../../misc/CustomCheckboxInput";
+import "./CustomAttributeRemoveDialog.scss";
+import { getShortLocale } from "../../../util/IntlUtil";
+import { getInitialPageSize } from "../../../action/SyncActions";
+import { FormattedMessage } from "react-intl";
+import {
+  DOMAIN_OPTIONS,
+  getSelectorOptionLabel,
+  RANGE_OPTIONS,
+} from "./CustomAttributeSelector";
+
+export interface CustomAttributeRemoveDialogProps {
+  /**
+   * The attribute that should be removed.
+   *
+   * <code>null</code> when dialog should not be visible.
+   */
+  customAttribute: CustomAttribute | null;
+  /**
+   * Callback executed <b>after</b> the attribute was removed.
+   */
+  onDelete: (property: CustomAttribute | null) => void;
+  /**
+   * Callback executed when user cancels the action
+   */
+  onCancel: () => void;
+}
+
+/**
+ * Promise area used when custom attribute usages are being loaded
+ */
+const CUSTOM_ATTRIBUTE_USAGE_PROMISE_AREA =
+  "CUSTOM_ATTRIBUTE_USAGE_PROMISE_AREA";
+
+/**
+ * Resolves label of the {@link #typeIri} in {@link RANGE_OPTIONS} and {@link DOMAIN_OPTIONS}.
+ * If label is not found returns {@link #fallback}
+ *
+ * @param typeIri the IRI of the type to resolve
+ * @param i18n translation function
+ * @param fallback default value to use if no label is found
+ */
+function getColumnLabel(
+  typeIri: string | undefined,
+  i18n: (key: string) => string,
+  fallback: string
+): string {
+  if (typeIri == null) {
+    return fallback;
+  }
+
+  const option = [RANGE_OPTIONS, DOMAIN_OPTIONS]
+    .flatMap((a) => a)
+    .find((option) => option.value === typeIri);
+
+  if (option) {
+    return getSelectorOptionLabel(option, i18n) ?? fallback;
+  }
+
+  return fallback;
+}
+
+function defineColumns(
+  i18n: (id: string) => string,
+  customAttribute: CustomAttribute | null
+): ColumnDef<Rdf4jStatement>[] {
+  const subjectType = getIriType(customAttribute?.domainIri);
+  const objectType = getIriType(customAttribute?.rangeIri);
+  return [
+    {
+      header: getColumnLabel(customAttribute?.domainIri, i18n, "subject"),
+      accessorKey: "subject",
+      cell: (info) => (
+        <CustomAttributeRdf4jValueNode
+          value={info.getValue() as Rdf4jResource}
+          type={subjectType}
+        />
+      ),
+    },
+    {
+      header: getColumnLabel(customAttribute?.rangeIri, i18n, "object"),
+      accessorKey: "object",
+      cell: (info) => (
+        <CustomAttributeRdf4jValueNode
+          value={info.getValue() as Rdf4jValue}
+          type={objectType}
+        />
+      ),
+    },
+    {
+      header: i18n("type.vocabulary"),
+      accessorKey: "context",
+      cell: (info) => (
+        <CustomAttributeRdf4jValueNode
+          value={info.getValue() as Rdf4jIRI}
+          type={IriType.VOCABULARY}
+        />
+      ),
+    },
+  ];
+}
+
+const INITIAL_PAGINATION = Object.freeze({
+  pageSize: getInitialPageSize(),
+  pageIndex: 0,
+});
+
+/**
+ * Dialog for confirmation of {@link CustomAttribute} removal.
+ * <p>
+ * Pass non-null {@link props#customAttribute} to make the dialog visible.
+ * <p>
+ * Once confirmed, the dialog calls API to remove the attribute.
+ */
+const CustomAttributeRemoveDialog: React.FC<
+  CustomAttributeRemoveDialogProps
+> = (props) => {
+  const { customAttribute, onDelete, onCancel } = props;
+  const { i18n, formatMessage, locale } = useI18n();
+  const lang = getShortLocale(locale);
+  const dispatch: ThunkDispatch = useDispatch();
+  const [usageStatements, setUsageStatements] = useState<Rdf4jStatement[]>([]);
+  const [totalStatements, setTotalStatements] = useState<number>(0);
+  const [pagination, setPagination] =
+    useState<PaginationState>(INITIAL_PAGINATION);
+  const [forceRemoveConfirmed, setForceRemoveConfirmed] = useState(false);
+
+  const attributeIri = useMemo(
+    () =>
+      customAttribute ? VocabularyUtils.create(customAttribute.iri) : null,
+    [customAttribute]
+  );
+
+  const label = customAttribute?.label?.[lang] ?? attributeIri?.fragment;
+
+  const onRemoveConfirmed = useCallback(() => {
+    if (customAttribute == null || attributeIri == null) {
+      return;
+    }
+
+    dispatch(removeCustomAttribute(attributeIri, forceRemoveConfirmed)).then(
+      () => onDelete(customAttribute)
+    );
+  }, [customAttribute, onDelete, attributeIri, dispatch, forceRemoveConfirmed]);
+
+  const hasUsage = usageStatements.length > 0;
+  const confirmDisabled = hasUsage && !forceRemoveConfirmed;
+  const isVisible = customAttribute != null && attributeIri != null;
+
+  // When attribute changes, reset force removal confirmation and pagination
+  useEffect(() => {
+    setForceRemoveConfirmed(false);
+    setPagination(INITIAL_PAGINATION);
+  }, [customAttribute, attributeIri]);
+
+  useEffect(() => {
+    if (attributeIri == null) {
+      return;
+    }
+
+    trackPromise(
+      dispatch(
+        loadCustomAttributeUsage(attributeIri, {
+          size: pagination.pageSize,
+          page: pagination.pageIndex,
+        })
+      ),
+      CUSTOM_ATTRIBUTE_USAGE_PROMISE_AREA
+    ).then((result) => {
+      if (!("error" in result)) {
+        setUsageStatements(result.data);
+        setTotalStatements(result.totalStatements);
+      }
+    });
+  }, [dispatch, attributeIri, pagination.pageSize, pagination.pageIndex]);
+
+  const columns = useMemo(
+    () => defineColumns(i18n, customAttribute),
+    [i18n, customAttribute]
+  );
+
+  const tableInstance = useReactTable<Rdf4jStatement>({
+    columns,
+    data: usageStatements,
+    getCoreRowModel: getCoreRowModel(),
+    enableColumnFilters: false,
+    enableSorting: false,
+    manualPagination: true,
+    rowCount: totalStatements,
+    state: { pagination },
+    onPaginationChange: (updater) => {
+      let newState: PaginationState;
+      if (typeof updater === "function") {
+        newState = updater(pagination);
+      } else {
+        newState = updater;
+      }
+
+      if (
+        newState.pageSize !== pagination.pageSize ||
+        newState.pageIndex !== pagination.pageIndex
+      ) {
+        setPagination(newState);
+      }
+    },
+  });
+
+  return (
+    <ConfirmCancelDialog
+      show={isVisible}
+      onClose={onCancel}
+      onConfirm={onRemoveConfirmed}
+      id={"custom-attribute-remove-dialog"}
+      title={formatMessage("asset.remove.dialog.title", {
+        type: i18n("administration.customization.customAttribute"),
+        label,
+      })}
+      confirmColor={"outline-danger"}
+      confirmKey={"remove"}
+      confirmDisabled={confirmDisabled}
+      size="lg"
+    >
+      <PromiseTrackingMask area={CUSTOM_ATTRIBUTE_USAGE_PROMISE_AREA} />
+      <FormattedMessage
+        id={"administration.customization.customAttributes.removal.description"}
+        values={{ label }}
+        tagName={"label"}
+      />
+      {hasUsage && (
+        <>
+          <Table instance={tableInstance} />
+          <CustomCheckBoxInput
+            id={"force-remove-checkbox"}
+            label={i18n(
+              "administration.customization.customAttributes.removal.confirm"
+            )}
+            checked={forceRemoveConfirmed}
+            onChange={(change) =>
+              setForceRemoveConfirmed(change.target.checked)
+            }
+          />
+        </>
+      )}
+    </ConfirmCancelDialog>
+  );
+};
+
+export default CustomAttributeRemoveDialog;
