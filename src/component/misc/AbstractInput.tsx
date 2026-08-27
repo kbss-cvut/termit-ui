@@ -69,7 +69,10 @@ export default class AbstractInput<
 > extends React.Component<T> {
   protected renderLabel() {
     return this.props.label ? (
-      <Label className={classNames("attribute-label", this.props.labelClass)}>
+      <Label
+        className={classNames("attribute-label", this.props.labelClass)}
+        for={this.props.id}
+      >
         {this.props.label}
         {this.renderHelp()}
       </Label>
