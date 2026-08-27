@@ -269,7 +269,7 @@ const de = {
     "administration.customization.customAttributes.removal.description":
       'Sind Sie sicher, dass Sie das benutzerdefinierte Attribut "{label}" dauerhaft entfernen möchten?',
     "administration.customization.customAttributes.removal.confirm":
-      "Attribut und alle seine Verwendungen entfernen",
+      "Um das Löschen des benutzerdefinierten Attributs und all seiner Verwendungen zu bestätigen, geben Sie den Attributnamen ein",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":

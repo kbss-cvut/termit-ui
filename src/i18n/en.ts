@@ -259,7 +259,7 @@ const en = {
     "administration.customization.customAttributes.removal.description":
       'Are you sure you want to permanently remove custom attribute "{label}"?',
     "administration.customization.customAttributes.removal.confirm":
-      "Remove attribute and all its usages",
+      "To confirm the deletion of the custom attribute and all its uses, enter the attribute name",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
