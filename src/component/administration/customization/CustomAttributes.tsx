@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useI18n } from "../../hook/useI18n";
 import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +30,7 @@ import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import CopyIriIcon from "../../misc/CopyIriIcon";
+import CustomAttributeRemoveDialog from "./CustomAttributeRemoveDialog";
 
 export const CustomAttributes: React.FC = () => {
   const { i18n, locale } = useI18n();
@@ -38,9 +39,19 @@ export const CustomAttributes: React.FC = () => {
     (state: TermItState) => state.customAttributes
   );
 
-  React.useEffect(() => {
+  /**
+   * Attribute that user wants to remove. When non-null, the removal dialog is displayed.
+   */
+  const [customAttributeForRemoval, setCustomAttributeForRemoval] =
+    useState<CustomAttribute | null>(null);
+
+  const fetchAttributes = React.useCallback(() => {
     dispatch(getCustomAttributes());
   }, [dispatch]);
+
+  React.useEffect(() => {
+    fetchAttributes();
+  }, [fetchAttributes]);
 
   const onEditClick = React.useCallback((property: CustomAttribute) => {
     Routing.transitionTo(Routes.editCustomAttribute, {
@@ -48,6 +59,35 @@ export const CustomAttributes: React.FC = () => {
         ["name", VocabularyUtils.create(property.iri).fragment],
       ]),
     });
+  }, []);
+
+  /**
+   * Executed when the remove button is clicked.
+   * Sets the attribute for removal making the remove dialog visible.
+   */
+  const onRemoveClick = React.useCallback(
+    (customAttribute: CustomAttribute) => {
+      setCustomAttributeForRemoval(customAttribute);
+    },
+    []
+  );
+
+  /**
+   * Executed when the remove dialog is confirmed and the attribute removed.
+   * Resets attribute for removal to null hiding the dialog.
+   * Re-fetches attributes to eliminate the removed attribute.
+   */
+  const onRemoveConfirmed = React.useCallback(() => {
+    fetchAttributes();
+    setCustomAttributeForRemoval(null);
+  }, [fetchAttributes]);
+
+  /**
+   * Executed when the remove dialog is canceled.
+   * Resets the attribute for removal to null hiding the dialog.
+   */
+  const onRemoveCanceled = React.useCallback(() => {
+    setCustomAttributeForRemoval(null);
   }, []);
 
   const lang = getShortLocale(locale);
@@ -117,6 +157,13 @@ export const CustomAttributes: React.FC = () => {
             >
               {i18n("edit")}
             </Button>
+            <Button
+              color="outline-danger"
+              onClick={() => onRemoveClick(row.original)}
+              size="sm"
+            >
+              {i18n("remove")}
+            </Button>
           </>
         ),
         meta: {
@@ -125,7 +172,7 @@ export const CustomAttributes: React.FC = () => {
         },
       },
     ],
-    [i18n, lang, onEditClick]
+    [i18n, lang, onEditClick, onRemoveClick]
   );
 
   const tableInstance = useReactTable<CustomAttribute>({
@@ -161,6 +208,11 @@ export const CustomAttributes: React.FC = () => {
       }
     >
       <Table instance={tableInstance} />
+      <CustomAttributeRemoveDialog
+        customAttribute={customAttributeForRemoval}
+        onDelete={onRemoveConfirmed}
+        onCancel={onRemoveCanceled}
+      />
     </PanelWithActions>
   );
 };

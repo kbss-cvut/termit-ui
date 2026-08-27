@@ -242,6 +242,7 @@ const en = {
       "User group label must not be empty.",
     "administration.groups.members": "Group members",
     "administration.customization.title": "Customization",
+    "administration.customization.customAttribute": "Custom attribute",
     "administration.customization.customAttributes.title": "Custom attributes",
     "administration.customization.customAttributes.domain": "Domain",
     "administration.customization.customAttributes.range": "Range",
@@ -255,6 +256,10 @@ const en = {
       "Applicable to relationship properties",
     "administration.customization.customAttributes.annotatedRelationships.help":
       "Select which term relationship properties this custom attribute can annotate. Only applicable when domain is 'Term relationship'.",
+    "administration.customization.customAttributes.removal.description":
+      'Are you sure you want to permanently remove custom attribute "{label}"?',
+    "administration.customization.customAttributes.removal.confirm":
+      "Remove attribute and all its usages",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
