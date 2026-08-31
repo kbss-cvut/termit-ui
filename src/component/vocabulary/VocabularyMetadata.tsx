@@ -119,6 +119,26 @@ export class VocabularyMetadata extends React.Component<
               labelKey="vocabulary.detail.related"
               htmlId="vocabulary-related-vocabularies"
             />
+            <Row>
+              <Col xl={2} md={4}>
+                <Label className="attribute-label mb-3">
+                  {i18n("vocabulary.preferredNamespaceUri")}
+                </Label>
+              </Col>
+              <Col xl={10} md={8}>
+                {vocabulary.preferredNamespaceUri}
+              </Col>
+            </Row>
+            <Row>
+              <Col xl={2} md={4}>
+                <Label className="attribute-label mb-3">
+                  {i18n("vocabulary.preferredNamespacePrefix")}
+                </Label>
+              </Col>
+              <Col xl={10} md={8}>
+                {vocabulary.preferredNamespacePrefix}
+              </Col>
+            </Row>
             <CustomAttributesValues asset={vocabulary} />
           </CardBody>
         </Card>
