@@ -103,11 +103,16 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           fragment: this.props.match.params.name,
           namespace,
         };
+    const selectedTermIris =
+      this.props.isDetailView && this.props.selectedTerms
+        ? [this.props.selectedTerms.iri]
+        : undefined;
     return this.props
       .fetchTerms(
         {
           ...fetchOptions,
           includeImported: this.state.includeImported,
+          includeTerms: selectedTermIris,
         },
         vocabularyIri
       )
@@ -126,7 +131,11 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             createVocabularyMatcher(matchingVocabularies),
             createTermNonTerminalStateMatcher(this.props.terminalStates),
           ],
-          fetchOptions
+          {
+            ...fetchOptions,
+            selectedIris: selectedTermIris,
+            loadingSubTerms: !!fetchOptions.optionID,
+          }
         );
       });
   };
