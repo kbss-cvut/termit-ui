@@ -57,6 +57,7 @@ interface VocabularyEditState {
    * @see import("../../util/IntlUtil").getLanguageOptions()
    */
   primaryLanguage: string;
+  preferredNamespacePrefix: string;
 }
 
 export class VocabularyEdit extends React.Component<
@@ -75,6 +76,7 @@ export class VocabularyEdit extends React.Component<
       importedVocabularies: this.props.vocabulary.importedVocabularies,
       relatedVocabularies: this.props.vocabulary.relatedVocabularies,
       primaryLanguage: props.vocabulary.primaryLanguage || this.props.language,
+      preferredNamespacePrefix: props.vocabulary.preferredNamespacePrefix || "",
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
   }
@@ -163,6 +165,7 @@ export class VocabularyEdit extends React.Component<
         importedVocabularies: this.state.importedVocabularies,
         relatedVocabularies: this.state.relatedVocabularies,
         primaryLanguage: this.state.primaryLanguage,
+        preferredNamespacePrefix: this.state.preferredNamespacePrefix,
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
@@ -266,6 +269,32 @@ export class VocabularyEdit extends React.Component<
                 helpKey="vocabulary.detail.related.help"
                 onChange={this.onChange}
               />
+              <Row>
+                <Col xs={12}>
+                  <CustomInput
+                    name="edit-vocabulary-namespace-uri"
+                    label={i18n("vocabulary.preferredNamespaceUri")}
+                    value={this.props.vocabulary.preferredNamespaceUri}
+                    readOnly={true}
+                    disabled={true}
+                    hint={i18n("vocabulary.preferredNamespaceUri.editReadonly")}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <CustomInput
+                    name="edit-vocabulary-namespace-prefix"
+                    label={i18n("vocabulary.preferredNamespacePrefix")}
+                    value={this.state.preferredNamespacePrefix}
+                    onChange={(e) =>
+                      this.onChange({
+                        preferredNamespacePrefix: e.target.value,
+                      })
+                    }
+                  />
+                </Col>
+              </Row>
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit
