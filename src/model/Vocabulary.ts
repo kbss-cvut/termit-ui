@@ -40,6 +40,8 @@ const ctx = {
   relatedVocabularies: VocabularyUtils.HAS_RELATED_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
   primaryLanguage: VocabularyUtils.DC_LANGUAGE,
+  preferredNamespaceUri: VocabularyUtils.VANN_PREFERRED_NAMESPACE_URI,
+  preferredNamespacePrefix: VocabularyUtils.VANN_PREFERRED_NAMESPACE_PREFIX,
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, USER_CONTEXT, ctx);
@@ -57,6 +59,8 @@ const MAPPED_PROPERTIES = [
   "termCount",
   "accessLevel",
   "primaryLanguage",
+  "preferredNamespaceUri",
+  "preferredNamespacePrefix",
 ];
 
 export const VOCABULARY_MULTILINGUAL_ATTRIBUTES = ["label", "comment"];
@@ -73,6 +77,8 @@ export interface VocabularyData extends AssetData {
    * @see import("../util/IntlUtil").getLanguageOptions()
    */
   primaryLanguage?: string;
+  preferredNamespacePrefix?: string;
+  preferredNamespaceUri?: string;
 }
 
 export default class Vocabulary
@@ -87,6 +93,8 @@ export default class Vocabulary
   public allImportedVocabularies?: string[];
   public accessLevel?: AccessLevel;
   public primaryLanguage?: string;
+  public preferredNamespacePrefix?: string;
+  public preferredNamespaceUri?: string;
 
   public termCount?: number;
 
@@ -105,6 +113,8 @@ export default class Vocabulary
       ? strToAccessLevel(data.accessLevel)
       : undefined;
     this.primaryLanguage = data.primaryLanguage;
+    this.preferredNamespacePrefix = data.preferredNamespacePrefix;
+    this.preferredNamespaceUri = data.preferredNamespaceUri;
   }
 
   getLabel(lang?: string): string {
