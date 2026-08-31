@@ -302,6 +302,11 @@ const cs = {
       "Začněte psát pro filtrování slovníků dle názvu",
     "vocabulary.title": "Název",
     "vocabulary.primaryLanguage": "Hlavní jazyk slovníku",
+    "vocabulary.preferredNamespaceUri": "Preferovaná URI jmenného prostoru",
+    "vocabulary.preferredNamespaceUri.editReadonly":
+      "Preferovanou URI jmenného prostoru nelze změnit, protože by zneplatila odvozování identifikátorů pojmů",
+    "vocabulary.preferredNamespacePrefix":
+      "Preferovaný prefix jmenného prostoru",
     "vocabulary.create.title": "Nový slovník",
     "vocabulary.create.submit": "Vytvořit",
     "vocabulary.create.files": "Soubory",

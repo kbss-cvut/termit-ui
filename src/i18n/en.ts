@@ -292,6 +292,10 @@ const en = {
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
     "vocabulary.primaryLanguage": "Primary vocabulary language",
+    "vocabulary.preferredNamespaceUri": "Preferred namespace URI",
+    "vocabulary.preferredNamespaceUri.editReadonly":
+      "Preferred namespace URI cannot be changed because it would break term identifier resolution",
+    "vocabulary.preferredNamespacePrefix": "Preferred namespace prefix",
     "vocabulary.create.title": "Create Vocabulary",
     "vocabulary.create.submit": "Create",
     "vocabulary.create.files": "Files",

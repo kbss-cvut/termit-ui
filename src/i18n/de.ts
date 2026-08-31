@@ -297,6 +297,10 @@ const de = {
       "Beginnen Sie mit der Eingabe, um Vokabulare nach Namen zu filtern",
     "vocabulary.title": "Titel",
     "vocabulary.primaryLanguage": "Primäres Vokabular der Sprache",
+    "vocabulary.preferredNamespaceUri": "Bevorzugte Namespace-URI",
+    "vocabulary.preferredNamespaceUri.editReadonly":
+      "Die bevorzugte Namespace-URI kann nicht geändert werden, da dies die Auflösung von Begriffskennungen beeinträchtigen würde",
+    "vocabulary.preferredNamespacePrefix": "Bevorzugtes Namespace-Präfix",
     "vocabulary.create.title": "Vokabular erstellen",
     "vocabulary.create.submit": "Erstellen",
     "vocabulary.create.files": "Dateien",
