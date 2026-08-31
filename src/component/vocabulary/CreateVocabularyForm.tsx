@@ -148,7 +148,10 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       comment,
       primaryLanguage,
       preferredNamespaceUri,
-      preferredNamespacePrefix,
+      preferredNamespacePrefix:
+        preferredNamespacePrefix.trim().length > 0
+          ? preferredNamespacePrefix
+          : undefined,
     });
     const document = new Document({
       label:

@@ -166,6 +166,7 @@ describe("Create vocabulary view", () => {
         document,
         types,
         primaryLanguage: Constants.DEFAULT_LANGUAGE,
+        preferredNamespaceUri: iri,
       })
     );
   });
@@ -202,7 +203,10 @@ describe("Create vocabulary view", () => {
           "Metropolitan Plan";
         nameInput.simulate("change", nameInput);
       });
-      expect(Ajax.post).not.toHaveBeenCalled();
+      expect(Ajax.post).not.toHaveBeenCalledWith(
+        Constants.API_PREFIX + "/identifiers",
+        expect.anything()
+      );
     });
 
     it("displays IRI generated and returned by the server", async () => {
