@@ -142,6 +142,10 @@ const VocabularyUtils = {
   DC_SUBJECT: _NS_DC + "subject",
   DC_RELATION: _NS_DC + "relation",
   AS_RELATIONSHIP: _NS_ACTIVITY_STREAMS + "relationship",
+  VANN_PREFERRED_NAMESPACE_URI:
+    "http://purl.org/vocab/vann/preferredNamespaceUri",
+  VANN_PREFERRED_NAMESPACE_PREFIX:
+    "http://purl.org/vocab/vann/preferredNamespacePrefix",
 
   NS_XSD: _NS_XSD,
   XSD_DATETIME: _NS_XSD + "dateTime",
