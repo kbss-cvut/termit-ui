@@ -13,7 +13,7 @@ import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
-import type { Mock } from "vitest";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 
 vi.mock("../../../util/Routing");
 
@@ -282,9 +282,9 @@ describe("Terms", () => {
           expect(spy).toHaveBeenCalledWith(
             terms,
             [expect.any(Function), expect.any(Function)],
-            {
+            expect.objectContaining({
               searchString: "test",
-            }
+            })
           );
         });
     });

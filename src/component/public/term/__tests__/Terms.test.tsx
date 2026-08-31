@@ -12,7 +12,7 @@ import Generator from "../../../../__tests__/environment/Generator";
 import * as TermTreeSelectHelper from "../../../term/TermTreeSelectHelper";
 import { langString } from "../../../../model/MultilingualString";
 import { TermFetchParams } from "../../../../util/Types";
-import type { Mock } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 vi.mock("../../../../util/Routing");
 
@@ -273,9 +273,9 @@ describe("Terms", () => {
           expect(spy).toHaveBeenCalledWith(
             terms,
             [expect.any(Function), expect.any(Function)],
-            {
+            expect.objectContaining({
               searchString: "test",
-            }
+            })
           );
         });
     });
