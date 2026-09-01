@@ -134,6 +134,18 @@ describe("Terms", () => {
     );
   });
 
+  it("marks the selected term for loading when it changes", () => {
+    const wrapper = renderShallow(true);
+    const resetOptions = vi.fn();
+    (wrapper.instance() as any).treeComponent.current = { resetOptions };
+    wrapper.setState({ selectedTermLoaded: true });
+
+    wrapper.setProps({ selectedTerms: new Term(term) });
+
+    expect(wrapper.state().selectedTermLoaded).toBeFalsy();
+    expect(resetOptions).toHaveBeenCalled();
+  });
+
   it("disables include imported terms toggle when fetching terms", () => {
     const wrapper = renderShallow();
     expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();

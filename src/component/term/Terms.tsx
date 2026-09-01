@@ -102,6 +102,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   }
 
   public componentDidUpdate(prevProps: GlossaryTermsProps) {
+    const selectedTermChanged =
+      prevProps.selectedTerms !== this.props.selectedTerms;
+    const shouldReloadTerms = this.shouldReloadTerms(prevProps);
+    if (selectedTermChanged || shouldReloadTerms) {
+      this.setState({ selectedTermLoaded: false });
+    }
     const matchingNotification = this.props.notifications.find(
       (n) =>
         Terms.isNotificationRelevant(n) ||
@@ -110,8 +116,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     if (matchingNotification && this.treeComponent.current) {
       this.treeComponent.current.resetOptions();
       this.props.consumeNotification(matchingNotification);
-    } else if (this.shouldReloadTerms(prevProps)) {
-      this.setState({ selectedTermLoaded: false });
+    } else if (shouldReloadTerms || selectedTermChanged) {
       this.treeComponent.current?.resetOptions();
     }
     if (prevProps.locale !== this.props.locale) {
