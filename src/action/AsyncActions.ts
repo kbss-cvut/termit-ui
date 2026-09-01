@@ -543,6 +543,7 @@ export function loadTerms(
     {
       searchString: fetchOptions.searchString,
       includeImported: fetchOptions.includeImported,
+      includeRelated: fetchOptions.includeRelated,
       includeTerms: fetchOptions.includeTerms,
       flat: fetchOptions.flatList,
       namespace: vocabularyIri.namespace,

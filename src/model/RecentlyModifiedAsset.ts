@@ -9,8 +9,8 @@ const ctx = {
     "@id": VocabularyUtils.DC_MODIFIED,
     "@type": VocabularyUtils.XSD_DATETIME,
   },
-  editor: VocabularyUtils.PREFIX + "má-editora",
-  vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+  editor: VocabularyUtils.PREFIX + "has-editor",
+  vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
 };
 
 export const CONTEXT = Object.assign(ctx, ASSET_CONTEXT, USER_CONTEXT);

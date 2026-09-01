@@ -3,7 +3,7 @@ import { injectIntl } from "react-intl";
 import { Button, FormGroup, FormText, Label } from "reactstrap";
 import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
-import "intelligent-tree-select/lib/styles.css";
+import "intelligent-tree-select/styles.css";
 import { connect } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { selectVocabularyTerm } from "../../action/SyncActions";

@@ -12,19 +12,31 @@ import { loadVocabularies } from "../../action/AsyncActions";
 import { useI18n } from "../hook/useI18n";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
+import HelpIcon from "../misc/HelpIcon";
 
-interface ImportedVocabulariesListEditProps {
+interface VocabulariesReferenceListEditProps {
   vocabulary: Vocabulary;
-  importedVocabularies?: AssetData[];
+  selectedVocabularies?: AssetData[];
+  fieldKey: string;
+  labelKey: string;
+  helpKey: string;
   onChange: (change: object) => void;
 }
 
-const ImportedVocabulariesListEdit: React.FC<
-  ImportedVocabulariesListEditProps
-> = ({ vocabulary, importedVocabularies, onChange }) => {
+const VocabulariesReferenceListEdit: React.FC<
+  VocabulariesReferenceListEditProps
+> = ({
+  vocabulary,
+  selectedVocabularies,
+  fieldKey,
+  labelKey,
+  helpKey,
+  onChange,
+}) => {
   const { i18n, locale } = useI18n();
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const dispatch: ThunkDispatch = useDispatch();
+
   React.useEffect(() => {
     if (Object.getOwnPropertyNames(vocabularies).length === 0) {
       dispatch(loadVocabularies());
@@ -33,19 +45,21 @@ const ImportedVocabulariesListEdit: React.FC<
 
   const onSelect = (selected: readonly Vocabulary[]) => {
     const selectedVocabs = selected.map((v) => ({ iri: v.iri }));
-    onChange({ importedVocabularies: selectedVocabs });
+    onChange({ [fieldKey]: selectedVocabs });
   };
 
   const options = Object.keys(vocabularies)
     .map((v) => vocabularies[v])
     .filter((v) => v.iri !== vocabulary.iri);
-  const selected = Utils.sanitizeArray(importedVocabularies).map((v) => v.iri!);
+  const selected = Utils.sanitizeArray(selectedVocabularies).map((v) => v.iri!);
+
   return (
     <Row>
       <Col xs={12}>
         <FormGroup>
           <Label className="attribute-label">
-            {i18n("vocabulary.detail.imports.edit")}
+            {i18n(labelKey as any)}
+            <HelpIcon id={`${fieldKey}-help`} text={i18n(helpKey as any)} />
           </Label>
           <IntelligentTreeSelect
             className="p-0"
@@ -71,4 +85,4 @@ const ImportedVocabulariesListEdit: React.FC<
   );
 };
 
-export default ImportedVocabulariesListEdit;
+export default VocabulariesReferenceListEdit;

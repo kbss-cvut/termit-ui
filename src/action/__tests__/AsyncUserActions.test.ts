@@ -14,7 +14,6 @@ import {
   loadUsers,
   login,
   register,
-  unlockUser,
   updateProfile,
 } from "../AsyncUserActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -237,39 +236,6 @@ describe("AsyncUserActions", () => {
       Ajax.post = vi.fn().mockImplementation(() => Promise.resolve({}));
       return Promise.resolve(
         (store.dispatch as ThunkDispatch)(enableUser(user))
-      ).then(() => {
-        const actions = store.getActions();
-        const lastAction = actions[actions.length - 1];
-        expect(lastAction.type).toEqual(ActionType.PUBLISH_MESSAGE);
-        expect(lastAction.message.type).toEqual(MessageType.SUCCESS);
-      });
-    });
-  });
-
-  describe("unlockUser", () => {
-    it("sends request with new user password to corresponding REST endpoint", () => {
-      const user = Generator.generateUser(namespace + name);
-      const newPassword = "new_password";
-      Ajax.delete = vi.fn().mockImplementation(() => Promise.resolve());
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(unlockUser(user, newPassword))
-      ).then(() => {
-        expect(Ajax.delete).toHaveBeenCalled();
-        const url = (Ajax.delete as Mock).mock.calls[0][0];
-        expect(url).toEqual(`${Constants.API_PREFIX}/users/${name}/lock`);
-        const config = (Ajax.delete as Mock).mock.calls[0][1];
-        expect(config.getContent()).toEqual(newPassword);
-        expect(config.getParams().namespace).toEqual(namespace);
-        expect(config.getContentType()).toEqual(Constants.TEXT_MIME_TYPE);
-      });
-    });
-
-    it("publishes message on success", () => {
-      const user = Generator.generateUser(namespace + name);
-      const newPassword = "new_password";
-      Ajax.delete = vi.fn().mockImplementation(() => Promise.resolve());
-      return Promise.resolve(
-        (store.dispatch as ThunkDispatch)(unlockUser(user, newPassword))
       ).then(() => {
         const actions = store.getActions();
         const lastAction = actions[actions.length - 1];

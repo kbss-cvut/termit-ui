@@ -4,11 +4,11 @@ import { CONTEXT as USER_CONTEXT, UserData } from "./User";
 
 const ctx = {
   created: {
-    "@id": `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-vytvo\u0159en\u00ed-verze`,
+    "@id": VocabularyUtils.SNAPSHOT_CREATED,
     "@type": VocabularyUtils.XSD_DATETIME,
   },
-  author: "http://purl.org/dc/terms/creator",
-  versionOf: `${VocabularyUtils.PREFIX}/je-verz\u00ed`,
+  author: VocabularyUtils.SNAPSHOT_AUTHOR,
+  versionOf: VocabularyUtils.PREFIX + "is-version-of",
 };
 
 export const CONTEXT = Object.assign({}, ctx, USER_CONTEXT, ASSET_CONTEXT);

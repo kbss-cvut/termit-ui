@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FormGroup } from "reactstrap";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Term, { TermData, TermInfo } from "src/model/Term";
@@ -16,11 +16,18 @@ import {
 import { useI18n } from "../hook/useI18n";
 import { ThunkDispatch, TreeSelectFetchOptionsParams } from "../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
-import { loadAllTerms } from "../../action/AsyncActions";
+import {
+  loadAllTerms,
+  loadTerms,
+  loadVocabularies,
+} from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
-import ShowFlatListToggle from "./state/ShowFlatListToggle";
+import TermListToggle from "./TermListToggle";
 import { setTermsFlatList } from "../../action/SyncActions";
 import { LargeTermValueList } from "./LargeTermValueList";
+import VocabularyUtils from "../../util/VocabularyUtils";
+import VocabulariesInfoIcon from "../misc/VocabulariesInfoIcon";
+import Utils from "../../util/Utils";
 
 export const MAX_SELECT_THRESHOLD = 20;
 
@@ -62,7 +69,14 @@ export const TermSelector: React.FC<{
   const terminalStates = useSelector(
     (state: TermItState) => state.terminalStates
   );
+  const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const treeSelect = React.useRef<IntelligentTreeSelect<Term>>(null);
+
+  React.useEffect(() => {
+    if (Object.keys(vocabularies).length === 0) {
+      dispatch(loadVocabularies());
+    }
+  }, [dispatch, vocabularies]);
 
   let flatList = useSelector((state: TermItState) => state.showTermsFlatList);
   if (forceFlatList) {
@@ -73,24 +87,46 @@ export const TermSelector: React.FC<{
     treeSelect.current?.resetOptions();
   };
 
+  const [limitToRelated, setLimitToRelated] = useState(!!vocabularyIri);
+
+  const handleLimitToRelatedToggle = () => {
+    setLimitToRelated(!limitToRelated);
+    treeSelect.current?.resetOptions();
+  };
+
   const selected =
     value.length > 0
       ? typeof value[0] === "string"
         ? (value as string[])
         : resolveSelectedIris(value as TermInfo[])
       : (value as string[]);
+
   const fetchOptions = async (
     fetchParams: TreeSelectFetchOptionsParams<TermData>
   ) => {
     const terms = await loadAndPrepareTerms(
       { ...fetchParams, flatList },
-      (options) =>
-        dispatch(
+      (options) => {
+        if (limitToRelated && vocabularyIri) {
+          return dispatch(
+            loadTerms(
+              {
+                ...options,
+                flatList,
+                includeImported: true,
+                includeRelated: true,
+              },
+              VocabularyUtils.create(vocabularyIri)
+            )
+          );
+        }
+        return dispatch(
           loadAllTerms(
             { ...options, flatList },
             resolveNamespaceForLoadAll(options)
           )
-        ),
+        );
+      },
       {
         selectedIris: selected.length > MAX_SELECT_THRESHOLD ? [] : selected,
         terminalStates: terminalStates,
@@ -105,17 +141,51 @@ export const TermSelector: React.FC<{
     controlShouldRenderValue: selected.length <= MAX_SELECT_THRESHOLD,
   };
 
+  const currentVocab = vocabularyIri ? vocabularies[vocabularyIri] : undefined;
+  const filteredVocabs = Utils.sanitizeArray(currentVocab?.relatedVocabularies)
+    .map((asset) => vocabularies[asset.iri!])
+    .filter(Boolean);
+
   return (
     <FormGroup id={id}>
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between mb-2">
         {label}
-        {!forceFlatList && (
-          <ShowFlatListToggle
-            id={id + "-show-flat-list"}
-            onToggle={handleFlatListToggle}
-            value={flatList}
-          />
-        )}
+        <div className="d-flex align-items-center">
+          {vocabularyIri && (
+            <>
+              {limitToRelated && filteredVocabs.length > 0 && (
+                <VocabulariesInfoIcon
+                  id={id + "-related-info-icon"}
+                  vocabularies={filteredVocabs}
+                  labelKey="vocabulary.detail.related"
+                  className="mr-2"
+                />
+              )}
+              <TermListToggle
+                id={id + "-limit-to-related"}
+                onToggle={handleLimitToRelatedToggle}
+                value={limitToRelated}
+                labelOnKey="glossary.limitToRelated"
+                labelOffKey="glossary.showAll"
+                tooltipOnKey="glossary.limitToRelated.help"
+                tooltipOffKey="glossary.showAll.help"
+              />
+            </>
+          )}
+          {!forceFlatList && (
+            <div className={vocabularyIri ? "ml-2" : ""}>
+              <TermListToggle
+                id={id + "-show-flat-list"}
+                onToggle={handleFlatListToggle}
+                value={flatList}
+                labelOnKey="glossary.showFlatList"
+                labelOffKey="glossary.showTreeList"
+                tooltipOnKey="glossary.showFlatList.help"
+                tooltipOffKey="glossary.showTreeList.help"
+              />
+            </div>
+          )}
+        </div>
       </div>
       <IntelligentTreeSelect
         ref={treeSelect}

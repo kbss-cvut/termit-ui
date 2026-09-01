@@ -29,7 +29,7 @@ type MultilingualColumnConfig = {
 
 type PluralMultilingualColumnConfig = {
   type: "pluralMultilingualString";
-  termKey: "examples";
+  termKey: "examples" | "altLabels" | "hiddenLabels";
 };
 
 type TermArrayColumnConfig = {
@@ -75,6 +75,8 @@ const COLUMN_CONFIG: Record<string, ColumnConfig> = {
   notation: { type: "stringArray", termKey: "notations" },
 
   example: { type: "pluralMultilingualString", termKey: "examples" },
+  altLabels: { type: "pluralMultilingualString", termKey: "altLabels" },
+  hiddenLabels: { type: "pluralMultilingualString", termKey: "hiddenLabels" },
 
   type: { type: "termTypes", termKey: "types" },
 };

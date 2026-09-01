@@ -2,7 +2,7 @@ import * as React from "react";
 import Term from "../../model/Term";
 import "./Annotation.scss";
 import { AnnotationSpanProps } from "./Annotator";
-import { AnnotationType } from "./AnnotationDomHelper";
+import { AnnotationType, isTermDefinition } from "./AnnotationDomHelper";
 import TermOccurrenceAnnotation from "./TermOccurrenceAnnotation";
 import TermDefinitionAnnotation from "./TermDefinitionAnnotation";
 import { connect } from "react-redux";
@@ -47,10 +47,6 @@ interface AnnotationState {
   term: Term | null | undefined;
   termFetchFinished: boolean;
   abortController: AbortController;
-}
-
-export function isDefinitionAnnotation(type: string) {
-  return type === AnnotationType.DEFINITION;
 }
 
 export class Annotation extends React.Component<
@@ -221,12 +217,12 @@ export class Annotation extends React.Component<
       return AnnotationClass.LOADING;
     }
     if (this.state.term === null) {
-      return isDefinitionAnnotation(this.props.typeof)
+      return isTermDefinition(this.props.typeof)
         ? AnnotationClass.PENDING_DEFINITION
         : AnnotationClass.SUGGESTED_OCCURRENCE;
     }
     if (this.state.term) {
-      return isDefinitionAnnotation(this.props.typeof)
+      return isTermDefinition(this.props.typeof)
         ? AnnotationClass.DEFINITION
         : AnnotationClass.ASSIGNED_OCCURRENCE;
     }

@@ -4,7 +4,6 @@ import withI18n, { HasI18n } from "../hoc/withI18n";
 import Vocabulary from "../../model/Vocabulary";
 import { Card, CardBody, Col, Label, Row } from "reactstrap";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
-import ImportedVocabulariesList from "./ImportedVocabulariesList";
 import Tabs from "../misc/Tabs";
 import AssetHistory from "../changetracking/AssetHistory";
 import TermChangeFrequency from "./TermChangeFrequency";
@@ -23,6 +22,7 @@ import AccessLevel, { hasAccess } from "../../model/acl/AccessLevel";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
+import VocabulariesReferenceList from "./VocabulariesReferenceList";
 
 interface VocabularyMetadataProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -109,9 +109,36 @@ export class VocabularyMetadata extends React.Component<
                 </MarkdownView>
               </Col>
             </Row>
-            <ImportedVocabulariesList
+            <VocabulariesReferenceList
               vocabularies={vocabulary.importedVocabularies}
+              labelKey="vocabulary.detail.imports"
+              htmlId="vocabulary-imported-vocabularies"
             />
+            <VocabulariesReferenceList
+              vocabularies={vocabulary.relatedVocabularies}
+              labelKey="vocabulary.detail.related"
+              htmlId="vocabulary-related-vocabularies"
+            />
+            <Row>
+              <Col xl={2} md={4}>
+                <Label className="attribute-label mb-3">
+                  {i18n("vocabulary.preferredNamespaceUri")}
+                </Label>
+              </Col>
+              <Col xl={10} md={8}>
+                {vocabulary.preferredNamespaceUri}
+              </Col>
+            </Row>
+            <Row>
+              <Col xl={2} md={4}>
+                <Label className="attribute-label mb-3">
+                  {i18n("vocabulary.preferredNamespacePrefix")}
+                </Label>
+              </Col>
+              <Col xl={10} md={8}>
+                {vocabulary.preferredNamespacePrefix}
+              </Col>
+            </Row>
             <CustomAttributesValues asset={vocabulary} />
           </CardBody>
         </Card>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { injectIntl } from "react-intl";
 import { Badge } from "reactstrap";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import "intelligent-tree-select/lib/styles.css";
+import "intelligent-tree-select/styles.css";
 import Term, { TermData } from "../../../model/Term";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import withI18n, { HasI18n } from "../../hoc/withI18n";
@@ -17,7 +17,7 @@ import {
 } from "../../../util/Types";
 import Routing from "../../../util/Routing";
 import classNames from "classnames";
-import IncludeImportedTermsToggle from "../../term/IncludeImportedTermsToggle";
+import TermListToggle from "../../term/TermListToggle";
 import { createTermsWithImportsOptionRenderer } from "../../misc/treeselect/Renderers";
 import {
   commonTermTreeSelectProps,
@@ -163,11 +163,15 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     return this.props.vocabulary &&
       this.props.vocabulary.importedVocabularies ? (
       <div className={classNames({ "mb-3": !this.props.isDetailView })}>
-        <IncludeImportedTermsToggle
+        <TermListToggle
           id="glossary-include-imported"
+          value={this.state.includeImported}
           onToggle={this.onIncludeImportedToggle}
-          includeImported={this.state.includeImported}
           disabled={this.state.disableIncludeImportedToggle}
+          labelOnKey="glossary.includeImported"
+          labelOffKey="glossary.excludeImported"
+          tooltipOnKey="glossary.includeImported.help"
+          tooltipOffKey="glossary.excludeImported.help"
         />
       </div>
     ) : null;

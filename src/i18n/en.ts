@@ -292,6 +292,10 @@ const en = {
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
     "vocabulary.primaryLanguage": "Primary vocabulary language",
+    "vocabulary.preferredNamespaceUri": "Preferred namespace URI",
+    "vocabulary.preferredNamespaceUri.editReadonly":
+      "Preferred namespace URI cannot be changed because it would break term identifier resolution",
+    "vocabulary.preferredNamespacePrefix": "Preferred namespace prefix",
     "vocabulary.create.title": "Create Vocabulary",
     "vocabulary.create.submit": "Create",
     "vocabulary.create.files": "Files",
@@ -380,6 +384,9 @@ const en = {
       "Select vocabularies you want to open for modeling. Vocabularies related to the one being open are pre-selected as they are required by the modeling tool.",
     "vocabulary.updated.message": "Vocabulary successfully updated.",
     "vocabulary.created.message": "Vocabulary successfully created.",
+    "vocabulary.sync.started.message":
+      "Vocabulary sync started in the background.",
+    "vocabulary.sync.finished.message": "Vocabulary sync finished.",
     "vocabulary.detail.subtitle": "Created by {author} on ",
     "vocabulary.detail.tabs.metadata": "Metadata",
     "vocabulary.detail.tabs.termdetail": "Term Detail",
@@ -387,7 +394,12 @@ const en = {
     "vocabulary.detail.files.file": "Filename",
     "vocabulary.detail.imports": "Imports",
     "vocabulary.detail.imports.edit": "Imports vocabularies",
+    "vocabulary.detail.imports.help":
+      "Imported vocabularies are used to create a hierarchy among terms. In particular, terms from imported vocabularies can be used as parent terms for terms in this dictionary.",
     "vocabulary.detail.document": "Document",
+    "vocabulary.detail.related": "Related vocabularies",
+    "vocabulary.detail.related.help":
+      "Related vocabularies are used to pre-filter the selection of related terms and synonyms to include only those from related vocabularies. This pre-filtering can be turned off.",
     "vocabulary.text-analysis.invoke.message":
       "Text analysis of terms' definitions in this vocabulary invoked.",
     "vocabulary.all.text-analysis.invoke.message":
@@ -568,6 +580,7 @@ const en = {
       "a term with label 'potato' can have search string 'spud'. ",
     "term.metadata.status": "State",
     "term.updated.message": "Term successfully updated.",
+    "term.updated.error.message": "Failed to update term.",
     "term.metadata.labelExists.message":
       'Term with label "{label}" already exists in this vocabulary',
     "term.metadata.multipleSources.message":
@@ -639,6 +652,11 @@ const en = {
     "glossary.importedIncluded": "with imported",
     "glossary.importedExcluded": "without imported",
     "glossary.importedTerm.tooltip": "Imported from vocabulary",
+    "glossary.showAll": "Show all",
+    "glossary.limitToRelated": "Limit to related",
+    "glossary.limitToRelated.help":
+      "Show only terms that are from related vocabularies",
+    "glossary.showAll.help": "Show all terms",
     "glossary.showTerminal": "Include terminal",
     "glossary.showNonTerminal": "Only active",
     "glossary.showTerminal.help":
@@ -674,6 +692,7 @@ const en = {
       "Open the dedicated sheet view for bulk updates and metadata overview.",
     "glossary.table.workspace.back": "Back to vocabulary",
     "glossary.table.workspace.back.help": "Return to vocabulary detail view.",
+    "glossary.table.fontSize": "Font size",
     "glossary.unusedTerm.tooltip": "Term not occurring in a document",
     "glossary.createTerm": "Create new term",
     "glossary.createTerm.tooltip": "Create new vocabulary's term",

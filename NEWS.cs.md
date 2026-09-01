@@ -1,3 +1,16 @@
+#### Verze 5.0.0
+
+- Lepší propojení datového modelu se SKOS - struktura `Vocabulary = Glossary + Model` nahrazena pouze `Vocabulary` (~ SKOS ConceptScheme)
+- Překlad základních ontologií - Ontologie pro popis dat, TermIt ontologie - z angličtiny do češtiny (včetně identifikátorů, např. `http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu` => `http://onto.fel.cvut.cz/ontologies/application/termit/administrator`)
+- Odstraněna podpora pro pracovní prostory
+- Přidána podpora pro správu namespace URI a prefixu slovníku
+- Přidána podpora pro změnu uživatelského jména
+- Export do Excel nyní zahrnuje externí rodiče pojmu
+- Přidána možnost určit související slovníky - tyto jsou použity k předfiltrování termínů pro selektory jako relatedMatch, exactMatch (lze vypnout)
+- Opravy v fulltextovém vyhledávání, vylepšení výkonu
+- Vylepšení tabulkového rozhraní slovníku
+- Aktualizace závislostí
+
 #### Verze 4.5.2
 
 - Aktualizace závislostí z důvodu bezpečnosti.

@@ -15,4 +15,13 @@ let loadIdentifier = <T extends { name: string; assetType: string }>(
 // This will cause the existing still running identifier requests to be ignored in favor of the most recent call
 loadIdentifier = last(loadIdentifier);
 
-export { loadIdentifier };
+let generateNamespace = (vocabularyIri: string): Promise<string> => {
+  return Ajax.post(
+    `${Constants.API_PREFIX}/identifiers/namespace`,
+    params({ vocabularyIri })
+  ).then((resp) => resp.data);
+};
+
+generateNamespace = last(generateNamespace);
+
+export { loadIdentifier, generateNamespace };

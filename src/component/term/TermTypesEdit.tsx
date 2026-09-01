@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
-import "intelligent-tree-select/lib/styles.css";
+import "intelligent-tree-select/styles.css";
 import Term, { TermData } from "../../model/Term";
 import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
