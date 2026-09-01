@@ -15,6 +15,22 @@ export const AnnotationType = {
   DEFINITION: VocabularyUtils.DEFINITION,
 };
 
+export const LegacyAnnotationType = {
+  OCCURRENCE:
+    "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/výskyt-termu",
+};
+
+export function isTermOccurrence(typeOf?: string) {
+  return (
+    AnnotationType.OCCURRENCE === typeOf ||
+    LegacyAnnotationType.OCCURRENCE === typeOf
+  );
+}
+
+export function isTermDefinition(typeOf?: string) {
+  return AnnotationType.DEFINITION === typeOf;
+}
+
 function toHtmlString(nodeList: NodeList): string {
   let result = "";
   for (let i = 0; i < nodeList.length; i++) {
@@ -44,9 +60,7 @@ const AnnotationDomHelper = {
       (node as DomHandlerElement).attribs.typeof,
       prefixMap
     );
-    return (
-      type === AnnotationType.OCCURRENCE || type === AnnotationType.DEFINITION
-    );
+    return isTermOccurrence(type) || type === AnnotationType.DEFINITION;
   },
 
   findAnnotation(
@@ -71,7 +85,7 @@ const AnnotationDomHelper = {
     // assuming annotation.type === "tag"
     const elem = annotation as DomHandlerElement;
     if (Utils.sanitizeArray(elem.children).length === 1) {
-      let newNode;
+      let newNode: DomHandlerNode;
       const child = elem.children![0];
       if (child.type === "text") {
         newNode = this.createTextualNode(elem);

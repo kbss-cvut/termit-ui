@@ -125,26 +125,24 @@ describe("AssetFactory", () => {
 
   describe("createTermAssignment", () => {
     const data = {
-      iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/prirazeni-termu/instance1741423723",
+      iri: "http://onto.fel.cvut.cz/ontologies/data-description/term-assignment/instance1741423723",
       types: [
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/přiřazení-termu",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/term-occurrence",
       ],
       term: {
         iri: "http://onto.fel.cvut.cz/ontologies/slovnik/sb-z-2006-183/pojem/nezastavene-uzemi",
-        types: [
-          "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/term",
-        ],
+        types: ["http://www.w3.org/2004/02/skos/core#Concept"],
         label: "Nezastavene uzemi",
       },
       target: {
-        iri: "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/cil/instance-873441519",
+        iri: "http://onto.fel.cvut.cz/ontologies/application/termit/occurrence-target/instance-873441519",
         types: [
-          "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/cíl",
+          "http://onto.fel.cvut.cz/ontologies/application/termit/occurrence-target",
         ],
         source: {
           iri: "http://onto.fel.cvut.cz/ontologies/zdroj/ml-test",
           types: [
-            "http://onto.fel.cvut.cz/ontologies/slovník/agendový/popis-dat/pojem/zdroj",
+            "http://onto.fel.cvut.cz/ontologies/data-description/resource",
           ],
           label: "ML test",
           author: {
@@ -185,7 +183,7 @@ describe("AssetFactory", () => {
   });
 
   describe("createChangeRecord", () => {
-    const changeClass = `${VocabularyUtils.PREFIX}zm\u011bna`;
+    const changeClass = `${VocabularyUtils.PREFIX}change`;
 
     it("creates a persist record for persist event data", () => {
       const persistRecord: ChangeRecordData = {

@@ -8,7 +8,7 @@ on:
   push:
     branches: [master, development]
   pull_request:
-    branches: [master, development]
+    branches: [master, development, 5.0.0]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,6 +25,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "24.x"
+          cache: "npm"
       - name: Install
         run: npm ci --ignore-scripts
       - name: Prettier Check
@@ -37,7 +38,3 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: npm run-script test-ci
-      - name: Build
-        env:
-          NODE_OPTIONS: "--max-old-space-size=4096"
-        run: npm run-script build

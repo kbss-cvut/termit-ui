@@ -1,6 +1,7 @@
 import TermAssignment, { CONTEXT } from "../TermAssignment";
 import Generator from "../../__tests__/environment/Generator";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import Term from "../Term";
 
 describe("TermAssignment", () => {
   describe("toJsonLd", () => {
@@ -27,11 +28,9 @@ describe("TermAssignment", () => {
         },
         types: [VocabularyUtils.TERM_ASSIGNMENT],
       });
-      vi.spyOn(sut.term, "toTermData");
 
       const result = sut.toJsonLd();
-      expect(result.term).toEqual(sut.term.toTermData());
-      expect(sut.term.toTermData).toHaveBeenCalled();
+      expect(result.term).toEqual((sut.term as Term).toTermData());
     });
   });
 });

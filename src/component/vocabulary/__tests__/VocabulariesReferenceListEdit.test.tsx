@@ -2,7 +2,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { shallow } from "enzyme";
-import ImportedVocabulariesListEdit from "../ImportedVocabulariesListEdit";
+import VocabulariesReferenceListEdit from "../VocabulariesReferenceListEdit";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { langString } from "../../../model/MultilingualString";
@@ -11,6 +11,10 @@ import { ThunkDispatch } from "src/util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
 import { loadVocabularies } from "../../../action/AsyncActions";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
+
+vi.mock("../../misc/HelpIcon", () => ({
+  default: () => <span>Help</span>,
+}));
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -21,7 +25,7 @@ vi.mock("react-redux", async (importOriginal) => {
   };
 });
 
-describe("ImportedVocabulariesListEdit", () => {
+describe("VocabulariesReferenceListEdit", () => {
   let vocabularies: { [key: string]: Vocabulary };
   let vocabulary: Vocabulary;
 
@@ -58,9 +62,12 @@ describe("ImportedVocabulariesListEdit", () => {
   it("loads vocabularies after mount when they are not loaded yet", () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue({});
     mountWithIntl(
-      <ImportedVocabulariesListEdit
+      <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
+        fieldKey="importedVocabularies"
+        labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     expect(loadVocabularies).toHaveBeenCalled();
@@ -68,9 +75,12 @@ describe("ImportedVocabulariesListEdit", () => {
 
   it("renders select without any value when no imported vocabularies are specified", () => {
     const wrapper = shallow(
-      <ImportedVocabulariesListEdit
+      <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
+        fieldKey="importedVocabularies"
+        labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([]);
@@ -82,9 +92,12 @@ describe("ImportedVocabulariesListEdit", () => {
       (v) => vocabularies[v]
     );
     const wrapper = shallow(
-      <ImportedVocabulariesListEdit
+      <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
+        fieldKey="importedVocabularies"
+        labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
@@ -98,10 +111,13 @@ describe("ImportedVocabulariesListEdit", () => {
   it("calls onChange with empty array when vocabulary selector is reset", () => {
     const selected = Object.keys(vocabularies).map((k) => ({ iri: k }));
     const wrapper = shallow(
-      <ImportedVocabulariesListEdit
+      <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
-        importedVocabularies={selected}
+        selectedVocabularies={selected}
         onChange={onChange}
+        fieldKey="importedVocabularies"
+        labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)([]);
@@ -110,9 +126,12 @@ describe("ImportedVocabulariesListEdit", () => {
 
   it("does not offer the vocabulary itself for importing", () => {
     const wrapper = shallow(
-      <ImportedVocabulariesListEdit
+      <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
+        fieldKey="importedVocabularies"
+        labelKey="vocabulary.importedVocabularies"
+        helpKey="vocabulary.importedVocabularies.help"
       />
     );
     const options: Vocabulary[] = wrapper

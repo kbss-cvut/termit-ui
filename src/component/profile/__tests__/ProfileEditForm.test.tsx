@@ -12,6 +12,7 @@ import { shallow } from "enzyme";
 describe("ProfileEditForm", () => {
   let firstName: string;
   let lastName: string;
+  let username: string;
   let onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   let onSubmit: () => void;
   let onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -21,6 +22,7 @@ describe("ProfileEditForm", () => {
   beforeEach(() => {
     firstName = "FirstName";
     lastName = "LastName";
+    username = "username";
     onChange = vi.fn();
     onSubmit = vi.fn();
     onKeyPress = vi.fn();
@@ -37,6 +39,7 @@ describe("ProfileEditForm", () => {
       <ProfileEditForm
         firstName={firstName}
         lastName={lastName}
+        username={username}
         onChange={onChange}
         onSubmit={onSubmit}
         onKeyPress={onKeyPress}
@@ -67,6 +70,7 @@ describe("ProfileEditForm", () => {
       <ProfileEditForm
         firstName={firstName}
         lastName={lastName}
+        username={username}
         onChange={onChange}
         onSubmit={onSubmit}
         onKeyPress={onKeyPress}
@@ -87,6 +91,7 @@ describe("ProfileEditForm", () => {
       <ProfileEditForm
         firstName={firstName}
         lastName={lastName}
+        username={username}
         onChange={onChange}
         onSubmit={onSubmit}
         onKeyPress={onKeyPress}
@@ -108,6 +113,7 @@ describe("ProfileEditForm", () => {
       <ProfileEditForm
         firstName={firstName}
         lastName={lastName}
+        username={username}
         onChange={onChange}
         onSubmit={onSubmit}
         onKeyPress={onKeyPress}
@@ -129,6 +135,7 @@ describe("ProfileEditForm", () => {
       <ProfileEditForm
         firstName={firstName}
         lastName={lastName}
+        username={username}
         onChange={onChange}
         onSubmit={onSubmit}
         onKeyPress={onKeyPress}

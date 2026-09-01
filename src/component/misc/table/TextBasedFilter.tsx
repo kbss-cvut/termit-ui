@@ -8,6 +8,7 @@ import { FilterFn, Row, RowData } from "@tanstack/react-table";
 interface TextBasedFilterProps {
   value: string;
   onChange: (value: string | undefined) => void;
+  count: number;
 }
 
 export const textContainsFilter: FilterFn<any> = (
@@ -59,6 +60,7 @@ export function multilingualTextContainsFilterFactory<
 const TextBasedFilter: React.FC<TextBasedFilterProps> = ({
   value,
   onChange,
+  count,
 }) => {
   const { formatMessage } = useI18n();
   return (
@@ -67,7 +69,7 @@ const TextBasedFilter: React.FC<TextBasedFilterProps> = ({
       className="mt-1"
       value={value}
       onChange={(e) => onChange(e.target.value || undefined)}
-      placeholder={formatMessage("table.filter.text.placeholder", { count: 0 })}
+      placeholder={formatMessage("table.filter.text.placeholder", { count })}
     />
   );
 };

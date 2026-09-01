@@ -15,7 +15,7 @@ import Files from "../resource/document/Files";
 import AddFile from "../resource/document/AddFile";
 import RemoveFile from "../resource/document/RemoveFile";
 import { useI18n } from "../hook/useI18n";
-import { loadIdentifier } from "../asset/CreateAssetUtils";
+import { generateNamespace, loadIdentifier } from "../asset/CreateAssetUtils";
 import { isVocabularyValid } from "./VocabularyValidationUtils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Document from "../../model/Document";
@@ -73,6 +73,10 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
   const [documentLabel, setDocumentLabel] = useState("");
   const [shouldGenerateIri, setShouldGenerateIri] = useState(true);
   const [primaryLanguage, setPrimaryLanguage] = useState<string>(language);
+  const [preferredNamespaceUri, setPreferredNamespaceUri] =
+    useState<string>("");
+  const [preferredNamespacePrefix, setPreferredNamespacePrefix] =
+    useState<string>("");
 
   const isInvalid = useMemo(() => {
     return !isVocabularyValid({
@@ -89,12 +93,20 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
     }
     setIri(e.currentTarget.value);
     setShouldGenerateIri(false);
+    generateNamespace(e.currentTarget.value).then((namespaceUri) =>
+      setPreferredNamespaceUri(namespaceUri)
+    );
   };
   const onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newLabel = Object.assign({}, label);
     newLabel[language] = e.currentTarget.value;
     setLabel(newLabel);
-    generateIri(e.currentTarget.value, shouldGenerateIri, setIri);
+    generateIri(e.currentTarget.value, shouldGenerateIri, (iri) => {
+      setIri(iri);
+      generateNamespace(iri).then((namespaceUri) =>
+        setPreferredNamespaceUri(namespaceUri)
+      );
+    });
   };
   const onCommentChange = (value: string) => {
     const newComment = Object.assign({}, comment);
@@ -135,8 +147,12 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
       label,
       comment,
       primaryLanguage,
+      preferredNamespaceUri,
+      preferredNamespacePrefix:
+        preferredNamespacePrefix.trim().length > 0
+          ? preferredNamespacePrefix
+          : undefined,
     });
-    vocabulary.addType(VocabularyUtils.DOCUMENT_VOCABULARY);
     const document = new Document({
       label:
         documentLabel.trim() === ""
@@ -268,6 +284,28 @@ const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({
                       value={iri}
                       onChange={onIriChange}
                       help={i18n("asset.create.iri.help")}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <CustomInput
+                      name="create-vocabulary-namespace-uri"
+                      label={i18n("vocabulary.preferredNamespaceUri")}
+                      value={preferredNamespaceUri}
+                      onChange={(e) => setPreferredNamespaceUri(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <CustomInput
+                      name="create-vocabulary-namespace-prefix"
+                      label={i18n("vocabulary.preferredNamespacePrefix")}
+                      value={preferredNamespacePrefix}
+                      onChange={(e) =>
+                        setPreferredNamespacePrefix(e.target.value)
+                      }
                     />
                   </Col>
                 </Row>

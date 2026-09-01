@@ -12,6 +12,7 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import { FaTimes } from "react-icons/fa";
+import { MdFormatSize } from "react-icons/md";
 import { useDebouncedCallback } from "use-debounce";
 import { useSelector, useDispatch } from "react-redux";
 import Term, { TermInfo } from "../../../../model/Term";
@@ -69,6 +70,8 @@ const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
   notation: false,
   scopeNote: false,
   example: false,
+  altLabels: false,
+  hiddenLabels: false,
   status: false,
   definition: true,
 };
@@ -76,6 +79,9 @@ const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
 const LOAD_MORE_THRESHOLD = 12;
 const VIRTUALIZED_ROW_ESTIMATE_SIZE = 46;
 const VIRTUALIZED_OVERSCAN_ROWS = 10;
+
+const FONT_SIZE_OPTIONS = [70, 80, 90, 100] as const;
+type TableFontSize = (typeof FONT_SIZE_OPTIONS)[number];
 
 export const VocabularySheetViewTable: React.FC<
   VocabularySheetViewTableProps
@@ -103,6 +109,17 @@ export const VocabularySheetViewTable: React.FC<
   const [editingColumnId, setEditingColumnId] = React.useState<
     TermsTableColumn["id"] | null
   >(null);
+
+  const [fontSize, setFontSize] = React.useState<TableFontSize>(() => {
+    const stored = BrowserStorage.get("TERMS_TABLE_FONT_SIZE");
+    const parsed = stored ? parseInt(stored, 10) : 100;
+
+    if (FONT_SIZE_OPTIONS.some((option) => option === parsed)) {
+      return parsed as TableFontSize;
+    }
+
+    return 100;
+  });
 
   const [columnVisibility, setColumnVisibility] = React.useState<
     Record<TermsTableColumn["id"], boolean>
@@ -175,22 +192,23 @@ export const VocabularySheetViewTable: React.FC<
       const baseTermData = loadedTerms.find((t) => t.iri === editingTermUri);
       if (!baseTermData) return;
 
-      try {
-        const termToUpdate = new Term({
-          ...baseTermData,
-          ...updatedProperties,
-        } as any);
+      const termToUpdate = new Term({
+        ...baseTermData,
+        ...updatedProperties,
+      } as any);
 
-        await updateTermMutation.mutateAsync({
+      updateTermMutation.mutate(
+        {
           apiPrefix,
           term: termToUpdate,
-        });
-
-        setEditingTermUri(null);
-        setEditingColumnId(null);
-      } catch (e) {
-        console.error("Failed to update term", e);
-      }
+        },
+        {
+          onSuccess: () => {
+            setEditingTermUri(null);
+            setEditingColumnId(null);
+          },
+        }
+      );
     },
     [editingTermUri, loadedTerms, updateTermMutation, apiPrefix]
   );
@@ -243,6 +261,15 @@ export const VocabularySheetViewTable: React.FC<
     },
     []
   );
+
+  const updateFontSize = (size: TableFontSize) => {
+    setFontSize(size);
+    if (size === 100) {
+      BrowserStorage.set("TERMS_TABLE_FONT_SIZE", "");
+    } else {
+      BrowserStorage.set("TERMS_TABLE_FONT_SIZE", size.toString());
+    }
+  };
 
   const renderExpandableTermListCell = React.useCallback(
     (
@@ -535,6 +562,70 @@ export const VocabularySheetViewTable: React.FC<
         },
       },
       {
+        id: "altLabels",
+        title: i18n("term.metadata.altLabels.label"),
+        minWidthRem: 14,
+        growFr: 2,
+        hideable: true,
+        render: (term, rowIndex) => {
+          const text = previewValues(
+            getLocalizedPluralInLanguage(term.altLabels, displayLanguage)
+          );
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "altLabels")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "altLabels")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "altLabels");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
+          );
+        },
+      },
+      {
+        id: "hiddenLabels",
+        title: i18n("term.metadata.hiddenLabels.label"),
+        minWidthRem: 14,
+        growFr: 2,
+        hideable: true,
+        render: (term, rowIndex) => {
+          const text = previewValues(
+            getLocalizedPluralInLanguage(term.hiddenLabels, displayLanguage)
+          );
+          return (
+            <HoverEditWrapper
+              onEdit={() => handleEditClick(term.iri, "hiddenLabels")}
+            >
+              {text && (
+                <ExpandableTextCell
+                  text={text}
+                  isExpanded={
+                    expandedCellKey === getCellKey(rowIndex, "hiddenLabels")
+                  }
+                  onToggle={() => {
+                    const cellKey = getCellKey(rowIndex, "hiddenLabels");
+                    setExpandedCellKey((prev) =>
+                      prev === cellKey ? null : cellKey
+                    );
+                  }}
+                />
+              )}
+            </HoverEditWrapper>
+          );
+        },
+      },
+      {
         id: "status",
         title: i18n("glossary.table.column.status"),
         minWidthRem: 10,
@@ -690,6 +781,7 @@ export const VocabularySheetViewTable: React.FC<
             </InputGroupAddon>
           )}
         </InputGroup>
+
         <UncontrolledDropdown className="vocabulary-sheet-view-column-dropdown">
           <DropdownToggle size="sm" color="secondary" caret={true}>
             {i18n("glossary.table.columns.button")}
@@ -721,6 +813,28 @@ export const VocabularySheetViewTable: React.FC<
             ))}
           </DropdownMenu>
         </UncontrolledDropdown>
+
+        <UncontrolledDropdown className="ml-auto">
+          <DropdownToggle
+            size="sm"
+            color="secondary"
+            caret={true}
+            title={i18n("glossary.table.fontSize")}
+          >
+            <MdFormatSize size={16} />
+          </DropdownToggle>
+          <DropdownMenu right={true}>
+            {FONT_SIZE_OPTIONS.map((size) => (
+              <DropdownItem
+                key={size.toString()}
+                active={fontSize === size}
+                onClick={() => updateFontSize(size)}
+              >
+                {`${size}%`}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </UncontrolledDropdown>
       </div>
 
       <div className="vocabulary-sheet-view-summary">
@@ -740,7 +854,10 @@ export const VocabularySheetViewTable: React.FC<
       <div
         className="vocabulary-sheet-view-grid-scroll"
         ref={scrollRef}
-        style={{ maxHeight: Utils.calculateAssetListHeight() }}
+        style={{
+          maxHeight: Utils.calculateAssetListHeight(),
+          fontSize: fontSize === 100 ? undefined : `${fontSize}%`,
+        }}
       >
         <div
           className="vocabulary-sheet-view-grid-header"

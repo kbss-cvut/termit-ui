@@ -329,14 +329,18 @@ describe("Reducers", () => {
         label: langString("Test vocabulary"),
         iri: Generator.generateUri(),
       };
+      const loadedVocab = new Vocabulary(vocabularyData);
       expect(
         reducers(
           stateToPlainObject(initialState),
-          asyncActionSuccessWithPayload(action, new Vocabulary(vocabularyData))
+          asyncActionSuccessWithPayload(action, loadedVocab)
         )
       ).toEqual(
         Object.assign({}, initialState, {
-          vocabulary: new Vocabulary(vocabularyData),
+          vocabulary: loadedVocab,
+          vocabularies: {
+            [loadedVocab.iri]: loadedVocab,
+          },
         })
       );
     });
@@ -1000,7 +1004,7 @@ describe("Reducers", () => {
       );
       expect(Object.keys(result.states)).toEqual(payload.map((r) => r.iri));
       expect(result.terminalStates).toEqual([
-        "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/zrušený-pojem",
+        "http://onto.fel.cvut.cz/ontologies/application/termit/cancelled-term",
       ]);
     });
   });

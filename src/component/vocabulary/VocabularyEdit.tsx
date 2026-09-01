@@ -14,7 +14,6 @@ import {
 import CustomInput from "../misc/CustomInput";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import ImportedVocabulariesListEdit from "./ImportedVocabulariesListEdit";
 import { AssetData } from "../../model/Asset";
 import MarkdownEditor from "../misc/MarkdownEditor";
 import Constants from "../../util/Constants";
@@ -34,6 +33,7 @@ import { connect } from "react-redux";
 import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 import { isVocabularyValid } from "./VocabularyValidationUtils";
 import { PropertyValueType } from "../../model/WithUnmappedProperties";
+import VocabulariesReferenceListEdit from "./VocabulariesReferenceListEdit";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -49,6 +49,7 @@ interface VocabularyEditState {
   label: MultilingualString;
   comment: MultilingualString;
   importedVocabularies?: AssetData[];
+  relatedVocabularies?: AssetData[];
   unmappedProperties: Map<string, PropertyValueType[]>;
   documentLabel: string;
   /**
@@ -56,6 +57,7 @@ interface VocabularyEditState {
    * @see import("../../util/IntlUtil").getLanguageOptions()
    */
   primaryLanguage: string;
+  preferredNamespacePrefix: string;
 }
 
 export class VocabularyEdit extends React.Component<
@@ -72,7 +74,9 @@ export class VocabularyEdit extends React.Component<
           : langString("", props.language),
       documentLabel: this.props.vocabulary.document?.label!,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
+      relatedVocabularies: this.props.vocabulary.relatedVocabularies,
       primaryLanguage: props.vocabulary.primaryLanguage || this.props.language,
+      preferredNamespacePrefix: props.vocabulary.preferredNamespacePrefix || "",
       unmappedProperties: this.props.vocabulary.unmappedProperties,
     };
   }
@@ -159,7 +163,9 @@ export class VocabularyEdit extends React.Component<
         label: this.state.label,
         comment: this.state.comment,
         importedVocabularies: this.state.importedVocabularies,
+        relatedVocabularies: this.state.relatedVocabularies,
         primaryLanguage: this.state.primaryLanguage,
+        preferredNamespacePrefix: this.state.preferredNamespacePrefix,
       })
     );
     newVocabulary.unmappedProperties = this.state.unmappedProperties;
@@ -247,11 +253,48 @@ export class VocabularyEdit extends React.Component<
                   </Select>
                 </Col>
               </Row>
-              <ImportedVocabulariesListEdit
+              <VocabulariesReferenceListEdit
                 vocabulary={this.props.vocabulary}
-                importedVocabularies={this.state.importedVocabularies}
+                selectedVocabularies={this.state.importedVocabularies}
+                fieldKey="importedVocabularies"
+                labelKey="vocabulary.detail.imports.edit"
+                helpKey="vocabulary.detail.imports.help"
                 onChange={this.onChange}
               />
+              <VocabulariesReferenceListEdit
+                vocabulary={this.props.vocabulary}
+                selectedVocabularies={this.state.relatedVocabularies}
+                fieldKey="relatedVocabularies"
+                labelKey="vocabulary.detail.related"
+                helpKey="vocabulary.detail.related.help"
+                onChange={this.onChange}
+              />
+              <Row>
+                <Col xs={12}>
+                  <CustomInput
+                    name="edit-vocabulary-namespace-uri"
+                    label={i18n("vocabulary.preferredNamespaceUri")}
+                    value={this.props.vocabulary.preferredNamespaceUri}
+                    readOnly={true}
+                    disabled={true}
+                    hint={i18n("vocabulary.preferredNamespaceUri.editReadonly")}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <CustomInput
+                    name="edit-vocabulary-namespace-prefix"
+                    label={i18n("vocabulary.preferredNamespacePrefix")}
+                    value={this.state.preferredNamespacePrefix}
+                    onChange={(e) =>
+                      this.onChange({
+                        preferredNamespacePrefix: e.target.value,
+                      })
+                    }
+                  />
+                </Col>
+              </Row>
               <Row>
                 <Col xs={12}>
                   <UnmappedPropertiesEdit

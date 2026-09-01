@@ -5,14 +5,14 @@ import { context } from "../MultilingualString";
 
 const ctx = {
   timestamp: {
-    "@id": `${VocabularyUtils.PREFIX}m\u00e1-datum-a-\u010das-modifikace`,
+    "@id": VocabularyUtils.DC_MODIFIED,
     "@type": VocabularyUtils.XSD_DATETIME,
   },
-  author: `${VocabularyUtils.PREFIX}m\u00e1-editora`,
-  changedEntity: `${VocabularyUtils.PREFIX}m\u00e1-zm\u011bn\u011bnou-entitu`,
-  changedAttribute: `${VocabularyUtils.PREFIX}m\u00e1-zm\u011bn\u011bn\u00fd-atribut`,
-  originalValue: `${VocabularyUtils.PREFIX}m\u00e1-p\u016fvodn\u00ed-hodnotu`,
-  newValue: `${VocabularyUtils.PREFIX}m\u00e1-novou-hodnotu`,
+  author: VocabularyUtils.PREFIX + "has-editor",
+  changedEntity: VocabularyUtils.PREFIX + "has-changed-entity",
+  changedAttribute: VocabularyUtils.PREFIX + "has-changed-attribute",
+  originalValue: VocabularyUtils.PREFIX + "has-original-value",
+  newValue: VocabularyUtils.PREFIX + "has-new-value",
   label: context(VocabularyUtils.RDFS_LABEL),
 };
 

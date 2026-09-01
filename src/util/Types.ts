@@ -46,6 +46,7 @@ export type TreeSelectFetchOptionsParams<T extends object> = FetchParams<T>;
 export interface TermFetchParams<T extends object>
   extends TreeSelectFetchOptionsParams<T> {
   includeImported?: boolean;
+  includeRelated?: boolean;
   includeTerms?: string[];
   flatList?: boolean;
 }

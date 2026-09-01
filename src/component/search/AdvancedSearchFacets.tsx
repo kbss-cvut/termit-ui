@@ -25,7 +25,7 @@ export const FACET_KEYS = [
 export type FacetKey = (typeof FACET_KEYS)[number];
 export type VisibleFacets = Record<FacetKey, boolean>;
 export const FACET_PARAM_MAP: Record<FacetKey, string> = {
-  vocabulary: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+  vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
   type: VocabularyUtils.RDF_TYPE,
   state: VocabularyUtils.HAS_TERM_STATE,
   notation: VocabularyUtils.SKOS_NOTATION,
@@ -115,10 +115,10 @@ const AdvancedSearchFacets: React.FC<AdvancedSearchFacetsProps> = ({
               <Col xl={4} md={6} xs={12} className="mb-3">
                 <VocabularyFacet
                   value={
-                    facetParams[VocabularyUtils.IS_TERM_FROM_VOCABULARY] ||
+                    facetParams[VocabularyUtils.SKOS_IN_SCHEME] ||
                     createSearchParam(
                       new RdfProperty({
-                        iri: VocabularyUtils.IS_TERM_FROM_VOCABULARY,
+                        iri: VocabularyUtils.SKOS_IN_SCHEME,
                         range: { iri: VocabularyUtils.VOCABULARY },
                       })
                     )

@@ -137,10 +137,7 @@ describe("Create vocabulary view", () => {
     const wrapper = mountWithIntl(<CreateVocabulary />);
     const label = "Test vocabulary";
     const comment = "Test vocabulary comment";
-    const types = [
-      VocabularyUtils.VOCABULARY,
-      VocabularyUtils.DOCUMENT_VOCABULARY,
-    ];
+    const types = [VocabularyUtils.VOCABULARY];
     await act(async () => {
       wrapper.find(MarkdownEditor).props().onChange!(comment);
       const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
@@ -169,6 +166,7 @@ describe("Create vocabulary view", () => {
         document,
         types,
         primaryLanguage: Constants.DEFAULT_LANGUAGE,
+        preferredNamespaceUri: iri,
       })
     );
   });
@@ -205,7 +203,10 @@ describe("Create vocabulary view", () => {
           "Metropolitan Plan";
         nameInput.simulate("change", nameInput);
       });
-      expect(Ajax.post).not.toHaveBeenCalled();
+      expect(Ajax.post).not.toHaveBeenCalledWith(
+        Constants.API_PREFIX + "/identifiers",
+        expect.anything()
+      );
     });
 
     it("displays IRI generated and returned by the server", async () => {

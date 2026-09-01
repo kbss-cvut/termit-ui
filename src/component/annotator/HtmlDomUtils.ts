@@ -1,7 +1,7 @@
 import { Node as DomHandlerNode } from "domhandler";
 import Utils from "../../util/Utils";
 import { TextQuoteSelector } from "../../model/TermOccurrence";
-import { AnnotationType } from "./AnnotationDomHelper";
+import { AnnotationType, LegacyAnnotationType } from "./AnnotationDomHelper";
 import { fromNode, toNode } from "simple-xpath-position";
 import * as React from "react";
 import TextSelection from "./TextSelection";
@@ -305,7 +305,9 @@ const HtmlDomUtils = {
   ): Element {
     const occurrences = document
       .getElementById("annotator")!
-      .querySelectorAll(`[typeof="${AnnotationType.OCCURRENCE}"]`);
+      .querySelectorAll(
+        `[typeof="${AnnotationType.OCCURRENCE}"], [typeof="${LegacyAnnotationType.OCCURRENCE}"]`
+      );
     const matching: Element[] = [];
     const looseCandidates: Element[] = [];
     occurrences.forEach((o) => {

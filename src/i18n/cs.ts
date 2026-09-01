@@ -302,6 +302,10 @@ const cs = {
       "Začněte psát pro filtrování slovníků dle názvu",
     "vocabulary.title": "Název",
     "vocabulary.primaryLanguage": "Hlavní jazyk slovníku",
+    "vocabulary.preferredNamespaceUri": "URI jmenného prostoru",
+    "vocabulary.preferredNamespaceUri.editReadonly":
+      "URI jmenného prostoru nelze změnit, protože by zneplatila odvozování identifikátorů pojmů",
+    "vocabulary.preferredNamespacePrefix": "Prefix jmenného prostoru",
     "vocabulary.create.title": "Nový slovník",
     "vocabulary.create.submit": "Vytvořit",
     "vocabulary.create.files": "Soubory",
@@ -389,13 +393,22 @@ const cs = {
       "Vyberte slovníky, které chcete pro modelování otevřít. Předvybrány jsou slovníky, které s otevíraným slovníkem souvisí a musí být v seznamy zahrnuty.",
     "vocabulary.updated.message": "Slovník úspěšně uložen.",
     "vocabulary.created.message": "Slovník úspěšně vytvořen.",
+    "vocabulary.sync.started.message":
+      "Synchronizace slovníku byla spuštěna na pozadí.",
+    "vocabulary.sync.finished.message":
+      "Synchronizace slovníku byla dokončena.",
     "vocabulary.detail.subtitle": "Vytvořen autorem {author} ",
     "vocabulary.detail.tabs.metadata": "Metadata",
     "vocabulary.detail.tabs.termdetail": "Detail pojmu",
     "vocabulary.detail.files": "Soubory",
     "vocabulary.detail.imports": "Importuje",
     "vocabulary.detail.imports.edit": "Importuje slovníky",
+    "vocabulary.detail.imports.help":
+      "Importované slovníky slouží k tvorbě hierarchie mezi pojmy. Konkrétné, pojmy z importovaných slovníků mohou být použity jako nadřazené pojmy pojmů z tohoto slovníku.",
     "vocabulary.detail.document": "Dokument",
+    "vocabulary.detail.related": "Související slovníky",
+    "vocabulary.detail.related.help":
+      "Související slovníky slouží k předfiltrování výběru souvisejících pojmů a pojmů se stejným významem pouze na související slovníky. Toto předfiltrování lze vypnout.",
     "vocabulary.text-analysis.invoke.message":
       "Textová analýza definic pojmů v tomto slovníku spuštěna.",
     "vocabulary.all.text-analysis.invoke.message":
@@ -577,6 +590,7 @@ const cs = {
       " slouží zejména pro vyhledávání. Nemusí se jednat (ani kontextuální) synonyma k názvu pojmu. Např. " +
       "pojem s názvem 'Kopaná' může mít vyhledávací text 'fočus'. ",
     "term.updated.message": "Pojem úspěšně aktualizován.",
+    "term.updated.error.message": "Pojem se nepodařilo aktualizovat.",
     "term.metadata.labelExists.message":
       'Pojem s názvem "{label}" již v tomto slovníku existuje',
     "term.metadata.multipleSources.message":
@@ -646,6 +660,11 @@ const cs = {
     "glossary.importedIncluded": "včetně importovaných",
     "glossary.importedExcluded": "bez importovaných",
     "glossary.importedTerm.tooltip": "Importován ze slovníku",
+    "glossary.showAll": "Zobrazit vše",
+    "glossary.limitToRelated": "Omezit na související",
+    "glossary.limitToRelated.help":
+      "Zobrazit pouze pojmy, které jsou ze souvisejících slovníků",
+    "glossary.showAll.help": "Zobrazit všechny pojmy",
     "glossary.showTerminal": "Včetně zrušených",
     "glossary.showNonTerminal": "Pouze aktivní",
     "glossary.showTerminal.help":
@@ -681,6 +700,7 @@ const cs = {
       "Otevře oddělené tabulkové zobrazení pojmů pro hromadné úpravy a zobrazení metadat.",
     "glossary.table.workspace.back": "Zpět na detail slovníku",
     "glossary.table.workspace.back.help": "Vrátí vás na detail slovníku.",
+    "glossary.table.fontSize": "Velikost písma",
     "glossary.unusedTerm.tooltip": "Není znám výskyt pojmu v dokumentu.",
     "glossary.createTerm": "Vytvořit nový pojem",
     "glossary.createTerm.tooltip": "Vytvořit nový pojem ve slovníku",

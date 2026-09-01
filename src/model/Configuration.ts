@@ -5,11 +5,11 @@ import VocabularyUtils from "../util/VocabularyUtils";
 const ctx = {
   iri: "@id",
   language: `${VocabularyUtils.DC_LANGUAGE}`,
-  roles: `${VocabularyUtils.NS_TERMIT}má-uživatelskou-roli`,
-  maxFileUploadSize: `${VocabularyUtils.NS_TERMIT}má-maximální-velikost-souboru`,
-  versionSeparator: `${VocabularyUtils.NS_TERMIT}má-oddělovač-verze`,
-  modelingToolUrl: `${VocabularyUtils.NS_TERMIT}má-adresu-modelovacího-nástroje`,
-  indexedLanguages: `${VocabularyUtils.NS_TERMIT}má-indexovaný-jazyk`,
+  roles: `${VocabularyUtils.NS_TERMIT}has-user-role`,
+  maxFileUploadSize: `${VocabularyUtils.NS_TERMIT}has-maximum-file-size`,
+  versionSeparator: `${VocabularyUtils.NS_TERMIT}has-version-separator`,
+  modelingToolUrl: `${VocabularyUtils.NS_TERMIT}has-modeling-tool-address`,
+  indexedLanguages: `${VocabularyUtils.NS_TERMIT}has-indexed-language`,
 };
 
 export const CONTEXT = Object.assign({}, USERROLE_CONTEXT, ctx);

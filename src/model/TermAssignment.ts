@@ -5,10 +5,10 @@ import VocabularyUtils from "../util/VocabularyUtils";
 import Utils from "../util/Utils";
 
 const ctx = {
-  term: VocabularyUtils.NS_TERMIT + "je-přiřazením-termu",
+  term: VocabularyUtils.IS_OCCURRENCE_OF_TERM,
   description: VocabularyUtils.DC_DESCRIPTION,
-  target: VocabularyUtils.NS_TERMIT + "má-cíl",
-  source: VocabularyUtils.PREFIX + "má-zdroj",
+  target: VocabularyUtils.NS_TERMIT + "has-target",
+  source: VocabularyUtils.PREFIX + "has-resource",
 };
 
 /**

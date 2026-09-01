@@ -1,3 +1,16 @@
+#### Version 5.0.0
+
+- Better align data model with SKOS - replace structure `Vocabulary = Glossary + Model` with just `Vocabulary` (~ SKOS ConceptScheme), validate SKOS property disjointness
+- Translate underlying ontologies - Data description ontology, TermIt ontology - from Czech to English (incl. IRIs, e.g., `http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu` => `http://onto.fel.cvut.cz/ontologies/application/termit/administrator`)
+- Remove obsolete support for workspaces
+- Added support for managing vocabulary preferred namespace URI and prefix
+- Added support for changing username
+- Excel export now includes term's external parents
+- Ability to specify related vocabularies - these are used to pre-filter terms for selectors such as relatedMatch, exactMatch (can be overriden)
+- Fixes in full-text search, improved performance
+- Improvements in the vocabulary sheet view
+- Dependency updates
+
 #### Version 4.5.2
 
 - Dependency security updates.

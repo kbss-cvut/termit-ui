@@ -7,7 +7,7 @@ export const CONTEXT = {
     "@type": VocabularyUtils.XSD_DATETIME,
   },
   expirationDate: {
-    "@id": VocabularyUtils.NS_TERMIT + "má-datum-expirace",
+    "@id": VocabularyUtils.NS_TERMIT + "has-expiration-date",
     "@type": VocabularyUtils.XSD_DATE,
   },
   lastUsed: {

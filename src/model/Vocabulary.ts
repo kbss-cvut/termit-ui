@@ -36,11 +36,12 @@ const ctx = {
     "@id": VocabularyUtils.DESCRIBES_DOCUMENT,
     "@context": DOCUMENT_CONTEXT,
   },
-  glossary: VocabularyUtils.HAS_GLOSSARY,
-  model: VocabularyUtils.HAS_MODEL,
   importedVocabularies: VocabularyUtils.IMPORTS_VOCABULARY,
+  relatedVocabularies: VocabularyUtils.HAS_RELATED_VOCABULARY,
   accessLevel: JsonLdUtils.idContext(VocabularyUtils.HAS_ACCESS_LEVEL),
   primaryLanguage: VocabularyUtils.DC_LANGUAGE,
+  preferredNamespaceUri: VocabularyUtils.VANN_PREFERRED_NAMESPACE_URI,
+  preferredNamespacePrefix: VocabularyUtils.VANN_PREFERRED_NAMESPACE_PREFIX,
 };
 
 export const CONTEXT = Object.assign({}, ASSET_CONTEXT, USER_CONTEXT, ctx);
@@ -52,13 +53,14 @@ const MAPPED_PROPERTIES = [
   "comment",
   "document",
   "types",
-  "glossary",
-  "model",
   "importedVocabularies",
+  "relatedVocabularies",
   "allImportedVocabularies",
   "termCount",
   "accessLevel",
   "primaryLanguage",
+  "preferredNamespaceUri",
+  "preferredNamespacePrefix",
 ];
 
 export const VOCABULARY_MULTILINGUAL_ATTRIBUTES = ["label", "comment"];
@@ -67,15 +69,16 @@ export interface VocabularyData extends AssetData {
   label: MultilingualString;
   comment?: MultilingualString;
   document?: DocumentData;
-  glossary?: AssetData;
-  model?: AssetData;
   importedVocabularies?: AssetData[];
+  relatedVocabularies?: AssetData[];
   accessLevel?: AccessLevel;
   /**
    * Short locale code defined by iso-639-1
    * @see import("../util/IntlUtil").getLanguageOptions()
    */
   primaryLanguage?: string;
+  preferredNamespacePrefix?: string;
+  preferredNamespaceUri?: string;
 }
 
 export default class Vocabulary
@@ -85,12 +88,13 @@ export default class Vocabulary
   public label: MultilingualString;
   public comment?: MultilingualString;
   public document?: Document;
-  public glossary?: AssetData;
-  public model?: AssetData;
   public importedVocabularies?: AssetData[];
+  public relatedVocabularies?: AssetData[];
   public allImportedVocabularies?: string[];
   public accessLevel?: AccessLevel;
   public primaryLanguage?: string;
+  public preferredNamespacePrefix?: string;
+  public preferredNamespaceUri?: string;
 
   public termCount?: number;
 
@@ -109,6 +113,8 @@ export default class Vocabulary
       ? strToAccessLevel(data.accessLevel)
       : undefined;
     this.primaryLanguage = data.primaryLanguage;
+    this.preferredNamespacePrefix = data.preferredNamespacePrefix;
+    this.preferredNamespaceUri = data.preferredNamespaceUri;
   }
 
   getLabel(lang?: string): string {

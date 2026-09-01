@@ -297,6 +297,10 @@ const de = {
       "Beginnen Sie mit der Eingabe, um Vokabulare nach Namen zu filtern",
     "vocabulary.title": "Titel",
     "vocabulary.primaryLanguage": "Primäres Vokabular der Sprache",
+    "vocabulary.preferredNamespaceUri": "Bevorzugte Namespace-URI",
+    "vocabulary.preferredNamespaceUri.editReadonly":
+      "Die bevorzugte Namespace-URI kann nicht geändert werden, da dies die Auflösung von Begriffskennungen beeinträchtigen würde",
+    "vocabulary.preferredNamespacePrefix": "Bevorzugtes Namespace-Präfix",
     "vocabulary.create.title": "Vokabular erstellen",
     "vocabulary.create.submit": "Erstellen",
     "vocabulary.create.files": "Dateien",
@@ -379,6 +383,10 @@ const de = {
       "Wählen Sie Vokabulare aus, die Sie zur Modellierung öffnen möchten. ",
     "vocabulary.updated.message": "Vokabular erfolgreich aktualisiert.",
     "vocabulary.created.message": "Vokabular erfolgreich erstellt.",
+    "vocabulary.sync.started.message":
+      "Die Synchronisierung des Vokabulars wurde im Hintergrund gestartet.",
+    "vocabulary.sync.finished.message":
+      "Die Synchronisierung des Vokabulars wurde abgeschlossen.",
     "vocabulary.detail.subtitle": "Erstellt von {author} am",
     "vocabulary.detail.tabs.metadata": "Metadaten",
     "vocabulary.detail.tabs.termdetail": "Begriffsdetails",
@@ -386,7 +394,12 @@ const de = {
     "vocabulary.detail.files.file": "Dateiname",
     "vocabulary.detail.imports": "Importe",
     "vocabulary.detail.imports.edit": "Importiert Vokabulare",
+    "vocabulary.detail.imports.help":
+      "Importierte Vokabulare dienen dazu, eine Hierarchie zwischen Begriffen zu erstellen. Konkret können Begriffe aus importierten Vokabularen als übergeordnete Begriffe für Begriffe aus diesem Vokabular verwendet werden.",
     "vocabulary.detail.document": "Dokument",
+    "vocabulary.detail.related": "Verwandte Vokabulare",
+    "vocabulary.detail.related.help":
+      "Die zugehörigen Vokabulare dienen dazu, die Auswahl der verwandten Begriffe und Begriffe mit derselben Bedeutung auf die zugehörigen Vokabulare zu beschränken. Diese Vorfilterung kann deaktiviert werden.",
     "vocabulary.text-analysis.invoke.message":
       "Textanalyse der Begriffsdefinitionen in diesem Vokabular.",
     "vocabulary.all.text-analysis.invoke.message":
@@ -537,6 +550,7 @@ const de = {
       "(Optionale) Suchbegriffe, die nicht zur visuellen Darstellung von Begriffen gedacht sind und hauptsächlich für Suchmaschinen dienen. ",
     "term.metadata.status": "Status",
     "term.updated.message": "Begriff erfolgreich aktualisiert.",
+    "term.updated.error.message": "Begriff konnte nicht aktualisiert werden.",
     "term.metadata.labelExists.message":
       'Der Begriff mit der Bezeichnung "{label}" existiert bereits in diesem Vokabular',
     "term.metadata.multipleSources.message":
@@ -606,6 +620,11 @@ const de = {
     "glossary.importedIncluded": "mit importierten",
     "glossary.importedExcluded": "ohne importierte",
     "glossary.importedTerm.tooltip": "Aus dem Vokabular importiert",
+    "glossary.showAll": "Alle anzeigen",
+    "glossary.limitToRelated": "Auf verwandte beschränken",
+    "glossary.limitToRelated.help":
+      "Nur Begriffe aus verwandten Vokabularen anzeigen",
+    "glossary.showAll.help": "Alle Begriffe anzeigen",
     "glossary.showTerminal": "Deaktivierte Begriffe einschließen",
     "glossary.showNonTerminal": "Nur aktive",
     "glossary.showTerminal.help": "Zeigt auch deaktivierte Begriffe an. ",
@@ -639,6 +658,7 @@ const de = {
       "Öffnet eine dedizierte Tabellenansicht für Massenbearbeitung und Metadaten-Übersicht.",
     "glossary.table.workspace.back": "Zurück zum Vokabular",
     "glossary.table.workspace.back.help": "Zurück zur Vokabular-Detailansicht.",
+    "glossary.table.fontSize": "Schriftgröße",
     "glossary.unusedTerm.tooltip":
       "Begriff, der in einem Dokument nicht vorkommt",
     "glossary.createTerm": "Neuen Begriff erstellen",

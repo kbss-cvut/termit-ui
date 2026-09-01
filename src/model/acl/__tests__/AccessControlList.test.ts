@@ -18,7 +18,7 @@ describe("AbstractAccessControlRecord", () => {
       const data: AccessControlRecordData = {
         iri: Generator.generateUri(),
         accessLevel:
-          "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/z\u00e1pis",
+          "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/write",
         holder: {
           iri: user.iri,
           label: langString(`${user.firstName} ${user.lastName}`, "cs"),
@@ -38,7 +38,7 @@ describe("AbstractAccessControlRecord", () => {
       const data: AccessControlRecordData = {
         iri: Generator.generateUri(),
         accessLevel:
-          "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/z\u00e1pis",
+          "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/write",
         holder: {
           iri: group.iri!,
           label: langString(group.label, "cs"),
@@ -62,7 +62,7 @@ describe("AbstractAccessControlRecord", () => {
         const data: AccessControlRecord<AccessHolderType> = {
           iri: Generator.generateUri(),
           accessLevel:
-            "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/\u00farove\u0148-p\u0159\u00edstupov\u00fdch-opr\u00e1vn\u011bn\u00ed/z\u00e1pis",
+            "http://onto.fel.cvut.cz/ontologies/application/termit/access-level/write",
           holder,
           types: [recordType],
         };
@@ -76,7 +76,7 @@ describe("AbstractAccessControlRecord", () => {
 
     function getUserRole() {
       return new UserRole({
-        iri: "http://onto.fel.cvut.cz/ontologies/application/termit/pojem/pln\u00fd-u\u017eivatel-termitu",
+        iri: "http://onto.fel.cvut.cz/ontologies/application/termit/editor",
         label: langString("Editor"),
         types: [VocabularyUtils.USER_ROLE],
       });
