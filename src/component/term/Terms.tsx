@@ -179,6 +179,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           : [this.props.vocabulary!.iri];
         this.setState({
           disableIncludeImportedToggle: this.props.isDetailView || false,
+          selectedTermLoaded: true,
         });
 
         // For flat list, just filter and return without tree processing
