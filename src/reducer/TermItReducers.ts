@@ -66,6 +66,7 @@ function user(
   switch (action.type) {
     case ActionType.FETCH_USER:
       return isAsyncSuccess(action) ? action.payload : state;
+    case ActionType.LOGIN:
     case ActionType.LOGOUT:
       return EMPTY_USER;
     default:

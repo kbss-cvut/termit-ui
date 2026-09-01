@@ -23,6 +23,7 @@ import ConfigParam from "../../util/ConfigParam";
 import IfOidcAuth from "../misc/oidc/IfOidcAuth";
 import OutgoingLink from "../misc/OutgoingLink";
 import PersonalAccessTokensList from "./PersonalAccessTokensList";
+import Utils from "../../util/Utils";
 
 interface ProfileProps extends HasI18n {
   user: User;
@@ -32,6 +33,7 @@ interface ProfileProps extends HasI18n {
 interface ProfileState {
   firstName: string;
   lastName: string;
+  username: string;
   edit: boolean;
 }
 
@@ -41,6 +43,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
     this.state = {
       firstName: props.user.firstName,
       lastName: props.user.lastName,
+      username: props.user.username,
       edit: false,
     };
   }
@@ -66,6 +69,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
       ...this.props.user,
       firstName: this.state.firstName,
       lastName: this.state.lastName,
+      username: this.state.username,
     };
 
     this.props
@@ -81,9 +85,11 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
     const { user } = this.props;
     return (
       (this.state.firstName !== user.firstName ||
-        this.state.lastName !== user.lastName) &&
+        this.state.lastName !== user.lastName ||
+        this.state.username !== user.username) &&
       this.state.firstName.trim().length > 0 &&
-      this.state.lastName.trim().length > 0
+      this.state.lastName.trim().length > 0 &&
+      Utils.isValidEmail(this.state.username)
     );
   }
 
@@ -128,6 +134,7 @@ export class Profile extends React.Component<ProfileProps, ProfileState> {
               <ProfileEditForm
                 firstName={this.state.firstName}
                 lastName={this.state.lastName}
+                username={this.state.username}
                 onChange={this.onChange}
                 onSubmit={this.onSubmit}
                 onKeyPress={this.onKeyPress}
