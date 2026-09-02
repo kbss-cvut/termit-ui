@@ -934,8 +934,8 @@ const de = {
     "error.term.remove.annotationsExist":
       "Der Begriff kann nicht gelöscht werden. ",
     "error.term.remove.hasSubTerms": "Der Begriff kann nicht gelöscht werden. ",
-    "error.term.remove.skosRelationshipsExist":
-      "Der Begriff kann nicht gelöscht werden. ",
+    "error.term.remove.relationshipsExist":
+      "Der Begriff kann nicht gelöscht werden, da er mit anderen Objekten verknüpft ist!",
     "error.invalidUriCharacter":
       'Ungültiger Bezeichner: "{uri}", unerwartetes Zeichen "{char}" bei {index}.',
     "error.invalidIdentifier": 'Ungültiger Bezeichner: "{uri}"',

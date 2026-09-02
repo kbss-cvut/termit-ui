@@ -974,8 +974,8 @@ const en = {
       "Cannot delete the term. It is used for annotating resources or terms:  {resources}",
     "error.term.remove.hasSubTerms":
       "Cannot delete the term. It is a parent of other terms: {subTerms}",
-    "error.term.remove.skosRelationshipsExist":
-      "Cannot delete the term. It is linked to other terms through properties: {properties}",
+    "error.term.remove.relationshipsExist":
+      "The term cannot be removed because it is linked to other objects!",
 
     "error.invalidUriCharacter":
       'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
