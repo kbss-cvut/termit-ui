@@ -169,6 +169,8 @@ const CustomAttributeRemoveDialog: React.FC<
   const label =
     getLocalized(customAttribute?.label, lang) ?? attributeIri?.fragment;
 
+  // Whether user successfully confirmed the intent to remove the custom attribute
+  // if there were some usages, confirmation is not required if the attribute is not used
   const removalConfirmed =
     usageStatements.length === 0 ||
     confirmationAttributeName === label ||
@@ -182,7 +184,10 @@ const CustomAttributeRemoveDialog: React.FC<
     }
 
     dispatch(
-      removeCustomAttribute(attributeIri, doRemoveUsages, removalConfirmed)
+      removeCustomAttribute(
+        attributeIri,
+        doRemoveUsages && usageStatements.length > 0
+      )
     ).then(() => onDelete(customAttribute));
   };
 
