@@ -10,17 +10,20 @@ import TermTypesEdit from "../../../term/TermTypesEdit";
 import Term, { TermInfo } from "../../../../model/Term";
 import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
 import Select from "../../../misc/Select";
+import { SelectedTermsList } from "./SelectedTermsList";
 
 export interface BatchTermEditorProps {
   vocabularyIri: string;
-  targetTerms: Set<string>;
+  language: string;
+  selectedTerms: Term[];
+  selectedTermIris: Set<string>;
   onSave: (
     updatedProperties: Omit<TermBatchEditDto, "targetTerms">
   ) => Promise<void>;
   onCancel: () => void;
 }
 
-type BatchProperty =
+export type BatchProperty =
   | "types"
   | "exactMatchTerms"
   | "relatedMatch"
@@ -34,13 +37,17 @@ type BatchProperty =
  * that property.
  *
  * @param vocabularyIri the IRI of the vocabulary being edited.
- * @param targetTerms a set of IRIs of the terms to be edited in batch.
+ * @param language the language for displaying term information.
+ * @param selectedTerms the terms to be edited in batch.
+ * @param selectedTermIris the IRIs of the terms to be edited in batch.
  * @param onSave a callback function to handle saving the updated properties.
  * @param onCancel a callback function to handle canceling the batch edit.
  */
 export const BatchTermEditor: React.FC<BatchTermEditorProps> = ({
   vocabularyIri,
-  targetTerms,
+  language,
+  selectedTerms,
+  selectedTermIris,
   onSave,
   onCancel,
 }) => {
@@ -106,7 +113,7 @@ export const BatchTermEditor: React.FC<BatchTermEditorProps> = ({
             id="batch-exact-matches-edit"
             selected={localExactMatches}
             vocabularyIri={vocabularyIri}
-            hiddenTermIris={targetTerms}
+            hiddenTermIris={selectedTermIris}
             onChange={(selected) => setLocalExactMatches(selected as Term[])}
           />
         </FormGroup>
@@ -120,7 +127,7 @@ export const BatchTermEditor: React.FC<BatchTermEditorProps> = ({
             id="batch-parent-terms-edit"
             parentTerms={localParentTerms}
             vocabularyIri={vocabularyIri}
-            hiddenTermIris={targetTerms}
+            hiddenTermIris={selectedTermIris}
             onChange={(selected) => setLocalParentTerms(selected as Term[])}
           />
         </FormGroup>
@@ -141,7 +148,7 @@ export const BatchTermEditor: React.FC<BatchTermEditorProps> = ({
             value={localRelatedMatches}
             vocabularyIri={vocabularyIri}
             fetchedTermsFilter={(terms) =>
-              terms.filter((t) => !targetTerms.has(t.iri))
+              terms.filter((t) => !selectedTermIris.has(t.iri))
             }
             onChange={(selected) => setLocalRelatedMatches(selected as Term[])}
           />
@@ -156,7 +163,7 @@ export const BatchTermEditor: React.FC<BatchTermEditorProps> = ({
     <div className="term-cell-editor d-flex flex-column h-100">
       <div className="editor-header p-3 border-bottom">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5 className="mb-0">{i18n("vocabulary.batchEdit.title")}</h5>
+          <h4 className="mb-0">{i18n("vocabulary.batchEdit.title")}</h4>
           <button
             type="button"
             className="close"
@@ -189,6 +196,12 @@ export const BatchTermEditor: React.FC<BatchTermEditorProps> = ({
 
       <div className="editor-body p-3 flex-grow-1 overflow-auto">
         {renderEditor()}
+        <SelectedTermsList
+          selectedTerms={selectedTerms}
+          selectedProperty={selectedProperty}
+          language={language}
+          vocabularyIri={vocabularyIri}
+        />
       </div>
 
       <div className="editor-footer p-3 border-top d-flex justify-content-end">

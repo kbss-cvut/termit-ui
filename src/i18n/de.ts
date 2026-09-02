@@ -455,6 +455,8 @@ const de = {
     "vocabulary.batchEdit.propertyToEdit": "Zu bearbeitende Eigenschaft",
     "vocabulary.batchEdit.propertySelect.placeholder": "Eigenschaft auswählen",
     "vocabulary.batchEdit.button": "Stapelweise bearbeiten ({count})",
+    "vocabulary.batchEdit.selectedTerms": "Ausgewählte Begriffe",
+    "vocabulary.batchEdit.noExistingValues": "Keine bestehenden Werte",
     "vocabulary.term.created.message": "Begriff erfolgreich erstellt.",
     "vocabulary.select-vocabulary": "Wählen Sie ein Vokabular aus",
     "vocabulary.remove.dialog.text.nonEmpty":

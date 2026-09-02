@@ -462,6 +462,8 @@ const cs = {
     "vocabulary.batchEdit.propertyToEdit": "Atribut k úpravě",
     "vocabulary.batchEdit.propertySelect.placeholder": "Vyberte atribut",
     "vocabulary.batchEdit.button": "Hromadná úprava ({count})",
+    "vocabulary.batchEdit.noExistingValues": "Žádné existující hodnoty",
+    "vocabulary.batchEdit.selectedTerms": "Vybrané pojmy",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",

@@ -777,6 +777,12 @@ export const VocabularySheetViewTable: React.FC<
     });
   };
 
+  const selectedBatchTerms = React.useMemo(() => {
+    return loadedTerms.filter(
+      (term) => term.iri && selectedBatchUris.has(term.iri)
+    );
+  }, [loadedTerms, selectedBatchUris]);
+
   return (
     <div className="vocabulary-sheet-view-table">
       <div className="vocabulary-sheet-view-controls">
@@ -1044,7 +1050,8 @@ export const VocabularySheetViewTable: React.FC<
         column={editingColumn}
         onSave={handleSaveEditedTerm}
         inBatchMode={isBatchSidebarOpen}
-        targetTerms={selectedBatchUris}
+        selectedTerms={selectedBatchTerms}
+        selectedTermIris={selectedBatchUris}
         vocabularyIri={vocabulary.iri}
         onBatchSave={handleSaveBatchEditedTerms}
       />
