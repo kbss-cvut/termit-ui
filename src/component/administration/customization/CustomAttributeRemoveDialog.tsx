@@ -39,6 +39,8 @@ import {
 import CustomInput from "../../misc/CustomInput";
 import ValidationResult from "../../../model/form/ValidationResult";
 import { getLocalized } from "../../../model/MultilingualString";
+import CustomCheckBoxInput from "../../misc/CustomCheckboxInput";
+import "./CustomAttributeRemoveDialog.scss";
 
 export interface CustomAttributeRemoveDialogProps {
   /**
@@ -154,6 +156,7 @@ const CustomAttributeRemoveDialog: React.FC<
   const [totalStatements, setTotalStatements] = useState<number>(0);
   const [pagination, setPagination] =
     useState<PaginationState>(INITIAL_PAGINATION);
+  const [doRemoveUsages, setDoRemoveUsages] = useState(true);
   const [confirmationAttributeName, setConfirmationAttributeName] =
     useState("");
 
@@ -167,22 +170,25 @@ const CustomAttributeRemoveDialog: React.FC<
     getLocalized(customAttribute?.label, lang) ?? attributeIri?.fragment;
 
   const removalConfirmed =
-    usageStatements.length === 0 || confirmationAttributeName === label;
+    usageStatements.length === 0 ||
+    confirmationAttributeName === label ||
+    !doRemoveUsages;
   const isConfirmDisabled = !removalConfirmed;
   const isVisible = customAttribute != null && attributeIri != null;
 
   const onRemoveConfirmed = () => {
-    if (customAttribute == null || attributeIri == null) {
+    if (customAttribute == null || attributeIri == null || isConfirmDisabled) {
       return;
     }
 
-    dispatch(removeCustomAttribute(attributeIri, removalConfirmed)).then(() =>
-      onDelete(customAttribute)
-    );
+    dispatch(
+      removeCustomAttribute(attributeIri, doRemoveUsages, removalConfirmed)
+    ).then(() => onDelete(customAttribute));
   };
 
   // When attribute changes, reset force removal confirmation and pagination
   useEffect(() => {
+    setDoRemoveUsages(true);
     setConfirmationAttributeName("");
     setPagination(INITIAL_PAGINATION);
   }, [customAttribute, attributeIri]);
@@ -263,11 +269,20 @@ const CustomAttributeRemoveDialog: React.FC<
       {usageStatements.length > 0 && (
         <>
           <Table instance={tableInstance} />
+          <CustomCheckBoxInput
+            id={"remove-usages-checkbox"}
+            label={i18n(
+              "administration.customization.customAttributes.removal.removeUsages"
+            )}
+            checked={doRemoveUsages}
+            onChange={(change) => setDoRemoveUsages(change.target.checked)}
+          />
           <CustomInput
             label={i18n(
               "administration.customization.customAttributes.removal.confirm"
             )}
             value={confirmationAttributeName}
+            disabled={!doRemoveUsages}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setConfirmationAttributeName(e.currentTarget.value)
             }

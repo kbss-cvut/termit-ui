@@ -268,6 +268,8 @@ const de = {
       "Wählen Sie aus, welche Term-Beziehungseigenschaften dieses benutzerdefinierte Attribut annotieren kann. Gilt nur, wenn die Domäne 'Term-Beziehung' ist.",
     "administration.customization.customAttributes.removal.description":
       'Sind Sie sicher, dass Sie das benutzerdefinierte Attribut "{label}" dauerhaft entfernen möchten?',
+    "administration.customization.customAttributes.removal.removeUsages":
+      "Alle Verwendungen des benutzerdefinierten Attributs entfernen.",
     "administration.customization.customAttributes.removal.confirm":
       "Um das Löschen des benutzerdefinierten Attributs und all seiner Verwendungen zu bestätigen, geben Sie den Attributnamen ein",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
