@@ -38,6 +38,7 @@ export function loadCustomAttributeUsage(
 
 export function removeCustomAttribute(
   attributeIri: IRI,
+  removeUsages: boolean,
   forceRemoval: boolean
 ) {
   return (dispatch: ThunkDispatch) => {
@@ -45,10 +46,9 @@ export function removeCustomAttribute(
     dispatch(asyncActionRequest(action, false));
     return Ajax.delete(
       Constants.API_PREFIX + `/data/custom-attributes/${attributeIri.fragment}`,
-      param("namespace", attributeIri.namespace).param(
-        "force",
-        forceRemoval.toString()
-      )
+      param("namespace", attributeIri.namespace)
+        .param("removeUsages", removeUsages.toString())
+        .param("force", forceRemoval.toString())
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));

@@ -258,6 +258,8 @@ const en = {
       "Select which term relationship properties this custom attribute can annotate. Only applicable when domain is 'Term relationship'.",
     "administration.customization.customAttributes.removal.description":
       'Are you sure you want to permanently remove custom attribute "{label}"?',
+    "administration.customization.customAttributes.removal.removeUsages":
+      "Remove all usages of the custom attribute.",
     "administration.customization.customAttributes.removal.confirm":
       "To confirm the deletion of the custom attribute and all its uses, enter the attribute name",
     "asset.link.tooltip": "View detail of this asset",
