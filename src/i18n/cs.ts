@@ -458,6 +458,10 @@ const cs = {
       "Upravit záznam řízení přístupu",
     "vocabulary.acl.record.update.success":
       "Záznam řízení přístupu úspěšně upraven.",
+    "vocabulary.batchEdit.title": "Hromadná úprava pojmů",
+    "vocabulary.batchEdit.propertyToEdit": "Atribut k úpravě",
+    "vocabulary.batchEdit.propertySelect.placeholder": "Vyberte atribut",
+    "vocabulary.batchEdit.button": "Hromadná úprava ({count})",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",

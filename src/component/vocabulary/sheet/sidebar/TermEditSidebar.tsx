@@ -3,23 +3,37 @@ import Term from "../../../../model/Term";
 import { TermsTableColumn } from "../table/VocabularySheetViewTableUtils";
 import { TermCellEditor } from "../table/cell/TermCellEditor";
 import "./TermEditSidebar.scss";
+import { BatchTermEditor } from "./BatchTermEditor";
+import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
 
 export interface TermEditSidebarProps {
   isOpen: boolean;
-  term: Term | null;
-  column: TermsTableColumn | null;
   language: string;
   onClose: () => void;
-  onSave: (updatedTerm: Partial<Term>) => Promise<void>;
+
+  term?: Term | null;
+  column?: TermsTableColumn | null;
+  onSave?: (updatedTerm: Partial<Term>) => Promise<void>;
+
+  inBatchMode?: boolean;
+  vocabularyIri: string;
+  targetTerms?: Set<string>;
+  onBatchSave?: (
+    updatedTerm: Omit<TermBatchEditDto, "targetTerms">
+  ) => Promise<void>;
 }
 
 export const TermEditSidebar: React.FC<TermEditSidebarProps> = ({
   isOpen,
-  term,
-  column,
   language,
   onClose,
+  term,
+  column,
   onSave,
+  inBatchMode = false,
+  vocabularyIri,
+  targetTerms,
+  onBatchSave,
 }) => {
   return (
     <>
@@ -28,14 +42,25 @@ export const TermEditSidebar: React.FC<TermEditSidebarProps> = ({
       )}
 
       <div className={`term-edit-sidebar ${isOpen ? "open" : ""}`}>
-        {term && column && (
-          <TermCellEditor
-            term={term}
-            column={column}
-            language={language}
+        {inBatchMode && onBatchSave ? (
+          <BatchTermEditor
+            vocabularyIri={vocabularyIri}
+            targetTerms={targetTerms || new Set()}
+            onSave={onBatchSave}
             onCancel={onClose}
-            onSave={onSave}
           />
+        ) : (
+          term &&
+          column &&
+          onSave && (
+            <TermCellEditor
+              term={term}
+              column={column}
+              language={language}
+              onCancel={onClose}
+              onSave={onSave}
+            />
+          )
         )}
       </div>
     </>
