@@ -131,7 +131,6 @@ const CustomAttributeRdfValueNode: React.FC<RdfValueNodeProps> = ({
   value,
   type = IriType.UNKNOWN,
 }) => {
-  console.debug("rendering RDF value", value, type);
   switch (value.type) {
     case RdfValueType.IRI:
       if (type != null) {
