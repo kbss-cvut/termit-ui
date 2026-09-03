@@ -38,7 +38,7 @@ import {
   createCustomAttribute,
   getCustomAttributes,
   updateCustomAttribute,
-} from "../../../action/AsyncActions";
+} from "../../../action/AsyncCustomizationActions";
 import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 import { useParams } from "react-router-dom";
 import VocabularyUtils from "../../../util/VocabularyUtils";

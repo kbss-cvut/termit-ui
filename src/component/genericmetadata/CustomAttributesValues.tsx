@@ -19,7 +19,7 @@ import {
 import VocabularyUtils from "../../util/VocabularyUtils";
 import TermIriLink from "../term/TermIriLink";
 import { ThunkDispatch } from "../../util/Types";
-import { getCustomAttributes } from "../../action/AsyncActions";
+import { getCustomAttributes } from "../../action/AsyncCustomizationActions";
 import OutgoingLink from "../misc/OutgoingLink";
 import { RelationshipAnnotationButton } from "../term/relationship-annotation/RelationshipAnnotationButton";
 import { HasIdentifier } from "../../model/Asset";

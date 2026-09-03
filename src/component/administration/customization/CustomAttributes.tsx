@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useI18n } from "../../hook/useI18n";
 import { ThunkDispatch } from "../../../util/Types";
 import { useDispatch, useSelector } from "react-redux";
-import { getCustomAttributes } from "../../../action/AsyncActions";
+import { getCustomAttributes } from "../../../action/AsyncCustomizationActions";
 import PanelWithActions from "../../misc/PanelWithActions";
 import {
   ColumnDef,

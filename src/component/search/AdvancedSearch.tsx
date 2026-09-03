@@ -26,7 +26,7 @@ import {
   sanitizeNoValue,
 } from "./facet/FacetedSearchUtil";
 import { RdfProperty } from "../../model/RdfsResource";
-import { getCustomAttributes } from "../../action/AsyncActions";
+import { getCustomAttributes } from "../../action/AsyncCustomizationActions";
 import { mergeDuplicates } from "./label/SearchUtil";
 import { createTermNonTerminalStateMatcher } from "../term/TermTreeSelectHelper";
 import "./label/Search.scss";

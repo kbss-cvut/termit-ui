@@ -40,8 +40,6 @@ import ActionType, {
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
-  CustomAttribute,
-  CustomAttributeData,
   RdfsResourceData,
 } from "../model/RdfsResource";
 import TermItState from "../model/TermItState";
@@ -1081,7 +1079,10 @@ export function getProperties() {
   );
 }
 
-function getPropertiesImpl<T extends RdfsResourceData, E extends RdfsResource>(
+export function getPropertiesImpl<
+  T extends RdfsResourceData,
+  E extends RdfsResource
+>(
   action: Action,
   endpoint: string,
   mapper: (data: T) => E,
@@ -1113,7 +1114,7 @@ export function createProperty(property: RdfsResource) {
   return createPropertyImpl(property, action, "/data/properties");
 }
 
-function createPropertyImpl(
+export function createPropertyImpl(
   property: { toJsonLd: () => object },
   action: Action,
   endpoint: string
@@ -1130,51 +1131,6 @@ function createPropertyImpl(
           publishMessage(
             new Message(
               { messageId: "properties.edit.new.success" },
-              MessageType.SUCCESS
-            )
-          )
-        );
-      })
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
-export function getCustomAttributes() {
-  return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
-    { type: ActionType.GET_CUSTOM_ATTRIBUTES },
-    "/data/custom-attributes",
-    (d) => new CustomAttribute(d),
-    () => []
-  );
-}
-
-export function createCustomAttribute(attribute: CustomAttribute) {
-  return createPropertyImpl(
-    attribute,
-    { type: ActionType.CREATE_CUSTOM_ATTRIBUTE },
-    "/data/custom-attributes"
-  );
-}
-
-export function updateCustomAttribute(attribute: CustomAttribute) {
-  const action = { type: ActionType.UPDATE_CUSTOM_ATTRIBUTE };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.put(
-      Constants.API_PREFIX +
-        "/data/custom-attributes/" +
-        VocabularyUtils.create(attribute.iri).fragment,
-      content(attribute.toJsonLd())
-    )
-      .then(() => {
-        dispatch(asyncActionSuccess(action));
-        dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId:
-                  "administration.customization.customAttributes.update.success",
-              },
               MessageType.SUCCESS
             )
           )

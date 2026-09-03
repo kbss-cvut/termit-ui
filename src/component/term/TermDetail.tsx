@@ -3,8 +3,8 @@ import withI18n, { HasI18n } from "../hoc/withI18n";
 import { RouteComponentProps, withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
+import { getCustomAttributes } from "../../action/AsyncCustomizationActions";
 import {
-  getCustomAttributes,
   loadVocabulary,
   removeTerm,
   updateTerm,
