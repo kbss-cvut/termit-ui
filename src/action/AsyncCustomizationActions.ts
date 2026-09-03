@@ -3,13 +3,63 @@ import {
   asyncActionFailure,
   asyncActionRequest,
   asyncActionSuccess,
+  publishMessage,
 } from "./SyncActions";
 import Constants from "../util/Constants";
-import Ajax, { param } from "../util/Ajax";
+import Ajax, { content, param } from "../util/Ajax";
 import { ErrorData } from "../model/ErrorInfo";
-import { IRI } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { Rdf4jStatement } from "../model/Rdf4jStatement";
+import { CustomAttribute, CustomAttributeData } from "../model/RdfsResource";
+import { createPropertyImpl, getPropertiesImpl } from "./AsyncActions";
+import Message from "../model/Message";
+import MessageType from "../model/MessageType";
+
+export function getCustomAttributes() {
+  return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
+    { type: ActionType.GET_CUSTOM_ATTRIBUTES },
+    "/data/custom-attributes",
+    (d) => new CustomAttribute(d),
+    () => []
+  );
+}
+
+export function createCustomAttribute(attribute: CustomAttribute) {
+  return createPropertyImpl(
+    attribute,
+    { type: ActionType.CREATE_CUSTOM_ATTRIBUTE },
+    "/data/custom-attributes"
+  );
+}
+
+export function updateCustomAttribute(attribute: CustomAttribute) {
+  const action = { type: ActionType.UPDATE_CUSTOM_ATTRIBUTE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.put(
+      Constants.API_PREFIX +
+        "/data/custom-attributes/" +
+        VocabularyUtils.create(attribute.iri).fragment,
+      content(attribute.toJsonLd())
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId:
+                  "administration.customization.customAttributes.update.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+      })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
 
 export function loadCustomAttributeUsage(
   attributeIri: IRI,
@@ -19,8 +69,7 @@ export function loadCustomAttributeUsage(
     const action = { type: ActionType.LOAD_CUSTOM_ATTRIBUTE_USAGE };
     dispatch(asyncActionRequest(action, true));
     return Ajax.getResponse(
-      `${Constants.API_PREFIX}/data/custom-attributes/${attributeIri.fragment}/usage`
-        `/data/custom-attributes/${attributeIri.fragment}/usage`,
+      `${Constants.API_PREFIX}/data/custom-attributes/${attributeIri.fragment}/usage`,
       param("namespace", attributeIri.namespace)
         .param("size", pageRequest.size.toString())
         .param("page", pageRequest.page.toString())
