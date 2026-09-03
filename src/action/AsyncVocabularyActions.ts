@@ -26,7 +26,7 @@ import { getApiPrefix } from "./ActionUtils";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import NotificationType from "../model/NotificationType";
 import ExportConfig from "../model/local/ExportConfig";
-import RDFStatement, { RDFSTATEMENT_CONTEXT } from "../model/RDFStatement";
+import RdfIriStatement, { RDFSTATEMENT_CONTEXT } from "../model/RdfStatement";
 import ChangeRecord, {
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
@@ -293,12 +293,12 @@ export function getVocabularyRelations(
       param("namespace", vocabularyIri.namespace).signal(abortController)
     )
       .then((data) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<RDFStatement>(
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfIriStatement>(
           data,
           RDFSTATEMENT_CONTEXT
         )
       )
-      .then((statements: RDFStatement[]) => {
+      .then((statements: RdfIriStatement[]) => {
         dispatch(asyncActionSuccess(action));
         return statements;
       })
@@ -321,12 +321,12 @@ export function getVocabularyTermsRelations(
       param("namespace", vocabularyIri.namespace).signal(abortController)
     )
       .then((data) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<RDFStatement>(
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfIriStatement>(
           data,
           RDFSTATEMENT_CONTEXT
         )
       )
-      .then((statements: RDFStatement[]) => {
+      .then((statements: RdfIriStatement[]) => {
         dispatch(asyncActionSuccess(action));
         return statements;
       })

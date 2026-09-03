@@ -1,10 +1,11 @@
 import {
-  Rdf4jIRI,
-  Rdf4jLiteral,
-  Rdf4jTriple,
-  Rdf4jValue,
+  RdfIRI,
+  RdfLiteral,
+  RdfTriple,
+  RdfValue,
+  RdfValueType,
   toIRIImpl,
-} from "../../../model/Rdf4jStatement";
+} from "../../../model/RdfStatement";
 import * as React from "react";
 import { useMemo } from "react";
 import VocabularyIriLink from "../../vocabulary/VocabularyIriLink";
@@ -43,7 +44,7 @@ export function getIriType(typeIri?: string) {
  * Based on the provided type renders either link to the respective Term or Vocabulary
  * or renders generic outgoing link as shortened IRI.
  */
-const Rdf4jIRINode: React.FC<{ iri: Rdf4jIRI; type: IriType }> = ({
+const RdfIRINode: React.FC<{ iri: RdfIRI; type: IriType }> = ({
   iri,
   type,
 }) => {
@@ -80,7 +81,7 @@ const Rdf4jIRINode: React.FC<{ iri: Rdf4jIRI; type: IriType }> = ({
 /**
  * Renders literal value as a simple inline code block
  */
-const Rdf4jLiteralNode: React.FC<{ literal: Rdf4jLiteral }> = ({ literal }) => {
+const RdfLiteralNode: React.FC<{ literal: RdfLiteral }> = ({ literal }) => {
   let labelText;
 
   switch (literal.coreDatatype) {
@@ -104,49 +105,46 @@ const Rdf4jLiteralNode: React.FC<{ literal: Rdf4jLiteral }> = ({ literal }) => {
 /**
  * Renders term relation triple
  */
-const Rdf4jTripleNode: React.FC<{ triple: Rdf4jTriple }> = ({ triple }) => {
+const RdfTripleNode: React.FC<{ triple: RdfTriple }> = ({ triple }) => {
   return (
     <>
-      <CustomAttributeRdf4jValueNode
-        value={triple.subject}
-        type={IriType.TERM}
-      />
+      <CustomAttributeRdfValueNode value={triple.subject} type={IriType.TERM} />
       <br />
-      <CustomAttributeRdf4jValueNode value={triple.predicate} />
+      <CustomAttributeRdfValueNode value={triple.predicate} />
       <br />
-      <CustomAttributeRdf4jValueNode
-        value={triple.object}
-        type={IriType.TERM}
-      />
+      <CustomAttributeRdfValueNode value={triple.object} type={IriType.TERM} />
     </>
   );
 };
 
-export interface Rdf4jValueNodeProps {
-  value: Rdf4jValue;
+export interface RdfValueNodeProps {
+  value: RdfValue;
   type?: IriType;
 }
 
 /**
- * Renders the given {@link Rdf4jValue}.
- * If the value is {@link Rdf4jIRI} and type is provided,
+ * Renders the given {@link RdfValue}.
+ * If the value is {@link RdfIRI} and type is provided,
  * a link to the respective entity is rendered.
  */
-const CustomAttributeRdf4jValueNode: React.FC<Rdf4jValueNodeProps> = ({
+const CustomAttributeRdfValueNode: React.FC<RdfValueNodeProps> = ({
   value,
   type = IriType.UNKNOWN,
 }) => {
-  if (value.triple) {
-    return <Rdf4jTripleNode triple={value as Rdf4jTriple} />;
-  }
-  if (value.IRI && type != null) {
-    return <Rdf4jIRINode iri={value as Rdf4jIRI} type={type} />;
-  }
-  if (value.literal) {
-    return <Rdf4jLiteralNode literal={value as Rdf4jLiteral} />;
-  }
+  console.debug("rendering RDF value", value, type);
+  switch (value.type) {
+    case RdfValueType.IRI:
+      if (type != null) {
+        return <RdfIRINode iri={value as RdfIRI} type={type} />;
+      }
+      break;
 
+    case RdfValueType.Literal:
+      return <RdfLiteralNode literal={value as RdfLiteral} />;
+    case RdfValueType.Triple:
+      return <RdfTripleNode triple={value as RdfTriple} />;
+  }
   return null;
 };
 
-export default CustomAttributeRdf4jValueNode;
+export default CustomAttributeRdfValueNode;

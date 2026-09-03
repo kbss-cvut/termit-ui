@@ -1,4 +1,4 @@
-import { RDFStatement, RDFSTATEMENT_CONTEXT } from "../RDFStatement";
+import { RdfIriStatement, RDFSTATEMENT_CONTEXT } from "../RdfStatement";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { ASSET_CONTEXT, HasIdentifier } from "../Asset";
 
@@ -14,7 +14,7 @@ const ctx = {
 export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT);
 
 export default interface RelationshipAnnotation {
-  relationship: RDFStatement;
+  relationship: RdfIriStatement;
   attribute: HasIdentifier;
   value: any[];
 }

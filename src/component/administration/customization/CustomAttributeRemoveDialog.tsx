@@ -12,11 +12,11 @@ import {
 } from "../../../action/AsyncCustomizationActions";
 import { trackPromise } from "react-promise-tracker";
 import {
-  Rdf4jIRI,
-  Rdf4jResource,
-  Rdf4jStatement,
-  Rdf4jValue,
-} from "../../../model/Rdf4jStatement";
+  RdfIRI,
+  RdfResource,
+  RdfStatement,
+  RdfValue,
+} from "../../../model/RdfStatement";
 import Table from "../../misc/table/Table";
 import {
   ColumnDef,
@@ -24,10 +24,10 @@ import {
   PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
-import CustomAttributeRdf4jValueNode, {
+import CustomAttributeRdfValueNode, {
   getIriType,
   IriType,
-} from "./CustomAttributeRdf4jValueNode";
+} from "./CustomAttributeRdfValueNode";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { FormattedMessage } from "react-intl";
 import {
@@ -41,6 +41,9 @@ import { getLocalized } from "../../../model/MultilingualString";
 import CustomCheckBoxInput from "../../misc/CustomCheckboxInput";
 import "./CustomAttributeRemoveDialog.scss";
 import { getInitialPageSize } from "../../../util/UISettingsUtil";
+import { publishMessage } from "../../../action/SyncActions";
+import Message from "../../../model/Message";
+import MessageType from "../../../model/MessageType";
 
 export interface CustomAttributeRemoveDialogProps {
   /**
@@ -96,7 +99,7 @@ function getColumnLabel(
 function defineColumns(
   i18n: (id: string) => string,
   customAttribute: CustomAttribute | null
-): ColumnDef<Rdf4jStatement>[] {
+): ColumnDef<RdfStatement>[] {
   const subjectType = getIriType(customAttribute?.domainIri);
   const objectType = getIriType(customAttribute?.rangeIri);
   return [
@@ -104,8 +107,8 @@ function defineColumns(
       header: getColumnLabel(customAttribute?.domainIri, i18n, "subject"),
       accessorKey: "subject",
       cell: (info) => (
-        <CustomAttributeRdf4jValueNode
-          value={info.getValue() as Rdf4jResource}
+        <CustomAttributeRdfValueNode
+          value={info.getValue() as RdfResource}
           type={subjectType}
         />
       ),
@@ -114,8 +117,8 @@ function defineColumns(
       header: getColumnLabel(customAttribute?.rangeIri, i18n, "object"),
       accessorKey: "object",
       cell: (info) => (
-        <CustomAttributeRdf4jValueNode
-          value={info.getValue() as Rdf4jValue}
+        <CustomAttributeRdfValueNode
+          value={info.getValue() as RdfValue}
           type={objectType}
         />
       ),
@@ -124,8 +127,8 @@ function defineColumns(
       header: i18n("type.vocabulary"),
       accessorKey: "context",
       cell: (info) => (
-        <CustomAttributeRdf4jValueNode
-          value={info.getValue() as Rdf4jIRI}
+        <CustomAttributeRdfValueNode
+          value={info.getValue() as RdfIRI}
           type={IriType.VOCABULARY}
         />
       ),
@@ -152,7 +155,7 @@ const CustomAttributeRemoveDialog: React.FC<
   const { i18n, formatMessage, locale } = useI18n();
   const lang = getShortLocale(locale);
   const dispatch: ThunkDispatch = useDispatch();
-  const [usageStatements, setUsageStatements] = useState<Rdf4jStatement[]>([]);
+  const [usageStatements, setUsageStatements] = useState<RdfStatement[]>([]);
   const [totalStatements, setTotalStatements] = useState<number>(0);
   const [pagination, setPagination] =
     useState<PaginationState>(INITIAL_PAGINATION);
@@ -215,6 +218,9 @@ const CustomAttributeRemoveDialog: React.FC<
       if (!("error" in result)) {
         setUsageStatements(result.data);
         setTotalStatements(result.totalStatements);
+      } else {
+        dispatch(publishMessage(new Message(result.error, MessageType.ERROR)));
+        onCancel();
       }
     });
   }, [dispatch, attributeIri, pagination.pageSize, pagination.pageIndex]);
@@ -224,7 +230,7 @@ const CustomAttributeRemoveDialog: React.FC<
     [i18n, customAttribute]
   );
 
-  const tableInstance = useReactTable<Rdf4jStatement>({
+  const tableInstance = useReactTable<RdfStatement>({
     columns,
     data: usageStatements,
     getCoreRowModel: getCoreRowModel(),
