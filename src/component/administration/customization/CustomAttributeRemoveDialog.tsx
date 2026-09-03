@@ -29,7 +29,6 @@ import CustomAttributeRdf4jValueNode, {
   IriType,
 } from "./CustomAttributeRdf4jValueNode";
 import { getShortLocale } from "../../../util/IntlUtil";
-import { getInitialPageSize } from "../../../action/SyncActions";
 import { FormattedMessage } from "react-intl";
 import {
   DOMAIN_OPTIONS,
@@ -41,6 +40,7 @@ import ValidationResult from "../../../model/form/ValidationResult";
 import { getLocalized } from "../../../model/MultilingualString";
 import CustomCheckBoxInput from "../../misc/CustomCheckboxInput";
 import "./CustomAttributeRemoveDialog.scss";
+import { getInitialPageSize } from "../../../util/UISettingsUtil";
 
 export interface CustomAttributeRemoveDialogProps {
   /**

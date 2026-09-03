@@ -254,7 +254,7 @@ export class ParentTermSelector extends React.Component<
             ref={this.treeComponent}
             value={resolveSelectedIris(this.props.parentTerms)}
             fetchOptions={this.fetchOptions}
-            fetchLimit={Constants.DEFAULT_PAGE_SIZE}
+            fetchLimit={Constants.DEFAULT_TREE_SELECT_FETCH_SIZE}
             maxHeight={200}
             multi={true}
             optionRenderer={createTermsWithImportsOptionRenderer(

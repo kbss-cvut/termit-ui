@@ -241,7 +241,7 @@ export function executeAdvancedSearch(
   searchParams: SearchParam[],
   pageSpec: PageRequest = {
     page: 0,
-    size: Constants.DEFAULT_PAGE_SIZE,
+    size: Constants.DEFAULT_TREE_SELECT_FETCH_SIZE,
   }
 ) {
   return (dispatch: ThunkDispatch) => {
