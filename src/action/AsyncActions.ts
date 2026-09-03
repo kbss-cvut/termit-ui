@@ -564,12 +564,8 @@ export function genericLoadTerms(
       const parentIri = VocabularyUtils.create(fetchOptions.optionID as string);
       url = `${getApiPrefix(getState())}/terms/${parentIri.fragment}/subterms`;
       target.namespace = parentIri.namespace;
-    } else if (!fetchOptions.searchString) {
-      if (fetchOptions.flatList) {
-        url += "/flat";
-      } else {
-        url += "/roots";
-      }
+    } else if (!fetchOptions.searchString && !fetchOptions.flatList) {
+      url += "/roots";
     }
     return Ajax.get(
       url,
