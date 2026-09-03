@@ -269,11 +269,11 @@ const cs = {
     "administration.customization.customAttributes.annotatedRelationships.help":
       "Vyberte, které vlastnosti vztahů mezi pojmy může tento vlastní atribut anotovat. Platí pouze když doména je 'Vztah mezi pojmy'.",
     "administration.customization.customAttributes.removal.description":
-      'Opravdu chcete nenávratně odstranit atribut "{label}"?',
+      'Opravdu chcete odstranit atribut "{label}"?',
     "administration.customization.customAttributes.removal.removeUsages":
-      "Odebrat všechny použití vlastního atributu.",
+      "Odebrat všechna použití vlastního atributu.",
     "administration.customization.customAttributes.removal.confirm":
-      "Pro potvrzení odstranění vlastního atributu a všech jeho použití, zadejte název atributu",
+      "Pro potvrzení odstranění vlastního atributu a všech jeho použití zadejte název atributu",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":

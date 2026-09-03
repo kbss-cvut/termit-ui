@@ -19,7 +19,7 @@ export function loadCustomAttributeUsage(
     const action = { type: ActionType.LOAD_CUSTOM_ATTRIBUTE_USAGE };
     dispatch(asyncActionRequest(action, true));
     return Ajax.getResponse(
-      Constants.API_PREFIX +
+      `${Constants.API_PREFIX}/data/custom-attributes/${attributeIri.fragment}/usage`
         `/data/custom-attributes/${attributeIri.fragment}/usage`,
       param("namespace", attributeIri.namespace)
         .param("size", pageRequest.size.toString())
@@ -44,7 +44,7 @@ export function removeCustomAttribute(
     const action = { type: ActionType.REMOVE_CUSTOM_ATTRIBUTE };
     dispatch(asyncActionRequest(action, false));
     return Ajax.delete(
-      Constants.API_PREFIX + `/data/custom-attributes/${attributeIri.fragment}`,
+      `${Constants.API_PREFIX}/data/custom-attributes/${attributeIri.fragment}`,
       param("namespace", attributeIri.namespace).param(
         "removeUsages",
         removeUsages.toString()
