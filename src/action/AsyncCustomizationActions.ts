@@ -10,7 +10,7 @@ import Ajax, { content, param } from "../util/Ajax";
 import { ErrorData } from "../model/ErrorInfo";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import { Rdf4jStatement } from "../model/Rdf4jStatement";
+import { RdfStatement } from "../model/RdfStatement";
 import { CustomAttribute, CustomAttributeData } from "../model/RdfsResource";
 import { createPropertyImpl, getPropertiesImpl } from "./AsyncActions";
 import Message from "../model/Message";
@@ -77,7 +77,7 @@ export function loadCustomAttributeUsage(
       .then((res) => {
         dispatch(asyncActionSuccess(action));
         return {
-          data: res.data as Rdf4jStatement[],
+          data: res.data as RdfStatement[],
           totalStatements: res?.headers[Constants.Headers.X_TOTAL_COUNT] || 0,
         };
       })
