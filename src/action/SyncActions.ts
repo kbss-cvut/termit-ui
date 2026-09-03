@@ -24,9 +24,8 @@ import {
   AnnotationOrigin,
 } from "../model/AnnotatorLegendFilter";
 import { saveTermsFlatListPreference } from "../util/UISettingsUtil";
-import Constants, { Language } from "../util/Constants";
+import { Language } from "../util/Constants";
 import MessageType from "../model/MessageType";
-import BrowserStorage from "../util/BrowserStorage";
 
 export function asyncActionRequest(
   a: Action,
@@ -216,18 +215,4 @@ export function setTermsFlatList(flatList: boolean): SetTermsFlatListAction {
     type: ActionType.SET_TERM_FLAT_LIST,
     flatList,
   };
-}
-
-/**
- * Tries to load saved page size from local storage.
- * If no size is saved, falls back to {@link Constants.DEFAULT_PAGE_SIZE}
- */
-export function getInitialPageSize() {
-  const savedSize = Number(
-    BrowserStorage.get(Constants.STORAGE_TABLE_PAGE_SIZE_KEY)
-  );
-  if (savedSize && Number.isFinite(savedSize)) {
-    return savedSize;
-  }
-  return Constants.DEFAULT_PAGE_SIZE;
 }

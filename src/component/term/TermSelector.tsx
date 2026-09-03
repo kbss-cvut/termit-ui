@@ -192,7 +192,7 @@ export const TermSelector: React.FC<{
         onChange={(v: readonly Term[]) => onChange(v)}
         value={selected}
         fetchOptions={fetchOptions}
-        fetchLimit={Constants.DEFAULT_PAGE_SIZE}
+        fetchLimit={Constants.DEFAULT_TREE_SELECT_FETCH_SIZE}
         maxHeight={200}
         multi={true}
         optionRenderer={createTermsWithImportsOptionRenderer(vocabularyIri)}
