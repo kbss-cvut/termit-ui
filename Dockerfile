@@ -21,7 +21,7 @@ RUN set -ex; \
 
 # RELEASE STAGE
 # Only include the static files in the final image
-FROM nginx:1.31.5-alpine
+FROM nginx:alpine
 
 # Make env var substitution happen on *.template files in the html dir
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=/usr/share/nginx/html \
