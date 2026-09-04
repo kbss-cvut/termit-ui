@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
+  Button,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
@@ -53,6 +54,9 @@ import {
 } from "../../../../model/MultilingualString";
 import TermLink from "../../../term/TermLink";
 import { HoverEditWrapper } from "./cell/HoverEditWrapper";
+import { IndeterminateCheckbox } from "../../../misc/IndeterminateCheckbox";
+import { useBatchEditTerms } from "../../../../query/hook/useBatchEditTerms";
+import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
@@ -79,6 +83,7 @@ const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
 const LOAD_MORE_THRESHOLD = 12;
 const VIRTUALIZED_ROW_ESTIMATE_SIZE = 46;
 const VIRTUALIZED_OVERSCAN_ROWS = 10;
+const CHECKBOX_COLUMN_WIDTH_REM = 3;
 
 const FONT_SIZE_OPTIONS = [70, 80, 90, 100] as const;
 type TableFontSize = (typeof FONT_SIZE_OPTIONS)[number];
@@ -109,6 +114,11 @@ export const VocabularySheetViewTable: React.FC<
   const [editingColumnId, setEditingColumnId] = React.useState<
     TermsTableColumn["id"] | null
   >(null);
+
+  const [selectedBatchUris, setSelectedBatchUris] = React.useState<Set<string>>(
+    new Set()
+  );
+  const [isBatchSidebarOpen, setIsBatchSidebarOpen] = React.useState(false);
 
   const [fontSize, setFontSize] = React.useState<TableFontSize>(() => {
     const stored = BrowserStorage.get("TERMS_TABLE_FONT_SIZE");
@@ -213,6 +223,29 @@ export const VocabularySheetViewTable: React.FC<
     [editingTermUri, loadedTerms, updateTermMutation, apiPrefix]
   );
 
+  const batchEditMutation = useBatchEditTerms();
+
+  const handleSaveBatchEditedTerms = React.useCallback(
+    async (updatedProperties: Omit<TermBatchEditDto, "targetTerms">) => {
+      if (selectedBatchUris.size === 0) return;
+
+      const payload = {
+        targetTerms: Array.from(selectedBatchUris),
+        ...updatedProperties,
+      };
+
+      await batchEditMutation.mutateAsync({
+        apiPrefix,
+        vocabularyIri: vocabulary.iri!,
+        data: payload,
+      });
+
+      setSelectedBatchUris(new Set());
+      setIsBatchSidebarOpen(false);
+    },
+    [selectedBatchUris, batchEditMutation, apiPrefix, vocabulary.iri]
+  );
+
   const availableTermLanguages = React.useMemo(
     () => resolveAvailableTermLanguages(loadedTerms, shortLocale),
     [loadedTerms, shortLocale]
@@ -270,6 +303,26 @@ export const VocabularySheetViewTable: React.FC<
       BrowserStorage.set("TERMS_TABLE_FONT_SIZE", size.toString());
     }
   };
+
+  const toggleBatchSelection = React.useCallback((iri: string) => {
+    setSelectedBatchUris((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(iri)) {
+        newSet.delete(iri);
+      } else {
+        newSet.add(iri);
+      }
+      return newSet;
+    });
+  }, []);
+
+  const toggleAllBatchSelection = React.useCallback(() => {
+    if (selectedBatchUris.size === displayedTerms.length) {
+      setSelectedBatchUris(new Set());
+    } else {
+      setSelectedBatchUris(new Set(displayedTerms.map((t) => t.iri)));
+    }
+  }, [displayedTerms, selectedBatchUris.size]);
 
   const renderExpandableTermListCell = React.useCallback(
     (
@@ -647,22 +700,23 @@ export const VocabularySheetViewTable: React.FC<
     [columns, columnVisibility]
   );
 
-  const gridTemplateColumns = React.useMemo(
-    () =>
-      visibleColumns.map((column) => resolveGridColumnWidth(column)).join(" "),
-    [visibleColumns]
-  );
+  const gridTemplateColumns = React.useMemo(() => {
+    const dataColumnsGrid = visibleColumns.map((column) =>
+      resolveGridColumnWidth(column)
+    );
+    return [`${CHECKBOX_COLUMN_WIDTH_REM}rem`, ...dataColumnsGrid].join(" ");
+  }, [visibleColumns]);
 
   const editingColumn = React.useMemo(() => {
     return columns.find((c) => c.id === editingColumnId) || null;
   }, [columns, editingColumnId]);
 
   const minGridWidth = React.useMemo(() => {
-    const totalMinWidthRem = visibleColumns.reduce(
+    const dataColumnsMinWidth = visibleColumns.reduce(
       (sum, column) => sum + column.minWidthRem,
       0
     );
-    return `${totalMinWidthRem}rem`;
+    return `${dataColumnsMinWidth + CHECKBOX_COLUMN_WIDTH_REM}rem`;
   }, [visibleColumns]);
 
   const rowVirtualizer = useVirtualizer({
@@ -722,6 +776,12 @@ export const VocabularySheetViewTable: React.FC<
       return newState;
     });
   };
+
+  const selectedBatchTerms = React.useMemo(() => {
+    return loadedTerms.filter(
+      (term) => term.iri && selectedBatchUris.has(term.iri)
+    );
+  }, [loadedTerms, selectedBatchUris]);
 
   return (
     <div className="vocabulary-sheet-view-table">
@@ -813,6 +873,18 @@ export const VocabularySheetViewTable: React.FC<
             ))}
           </DropdownMenu>
         </UncontrolledDropdown>
+        {selectedBatchUris.size > 0 && (
+          <Button
+            size="sm"
+            color="primary"
+            className="mr-2"
+            onClick={() => setIsBatchSidebarOpen(true)}
+          >
+            {formatMessage("vocabulary.batchEdit.button", {
+              count: selectedBatchUris.size,
+            })}
+          </Button>
+        )}
 
         <UncontrolledDropdown className="ml-auto">
           <DropdownToggle
@@ -863,6 +935,20 @@ export const VocabularySheetViewTable: React.FC<
           className="vocabulary-sheet-view-grid-header"
           style={{ gridTemplateColumns, minWidth: minGridWidth }}
         >
+          <div className="vocabulary-sheet-view-header-cell d-flex align-items-center justify-content-center">
+            <IndeterminateCheckbox
+              id="batch-edit-select-all"
+              checked={
+                selectedBatchUris.size > 0 &&
+                selectedBatchUris.size === displayedTerms.length
+              }
+              indeterminate={
+                selectedBatchUris.size > 0 &&
+                selectedBatchUris.size < displayedTerms.length
+              }
+              onChange={toggleAllBatchSelection}
+            />
+          </div>
           {visibleColumns.map((column) => (
             <div key={column.id} className="vocabulary-sheet-view-header-cell">
               {column.title}
@@ -904,22 +990,34 @@ export const VocabularySheetViewTable: React.FC<
                       <span>{i18n("glossary.table.loadingMore")}</span>
                     </div>
                   ) : (
-                    visibleColumns.map((column) => {
-                      const cellKey = getCellKey(virtualRow.index, column.id);
-                      const isExpandedCell = expandedCellKey === cellKey;
+                    <>
+                      <div className="vocabulary-sheet-view-cell d-flex align-items-center justify-content-center">
+                        <IndeterminateCheckbox
+                          id={`batch-edit-select-${term.iri}`}
+                          checked={selectedBatchUris.has(term.iri)}
+                          onChange={() => toggleBatchSelection(term.iri)}
+                        />
+                      </div>
+                      {visibleColumns.map((column) => {
+                        const cellKey = getCellKey(virtualRow.index, column.id);
+                        const isExpandedCell = expandedCellKey === cellKey;
 
-                      return (
-                        <div
-                          key={`${virtualRow.index}-${column.id}`}
-                          className={classNames("vocabulary-sheet-view-cell", {
-                            "vocabulary-sheet-view-cell-expanded":
-                              isExpandedCell,
-                          })}
-                        >
-                          {column.render(term, virtualRow.index)}
-                        </div>
-                      );
-                    })
+                        return (
+                          <div
+                            key={`${virtualRow.index}-${column.id}`}
+                            className={classNames(
+                              "vocabulary-sheet-view-cell",
+                              {
+                                "vocabulary-sheet-view-cell-expanded":
+                                  isExpandedCell,
+                              }
+                            )}
+                          >
+                            {column.render(term, virtualRow.index)}
+                          </div>
+                        );
+                      })}
+                    </>
                   )}
                 </div>
               );
@@ -941,15 +1039,21 @@ export const VocabularySheetViewTable: React.FC<
         </div>
       </div>
       <TermEditSidebar
-        isOpen={!!editingTermUri}
-        term={editingTermData || null}
-        column={editingColumn}
+        isOpen={!!editingTermUri || isBatchSidebarOpen}
         language={displayLanguage}
         onClose={() => {
           setEditingTermUri(null);
           setEditingColumnId(null);
+          setIsBatchSidebarOpen(false);
         }}
+        term={editingTermData || null}
+        column={editingColumn}
         onSave={handleSaveEditedTerm}
+        inBatchMode={isBatchSidebarOpen}
+        selectedTerms={selectedBatchTerms}
+        selectedTermIris={selectedBatchUris}
+        vocabularyIri={vocabulary.iri}
+        onBatchSave={handleSaveBatchEditedTerms}
       />
     </div>
   );

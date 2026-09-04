@@ -457,6 +457,12 @@ const en = {
     "vocabulary.acl.record.update.dialog.title": "Update access control record",
     "vocabulary.acl.record.update.success":
       "Access control record successfully updated.",
+    "vocabulary.batchEdit.title": "Batch edit terms",
+    "vocabulary.batchEdit.propertyToEdit": "Property to edit",
+    "vocabulary.batchEdit.propertySelect.placeholder": "Select property",
+    "vocabulary.batchEdit.button": "Batch Edit ({count})",
+    "vocabulary.batchEdit.selectedTerms": "Selected Terms",
+    "vocabulary.batchEdit.noExistingValues": "No existing values",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",

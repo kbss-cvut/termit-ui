@@ -30,28 +30,40 @@ import HelpIcon from "../misc/HelpIcon";
 import Constants from "../../util/Constants";
 import { setTermsFlatList } from "../../action/SyncActions";
 
-function filterOutCurrentTerm(terms: Term[], currentTermIri?: string) {
-  if (currentTermIri) {
-    const result: Term[] = [];
-    for (const t of terms) {
-      if (t.iri === currentTermIri) {
-        continue;
-      }
-      if (t.plainSubTerms) {
-        t.plainSubTerms = t.plainSubTerms.filter((st) => st !== currentTermIri);
-      }
-      result.push(t);
+/**
+ * Filters out terms that are either the current term or are in the
+ * hiddenTermIris set.
+ * @param terms The list of terms to filter.
+ * @param currentTermIri The IRI of the current term to exclude.
+ * @param hiddenTermIris A set of IRIs to exclude from the results.
+ * @return A new array of terms that do not include the current term or any
+ * terms in the hiddenTermIris set.
+ */
+function filterOutHiddenTerms(
+  terms: Term[],
+  currentTermIri?: string,
+  hiddenTermIris?: Set<string>
+): Term[] {
+  const result: Term[] = [];
+  for (const t of terms) {
+    if (t.iri === currentTermIri || hiddenTermIris?.has(t.iri!)) {
+      continue;
     }
-    return result;
-  } else {
-    return terms;
+    if (t.plainSubTerms) {
+      t.plainSubTerms = t.plainSubTerms.filter(
+        (st) => st !== currentTermIri && !hiddenTermIris?.has(st)
+      );
+    }
+    result.push(t);
   }
+  return result;
 }
 
 export interface ParentTermSelectorProps extends HasI18n {
   id: string;
   termIri?: string;
   parentTerms?: TermData[];
+  hiddenTermIris?: Set<string>;
   validationMessage?: string | React.JSX.Element;
   vocabularyIri: string;
   currentVocabulary?: Vocabulary;
@@ -169,7 +181,11 @@ export class ParentTermSelector extends React.Component<
       }
     ).then((terms) => {
       this.toggleIncludeImportedDisabled();
-      return filterOutCurrentTerm(terms, this.props.termIri);
+      return filterOutHiddenTerms(
+        terms,
+        this.props.termIri,
+        this.props.hiddenTermIris
+      );
     });
   };
 
