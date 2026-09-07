@@ -28,7 +28,7 @@ export const useBatchEditTerms = () => {
   return useMutation({
     mutationFn: async ({ vocabularyIri, data }: BatchEditParams) => {
       const vocabHelper = VocabularyUtils.create(vocabularyIri);
-      const reqUrl = `${Constants.SERVER_URL}/vocabularies/${vocabHelper.fragment}/terms`;
+      const reqUrl = `${Constants.API_PREFIX}/vocabularies/${vocabHelper.fragment}/terms`;
 
       const serverPayload = {
         targetTerms: data.targetTerms,
