@@ -463,6 +463,8 @@ const en = {
     "vocabulary.batchEdit.button": "Batch Edit ({count})",
     "vocabulary.batchEdit.selectedTerms": "Selected Terms",
     "vocabulary.batchEdit.noExistingValues": "No existing values",
+    "vocabulary.batchEdit.hideValues": "Hide current values",
+    "vocabulary.batchEdit.showValues": "Show current values",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",

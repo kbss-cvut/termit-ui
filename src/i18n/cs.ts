@@ -471,6 +471,8 @@ const cs = {
     "vocabulary.batchEdit.button": "Hromadná úprava ({count})",
     "vocabulary.batchEdit.noExistingValues": "Žádné existující hodnoty",
     "vocabulary.batchEdit.selectedTerms": "Vybrané pojmy",
+    "vocabulary.batchEdit.hideValues": "Skrýt aktuální hodnoty",
+    "vocabulary.batchEdit.showValues": "Zobrazit aktuální hodnoty",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",

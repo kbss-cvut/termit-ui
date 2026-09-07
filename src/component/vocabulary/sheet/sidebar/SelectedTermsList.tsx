@@ -127,7 +127,14 @@ export const SelectedTermsList: React.FC<SelectedTermsListProps> = ({
                   {getLocalizedInLanguage(term.label, language) || term.iri}
                 </span>
                 {isExpandable && (
-                  <span className="text-muted">
+                  <span
+                    className="text-muted"
+                    title={
+                      isExpanded
+                        ? i18n("vocabulary.batchEdit.hideValues")
+                        : i18n("vocabulary.batchEdit.showValues")
+                    }
+                  >
                     {isExpanded ? <FaMinus size={14} /> : <FaPlus size={14} />}
                   </span>
                 )}
