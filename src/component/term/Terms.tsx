@@ -417,7 +417,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             isClearable={!isDetailView}
             onChange={this.onTermSelect}
             value={this.props.selectedTerms}
-            valueIsControlled={false}
+            valueIsControlled={true}
             fetchOptions={this.fetchOptions}
             isMenuOpen={true}
             multi={false}
