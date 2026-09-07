@@ -288,6 +288,29 @@ const de = {
     "asset.modify.dialog.title": 'Ändern Sie {type} "{label}"',
     "asset.remove.dialog.text":
       'Sind Sie sicher, dass Sie {type} "{label}" entfernen möchten?',
+
+    "term.remove.description":
+      'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Legen Sie fest, wie mit abhängigen Daten verfahren werden soll.',
+    "term.remove.references.found":
+      "Auf diesen Begriff {count, plural, one {verweist # Beziehung} other {verweisen # Beziehungen}}.",
+    "term.remove.references.source": "Verweisende Entität",
+    "term.remove.references.relationship": "Beziehung",
+    "term.remove.subTermsStrategy": "Umgang mit Unterbegriffen",
+    "term.remove.subTermsStrategy.reconnect":
+      "Unterbegriffe eine Ebene nach oben verschieben",
+    "term.remove.subTermsStrategy.reconnect.description":
+      "Jeder Unterbegriff wird den übergeordneten Begriffen des zu entfernenden Begriffs untergeordnet. Bei einem Wurzelbegriff werden seine Unterbegriffe zu Wurzelbegriffen.",
+    "term.remove.subTermsStrategy.cascade": "Alle Unterbegriffe entfernen",
+    "term.remove.subTermsStrategy.cascade.description":
+      "Entfernt rekursiv alle Unterbegriffe mit denselben Einstellungen für Vorkommen und Beziehungen.",
+    "term.remove.occurrences": "Vorkommen des Begriffs entfernen",
+    "term.remove.occurrences.hint":
+      "Wenn diese Option nicht ausgewählt ist und der Begriff Vorkommen hat, schlägt das Entfernen fehl.",
+    "term.remove.relationships":
+      "Beziehungen entfernen, die auf diesen Begriff verweisen",
+    "term.remove.relationships.hint":
+      "Wenn diese Option nicht ausgewählt ist und eine Beziehung auf den Begriff verweist, schlägt das Entfernen fehl.",
+
     "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
       "Die Übersetzung im Vokabular der Primärsprache kann nicht entfernt werden!",
     "document.remove.tooltip.disabled":

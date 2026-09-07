@@ -279,6 +279,27 @@ const en = {
     "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
+
+    "term.remove.description":
+      'Are you sure you want to permanently remove the term "{label}"? Choose how to handle dependent data.',
+    "term.remove.references.found":
+      "This term is referenced by {count, plural, one {# relationship} other {# relationships}}.",
+    "term.remove.references.source": "Referencing entity",
+    "term.remove.references.relationship": "Relationship",
+    "term.remove.subTermsStrategy": "Handling of sub terms",
+    "term.remove.subTermsStrategy.reconnect": "Move sub terms up one level",
+    "term.remove.subTermsStrategy.reconnect.description":
+      "Each sub term becomes a child of the parent terms of the term being removed. If the term is a root term, its sub terms become root terms.",
+    "term.remove.subTermsStrategy.cascade": "Remove all sub terms",
+    "term.remove.subTermsStrategy.cascade.description":
+      "Recursively removes all sub terms using the same occurrence and relationship settings.",
+    "term.remove.occurrences": "Remove term occurrences",
+    "term.remove.occurrences.hint":
+      "If this option is not selected and the term has occurrences, removal will fail.",
+    "term.remove.relationships": "Remove relationships referencing this term",
+    "term.remove.relationships.hint":
+      "If this option is not selected and any relationship references the term, removal will fail.",
+
     "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
       "Cannot remove translation in the vocabulary primary language!",
 

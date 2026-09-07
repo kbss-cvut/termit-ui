@@ -6,7 +6,7 @@
  */
 import VocabularyUtils, { IRI, IRIImpl } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import { GetStoreState, ThunkDispatch } from "../util/Types";
+import { GetStoreState, PageRequest, ThunkDispatch } from "../util/Types";
 import * as SyncActions from "./SyncActions";
 import {
   asyncActionFailure,
@@ -35,6 +35,7 @@ import { getApiPrefix } from "./ActionUtils";
 import { AssetData } from "../model/Asset";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import TermItState from "../model/TermItState";
+import { Rdf4jStatement } from "../model/Rdf4jStatement";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -387,4 +388,35 @@ function fetchTerm(
       param("namespace", vocabularyIri.namespace).param("at", timestamp)
     );
   }
+}
+
+/**
+ * Loads statements from vocabulary graphs that reference the specified term as object.
+ *
+ * @param term term whose incoming references should be loaded
+ * @param pageRequest requested page and page size
+ */
+export function loadReferencesToTerm(term: Term, pageRequest: PageRequest) {
+  const vocabularyIri = VocabularyUtils.create(term.vocabulary!.iri!);
+  const termIri = VocabularyUtils.create(term.iri);
+  return (dispatch: ThunkDispatch) => {
+    const action = { type: ActionType.LOAD_REFERENCES_TO_TERM };
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.getResponse(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/${termIri.fragment}/references`,
+      param("namespace", vocabularyIri.namespace)
+        .param("size", pageRequest.size.toString())
+        .param("page", pageRequest.page.toString())
+    )
+      .then((response) => {
+        dispatch(asyncActionSuccess(action));
+        return {
+          data: response.data as Rdf4jStatement[],
+          totalStatements: Number(
+            response.headers[Constants.Headers.X_TOTAL_COUNT] || 0
+          ),
+        };
+      })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
 }

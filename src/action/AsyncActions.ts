@@ -73,6 +73,7 @@ import {
   VocabularyContentChangeFilterData,
 } from "../model/filter/VocabularyContentChangeFilterData";
 import ResourceSaveReason from "../component/annotator/ResourceSaveReason";
+import { TermRemovalOptions } from "../model/TermRemovalOptions";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -424,8 +425,22 @@ export function removeVocabulary(vocabulary: Vocabulary) {
   );
 }
 
-export function removeTerm(term: Term) {
+/**
+ * Removes a term and optionally configures handling of its dependent data.
+ * Omitting options preserves the server's default removal behavior.
+ *
+ * @param term term to remove
+ * @param removalOptions handling of sub-terms, occurrences, and relationships
+ */
+export function removeTerm(term: Term, removalOptions?: TermRemovalOptions) {
   const vocabularyIri = VocabularyUtils.create(term.vocabulary?.iri!);
+  const additionalParams = removalOptions
+    ? new Map([
+        ["subTermsStrategy", removalOptions.subTermsStrategy],
+        ["removeOccurrences", removalOptions.removeOccurrences.toString()],
+        ["removeRelationships", removalOptions.removeRelationships.toString()],
+      ])
+    : undefined;
   return removeAsset(
     VocabularyUtils.create(term.iri),
     vocabularyIri.namespace,
@@ -439,7 +454,8 @@ export function removeTerm(term: Term) {
       query: vocabularyIri.namespace
         ? new Map([["namespace", vocabularyIri.namespace]])
         : undefined,
-    }
+    },
+    additionalParams
   );
 }
 
@@ -451,14 +467,17 @@ export function removeAsset(
   load: () => (dispatch: ThunkDispatch, getState: GetStoreState) => Promise<{}>,
   messageId: string,
   transitionRoute: Route,
-  options?: {}
+  options?: {},
+  additionalParams?: Map<string, string>
 ) {
   const action: RemoveAssetAction = { type, iri: IRIImpl.toString(iri) };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
+    const requestConfig = param("namespace", namespace);
+    additionalParams?.forEach((value, key) => requestConfig.param(key, value));
     return Ajax.delete(
       Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
-      param("namespace", namespace)
+      requestConfig
     )
       .then(() => {
         dispatch(asyncActionSuccess(action));
