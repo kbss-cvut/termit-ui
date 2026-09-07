@@ -28,7 +28,6 @@ import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 import xorBy from "lodash/xorBy";
 import Vocabulary from "../../model/Vocabulary";
 import { FaTrashAlt } from "react-icons/fa";
-import RemoveAssetDialog from "../asset/RemoveAssetDialog";
 import {
   getLocalized,
   getLocalizedPlural,
@@ -61,6 +60,8 @@ import {
   loadTermRelationshipAnnotations,
   loadTermRelationshipsAnnotatedBy,
 } from "../../action/AsyncTermRelationshipAnnotationActions";
+import TermRemoveDialog from "./TermRemoveDialog";
+import { TermRemovalOptions } from "../../model/TermRemovalOptions";
 
 const USER_VOCABULARIES_VALIDATION_ENDPOINT =
   "/user" + Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_VALIDATION;
@@ -83,7 +84,7 @@ interface TermDetailProps
     HasStompClient,
     RouteComponentProps<any> {
   updateTerm: (term: Term) => Promise<any>;
-  removeTerm: (term: Term) => Promise<any>;
+  removeTerm: (term: Term, options?: TermRemovalOptions) => Promise<any>;
   requestVocabularyValidation: (
     vocabularyIri: IRI,
     stompClient: StompClient
@@ -237,8 +238,13 @@ export class TermDetail extends EditableComponent<
     }
   }
 
-  public onRemove = () => {
-    this.props.removeTerm(this.props.term!).then(() => {
+  public onRemove = (options: TermRemovalOptions) => {
+    if (!this.props.term || !options) {
+      this.onCloseRemove();
+      return;
+    }
+    const removal = this.props.removeTerm(this.props.term, options);
+    removal.then(() => {
       this.onCloseRemove();
     });
   };
@@ -309,9 +315,9 @@ export class TermDetail extends EditableComponent<
         />
 
         <HeaderWithActions title={this.renderTitle()} actions={buttons} />
-        <RemoveAssetDialog
+        <TermRemoveDialog
           show={this.state.showRemoveDialog}
-          asset={term}
+          term={term}
           onCancel={this.onCloseRemove}
           onSubmit={this.onRemove}
         />
@@ -386,7 +392,8 @@ export default connect(
       loadTerm: (termName: string, vocabularyIri: IRI, timestamp?: string) =>
         dispatch(loadTerm(termName, vocabularyIri, timestamp)),
       updateTerm: (term: Term) => dispatch(updateTerm(term)),
-      removeTerm: (term: Term) => dispatch(removeTerm(term)),
+      removeTerm: (term: Term, options?: TermRemovalOptions) =>
+        dispatch(removeTerm(term, options)),
       approveOccurrence: (occurrence: TermOccurrence) =>
         dispatch(approveOccurrence(occurrence)),
       removeOccurrence: (occurrence: TermOccurrence) =>

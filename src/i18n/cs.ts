@@ -290,6 +290,27 @@ const cs = {
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
+
+    "term.remove.description":
+      'Opravdu chcete trvale odstranit pojem "{label}"? Nastavte, jak se má naložit se závislými daty.',
+    "term.remove.references.found":
+      "Na tento pojem {count, plural, one {odkazuje # vztah} few {odkazují # vztahy} other {odkazuje # vztahů}}.",
+    "term.remove.references.source": "Odkazující",
+    "term.remove.references.relationship": "Vztah",
+    "term.remove.subTermsStrategy": "Zpracování podřazených pojmů",
+    "term.remove.subTermsStrategy.reconnect":
+      "Přesunout podřazené pojmy o úroveň výše",
+    "term.remove.subTermsStrategy.reconnect.description":
+      "Každý podřazený pojem se stane potomkem nadřazených pojmů odstraňovaného pojmu. U kořenového pojmu se jeho podřazené pojmy stanou kořenovými.",
+    "term.remove.subTermsStrategy.cascade": "Odstranit všechny podřazené pojmy",
+    "term.remove.subTermsStrategy.cascade.description":
+      "Rekurzivně odstraní všechny podřazené pojmy se stejným nastavením výskytů a vztahů.",
+    "term.remove.occurrences": "Odstranit výskyty pojmu",
+    "term.remove.occurrences.hint":
+      "Pokud tato volba není vybrána a pojem má výskyty, odstranění selže.",
+    "term.remove.relationships": "Odstranit vztahy odkazující na tento pojem",
+    "term.remove.relationships.hint":
+      "Pokud tato volba není vybrána a na pojem odkazuje nějaký vztah, odstranění selže.",
     "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
       "Nelze odebrat překlad pro hlavní jazyk slovníku!",
 
