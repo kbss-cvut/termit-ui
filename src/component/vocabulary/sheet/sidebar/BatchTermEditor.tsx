@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { trackPromise } from "react-promise-tracker";
 import { Button, FormGroup, Label } from "reactstrap";
@@ -58,6 +58,13 @@ export const BatchTermEditor: React.FC<BatchTermEditorProps> = ({
   const [localExactMatches, setLocalExactMatches] = useState<Term[]>([]);
   const [localRelatedMatches, setLocalRelatedMatches] = useState<Term[]>([]);
   const [localParentTerms, setLocalParentTerms] = useState<Term[]>([]);
+
+  useEffect(() => {
+    setLocalTypes([]);
+    setLocalExactMatches([]);
+    setLocalRelatedMatches([]);
+    setLocalParentTerms([]);
+  }, [selectedProperty]);
 
   const handleSave = () => {
     if (!selectedProperty) return;
