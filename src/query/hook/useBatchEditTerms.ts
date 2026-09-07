@@ -8,9 +8,9 @@ import Term from "../../model/Term";
 import { publishMessage } from "../../action/SyncActions";
 import { createFormattedMessage } from "../../model/Message";
 import MessageType from "../../model/MessageType";
+import Constants from "../../util/Constants";
 
 interface BatchEditParams {
-  apiPrefix: string;
   vocabularyIri: string;
   data: TermBatchEditDto;
 }
@@ -26,9 +26,9 @@ export const useBatchEditTerms = () => {
   const dispatch = useDispatch();
 
   return useMutation({
-    mutationFn: async ({ apiPrefix, vocabularyIri, data }: BatchEditParams) => {
+    mutationFn: async ({ vocabularyIri, data }: BatchEditParams) => {
       const vocabHelper = VocabularyUtils.create(vocabularyIri);
-      const reqUrl = `${apiPrefix}/vocabularies/${vocabHelper.fragment}/terms`;
+      const reqUrl = `${Constants.SERVER_URL}/vocabularies/${vocabHelper.fragment}/terms`;
 
       const serverPayload = {
         targetTerms: data.targetTerms,
