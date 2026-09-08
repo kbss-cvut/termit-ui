@@ -10,7 +10,7 @@ import {
   MultilingualString,
 } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
-import { RdfProperty } from "../../model/RdfsResource";
+import { CustomAttribute, RdfProperty } from "../../model/RdfsResource";
 import {
   HasUnmappedProperties,
   PropertyValueType,
@@ -54,27 +54,17 @@ export const CustomAttributesValues: React.FC<{
             <Col xl={10} md={8}>
               {Utils.sanitizeArray(asset.unmappedProperties.get(att.iri))
                 .length === 1 ? (
-                <CustomAttributeValue
-                  attribute={att}
-                  value={asset.unmappedProperties.get(att.iri)![0]}
-                />
+                renderValue(
+                  att,
+                  asset.unmappedProperties.get(att.iri)![0],
+                  asset,
+                  lang
+                )
               ) : (
                 <List type="unstyled" className="mb-3">
                   {asset.unmappedProperties.get(att.iri)?.map((val) => (
                     <li key={stringifyPropertyValue(val)}>
-                      <CustomAttributeValue attribute={att} value={val} />
-                      {(val as any).iri && (
-                        <RelationshipAnnotationButton
-                          relationship={{
-                            subject: asset,
-                            predicate: att.iri,
-                            predicateLabel: getLocalized(att.label, lang),
-                            object: val as HasIdentifier & {
-                              label: MultilingualString;
-                            },
-                          }}
-                        />
-                      )}
+                      {renderValue(att, val, asset, lang)}
                     </li>
                   ))}
                 </List>
@@ -85,6 +75,34 @@ export const CustomAttributesValues: React.FC<{
     </>
   );
 };
+
+function renderValue(
+  att: CustomAttribute,
+  val: PropertyValueType,
+  asset: HasUnmappedProperties &
+    HasIdentifier & {
+      label: MultilingualString;
+    },
+  lang: string
+) {
+  return (
+    <>
+      <CustomAttributeValue attribute={att} value={val} />
+      {(val as any).iri && (
+        <RelationshipAnnotationButton
+          relationship={{
+            subject: asset,
+            predicate: att.iri,
+            predicateLabel: getLocalized(att.label, lang),
+            object: val as HasIdentifier & {
+              label: MultilingualString;
+            },
+          }}
+        />
+      )}
+    </>
+  );
+}
 
 export const CustomAttributeValue: React.FC<{
   attribute: RdfProperty;
