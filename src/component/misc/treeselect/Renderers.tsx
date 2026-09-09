@@ -76,8 +76,14 @@ export function createTermRenderer<T extends TermData>(
       marginLeft: `${option.depth * 16}px`,
     };
 
-    const { valueKey, renderAsTree, labelKey, getOptionLabel, inputValue } =
-      params.selectProps;
+    const {
+      valueKey,
+      renderAsTree,
+      labelKey,
+      getOptionLabel,
+      getOptionTitle,
+      inputValue,
+    } = params.selectProps;
 
     const className = classNames("VirtualizedSelectOption", {
       VirtualizedSelectDisabledOption: params.isDisabled,
@@ -108,6 +114,7 @@ export function createTermRenderer<T extends TermData>(
         labelKey={labelKey}
         valueKey={valueKey}
         getOptionLabel={getOptionLabel}
+        getOptionTitle={getOptionTitle}
         style={optionStyle}
         searchString={inputValue}
         addonBefore={addonBefore}

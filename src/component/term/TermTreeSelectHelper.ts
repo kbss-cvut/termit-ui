@@ -17,6 +17,8 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     valueKey: "iri",
     getOptionLabel: (option: Term | TermData) =>
       getLocalized(option.label, getShortLocale(intl.locale)),
+    getOptionTitle: (option: Term | TermData) =>
+      getLocalized(option.definition, getShortLocale(intl.locale)),
     childrenKey: "plainSubTerms",
     renderAsTree: true,
     simpleTreeData: true,
