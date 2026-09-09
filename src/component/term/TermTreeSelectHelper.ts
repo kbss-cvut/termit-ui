@@ -7,6 +7,7 @@ import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchResult from "../../model/search/SearchResult";
 import unionBy from "lodash/unionBy";
+import removeMd from "remove-markdown";
 
 /**
  * Common properties for a tree selector containing terms
@@ -18,7 +19,7 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     getOptionLabel: (option: Term | TermData) =>
       getLocalized(option.label, getShortLocale(intl.locale)),
     getOptionTitle: (option: Term | TermData) =>
-      getLocalized(option.definition, getShortLocale(intl.locale)),
+      removeMd(getLocalized(option.definition, getShortLocale(intl.locale))),
     childrenKey: "plainSubTerms",
     renderAsTree: true,
     simpleTreeData: true,
