@@ -25,6 +25,11 @@ interface ResultItemProps {
   onMouseEnter?: (option: any) => void;
   onClick?: () => void;
   onToggleClick?: (option: any) => void;
+
+  /// checks whether the given option is expanded
+  isOptionExpanded: (option: any) => boolean;
+  /// checks whether the child is waiting for children options request
+  isOptionFetchingChild: (option: any) => boolean;
 }
 
 /**
@@ -71,6 +76,8 @@ class ResultItem extends React.Component<ResultItemProps> {
     const value: string = option[valueKey];
     const title = getOptionTitle ? getOptionTitle(option) : undefined;
 
+    const isFetchingChild = this.props.isOptionFetchingChild(value);
+
     return (
       <div
         className={this.props.className}
@@ -100,7 +107,7 @@ class ResultItem extends React.Component<ResultItemProps> {
           />
           {this.props.addonAfter}
 
-          {option.fetchingChild && (
+          {isFetchingChild && (
             <span className="Select-loading-zone" aria-hidden="true">
               <span className="Select-loading" />
             </span>
@@ -111,6 +118,7 @@ class ResultItem extends React.Component<ResultItemProps> {
   }
 
   private getCollapseButton() {
+    const isExpanded = this.props.isOptionExpanded(this.props.option);
     return (
       <button
         type="button"
@@ -123,7 +131,7 @@ class ResultItem extends React.Component<ResultItemProps> {
           cursor: "pointer",
         }}
       >
-        {this.props.option.expanded ? <ToggleMinusIcon /> : <TogglePlusIcon />}
+        {isExpanded ? <ToggleMinusIcon /> : <TogglePlusIcon />}
       </button>
     );
   }
