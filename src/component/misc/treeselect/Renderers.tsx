@@ -83,6 +83,8 @@ export function createTermRenderer<T extends TermData>(
       getOptionLabel,
       getOptionTitle,
       inputValue,
+      isOptionExpanded,
+      isOptionFetchingChild,
     } = params.selectProps;
 
     const className = classNames("VirtualizedSelectOption", {
@@ -120,6 +122,8 @@ export function createTermRenderer<T extends TermData>(
         addonBefore={addonBefore}
         addonAfter={addonAfter}
         displayInfoOnHover={false}
+        isOptionExpanded={isOptionExpanded}
+        isOptionFetchingChild={isOptionFetchingChild}
         {...eventHandlers}
       />
     );
