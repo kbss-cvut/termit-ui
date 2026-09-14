@@ -356,7 +356,7 @@ const de = {
     "vocabulary.summary.import.dialog.label":
       "Laden Sie eine exportierte Version dieses Vokabulars hoch",
     "vocabulary.summary.import.dialog.skosImport":
-      "Im SKOS-Format und mit einem einzelnen skos:ConceptScheme mit IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
+      "Im SKOS-Format und mit genau einem skos:ConceptScheme, dessen IRI der IRI dieses Vokabulars entspricht.",
     "vocabulary.summary.import.dialog.excelImport":
       "Als MS-Excel-Datei entsprechend <a>dieser Vorlage</a>",
     "vocabulary.summary.import.excel.template.tooltip":

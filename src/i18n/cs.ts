@@ -356,7 +356,7 @@ const cs = {
     "vocabulary.summary.import.dialog.label":
       "Nahrajte vyexportovanou verzi tohoto slovníku",
     "vocabulary.summary.import.dialog.skosImport":
-      "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář.",
+      "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI odpovídající IRI tohoto slovníku.",
     "vocabulary.summary.import.dialog.excelImport":
       "Ve formátu MS Excel odpovídající <a>této šabloně</a>",
     "vocabulary.summary.import.excel.template.tooltip":
