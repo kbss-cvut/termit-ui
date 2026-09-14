@@ -922,7 +922,7 @@ const cs = {
 
     "message.welcome": "Vítejte v aplikaci TermIt!",
     "link.external.title": "{url} - otevřít v nové záložce",
-    "properties.edit.title": "Další atributy",
+    "properties.edit.title": "Ostatní atributy",
     "properties.empty": "Žádné další atributy nebyly nalezeny.",
     "properties.edit.remove": "Odebrat tuto hodnotu",
     "properties.edit.remove.text": "Odebrat",

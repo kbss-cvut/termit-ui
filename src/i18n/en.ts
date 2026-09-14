@@ -916,7 +916,7 @@ const en = {
 
     "message.welcome": "Welcome to TermIt!",
     "link.external.title": "{url} - open in a new browser tab",
-    "properties.edit.title": "Additional properties",
+    "properties.edit.title": "Other properties",
     "properties.empty": "There are no additional properties here.",
     "properties.edit.remove": "Remove this property value",
     "properties.edit.remove.text": "Remove",
