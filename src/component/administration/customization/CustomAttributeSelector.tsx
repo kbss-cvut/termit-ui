@@ -10,7 +10,7 @@ export type SelectorOption = {
 };
 
 // When extending RANGE_OPTIONS or DOMAIN_OPTIONS, make sure that
-// CustomAttributeRdf4jValueNode.tsx is able to render the new type
+// RdfValueNode.tsx is able to render the new type
 
 export const RANGE_OPTIONS: SelectorOption[] = [
   {

@@ -85,10 +85,10 @@ export interface RdfStatement {
   context: RdfResource;
 }
 
-export function toIRIImpl(rdf4jIri: RdfIRI) {
+export function toIRIImpl(rdfIri: RdfIRI) {
   return IRIImpl.create({
-    namespace: rdf4jIri.namespace,
-    fragment: rdf4jIri.localName,
+    namespace: rdfIri.namespace,
+    fragment: rdfIri.localName,
   });
 }
 
