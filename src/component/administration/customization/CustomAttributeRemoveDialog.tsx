@@ -24,10 +24,7 @@ import {
   PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
-import CustomAttributeRdfValueNode, {
-  getIriType,
-  IriType,
-} from "./CustomAttributeRdfValueNode";
+import RdfValueNode, { getIriType, IriType } from "../../misc/RdfValueNode";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { FormattedMessage } from "react-intl";
 import {
@@ -107,7 +104,7 @@ function defineColumns(
       header: getColumnLabel(customAttribute?.domainIri, i18n, "subject"),
       accessorKey: "subject",
       cell: (info) => (
-        <CustomAttributeRdfValueNode
+        <RdfValueNode
           value={info.getValue() as RdfResource}
           type={subjectType}
         />
@@ -117,17 +114,14 @@ function defineColumns(
       header: getColumnLabel(customAttribute?.rangeIri, i18n, "object"),
       accessorKey: "object",
       cell: (info) => (
-        <CustomAttributeRdfValueNode
-          value={info.getValue() as RdfValue}
-          type={objectType}
-        />
+        <RdfValueNode value={info.getValue() as RdfValue} type={objectType} />
       ),
     },
     {
       header: i18n("type.vocabulary"),
       accessorKey: "context",
       cell: (info) => (
-        <CustomAttributeRdfValueNode
+        <RdfValueNode
           value={info.getValue() as RdfIRI}
           type={IriType.VOCABULARY}
         />
