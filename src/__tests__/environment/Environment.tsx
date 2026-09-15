@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ReactElement } from "react";
 import { mount, MountRendererProps } from "enzyme";
+import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import intlData from "../../i18n/en";
 import { IntlProvider } from "react-intl";
 import { Provider } from "react-redux";
@@ -51,6 +52,34 @@ export function mountWithIntl(
       ),
       properties
     ),
+    options
+  );
+}
+
+/**
+ * React Testing Library equivalent of {@link mountWithIntl}.
+ *
+ * Wraps the specified component in Provider and IntlProvider, so that Redux and React Intl context are set up,
+ * and renders it using React Testing Library's `render` function.
+ *
+ * This is part of the ongoing migration away from Enzyme (TODO(enzyme-migration)). New tests should prefer this
+ * helper (and React Testing Library in general) over {@link mountWithIntl}. Existing Enzyme-based tests are left
+ * untouched and can be migrated incrementally.
+ * @param node The element to render
+ * @param options Optional React Testing Library render options
+ * @param intl Optional intl data. If not specified, default will be used
+ */
+export function renderWithIntl(
+  node: ReactElement<any>,
+  options?: RenderOptions,
+  intl: IntlData = intlData
+): RenderResult {
+  // Load locales for the TimeAgo library
+  TimeAgo.addLocale(require("javascript-time-ago/locale/en"));
+  return render(
+    <Provider store={mockStore}>
+      <IntlProvider {...intl}>{node}</IntlProvider>
+    </Provider>,
     options
   );
 }
