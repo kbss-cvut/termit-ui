@@ -5,14 +5,14 @@ import {
   RdfValue,
   RdfValueType,
   toIRIImpl,
-} from "../../../model/RdfStatement";
+} from "../../model/RdfStatement";
 import * as React from "react";
 import { useMemo } from "react";
-import VocabularyIriLink from "../../vocabulary/VocabularyIriLink";
-import TermIriLink from "../../term/TermIriLink";
-import Utils from "../../../util/Utils";
-import OutgoingLink from "../../misc/OutgoingLink";
-import VocabularyUtils from "../../../util/VocabularyUtils";
+import VocabularyIriLink from "../vocabulary/VocabularyIriLink";
+import TermIriLink from "../term/TermIriLink";
+import Utils from "../../util/Utils";
+import OutgoingLink from "../misc/OutgoingLink";
+import VocabularyUtils from "../../util/VocabularyUtils";
 import { UncontrolledTooltip } from "reactstrap";
 
 /**
@@ -108,11 +108,11 @@ const RdfLiteralNode: React.FC<{ literal: RdfLiteral }> = ({ literal }) => {
 const RdfTripleNode: React.FC<{ triple: RdfTriple }> = ({ triple }) => {
   return (
     <>
-      <CustomAttributeRdfValueNode value={triple.subject} type={IriType.TERM} />
+      <RdfValueNode value={triple.subject} type={IriType.TERM} />
       <br />
-      <CustomAttributeRdfValueNode value={triple.predicate} />
+      <RdfValueNode value={triple.predicate} />
       <br />
-      <CustomAttributeRdfValueNode value={triple.object} type={IriType.TERM} />
+      <RdfValueNode value={triple.object} type={IriType.TERM} />
     </>
   );
 };
@@ -127,7 +127,7 @@ export interface RdfValueNodeProps {
  * If the value is {@link RdfIRI} and type is provided,
  * a link to the respective entity is rendered.
  */
-const CustomAttributeRdfValueNode: React.FC<RdfValueNodeProps> = ({
+const RdfValueNode: React.FC<RdfValueNodeProps> = ({
   value,
   type = IriType.UNKNOWN,
 }) => {
@@ -146,4 +146,4 @@ const CustomAttributeRdfValueNode: React.FC<RdfValueNodeProps> = ({
   return null;
 };
 
-export default CustomAttributeRdfValueNode;
+export default RdfValueNode;
