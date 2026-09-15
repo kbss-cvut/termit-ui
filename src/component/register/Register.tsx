@@ -1,12 +1,10 @@
 import * as React from "react";
-import { FormattedMessage, injectIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { Card, CardBody, CardHeader } from "reactstrap";
-import withI18n, { HasI18n } from "../hoc/withI18n";
 import Routes from "../../util/Routes";
 import Routing from "../../util/Routing";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
-import { AsyncFailureAction, MessageAction } from "../../action/ActionType";
 import { ThunkDispatch } from "../../util/Types";
 import SecurityUtils from "../../util/SecurityUtils";
 import PublicLayout from "../layout/PublicLayout";
@@ -17,35 +15,34 @@ import Constants from "../../util/Constants";
 import { Link } from "react-router-dom";
 import WindowTitle from "../misc/WindowTitle";
 import IfInternalAuth from "../misc/oidc/IfInternalAuth";
+import { useI18n } from "../hook/useI18n";
 
-interface RegisterProps extends HasI18n {
-  loading: boolean;
-  register: (
-    user: UserAccountData
-  ) => Promise<AsyncFailureAction | MessageAction>;
-}
+export const Register: React.FC = () => {
+  const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  const loading = useSelector((s: TermItState) => s.loading);
 
-export const Register: React.FC<RegisterProps> = (props) => {
   React.useEffect(() => {
     SecurityUtils.clearToken();
   }, []);
 
-  const onRegister = (userData: UserAccountData) => props.register(userData);
+  const onRegister = (userData: UserAccountData) =>
+    dispatch(register(userData));
   const onCancel = () => Routing.transitionTo(Routes.login);
   return (
-    <PublicLayout title={props.i18n("register.title")}>
-      <WindowTitle title={props.i18n("register.title")} />
+    <PublicLayout title={i18n("register.title")}>
+      <WindowTitle title={i18n("register.title")} />
       <IfInternalAuth>
         <Card className="modal-panel">
           <CardHeader className="border-bottom-0 pb-0 text-center">
             <h1>{Constants.APP_NAME}</h1>
-            <div>{props.i18n("register.subtitle")}</div>
+            <div>{i18n("register.subtitle")}</div>
           </CardHeader>
           <CardBody>
             <RegistrationForm
               register={onRegister}
               cancel={onCancel}
-              loading={props.loading}
+              loading={loading}
             />
             <div className="text-center">
               <FormattedMessage
@@ -54,6 +51,7 @@ export const Register: React.FC<RegisterProps> = (props) => {
                   a: (chunks: any) => (
                     <Link
                       id="register-login"
+                      data-testid="register-login"
                       to={Routes.login.link()}
                       className="bold"
                     >
@@ -70,15 +68,4 @@ export const Register: React.FC<RegisterProps> = (props) => {
   );
 };
 
-export default connect(
-  (state: TermItState) => {
-    return {
-      loading: state.loading,
-    };
-  },
-  (dispatch: ThunkDispatch) => {
-    return {
-      register: (user: UserAccountData) => dispatch(register(user)),
-    };
-  }
-)(injectIntl(withI18n(Register)));
+export default Register;
