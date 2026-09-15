@@ -1,12 +1,6 @@
 import { Register } from "../Register";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import ActionType, { AsyncFailureAction } from "../../../action/ActionType";
 import SecurityUtils from "../../../util/SecurityUtils";
-import {
-  flushPromises,
-  mountWithIntl,
-} from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router";
 
 vi.mock("../../../util/Routing");
@@ -14,23 +8,12 @@ vi.mock("../../../util/Ajax");
 vi.mock("../../../util/SecurityUtils");
 
 describe("Registration", () => {
-  let register: () => Promise<AsyncFailureAction>;
-
-  beforeEach(() => {
-    register = vi
-      .fn()
-      .mockImplementation(() => Promise.resolve({ type: ActionType.LOGIN }));
-  });
-
-  it("clears potentially existing JWT on mount", async () => {
-    mountWithIntl(
+  it("clears potentially existing JWT on mount", () => {
+    renderWithIntl(
       <MemoryRouter>
-        <Register loading={false} register={register} {...intlFunctions()} />
+        <Register />
       </MemoryRouter>
     );
-    await act(async () => {
-      await flushPromises();
-    });
     expect(SecurityUtils.clearToken).toHaveBeenCalled();
   });
 });
