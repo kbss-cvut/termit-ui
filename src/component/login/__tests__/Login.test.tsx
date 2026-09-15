@@ -1,27 +1,32 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Login } from "../Login";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { MessageAction } from "../../../action/ActionType";
 import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router";
 import * as Constants from "../../../util/Constants";
 import ConfigParam from "../../../util/ConfigParam";
 import Message from "../../../model/Message";
 import MessageType from "../../../model/MessageType";
+import { login } from "../../../action/AsyncUserActions";
+import ActionType from "../../../action/ActionType";
 
 vi.mock("../../../util/Routing");
+vi.mock("../../../action/AsyncUserActions", () => ({
+  ...vi.importActual("../../../action/AsyncUserActions"),
+  login: vi.fn(),
+}));
+
+const mockedLogin = vi.mocked(login, true);
 
 describe("Login", () => {
-  let login: (username: string, password: string) => Promise<MessageAction>;
-
   beforeEach(() => {
-    login = vi.fn().mockImplementation(() =>
+    mockedLogin.mockReset().mockReturnValue(() =>
       Promise.resolve({
         message: new Message(
           { message: "dummy success message" },
           MessageType.SUCCESS
         ),
+        type: ActionType.LOGIN,
       })
     );
   });
@@ -30,7 +35,7 @@ describe("Login", () => {
     const user = userEvent.setup();
     renderWithIntl(
       <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
+        <Login />
       </MemoryRouter>
     );
     const button = screen.getByTestId("login-submit");
@@ -48,7 +53,7 @@ describe("Login", () => {
     const user = userEvent.setup();
     renderWithIntl(
       <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
+        <Login />
       </MemoryRouter>
     );
     const button = screen.getByTestId("login-submit");
@@ -62,31 +67,31 @@ describe("Login", () => {
     const user = userEvent.setup();
     renderWithIntl(
       <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
+        <Login />
       </MemoryRouter>
     );
     await user.type(screen.getByTestId("login-username"), "aaaa");
     await user.type(screen.getByTestId("login-password"), "aaaa{enter}");
-    expect(login).toHaveBeenCalled();
+    expect(mockedLogin).toHaveBeenCalled();
   });
 
   it("does not invoke login when enter is pressed and one field is invalid", async () => {
     const user = userEvent.setup();
     renderWithIntl(
       <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
+        <Login />
       </MemoryRouter>
     );
     await user.type(screen.getByTestId("login-username"), "aaaa");
     await user.type(screen.getByTestId("login-password"), "{enter}");
-    expect(login).not.toHaveBeenCalled();
+    expect(mockedLogin).not.toHaveBeenCalled();
   });
 
   it("renders registration link by default", () => {
     vi.spyOn(Constants, "getEnv").mockReturnValue("false");
     renderWithIntl(
       <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
+        <Login />
       </MemoryRouter>
     );
     expect(screen.queryByTestId("login-register")).toBeInTheDocument();
@@ -98,7 +103,7 @@ describe("Login", () => {
     });
     renderWithIntl(
       <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
+        <Login />
       </MemoryRouter>
     );
     expect(screen.queryByTestId("login-register")).not.toBeInTheDocument();
@@ -113,7 +118,7 @@ describe("Login", () => {
     });
     renderWithIntl(
       <MemoryRouter>
-        <Login loading={false} login={login} {...intlFunctions()} />
+        <Login />
       </MemoryRouter>
     );
     expect(screen.queryByTestId("login-public-view")).not.toBeInTheDocument();
