@@ -35,7 +35,7 @@ import { getApiPrefix } from "./ActionUtils";
 import { AssetData } from "../model/Asset";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import TermItState from "../model/TermItState";
-import { Rdf4jStatement } from "../model/Rdf4jStatement";
+import { RdfStatement } from "../model/RdfStatement";
 
 const ENDPOINT = `${Constants.API_PREFIX}/vocabularies/`;
 
@@ -411,7 +411,7 @@ export function loadReferencesToTerm(term: Term, pageRequest: PageRequest) {
       .then((response) => {
         dispatch(asyncActionSuccess(action));
         return {
-          data: response.data as Rdf4jStatement[],
+          data: response.data as RdfStatement[],
           totalStatements: Number(
             response.headers[Constants.Headers.X_TOTAL_COUNT] || 0
           ),

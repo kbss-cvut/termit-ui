@@ -14,13 +14,8 @@ import {
   SubTermRemovalStrategy,
   TermRemovalOptions,
 } from "../../model/TermRemovalOptions";
-import {
-  Rdf4jIRI,
-  Rdf4jResource,
-  Rdf4jStatement,
-} from "../../model/Rdf4jStatement";
+import { RdfIRI, RdfResource, RdfStatement } from "../../model/RdfStatement";
 import { getLocalized } from "../../model/MultilingualString";
-import { getInitialPageSize } from "../../action/SyncActions";
 import { loadReferencesToTerm } from "../../action/AsyncTermActions";
 import { getShortLocale } from "../../util/IntlUtil";
 import { ThunkDispatch } from "../../util/Types";
@@ -29,11 +24,10 @@ import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import Select from "../misc/Select";
 import Table from "../misc/table/Table";
-import Rdf4jValueNode, {
-  IriType,
-} from "../administration/customization/CustomAttributeRdf4jValueNode";
+import Rdf4jValueNode, { IriType } from "../misc/RdfValueNode";
 import { useI18n } from "../hook/useI18n";
 import "./TermRemoveDialog.scss";
+import { getInitialPageSize } from "../../util/UISettingsUtil";
 
 export interface TermRemoveDialogProps {
   /** Whether the dialog is visible. */
@@ -83,14 +77,14 @@ const DEFAULT_STRATEGY_OPTION = STRATEGY_OPTIONS[0].value;
  */
 function defineColumns(
   i18n: (id: string) => string
-): ColumnDef<Rdf4jStatement>[] {
+): ColumnDef<RdfStatement>[] {
   return [
     {
       header: i18n("term.remove.references.source"),
       accessorKey: "subject",
       cell: (info) => (
         <Rdf4jValueNode
-          value={info.getValue() as Rdf4jResource}
+          value={info.getValue() as RdfResource}
           type={IriType.TERM}
         />
       ),
@@ -98,13 +92,13 @@ function defineColumns(
     {
       header: i18n("term.remove.references.relationship"),
       accessorKey: "predicate",
-      cell: (info) => <Rdf4jValueNode value={info.getValue() as Rdf4jIRI} />,
+      cell: (info) => <Rdf4jValueNode value={info.getValue() as RdfIRI} />,
     },
     {
       header: i18n("type.vocabulary"),
       accessorKey: "context",
       cell: (info) => {
-        const context = info.getValue() as Rdf4jResource | null;
+        const context = info.getValue() as RdfResource | null;
         return context ? (
           <Rdf4jValueNode value={context} type={IriType.VOCABULARY} />
         ) : null;
@@ -173,7 +167,7 @@ const TermRemoveDialog: React.FC<TermRemoveDialogProps> = ({
 }) => {
   const { i18n, formatMessage, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  const [references, setReferences] = useState<Rdf4jStatement[]>([]);
+  const [references, setReferences] = useState<RdfStatement[]>([]);
   const [totalReferences, setTotalReferences] = useState(0);
   const [pagination, setPagination] =
     useState<PaginationState>(INITIAL_PAGINATION);
@@ -218,7 +212,7 @@ const TermRemoveDialog: React.FC<TermRemoveDialogProps> = ({
   }, [dispatch, show, term, pagination.pageSize, pagination.pageIndex]);
 
   const columns = useMemo(() => defineColumns(i18n), [i18n]);
-  const tableInstance = useReactTable<Rdf4jStatement>({
+  const tableInstance = useReactTable<RdfStatement>({
     columns,
     data: references,
     getCoreRowModel: getCoreRowModel(),
