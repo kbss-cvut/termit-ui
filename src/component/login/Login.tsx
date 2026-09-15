@@ -72,6 +72,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
               <Messages renderInPlace={true} />
               <EnhancedInput
                 name="username"
+                data-testid="login-username"
                 label={i18n("login.username")}
                 autoComplete="username"
                 labelDirection={LabelDirection.vertical}
@@ -83,6 +84,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
               <EnhancedInput
                 type="password"
                 name="password"
+                data-testid="login-password"
                 autoComplete="current-password"
                 labelDirection={LabelDirection.vertical}
                 label={i18n("login.password")}
@@ -95,6 +97,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
 
               <Button
                 id="login-submit"
+                data-testid="login-submit"
                 color="success"
                 onClick={this.login}
                 className="btn-block"
@@ -151,6 +154,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
             a: (chunks: any) => (
               <Link
                 id="login-register"
+                data-testid="login-register"
                 to={Routes.register.link()}
                 className="bold"
               >
@@ -175,6 +179,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
             a: (chunks: any) => (
               <Link
                 id="login-public-view"
+                data-testid="login-public-view"
                 to={Routes.publicVocabularies.link()}
                 className="bold"
               >

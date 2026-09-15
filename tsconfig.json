@@ -24,17 +24,9 @@
     "skipLibCheck": true,
     "strict": true,
     "typeRoots": ["node_modules/@types", "src/@types"],
-    "types": ["node", "jest", "vite/client", "vitest/globals"],
+    "types": ["node", "vite/client"],
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "exclude": [
-    "node_modules",
-    "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "**/__tests__",
-    "**/__mocks__"
-  ]
+  "exclude": ["node_modules", "build", "scripts", "acceptance-tests", "webpack"]
 }

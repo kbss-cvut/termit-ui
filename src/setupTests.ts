@@ -1,8 +1,12 @@
+/// <reference types="vitest/globals" />
 import { TextDecoder, TextEncoder } from "util";
 import "vitest-localstorage-mock";
 import { configure } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import enableHooks from "vitest-react-hooks-shallow";
+// TODO(enzyme-migration): remove the Enzyme adapter config above once all tests
+// have been migrated to React Testing Library.
+import "@testing-library/jest-dom/vitest";
 
 configure({ adapter: new Adapter() });
 
