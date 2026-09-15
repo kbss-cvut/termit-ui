@@ -4,7 +4,6 @@ import { FormattedMessage } from "react-intl";
 import { FormText, Label } from "reactstrap";
 import {
   ColumnDef,
-  getCoreRowModel,
   PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -24,7 +23,7 @@ import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import Select from "../misc/Select";
 import Table from "../misc/table/Table";
-import Rdf4jValueNode, { IriType } from "../misc/RdfValueNode";
+import RdfValueNode, { IriType } from "../misc/RdfValueNode";
 import { useI18n } from "../hook/useI18n";
 import "./TermRemoveDialog.scss";
 import { getInitialPageSize } from "../../util/UISettingsUtil";
@@ -83,7 +82,7 @@ function defineColumns(
       header: i18n("term.remove.references.source"),
       accessorKey: "subject",
       cell: (info) => (
-        <Rdf4jValueNode
+        <RdfValueNode
           value={info.getValue() as RdfResource}
           type={IriType.TERM}
         />
@@ -92,7 +91,7 @@ function defineColumns(
     {
       header: i18n("term.remove.references.relationship"),
       accessorKey: "predicate",
-      cell: (info) => <Rdf4jValueNode value={info.getValue() as RdfIRI} />,
+      cell: (info) => <RdfValueNode value={info.getValue() as RdfIRI} />,
     },
     {
       header: i18n("type.vocabulary"),
@@ -100,7 +99,7 @@ function defineColumns(
       cell: (info) => {
         const context = info.getValue() as RdfResource | null;
         return context ? (
-          <Rdf4jValueNode value={context} type={IriType.VOCABULARY} />
+          <RdfValueNode value={context} type={IriType.VOCABULARY} />
         ) : null;
       },
     },
