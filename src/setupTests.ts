@@ -18,14 +18,30 @@ configure({ adapter: new Adapter() });
 // Polyfill for document.createRange which is needed by some tests
 // https://github.com/mui-org/material-ui/issues/15726
 // This is fixed in jest 26, but react scripts v4 are needed for that
-(global as any).document.createRange = () => ({
-  setStart: () => {},
-  setEnd: () => {},
-  commonAncestorContainer: {
-    nodeName: "BODY",
-    ownerDocument: document,
-  },
-});
+(global as any).document.createRange = () => {
+  if (typeof Range !== "undefined") {
+    const range = new Range();
+    range.setStart(document.body, 0);
+    range.setEnd(document.body, 0);
+    return range;
+  }
+  return {
+    setStart: () => {},
+    setEnd: () => {},
+    cloneRange: () => ({
+      setStart: () => {},
+      setEnd: () => {},
+      commonAncestorContainer: {
+        nodeName: "BODY",
+        ownerDocument: document,
+      },
+    }),
+    commonAncestorContainer: {
+      nodeName: "BODY",
+      ownerDocument: document,
+    },
+  };
+};
 
 enableHooks(vi, { dontMockByDefault: true });
 

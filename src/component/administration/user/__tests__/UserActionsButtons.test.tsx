@@ -1,9 +1,7 @@
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Generator from "../../../../__tests__/environment/Generator";
-import { shallow } from "enzyme";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../../__tests__/environment/IntlUtil";
+import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import User from "../../../../model/User";
 import Utils from "../../../../util/Utils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
@@ -25,77 +23,74 @@ describe("UserRow", () => {
   });
 
   it("renders disable button for non-disabled user", () => {
-    const wrapper = shallow(
+    const { container } = render(
       <UserActionsButtons
         user={user}
         currentUser={Generator.generateUser()}
         {...actions}
-        {...intlFunctions()}
       />
     );
     expect(
-      wrapper.exists(`#user-${Utils.hashCode(user.iri)}-disable`)
+      container.querySelector(`#user-${Utils.hashCode(user.iri)}-disable`)
     ).toBeTruthy();
   });
 
   it("renders enable button for disabled user", () => {
     user.types.push(VocabularyUtils.USER_DISABLED);
-    const wrapper = shallow(
+    const { container } = render(
       <UserActionsButtons
         user={user}
         currentUser={Generator.generateUser()}
         {...actions}
-        {...intlFunctions()}
       />
     );
     expect(
-      wrapper.exists(`#user-${Utils.hashCode(user.iri)}-disable`)
+      container.querySelector(`#user-${Utils.hashCode(user.iri)}-disable`)
     ).toBeFalsy();
     expect(
-      wrapper.exists(`#user-${Utils.hashCode(user.iri)}-enable`)
+      container.querySelector(`#user-${Utils.hashCode(user.iri)}-enable`)
     ).toBeTruthy();
   });
 
-  it("invokes disable action when disable button is clicked", () => {
-    const wrapper = shallow(
+  it("invokes disable action when disable button is clicked", async () => {
+    const ue = userEvent.setup();
+    const { container } = render(
       <UserActionsButtons
         user={user}
         currentUser={Generator.generateUser()}
         {...actions}
-        {...intlFunctions()}
       />
     );
-    const button = wrapper.find(`#user-${Utils.hashCode(user.iri)}-disable`);
-    expect(button.exists()).toBeTruthy();
-    button.simulate("click");
+    const button = container.querySelector(
+      `#user-${Utils.hashCode(user.iri)}-disable`
+    ) as HTMLElement;
+    expect(button).toBeTruthy();
+    await ue.click(button);
     expect(actions.disable).toHaveBeenCalledWith(user);
   });
 
-  it("invokes enable action when enable button is clicked", () => {
+  it("invokes enable action when enable button is clicked", async () => {
     user.types.push(VocabularyUtils.USER_DISABLED);
-    const wrapper = shallow(
+    const ue = userEvent.setup();
+    const { container } = render(
       <UserActionsButtons
         user={user}
         currentUser={Generator.generateUser()}
         {...actions}
-        {...intlFunctions()}
       />
     );
-    const button = wrapper.find(`#user-${Utils.hashCode(user.iri)}-enable`);
-    expect(button.exists()).toBeTruthy();
-    button.simulate("click");
+    const button = container.querySelector(
+      `#user-${Utils.hashCode(user.iri)}-enable`
+    ) as HTMLElement;
+    expect(button).toBeTruthy();
+    await ue.click(button);
     expect(actions.enable).toHaveBeenCalledWith(user);
   });
 
   it("does not render action buttons for currently logged-in user", () => {
-    const wrapper = shallow(
-      <UserActionsButtons
-        user={user}
-        currentUser={user}
-        {...actions}
-        {...intlFunctions()}
-      />
+    const { container } = render(
+      <UserActionsButtons user={user} currentUser={user} {...actions} />
     );
-    expect(wrapper.exists("Button")).toBeFalsy();
+    expect(container.querySelector("button")).toBeFalsy();
   });
 });
