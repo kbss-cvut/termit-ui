@@ -1,3 +1,4 @@
+import { screen } from "@testing-library/react";
 import { MainView } from "../MainView";
 import User, { EMPTY_USER } from "../../model/User";
 import {
@@ -5,13 +6,51 @@ import {
   DEFAULT_CONFIGURATION,
 } from "../../model/Configuration";
 import { intlFunctions } from "../../__tests__/environment/IntlUtil";
-import { shallow } from "enzyme";
 import { createMemoryHistory } from "history";
 import { match, routingProps } from "../../__tests__/environment/TestUtil";
 import Generator from "../../__tests__/environment/Generator";
 import Constants from "../../util/Constants";
-import Breadcrumbs from "../breadcrumb/Breadcrumbs";
+import { renderWithIntl } from "../../__tests__/environment/Environment";
+import { MemoryRouter } from "react-router";
 import { vi } from "vitest";
+
+// MainView pulls in the whole application tree (sidebar, dashboard widgets, lazy-loaded
+// route modules, ...). Since RTL - unlike Enzyme's shallow rendering - always renders the
+// full tree, these heavy/unrelated children are stubbed out so the tests stay focused on
+// MainView's own rendering logic (placeholder, navbar, breadcrumb).
+vi.mock("../dashboard/Dashboard", () => ({
+  default: () => <div data-testid="dashboard" />,
+}));
+vi.mock("../sidebar/Sidebar", () => ({
+  default: () => <div data-testid="sidebar" />,
+}));
+vi.mock("../footer/Footer", () => ({
+  default: () => <div data-testid="footer" />,
+}));
+vi.mock("../search/label/NavbarSearch", () => ({
+  default: () => <div data-testid="navbar-search" />,
+}));
+vi.mock("../search/SearchListenerHelper", () => ({
+  default: () => null,
+}));
+vi.mock("../misc/UserDropdown", () => ({
+  default: () => <div data-testid="user-dropdown" />,
+}));
+vi.mock("../profile/ProfileRoute", () => ({
+  default: () => <div data-testid="profile-route" />,
+}));
+vi.mock("../administration/AdministrationRoute", () => ({
+  default: () => <div data-testid="administration-route" />,
+}));
+vi.mock("../vocabulary/VocabularyManagementRoute", () => ({
+  default: () => <div data-testid="vocabulary-management-route" />,
+}));
+vi.mock("../statistics/Statistics", () => ({
+  default: () => <div data-testid="statistics" />,
+}));
+vi.mock("../search/AdvancedSearch", () => ({
+  default: () => <div data-testid="advanced-search" />,
+}));
 
 describe("MainView", () => {
   let loadUser: () => Promise<any>;
@@ -54,69 +93,62 @@ describe("MainView", () => {
     };
   });
 
-  describe("component mount", () => {
-    it("loads user on mount", () => {
-      shallow(
+  function renderMainView(props: any, pathname: string = "/") {
+    return renderWithIntl(
+      <MemoryRouter initialEntries={[pathname]}>
         <MainView
-          user={EMPTY_USER}
-          sidebarExpanded={true}
-          desktopView={true}
-          configuration={DEFAULT_CONFIGURATION}
           {...actions}
           {...intlFunctions()}
           {...routingProps()}
+          {...props}
         />
-      );
+      </MemoryRouter>
+    );
+  }
+
+  describe("component mount", () => {
+    it("loads user on mount", () => {
+      renderMainView({
+        user: EMPTY_USER,
+        sidebarExpanded: true,
+        desktopView: true,
+        configuration: DEFAULT_CONFIGURATION,
+      });
       expect(loadUser).toHaveBeenCalled();
     });
 
     it("does not load user when it is already present in store", () => {
-      shallow(
-        <MainView
-          user={nonEmptyUser}
-          sidebarExpanded={true}
-          desktopView={true}
-          configuration={DEFAULT_CONFIGURATION}
-          {...actions}
-          {...intlFunctions()}
-          {...routingProps()}
-        />
-      );
+      renderMainView({
+        user: nonEmptyUser,
+        sidebarExpanded: true,
+        desktopView: true,
+        configuration: DEFAULT_CONFIGURATION,
+      });
       expect(loadUser).not.toHaveBeenCalled();
     });
 
     it("renders placeholder UI when user is being loaded", () => {
-      const wrapper = shallow(
-        <MainView
-          user={EMPTY_USER}
-          sidebarExpanded={true}
-          desktopView={true}
-          configuration={DEFAULT_CONFIGURATION}
-          {...actions}
-          {...intlFunctions()}
-          {...routingProps()}
-        />
-      );
-      expect(wrapper.exists("#loading-placeholder")).toBeTruthy();
+      const { container } = renderMainView({
+        user: EMPTY_USER,
+        sidebarExpanded: true,
+        desktopView: true,
+        configuration: DEFAULT_CONFIGURATION,
+      });
+      expect(container.querySelector("#loading-placeholder")).toBeTruthy();
     });
   });
 
   it("does not render breadcrumb on dashboard", () => {
-    const wrapper = shallow(
-      <MainView
-        user={nonEmptyUser}
-        sidebarExpanded={true}
-        desktopView={true}
-        configuration={DEFAULT_CONFIGURATION}
-        {...actions}
-        {...intlFunctions()}
-        {...routingProps()}
-      />
-    );
-    expect(wrapper.exists(Breadcrumbs)).toBeFalsy();
+    const { container } = renderMainView({
+      user: nonEmptyUser,
+      sidebarExpanded: true,
+      desktopView: true,
+      configuration: DEFAULT_CONFIGURATION,
+    });
+    expect(container.querySelector(".breadcrumb-bar")).toBeFalsy();
   });
 
-  it("renders breadcrumb on route different to dashboard", () => {
+  it("renders breadcrumb on route different to dashboard", async () => {
     const locationVocabularies = {
       pathname: "/vocabularies",
       search: "",
@@ -124,49 +156,39 @@ describe("MainView", () => {
       state: {},
     };
 
-    const wrapper = shallow(
-      <MainView
-        user={nonEmptyUser}
-        sidebarExpanded={true}
-        desktopView={true}
-        configuration={configuration}
-        {...actions}
-        history={createMemoryHistory()}
-        location={locationVocabularies}
-        match={match()}
-        {...intlFunctions()}
-      />
+    const { container } = renderMainView(
+      {
+        user: nonEmptyUser,
+        sidebarExpanded: true,
+        desktopView: true,
+        configuration,
+        history: createMemoryHistory(),
+        location: locationVocabularies,
+        match: match(),
+      },
+      "/vocabularies"
     );
-    expect(wrapper.exists(Breadcrumbs)).toBeTruthy();
+    await screen.findByTestId("vocabulary-management-route");
+    expect(container.querySelector(".breadcrumb-bar")).toBeTruthy();
   });
 
   it("renders navbar on >= 768px", () => {
-    const wrapper = shallow(
-      <MainView
-        user={nonEmptyUser}
-        sidebarExpanded={true}
-        desktopView={true}
-        configuration={configuration}
-        {...actions}
-        {...intlFunctions()}
-        {...routingProps()}
-      />
-    );
-    expect(wrapper.exists("#navbar")).toBeTruthy();
+    const { container } = renderMainView({
+      user: nonEmptyUser,
+      sidebarExpanded: true,
+      desktopView: true,
+      configuration,
+    });
+    expect(container.querySelector("#navbar")).toBeTruthy();
   });
 
   it("does not render navbar on > 768px", () => {
-    const wrapper = shallow(
-      <MainView
-        user={nonEmptyUser}
-        sidebarExpanded={true}
-        desktopView={false}
-        configuration={configuration}
-        {...actions}
-        {...intlFunctions()}
-        {...routingProps()}
-      />
-    );
-    expect(wrapper.exists("#navbar")).toBeFalsy();
+    const { container } = renderMainView({
+      user: nonEmptyUser,
+      sidebarExpanded: true,
+      desktopView: false,
+      configuration,
+    });
+    expect(container.querySelector("#navbar")).toBeFalsy();
   });
 });

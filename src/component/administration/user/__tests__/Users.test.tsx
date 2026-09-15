@@ -1,8 +1,9 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 import Users from "../Users";
 import Generator from "../../../../__tests__/environment/Generator";
-import { shallow } from "enzyme";
 import * as UserActions from "../../../../action/AsyncUserActions";
-import UsersTable from "../UsersTable";
 import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import * as Redux from "react-redux";
 import * as OidcUtils from "../../../../util/OidcUtils";
@@ -16,6 +17,28 @@ vi.mock("react-redux", async (importOriginal) => {
     useDispatch: vi.fn(),
   };
 });
+
+// UsersTable pulls in @tanstack/react-table and renders a full data table. It is stubbed out
+// here so these tests can focus on Users' own wiring of the disable/enable/readOnly props,
+// without needing to also satisfy UsersTable's own useSelector calls.
+vi.mock("../UsersTable", () => ({
+  default: (props: any) => (
+    <div data-testid="users-table" data-readonly={String(!!props.readOnly)}>
+      <button
+        data-testid="disable-first-user"
+        onClick={() => props.disable(props.users[0])}
+      >
+        disable
+      </button>
+      <button
+        data-testid="enable-first-user"
+        onClick={() => props.enable(props.users[0])}
+      >
+        enable
+      </button>
+    </div>
+  ),
+}));
 
 describe("Users", () => {
   const currentUser = Generator.generateUser();
@@ -32,33 +55,39 @@ describe("Users", () => {
     );
   });
 
-  function render() {
+  function renderUsers() {
     vi.spyOn(Redux, "useSelector")
       .mockReturnValueOnce(users)
       .mockReturnValueOnce(currentUser);
     mockUseI18n();
-    return shallow(<Users />);
+    return render(
+      <MemoryRouter>
+        <Users />
+      </MemoryRouter>
+    );
   }
 
-  it("disables user and reloads all users on finish", () => {
+  it("disables user and reloads all users on finish", async () => {
     vi.spyOn(UserActions, "loadUsers");
     vi.spyOn(UserActions, "disableUser");
-    const wrapper = render();
+    const ue = userEvent.setup();
+    renderUsers();
 
-    wrapper.find(UsersTable).prop("disable")(users[0]);
-    return Promise.resolve().then(() => {
+    await ue.click(screen.getByTestId("disable-first-user"));
+    await waitFor(() => {
       expect(UserActions.disableUser).toHaveBeenCalledWith(users[0]);
       expect(UserActions.loadUsers).toHaveBeenCalledTimes(1);
     });
   });
 
-  it("enables user and reloads all users on finish", () => {
+  it("enables user and reloads all users on finish", async () => {
     vi.spyOn(UserActions, "loadUsers");
     vi.spyOn(UserActions, "enableUser");
-    const wrapper = render();
+    const ue = userEvent.setup();
+    renderUsers();
 
-    wrapper.find(UsersTable).prop("enable")(users[0]);
-    return Promise.resolve().then(() => {
+    await ue.click(screen.getByTestId("enable-first-user"));
+    await waitFor(() => {
       expect(UserActions.enableUser).toHaveBeenCalledWith(users[0]);
       expect(UserActions.loadUsers).toHaveBeenCalledTimes(1);
     });
@@ -67,8 +96,11 @@ describe("Users", () => {
   it("renders users table read only when using OIDC authentication", () => {
     vi.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
     vi.spyOn(UserActions, "loadUsers");
-    const wrapper = render();
-    expect(wrapper.find(UsersTable).prop("readOnly")).toBeTruthy();
+    renderUsers();
+    expect(screen.getByTestId("users-table")).toHaveAttribute(
+      "data-readonly",
+      "true"
+    );
   });
 
   it("renders link to auth service administration when using OIDC authentication", () => {
@@ -76,7 +108,7 @@ describe("Users", () => {
     vi.spyOn(Constats, "getEnv").mockReturnValue(link);
     vi.spyOn(OidcUtils, "isUsingOidcAuth").mockReturnValue(true);
     vi.spyOn(UserActions, "loadUsers");
-    const wrapper = render();
-    expect(wrapper.exists("#oidc-notice")).toBeTruthy();
+    const { container } = renderUsers();
+    expect(container.querySelector("#oidc-notice")).toBeTruthy();
   });
 });

@@ -1,14 +1,15 @@
+import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import User from "../../../../model/User";
 import UserRole, { UserRoleData } from "../../../../model/UserRole";
 import Generator from "../../../../__tests__/environment/Generator";
-import { mountWithIntlAttached } from "../../../annotator/__tests__/AnnotationUtil";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 import UserRolesEdit from "../UserRolesEdit";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import * as UserActions from "../../../../action/AsyncUserActions";
 import * as Redux from "react-redux";
 import { langString } from "../../../../model/MultilingualString";
 import RdfsResource from "../../../../model/RdfsResource";
-import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -20,8 +21,7 @@ vi.mock("react-redux", async (importOriginal) => {
   };
 });
 
-// Temporarily disabled due to issues with mocking popper.js
-describe.skip("UserRolesEdit", () => {
+describe("UserRolesEdit", () => {
   const roles: UserRole[] = [
     new UserRole({
       iri: VocabularyUtils.USER_ADMIN,
@@ -59,7 +59,8 @@ describe.skip("UserRolesEdit", () => {
     ]);
     vi.spyOn(Redux, "useDispatch").mockReturnValue(mockDispatch);
     user.types.push(VocabularyUtils.USER_EDITOR);
-    const wrapper = mountWithIntlAttached(
+    const ue = userEvent.setup();
+    renderWithIntl(
       <MemoryRouter>
         <UserRolesEdit
           user={user}
@@ -69,19 +70,13 @@ describe.skip("UserRolesEdit", () => {
         />
       </MemoryRouter>
     );
-    expect(
-      wrapper.find("button#role-edit-submit").prop("disabled")
-    ).toBeFalsy();
-    await act(() => {
-      wrapper.find("select").simulate("change", {
-        target: { value: VocabularyUtils.USER_RESTRICTED },
-      });
-      return Promise.resolve().then(() => {
-        wrapper.update();
-        expect(
-          wrapper.find("button#role-edit-submit").prop("disabled")
-        ).toBeTruthy();
-      });
-    });
+    expect(screen.getByText("Save").closest("button")).not.toBeDisabled();
+    await ue.selectOptions(
+      screen.getByRole("combobox"),
+      VocabularyUtils.USER_RESTRICTED
+    );
+    await waitFor(() =>
+      expect(screen.getByText("Save").closest("button")).toBeDisabled()
+    );
   });
 });
