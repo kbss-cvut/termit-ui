@@ -12,6 +12,7 @@ import Utils from "../../util/Utils";
 import SecurityUtils from "../../util/SecurityUtils";
 import EnhancedInput, { LabelDirection } from "../misc/EnhancedInput";
 import { useI18n } from "../hook/useI18n";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface RegistrationFormProps {
   loading: boolean;
@@ -95,11 +96,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     passwordsMatch();
 
   const onRegister = () => {
-    const userData: UserAccountData = {
+    const userData = {
       firstName,
       lastName,
       username,
       password,
+      types: [VocabularyUtils.USER_RESTRICTED],
     };
     register(userData).then((result) => {
       const asyncResult = result as AsyncFailureAction;
