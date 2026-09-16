@@ -292,7 +292,7 @@ const en = {
       "Each sub term becomes a child of the parent terms of the term being removed. If the term is a root term, its sub terms become root terms.",
     "term.remove.subTermsStrategy.cascade": "Remove all sub terms",
     "term.remove.subTermsStrategy.cascade.description":
-      "Recursively removes all sub terms using the same occurrence and relationship settings.",
+      "Recursively removes all sub terms.",
     "term.remove.occurrences": "Remove term occurrences",
     "term.remove.occurrences.hint":
       "If this option is not selected and the term has occurrences, removal will fail.",

@@ -292,7 +292,7 @@ const cs = {
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
 
     "term.remove.description":
-      'Opravdu chcete trvale odstranit pojem "{label}"? Nastavte, jak se má naložit se závislými daty.',
+      'Opravdu chcete trvale odstranit pojem "{label}"? Vyberte, jak se má naložit se závislými daty.',
     "term.remove.references.found":
       "Na tento pojem {count, plural, one {odkazuje # vztah} few {odkazují # vztahy} other {odkazuje # vztahů}}.",
     "term.remove.references.source": "Odkazující",
@@ -304,7 +304,7 @@ const cs = {
       "Každý podřazený pojem se stane potomkem nadřazených pojmů odstraňovaného pojmu. U kořenového pojmu se jeho podřazené pojmy stanou kořenovými.",
     "term.remove.subTermsStrategy.cascade": "Odstranit všechny podřazené pojmy",
     "term.remove.subTermsStrategy.cascade.description":
-      "Rekurzivně odstraní všechny podřazené pojmy se stejným nastavením výskytů a vztahů.",
+      "Rekurzivně odstraní všechny podřazené pojmy.",
     "term.remove.occurrences": "Odstranit výskyty pojmu",
     "term.remove.occurrences.hint":
       "Pokud tato volba není vybrána a pojem má výskyty, odstranění selže.",
