@@ -126,6 +126,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     if (prevProps.flatList !== this.props.flatList) {
       this.treeComponent.current?.resetOptions();
     }
+
+    if (
+      Utils.didNavigationOccur(prevProps, this.props) ||
+      selectedTermChanged
+    ) {
+      this.treeComponent.current?.resetScrollState();
+    }
   }
 
   public static isNotificationRelevant(n: AppNotification) {
