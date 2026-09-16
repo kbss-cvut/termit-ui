@@ -290,7 +290,7 @@ const de = {
       'Sind Sie sicher, dass Sie {type} "{label}" entfernen möchten?',
 
     "term.remove.description":
-      'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Legen Sie fest, wie mit abhängigen Daten verfahren werden soll.',
+      'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Wählen Sie, wie mit abhängigen Daten verfahren werden soll.',
     "term.remove.references.found":
       "Auf diesen Begriff {count, plural, one {verweist # Beziehung} other {verweisen # Beziehungen}}.",
     "term.remove.references.source": "Verweisende Entität",
@@ -302,7 +302,7 @@ const de = {
       "Jeder Unterbegriff wird den übergeordneten Begriffen des zu entfernenden Begriffs untergeordnet. Bei einem Wurzelbegriff werden seine Unterbegriffe zu Wurzelbegriffen.",
     "term.remove.subTermsStrategy.cascade": "Alle Unterbegriffe entfernen",
     "term.remove.subTermsStrategy.cascade.description":
-      "Entfernt rekursiv alle Unterbegriffe mit denselben Einstellungen für Vorkommen und Beziehungen.",
+      "Entfernt rekursiv alle Unterbegriffe.",
     "term.remove.occurrences": "Vorkommen des Begriffs entfernen",
     "term.remove.occurrences.hint":
       "Wenn diese Option nicht ausgewählt ist und der Begriff Vorkommen hat, schlägt das Entfernen fehl.",
