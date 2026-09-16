@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { FormText, Label } from "reactstrap";
 import {
   ColumnDef,
+  getCoreRowModel,
   PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
