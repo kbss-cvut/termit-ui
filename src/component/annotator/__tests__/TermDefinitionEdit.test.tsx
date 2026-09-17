@@ -1,34 +1,33 @@
 import Term from "../../../model/Term";
 import { TermDefinitionEdit } from "../TermDefinitionEdit";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import Generator from "../../../__tests__/environment/Generator";
-import { mountWithIntlAttached } from "./AnnotationUtil";
 import { ElementType } from "htmlparser2";
-import { TermDefinitionBlockEdit } from "../../term/TermDefinitionBlockEdit";
 import Constants from "../../../util/Constants";
-import CustomInput from "../../misc/CustomInput";
-import MarkdownEditor from "../../misc/MarkdownEditor";
 import {
   mockStore,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { Mock } from "vitest";
 
 vi.mock("../../misc/MarkdownEditor", () => ({
-  default: () => <div>Editor</div>,
+  default: (props: any) => (
+    <div data-testid="markdown-editor" data-readonly={String(!!props.readOnly)}>
+      {props.value}
+    </div>
+  ),
 }));
 
-// Temporarily disabled due to issues with mocking popper.js
-describe.skip("TermDefinitionEdit", () => {
+describe("TermDefinitionEdit", () => {
   let onSave: (update: Term) => void;
   let onCancel: () => void;
 
   beforeEach(() => {
     onSave = vi.fn();
     onCancel = vi.fn();
+    mockUseI18n();
     mockStore.getState().configuration.language = Constants.DEFAULT_LANGUAGE;
   });
 
@@ -37,15 +36,10 @@ describe.skip("TermDefinitionEdit", () => {
   });
 
   it("returns null when no element and term are provided", () => {
-    mockUseI18n();
-    const wrapper = mountWithIntl(
-      <TermDefinitionEdit
-        onSave={onSave}
-        onCancel={onCancel}
-        {...intlFunctions()}
-      />
+    const { container } = renderWithIntl(
+      <TermDefinitionEdit onSave={onSave} onCancel={onCancel} />
     );
-    expect(wrapper.find(TermDefinitionEdit).isEmptyRender()).toBeTruthy();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it("renders simple definition editing block when definition does not exist on selected term", () => {
@@ -58,18 +52,15 @@ describe.skip("TermDefinitionEdit", () => {
         resource: term.iri,
       },
     };
-    const wrapper = mountWithIntlAttached(
+    renderWithIntl(
       <TermDefinitionEdit
         onSave={onSave}
         onCancel={onCancel}
         term={term}
         annotationElement={annotatedElement}
-        {...intlFunctions()}
       />
     );
-    const definitionEdit = wrapper.find(TermDefinitionBlockEdit);
-    expect(definitionEdit.exists()).toBeTruthy();
-    expect(definitionEdit.length).toEqual(1);
+    expect(screen.getAllByTestId("markdown-editor")).toHaveLength(1);
   });
 
   it("renders definition blocks with existing and selected text content when term already has definition", () => {
@@ -84,23 +75,20 @@ describe.skip("TermDefinitionEdit", () => {
         resource: term.iri,
       },
     };
-    const wrapper = mountWithIntlAttached(
+    renderWithIntl(
       <TermDefinitionEdit
         onSave={onSave}
         onCancel={onCancel}
         term={term}
         annotationElement={annotatedElement}
-        {...intlFunctions()}
       />
     );
-    const definitionEdit = wrapper.find(TermDefinitionBlockEdit);
-    expect(definitionEdit.exists()).toBeTruthy();
-    expect(definitionEdit.length).toEqual(2);
-    const definitionAreas = wrapper.find(MarkdownEditor);
-    expect(definitionAreas.get(0).props.value).toEqual(term.definition.en);
-    expect(definitionAreas.get(1).props.value).toEqual(annotatedElement.data);
-    const sources = wrapper.find(CustomInput);
-    sources.forEach((s) => expect(s.prop("value")).toEqual(term.sources![0]));
+    const definitionAreas = screen.getAllByTestId("markdown-editor");
+    expect(definitionAreas).toHaveLength(2);
+    expect(definitionAreas[0]).toHaveTextContent(term.definition.en);
+    expect(definitionAreas[1]).toHaveTextContent(annotatedElement.data);
+    const sources = screen.getAllByDisplayValue(term.sources![0]);
+    expect(sources).toHaveLength(2);
   });
 
   it("renders original definition block readOnly", () => {
@@ -114,21 +102,21 @@ describe.skip("TermDefinitionEdit", () => {
         resource: term.iri,
       },
     };
-    const wrapper = mountWithIntlAttached(
+    renderWithIntl(
       <TermDefinitionEdit
         onSave={onSave}
         onCancel={onCancel}
         term={term}
         annotationElement={annotatedElement}
-        {...intlFunctions()}
       />
     );
-    const definitionEdit = wrapper.find(TermDefinitionBlockEdit);
-    expect(definitionEdit.get(0).props.readOnly).toBeTruthy();
+    const definitionAreas = screen.getAllByTestId("markdown-editor");
+    expect(definitionAreas[0]).toHaveAttribute("data-readonly", "true");
+    expect(definitionAreas[1]).toHaveAttribute("data-readonly", "false");
   });
 
   describe("onSave", () => {
-    it("passes term with updated term definition based on editing in the component", () => {
+    it("passes term with updated term definition based on editing in the component", async () => {
       const term = Generator.generateTerm();
       term.definition = { en: "Original definition text" };
       term.sources = ["hl.1/cl.2/odst.3"];
@@ -140,16 +128,16 @@ describe.skip("TermDefinitionEdit", () => {
           resource: term.iri,
         },
       };
-      const wrapper = mountWithIntlAttached(
+      const user = userEvent.setup();
+      renderWithIntl(
         <TermDefinitionEdit
           onSave={onSave}
           onCancel={onCancel}
           term={term}
           annotationElement={annotatedElement}
-          {...intlFunctions()}
         />
       );
-      wrapper.find("button#annotator-set-definition-save").simulate("click");
+      await user.click(screen.getByRole("button", { name: /save/i }));
       expect(onSave).toHaveBeenCalled();
       expect((onSave as Mock).mock.calls[0][0].definition).toEqual({
         en: annotatedElement.data,
