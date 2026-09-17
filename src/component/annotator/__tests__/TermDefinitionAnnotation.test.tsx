@@ -1,17 +1,16 @@
 import Generator from "../../../__tests__/environment/Generator";
 import Term from "../../../model/Term";
-import { shallow } from "enzyme";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { TermDefinitionAnnotation } from "../TermDefinitionAnnotation";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
-import SimplePopupWithActions from "../SimplePopupWithActions";
-import AnnotationTerms from "../AnnotationTerms";
-import TermDefinitionAnnotationView from "../TermDefinitionAnnotationView";
-import { withHooks } from "vitest-react-hooks-shallow";
 import * as Actions from "../../../action/AsyncTermActions";
 import * as redux from "react-redux";
 import { ThunkDispatch } from "../../../util/Types";
 import type { Mock } from "vitest";
 import AccessLevel from "../../../model/acl/AccessLevel";
+import { MemoryRouter } from "react-router";
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -23,7 +22,7 @@ vi.mock("react-redux", async (importOriginal) => {
 
 describe("TermDefinitionAnnotation", () => {
   const annotationProps = {
-    target: "id_:123",
+    target: "test",
     resource: Generator.generateUri(),
     text: "Test definition",
   };
@@ -47,76 +46,67 @@ describe("TermDefinitionAnnotation", () => {
     mockUseI18n();
     fakeDispatch = vi.fn();
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
+    const target = document.createElement("span");
+    target.id = "test";
+    document.body.appendChild(target);
   });
 
+  afterEach(() => {
+    document.getElementById("test")?.remove();
+  });
+
+  function renderComponent(props: any) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <TermDefinitionAnnotation
+          isOpen={true}
+          {...annotationProps}
+          {...actions}
+          accessLevel={AccessLevel.WRITE}
+          {...props}
+        />
+      </MemoryRouter>
+    );
+  }
+
   it("renders term definition view by default", () => {
-    const wrapper = shallow(
-      <TermDefinitionAnnotation
-        isOpen={true}
-        term={Generator.generateTerm()}
-        {...annotationProps}
-        {...actions}
-        accessLevel={AccessLevel.WRITE}
-      />
-    );
-    expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(
-      TermDefinitionAnnotationView
-    );
+    renderComponent({ term: Generator.generateTerm() });
+    expect(screen.getByText("Term:")).toBeInTheDocument();
+    expect(screen.queryByText("Term not selected.")).not.toBeInTheDocument();
   });
 
   it("renders term definition edit when no term is provided", () => {
-    const wrapper = shallow(
-      <TermDefinitionAnnotation
-        isOpen={true}
-        term={null}
-        {...annotationProps}
-        {...actions}
-        accessLevel={AccessLevel.WRITE}
-      />
-    );
-    expect(wrapper.find(SimplePopupWithActions).prop("component").type).toEqual(
-      AnnotationTerms
-    );
+    renderComponent({ term: null });
+    expect(screen.getByText("Term not selected.")).toBeInTheDocument();
   });
 
   it("switches from editing to view mode when a term is provided", () => {
-    withHooks(() => {
-      const wrapper = shallow(
+    const { rerender } = renderComponent({ term: null });
+    expect(screen.getByText("Term not selected.")).toBeInTheDocument();
+    const term = Generator.generateTerm();
+    rerender(
+      <MemoryRouter>
         <TermDefinitionAnnotation
           isOpen={true}
-          term={null}
           {...annotationProps}
           {...actions}
           accessLevel={AccessLevel.WRITE}
+          term={term}
         />
-      );
-      expect(
-        wrapper.find(SimplePopupWithActions).prop("component").type
-      ).toEqual(AnnotationTerms);
-      const term = Generator.generateTerm();
-      wrapper.setProps({ term });
-      wrapper.update();
-      expect(
-        wrapper.find(SimplePopupWithActions).prop("component").type
-      ).toEqual(TermDefinitionAnnotationView);
-    });
+      </MemoryRouter>
+    );
+    expect(screen.queryByText("Term not selected.")).not.toBeInTheDocument();
+    expect(screen.getByText("Term:")).toBeInTheDocument();
   });
 
   describe("onRemove", () => {
-    it("removes term definition source via action as well as invoking annotation removal", () => {
+    it("removes term definition source via action as well as invoking annotation removal", async () => {
       const term = Generator.generateTerm();
       vi.spyOn(Actions, "removeTermDefinitionSource");
-      const wrapper = shallow(
-        <TermDefinitionAnnotation
-          isOpen={true}
-          term={term}
-          {...annotationProps}
-          {...actions}
-          accessLevel={AccessLevel.WRITE}
-        />
-      );
-      const popup = wrapper.find(SimplePopupWithActions);
-      popup.props().actions[1].props.children.props.onClick();
+      const user = userEvent.setup();
+      renderComponent({ term });
+
+      await user.click(screen.getByTitle("Remove"));
 
       expect(actions.onRemove).toHaveBeenCalled();
       expect(Actions.removeTermDefinitionSource).toHaveBeenCalledWith(term);

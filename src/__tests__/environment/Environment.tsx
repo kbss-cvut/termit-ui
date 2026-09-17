@@ -76,12 +76,14 @@ export function renderWithIntl(
 ): RenderResult {
   // Load locales for the TimeAgo library
   TimeAgo.addLocale(require("javascript-time-ago/locale/en"));
-  return render(
-    <Provider store={mockStore}>
-      <IntlProvider {...intl}>{node}</IntlProvider>
-    </Provider>,
-    options
-  );
+  return render(node, {
+    wrapper: ({ children }) => (
+      <Provider store={mockStore}>
+        <IntlProvider {...intl}>{children}</IntlProvider>
+      </Provider>
+    ),
+    ...options,
+  });
 }
 
 /**
