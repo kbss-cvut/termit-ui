@@ -2,7 +2,7 @@ import React from "react";
 import { TermSelector } from "../../term/TermSelector";
 import Term from "../../../model/Term";
 import SearchParam from "../../../model/search/SearchParam";
-import { FormGroup, Label } from "reactstrap";
+import { Label } from "reactstrap";
 
 export const TermSelectorFacet: React.FC<{
   id: string;
@@ -15,16 +15,12 @@ export const TermSelectorFacet: React.FC<{
   };
 
   return (
-    <FormGroup>
-      <div className="d-flex justify-content-between">
-        <Label className="attribute-label mb-3">{label}</Label>
-      </div>
-      <TermSelector
-        id={id}
-        value={value.value}
-        onChange={onSelect}
-        forceFlatList={true}
-      />
-    </FormGroup>
+    <TermSelector
+      id={id}
+      label={<Label className="attribute-label mb-0">{label}</Label>}
+      value={value.value}
+      onChange={onSelect}
+      forceFlatList={true}
+    />
   );
 };
