@@ -43,6 +43,24 @@ configure({ adapter: new Adapter() });
   };
 };
 
+// jsdom returns "" for unset CSS properties, which makes popper.js compute NaN
+// offsets (e.g. parseFloat(styles.borderTopWidth)) and React warn about NaN style
+// values. The proxy coerces empty values to "0px".
+const originalGetComputedStyle = window.getComputedStyle.bind(window);
+window.getComputedStyle = (elt: Element, pseudoElt?: string | null) =>
+  new Proxy(originalGetComputedStyle(elt, pseudoElt), {
+    get(target, prop) {
+      if (prop === "getPropertyValue") {
+        return (name: string) => target.getPropertyValue(name) || "0px";
+      }
+      const value = Reflect.get(target, prop);
+      if (typeof value === "function") {
+        return value.bind(target);
+      }
+      return value === "" ? "0px" : value;
+    },
+  });
+
 enableHooks(vi, { dontMockByDefault: true });
 
 import.meta.env.VITE_VERSION = "0.0.1";
