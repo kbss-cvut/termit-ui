@@ -1,18 +1,15 @@
 import Term from "../../../model/Term";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
+import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import { TermOccurrenceAnnotation } from "../TermOccurrenceAnnotation";
-import { shallow } from "enzyme";
-import SimplePopupWithActions from "../SimplePopupWithActions";
+import { screen } from "@testing-library/react";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import {
   AnnotationClass,
   AnnotationOrigin,
 } from "../../../model/AnnotatorLegendFilter";
 import Generator from "../../../__tests__/environment/Generator";
-import { withHooks } from "vitest-react-hooks-shallow";
 import AccessLevel from "../../../model/acl/AccessLevel";
+import { MemoryRouter } from "react-router";
 
 describe("TermOccurrenceAnnotation", () => {
   const text = "mesta";
@@ -41,47 +38,60 @@ describe("TermOccurrenceAnnotation", () => {
       onClose: vi.fn(),
     };
     mockUseI18n();
+    const target = document.createElement("span");
+    target.id = "test";
+    document.body.appendChild(target);
+  });
+
+  afterEach(() => {
+    document.getElementById("test")?.remove();
   });
 
   it("does not render confirm button for suggested occurrence of an unknown term", () => {
-    const wrapper = shallow(
-      <TermOccurrenceAnnotation
-        {...actions}
-        {...intlFunctions()}
-        {...suggestedOccProps}
-        {...intlFunctions()}
-        annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
-        annotationOrigin={AnnotationOrigin.PROPOSED}
-        isOpen={true}
-        accessLevel={AccessLevel.WRITE}
-      />
-    );
-    const buttons = wrapper.find(SimplePopupWithActions).prop("actions");
-    expect(buttons.length).toBeGreaterThan(0);
-    const confirmButton = buttons.find((b) => b.key === "annotation.confirm");
-    expect(confirmButton).not.toBeDefined();
-  });
-
-  it("switches from editing to view mode when a term is provided", () => {
-    withHooks(() => {
-      const wrapper = shallow(
+    renderWithIntl(
+      <MemoryRouter>
         <TermOccurrenceAnnotation
           {...actions}
-          {...intlFunctions()}
           {...suggestedOccProps}
-          {...intlFunctions()}
           annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
           annotationOrigin={AnnotationOrigin.PROPOSED}
           isOpen={true}
           accessLevel={AccessLevel.WRITE}
         />
-      );
-      const term = Generator.generateTerm();
-      wrapper.setProps({ term });
-      wrapper.update();
-      wrapper.update();
-      const buttons = wrapper.find(SimplePopupWithActions).prop("actions");
-      expect(buttons.find((b) => b.key === "annotation.edit")).toBeDefined();
-    });
+      </MemoryRouter>
+    );
+    expect(
+      screen.queryByTitle("Confirm suggestion of term occurrence")
+    ).not.toBeInTheDocument();
+  });
+
+  it("switches from editing to view mode when a term is provided", () => {
+    const { rerender } = renderWithIntl(
+      <MemoryRouter>
+        <TermOccurrenceAnnotation
+          {...actions}
+          {...suggestedOccProps}
+          annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
+          annotationOrigin={AnnotationOrigin.PROPOSED}
+          isOpen={true}
+          accessLevel={AccessLevel.WRITE}
+        />
+      </MemoryRouter>
+    );
+    const term = Generator.generateTerm();
+    rerender(
+      <MemoryRouter>
+        <TermOccurrenceAnnotation
+          {...actions}
+          {...suggestedOccProps}
+          term={term}
+          annotationClass={AnnotationClass.SUGGESTED_OCCURRENCE}
+          annotationOrigin={AnnotationOrigin.PROPOSED}
+          isOpen={true}
+          accessLevel={AccessLevel.WRITE}
+        />
+      </MemoryRouter>
+    );
+    expect(screen.getByTitle("Edit term occurrence")).toBeInTheDocument();
   });
 });

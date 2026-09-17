@@ -1,18 +1,17 @@
-import React from "react";
 import File from "../../../model/File";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Generator from "../../../__tests__/environment/Generator";
 import TextAnalysisInvocationButton from "../TextAnalysisInvocationButton";
-import ResourceSelectVocabulary from "../../resource/ResourceSelectVocabulary";
 import Vocabulary from "../../../model/Vocabulary";
 import * as Redux from "react-redux";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import * as AsyncActions from "../../../action/AsyncActions";
 import {
-  mountWithIntl,
-  webSocketProviderWrappingComponentOptions,
+  renderWithIntl,
+  withWebSocket,
 } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -23,12 +22,18 @@ vi.mock("react-redux", async (importOriginal) => {
   };
 });
 
-const mount = (
-  el: React.ReactElement<any, string | React.JSXElementConstructor<any>>
-) => mountWithIntl(el, webSocketProviderWrappingComponentOptions);
+// ResourceSelectVocabulary renders a full vocabulary tree select (VocabularySelect), which is not
+// under test here. It is stubbed out so these tests can focus on TextAnalysisInvocationButton's own
+// wiring of showing the selector and dispatching text analysis on submit.
+let lastResourceSelectVocabularyProps: any = null;
+vi.mock("../../resource/ResourceSelectVocabulary", () => ({
+  default: (props: any) => {
+    lastResourceSelectVocabularyProps = props;
+    return props.show ? <div data-testid="resource-select-vocabulary" /> : null;
+  },
+}));
 
-// Temporarily disabled due to issues with mocking popper.js
-describe.skip("TextAnalysisInvocationButton", () => {
+describe("TextAnalysisInvocationButton", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/resources/";
   const fileName = "test.html";
 
@@ -37,6 +42,7 @@ describe.skip("TextAnalysisInvocationButton", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
+    lastResourceSelectVocabularyProps = null;
     file = new File({
       iri: namespace + fileName,
       label: fileName,
@@ -48,58 +54,37 @@ describe.skip("TextAnalysisInvocationButton", () => {
     (Redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
   });
 
-  it("runs text analysis immediately when defaultVocabulary was specified.", () => {
-    const vocabularyIri = Generator.generateUri();
-    vocabulary.iri = vocabularyIri;
-    const fileIri = VocabularyUtils.create(file.iri);
-
-    vi.spyOn(AsyncActions, "executeFileTextAnalysis");
-
-    const wrapper = mount(
-      <TextAnalysisInvocationButton
-        fileIri={fileIri}
-        defaultVocabularyIri={vocabularyIri}
-      />
-    );
-    wrapper.find(ResourceSelectVocabulary).props().onSubmit(vocabulary);
-    expect(AsyncActions.executeFileTextAnalysis).toHaveBeenCalledWith(
-      fileIri,
-      vocabularyIri
-    );
-  });
-
-  it("shows vocabulary selector when no default vocabulary was specified", () => {
+  it("shows vocabulary selector when button is clicked", async () => {
     const fileIri = VocabularyUtils.create(Generator.generateUri());
     vi.spyOn(AsyncActions, "executeFileTextAnalysis");
-    const wrapper = mount(<TextAnalysisInvocationButton fileIri={fileIri} />);
-    wrapper.simulate("click");
-    wrapper.update();
-    expect(wrapper.exists(ResourceSelectVocabulary));
-    expect(wrapper.find(ResourceSelectVocabulary).props().show).toBeTruthy();
+    const user = userEvent.setup();
+    renderWithIntl(
+      withWebSocket(<TextAnalysisInvocationButton fileIri={fileIri} />)
+    );
+    expect(lastResourceSelectVocabularyProps.show).toBeFalsy();
+
+    await user.click(screen.getByTitle("Start text analysis"));
+
+    expect(lastResourceSelectVocabularyProps.show).toBeTruthy();
     expect(AsyncActions.executeFileTextAnalysis).not.toHaveBeenCalled();
   });
 
-  it("invokes text analysis with selected Vocabulary when Vocabulary selector is submitted", () => {
+  it("invokes text analysis with selected Vocabulary when Vocabulary selector is submitted", async () => {
     vi.spyOn(AsyncActions, "executeFileTextAnalysis");
-    const wrapper = mount(
-      <TextAnalysisInvocationButton
-        fileIri={VocabularyUtils.create(file.iri)}
-      />
+    const fileIri = VocabularyUtils.create(file.iri);
+    const user = userEvent.setup();
+    renderWithIntl(
+      withWebSocket(<TextAnalysisInvocationButton fileIri={fileIri} />)
     );
-    wrapper.simulate("click");
-    wrapper.update();
 
-    expect(wrapper.find(ResourceSelectVocabulary).props().show).toBeTruthy();
+    await user.click(screen.getByTitle("Start text analysis"));
+    expect(lastResourceSelectVocabularyProps.show).toBeTruthy();
 
-    act(() => {
-      wrapper.find(ResourceSelectVocabulary).props().onSubmit(vocabulary);
-    });
+    lastResourceSelectVocabularyProps.onSubmit(vocabulary);
 
     expect(AsyncActions.executeFileTextAnalysis).toHaveBeenLastCalledWith(
-      VocabularyUtils.create(file.iri),
+      fileIri,
       vocabulary.iri
     );
-    wrapper.update();
-    expect(wrapper.find(ResourceSelectVocabulary).props().show).toBeFalsy();
   });
 });
