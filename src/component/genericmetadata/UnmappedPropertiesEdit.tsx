@@ -70,24 +70,30 @@ const UnmappedPropertiesEdit: React.FC<UnmappedPropertiesEditProps> = ({
   };
 
   return (
-    <AttributeSectionContainer label={i18n("properties.edit.title")}>
-      <CustomAttributesValuesEdit
-        assetType={assetType}
-        values={properties}
-        onChange={onPropertyValueChange}
-      />
-      <UnmappedProperties
-        properties={properties}
-        onRemove={onRemove}
-        showInfoOnEmpty={false}
-      />
-      <UnmappedPropertyValueEdit
-        language={language}
-        languages={languages}
-        propertiesToIgnore={Utils.sanitizeArray(ignoredProperties)}
-        onChange={onSingleValueAdded}
-      />
-    </AttributeSectionContainer>
+    <>
+      <AttributeSectionContainer
+        label={i18n("administration.customization.customAttributes.title")}
+      >
+        <CustomAttributesValuesEdit
+          assetType={assetType}
+          values={properties}
+          onChange={onPropertyValueChange}
+        />
+      </AttributeSectionContainer>
+      <AttributeSectionContainer label={i18n("properties.edit.title")}>
+        <UnmappedProperties
+          properties={properties}
+          onRemove={onRemove}
+          showInfoOnEmpty={false}
+        />
+        <UnmappedPropertyValueEdit
+          language={language}
+          languages={languages}
+          propertiesToIgnore={Utils.sanitizeArray(ignoredProperties)}
+          onChange={onSingleValueAdded}
+        />
+      </AttributeSectionContainer>
+    </>
   );
 };
 
