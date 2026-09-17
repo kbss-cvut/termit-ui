@@ -137,7 +137,11 @@ describe("Terms", () => {
   it("marks the selected term for loading when it changes", () => {
     const wrapper = renderShallow(true);
     const resetOptions = vi.fn();
-    (wrapper.instance() as any).treeComponent.current = { resetOptions };
+    const resetScrollState = vi.fn();
+    (wrapper.instance() as any).treeComponent.current = {
+      resetOptions,
+      resetScrollState,
+    };
     wrapper.setState({ selectedTermLoaded: true });
 
     wrapper.setProps({ selectedTerms: new Term(term) });
