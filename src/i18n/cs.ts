@@ -22,6 +22,7 @@ const cs = {
     time: "Čas",
     close: "Zavřít",
     copy: "Zkopírovat",
+    filters: "Filtrovat",
     "copy.success": "Zkopírováno!",
     "basic-information": "Základní informace",
     "created-info": "Vytvořeno uživatelem {author} dne {date}",
@@ -734,6 +735,7 @@ const cs = {
     "glossary.table.workspace.open": "Otevřít tabulkové zobrazení",
     "glossary.table.workspace.open.help":
       "Otevře oddělené tabulkové zobrazení pojmů pro hromadné úpravy a zobrazení metadat.",
+    "glossary.table.filters.clear": "Vymazat filtry",
     "glossary.table.workspace.back": "Zpět na detail slovníku",
     "glossary.table.workspace.back.help": "Vrátí vás na detail slovníku.",
     "glossary.table.fontSize": "Velikost písma",

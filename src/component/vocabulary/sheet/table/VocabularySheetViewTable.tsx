@@ -5,14 +5,10 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
   Spinner,
   UncontrolledDropdown,
+  Input,
 } from "reactstrap";
-import { FaTimes } from "react-icons/fa";
 import { MdFormatSize } from "react-icons/md";
 import { useDebouncedCallback } from "use-debounce";
 import { useSelector, useDispatch } from "react-redux";
@@ -57,6 +53,10 @@ import { HoverEditWrapper } from "./cell/HoverEditWrapper";
 import { IndeterminateCheckbox } from "../../../misc/IndeterminateCheckbox";
 import { useBatchEditTerms } from "../../../../query/hook/useBatchEditTerms";
 import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
+import SearchParam from "../../../../model/search/SearchParam";
+import { aggregateSearchParams } from "../../../search/facet/FacetedSearchUtil";
+import { FaFilter } from "react-icons/fa";
+import { FilterPanel } from "./filter/FilterPanel";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
@@ -101,8 +101,6 @@ export const VocabularySheetViewTable: React.FC<
     dispatch(loadTypes());
   }, [dispatch]);
 
-  const [searchInput, setSearchInput] = React.useState("");
-  const [searchString, setSearchString] = React.useState("");
   const [tableLanguage, setTableLanguage] = React.useState(shortLocale);
   const [expandedCellKey, setExpandedCellKey] = React.useState<string | null>(
     null
@@ -119,6 +117,37 @@ export const VocabularySheetViewTable: React.FC<
     new Set()
   );
   const [isBatchSidebarOpen, setIsBatchSidebarOpen] = React.useState(false);
+
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = React.useState(false);
+  const [facetParams, setFacetParams] = React.useState<{
+    [key: string]: SearchParam;
+  }>({});
+  const [appliedFacetParams, setAppliedFacetParams] = React.useState<{
+    [key: string]: SearchParam;
+  }>({});
+
+  const debouncedApplyFilters = useDebouncedCallback(
+    (params: { [key: string]: SearchParam }) => {
+      setAppliedFacetParams(params);
+    },
+    Constants.SEARCH_DEBOUNCE_DELAY
+  );
+
+  const handleFacetChange = React.useCallback(
+    (value: SearchParam) => {
+      setFacetParams((prev) => {
+        const next = { ...prev, [value.property]: value };
+        debouncedApplyFilters(next);
+        return next;
+      });
+    },
+    [debouncedApplyFilters]
+  );
+
+  const handleClearFilters = React.useCallback(() => {
+    setFacetParams({});
+    debouncedApplyFilters({});
+  }, [debouncedApplyFilters]);
 
   const [fontSize, setFontSize] = React.useState<TableFontSize>(() => {
     const stored = BrowserStorage.get("TERMS_TABLE_FONT_SIZE");
@@ -169,20 +198,22 @@ export const VocabularySheetViewTable: React.FC<
 
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  const debouncedSearch = useDebouncedCallback((value: string) => {
-    setSearchString(value.trim());
-  }, Constants.SEARCH_DEBOUNCE_DELAY);
-
   const vocabularyIri = React.useMemo(
     () => VocabularyUtils.create(vocabulary.iri!),
     [vocabulary.iri]
   );
 
+  const activeSearchParams = React.useMemo(
+    () => aggregateSearchParams(appliedFacetParams),
+    [appliedFacetParams]
+  );
+
   const termsQuery = useVocabularyTerms({
     apiPrefix,
     vocabularyIri,
-    searchString,
+    searchString: "",
     language: shortLocale,
+    searchParams: activeSearchParams,
   });
 
   const loadedTerms = React.useMemo(
@@ -757,7 +788,7 @@ export const VocabularySheetViewTable: React.FC<
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, left: 0 });
     }
-  }, [searchString, vocabulary.iri, shortLocale]);
+  }, [appliedFacetParams, vocabulary.iri, shortLocale]);
 
   const updateColumnVisibility = (
     columnId: TermsTableColumn["id"],
@@ -783,12 +814,20 @@ export const VocabularySheetViewTable: React.FC<
     );
   }, [loadedTerms, selectedBatchUris]);
 
+  const activeFilterCount = React.useMemo(() => {
+    return Object.values(facetParams).filter((p) => {
+      if (!p.value || p.value.length === 0) return false;
+      if (p.value.length === 1 && p.value[0] === "") return false;
+      return true;
+    }).length;
+  }, [facetParams]);
+
   return (
     <div className="vocabulary-sheet-view-table">
       <div className="vocabulary-sheet-view-controls">
         {availableTermLanguages.length > 1 && (
           <div
-            className="vocabulary-sheet-view-language-switcher"
+            className="vocabulary-sheet-view-language-switcher mr-4"
             role="group"
             aria-label="Table term language switcher"
           >
@@ -811,36 +850,18 @@ export const VocabularySheetViewTable: React.FC<
             ))}
           </div>
         )}
-        <InputGroup
+
+        <Button
           size="sm"
-          style={{ width: "24rem" }}
-          className="input-group-merge"
+          color={Object.keys(facetParams).length > 0 ? "primary" : "secondary"}
+          outline={Object.keys(facetParams).length === 0}
+          onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+          className="mr-2"
         >
-          <Input
-            value={searchInput}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSearchInput(value);
-              debouncedSearch(value);
-            }}
-            placeholder={i18n("glossary.table.filter.placeholder")}
-          />
-          {searchInput && (
-            <InputGroupAddon
-              addonType="append"
-              onClick={() => {
-                debouncedSearch.cancel();
-                setSearchInput("");
-                setSearchString("");
-              }}
-              style={{ cursor: "pointer", zIndex: 5 }}
-            >
-              <InputGroupText title={i18n("search.reset")}>
-                <FaTimes />
-              </InputGroupText>
-            </InputGroupAddon>
-          )}
-        </InputGroup>
+          {i18n("filters")}{" "}
+          {activeFilterCount > 0 ? `(${activeFilterCount})` : ""}
+          <FaFilter className="mb-1" />
+        </Button>
 
         <UncontrolledDropdown className="vocabulary-sheet-view-column-dropdown">
           <DropdownToggle size="sm" color="secondary" caret={true}>
@@ -908,6 +929,13 @@ export const VocabularySheetViewTable: React.FC<
           </DropdownMenu>
         </UncontrolledDropdown>
       </div>
+
+      <FilterPanel
+        isOpen={isFilterPanelOpen}
+        facetParams={facetParams}
+        onFacetChange={handleFacetChange}
+        onClearFilters={handleClearFilters}
+      />
 
       <div className="vocabulary-sheet-view-summary">
         <span>

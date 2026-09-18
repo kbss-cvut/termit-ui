@@ -22,6 +22,7 @@ const en = {
     time: "Time",
     close: "Close",
     copy: "Copy",
+    filters: "Filters",
     "copy.success": "Copied!",
     "basic-information": "Basic Information",
     "created-info": "Created by {author} on {date}",
@@ -726,6 +727,7 @@ const en = {
     "glossary.table.workspace.open": "Open sheet view",
     "glossary.table.workspace.open.help":
       "Open the dedicated sheet view for bulk updates and metadata overview.",
+    "glossary.table.filters.clear": "Clear filters",
     "glossary.table.workspace.back": "Back to vocabulary",
     "glossary.table.workspace.back.help": "Return to vocabulary detail view.",
     "glossary.table.fontSize": "Font size",
