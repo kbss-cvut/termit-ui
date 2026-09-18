@@ -1,10 +1,11 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Term, { CONTEXT as TERM_CONTEXT, TermData } from "../../model/Term";
 import Constants from "../../util/Constants";
-import Ajax, { params } from "../../util/Ajax";
+import Ajax, { content, params } from "../../util/Ajax";
 import JsonLdUtils from "../../util/JsonLdUtils";
-import { IRI } from "../../util/VocabularyUtils";
 import { queryKeys } from "../queryKeys";
+import SearchParam, { MatchType } from "../../model/search/SearchParam";
+import VocabularyUtils, { IRI } from "../../util/VocabularyUtils";
 
 export const VOCABULARY_TERMS_PAGE_SIZE = 100;
 
@@ -21,6 +22,7 @@ interface FetchVocabularyTermsPageParams {
   searchString: string;
   language: string;
   pageParam: number;
+  searchParams?: SearchParam[];
   signal?: AbortSignal;
 }
 
@@ -53,6 +55,7 @@ export async function fetchVocabularyTermsPage({
   searchString,
   language,
   pageParam,
+  searchParams = [],
   signal,
 }: FetchVocabularyTermsPageParams): Promise<VocabularyTermsPage> {
   const requestParams: {
@@ -78,8 +81,31 @@ export async function fetchVocabularyTermsPage({
     requestParams.namespace = vocabularyIri.namespace;
   }
 
-  const requestConfig = params(requestParams);
   const endpoint = `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms`;
+  const searchEndpoint = `${apiPrefix}/search/advanced`;
+
+  const finalSearchParams = [...searchParams];
+
+  if (searchParams.length > 0) {
+    const fullVocabIri = vocabularyIri.namespace
+      ? vocabularyIri.namespace + vocabularyIri.fragment
+      : vocabularyIri.fragment;
+
+    // Restrict search to the current vocabulary
+    finalSearchParams.push({
+      property: VocabularyUtils.SKOS_IN_SCHEME,
+      value: [fullVocabIri],
+      matchType: MatchType.IRI,
+    });
+  }
+
+  const requestConfig =
+    searchParams.length > 0
+      ? content(finalSearchParams)
+          .contentType(Constants.JSON_MIME_TYPE)
+          .preserveAcceptHeaderInPost()
+          .params(requestParams)
+      : params(requestParams);
 
   if (signal) {
     const abortController = new AbortController();
@@ -89,7 +115,11 @@ export async function fetchVocabularyTermsPage({
     requestConfig.signal(abortController);
   }
 
-  const response = await Ajax.getResponse(endpoint, requestConfig);
+  const response =
+    searchParams.length > 0
+      ? await Ajax.post(searchEndpoint, requestConfig)
+      : await Ajax.getResponse(endpoint, requestConfig);
+
   const compacted =
     await JsonLdUtils.compactAndResolveReferencesAsArray<TermData>(
       response.data,
@@ -119,7 +149,16 @@ export async function fetchVocabularyTermsPage({
     }
 
     try {
-      const countResponse = await Ajax.head(endpoint, params(countParams));
+      const countResponse =
+        searchParams.length > 0
+          ? await Ajax.post(
+              searchEndpoint,
+              content(finalSearchParams)
+                .contentType(Constants.JSON_MIME_TYPE)
+                .preserveAcceptHeaderInPost()
+                .params(countParams)
+            )
+          : await Ajax.head(endpoint, params(countParams));
       totalCount = resolveTotalCount(countResponse.headers);
     } catch {
       // Ignore fallback count errors and keep unknown total behavior.
@@ -144,6 +183,7 @@ interface UseVocabularyTermsParams {
   vocabularyIri: IRI;
   searchString: string;
   language: string;
+  searchParams?: SearchParam[];
 }
 
 function normalizeLanguageTag(language: string): string {
@@ -158,18 +198,24 @@ export function useVocabularyTerms({
   vocabularyIri,
   searchString,
   language,
+  searchParams = [],
 }: UseVocabularyTermsParams) {
   const normalizedSearchString = searchString.trim();
   const normalizedLanguage = normalizeLanguageTag(language);
 
+  const baseQueryKey = queryKeys.terms.list({
+    apiPrefix,
+    vocabularyFragment: vocabularyIri.fragment,
+    vocabularyNamespace: vocabularyIri.namespace,
+    searchString: normalizedSearchString,
+    language: normalizedLanguage,
+  });
+
   return useInfiniteQuery<VocabularyTermsPage>({
-    queryKey: queryKeys.terms.list({
-      apiPrefix,
-      vocabularyFragment: vocabularyIri.fragment,
-      vocabularyNamespace: vocabularyIri.namespace,
-      searchString: normalizedSearchString,
-      language: normalizedLanguage,
-    }),
+    queryKey: [
+      ...(Array.isArray(baseQueryKey) ? baseQueryKey : [baseQueryKey]),
+      searchParams,
+    ],
     queryFn: ({ pageParam = 0, signal }) =>
       fetchVocabularyTermsPage({
         apiPrefix,
@@ -177,6 +223,7 @@ export function useVocabularyTerms({
         searchString: normalizedSearchString,
         language: normalizedLanguage,
         pageParam: Number(pageParam),
+        searchParams,
         signal,
       }),
     getNextPageParam: (lastPage) =>

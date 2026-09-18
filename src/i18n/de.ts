@@ -22,6 +22,7 @@ const de = {
     time: "Uhrzeit",
     close: "Schließen",
     copy: "Kopieren",
+    filters: "Filter",
     "copy.success": "Kopiert!",
     "basic-information": "Grundlegende Informationen",
     "created-info": "Erstellt von {author} am {date}",
@@ -695,6 +696,7 @@ const de = {
     "glossary.table.workspace.open": "Tabellenansicht öffnen",
     "glossary.table.workspace.open.help":
       "Öffnet eine dedizierte Tabellenansicht für Massenbearbeitung und Metadaten-Übersicht.",
+    "glossary.table.filters.clear": "Filter löschen",
     "glossary.table.workspace.back": "Zurück zum Vokabular",
     "glossary.table.workspace.back.help": "Zurück zur Vokabular-Detailansicht.",
     "glossary.table.fontSize": "Schriftgröße",
