@@ -176,5 +176,8 @@ export function createTermValueRenderer(vocabularyIri?: string) {
 }
 
 export function createVocabularyValueRenderer() {
-  return (_: any, option: Vocabulary) => <VocabularyLink vocabulary={option} />;
+  // Ensure instance passed to VocabularyLink has the correct prototype
+  return (_: any, option: Vocabulary) => (
+    <VocabularyLink vocabulary={new Vocabulary(option)} />
+  );
 }
