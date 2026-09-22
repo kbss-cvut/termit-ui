@@ -10,7 +10,7 @@ import * as redux from "react-redux";
 import { withHooks } from "vitest-react-hooks-shallow";
 import { shallow } from "enzyme";
 import * as Actions from "../../../action/AsyncActions";
-import type { Mock } from "vitest";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -37,28 +37,17 @@ describe("VocabularySelect", () => {
     (redux.useSelector as Mock).mockReturnValue({});
     const fakeDispatch = vi.fn();
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
-    vi.spyOn(Actions, "loadVocabularies").mockReturnValue(vi.fn());
+    const loadAction = vi.fn();
+    vi.spyOn(Actions, "loadVocabulariesIfNotLoaded").mockReturnValue(
+      loadAction
+    );
     withHooks(() => {
       mockUseI18n();
       shallow(
         <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
       );
-      expect(fakeDispatch).toHaveBeenCalled();
-      expect(Actions.loadVocabularies).toHaveBeenCalled();
-    });
-  });
-
-  it("does not load vocabularies when they are already loaded", () => {
-    (redux.useSelector as Mock).mockReturnValue(vocabularies);
-    const fakeDispatch = vi.fn();
-    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
-    vi.spyOn(Actions, "loadVocabularies").mockReturnValue(vi.fn());
-    withHooks(() => {
-      mockUseI18n();
-      shallow(
-        <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
-      );
-      expect(fakeDispatch).not.toHaveBeenCalled();
+      expect(Actions.loadVocabulariesIfNotLoaded).toHaveBeenCalled();
+      expect(fakeDispatch).toHaveBeenCalledWith(loadAction);
     });
   });
 
