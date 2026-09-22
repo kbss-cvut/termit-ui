@@ -13,6 +13,7 @@ import {
 import OutgoingLink from "../../misc/OutgoingLink";
 import { Label } from "reactstrap";
 import Constants from "../../../util/Constants";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("UpdateRow", () => {
   beforeEach(() => {
@@ -22,7 +23,9 @@ describe("UpdateRow", () => {
   it("renders id value as an outgoing link", () => {
     const newValue = Generator.generateUri();
     const record = generateUpdateRecord({ iri: newValue });
-    const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
+    const wrapper = shallow(
+      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
+    );
     const link = wrapper.find(OutgoingLink);
     expect(link.exists()).toBeTruthy();
     expect(link.prop("iri")).toEqual(newValue);
@@ -40,7 +43,9 @@ describe("UpdateRow", () => {
       originalValue: [{ iri: idValue }, literalValue],
       types: [VocabularyUtils.UPDATE_EVENT],
     });
-    const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
+    const wrapper = shallow(
+      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
+    );
     const link = wrapper.find(OutgoingLink);
     expect(link.exists()).toBeTruthy();
     expect(link.prop("iri")).toEqual(idValue);
@@ -55,7 +60,9 @@ describe("UpdateRow", () => {
       "@value": "Test value",
     };
     const record = generateUpdateRecord(newValue);
-    const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
+    const wrapper = shallow(
+      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
+    );
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
     expect(label.childAt(1).childAt(0).text()).toContain(
@@ -88,7 +95,9 @@ describe("UpdateRow", () => {
       },
     ];
     const record = generateUpdateRecord(newValue);
-    const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
+    const wrapper = shallow(
+      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
+    );
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
     expect(label.length).toEqual(newValue.length);
@@ -111,7 +120,9 @@ describe("UpdateRow", () => {
       "test",
     ];
     const record = generateUpdateRecord(newValue);
-    const wrapper = shallow(<UpdateRow record={record} {...intlFunctions()} />);
+    const wrapper = shallow(
+      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
+    );
     const label = wrapper.find(Label);
     expect(label.exists()).toBeTruthy();
     expect(label.length).toEqual(newValue.length);
