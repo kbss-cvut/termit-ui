@@ -980,6 +980,7 @@ const de = {
     "history.changedAttribute": "Attribut",
     "history.originalValue": "Ursprünglicher Wert",
     "history.newValue": "Neuer Wert",
+    "history.rollback": "Änderung rückgängig machen",
     "changefrequency.label": "Aktivität",
     "tooltip.copy-iri": "IRI kopieren",
     "tooltip.copied": "Kopiert!",

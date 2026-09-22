@@ -49,6 +49,10 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
     )
   );
 
+  const rollback = (record: UpdateRecord) => {
+    // TODO Implement rollback.
+  };
+
   React.useEffect(() => {
     if (asset.iri === Constants.EMPTY_ASSET_IRI) {
       return;
@@ -121,6 +125,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
             <th className="col-2">{i18n("history.changedAttribute")}</th>
             <th className="col-2">{i18n("history.originalValue")}</th>
             <th className="col-2">{i18n("history.newValue")}</th>
+            <th className="col-1 text-center">{i18n("actions")}</th>
           </tr>
           <tr>
             <td>
@@ -157,6 +162,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
                 onChange={(e) => setFilterAttribute(e.target.value)}
               />
             </td>
+            <td />
           </tr>
         </thead>
         <tbody>
@@ -165,7 +171,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
               return <PersistRow key={r.iri} record={r} />;
             }
             if (r instanceof UpdateRecord) {
-              return <UpdateRow key={r.iri} record={r} />;
+              return <UpdateRow key={r.iri} record={r} onRollback={rollback} />;
             }
             if (r instanceof DeleteRecord) {
               return <DeleteRow key={r.iri} record={r} />;

@@ -1,4 +1,5 @@
 import ChangeRecord, { ChangeRecordData } from "./ChangeRecord";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface ID {
   iri: string;
@@ -29,5 +30,9 @@ export class UpdateRecord extends ChangeRecord implements UpdateRecordData {
 
   get typeLabel(): string {
     return "history.type.update";
+  }
+
+  get isReversible(): boolean {
+    return this.types.includes(VocabularyUtils.REVERSIBLE_CHANGE);
   }
 }
