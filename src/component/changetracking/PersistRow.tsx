@@ -28,6 +28,7 @@ export const PersistRow: React.FC<PersistRowProps> = (props) => {
       <td />
       <td />
       <td />
+      <td />
     </tr>
   );
 };

@@ -1024,6 +1024,7 @@ const cs = {
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
+    "history.rollback": "Vrátit změnu",
 
     "changefrequency.label": "Aktivita",
 

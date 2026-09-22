@@ -3,10 +3,16 @@ import { FormattedDate, FormattedTime } from "react-intl";
 import AssetLabel from "../misc/AssetLabel";
 import { Badge } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
-import { UpdateRowProps } from "./UpdateRow";
 import TermIriLink from "../term/TermIriLink";
+import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 
-export const VocabularyContentUpdateRow: React.FC<UpdateRowProps> = (props) => {
+interface VocabularyContentUpdateRowProps {
+  record: UpdateRecord;
+}
+
+export const VocabularyContentUpdateRow: React.FC<
+  VocabularyContentUpdateRowProps
+> = (props) => {
   const { i18n } = useI18n();
   const record = props.record;
   const created = new Date(Date.parse(record.timestamp));

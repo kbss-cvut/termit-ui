@@ -187,6 +187,8 @@ const VocabularyUtils = {
   IS_READ_ONLY: _NS_TERMIT + "read-only",
   IS_FORBIDDEN: _NS_TERMIT + "forbidden",
 
+  REVERSIBLE_CHANGE: _NS_TERMIT + "reversible-change",
+
   getFragment(iri: string): string {
     return this.create(iri).fragment;
   },
