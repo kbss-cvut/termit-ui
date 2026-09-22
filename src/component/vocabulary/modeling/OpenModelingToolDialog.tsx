@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadRelatedVocabularies } from "../../../action/AsyncVocabularyActions";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import TermItState from "../../../model/TermItState";
-import { loadVocabularies } from "../../../action/AsyncActions";
+import { loadVocabulariesIfNotLoaded } from "../../../action/AsyncActions";
 import { Col, Input, Row } from "reactstrap";
 import { getShortLocale } from "../../../util/IntlUtil";
 import "./OpenModelingToolDialog.scss";
@@ -51,9 +51,8 @@ const OpenModelingToolDialog: React.FC<OpenModelingToolDialogProps> = ({
       setRelatedVocabularies([...data, vocabulary.iri]);
       setSelectedVocabularies([...data, vocabulary.iri]);
     });
-    if (Object.keys(vocabularies).length === 0) {
-      dispatch(loadVocabularies());
-    }
+
+    dispatch(loadVocabulariesIfNotLoaded());
   }, [
     vocabulary.iri,
     vocabularies,

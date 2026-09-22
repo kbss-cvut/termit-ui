@@ -50,12 +50,14 @@ import { langString } from "../../model/MultilingualString";
 import { Configuration } from "../../model/Configuration";
 import { removeSearchListener } from "../../action/SearchActions";
 import JsonLdUtils from "../../util/JsonLdUtils";
+import { beforeEach, describe, expect, it } from "vitest";
 
 function stateToPlainObject(state: TermItState): TermItState {
   return {
     loading: state.loading,
     user: state.user,
     vocabulary: state.vocabulary,
+    areVocabulariesLoaded: state.areVocabulariesLoaded,
     vocabularies: state.vocabularies,
     queryResults: state.queryResults,
     messages: state.messages,

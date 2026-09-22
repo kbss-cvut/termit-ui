@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   loadAllTerms,
   loadTerms,
-  loadVocabularies,
+  loadVocabulariesIfNotLoaded,
 } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
 import TermListToggle from "./TermListToggle";
@@ -73,9 +73,7 @@ export const TermSelector: React.FC<{
   const treeSelect = React.useRef<IntelligentTreeSelect<Term>>(null);
 
   React.useEffect(() => {
-    if (Object.keys(vocabularies).length === 0) {
-      dispatch(loadVocabularies());
-    }
+    dispatch(loadVocabulariesIfNotLoaded());
   }, [dispatch, vocabularies]);
 
   let flatList = useSelector((state: TermItState) => state.showTermsFlatList);

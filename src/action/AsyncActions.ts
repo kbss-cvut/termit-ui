@@ -498,6 +498,21 @@ export function removeAsset(
   };
 }
 
+/**
+ * Loads vocabularies into the store only if there were not loaded yet.
+ *
+ * @return Already loaded vocabularies or newly loaded vocabularies if they were not loaded yet.
+ */
+export function loadVocabulariesIfNotLoaded() {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    const { areVocabulariesLoaded, vocabularies } = getState();
+    if (areVocabulariesLoaded) {
+      return Promise.resolve(vocabularies);
+    }
+    return dispatch(loadVocabularies());
+  };
+}
+
 export function loadVocabularies() {
   const action = {
     type: ActionType.LOAD_VOCABULARIES,
