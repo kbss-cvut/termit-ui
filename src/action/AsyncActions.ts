@@ -59,7 +59,7 @@ import {
   TextAnalysisRecord,
   TextAnalysisRecordData,
 } from "../model/TextAnalysisRecord";
-import {
+import ChangeRecord, {
   ChangeRecordData,
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
@@ -1414,5 +1414,73 @@ export function removeSnapshot(snapshotIri: IRI) {
         );
       })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+function getRollbackChangeEndpoint(
+  asset: Asset,
+  assetIri: IRI,
+  changeRecordIri: IRI
+) {
+  const types = Utils.sanitizeArray(asset.types);
+  let assetTypePathSegment: String | null = null;
+  if (types.includes(VocabularyUtils.TERM)) {
+    assetTypePathSegment = "terms";
+  } else if (types.includes(VocabularyUtils.VOCABULARY)) {
+    assetTypePathSegment = "vocabularies";
+  }
+
+  if (assetTypePathSegment != null) {
+    return `${Constants.API_PREFIX}/${assetTypePathSegment}/${assetIri.fragment}/history/${changeRecordIri.fragment}/rollback`;
+  }
+
+  throw new TypeError(
+    "Asset " + asset.iri + " does not support change rollback."
+  );
+}
+
+/**
+ * Rolls back the specified change to a term or vocabulary.
+ *
+ * Publishes a message describing the outcome and resolves to `true` when the
+ * rollback succeeds or `false` when the request fails.
+ *
+ * @param asset Term or vocabulary whose change should be rolled back
+ * @param changeRecord Record identifying the change to roll back
+ * @returns Promise of boolean. {@code true} when the rollback was successful,
+ *          {@code false} otherwise.
+ */
+export function rollbackChange(asset: Asset, changeRecord: ChangeRecord) {
+  const action = { type: ActionType.ROLLBACK_CHANGE };
+  const assetIri = VocabularyUtils.create(asset.iri);
+  const recordIri = VocabularyUtils.create(changeRecord.iri);
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, false));
+    const endpoint = getRollbackChangeEndpoint(asset, assetIri, recordIri);
+    return Ajax.post(endpoint, param("namespace", assetIri.namespace))
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "history.rollback.success" },
+              MessageType.SUCCESS
+            )
+          )
+        );
+        return true;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "history.rollback.failure" },
+              MessageType.ERROR
+            )
+          )
+        );
+        return false;
+      });
   };
 }

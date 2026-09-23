@@ -1018,6 +1018,9 @@ const en = {
     "history.changedAttribute": "Attribute",
     "history.originalValue": "Original value",
     "history.newValue": "New value",
+    "history.rollback": "Roll back change",
+    "history.rollback.success": "The change was rolled back successfully.",
+    "history.rollback.failure": "The change could not be rolled back.",
 
     "changefrequency.label": "Activity",
 

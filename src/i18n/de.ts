@@ -978,6 +978,11 @@ const de = {
     "history.changedAttribute": "Attribut",
     "history.originalValue": "Ursprünglicher Wert",
     "history.newValue": "Neuer Wert",
+    "history.rollback": "Änderung rückgängig machen",
+    "history.rollback.success":
+      "Die Änderung wurde erfolgreich rückgängig gemacht.",
+    "history.rollback.failure":
+      "Die Änderung konnte nicht rückgängig gemacht werden.",
     "changefrequency.label": "Aktivität",
     "tooltip.copy-iri": "IRI kopieren",
     "tooltip.copied": "Kopiert!",
