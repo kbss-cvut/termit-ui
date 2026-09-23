@@ -1025,6 +1025,8 @@ const cs = {
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
     "history.rollback": "Vrátit změnu",
+    "history.rollback.success": "Změna byla úspěšně vrácena.",
+    "history.rollback.failure": "Změnu se nepodařilo vrátit.",
 
     "changefrequency.label": "Aktivita",
 

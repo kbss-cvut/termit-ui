@@ -7,8 +7,10 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import {
   loadHistory as loadHistoryAction,
+  loadVocabulary,
   rollbackChange,
 } from "../../action/AsyncActions";
+import { loadTerm } from "../../action/AsyncTermActions";
 import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import UpdateRow from "./UpdateRow";
 import PersistRow from "./PersistRow";
@@ -25,6 +27,7 @@ import DeleteRow from "./DeleteRow";
 import debounce from "lodash/debounce";
 import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 interface AssetHistoryProps {
   asset: Asset;
@@ -52,8 +55,26 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
     )
   );
 
+  const reloadCurrentAsset = () => {
+    if (asset instanceof Vocabulary) {
+      dispatch(loadVocabulary(VocabularyUtils.create(asset.iri)));
+    } else if (asset instanceof Term && asset.vocabulary) {
+      dispatch(
+        loadTerm(
+          VocabularyUtils.create(asset.iri).fragment,
+          VocabularyUtils.create(asset.vocabulary.iri)
+        )
+      );
+    }
+  };
+
   const rollback = (record: UpdateRecord) => {
-    dispatch(rollbackChange(asset, record));
+    dispatch(rollbackChange(asset, record)).then((successful) => {
+      if (!successful) {
+        return;
+      }
+      reloadCurrentAsset();
+    });
   };
 
   React.useEffect(() => {

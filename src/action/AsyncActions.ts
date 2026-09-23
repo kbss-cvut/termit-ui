@@ -1439,6 +1439,17 @@ function getRollbackChangeEndpoint(
   );
 }
 
+/**
+ * Rolls back the specified change to a term or vocabulary.
+ *
+ * Publishes a message describing the outcome and resolves to `true` when the
+ * rollback succeeds or `false` when the request fails.
+ *
+ * @param asset Term or vocabulary whose change should be rolled back
+ * @param changeRecord Record identifying the change to roll back
+ * @returns Promise of boolean. {@code true} when the rollback was successful,
+ *          {@code false} otherwise.
+ */
 export function rollbackChange(asset: Asset, changeRecord: ChangeRecord) {
   const action = { type: ActionType.ROLLBACK_CHANGE };
   const assetIri = VocabularyUtils.create(asset.iri);
@@ -1447,7 +1458,29 @@ export function rollbackChange(asset: Asset, changeRecord: ChangeRecord) {
     dispatch(asyncActionRequest(action, false));
     const endpoint = getRollbackChangeEndpoint(asset, assetIri, recordIri);
     return Ajax.post(endpoint, param("namespace", assetIri.namespace))
-      .then(() => dispatch(asyncActionSuccess(action)))
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "history.rollback.success" },
+              MessageType.SUCCESS
+            )
+          )
+        );
+        return true;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "history.rollback.failure" },
+              MessageType.ERROR
+            )
+          )
+        );
+        return false;
+      });
   };
 }
