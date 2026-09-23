@@ -5,7 +5,10 @@ import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import { Table } from "reactstrap";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import { loadHistory as loadHistoryAction } from "../../action/AsyncActions";
+import {
+  loadHistory as loadHistoryAction,
+  rollbackChange,
+} from "../../action/AsyncActions";
 import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import UpdateRow from "./UpdateRow";
 import PersistRow from "./PersistRow";
@@ -50,7 +53,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   );
 
   const rollback = (record: UpdateRecord) => {
-    // TODO Implement rollback.
+    dispatch(rollbackChange(asset, record));
   };
 
   React.useEffect(() => {
