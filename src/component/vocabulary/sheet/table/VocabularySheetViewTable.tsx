@@ -935,6 +935,7 @@ export const VocabularySheetViewTable: React.FC<
         facetParams={facetParams}
         onFacetChange={handleFacetChange}
         onClearFilters={handleClearFilters}
+        vocabularyIri={vocabulary.iri!}
       />
 
       <div className="vocabulary-sheet-view-summary">

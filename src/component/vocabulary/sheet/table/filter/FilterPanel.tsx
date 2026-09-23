@@ -17,6 +17,7 @@ export interface FilterPanelProps {
   facetParams: { [key: string]: SearchParam };
   onFacetChange: (value: SearchParam) => void;
   onClearFilters: () => void;
+  vocabularyIri: string;
 }
 
 export const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -24,6 +25,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   facetParams,
   onFacetChange,
   onClearFilters,
+  vocabularyIri,
 }) => {
   const { i18n } = useI18n();
 
@@ -88,6 +90,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }
                 onChange={onFacetChange}
+                vocabularyIri={vocabularyIri}
+                includeImported={true}
+                disableScopeToggle={true}
               />
             </Col>
             {/* Sub terms */}
@@ -103,6 +108,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   }
                 }
                 onChange={onFacetChange}
+                vocabularyIri={vocabularyIri}
+                includeImported={false}
+                disableScopeToggle={true}
               />
             </Col>
             {/* Related Terms */}

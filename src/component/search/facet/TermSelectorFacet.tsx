@@ -9,7 +9,18 @@ export const TermSelectorFacet: React.FC<{
   label: string;
   value: SearchParam;
   onChange: (value: SearchParam) => void;
-}> = ({ id, label, value, onChange }) => {
+  vocabularyIri?: string;
+  includeImported?: boolean;
+  disableScopeToggle?: boolean;
+}> = ({
+  id,
+  label,
+  value,
+  onChange,
+  vocabularyIri,
+  includeImported,
+  disableScopeToggle,
+}) => {
   const onSelect = (values: readonly Term[]) => {
     onChange({ ...value, value: values.map((v) => v.iri) });
   };
@@ -21,6 +32,9 @@ export const TermSelectorFacet: React.FC<{
       value={value.value}
       onChange={onSelect}
       forceFlatList={true}
+      vocabularyIri={vocabularyIri}
+      includeImported={includeImported}
+      disableScopeToggle={disableScopeToggle}
     />
   );
 };

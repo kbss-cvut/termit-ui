@@ -51,6 +51,8 @@ export const TermSelector: React.FC<{
   vocabularyIri?: string;
   suffix?: React.ReactNode;
   forceFlatList?: boolean;
+  includeImported?: boolean;
+  disableScopeToggle?: boolean;
 
   fetchedTermsFilter?: (terms: Term[]) => Term[];
   onChange: (selected: readonly Term[]) => void;
@@ -63,6 +65,8 @@ export const TermSelector: React.FC<{
   onChange,
   suffix,
   vocabularyIri,
+  includeImported = true,
+  disableScopeToggle = false,
 }) => {
   const intl = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
@@ -111,7 +115,7 @@ export const TermSelector: React.FC<{
               {
                 ...options,
                 flatList,
-                includeImported: true,
+                includeImported: includeImported,
                 includeRelated: true,
               },
               VocabularyUtils.create(vocabularyIri)
@@ -149,7 +153,7 @@ export const TermSelector: React.FC<{
       <div className="d-flex justify-content-between mb-2">
         {label}
         <div className="d-flex align-items-center">
-          {vocabularyIri && (
+          {vocabularyIri && !disableScopeToggle && (
             <>
               {limitToRelated && filteredVocabs.length > 0 && (
                 <VocabulariesInfoIcon
