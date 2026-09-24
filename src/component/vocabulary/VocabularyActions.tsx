@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import Utils from "../../util/Utils";
 import OpenModelingToolDialog from "./modeling/OpenModelingToolDialog";
+import { IoMdMove } from "react-icons/io";
 
 interface VocabularyActionsProps {
   vocabulary: Vocabulary;
@@ -30,6 +31,7 @@ interface VocabularyActionsProps {
   onExport: () => void;
   onImport: (file: File, translationsOnly: boolean) => Promise<any>;
   onCreateSnapshot: () => void;
+  onMigrateIri: () => void;
 }
 
 const VocabularyActions: React.FC<VocabularyActionsProps> = ({
@@ -38,6 +40,7 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
   onExport,
   onImport,
   onCreateSnapshot,
+  onMigrateIri,
 }) => {
   const { i18n } = useI18n();
   const [showImportDialog, setShowImportDialog] = React.useState(false);
@@ -133,6 +136,19 @@ const VocabularyActions: React.FC<VocabularyActionsProps> = ({
               </DropdownItem>
             </IfVocabularyActionAuthorized>
           </If>
+          <IfVocabularyActionAuthorized
+            vocabulary={vocabulary}
+            requiredAccessLevel={AccessLevel.SECURITY}
+          >
+            <DropdownItem
+              className="btn-sm"
+              title={i18n("vocabulary.migrate.iri.title")}
+              onClick={onMigrateIri}
+            >
+              <IoMdMove className="mr-1" />
+              {i18n("asset.migrate.iri.label")}
+            </DropdownItem>
+          </IfVocabularyActionAuthorized>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
     </>

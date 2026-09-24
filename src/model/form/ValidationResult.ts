@@ -50,6 +50,10 @@ export default class ValidationResult {
   static blocker(msg: string) {
     return new ValidationResult(Severity.BLOCKER, msg);
   }
+
+  static fromBoolean(isValid: boolean) {
+    return isValid ? ValidationResult.VALID : ValidationResult.BLOCKER;
+  }
 }
 
 export function severityComparator(a: ValidationResult, b: ValidationResult) {

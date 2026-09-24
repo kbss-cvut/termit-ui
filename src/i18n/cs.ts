@@ -294,6 +294,13 @@ const cs = {
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
 
+    "asset.migrate.iri.label": "Migrovat identifikátor",
+    "asset.migrate.iri.dangerZone.label": "Nebezpečná zóna",
+    "asset.migrate.iri.dangerZone.description":
+      "Mezinárodní identifikátory by měly být unikátní a neměnné. Jejich změna naruší externí vazby zdrojů a klientů mimo TermIt!",
+    "asset.migrate.iri.originalIri": "Původní identifikátor",
+    "asset.migrate.iri.newIri": "Nový identifikátor",
+
     "term.remove.description":
       'Opravdu chcete trvale odstranit pojem "{label}"? Vyberte, jak se má naložit se závislými daty.',
     "term.remove.references.found":
@@ -519,6 +526,10 @@ const cs = {
       "Existuje {termsRelations, plural, one {<b>1</b> vazba na pojem} other {<b>#</b> vazeb na pojmy}} z tohoto slovníku.",
     "vocabulary.remove.dialog.input.label":
       "Pro ověření, zadejte název slovníku",
+
+    "vocabulary.migrate.iri.title": "Změnit identifikátor slovníku nebo pojmu",
+    "vocabulary.migrate.iri.confirmLabel":
+      "Pro potvrzení zadejte název {assetType, select, vocabulary {slovníku} term {pojmu} other {záznamu}}",
 
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",

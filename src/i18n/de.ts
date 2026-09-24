@@ -292,6 +292,13 @@ const de = {
     "asset.remove.dialog.text":
       'Sind Sie sicher, dass Sie {type} "{label}" entfernen möchten?',
 
+    "asset.migrate.iri.label": "Identifikator migrieren",
+    "asset.migrate.iri.dangerZone.label": "Gefahrenzone",
+    "asset.migrate.iri.dangerZone.description":
+      "Internationale Identifikatoren sollten eindeutig und unveränderlich sein. Ihre Änderung unterbricht externe Verknüpfungen von Ressourcen und Clients außerhalb von TermIt!",
+    "asset.migrate.iri.originalIri": "Ursprünglicher Identifikator",
+    "asset.migrate.iri.newIri": "Neuer Identifikator",
+
     "term.remove.description":
       'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Wählen Sie, wie mit abhängigen Daten verfahren werden soll.',
     "term.remove.references.found":
@@ -330,6 +337,12 @@ const de = {
     "vocabulary.vocabularies.select.placeholder":
       "Beginnen Sie mit der Eingabe, um Vokabulare nach Namen zu filtern",
     "vocabulary.title": "Titel",
+    "vocabulary.migrate.iri.label": "Identifikator migrieren",
+    "vocabulary.migrate.iri.title":
+      "Identifikator des Vokabulars oder eines Begriffs ändern",
+    "vocabulary.migrate.iri.confirmLabel":
+      "Geben Sie zur Bestätigung den Namen {assetType, select, vocabulary {des Vokabulars} term {des Begriffs} other {des Eintrags}} ein",
+
     "vocabulary.primaryLanguage": "Primäres Vokabular der Sprache",
     "vocabulary.preferredNamespaceUri": "Bevorzugte Namespace-URI",
     "vocabulary.preferredNamespaceUri.editReadonly":
