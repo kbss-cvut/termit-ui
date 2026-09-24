@@ -38,11 +38,14 @@ export const MAX_SELECT_THRESHOLD = 20;
  * @param id Component identifier
  * @param label Label to render for the selector
  * @param value Selected value
+ * @param multi Whether multiple terms can be selected
  * @param fetchedTermsFilter Filter for terms fetched from the backend
  * @param onChange Handler for selection
  * @param suffix Suffix to render after the selector (but within the form group)
  * @param vocabularyIri IRI of the vocabulary the current term belongs to
  * @param forceFlatList Whether to force the selector to render in flat list mode
+ * @param includeImported Whether terms from imported vocabularies should be included
+ * @param disableScopeToggle Whether toggle for "show related" should be disabled
  */
 export const TermSelector: React.FC<{
   id?: string;
@@ -53,6 +56,7 @@ export const TermSelector: React.FC<{
   forceFlatList?: boolean;
   includeImported?: boolean;
   disableScopeToggle?: boolean;
+  multi?: boolean;
 
   fetchedTermsFilter?: (terms: Term[]) => Term[];
   onChange: (selected: readonly Term[]) => void;
@@ -67,6 +71,7 @@ export const TermSelector: React.FC<{
   vocabularyIri,
   includeImported = true,
   disableScopeToggle = false,
+  multi = true,
 }) => {
   const intl = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
@@ -96,12 +101,24 @@ export const TermSelector: React.FC<{
     treeSelect.current?.resetOptions();
   };
 
-  const selected =
+  const selectedValues =
     value.length > 0
       ? typeof value[0] === "string"
         ? (value as string[])
         : resolveSelectedIris(value as TermInfo[])
       : (value as string[]);
+
+  const selected = multi ? selectedValues : selectedValues.slice(0, 1);
+
+  const handleChange = (newValue: readonly Term[] | Term | null) => {
+    if (newValue === null) {
+      onChange([]);
+    } else if (Array.isArray(newValue)) {
+      onChange(newValue);
+    } else {
+      onChange([newValue as Term]);
+    }
+  };
 
   const fetchOptions = async (
     fetchParams: TreeSelectFetchOptionsParams<TermData>
@@ -191,18 +208,18 @@ export const TermSelector: React.FC<{
       </div>
       <IntelligentTreeSelect
         ref={treeSelect}
-        onChange={(v: readonly Term[]) => onChange(v)}
-        value={selected}
+        onChange={handleChange}
+        value={multi ? selected : selected[0]}
         fetchOptions={fetchOptions}
         fetchLimit={Constants.DEFAULT_TREE_SELECT_FETCH_SIZE}
         maxHeight={200}
-        multi={true}
+        multi={multi}
         optionRenderer={createTermsWithImportsOptionRenderer(vocabularyIri)}
         valueRenderer={createTermValueRenderer(vocabularyIri)}
         {...treeSelectProps}
       />
       {suffix}
-      {selected.length > MAX_SELECT_THRESHOLD && (
+      {multi && selected.length > MAX_SELECT_THRESHOLD && (
         <LargeTermValueList value={value} onChange={onChange} />
       )}
     </FormGroup>

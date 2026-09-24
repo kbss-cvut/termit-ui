@@ -283,6 +283,13 @@ const en = {
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
 
+    "asset.migrate.iri.label": "Migrate Identifier",
+    "asset.migrate.iri.dangerZone.label": "Danger Zone",
+    "asset.migrate.iri.dangerZone.description":
+      "International identifiers should be unique and immutable. Changing them will break external links from resources and clients outside TermIt!",
+    "asset.migrate.iri.originalIri": "Original identifier",
+    "asset.migrate.iri.newIri": "New identifier",
+
     "term.remove.description":
       'Are you sure you want to permanently remove the term "{label}"? Choose how to handle dependent data.',
     "term.remove.references.found":
@@ -322,6 +329,12 @@ const en = {
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
+    "vocabulary.migrate.iri.label": "Migrate Identifier",
+    "vocabulary.migrate.iri.title":
+      "Change identifier of the vocabulary or a term",
+    "vocabulary.migrate.iri.confirmLabel":
+      "To confirm, enter the name of the {assetType, select, vocabulary {vocabulary} term {term} other {asset}}",
+
     "vocabulary.primaryLanguage": "Primary vocabulary language",
     "vocabulary.preferredNamespaceUri": "Preferred namespace URI",
     "vocabulary.preferredNamespaceUri.editReadonly":

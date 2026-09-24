@@ -52,6 +52,7 @@ import { HasStompClient, StompClient } from "../hoc/withStompClient";
 import Constants from "../../util/Constants";
 import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
 import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
+import VocabularyTermIriMigrationDialog from "./VocabularyTermIriMigrationDialog";
 
 interface VocabularySummaryProps
   extends HasI18n,
@@ -84,6 +85,7 @@ interface VocabularySummaryProps
 export interface VocabularySummaryState extends EditableComponentState {
   showExportDialog: boolean;
   showSnapshotDialog: boolean;
+  showIriMigrationDialog: boolean;
   language: string;
 }
 
@@ -109,6 +111,7 @@ export class VocabularySummary extends EditableComponent<
       showRemoveDialog: false,
       showExportDialog: false,
       showSnapshotDialog: false,
+      showIriMigrationDialog: false,
       language: resolveInitialLanguage(
         props.vocabulary,
         props.locale,
@@ -231,6 +234,12 @@ export class VocabularySummary extends EditableComponent<
     );
   };
 
+  private onIriMigrationDialogToggle = () => {
+    this.setState({
+      showIriMigrationDialog: !this.state.showIriMigrationDialog,
+    });
+  };
+
   public render() {
     const { i18n, vocabulary } = this.props;
     const buttons: React.ReactElement[] = [];
@@ -283,6 +292,7 @@ export class VocabularySummary extends EditableComponent<
         onExport={this.onExportToggle}
         onImport={this.onImport}
         onCreateSnapshot={this.onCreateSnapshotToggle}
+        onMigrateIri={this.onIriMigrationDialogToggle}
       />
     );
 
@@ -312,6 +322,11 @@ export class VocabularySummary extends EditableComponent<
             show={this.state.showSnapshotDialog}
             onClose={this.onCreateSnapshotToggle}
             onConfirm={this.onCreateSnapshot}
+          />
+          <VocabularyTermIriMigrationDialog
+            isVisible={this.state.showIriMigrationDialog}
+            onCancel={this.onIriMigrationDialogToggle}
+            vocabulary={this.props.vocabulary}
           />
           <PromiseTrackingMask area="vocabulary-summary" />
           {this.state.edit ? (
