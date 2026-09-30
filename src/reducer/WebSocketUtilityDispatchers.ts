@@ -11,8 +11,8 @@ export function updateLongRunningTasks(message: IMessage, action: Action) {
 
     tasks.forEach((task) => {
       if (task.startedAt) {
-        // @ts-ignore
-        task.startedAt = new Date(task.startedAt * 1000);
+        // parse ISO-8601 timestamp string
+        task.startedAt = new Date(task.startedAt);
       }
 
       task.name = "longrunningtasks.name." + task.name;
