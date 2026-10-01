@@ -10,6 +10,7 @@ import { Label } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import { TermSelector } from "../term/TermSelector";
 import Utils from "../../util/Utils";
+import ValidationResult from "../../model/form/ValidationResult";
 
 export interface VocabularyTermIriMigrationDialogProps
   extends IriMigrationDialogControlProps {
@@ -66,6 +67,20 @@ const TermTab: FunctionComponent<TermTabProps> = ({
   );
 };
 
+function validateTermIri(
+  vocabulary: Vocabulary,
+  newIri: string,
+  formatMessage: (msg: string, args: object) => string
+) {
+  const namespace = vocabulary.preferredNamespaceUri;
+  if (namespace && newIri.startsWith(namespace) && newIri !== namespace) {
+    return ValidationResult.VALID;
+  }
+  return ValidationResult.blocker(
+    formatMessage("asset.migrate.iri.error.preferredNamespace", { namespace })
+  );
+}
+
 const VocabularyTermIriMigrationDialog = ({
   onCancel,
   isVisible,
@@ -89,6 +104,13 @@ const VocabularyTermIriMigrationDialog = ({
     }
   };
 
+  const validateNewIri = (newIri: string) => {
+    if (activeTab === TAB_KEY.TERM) {
+      return validateTermIri(vocabulary, newIri, formatMessage);
+    }
+    return ValidationResult.VALID;
+  };
+
   return (
     <IriMigrationDialog
       ref={dialogRef}
@@ -100,6 +122,7 @@ const VocabularyTermIriMigrationDialog = ({
       isVisible={isVisible}
       onCancel={onCancel}
       asset={selectedAsset}
+      newIriValidator={validateNewIri}
     >
       <Tabs
         activeTabLabelKey={activeTab}

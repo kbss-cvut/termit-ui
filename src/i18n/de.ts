@@ -298,6 +298,11 @@ const de = {
       "Internationale Identifikatoren sollten eindeutig und unveränderlich sein. Ihre Änderung unterbricht externe Verknüpfungen von Ressourcen und Clients außerhalb von TermIt!",
     "asset.migrate.iri.originalIri": "Ursprünglicher Identifikator",
     "asset.migrate.iri.newIri": "Neuer Identifikator",
+    "asset.migrate.iri.error.sameAsOriginal":
+      "Der neue Identifikator darf nicht mit dem ursprünglichen Identifikator identisch sein",
+    "asset.migrate.iri.error.preferredNamespace":
+      "Der neue Identifikator muss den Namespace des Vokabulars verwenden: {namespace}",
+    "asset.migrate.iri.error.invalidIri": "Ungültiger Identifikator",
 
     "term.remove.description":
       'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Wählen Sie, wie mit abhängigen Daten verfahren werden soll.',

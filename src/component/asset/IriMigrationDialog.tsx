@@ -27,6 +27,12 @@ export interface IriMigrationDialogProps
   confirmationInputLabel: string;
   /// Title of the dialog
   title?: string;
+  /**
+   * Validator of the entered new IRI value
+   * <p>
+   * The new IRI is internally already validated for empty value, invalid URI and equality with the original IRI.
+   */
+  newIriValidator: (newIri: string) => ValidationResult;
   children?: ReactNode;
 }
 
@@ -52,10 +58,23 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
       resetForm,
     }));
 
-    const isNewIriValid =
-      !!newIri && Utils.isUri(newIri) && newIri !== asset?.iri;
     const isLabelConfirmed =
       asset != null && asset.getLabel(locale) === confirmationLabelValue;
+
+    let newIriValidationResult = props.newIriValidator(newIri);
+
+    if (!newIri || !Utils.isUri(newIri)) {
+      newIriValidationResult = ValidationResult.blocker(
+        i18n("asset.migrate.iri.error.invalidIri")
+      );
+    }
+    if (newIri === asset?.iri) {
+      newIriValidationResult = ValidationResult.blocker(
+        i18n("asset.migrate.iri.error.sameAsOriginal")
+      );
+    }
+
+    const isNewIriValid = newIriValidationResult === ValidationResult.VALID;
 
     return (
       <ConfirmCancelDialog
@@ -84,7 +103,7 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
             value={newIri}
             onInput={(e) => setNewIri(e.currentTarget.value)}
             label={i18n("asset.migrate.iri.newIri")}
-            validation={ValidationResult.fromBoolean(isNewIriValid)}
+            validation={newIriValidationResult}
           />
           <CustomInput
             label={props.confirmationInputLabel}
