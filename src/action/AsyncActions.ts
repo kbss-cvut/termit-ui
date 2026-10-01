@@ -1455,7 +1455,7 @@ export function rollbackChange(asset: Asset, changeRecord: ChangeRecord) {
   const assetIri = VocabularyUtils.create(asset.iri);
   const recordIri = VocabularyUtils.create(changeRecord.iri);
   return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, false));
+    dispatch(asyncActionRequest(action, true));
     const endpoint = getRollbackChangeEndpoint(asset, assetIri, recordIri);
     return Ajax.post(endpoint, param("namespace", assetIri.namespace))
       .then(() => {
