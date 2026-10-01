@@ -28,10 +28,14 @@ import debounce from "lodash/debounce";
 import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 
 interface AssetHistoryProps {
   asset: Asset;
 }
+
+const PROMISE_AREA = "ASSET_HISTORY_PROMISE_AREA";
 
 export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   const { i18n } = useI18n();
@@ -55,11 +59,11 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
     )
   );
 
-  const reloadCurrentAsset = () => {
+  const reloadCurrentAsset = async () => {
     if (asset instanceof Vocabulary) {
-      dispatch(loadVocabulary(VocabularyUtils.create(asset.iri)));
+      await dispatch(loadVocabulary(VocabularyUtils.create(asset.iri)));
     } else if (asset instanceof Term && asset.vocabulary) {
-      dispatch(
+      await dispatch(
         loadTerm(
           VocabularyUtils.create(asset.iri).fragment,
           VocabularyUtils.create(asset.vocabulary.iri)
@@ -69,12 +73,15 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   };
 
   const rollback = (record: UpdateRecord) => {
-    dispatch(rollbackChange(asset, record)).then((successful) => {
-      if (!successful) {
-        return;
-      }
-      reloadCurrentAsset();
-    });
+    trackPromise(
+      dispatch(rollbackChange(asset, record)).then((successful) => {
+        if (!successful) {
+          return Promise.resolve();
+        }
+        return reloadCurrentAsset();
+      }),
+      PROMISE_AREA
+    );
   };
 
   React.useEffect(() => {
@@ -212,6 +219,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
           itemCount={pageRecords.length}
         />
       ) : null}
+      <PromiseTrackingMask area={PROMISE_AREA} />
     </div>
   );
 };
