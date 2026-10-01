@@ -300,6 +300,11 @@ const cs = {
       "Mezinárodní identifikátory by měly být unikátní a neměnné. Jejich změna naruší externí vazby zdrojů a klientů mimo TermIt!",
     "asset.migrate.iri.originalIri": "Původní identifikátor",
     "asset.migrate.iri.newIri": "Nový identifikátor",
+    "asset.migrate.iri.error.sameAsOriginal":
+      "Nový identifikátor nesmí být stejný jako původní identifikátor",
+    "asset.migrate.iri.error.preferredNamespace":
+      "Nový identifikátor musí používat jmenný prostor slovíku: {namespace}",
+    "asset.migrate.iri.error.invalidIri": "Neplatný identifikátor",
 
     "term.remove.description":
       'Opravdu chcete trvale odstranit pojem "{label}"? Vyberte, jak se má naložit se závislými daty.',

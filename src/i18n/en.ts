@@ -289,6 +289,11 @@ const en = {
       "International identifiers should be unique and immutable. Changing them will break external links from resources and clients outside TermIt!",
     "asset.migrate.iri.originalIri": "Original identifier",
     "asset.migrate.iri.newIri": "New identifier",
+    "asset.migrate.iri.error.sameAsOriginal":
+      "The new identifier must not be the same as the original identifier",
+    "asset.migrate.iri.error.preferredNamespace":
+      "The new identifier must use the vocabulary namespace: {namespace}",
+    "asset.migrate.iri.error.invalidIri": "Invalid identifier",
 
     "term.remove.description":
       'Are you sure you want to permanently remove the term "{label}"? Choose how to handle dependent data.',
